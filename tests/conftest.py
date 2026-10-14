@@ -21,3 +21,6 @@ def fresh_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     # The window helper is the developer's machine, never the suite's: a case that wants one
     # names it.
     monkeypatch.delenv("WINDOW_APP", raising=False)
+    # So is the binary the developer's `MAME_BINARY` names: the ladder a case climbs is the one
+    # the case sets up.
+    monkeypatch.delenv("MAME_BINARY", raising=False)

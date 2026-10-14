@@ -73,7 +73,8 @@ def start(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # counts only: `machine_map` is where the rows are.
     shape = _sections({part: reply["machine"][part]
                        for part in ("cpus", "screens", "rom_files", "regions", "shares")})
-    return (f"start {reply['system']}: rom_check {reply['rom_check']}, "
+    return (f"start {reply['system']} on {reply['binary']} ({reply['binary_origin']}): "
+            f"rom_check {reply['rom_check']}, "
             f"{prose.counted(reply['symbols_total'], 'symbol')}, pc {reply['pc']}"
             + (f", machine: {shape}" if shape else "")
             + (f", {prose.counted(len(back), 'declaration')} re-armed: "

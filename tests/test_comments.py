@@ -886,7 +886,8 @@ def test_a_symbol_comment_follows_its_name_across_a_build_and_is_never_stale(
 
 
 def test_start_says_how_many_comments_it_placed_again() -> None:
-    reply = {"system": "m68k-dual", "rom_check": "OK", "symbols_total": 3, "pc": "0x0", "machine":
+    reply = {"system": "m68k-dual", "binary": "/opt/mame/mame", "binary_origin": "argument",
+             "rom_check": "OK", "symbols_total": 3, "pc": "0x0", "machine":
              {"cpus": 2, "screens": 1, "rom_files": 0, "regions": 0, "shares": 0},
              "declarations": {"comments": {"rearmed": [{"ref": "a", "cpu": MAIN}] * 2}},
              "start_retries": []}

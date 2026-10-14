@@ -333,5 +333,7 @@
       "cpu": {"any_of": ["audiocpu", ":audiocpu"]}},
      {"ref": "0x6000", "mode": "capture", "trigger": "0x6000", "trigger_type": "r",
       "cpu": {"any_of": ["audiocpu", ":audiocpu"]}}]},
-   "allow": ["by"], "grammar": ["capture", "r"]}
+   "allow": ["by"], "grammar": ["capture", "r"]},
+  {"id": "M168", "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base.",
+   "tool": "start", "args": {"system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin"}}
 ]}

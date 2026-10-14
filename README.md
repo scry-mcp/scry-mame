@@ -68,8 +68,9 @@ You need a MAME build with the gdbstub (any recent one; `-debugger gdbstub` is t
 stock stub stops MAME at start when the machine's FIRST cpu is not one its register maps
 cover), its `console` plugin (`plugins/console` beside the binary, or `share/mame/plugins/console` under
 the prefix of a packaged MAME), the ROM set of the system you debug, and
-Python 3.11 or newer. No external `gdb` is involved: the remote protocol is plain text over
-TCP and the client is stdlib only. One family of cpus needs a recent enough MAME: the stub's
+Python 3.11 or newer. `start` runs the `mame` its `binary` argument names, else the
+one `MAME_BINARY` names, else the one on your `PATH`. No external `gdb` is involved: the
+remote protocol is plain text over TCP and the client is stdlib only. One family of cpus needs a recent enough MAME: the stub's
 register map for the NEC V20/V30/V33 and their relatives is in MAME from mamedev/mame#16131
 on, so a board on one of those needs a MAME that includes it. And MAME's Lua console thread can
 crash a boot (a data race on its one Lua state): `patches/0003-lua-thread-context-race.patch` is
@@ -108,7 +109,7 @@ close()                       -> {"closed": true, "ended_by": "quit", ...}
 
 Everything about *your* project comes from you: the binary, the system, the ROM paths, the
 reference image, the symbol file, where a window goes. The server names no game and carries
-no default that points anywhere. The same server serves a 68000 board and a V30 one.
+no default of its own: a `start` without `binary` runs the MAME your environment names. The same server serves a 68000 board and a V30 one.
 
 ## Examples
 
@@ -339,7 +340,7 @@ frame, the stop goes at that write instead (REFERENCE.md, Which instant a decode
 
 Everything about *your* project comes from you: the binary, the system, the ROM paths, the
 reference image, the symbol file, where a window goes. The server knows no project and
-carries no default that points anywhere in particular.
+carries no default of its own.
 
 | tool | what it does |
 |---|---|

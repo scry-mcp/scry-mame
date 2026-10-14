@@ -38,8 +38,9 @@ for how long a wait may take, `count` for how many steps, the `breakpoint_*` ver
 `memdump(ref, length, dest)` with its subject first. One spelling per concept is the fleet's
 rule for every tool surface, and the two emulator servers were the one place it was broken.
 
-The server knows no game: the binary, the system, the ROM paths and the symbol file all come
-from the caller, so the same server serves every project.
+The server knows no game: the system, the ROM paths and the symbol file come from the caller,
+and the binary from its argument, `MAME_BINARY` or the PATH, so the same server serves every
+project.
 """
 
 from __future__ import annotations
@@ -419,7 +420,6 @@ def _stopped(what: str) -> tuple[gs.Session, Path]:
 
 @tool("Start a MAME session", summary=summaries.start)
 def start(
-    binary: str,
     system: str,
     rompath: str,
     reference_rom: str,
@@ -439,12 +439,13 @@ def start(
     throttle_from_frame: int = 0,
     types: str | dict[str, str] = "",
     cfg: str = "",
+    binary: str = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
     Arguments (every path absolute; `rompath`, `inipath`, `state_dir` directories, the rest files):
-    - `binary`, `system`, `rompath`.
+    - `system`, `rompath`; `binary` (omitted: `MAME_BINARY`, else the PATH's `mame`).
     - `reference_rom`, `reference_addr` (`0x`), `reference_base` (`0x`, the image's first byte).
     - `symbols`: a YAML or the linker's five-column map, the first cpu's. `bases`
       maps each non-CODE class of a map to a `0x` base or to `rom`. `types`: a file of `name:
@@ -456,21 +457,20 @@ def start(
     - `boot_lua`, an EXISTING harness file, never Lua text (no tool here writes one;
       never `manager.machine:exit()`), `env` for it, `inipath`,
       `seconds` (the stub's wait, (0, {WAIT_MAX_S}]), `stub_port` (`0`: a free one).
-    - `state_dir` (empty: disposable; else kept), `cfg` (the repo's `.cfg`).
+    - `state_dir` (empty: disposable; else kept), `cfg`.
 
     Refused before anything is spawned: a live session, a relative path, a missing file, a cpu
     the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
-    a `stub_port` in use, a bad `seconds`,
+    a `stub_port` in use,
     a `reference_addr` OUTSIDE the image; a `system` the binary lacks. Another pid's stub:
     `host_failed`. 16 bytes that do not match: `readback_refused`, closed.
 
-    Reply: `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `cfg`, `debugger`,
-    `errorlog_path`, `stdout_path`, `rom_check`, `symbols_total`, `symbols_typed`,
-    `symbols_format`, `symbols_by_class` (the first cpu's), `symbols_by_cpu`, `registers`,
-    `pc`, `frame`, `frame_symbol` (unavailable with no counter), `machine` (counts), what
+    Reply: `system`, `binary`, `binary_origin`, `version`, `pid`, `stub_port`, `scratch_dir`,
+    `state_dir`, `cfg`, `debugger`, `errorlog_path`, `stdout_path`, `rom_check`,
+    `symbols_total`, `symbols_typed`, `symbols_format`, `symbols_by_class` (first cpu),
+    `symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine` (counts), what
     reached the driver (`env`, `display`, `background`, `flags`, `throttle_from_frame`,
-    `boot_lua_path`), `declarations` and
-    `start_retries` (each a `kind`).
+    `boot_lua_path`), `declarations` and `start_retries`.
 
     Reference: REFERENCE.md, The session.
     """

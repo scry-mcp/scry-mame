@@ -43,6 +43,7 @@ ABORTED = -signal.SIGABRT
 IMAGE = bytes(range(256)) * 64
 
 # The emulator double. `-listxml` is the query `start` asks before it boots, and answers no XML;
+# `-version` answers one line, as a MAME does;
 # the boot itself counts its launches in a file, dies by SIGSEGV while the count is at or below
 # DEATHS (after LATE seconds, when set), and otherwise marks itself booted (the gdbstub double
 # answers from then on) and stays alive the way a parked MAME does. EXIT, when set, is a plain
@@ -52,7 +53,7 @@ IMAGE = bytes(range(256)) * 64
 # double prints the debugger's banner as MAME does, BANNER_AFTER seconds after it can be dialled,
 # or never when that is None.
 DOUBLE = """#!/bin/sh
-case " $* " in *" -listxml "*) exit 0 ;; esac
+case " $* " in *" -listxml "*) exit 0 ;; *" -version "*) echo "0.0 (double)"; exit 0 ;; esac
 here=$(dirname "$0")
 rm -f "$here/booted"
 n=$(( $(cat "$here/launches" 2>/dev/null || echo 0) + 1 ))

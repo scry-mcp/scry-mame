@@ -21,6 +21,7 @@ from typing import Any
 from xml.parsers import expat
 
 import gdb_session as gs
+import mame_binary as binaries
 import mame_boot_failures as failures
 import mame_comments as comments
 import mame_cpus as cpus
@@ -598,7 +599,8 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
     argument (`inputs.absolute`: absolute, no `~` nobody expands, no NUL and no lone surrogate)
     in the order `judge` reads them, and `display`'s word, which is wrong on any machine.
     Whether each file is there, and what it holds, is the host's, and `judge`'s."""
-    inputs.absolute("binary", binary)
+    if binary:          # empty climbs `mame_binary`'s ladder, which judges what it lands on
+        inputs.absolute("binary", binary)
     inputs.absolute("reference_rom", reference_rom)
     inputs.absolute("rompath", rompath)
     judge_inipath(inipath)
@@ -628,17 +630,11 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 display=display)
-    # `is_file()` AND `os.access(X_OK)`, NEVER `exists()`, for the reason `window_flags` sets
-    # out above, plus the one that is this check's own: `exists()` answers True for a
-    # DIRECTORY, so a folder carrying the binary's name reaches the spawn, and what refuses it
-    # there is `subprocess`, after the scratch has been made and with nothing in the message
-    # naming the argument. The harness and the symbol file below take `is_file()` for the same
-    # reason and have no exec bit to ask about.
-    inputs.input_file("binary", binary, "MAME binary")
-    if not os.access(binary, os.X_OK):
-        raise st.Invalid("bad_argument",
-            f"the MAME binary {binary} is not executable; MAME is a program and this server "
-            "spawns it")
+    # THE BINARY IS AN EXECUTABLE FILE ALREADY: `binary` here is what `mame_binary.resolve`
+    # landed on, and `shutil.which` approves neither a directory nor a file without its exec
+    # bit. The inputs below take `is_file()`, never `exists()`, which answers True for a
+    # directory, so a folder carrying a file's name would reach the spawn and be refused there,
+    # after the scratch has been made and with nothing in the message naming the argument.
     if plugins_dir(binary) is None:
         looked = "; ".join(str(d / CONSOLE_PLUGIN) for d in plugin_places(binary))
         raise st.Invalid("bad_argument",
@@ -1040,6 +1036,10 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     # Whatever is left here is a process with no session to write state for (a live one was
     # refused above), so it is not given the grace a `close` gives.
     STATE.kill(progress, grace=False)
+    # THE BINARY LADDER is climbed after the session gate, so a live or broken session answers
+    # as such whatever executable `binary` or `MAME_BINARY` names; a relaunch climbs it again.
+    resolved = binaries.resolve(binary)
+    binary = resolved.path
     judged = judge(binary=binary, system=system, rompath=rompath, reference_rom=reference_rom,
                    symbols=symbols, reference_addr=reference_addr, inipath=inipath, wait=wait,
                    shared=shared, boot_lua=boot_lua, env=env, bases=bases,
@@ -1060,6 +1060,9 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     STATE.port = judged.port
     try:
         try:
+            # Asked after `judge`, so a refused input spawns nothing, `-version` included, and
+            # inside the guard, so whatever escapes it still collects the `-listxml` query.
+            binary_facts = binaries.facts(resolved)
             given, harness, _cmd = boot(judged, progress,
                                         last_launch=len(retries) == START_RETRIES_MAX)
         except st.Invalid:
@@ -1123,6 +1126,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         STATE.boot_pc = int(park["pc"], 16)      # what `reset` reads its pc back against
         started = menvelope.envelope({
             "system": system,
+            **binary_facts,
             "pid": STATE.proc.pid if STATE.proc else None,
             "stub_port": judged.port,
             "scratch_dir": str(STATE.scratch),

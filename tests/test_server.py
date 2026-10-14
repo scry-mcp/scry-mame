@@ -550,24 +550,25 @@ def _never_spawns(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(subprocess, "Popen", boom)
 
 
-@pytest.mark.parametrize(("argument", "thing"), [
-    ("binary", "MAME binary"),
-    ("reference_rom", "reference ROM"),
-    ("symbols", "symbol file"),
-    ("boot_lua", "boot harness"),
-    ("cfg", "cfg"),
+@pytest.mark.parametrize(("argument", "refusal"), [
+    ("binary", r"MAME binary resolves from the argument rung: .*\(a directory\)"),
+    ("reference_rom", "no such reference ROM"),
+    ("symbols", "no such symbol file"),
+    ("boot_lua", "no such boot harness"),
+    ("cfg", "no such cfg"),
 ])
 def test_a_directory_where_a_file_is_due_is_refused_naming_the_argument(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, argument: str, thing: str
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, argument: str, refusal: str
 ) -> None:
     """Each of the five path arguments refuses a DIRECTORY, at the argument and before
     anything is spawned. The reason `is_file()` is the check and not `exists()` lives with the
-    check, in `mame_launch.judge`; what this pins is that every one of the five asks it."""
+    check, in `mame_launch.judge`, and for `binary` in the ladder (`mame_binary`), which says
+    why the path it was given is no executable; what this pins is that every one asks it."""
     _never_spawns(monkeypatch, tmp_path)
     folder = tmp_path / "a-directory-not-a-file"
     folder.mkdir()
     args: dict[str, Any] = {**_boot_args(tmp_path, bytes(16)), argument: str(folder)}
-    refused(f"no such {thing}", s.start(**args))
+    refused(refusal, s.start(**args))
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
@@ -582,7 +583,7 @@ def test_a_binary_that_is_a_file_and_cannot_be_run_is_refused_as_such(
     unrunnable = tmp_path / "not-a-program"
     unrunnable.write_text("#!/bin/sh\nexit 0\n")
     unrunnable.chmod(0o644)
-    refused("is not executable", s.start(**{**args, "binary": str(unrunnable)}))
+    refused(r"\(not executable\)", s.start(**{**args, "binary": str(unrunnable)}))
 
 
 def test_a_map_class_with_no_base_refuses_start_before_the_emulator_exists(
@@ -4194,7 +4195,8 @@ def _query_that_outlives_the_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
     HELD, so a test can read whether the process was collected: the `start` arguments and
     the list the `Popen` lands in."""
     args = _boot_args(tmp_path, bytes(range(64)))
-    Path(args["binary"]).write_text("#!/bin/sh\nsleep 30\n")
+    Path(args["binary"]).write_text(
+        '#!/bin/sh\n[ "$1" = -version ] && { echo "0.0 (a slow query)"; exit 0; }\nsleep 30\n')
     Path(args["binary"]).chmod(0o755)
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     held: list[Any] = []
@@ -6690,11 +6692,11 @@ def test_the_summary_line_of_each_tool_says_what_came_back(
 
 def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any() -> None:
     reply: dict[str, Any] = {"status": "ok", "system": "m68k-dual", "rom_check": "OK",
-             "symbols_total": 61,
+             "binary": "/opt/mame/mame", "binary_origin": "PATH", "symbols_total": 61,
              "pc": "0x000f2034", "machine": {n: 0 for n in machine.SECTIONS},
              "declarations": {"rearm": {"rearmed": []}}, "start_retries": []}
     assert s._summary("start", {}, reply) == (
-        "start m68k-dual: rom_check OK, 61 symbols, pc 0x000f2034")
+        "start m68k-dual on /opt/mame/mame (PATH): rom_check OK, 61 symbols, pc 0x000f2034")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": ":maincpu"}]
     assert s._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0 on :maincpu")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": None}]

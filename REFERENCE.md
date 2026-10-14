@@ -147,6 +147,20 @@ names, and that sentence beside it, so the difference is read as the method and 
 regression. It is not repeated on every stop: the fact belongs to the session, and those two
 replies are where a session is described.
 
+**Which MAME runs is resolved for each launch, and said.** The ladder is the `binary` argument
+(an absolute path), else the `MAME_BINARY` variable, else the `mame` the PATH finds, and the
+first rung holding a value is the one taken. A relative value is refused at its argument or
+variable; one naming no executable file is refused (`bad_argument`) naming what all three rungs
+held and why the one taken is not a program (`no such file`, `a directory`, `not executable`),
+and is never passed over for the next, because a caller who named a build and got another would
+be measuring the wrong emulator. The ladder is climbed after the session gate, so a live or
+broken session answers as such whatever executable `binary` or `MAME_BINARY` names, and a
+relaunch after a crash climbs it again. The reply carries `binary` (absolute), `binary_origin`
+(`argument`, `MAME_BINARY` or `PATH`) and `version`: the first non-blank line `-version` prints,
+asked after the inputs are judged so a refused input spawns nothing, or `{"available": false,
+"why": ...}` when it printed nothing, did not return in 5 s or could not run; the start goes on
+either way.
+
 **Every path argument is an absolute path, judged at the argument.** One rule serves every path
 this server takes: `binary`, `rompath`, each element of `inipath`, `reference_rom`, `symbols`
 and `types` and each entry of their mappings, `boot_lua`, `cfg`, `state_dir`, `gfx_load`'s
@@ -160,15 +174,14 @@ input before it writes anything into `state_dir`. An `inipath` element that does
 handed to MAME, which skips an ini directory it cannot find; an empty one is refused.
 
 **Every input file `start` takes has to be a FILE, and a directory is refused at the argument.**
-The binary, the reference ROM, the symbol and types files, the boot harness and the cfg are each
-checked with `is_file()`, and the binary also has to be executable; the ROM path is the one
-input that has to be a directory and is checked as one. The distinction is not pedantry:
-`exists()` answers yes to a folder, so under that check alone a directory carrying the binary's
-name is indistinguishable from the binary, and what refuses it arrives out of the spawn instead,
-after a scratch directory has been made, in a message that names a path and not the argument.
-`is_file()` is what excludes it. Those refusals, and the ROM directory's, read `no such <thing>:
-<path>` from one composer, as does every missing input file another tool reads (`gfx_load`'s
-manifest). A file that is there and wrong is the caller's argument too, never a failure of the
+The reference ROM, the symbol and types files, the boot harness and the cfg are each checked
+with `is_file()`; the binary is judged by the ladder above, which also needs the exec bit; the
+ROM path is the one input that has to be a directory. `exists()` answers yes to a folder, so
+under that check alone a directory carrying a file's name would be taken for the file, and what
+refuses it would arrive out of the spawn, after a scratch directory has been made, naming a path
+and not the argument. `is_file()` excludes it. Every one of these but the binary, and the ROM
+directory, reads `no such <thing>: <path>` from one composer, as does every missing input file
+another tool reads (`gfx_load`'s manifest). A file that is there and wrong is the caller's argument too, never a failure of the
 tool: one nobody may read is `cannot read the <thing> <path>`, one that is not UTF-8 text is
 `<path> is not UTF-8 text`, the same two sentences for the `types` file, the symbol file and the
 manifest; whatever else the symbol reader finds wrong in the symbol file, or in `bases` against
@@ -2855,6 +2868,8 @@ module:
   the batch executor alike.
 - **`mame_launch.py`**: the command line as a pure function, the window flags, the port
   probe, `start` and `close`.
+- **`mame_binary.py`**: which MAME `start` runs, by the ladder *The session* sets out, and the
+  build's own version line.
 - **`mame_stub_owner.py`**, **`mame_guardian.py`**, **`mame_idle.py`**: whose gdbstub a port
   serves, proved by the process that holds it; the guardian beside every MAME, so it dies with
   the server however the server ends; and the idle bound, which closes a session no tool has
