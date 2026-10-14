@@ -311,41 +311,38 @@ def test_a_helper_that_cannot_be_executed_at_all_is_caught_rather_than_raised(
     assert "-window" in flags and "-nomaximize" in flags
 
 
-def test_the_default_window_helper_is_found_beside_the_package_not_in_the_home(
+def test_with_no_window_app_no_helper_is_looked_for_anywhere(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """With no `WINDOW_APP` the helper is looked for in this tree's `bin/`, the package's
-    parent, and never under the home directory: a clone anywhere reads the same, and a clone
-    without `bin/` falls back to the default flags like any missing helper. The home is moved
-    to an empty directory and the helper stood in for, so the path the refusal names is the
-    one that was looked at."""
+    """`WINDOW_APP` is the only route to a window helper: unset, none is run, wherever one might
+    sit beside the package, so a clone reads the same on every machine. A quick start takes the
+    default flags; a shared one refuses as `host_failed`, naming the variable that would fix it.
+    A working helper is planted where a default could have pointed, so a default that survived
+    would answer with its flags instead of refusing."""
+    planted = tmp_path / "place-window.sh"
+    planted.write_text('#!/bin/sh\nprintf -- "-window\\n-planted\\n"\n')
+    planted.chmod(0o755)
     monkeypatch.delenv("WINDOW_APP", raising=False)
-    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(launch, "WINDOW_HELPER", planted, raising=False)
+    ran: list[list[str]] = []
+    real_run = subprocess.run
 
-    def answers_nothing(cmd: list[str], **_: object) -> subprocess.CompletedProcess[str]:
-        return subprocess.CompletedProcess(cmd, 1, "", "stand-in")
+    def recorded(cmd: list[str], **kw: Any) -> subprocess.CompletedProcess[str]:
+        ran.append(cmd)
+        return real_run(cmd, **kw)
 
-    monkeypatch.setattr(subprocess, "run", answers_nothing)
-    beside = Path(launch.__file__).resolve().parent.parent / "bin" / "place-window.sh"
-    with pytest.raises(mstate.Invalid, match="geometry") as refused:
+    # BY BEHAVIOUR, not by a name: whatever a default might be called, running it is the tell.
+    monkeypatch.setattr(subprocess, "run", recorded)
+    assert launch.window_flags(shared=False) == ["-window", "-nomaximize", "-resolution", "320x240"]
+    assert ran == [], f"a helper ran with WINDOW_APP unset: {ran}"
+    monkeypatch.setenv("WINDOW_APP", "   ")
+    with pytest.raises(mstate.Invalid, match="WINDOW_APP is not set"):
         launch.window_flags(shared=True)
-    assert str(beside) in str(refused.value), str(refused.value)
-    assert str(tmp_path) not in str(refused.value)
-
-
-def test_a_clone_without_the_helper_beside_it_takes_the_fallback(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The default helper absent, as in a clone that carries the package without the tree's
-    `bin/`: a quick start takes the default flags, a shared one refuses naming where it
-    looked."""
-    monkeypatch.delenv("WINDOW_APP", raising=False)
-    monkeypatch.setattr(launch, "WINDOW_HELPER", tmp_path / "bin" / "place-window.sh")
-    flags = launch.window_flags(shared=False)
-    assert "-window" in flags and "-nomaximize" in flags
-    with pytest.raises(mstate.Invalid, match="geometry") as refused:
+    monkeypatch.delenv("WINDOW_APP")
+    with pytest.raises(mstate.Invalid) as refused:
         launch.window_flags(shared=True)
-    assert str(tmp_path / "bin" / "place-window.sh") in str(refused.value)
+    assert refused.value.code == "host_failed", refused.value.code
+    assert "WINDOW_APP is not set" in str(refused.value), str(refused.value)
 
 
 def test_the_tools_are_serialized() -> None:
@@ -493,17 +490,6 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "step", "stop", "symbols_find", "throttle", "watch_add", "watch_clear", "watch_list",
         "write", "scan_start", "scan_filter", "scan_clear",
     ]), f"the registered surface changed: {registered}"
-
-
-def test_the_window_helper_default_is_the_program_and_not_the_alias() -> None:
-    """Same contract as the board tools: an in-tree execution names the `.sh`.
-
-    `bin/place-window` is a SYMLINK. In a checkout that did not materialise it the alias is a
-    short text file and exec answers rc=126, which `_window_flags` would then degrade past in
-    silence. Naming the program removes the state rather than handling it.
-    """
-    src = Path(launch.__file__).read_text(encoding="utf-8")
-    assert '"place-window.sh"' in src, "server no longer names place-window.sh as its default"
 
 
 # ------------------------------------------------- what a start refuses before anything exists

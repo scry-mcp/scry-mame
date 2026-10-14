@@ -18,3 +18,6 @@ def fresh_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     # THE STATE DIRECTORY IS THE TEST'S OWN, so nothing a case provokes (a failed start's
     # kept output, a persistent store) lands in the owner's real one.
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "xdg-state"))
+    # The window helper is the developer's machine, never the suite's: a case that wants one
+    # names it.
+    monkeypatch.delenv("WINDOW_APP", raising=False)

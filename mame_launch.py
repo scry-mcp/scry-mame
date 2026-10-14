@@ -153,10 +153,6 @@ def reference_rom_file(reference_rom: str) -> Path:
     return ref
 
 
-#: The window helper when `WINDOW_APP` names none: the program itself, not its alias.
-WINDOW_HELPER = Path(__file__).resolve().parent.parent / "bin" / "place-window.sh"
-
-
 def window_flags(shared: bool, display: str = "") -> list[str]:
     """Window flags: from the shared helper when it is there, from a sensible default when not.
 
@@ -170,20 +166,22 @@ def window_flags(shared: bool, display: str = "") -> list[str]:
     one: the helper ignores it otherwise, out loud on stderr, which no caller of this server ever
     sees, so `start` refuses that combination before it gets here.
     """
-    # THE DEFAULT IS BESIDE THIS PACKAGE, in the tree's own `bin/`, never under the home: a path
-    # resolved from the home reads differently for every clone, and a clone without `bin/` is the
-    # missing-helper case the fallback below already carries.
-    helper = Path(os.environ.get("WINDOW_APP", WINDOW_HELPER))
-    # `is_file()` AND `os.access`, NOT `exists()`. The DEFAULT above names the program, so it is
-    # not reached through a symlink any more; what still arrives here is a `WINDOW_APP` pointing
-    # at the alias, or any helper that is present and cannot be run. `exists()` answers True for a
+    # `WINDOW_APP` IS THE ONLY ROUTE TO A HELPER, and there is no default: a path this package
+    # guessed (beside it, under the home) would read differently for every clone and point at
+    # somebody's private configuration. Unset is the missing-helper case the fallback carries.
+    named = os.environ.get("WINDOW_APP", "").strip()
+    helper = Path(named)
+    # `is_file()` AND `os.access`, NOT `exists()`. What arrives here can be a `WINDOW_APP`
+    # pointing at an alias that a checkout did not materialise, or any helper that is present
+    # and cannot be run. `exists()` answers True for a
     # short text file with no exec bit, and `subprocess.run` then raises PermissionError -- an
     # OSError, which `check=False` does not suppress -- taking the whole of `start` down. The
     # absent case was the only one this ever handled.
     # AND `os.access(X_OK)` IS A NO-OP ON WINDOWS, where it answers True for any existing file, so
     # the `except` below is the half that carries the case there rather than a belt on a brace.
-    failed = f"the helper that computes it is not at {helper}. Set WINDOW_APP"
-    if helper.is_file() and os.access(helper, os.X_OK):
+    failed = (f"the helper that computes it is not at {helper}. Set WINDOW_APP to it" if named
+              else "WINDOW_APP is not set, so no helper computes it. Set WINDOW_APP to one")
+    if named and helper.is_file() and os.access(helper, os.X_OK):
         cmd = [str(helper), "mame"] + (["--shared"] if shared else [])
         if display:
             cmd += ["--display", display]
