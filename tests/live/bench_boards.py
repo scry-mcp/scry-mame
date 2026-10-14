@@ -1,6 +1,6 @@
 """The boards the live scripts run on the bench, and why one cannot run: their copies, pinned by
 `scry_core.live_bench` in the bench's own `bench.json`, one directory per board under the bench's
-root (`MAME_LIVE_BENCH`).
+root, which `_root` resolves.
 
 A BOARD IS NAMED HERE BY ITS LABEL, never by its set: what the case covers (`m68k-dual`, `v30`)
 is what this tree says, and what MAME needs on disk (the set's name, its binary, its ROM files)
@@ -10,19 +10,27 @@ one place that already holds the real files.
 
 A board whose identity is absent or incomplete, or whose copies are absent or off their pins, is
 BLOCKED naming what is wrong and how to fix it; the free boards of mamedev.org run without a
-bench. Every reason is worked out once per run.
+bench.
 """
 
 import json
+import os
 from pathlib import Path
 
 from scry_core import live_bench as bench
 
-BENCH = bench.root("mame")
-#: The manifest of every file the live tier reads from the bench.
-BENCH_MANIFEST = BENCH / "bench.json"
+
+def _root() -> Path:
+    held = os.environ.get("MAME_LIVE_BENCH", "")
+    if held:
+        return Path(held).expanduser().absolute()
+    return Path.home() / ".local" / "share" / "scry-bench" / "mame"
+
+
+#: The bench, with the manifest of every file the live tier reads from it.
+BENCH = bench.Bench(_root())
 #: What each label stands for on this machine: `{label: {key: value}}`, every value a string.
-IDENTITY = BENCH / "identity.json"
+IDENTITY = BENCH.root / "identity.json"
 
 #: The keys each board's identity carries. `dir` is the board's directory under the bench; the
 #: keys in `PATH_KEYS` are files inside it.
@@ -52,9 +60,6 @@ _OPENED: dict[str, tuple[str, ...]] = {
     "v30": (V30_REFERENCE_ROM, V30_SYMBOLS),
     "v30-alt": (),
 }
-
-_reasons: dict[str, str] = {}
-_pins: dict[str, str] = {}
 
 
 def _identity() -> tuple[dict[str, dict[str, str]], str]:
@@ -116,7 +121,7 @@ def value(label: str, key: str) -> str:
 def board_dir(label: str) -> Path:
     """`label`'s directory on the bench; the label's own name when its identity is unusable, so a
     path built on it is one `args_missing` traces back to the label."""
-    return BENCH / (value(label, "dir") or label)
+    return BENCH.root / (value(label, "dir") or label)
 
 
 def board_path(label: str, key: str) -> str:
@@ -124,21 +129,10 @@ def board_path(label: str, key: str) -> str:
     return str(board_dir(label) / value(label, key))
 
 
-def manifest_absent() -> str:
-    """Why there is no manifest to judge the copies by, or empty: it is not tracked, so `fill`
-    cannot make it, and the remedy is to put the bench's own back."""
-    if BENCH_MANIFEST.is_file():
-        return ""
-    return (f"bench manifest ABSENT: {BENCH_MANIFEST} pins every copy and is kept only in the "
-            "bench; restore it there, then `python -m scry_core.live_bench check`")
-
-
 def bench_missing(prefix: str) -> str:
     """Why the copies under `prefix` (a board's directory, or one file) cannot be used, or empty
     when every one matches its pin."""
-    if prefix not in _reasons:
-        _reasons[prefix] = manifest_absent() or bench.missing("mame", BENCH_MANIFEST, prefix)
-    return _reasons[prefix]
+    return BENCH.missing(prefix)
 
 
 def opened(label: str) -> list[str]:
@@ -153,17 +147,14 @@ def _unpinned(label: str) -> str:
     """The first file board `label` opens that the manifest does not pin, as a reason, or empty:
     a file opened unpinned would be read unchecked, and the board would run on whatever sits
     there."""
-    if label not in _pins:
-        try:
-            pinned = {e.path for e in bench.load(BENCH_MANIFEST)}
-        except bench.Invalid as e:
-            _pins[label] = f"bench {e}"
-            return _pins[label]
-        off = next((p for p in opened(label) if p not in pinned), None)
-        _pins[label] = "" if off is None else (
-            f"board {label} opens {off}, which {BENCH_MANIFEST} does not pin: pin it there, or "
-            "name a file it pins")
-    return _pins[label]
+    try:
+        pinned = BENCH.pinned
+    except bench.Invalid as e:
+        return f"bench {e}"
+    off = next((p for p in opened(label) if p not in pinned), None)
+    return "" if off is None else (
+        f"board {label} opens {off}, which {BENCH.manifest} does not pin: pin it there, or "
+        "name a file it pins")
 
 
 def board_missing(label: str) -> str:
@@ -206,7 +197,7 @@ def args_missing(args: dict[str, object]) -> str:
     values = [v for a in args.values() for v in (a.values() if isinstance(a, dict) else [a])]
     for v in values:
         try:
-            top = Path(str(v)).relative_to(BENCH).parts[0]
+            top = Path(str(v)).relative_to(BENCH.root).parts[0]
         except (ValueError, IndexError):
             continue
         label = next((lb for lb in IDENTITY_KEYS if top in (lb, value(lb, "dir"))), "")

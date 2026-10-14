@@ -262,6 +262,12 @@ def _finished(name: str, args: dict[str, Any], reply: dict[str, Any],
     return {"summary": _summary(name, args, reply), **body, "session": session}
 
 
+def probe_check(tool: str, given: dict[str, Any], effective: dict[str, Any]) -> None:
+    """This server's pre-gate judge in the shape `scry_core.probe.Check` takes: each tool body
+    calls `args.check` with its own values, defaults included, every number read first as the
+    `tool()` wrapper reads it (`numbers_read`), so the probe judges a call the way the tool
+    would. `given` is not used: the bodies judge what they run with."""
+    args.check(tool, **inputs.numbers_read(globals()[tool], effective))
 
 
 def tool(

@@ -3126,7 +3126,7 @@ def _renderer_tile(tile: int, x: int, y: int, w: int, h: int) -> bytes | None:
     needs its project's own environment (numpy); the m68k-dual boot already checked every pin.
     None when no capture is pinned for these arguments: the rectangle is not the one pinned."""
     name = f"{value('m68k-dual', 'dir')}/renderer/tile{tile}_x{x}_y{y}_{w}x{h}.bin"
-    return None if bench_missing(name) else (BENCH / name).read_bytes()
+    return None if bench_missing(name) else (BENCH.root / name).read_bytes()
 
 
 @section("E", "the project's manifest on m68k-dual: boxes, sources, the renderer", E_CELLS)

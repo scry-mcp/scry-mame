@@ -134,7 +134,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
                                                "disasm/sub.yaml", "run/mame_roms/dualset.zip",
                                                "hardware/gfx.yaml")]
     (tmp_path / "bench.json").write_text(json.dumps(pins))
-    assert tmp_path / "bench.json" == boards.BENCH_MANIFEST, "the manifest is the bench's own"
+    assert tmp_path / "bench.json" == boards.BENCH.manifest, "the manifest is the bench's own"
     hashed: list[Path] = []
     real_digest = boards.bench.digest
     def digest(path: Path) -> str:
@@ -150,7 +150,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
 
     monkeypatch.setattr(h.s, "start", start)
     assert boards.m68k_dual_missing().startswith("bench MISSING dual/")
-    boards._reasons.clear()
+    monkeypatch.setattr(boards, "BENCH", boards.bench.Bench(boards.BENCH.root))
     for pin in pins[1:]:
         (tmp_path / pin["path"]).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / pin["path"]).write_bytes(data)
@@ -171,8 +171,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
     h.call("start", binary="/opt/stock/mame")
     h.call("start", binary=str(tmp_path))
     h.call("start")
-    boards._reasons.clear()
-    boards._pins.clear()
+    monkeypatch.setattr(boards, "BENCH", boards.bench.Bench(boards.BENCH.root))
     (tmp_path / "dual/upstream/dualmame").write_bytes(data)
     h.call("start", **h.BOOT)
     assert started == ["/opt/stock/mame", str(tmp_path), h.BOOT["binary"]]
@@ -330,8 +329,7 @@ def test_a_file_the_identity_names_that_the_manifest_does_not_pin_blocks_the_boa
     assert boards.board_missing("m68k-dual-alt") == (
         f"board m68k-dual-alt opens alt/disasm/alt.bin, which {tmp_path / 'bench.json'} does "
         "not pin: pin it there, or name a file it pins")
-    boards._reasons.clear()
-    boards._pins.clear()
+    monkeypatch.setattr(boards, "BENCH", boards.bench.Bench(boards.BENCH.root))
     pins.append(_pin("alt/disasm/alt.bin", data))
     (tmp_path / "alt/disasm").mkdir()
     (tmp_path / "alt/disasm/alt.bin").write_bytes(data)
@@ -394,3 +392,23 @@ def test_block_f_takes_the_newest_pen_completed_with_red_and_blue_apart(
 ) -> None:
     pick = _matrix_function("_completed_pen_red_blue_apart")
     assert pick({"rows": rows}) == want  # type: ignore[operator]
+
+
+def test_the_bench_root_is_the_variable_or_the_users_data_and_the_manifest_lives_in_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """This repository resolves its own bench and hands the directory to `scry_core.live_bench`,
+    which knows no server: `MAME_LIVE_BENCH` (a `~` expanded, a relative path made absolute) or
+    `~/.local/share/scry-bench/mame`."""
+    _harness(monkeypatch, tmp_path)
+    boards = sys.modules["bench_boards"]
+    assert boards.BENCH.root == tmp_path
+    assert tmp_path / "bench.json" == boards.BENCH.manifest
+    monkeypatch.delenv("MAME_LIVE_BENCH")
+    assert boards._root() == Path.home() / ".local/share/scry-bench/mame"
+    monkeypatch.setenv("MAME_LIVE_BENCH", "~/b")
+    assert boards._root() == Path.home() / "b"
+    monkeypatch.setenv("MAME_LIVE_BENCH", "relative")
+    assert boards._root() == Path.cwd() / "relative"
+    assert boards.bench_missing("dual/").endswith(
+        f"`python -m scry_core.live_bench check --bench {tmp_path}`"), "the remedy names --bench"

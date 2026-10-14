@@ -304,12 +304,12 @@ def test_a_sign_or_a_bare_0x_is_refused_in_words_that_fit_it(given: str) -> None
 def test_the_probe_judges_a_number_as_the_tool_reads_it() -> None:
     """The probe asks the server's own check about a call it never makes: a `0x` answer is
     judged on the integer it spells, decimal text refused as the tool refuses it."""
-    from mcp_probe import servers
-    servers._mame_check("set_register", {}, {"name": "d0", "value": "0x2f00", "cpu": ""})
+    import server
+    server.probe_check("set_register", {}, {"name": "d0", "value": "0x2f00", "cpu": ""})
     with pytest.raises(mstate.Invalid, match="value='4660'"):
-        servers._mame_check("set_register", {}, {"name": "d0", "value": "4660", "cpu": ""})
+        server.probe_check("set_register", {}, {"name": "d0", "value": "4660", "cpu": ""})
     with pytest.raises(mstate.Invalid, match="0..0xff"):
-        servers._mame_check("gfx_film", {}, {"trigger": "0x400", "value": "0x100"})
+        server.probe_check("gfx_film", {}, {"trigger": "0x400", "value": "0x100"})
 
 
 @pytest.mark.parametrize("tool,others,arg", [

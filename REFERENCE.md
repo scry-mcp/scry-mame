@@ -3024,11 +3024,10 @@ binaries, ROMs and symbol files pinned by hash in the bench's own `bench.json`, 
 `identity.json` beside it that says which set, binary and files each board's label stands for
 (its keys: `IDENTITY_KEYS` in `tests/live/bench_boards.py`).
 Neither is tracked, because both name the programs the copies came from; the tracked live code
-names only the labels. `uv run python -m scry_core.live_bench fill --server mame --manifest
-<bench>/bench.json --from <source_repo>=<checkout>` copies them from their checkouts and `check
---server mame --manifest <bench>/bench.json` says whether they still match, and a board whose
-identity is incomplete or whose copies are absent or wrong is BLOCKED naming what is wrong
-rather than run on something else.
+names only the labels. `uv run python -m scry_core.live_bench fill --bench <bench> --from
+<source_repo>=<checkout>` copies them from their checkouts and `check --bench <bench>` says
+whether they still match, and a board whose identity is incomplete or whose copies are absent
+or wrong is BLOCKED naming what is wrong rather than run on something else.
 The live half is deselected by default (`-m live`), so a stranger running `pytest tests` from a
 clone never launches an emulator per case.
 
