@@ -62,7 +62,7 @@ COMPONENTS = ("r", "g", "b")
 RAMDAC_PENS = 256        # a RAMDAC's index port is a byte, so it names this many pens
 PROTOCOLS = ("ramdac", "latch", "sequence")
 PACKED = ("latch", "sequence")   # a whole colour in one word, never a component a write
-PEN_COUNT_MAX = 1024     # Speed Fight's 10-bit index, the widest a known protocol addresses
+PEN_COUNT_MAX = 1024     # v30-alt's 10-bit index, the widest a known protocol addresses
 # THE FIRST LINE OF A DRAFT (`mame_draft`), a comment: loaded like any manifest and said to be a
 # draft, until the owner confirms it by deleting the line.
 DRAFT_MARKER = ("# DRAFT gfx.yaml written by gfx_draft from one session's evidence: delete this "

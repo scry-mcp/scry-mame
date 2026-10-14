@@ -121,7 +121,7 @@ def law(r: mm.PalettePort) -> tuple[Any, ...]:
 
 def fresh() -> bool:
     """Whether the machine stands where `start` parked it and has executed nothing since (no
-    stop has been read after the park's, and it was not released): Line UP's driver zeroes its
+    stop has been read after the park's, and it was not released): v30's driver zeroes its
     `sequence` offset as its video starts, before the first instruction, so a log armed here
     knows it."""
     ses, stop = STATE.ses, STATE.last_stop
@@ -287,7 +287,7 @@ def _reversed(value: int, bits: int) -> int:
 
 def decode(r: mm.PalettePort, word: int, known: int) -> tuple[int | None, int | None, int | None]:
     """A packed protocol's word as r, g, b components: `order`'s components from bit 0 up,
-    `component_bits` each, each bit-reversed when the entry says so (Line UP's
+    `component_bits` each, each bit-reversed when the entry says so (v30's
     `bitswap<8>(x,7,6,5,0,1,2,3,4)` on a 5-bit component); all None until every colour bit of
     the word has been seen written (`known`)."""
     bits = r.component_bits

@@ -1,16 +1,16 @@
 """The palette write log (`mame_ramdac`, `palette_log`) and the pixel query it answers
 (`screen_view` mode `pixel`, `set_by`).
 
-THE RADENDUR CASE IS CAPTURED, on TCH's `upstream/radendu` through this server, with TCH's BT478
+THE m68k-dual CASE IS CAPTURED, on its own build through this server, with the board's BT478
 declared as the fixture manifest's `palette_ports.ramdac` (index `0x720001`, data `0x720003`, r g b,
 8 bits). The log was armed at the stop at frame 898, inside the game's palette upload, and read at a
-stop in frame 901, away from the upload: `ramdac-radendur.txt` is the dump the pixel query's own
-chunk wrote there, `ramdac-radendur.rows.gz` the rows file as it was, `screen-radendur-pixel.txt`
-and `radendur-pixel-screen.bin.gz` that chunk's capture line and screen. At that stop pixel (100,
+stop in frame 901, away from the upload: `ramdac-m68k-dual.txt` is the dump the pixel query's own
+chunk wrote there, `ramdac-m68k-dual.rows.gz` the rows file as it was, `screen-m68k-dual-pixel.txt`
+and `m68k-dual-pixel-screen.bin.gz` that chunk's capture line and screen. At that stop pixel (100,
 100) is pen 0x49, and the colour its last port write left agreed with the live pen. Then, at the
 same stop, pen 0x49 was written through the server's `write` (index, then 12 34 56), again from a
 Lua chunk (21 43 65), a state was saved, the machine run and the state loaded:
-`ramdac-radendur-after.*` is the log after all that, the debugger's writes and the load's desync
+`ramdac-m68k-dual-after.*` is the log after all that, the debugger's writes and the load's desync
 in it. Being captured, the rows begin with the upload the arming cut into, before any index
 write, which is what `unsynced` is.
 """
@@ -65,7 +65,7 @@ def _edited(name: str, old: str, new: str) -> str:
 
 def _pen(pen: int) -> tuple[int, ...]:
     """A pen's components as the captured dump holds them, in r, g, b order."""
-    dump = mr.parse_dump(_text("ramdac-radendur.txt"))
+    dump = mr.parse_dump(_text("ramdac-m68k-dual.txt"))
     assert dump is not None
     return tuple(c for c in dump["pens"][pen].components if c is not None)
 
@@ -87,7 +87,7 @@ def _loaded(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
     return ses
 
 
-def _armed(ses: _ChannelSession, name: str = "ramdac-radendur") -> dict[str, Any]:
+def _armed(ses: _ChannelSession, name: str = "ramdac-m68k-dual") -> dict[str, Any]:
     """The log armed through the tool, its install answered, and the dump and rows its dumper
     wrote where the record says, as `name`'s capture has them."""
     out = s.palette_log(palette_port="ramdac", arm=True)
@@ -137,7 +137,7 @@ def test_the_install_runs_the_devices_state_machine_on_both_ports() -> None:
 
 
 def test_a_captured_dump_parses_whole_and_a_cut_or_undecided_one_reads_as_none() -> None:
-    text = _text("ramdac-radendur.txt")
+    text = _text("ramdac-m68k-dual.txt")
     dump = mr.parse_dump(text)
     assert dump is not None
     assert (dump["id"], dump["frame"], dump["total"], dump["index_writes"], dump["unsynced"],
@@ -155,7 +155,7 @@ def test_a_captured_dump_parses_whole_and_a_cut_or_undecided_one_reads_as_none()
 
 
 def test_rows_parse_every_kind_and_a_cut_row_ends_the_read(tmp_path: Path) -> None:
-    rows = list(mr.rows_of(_text("ramdac-radendur-after.rows.gz").splitlines()))
+    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after.rows.gz").splitlines()))
     kinds = [r.kind for r in rows]
     assert (kinds.count("i"), kinds.count("d"), kinds.count("x")) == (3, 1336, 1)
     assert rows[0] == mr.Row("d", 1, 899, 0xBB0, "guest", value=0xC5), "unsynced: no pen"
@@ -204,14 +204,14 @@ def test_known_answer_the_taps_pens_are_the_devices_own() -> None:
     tap placed is on the pen and component the device would put it on, and the unsynced ones are
     exactly those before the first index write. The same law without the auto-increment
     disagrees, which is the control that this comparison can fail."""
-    rows = list(mr.rows_of(_text("ramdac-radendur-after.rows.gz").splitlines()))
+    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after.rows.gz").splitlines()))
     tap = [(r.n, r.pen, r.slot) for r in rows if r.kind == "d"]
     assert len(tap) > 1000 and sum(1 for _n, p, _s in tap if p is None) == 562
     assert _device(rows, auto=True) == tap
     assert _device(rows, auto=False) != tap
 
 
-@pytest.mark.parametrize("name", ["ramdac-radendur", "ramdac-radendur-after"])
+@pytest.mark.parametrize("name", ["ramdac-m68k-dual", "ramdac-m68k-dual-after"])
 def test_known_answer_the_replay_composes_what_the_dump_holds(name: str, tmp_path: Path) -> None:
     """Two paths to one colour: the dump's components, composed by the tap in MAME, and the rows
     replayed in order in Python. They agree on every pen, and on the newest write of each."""
@@ -361,7 +361,7 @@ def test_writers_are_placed_in_the_symbol_table_and_a_clean_log_carries_no_notes
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
     use_table(monkeypatch, table={"PAL_UPLOAD": 0xBE0})
-    rec["path"].write_text(_edited("ramdac-radendur.txt", "unsynced=562", "unsynced=0"))
+    rec["path"].write_text(_edited("ramdac-m68k-dual.txt", "unsynced=562", "unsynced=0"))
     out = s.palette_log(palette_port="ramdac", pen=PEN, limit=1)
     assert out["pen_state"]["last"]["symbol"] == "PAL_UPLOAD+0x16" and "note" not in out
     whole = s.palette_log(palette_port="ramdac", limit=0)
@@ -375,9 +375,9 @@ def test_a_debuggers_write_only_a_shown_row_holds_is_still_said(
     carry it, and those rows alone have to bring the note. The clean log is the control."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
-    rec["path"].write_text(_edited("ramdac-radendur.txt", "unsynced=562", "unsynced=0"))
+    rec["path"].write_text(_edited("ramdac-m68k-dual.txt", "unsynced=562", "unsynced=0"))
     assert "note" not in s.palette_log(palette_port="ramdac", limit=2), "the control"
-    rows = _text("ramdac-radendur.rows.gz").splitlines()
+    rows = _text("ramdac-m68k-dual.rows.gz").splitlines()
     n = int(rows[-1].split()[1])
     rows += [f"d {n + 1} 999 e2f2c d 10 0 21", f"d {n + 2} 999 bb0 g 10 0 c5"]
     rec["rows_path"].write_text("\n".join(rows) + "\n")
@@ -393,7 +393,7 @@ def test_a_log_that_cannot_see_a_reset_or_whose_rows_were_cut_says_so(
     what it could not see, the edits being to the captured dump's header alone."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
-    rec["path"].write_text(_edited("ramdac-radendur.txt", "overflow_rows=0 notifiers=2",
+    rec["path"].write_text(_edited("ramdac-m68k-dual.txt", "overflow_rows=0 notifiers=2",
                                    "overflow_rows=5 notifiers=1"))
     out = s.palette_log(palette_port="ramdac")
     assert out["sees_reset_and_load"] is False and out["rows_cut"] is True
@@ -420,7 +420,7 @@ def test_a_pen_is_read_whole_with_its_own_rows(monkeypatch: pytest.MonkeyPatch,
 def test_the_debuggers_writes_and_a_load_are_said(monkeypatch: pytest.MonkeyPatch,
                                                   tmp_path: Path) -> None:
     ses = _loaded(monkeypatch, tmp_path)
-    _armed(ses, "ramdac-radendur-after")
+    _armed(ses, "ramdac-m68k-dual-after")
     out = s.palette_log(palette_port="ramdac", pen=PEN, limit=3)
     assert out["pen_state"]["last"] == {"n": 1339, "frame": 901, "pc": "0x000e2f2c",
                                         "written_by": "debugger"}
@@ -441,7 +441,7 @@ def test_a_debuggers_write_is_never_placed_in_the_guests_symbol_table(
     """The debugger's pc is where the machine stood when it wrote, not code that wrote: a symbol
     beside it would name a routine of the game as the writer. The guest's rows are the control."""
     ses = _loaded(monkeypatch, tmp_path)
-    _armed(ses, "ramdac-radendur-after")
+    _armed(ses, "ramdac-m68k-dual-after")
     use_table(monkeypatch, table={"PAL_UPLOAD": 0xBE0, "BELOW_THE_DEBUGGER": 0xE2F00})
     out = s.palette_log(palette_port="ramdac", pen=PEN, limit=3)
     last = out["pen_state"]["last"]
@@ -524,7 +524,7 @@ def test_a_log_armed_from_another_entry_is_refused(monkeypatch: pytest.MonkeyPat
 # ------------------------------------------------------------------ the pixel query
 
 def _pixel(ses: _ChannelSession) -> dict[str, Any]:
-    _serve(ses, "screen-radendur-pixel", screen="radendur-pixel-screen")
+    _serve(ses, "screen-m68k-dual-pixel", screen="m68k-dual-pixel-screen")
     out: dict[str, Any] = s.screen_view(mode="pixel", point=[100, 100])
     return out
 
@@ -556,7 +556,7 @@ def test_a_pen_its_last_write_does_not_explain_is_said_with_the_write_that_does(
     chunk's) left another colour, so the reply says they disagree and finds the kept row that
     left the colour the pen has."""
     ses = _loaded(monkeypatch, tmp_path)
-    _armed(ses, "ramdac-radendur-after")
+    _armed(ses, "ramdac-m68k-dual-after")
     out = _pixel(ses)
     assert out["set_by"]["agrees"] is False and out["set_by"]["color"] == "#214365"
     assert "something other than a write to the entry's ports" in out["note"]
@@ -578,8 +578,8 @@ def test_a_colour_no_kept_row_left_is_said_as_none(monkeypatch: pytest.MonkeyPat
     """The pen's colour came from somewhere the kept rows never show (here, rows cut before
     it): `same_color_write` is null rather than the nearest row."""
     ses = _loaded(monkeypatch, tmp_path)
-    rec = _armed(ses, "ramdac-radendur-after")
-    rows = _text("ramdac-radendur-after.rows.gz")
+    rec = _armed(ses, "ramdac-m68k-dual-after")
+    rows = _text("ramdac-m68k-dual-after.rows.gz")
     kept = [ln for ln in rows.splitlines() if not re.match(r"^d \d+ \d+ \w+ \w 49 ", ln)]
     rec["rows_path"].write_text("\n".join(kept[:1300]) + "\n")
     out = _pixel(ses)
@@ -612,7 +612,7 @@ def test_a_log_armed_under_another_law_leaves_the_pixel_its_pen(
 
 def test_only_the_pixel_dumps_the_log(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     ses = _loaded(monkeypatch, tmp_path)
-    _serve(ses, "screen-radendur-pixel", screen="radendur-pixel-screen")
+    _serve(ses, "screen-m68k-dual-pixel", screen="m68k-dual-pixel-screen")
     assert s.screen_view(mode="histogram")["status"] == "ok"
     assert "dump_all" not in ses.stdin.getvalue().decode().splitlines()[-1]
 
@@ -620,8 +620,8 @@ def test_only_the_pixel_dumps_the_log(monkeypatch: pytest.MonkeyPatch, tmp_path:
 def test_a_debugger_write_is_marked_at_the_pixel(monkeypatch: pytest.MonkeyPatch,
                                                   tmp_path: Path) -> None:
     ses = _loaded(monkeypatch, tmp_path)
-    rec = _armed(ses, "ramdac-radendur-after")
-    rec["path"].write_text(_edited("ramdac-radendur-after.txt", "p 49 9 1339 901 e2f2c d 21 43 65",
+    rec = _armed(ses, "ramdac-m68k-dual-after")
+    rec["path"].write_text(_edited("ramdac-m68k-dual-after.txt", "p 49 9 1339 901 e2f2c d 21 43 65",
                                    "p 49 9 1339 901 e2f2c d 9c 73 4a"))
     out = _pixel(ses)
     assert out["set_by"]["agrees"] is True and out["set_by"]["last"]["written_by"] == "debugger"
@@ -653,7 +653,7 @@ def test_what_the_pixel_cannot_say_it_names(monkeypatch: pytest.MonkeyPatch, tmp
         ses = _loaded(monkeypatch, tmp_path)
     if case in ("pen_unwritten", "incomplete"):
         rec = _armed(ses)
-        dump = _text("ramdac-radendur.txt")
+        dump = _text("ramdac-m68k-dual.txt")
         line = "p 49 3 785 900 bf6 g 9c 73 4a\n"
         assert line in dump
         rec["path"].write_text(dump.replace(line, "" if case == "pen_unwritten" else
@@ -675,7 +675,7 @@ def test_only_the_rows_a_reply_shows_are_labelled(monkeypatch: pytest.MonkeyPatc
     """Placing a writer in the symbol table costs a pass over the table, so it is spent on the
     rows the reply keeps, never on every row of the log only to drop them."""
     ses = _loaded(monkeypatch, tmp_path)
-    _armed(ses, "ramdac-radendur-after")
+    _armed(ses, "ramdac-m68k-dual-after")
     labelled: list[int] = []
     real = mr.row_fields
     def counted(*a: Any) -> dict[str, Any]:
@@ -697,7 +697,7 @@ def test_the_rows_shown_are_each_rendered_as_what_they_were(monkeypatch: pytest.
     its own shape."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
-    rows = _text("ramdac-radendur.rows.gz").splitlines()
+    rows = _text("ramdac-m68k-dual.rows.gz").splitlines()
     first_index = next(i for i, ln in enumerate(rows) if ln.startswith("i "))
     rec["rows_path"].write_text("\n".join(rows[:first_index + 2]) + "\n")
     out = s.palette_log(palette_port="ramdac", limit=3)
@@ -735,11 +735,11 @@ def _composed(board: str, r: mm.PalettePort) -> dict[int, str | None]:
             for pen, p in _packed_dump(board)["pens"].items()}
 
 
-# the pens each capture's run wrote: Speed Fight's game never set its last pen
-@pytest.mark.parametrize("board, pens", [("speedf", 1023), ("lineup", 256)])
+# the pens each capture's run wrote: v30-alt's game never set its last pen
+@pytest.mark.parametrize("board, pens", [("v30-alt", 1023), ("v30", 256)])
 def test_known_answer_a_packed_dump_decodes_to_the_colours_mame_held(board: str,
                                                                     pens: int) -> None:
-    """CAPTURED: Speed Fight's latch and Line UP's sequence (PROVENANCE.txt), every pen the log
+    """CAPTURED: v30-alt's latch and v30's sequence (PROVENANCE.txt), every pen the log
     composed against what `palette` read at the same stop."""
     held = _held(board)
     composed = _composed(board, _packed(board))
@@ -749,9 +749,9 @@ def test_known_answer_a_packed_dump_decodes_to_the_colours_mame_held(board: str,
 
 def test_the_controls_of_the_packed_known_answers_can_fail() -> None:
     """The same dumps read under a law each driver does not have disagree with the palette:
-    Line UP without the bit reversal of `twins_pal_w`, Speed Fight with red and blue swapped."""
-    for board, wrong in (("lineup", {"components_bit_reversed": False}),
-                         ("speedf", {"order": ("b", "g", "r")})):
+    v30 without the bit reversal of `twins_pal_w`, v30-alt with red and blue swapped."""
+    for board, wrong in (("v30", {"components_bit_reversed": False}),
+                         ("v30-alt", {"order": ("b", "g", "r")})):
         held, right = _held(board), _composed(board, _packed(board))
         misread = _composed(board, dataclasses.replace(_packed(board), **wrong))
         # the pens the wrong law reads otherwise (a grey reads the same either way)
@@ -762,7 +762,7 @@ def test_the_controls_of_the_packed_known_answers_can_fail() -> None:
 def test_a_packed_word_is_decoded_by_the_entrys_law() -> None:
     """`order`'s components from bit 0 up, `component_bits` each, bit-reversed when the entry
     says so, and nothing until every colour bit has been seen."""
-    seq, latch = _packed("lineup"), _packed("speedf")
+    seq, latch = _packed("v30"), _packed("v30-alt")
     word = 0b10000_00011_00001                      # r 1, g 3, b 16 from bit 0 up
     assert mr.decode(latch, word, 0x7FFF) == (1, 3, 16)
     assert mr.decode(seq, word, 0xFFFF) == (16, 24, 1), "each 5-bit component bit-reversed"
@@ -771,14 +771,14 @@ def test_a_packed_word_is_decoded_by_the_entrys_law() -> None:
 
 
 def test_a_packed_dump_parses_its_word_lines_and_an_older_header_reads_no_partial() -> None:
-    dump = _packed_dump("speedf")
+    dump = _packed_dump("v30-alt")
     assert (dump["id"], dump["partial_writes"], dump["unsynced"]) == ("ramdac_a_1@io_8", 0, 0)
     p = next(iter(dump["pens"].values()))
     assert p.word is not None and p.known == 0xFFFF and p.components == (None, None, None)
-    radendur = mr.parse_dump(_text("ramdac-radendur.txt"))
-    assert radendur is not None and radendur["partial_writes"] == 0, (
+    m68k_dual = mr.parse_dump(_text("ramdac-m68k-dual.txt"))
+    assert m68k_dual is not None and m68k_dual["partial_writes"] == 0, (
         "a byte RAMDAC's captured dump carries no field and reads as none")
-    text = gzip.decompress((PACKED_FIX / "speedf-dump.txt.gz").read_bytes()).decode()
+    text = gzip.decompress((PACKED_FIX / "v30-alt-dump.txt.gz").read_bytes()).decode()
     bad = re.sub(r"(?m)^(w [0-9a-f]+ .*) ([0-9a-f]+)$", r"\1 zz", text, count=1)
     assert bad != text and mr.parse_dump(bad) is None, "a word line of another shape"
 
@@ -792,26 +792,26 @@ def test_the_packed_rows_are_replayed_merging_each_write_under_its_mask(tmp_path
                     "i 2 5 402 g 0\n"
                     "w 3 5 404 g 0 1 ff\n"
                     "w 4 5 404 g 0 7c00 ff00\n")
-    got = [(r.kind, r.pen, col) for r, col in mr.replay(path, _packed("lineup"))]
+    got = [(r.kind, r.pen, col) for r, col in mr.replay(path, _packed("v30"))]
     assert got == [("w", None, None), ("i", None, None), ("w", 0, None),
-                   ("w", 0, mr.colour(mr.decode(_packed("lineup"), 0x7C01, 0x7FFF), 5))]
+                   ("w", 0, mr.colour(mr.decode(_packed("v30"), 0x7C01, 0x7FFF), 5))]
     rows = list(mr.rows(path))
     assert (rows[2].value, rows[2].mask) == (0x1, 0xFF)
-    shown = mr.row_fields(rows[3], "#ffffff", _packed("lineup"), None)
+    shown = mr.row_fields(rows[3], "#ffffff", _packed("v30"), None)
     assert (shown["pen"], shown["word"], shown["mask"], shown["color"]) == (
         0, "0x7c00", "0xff00", "#ffffff")
-    lost = mr.row_fields(rows[0], None, _packed("lineup"), None)
+    lost = mr.row_fields(rows[0], None, _packed("v30"), None)
     assert (lost["unsynced"], lost["word"], lost["mask"]) == (True, "0x7fff", "0xffff"), (
         "an unsynced packed row shows what it carried, as a placed one does")
     over = tmp_path / "over.rows"
     over.write_text("w 1 5 404 g 0 7fff ffff\nw 2 5 404 g 0 0 ff\n")
-    last = [col for _r, col in mr.replay(over, _packed("speedf"))][-1]
-    assert last == mr.colour(mr.decode(_packed("speedf"), 0x7F00, 0x7FFF), 5), (
+    last = [col for _r, col in mr.replay(over, _packed("v30-alt"))][-1]
+    assert last == mr.colour(mr.decode(_packed("v30-alt"), 0x7F00, 0x7FFF), 5), (
         "a write clears the bits of its mask it carries as 0")
 
 
 def test_the_latch_and_sequence_taps_run_their_drivers_state_machines() -> None:
-    latch = rlua.install_script("id", _packed("speedf"), Path("/s/h"), Path("/s/r"), ":maincpu")
+    latch = rlua.install_script("id", _packed("v30-alt"), Path("/s/h"), Path("/s/r"), ":maincpu")
     assert 'cpu.spaces["io"]' in latch and "local flag = 0x8000" in latch
     assert "local auto, pmask = true, 0x3ff" in latch and "local cmask = 0x7fff" in latch
     assert "if (v & flag) ~= 0 then" in latch, "a flagged word is an index"
@@ -822,10 +822,10 @@ def test_the_latch_and_sequence_taps_run_their_drivers_state_machines() -> None:
         "a refused install leaves the log it would replace in place")
     assert 'desync("index_partial")' in latch, "an index write that leaves it unknown desyncs"
     assert "sync = false" in latch
-    alone = rlua.install_script("id", dataclasses.replace(_packed("speedf"), index_port=None),
+    alone = rlua.install_script("id", dataclasses.replace(_packed("v30-alt"), index_port=None),
                                 Path("/s/h"), Path("/s/r"), None)
     assert "mcp_ramdac_i_" not in alone and "local ip, dp, base = nil, 0x8, 0" in alone
-    seq = rlua.install_script("id", _packed("lineup"), Path("/s/h"), Path("/s/r"), None, True)
+    seq = rlua.install_script("id", _packed("v30"), Path("/s/h"), Path("/s/r"), None, True)
     assert "t.idx, t.sync = 0, true" in seq and "sync = true" in seq
     assert "store(base + t.idx, v, m, fr, pc, w)" in seq, "a write merges under its mask"
     byte = rlua.install_script("id", _ramdac(), Path("/s/h"), Path("/s/r"), None, True)
@@ -839,9 +839,9 @@ def test_the_latch_and_sequence_taps_run_their_drivers_state_machines() -> None:
 def test_every_callback_a_palette_log_installs_runs_under_the_guard() -> None:
     """Each protocol's taps, the reset and state-load notifiers, and the dumper; and the dump the
     pixel's chunk asks for, which runs every log's dumper outside the periodic."""
-    for r, taps in ((_ramdac(), 2), (_packed("speedf"), 2),
-                    (dataclasses.replace(_packed("speedf"), index_port=None), 1),
-                    (_packed("lineup"), 2)):
+    for r, taps in ((_ramdac(), 2), (_packed("v30-alt"), 2),
+                    (dataclasses.replace(_packed("v30-alt"), index_port=None), 1),
+                    (_packed("v30"), 2)):
         script = rlua.install_script(LOG_ID, r, Path("/s/h.txt"), Path("/s/r.rows"), ":maincpu")
         assert_every_callback_guarded(script, taps, 2)
         assert "for _, it in pairs(T.items) do dump_guarded(it, T.dump, fr) end" in script
@@ -866,7 +866,7 @@ RAISED_FIRST = "mcp:3: planted fault"
 def _raised() -> str:
     """The captured dump that has pens, given the raised capture's count and first message: a log
     whose tap raised after it set its pens, the one shape a capture with no pen cannot show."""
-    text = _edited("ramdac-radendur.txt", "cpu=:maincpu\n", "cpu=:maincpu errors=3072\n")
+    text = _edited("ramdac-m68k-dual.txt", "cpu=:maincpu\n", "cpu=:maincpu errors=3072\n")
     assert text.endswith("\nend\n")
     return text[:-len("end\n")] + f"e {RAISED_FIRST}\nend\n"
 
@@ -888,7 +888,7 @@ def test_a_log_whose_taps_raised_says_so_and_is_never_an_empty_census(
     rec["path"].write_text(_raised())
     pixel = _pixel(ses)
     assert pixel["set_by"]["callback_errors"] == {"count": 3072, "first": RAISED_FIRST}, pixel
-    dump = mr.parse_dump(_text("ramdac-radendur.txt"))
+    dump = mr.parse_dump(_text("ramdac-m68k-dual.txt"))
     assert dump is not None and dump["errors"] is None, "a dump from before the guard"
 
 
@@ -911,7 +911,7 @@ def test_a_healthy_log_says_none_raised_and_its_prose_says_nothing_of_it(
     so, and no summary, `why` or `set_by` speaks of errors."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
-    rec["path"].write_text(_edited("ramdac-radendur.txt", "cpu=:maincpu\n",
+    rec["path"].write_text(_edited("ramdac-m68k-dual.txt", "cpu=:maincpu\n",
                                    "cpu=:maincpu errors=0\n"))
     out = s.palette_log(palette_port="ramdac")
     assert out["callback_errors"] == {"count": 0, "first": {"available": False,
@@ -933,7 +933,7 @@ def test_every_protocol_the_manifest_takes_has_a_tap() -> None:
 def _packed_manifest(tmp_path: Path, board: str) -> Path:
     """The fixture manifest with its RAMDAC replaced by `board`'s packed entry, so it loads on
     the double's system."""
-    # Line UP's fixture keeps the section's old name, `ramdacs`, which the loader reads as an alias
+    # v30's fixture keeps the section's old name, `ramdacs`, which the loader reads as an alias
     entry = re.split(r"^(?:palette_ports|ramdacs):\n",
                      (PACKED_FIX / f"{board}-palette.yaml").read_text(), maxsplit=1, flags=re.M)[1]
     head = MANIFEST.read_text().split("palette_ports:\n", 1)[0]
@@ -948,7 +948,7 @@ def test_a_sequence_log_armed_where_start_parked_knows_its_offset(
     """The driver's `machine_start` zeroes the offset, so a log armed before the machine ever
     executed starts synced at 0; one stop later nothing says where the offset is."""
     ses = _channel(monkeypatch, tmp_path)
-    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "lineup")))["status"] == "ok"
+    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30")))["status"] == "ok"
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     monkeypatch.setattr(mstate.STATE, "last_stop", {"how": "start", "stop_count": ses.stop_count})
     assert mr.fresh() is True
@@ -976,7 +976,7 @@ def test_only_a_sequence_log_starts_synced_where_start_parked(
     """A latch learns its index from a flagged word, which it cannot know before one: armed at
     the park it still starts unsynced."""
     ses = _channel(monkeypatch, tmp_path)
-    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "speedf")))["status"] == "ok"
+    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30-alt")))["status"] == "ok"
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     monkeypatch.setattr(mstate.STATE, "last_stop", {"how": "start", "stop_count": ses.stop_count})
     out = s.palette_log(palette_port="pal", arm=True)
@@ -987,7 +987,7 @@ def test_only_a_sequence_log_starts_synced_where_start_parked(
 def test_a_log_in_the_io_space_needs_a_cpu_with_one(monkeypatch: pytest.MonkeyPatch,
                                                     tmp_path: Path) -> None:
     _channel(monkeypatch, tmp_path)
-    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "speedf")))["status"] == "ok"
+    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30-alt")))["status"] == "ok"
     monkeypatch.setattr(mstate.STATE, "machine_map",
                         {"cpus": [{"tag": ":maincpu", "spaces": ["program"]}]})
     refused(r":maincpu has no io space", s.palette_log(palette_port="pal", arm=True))
@@ -996,22 +996,22 @@ def test_a_log_in_the_io_space_needs_a_cpu_with_one(monkeypatch: pytest.MonkeyPa
 
 def test_a_packed_log_is_read_by_pen_with_its_word(monkeypatch: pytest.MonkeyPatch,
                                                    tmp_path: Path) -> None:
-    """Speed Fight's captured dump through the tool: a pen's colour is the palette's, its word is
+    """v30-alt's captured dump through the tool: a pen's colour is the palette's, its word is
     shown, the reply counts `partial_writes`, and a dump that counted some says what they
     are."""
     ses = _channel(monkeypatch, tmp_path)
-    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "speedf")))["status"] == "ok"
+    assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30-alt")))["status"] == "ok"
     out = s.palette_log(palette_port="pal", arm=True)
     assert out["armed_now"] is True and out["tally_id"] == "ramdac_a_1@io_8", out
     ses.answers[mstate.STATE.lua_seq] = (
         b"MCP_TALLY installed tally_id=ramdac_a_1@io_8 index=a data=8 data_width=16 "
         b"endianness=little cpu=:maincpu\n") + ses.sentinel(mstate.STATE.lua_seq)
-    rec = mstate.STATE.tallies[mr.owner_of(_packed("speedf"))]
+    rec = mstate.STATE.tallies[mr.owner_of(_packed("v30-alt"))]
     rec.update(installed=True, cpu=":maincpu")
-    text = gzip.decompress((PACKED_FIX / "speedf-dump.txt.gz").read_bytes()).decode()
+    text = gzip.decompress((PACKED_FIX / "v30-alt-dump.txt.gz").read_bytes()).decode()
     rec["path"].write_text(text)
     rec["rows_path"].write_text("")
-    held = _held("speedf")
+    held = _held("v30-alt")
     read = s.palette_log(palette_port="pal", pen=0x100, limit=0)
     assert read["partial_writes"] == 0 and read["pen_state"]["color"] == held[0x100], read
     assert read["pen_state"]["word"].startswith("0x") and read["pen_state"]["complete"] is True
@@ -1026,7 +1026,7 @@ def test_a_log_armed_under_another_protocol_law_is_refused(monkeypatch: pytest.M
     """The law carries the protocol's keys: the same ports re-declared without the bit reversal
     would read the words wrongly."""
     _channel(monkeypatch, tmp_path)
-    path = _packed_manifest(tmp_path, "lineup")
+    path = _packed_manifest(tmp_path, "v30")
     assert s.gfx_load(path=str(path))["status"] == "ok"
     assert s.palette_log(palette_port="pal", arm=True)["armed_now"] is True
     path.write_text(path.read_text().replace("components_bit_reversed: true",

@@ -1,4 +1,4 @@
-Captured live on radendur (the patched build, one start), each family's own dumper writing after
+Captured live on m68k-dual (the patched build, one start), each family's own dumper writing after
 its body raised. A count watch on the blitter's strobe 0x70001e (length 2), a capture of the frame
 counter 0x2031fc triggered on its low word 0x2031fe, the manifest's palette log `ramdac` and a
 `changed` film on 0x70001e were armed, the machine ran two frames, and a fault was planted in each
@@ -18,7 +18,7 @@ film-raised.txt       the film: one error per strobe write its tap took since th
 dump-failed.errorlog.txt
                       the line the guard logs for a dumper that raised, copied from `error.log`
                       as the live matrix's C.7 cell read it: a count watch on 0x70001e (length 2)
-                      on radendur, its item's `endianness` made to raise when the dumper
+                      on m68k-dual, its item's `endianness` made to raise when the dumper
                       formats it, after the `.tmp` is open (`DUMPER_FAULT` in
                       tests/live/live_matrix.py). Logged once over two stops. The unit tests put
                       their own tap's id in place of `70001e_2`; the rest of the line is as MAME

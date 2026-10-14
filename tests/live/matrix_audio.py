@@ -2,7 +2,7 @@
 
 Each cell is asked on the board that can answer it: circus on the stock MAME for the contract
 (the span, the file against its own header, the listing, the refusals, and the mixer's one file
-shared with other callers), radendur for a stereo mixer, and Line UP for the content, where a
+shared with other callers), m68k-dual for a stereo mixer, and v30 for the content, where a
 tone of a known period is pinned on the AY and the recording has to carry that tone and halve
 with the period. A board that cannot run on this host has its cells BLOCKED with the reason,
 never passed.
@@ -20,7 +20,7 @@ from array import array
 from pathlib import Path
 from typing import Any
 
-from bench_boards import board_missing, radendur_missing
+from bench_boards import board_missing, m68k_dual_missing
 from live_harness import (
     WAIT_CEILING_S,
     Board,
@@ -38,7 +38,7 @@ from live_harness import (
     said,
     section,
 )
-from matrix_acceptance import LINEUP, v30_boot
+from matrix_acceptance import V30, v30_boot
 
 from mame_transport import lua_string
 
@@ -49,7 +49,7 @@ from mame_transport import lua_string
 # on the frame notifier, exact to a double's rounding.
 MIXER_UPDATES_PER_S = 50
 SPAN_TOLERANCE_S = 1e-6
-# THE AY'S KNOWN ANSWER. Line UP's AY-3-8910 runs at 2 MHz behind io 0x0000 (register select) and
+# THE AY'S KNOWN ANSWER. v30's AY-3-8910 runs at 2 MHz behind io 0x0000 (register select) and
 # 0x0002 (data); a tone channel's frequency is the clock over 16 times its 12-bit period. The
 # game's own sound driver rewrites the chip every frame, so poking the registers once a frame
 # only gates the tone: a write tap substitutes the pinned value for whatever the game writes to
@@ -105,9 +105,9 @@ L_CELLS = [f"L{n} {text}" for n, text in enumerate([
     "circus: frames=1 is refused bad_argument",
     "circus: the same dest again is refused and the file is left byte for byte",
     "circus: a running machine is refused not_stopped",
-    "radendur: a 30-frame recording has two channels",
-    f"lineup: the AY pinned at period {AY_PERIOD_A:#x} records its tone",
-    f"lineup: pinned at period {AY_PERIOD_B:#x} on a fresh boot, the tone halves",
+    "m68k-dual: a 30-frame recording has two channels",
+    f"v30: the AY pinned at period {AY_PERIOD_A:#x} records its tone",
+    f"v30: pinned at period {AY_PERIOD_B:#x} on a fresh boot, the tone halves",
     "circus: a file another caller swaps in under an open recording is still recording after "
     "that recording's last frame, and the cut recording is refused",
     "circus: a recording released mid-run began (its begin mark) and writes nothing more: no end "
@@ -275,7 +275,7 @@ def _l_wavwrite(t: list[str]) -> None:
     call("close")
 
 
-def _l_radendur(t: list[str]) -> None:
+def _l_m68k_dual(t: list[str]) -> None:
     boot(symbols=None)
     call("run_for", frames=30, seconds=WAIT_CEILING_S)
     r = call("audio_record", frames=30, seconds=WAIT_CEILING_S)
@@ -284,8 +284,8 @@ def _l_radendur(t: list[str]) -> None:
 
 
 def _ay_tone(period: int) -> tuple[float | None, dict[str, Any]]:
-    """A fresh Line UP, the AY pinned at `period`, 30 frames recorded: the tone and the reply."""
-    v30_boot(LINEUP)
+    """A fresh v30, the AY pinned at `period`, 30 frames recorded: the tone and the reply."""
+    v30_boot(V30)
     call("run_for", frames=60, seconds=WAIT_CEILING_S)
     call("lua", script=AY_PIN_LUA % {"period": period})
     dest = Path(fresh(".wav"))
@@ -298,7 +298,7 @@ def _near(hz: float | None, want: float) -> bool:
     return hz is not None and abs(hz - want) <= AY_TONE_TOLERANCE * want
 
 
-def _l_lineup(t: list[str]) -> None:
+def _l_v30(t: list[str]) -> None:
     want_a = AY_CLOCK_HZ / (16 * AY_PERIOD_A)
     hz_a, r = _ay_tone(AY_PERIOD_A)
     cell(t[7], _near(hz_a, want_a) and r.get("sample_min") != r.get("sample_max"),
@@ -312,8 +312,8 @@ def _l_lineup(t: list[str]) -> None:
 
 L_BOARDS = (
     Board(_l_circus, (0, 1, 2, 3, 4, 5), free_boards_missing),
-    Board(_l_radendur, (6,), radendur_missing),
-    Board(_l_lineup, (7, 8), lambda: board_missing("v30")),
+    Board(_l_m68k_dual, (6,), m68k_dual_missing),
+    Board(_l_v30, (7, 8), lambda: board_missing("v30")),
     Board(_l_swap, (9,), free_boards_missing),
     Board(_l_release, (10,), free_boards_missing),
     Board(_l_wavwrite, (11,), free_boards_missing),

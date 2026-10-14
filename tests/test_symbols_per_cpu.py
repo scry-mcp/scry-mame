@@ -2,7 +2,7 @@
 was, or a mapping `{cpu: path}`; `bases` and `types` follow its shape; the store keeps its key
 when another cpu's table is added; and the fingerprint names the cpu for any but the first.
 
-The machine's cpus are `-listxml`'s, CAPTURED from radendur (`fixtures/machine/`).
+The machine's cpus are `-listxml`'s, CAPTURED from m68k-dual (`fixtures/machine/`).
 """
 
 import sys
@@ -21,8 +21,8 @@ import mame_state as mstate  # noqa: E402
 import mame_symbols as syms  # noqa: E402
 import server as s  # noqa: E402
 
-RADENDUR = [":maincpu", ":subcpu"]
-LISTXML = Path(__file__).parent / "fixtures" / "machine" / "listxml-radendur.xml"
+M68K_DUAL = [":maincpu", ":subcpu"]
+LISTXML = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"
 
 
 def _yaml(path: Path, *rows: tuple[str, int]) -> str:
@@ -42,8 +42,8 @@ def test_one_path_is_the_first_cpus_table_and_a_mapping_is_one_per_cpu(tmp_path:
     one = syms.load(main, None, "", [])
     assert list(one.tables) == [None], "one path names no cpu until the machine does"
     assert one.keyed(":maincpu")[":maincpu"].table["IRQ_VBLANK"] == 0x400
-    both = syms.load({"maincpu": main, ":subcpu": sub}, None, "", RADENDUR)
-    assert sorted(str(cpu) for cpu in both.tables) == RADENDUR, "either spelling is its tag"
+    both = syms.load({"maincpu": main, ":subcpu": sub}, None, "", M68K_DUAL)
+    assert sorted(str(cpu) for cpu in both.tables) == M68K_DUAL, "either spelling is its tag"
     assert both.tables[":subcpu"].table["IRQ_VBLANK"] == 0x542
     assert both.path_of(":subcpu", ":maincpu") == Path(sub)
     assert one.path_of(":maincpu", ":maincpu") == Path(main)
@@ -54,7 +54,7 @@ def test_a_mapping_naming_a_cpu_the_machine_lacks_is_refused_naming_its_cpus(
 ) -> None:
     main, _sub = _two_tables(tmp_path)
     with pytest.raises(mstate.Invalid) as e:
-        syms.load({"soundcpu": main}, None, "", RADENDUR)
+        syms.load({"soundcpu": main}, None, "", M68K_DUAL)
     assert e.value.code == "unknown_ref" and ":subcpu" in str(e.value)
 
 
@@ -80,7 +80,7 @@ def test_bases_and_types_follow_the_shape_of_symbols(
         return {"MAIN": main, "TYPES": str(typed)}.get(v, v)
 
     with pytest.raises(mstate.Invalid, match=said):
-        syms.load(fill(symbols), fill(bases), fill(types), RADENDUR)
+        syms.load(fill(symbols), fill(bases), fill(types), M68K_DUAL)
 
 
 def test_types_per_cpu_type_that_cpus_table(tmp_path: Path) -> None:
@@ -88,7 +88,7 @@ def test_types_per_cpu_type_that_cpus_table(tmp_path: Path) -> None:
     typed = tmp_path / "sub.types"
     typed.write_text("sub_only: u16\n")
     loaded = syms.load({"maincpu": main, "subcpu": sub}, None, {"subcpu": str(typed)},
-                       RADENDUR)
+                       M68K_DUAL)
     assert loaded.tables[":subcpu"].types == {"SUB_ONLY": "u16"}
     assert loaded.tables[":maincpu"].types == {}
 
@@ -98,39 +98,39 @@ def test_the_store_keeps_its_key_when_a_table_for_another_cpu_is_added(tmp_path:
     key is the first cpu's file. A mapping that gives the first cpu none keys by the one it
     gives, named, so it is never mistaken for the first cpu's store."""
     main, sub = _two_tables(tmp_path)
-    one = syms.store_key("radendur", syms.load(main, None, "", []), RADENDUR)
-    both = syms.store_key("radendur", syms.load({"maincpu": main, "subcpu": sub}, None, "",
-                                                RADENDUR), RADENDUR)
-    assert one == both == dec.store_key("radendur", main)
-    only_sub = syms.store_key("radendur", syms.load({"subcpu": sub}, None, "", RADENDUR),
-                              RADENDUR)
-    assert only_sub == f"{dec.store_key('radendur', sub)} :subcpu"
-    assert syms.store_key("radendur", syms.load("", None, "", []), RADENDUR) is None
+    one = syms.store_key("m68k-dual", syms.load(main, None, "", []), M68K_DUAL)
+    both = syms.store_key("m68k-dual", syms.load({"maincpu": main, "subcpu": sub}, None, "",
+                                                M68K_DUAL), M68K_DUAL)
+    assert one == both == dec.store_key("m68k-dual", main)
+    only_sub = syms.store_key("m68k-dual", syms.load({"subcpu": sub}, None, "", M68K_DUAL),
+                              M68K_DUAL)
+    assert only_sub == f"{dec.store_key('m68k-dual', sub)} :subcpu"
+    assert syms.store_key("m68k-dual", syms.load("", None, "", []), M68K_DUAL) is None
 
 
 def test_a_fingerprint_names_the_cpu_for_any_but_the_first(tmp_path: Path) -> None:
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(16))
     main, _sub = _two_tables(tmp_path)
-    first = syms.fingerprint("radendur", rom, Path(main))
-    assert first == syms.fingerprint("radendur", rom, Path(main), None)
-    assert first != syms.fingerprint("radendur", rom, Path(main), ":subcpu")
+    first = syms.fingerprint("m68k-dual", rom, Path(main))
+    assert first == syms.fingerprint("m68k-dual", rom, Path(main), None)
+    assert first != syms.fingerprint("m68k-dual", rom, Path(main), ":subcpu")
 
 
-def _radendur_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, str]:
-    """A start that boots nothing and answers `-listxml` with radendur's captured document."""
+def _m68k_dual_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, str]:
+    """A start that boots nothing and answers `-listxml` with m68k-dual's captured document."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
     Path(args["binary"]).write_text(f"#!/bin/sh\ncat {LISTXML}\n")
     Path(args["binary"]).chmod(0o755)
-    return {**args, "system": "radendur"}
+    return {**args, "system": "m68k-dual"}
 
 
 def test_start_loads_a_table_per_cpu_and_answers_each_count(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    args = _radendur_boot(monkeypatch, tmp_path)
+    args = _m68k_dual_boot(monkeypatch, tmp_path)
     main, sub = _two_tables(tmp_path)
     out = s.start(**args, symbols={"maincpu": main, "subcpu": sub})
     try:
@@ -139,7 +139,7 @@ def test_start_loads_a_table_per_cpu_and_answers_each_count(
         assert mstate.STATE.table(":subcpu").table["IRQ_VBLANK"] == 0x542
         assert mstate.STATE.table().table["IRQ_VBLANK"] == 0x400, "no cpu: the first's"
         assert out["symbols_total"] == 2 and out["symbols_by_cpu"] == {":maincpu": 2, ":subcpu": 2}
-        assert out["declarations"]["key"] == dec.store_key("radendur", main)
+        assert out["declarations"]["key"] == dec.store_key("m68k-dual", main)
     finally:
         s.close()
 
@@ -147,7 +147,7 @@ def test_start_loads_a_table_per_cpu_and_answers_each_count(
 def test_start_with_one_path_gives_it_to_the_first_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    args = _radendur_boot(monkeypatch, tmp_path)
+    args = _m68k_dual_boot(monkeypatch, tmp_path)
     main, _sub = _two_tables(tmp_path)
     out = s.start(**args, symbols=main)
     try:
@@ -160,7 +160,7 @@ def test_start_with_one_path_gives_it_to_the_first_cpu(
 def test_a_mapping_naming_a_cpu_the_machine_lacks_spawns_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    args = _radendur_boot(monkeypatch, tmp_path)
+    args = _m68k_dual_boot(monkeypatch, tmp_path)
     main, _sub = _two_tables(tmp_path)
     _never_spawns_but_listxml(monkeypatch, tmp_path)
     refused("no cpu 'soundcpu'", s.start(**args, symbols={"soundcpu": main}))
@@ -183,7 +183,7 @@ def _never_spawns_but_listxml(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -
 def test_a_mapping_naming_one_cpu_twice_is_refused(tmp_path: Path) -> None:
     main, _sub = _two_tables(tmp_path)
     with pytest.raises(mstate.Invalid, match="names one cpu twice"):
-        syms.load({"maincpu": main, ":maincpu": main}, None, "", RADENDUR)
+        syms.load({"maincpu": main, ":maincpu": main}, None, "", M68K_DUAL)
 
 
 def test_a_mapping_is_refused_when_the_machine_lists_no_cpu(

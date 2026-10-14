@@ -340,7 +340,7 @@ def test_the_reap_after_a_kill_says_what_it_waits_for(
 
 
 def test_a_cfg_that_cannot_be_read_back_says_so_rather_than_unchanged(tmp_path: Path) -> None:
-    source = tmp_path / "radendur.cfg"
+    source = tmp_path / "m68k-dual.cfg"
     source.write_text("<mameconfig/>")
     fresh = _killing(_Session(), _Mame(exits=True))
     fresh.cfg = {"installed": str(tmp_path / "gone.cfg"), "source": str(source)}

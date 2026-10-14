@@ -1,5 +1,5 @@
 schema: 1
-systems: [lineup]
+systems: [v30]
 palette_ports:
   pal:
     palette: palette
@@ -14,4 +14,4 @@ palette_ports:
     component_bits: 5
     auto_increment: true
     status: declared
-    source: "lineup-mame upstream twins.cpp, twins_pal_w and porte_paloff0_w"
+    source: "twins.cpp, twins_pal_w and porte_paloff0_w"

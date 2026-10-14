@@ -35,8 +35,9 @@ TAG = ":maincpu"
 ARMED = "Tracing CPU '{tag}' to file {path}"
 CLOSED = "Stopped tracing on CPU '{tag}'"
 # program masks and the widths the tracer printed under them (M6)
-WIDTHS = {"radendur-maincpu-2f.trace.gz": (0xFFFFFF, 6), "radendur-subcpu-2f.trace": (0xFFFFFF, 6),
-          "speedf-2f.trace.gz": (0xFFFFF, 5), "circus-2f.trace": (0x7FFF, 4)}
+WIDTHS = {"m68k-dual-maincpu-2f.trace.gz": (0xFFFFFF, 6),
+          "m68k-dual-subcpu-2f.trace": (0xFFFFFF, 6), "v30-alt-2f.trace.gz": (0xFFFFF, 5),
+          "circus-2f.trace": (0x7FFF, 4)}
 
 
 def fixture(name: str) -> bytes:
@@ -65,13 +66,13 @@ def test_the_parser_reads_every_captured_file_as_a_known_count(name: str) -> Non
 
 
 def mutated(old: bytes, new: bytes) -> bytes:
-    data = fixture("speedf-2f.trace.gz")
+    data = fixture("v30-alt-2f.trace.gz")
     assert data.count(old) >= 1
     return data.replace(old, new, 1)
 
 
 def first_line() -> bytes:
-    return fixture("speedf-2f.trace.gz").split(b"\n", 1)[0]
+    return fixture("v30-alt-2f.trace.gz").split(b"\n", 1)[0]
 
 
 def test_a_line_of_no_shape_the_tracer_prints_is_refused_by_number() -> None:
@@ -114,7 +115,7 @@ def test_blank_lines_count_and_a_last_line_needs_no_newline() -> None:
 
 def test_a_pc_past_the_mask_is_no_channel() -> None:
     with pytest.raises(mstate.Invalid) as e:
-        mtrace.parse(lines(fixture("speedf-2f.trace.gz")), 5, 0xFFFF, TAG)
+        mtrace.parse(lines(fixture("v30-alt-2f.trace.gz")), 5, 0xFFFF, TAG)
     assert e.value.code == "no_channel" and "mask" in str(e.value)
 
 
@@ -291,7 +292,7 @@ def call(ses: Console, **kw: Any) -> dict[str, Any]:
 
 
 def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> None:
-    data = fixture("speedf-2f.trace.gz")
+    data = fixture("v30-alt-2f.trace.gz")
     ses = board(data, mask=0xFFFFF)
     out = call(ses)
     t = out["trace"]
@@ -311,7 +312,7 @@ def test_a_cpu_with_no_table_places_nothing_and_says_so(board: Any) -> None:
 
 
 def test_the_summary_is_capped_and_counted(board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    data = fixture("speedf-2f.trace.gz")
+    data = fixture("v30-alt-2f.trace.gz")
     pcs = sorted(mtrace.parse(lines(data), None, None, TAG).counts)
     use_table(monkeypatch, TAG, table={f"S{i:03d}": pc for i, pc in enumerate(pcs[:100])})
     t = call(board(data, mask=0xFFFFF))["trace"]
@@ -323,7 +324,7 @@ def test_the_summary_is_capped_and_counted(board: Any, monkeypatch: pytest.Monke
 
 def test_a_summary_exactly_at_the_cap_is_not_truncated(
         board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    data = fixture("speedf-2f.trace.gz")
+    data = fixture("v30-alt-2f.trace.gz")
     pcs = sorted(mtrace.parse(lines(data), None, None, TAG).counts)
     shown = mtrace.SYMBOLS_SHOWN
     use_table(monkeypatch, TAG, table={f"S{i:03d}": pc for i, pc in enumerate(pcs[:shown])})
@@ -332,7 +333,7 @@ def test_a_summary_exactly_at_the_cap_is_not_truncated(
 
 
 def test_the_parked_start_pc_is_counted(board: Any) -> None:
-    data = fixture("radendur-maincpu-parked-step3.trace")
+    data = fixture("m68k-dual-maincpu-parked-step3.trace")
     held, run = writing(data, 0x2600)
     ses = board(data, parked=0xF2034, run=run)
     held.append(ses)
@@ -345,7 +346,7 @@ def test_the_parked_start_pc_is_counted(board: Any) -> None:
 def test_the_parked_end_pc_leaves_the_set_when_it_ran_nowhere_else(board: Any) -> None:
     """The captured window ended on :maincpu at 0xba6, the file's last line and its only line
     at that pc: an arrival the window never executed."""
-    data = fixture("radendur-maincpu-parked-1f.trace")
+    data = fixture("m68k-dual-maincpu-parked-1f.trace")
     p = mtrace.parse(lines(data), None, None, TAG)
     assert p.last_pc == 0xBA6 and p.counts[0xBA6] == 1
     t = call(board(data))["trace"]
@@ -388,7 +389,7 @@ def test_a_parked_start_pc_already_in_the_set_is_still_counted(board: Any) -> No
 def test_a_pc_parked_at_both_edges_stays_in_the_condensed_set(board: Any) -> None:
     """The cpu parked on 0x400 executes it first, which the tracer armed there does not log, and
     ends parked on it again, logged once on arrival: the window executed it once, so the start
-    edge puts back what the end edge takes (Speed Fight's frame stop on its vblank handler)."""
+    edge puts back what the end edge takes (v30-alt's frame stop on its vblank handler)."""
     data = b"000402: nop\n000404: nop\n000400: rte\n"
     for noloop in (False, True):
         held, run = writing(data, 0x400)
@@ -404,7 +405,7 @@ def test_a_pc_parked_at_both_edges_stays_in_the_condensed_set(board: Any) -> Non
 
 def test_a_cpu_the_run_did_not_stop_on_keeps_its_last_line_and_says_why(
         board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    """radendur's subcpu spinning on `bra $542` while the run stops on maincpu, whose survey pc
+    """m68k-dual's subcpu spinning on `bra $542` while the run stops on maincpu, whose survey pc
     is the same number: no edge is the subcpu's, and `note` says what its last line is."""
     data = b"000542: bra     $542\n000542: bra     $542\n"
     held, run = writing(data, 0x542)
@@ -549,7 +550,7 @@ def test_a_close_whose_answer_latched_the_session_is_session_broken(board: Any) 
 def test_an_ignored_cpu_s_refusal_names_it(board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(cpus, "ignored", lambda ses: [TAG])
     with pytest.raises(mstate.Invalid) as e:
-        call(board(fixture("radendur-subcpu-ignored-2f.trace")))
+        call(board(fixture("m68k-dual-subcpu-ignored-2f.trace")))
     assert "lists :maincpu as ignored" in str(e.value)
 
 
@@ -628,7 +629,7 @@ def test_an_empty_trace_is_refused_naming_both_causes(board: Any) -> None:
 def test_a_trace_of_only_interrupt_lines_is_refused_like_an_empty_one(board: Any) -> None:
     """An ignored cpu executes nothing the tracer logs, yet its interrupt hook still writes
     `(interrupted at ...)` lines: a file of those holds no executed address."""
-    data = fixture("radendur-subcpu-ignored-2f.trace")
+    data = fixture("m68k-dual-subcpu-ignored-2f.trace")
     assert data and not re.search(rb"^[0-9A-F]+: ", data, re.M)
     with pytest.raises(mstate.Invalid) as e:
         call(board(data))

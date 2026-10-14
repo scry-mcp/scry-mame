@@ -149,7 +149,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
         return {}
 
     monkeypatch.setattr(h.s, "start", start)
-    assert boards.radendur_missing().startswith("bench MISSING dual/")
+    assert boards.m68k_dual_missing().startswith("bench MISSING dual/")
     boards._reasons.clear()
     for pin in pins[1:]:
         (tmp_path / pin["path"]).parent.mkdir(parents=True, exist_ok=True)
@@ -163,7 +163,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
         h.call("start", **h.BOOT)
     assert sorted(hashed) == sorted(tmp_path / p["path"] for p in pins), (
         "a board's copies are hashed once each per run")
-    assert boards.radendur_missing().startswith("bench MISMATCH dual/upstream/dualmame")
+    assert boards.m68k_dual_missing().startswith("bench MISMATCH dual/upstream/dualmame")
     with pytest.raises(h.Blocked, match="MISMATCH dual/upstream/dualmame"):
         h.call("gfx_load", path=str(tmp_path / "dual/hardware/gfx.yaml"))
     with pytest.raises(h.Blocked, match="MISMATCH dual/upstream/dualmame"):
@@ -176,7 +176,7 @@ def test_a_start_on_the_bench_is_blocked_naming_the_file_that_is_absent_or_wrong
     (tmp_path / "dual/upstream/dualmame").write_bytes(data)
     h.call("start", **h.BOOT)
     assert started == ["/opt/stock/mame", str(tmp_path), h.BOOT["binary"]]
-    assert boards.radendur_missing() == ""
+    assert boards.m68k_dual_missing() == ""
 
 
 def test_a_board_whose_call_is_refused_blocks_its_open_cells_and_fails_none(
@@ -218,7 +218,7 @@ def test_every_value_a_board_boots_on_comes_from_the_benchs_identity(
                     str(dual / "disasm/sub.yaml"), str(dual / "hardware/gfx.yaml"),
                     "dual_state::blit_w")
     alt = tmp_path / "alt"
-    alt_boot = boards.RLTENNIS_BOOT
+    alt_boot = boards.M68K_DUAL_ALT_BOOT
     assert alt_boot == {
         "binary": str(alt / "upstream/altmame"), "system": "altset",
         "rompath": str(alt / "run/mame_roms"), "reference_rom": str(alt / "disasm/alt.bin"),
@@ -274,7 +274,7 @@ def test_an_identity_that_cannot_name_a_board_blocks_it_with_the_remedy(
     boards = sys.modules["bench_boards"]
     (tmp_path / "bench.json").write_text(json.dumps([_pin("dual/upstream/dualmame", b"x")]))
     monkeypatch.setattr(h.s, "start", lambda **kw: pytest.fail(f"a blocked board started: {kw}"))
-    assert re.match(why, boards.radendur_missing()), boards.radendur_missing()
+    assert re.match(why, boards.m68k_dual_missing()), boards.m68k_dual_missing()
     with pytest.raises(h.Blocked, match=why):
         h.call("start", **h.BOOT)
 
@@ -346,7 +346,7 @@ def test_a_bench_with_no_manifest_says_it_is_kept_only_there(
     """`fill` and `check` both read the manifest, so neither can be the remedy for its absence."""
     _harness(monkeypatch, tmp_path)
     boards = sys.modules["bench_boards"]
-    assert boards.radendur_missing().startswith(
+    assert boards.m68k_dual_missing().startswith(
         f"bench manifest ABSENT: {tmp_path / 'bench.json'} pins every copy and is kept only in "
         "the bench")
 

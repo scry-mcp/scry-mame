@@ -1,107 +1,109 @@
 Captured live through the mame server's own tools, by a one-off script outside this tree.
-Line UP (`lineup`, its project's build) and radendur (TCH's `radendu`), each booted
-fresh and warmed up; `<board>-stop<k>.bin.gz` is a `memdump` of the scan range (Line UP
-:maincpu 0x0+0x10000, radendur :maincpu 0x200000+0x10000) at the k-th stop, 7 frames
+v30 (a MAME build carrying its driver) and m68k-dual, each booted
+fresh and warmed up; `<board>-stop<k>.bin.gz` is a `memdump` of the scan range (v30
+:maincpu 0x0+0x10000, m68k-dual :maincpu 0x200000+0x10000) at the k-th stop, 7 frames
 apart (later stops further apart when a pair was trivial). `<board>-<width>-<op>.rows.*`
 is MAME's own `cheatlist` after `cheatinit <width>` at the pair's first stop and
 `cheatnextf <op>` at its second (`ub` stops 1-2, `uw` 2-3, `ud` 3-4), as sorted
 `addr value` rows (value the current one) gzipped, or above 4096 rows their count and
-sha256; Line UP's lists, kept only while its `overlay` control held, are of that
+sha256; v30's lists, kept only while its `overlay` control held, are of that
 device, its dumps of the cpu. A stop's dump is kept only when its pair agreed with the
 console. `mf-*` is
-the two-filter oracle on radendur :maincpu (three dumps, two lists). The console's own
+the two-filter oracle on m68k-dual :maincpu (three dumps, two lists). The console's own
 answer to `save` is `<board>-console-save-answer.txt`.
+Program and board names were then replaced by neutral labels by a single mechanical substitution
+that preserves every field width; nothing else was edited.
 
 Files:
-  lineup-console-save-answer.txt
-  lineup-stop1.bin.gz
-  lineup-stop2.bin.gz
-  lineup-stop3.bin.gz
-  lineup-stop4.bin.gz
-  lineup-ub-decrease.rows.gz
-  lineup-ub-decreaseorequal.rows.sha256
-  lineup-ub-equal.rows.sha256
-  lineup-ub-equal_0x2.rows.gz
-  lineup-ub-gt_0x1.rows.sha256
-  lineup-ub-gt_0x2.rows.sha256
-  lineup-ub-increase.rows.gz
-  lineup-ub-increaseorequal.rows.sha256
-  lineup-ub-lt_0x2.rows.sha256
-  lineup-ub-lt_0x3.rows.sha256
-  lineup-ub-notequal.rows.gz
-  lineup-ub-notequal_0x2.rows.sha256
-  lineup-ud-decrease.rows.gz
-  lineup-ud-decreaseorequal.rows.sha256
-  lineup-ud-equal.rows.sha256
-  lineup-ud-equal_0x4020000.rows.gz
-  lineup-ud-gt_0x401ffff.rows.gz
-  lineup-ud-gt_0x4020000.rows.gz
-  lineup-ud-increase.rows.gz
-  lineup-ud-increaseorequal.rows.sha256
-  lineup-ud-lt_0x4020000.rows.sha256
-  lineup-ud-lt_0x4020001.rows.sha256
-  lineup-ud-notequal.rows.gz
-  lineup-ud-notequal_0x4020000.rows.sha256
-  lineup-uw-decrease.rows.gz
-  lineup-uw-decreaseorequal.rows.sha256
-  lineup-uw-equal.rows.sha256
-  lineup-uw-equal_0x402.rows.gz
-  lineup-uw-gt_0x401.rows.sha256
-  lineup-uw-gt_0x402.rows.sha256
-  lineup-uw-increase.rows.gz
-  lineup-uw-increaseorequal.rows.sha256
-  lineup-uw-lt_0x402.rows.sha256
-  lineup-uw-lt_0x403.rows.sha256
-  lineup-uw-notequal.rows.gz
-  lineup-uw-notequal_0x402.rows.sha256
-  radendur-console-save-answer.txt
-  radendur-mf-f1.rows.gz
-  radendur-mf-f2.rows.gz
-  radendur-mf-stop1.bin.gz
-  radendur-mf-stop2.bin.gz
-  radendur-mf-stop3.bin.gz
-  radendur-stop1.bin.gz
-  radendur-stop2.bin.gz
-  radendur-stop3.bin.gz
-  radendur-stop4.bin.gz
-  radendur-ub-decrease.rows.gz
-  radendur-ub-decreaseorequal.rows.sha256
-  radendur-ub-equal.rows.sha256
-  radendur-ub-equal_0x8.rows.gz
-  radendur-ub-gt_0x7.rows.sha256
-  radendur-ub-gt_0x8.rows.sha256
-  radendur-ub-increase.rows.gz
-  radendur-ub-increaseorequal.rows.sha256
-  radendur-ub-lt_0x8.rows.sha256
-  radendur-ub-lt_0x9.rows.sha256
-  radendur-ub-notequal.rows.gz
-  radendur-ub-notequal_0x8.rows.sha256
-  radendur-ud-decrease.rows.gz
-  radendur-ud-decreaseorequal.rows.sha256
-  radendur-ud-equal.rows.sha256
-  radendur-ud-equal_0x2f360000.rows.gz
-  radendur-ud-gt_0x2f35ffff.rows.gz
-  radendur-ud-gt_0x2f360000.rows.gz
-  radendur-ud-increase.rows.gz
-  radendur-ud-increaseorequal.rows.sha256
-  radendur-ud-lt_0x2f360000.rows.sha256
-  radendur-ud-lt_0x2f360001.rows.sha256
-  radendur-ud-notequal.rows.gz
-  radendur-ud-notequal_0x2f360000.rows.sha256
-  radendur-uw-decrease.rows.gz
-  radendur-uw-decreaseorequal.rows.sha256
-  radendur-uw-equal.rows.sha256
-  radendur-uw-equal_0x2f30.rows.gz
-  radendur-uw-gt_0x2f2f.rows.gz
-  radendur-uw-gt_0x2f30.rows.gz
-  radendur-uw-increase.rows.gz
-  radendur-uw-increaseorequal.rows.sha256
-  radendur-uw-lt_0x2f30.rows.sha256
-  radendur-uw-lt_0x2f31.rows.sha256
-  radendur-uw-notequal.rows.gz
-  radendur-uw-notequal_0x2f30.rows.sha256
+  v30-console-save-answer.txt
+  v30-stop1.bin.gz
+  v30-stop2.bin.gz
+  v30-stop3.bin.gz
+  v30-stop4.bin.gz
+  v30-ub-decrease.rows.gz
+  v30-ub-decreaseorequal.rows.sha256
+  v30-ub-equal.rows.sha256
+  v30-ub-equal_0x2.rows.gz
+  v30-ub-gt_0x1.rows.sha256
+  v30-ub-gt_0x2.rows.sha256
+  v30-ub-increase.rows.gz
+  v30-ub-increaseorequal.rows.sha256
+  v30-ub-lt_0x2.rows.sha256
+  v30-ub-lt_0x3.rows.sha256
+  v30-ub-notequal.rows.gz
+  v30-ub-notequal_0x2.rows.sha256
+  v30-ud-decrease.rows.gz
+  v30-ud-decreaseorequal.rows.sha256
+  v30-ud-equal.rows.sha256
+  v30-ud-equal_0x4020000.rows.gz
+  v30-ud-gt_0x401ffff.rows.gz
+  v30-ud-gt_0x4020000.rows.gz
+  v30-ud-increase.rows.gz
+  v30-ud-increaseorequal.rows.sha256
+  v30-ud-lt_0x4020000.rows.sha256
+  v30-ud-lt_0x4020001.rows.sha256
+  v30-ud-notequal.rows.gz
+  v30-ud-notequal_0x4020000.rows.sha256
+  v30-uw-decrease.rows.gz
+  v30-uw-decreaseorequal.rows.sha256
+  v30-uw-equal.rows.sha256
+  v30-uw-equal_0x402.rows.gz
+  v30-uw-gt_0x401.rows.sha256
+  v30-uw-gt_0x402.rows.sha256
+  v30-uw-increase.rows.gz
+  v30-uw-increaseorequal.rows.sha256
+  v30-uw-lt_0x402.rows.sha256
+  v30-uw-lt_0x403.rows.sha256
+  v30-uw-notequal.rows.gz
+  v30-uw-notequal_0x402.rows.sha256
+  m68k-dual-console-save-answer.txt
+  m68k-dual-mf-f1.rows.gz
+  m68k-dual-mf-f2.rows.gz
+  m68k-dual-mf-stop1.bin.gz
+  m68k-dual-mf-stop2.bin.gz
+  m68k-dual-mf-stop3.bin.gz
+  m68k-dual-stop1.bin.gz
+  m68k-dual-stop2.bin.gz
+  m68k-dual-stop3.bin.gz
+  m68k-dual-stop4.bin.gz
+  m68k-dual-ub-decrease.rows.gz
+  m68k-dual-ub-decreaseorequal.rows.sha256
+  m68k-dual-ub-equal.rows.sha256
+  m68k-dual-ub-equal_0x8.rows.gz
+  m68k-dual-ub-gt_0x7.rows.sha256
+  m68k-dual-ub-gt_0x8.rows.sha256
+  m68k-dual-ub-increase.rows.gz
+  m68k-dual-ub-increaseorequal.rows.sha256
+  m68k-dual-ub-lt_0x8.rows.sha256
+  m68k-dual-ub-lt_0x9.rows.sha256
+  m68k-dual-ub-notequal.rows.gz
+  m68k-dual-ub-notequal_0x8.rows.sha256
+  m68k-dual-ud-decrease.rows.gz
+  m68k-dual-ud-decreaseorequal.rows.sha256
+  m68k-dual-ud-equal.rows.sha256
+  m68k-dual-ud-equal_0x2f360000.rows.gz
+  m68k-dual-ud-gt_0x2f35ffff.rows.gz
+  m68k-dual-ud-gt_0x2f360000.rows.gz
+  m68k-dual-ud-increase.rows.gz
+  m68k-dual-ud-increaseorequal.rows.sha256
+  m68k-dual-ud-lt_0x2f360000.rows.sha256
+  m68k-dual-ud-lt_0x2f360001.rows.sha256
+  m68k-dual-ud-notequal.rows.gz
+  m68k-dual-ud-notequal_0x2f360000.rows.sha256
+  m68k-dual-uw-decrease.rows.gz
+  m68k-dual-uw-decreaseorequal.rows.sha256
+  m68k-dual-uw-equal.rows.sha256
+  m68k-dual-uw-equal_0x2f30.rows.gz
+  m68k-dual-uw-gt_0x2f2f.rows.gz
+  m68k-dual-uw-gt_0x2f30.rows.gz
+  m68k-dual-uw-increase.rows.gz
+  m68k-dual-uw-increaseorequal.rows.sha256
+  m68k-dual-uw-lt_0x2f30.rows.sha256
+  m68k-dual-uw-lt_0x2f31.rows.sha256
+  m68k-dual-uw-notequal.rows.gz
+  m68k-dual-uw-notequal_0x2f30.rows.sha256
 
-radendur's `cheatinit` admits every cell of 0x200000+0x10000 on :maincpu but the ones whose
+m68k-dual's `cheatinit` admits every cell of 0x200000+0x10000 on :maincpu but the ones whose
 first byte has no direct write pointer, the driver's own write taps (0x20173a-0x20173b and
-0x20f8f4-0x20f907); `radendur-<width>-not-admitted.txt` lists them, and every list and offline
-compare of radendur is over the admitted cells only (MAME's own `cheatnextf all` + `cheatlist`).
+0x20f8f4-0x20f907); `m68k-dual-<width>-not-admitted.txt` lists them, and every list and offline
+compare of m68k-dual is over the admitted cells only (MAME's own `cheatnextf all` + `cheatlist`).

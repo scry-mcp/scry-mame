@@ -60,15 +60,15 @@ def _watch(tmp_path: Path) -> dec.Declaration:
 
 def test_a_declaration_survives_a_new_store_over_the_same_file(tmp_path: Path) -> None:
     path = tmp_path / "declarations.json"
-    store = dec.DeclarationStore("radendur /repo/symbols.yaml", path)
+    store = dec.DeclarationStore("m68k-dual /repo/symbols.yaml", path)
     assert store.persistent is True
     store.add(_watch(tmp_path))
     store.add(dec.Declaration("breakpoint", "address", "0x4a0", origin="s1"))
-    again = dec.DeclarationStore("radendur /repo/symbols.yaml", path)
+    again = dec.DeclarationStore("m68k-dual /repo/symbols.yaml", path)
     assert again.declarations() == store.declarations()
     assert again.declarations()[0].origin == "s1", "the stamp travels too"
     assert again.discard([d for d in again.declarations() if d.ref == "0x4a0"]) == 1
-    assert len(dec.DeclarationStore("radendur /repo/symbols.yaml", path).declarations()) == 1
+    assert len(dec.DeclarationStore("m68k-dual /repo/symbols.yaml", path).declarations()) == 1
 
 
 def test_a_replaced_declaration_is_on_disk_in_one_write_and_keeps_what_the_new_one_lacks(
@@ -125,13 +125,13 @@ def test_a_bench_copy_of_a_symbol_file_is_a_store_of_its_own(tmp_path: Path) -> 
     for p in (project, copy):
         p.parent.mkdir()
         p.write_text("symbols: []\n")
-    owner = dec.DeclarationStore(dec.store_key("radendur", str(project)), path)
+    owner = dec.DeclarationStore(dec.store_key("m68k-dual", str(project)), path)
     owner.add(dec.Declaration("breakpoint", "address", "0x4a0", origin="owner"))
-    bench = dec.DeclarationStore(dec.store_key("radendur", str(copy)), path)
+    bench = dec.DeclarationStore(dec.store_key("m68k-dual", str(copy)), path)
     assert bench.declarations() == []
     bench.add(dec.Declaration("breakpoint", "address", "0x400", origin="tier"))
     assert bench.discard(bench.declarations()) == 1
-    assert [d.ref for d in dec.DeclarationStore(dec.store_key("radendur", str(project)),
+    assert [d.ref for d in dec.DeclarationStore(dec.store_key("m68k-dual", str(project)),
                                                 path).declarations()] == ["0x4a0"]
 
 
@@ -182,7 +182,7 @@ def test_the_default_path_is_a_state_directory_and_the_key_is_system_and_file(
     monkeypatch.delenv("XDG_STATE_HOME")
     assert dec.default_path() == Path.home() / ".local/state/mame-debug/declarations.json"
     sym = tmp_path / "a" / ".." / "symbols.yaml"
-    assert dec.store_key("radendur", str(sym)) == f"radendur {tmp_path / 'symbols.yaml'}"
+    assert dec.store_key("m68k-dual", str(sym)) == f"m68k-dual {tmp_path / 'symbols.yaml'}"
     with pytest.raises(dec.DeclarationError, match="system"):
         dec.store_key("", "x")
 

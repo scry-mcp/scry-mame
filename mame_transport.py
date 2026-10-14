@@ -365,7 +365,7 @@ PIPE_STEPS_MAX = 8
 
 # THE CONSOLE'S READER IS A THREAD (`plugins/console/init.lua` starts the linenoise read in
 # an `emu.thread`), and the periodic hook, run ONCE at a stop, returns without evaluating
-# while that thread is still taking the line. Measured on radendur: a signature sent right
+# while that thread is still taking the line. Measured on m68k-dual: a signature sent right
 # after another had its step land before the reader held the line, and one more step
 # evaluated it at once. So an answer is given this window after a step, then another step
 # is spent, up to a cap that keeps a console that never answers a refusal rather than an
@@ -378,7 +378,7 @@ READER_STEPS_MAX = 3
 # "FIXME: this is unsafe as the thread function modifies members of the object"): the
 # reader clears `busy` BEFORE it has finished unwinding, and the hook that finds it idle
 # loads the next read into the SAME Lua state while it still runs there. A step sent the
-# instant the line is written lands its stop inside that window: measured on radendur, the
+# instant the line is written lands its stop inside that window: measured on m68k-dual, the
 # reader died at start ("[LUA ERROR] in thread: attempt to index a nil value" in `require`,
 # `setcompletion` read as a table, "return value must be string"), and after each death the
 # hook, whose `result` a failed thread never clears, RAN THE PREVIOUS CHUNK AGAIN (the same

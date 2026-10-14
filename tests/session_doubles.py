@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import gdb_session as g  # noqa: E402
 import mame_state as mstate  # noqa: E402
 
-# `map`'s answers, CAPTURED from a live radendur session, never authored: a RAM address, a ROM
+# `map`'s answers, CAPTURED from a live m68k-dual session, never authored: a RAM address, a ROM
 # one, and a write-only latch.
 MAP_RAM = ("   Read: 200000 logical program == 200000 physical program -> memory@200000\n"
            "  Write: 200000 logical program == 200000 physical program -> memory@200000\n"
@@ -27,7 +27,7 @@ MAP_ROM = ("   Read: 000400 logical program == 000400 physical program -> memory
 # A write-only latch: the write side is a handler, the read side is nowhere (captured).
 MAP_LATCH = ("   Read: 740000 logical program == 740000 physical program -> unmapped\n"
              "  Write: 740000 logical program == 740000 physical program -> "
-             "radendur_state::latch_w\n"
+             "m68k_dual_state::latch_w\n"
              "  Fetch: 740000 logical program == 740000 physical program -> unmapped\n")
 
 
@@ -466,7 +466,7 @@ def suspend_console(double: Any, command: str) -> str | None:
 def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "program")) -> None:
     """`ses`'s cpu given an io space, and its console answering `mapi` as a V30 board's did: the
     palette ports 6..7, one map entry, written through its handler, every other port unmapped
-    (`mapi.lineup-*.txt`; the captured answer is port 6's, and 7 shares its entry)."""
+    (`mapi.v30-*.txt`; the captured answer is port 6's, and 7 shares its entry)."""
     monkeypatch.setattr(mstate.STATE, "machine_map",
                         {**mstate.STATE.machine_map,
                          "cpus": [{"tag": ":maincpu", "spaces": list(spaces)}]})
@@ -476,8 +476,8 @@ def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "progr
         if command.startswith("mapi "):
             ses.commands.append(command)
             port = int(command[5:].split(":", 1)[0], 16)
-            return captured("mapi.lineup-6.txt" if port in (6, 7)
-                            else "mapi.lineup-20-unmapped.txt")
+            return captured("mapi.v30-6.txt" if port in (6, 7)
+                            else "mapi.v30-20-unmapped.txt")
         return str(plain(command, timeout))
 
     monkeypatch.setattr(ses, "monitor", monitor)

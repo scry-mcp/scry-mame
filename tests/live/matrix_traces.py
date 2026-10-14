@@ -1,6 +1,6 @@
 """Section N of the live matrix: `trace`, the addresses a bounded run executed.
 
-On radendur, the harness's own board, whose maincpu runs its vblank handler at 0x4a0 every frame
+On m68k-dual, the harness's own board, whose maincpu runs its vblank handler at 0x4a0 every frame
 and never reaches its exception handler at 0x25a4 on a healthy boot: the set file must hold the
 first and not the second. Every predicate is a named function, so each can be shown False on a
 copy of its own green reply turned wrong (`MUTATIONS`, run by `--mutations`).
@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from bench_boards import radendur_missing
+from bench_boards import m68k_dual_missing
 from live_harness import (
     WAIT_CEILING_S,
     Board,
@@ -37,7 +37,7 @@ from live_harness import (
 
 import mame_trace as mtrace  # isort: skip -- found through the path the harness sets
 
-# radendur's known answers, written here and not read from the server: the vblank handler, hot
+# m68k-dual's known answers, written here and not read from the server: the vblank handler, hot
 # every frame, and the exception handler, silent on a healthy boot; and the 68000's program
 # space, which every subcpu address must sit inside.
 VBLANK = "0x000004a0"
@@ -46,9 +46,9 @@ MASK_68000 = 0xFFFFFF
 
 N_TITLE = "trace: the executed set of a bounded run, read back from its own file"
 N_CELLS = [f"N{n} {text}" for n, text in enumerate([
-    "radendur maincpu over 2 frames: the set file holds the vblank handler and not the "
+    "m68k-dual maincpu over 2 frames: the set file holds the vblank handler and not the "
     "exception handler, whose address the symbol table confirms",
-    "radendur subcpu over 2 frames: trace.cpu is :subcpu and every address is inside its "
+    "m68k-dual subcpu over 2 frames: trace.cpu is :subcpu and every address is inside its "
     "program space",
     "the set file has exactly trace.addresses rows, ascending, none repeated, and is the raw "
     "trace file's pcs with the parked edges applied from the stop before and the stop after",
@@ -61,7 +61,7 @@ N_CELLS = [f"N{n} {text}" for n, text in enumerate([
     "captures lists the trace, present, as kind trace",
     "a trace on a fresh start leaves session.altered false",
     "one frame and one millisecond past the caps are refused bad_argument, nothing armed",
-    "radendur maincpu traced from a fresh start: the pc it was parked on, which the raw file "
+    "m68k-dual maincpu traced from a fresh start: the pc it was parked on, which the raw file "
     "never logs, is in the set, where only the start edge can have put it",
 ])]
 
@@ -180,7 +180,7 @@ def _size(path: str | None) -> int | None:
     return Path(path).stat().st_size if path and Path(path).is_file() else None
 
 
-def _n_radendur(t: list[str]) -> None:
+def _n_m68k_dual(t: list[str]) -> None:
     started = boot()
     r = _trace(frames=2)
     cell(t[8], not_altered(r), said(r))
@@ -239,7 +239,7 @@ def _n_radendur(t: list[str]) -> None:
 
 
 N_BOARDS = (
-    Board(_n_radendur, tuple(range(len(N_CELLS))), radendur_missing),
+    Board(_n_m68k_dual, tuple(range(len(N_CELLS))), m68k_dual_missing),
 )
 boards_cover("N_BOARDS", N_CELLS, N_BOARDS)
 
@@ -251,7 +251,7 @@ def register_n() -> None:
 
 def mutations(green: dict[str, Any]) -> list[tuple[str, bool]]:
     """Each predicate applied to a copy of a green reply turned wrong: every one must be False.
-    `green` is the file a green run of `_n_radendur` wrote and printed the path of."""
+    `green` is the file a green run of `_n_m68k_dual` wrote and printed the path of."""
     main, rows, sub, raw = green["main"], green["rows"], green["sub"], green["raw"]
     start = green["start"]
     wrong_rows = [r for r in rows if r["addr"] != VBLANK] + [{"addr": EXCEPTION}]
@@ -308,7 +308,7 @@ def controls(green: dict[str, Any]) -> list[tuple[str, bool]]:
 def _both_edges(drop_parked: bool) -> tuple[dict[str, Any], list[dict[str, Any]], list[int],
                                             int]:
     """A window that starts and ends parked on 0x400, logged once at the end: executed once,
-    so in the set (Speed Fight's frame stop on its vblank handler)."""
+    so in the set (v30-alt's frame stop on its vblank handler)."""
     pcs = [0x402, 0x404] + ([] if drop_parked else [0x400])
     rows = [{"addr": f"{pc:#010x}"} for pc in sorted(pcs)]
     reply = {"summary": "x", "status": "ok", "cpu": ":maincpu", "pc": "0x00000400",

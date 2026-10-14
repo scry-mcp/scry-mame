@@ -1,7 +1,9 @@
 Captured live, never authored: these are the bytes the boot harness (`mame_machine.MACHINE_LUA`,
 through MAME's `-autoboot_script`) wrote into the session's scratch on a real machine.
+Program and board names were then replaced by neutral labels by a single mechanical substitution
+that preserves every field width; nothing else was edited.
 
-radendur.txt   the 68000 board of tch-blitter (`radendu`, set `radendur`): TWO MC68000 with
+m68k-dual.txt   the m68k-dual board: TWO MC68000 with
                distinct tags, which is the multi-cpu case the single-cpu assumption elsewhere
                in this server would have got wrong. It carries the shapes the parser has to
                tell apart: an entry that names a REGION with its offset, one that names a
@@ -22,12 +24,12 @@ edited by hand stops being evidence about the thing it is supposed to describe.
 Captured from MAME's own `-listxml`, each run against the build that carries the set, in the
 exact form the server runs it (`<binary> <system> -listxml`), stdout verbatim:
 
-listxml-radendur.xml  the tch-blitter build (`radendu radendur -listxml`): the MULTI-CPU case
+listxml-m68k-dual.xml  the m68k-dual build (`<binary> <set> -listxml`): the MULTI-CPU case
                       again, from the other source, with both 68000s' clocks; a screen with its
                       rotation; and the board's ROM files, of which the undumped ones carry
                       NO crc and NO sha1 at all, which is the absent-field case the parser
                       must not fill in.
-listxml-lineup.xml    the lineup build (`mamelineup lineup -listxml`): a SINGLE V30 at a
+listxml-v30.xml    the v30 build (`<binary> <set> -listxml`): a SINGLE V30 at a
                       different clock, so a reading that hard-wired two cpus or one clock is
                       red against it.
 
@@ -38,7 +40,7 @@ of its own, so that exclusion has no case to be proven red against on this host.
 
 ONE FILE HERE IS NOT A CAPTURE, and it says so on the line above the part that is not:
 
-listxml-device-with-hardware.xml   listxml-radendur.xml with THREE lines added by hand, inside
+listxml-device-with-hardware.xml   listxml-m68k-dual.xml with THREE lines added by hand, inside
                                    the `ramdac` device machine: a marker comment, a
                                    `<chip type="cpu">` and a `<rom>`. Everything else is the
                                    capture, byte for byte.

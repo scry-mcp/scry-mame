@@ -1,6 +1,6 @@
 """What `cpu_info` says of each cpu (visible, ignored, suspended, its pc register, the
 declarations on it), and that it moves nothing: REFERENCE.md, The session. `status` carries no
-per-cpu reading. The two-cpu double is `test_stops_per_cpu`'s, whose pcs are radendur's.
+per-cpu reading. The two-cpu double is `test_stops_per_cpu`'s, whose pcs are m68k-dual's.
 """
 
 from __future__ import annotations

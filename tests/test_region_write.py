@@ -3,7 +3,7 @@ the cpu.
 
 The double keeps each region the way MAME does, in the HOST's byte order per region word, and
 answers `saver` and `loadr` with the console's own sentences (`fixtures/console/saver.*`,
-`loadr.*`, captured on radendur, whose provenance also records the known answer: with the cpu
+`loadr.*`, captured on m68k-dual, whose provenance also records the known answer: with the cpu
 reading `80a0` at 0x7b8, `saver` wrote `a080`, and a `loadr` of `2080` made the cpu read
 `8020`). What it stores is authored from `debugcmd.cpp`'s region branches (a span clamped at
 the region's end, a load no longer than its file).
@@ -18,7 +18,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from session_doubles import MAP_LATCH, MAP_ROM, captured  # noqa: E402
-from test_machine import RADENDUR, _cached  # noqa: E402
+from test_machine import M68K_DUAL, _cached  # noqa: E402
 from test_watches import _rom_under_write, _WatchSession  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
@@ -31,7 +31,7 @@ _SIZE = 0x100000
 
 
 class _Regions:
-    """radendur's two program ROM regions as MAME holds them, and the console's two region
+    """m68k-dual's two program ROM regions as MAME holds them, and the console's two region
     commands over them. `order` and `width` are the regions' declared layout; `answer` stands in
     for the console's sentence when a case needs it to answer something else, `maps` for its
     `map`, and `drop` makes the stub's answer to a `loadr` that landed never arrive."""
@@ -118,7 +118,7 @@ def _sent(ses: _WatchSession, verb: str) -> list[str]:
     return [c for c in ses.commands if c.startswith(verb + " ")]
 
 
-def test_a_region_write_on_radendur_lands_as_the_measured_bytes_and_reads_back(
+def test_a_region_write_on_m68k_dual_lands_as_the_measured_bytes_and_reads_back(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """KNOWN ANSWER (the provenance's): the cpu reads 8020 once the region holds 20 80."""
@@ -135,13 +135,13 @@ def test_a_region_write_on_radendur_lands_as_the_measured_bytes_and_reads_back(
 
 # A BOARD WHOSE DRIVER NAMES ITS REGION RELATIVELY: the gather then writes the entry's region
 # bare (`maincpu`), while the inventory's `regions` table names it in full.
-_BARE_REGION = RADENDUR.replace("share=- region=:maincpu", "share=- region=maincpu")
+_BARE_REGION = M68K_DUAL.replace("share=- region=:maincpu", "share=- region=maincpu")
 
 
 def test_a_region_the_map_entry_names_bare_is_the_inventorys_region_and_is_written(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    assert _BARE_REGION != RADENDUR, "the substitution matched nothing"
+    assert _BARE_REGION != M68K_DUAL, "the substitution matched nothing"
     _ses, regions = _regions(monkeypatch, tmp_path, dump=_BARE_REGION)
     out = s.write(ref="0x7b8", data_hex="8020", region=True)
     assert out["status"] == "ok" and out["verified"] is True, out
@@ -185,10 +185,10 @@ def test_a_region_write_on_the_sub_cpu_goes_into_the_sub_cpus_region(
     assert regions.cpu_read(":maincpu", 0x544, 2) == bytes(2), "the main cpu's region moved"
 
 
-_NO_REGION_LINE = RADENDUR.replace(
+_NO_REGION_LINE = M68K_DUAL.replace(
     "REGION :maincpu size=1048576 bytewidth=2 endianness=big\n", "")
-_SMALL_REGION = RADENDUR.replace("REGION :maincpu size=1048576 ", "REGION :maincpu size=1024 ")
-_MASKED = RADENDUR.replace("start=0 end=fffff mirror=0 mask=0 share=- region=:maincpu",
+_SMALL_REGION = M68K_DUAL.replace("REGION :maincpu size=1048576 ", "REGION :maincpu size=1024 ")
+_MASKED = M68K_DUAL.replace("start=0 end=fffff mirror=0 mask=0 share=- region=:maincpu",
                            "start=0 end=fffff mirror=0 mask=fffff share=- region=:maincpu")
 
 
@@ -205,7 +205,7 @@ _MASKED = RADENDUR.replace("start=0 end=fffff mirror=0 mask=0 share=- region=:ma
 def test_a_region_write_that_cannot_be_placed_is_refused_before_anything_is_sent(
     ref: str, data: str, dump: str, said: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    assert dump != RADENDUR, "the anchor matched nothing"
+    assert dump != M68K_DUAL, "the anchor matched nothing"
     ses, _ = _regions(monkeypatch, tmp_path, dump=dump)
     ses.rom_write_unmapped.add(0x300000)
     out = s.write(ref=ref, data_hex=data, region=True)

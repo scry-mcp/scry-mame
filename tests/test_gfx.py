@@ -244,15 +244,15 @@ def test_isolate_shows_the_pens_asked_for_and_where_they_are(
 def test_isolate_makes_a_dark_pen_stand_out_on_an_indexed_screen(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """radendur's title, pen 221, the dark brown of the background: dimmed, the rest of the screen
+    """m68k-dual's title, pen 221, the dark brown of the background: dimmed, the rest of the screen
     went dark round it and the view read as the same screen darker. In the contrast colour over
     greys it stands out, and the PNG is still indexed with the pen as its index."""
     ses = _channel(monkeypatch, tmp_path)
-    _serve(ses, "screen-radendur", screen="radendur-screen")
+    _serve(ses, "screen-m68k-dual", screen="m68k-dual-screen")
     out = s.screen_view(mode="isolate", pens=[221], scale=1)
     assert out["status"] == "ok", out
     pic = _png(out)
-    raw = _capture("radendur-screen")
+    raw = _capture("m68k-dual-screen")
     size = 336 * 252 * 4
     idx = bytes(raw[size + i] for i in range(0, size, 4))
     assert pic.indexed and pic.pixels == idx, "the index is still the pen"

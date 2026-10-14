@@ -2,7 +2,7 @@
 lives in a parameter (an action, a script, a listing with none), and a condition judged on
 another cpu whose visible cpu cannot be put back.
 
-On radendur's two 68000s. Each write cell has its read beside it, run the same way, so a cell
+On m68k-dual's two 68000s. Each write cell has its read beside it, run the same way, so a cell
 cannot pass on a classifier that marks everything. The put-back cell builds the one state that
 refuses it, an ignored cpu left visible: shown through the stub while MAME stays live on the
 other, then ignored, which runs nothing (REFERENCE.md, *The console*).

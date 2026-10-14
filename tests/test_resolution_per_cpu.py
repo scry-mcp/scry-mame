@@ -29,7 +29,7 @@ MAIN, SUB = ":maincpu", ":subcpu"
 
 
 def _two_programs(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _RunningSession:
-    """The running double on radendur's two cpus with the thread patch, one table per cpu:
+    """The running double on m68k-dual's two cpus with the thread patch, one table per cpu:
     `irq_vblank` in both at two addresses, and a name in each that the other lacks."""
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: MAIN, 2: SUB}

@@ -159,7 +159,7 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     import json
 
     from test_declarations import _armable_boot
-    from test_machine import RADENDUR
+    from test_machine import M68K_DUAL
     from test_server import _boot_args
     from test_symbols_per_cpu import LISTXML, _yaml
 
@@ -167,11 +167,11 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     import mame_machine as machine
 
     sub_regs = "REGS :subcpu A0,A1,A2,A3,A4,A5,A6,CURFLAGS,CURPC,D0,D1,D2,D3,D4,D5,D6,D7,IR,PC,"
-    assert RADENDUR.count(sub_regs) == 1, "the line the variant replaces"
-    dump = RADENDUR.replace(sub_regs, sub_regs + "IX,")
+    assert M68K_DUAL.count(sub_regs) == 1, "the line the variant replaces"
+    dump = M68K_DUAL.replace(sub_regs, sub_regs + "IX,")
     image, _sym, store, _armed = _armable_boot(monkeypatch, tmp_path)
-    args = {**_boot_args(tmp_path, image), "system": "radendur"}
-    Path(args["binary"]).write_text(f"#!/bin/sh\ncat {LISTXML}\n")    # radendur's -listxml
+    args = {**_boot_args(tmp_path, image), "system": "m68k-dual"}
+    Path(args["binary"]).write_text(f"#!/bin/sh\ncat {LISTXML}\n")    # m68k-dual's -listxml
     real_boot = launch.boot
 
     def boot(*a: object, **k: object) -> object:
@@ -191,7 +191,7 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     rows += [dec.Declaration("watch", "symbol", "sub_data", width=4, fmt="u32",
                              watch_mode="change", cpu=SUB, origin="earlier"),
              dec.Declaration("regpoint", "expr", "USP==1", cpu=MAIN, origin="earlier")]
-    store.write_text(json.dumps({dec.store_key("radendur", main): [r.to_dict() for r in rows]}))
+    store.write_text(json.dumps({dec.store_key("m68k-dual", main): [r.to_dict() for r in rows]}))
     out = s.start(**args, symbols={"maincpu": main, "subcpu": sub})
     try:
         rearm = out["declarations"]["rearm"]

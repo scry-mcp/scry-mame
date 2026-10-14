@@ -34,7 +34,7 @@ from session_doubles import (
     wplist_answer,
 )
 from test_gdb_session import _wired  # noqa: E402
-from test_machine import RADENDUR, _cached  # noqa: E402
+from test_machine import M68K_DUAL, _cached  # noqa: E402
 from test_server import _running, _RunningSession  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
@@ -50,7 +50,7 @@ import mame_state as mstate  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
 
-# The console's answers, CAPTURED from a live radendur session, never authored: `wplist` with
+# The console's answers, CAPTURED from a live m68k-dual session, never authored: `wplist` with
 # one watch and with none; `map`'s are in `session_doubles`.
 WPLIST_ONE = "Device ':maincpu' program space watchpoints:\n    1 @ 2031FC-2031FF write\n\n"
 WPLIST_NONE = "No watchpoints currently installed\n\n"
@@ -486,7 +486,7 @@ def test_a_short_read_refreshing_a_baseline_after_a_write_refuses_and_names_the_
 
 
 def _rom_under_write(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """radendur as the machine answers a write to its ROM: `map` gives the address no write
+    """m68k-dual as the machine answers a write to its ROM: `map` gives the address no write
     side, the bytes land nowhere, and the inventory `start` cached is the captured one."""
     ses = _watching(monkeypatch, tmp_path)
     ses.rom_write_unmapped.add(0x7B8)
@@ -502,7 +502,7 @@ def _rom_under_write(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchS
 def test_a_write_that_goes_nowhere_on_rom_says_so_and_names_the_region_behind_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """KNOWN ANSWER, radendur: the write side of 0x7b8 is unmapped and its read side is
+    """KNOWN ANSWER, m68k-dual: the write side of 0x7b8 is unmapped and its read side is
     memory, and the captured inventory backs :maincpu's program space from 0 with the region
     `:maincpu` at offset 0, so the bytes live at offset 0x7b8 of that region."""
     ses = _rom_under_write(monkeypatch, tmp_path)
@@ -516,7 +516,7 @@ def test_a_write_that_goes_nowhere_on_rom_says_so_and_names_the_region_behind_it
 def test_a_rom_write_on_two_cpus_names_the_region_of_the_cpu_it_went_to(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """radendur backs 0..0xfffff with a region on BOTH cpus, and the write, its read-back and
+    """m68k-dual backs 0..0xfffff with a region on BOTH cpus, and the write, its read-back and
     the `map` asked why are one cpu's, named: a stub without threads writes its first cpu
     whatever `cpulist` marks, and that cpu's region is the one named."""
     ses = _rom_under_write(monkeypatch, tmp_path)
@@ -579,12 +579,12 @@ def test_a_rom_write_with_another_cpu_visible_is_explained_on_the_cpu_it_went_to
     assert f"map 0x7b8:{went_to}" in ses.commands, ses.commands
 
 
-# radendur's :maincpu ROM entry as captured, with a mirror bit and then a second entry over it:
+# m68k-dual's :maincpu ROM entry as captured, with a mirror bit and then a second entry over it:
 # the two shapes of map the captured board does not have.
 _ROM_ENTRY = "ENTRY :maincpu program 1 start=0 end=fffff mirror=0 "
-_MIRRORED = RADENDUR.replace(_ROM_ENTRY, "ENTRY :maincpu program 1 start=0 end=fffff "
+_MIRRORED = M68K_DUAL.replace(_ROM_ENTRY, "ENTRY :maincpu program 1 start=0 end=fffff "
                              "mirror=100000 ")
-_OVERLAPPED = RADENDUR.replace(
+_OVERLAPPED = M68K_DUAL.replace(
     _ROM_ENTRY, "ENTRY :maincpu program 1 start=0 end=fff mirror=0 mask=0 share=- "
     "region=:user1 region_offset=0\n" + _ROM_ENTRY.replace(" 1 ", " 2 ", 1))
 
@@ -594,7 +594,7 @@ def test_a_rom_write_through_a_mirror_names_the_bytes_it_mirrors(
 ) -> None:
     """MAME ignores the mirror bits when it matches an address, so 0x1007b8 on a map mirrored
     at 0x100000 is offset 0x7b8 of the same region."""
-    assert _MIRRORED != RADENDUR, "the anchor matched nothing"
+    assert _MIRRORED != M68K_DUAL, "the anchor matched nothing"
     ses = _rom_under_write(monkeypatch, tmp_path)
     ses.rom_write_unmapped.add(0x1007B8)
     ses.memory[0x1007B8] = bytes.fromhex("80a0")
@@ -606,7 +606,7 @@ def test_a_rom_write_through_a_mirror_names_the_bytes_it_mirrors(
 def test_a_rom_write_under_two_entries_of_one_cpu_names_no_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    assert _OVERLAPPED != RADENDUR, "the anchor matched nothing"
+    assert _OVERLAPPED != M68K_DUAL, "the anchor matched nothing"
     _rom_under_write(monkeypatch, tmp_path)
     _cached(monkeypatch, tmp_path, dump=_OVERLAPPED)
     out = s.write(ref="0x7b8", data_hex="8020")
@@ -652,8 +652,8 @@ def test_a_rom_write_the_map_cannot_place_names_no_offset(
     ses.rom_write_unmapped.add(addr)
     ses.memory[addr] = bytes.fromhex("80a0")
     if dump:
-        masked = RADENDUR.replace(_ROM_ENTRY + "mask=0 ", _ROM_ENTRY + "mask=fffff ")
-        assert masked != RADENDUR, "the anchor matched nothing"
+        masked = M68K_DUAL.replace(_ROM_ENTRY + "mask=0 ", _ROM_ENTRY + "mask=fffff ")
+        assert masked != M68K_DUAL, "the anchor matched nothing"
         _cached(monkeypatch, tmp_path, dump=masked)
     out = s.write(ref=f"{addr:#x}", data_hex="8020")
     assert out["target"] == "rom" and "region_offset" not in out and said in out["note"], out
@@ -1715,7 +1715,7 @@ def test_symbols_find_says_whether_each_symbol_is_live_ram_or_its_rom_copy(
     # is NOT a latch. The lines are the captured shape with the handler names of a paired
     # region; no board of the fleet was captured with one, so the case is authored from
     # the captured format and says so.
-    paired = MAP_LATCH.replace("-> unmapped\n", "-> radendur_state::latch_r\n", 1)
+    paired = MAP_LATCH.replace("-> unmapped\n", "-> m68k_dual_state::latch_r\n", 1)
     real_monitor = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda command, timeout=10.0:
                         paired if command == "map 0x740004" else real_monitor(command, timeout))

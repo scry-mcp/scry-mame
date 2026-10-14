@@ -782,12 +782,12 @@ def test_a_window_proves_its_layout_at_the_least_it_needs() -> None:
 
 # ------------------------------------------------------------------ proof by uniqueness
 
-def _lineup(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, Any]:
-    """The draft of the two Line UP answers (`fixtures/draft/PROVENANCE.txt`): a digit matched
+def _v30(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, Any]:
+    """The draft of the two v30 answers (`fixtures/draft/PROVENANCE.txt`): a digit matched
     once over its whole table, and the INSERT COINS strip matched in many windows."""
-    locs = json.loads(gzip.decompress((DRAFT_FIX / "lineup-locates.json.gz").read_bytes()))
+    locs = json.loads(gzip.decompress((DRAFT_FIX / "v30-locates.json.gz").read_bytes()))
     _evidence(monkeypatch, tmp_path, _renamed(locs))
-    monkeypatch.setattr(mstate.STATE, "system", "lineup")
+    monkeypatch.setattr(mstate.STATE, "system", "v30")
     out: dict[str, Any] = s.gfx_draft()
     return out
 
@@ -797,7 +797,7 @@ def test_a_unique_match_over_a_whole_8bpp_search_proves_its_layout(
 ) -> None:
     """The digit's window varies along both axes with its rarest pen short of the tile's side:
     its one match over every tile of the table proves the layout."""
-    out = _lineup(monkeypatch, tmp_path)
+    out = _v30(monkeypatch, tmp_path)
     assert out["formats"] == {"tiles_24x24x8": "proved"}, out
     entry = _report(out)["formats"]["tiles_24x24x8"]
     assert [(e["status"], e["proved_by"], e["tiles"]) for e in entry] == [("proved", [1], [1])]
@@ -806,7 +806,7 @@ def test_a_unique_match_over_a_whole_8bpp_search_proves_its_layout(
 def test_a_strip_matched_many_times_stays_unproved_naming_what_it_failed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    out = _lineup(monkeypatch, tmp_path)
+    out = _v30(monkeypatch, tmp_path)
     rows = [u for u in _report(out)["unproving"] if u["layout"] == "coins8"]
     assert [(u["flat"], u["causes"], u["contested"]) for u in rows] == [
         (35, {"cols": 8, "rarest": 27}, 0)], rows
@@ -900,7 +900,7 @@ def test_a_window_fails_the_conditions_it_misses_by_shape_and_by_uniqueness(
 def test_the_measured_known_answers_fall_each_side_of_the_rarest_floor(
     known: str, shape: list[int], side: int, failed: set[str],
 ) -> None:
-    """The shapes Line UP's known answers gave live: each matched once over a search of one
+    """The shapes v30's known answers gave live: each matched once over a search of one
     window, and the digit's search held fewer tiles than the strip's, so neither the windows
     tried nor the tiles searched tell them apart. The rarest pen does (the strip's row gradient
     is in every tile of the font and tells nothing apart). Uniqueness stands in for the rarest
@@ -912,7 +912,7 @@ def test_the_measured_known_answers_fall_each_side_of_the_rarest_floor(
 def test_a_strip_cut_to_one_window_proves_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """INSERT COINS's first window alone, as Line UP answered it: one match over the strip's
+    """INSERT COINS's first window alone, as v30 answered it: one match over the strip's
     tiles, two distinct columns and a one-pixel rarest pen. It proves nothing, and says why."""
     coins = _deep(8)
     loc = _one(23, [coins], [(coins["name"], 84, 8)], tag="program", shape=[8, 2, 1])

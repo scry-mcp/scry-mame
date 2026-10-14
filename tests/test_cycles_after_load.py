@@ -46,7 +46,7 @@ AT_FRAME_0 = _C0 - _F0 * PER_FRAME
 def _board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
     """A stopped machine at the capture's frame 10 whose counter behaves as the capture's."""
     ses = _channel(monkeypatch, tmp_path)
-    monkeypatch.setattr(mstate.STATE, "system", "radendur")   # the captured header's name
+    monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")   # the captured header's name
     monkeypatch.setattr(advance, "VBLANK_SETTLE_S", 0.0)
     ses.frame = 10
     ses.cycles_per_frame = PER_FRAME

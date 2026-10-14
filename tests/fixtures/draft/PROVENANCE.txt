@@ -1,7 +1,9 @@
 Captured live, never authored: the `evidence.locates` of the report `gfx_draft` wrote on a real
 machine, as `mame_evidence.record_locate` kept them, re-serialised with sorted keys.
+Program and board names were then replaced by neutral labels by a single mechanical substitution
+that preserves every field width; nothing else was edited.
 
-lineup-locates.json.gz  the V30 board of lineup-mame (`mamelineup`, set `lineup`, the canonical
+v30-locates.json.gz  the v30 board (the canonical
                         romset), two `gfx_locate` answers over one session, each on a range of
                         the cpu's program space (no region or share holds this board's
                         graphics):

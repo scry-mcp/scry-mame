@@ -1,15 +1,15 @@
 """The conditioned film (`mame_film`, `gfx_film`): arming it, reading what it wrote, and the sheet,
 the per-frame files, the listing and the animation it answers with.
 
-THE RADENDUR CASE IS CAPTURED, on TCH's `upstream/radendu` through this server: stopped at frame
+THE m68k-dual CASE IS CAPTURED, on its own build through this server: stopped at frame
 898, a capture declared on the blitter (`0x700000`, 32 bytes, trigger `0x70001e`) and a film armed
 on the strobe (`0x70001e`, 2 bytes, `0xffff`, keep 3, frames 12), then run 14 frames. The arming
-chunk's answer and files are `arm-radendur.*`; `film.txt` is the header the film wrote and
+chunk's answer and files are `arm-m68k-dual.*`; `film.txt` is the header the film wrote and
 `frame-1.*`, `frame-2.*` the first two kept frames as the notifier left them (frames 900 and 901,
-each read at the next frame); `capture-radendur.rows.gz` the capture's rows of frames 899..902.
+each read at the next frame); `capture-m68k-dual.rows.gz` the capture's rows of frames 899..902.
 `arm-circus.*` is the arming on the stock `circus` at frame 600, where MAME's snapshot is not
 the bare screen: it holds colours none of the screen's two pens does. `MAP_BLIT` is the
-console's `map 0x70001e` on radendur.
+console's `map 0x70001e` on m68k-dual.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ import server as s  # noqa: E402
 FIX = Path(__file__).parent / "fixtures" / "film"
 MAP_BLIT = ("   Read: 70001E logical program == 70001E physical program -> unmapped\n"
             "  Write: 70001E logical program == 70001E physical program -> "
-            "radendur_state::blit_w\n"
+            "m68k_dual_state::blit_w\n"
             "  Fetch: 70001E logical program == 70001E physical program -> unmapped\n\n")
 BLIT_PROGRAM = 0x2004
 
@@ -66,7 +66,7 @@ def _edited(text: str, old: str, new: str) -> str:
 
 
 def _session(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
-    """The channel double, answering `map` as radendur's console does for the strobe."""
+    """The channel double, answering `map` as m68k-dual's console does for the strobe."""
     ses = _channel(monkeypatch, tmp_path)
     plain = ses.monitor
 
@@ -95,7 +95,7 @@ def _serve_arm(ses: _ChannelSession, board: str, snap: bytes | None = None) -> N
 def _armed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[str, Any]:
     """The film armed as the capture was, its install answered, and its record."""
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(**{"trigger": "0x70001e", "length": 2, "value": 0xFFFF, "keep": 3,
                         "frames": 12, **kw})
     assert out["status"] == "ok", out
@@ -191,15 +191,15 @@ def test_arming_reads_the_screen_once_and_sends_the_install_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(trigger="0x70001e", length=2, value=0xFFFF, keep=3, frames=12)
     assert out["status"] == "ok", out
     assert out["armed_now"] is True and (out["installed"], out["pending"]) == (False, True), out
     assert out["film"]["checked"] is True and "why" not in out["film"], (
-        "radendur's snapshot is its bare screen, so every kept frame is checked")
+        "m68k-dual's snapshot is its bare screen, so every kept frame is checked")
     assert "mismatch" not in out["film"], "a bare-screen snapshot has nothing to measure"
     assert (out["film"]["trigger_addr"], out["film"]["value"], out["trigger_maps_to"]) == (
-        "0x0070001e", "0xffff", "radendur_state::blit_w")
+        "0x0070001e", "0xffff", "m68k_dual_state::blit_w")
     assert "map 0x70001e::maincpu" in ses.commands, "the trigger's write side is asked"
     assert out["session"]["altered"] is False, "arming reads the screen and puts every pen back"
     folder = Path(out["film"]["film_dir"])
@@ -271,7 +271,7 @@ def test_what_only_the_machine_can_judge_is_refused_and_nothing_is_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kw: dict[str, Any], says: str,
 ) -> None:
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(**kw)
     assert out["status"] == "INVALID", out
     assert says in out["message"], out["message"]
@@ -300,7 +300,7 @@ def test_every_listed_hit_is_a_write_the_capture_recorded_on_the_same_frame() ->
     """Two taps on one strobe: each hit a kept frame names (pc, value, the counter the tap read)
     is a row of the blitter's capture with that pc, that data and that frame."""
     rows = {(int(pc, 16), int(data, 16), int(frame))
-            for line in gzip.decompress((FIX / "capture-radendur.rows.gz").read_bytes())
+            for line in gzip.decompress((FIX / "capture-m68k-dual.rows.gz").read_bytes())
             .decode().splitlines()
             for _r, _n, frame, pc, data, *_rest in [line.split(" ")]}
     for k in (1, 2):
@@ -695,7 +695,7 @@ def test_a_snapshot_whose_bytes_are_not_its_declared_size_is_refused(
     """The arming chunk writes the snapshot whole or raises, so a file of another length is an
     instrument that failed, never a snapshot that differs."""
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur", b"")
+    _serve_arm(ses, "m68k-dual", b"")
     out = s.gfx_film(trigger="0x70001e")
     assert out["status"] == "INVALID" and out["code"] == "unexpected_answer", out
     assert "holds 0 bytes, and the 336x252 snapshot it declared is 338688" in out["message"]
@@ -801,7 +801,7 @@ def test_a_film_goes_to_dest_and_a_second_film_to_a_directory_of_its_own(
     ses = _session(monkeypatch, tmp_path)
 
     def arm(**kw: Any) -> dict[str, Any]:
-        _serve_arm(ses, "radendur")
+        _serve_arm(ses, "m68k-dual")
         out: dict[str, Any] = s.gfx_film(trigger="0x70001e", **kw)
         # the install the arming sent is answered, as the console answers it at the next step
         ses.answers[mstate.STATE.lua_seq] = ses.sentinel(mstate.STATE.lua_seq)
@@ -829,11 +829,11 @@ def test_an_arming_refused_at_the_install_leaves_its_dest_unmade(
         raise mstate.Invalid("bad_argument", "the console is too far behind to take it")
 
     monkeypatch.setattr(mtap, "send_tap", refusing)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     refused("too far behind", s.gfx_film(trigger="0x70001e", film_dir=str(dest)))
     assert not dest.exists(), "the refused arming left its directory"
     monkeypatch.setattr(mtap, "send_tap", real)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     assert s.gfx_film(trigger="0x70001e", film_dir=str(dest))["status"] == "ok"
     assert dest.is_dir()
 
@@ -844,7 +844,7 @@ def test_a_trigger_nothing_handles_is_armed_and_the_note_says_the_write_goes_now
     """Measured: a write tap on an address whose write side is unmapped still sees the cpu's
     writes there, so the film arms on it; on a ROM copy the note points at the live datum."""
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     plain = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda c, timeout=10.0: MAP_ROM if c.startswith("map ")
                         else plain(c, timeout))
@@ -859,7 +859,7 @@ def test_an_arming_answer_with_no_film_line_is_refused_in_the_consoles_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     seq = mstate.STATE.lua_seq + 1
     ses.answers[seq] = re.sub(rb"MCP_FILM_ARM[^\n]*\n", b"", ses.answers[seq])
     out = s.gfx_film(trigger="0x70001e")
@@ -871,7 +871,7 @@ def test_a_snapshot_of_another_size_leaves_every_frame_unchecked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur", bytes(4 * 672 * 504))
+    _serve_arm(ses, "m68k-dual", bytes(4 * 672 * 504))
     seq = mstate.STATE.lua_seq + 1
     ses.answers[seq] = ses.answers[seq].replace(b"snap_w=336 snap_h=252", b"snap_w=672 snap_h=504")
     out = s.gfx_film(trigger="0x70001e")
@@ -902,7 +902,7 @@ def test_a_direct_colour_screen_keeps_its_frames_in_colour_checked_against_mames
 ) -> None:
     """starfire draws in direct colour: a kept frame has no pens, so its file is RGB, the
     colours the screen held, and the check compares those colours with MAME's rendering. The
-    film record is radendur's armed one with starfire's screen, the frame's files starfire's
+    film record is m68k-dual's armed one with starfire's screen, the frame's files starfire's
     own capture (`starfire-*`, a film on `0x8014` at frame 276)."""
     rec = _armed(monkeypatch, tmp_path)
     rec["film"] = film = dataclasses.replace(rec["film"], width=256, height=224, length=1,
@@ -965,7 +965,7 @@ def test_the_notifier_reads_a_picture_only_on_a_frame_that_drew() -> None:
 def test_a_changed_film_arms_with_its_condition_named(monkeypatch: pytest.MonkeyPatch,
                                                       tmp_path: Path) -> None:
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(trigger="0x70001e", length=2, changed=True)
     assert out["status"] == "ok", out
     assert out["film"]["changed"] is True, out["film"]
@@ -1090,7 +1090,7 @@ def test_a_film_on_a_port_taps_the_io_space_and_asks_the_io_map(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _io_session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(trigger="0x6", length=2, space="io", keep=12, frames=12)
     assert out["status"] == "ok", out
     assert out["film"]["space"] == "io", out["film"]
@@ -1125,7 +1125,7 @@ def test_what_a_film_on_a_port_cannot_take_is_refused_before_the_machine(
 def test_a_film_on_a_cpu_with_no_io_space_is_refused(monkeypatch: pytest.MonkeyPatch,
                                                       tmp_path: Path) -> None:
     ses = _io_session(monkeypatch, tmp_path, spaces=("program",))
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     refused("no io space", s.gfx_film(trigger="0x6", length=2, space="io"))
     assert mf.held() is None
 
@@ -1144,7 +1144,7 @@ def test_a_film_on_a_trigger_whose_write_side_the_console_does_not_name_is_refus
 def test_a_film_on_an_unmapped_port_is_armed_and_says_the_out_goes_nowhere(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     ses = _io_session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(trigger="0x20", length=2, space="io")
     assert out["status"] == "ok" and out["trigger_maps_to"] == "unmapped", out
     assert "nothing in the machine handles an `out` at port 0x20" in out["note"], out
@@ -1157,7 +1157,7 @@ def test_a_film_on_an_odd_port_across_the_io_bus_word_is_refused(
     """Two bytes from port 7 of a 16-bit io bus straddle two bus words, which no single `out`
     writes: refused as a program trigger across a word is."""
     ses = _io_session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     refused("cross a bus word", s.gfx_film(trigger="0x7", length=2, space="io"))
     assert mf.held() is None
 

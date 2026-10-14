@@ -126,7 +126,7 @@ def _pane(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, threads: bool = True,
     use_table(monkeypatch, MAIN, table={"IRQ_VBLANK": 0x400, "FADE": 0x900})
     use_table(monkeypatch, SUB, table={"SND_RESET": 0x400})
     if store is not None:
-        monkeypatch.setattr(mstate.STATE, "store", dec.DeclarationStore("radendur key", store))
+        monkeypatch.setattr(mstate.STATE, "store", dec.DeclarationStore("m68k-dual key", store))
     return pane
 
 
@@ -313,10 +313,10 @@ def test_a_persistent_store_keeps_the_comment_for_the_next_session(
     _pane(monkeypatch, tmp_path, store=path)
     out = s.comment_add(ref="irq_vblank", text="kept", cpu="maincpu")
     assert out["declarations"] == {"persistent": True, "path": str(path)} and "note" not in out
-    saved = json.loads(path.read_text())["radendur key"]
+    saved = json.loads(path.read_text())["m68k-dual key"]
     assert [(d["kind"], d["ref"], d["text"], d["cpu"]) for d in saved] == [
         ("comment", "irq_vblank", "kept", MAIN)]
-    again = dec.DeclarationStore("radendur key", path).declarations()
+    again = dec.DeclarationStore("m68k-dual key", path).declarations()
     assert [(d.ref, d.text) for d in again] == [("irq_vblank", "kept")]
 
 
@@ -636,7 +636,7 @@ def test_start_pins_the_comment_directory_in_the_scratch() -> None:
     """MAME writes the comments it holds into `comment_directory` on every exit of a `-debug`
     machine; pinned on the command line, an ini given through `inipath` cannot move that file
     where a later plain MAME would show a deleted comment again."""
-    cmd = launch.build_command("mame", "radendur", "/roms", 1234, [], "/tmp/scratch",
+    cmd = launch.build_command("mame", "m68k-dual", "/roms", 1234, [], "/tmp/scratch",
                                inipath="/ini", state_dir="/state")
     i = cmd.index("-comment_directory")
     assert cmd[i + 1] == "/tmp/scratch/comments"
@@ -886,7 +886,7 @@ def test_a_symbol_comment_follows_its_name_across_a_build_and_is_never_stale(
 
 
 def test_start_says_how_many_comments_it_placed_again() -> None:
-    reply = {"system": "radendur", "rom_check": "OK", "symbols_total": 3, "pc": "0x0", "machine":
+    reply = {"system": "m68k-dual", "rom_check": "OK", "symbols_total": 3, "pc": "0x0", "machine":
              {"cpus": 2, "screens": 1, "rom_files": 0, "regions": 0, "shares": 0},
              "declarations": {"comments": {"rearmed": [{"ref": "a", "cpu": MAIN}] * 2}},
              "start_retries": []}

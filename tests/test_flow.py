@@ -1,7 +1,7 @@
 """The flow class of a listing's lines, off the mnemonic table of each cpu type.
 
 The listings are CAPTURED, never authored: the same range written by the console's `dasm` with
-its opcode bytes and without them, on the 68000 board of tch-blitter and the V30 board of lineup
+its opcode bytes and without them, on the 68000 board of m68k-dual and the V30 board of v30
 (`fixtures/console/PROVENANCE.txt`). Each expected class was checked by hand against what the
 instruction does, not against what the table says.
 """

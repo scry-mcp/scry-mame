@@ -13,7 +13,7 @@ and BLOCKED when it could not be run, with the reason (`run_sections` says how i
 
     timeout 1800 uv run python tests/live/live_matrix.py
 
-radendur and section H's V30 boards run on their copies on the bench (`bench_boards`); a board
+m68k-dual and section H's V30 boards run on their copies on the bench (`bench_boards`); a board
 that cannot run there is BLOCKED with the reason.
 Blocks D, J, K and Q, section H's circus and section T's 1942 also drive the free boards of
 mamedev.org, which need a stock MAME and their zips (`free_boards_missing` says which
@@ -43,7 +43,7 @@ from bench_boards import (
     SUB_SYMBOLS,
     SYMBOLS,
     bench_missing,
-    radendur_missing,
+    m68k_dual_missing,
     value,
 )
 from gfx_layouts import BYTES_8X8, CIRCUS_CHAR, GRID_FB, GRID_SPRITE, WITCH_TILE
@@ -333,7 +333,7 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "comment_delete": lambda r: (r.get("deleted") or {}).get("ref") == "irq_vblank",
     "symbols_find": lambda r: r.get("symbols_total") == 1,
     "machine_map": lambda r: bool(r.get("cpus")),
-    # radendur's two cpus, the main one visible, each pc read.
+    # m68k-dual's two cpus, the main one visible, each pc read.
     "cpu_info": lambda r: [(c["cpu"], c["visible"], "value" in (c["pc"] or {}))
                            for c in r.get("cpus", [])]
     == [(":maincpu", True, True), (":subcpu", False, True)],
@@ -550,9 +550,9 @@ def block_a() -> None:
     extra = sorted(set(PROBES) - set(registered))
     cell(SURFACE, not missing and not extra and sorted(STOPPED_ORDER) == registered,
          f"{len(registered)} tools; unprobed {missing}, unknown {extra}")
-    # Every state but the first needs radendur booted, and a probe that cannot boot it would
+    # Every state but the first needs m68k-dual booted, and a probe that cannot boot it would
     # leave the next states judging a machine that is not there.
-    if why := radendur_missing():
+    if why := m68k_dual_missing():
         raise Blocked(why)
     ensure_closed()
     run_state("none", ABSENT_ORDER)            # ends with `start`: a stopped machine
@@ -564,7 +564,7 @@ def block_a() -> None:
 
 # ======================================================= Block A by cpu: the same, per cpu
 #
-# radendur has two 68000s. Every tool that takes `cpu` is probed naming each one, stopped and
+# m68k-dual has two 68000s. Every tool that takes `cpu` is probed naming each one, stopped and
 # running, with `:maincpu` visible throughout: a probe on `:subcpu` names a cpu that is NOT the
 # visible one, which is the case the model is about. A reply that touches a cpu names the one
 # asked for, and the visible cpu does not move, except where MAME moves it (`step`, `focus`),
@@ -743,7 +743,7 @@ def _on(tag: str, state: str, tool: str) -> str:
     return f"{tool} @ {state} on {tag}"
 
 
-@section("A", "states x tools per cpu, on radendur's two 68000s (B7.4)",
+@section("A", "states x tools per cpu, on m68k-dual's two 68000s (B7.4)",
          [BY_CPU_SURFACE, RELEASE_RESETS] + [_on(tag, state, t) for tag in (MAIN, SUB)
                              for state, order in (("stopped", BY_CPU_ORDER),
                                                   ("running", BY_CPU_RUNNING_ORDER))
@@ -1700,7 +1700,7 @@ def c1_declarations() -> None:
          str([(w.get("ref"), w.get("inherited")) for w in ws]))
     row4a0 = by_ref(bps).get("0x4a0", {})
     cell(C1[9], row4a0.get("state") == "armed" and row4a0.get("role") == "control", str(row4a0))
-    # radendur's vblank handler starts writing this counter only once the boot has settled, a
+    # m68k-dual's vblank handler starts writing this counter only once the boot has settled, a
     # few frames in: sixty frames are past that, so a zero here would be the tally's, not the
     # game's.
     r = call("run_for", frames=60, seconds=10.0, disarm_watches=True)
@@ -2743,7 +2743,7 @@ def c15_condition_and_capture() -> None:
 # session (circus's videoram names the char, gridlee's spriteram the sprite), and each negative is
 # a board whose screen has no pens to give (starfire, direct colour; witchgme, a palette device
 # its screen does not use; topgunnr, vector). The boards are the free sets of mamedev.org, which
-# radendur's binary does not carry, so the section runs a stock MAME named by MAME_STOCK_BINARY
+# m68k-dual's binary does not carry, so the section runs a stock MAME named by MAME_STOCK_BINARY
 # (its `plugins` directory beside it) over the zips in MAME_TEST_ROMS; without both, every cell is
 # BLOCKED with that reason.
 
@@ -3057,7 +3057,7 @@ def block_d() -> None:
     run_boards(D_CELLS, D_BOARDS)
 
 
-# ============================================ Block E: the project's manifest on radendur
+# ============================================ Block E: the project's manifest on m68k-dual
 
 E_CELLS = [
     "gfx_load reads the project's manifest whole, every field with its status",
@@ -3123,13 +3123,13 @@ def _renderer_tile(tile: int, x: int, y: int, w: int, h: int) -> bytes | None:
     """What the project's renderer samples for a tile whose descriptor sends the blitter to page
     `tile` at (`x`, `y`), `w` x `h`: its own `tile()` over a descriptor written into a copy of its
     ROM. The bench holds one capture per argument set, taken by `fill`, because the renderer
-    needs its project's own environment (numpy); the radendur boot already checked every pin.
+    needs its project's own environment (numpy); the m68k-dual boot already checked every pin.
     None when no capture is pinned for these arguments: the rectangle is not the one pinned."""
     name = f"{value('m68k-dual', 'dir')}/renderer/tile{tile}_x{x}_y{y}_{w}x{h}.bin"
     return None if bench_missing(name) else (BENCH / name).read_bytes()
 
 
-@section("E", "the project's manifest on radendur: boxes, sources, the renderer", E_CELLS)
+@section("E", "the project's manifest on m68k-dual: boxes, sources, the renderer", E_CELLS)
 def block_e() -> None:
     t = E_CELLS
     boot()
@@ -3161,7 +3161,7 @@ def block_e() -> None:
     pens = _png(str(screen.get("image", {}).get("path")))
     frame = boxes.get("frame_blit")
     drawn = [b for b in blits if b.get("plane") == "sprites" and b["fields"].get("reads_source")
-             and not b["flags"].get("writes_index_0")]   # radendur's driver skips those blits
+             and not b["flags"].get("writes_index_0")]   # m68k-dual's driver skips those blits
     sources: dict[int, Any] = {}
     for b in drawn:
         src = call("gfx_blit_source", draw_command="blit", frame=frame, index=b["index"], margin=1,
@@ -3258,7 +3258,7 @@ def _e_views(t: list[str], pens: Any, first: dict[str, Any] | None, frame: Any) 
          f"{w}x{h} with a margin of 2: {said(wide, 60)}")
 
 
-#: The name of radendur's palette port in tch-blitter's manifest, which is a RAMDAC.
+#: The name of m68k-dual's palette port in m68k-dual's manifest, which is a RAMDAC.
 RAMDAC = "ramdac"
 F_CELLS = [
     "with no log armed, the pixel names the `palette_log` call that arms one",
@@ -3300,7 +3300,7 @@ def _completed_pen_red_blue_apart(r: dict[str, Any]) -> int | None:
     return None
 
 
-@section("F", "the palette write log on radendur: which pen, and who set it", F_CELLS)
+@section("F", "the palette write log on m68k-dual: which pen, and who set it", F_CELLS)
 def block_f() -> None:
     t = F_CELLS
     boot()
@@ -3393,7 +3393,7 @@ def block_f() -> None:
     call("palette_log", palette_port=RAMDAC, clear=True)
 
 
-# ============================================ Block G: the conditioned film on radendur
+# ============================================ Block G: the conditioned film on m68k-dual
 
 G_CELLS = [
     "gfx_film arms on the blitter's strobe, its frames checkable, the strobe's writer named",
@@ -3411,7 +3411,7 @@ G_CELLS = [
 ]
 
 
-@section("G", "the conditioned film on radendur: frames kept where a write happened", G_CELLS)
+@section("G", "the conditioned film on m68k-dual: frames kept where a write happened", G_CELLS)
 def block_g() -> None:
     t = G_CELLS
     boot()
@@ -3508,7 +3508,7 @@ def block_g() -> None:
 
 # ================================================= Section I: what `cpu_info` says of each cpu
 #
-# `cpu_info`'s rows on radendur's two 68000s, each reading against an answer that does not come
+# `cpu_info`'s rows on m68k-dual's two 68000s, each reading against an answer that does not come
 # from `cpu_info`: the cpu's own `registers`, its `curpc` shown through `focus`, the console's
 # listings, the `_list` tools' rows. "Moves nothing" is judged by readings that a step is proved
 # to change, so the instrument can see a move.
@@ -3579,7 +3579,7 @@ def _readings() -> dict[str, Any]:
     return out
 
 
-@section("I", "what cpu_info says of each cpu, on radendur's two 68000s", I_CELLS)
+@section("I", "what cpu_info says of each cpu, on m68k-dual's two 68000s", I_CELLS)
 def block_i_cpu_info() -> None:
     t = I_CELLS
     boot(symbols={MAIN: SYMBOLS, SUB: SUB_SYMBOLS})
@@ -3668,25 +3668,25 @@ def block_i_cpu_info() -> None:
 #
 # The independent answer is the console's `cheatinit`/`cheatnextf` at the same stops, compared
 # with what was opened (`cheatnextf`), never a survivor address written here: the game decides
-# which cells move, the engine says which ones did. radendur's engine admits every cell but those
+# which cells move, the engine says which ones did. m68k-dual's engine admits every cell but those
 # the driver taps for writes, whose growth is discounted from its count.
 
 J_CELLS = [
-    "radendur: a :maincpu scan narrows the credits and matches the console's cheat engine at "
+    "m68k-dual: a :maincpu scan narrows the credits and matches the console's cheat engine at "
     "every filter",
-    "radendur: a :subcpu scan names its cpu and an `=` after a `>` round closes it",
-    "radendur: a second scan_start, a filter with none open, a scan on a running machine are "
+    "m68k-dual: a :subcpu scan names its cpu and an `=` after a `>` round closes it",
+    "m68k-dual: a second scan_start, a filter with none open, a scan on a running machine are "
     "refused",
-    "radendur: the scan calls move neither pc, stop_seq nor the emulated time, and alter nothing",
+    "m68k-dual: the scan calls move neither pc, stop_seq nor the emulated time, and alter nothing",
     "circus: the clown's latch narrows the RAM to the console's own survivors at every filter",
 ]
 _FOUND = re.compile(r"(\d+) cheats found")
 _INIT = re.compile(r"(\d+) cheat locations initialized for .* '([^']+)' program space")
 _LIST_ROW = re.compile(r"Possibility \d+: ([0-9A-F]+) \(([0-9A-F]+)\)")
-# radendur's write taps: no direct write pointer, so the engine's `cheatinit` leaves them out.
+# m68k-dual's write taps: no direct write pointer, so the engine's `cheatinit` leaves them out.
 # The fixture the unit tests compare against is the one list of them, read when the board runs
 # so that a missing file fails that board and not the whole matrix at import.
-_TAPS_FILE = Path(__file__).parents[1] / "fixtures" / "scan" / "radendur-ub-not-admitted.txt"
+_TAPS_FILE = Path(__file__).parents[1] / "fixtures" / "scan" / "m68k-dual-ub-not-admitted.txt"
 
 
 def _tap_addrs() -> tuple[int, ...]:
@@ -3738,7 +3738,7 @@ def _taps(addrs: tuple[int, ...]) -> list[int]:
             for a in addrs]
 
 
-def _j_radendur(t: list[str]) -> None:
+def _j_m68k_dual(t: list[str]) -> None:
     boot(symbols={MAIN: SYMBOLS, SUB: SUB_SYMBOLS})
     call("run_for", frames=600, seconds=10.0)
     before = _where()
@@ -3836,7 +3836,7 @@ def _j_circus(t: list[str]) -> None:
     call("close")
 
 
-J_BOARDS = (Board(_j_radendur, (0, 1, 2, 3), radendur_missing),
+J_BOARDS = (Board(_j_m68k_dual, (0, 1, 2, 3), m68k_dual_missing),
             Board(_j_circus, (4,), free_boards_missing))
 boards_cover("J_BOARDS", J_CELLS, J_BOARDS)
 
@@ -3884,9 +3884,9 @@ def on_board(board: str, whats: list[str]) -> list[str]:
     return [f"{board}: {what}" for what in whats]
 
 
-K_LEFTOVER, K_REDECLARE = f"radendur: {K_CAPTURE_LEFTOVER}", f"circus: {K_REDECLARE_LIVE}"
+K_LEFTOVER, K_REDECLARE = f"m68k-dual: {K_CAPTURE_LEFTOVER}", f"circus: {K_REDECLARE_LIVE}"
 K_CELLS = (K_OWN + on_board("circus", K_RESEND + K_REMOVALS)
-           + on_board("radendur", K_RESEND + K_REMOVALS) + [K_LEFTOVER, K_REDECLARE])
+           + on_board("m68k-dual", K_RESEND + K_REMOVALS) + [K_LEFTOVER, K_REDECLARE])
 
 
 def _states_by_name(r: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -3974,14 +3974,14 @@ def _k_circus(_cells: list[str]) -> None:
     call("close")
 
 
-def _k_radendur(_cells: list[str]) -> None:
+def _k_m68k_dual(_cells: list[str]) -> None:
     boot()
     call("run_for", frames=3, seconds=10.0)
     refs = ("0x70001e", "0x70001c", "0x70001a", "0x700018")
-    _k_resend(on_board("radendur", K_RESEND), refs, 2)
+    _k_resend(on_board("m68k-dual", K_RESEND), refs, 2)
     # The last range is the frame counter's low word, written once a frame: the blitter's
     # ranges can go three frames unwritten, and that cell compares a total.
-    k_removals(on_board("radendur", K_REMOVALS), (refs[1], refs[2], "0x2031fe"), 2)
+    k_removals(on_board("m68k-dual", K_REMOVALS), (refs[1], refs[2], "0x2031fe"), 2)
     k_capture_leftover(K_LEFTOVER, "0x2031fc", "0x2031fe")
     call("close")
 
@@ -4123,8 +4123,8 @@ def k_owned(labels: list[str]) -> tuple[int, ...]:
 
 K_BOARDS = (Board(_k_circus, k_owned(K_OWN + on_board("circus", K_RESEND + K_REMOVALS)),
                   free_boards_missing),
-            Board(_k_radendur, k_owned(on_board("radendur", K_RESEND + K_REMOVALS)
-                                       + [K_LEFTOVER]), radendur_missing),
+            Board(_k_m68k_dual, k_owned(on_board("m68k-dual", K_RESEND + K_REMOVALS)
+                                       + [K_LEFTOVER]), m68k_dual_missing),
             Board(_k_circus_redeclare, k_owned([K_REDECLARE]), free_boards_missing))
 boards_cover("K_BOARDS", K_CELLS, K_BOARDS)
 

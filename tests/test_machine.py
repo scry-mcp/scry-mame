@@ -23,20 +23,20 @@ import mame_state as st
 from mame_state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "machine"
-RADENDUR = (FIXTURES / "radendur.txt").read_text(encoding="utf-8")
+M68K_DUAL = (FIXTURES / "m68k-dual.txt").read_text(encoding="utf-8")
 # THE SUB CPU'S PROGRAM SPACE as the capture carries it, and an AUTHORED variant of the capture
-# whose sub cpu reaches less, derived by replacement and said so: radendur's two masks are equal,
+# whose sub cpu reaches less, derived by replacement and said so: m68k-dual's two masks are equal,
 # so no case on the capture alone can tell one cpu's mask from the other's. The case using it
 # asserts the line was there to replace, so the variant cannot silently equal the capture.
 SUB_PROGRAM = "SPACE :subcpu program data_width=16 endianness=big entries=5 address_mask=ffffff\n"
-SUB_NARROWED = RADENDUR.replace(SUB_PROGRAM, SUB_PROGRAM.replace("=ffffff", "=3fff"))
+SUB_NARROWED = M68K_DUAL.replace(SUB_PROGRAM, SUB_PROGRAM.replace("=ffffff", "=3fff"))
 
 
 def test_the_captured_dump_of_a_two_cpu_board_reads_back_as_two_cpus() -> None:
     """THE MULTI-CPU CASE, which is what the single-cpu reader elsewhere here would miss: both
     68000s come back with distinct tags, each with the two spaces it exposes, and the entry
     counts the gather declared are the entries the parse produced."""
-    found = machine.parse(RADENDUR)
+    found = machine.parse(M68K_DUAL)
     assert [cpu["tag"] for cpu in found["cpus"]] == [":maincpu", ":subcpu"]
     assert all(cpu["name"] == "Motorola MC68000" for cpu in found["cpus"])
     # THE TYPE IS MAME'S SHORTNAME, the word `disassemble` picks its flow table by: the
@@ -56,7 +56,7 @@ def test_the_capture_is_still_the_multi_cpu_case_it_was_taken_for() -> None:
     """The case above proves a two-cpu reading only while the capture HAS two cpus with
     distinct tags. Re-captured one day off a single-cpu board it would keep passing and stop
     testing anything, so what the fixture is for is asserted here rather than assumed."""
-    cpus = machine.parse(RADENDUR)["cpus"]
+    cpus = machine.parse(M68K_DUAL)["cpus"]
     tags = [cpu["tag"] for cpu in cpus]
     assert len(cpus) > 1 and len(set(tags)) == len(tags), tags
 
@@ -64,7 +64,7 @@ def test_the_capture_is_still_the_multi_cpu_case_it_was_taken_for() -> None:
 def test_an_entry_names_its_block_or_names_nothing_at_all() -> None:
     """Decision: a field neither source backs is ABSENT. The dump spells an absent share or
     region `-`, and that dash must never reach the reply as if it were a tag."""
-    found = machine.parse(RADENDUR)["address_map"]
+    found = machine.parse(M68K_DUAL)["address_map"]
     entries = {(e["cpu"], e["space"], e["index"]): e for e in found}
     rom = entries[(":maincpu", "program", 1)]
     assert rom["region"] == ":maincpu" and rom["region_offset"] == 0 and "share" not in rom
@@ -80,7 +80,7 @@ def test_an_entry_names_its_block_or_names_nothing_at_all() -> None:
 
 
 def test_the_blocks_and_the_screen_come_back_with_their_sizes() -> None:
-    found = machine.parse(RADENDUR)
+    found = machine.parse(M68K_DUAL)
     # EVERY FIELD OF EVERY ROW, not just the identifying one: each of these could be wired to
     # a constant and the row would still look plausible. The whole dict is compared so a field
     # added to the gather cannot arrive unwatched either.
@@ -102,7 +102,7 @@ def test_the_blocks_and_the_screen_come_back_with_their_sizes() -> None:
 def test_a_space_carries_the_width_and_the_byte_order_the_machine_declared() -> None:
     """A cpu's bus width and byte order decide how every value under it is read, so a space
     row that answered a plausible constant would mislead every reader of the map below it."""
-    found = machine.parse(RADENDUR)
+    found = machine.parse(M68K_DUAL)
     assert found["spaces"] == [
         {"cpu": ":maincpu", "space": "cpu_space", "data_width_bits": 16, "endianness": "big",
          "entries": 7, "address_mask": "0x00ffffff"},
@@ -170,9 +170,9 @@ def test_a_dump_that_was_cut_off_is_refused_rather_than_parsed() -> None:
     reads as a verdict when it is a failure. Both ends are checked, so a producer that died
     half way and one that never started are each refused in their own words."""
     with pytest.raises(LookupError, match="cut off"):
-        machine.parse("\n".join(RADENDUR.splitlines()[:20]) + "\n")
+        machine.parse("\n".join(M68K_DUAL.splitlines()[:20]) + "\n")
     with pytest.raises(LookupError, match="does not open"):
-        machine.parse("\n".join(RADENDUR.splitlines()[1:]) + "\n")
+        machine.parse("\n".join(M68K_DUAL.splitlines()[1:]) + "\n")
     with pytest.raises(LookupError, match="nothing here is the machine"):
         machine.parse("")
 
@@ -268,7 +268,7 @@ def test_the_cache_of_a_scratch_with_no_dump_is_empty_sections_and_a_note(tmp_pa
 
 
 def test_the_cache_of_a_scratch_holding_the_capture_is_the_capture(tmp_path: Path) -> None:
-    (tmp_path / machine.DUMP_NAME).write_text(RADENDUR, encoding="utf-8")
+    (tmp_path / machine.DUMP_NAME).write_text(M68K_DUAL, encoding="utf-8")
     cached = machine.cache(tmp_path, NO_XML)
     assert [cpu["tag"] for cpu in cached["cpus"]] == [":maincpu", ":subcpu"]
     assert machine.MAP_NOTE in cached["note"]
@@ -297,13 +297,13 @@ def test_the_harness_text_carries_the_dump_path_and_its_own_sentinels(tmp_path: 
 # about the LIVE half is not quietly also a case about the other one.
 NO_XML: tuple[dict[str, list[dict[str, object]]], str] = (
     {"cpus": [], "screens": [], "rom_files": []}, "")
-LISTXML_RADENDUR = (FIXTURES / "listxml-radendur.xml").read_bytes()
-LISTXML_LINEUP = (FIXTURES / "listxml-lineup.xml").read_bytes()
+LISTXML_M68K_DUAL = (FIXTURES / "listxml-m68k-dual.xml").read_bytes()
+LISTXML_V30 = (FIXTURES / "listxml-v30.xml").read_bytes()
 
 
 def test_listxml_gives_both_cpus_their_clocks_which_the_live_channel_has_not() -> None:
     """The clock is the whole reason this source exists: the live channel answers nil for it."""
-    found = machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]
+    found = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]
     assert [(c["tag"], c["name"], c["clock_hz"]) for c in found["cpus"]] == [
         (":maincpu", "Motorola MC68000", 16_000_000),
         (":subcpu", "Motorola MC68000", 16_000_000),
@@ -313,7 +313,7 @@ def test_listxml_gives_both_cpus_their_clocks_which_the_live_channel_has_not() -
 def test_a_single_cpu_board_reads_back_as_one_cpu_at_its_own_clock() -> None:
     """The counter-case to the one above: a reading that hard-wired two cpus, or one clock,
     is red here."""
-    found = machine.parse_listxml(LISTXML_LINEUP, "lineup")[0]
+    found = machine.parse_listxml(LISTXML_V30, "v30-board")[0]
     assert [(c["tag"], c["name"], c["clock_hz"]) for c in found["cpus"]] == [
         (":maincpu", "NEC V30", 8_000_000),
     ]
@@ -323,7 +323,7 @@ def test_a_single_cpu_board_reads_back_as_one_cpu_at_its_own_clock() -> None:
 
 def test_a_rom_nobody_has_dumped_carries_no_crc_and_no_sha1() -> None:
     """A zero crc would be a fabrication about the one thing this section exists to carry."""
-    roms = machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]["rom_files"]
+    roms = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]["rom_files"]
     # `dump_status` (MAME's `status`) is on EVERY row, not only the bad ones: MAME's own DTD
     # declares it with a default of `good`, and an XML parser fills a declared default in. So
     # what says a ROM is undumped is the word, and what proves nothing was invented is the
@@ -339,25 +339,25 @@ def test_a_roms_size_and_its_offset_are_numbers() -> None:
     """MAME's DTD calls both CDATA and settles neither, so this reads them off the data: under
     the wrong reading the graphics ROMs overlap, and a region's size stops agreeing with what
     the live channel measures for it."""
-    roms = machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]["rom_files"]
+    roms = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]["rom_files"]
     gfx = sorted((r for r in roms if r.get("region") == ":gfx1"), key=lambda r: r["offset"])
     assert len(gfx) > 2
     for earlier, later in zip(gfx, gfx[1:], strict=False):
         assert later["offset"] >= earlier["offset"] + earlier["size"], (
             f"{earlier['name']} would overlap {later['name']}")
     plds = [r for r in roms if r.get("region") == ":plds"]
-    live_size = {r["tag"]: r["size"] for r in machine.parse(RADENDUR)["regions"]}[":plds"]
+    live_size = {r["tag"]: r["size"] for r in machine.parse(M68K_DUAL)["regions"]}[":plds"]
     assert any(r["size"] == live_size for r in plds), "the two sources measure the same bytes"
 
 
 def test_a_tag_is_spelled_the_live_channels_way_by_both_sources() -> None:
     """`-listxml` names a tag relative to the machine root and the live channel absolutely. Two
     spellings of one device is two devices to a reader, and nothing would line up."""
-    found = machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]
+    found = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]
     assert all(c["tag"].startswith(":") for c in found["cpus"])
     assert all(s["tag"].startswith(":") for s in found["screens"])
     assert all(r["region"].startswith(":") for r in found["rom_files"] if "region" in r)
-    live_tags = {c["tag"] for c in machine.parse(RADENDUR)["cpus"]}
+    live_tags = {c["tag"] for c in machine.parse(M68K_DUAL)["cpus"]}
     assert {c["tag"] for c in found["cpus"]} == live_tags, "the two halves join on the tag"
 
 
@@ -365,20 +365,20 @@ def test_a_screen_that_is_mounted_turned_reports_the_rotation_it_was_given() -> 
     """Both captures are of horizontal cabinets, so `rotate="0"` is all they can prove. A
     turned screen is the ordinary case this tool exists to describe, and the value must reach
     the reply rather than being answered as zero whatever MAME said."""
-    turned = LISTXML_RADENDUR.replace(b'rotate="0"', b'rotate="270"', 1)
-    assert turned != LISTXML_RADENDUR, "the substitution matched nothing, so nothing was tested"
-    assert machine.parse_listxml(turned, "radendur")[0]["screens"][0]["rotation"] == 270
-    assert machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]["screens"][0]["rotation"] == 0
+    turned = LISTXML_M68K_DUAL.replace(b'rotate="0"', b'rotate="270"', 1)
+    assert turned != LISTXML_M68K_DUAL, "the substitution matched nothing, so nothing was tested"
+    assert machine.parse_listxml(turned, "m68k-dual")[0]["screens"][0]["rotation"] == 270
+    assert machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]["screens"][0]["rotation"] == 0
 
 
 def test_a_document_that_does_not_carry_the_machine_asked_about_is_refused() -> None:
     """`-listxml` answers the set asked for AND a machine per device it is built from, so a
     walk of every element in the document would attribute another board's hardware to this one.
     A document holding none of the right name is the observable half of that scoping."""
-    with pytest.raises(LookupError, match="carries no <machine name='lineup'>"):
-        machine.parse_listxml(LISTXML_RADENDUR, "lineup")[0]
-    with pytest.raises(LookupError, match="carries no <machine name='radendur'>"):
-        machine.parse_listxml(LISTXML_LINEUP, "radendur")[0]
+    with pytest.raises(LookupError, match="carries no <machine name='v30'>"):
+        machine.parse_listxml(LISTXML_M68K_DUAL, "v30")[0]
+    with pytest.raises(LookupError, match="carries no <machine name='m68k-dual'>"):
+        machine.parse_listxml(LISTXML_V30, "m68k-dual")[0]
 
 
 def test_hardware_belonging_to_a_device_machine_never_reaches_the_set() -> None:
@@ -391,14 +391,14 @@ def test_hardware_belonging_to_a_device_machine_never_reaches_the_set() -> None:
     Delete the scoping and this goes red, which is what a case is for."""
     doctored = (FIXTURES / "listxml-device-with-hardware.xml").read_bytes()
     assert b'name="Imaginary DSP"' in doctored, "the fixture lost the thing it exists for"
-    found, dropped = machine.parse_listxml(doctored, "radendur")
+    found, dropped = machine.parse_listxml(doctored, "m68k-dual")
     assert dropped == ""
     assert [c["name"] for c in found["cpus"]] == ["Motorola MC68000", "Motorola MC68000"]
     assert all(c["name"] != "Imaginary DSP" for c in found["cpus"])
     assert all(r["name"] != "never.dumped" for r in found["rom_files"])
     # AND THE SET'S OWN HARDWARE IS UNTOUCHED BY THE DOCTORING: the same counts as the capture,
     # so this proves an exclusion and not a parser that stopped reading early.
-    clean, _ = machine.parse_listxml(LISTXML_RADENDUR, "radendur")
+    clean, _ = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")
     assert len(found["cpus"]) == len(clean["cpus"])
     assert len(found["rom_files"]) == len(clean["rom_files"])
 
@@ -407,11 +407,11 @@ def test_a_chip_or_a_display_mame_did_not_name_is_dropped_and_the_note_says_so()
     """A tag is OPTIONAL in MAME's own DTD. Filled from an absent attribute it came out as the
     bare `:`, which matches no device: the real cpu silently lost its clock and a phantom row
     appeared beside it carrying one. A row that cannot be named is dropped, out loud."""
-    untagged = LISTXML_RADENDUR.replace(
+    untagged = LISTXML_M68K_DUAL.replace(
         b'<chip type="cpu" tag="maincpu" name="Motorola MC68000" clock="16000000"/>',
         b'<chip type="cpu" name="Motorola MC68000" clock="16000000"/>', 1)
-    assert untagged != LISTXML_RADENDUR, "the substitution matched nothing"
-    found, dropped = machine.parse_listxml(untagged, "radendur")
+    assert untagged != LISTXML_M68K_DUAL, "the substitution matched nothing"
+    found, dropped = machine.parse_listxml(untagged, "m68k-dual")
     assert [c["tag"] for c in found["cpus"]] == [":subcpu"]
     assert all(c["tag"] != ":" for c in found["cpus"]), "the bare colon is not a device"
     assert "1 row of `-listxml` (cpu) carries no `tag` and was dropped" in dropped
@@ -422,18 +422,18 @@ def test_a_value_mame_spelled_some_other_way_does_not_take_the_start_down() -> N
     handler travels out through the parser and would take the whole `start` with it. It is the
     same class of failure as unreadable XML and answers the same way: the section is absent,
     the reason is said, and the session comes up."""
-    odd = LISTXML_RADENDUR.replace(b'clock="16000000"', b'clock="XTAL_16MHz"', 1)
-    assert odd != LISTXML_RADENDUR, "the substitution matched nothing"
+    odd = LISTXML_M68K_DUAL.replace(b'clock="16000000"', b'clock="XTAL_16MHz"', 1)
+    assert odd != LISTXML_M68K_DUAL, "the substitution matched nothing"
     with pytest.raises(LookupError, match="not the number this reads"):
-        machine.parse_listxml(odd, "radendur")
+        machine.parse_listxml(odd, "m68k-dual")
 
 
 def test_the_device_machines_beside_the_set_are_not_read_as_part_of_it() -> None:
     """The scoping has something to exclude: each document carries several machines and only
     one of them is the set. On these two builds no device machine carries a chip, a rom or a
     display of its own, so what is asserted here is that the counts are the SET's own."""
-    for text, system, n_cpus, roms in ((LISTXML_RADENDUR, "radendur", 2, 22),
-                                       (LISTXML_LINEUP, "lineup", 1, 3)):
+    for text, system, n_cpus, roms in ((LISTXML_M68K_DUAL, "m68k-dual", 2, 22),
+                                       (LISTXML_V30, "v30-board", 1, 3)):
         assert text.count(b"<machine name=") > 1, "a one-machine document proves no scoping"
         found = machine.parse_listxml(text, system)[0]
         assert len(found["cpus"]) == n_cpus and len(found["rom_files"]) == roms
@@ -479,13 +479,13 @@ def test_any_other_listxml_failure_leaves_start_working_and_quotes_what_it_said(
     missing cannot be told from a machine that has none, so the failure is NAMED, with its
     exit code and its own words."""
     binary = _stub_mame(tmp_path, "mame", "echo 'Fatal error: out of memory' >&2\nexit 3")
-    found, note = _listxml(binary, "radendur")
+    found, note = _listxml(binary, "m68k-dual")
     assert found == {"cpus": [], "screens": [], "rom_files": []}
     assert "exit code 3" in note and "out of memory" in note and "rom_files" in note
 
 
 def test_a_binary_that_cannot_be_run_is_a_note_and_not_a_crash(tmp_path: Path) -> None:
-    found, note = _listxml(str(tmp_path / "not-here"), "radendur")
+    found, note = _listxml(str(tmp_path / "not-here"), "m68k-dual")
     assert found["cpus"] == [] and "could not be run" in note
 
 
@@ -493,25 +493,25 @@ def test_listxml_that_answers_something_other_than_its_own_xml_is_a_note(
     tmp_path: Path,
 ) -> None:
     binary = _stub_mame(tmp_path, "mame", "echo 'not xml at all'")
-    found, note = _listxml(binary, "radendur")
+    found, note = _listxml(binary, "m68k-dual")
     assert found["cpus"] == [] and "did not answer XML" in note
 
 
 def test_a_successful_listxml_comes_back_parsed(tmp_path: Path) -> None:
     """The positive control for the three notes above: the same wrapper, over the captured
     document, answers the board rather than a sentence about why it could not."""
-    xml = FIXTURES / "listxml-radendur.xml"
+    xml = FIXTURES / "listxml-m68k-dual.xml"
     binary = _stub_mame(tmp_path, "mame", f"cat {xml}")
-    found, note = _listxml(binary, "radendur")
+    found, note = _listxml(binary, "m68k-dual")
     assert note == "" and len(found["cpus"]) == 2 and len(found["rom_files"]) == 22
 
 
 def test_the_two_halves_join_into_one_cpu_with_both_sources_fields(tmp_path: Path) -> None:
     """What the whole thing is for: one row per cpu carrying the spaces only the live channel
     knows AND the clock only `-listxml` knows."""
-    (tmp_path / machine.DUMP_NAME).write_text(RADENDUR, encoding="utf-8")
+    (tmp_path / machine.DUMP_NAME).write_text(M68K_DUAL, encoding="utf-8")
     cached = machine.cache(tmp_path,
-                           machine.parse_listxml(LISTXML_RADENDUR, "radendur"))
+                           machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual"))
     by_tag = {c["tag"]: c for c in cached["cpus"]}
     assert set(by_tag) == {":maincpu", ":subcpu"}
     for cpu in by_tag.values():
@@ -548,11 +548,11 @@ def test_a_device_only_one_source_has_keeps_only_that_sources_fields() -> None:
 
 
 def _cached(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, dump: str = "",
-            xml: bytes = b"", system: str = "radendur") -> None:
+            xml: bytes = b"", system: str = "m68k-dual") -> None:
     """Put a machine on the STATE the way `start` does, and nothing else: `machine_map` serves
     that cache and must not need a session, a process or a console to answer from it."""
-    (tmp_path / machine.DUMP_NAME).write_text(dump or RADENDUR, encoding="utf-8")
-    static = machine.parse_listxml(xml or LISTXML_RADENDUR, system)
+    (tmp_path / machine.DUMP_NAME).write_text(dump or M68K_DUAL, encoding="utf-8")
+    static = machine.parse_listxml(xml or LISTXML_M68K_DUAL, system)
     monkeypatch.setattr(STATE, "machine_map", machine.cache(tmp_path, static))
 
 
@@ -751,8 +751,8 @@ def test_every_space_carries_its_own_mask_and_a_cpu_is_judged_by_its_own() -> No
     """The last address each space reaches, gathered per space, so `memdump` and `find` judge a
     range by the mask of the cpu they read, whichever is visible. A cpu the inventory lacks, or
     none named, has no mask here rather than another cpu's."""
-    assert [r["address_mask"] for r in machine.parse(RADENDUR)["spaces"]] == ["0x00ffffff"] * 4
-    assert SUB_NARROWED != RADENDUR, "the capture no longer carries the sub cpu's program line"
+    assert [r["address_mask"] for r in machine.parse(M68K_DUAL)["spaces"]] == ["0x00ffffff"] * 4
+    assert SUB_NARROWED != M68K_DUAL, "the capture no longer carries the sub cpu's program line"
     STATE.machine_map = machine.parse(SUB_NARROWED)
     try:
         assert (cpus.program_mask(":maincpu"), cpus.program_mask(":subcpu")) == (0xFFFFFF, 0x3FFF)
@@ -827,14 +827,14 @@ def test_a_cut_off_listxml_is_refused_and_a_device_after_the_set_keeps_its_hardw
     closes when that element does: a device machine listed AFTER the set carries nothing
     into it. The ROM rows carry their names."""
     with pytest.raises(LookupError, match="XML"):
-        machine.parse_listxml(LISTXML_RADENDUR[:4000], "radendur")
+        machine.parse_listxml(LISTXML_M68K_DUAL[:4000], "m68k-dual")
     ghost = (b'<machine name="zzz" isdevice="yes"><description>x</description>'
              b'<chip type="cpu" tag="ghost" name="G" clock="1"/>'
              b'<rom name="ghost.bin" size="16" region="ghost" offset="0"/></machine>')
-    after = LISTXML_RADENDUR.replace(b"</mame>", ghost + b"</mame>")
-    assert after != LISTXML_RADENDUR, "the substitution matched nothing"
-    clean = machine.parse_listxml(LISTXML_RADENDUR, "radendur")[0]
-    found = machine.parse_listxml(after, "radendur")[0]
+    after = LISTXML_M68K_DUAL.replace(b"</mame>", ghost + b"</mame>")
+    assert after != LISTXML_M68K_DUAL, "the substitution matched nothing"
+    clean = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]
+    found = machine.parse_listxml(after, "m68k-dual")[0]
     assert found == clean, "the device machine after the set leaked into it"
     assert all(rom["name"] for rom in found["rom_files"]) and found["rom_files"]
 

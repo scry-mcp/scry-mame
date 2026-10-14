@@ -162,47 +162,89 @@
 ]>
 
 <mame build="0.289 (mame0289-dirty)" debug="no" mameconfig="10">
-	<machine name="lineup" sourcefile="edevices/twins.cpp">
-		<description>LineUp</description>
-		<year>1994</year>
-		<manufacturer>Eco-Games / GAMART</manufacturer>
-		<rom name="1.bin" size="524288" crc="2f326f4d" sha1="75c066fbd1e595d35081cfaac861daa31f3ddb88" region="ipl" offset="0"/>
-		<rom name="2.bin" size="524288" crc="406ee7a6" sha1="7d23fcd33a8b87cfeb22ca27c32dd212b71b895d" region="ipl" offset="1"/>
-		<rom name="24c02.u15" size="256" crc="0d968558" sha1="b376885ac8452b6cbf9ced81b1080bfd570d9b91" region="i2cmem" offset="0"/>
-		<device_ref tag=":maincpu" name="v30"/>
+	<machine name="m68k-dual" sourcefile="m68k-dual/m68k-dual.cpp">
+		<description>m68k-dual</description>
+		<year>199?</year>
+		<manufacturer>m68k-dual</manufacturer>
+		<rom name="endu.u19" size="524288" crc="d24ca61c" sha1="64d2648959579d35fbf4c8479c0ff75781d28146" region="maincpu" offset="1"/>
+		<rom name="endu.u21" size="524288" crc="45244675" sha1="69be2eca3548644f97b9f6956bb3ff979740b1e4" region="maincpu" offset="0"/>
+		<rom name="endu.u63" size="524288" crc="43c35368" sha1="62167a434bfe00825f2f97ecadd0af3e2d2b63f2" region="subcpu" offset="1"/>
+		<rom name="endu.u65" size="524288" crc="25259894" sha1="b260324760dba1595ab8bd53e1bbc20c04b640dd" region="subcpu" offset="0"/>
+		<rom name="endu.u52" size="524288" crc="2b686f81" sha1="9d9aa0f6e1a3dc7e96f647ddda3214f1f4c6bf1d" region="gfx1" offset="0"/>
+		<rom name="endu.u53" size="524288" crc="1a224c69" sha1="ed1a8fdd97ea0caa649d3f1238fa13b1fd19376c" region="gfx1" offset="80000"/>
+		<rom name="endu.u54" size="524288" crc="217a9725" sha1="14240e457967c5b23c54d4395fc1ab7394a59fc9" region="gfx1" offset="100000"/>
+		<rom name="endu.u55" size="524288" crc="bfce1b17" sha1="415ab6815836dafb1a0b86464e84f3aaa5d1075d" region="gfx1" offset="180000"/>
+		<rom name="endu.u56" size="524288" crc="4b9460a8" sha1="d2b9484f133d5d9abbe6a163c57d079944b3221f" region="gfx1" offset="200000"/>
+		<rom name="endu.u57" size="524288" crc="f17d5752" sha1="354a76e9e130f10fc103ab83ea15bf1f47fca391" region="gfx1" offset="280000"/>
+		<rom name="endu.u58" size="524288" crc="75660aac" sha1="6a521e1d2a632c26e53b83d2cc4b0edecfc1e68c" region="gfx1" offset="300000"/>
+		<rom name="endu.u59" size="524288" crc="037648df" sha1="19b0cbdb60ac4b14f06dd71ddf4e3b2d2dbdb19d" region="gfx1" offset="380000"/>
+		<rom name="endu.u200" size="524288" crc="e1417f94" sha1="dba02ce1f9bbe18e78c67e770fe84184e227799b" region="gfx1" offset="400000"/>
+		<rom name="endu.u201" size="524288" crc="25d9db1c" sha1="c61491ae2dc97ea5c9f0f0d58f32edf0a3a94d95" region="gfx1" offset="480000"/>
+		<rom name="endu.u202" size="524288" crc="15f4fbd4" sha1="2ad28af1bd0924fc3f1f6e026ca834c7df774b64" region="gfx1" offset="500000"/>
+		<rom name="endu.u203" size="524288" crc="e6361a27" sha1="826be3b326e68c3b7c0f5c3d84993a971b32f84e" region="gfx1" offset="580000"/>
+		<rom name="endu.u204" size="524288" crc="0db97872" sha1="56e38a9034082c3ceb78c0f3aba6125ce6fabd49" region="gfx1" offset="600000"/>
+		<rom name="endu.u205" size="524288" crc="75660aac" sha1="6a521e1d2a632c26e53b83d2cc4b0edecfc1e68c" region="gfx1" offset="680000"/>
+		<rom name="m68k_dual_2_d579_gal22v10.u24" size="741" crc="ebe162d0" sha1="910e3733df70db4df704f3e105ed27eaa4c32ae6" region="plds" offset="0"/>
+		<rom name="m68k_dual_gal22v10b.u23" size="741" crc="f1b0b2b7" sha1="f85c87c7956813fe78f399694dc999877b1dcb60" region="plds" offset="0"/>
+		<rom name="3_pal16v8.u40" size="279" status="nodump" region="plds" offset="0"/>
+		<rom name="4_pal16v8.u73" size="279" status="nodump" region="plds" offset="0"/>
+		<device_ref tag=":maincpu" name="m68000"/>
+		<device_ref tag=":subcpu" name="m68000"/>
+		<device_ref tag=":adc" name="adc0808"/>
+		<device_ref tag=":scan_timer" name="timer"/>
 		<device_ref tag=":screen" name="screen"/>
-		<device_ref tag=":i2cmem" name="24c02"/>
-		<device_ref tag=":overlay" name="address_map_bank"/>
+		<device_ref tag=":gfxdecode" name="gfxdecode"/>
 		<device_ref tag=":palette" name="palette"/>
-		<device_ref tag=":mono" name="speaker"/>
-		<device_ref tag=":aysnd" name="ay8910"/>
-		<chip type="cpu" tag="maincpu" name="NEC V30" clock="8000000"/>
-		<chip type="audio" tag="mono" name="Speaker"/>
-		<chip type="audio" tag="aysnd" name="AY-3-8910A PSG" clock="2000000"/>
-		<display tag="screen" type="raster" rotate="0" width="320" height="204" refresh="50.080128" pixclock="8000000" htotal="512" hbend="0" hbstart="320" vtotal="312" vbend="0" vbstart="204" />
+		<device_ref tag=":ramdac" name="ramdac"/>
+		<device_ref tag=":eeprom" name="93c46_16"/>
+		<device_ref tag=":speaker" name="speaker"/>
+		<device_ref tag=":ldac" name="dac_10bit_r2r"/>
+		<device_ref tag=":rdac" name="dac_10bit_r2r"/>
+		<chip type="cpu" tag="maincpu" name="Motorola MC68000" clock="16000000"/>
+		<chip type="cpu" tag="subcpu" name="Motorola MC68000" clock="16000000"/>
+		<chip type="audio" tag="speaker" name="Speaker"/>
+		<chip type="audio" tag="ldac" name="10-Bit R-2R DAC"/>
+		<chip type="audio" tag="rdac" name="10-Bit R-2R DAC"/>
+		<display tag="screen" type="raster" rotate="0" width="336" height="252" refresh="50.080128" pixclock="8000000" htotal="512" hbend="0" hbstart="336" vtotal="312" vbend="0" vbstart="252" />
 		<sound channels="1"/>
-		<input players="2" coins="2">
-			<control type="joy" player="1" buttons="2" ways="8"/>
-			<control type="joy" player="2" buttons="2" ways="8"/>
+		<input players="2" coins="2" service="yes">
+			<control type="joy" player="1" buttons="3" ways="8"/>
+			<control type="joy" player="2" buttons="3" ways="8"/>
 		</input>
+		<port tag=":ACCELERATOR">
+		</port>
+		<port tag=":BRAKE">
+		</port>
 		<port tag=":P1">
 		</port>
 		<port tag=":P2">
 		</port>
-		<driver status="good" emulation="good" savestate="supported"/>
+		<port tag=":STEERING">
+		</port>
+		<driver status="preliminary" emulation="preliminary" savestate="unsupported"/>
+		<feature type="graphics" status="imperfect"/>
 	</machine>
-	<machine name="24c02" sourcefile="devices/machine/i2cmem.cpp" isdevice="yes" runnable="no">
-		<description>24C02 I2C Memory</description>
+	<machine name="93c46_16" sourcefile="devices/machine/eepromser.cpp" isdevice="yes" runnable="no">
+		<description>Serial EEPROM 93C46 (64x16)</description>
 	</machine>
-	<machine name="address_map_bank" sourcefile="devices/machine/bankdev.cpp" isdevice="yes" runnable="no">
-		<description>Address Map Bank</description>
+	<machine name="adc0808" sourcefile="devices/machine/adc0808.cpp" isdevice="yes" runnable="no">
+		<description>ADC0808 A/D Converter</description>
 	</machine>
-	<machine name="ay8910" sourcefile="devices/sound/ay8910.cpp" isdevice="yes" runnable="no">
-		<description>AY-3-8910A PSG</description>
+	<machine name="dac_10bit_r2r" sourcefile="devices/sound/dac.h" isdevice="yes" runnable="no">
+		<description>10-Bit R-2R DAC</description>
 		<sound channels="0"/>
+	</machine>
+	<machine name="gfxdecode" sourcefile="emu/drawgfx.cpp" isdevice="yes" runnable="no">
+		<description>gfxdecode</description>
+	</machine>
+	<machine name="m68000" sourcefile="devices/cpu/m68000/m68000.cpp" isdevice="yes" runnable="no">
+		<description>Motorola MC68000</description>
 	</machine>
 	<machine name="palette" sourcefile="emu/emupal.cpp" isdevice="yes" runnable="no">
 		<description>palette</description>
+	</machine>
+	<machine name="ramdac" sourcefile="devices/video/ramdac.cpp" isdevice="yes" runnable="no">
+		<description>RAMDAC</description>
 	</machine>
 	<machine name="screen" sourcefile="emu/screen.cpp" isdevice="yes" runnable="no">
 		<description>Video Screen</description>
@@ -211,7 +253,7 @@
 		<description>Speaker</description>
 		<sound channels="1"/>
 	</machine>
-	<machine name="v30" sourcefile="devices/cpu/nec/nec.cpp" isdevice="yes" runnable="no">
-		<description>NEC V30</description>
+	<machine name="timer" sourcefile="devices/machine/timer.cpp" isdevice="yes" runnable="no">
+		<description>Timer</description>
 	</machine>
 </mame>

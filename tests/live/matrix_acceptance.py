@@ -1,8 +1,8 @@
-"""Section H of the live matrix: contracts at the edges of boards other than radendur, each asked
+"""Section H of the live matrix: contracts at the edges of boards other than m68k-dual, each asked
 on the board that exposes it.
 
 Circus runs on the stock MAME over the sets in `MAME_TEST_ROMS` and pangofun as `pangofun_boot`
-does; radendur and the two V30 boards run on their copies on the bench (`bench_boards`), the
+does; m68k-dual and the two V30 boards run on their copies on the bench (`bench_boards`), the
 V30s' palettes written by the `sequence` and the `latch` protocols. A board that cannot run on
 this host has its cells BLOCKED with the reason, never passed.
 
@@ -18,14 +18,14 @@ from pathlib import Path
 from typing import Any
 
 from bench_boards import (
+    M68K_DUAL_SYSTEM,
     MANIFEST,
-    RADENDUR_SYSTEM,
     ROMPATH,
     V30_REFERENCE_ROM,
     V30_SYMBOLS,
     board_dir,
     board_missing,
-    radendur_missing,
+    m68k_dual_missing,
     value,
 )
 from gfx_layouts import CIRCUS_CHAR
@@ -58,10 +58,10 @@ import mame_ramdac as mramdac  # isort: skip
 
 # The pens each V30 board's palette log is held to: spread across its table, each one its attract
 # screen has written by the time they are compared.
-LINEUP_PENS = (1, 17, 100, 200, 255)
-SPEEDF_PENS = (16, 17, 512, 1022)
+V30_PENS = (1, 17, 100, 200, 255)
+V30_ALT_PENS = (16, 17, 512, 1022)
 
-H_TITLE = "contracts at the edges of boards other than radendur, each on the board exposing it"
+H_TITLE = "contracts at the edges of boards other than m68k-dual, each on the board exposing it"
 H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "circus: write(region=True) at 0x11f0 patches the ROM region :maincpu, reads the bytes back, "
     "and is restored",
@@ -80,20 +80,20 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "circus: a one-byte show watch on the 6502 reads the byte read_memory reads",
     "circus: gfx_locate from a ref with no count is refused",
     "circus: gfx_load of the project's manifest is refused naming the systems it describes",
-    "radendur: palette_log lists its setters up to the cut, their total beside them and every "
+    "m68k-dual: palette_log lists its setters up to the cut, their total beside them and every "
     "one in the file it names",
-    "lineup: read_block at 0x81a20 is refused: its map entry names no share and no region",
-    f"lineup: the sequence log's pens {', '.join(map(str, LINEUP_PENS))} are the palette's, none "
+    "v30: read_block at 0x81a20 is refused: its map entry names no share and no region",
+    f"v30: the sequence log's pens {', '.join(map(str, V30_PENS))} are the palette's, none "
     "unsynced",
-    "lineup: the digit Draw_BNumber draws is tile 1 of ten at (52, 104), and the draft proves "
+    "v30: the digit Draw_BNumber draws is tile 1 of ten at (52, 104), and the draft proves "
     "tiles_24x24x8",
-    "speedf: a count watch of two bytes at 0xecb1 is refused for splitting a bus word",
-    "speedf: an io count on port 0x8 is not stored, and one on port 0x7e, which nothing handles, "
+    "v30-alt: a count watch of two bytes at 0xecb1 is refused for splitting a bus word",
+    "v30-alt: an io count on port 0x8 is not stored, and one on port 0x7e, which nothing handles, "
     "is armed saying so and tallies the cpu's own out there",
-    f"speedf: the latch log's pens {', '.join(map(str, SPEEDF_PENS))} are the palette's, none "
+    f"v30-alt: the latch log's pens {', '.join(map(str, V30_ALT_PENS))} are the palette's, none "
     "unsynced",
-    "speedf: the first run after a state_load has no cycles, and says why",
-    "speedf: an io count of two bytes at the odd port 0x9 is refused for splitting the io bus's "
+    "v30-alt: the first run after a state_load has no cycles, and says why",
+    "v30-alt: an io count of two bytes at the odd port 0x9 is refused for splitting the io bus's "
     "16-bit word, naming the counts in the io space",
     "pangofun: the i486's own out of a dword at port 0xe2 reaches an io tap as two 32-bit bus "
     "word fragments; a count there is refused naming one per word, and declared back, the one at "
@@ -224,18 +224,18 @@ def _h_circus(t: list[str]) -> None:
              flips=["none"])
     cell(t[10], refused(r, "bad_argument") and "`count`" in str(r.get("message")), said(r))
     r = call("gfx_load", path=MANIFEST)
-    cell(t[11], refused(r, "bad_argument") and RADENDUR_SYSTEM in (r.get("systems") or [])
+    cell(t[11], refused(r, "bad_argument") and M68K_DUAL_SYSTEM in (r.get("systems") or [])
          and "circus" in str(r.get("message")), said(r))
     call("close")
 
 
-# ========================================================================== radendur
+# ========================================================================== m68k-dual
 
-RADENDUR_SETTERS = 256  # its upload is an unrolled loop: one writer pc per pen
+M68K_DUAL_SETTERS = 256  # its upload is an unrolled loop: one writer pc per pen
 
 
-def _h_radendur(t: list[str]) -> None:
-    require_booted("radendur", boot())
+def _h_m68k_dual(t: list[str]) -> None:
+    require_booted("m68k-dual", boot())
     loaded = call("gfx_load", path=MANIFEST)
     armed = call("palette_log", palette_port="ramdac", arm=True)
     call("run_for", frames=60, seconds=WAIT_CEILING_S)
@@ -244,9 +244,9 @@ def _h_radendur(t: list[str]) -> None:
     path = Path(str(r.get("setters_path")))
     every = json.loads(path.read_text()) if r.get("setters_path") and path.is_file() else None
     cell(t[12], ok(loaded) and ok(armed) and ok(r)
-         and len(setters) == min(RADENDUR_SETTERS, mramdac.SETTERS_LISTED_MAX)
-         and r.get("setters_total") == RADENDUR_SETTERS and isinstance(every, list)
-         and len(every) == RADENDUR_SETTERS and every[:len(setters)] == setters,
+         and len(setters) == min(M68K_DUAL_SETTERS, mramdac.SETTERS_LISTED_MAX)
+         and r.get("setters_total") == M68K_DUAL_SETTERS and isinstance(every, list)
+         and len(every) == M68K_DUAL_SETTERS and every[:len(setters)] == setters,
          f"{len(setters)} listed, total {r.get('setters_total')}, file "
          f"{len(every) if isinstance(every, list) else None}")
     call("close")
@@ -259,20 +259,20 @@ def _h_radendur(t: list[str]) -> None:
 # which program it is taken from the bench's identity; a start carries the symbols only where a
 # cell needs a name.
 
-LINEUP = ("v30", {"binary": value("v30", "binary"), "system": value("v30", "system"),
+V30 = ("v30", {"binary": value("v30", "binary"), "system": value("v30", "system"),
                   "rompath": ROMPATH, "inipath": "run", "reference_rom": V30_REFERENCE_ROM,
                   "reference_addr": "0x30000", "reference_base": "0x0"})
-LINEUP_SYMBOLS = (V30_SYMBOLS, {"DATA": "0x400", value("v30", "rom_segment"): "rom"})
-SPEEDF = ("v30-alt", {"binary": value("v30-alt", "binary"), "system": value("v30-alt", "system"),
+V30_BOOT_SYMBOLS = (V30_SYMBOLS, {"DATA": "0x400", value("v30", "rom_segment"): "rom"})
+V30_ALT = ("v30-alt", {"binary": value("v30-alt", "binary"), "system": value("v30-alt", "system"),
                       "rompath": ROMPATH, "inipath": "run",
                       "reference_rom": value("v30-alt", "reference_rom"),
                       "reference_addr": "0xFFFF0", "reference_base": "0x20000"})
 PATHS = ("binary", "rompath", "inipath", "reference_rom")
 
-# Line UP's score digit: 24x24 pixels, a byte a pixel read as eight planes, so a row is 24 * 8
+# v30's score digit: 24x24 pixels, a byte a pixel read as eight planes, so a row is 24 * 8
 # bits and a digit 24 rows of them; ten digits from 0x81a20
 DIGIT_ROW_BITS = 24 * 8
-LINEUP_DIGIT: dict[str, Any] = {
+V30_DIGIT: dict[str, Any] = {
     "width": 24, "height": 24, "planes": 8, "planeoffset": "STEP8(0,1)",
     "xoffset": list(range(0, DIGIT_ROW_BITS, 8)),
     "yoffset": list(range(0, 24 * DIGIT_ROW_BITS, DIGIT_ROW_BITS)),
@@ -289,24 +289,24 @@ def v30_boot(board: tuple[str, dict[str, str]],
     return require_booted(label, call("start", seconds=START_WAIT_S, **kw))
 
 
-def _h_lineup(t: list[str]) -> None:
-    v30_boot(LINEUP)
+def _h_v30(t: list[str]) -> None:
+    v30_boot(V30)
     # armed before anything executes: a `sequence` log knows the index only from the start
-    call("gfx_load", path=palette_manifest("lineup-palette.yaml", "v30"))
+    call("gfx_load", path=palette_manifest("v30-palette.yaml", "v30"))
     call("palette_log", palette_port="pal", arm=True)
     r = call("read_block", ref="0x81a20", length=16)
     cell(t[13], refused(r, "unknown_ref") and "no share and no region" in str(r.get("message")),
          said(r))
     short = _run_frames(600)
-    agree, detail = _palette_log_matches("pal", LINEUP_PENS)
+    agree, detail = _palette_log_matches("pal", V30_PENS)
     cell(t[14], agree and not short, f"{short} {detail}")
     call("close")
 
-    v30_boot(LINEUP, LINEUP_SYMBOLS)
+    v30_boot(V30, V30_BOOT_SYMBOLS)
     short = _run_frames(300)
     reached = call("run_to", ref="Draw_BNumber", control="Next_Frame", seconds=WAIT_CEILING_S)
     call("run_for", frames=2, seconds=WAIT_CEILING_S)
-    r = call("gfx_locate", layouts=[LINEUP_DIGIT], patch=[52, 104, 24, 24], ref="0x81a20",
+    r = call("gfx_locate", layouts=[V30_DIGIT], patch=[52, 104, 24, 24], ref="0x81a20",
              count=10, transparent=0, flips=["none"], seconds=WAIT_CEILING_S)
     m = (r.get("matches") or [{}])[0]
     draft = call("gfx_draft", dest=fresh(".yaml"))
@@ -319,26 +319,26 @@ def _h_lineup(t: list[str]) -> None:
     call("close")
 
 
-# THE CPU'S OWN `out` on speedf's V30, planted at 0000:8000 and stepped, so a count's tally is a
+# THE CPU'S OWN `out` on v30-alt's V30, planted at 0000:8000 and stepped, so a count's tally is a
 # write the cell caused rather than one the attract mode may or may not make.
-SPEEDF_CODE_ADDR = 0x8000
-SPEEDF_OUT_WORD = 0x1234
+V30_ALT_CODE_ADDR = 0x8000
+V30_ALT_OUT_WORD = 0x1234
 
 
 def _v30_out_word(port: int, value: int) -> None:
-    """`mov dx, port; mov ax, value; out dx, ax; jmp $` run by the V30 from SPEEDF_CODE_ADDR."""
+    """`mov dx, port; mov ax, value; out dx, ax; jmp $` run by the V30 from V30_ALT_CODE_ADDR."""
     code = bytes([0xBA, port & 0xFF, port >> 8, 0xB8, value & 0xFF, value >> 8, 0xEF, 0xEB, 0xFE])
-    call("write", ref=hex(SPEEDF_CODE_ADDR), data_hex=code.hex())
+    call("write", ref=hex(V30_ALT_CODE_ADDR), data_hex=code.hex())
     call("set_register", name="CS", value=0)
-    call("set_register", name="EIP", value=SPEEDF_CODE_ADDR)
+    call("set_register", name="EIP", value=V30_ALT_CODE_ADDR)
     # A count's install waits in the console's pipe until a line is read, and a step reads none:
     # this chunk drains it, so the tap exists before the `out` runs.
     call("lua", script='print("drained")')
     call("step", count=3)
 
 
-def _h_speedf(t: list[str]) -> None:
-    v30_boot(SPEEDF)
+def _h_v30_alt(t: list[str]) -> None:
+    v30_boot(V30_ALT)
     r = call("watch_add", ref="0xecb1", mode="count", length=2)
     cell(t[16], refused(r, "bad_argument") and "split" in str(r.get("message")), said(r))
     tap = call("watch_add", ref="0x8", mode="count", space="io", length=2)
@@ -347,10 +347,10 @@ def _h_speedf(t: list[str]) -> None:
     odd = call("watch_add", ref="0x9", mode="count", space="io", length=2)
     cell(t[20], refused(odd, "bad_argument") and "split a 16-bit bus word" in str(
         odd.get("message")) and 'space="io"' in str(odd.get("message")), said(odd, 160))
-    call("gfx_load", path=palette_manifest("speedf-palette.yaml", "v30-alt"))
+    call("gfx_load", path=palette_manifest("v30-alt-palette.yaml", "v30-alt"))
     call("palette_log", palette_port="pal", arm=True)
     short = _run_frames(600)
-    agree, detail = _palette_log_matches("pal", SPEEDF_PENS)
+    agree, detail = _palette_log_matches("pal", V30_ALT_PENS)
     cell(t[18], agree and not short, f"{short} {detail}")
     name = fresh_state()
     call("state_save", name=name)
@@ -362,12 +362,12 @@ def _h_speedf(t: list[str]) -> None:
     # LAST, because the planted code leaves the cpu in its `jmp $`: every cell before it needs the
     # game running, and a count armed only now tallies the planted `out` and nothing else.
     none = call("watch_add", ref="0x7e", mode="count", space="io", length=2)
-    _v30_out_word(0x7E, SPEEDF_OUT_WORD)
+    _v30_out_word(0x7E, V30_ALT_OUT_WORD)
     none_values = _io_count_values("0x7e")
     cell(t[17], ok(tap) and tap.get("stored") is False and ok(none)
          and none.get("write_maps_to") == "unmapped"
          and "nothing in the machine handles an `out` at port 0x7e" in str(none.get("note"))
-         and none_values == [SPEEDF_OUT_WORD],
+         and none_values == [V30_ALT_OUT_WORD],
          f"{said(tap, 50)} / {said(none, 50)} / {none_values}")
     call("close")
 
@@ -446,9 +446,9 @@ def _h_pangofun(t: list[str]) -> None:
 
 H_BOARDS = (
     Board(_h_circus, tuple(range(12)), free_boards_missing),
-    Board(_h_radendur, (12,), radendur_missing),
-    Board(_h_lineup, (13, 14, 15), lambda: board_missing("v30")),
-    Board(_h_speedf, (16, 17, 18, 19, 20),
+    Board(_h_m68k_dual, (12,), m68k_dual_missing),
+    Board(_h_v30, (13, 14, 15), lambda: board_missing("v30")),
+    Board(_h_v30_alt, (16, 17, 18, 19, 20),
           lambda: board_missing("v30-alt")),
     Board(_h_pangofun, (21,), pangofun_missing),
 )

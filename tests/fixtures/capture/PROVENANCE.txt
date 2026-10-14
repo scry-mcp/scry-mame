@@ -1,4 +1,4 @@
-Captured live on radendur (the patched build, a fresh start per pass), by a capture watch and a
+Captured live on m68k-dual (the patched build, a fresh start per pass), by a capture watch and a
 count watch declared through `server.watch_add` with the code on disk, then `run_for`; the files
 are the ones the periodic hook wrote in the scratch, copied as they were, each row with its beam
 line and its time.

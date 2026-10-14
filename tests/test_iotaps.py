@@ -1,7 +1,7 @@
 """Taps in a cpu's io space: count and capture watches whose write is an `out` to a port.
 
-The console answers a port's handlers with `mapi` (`mapi.lineup-6.txt`, a port written through
-its handler; `mapi.lineup-20-unmapped.txt`, one nothing handles). An io tap is for the session
+The console answers a port's handlers with `mapi` (`mapi.v30-6.txt`, a port written through
+its handler; `mapi.v30-20-unmapped.txt`, one nothing handles). An io tap is for the session
 only, so everything here also holds that the declaration store never sees one.
 """
 
@@ -325,7 +325,7 @@ def test_the_ids_of_a_port_carry_the_space() -> None:
 # --------------------------------------------- a count on a port, judged by the io bus width
 
 def _io_bus(monkeypatch: pytest.MonkeyPatch, data_width: int | None) -> None:
-    """`start`'s inventory with the double's io space `data_width` bits wide (speedf's V30
+    """`start`'s inventory with the double's io space `data_width` bits wide (v30-alt's V30
     declares 16), or with no io space row at all."""
     rows = [] if data_width is None else [
         {"cpu": ":maincpu", "space": "io", "data_width_bits": data_width, "endianness": "little",
@@ -337,7 +337,7 @@ def _io_bus(monkeypatch: pytest.MonkeyPatch, data_width: int | None) -> None:
 def test_a_count_on_an_odd_port_of_a_16_bit_io_bus_is_refused_with_nothing_sent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """On speedf a V30 `out dx, ax` at an odd port reaches a tap as two bus-word fragments, each
+    """On v30-alt a V30 `out dx, ax` at an odd port reaches a tap as two bus-word fragments, each
     under its lane mask, as a program write does, so a two-byte count at an odd port would hold
     two `partial` rows and no value. It is refused as the program space's split is,
     naming the counts that work, each in the io space."""

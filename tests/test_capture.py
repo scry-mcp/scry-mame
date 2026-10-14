@@ -1,7 +1,7 @@
 """A watch that CAPTURES (`mame_capture`): the count watch's tap on a TRIGGER, recording the
 whole block at each write to it, one row per event.
 
-The known answers are CAPTURED on radendur (`fixtures/capture/PROVENANCE.txt`), each beside a
+The known answers are CAPTURED on m68k-dual (`fixtures/capture/PROVENANCE.txt`), each beside a
 control that counted the trigger's writes over the same pass. The frame counter's capture
 measures what a row holds: its trigger is the low word of the long it captures, so every row's block
 holds that word's value from BEFORE the write, one less than the row's own `data`. The
@@ -51,7 +51,7 @@ OWNER = ("0x2031fc", ":maincpu")
 
 
 def _capturing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """The tally's double with radendur's captured address map, where the frame counter lives in
+    """The tally's double with m68k-dual's captured address map, where the frame counter lives in
     the share `mainram` and the blitter's words in the share `blitram`, and the symbols that
     place the captured writers."""
     ses = _tallying(monkeypatch, tmp_path)
@@ -139,7 +139,7 @@ def test_known_answer_every_row_holds_the_trigger_word_from_before_its_write() -
 
 
 def test_known_answer_the_vblank_handlers_write_lands_on_the_line_the_driver_raises_it() -> None:
-    """MEASURED. The frame counter's write is IRQ_VBLANK's, and radendur's driver raises that
+    """MEASURED. The frame counter's write is IRQ_VBLANK's, and m68k-dual's driver raises that
     interrupt at scanline `NUM_SCANLINES`, 256, past its 252 visible lines: every row from the
     second on is stamped line 256. The first is the handler's first run after the boot, at line
     137. The times only grow, and two rows sit one frame apart to within the line both land on:
@@ -493,7 +493,7 @@ def test_the_capture_leaves_the_tally_state_to_the_tally(
 def _map(*entries: tuple[int, int, str]) -> dict[str, object]:
     """An address map of `:maincpu`'s program space from `(start, end, share)` rows, in install
     order, an empty share meaning none: the shape `start` caches, for the overlaps and the gaps
-    the captured radendur map does not have."""
+    the captured m68k-dual map does not have."""
     return {"address_map": [
         {"cpu": ":maincpu", "space": "program", "index": i, "start": f"{s:#010x}",
          "end": f"{e:#010x}", **({"share": sh} if sh else {})}
@@ -540,7 +540,7 @@ def test_a_block_with_a_handler_inside_is_refused_where_the_handler_starts(
 def test_a_block_in_rom_is_read_from_its_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The captured radendur map backs the main cpu's code with the region `:maincpu`: a
+    """The captured m68k-dual map backs the main cpu's code with the region `:maincpu`: a
     capture there reads the region, at the address's offset into it."""
     _capturing(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x400", mode="capture", length=4, trigger="0x2031fe")

@@ -307,7 +307,7 @@ def test_a_pointer_typed_with_a_class_is_relocated_by_that_class_not_the_base_sy
     use_table(monkeypatch, table={"ROUTINE_ANIM": 0x8436, "PUSH_START_ANIM": 0x318EB,
                                   "PLAYER1": 0x8400})
     use_table(monkeypatch, bases={"DATA": 0x400})
-    use_table(monkeypatch, segment_bases={"CODE": 0x30000, "DATA": 0x8000, "LUP_JUKEBOX": 0x60000})
+    use_table(monkeypatch, segment_bases={"CODE": 0x30000, "DATA": 0x8000, "V30_JUKEBOX": 0x60000})
     use_table(monkeypatch, classes={"ROUTINE_ANIM": "DATA", "PUSH_START_ANIM": "CODE",
                                     "PLAYER1": "DATA"})
     use_table(monkeypatch, types={"ROUTINE_ANIM": "ptr16@CODE",
@@ -343,10 +343,10 @@ def test_a_pointer_typed_with_a_class_is_relocated_by_that_class_not_the_base_sy
     ses.memory[0x8436] = b"\x00\x00"
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["status"] == "INVALID" and "TEXT" in out["message"], out
-    # A class the map CARRIES whose rows share no segment base (LineUp's tile sheet, laid
+    # A class the map CARRIES whose rows share no segment base (v30's tile sheet, laid
     # out as blocks) is named as such, not as absent.
-    use_table(monkeypatch, classes={"ROUTINE_ANIM": "DATA", "ICON_6": "LUP_JUKEBOX"})
-    use_table(monkeypatch, types={"ROUTINE_ANIM": "ptr16@LUP_JUKEBOX"})
+    use_table(monkeypatch, classes={"ROUTINE_ANIM": "DATA", "ICON_6": "V30_JUKEBOX"})
+    use_table(monkeypatch, types={"ROUTINE_ANIM": "ptr16@V30_JUKEBOX"})
     use_table(monkeypatch, segment_bases={"CODE": 0x30000, "DATA": 0x8000})
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["status"] == "INVALID" and "do not share one segment base" in out["message"], out

@@ -34,7 +34,7 @@ LATCH_HIT_2 = "Stopped at watchpoint 1 writing A0A0 to 740000 (PC=00203176)\n"
 
 def test_map_answers_both_sides_and_the_write_only_latch_is_told_from_ram() -> None:
     assert mmap.map_sides(MAP_LATCH) == {"read": "unmapped",
-                                         "write": "radendur_state::latch_w"}
+                                         "write": "m68k_dual_state::latch_w"}
     assert mmap.map_sides(MAP_RAM) == {"read": "memory@200000", "write": "memory@200000"}
     assert mmap.map_sides(MAP_ROM) == {"read": "memory@0", "write": "unmapped"}
     assert mmap.map_sides("garbage") == {"read": None, "write": None}
@@ -47,7 +47,7 @@ def test_a_change_watch_on_a_latch_takes_its_values_from_the_bus_and_reads_no_me
     ses.latches.add(0x740000)
     out = s.watch_add(ref="0x740000", mode="change", length=2)
     assert out["status"] == "ok" and out["armed"] is True
-    assert out["write_maps_to"] == "radendur_state::latch_w"
+    assert out["write_maps_to"] == "m68k_dual_state::latch_w"
     assert out["read_maps_to"] == "unmapped" and out["values_from"] == "bus"
     assert "reading" not in out, "a write-only register has no value to read"
     ram = s.watch_add(ref="frame_lo", mode="change", length=4)

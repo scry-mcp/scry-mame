@@ -628,11 +628,11 @@ def test_a_bases_value_of_rom_means_the_class_stays_at_its_linear_address(
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     sym = tmp_path / "game.map"
-    sym.write_text("_start\tED000\t_TEXT\t0\tCODE\njuke\t60000\tJUKE\t0\tLUP_JUKEBOX\n")
-    out = s.start(**_boot_args(tmp_path, image), symbols=str(sym), bases={"LUP_JUKEBOX": "rom"})
+    sym.write_text("_start\tED000\t_TEXT\t0\tCODE\njuke\t60000\tJUKE\t0\tV30_JUKEBOX\n")
+    out = s.start(**_boot_args(tmp_path, image), symbols=str(sym), bases={"V30_JUKEBOX": "rom"})
     try:
         assert out["symbols_total"] == 2
-        assert out["symbols_by_class"] == {"CODE": 1, "LUP_JUKEBOX": 1}
+        assert out["symbols_by_class"] == {"CODE": 1, "V30_JUKEBOX": 1}
         assert mstate.STATE.resolve("juke") == 0x60000
     finally:
         s.close()
@@ -710,7 +710,7 @@ def test_the_spawn_sentinel_can_fire(monkeypatch: pytest.MonkeyPatch, tmp_path: 
 
 
 # The debugger's banner as `tests/fixtures/console/session.volume.stdout` captured it.
-BANNER_LINE = launch.DEBUGGER_BANNER + "radendur (Radical Enduro (early prototype))\n"
+BANNER_LINE = launch.DEBUGGER_BANNER + "m68k-dual (m68k-dual)\n"
 
 
 class _StubProcess:
@@ -1084,7 +1084,7 @@ def test_the_command_line_carries_the_mark_and_its_directories(tmp_path: Path) -
     the scratch, is what a `ps | awk` in another repo can exclude. `cfg/` and `nvram/` go where
     the caller's state lives: the scratch by default, a `state_dir` when one is given."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}abc"
-    cmd = launch.build_command("/bin/mame", "radendur", "/roms", 23946, ["-window"], str(scratch))
+    cmd = launch.build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"], str(scratch))
     snap = Path(cmd[cmd.index("-snapshot_directory") + 1])
     assert snap == scratch / "snap"
     assert snap.parent.name.startswith(launch.SCRATCH_PREFIX), "the mark is the scratch's own name"
@@ -1093,7 +1093,7 @@ def test_the_command_line_carries_the_mark_and_its_directories(tmp_path: Path) -
 
     state = tmp_path / "state"
     cmd = launch.build_command(
-        "/bin/mame", "radendur", "/roms", 23946, ["-window"], str(scratch), state_dir=str(state)
+        "/bin/mame", "m68k-dual", "/roms", 23946, ["-window"], str(scratch), state_dir=str(state)
     )
     assert cmd[cmd.index("-snapshot_directory") + 1] == str(scratch / "snap"), (
         "snapshots stay in the scratch: they are this session's output, not the game's state"
@@ -1476,7 +1476,7 @@ def test_kill_resets_the_state_even_when_a_close_raises(which: str) -> None:
     ses = _RecordingSession()
     proc = _ExitingProcess(ses.events, exits=True)
     mstate.STATE.ses, mstate.STATE.proc = ses, proc  # type: ignore[assignment]
-    mstate.STATE.system = "radendur"
+    mstate.STATE.system = "m68k-dual"
     if which == "session":
         ses.close = _Raising().close  # type: ignore[method-assign]
     else:
@@ -1691,7 +1691,7 @@ def test_memdump_judges_the_range_by_the_mask_of_the_cpu_it_saves_from(
 ) -> None:
     """`save` reads the VISIBLE cpu's program space, read off `cpulist` at the call, so the wrap
     is judged by that cpu's own mask: after a `focus` another cpu's mask never decides. The two
-    masks here are AUTHORED apart (radendur's are equal) so the case can tell them apart."""
+    masks here are AUTHORED apart (m68k-dual's are equal) so the case can tell them apart."""
     def save(command: str) -> str:
         path, _start, length = command[len("save "):].split(",")
         Path(path).write_bytes(bytes(int(length, 16)))
@@ -2144,7 +2144,7 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
     """A DIRECT memory operand on a segmented board prints as the raw offset inside its
     class (`word ptr [0C014h]`), which is the map's `offset` column and NOT the linear
     address `read_memory` and `watch_add` take (`0x400 + offset` with DS=0x40). Measured
-    on Speed Fight: a caller read and watched the wrong byte for a while, and it answered a
+    on v30-alt: a caller read and watched the wrong byte for a while, and it answered a
     plausible zero with no error. So the listing carries `resolved`: each direct operand's
     linear address under every class base `start` was given, with the symbol it lands in.
     Register-relative (`ds1:[bw-31BBh]`, `[ix]`), an immediate (`0CA35h`) and a call target
@@ -4062,13 +4062,13 @@ def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
     fake, log = _recording_helper(tmp_path)
     monkeypatch.setenv("WINDOW_APP", str(fake))
     monkeypatch.setenv("WINDOW_SHARED_DISPLAY", "main")
-    out = s.start(**_boot_args(tmp_path, image), shared=True, env={"RADENDUR_SWITCH": "on"})
+    out = s.start(**_boot_args(tmp_path, image), shared=True, env={"M68K_DUAL_SWITCH": "on"})
     try:
-        assert out["display"] == "main" and out["env"] == {"RADENDUR_SWITCH": "on"}
+        assert out["display"] == "main" and out["env"] == {"M68K_DUAL_SWITCH": "on"}
         assert log.read_text().split() == ["mame", "--shared", "--display", "main"], (
             "the exported answer reaches the helper explicitly, so the reply and the helper agree")
         assert out["flags"] == ["-window", "-nomaximize"] and out["throttle_from_frame"] == 0
-        assert _StubProcess.last_kwargs["env"]["RADENDUR_SWITCH"] == "on"
+        assert _StubProcess.last_kwargs["env"]["M68K_DUAL_SWITCH"] == "on"
         assert Path(out["boot_lua_path"]).parent == mstate.STATE.scratch, (
             "the server writes the one boot script on every start, for the inventory")
         assert isinstance(out["frame"], int) or out["frame"]["available"] is False
@@ -4307,10 +4307,10 @@ def test_start_says_the_shape_of_the_board_on_its_summary_line(
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    xml = Path(__file__).parent / "fixtures" / "machine" / "listxml-radendur.xml"
+    xml = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"
     Path(args["binary"]).write_text(f"#!/bin/sh\ncat {xml}\n")
     Path(args["binary"]).chmod(0o755)
-    out = s.start(**{**args, "system": "radendur"})
+    out = s.start(**{**args, "system": "m68k-dual"})
     try:
         assert out["machine"]["cpus"] == 2 and out["machine"]["rom_files"] == 22
         assert "machine: 2 cpus" in out["summary"], out["summary"]
@@ -4769,10 +4769,10 @@ def test_start_refuses_while_a_session_is_live(
     """`start` must not kill whatever was live and boot again in silence: it refuses and
     asks for `close`. One machine per server, and ending one is a deliberate act."""
     ses = _running(monkeypatch, tmp_path)
-    monkeypatch.setattr(mstate.STATE, "system", "radendur")
+    monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     e = refused("live",
     s.start(**_boot_args(tmp_path, b"\0" * 32)))
-    assert "radendur" in e["message"] and "4242" in e["message"] and "`close`" in e["message"]
+    assert "m68k-dual" in e["message"] and "4242" in e["message"] and "`close`" in e["message"]
     assert mstate.STATE.ses is ses, "the live session was left alone"  # type: ignore[comparison-overlap]
 
 
@@ -5367,7 +5367,7 @@ def test_a_packaged_mame_finds_its_console_plugin_under_its_prefixs_share(
 
 def test_the_command_line_names_the_plugins_beside_the_binary(tmp_path: Path) -> None:
     binary = fake_mame(tmp_path)
-    cmd = launch.build_command(str(binary), "radendur", "/roms", 23946, [], str(tmp_path))
+    cmd = launch.build_command(str(binary), "m68k-dual", "/roms", 23946, [], str(tmp_path))
     at = cmd.index("-pluginspath")
     assert cmd[at + 1] == str((tmp_path / "plugins").resolve())
     assert "-console" in cmd
@@ -5447,7 +5447,7 @@ def test_start_installs_the_repos_cfg_where_mame_reads_it_and_close_says_if_it_c
     the repo's file and says whether MAME rewrote the copy on its way out."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
-    source = tmp_path / "repo" / "run" / "cfg" / "lineup.cfg"
+    source = tmp_path / "repo" / "run" / "cfg" / "v30.cfg"
     source.parent.mkdir(parents=True)
     source.write_text(CFG_OK)
     out = s.start(**_boot_args(tmp_path, image), cfg=str(source))
@@ -5510,9 +5510,9 @@ def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
     assert not state.exists(), "a refused start created the caller's state_dir"
     cfg.write_text(CFG_OK.replace("<input>", "<!-- a -- b -->\n        <input>"))
     refused("comment", s.start(**args, cfg=str(cfg)))
-    cfg.write_text(CFG_OK.replace('name="m68k"', 'name="lineup"'))
-    refused("lineup", s.start(**args, cfg=str(cfg)))
-    refused("ABSOLUTE", s.start(**args, cfg="run/cfg/lineup.cfg"))
+    cfg.write_text(CFG_OK.replace('name="m68k"', 'name="v30"'))
+    refused("v30", s.start(**args, cfg=str(cfg)))
+    refused("ABSOLUTE", s.start(**args, cfg="run/cfg/v30.cfg"))
     refused("no such cfg", s.start(**args, cfg=str(tmp_path / "missing.cfg")))
     assert s.status()["alive"] is False, "nothing was spawned"
 
@@ -5572,11 +5572,11 @@ def test_a_tilde_path_is_named_as_unexpanded_and_not_as_relative() -> None:
     argument never goes through a shell. Calling it "relative" and saying "give it
     absolutely" invites them to retype the same string and meet the same refusal with
     nothing new, which is a remedy that cannot work."""
-    said = inputs.absolute_hint("~/Code/lineup-mame/upstream/mamelineup")
+    said = inputs.absolute_hint("~/Code/v30-mame/upstream/v30")
     assert "RELATIVE" not in said, said
     assert "~" in said and "expands it" in said, said
     # The two it must keep telling apart, unchanged.
-    assert "RELATIVE" in inputs.absolute_hint("upstream/mamelineup")
+    assert "RELATIVE" in inputs.absolute_hint("upstream/v30")
     assert inputs.absolute_hint("/Users/x/mame") == ""
 
 
@@ -6431,7 +6431,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}proof"
     (scratch / "cfg").mkdir(parents=True)
-    cfg = scratch / "cfg" / "radendur.cfg"
+    cfg = scratch / "cfg" / "m68k-dual.cfg"
     cfg.write_text("<mameconfig/>")
     os.utime(cfg, ns=(1_000_000_000, 1_000_000_000))       # long before any exit
 
@@ -6444,7 +6444,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
 
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _Writing(ses.events, exits=True)  # type: ignore[assignment]
-    mstate.STATE.scratch, mstate.STATE.system = scratch, "radendur"
+    mstate.STATE.scratch, mstate.STATE.system = scratch, "m68k-dual"
     closed = s.close()
     assert closed["ended_by"] == "quit" and closed["state_written"] is True, closed
     assert closed["summary"] == "close: quit, exit code 0"
@@ -6453,7 +6453,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     os.utime(cfg, ns=(1_000_000_000, 1_000_000_000))
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
-    mstate.STATE.scratch, mstate.STATE.system = scratch, "radendur"
+    mstate.STATE.scratch, mstate.STATE.system = scratch, "m68k-dual"
     closed = s.close()
     assert closed["ended_by"] == "exited" and closed["state_written"] is False, closed
     assert closed["summary"] == "close: exited without writing its state, exit code 0"
@@ -6689,12 +6689,12 @@ def test_the_summary_line_of_each_tool_says_what_came_back(
 
 
 def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any() -> None:
-    reply: dict[str, Any] = {"status": "ok", "system": "radendur", "rom_check": "OK",
+    reply: dict[str, Any] = {"status": "ok", "system": "m68k-dual", "rom_check": "OK",
              "symbols_total": 61,
              "pc": "0x000f2034", "machine": {n: 0 for n in machine.SECTIONS},
              "declarations": {"rearm": {"rearmed": []}}, "start_retries": []}
     assert s._summary("start", {}, reply) == (
-        "start radendur: rom_check OK, 61 symbols, pc 0x000f2034")
+        "start m68k-dual: rom_check OK, 61 symbols, pc 0x000f2034")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": ":maincpu"}]
     assert s._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0 on :maincpu")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": None}]

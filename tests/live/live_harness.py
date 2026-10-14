@@ -38,9 +38,9 @@ import server as s  # noqa: E402
 from mame_state import STATE  # noqa: E402
 
 from bench_boards import (  # noqa: E402  # isort: skip
-    RADENDUR_BINARY,
-    RADENDUR_ROMS,
-    RADENDUR_SYSTEM,
+    M68K_DUAL_BINARY,
+    M68K_DUAL_ROMS,
+    M68K_DUAL_SYSTEM,
     REFERENCE_ROM,
     SYMBOLS,
     args_missing,
@@ -57,8 +57,8 @@ def invalid(message: str) -> None:
     sys.exit(EXIT_INVALID)
 
 
-# radendur's boot, every live script's: the board on the bench (`bench_boards`).
-BOOT = dict(binary=RADENDUR_BINARY, system=RADENDUR_SYSTEM, rompath=RADENDUR_ROMS,
+# m68k-dual's boot, every live script's: the board on the bench (`bench_boards`).
+BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_ROMS,
             reference_rom=REFERENCE_ROM, reference_addr="0x0", seconds=25.0)
 
 # WHETHER THIS RUN'S MACHINES TAKE THE OWNER'S FOCUS, asked per run and never per cell: unset,
@@ -128,7 +128,7 @@ TRANSCRIPT = SCRATCH / "transcript.jsonl"
 
 # ONE CALL'S OWN WAIT (the matrix's rule B1), and the reason a cell is BLOCKED rather than run: a
 # matrix that waits on a hung channel measures the wait. A `start`'s boot wait is exempt, since a
-# boot is not a channel that hung; the boards booted here other than radendur get START_WAIT_S.
+# boot is not a channel that hung; the boards booted here other than m68k-dual get START_WAIT_S.
 WAIT_CEILING_S = 10.0
 START_WAIT_S = 30.0
 WAIT_ARGS = ("seconds", "settle_seconds")

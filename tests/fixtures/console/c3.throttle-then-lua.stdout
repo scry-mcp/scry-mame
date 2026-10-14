@@ -15,14 +15,14 @@ Copyright (C) Nicola Salmoria and the MAME team
 Lua 5.4	
 Copyright (C) Lua.org, PUC-Rio
 
-[1;36m[MAME][0m> 3_pal16v8.u40 NOT FOUND (NO GOOD DUMP KNOWN) (tried in radendur)
-4_pal16v8.u73 NOT FOUND (NO GOOD DUMP KNOWN) (tried in radendur)
+[1;36m[MAME][0m> 3_pal16v8.u40 NOT FOUND (NO GOOD DUMP KNOWN) (tried in m68k-dual)
+4_pal16v8.u73 NOT FOUND (NO GOOD DUMP KNOWN) (tried in m68k-dual)
 WARNING: the machine might not run correctly.
 gdbstub: listening on address localhost port 23946
 
 
 MAME debugger version 0.289 (unknown)
-Currently targeting radendur (Radical Enduro (early prototype))
+Currently targeting m68k-dual (m68k-dual)
 local f, e = load("manager.machine.video.throttled = false\nlocal screen = nil\nfor _, s in pairs(manager.machine.screens) do screen = s break end\nmanager.machine:logerror(string.format(\"MAME_MCP_THROTTLE#1 throttled=%s frame=%d\\n\",\n    tostring(manager.machine.video.throttled), screen and screen:frame_number() or -1))\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#1", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#1", ok, err) end
 MAME_MCP_LUA_END#1	true	nil
 [1;36m[MAME][0m> local f, e = load("print(2)", "=mcp") if f == nil then print("MAME_MCP_LUA_END#2", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#2", ok, err) end

@@ -41,7 +41,7 @@ def _common(tmp_path: Path) -> dict[str, Any]:
 @pytest.fixture
 def here(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     """The test's working directory, holding the relative paths the cases name, each one real:
-    `roms/`, `run/`, `game.map`, `types.txt`, `boot.lua`, `lineup.cfg`; `_common(here)` adds the
+    `roms/`, `run/`, `game.map`, `types.txt`, `boot.lua`, `v30.cfg`; `_common(here)` adds the
     binary `fake-mame` with its plugins beside it, and `ref.bin`."""
     _never_spawns(monkeypatch, tmp_path)
     monkeypatch.chdir(tmp_path)
@@ -50,7 +50,7 @@ def here(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     (tmp_path / "game.map").write_text("_start\tED000\t_TEXT\t0\tCODE\n")
     (tmp_path / "types.txt").write_text("_start: u16\n")
     (tmp_path / "boot.lua").write_text("-- a harness\n")
-    (tmp_path / "lineup.cfg").write_text("<mameconfig version=\"10\"/>\n")
+    (tmp_path / "v30.cfg").write_text("<mameconfig version=\"10\"/>\n")
     return tmp_path
 
 
@@ -63,7 +63,7 @@ def here(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     ("symbols", {"maincpu": "game.map"}, "symbols['maincpu']=", "RELATIVE"),
     ("boot_lua", "boot.lua", "boot_lua=", "RELATIVE"),
     ("inipath", "run", "inipath=", "RELATIVE"),
-    ("cfg", "lineup.cfg", "cfg=", "RELATIVE"),
+    ("cfg", "v30.cfg", "cfg=", "RELATIVE"),
     ("state_dir", "run", "state_dir=", "RELATIVE"),
 ])
 def test_a_relative_path_that_exists_from_here_is_refused_naming_its_argument(
@@ -267,10 +267,10 @@ def test_a_state_whose_file_is_a_dangling_link_already_exists(
 
 
 def _state_folder(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[Any, Path]:
-    """A session double on radendur, and its state folder, made."""
+    """A session double on m68k-dual, and its state folder, made."""
     ses = _channel(monkeypatch, tmp_path)
-    monkeypatch.setattr(mstate.STATE, "system", "radendur")
-    sta = ses.scratch / "sta" / "radendur"
+    monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
+    sta = ses.scratch / "sta" / "m68k-dual"
     sta.mkdir(parents=True, exist_ok=True)
     return ses, sta
 
@@ -313,7 +313,7 @@ def test_a_link_to_a_state_that_exists_is_a_state_and_a_dangling_one_hides_none_
     """Only a link through which no file is reached is singled out: a link to a real state is
     listed with its size like any state, and the rows after a dangling one are all there."""
     ses, _, _ = _dangling_state(monkeypatch, tmp_path)
-    sta = ses.scratch / "sta" / "radendur"
+    sta = ses.scratch / "sta" / "m68k-dual"
     real = tmp_path / "real.sta"
     real.write_bytes(bytes(40))
     (sta / "a.sta").symlink_to(real)

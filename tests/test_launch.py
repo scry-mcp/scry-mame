@@ -54,8 +54,8 @@ def test_the_cfg_refusal_is_found_past_bytes_that_are_not_text(tmp_path: Path) -
     """MAME's stdout carries whatever a driver prints, and one byte that is not UTF-8 ahead of
     the line may not hide the line."""
     files.log_path(tmp_path, "process").write_bytes(
-        b"boot \xff\xfe noise\n" + f"{launch.CFG_PARSE_ERROR} cfg/radendur.cfg\n".encode())
-    assert launch.cfg_parse_error(tmp_path) == f"{launch.CFG_PARSE_ERROR} cfg/radendur.cfg"
+        b"boot \xff\xfe noise\n" + f"{launch.CFG_PARSE_ERROR} cfg/m68k-dual.cfg\n".encode())
+    assert launch.cfg_parse_error(tmp_path) == f"{launch.CFG_PARSE_ERROR} cfg/m68k-dual.cfg"
 
 
 def test_the_boot_script_carries_the_inventory_and_adds_the_throttle_after_it(

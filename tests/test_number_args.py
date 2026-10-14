@@ -237,7 +237,7 @@ def test_a_films_value_and_its_hits_come_back_written_0x_at_the_triggers_width(
 ) -> None:
     from test_film import _serve_arm, _session
     ses = _session(monkeypatch, tmp_path)
-    _serve_arm(ses, "radendur")
+    _serve_arm(ses, "m68k-dual")
     out = s.gfx_film(trigger="0x70001e", length=2, value="0x00ff", keep=3, frames=12)
     assert out["film"]["value"] == "0x00ff", out["film"]
     assert inputs.number_arg("value", out["film"]["value"]) == 0xFF

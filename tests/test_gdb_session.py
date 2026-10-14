@@ -202,11 +202,11 @@ def test_a_rom_resident_class_is_declared_and_keeps_the_maps_linear_address(tmp_
     way is a base of None: "this class is resident, runtime = linear", and it is honoured only
     for rows of that class."""
     m = tmp_path / "game.map"
-    m.write_text(V30_MAP + "juke_tiles\t60000\tJUKE\t0\tLUP_JUKEBOX\n", encoding="utf-8")
-    t = g.symbols(str(m), bases={"DATA": 0x400, "LUP_JUKEBOX": None})
+    m.write_text(V30_MAP + "juke_tiles\t60000\tJUKE\t0\tV30_JUKEBOX\n", encoding="utf-8")
+    t = g.symbols(str(m), bases={"DATA": 0x400, "V30_JUKEBOX": None})
     assert t.table["JUKE_TILES"] == 0x60000, "resident: the linear address, no arithmetic"
     assert t.table["DEMO_COUNT"] == 0x400 + 0xA007, "a based class is still relocated"
-    assert t.by_class["LUP_JUKEBOX"] == 1
+    assert t.by_class["V30_JUKEBOX"] == 1
 
 
 def test_a_class_with_no_base_refuses_and_names_the_row(tmp_path: Path) -> None:
@@ -382,7 +382,7 @@ def test_the_boot_harness_reaches_the_mame_command_line() -> None:
     """
     from mame_launch import build_command
 
-    cmd = build_command("/bin/mame", "radendur", "/roms", 23946, ["-window"],
+    cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
                         "/scratch/mame-mcp-t", boot_lua="/tmp/harness.lua")
 
     assert "-autoboot_script" in cmd
@@ -396,7 +396,8 @@ def test_without_a_harness_no_autoboot_slips_through() -> None:
     """The negative case: a flag that shows up unasked is as bad as one that is missing."""
     from mame_launch import build_command
 
-    cmd = build_command("/bin/mame", "radendur", "/roms", 23946, ["-window"], "/scratch/mame-mcp-t")
+    cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
+                        "/scratch/mame-mcp-t")
 
     assert "-autoboot_script" not in cmd
     assert "-autoboot_delay" not in cmd
@@ -407,10 +408,10 @@ def test_the_gdbstub_and_its_port_always_go() -> None:
     from mame_launch import build_command
 
     cmd = build_command(
-        "/bin/mame", "radendur", "/roms", 23947, ["-window"], "/scratch/mame-mcp-t", inipath="/ini"
+        "/bin/mame", "m68k-dual", "/roms", 23947, ["-window"], "/scratch/mame-mcp-t", inipath="/ini"
     )
 
-    assert cmd[:2] == ["/bin/mame", "radendur"]
+    assert cmd[:2] == ["/bin/mame", "m68k-dual"]
     assert "-debug" in cmd and "gdbstub" in cmd
     assert cmd[cmd.index("-debugger_port") + 1] == "23947"
     assert cmd[cmd.index("-inipath") + 1] == "/ini"
@@ -1164,7 +1165,7 @@ def test_the_packet_size_the_stub_advertises_is_read_off_qsupported() -> None:
     assert g.packet_size("") is None
 
 
-# THE STUB'S THREADS, as radendur's two builds answered them over the socket (captured by the
+# THE STUB'S THREADS, as m68k-dual's two builds answered them over the socket (captured by the
 # proof of the gdbstub patch 0004): the patched stub lists one thread per cpu and names each
 # by its tag, hex encoded as the protocol wants; the stub before it lists one thread and
 # answers the empty packet, "unsupported", to `qThreadExtraInfo`.
@@ -1353,7 +1354,7 @@ def test_a_stop_on_another_thread_is_undone_before_the_next_register_or_memory_p
 def test_a_threads_block_selects_it_once_and_the_first_cpu_is_put_back_after() -> None:
     """`register_block` reads one thread's whole `g` reply with that thread selected, once
     however often it is asked, and the next packet for thread 1 selects it again. `Hc` is its
-    own packet and moves no selection. The replies are radendur's (captured by B3's focus)."""
+    own packet and moves no selection. The replies are m68k-dual's (captured by B3's focus)."""
     block = "00600080000031bf"
     ses, wire = _wired(["OK", block, block, "OK", "OK", "00000400"])
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
@@ -1364,8 +1365,8 @@ def test_a_threads_block_selects_it_once_and_the_first_cpu_is_put_back_after() -
     assert _packets(wire) == ["Hg2", "g", "g", "Hc2", "Hg1", "m4,4"]
 
 
-# EVERY REGISTER AND MEMORY PACKET, each with the call that sends it and a reply radendur's stub
-# gives it (the `m` and `g` words captured off radendur; `OK` for a write).
+# EVERY REGISTER AND MEMORY PACKET, each with the call that sends it and a reply m68k-dual's stub
+# gives it (the `m` and `g` words captured off m68k-dual; `OK` for a write).
 _THREAD_PACKETS = [
     ("read", lambda s, t: s.read(0x4, 4, thread=t), "m4,4", "00000401"),
     ("write", lambda s, t: s.write(0x4, b"\x01", thread=t), "M4,1:01", "OK"),
@@ -1409,7 +1410,7 @@ def test_the_stopped_thread_is_read_off_the_question_and_moves_the_selection_as_
     """`?` answers the stop reply of the last stop, which selects its thread for `g` and `m`
     on the stub, as the stop did: the session follows, or the next read for thread 1 would be
     served for the stopped thread's cpu without a word. A reply naming no thread is None and
-    moves nothing. The replies are radendur's (captured by B3's probe of `?`)."""
+    moves nothing. The replies are m68k-dual's (captured by B3's probe of `?`)."""
     ses, wire = _wired(["T05thread:2;0e:0000083a;0f:00201000;11:00000542;", "OK", "00000400"])
     assert ses.stopped_thread() == 2
     ses.read(0x4, 4, thread=1)
@@ -1587,7 +1588,7 @@ def test_unwrap_console_breaks_the_one_ambiguous_tie_with_the_callers_starts() -
 # ----------------------------------------------- the framing, on the bytes MAME's stub sent
 #
 # `_Wire` hands `_receive` one whole packet per read, so where a packet ENDS was never asked.
-# The chunks below are what a quick radendur session put on the socket, cut as they arrived:
+# The chunks below are what a quick m68k-dual session put on the socket, cut as they arrived:
 # the ack alone and then the packet, the ack glued to it, and a stop reply with its registers.
 
 STOP_PARKED = b"$T050e:00000000;0f:00201000;11:000f2034;#67"
@@ -1867,7 +1868,7 @@ def _two_cpus_on(wire: _ByteWire) -> g.Session:
 
 
 def test_each_threads_registers_are_cut_by_its_own_description() -> None:
-    """KNOWN ANSWER, radendur on the patched stub: each thread has its own description, read
+    """KNOWN ANSWER, m68k-dual on the patched stub: each thread has its own description, read
     with that thread selected and once only, and its `g` reply is cut by it. The two cpus stood
     at different pcs at the one instant the captures were taken."""
     xml2 = (TWO_CPUS / "target.thread2.xml").read_text()

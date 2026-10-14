@@ -1,8 +1,8 @@
-# A manifest in the shape a project writes one: TCH's blitter command, transcribed from
-# tch/radendur.cpp's do_blit, plus circus's char layout for the named-format cases. `m68k` is the
+# A manifest in the shape a project writes one: m68k-dual's blitter command, transcribed from
+# the board driver's do_blit, plus circus's char layout for the named-format cases. `m68k` is the
 # system the suite's session doubles run.
 schema: 1
-systems: [m68k, radendur]
+systems: [m68k, m68k-dual]
 
 formats:
   page_512x512x8:
@@ -15,7 +15,7 @@ formats:
       yoffset: '{ STEP512(0,4096) }'
       charincrement: 512*512*8
     status: declared
-    source: radendur.cpp texlayout
+    source: m68k-dual.cpp texlayout
   charlayout:
     layout:
       width: 8
@@ -35,12 +35,12 @@ assets:
     palette: palette
     wrap: true
     status: declared
-    source: radendur.cpp do_blit, the source wraps inside its page
+    source: m68k-dual.cpp do_blit, the source wraps inside its page
 
 commands:
   blit:
-    block: {address: 0x700000, words: 16, word_bytes: 2, status: declared, source: 'radendur.cpp main_map, blit_w'}
-    fire: {word: 15, value: 0xffff, status: declared, source: radendur.cpp blit_w}
+    block: {address: 0x700000, words: 16, word_bytes: 2, status: declared, source: 'm68k-dual.cpp main_map, blit_w'}
+    fire: {word: 15, value: 0xffff, status: declared, source: m68k-dual.cpp blit_w}
     asset: pages
     fields:
       dest_x:
@@ -54,58 +54,58 @@ commands:
           - {word: 2, mask: 0x00ff}
           - {word: 7, mask: 0x0080, at: 8}
         status: declared
-        source: radendur.cpp do_blit
+        source: m68k-dual.cpp do_blit
       dest_x_end:
         parts:
           - {word: 1, mask: 0x00ff}
           - {word: 9, mask: 0x0004, at: 8}
         status: declared
-        source: radendur.cpp do_blit
+        source: m68k-dual.cpp do_blit
       dest_y_end:
         parts:
           - {word: 3, mask: 0x00ff}
           - {word: 9, mask: 0x0008, at: 8}
         status: declared
-        source: radendur.cpp do_blit
-      dest_dir_x: {parts: [{word: 7, mask: 0x0001}], asserted: 1, status: declared, source: radendur.cpp do_blit}
-      dest_dir_y: {parts: [{word: 7, mask: 0x0002}], asserted: 1, status: declared, source: radendur.cpp do_blit}
+        source: m68k-dual.cpp do_blit
+      dest_dir_x: {parts: [{word: 7, mask: 0x0001}], asserted: 1, status: declared, source: m68k-dual.cpp do_blit}
+      dest_dir_y: {parts: [{word: 7, mask: 0x0002}], asserted: 1, status: declared, source: m68k-dual.cpp do_blit}
       source_x:
         parts:
           - {word: 0, mask: 0xff00}
           - {word: 6, mask: 0x0100, at: 8}
         status: declared
-        source: radendur.cpp do_blit
+        source: m68k-dual.cpp do_blit
       source_y:
         parts:
           - {word: 2, mask: 0xff00}
           - {word: 6, mask: 0x0200, at: 8}
         add: 1
         status: declared
-        source: radendur.cpp do_blit, v_bias at 1:1
+        source: m68k-dual.cpp do_blit, v_bias at 1:1
       source_tile:
         parts:
           - {word: 6, mask: 0xfc00}
         status: declared
-        source: radendur.cpp do_blit
-      source_dir_x: {parts: [{word: 8, mask: 0x4000}], asserted: 1, status: declared, source: radendur.cpp do_blit}
-      source_dir_y: {parts: [{word: 8, mask: 0x8000}], asserted: 1, status: declared, source: radendur.cpp do_blit}
-      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: radendur.cpp do_blit}
+        source: m68k-dual.cpp do_blit
+      source_dir_x: {parts: [{word: 8, mask: 0x4000}], asserted: 1, status: declared, source: m68k-dual.cpp do_blit}
+      source_dir_y: {parts: [{word: 8, mask: 0x8000}], asserted: 1, status: declared, source: m68k-dual.cpp do_blit}
+      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: m68k-dual.cpp do_blit}
       reads_source: {parts: [{word: 7, mask: 0x0004}], asserted: 1, status: human, source: the family's register notes}
     flags:
       writes_index_0: {parts: [{word: 7, mask: 0x0008}], status: declared, source: wheelfir.cpp do_blit}
-      drawing_low_half: {parts: [{word: 8, mask: 0x0020}], status: declared, source: 'radendur.cpp do_blit, flip_page'}
+      drawing_low_half: {parts: [{word: 8, mask: 0x0020}], status: declared, source: 'm68k-dual.cpp do_blit, flip_page'}
       scroll_x:
         parts:
           - {word: 10, mask: 0x00ff}
           - {word: 8, mask: 0x0040, at: 8}
         status: declared
-        source: radendur.cpp screen_update
+        source: m68k-dual.cpp screen_update
       scroll_y:
         parts:
           - {word: 11, mask: 0x00ff}
           - {word: 8, mask: 0x0080, at: 8}
         status: declared
-        source: radendur.cpp scanline_timer_callback
+        source: m68k-dual.cpp scanline_timer_callback
     planes:
       - name: fg
         when: 0
@@ -115,7 +115,7 @@ commands:
         width: 512
         height: 512
         status: declared
-        source: radendur.cpp flip_page and screen_update
+        source: m68k-dual.cpp flip_page and screen_update
       - name: bg
         when: 1
         order: 0
@@ -124,7 +124,7 @@ commands:
         width: 512
         height: 512
         status: declared
-        source: radendur.cpp screen_update
+        source: m68k-dual.cpp screen_update
 
 palette_ports:
   ramdac:
@@ -135,4 +135,4 @@ palette_ports:
     component_bits: 8
     auto_increment: true
     status: declared
-    source: radendur.cpp main_map (index_w, pal_w) and ramdac_map (ramdac_rgb888_w)
+    source: m68k-dual.cpp main_map (index_w, pal_w) and ramdac_map (ramdac_rgb888_w)

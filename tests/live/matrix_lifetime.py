@@ -28,7 +28,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from bench_boards import SYMBOLS, radendur_missing
+from bench_boards import SYMBOLS, m68k_dual_missing
 from live_harness import (
     BOOT,
     Board,
@@ -90,7 +90,7 @@ time.sleep(600)
 def _p_port(t: list[str]) -> None:
     r = boot()
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     port, pid = r.get("stub_port"), r.get("pid")
     assert STATE.ses is not None
     proof, local = STATE.ses.owner, STATE.ses.local_port
@@ -159,7 +159,7 @@ def _p_sigkill(t: list[str]) -> None:
 def _p_idle(t: list[str]) -> None:
     r = boot()
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     pid = r.get("pid")
     before = isinstance(pid, int) and alive(pid)
     clock = idle.IDLE
@@ -175,7 +175,7 @@ def _p_idle(t: list[str]) -> None:
 def _p_quit(t: list[str]) -> None:
     r = boot()
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     pid = r.get("pid")
     before = isinstance(pid, int) and alive(pid)
     shut = call("close")
@@ -225,7 +225,7 @@ def _p_own_store(t: list[str]) -> None:
     own = Path(fresh("-state")) / "declarations.json"
     r = boot(state_dir=str(own.parent))
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     decl = r.get("declarations", {})
     declared = _declare_all()
     rows = _stored_rows(own)
@@ -256,7 +256,7 @@ def _p_own_store(t: list[str]) -> None:
 def _p_age(t: list[str]) -> None:
     r = boot(state_dir=fresh("-state"))
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     call("breakpoint_at", ref="exception_handler")
     first = call("breakpoint_list").get("breakpoints", [{}])[0].get("age_s")
     time.sleep(AGE_GAP_S)
@@ -268,13 +268,13 @@ def _p_age(t: list[str]) -> None:
 
 
 P_BOARDS = (
-    Board(_p_port, (0,), radendur_missing),
-    Board(_p_foreign, (1,), radendur_missing),
-    Board(_p_sigkill, (2,), radendur_missing),
-    Board(_p_idle, (3,), radendur_missing),
-    Board(_p_own_store, (4, 5), radendur_missing),
-    Board(_p_age, (6,), radendur_missing),
-    Board(_p_quit, (7,), radendur_missing),
+    Board(_p_port, (0,), m68k_dual_missing),
+    Board(_p_foreign, (1,), m68k_dual_missing),
+    Board(_p_sigkill, (2,), m68k_dual_missing),
+    Board(_p_idle, (3,), m68k_dual_missing),
+    Board(_p_own_store, (4, 5), m68k_dual_missing),
+    Board(_p_age, (6,), m68k_dual_missing),
+    Board(_p_quit, (7,), m68k_dual_missing),
 )
 boards_cover("section P", P_CELLS, P_BOARDS)
 

@@ -269,7 +269,7 @@ def _packed(r: mm.PalettePort) -> str:
 
 
 def _latch_taps(r: mm.PalettePort) -> str:
-    """Speed Fight's `paldat_w`: a data word with a bit of `index_flag_mask` set sets the index
+    """v30-alt's `paldat_w`: a data word with a bit of `index_flag_mask` set sets the index
     to its low bits; any other word is a whole colour for the indexed pen (the driver takes no
     mask), and the index moves on when it auto-increments. The optional index port merges into
     the index under the write's mask (`paloff_w`'s `COMBINE_DATA`)."""
@@ -315,7 +315,7 @@ end))
 
 
 def _sequence_taps(r: mm.PalettePort) -> str:
-    """Line UP's `twins_pal_w`: each data write merges into the pen at the offset under its mask
+    """v30's `twins_pal_w`: each data write merges into the pen at the offset under its mask
     (`COMBINE_DATA`), and the offset moves on; any write to the bus word of the index port
     (`porte_paloff0_w`) sends the offset back to 0."""
     return _packed(r) + """local ilo = ip - (ip % nb)

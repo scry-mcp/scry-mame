@@ -1,8 +1,8 @@
 """The value scan (`mame_scan`), judged against MAME's own engine.
 
 The known answer is never computed by the code under test. `fixtures/scan/` holds what a live
-session captured (`PROVENANCE.txt`): the scanned range dumped at successive stops of Line UP
-(V30, little-endian) and radendur (68000, big-endian), and after each pair of stops MAME's
+session captured (`PROVENANCE.txt`): the scanned range dumped at successive stops of v30
+(V30, little-endian) and m68k-dual (68000, big-endian), and after each pair of stops MAME's
 own `cheatlist` for every operator its console expresses, the cell compared against the value
 it held when the scan opened (`cheatnextf`) or against a value. A scan opened on the first dump
 and filtered on the second must keep exactly the cells, with exactly the values, MAME kept.
@@ -12,6 +12,7 @@ import asyncio
 import copy
 import gzip
 import hashlib
+import re
 from operator import gt, lt, ne
 from pathlib import Path
 from types import SimpleNamespace
@@ -29,7 +30,7 @@ import server as s
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "scan"
 BOARDS: dict[str, tuple[int, Literal["little", "big"]]] = {
-    "lineup": (0x0, "little"), "radendur": (0x200000, "big")}
+    "v30": (0x0, "little"), "m68k-dual": (0x200000, "big")}
 WIDTH_OF = {"ub": "byte", "uw": "word", "ud": "dword"}
 #: A cell's size in bytes, by the name the tests are parametrized with.
 SIZE = {"byte": 1, "word": 2, "dword": 4}
@@ -89,7 +90,7 @@ def board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
         base, order = BOARDS.get(name, (0x0, "little"))
         ses = Board(base, memory, order)
         _console(monkeypatch, tmp_path, ses)
-        mask = 0xFFFFFF if name == "radendur" else 0xFFFFF
+        mask = 0xFFFFFF if name == "m68k-dual" else 0xFFFFF
         monkeypatch.setattr(mstate.STATE, "machine_map", _masked(mask))
         monkeypatch.setattr(mstate.STATE, "scan", None)
         return ses
@@ -122,14 +123,14 @@ def same_as_mame(ours: set[tuple[int, int]], name: str) -> None:
 
 
 def not_admitted(name: str, width: str) -> set[int]:
-    """The cells MAME's engine did not take (a driver's write taps on radendur): its list
+    """The cells MAME's engine did not take (a driver's write taps on m68k-dual): its list
     leaves them out, so the comparison does too."""
     f = FIXTURES / f"{name}-{width}-not-admitted.txt"
     return {int(a, 16) for a in f.read_text().split()} if f.is_file() else set()
 
 
 def cases() -> list[tuple[str, str, str]]:
-    return [tuple(f.name.split(".")[0].split("-", 2))  # type: ignore[misc]
+    return [tuple(re.fullmatch(r"(.+)-(u[bwd])-(.+)", f.name.split(".")[0]).groups())  # type: ignore[union-attr]
             for f in sorted(FIXTURES.glob("*-u?-*.rows.*"))]
 
 
@@ -180,22 +181,22 @@ def test_two_filters_compare_against_the_scan_as_opened(board: Any) -> None:
     """MAME's `cheatnextf notequal` twice over three stops, the second list the cells that
     differ from the opening at stop 3 among those that differed at stop 2: a rolling
     comparison (against stop 2) would drop the cells that changed once and stayed."""
-    ses = board("radendur", dump("radendur-mf-stop1"))
-    gone = not_admitted("radendur", "ub")
+    ses = board("m68k-dual", dump("m68k-dual-mf-stop1"))
+    gone = not_admitted("m68k-dual", "ub")
     s.scan_start(ref="0x200000", length=0x10000)
-    ses.memory[:] = dump("radendur-mf-stop2")
+    ses.memory[:] = dump("m68k-dual-mf-stop2")
     first = s.scan_filter(operator="!")
-    same_as_mame({r for r in survivors() if r[0] not in gone}, "radendur-mf-f1")
-    ses.memory[:] = dump("radendur-mf-stop3")
+    same_as_mame({r for r in survivors() if r[0] not in gone}, "m68k-dual-mf-f1")
+    ses.memory[:] = dump("m68k-dual-mf-stop3")
     second = s.scan_filter(operator="!")
     assert (first["iterations"], second["iterations"]) == (1, 2)
-    same_as_mame({r for r in survivors() if r[0] not in gone}, "radendur-mf-f2")
+    same_as_mame({r for r in survivors() if r[0] not in gone}, "m68k-dual-mf-f2")
 
 
 def test_a_cell_written_back_to_its_opening_value_drops_out_of_changed(board: Any) -> None:
     """This server's own semantics on a synthetic block (no engine to ask): a cell changed once
     keeps passing `!`, and written back to what it held when the scan opened it stops."""
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     s.scan_start(ref="0x0", length=0x10)
     ses.memory[3] = 0xA5
     one = s.scan_filter(operator="!")
@@ -212,7 +213,7 @@ def test_a_cell_written_back_to_its_opening_value_drops_out_of_changed(board: An
 
 
 def test_a_scan_answers_its_cells_cpu_and_space_and_moves_nothing(board: Any) -> None:
-    ses = board("radendur", dump("radendur-stop1"))
+    ses = board("m68k-dual", dump("m68k-dual-stop1"))
     out = s.scan_start(ref="0x200000", length=0x100, cell_bytes=2)
     assert "width" not in out, out
     assert {k: out[k] for k in ("addr", "length", "cell_bytes", "hits_total", "cpu",
@@ -235,7 +236,7 @@ def test_a_scan_answers_its_cells_cpu_and_space_and_moves_nothing(board: Any) ->
 
 
 def test_word_cells_decode_in_the_cpus_order_and_may_start_odd(board: Any) -> None:
-    for name, at, want in [("radendur", 0x200001, 0x1234), ("lineup", 0x1, 0x3412)]:
+    for name, at, want in [("m68k-dual", 0x200001, 0x1234), ("v30", 0x1, 0x3412)]:
         base, _ = BOARDS[name]
         memory = bytearray(0x100)
         ses = board(name, bytes(memory))
@@ -248,7 +249,7 @@ def test_word_cells_decode_in_the_cpus_order_and_may_start_odd(board: Any) -> No
 def test_the_listing_is_whole_up_to_the_ceiling_and_cut_whole_above(board: Any) -> None:
     ceiling = read.LOG_LIMIT_MAX
     for moved, listed in [(ceiling, True), (ceiling + 1, False)]:
-        ses = board("lineup", bytes(0x1000))
+        ses = board("v30", bytes(0x1000))
         s.scan_start(ref="0x0", length=0x1000)
         for i in range(moved):
             ses.memory[i] = 1
@@ -266,7 +267,7 @@ def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(
     with the thread patch or without it; new bytes at the next filter are compared, not a
     reason to drop the scan; and it dies with the session's fields."""
     for threads in ({1: ":maincpu", 2: ":subcpu"}, {}):
-        ses = board("radendur", bytes(0x100))
+        ses = board("m68k-dual", bytes(0x100))
         ses.threads = threads
         s.scan_start(ref="0x200000", length=0x10)
         ses.replies["cpulist"] = captured("cpulist.sub-visible.txt")
@@ -284,7 +285,7 @@ def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(
 
 
 def test_scan_clear_answers_whether_one_was_open(board: Any) -> None:
-    board("lineup", bytes(0x100))
+    board("v30", bytes(0x100))
     assert s.scan_clear()["cleared"] is False and "note" in s.scan_clear()
     s.scan_start(ref="0x0", length=0x10)
     assert s.scan_clear()["cleared"] is True and mstate.STATE.scan is None
@@ -307,7 +308,7 @@ def test_what_needs_no_machine_is_refused_with_none(call: Any, said: str) -> Non
 
 
 def test_what_the_open_scan_decides_is_refused_against_it(board: Any) -> None:
-    board("lineup", bytes(0x100))
+    board("v30", bytes(0x100))
     out = s.scan_filter(operator="=")
     assert out["code"] == "needs_call" and "`scan_start`" in out["message"], out
     s.scan_start(ref="0x0", length=0x10)
@@ -321,7 +322,7 @@ def test_what_the_open_scan_decides_is_refused_against_it(board: Any) -> None:
 
 
 def test_a_range_past_the_cpus_space_is_refused_before_any_save(board: Any) -> None:
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     out = s.scan_start(ref="0xffff8", length=0x10)
     assert out["code"] == "bad_argument" and "mask" in out["message"], out
     assert not [c for c in ses.commands if c.startswith("save ")]
@@ -329,7 +330,7 @@ def test_a_range_past_the_cpus_space_is_refused_before_any_save(board: Any) -> N
 
 def test_a_copy_path_the_console_would_cut_is_the_hosts_failure(
         board: Any, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     split = tmp_path / "a;b"
     split.mkdir()
     monkeypatch.setattr(mstate.STATE, "scratch", split)
@@ -340,7 +341,7 @@ def test_a_copy_path_the_console_would_cut_is_the_hosts_failure(
 
 
 def test_a_word_scan_on_a_cpu_with_no_byte_order_is_no_channel(board: Any) -> None:
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
 
     def unknown(thread: int) -> Any:
         raise gs.UnknownByteOrder("no order for this architecture")
@@ -359,7 +360,7 @@ def test_with_no_session_every_scan_tool_says_so() -> None:
 def test_a_filter_with_a_value_rewrites_no_opening(board: Any) -> None:
     """Survivors only shrink, and a valued filter leaves each cell's opening where it was: the
     next `!` still compares with the scan as opened."""
-    ses = board("lineup", bytes([0, 5, 9, 0]))
+    ses = board("v30", bytes([0, 5, 9, 0]))
     s.scan_start(ref="0x0", length=3)
     ses.memory[1] = 7            # moved before the valued filter: 7 is not its opening
     assert s.scan_filter(operator=">=", value=5)["hits_total"] == 2
@@ -370,7 +371,7 @@ def test_a_filter_with_a_value_rewrites_no_opening(board: Any) -> None:
 
 
 def test_word_and_dword_cells_are_unsigned_to_the_top_of_their_width(board: Any) -> None:
-    for name, width, top in [("lineup", "word", 0xFFFF), ("radendur", "dword", 0xFFFFFFFF)]:
+    for name, width, top in [("v30", "word", 0xFFFF), ("m68k-dual", "dword", 0xFFFFFFFF)]:
         base, _ = BOARDS[name]
         ses = board(name, bytes(0x10))
         s.scan_start(ref=f"{base:#x}", length=8, cell_bytes=SIZE[width])
@@ -389,7 +390,7 @@ def test_word_and_dword_cells_are_unsigned_to_the_top_of_their_width(board: Any)
 
 
 def test_a_range_copy_that_fails_after_the_save_leaves_the_scan_as_it_was(board: Any) -> None:
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     short = ses.replies["save"]
     ses.replies["save"] = lambda c: (Path(c[5:].split(",")[0]).write_bytes(b"x"), "ok")[1]
     out = s.scan_start(ref="0x0", length=0x10)
@@ -410,7 +411,7 @@ def test_a_range_copy_that_fails_after_the_save_leaves_the_scan_as_it_was(board:
 
 
 def test_scan_clear_answers_on_a_running_machine_and_not_on_a_broken_one(board: Any) -> None:
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     s.scan_start(ref="0x0", length=0x10)
     ses.running = True
     ses.poll_stop = lambda timeout=0.0: False
@@ -424,7 +425,7 @@ def test_a_scan_on_a_console_that_marks_no_cpu_is_refused(board: Any) -> None:
     """Without the thread patch and with no `cpu` named, the scan's cpu is the visible one: a
     console that names none (one that lacks `cpulist`, captured) leaves a scan bound to nothing,
     which would read whichever cpu is visible at each filter."""
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     ses.threads = {}
     ses.replies["cpulist"] = captured("rpset.unknown-command.txt").replace(
         "rpzzzset {1}", "cpulist")
@@ -440,7 +441,7 @@ def test_a_scan_on_a_console_that_marks_no_cpu_is_refused(board: Any) -> None:
     ("byte", "B", 1), ("word", "H", 2), ("dword", "I", 4)])
 def test_an_open_scan_holds_its_values_in_the_cells_width_and_its_offsets_in_four_bytes(
         board: Any, width: str, code: str, size: int) -> None:
-    board("lineup", bytes(0x100))
+    board("v30", bytes(0x100))
     s.scan_start(ref="0x0", length=0x40, cell_bytes=SIZE[width])
     held = mstate.STATE.scan
     assert held is not None
@@ -487,7 +488,7 @@ def test_three_filters_read_only_the_survivors_span_and_keep_the_as_opened_answe
 def test_the_span_reaches_each_end_of_the_range(board: Any, width: str, cell: int) -> None:
     """Survivors on the first and the last cell read the whole range; once the first is
     written back to its opening value, the last one alone is one cell at the range's end."""
-    ses = board("lineup", bytes(0x100))
+    ses = board("v30", bytes(0x100))
     last = 0x30 - cell
     s.scan_start(ref="0x10", length=0x20, cell_bytes=SIZE[width])
     ses.memory[0x10] = ses.memory[last] = 1
@@ -500,9 +501,9 @@ def test_the_span_reaches_each_end_of_the_range(board: Any, width: str, cell: in
 
 
 def test_an_odd_word_start_narrows_on_its_own_cells(board: Any) -> None:
-    """Speed Fight's shape, words from an odd address: the span starts on a cell of the scan,
+    """v30-alt's shape, words from an odd address: the span starts on a cell of the scan,
     never on the even address below it. A refused read of a narrowed scan leaves it whole."""
-    ses = board("lineup", bytes(0x10000))
+    ses = board("v30", bytes(0x10000))
     s.scan_start(ref="0x1", length=0xFFFE, cell_bytes=2)
     ses.memory[0x101:0x103] = b"\x34\x12"
     ses.memory[0x201:0x203] = b"\x78\x56"

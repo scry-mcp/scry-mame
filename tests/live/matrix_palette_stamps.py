@@ -1,4 +1,4 @@
-"""Section U of the live matrix: what a `palette_log` row says about WHEN, on radendur, whose
+"""Section U of the live matrix: what a `palette_log` row says about WHEN, on m68k-dual, whose
 RAMDAC the project's manifest declares and whose game uploads its palette a frame at a time.
 
 THE LINE'S REFERENCE IS MAME'S OWN `vpos()`, the debugger's `beamy`, as section T takes it for a
@@ -21,7 +21,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from bench_boards import MANIFEST, radendur_missing
+from bench_boards import MANIFEST, m68k_dual_missing
 from live_harness import (
     Board,
     blocked,
@@ -41,13 +41,13 @@ from matrix_stamps import brackets, lines_at_stops
 import mame_capture as mcapture  # isort: skip -- found through the path the harness sets
 import mame_ramdac as mramdac  # isort: skip
 
-U_TITLE = "a palette_log row's line and time, on radendur's RAMDAC"
+U_TITLE = "a palette_log row's line and time, on m68k-dual's RAMDAC"
 RAMDAC = "ramdac"
 U_CELLS = [
-    "radendur: the log's row of a palette data write carries a line inside the bracket the "
+    "m68k-dual: the log's row of a palette data write carries a line inside the bracket the "
     "debugger's beamy reads before and after the writing instruction, at every stop",
-    "radendur: the log's rows carry their times in the order the tap wrote them",
-    "radendur: the same log with its line derived one line ahead misses beamy wherever the "
+    "m68k-dual: the log's rows carry their times in the order the tap wrote them",
+    "m68k-dual: the same log with its line derived one line ahead misses beamy wherever the "
     "bracket is one line: the reference can fail",
 ]
 
@@ -65,7 +65,7 @@ def _line_of(frame: Any, pc: int) -> int | None:
     return mine[-1].line if mine else None
 
 
-def _u_radendur(t: list[str]) -> None:
+def _u_m68k_dual(t: list[str]) -> None:
     boot()
     call("gfx_load", path=MANIFEST)
     # The upload runs once the game is past its boot, as section F finds it.
@@ -129,7 +129,7 @@ def _u_radendur(t: list[str]) -> None:
     call("close")
 
 
-U_BOARDS = (Board(_u_radendur, (0, 1, 2), radendur_missing),)
+U_BOARDS = (Board(_u_m68k_dual, (0, 1, 2), m68k_dual_missing),)
 boards_cover("section U", U_CELLS, U_BOARDS)
 
 

@@ -87,7 +87,7 @@ def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str,
     the harness FILE goes, or a `~` nothing expands, is a call the server refuses, so a task
     expecting it is refused too."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
-            "args": {"binary": "/b/mame", "system": "radendur", "rompath": "/r",
+            "args": {"binary": "/b/mame", "system": "m68k-dual", "rompath": "/r",
                      "reference_rom": "/r/rom.bin", "boot_lua": boot_lua}}
     (problem,) = probe.task_problems(SURFACE, [task])
     assert problem.startswith("mame task M1: its own expected call is refused: the server's "
@@ -99,7 +99,7 @@ def test_a_start_with_absolute_paths_is_judged_by_shape_not_by_what_is_on_disk()
     """The control: paths no machine holds are taken, because whether a file is there is the
     host's, never the probe's."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
-            "args": {"binary": "/no/such/mame", "system": "radendur", "rompath": "/no/roms",
+            "args": {"binary": "/no/such/mame", "system": "m68k-dual", "rompath": "/no/roms",
                      "reference_rom": "/no/rom.bin", "boot_lua": "/no/harness.lua",
                      "symbols": {"maincpu": "/no/a.map"}}}
     assert probe.task_problems(SURFACE, [task]) == []

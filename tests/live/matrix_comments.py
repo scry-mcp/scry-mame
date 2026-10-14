@@ -1,6 +1,6 @@
 """Section M of the live matrix: comments, held as declarations and shown in MAME's own pane.
 
-On radendur's two 68000s, with both cpus' symbol files and the section's own declaration store
+On m68k-dual's two 68000s, with both cpus' symbol files and the section's own declaration store
 (the harness isolates one per section). Every expected file text is written in the cell from the
 literal refs, cpus and texts, with the stamps read off the store's own file, the one view the
 server does not compose; the pane is read back through `disassemble` and MAME's own `comsave`.
@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from bench_boards import RADENDUR_SYSTEM, SUB_SYMBOLS, SYMBOLS, radendur_missing
+from bench_boards import M68K_DUAL_SYSTEM, SUB_SYMBOLS, SYMBOLS, m68k_dual_missing
 from live_harness import (
     SCRATCH,
     Board,
@@ -96,10 +96,10 @@ def _sha(path: str) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def _m_radendur(t: list[str]) -> None:
+def _m_m68k_dual(t: list[str]) -> None:
     r = _boot()
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     r = call("comment_list")
     cell(t[0], ok(r) and r.get("comments") == [] and r.get("comments_total") == 0, said(r))
     found = call("symbols_find", name="irq_vblank", cpu="maincpu")
@@ -282,11 +282,12 @@ def _pinned(t: list[str]) -> None:
     (ini / "mame.ini").write_text(f"joystickprovider none\ncomment_directory {target}\n")
     r = _boot(inipath=str(ini))
     if not ok(r):
-        cell(t[12], False, f"radendur did not boot with the ini: {said(r)}")
+        cell(t[12], False, f"m68k-dual did not boot with the ini: {said(r)}")
         return
     call("comment_add", ref="irq_vblank", text="pinned", cpu="maincpu")
     saved = call("debug", command="comsave")
-    in_scratch = (Path(str(r.get("scratch_dir"))) / "comments" / f"{RADENDUR_SYSTEM}.cmt").is_file()
+    stored = Path(str(r.get("scratch_dir"))) / "comments" / f"{M68K_DUAL_SYSTEM}.cmt"
+    in_scratch = stored.is_file()
     in_ini_dir = sorted(target.iterdir())
     call("comment_delete", ref="irq_vblank", cpu="maincpu")
     left = call("comment_list").get("comments")
@@ -296,7 +297,7 @@ def _pinned(t: list[str]) -> None:
     call("close")
 
 
-M_BOARDS = (Board(_m_radendur, tuple(range(len(M_CELLS))), radendur_missing),)
+M_BOARDS = (Board(_m_m68k_dual, tuple(range(len(M_CELLS))), m68k_dual_missing),)
 boards_cover("M_BOARDS", M_CELLS, M_BOARDS)
 
 

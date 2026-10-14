@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from session_doubles import add_symbol, refs, refused  # noqa: E402
 from test_server import _running  # noqa: E402
-from test_symbols_per_cpu import _radendur_boot, _two_tables  # noqa: E402
+from test_symbols_per_cpu import _m68k_dual_boot, _two_tables  # noqa: E402
 
 import mame_arming as arming  # noqa: E402
 import mame_breakpoints as breakpoints  # noqa: E402
@@ -245,7 +245,7 @@ def test_a_raw_address_is_judged_against_its_own_cpus_build(
 def test_start_gives_each_cpu_its_own_build(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    args = _radendur_boot(monkeypatch, tmp_path)
+    args = _m68k_dual_boot(monkeypatch, tmp_path)
     main, sub = _two_tables(tmp_path)
     out = s.start(**args, symbols={"maincpu": main, "subcpu": sub})
     try:
@@ -300,7 +300,7 @@ def test_a_range_held_by_a_declaration_of_unknown_cpu_is_held_on_every_cpu() -> 
 
 
 def test_bases_or_types_naming_one_cpu_twice_are_refused(tmp_path: Path) -> None:
-    from test_symbols_per_cpu import RADENDUR, _two_tables
+    from test_symbols_per_cpu import M68K_DUAL, _two_tables
 
     import mame_symbols as syms
 
@@ -309,7 +309,7 @@ def test_bases_or_types_naming_one_cpu_twice_are_refused(tmp_path: Path) -> None
     typed.write_text("irq_vblank: u16\n")
     with pytest.raises(mstate.Invalid, match="names one cpu twice"):
         syms.load({"maincpu": main}, None, {"maincpu": str(typed), ":maincpu": str(typed)},
-                  RADENDUR)
+                  M68K_DUAL)
 
 
 def test_run_to_declares_its_control_on_the_cpu_it_already_chose(

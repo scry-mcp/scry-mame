@@ -1,6 +1,6 @@
 # stub-two-cpus fixtures
 
-CAPTURED, none typed, from MAME's own gdbstub at the fleet's pinned commit on `radendur`, a board
+CAPTURED, none typed, from MAME's own gdbstub at the fleet's pinned commit on `m68k-dual`, a board
 with two 68000s, parked at the debugger right after the boot:
 
 - `target.xml`: the description the stub answers to `qXfer:features:read:target.xml`. The main

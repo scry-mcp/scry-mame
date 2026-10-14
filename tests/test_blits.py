@@ -1,13 +1,13 @@
 """A capture's rows through the manifest's draw command: the boxes a frame's blits drew
 (`gfx_blits`) and the rectangle one blit reads (`gfx_blit_source`).
 
-THE RADENDUR CASE IS CAPTURED, on TCH's `upstream/radendu` through this server: a capture watch on
+THE m68k-dual CASE IS CAPTURED, on its own build through this server: a capture watch on
 the blitter block (`watch_add(ref="0x700000", mode="capture", length=32, trigger="0x70001e")`)
-declared at the stop at frame 900 and read at the stop at frame 903. `radendur-blit-rows.rows.gz`
+declared at the stop at frame 900 and read at the stop at frame 903. `m68k-dual-blit-rows.rows.gz`
 is the rows file the periodic hook wrote, in rows of six fields with no line and no time, which the
-cases read completed by `with_stamps`, since no reader here takes either. `radendur-screen.bin.gz`
+cases read completed by `with_stamps`, since no reader here takes either. `m68k-dual-screen.bin.gz`
 is that stop's screen as the index capture writes it, rebuilt from the indexed PNG `screen_view`
-wrote at the same stop (each PNG index is the pen, its PLTE the pens), and `screen-radendur.txt`
+wrote at the same stop (each PNG index is the pen, its PLTE the pens), and `screen-m68k-dual.txt`
 the capture line that stop answered. The header is the one the survey of that stop reported (352
 rows, none over the cap, a 16-bit big-endian bus). The known answer is the screen itself: at that
 stop every FG blit of frame 902 into the low half, decoded from the ROM files, agreed with the
@@ -56,9 +56,9 @@ HEADER = ("MCP_CAPTURE 700000_32_t70001e seq=3 frame=903 total=352 rows=352 over
           "data_width=16 endianness=big cpu=:maincpu\nend\n")
 
 
-def _radendur_rows(salt: int = 0) -> str:
+def _m68k_dual_rows(salt: int = 0) -> str:
     """The captured rows, completed with a line and a time (`with_stamps`)."""
-    return with_stamps(gzip.decompress((FIX / "radendur-blit-rows.rows.gz").read_bytes()).decode(),
+    return with_stamps(gzip.decompress((FIX / "m68k-dual-blit-rows.rows.gz").read_bytes()).decode(),
                        salt)
 
 
@@ -77,10 +77,10 @@ def _declared(ses: _ChannelSession, rows: str, header: str = HEADER) -> dict[str
     return rec
 
 
-def _radendur(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
+def _m68k_dual(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(MANIFEST))["status"] == "ok"
-    _declared(ses, _radendur_rows())
+    _declared(ses, _m68k_dual_rows())
     return ses
 
 
@@ -90,7 +90,7 @@ def _screen(ses: _ChannelSession) -> None:
     seq = mstate.STATE.lua_seq + 1
     ses.answers[seq] = (b"MAME_MCP_SCREEN tag=:screen w=336 h=252 frame=903 palette=- entries=0\n"
                         + ses.sentinel(seq))
-    raw = gzip.decompress((FIX / "radendur-screen.bin.gz").read_bytes())
+    raw = gzip.decompress((FIX / "m68k-dual-screen.bin.gz").read_bytes())
     (ses.scratch / f"screen-{seq}.bin").write_bytes(raw[:336 * 252 * 4])
 
 
@@ -112,22 +112,22 @@ def _pages(ses: _ChannelSession, **kwargs: Any) -> list[dict[str, Any]]:
         first = page["next_first"]
 
 
-# ------------------------------------------------------------------ gfx_blits, radendur
+# ------------------------------------------------------------------ gfx_blits, m68k-dual
 
 def test_the_blits_do_not_move_with_the_line_and_time_a_row_carries(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """The boxes are read from a row's frame, writer, data and block: the same rows under two
     other lines and times answer the same blits."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     first = [b for page in _pages(ses) for b in page["blits"]]
-    _declared(ses, _radendur_rows(salt=7).replace(" -1 ", " 3 "))
+    _declared(ses, _m68k_dual_rows(salt=7).replace(" -1 ", " 3 "))
     again = [b for page in _pages(ses) for b in page["blits"]]
     assert first and again == first
 
 
 def test_the_boxes_of_a_frame_sit_where_the_screen_shows_them(monkeypatch: pytest.MonkeyPatch,
                                                               tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     pages = _pages(ses)
     out = pages[0]
     assert (out["frame_blit"], out["frame_complete"], out["frame_screen"]) == (902, True, 903)
@@ -175,7 +175,7 @@ def test_the_default_reply_is_a_summary_and_fits_the_clients_cap(
     and arrived cut. By default the reply is the count, the legend by writer, the count by plane
     and page, and the picture; the detail is a page. The control is the old reply, the whole list
     in the text the client is handed, which crosses the budget."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", scale=1)
     assert out["status"] == "ok", out
@@ -203,7 +203,7 @@ def test_the_default_reply_is_a_summary_and_fits_the_clients_cap(
 def test_the_detail_is_paged_and_a_page_past_the_list_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", frame=902, detail=True)
     assert out["listed"] == {"first": 0, "count": mstate.ROWS_SHOWN, "of": 88}
@@ -222,7 +222,7 @@ def test_the_detail_is_paged_and_a_page_past_the_list_is_refused(
 def test_an_area_nothing_covers_lists_nothing_and_no_page_past_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """One small blit in a corner (radendur's frame covers its whole screen with page-wide
+    """One small blit in a corner (m68k-dual's frame covers its whole screen with page-wide
     blits): an area away from it lists nothing, so any page past the first is past the list."""
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(MANIFEST))["status"] == "ok"
@@ -241,7 +241,7 @@ def test_topmost_is_judged_over_every_covering_blit_not_the_page(
 ) -> None:
     """The whole screen as the area: more blits cover it than a page lists, and `topmost` is the
     last of the highest plane among ALL of them, which the first page does not hold."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     pages = _pages(ses, area=[0, 0, 336, 252])
     every = [b for page in pages for b in page["blits"]]
     assert len(pages) > 1 and pages[0]["listed"]["of"] == len(every)
@@ -258,7 +258,7 @@ def test_an_area_lists_the_blits_covering_it_in_the_order_drawn(
     """A point inside blit 112's box: it and the high half's page-wide blit cover it. The topmost
     is the later one, of the page the screen is NOT showing, which is exactly why covering is
     said not to be painting and why each names its page."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", area=[60, 50, 1, 1], scale=1)
     assert out["status"] == "ok", out
@@ -277,7 +277,7 @@ def test_an_area_lists_the_blits_covering_it_in_the_order_drawn(
 
 def test_the_stops_own_frame_is_marked_incomplete(monkeypatch: pytest.MonkeyPatch,
                                                   tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", frame=903, scale=1)
     assert out["frame_blit"] == 903 and out["frame_complete"] is False and out["blits_in_frame"] > 0
@@ -285,7 +285,7 @@ def test_the_stops_own_frame_is_marked_incomplete(monkeypatch: pytest.MonkeyPatc
 
 def test_a_frame_with_no_blit_names_the_frames_that_have_some(monkeypatch: pytest.MonkeyPatch,
                                                                tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = refused(r"no blit of 'blit' was fired in frame 800",
                   s.gfx_blits(draw_command="blit", frame=800))
@@ -305,7 +305,7 @@ def test_a_capture_whose_tap_raised_carries_its_errors_on_the_blits_and_their_re
     assert s.gfx_load(path=str(MANIFEST))["status"] == "ok"
     raised = HEADER.replace("cpu=:maincpu\n", "cpu=:maincpu errors=9\ne mcp:44: planted fault\n")
     assert raised != HEADER
-    _declared(ses, _radendur_rows(),
+    _declared(ses, _m68k_dual_rows(),
               raised)
     errors = {"count": 9, "first": "mcp:44: planted fault"}
     clause = "the capture's callbacks raised 9 times (the first: mcp:44: planted fault)"
@@ -320,7 +320,7 @@ def test_a_capture_whose_tap_raised_carries_its_errors_on_the_blits_and_their_re
     assert none["callback_errors"] == errors
     assert none["message"].endswith(f"; {clause}, so rows may be missing"), none["message"]
     # A HEADER THAT CARRIES NO COUNT says nothing either way: no key, no clause
-    _declared(ses, _radendur_rows())
+    _declared(ses, _m68k_dual_rows())
     _screen(ses)
     plain = refused(r"no blit of 'blit' was fired in frame 800$",
                     s.gfx_blits(draw_command="blit", frame=800))
@@ -331,7 +331,7 @@ def test_a_frame_past_the_rows_kept_is_said_to_be_past_them(monkeypatch: pytest.
                                                             tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(MANIFEST))["status"] == "ok"
-    rows = _radendur_rows()
+    rows = _m68k_dual_rows()
     kept = "".join(rows.splitlines(keepends=True)[:100])
     _declared(ses, kept, HEADER.replace("rows=352 overflow_rows=0", "rows=100 overflow_rows=252"))
     _screen(ses)
@@ -362,7 +362,7 @@ def test_a_capture_with_no_rows_yet_is_refused(monkeypatch: pytest.MonkeyPatch,
 
 def test_an_area_off_the_screen_is_refused_with_its_size(monkeypatch: pytest.MonkeyPatch,
                                                          tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = refused(r"area \[330, 0\] \+ 10x10 leaves the 336x252 screen",
                   s.gfx_blits(draw_command="blit", area=[330, 0, 10, 10]))
@@ -472,7 +472,7 @@ def test_a_fire_word_across_the_bus_word_is_refused_by_name(monkeypatch: pytest.
                                                            tmp_path: Path) -> None:
     """A fire word at an odd address of a 16-bit bus is carried by no single write: said so,
     on either byte order, never a raw error nor a capture that silently holds no blit."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     text, n = re.subn(r"block: \{address: 0x700000,", "block: {address: 0x700001,",
                       MANIFEST.read_text(), count=1)
     assert n == 1
@@ -784,7 +784,7 @@ def test_a_box_by_width_and_height_covers_that_many_and_at_most_the_plane(
 def test_a_command_with_no_planes_maps_its_walk_to_the_screen_as_it_is(tmp_path: Path) -> None:
     cmd = _variant(tmp_path, (_PLANES, ""),
                    ("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: "
-                    "radendur.cpp do_blit}\n", ""))
+                    "m68k-dual.cpp do_blit}\n", ""))
     assert cmd.planes == ()
     geo = mblits.geometry(cmd, _blit(cmd, _words(330, 250, 339, 251)), 336, 252)
     assert geo["plane"] is None and geo["screen"] == [[330, 250, 6, 2]] and geo["clipped"]
@@ -798,7 +798,7 @@ def test_one_plane_with_no_plane_role_places_every_blit(tmp_path: Path) -> None:
            "        origin_x: 100\n        status: declared\n        source: a test\n")
     cmd = _variant(tmp_path, (_PLANES, one),
                    ("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: "
-                    "radendur.cpp do_blit}\n", ""))
+                    "m68k-dual.cpp do_blit}\n", ""))
     geo = mblits.geometry(cmd, _blit(cmd, _words(100, 0, 103, 1, w7=0x13)), 336, 252)
     assert geo["plane"] == "only" and geo["screen"] == [[0, 0, 4, 2]]
 
@@ -806,7 +806,7 @@ def test_one_plane_with_no_plane_role_places_every_blit(tmp_path: Path) -> None:
 def test_several_planes_need_the_plane_role(tmp_path: Path) -> None:
     with pytest.raises(mstate.Invalid, match=r"several planes need the `plane` role"):
         _variant(tmp_path, ("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, "
-                            "source: radendur.cpp do_blit}\n", ""),
+                            "source: m68k-dual.cpp do_blit}\n", ""),
                  ("        when: 0\n", ""), ("        when: 1\n", ""))
 
 
@@ -891,7 +891,7 @@ def test_a_capture_that_never_installed_says_so_rather_than_no_rows_yet(
 ) -> None:
     """A tap the console refused, or never evaluated, recorded nothing and never will: waiting
     for a trigger, which "no rows yet" advises, would wait for ever."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     mstate.STATE.tallies[OWNER].update(change)
     with pytest.raises(mstate.Invalid) as err:
         mblits.read_rows(ses.scratch, mm.command("blit"), None, 903)
@@ -907,7 +907,7 @@ def test_the_frame_the_cap_cut_is_not_called_complete(monkeypatch: pytest.Monkey
     some: that frame is marked, the frames before it are whole."""
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(MANIFEST))["status"] == "ok"
-    rows = _radendur_rows()
+    rows = _m68k_dual_rows()
     kept = "".join(rows.splitlines(keepends=True)[:300])
     last_frame = int(kept.splitlines()[-1].split()[2])
     _declared(ses, kept, HEADER.replace("rows=352 overflow_rows=0", "rows=300 overflow_rows=52"))
@@ -939,7 +939,7 @@ def test_a_negative_tile_and_an_empty_walk_are_refused(monkeypatch: pytest.Monke
                       "        parts:\n          - {word: 6, mask: 0xfc00}\n        add: -1\n"),
                      (_PLANES, ""),
                      ("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: "
-                      "radendur.cpp do_blit}\n", "")):
+                      "m68k-dual.cpp do_blit}\n", "")):
         text, n = re.subn(re.escape(old), new, text, count=1)
         assert n == 1, old
     path = tmp_path / "edge.yaml"
@@ -999,7 +999,7 @@ def test_a_listed_page_names_the_flags_it_shows_as_not_proved(monkeypatch: pytes
                                                               tmp_path: Path) -> None:
     """Every listed blit carries its flags, so a reply that lists blits leans on them; the
     summary lists none and names none of them."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     listed = s.gfx_blits(draw_command="blit", detail=True, scale=1)
     assert listed["blits"][0]["flags"]["writes_index_0"] == 0
@@ -1013,7 +1013,7 @@ def test_the_summary_builds_no_row_per_blit(monkeypatch: pytest.MonkeyPatch,
                                             tmp_path: Path) -> None:
     """The default reply lists no blit, so it names each writer once, for the legend, and no
     blit's row is built only to be thrown away."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     calls: list[int] = []
     real = mame_read.add_symbol
 
@@ -1032,7 +1032,7 @@ def test_only_the_blits_a_page_shows_are_labelled(monkeypatch: pytest.MonkeyPatc
                                                   tmp_path: Path) -> None:
     """A writer's symbol is looked up for the page listed and the legend, not for every blit of
     the frame the page is cut from."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     labelled: list[int] = []
     real = mame_read.add_symbol
 
@@ -1052,7 +1052,7 @@ def test_the_boxes_ask_the_screen_for_its_colours_and_touch_no_pen(
 ) -> None:
     """The boxes are drawn over the screen's colours, so the capture asks for no pens: none is
     rewritten to read them, and a palette the game adjusted cannot refuse the answer."""
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", scale=1)
     assert out["status"] == "ok", out
@@ -1084,7 +1084,7 @@ def test_as_many_writers_as_colours_do_not_repeat_one(monkeypatch: pytest.Monkey
 
 def test_a_summary_names_the_flags_its_planes_lean_on(monkeypatch: pytest.MonkeyPatch,
                                                       tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     out = s.gfx_blits(draw_command="blit", scale=1)
     assert {"drawing_low_half", "scroll_x", "scroll_y"} <= set(out["not_proved"]), out["not_proved"]
@@ -1206,7 +1206,7 @@ def test_the_row_below_the_rectangle_is_margin() -> None:
 def _no_planes(tmp_path: Path) -> mm.Command:
     return _variant(tmp_path, (_PLANES, ""),
                     ("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, source: "
-                     "radendur.cpp do_blit}\n", ""))
+                     "m68k-dual.cpp do_blit}\n", ""))
 
 
 def test_a_walk_down_a_screen_that_does_not_wrap_covers_from_its_end(tmp_path: Path) -> None:
@@ -1233,7 +1233,7 @@ def test_a_source_with_no_tile_role_reads_tile_zero(monkeypatch: pytest.MonkeyPa
                                                     tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
     text, n = re.subn(r"      source_tile:\n        parts:\n          - \{word: 6, mask: 0xfc00\}\n"
-                      r"        status: declared\n        source: radendur.cpp do_blit\n", "",
+                      r"        status: declared\n        source: m68k-dual.cpp do_blit\n", "",
                       Path(_sheet_manifest(tmp_path)).read_text(), count=1)
     assert n == 1
     path = tmp_path / "notile.yaml"
@@ -1302,7 +1302,7 @@ def test_a_command_with_no_source_role_says_which_is_missing(monkeypatch: pytest
     ses = _channel(monkeypatch, tmp_path)
     text, n = re.subn(r"      source_x:\n        parts:\n          - \{word: 0, mask: 0xff00\}\n"
                       r"          - \{word: 6, mask: 0x0100, at: 8\}\n        status: declared\n"
-                      r"        source: radendur.cpp do_blit\n", "", MANIFEST.read_text(), count=1)
+                      r"        source: m68k-dual.cpp do_blit\n", "", MANIFEST.read_text(), count=1)
     assert n == 1
     path = tmp_path / "nosx.yaml"
     path.write_text(text)
@@ -1352,7 +1352,7 @@ def test_a_palette_the_machine_lacks_is_named_with_the_ones_it_has(
 def test_every_writer_is_named_on_the_cpu_the_capture_ran_on(monkeypatch: pytest.MonkeyPatch,
                                                              tmp_path: Path) -> None:
     seen = _symbols(monkeypatch, {})
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     assert s.gfx_blits(draw_command="blit", scale=1)["status"] == "ok"
     assert seen and set(seen) == {":maincpu"}, "the legend's writers"
@@ -1393,7 +1393,7 @@ def test_the_screen_is_captured_under_the_calls_progress(monkeypatch: pytest.Mon
         return real(*args)
 
     monkeypatch.setattr(mame_screen, "capture", spy)
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     mblits.gfx_blits(cast(Any, ses), ses.scratch, "blit", None, None, False, 0, 1, "", 5.0, _mark)
     (args,) = seen
@@ -1402,7 +1402,7 @@ def test_the_screen_is_captured_under_the_calls_progress(monkeypatch: pytest.Mon
 
 def test_reading_the_rows_leaves_the_next_stops_baseline_alone(monkeypatch: pytest.MonkeyPatch,
                                                                tmp_path: Path) -> None:
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     _screen(ses)
     s.gfx_blits(draw_command="blit", scale=1)
     rec = mstate.STATE.tallies[OWNER]
@@ -1427,7 +1427,7 @@ def test_a_capture_whose_install_has_not_answered_is_read_from_this_sessions_con
 ) -> None:
     """The install's answer sits in the scratch's console log: reading the rows records it."""
     import mame_files
-    ses = _radendur(monkeypatch, tmp_path)
+    ses = _m68k_dual(monkeypatch, tmp_path)
     rec = mstate.STATE.tallies[OWNER]
     rec.update(installed=None, seq=9999, mark=0, line="the install line", error=None)
     mame_files.log_path(ses.scratch, "process").write_bytes(b"MAME_MCP_LUA_END#9999\ttrue\tnil\n")

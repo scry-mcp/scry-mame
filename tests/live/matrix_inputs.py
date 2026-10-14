@@ -1,7 +1,7 @@
 """Section O of the live matrix: the inputs every tool shares, read by one rule each.
 
 An address is written `0x`, any other ref is a symbol, and bare hex naming no symbol is refused
-with the `0x` spelling: on circus (no symbol file at all) and on radendur, whose table holds
+with the `0x` spelling: on circus (no symbol file at all) and on m68k-dual, whose table holds
 `adc`, a name that is also valid hex. Each cell carries its own control: the other spelling of
 the same place, read through the same tool, or the row the call must leave alone.
 
@@ -10,7 +10,7 @@ section only:
 
     MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_inputs.py
 
-speedf (its copy on the bench) carries the io port cell, the one board here with an io space.
+v30-alt (its copy on the bench) carries the io port cell, the one board here with an io space.
 """
 
 import json
@@ -19,7 +19,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from bench_boards import SYMBOLS, board_missing, radendur_missing
+from bench_boards import SYMBOLS, board_missing, m68k_dual_missing
 from live_harness import (
     BOOT,
     Board,
@@ -37,7 +37,7 @@ from live_harness import (
     said,
     section,
 )
-from matrix_acceptance import SPEEDF, v30_boot
+from matrix_acceptance import V30_ALT, v30_boot
 
 import mame_declarations as dec  # isort: skip -- found through the path the harness sets
 import mame_symbols as syms  # isort: skip -- found through the path the harness sets
@@ -45,7 +45,7 @@ import mame_symbols as syms  # isort: skip -- found through the path the harness
 O_TITLE = "inputs: an address only with 0x, one reading per ref, the store's old rows kept"
 O_CELLS = [f"O{n} {text}" for n, text in enumerate([
     "circus, no symbols: 0x1000 reads, bare 1000 is refused naming 0x1000",
-    "radendur: adc reads the symbol and 0xadc the address, each as its memdump holds it",
+    "m68k-dual: adc reads the symbol and 0xadc the address, each as its memdump holds it",
     "a comment by the name adc and one at 0xadc: a delete by the name leaves the raw one",
     "after a rebuild, a delete by the name in another case leaves the stale raw comment",
     "a list whose third step is bare hex is refused before anything ran, nothing written",
@@ -54,7 +54,7 @@ O_CELLS = [f"O{n} {text}" for n, text in enumerate([
     "0X4A0 is an address, and a ref padded with spaces reads as the trimmed one",
     "by=\"address\" with bare hex and by=\"symbol\" with 0x are refused, the list unchanged",
     "0x alone and 0x before non-hex are refused as starting like an address",
-    "speedf: a port written 0x8 is tapped, the bare port 8 is refused naming 0x8",
+    "v30-alt: a port written 0x8 is tapped, the bare port 8 is refused naming 0x8",
     "start with a bare reference_addr is refused before any MAME runs",
 ], start=1)]
 MAIN = ":maincpu"
@@ -79,11 +79,11 @@ def _dumped(ref: str) -> str:
     return Path(dest).read_bytes().hex() if ok(r) and Path(dest).is_file() else f"<{said(r)}>"
 
 
-def _o_radendur(t: list[str]) -> None:
+def _o_m68k_dual(t: list[str]) -> None:
     seeded = _legacy_row()
     r = boot()
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     listed = call("breakpoint_list").get("breakpoints") or []
     rows = [(b.get("ref"), b.get("by"), b.get("state")) for b in listed]
     bplist = str(call("debug", command="bplist").get("output", ""))
@@ -151,8 +151,8 @@ def _o_radendur(t: list[str]) -> None:
         call("close")
 
 
-def _o_speedf(t: list[str]) -> None:
-    v30_boot(SPEEDF)
+def _o_v30_alt(t: list[str]) -> None:
+    v30_boot(V30_ALT)
     tap = call("watch_add", ref="0x8", mode="count", space="io", length=2)
     bare = call("watch_add", ref="8", mode="count", space="io", length=2)
     cell(t[10], ok(tap) and refused(bare, "bad_argument")
@@ -165,7 +165,7 @@ def _o_speedf(t: list[str]) -> None:
 
 def _legacy_row() -> str:
     """The store as an older version wrote it: a breakpoint by address in bare hex, on the key
-    `start` reads for radendur's symbol file, in this section's own state directory, declared
+    `start` reads for m68k-dual's symbol file, in this section's own state directory, declared
     against the build this section boots (its fingerprint, which a raw address re-arms over).
     Answers that fingerprint, for the cell to compare with the one `start` computes."""
     path = dec.default_path()
@@ -185,7 +185,7 @@ def _rebuilt(t: list[str]) -> None:
     shutil.copyfile(SYMBOLS, copy)
     r = boot(symbols=str(copy))
     if not ok(r):
-        raise RuntimeError(f"radendur did not boot on the copy: {said(r)}")
+        raise RuntimeError(f"m68k-dual did not boot on the copy: {said(r)}")
     raw = str((call("symbols_find", name="page_bit_compose_a").get("symbols") or [{}])[0]
               .get("addr", ""))
     call("comment_add", ref=f"{int(raw, 16):#x}", text="matrix old raw", cpu="maincpu")
@@ -206,8 +206,8 @@ def _rebuilt(t: list[str]) -> None:
 
 
 O_BOARDS = (Board(_o_circus, (0,), free_boards_missing),
-            Board(_o_radendur, (1, 2, 3, 4, 5, 6, 7, 8, 9, 11), radendur_missing),
-            Board(_o_speedf, (10,), lambda: board_missing("v30-alt")))
+            Board(_o_m68k_dual, (1, 2, 3, 4, 5, 6, 7, 8, 9, 11), m68k_dual_missing),
+            Board(_o_v30_alt, (10,), lambda: board_missing("v30-alt")))
 boards_cover("O_BOARDS", O_CELLS, O_BOARDS)
 
 

@@ -4,7 +4,7 @@ The patched stub's `Hc` moves nothing, and the reply proves it on the frame coun
 cpu's whole register block. A stub without threads leaves only the console's `focus`, which
 ignores every other cpu and runs until the focused one executes; the reply names what it
 ignored and surveys where it stopped. The doubles answer `cpulist`, `ignore` and `focus` from
-captures of radendur.
+captures of m68k-dual.
 """
 
 from __future__ import annotations

@@ -336,7 +336,7 @@ def drain_ahead(ses: gs.Session, scratch: Path) -> tuple[int, int]:
     THE PIPE IS DRAINED FIRST, the raw form's rule. A `throttle` asked while stopped leaves
     its line there, and the console reads one line each time its hook runs: a wrapper that
     just ran its own frames spent them on somebody else's line and came back with its notifier never
-    released (measured live on LineUp: `input` behind a backlog answered `released: false`,
+    released (measured live on v30: `input` behind a backlog answered `released: false`,
     the field still held). So the lines ahead are stepped off first, and the frames the
     wrapper asks for are then its own."""
     ahead = transport.refuse_if_too_deep(scratch)

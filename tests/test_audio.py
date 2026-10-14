@@ -1,9 +1,9 @@
 """`audio_record`: the mixer's WAV over exactly `frames` frames, and the reader that checks it.
 
 The doubles are REAL files MAME wrote, gzipped in `tests/fixtures/audio/` with their provenance:
-a tone pinned on Line UP's AY, the same board's plain attract, a closed file that never received
+a tone pinned on v30's AY, the same board's plain attract, a closed file that never received
 an update, an unfinished one copied while the recording was still open, and a stereo recording
-from radendur, with the `begin` and `end` marks the recording script logged beside the first and
+from m68k-dual, with the `begin` and `end` marks the recording script logged beside the first and
 the last. Every failure the tool must refuse is a controlled edit of one of them, never a header
 written from what a WAV is believed to look like.
 """
@@ -68,8 +68,8 @@ def _put(ses: object, seq: int, path: Path, content: bytes | None, marks: list[s
 
 # ------------------------------------------------------------------------------- the reader
 
-@pytest.mark.parametrize("name", ["lineup-ay-tone", "lineup-plain", "lineup-closed-empty",
-                                  "radendur-stereo"])
+@pytest.mark.parametrize("name", ["v30-ay-tone", "v30-plain", "v30-closed-empty",
+                                  "m68k-dual-stereo"])
 def test_the_reader_agrees_with_stdlib_wave_on_every_real_file(tmp_path: Path, name: str) -> None:
     """The known answer for the header is a reader this server does not use: `wave` from the
     standard library reads channels, rate and frames off each file MAME wrote."""
@@ -87,7 +87,7 @@ def test_the_reader_agrees_with_stdlib_wave_on_every_real_file(tmp_path: Path, n
 
 def test_the_levels_of_a_tone_differ_and_those_of_a_held_level_do_not(tmp_path: Path) -> None:
     tone = tmp_path / "tone.wav"
-    tone.write_bytes(_wav("lineup-ay-tone"))
+    tone.write_bytes(_wav("v30-ay-tone"))
     lo, hi = mfiles.wav_levels(tone)
     assert lo < hi, (lo, hi)
     # every sample of the same file set to one level: a DAC at rest
@@ -104,7 +104,7 @@ def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyP
     """The file is read in bounded chunks; the extremes found are the whole file's, whatever
     chunk holds them."""
     path = tmp_path / "tone.wav"
-    path.write_bytes(_wav("lineup-ay-tone"))
+    path.write_bytes(_wav("v30-ay-tone"))
     whole = mfiles.wav_levels(path)
     monkeypatch.setattr(mfiles, "WAV_CHUNK_BYTES", 6)
     assert mfiles.wav_levels(path) == whole
@@ -113,10 +113,10 @@ def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyP
 def test_the_levels_of_a_file_longer_than_one_chunk_are_its_own(tmp_path: Path) -> None:
     """The chunk the levels are read in holds whole samples, so the second chunk starts on a
     sample too: the AY tone repeated past one chunk reads the levels stdlib `wave` reads."""
-    tone = _wav("lineup-ay-tone")[mfiles.WAV_HEADER_BYTES:]
+    tone = _wav("v30-ay-tone")[mfiles.WAV_HEADER_BYTES:]
     data = tone * (mfiles.WAV_CHUNK_BYTES // len(tone) + 2)
     path = tmp_path / "long.wav"
-    path.write_bytes(_with_sizes(_wav("lineup-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
+    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
     assert path.stat().st_size > mfiles.WAV_CHUNK_BYTES + mfiles.WAV_HEADER_BYTES
     with wave.open(str(path)) as w:
         every = array("h", w.readframes(w.getnframes()))
@@ -134,7 +134,7 @@ def test_a_lone_outlier_is_found_wherever_it_lies(monkeypatch: pytest.MonkeyPatc
     data = bytearray(2 * n)
     struct.pack_into("<h", data, 2 * index, -777)
     path = tmp_path / "x.wav"
-    path.write_bytes(_with_sizes(_wav("lineup-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
+    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
     assert mfiles.wav_levels(path) == (-777, 0)
 
 
@@ -144,8 +144,8 @@ def _edit(data: bytes, at: int, fmt: str, value: int) -> bytes:
     return bytes(out)
 
 
-AY = _wav("lineup-ay-tone")
-STEREO = _wav("radendur-stereo")
+AY = _wav("v30-ay-tone")
+STEREO = _wav("m68k-dual-stereo")
 
 
 def _no_speaker(data: bytes) -> bytes:
@@ -190,7 +190,7 @@ def test_the_reader_refuses_a_header_that_disagrees_with_itself_or_the_file(
 def test_the_reader_refuses_an_unfinished_file_and_a_missing_one(tmp_path: Path) -> None:
     """MAME writes both sizes at close: a file still open reads 0 there whatever it holds."""
     path = tmp_path / "open.wav"
-    path.write_bytes(_wav("lineup-unfinished"))
+    path.write_bytes(_wav("v30-unfinished"))
     head = path.read_bytes()[:mfiles.WAV_HEADER_BYTES]
     assert path.stat().st_size > mfiles.WAV_HEADER_BYTES
     assert struct.unpack_from("<I", head, 4) == struct.unpack_from("<I", head, 40) == (0,), (
@@ -203,16 +203,16 @@ def test_a_header_naming_no_channel_is_told_apart_from_a_file_that_is_no_wav(
     tmp_path: Path
 ) -> None:
     path = tmp_path / "x.wav"
-    path.write_bytes(_no_speaker(_wav("lineup-closed-empty")))
+    path.write_bytes(_no_speaker(_wav("v30-closed-empty")))
     assert mfiles.wav_header(path) is None and mfiles.wav_without_channel(path)
     path.write_bytes(bytes(mfiles.WAV_HEADER_BYTES))
     assert not mfiles.wav_without_channel(path), "zeros are not a WAV, with a channel or none"
-    path.write_bytes(b"RIFX" + _no_speaker(_wav("lineup-closed-empty"))[4:])
+    path.write_bytes(b"RIFX" + _no_speaker(_wav("v30-closed-empty"))[4:])
     assert not mfiles.wav_without_channel(path), "no RIFF magic, no WAV"
-    no_wave = _no_speaker(_wav("lineup-closed-empty"))
+    no_wave = _no_speaker(_wav("v30-closed-empty"))
     path.write_bytes(no_wave[:8] + b"WAVX" + no_wave[12:])
     assert not mfiles.wav_without_channel(path), "no WAVE magic, no WAV"
-    path.write_bytes(_wav("lineup-closed-empty"))
+    path.write_bytes(_wav("v30-closed-empty"))
     assert not mfiles.wav_without_channel(path)
     assert not mfiles.wav_without_channel(tmp_path / "never.wav")
 
@@ -224,7 +224,7 @@ def test_audio_record_checks_the_wav_and_answers_its_fields_in_order(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     path = ses.scratch / "snap" / "audio-1.wav"
-    _put(ses, 1, path, AY, _marks("lineup-ay-tone", 1))
+    _put(ses, 1, path, AY, _marks("v30-ay-tone", 1))
     out = s.audio_record(frames=30)
     assert out["status"] == "ok", out
     assert out["path"] == str(path) and out["bytes"] == len(AY) and out["ended"] is True
@@ -253,12 +253,12 @@ def test_audio_record_writes_where_it_is_told_and_counts_its_default_with_record
     and a WAV of one session never take the same number."""
     ses = _channel(monkeypatch, tmp_path)
     dest = tmp_path / "out.wav"
-    _put(ses, 1, dest, _wav("radendur-stereo"), _marks("radendur-stereo", 1))
+    _put(ses, 1, dest, _wav("m68k-dual-stereo"), _marks("m68k-dual-stereo", 1))
     out = s.audio_record(frames=7, dest=str(dest))
     assert out["status"] == "ok" and out["path"] == str(dest) and out["channels"] == 2, out
     assert mstate.STATE.recordings == 0, "a given dest takes no number from the counter"
     mstate.STATE.recordings = 4
-    _put(ses, 2, ses.scratch / "snap" / "audio-5.wav", AY, _marks("lineup-ay-tone", 2))
+    _put(ses, 2, ses.scratch / "snap" / "audio-5.wav", AY, _marks("v30-ay-tone", 2))
     assert s.audio_record(frames=30)["path"].endswith("audio-5.wav")
 
 
@@ -271,7 +271,7 @@ def test_a_silent_recording_is_answered_and_said_never_refused(
     held = bytearray(AY)
     held[mfiles.WAV_HEADER_BYTES:] = struct.pack("<h", level) * (
         (len(AY) - mfiles.WAV_HEADER_BYTES) // 2)
-    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", bytes(held), _marks("lineup-ay-tone", 1))
+    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", bytes(held), _marks("v30-ay-tone", 1))
     out = s.audio_record(frames=30)
     assert out["status"] == "ok" and out["sample_min"] == out["sample_max"] == level, out
     assert out["summary"].endswith(", silent at " + out["path"]), out["summary"]
@@ -310,31 +310,31 @@ def test_audio_record_refuses_what_it_measured_and_says_which(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, case: str
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    marks = _marks("lineup-ay-tone", 1)
+    marks = _marks("v30-ay-tone", 1)
     if case == "mixer refused":
         begin = marks[0].replace("ok=true recording=true", "ok=false recording=true")
         _refused_with(ses, None, [begin], 30, "the mixer refused to begin")
     elif case == "unfinished":
-        out = _refused_with(ses, _wav("lineup-unfinished"), marks, 30, "not a finished WAV")
+        out = _refused_with(ses, _wav("v30-unfinished"), marks, 30, "not a finished WAV")
         assert "no speaker" not in str(out["message"]), "its header names a channel"
     elif case == "no speaker":
-        empty = _no_speaker(_wav("lineup-closed-empty"))
+        empty = _no_speaker(_wav("v30-closed-empty"))
         out = _refused_with(ses, empty, marks, 30, "not a finished WAV")
         assert "no speaker" in str(out["message"])
     elif case == "one frame short":
-        _refused_with(ses, AY, _shifted("lineup-ay-tone", 1, end_frame=90), 30,
+        _refused_with(ses, AY, _shifted("v30-ay-tone", 1, end_frame=90), 30,
                       "ended the recording 29 frames after it began, not 30")
     elif case == "span":
-        _refused_with(ses, AY, _shifted("lineup-ay-tone", 1, end_time=1.84), 30,
+        _refused_with(ses, AY, _shifted("v30-ay-tone", 1, end_time=1.84), 30,
                       "not 30 frame periods")
     elif case == "no update":
-        out = _refused_with(ses, _wav("lineup-closed-empty"), marks, 30, "held no mixer update")
-        assert out["bytes"] == len(_wav("lineup-closed-empty")), "the file's own size"
+        out = _refused_with(ses, _wav("v30-closed-empty"), marks, 30, "held no mixer update")
+        assert out["bytes"] == len(_wav("v30-closed-empty")), "the file's own size"
     elif case == "one frame long":
-        _refused_with(ses, AY, _shifted("lineup-ay-tone", 1, end_frame=92), 30,
+        _refused_with(ses, AY, _shifted("v30-ay-tone", 1, end_frame=92), 30,
                       "ended the recording 31 frames after it began, not 30")
     elif case == "samples":
-        _refused_with(ses, _wav("radendur-stereo"), marks, 30,
+        _refused_with(ses, _wav("m68k-dual-stereo"), marks, 30,
                       "does not hold the span it was bounded by")
 
 
@@ -342,7 +342,7 @@ def test_a_recording_cut_short_is_still_open_and_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, _marks("lineup-ay-tone", 1)[:1])
+    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, _marks("v30-ay-tone", 1)[:1])
     out = s.audio_record(frames=30)
     assert out["status"] == "ok" and out["ended"] is False and out["frame_end_planned"] == 90, out
     assert out["began"] is True, out
@@ -390,14 +390,14 @@ def test_an_end_mark_with_no_begin_mark_is_refused(
     """The script ended a recording whose beginning the log does not hold: no reply can say
     what the file is, and "not begun" would be false."""
     ses = _channel(monkeypatch, tmp_path)
-    _refused_with(ses, AY, _marks("lineup-ay-tone", 1)[1:], 30, "no `begin` mark")
+    _refused_with(ses, AY, _marks("v30-ay-tone", 1)[1:], 30, "no `begin` mark")
 
 
 def test_a_chunk_the_console_ran_twice_is_a_rerun(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    begin, end = _marks("lineup-ay-tone", 1)
+    begin, end = _marks("v30-ay-tone", 1)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", AY, [begin, begin, end])
     out = s.audio_record(frames=30)
     assert out["code"] == "console_rerun", out
@@ -441,7 +441,7 @@ def test_captures_lists_a_wav_with_its_header_and_nulls_once_it_no_longer_reads(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     path = ses.scratch / "snap" / "audio-1.wav"
-    _put(ses, 1, path, AY, _marks("lineup-ay-tone", 1))
+    _put(ses, 1, path, AY, _marks("v30-ay-tone", 1))
     assert s.audio_record(frames=30)["status"] == "ok"
     wav = s.captures()["captures"][-1]
     assert (wav["kind"], wav["present"], wav["bytes"]) == ("wav", True, len(AY)), wav
@@ -474,7 +474,7 @@ def test_the_script_stops_the_mixer_in_one_place_and_prints_its_times_whole() ->
 def _spanning(seq: int, emulated: float, frames: int = 30, t0: float | None = None) -> list[str]:
     """Begin and end marks whose span is `emulated` seconds over `frames` periods, from `t0`
     or the fixture's own begin time."""
-    begin, _ = _marks("lineup-ay-tone", seq)
+    begin, _ = _marks("v30-ay-tone", seq)
     if t0 is None:
         t0 = float(begin.rsplit("time=", 1)[1].split()[0])
     head = begin.split(" begin ", 1)[0]
@@ -504,7 +504,7 @@ def test_the_span_is_held_to_its_periods_within_a_microsecond(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, drift: float, ok: bool
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    begin, end = _marks("lineup-ay-tone", 1)
+    begin, end = _marks("v30-ay-tone", 1)
     t1 = float(end.rsplit("time=", 1)[1])
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", AY,
          [begin, end.rsplit("time=", 1)[0] + f"time={t1 + drift!r}"])
@@ -567,7 +567,7 @@ def test_recording_after_is_what_the_begin_mark_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    begin, end = _marks("lineup-ay-tone", 1)
+    begin, end = _marks("v30-ay-tone", 1)
     begin = begin.replace("ok=true recording=true", "ok=true recording=false")
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", AY, [begin, end])
     out = s.audio_record(frames=30)
@@ -637,8 +637,8 @@ def test_a_finished_recording_with_its_armed_line_is_finished(
     """The live shape: the chunk logs `armed` as it is evaluated, then the notifier `begin` and
     `end`. An `armed` line beside a `begin` is a recording that began."""
     ses = _channel(monkeypatch, tmp_path)
-    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", _wav("lineup-ay-tone"),
-         [_armed(1), *_marks("lineup-ay-tone", 1)])
+    _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", _wav("v30-ay-tone"),
+         [_armed(1), *_marks("v30-ay-tone", 1)])
     out = s.audio_record(frames=30)
     assert out["status"] == "ok" and out["began"] is True and out["ended"] is True, out
     assert out["samples"] > 0, out
@@ -650,7 +650,7 @@ def test_a_refusal_after_the_run_says_the_frames_the_run_advanced(
     """A refusal raised once the run is over has moved the machine by the whole run: it says
     from which frame to which, in the run refusals' own keys."""
     ses = _channel(monkeypatch, tmp_path)
-    began = [ln.replace(" ok=true", " ok=false") for ln in _marks("lineup-ay-tone", 1)]
+    began = [ln.replace(" ok=true", " ok=false") for ln in _marks("v30-ay-tone", 1)]
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1), *began])
     before = 100                      # the double's frame counter at its start
     out = refused("the mixer refused to begin", s.audio_record(frames=30))
@@ -797,7 +797,7 @@ function release() _G._mame_mcp_audio_release() end
 def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list[str]:
     """The mixer, then `before`, then the recording script for `frames` frames on `ours.wav`,
     then `after`: what it printed, one event a line (`stop <path>`, `log <mark line>`)."""
-    header = _wav("lineup-unfinished")[:mfiles.WAV_HEADER_BYTES]
+    header = _wav("v30-unfinished")[:mfiles.WAV_HEADER_BYTES]
     chunk = (MIXER_LUA % {"header": _lua_bytes(header)} + before + "\n"
              + maudio.AUDIO_LUA % {"path": transport.lua_string(str(tmp_path / "ours.wav")),
                                    "frames": frames, "mark": "MAME_MCP_AUDIO#1"}
@@ -811,7 +811,7 @@ def test_the_lua_mixer_double_closes_a_file_as_mames_did(tmp_path: Path) -> None
     out = _run_audio_lua(tmp_path, 2, 'other_begins("x.wav") machine = manager.machine '
                          'machine.sound:stop_recording()', "")
     assert out[0] == "stop x.wav", out
-    assert (tmp_path / "x.wav").read_bytes() == _wav("lineup-closed-empty")
+    assert (tmp_path / "x.wav").read_bytes() == _wav("v30-closed-empty")
 
 
 def test_the_script_begins_on_its_first_notifier_call_and_ends_frames_calls_later(

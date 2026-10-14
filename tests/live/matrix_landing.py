@@ -1,11 +1,11 @@
-"""Section V of the live matrix: a control on the instruction a frame stop lands on, on rltennis,
-where that instruction is the first of the handler the vblank interrupt enters.
+"""Section V of the live matrix: a control on the instruction a frame stop lands on, on
+m68k-dual-alt, where that instruction is the first of the handler the vblank interrupt enters.
 
 Two arms over one run by frames (`breakpoints.count_landing` says why they differ). The server's:
 a control there counts as many hits as a control on the next instruction. MAME's own: a logging
 breakpoint there, typed through `debug`, logs fewer lines than one on the next instruction. The
 day MAME evaluates that instruction the second arm goes red, and the server's correction is the
-thing to revisit. rltennis runs on its copies on the bench, BLOCKED naming the file when they
+thing to revisit. m68k-dual-alt runs on its copies on the bench, BLOCKED naming the file when they
 are absent or off their pins.
 
 `live_matrix.py` registers this section; run alone, it is the same machinery over it only:
@@ -15,7 +15,7 @@ are absent or off their pins.
 
 from typing import Any
 
-from bench_boards import RLTENNIS_BOOT, board_missing
+from bench_boards import M68K_DUAL_ALT_BOOT, board_missing
 from live_harness import (
     Board,
     boards_cover,
@@ -35,7 +35,7 @@ AT_HANDLER, AT_INSIDE = "MCPH", "MCPI"      # each logging breakpoint's own word
 
 V_TITLE = "a control on the instruction a stop lands on"
 V = [
-    "over a run by frames on rltennis, a control on the handler a frame stop lands on counts "
+    "over a run by frames on m68k-dual-alt, a control on the handler a frame stop lands on counts "
     "as many hits as a control on the next instruction, while MAME's own logging breakpoint "
     "there logs fewer lines than one on the next instruction",
 ]
@@ -45,8 +45,8 @@ def _logged(word: str) -> Any:
     return call("log", pattern=f"^{word} ", channel="emulator", limit=1).get("lines_total")
 
 
-def _v_rltennis(_cells: list[str]) -> None:
-    require_booted("rltennis", call("start", **RLTENNIS_BOOT, seconds=25.0))
+def _v_m68k_dual_alt(_cells: list[str]) -> None:
+    require_booted("m68k-dual-alt", call("start", **M68K_DUAL_ALT_BOOT, seconds=25.0))
     controls = [call("breakpoint_at", ref=ref, role="control") for ref in (HANDLER, INSIDE)]
     raw = [call("debug", command=f'bp {ref[2:]},1,{{logerror "{word} %d\\n",frame ; g}}')
            for ref, word in ((HANDLER, AT_HANDLER), (INSIDE, AT_INSIDE))]
@@ -62,7 +62,7 @@ def _v_rltennis(_cells: list[str]) -> None:
          f"{inside}; logged at {HANDLER} {logged_first}, at {INSIDE} {logged_inside}")
 
 
-V_BOARDS = (Board(_v_rltennis, (0,), lambda: board_missing("m68k-dual-alt")),)
+V_BOARDS = (Board(_v_m68k_dual_alt, (0,), lambda: board_missing("m68k-dual-alt")),)
 boards_cover("V_BOARDS", V, V_BOARDS)
 
 

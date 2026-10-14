@@ -1,7 +1,7 @@
 """Section K's removal cells: a tap's removal handed back unrun is lost and never resent, and a
 range declared again while its removal is held reads nothing the removed tap left.
 
-`live_matrix.py` runs these inside section K, on circus and radendur, after the install cells
+`live_matrix.py` runs these inside section K, on circus and m68k-dual, after the install cells
 that use the same instrument (`reader_fault`); every count watch here is cleared at the end.
 """
 

@@ -2399,20 +2399,20 @@ widened to 8 bits the way MAME's `palNbit` widens them.
 That law is the entry's `protocol` `ramdac`. Two other drivers put a whole colour in one word,
 and the entry names which (`protocol`), the words being read little-endian from the port's
 address up to the end of its bus word; a big-endian bus, or an index port in the data port's bus
-word, is refused by the install itself (`state` `install_failed`, the console's words in its `why`), before it touches a log already armed. **`latch`** (Speed Fight's `paldat_w`): a word on
+word, is refused by the install itself (`state` `install_failed`, the console's words in its `why`), before it touches a log already armed. **`latch`** (v30-alt's `paldat_w`): a word on
 the data port with a bit of `index_flag_mask` set sets the index to its low bits, and any other
 word is the colour of the indexed pen, written whole (the driver takes no mask); a write to the
 optional `index_port` merges into the index under its mask (`COMBINE_DATA`), and while the index
 is unknown only a write covering every index bit makes it known (one that does not is a
-`desync` row, its `why` saying so). **`sequence`** (Line UP's `twins_pal_w`): each data write merges
+`desync` row, its `why` saying so). **`sequence`** (v30's `twins_pal_w`): each data write merges
 into the stored word of the pen at the offset under its mask; any write to the bus word of
 `index_port` sends the offset back to 0. In both, a colour write moves the index on by one when
-`auto_increment`. Line UP's driver zeroes its offset once, as its video starts, before the first
+`auto_increment`. v30's driver zeroes its offset once, as its video starts, before the first
 instruction, so a `sequence` log armed where `start` parked, before the machine ever executed,
 starts knowing it (`synced_at_start`); armed anywhere else it waits for a write to the reset
 port, which a game may never make again. In both, the colour is
 `order`'s components from bit 0 up, `component_bits` each, bit-reversed when
-`components_bit_reversed` (Line UP's `bitswap<8>(x,7,6,5,0,1,2,3,4)`), and a pen has a colour
+`components_bit_reversed` (v30's `bitswap<8>(x,7,6,5,0,1,2,3,4)`), and a pen has a colour
 only once every colour bit of its word has been seen written: a write that merges into a pen
 whose other bits the log never saw is counted in `partial_writes`, and the pen keeps no colour
 until they are. A packed pen shows its `word`, and a packed row its `word` and `mask`, where a
@@ -2422,7 +2422,7 @@ byte-wide RAMDAC's shows `component` and `value`. The index wraps at `pen_count`
 the pen's newest logged write, dumped by the same chunk that read the screen, so the three are
 one instant. `agrees` says whether the colour that write left is the pen's colour now. When it
 is not, something other than a port write changed the pen since (a driver copying pens itself,
-as radendur's does at vblank from a snapshot taken at the page flip, a Lua `set_pen_color`, a
+as m68k-dual's does at vblank from a snapshot taken at the page flip, a Lua `set_pen_color`, a
 state load), and the reply says so and names `same_color_write`, the newest kept row that left
 the pen that colour, instead of guessing. The `note` keeps every sentence that applies: a
 write the debugger made and a colour it did not leave are two facts, and saying one does not

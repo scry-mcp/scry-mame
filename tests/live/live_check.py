@@ -11,7 +11,7 @@ import wave
 from pathlib import Path
 from typing import Any
 
-from bench_boards import MANIFEST, RADENDUR_SYSTEM, REFERENCE_ROM, SYMBOLS, radendur_missing
+from bench_boards import M68K_DUAL_SYSTEM, MANIFEST, REFERENCE_ROM, SYMBOLS, m68k_dual_missing
 from live_harness import (
     BOOT,
     check,
@@ -31,8 +31,8 @@ import mame_machine as machine  # isort: skip
 import server as s  # isort: skip
 
 #   uv run python tests/live/live_check.py
-# Every check here is on radendur, so a bench without its copies leaves nothing to examine.
-if why := radendur_missing():
+# Every check here is on m68k-dual, so a bench without its copies leaves nothing to examine.
+if why := m68k_dual_missing():
     invalid(why)
 isolate_state("mame-live-check-state-")
 
@@ -687,11 +687,11 @@ check("gfx_sweep draws gfx1 under its 8-bit candidates on one labelled, attached
       == [8, 8, 8] and (sweep.get("image") or {}).get("inline") is True,
       str(sweep.get("summary")))
 draft_dir = Path(tempfile.mkdtemp(prefix="mame-live-draft-"))
-draft = s.gfx_draft(dest=str(draft_dir / "radendur-gfx.yaml"))
+draft = s.gfx_draft(dest=str(draft_dir / "m68k-dual-gfx.yaml"))
 check("gfx_draft writes a draft the loader takes and its report beside it",
       draft.get("status") == "ok"
-      and (draft_dir / "radendur-gfx.yaml").read_text().startswith("# DRAFT")
-      and (draft_dir / "radendur-gfx.report.json").is_file(), str(draft.get("summary")))
+      and (draft_dir / "m68k-dual-gfx.yaml").read_text().startswith("# DRAFT")
+      and (draft_dir / "m68k-dual-gfx.report.json").is_file(), str(draft.get("summary")))
 check("and neither altered the session", s.status()["session"]["altered"] == altered_before)
 
 print("\n== drive: look, act, verify on the emulator log")
@@ -870,7 +870,7 @@ check("a stop the console's run reached at a breakpoint is found by the first co
 s.breakpoint_clear(all=True)
 check("closed", s.close().get("closed") is True)
 
-print("\n== the Lua channel: MAME's own console through stdin, measured on radendur")
+print("\n== the Lua channel: MAME's own console through stdin, measured on m68k-dual")
 r = s.start(**BOOT, symbols=SYMBOLS)
 check("a fresh session for the channel", r.get("rom_check") == "OK", str(r.get("summary")))
 image = Path(REFERENCE_ROM).read_bytes()
@@ -889,7 +889,7 @@ check("the console's own error is a refusal in its words", r.get("status") == "I
 r = s.lua("local t = {}\nfor i = 1, 3 do t[#t + 1] = i * 2 end\nprint(table.concat(t, ','))")
 check("a multi-line script runs as ONE chunk", r.get("output") == "2,4,6\n", str(r.get("output")))
 
-print("\n== input(): the coin of radendur, by port and field name, read back off the port")
+print("\n== input(): the coin of m68k-dual, by port and field name, read back off the port")
 # The game's credit counter (nav-phase.lua reads it at 0x20351e); the menu needs the machine
 # past its boot, so run there first.
 s.run_for(frames=300)
@@ -927,7 +927,7 @@ check("a state that does not exist is refused before the console", r.get("code")
 # MAME refuses a bad state in SILENCE from the console (measured: nothing in any log), so
 # the header is judged before the console: a corrupt magic and another system's name.
 good = (Path(str(s.status().get("state_dir") or s.status().get("scratch_dir"))) / "sta"
-        / RADENDUR_SYSTEM)
+        / M68K_DUAL_SYSTEM)
 corrupt = bytearray((good / "live.sta").read_bytes())
 corrupt[0:8] = b"NOTASAVE"
 (good / "corrupt.sta").write_bytes(corrupt)
@@ -1019,7 +1019,7 @@ check("every range in the reply is one the machine declared, and each is well fo
 s.close()
 
 print("\n== machine_map(): symbol_coverage against a table that carries classes")
-table = Path(tempfile.mkdtemp(prefix="mame-live-symbols-")) / "radendur.map"
+table = Path(tempfile.mkdtemp(prefix="mame-live-symbols-")) / "m68k-dual.map"
 table.write_text(
     "boot_entry\tF2034\t_TEXT\t0\tCODE\n"
     "irq_vblank\t400\t_TEXT\t0\tCODE\n"

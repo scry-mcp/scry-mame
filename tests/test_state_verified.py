@@ -63,7 +63,7 @@ def _board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *, threads: dict[int
     plain = _channel(monkeypatch, tmp_path)
     plain.__class__ = kind
     ses = cast(_BlockSession, plain)
-    monkeypatch.setattr(mstate.STATE, "system", "radendur")
+    monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     ses.threads = dict(threads)
     ses.stale_after_load = True                          # the frame comes back at a load
     ses.blocks = {tid: dict(_A) for tid in (threads or {1: ""})}

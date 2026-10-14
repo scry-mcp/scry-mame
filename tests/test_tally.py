@@ -3,7 +3,7 @@ console, installed when the console next reads a line, dumped by a periodic hook
 stop, read back by the survey.
 
 The dump here is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`): sixty-one frames of
-radendur's vblank handler writing its frame counter, two words per long, from one pc. The
+m68k-dual's vblank handler writing its frame counter, two words per long, from one pc. The
 bus events the lane decoding is checked against are the ones measured on the same board:
 a `move.l` arriving as two `mask=ffff` words and a `move.b #$d8` arriving as `data=d8d8
 mask=ff00`, the byte on both lanes and the mask naming the one that lands. The dumps with
@@ -395,7 +395,7 @@ def test_a_count_watch_inside_a_bus_word_or_of_whole_ones_is_installed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, addr: int, length: int, data_width: int,
 ) -> None:
     """A range inside one bus word is written whole by one write; a range of whole words word
-    by word, each row one whole word of it (radendur's u32 on its 16-bit bus). Neither is
+    by word, each row one whole word of it (m68k-dual's u32 on its 16-bit bus). Neither is
     refused, and an 8-bit bus refuses nothing."""
     _tallying(monkeypatch, tmp_path)
     _on_bus(monkeypatch, data_width)

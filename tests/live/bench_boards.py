@@ -173,16 +173,16 @@ def board_missing(label: str) -> str:
             or _unpinned(label))
 
 
-def radendur_missing() -> str:
+def m68k_dual_missing() -> str:
     """Why the board every script drives cannot run here, or empty."""
     return board_missing("m68k-dual")
 
 
 # the board every live script drives, how it proves itself against the ROM on disk, and the
 # project's own graphics manifest, which its sections read.
-RADENDUR_BINARY = board_path("m68k-dual", "binary")
-RADENDUR_SYSTEM = value("m68k-dual", "system")
-RADENDUR_ROMS = str(board_dir("m68k-dual") / ROMPATH)
+M68K_DUAL_BINARY = board_path("m68k-dual", "binary")
+M68K_DUAL_SYSTEM = value("m68k-dual", "system")
+M68K_DUAL_ROMS = str(board_dir("m68k-dual") / ROMPATH)
 REFERENCE_ROM = board_path("m68k-dual", "reference_rom")
 SYMBOLS = board_path("m68k-dual", "symbols")
 SUB_ROM = board_path("m68k-dual", "sub_rom")
@@ -192,7 +192,7 @@ MANIFEST = str(board_dir("m68k-dual") / GFX_MANIFEST)
 BLIT_HANDLER = value("m68k-dual", "blit_handler")
 
 # a second 68000 board, driven by section V.
-RLTENNIS_BOOT = dict(binary=board_path("m68k-dual-alt", "binary"),
+M68K_DUAL_ALT_BOOT = dict(binary=board_path("m68k-dual-alt", "binary"),
                      system=value("m68k-dual-alt", "system"),
                      rompath=str(board_dir("m68k-dual-alt") / ROMPATH),
                      reference_rom=board_path("m68k-dual-alt", "reference_rom"),

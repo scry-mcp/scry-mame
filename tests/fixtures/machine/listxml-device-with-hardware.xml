@@ -162,10 +162,10 @@
 ]>
 
 <mame build="0.289 (mame0289-dirty)" debug="no" mameconfig="10">
-	<machine name="radendur" sourcefile="tch/radendur.cpp">
-		<description>Radical Enduro (early prototype)</description>
+	<machine name="m68k-dual" sourcefile="m68k-dual/m68k-dual.cpp">
+		<description>m68k-dual</description>
 		<year>199?</year>
-		<manufacturer>TCH / Sator Videogames</manufacturer>
+		<manufacturer>m68k-dual</manufacturer>
 		<rom name="endu.u19" size="524288" crc="d24ca61c" sha1="64d2648959579d35fbf4c8479c0ff75781d28146" region="maincpu" offset="1"/>
 		<rom name="endu.u21" size="524288" crc="45244675" sha1="69be2eca3548644f97b9f6956bb3ff979740b1e4" region="maincpu" offset="0"/>
 		<rom name="endu.u63" size="524288" crc="43c35368" sha1="62167a434bfe00825f2f97ecadd0af3e2d2b63f2" region="subcpu" offset="1"/>
@@ -184,8 +184,8 @@
 		<rom name="endu.u203" size="524288" crc="e6361a27" sha1="826be3b326e68c3b7c0f5c3d84993a971b32f84e" region="gfx1" offset="580000"/>
 		<rom name="endu.u204" size="524288" crc="0db97872" sha1="56e38a9034082c3ceb78c0f3aba6125ce6fabd49" region="gfx1" offset="600000"/>
 		<rom name="endu.u205" size="524288" crc="75660aac" sha1="6a521e1d2a632c26e53b83d2cc4b0edecfc1e68c" region="gfx1" offset="680000"/>
-		<rom name="radenduro_2_d579_gal22v10.u24" size="741" crc="ebe162d0" sha1="910e3733df70db4df704f3e105ed27eaa4c32ae6" region="plds" offset="0"/>
-		<rom name="radenduro_gal22v10b.u23" size="741" crc="f1b0b2b7" sha1="f85c87c7956813fe78f399694dc999877b1dcb60" region="plds" offset="0"/>
+		<rom name="m68k_dual_2_d579_gal22v10.u24" size="741" crc="ebe162d0" sha1="910e3733df70db4df704f3e105ed27eaa4c32ae6" region="plds" offset="0"/>
+		<rom name="m68k_dual_gal22v10b.u23" size="741" crc="f1b0b2b7" sha1="f85c87c7956813fe78f399694dc999877b1dcb60" region="plds" offset="0"/>
 		<rom name="3_pal16v8.u40" size="279" status="nodump" region="plds" offset="0"/>
 		<rom name="4_pal16v8.u73" size="279" status="nodump" region="plds" offset="0"/>
 		<device_ref tag=":maincpu" name="m68000"/>

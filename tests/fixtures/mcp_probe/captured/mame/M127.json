@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "M127",
-  "prompt": "Replace the confirmed manifest /home/dev/tch/hardware/gfx.yaml with the draft of this session, overwriting it.",
+  "prompt": "Replace the confirmed manifest /home/dev/m68k-dual/hardware/gfx.yaml with the draft of this session, overwriting it.",
   "expect": "CANNOT",
   "about": "gfx_draft"
  },

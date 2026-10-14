@@ -2,9 +2,10 @@
 `gfx_load`, and a format named by the manifest wherever a layout is taken.
 
 The manifest under `tests/fixtures/gfx/manifest-blitter.yaml` is a project's declaration, not a
-double of anything MAME prints, so it is written by hand: TCH's blitter command transcribed from
-`tch/radendur.cpp`, and circus's char layout transcribed from `circus.cpp`. Every refusal below is
-a one-place edit of that file, made with a substitution that must match exactly once.
+double of anything MAME prints, so it is written by hand: m68k-dual's blitter command
+transcribed from its driver, and circus's char layout transcribed from `circus.cpp`. Every
+refusal below is a one-place edit of that file, made with a substitution that must match
+exactly once.
 """
 
 from __future__ import annotations
@@ -53,12 +54,12 @@ def test_the_subset_reads_what_a_manifest_is_written_in() -> None:
         "c: the game's own # after an apostrophe, which is a letter\n"
         "d:\n- 1\n- 0x10\n- [1, [2, 3], {e: f}]\n- {g: 'h, i', j: \"k: l\"}\n"
         "m:\n  - k: 1\n    o:\n      - p\n      - q: r\n        s: t\n"
-        "u: 512*512*8\nv: radendur.cpp:208 do_blit\nw: true\nx: false\n")
+        "u: 512*512*8\nv: m68k-dual.cpp:208 do_blit\nw: true\nx: false\n")
     assert doc == {
         "a": "it's", "b": 'x "y" \\ z', "c": "the game's own",
         "d": [1, 16, [1, [2, 3], {"e": "f"}], {"g": "h, i", "j": "k: l"}],
         "m": [{"k": 1, "o": ["p", {"q": "r", "s": "t"}]}],
-        "u": "512*512*8", "v": "radendur.cpp:208 do_blit", "w": True, "x": False}
+        "u": "512*512*8", "v": "m68k-dual.cpp:208 do_blit", "w": True, "x": False}
 
 
 @pytest.mark.parametrize("text, said", [
@@ -177,7 +178,7 @@ def test_a_bom_is_the_streams_and_not_the_first_keys() -> None:
 def test_the_fixture_loads_whole_and_says_what_it_holds() -> None:
     man = mm.read(str(MANIFEST))
     out = man.summary()
-    assert out["systems"] == ["m68k", "radendur"]
+    assert out["systems"] == ["m68k", "m68k-dual"]
     assert out["formats"] == {"page_512x512x8": "declared", "charlayout": "declared"}
     assert out["assets"] == {"pages": {"format": "page_512x512x8", "tag": "gfx1",
                                        "palette": "palette"}}
@@ -203,7 +204,7 @@ def test_the_fixture_loads_whole_and_says_what_it_holds() -> None:
 
 
 def test_a_field_is_composed_from_its_parts_across_words() -> None:
-    """A row of TCH's blitter block: every coordinate splits across words, and each part lands
+    """A row of m68k-dual's blitter block: every coordinate splits across words, and each part lands
     at its `at`; `add` is applied after (the one-row seam on `source_y`)."""
     cmd = mm.read(str(MANIFEST)).commands["blit"]
     words = [0x2530, 0x003F, 0x0A2E, 0x014D, 0, 0, 0x2700, 0x0047, 0xC0E0, 0x000C,
@@ -237,7 +238,7 @@ def test_a_field_is_composed_from_its_parts_across_words() -> None:
      r"`when` is the value of the `plane` role"),
     ("{word: 7, mask: 0x0001}], asserted: 1,", "{word: 7, mask: 0x0001}], asserted: 1, add: 1,",
      r"dest_dir_x\.add: a one-bit role is matched to `asserted`, not added to"),
-    ("systems: [m68k, radendur]", "systems: []", r"systems is a list"),
+    ("systems: [m68k, m68k-dual]", "systems: []", r"systems is a list"),
     ("    fire: {word: 15,", "    fires: {word: 15,", r"commands\.blit\.fires: an unknown key"),
     ("        - {word: 7, mask: 0x0040, at: 8}", "        - {word: 7, maks: 0x0040, at: 8}",
      r"commands\.blit\.fields\.dest_x\.parts\[1\]\.maks: an unknown key"),
@@ -322,7 +323,7 @@ def test_two_ramdacs_may_not_set_the_same_pens_of_one_palette(tmp_path: Path) ->
         "another palette's pens are other pens")
 
 
-# the two packed protocols, as Speed Fight's and Line UP's drivers take their palettes
+# the two packed protocols, as v30-alt's and v30's drivers take their palettes
 _LATCH = """  pal:
     palette: palette
     cpu: maincpu
@@ -336,7 +337,7 @@ _LATCH = """  pal:
     component_bits: 5
     auto_increment: true
     status: declared
-    source: speedf paldat_w and paloff_w
+    source: v30-alt paldat_w and paloff_w
 """
 _SEQUENCE = """  pal:
     palette: palette
@@ -536,7 +537,7 @@ def test_the_old_section_name_is_read_as_palette_ports_and_the_reply_names_the_n
 def test_line_ups_fixture_keeps_the_old_name_and_loads(tmp_path: Path) -> None:
     """The one fixture left on `ramdacs` on purpose: a manifest written before the rename loads
     with no edit."""
-    path = Path(__file__).parent / "fixtures" / "ramdac" / "lineup-palette.yaml"
+    path = Path(__file__).parent / "fixtures" / "ramdac" / "v30-palette.yaml"
     assert "\nramdacs:\n" in path.read_text()
     man = mm.read(str(path))
     assert man.old_section == "ramdacs" and list(man.palette_ports), man
@@ -556,7 +557,7 @@ def test_a_manifest_for_another_board_is_refused(monkeypatch: pytest.MonkeyPatch
                                                  tmp_path: Path) -> None:
     _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "circus")
-    out = refused(r"describes \['m68k', 'radendur'\], and this session runs 'circus'",
+    out = refused(r"describes \['m68k', 'm68k-dual'\], and this session runs 'circus'",
                   s.gfx_load(path=str(MANIFEST)))
     assert out["still_loaded"]["available"] is False and mstate.STATE.manifest is None
 
@@ -709,14 +710,14 @@ def test_a_flow_nested_past_any_manifest_is_refused_as_yaml() -> None:
 
 _BLOCK = "block: {address: 0x700000, words: 16, word_bytes: 2,"
 _FIRE = "fire: {word: 15, value: 0xffff,"
-_ASSET_STATUS = "    status: declared\n    source: radendur.cpp do_blit, the source wraps"
+_ASSET_STATUS = "    status: declared\n    source: m68k-dual.cpp do_blit, the source wraps"
 _FLAG = "      writes_index_0: {parts: [{word: 7, mask: 0x0008}],"
 _PLANE0 = "      - name: fg\n        when: 0\n        order: 1\n"
 _RAMDAC = "    index_port: 0x720001\n"
 _SIZE = ("        width: 512\n        height: 512\n        status: declared\n"
-         "        source: radendur.cpp flip")
+         "        source: m68k-dual.cpp flip")
 _ORIGIN_Y = "        origin_y: {field: drawing_low_half, scale: -256, add: 256}"
-_RAMDAC_PROV = "    status: declared\n    source: radendur.cpp main_map"
+_RAMDAC_PROV = "    status: declared\n    source: m68k-dual.cpp main_map"
 
 
 @pytest.mark.parametrize("old, new, said", [
@@ -802,8 +803,8 @@ _RAMDAC_PROV = "    status: declared\n    source: radendur.cpp main_map"
      r"^commands\.blit\.planes\[0\]\.width=0 is outside 1\.\.65536;"),
     (_SIZE, _SIZE.replace("height: 512", "height: 65537"),
      r"^commands\.blit\.planes\[0\]\.height=65537 is outside 1\.\.65536;"),
-    ("        status: declared\n        source: radendur.cpp flip",
-     "        status: guessed\n        source: radendur.cpp flip",
+    ("        status: declared\n        source: m68k-dual.cpp flip",
+     "        status: guessed\n        source: m68k-dual.cpp flip",
      r"^commands\.blit\.planes\[0\]\.status="),
     (_RAMDAC, "    index_port: -1\n", r"^palette_ports\.ramdac\.index_port=-1 is outside 0\.\.;"),
     ("    data_port: 0x720003", "    data_port: -1",
@@ -815,7 +816,7 @@ _RAMDAC_PROV = "    status: declared\n    source: radendur.cpp main_map"
      r"^palette_ports\.ramdac\.status='guessed'"),
     ("palette_ports:\n  ramdac:", "palette_ports: [1]\nramdocs:\n  ramdac:",
      r"^gfx\.yaml\.ramdocs: an unknown key"),
-    ("systems: [m68k, radendur]", "systems: [1]", r"^systems\[0\] is a non-empty string"),
+    ("systems: [m68k, m68k-dual]", "systems: [1]", r"^systems\[0\] is a non-empty string"),
     ("assets:\n  pages:", "assets: [1]\nassots:\n  pages:", r"^gfx\.yaml\.assots: an unknown key"),
     ("formats:\n  page_512x512x8:", "formats:\n  page_512x512x8:\n    shape: 1",
      r"^formats\.page_512x512x8\.shape: an unknown"),
@@ -907,7 +908,7 @@ def test_a_const_size_is_bounded_and_needs_no_parts() -> None:
 def test_a_plane_with_when_on_a_command_with_no_plane_role_says_so(tmp_path: Path) -> None:
     text = MANIFEST.read_text()
     text = text.replace("      plane: {parts: [{word: 7, mask: 0x0010}], status: declared, "
-                        "source: radendur.cpp do_blit}\n", "")
+                        "source: m68k-dual.cpp do_blit}\n", "")
     start = text.index("      - name: bg\n")
     end = text.index("\npalette_ports:")
     path = tmp_path / "gfx.yaml"
@@ -951,7 +952,8 @@ def test_every_refusal_about_a_manifest_says_which_one_is_still_loaded(
         mm.read(str(bad))
     assert err.value.fields["still_loaded"] == held
     other = tmp_path / "circus.yaml"
-    other.write_text(MANIFEST.read_text().replace("systems: [m68k, radendur]", "systems: [circus]"))
+    text = MANIFEST.read_text()
+    other.write_text(text.replace("systems: [m68k, m68k-dual]", "systems: [circus]"))
     out = refused("describes", s.gfx_load(path=str(other)))
     assert (out["systems"], out["system"], out["still_loaded"]) == (["circus"], "m68k", held)
 

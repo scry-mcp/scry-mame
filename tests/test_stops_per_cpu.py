@@ -233,7 +233,7 @@ _LAYOUT = g.Layout.parse(
 
 
 def _two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, threads: dict[int, str]) -> Any:
-    """`_running`'s double on radendur's two cpus, where a step runs BOTH: each thread's pc moves
+    """`_running`'s double on m68k-dual's two cpus, where a step runs BOTH: each thread's pc moves
     on by two bytes a step, and the stop is the stepping cpu's (MAME makes it visible)."""
     ses = _running(monkeypatch, tmp_path)
     ses.threads = threads

@@ -1,9 +1,9 @@
 {
- "lineup-ay-tone": [
+ "v30-ay-tone": [
   "[luaengine] MAME_MCP_AUDIO#2 begin frame=61 ok=true recording=true time=1.238016 period=0.019968000000000003",
   "[luaengine] MAME_MCP_AUDIO#2 end frame=91 time=1.837056"
  ],
- "radendur-stereo": [
+ "m68k-dual-stereo": [
   "[luaengine] MAME_MCP_AUDIO#3 begin frame=101 ok=true recording=true time=2.036736000 period=0.019968000",
   "[luaengine] MAME_MCP_AUDIO#3 end frame=108 time=2.176512000"
  ]

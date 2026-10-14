@@ -335,7 +335,7 @@ def test_the_same_watch_ref_on_another_cpu_is_a_second_declaration_with_its_own_
 def _console_on_two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     """The console double with the two captured cpus, the main one visible, the patched stub's
     threads, and an inventory whose sub cpu reaches less than its main one (AUTHORED apart:
-    radendur's two masks are equal)."""
+    m68k-dual's two masks are equal)."""
     from test_server import _console, _ConsoleSession, _masked
 
     def save(command: str) -> str:
@@ -514,12 +514,12 @@ def test_a_registerpoint_names_only_the_visible_cpu(
 
 
 def test_the_gather_reads_each_cpus_register_names_off_its_own_state() -> None:
-    from test_machine import RADENDUR
+    from test_machine import M68K_DUAL
 
     import mame_cpus as cpus
     import mame_machine as machine
 
-    regs = machine.parse(RADENDUR)[cpus.CPU_REGISTERS]
+    regs = machine.parse(M68K_DUAL)[cpus.CPU_REGISTERS]
     assert sorted(regs) == [":maincpu", ":subcpu"]
     assert {"D0", "A7", "PC"} - set(regs[":subcpu"]) == {"A7"}, "the console's own names"
 
@@ -528,7 +528,7 @@ def test_a_condition_is_judged_against_the_registers_of_the_cpu_it_arms_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A symbol spelled like one of the sub cpu's registers is ambiguous there and plain
-    elsewhere. The register sets are AUTHORED apart (radendur's two 68000s share theirs), the
+    elsewhere. The register sets are AUTHORED apart (m68k-dual's two 68000s share theirs), the
     way a heterogeneous board has them."""
     import mame_cpus as cpus
 
