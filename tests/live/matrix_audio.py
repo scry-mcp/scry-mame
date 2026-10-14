@@ -20,7 +20,7 @@ from array import array
 from pathlib import Path
 from typing import Any
 
-from bench_boards import bench_missing, radendur_missing
+from bench_boards import board_missing, radendur_missing
 from live_harness import (
     WAIT_CEILING_S,
     Board,
@@ -313,7 +313,7 @@ def _l_lineup(t: list[str]) -> None:
 L_BOARDS = (
     Board(_l_circus, (0, 1, 2, 3, 4, 5), free_boards_missing),
     Board(_l_radendur, (6,), radendur_missing),
-    Board(_l_lineup, (7, 8), lambda: bench_missing("lineup/")),
+    Board(_l_lineup, (7, 8), lambda: board_missing("v30")),
     Board(_l_swap, (9,), free_boards_missing),
     Board(_l_release, (10,), free_boards_missing),
     Board(_l_wavwrite, (11,), free_boards_missing),

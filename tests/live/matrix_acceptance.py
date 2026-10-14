@@ -13,10 +13,21 @@ this section only:
 """
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
-from bench_boards import BENCH, MANIFEST, bench_missing, radendur_missing
+from bench_boards import (
+    MANIFEST,
+    RADENDUR_SYSTEM,
+    ROMPATH,
+    V30_REFERENCE_ROM,
+    V30_SYMBOLS,
+    board_dir,
+    board_missing,
+    radendur_missing,
+    value,
+)
 from gfx_layouts import CIRCUS_CHAR
 from live_harness import (
     START_WAIT_S,
@@ -91,8 +102,26 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
 ], start=1)]
 
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
+
+
 RUN_STEP_FRAMES = 100   # frames a single run_for is asked for, so each one fits one call's wait
 
+
+
+def palette_manifest(name: str, label: str) -> str:
+    """The tracked palette manifest `name` as a session on board `label` loads it: `gfx_load`
+    refuses a manifest whose `systems` do not hold the set the session runs, and the tracked
+    file never names the set, so the copy's `systems` line is the bench identity's. The line
+    must match exactly once: a substitution that matched nothing would load the tracked file
+    unchanged."""
+    line = f"systems: [{value(label, 'system')}]"
+    text, n = re.subn(r"(?m)^systems: \[[^\]\n]*\]$", lambda _m: line,
+                      (PALETTE_MANIFESTS / name).read_text(encoding="utf-8"))
+    if n != 1:
+        raise RuntimeError(f"{name} has {n} `systems:` lines where one was expected")
+    out = Path(fresh(".yaml"))
+    out.write_text(text, encoding="utf-8")
+    return str(out)
 
 def _run_frames(frames: int) -> list[str]:
     """Run `frames` frames in steps of RUN_STEP_FRAMES, answering what each step that was not
@@ -195,7 +224,7 @@ def _h_circus(t: list[str]) -> None:
              flips=["none"])
     cell(t[10], refused(r, "bad_argument") and "`count`" in str(r.get("message")), said(r))
     r = call("gfx_load", path=MANIFEST)
-    cell(t[11], refused(r, "bad_argument") and "radendur" in (r.get("systems") or [])
+    cell(t[11], refused(r, "bad_argument") and RADENDUR_SYSTEM in (r.get("systems") or [])
          and "circus" in str(r.get("message")), said(r))
     call("close")
 
@@ -225,17 +254,19 @@ def _h_radendur(t: list[str]) -> None:
 
 # ========================================================================= the V30s
 #
-# How a session starts on each V30 board, as its checkout's notes on interactive debugging say,
-# relative to the board's directory on the bench (the checkout's layout); a start carries the
-# symbols only where a cell needs a name.
+# How a session starts on each V30 board: its label, then its start's arguments, the paths
+# relative to the board's directory on the bench (its checkout's layout) and the names that say
+# which program it is taken from the bench's identity; a start carries the symbols only where a
+# cell needs a name.
 
-LINEUP = {"binary": "upstream/mamelineup", "system": "lineup", "rompath": "run/mame_roms",
-          "inipath": "run", "reference_rom": "build/Game_V30.bin", "reference_addr": "0x30000",
-          "reference_base": "0x0"}
-LINEUP_SYMBOLS = ("build/game_v30.map", {"DATA": "0x400", "LUP_JUKEBOX": "rom"})
-SPEEDF = {"binary": "upstream/mamespeedf", "system": "speedf", "rompath": "run/mame_roms",
-          "inipath": "run", "reference_rom": "build/speedf_v30.bin",
-          "reference_addr": "0xFFFF0", "reference_base": "0x20000"}
+LINEUP = ("v30", {"binary": value("v30", "binary"), "system": value("v30", "system"),
+                  "rompath": ROMPATH, "inipath": "run", "reference_rom": V30_REFERENCE_ROM,
+                  "reference_addr": "0x30000", "reference_base": "0x0"})
+LINEUP_SYMBOLS = (V30_SYMBOLS, {"DATA": "0x400", value("v30", "rom_segment"): "rom"})
+SPEEDF = ("v30-alt", {"binary": value("v30-alt", "binary"), "system": value("v30-alt", "system"),
+                      "rompath": ROMPATH, "inipath": "run",
+                      "reference_rom": value("v30-alt", "reference_rom"),
+                      "reference_addr": "0xFFFF0", "reference_base": "0x20000"})
 PATHS = ("binary", "rompath", "inipath", "reference_rom")
 
 # Line UP's score digit: 24x24 pixels, a byte a pixel read as eight planes, so a row is 24 * 8
@@ -248,19 +279,20 @@ LINEUP_DIGIT: dict[str, Any] = {
     "charincrement": 24 * DIGIT_ROW_BITS}
 
 
-def v30_boot(args: dict[str, str],
+def v30_boot(board: tuple[str, dict[str, str]],
              symbols: tuple[str, dict[str, str]] | None = None) -> dict[str, Any]:
-    root = BENCH / args["system"]
+    label, args = board
+    root = board_dir(label)
     kw: dict[str, Any] = {k: str(root / v) if k in PATHS else v for k, v in args.items()}
     if symbols is not None:
         kw.update(symbols=str(root / symbols[0]), bases=symbols[1])
-    return require_booted(args["system"], call("start", seconds=START_WAIT_S, **kw))
+    return require_booted(label, call("start", seconds=START_WAIT_S, **kw))
 
 
 def _h_lineup(t: list[str]) -> None:
     v30_boot(LINEUP)
     # armed before anything executes: a `sequence` log knows the index only from the start
-    call("gfx_load", path=str(PALETTE_MANIFESTS / "lineup-palette.yaml"))
+    call("gfx_load", path=palette_manifest("lineup-palette.yaml", "v30"))
     call("palette_log", palette_port="pal", arm=True)
     r = call("read_block", ref="0x81a20", length=16)
     cell(t[13], refused(r, "unknown_ref") and "no share and no region" in str(r.get("message")),
@@ -315,7 +347,7 @@ def _h_speedf(t: list[str]) -> None:
     odd = call("watch_add", ref="0x9", mode="count", space="io", length=2)
     cell(t[20], refused(odd, "bad_argument") and "split a 16-bit bus word" in str(
         odd.get("message")) and 'space="io"' in str(odd.get("message")), said(odd, 160))
-    call("gfx_load", path=str(PALETTE_MANIFESTS / "speedf-palette.yaml"))
+    call("gfx_load", path=palette_manifest("speedf-palette.yaml", "v30-alt"))
     call("palette_log", palette_port="pal", arm=True)
     short = _run_frames(600)
     agree, detail = _palette_log_matches("pal", SPEEDF_PENS)
@@ -415,9 +447,9 @@ def _h_pangofun(t: list[str]) -> None:
 H_BOARDS = (
     Board(_h_circus, tuple(range(12)), free_boards_missing),
     Board(_h_radendur, (12,), radendur_missing),
-    Board(_h_lineup, (13, 14, 15), lambda: bench_missing("lineup/")),
+    Board(_h_lineup, (13, 14, 15), lambda: board_missing("v30")),
     Board(_h_speedf, (16, 17, 18, 19, 20),
-          lambda: bench_missing("speedf/")),
+          lambda: board_missing("v30-alt")),
     Board(_h_pangofun, (21,), pangofun_missing),
 )
 boards_cover("H_BOARDS", H_CELLS, H_BOARDS)

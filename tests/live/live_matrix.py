@@ -13,9 +13,8 @@ and BLOCKED when it could not be run, with the reason (`run_sections` says how i
 
     timeout 1800 uv run python tests/live/live_matrix.py
 
-radendur and section H's V30 boards run on their copies on the bench (`python -m
-scry_core.live_bench` fills and checks it); a board whose copies are absent or do not match is
-BLOCKED naming the file.
+radendur and section H's V30 boards run on their copies on the bench (`bench_boards`); a board
+that cannot run there is BLOCKED with the reason.
 Blocks D, J, K and Q, section H's circus and section T's 1942 also drive the free boards of
 mamedev.org, which need a stock MAME and their zips (`free_boards_missing` says which
 variables); section S's multi-cpu boards need a build whose stub serves a
@@ -37,6 +36,7 @@ from typing import Any
 
 from bench_boards import (
     BENCH,
+    BLIT_HANDLER,
     MANIFEST,
     REFERENCE_ROM,
     SUB_ROM,
@@ -44,6 +44,7 @@ from bench_boards import (
     SYMBOLS,
     bench_missing,
     radendur_missing,
+    value,
 )
 from gfx_layouts import BYTES_8X8, CIRCUS_CHAR, GRID_FB, GRID_SPRITE, WITCH_TILE
 from live_harness import (
@@ -3124,7 +3125,7 @@ def _renderer_tile(tile: int, x: int, y: int, w: int, h: int) -> bytes | None:
     ROM. The bench holds one capture per argument set, taken by `fill`, because the renderer
     needs its project's own environment (numpy); the radendur boot already checked every pin.
     None when no capture is pinned for these arguments: the rectangle is not the one pinned."""
-    name = f"radendur/renderer/tile{tile}_x{x}_y{y}_{w}x{h}.bin"
+    name = f"{value('m68k-dual', 'dir')}/renderer/tile{tile}_x{x}_y{y}_{w}x{h}.bin"
     return None if bench_missing(name) else (BENCH / name).read_bytes()
 
 
@@ -3420,7 +3421,7 @@ def block_g() -> None:
     call("watch_add", ref=BLITTER, mode="capture", length=32, trigger=BLIT_TRIGGER)
     armed = call("gfx_film", **{**FILM, "keep": 3, "frames": 8})
     cell(t[0], armed.get("armed_now") is True and armed["film"]["checked"] is True
-         and armed.get("trigger_maps_to") == "radendur_state::blit_w", said(armed))
+         and armed.get("trigger_maps_to") == BLIT_HANDLER, said(armed))
     call("run_for", frames=10, seconds=10.0)
     film = call("gfx_film")
     cell(t[1], film.get("kept") == 3 and film.get("refused") == 0

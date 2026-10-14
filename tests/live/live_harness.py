@@ -40,6 +40,7 @@ from mame_state import STATE  # noqa: E402
 from bench_boards import (  # noqa: E402  # isort: skip
     RADENDUR_BINARY,
     RADENDUR_ROMS,
+    RADENDUR_SYSTEM,
     REFERENCE_ROM,
     SYMBOLS,
     args_missing,
@@ -57,7 +58,7 @@ def invalid(message: str) -> None:
 
 
 # radendur's boot, every live script's: the board on the bench (`bench_boards`).
-BOOT = dict(binary=RADENDUR_BINARY, system="radendur", rompath=RADENDUR_ROMS,
+BOOT = dict(binary=RADENDUR_BINARY, system=RADENDUR_SYSTEM, rompath=RADENDUR_ROMS,
             reference_rom=REFERENCE_ROM, reference_addr="0x0", seconds=25.0)
 
 # WHETHER THIS RUN'S MACHINES TAKE THE OWNER'S FOCUS, asked per run and never per cell: unset,

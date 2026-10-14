@@ -19,7 +19,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from bench_boards import SYMBOLS, bench_missing, radendur_missing
+from bench_boards import SYMBOLS, board_missing, radendur_missing
 from live_harness import (
     BOOT,
     Board,
@@ -207,7 +207,7 @@ def _rebuilt(t: list[str]) -> None:
 
 O_BOARDS = (Board(_o_circus, (0,), free_boards_missing),
             Board(_o_radendur, (1, 2, 3, 4, 5, 6, 7, 8, 9, 11), radendur_missing),
-            Board(_o_speedf, (10,), lambda: bench_missing("speedf/")))
+            Board(_o_speedf, (10,), lambda: board_missing("v30-alt")))
 boards_cover("O_BOARDS", O_CELLS, O_BOARDS)
 
 

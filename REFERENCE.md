@@ -3003,13 +3003,17 @@ Every guarantee in this document has a test that was seen RED against the defect
 was fixed, and the console parsers are held to text captured live rather than authored (the
 captures live under `tests/fixtures/console/` with their provenance). The live half is
 `tests/live/live_check.py` against a real board, which drives every tool through the server,
-the running contract and the throttle flight included. The boards it drives run on a bench,
-copies of their binaries, ROMs and symbol files pinned by hash in `tests/live/bench.json`,
-under `MAME_LIVE_BENCH` (`~/.local/share/scry-bench/mame` when unset): `uv run python
--m scry_core.live_bench fill --server mame --manifest tests/live/bench.json --from
-<source_repo>=<checkout>` copies them from their checkouts and `check --server mame --manifest
-tests/live/bench.json` says whether they still match, and a board
-whose copies are absent or wrong is BLOCKED naming the file rather than run on something else.
+the running contract and the throttle flight included. The boards it drives run on a bench
+under `MAME_LIVE_BENCH` (`~/.local/share/scry-bench/mame` when unset): copies of their
+binaries, ROMs and symbol files pinned by hash in the bench's own `bench.json`, and an
+`identity.json` beside it that says which set, binary and files each board's label stands for
+(its keys: `IDENTITY_KEYS` in `tests/live/bench_boards.py`).
+Neither is tracked, because both name the programs the copies came from; the tracked live code
+names only the labels. `uv run python -m scry_core.live_bench fill --server mame --manifest
+<bench>/bench.json --from <source_repo>=<checkout>` copies them from their checkouts and `check
+--server mame --manifest <bench>/bench.json` says whether they still match, and a board whose
+identity is incomplete or whose copies are absent or wrong is BLOCKED naming what is wrong
+rather than run on something else.
 The live half is deselected by default (`-m live`), so a stranger running `pytest tests` from a
 clone never launches an emulator per case.
 

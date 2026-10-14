@@ -11,7 +11,7 @@ import wave
 from pathlib import Path
 from typing import Any
 
-from bench_boards import MANIFEST, REFERENCE_ROM, SYMBOLS, radendur_missing
+from bench_boards import MANIFEST, RADENDUR_SYSTEM, REFERENCE_ROM, SYMBOLS, radendur_missing
 from live_harness import (
     BOOT,
     check,
@@ -926,7 +926,8 @@ r = s.state_load(name="nope")
 check("a state that does not exist is refused before the console", r.get("code") == "unknown_ref")
 # MAME refuses a bad state in SILENCE from the console (measured: nothing in any log), so
 # the header is judged before the console: a corrupt magic and another system's name.
-good = Path(str(s.status().get("state_dir") or s.status().get("scratch_dir"))) / "sta" / "radendur"
+good = (Path(str(s.status().get("state_dir") or s.status().get("scratch_dir"))) / "sta"
+        / RADENDUR_SYSTEM)
 corrupt = bytearray((good / "live.sta").read_bytes())
 corrupt[0:8] = b"NOTASAVE"
 (good / "corrupt.sta").write_bytes(corrupt)

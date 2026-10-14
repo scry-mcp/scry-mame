@@ -15,7 +15,7 @@ are absent or off their pins.
 
 from typing import Any
 
-from bench_boards import RLTENNIS_BOOT, bench_missing
+from bench_boards import RLTENNIS_BOOT, board_missing
 from live_harness import (
     Board,
     boards_cover,
@@ -62,7 +62,7 @@ def _v_rltennis(_cells: list[str]) -> None:
          f"{inside}; logged at {HANDLER} {logged_first}, at {INSIDE} {logged_inside}")
 
 
-V_BOARDS = (Board(_v_rltennis, (0,), lambda: bench_missing("rltennis/")),)
+V_BOARDS = (Board(_v_rltennis, (0,), lambda: board_missing("m68k-dual-alt")),)
 boards_cover("V_BOARDS", V, V_BOARDS)
 
 

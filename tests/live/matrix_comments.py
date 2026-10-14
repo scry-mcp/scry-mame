@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from bench_boards import SUB_SYMBOLS, SYMBOLS, radendur_missing
+from bench_boards import RADENDUR_SYSTEM, SUB_SYMBOLS, SYMBOLS, radendur_missing
 from live_harness import (
     SCRATCH,
     Board,
@@ -286,7 +286,7 @@ def _pinned(t: list[str]) -> None:
         return
     call("comment_add", ref="irq_vblank", text="pinned", cpu="maincpu")
     saved = call("debug", command="comsave")
-    in_scratch = (Path(str(r.get("scratch_dir"))) / "comments" / "radendur.cmt").is_file()
+    in_scratch = (Path(str(r.get("scratch_dir"))) / "comments" / f"{RADENDUR_SYSTEM}.cmt").is_file()
     in_ini_dir = sorted(target.iterdir())
     call("comment_delete", ref="irq_vblank", cpu="maincpu")
     left = call("comment_list").get("comments")
