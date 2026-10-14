@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M21",
+  "prompt": "List every watch declaration and its state.",
+  "tool": "watch_list"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M21: {\"tool\": \"watch_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"watch_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"watch_list\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

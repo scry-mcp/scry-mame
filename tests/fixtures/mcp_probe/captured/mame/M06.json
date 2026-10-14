@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M06",
+  "prompt": "Run to the symbol LevelEnd, counting the control already declared at FrameTick on the way, stopping there only when the console expression w@LivesLeft==3 holds. Disarm the change watches for this pass, and give it at most 45 wall-clock seconds.",
+  "tool": "run_to",
+  "args": {
+   "ref": "LevelEnd",
+   "control": "FrameTick",
+   "condition": {
+    "any_of": [
+     "w@LivesLeft==3",
+     "w@LivesLeft==0x3"
+    ]
+   },
+   "disarm_watches": true,
+   "seconds": 45
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"seconds\": 45, \"disarm_watches\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+{
+ "task": {
+  "id": "M67",
+  "prompt": "Stop wherever register d2 comes to equal 1f, naming the cpu tagged gfxcpu so that the declaration is refused if that is not the cpu the debugger shows.",
+  "tool": "regpoint_add",
+  "args": {
+   "condition": {
+    "any_of": [
+     "d2==1f",
+     "d2==0x1f",
+     "D2==1f",
+     "D2==0x1f"
+    ]
+   },
+   "cpu": {
+    "any_of": [
+     "gfxcpu",
+     ":gfxcpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

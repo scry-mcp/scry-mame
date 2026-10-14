@@ -1,0 +1,19 @@
+{
+ "task": {
+  "id": "M108",
+  "prompt": "Start logging every write to the RAMDAC the loaded manifest calls bt478, so that later I can tell who set each pen's colour.",
+  "tool": "palette_log",
+  "args": {
+   "palette_port": "bt478",
+   "arm": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M108: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"bt478\", \"arm\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

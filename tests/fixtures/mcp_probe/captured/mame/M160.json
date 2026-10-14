@@ -1,0 +1,42 @@
+{
+ "task": {
+  "id": "M160",
+  "prompt": "Read 16 bytes of the memory block MAME keeps under the tag vram, starting 0x1c0 bytes into it.",
+  "tool": "read_block",
+  "args": {
+   "tag": {
+    "any_of": [
+     "vram",
+     ":vram"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     448,
+     "0x1c0"
+    ]
+   },
+   "length": 16
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  }
+ ]
+}

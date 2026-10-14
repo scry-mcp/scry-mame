@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M127",
+  "prompt": "Replace the confirmed manifest /home/dev/tch/hardware/gfx.yaml with the draft of this session, overwriting it.",
+  "expect": "CANNOT",
+  "about": "gfx_draft"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to overwrite confirmed manifests"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to overwrite non-draft files; the confirmed manifest cannot be replaced"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to overwrite non-draft files; the confirmed manifest cannot be replaced."
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "task": {
+  "id": "M113",
+  "prompt": "The blits of frame 88 of the draw command tiledraw, listed one by one with their fields: give me the page that starts at place 50 of that list.",
+  "tool": "gfx_blits",
+  "args": {
+   "draw_command": "tiledraw",
+   "frame": 88,
+   "detail": true,
+   "first": 50
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M113: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"tiledraw\", \"frame\": 88, \"detail\": true, \"first\": 50}}"
+   ],
+   "right": true
+  }
+ ]
+}

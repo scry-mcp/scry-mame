@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M155",
+  "prompt": "Record every code location the CPU runs from now until the routine irq_vblank is first reached, however long that takes.",
+  "expect": "CANNOT",
+  "about": "trace"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M155: CANNOT trace has maximum duration of 5027 frames; cannot run until symbol is reached without separate run_to call"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M155: CANNOT the trace tool cannot stop at a specific routine; it only runs for a specified duration or frame count."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M155: CANNOT trace does not support running until a symbol is reached; it only traces for a fixed duration."
+   ],
+   "right": true
+  }
+ ]
+}

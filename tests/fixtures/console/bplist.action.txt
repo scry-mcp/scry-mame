@@ -1,0 +1,3 @@
+Device ':maincpu' breakpoints:
+    1 @ 0025A4 do temp0++ ; g
+

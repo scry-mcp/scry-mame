@@ -1,0 +1,2 @@
+Invalid watchpoint type: expected r, w, or rw
+

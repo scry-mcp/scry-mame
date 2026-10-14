@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M133",
+  "prompt": "Which cpus has the debugger suspended?",
+  "tool": "cpu_info"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M133: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M133: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M133: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

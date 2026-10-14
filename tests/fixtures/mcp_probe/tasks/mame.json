@@ -1,0 +1,8 @@
+{"tasks": [
+  {"id": "M1", "prompt": "Read 6 bytes of memory at the symbol PlayerX.",
+   "tool": "read_memory", "args": {"ref": "PlayerX", "length": 6}},
+  {"id": "M2", "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
+   "expect": "CANNOT", "about": "read_memory"},
+  {"id": "M3", "prompt": "Read 12 bytes of memory at hex address 3FF0 of the cpu tagged soundcpu.",
+   "tool": "read_memory", "args": {"ref": {"any_of": ["3FF0", "0x3FF0", "3ff0", "0x3ff0"]}, "length": 12, "cpu": {"any_of": ["soundcpu", ":soundcpu"]}}}
+]}

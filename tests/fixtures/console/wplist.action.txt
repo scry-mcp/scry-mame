@@ -1,0 +1,3 @@
+Device ':maincpu' program space watchpoints:
+    1 @ 0025A4-0025A5 write do temp1++ ; g
+

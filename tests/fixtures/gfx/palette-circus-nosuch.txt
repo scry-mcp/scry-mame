@@ -1,0 +1,2 @@
+MAME_MCP_PAL_NONE name=nosuch palettes=:palette
+MAME_MCP_LUA_END#1	true	nil

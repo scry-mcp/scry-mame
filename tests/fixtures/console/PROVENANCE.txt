@@ -1,0 +1,428 @@
+Captured live from MAME's debugger console through the gdbstub, on the 68000 board of
+tch-blitter (`radendu`, set `radendur`), the machine stopped in the debugger.
+
+dasm.txt        the FILE written by `dasm <scratch>/dasm.txt,0,10` (address 0, 0x10 = 16 BYTES)
+dasm.reply.txt  what the console answered to that command
+find.txt        `find 0,10000,00,20,10,00` (the reference image's first four bytes, over the first 64 KB)
+find.none.txt   `find 0,10000,de,ad,be,ef,ca,fe` (a pattern that is not there)
+history.txt     `history ,8` after twelve single steps from reset
+
+The parsers in server.py are written against these bytes, never against a shape authored from
+memory; a change in MAME's output is re-captured here, not patched in the fixture.
+
+The captures above were typed with BARE numbers. The tools send the same commands with the `0x`
+prefix on every number (`dasm dasm.txt,0x0,0x10`, `find 0x0,0x10000,0x00,0x20,0x10,0x00`,
+`history ,0x8`), because MAME's expression parser reads a bare `d0` as the D0 register; the
+prefixed spellings were proven on the same board through the tools themselves, answering the
+same five lines, the same two hits and the same eight-line trail.
+
+Captured live through the `disassemble` TOOL (the `lines` of its reply, which are the
+non-empty lines of the file the console's `dasm` wrote), on the V30 board of speedf-mame
+(`mamespeedf`, set `speedf`), the machine stopped in the debugger, `bases={"DATA": "400"}`:
+
+dasm.v30.new_irq_video.txt   `disassemble(ref="new_irq_video", length=48)`: a routine with
+                             DIRECT memory operands (`word ptr [0C014h]`, `[0E849h]`), which
+                             the listing prints as the raw offset inside the DATA class and
+                             not as the linear address (`0x400 + offset`) `read_memory` and
+                             `watch_add` take; `symbols_find(linear="c414")` answered
+                             `IN_IRQ + 0` and `linear="ec49"` `TOTALTIME + 0` on the same board.
+                             It also holds the shapes that are NOT direct operands: an
+                             immediate (`mov aw,40h`), a branch target (`bne 0F5BD1h`) and
+                             call targets (`call 0FD108h`).
+dasm.v30.startdemo.txt       `disassemble(ref="startdemo", length=48)`: the register-relative
+                             shapes that must not be resolved (`ds1:[bw-31BBh]`, `ps:[ix]`,
+                             `[ix]`) and an immediate (`0CA35h`), beside the one direct
+                             operand of the listing (`byte ptr [0CA34h]`).
+
+Captured live through `mame_read.dasm_lines`, the same range written twice, WITH the opcode
+bytes (`dasm dasm.txt,<addr>,<len>`) and WITHOUT them (`dasm dasm.bare.txt,<addr>,<len>,0`), the
+machine parked at `start`, each file copied verbatim out of the scratch:
+
+dasm.m68k.560.txt               tch-blitter's 68000 board (`radendu`, set `radendur`), 0x560 for
+dasm.m68k.560.bare.txt          0x40 bytes: the tail of an interrupt handler holding a
+                                conditional branch (`beq`), a call (`jsr`) and a return (`rte`),
+                                the first window from 0x400 up that held all three
+dasm.v30.30000.txt              lineup's V30 board (`mamelineup`, set `lineup`), 0x30000 for
+dasm.v30.30000.bare.txt         0xb0 bytes: the program's entry, with `br`, `call`, `bc`, `be`,
+                                `dbnz`, two `rep`-prefixed string moves and a `reti`; and a text
+                                string between 0x3002D and 0x3004F that decodes as instructions,
+                                which is what a listing over data looks like
+
+Captured live from the console's own `-debuglog` file (`debug.log` in the scratch), on the same
+68000 board of tch-blitter, through the tools of the server before a foreign breakpoint could
+cut a run: `run_for(frames=60)` so the boot had reached the vblank handler, `debug("bpset
+0x400")` (the handler, which runs every frame), then:
+
+debuglog.foreign-bp.frames.txt  what `run_for(frames=5)` added: every `Stopped at breakpoint 1`
+                                the run resumed through, the console echoing the reads that
+                                followed it, and the `Stopped at VBLANK` of the same frame
+debuglog.foreign-bp.ms.txt      what `run_for(milliseconds=200)` added right after, from the
+                                breakpoint's own stop
+
+Captured live through `Session.monitor` (the exact text the list parsers receive), on the same
+68000 board of tch-blitter, the machine stopped in the debugger, each list after a `bpclear` or
+`wpclear` sent the same way. MAME's console buffer wraps every line at its `MAX_LINE_LENGTH`
+(`src/emu/debug/textbuf.cpp`): at a space when the line has one, dropping the space, and with a
+hard cut at the column when it has none. The conditions are `d0==0x<zeros>1`, whose leading
+zeros change the length and not the value:
+
+bplist.row249.txt        `bp 400,<c>` sized so the printed row is one short of the wrap column
+bplist.row250.txt        the same row AT the wrap column: cut at the space after `if`
+bplist.row251.txt        one past it
+bplist.at-limit.txt      the condition whose `bp` command is at the stub's packet limit (read
+                         off the session's advertised packet size): the header piece, then hard
+                         cuts at the column
+bplist.space-early.txt   `d0==0x1 || d1==0x<zeros>1`: the last space before the column is early
+bplist.space-late.txt    `d0==0x<zeros>1 || d1==0x1`: a space a few columns before the column
+bplist.two-rows.txt      the at-limit row, then `bp 404,d0==1` beside it
+wplist.cond-short.txt    `wpset 0x2031fc,0x4,w,d0==1`
+wplist.cond-wrapped.txt  the same watchpoint under a condition long enough to wrap
+
+Captured live from the console's own stdout (`stdout.log` in the scratch), on the same 68000
+board of tch-blitter, by the block that went looking for a line nobody answers: a fresh
+machine, then twenty repetitions of the sequence measured to kill the console's reader (one
+`perform` of `captures`, `screen_signature`, `state_save` under a fresh name, `throttle(off)`,
+`resume`, `stop`) with two `read_block` calls at the address map's edges after each. The whole
+file as the session wrote it, never sliced:
+
+session.volume.stdout    what `eaten` had no case against: a console log with REAL volume, 82
+                         echoed command lines numbered 2..83, each between 463 and 2433 bytes,
+                         and ONE reader death sitting among them rather than at either end.
+                         Eleven echoes fall before that death and seventy-one after it, which
+                         is what lets the discriminating case be asked at all: `eaten` works by
+                         finding this line's echo and searching the tail after it, so the claim
+                         its docstring makes -- that a report sitting BEFORE this line's echo
+                         belongs to somebody else's line -- needs a second candidate somewhere
+                         in the buffer, and a double of one or two lines has nowhere to put
+                         one. Its SIZE is part of the contract and a test asserts it: a later
+                         shrink goes red instead of quietly removing the axis.
+
+The reader's death in that file is the one the console prints STARTING UP (`require`'s
+`setcompletion` read as a table), which is the shape measured on this board; the block it came
+from did not reproduce the line nobody answers, so nothing here is a capture of that.
+
+Captured live through `Session.monitor`, on the same 68000 board of tch-blitter, the machine
+stopped in the debugger on a fresh start with no registerpoint of anybody's. A registerpoint's
+index is printed in HEX (`%X`), the list is newest first, and the condition goes inside braces
+because the console reads a bare `d1==7fff` as an assignment:
+
+rplist.none.txt                `rplist` with none installed
+rpset.set.txt                  `rpset {d1==7fff}`
+rplist.one.txt                 `rplist` after it
+rpset.unknown-symbol.txt       `rpset {eax==5}`: a register this cpu lacks, and nothing is armed
+print.braces.unknown-symbol.txt  `print {eax==5}`: the same refusal from the evaluator
+print.braces.malformed.txt     `print {d1==}`: the evaluator refuses what `rpset` ARMS
+print.braces.false.txt         `print {d1==7fff}` while D1 holds something else
+rpset.malformed-armed.txt      `rpset {d1==}`: MAME arms a condition it cannot evaluate
+rplist.two-rows.txt            `rplist` after it: the malformed row ABOVE the first one
+rpclear.cleared.txt            `rpclear 2`
+rpclear.invalid.txt            `rpclear 7`, a number no row holds
+rplist.disabled.txt            `rplist` after `rpdisable 1`: the row keeps a leading `D`
+rpset.unknown-command.txt      `rpzzzset {1}`: how this console answers a command it lacks,
+                               which is what a debugger with no registerpoints would say
+rplist.cond-with-spaces.txt    `rplist` after `rpset {d1==7fff && d0!=0x12345678}`
+rpset.sixteenth.txt            the sixteenth `rpset` of a session: `Registerpoint 10 set`
+rplist.sixteen.txt             `rplist` after it: `10`, then `F` down to `A`, then `9`
+rplist.two-devices.txt         the board has two 68000s: `rpset {d1==7fff}`, `focus subcpu`, the
+                               same `rpset` again, `rplist`: one section per cpu, the SAME
+                               condition text under each, one counter for both
+
+Captured live from the console's own `-debuglog` file, same board, with `rpset {d1==7fff}`
+typed through the console and nothing else armed. A registerpoint fires at EVERY instruction
+while its condition holds, so each `gvblank` below stopped one instruction on with the frame
+counter where it was:
+
+debuglog.foreign-rp.resume.txt  what `resume(seconds=5)` added: the stop under the stub's `c`
+debuglog.foreign-rp.frames.txt  what `run_for(frames=2)` added: four `gvblank`s, four stops
+debuglog.foreign-rp.ms.txt      what `run_for(milliseconds=200)` added right after
+debuglog.rp-sixteenth.txt       the stop line of the sixteenth registerpoint (`rpset {1}`)
+
+Captured live through `Session.monitor`, same board, the machine stopped in the debugger on a
+fresh start, after a `bpclear` and a `wpclear`. The console takes a cpu after a breakpoint's
+address and none on a watchpoint, which goes to the visible cpu; both lists print one
+`Device '<tag>'` section per cpu that holds a row, and one counter numbers the rows of both:
+
+bplist.two-devices.txt   `bp 400`, `bp 4a0,d0==1`, `bp 400:subcpu`, `bplist`: the SAME address
+                         under each cpu, the sub cpu's row carrying the third index
+wplist.two-devices.txt   `wp 203200,2,w`, `focus subcpu`, `wp 8000,2,w`, `focus maincpu`,
+                         `wplist`
+
+bplist.by-address.txt    a fresh start, `bp 4a0,(++temp0)==0` then `bp 400,temp1++;g`, `bplist`: the
+                         row set SECOND is listed first, a section being ordered by address;
+                         and the `;g` never reached the row, the console having read the `;`
+                         as the end of the command
+
+Captured live from the console's own `-debuglog` file, same board, `:maincpu` visible, with
+`bp 542:subcpu` typed through the console (an address the sub cpu's trail was sitting on) and
+nothing else armed:
+
+debuglog.subcpu-bp.resume.txt  what `resume(seconds=8)` added: the stop line names NO cpu, and
+                               the lines after it are the console echoing the reads of the
+                               stop's survey, the `bplist` among them
+
+Captured live through `Session.monitor`, same board, `:maincpu` visible, the machine stopped in
+the debugger on a fresh start, after `bpclear`, `wpclear` and `rpclear` (each answering `Cleared
+all ...points`). An ACTION goes inside braces, as the debugger documentation writes it
+(`docs.mamedev.org/debugger`: "you may need to surround the action with braces { } to ensure
+commas and semicolons within the command are not interpreted in the context of the ... command
+itself"); typed bare, `bp 400,temp1++;g` lost its `;g` to the console (`bplist.by-address.txt`).
+Each was armed at `exception_handler` (0x25a4), a place the boot never reaches. The list prints
+the action after `do`, spaces kept as typed, and prints NO `if` for a condition of `1`:
+
+bplist.action.txt        `bp 25a4,1,{ temp0++ ; g }` (`Breakpoint 1 set`), then `bplist`
+wplist.action.txt        `wp 25a4,2,w,1,{ temp1++ ; g }` (`Watchpoint 1 set`), then `wplist`
+rplist.action.txt        `rp {temp2==0x1234},{ temp3++ ; g }` (`Registerpoint 1 set`), then `rplist`
+
+Captured live through `Session.monitor`, same board, the machine stopped in the debugger on a
+fresh start with no breakpoint of anybody's, by the probe that compared the doubles with the
+console (its output is kept with that block's handover notes):
+
+bpclear.invalid.txt      `bpclear 7`, a number no row holds: what a double answers there
+                         instead of a `cleared` no console ever printed
+
+Captured live from the scratch of a fresh quick start, same board, before anything ran: the
+first bytes MAME writes to `error.log` (`-log`), read with `xxd`. `debug.log` and `stdout.log`
+of the same start open with no such mark:
+
+errorlog.start.txt       a UTF-8 byte-order mark, then `Soft reset` and a newline: the first
+                         line of every `error.log`, which a reader decoding plain UTF-8 hands
+                         back with the mark glued to it
+
+Captured live from the console's own `-debuglog` file, same board, with `wpset 2031fc,4,w` typed
+through `debug` and nothing else armed, then `resume`: the stop line of a watchpoint this server
+did not arm, which every earlier case had authored. A byte write prints two hex digits; a word
+write prints four:
+
+debuglog.foreign-wp.resume.txt  what `resume(seconds=5)` added: the console's clock, the
+                                `Stopped at watchpoint 1 writing 00 to 2031FC (PC=000025F4)`
+                                line, and the echoes of the stop's survey after it
+
+Captured live by `tests/live/live_matrix.py` on the same board: the `stdout.log` the matrix kept
+when its console cell failed, copied byte for byte from the evidence directory the run named.
+The recording's scratch path inside it is the host's temporary directory, left as captured:
+
+c3.death-and-rerun.stdout  section C3, the Lua console's shared sequence, on a start whose
+                           console reader died once (`[LUA ERROR] in thread`, linenoise's
+                           `setcompletion`) and whose chunk 5 the console ran twice (its
+                           sentinel printed two times), the session block reading one death
+                           and one rerun: what the cell compares a count against
+
+Captured live through `tests/live/live_harness.py`'s `call`, same board, by a runner that copied
+the session's `stdout.log` before `close`, on a build whose gdbstub refreshes the display after
+a console command:
+
+c3.throttle-then-lua.stdout  a fresh start, `throttle(on=False)` on the stopped machine, then
+                             `lua(script="print(2)", read_only=True)`: the throttle's end (#1)
+                             printed before `lua`'s (#2), and that `lua` reply read
+                             `lines_ahead: 0`
+
+Captured live through `Session.monitor`, same board, after 60 frames of a fresh start, on the
+build with the gdbstub thread patch (0004); the first capture is byte for byte what the build
+from before the patch answered:
+
+cpulist.main-visible.txt   `cpulist`: every cpu in the debugger's order, the visible one marked
+                           with `*`, here `:maincpu`
+cpulist.sub-visible.txt    `cpulist` after the stub's `Hc2`: the mark moved to `:subcpu`, and
+                           nothing ran (the frame counter and the emulated time held)
+
+Captured live through `Session.monitor`, same board, on the build with the gdbstub thread patch
+(0004) and on the build before it, byte for byte the same on both:
+
+bpclear.cleared.txt      `bpset 4a0` (row 1), then `bpclear 1`: the answer when a row goes
+
+Captured live through `Session.monitor`, same board, after 60 frames of a fresh start, on the
+build with the gdbstub thread patch (0004) and on the build before it, byte for byte the same on
+both:
+
+ignore.none.txt          `ignore` with no argument, no cpu ignored
+ignore.main-ignored.txt  `ignore` with no argument after `focus subcpu`: the one it ignored
+focus.subcpu.txt         `focus subcpu`: the console's answer, which names the absolute tag
+
+Captured live through the `debug` tool (its `output`, verbatim), same board, after 60 frames of
+a fresh start and one frame more, on the build of MAME master 9c28def3 with the gdbstub thread patch
+(0004), `:maincpu` the cpu the last stop was on (suspending that one would run the machine):
+
+suspend.none.txt           `suspend` with no argument, no cpu suspended
+suspend.sub.txt            `suspend :subcpu`: the answer when a cpu is suspended
+suspend.sub-suspended.txt  `suspend` with no argument after it: the one it suspended
+resume.sub.txt             `resume :subcpu`: the answer when a suspended cpu is resumed
+
+Captured live through `Session.monitor`, same board, on the build with the gdbstub thread patch
+(0004), arming with the cpu named as the server does for every row:
+
+bpset.set.txt          `bp 400::maincpu`: the answer when a breakpoint is armed (row 1)
+wpset.set.txt          `wp 2031fc::maincpu,4,w`: the answer when a watchpoint is armed (row 1)
+wpclear.cleared.txt    `wpclear 0x1`: the answer when a watchpoint row goes
+wpclear.invalid.txt    `wpclear 0x9`: the answer for a number no watchpoint row holds
+
+Captured live through `Session.monitor`, same board, after 30 frames of a fresh start, each with
+the cpu named, beside the same command on the main cpu, which answered differently:
+
+history.sub.txt       `history :subcpu,0x4`: the sub cpu's trail, a `bra` to itself at 0x542
+find.sub.txt          `find 0x0::subcpu,0x10,0x00,0x00,0x04,0x00`: found in the sub cpu's vectors
+                      (the main cpu's answered `Not found`)
+bplist.sub-none.txt   `bplist :subcpu`: the sentence for none, naming the cpu
+wplist.sub-none.txt   `wplist :subcpu`: the same for watchpoints
+dasm.sub.txt          the file `dasm dasm-sub.txt,0x542,0x8,1,:subcpu` wrote
+
+Captured live through the `debug` TOOL (its `output`, the exact text `Session.monitor` returned),
+same 68000 board of tch-blitter (patched build), the machine parked at the debugger on a fresh
+start with no row of anybody's, by a scratch script that sent each line once, the controls
+first and last. These are the console's OWN ERROR ANSWERS, the shapes `mame_console` reads as a
+refusal (its module docstring says how the two families differ); a shape not captured here is
+not matched.
+
+answered.print-pc.txt              `print pc`: the negative control, a number
+answered.print-braces-false.txt    `print {d1==7fff}` while D1 holds something else: `0`
+answered.bplist-none.txt           `bplist` with no row: a sentence that is not an error
+refused.print-expression-subcpu.txt  `print d@20113a:subcpu`: the line the card was measured on
+refused.print-expression-symbol.txt  `print zzz`: an unknown symbol in a `print`
+refused.bp-expression-symbol.txt   `bp zzz`: the same refusal from a `bp`, nothing armed
+refused.unknown-command.txt        `zzz 1`: a command the console lacks
+refused.bpclear-number.txt         `bpclear 0x7` with no row: a number no breakpoint holds
+refused.wpclear-number.txt         `wpclear 0x9`: the same for a watchpoint
+refused.rpclear-number.txt         `rpclear 0x7`: the same for a registerpoint
+refused.not-enough-params.txt      `print` alone
+refused.too-many-params.txt        `focus maincpu,subcpu,zzz`
+refused.unbalanced-parens.txt      `print {d1==`: the caret at the end of the line
+refused.unbalanced-quotes.txt      `print "abc`
+refused.assignment-expression.txt  `d0=`: a one-parameter assignment that does not parse; the
+                                   caret's column is the error CODE (8, stack underflow)
+refused.wpset-type.txt             `wpset 0x100,4,x`: an argument the command refuses
+refused.loadr-missing-file.txt     `loadr /nonexistent/nope.bin,0,4,:maincpu`
+refused.load-missing-file.txt      `load /nonexistent/nope.bin,0,4`: the same sentence
+refused.semicolon-middle.txt       `print pc;print d@20113a:subcpu;print d0`: the first and the
+                                   third answered (`F2036`, `0`) around the second's refusal
+refused.semicolon-first.txt        `zzz 1;print pc`: a parse error refuses the line at its
+                                   command, and the `print` after it never ran
+
+Captured the same way, in two later runs of the same script, for the shapes the review asked
+for; `print d0=5,zzz` was followed by `print d0`, which answered `5`, so the register WAS
+written before the console refused the line:
+
+refused.bpclear-two.txt            `bpclear 0x7;bpclear 0x8`: one `Invalid` line per command
+refused.print-then-bpclear.txt     `print pc;bpclear 0x7`: the value, then the refusal
+refused.unknown-then-g.txt         `zzz 1;g`: a parse error at the first command; the `g` never ran
+refused.assignment-two.txt         `d0=;d1=`: one caret for two malformed assignments
+refused.print-assign-then-error.txt  `print d0=5,zzz`: D0 written, then `zzz` refused
+refused.assign-then-comparison.txt `d1=1234;print d1==1234`: the console reads the bare
+                                   comparison as an ASSIGNMENT EXPRESSION (one parameter
+                                   holding `=`) and refuses it; the caret's column is the code
+refused.comparison-bare.txt        `print d1==1234` alone: the same refusal
+answered.comparison-braces.txt     `print {d1==1234}`: braced, it is a command, and it answers
+refused.two-unpinned-then-parse.txt  `print foo;print foo;yyy;g`: two run-time errors, then the
+                                   parse error that stopped the line before `g`
+refused.long-parse-error.txt       `print 1;` forty times then `zzz`: the echo and the caret
+                                   line both wrapped by the console's text buffer
+refused.bpclear-partial.txt        `bpclear 0x1,0x7` with no row: one `Invalid` line per index
+refused.trailing-semicolon.txt     `zzz 1;`: the echo keeps the `;`, and there is no empty command
+
+Captured the same way (the `debug` tool's `output`, patched build, a fresh start), for the
+region write: `saver` copies a span of a memory REGION to a file and `loadr` a file into one,
+raw bytes, both bypassing the cpu's view. Between each line `read_memory(ref="7b8")` read the
+word through `:maincpu`: `80a0` at the start, `8020` after the load, `80a0` again after the
+restore. `saved.bin` held `a080` (the word in the host's order) and the load file `2080`:
+
+saver.saved.txt               `saver <file>,0x7b8,0x2,:maincpu`
+loadr.loaded.txt              `loadr <file of 2 bytes>,0x7b8,0x2,:maincpu`: the range it loaded
+loadr.short-file.txt          `loadr <file of 1 byte>,0x7b8,0x2,:maincpu`: it loads what the file
+                              holds and says so only through the range, one byte short
+saver.clamped-at-end.txt      `saver <file>,0xffffe,0x10,:maincpu`: the same success sentence,
+                              and the file holds the 2 bytes left before the region's end
+loadr.invalid-offset.txt      `loadr <file>,0x100000,0x2,:maincpu`: an offset at the region's size
+saver.invalid-offset.txt      `saver <file>,0x100000,0x2,:maincpu`: the same sentence
+loadr.unknown-region.txt      `loadr <file>,0x7b8,0x2,:nope`: a tag no region has
+saver.unknown-region.txt      `saver <file>,0x7b8,0x2,:nope`: the same sentence
+saver.unwritable.txt          `saver /nonexistent/dir/x.bin,0x7b8,0x2,:maincpu`
+
+Captured the same way (the `debug` tool's `output`, patched build, a fresh start), for a write
+watch conditioned on the value it carries. `wpdata`, `wpaddr` and `wpsize` sit in the debugger's
+GLOBAL symbol table (`debugcpu.cpp`), so the console evaluates them outside a watchpoint, as 0;
+a condition MAME cannot parse at the arm is refused, and one it can parse but not evaluate is
+ARMED and never fires (`points.cpp` returns on an `expression_error`), which is why a condition
+is put to the evaluator before the `wp`:
+
+print.braces.wpdata-outside.txt         `print {wpdata}` with no watchpoint firing: 0
+print.braces.wpdata-masked-outside.txt  `print {(wpdata&3)!=0}`: 0
+wpset.set-condition.txt                 `wp 2031fe:maincpu,2,w,(wpdata&3)==0`
+wplist.condition.txt                    `wplist` after it: the row carries ` if <condition>`
+wpset.malformed-condition.txt           `wp 2031fc:maincpu,2,w,wpdata==`: set, all the same
+wplist.malformed-armed.txt              `wplist` after both: the malformed row is listed
+refused.wpset-unknown-symbol.txt        `wp 2031fc:maincpu,2,w,zzqq==1`: refused at the arm
+debuglog.conditioned-wp.txt             `debug.log` over six `run_for(frames=3)` after the arms:
+                                        the conditioned row's stop line has the unconditioned
+                                        shape; the malformed row logged no stop there
+
+Captured the same way, for the write side of an address a Lua write tap sits on (a capture's,
+then a count watch's beside it, each after one frame so the install ran): MAME names every tap
+in `map` as `(<tap name>) ` before what it wraps (`emumem_het.cpp`), so the handler is the last
+word of the line and not its first:
+
+map.one-tap.txt                  `map 2031fe` under a capture triggered there
+map.two-taps.txt                 `map 2031fe` under that capture and a count watch on the byte
+
+On Line UP's V30 board (`lineup`, the project's own `mamelineup` build), the machine stopped
+after 900 frames of attract with a Lua write tap named `c11` installed on io ports 6..7. The io
+space answers `mapi` where the program space answers `map`, in the same three-line shape, the
+tap wrapping the handler as it does in `map`:
+
+mapi.lineup-6.txt                `mapi 6`: the palette port, written through `twins_pal_w`
+mapi.lineup-20-unmapped.txt      `mapi 20`: a port nothing handles, on every side
+
+Captured through the `debug` TOOL (its `output`), with the stock debug build patched for SDL3's
+joystick ids, right after `start` and before anything advanced. On `topgunnr`, a vector board:
+its `-listxml` declares a `vector` display and no screen device, and MAME's debugger registers
+`frame` (with `beamx`, `beamy` and the vblank stop) only on a machine with exactly one screen
+device, `frame0`... on one with several, nothing on one with none (debugcpu.cpp); `symlist`
+listed none of the three. On `circus`, one screen, as the control:
+
+print-frame-no-screen.txt    `print frame` on topgunnr: refused, an unknown symbol
+print-frame0-no-screen.txt   `print frame0` on topgunnr (and on circus, which has one screen):
+                             the same refusal for the several-screens name
+print-frame-one-screen.txt   `print frame` on circus at the park: frame 0
+time.txt                     `time` on topgunnr, twice at rest, the same both times: the emulated
+                             clock is a console command, not an expression symbol, and it
+                             answers on a board with no frame counter
+
+Captured through the `debug` TOOL (its `output`), on `circus` (the stock debug build patched for
+SDL3's joystick ids, `joystickprovider none`): `print frame,totalcycles` four times, each answer
+kept whole and in order, one blank line closing each as the console prints it. MAME's debugger
+refreshes `totalcycles` only when the cpu executes, so right after `stateload` it still holds
+the count from before the load while `frame` already reads the loaded one:
+
+totalcycles-after-load.txt   after `run_for(frames=10)` and `state_save("c1")`; after
+                             `run_for(frames=5)`; after `state_load("c1")` (the loaded frame,
+                             the count the machine held at its stop before the load); after
+                             one `step` (the loaded count plus that instruction's cycles)
+
+Read off MAME's source rather than captured from a console, at revision
+9c28def3407cf3386d5c6bea932312741acb7992 of the tch-blitter checkout's `upstream/`: every
+`register_command` call in src/emu/debug/debugcmd.cpp and debugcon.cpp, one per line as `name
+minparams maxparams`, the maximum spelled as the source spells it (`MAX_COMMAND_PARAMS`). The
+classifier's tables are judged against this list, so a command MAME adds or drops is a red test
+rather than a word the tables silently leave unjudged. Regenerated from a checkout's
+src/emu/debug with:
+
+    grep -ho 'register_command("[^"]*" *,[^,]*, *[0-9]*, *[A-Z_0-9]*' debugcmd.cpp debugcon.cpp \
+      | sed -E 's/register_command\("([^"]*)" *,[^,]*, *([0-9]*), *([A-Z_0-9]*)/\1 \2 \3/'
+
+
+commands.registered.txt      every registration, in source order
+
+Captured through the `debug` TOOL (its `output`), on `circus` started with an ini holding
+`rewind 1`, after `run_for(frames=10)` and `run_for(frames=2)`: `debug("rewind")` with no rewind
+state the machine could step back to. It is MAME's own refusal of the command
+(`execute_rewind` in src/emu/debug/debugcmd.cpp prints it when `rewind_step` fails, and prints
+nothing on success), so the machine was not replaced:
+
+rewind.refused.txt           the console's whole answer, its closing blank line included
+
+Captured from MAME's `error.log`, not its console, on `circus` built from MAME master 285ea99f
+with patches 0003 and 0005, whose gdbstub refreshes the display after every console command:
+`run_for(frames=10)`, then `state_save`. The refreshes of the console commands before it ran
+circus's screen update with the machine stopped, which asserted its IRQ and left the line's
+event pending as an anonymous timer, so MAME held the save (`handle_saveload` asks
+`device_scheduler::can_save`, which logs this and dumps the timers). Cut from its first line to
+the dump's closing rule:
+
+statesave.held.errorlog.txt  MAME's words for a held save, and the timer dump that follows them

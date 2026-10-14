@@ -1,0 +1,74 @@
+30000: di      
+30001: clr1    dir
+30002: br      3004Eh
+30005: call    350BAh
+30008: mov     aw,0h
+3000B: call    350DFh
+3000E: call    3147Ah
+30011: call    350BAh
+30014: call    30174h
+30017: mov     ix,8000h
+3001A: call    312FEh
+3001D: mov     ix,8048h
+30020: call    312FEh
+30023: call    3170Bh
+30026: call    31742h
+30029: bc      30005h
+3002B: br      30014h
+3002D: inc     sp
+3002E: pop     r
+3002F: be      30096h
+30031: and     [bp+ix],bh
+30033: and     [bw+ix],dh
+30035: adjba   
+30036: adj4s   
+30037: xor     [iy],dh
+30039: adj4s   
+3003A: xor     dh,[5420h]
+3003E: mul     bp,[iy+65h],3A20h
+30043: and     [bw+ix],dh
+30045: xor     [bp+ix],bh
+30047: xor     [bw+ix],dh
+30049: cmp     dh,[bw+ix]
+3004B: xor     [bw+ix],ah
+3004D: add     [bp+iy],dh
+3004F: ror     byte ptr [bp+33C0h],-1h
+30054: mov     cw,200h
+30057: mov     aw,0ACh
+3005A: stmw    
+3005B: mov     aw,ps
+3005D: stmw    
+3005E: dbnz    30057h
+30060: mov     aw,1000h
+30063: mov     ds1,aw
+30065: xor     aw,aw
+30067: xor     iy,iy
+30069: mov     cw,7D00h
+3006C: rep     stmw    
+3006E: mov     aw,2000h
+30071: mov     ds0,aw
+30073: xor     ix,ix
+30075: mov     aw,40h
+30078: mov     ds1,aw
+3007A: xor     iy,iy
+3007C: mov     cw,7D00h
+3007F: rep     movbkw  
+30081: mov     aw,40h
+30084: mov     ds0,aw
+30086: mov     ss,aw
+30088: mov     sp,99DFh
+3008B: mov     bp,sp
+3008D: mov     word ptr [8D46h],1h
+30093: xor     aw,aw
+30095: mov     ds1,aw
+30097: mov     ix,8h
+3009A: mov     aw,0ADh
+3009D: mov     ds1:[ix],aw
+300A0: mov     ds1:[ix+2h],ps
+300A4: mov     aw,1000h
+300A7: mov     ds1,aw
+300A9: br      30005h
+300AC: reti    
+300AD: push    bp
+300AE: push    aw
+300AF: push    bw

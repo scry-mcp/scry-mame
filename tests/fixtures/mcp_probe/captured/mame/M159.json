@@ -1,0 +1,38 @@
+{
+ "task": {
+  "id": "M159",
+  "prompt": "Press the field P2 Button 1 of port :IN1 with the value 0x40 for 2 frames.",
+  "tool": "input",
+  "args": {
+   "port": ":IN1",
+   "field": "P2 Button 1",
+   "value": {
+    "any_of": [
+     64,
+     "0x40"
+    ]
+   },
+   "frames": 2
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M159: {\"tool\": \"input\", \"args\": {\"port\": \":IN1\", \"field\": \"P2 Button 1\", \"value\": \"0x40\", \"frames\": 2}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M159: {\"tool\": \"input\", \"args\": {\"port\": \":IN1\", \"field\": \"P2 Button 1\", \"value\": \"0x40\", \"frames\": 2}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M159: {\"tool\": \"input\", \"args\": {\"port\": \":IN1\", \"field\": \"P2 Button 1\", \"value\": \"0x40\", \"frames\": 2}}"
+   ],
+   "right": true
+  }
+ ]
+}

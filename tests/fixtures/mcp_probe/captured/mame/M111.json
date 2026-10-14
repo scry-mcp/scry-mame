@@ -1,0 +1,37 @@
+{
+ "task": {
+  "id": "M111",
+  "prompt": "The pixel at x 40, y 12 of the screen is the wrong colour: which pen is it, what colour does that pen have now, and which write set it?",
+  "tool": "screen_view",
+  "args": {
+   "mode": "pixel",
+   "point": [
+    40,
+    12
+   ]
+  },
+  "grammar": [
+   "pixel"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M111: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [40, 12]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M111: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [40, 12]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M111: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [40, 12]}}"
+   ],
+   "right": true
+  }
+ ]
+}

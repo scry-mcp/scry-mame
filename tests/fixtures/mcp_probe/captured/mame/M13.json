@@ -1,0 +1,38 @@
+{
+ "task": {
+  "id": "M13",
+  "prompt": "Halt at PlayerX, forcing it to be taken as a symbol, but only when the console expression w@PlayerX!=0 holds.",
+  "tool": "breakpoint_at",
+  "args": {
+   "ref": "PlayerX",
+   "by": "symbol",
+   "condition": "w@PlayerX!=0"
+  },
+  "allow": [
+   "role"
+  ],
+  "grammar": [
+   "symbol"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

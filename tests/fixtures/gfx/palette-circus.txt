@@ -1,0 +1,2 @@
+MAME_MCP_PAL tag=:palette entries=2 indirect=0 shadows=false highlights=false first=0 pens=ff000000,ffffffff ind=
+MAME_MCP_LUA_END#1	true	nil

@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M25",
+  "prompt": "Describe the machine, narrowed to the cpu tagged audiocpu.",
+  "tool": "machine_map",
+  "args": {
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

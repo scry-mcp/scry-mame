@@ -1,0 +1,34 @@
+{
+ "task": {
+  "id": "M165",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Nobody is going to watch it, but this once I want its window brought to the front when it launches.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "/opt/fury/roms",
+   "reference_rom": "/opt/fury/roms/fury.bin",
+   "background": false
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M165: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"display\": \"main\", \"background\": false}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M165: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"display\": \"main\", \"background\": false}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M165: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"display\": \"main\", \"background\": false}}"
+   ],
+   "right": false
+  }
+ ]
+}

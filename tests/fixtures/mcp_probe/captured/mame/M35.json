@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M35",
+  "prompt": "Force register D3 to the decimal value 4660.",
+  "tool": "set_register",
+  "args": {
+   "name": {
+    "any_of": [
+     "D3",
+     "d3"
+    ]
+   },
+   "value": {
+    "any_of": [
+     4660,
+     "0x1234"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+   ],
+   "right": true
+  }
+ ]
+}

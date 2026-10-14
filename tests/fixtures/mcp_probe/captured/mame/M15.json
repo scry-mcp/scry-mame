@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M15",
+  "prompt": "Clear the breakpoint declared as FrameTick.",
+  "tool": "breakpoint_clear",
+  "args": {
+   "ref": "FrameTick"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

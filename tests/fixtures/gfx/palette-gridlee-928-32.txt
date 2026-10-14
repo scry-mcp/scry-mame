@@ -1,0 +1,2 @@
+MAME_MCP_PAL tag=:palette entries=2048 indirect=0 shadows=false highlights=false first=928 pens=ff8866bb,ffff0000,ffcc0000,ff660000,ffccff88,ff77cc44,ff449933,ffff77ff,ffff9900,ff990000,ff00bb22,ff777777,ffcccccc,ff000000,ff889999,ffffffff,ff11ffdd,ff55bbff,ff55aaff,ff5599ff,ff888888,ffdd22ee,ffdd2244,ff22ddbb,ff33bbaa,ff1188ff,ff4477bb,ff5566aa,ff446677,ff115555,ff5577dd,ff5577aa ind=
+MAME_MCP_LUA_END#1	true	nil

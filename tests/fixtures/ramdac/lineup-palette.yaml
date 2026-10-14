@@ -1,0 +1,17 @@
+schema: 1
+systems: [lineup]
+ramdacs:
+  pal:
+    palette: palette
+    cpu: maincpu
+    space: io
+    protocol: sequence
+    data_port: 0x6
+    index_port: 0xe
+    pen_count: 256
+    components_bit_reversed: true
+    order: [r, g, b]
+    component_bits: 5
+    auto_increment: true
+    status: declared
+    source: "lineup-mame upstream twins.cpp, twins_pal_w and porte_paloff0_w"

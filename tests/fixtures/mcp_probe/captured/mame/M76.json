@@ -1,0 +1,36 @@
+{
+ "task": {
+  "id": "M76",
+  "prompt": "Remove the breakpoint declaration SoundNmi on the cpu tagged audiocpu, leaving the one of the same name on the other cpu.",
+  "tool": "breakpoint_clear",
+  "args": {
+   "ref": "SoundNmi",
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M76: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M76: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M76: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

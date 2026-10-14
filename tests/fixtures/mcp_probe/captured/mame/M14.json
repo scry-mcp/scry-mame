@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M14",
+  "prompt": "List every breakpoint declaration and its state.",
+  "tool": "breakpoint_list"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

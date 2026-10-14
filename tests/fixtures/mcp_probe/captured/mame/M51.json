@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M51",
+  "prompt": "List every savestate in this session's state folder.",
+  "tool": "state_list"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M51: {\"tool\": \"state_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M51: {\"tool\": \"state_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M51: {\"tool\": \"state_list\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

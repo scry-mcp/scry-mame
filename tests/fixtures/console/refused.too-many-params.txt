@@ -1,0 +1,4 @@
+>focus maincpu,subcpu,zzz
+ ^
+too many parameters for command
+

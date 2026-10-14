@@ -1,0 +1,13 @@
+# Caches, virtualenvs and coverage data: they regenerate, and a tracked one goes stale.
+__pycache__/
+*.py[co]
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+# The probe's run directories, written under the repository's root.
+/tmp/
+**/._*
+**/.DS_Store

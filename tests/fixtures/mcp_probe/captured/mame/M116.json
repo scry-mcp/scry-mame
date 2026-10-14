@@ -1,0 +1,32 @@
+{
+ "task": {
+  "id": "M116",
+  "prompt": "Film the frames in which the byte at the symbol SOUND_LATCH of the cpu subcpu is written, keeping only the 48x40 part of the screen at x 16, y 24, the files going to the new directory /tmp/mcp-probe-film, waiting up to 9 seconds for the screen read.",
+  "tool": "gfx_film",
+  "args": {
+   "trigger": "SOUND_LATCH",
+   "cpu": {
+    "any_of": [
+     "subcpu",
+     ":subcpu"
+    ]
+   },
+   "crop": [
+    16,
+    24,
+    48,
+    40
+   ],
+   "film_dir": "/tmp/mcp-probe-film",
+   "seconds": 9
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M116: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"SOUND_LATCH\", \"cpu\": \"subcpu\", \"crop\": [16, 24, 48, 40], \"film_dir\": \"/tmp/mcp-probe-film\", \"seconds\": 9}}"
+   ],
+   "right": true
+  }
+ ]
+}

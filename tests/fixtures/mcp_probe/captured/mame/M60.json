@@ -1,0 +1,49 @@
+{
+ "task": {
+  "id": "M60",
+  "prompt": "Find every place the bytes 4E 71 occur in the 1536 bytes from hex address 2600 of the cpu tagged soundcpu.",
+  "tool": "find",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x2600"
+    ]
+   },
+   "length": 1536,
+   "data_hex": {
+    "any_of": [
+     "4E71",
+     "4E 71",
+     "4e71",
+     "4e 71"
+    ]
+   },
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

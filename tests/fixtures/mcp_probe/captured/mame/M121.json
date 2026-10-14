@@ -1,0 +1,47 @@
+{
+ "task": {
+  "id": "M121",
+  "prompt": "Nobody knows the format of the region gfx3. Draw it under the candidate layouts at one and two bits a pixel, as 24x24 tiles, 20 tiles a candidate, saved to /tmp/mcp-probe-sweep.png.",
+  "tool": "gfx_sweep",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx3",
+     ":gfx3"
+    ]
+   },
+   "planes": [
+    1,
+    2
+   ],
+   "sizes": [
+    [
+     24,
+     24
+    ]
+   ],
+   "count": 20,
+   "dest": "/tmp/mcp-probe-sweep.png"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"palette\": \"none\", \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"count\": 20, \"palette\": \"none\", \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

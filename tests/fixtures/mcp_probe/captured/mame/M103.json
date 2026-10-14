@@ -1,0 +1,19 @@
+{
+ "task": {
+  "id": "M103",
+  "prompt": "Draw every blit the draw command tiledraw fired in the newest finished frame as boxes over the screen, waiting up to 12 seconds.",
+  "tool": "gfx_blits",
+  "args": {
+   "draw_command": "tiledraw",
+   "seconds": 12
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M103: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"tiledraw\", \"seconds\": 12}}"
+   ],
+   "right": true
+  }
+ ]
+}

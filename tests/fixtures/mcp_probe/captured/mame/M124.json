@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M124",
+  "prompt": "Write the gfx.yaml draft of what this session has proved about the board to /tmp/newboard-gfx-draft.yaml.",
+  "tool": "gfx_draft",
+  "args": {
+   "dest": "/tmp/newboard-gfx-draft.yaml"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M124: {\"tool\": \"gfx_draft\", \"args\": {\"dest\": \"/tmp/newboard-gfx-draft.yaml\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M124: {\"tool\": \"gfx_draft\", \"args\": {\"dest\": \"/tmp/newboard-gfx-draft.yaml\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M124: {\"tool\": \"gfx_draft\", \"args\": {\"dest\": \"/tmp/newboard-gfx-draft.yaml\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

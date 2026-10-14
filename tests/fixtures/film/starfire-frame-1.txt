@@ -1,0 +1,5 @@
+MCP_FILM_FRAME k=1 frame=276 hits=2 read_at=277
+h 91 ff 275
+h e0 0 275
+said MAME_MCP_SCREEN tag=:screen w=256 h=224 frame=277 palette=- entries=0
+end

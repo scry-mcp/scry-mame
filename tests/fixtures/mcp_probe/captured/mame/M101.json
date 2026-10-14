@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M101",
+  "prompt": "Load the graphics manifest of this project, /home/dev/tch/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
+  "tool": "gfx_load",
+  "args": {
+   "path": "/home/dev/tch/hardware/gfx.yaml"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/tch/hardware/gfx.yaml\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/tch/hardware/gfx.yaml\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/tch/hardware/gfx.yaml\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,55 @@
+{
+ "task": {
+  "id": "M161",
+  "prompt": "Show 4 tiles of the region gfx2, starting 0x800 bytes into it, in the loaded manifest's format chars8, through the palette device tagged ppu_pal from pen 0x30.",
+  "tool": "gfx_view",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx2",
+     ":gfx2"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     2048,
+     "0x800"
+    ]
+   },
+   "count": 4,
+   "layout": "chars8",
+   "palette": {
+    "any_of": [
+     "ppu_pal",
+     ":ppu_pal"
+    ]
+   },
+   "pen_base": {
+    "any_of": [
+     48,
+     "0x30"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"first\": 0, \"count\": 4}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx2\", \"offset\": \"0x800\", \"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\", \"count\": 4}}"
+   ],
+   "right": true
+  }
+ ]
+}

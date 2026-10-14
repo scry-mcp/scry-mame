@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M119",
+  "prompt": "Stop the film that is recording in this session; its files can stay.",
+  "tool": "gfx_film",
+  "args": {
+   "clear": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M119: {\"tool\": \"gfx_film\", \"args\": {\"clear\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M119: {\"tool\": \"gfx_film\", \"args\": {\"clear\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M119: {\"tool\": \"gfx_film\", \"args\": {\"clear\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

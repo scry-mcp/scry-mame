@@ -1,0 +1,2 @@
+MAME_MCP_SCREEN tag=:screen w=336 h=252 frame=903 palette=:palette entries=256
+MAME_MCP_LUA_END#5	true	nil

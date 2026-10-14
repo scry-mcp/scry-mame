@@ -1,0 +1,4 @@
+   Read: 0006 logical io == 0006 physical io -> unmapped
+  Write: 0006 logical io == 0006 physical io -> (c11) twinsed1_state::twins_pal_w
+  Fetch: 0006 logical io == 0006 physical io -> unmapped
+

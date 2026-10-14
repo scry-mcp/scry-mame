@@ -1,0 +1,9 @@
+{
+  "path": ["."],
+  "format": ["python", "bash"],
+  "gitignore": true,
+  "ignore": ["**/.venv/**", "**/__pycache__/**"],
+  "minTokens": 75,
+  "reporters": ["console"],
+  "absolute": true
+}

@@ -1,0 +1,34 @@
+{
+ "task": {
+  "id": "M43",
+  "prompt": "In one round trip: run to StageDone counting the control declared at FrameTick, then save a PNG of the screen to /tmp/mcp-probe-stage.png. Wait at most 40 seconds for each stop between steps, and cut each step's account to its summary.",
+  "tool": "perform",
+  "args": {
+   "steps": [
+    {
+     "op": "run_to",
+     "ref": "StageDone",
+     "control": "FrameTick"
+    },
+    {
+     "op": "snapshot",
+     "dest": "/tmp/mcp-probe-stage.png"
+    }
+   ],
+   "settle_seconds": 40,
+   "summaries": true
+  },
+  "grammar": [
+   "run_to",
+   "snapshot"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

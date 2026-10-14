@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M157",
+  "prompt": "Force register D5 to the value 0x2f00.",
+  "tool": "set_register",
+  "args": {
+   "name": {
+    "any_of": [
+     "D5",
+     "d5"
+    ]
+   },
+   "value": {
+    "any_of": [
+     12032,
+     "0x2f00"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M157: {\"tool\": \"set_register\", \"args\": {\"name\": \"D5\", \"value\": \"0x2f00\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M157: {\"tool\": \"set_register\", \"args\": {\"name\": \"D5\", \"value\": \"0x2f00\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M157: {\"tool\": \"set_register\", \"args\": {\"name\": \"D5\", \"value\": \"0x2f00\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

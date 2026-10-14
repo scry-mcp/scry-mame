@@ -1,0 +1,38 @@
+{
+ "task": {
+  "id": "M125",
+  "prompt": "Ana looked at the sweep's sheet and picked candidate s1c4 as the format: record her choice and write the draft to the scratch.",
+  "tool": "gfx_draft",
+  "args": {
+   "choose": {
+    "candidate": "s1c4",
+    "chosen_by": {
+     "any_of": [
+      "Ana",
+      "ana"
+     ]
+    }
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M125: {\"tool\": \"gfx_draft\", \"args\": {\"choose\": {\"candidate\": \"s1c4\", \"chosen_by\": \"Ana\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M125: {\"tool\": \"gfx_draft\", \"args\": {\"choose\": {\"candidate\": \"s1c4\", \"chosen_by\": \"Ana\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M125: {\"tool\": \"gfx_draft\", \"args\": {\"choose\": {\"candidate\": \"s1c4\", \"chosen_by\": \"Ana\"}}}"
+   ],
+   "right": true
+  }
+ ]
+}

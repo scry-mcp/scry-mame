@@ -1,0 +1,43 @@
+{
+ "task": {
+  "id": "M27",
+  "prompt": "Read 48 bytes of the memory block MAME keeps under the tag palram2, starting 72 bytes into it, waiting up to 8 seconds for the console.",
+  "tool": "read_block",
+  "args": {
+   "tag": {
+    "any_of": [
+     "palram2",
+     ":palram2"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     72,
+     "0x48"
+    ]
+   },
+   "length": 48,
+   "seconds": 8
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M27: {\"tool\": \"read_block\", \"args\": {\"tag\": \"palram2\", \"offset\": 72, \"length\": 48, \"seconds\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M27: {\"tool\": \"read_block\", \"args\": {\"tag\": \"palram2\", \"offset\": 72, \"length\": 48, \"seconds\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M27: {\"tool\": \"read_block\", \"args\": {\"tag\": \"palram2\", \"offset\": 72, \"length\": 48, \"seconds\": 8}}"
+   ],
+   "right": true
+  }
+ ]
+}

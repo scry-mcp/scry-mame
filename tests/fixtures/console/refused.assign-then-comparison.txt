@@ -1,0 +1,4 @@
+>d1=1234;print d1==1234
+     ^
+error in assignment expression: unknown symbol
+

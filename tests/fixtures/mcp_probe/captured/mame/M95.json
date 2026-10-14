@@ -1,0 +1,87 @@
+{
+ "task": {
+  "id": "M95",
+  "prompt": "Decode the region gfx2, starting 2048 bytes into it, under the layout {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}. Show tiles 10 to 29, 8 a row, in grey because I do not want the machine's colours, saved to /tmp/mcp-probe-tiles.png at scale 4, waiting up to 9 seconds.",
+  "tool": "gfx_view",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx2",
+     ":gfx2"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     2048,
+     "0x800"
+    ]
+   },
+   "first": 10,
+   "count": 20,
+   "columns": 8,
+   "palette": "none",
+   "dest": "/tmp/mcp-probe-tiles.png",
+   "scale": 4,
+   "seconds": 9,
+   "layout": {
+    "width": 16,
+    "height": 16,
+    "planes": 4,
+    "planeoffset": {
+     "any_of": [
+      "{ 0, 1, 2, 3 }",
+      "0, 1, 2, 3",
+      [
+       0,
+       1,
+       2,
+       3
+      ]
+     ]
+    },
+    "xoffset": {
+     "any_of": [
+      "{ STEP16(0,4) }",
+      "STEP16(0,4)",
+      [
+       "STEP16(0,4)"
+      ]
+     ]
+    },
+    "yoffset": {
+     "any_of": [
+      "{ STEP16(0,64) }",
+      "STEP16(0,64)",
+      [
+       "STEP16(0,64)"
+      ]
+     ]
+    },
+    "charincrement": "16*64"
+   }
+  },
+  "grammar": [
+   "none"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M95: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx2\", \"offset\": 2048, \"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+   ],
+   "right": true
+  }
+ ]
+}

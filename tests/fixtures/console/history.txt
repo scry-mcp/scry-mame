@@ -1,0 +1,9 @@
+0025E8: lea     $201000.l, A0
+0025EE: move.l  #$e927, D0
+0025F4: clr.b   (A0)+
+0025F6: dbra    D0, $25f4
+0025F4: clr.b   (A0)+
+0025F6: dbra    D0, $25f4
+0025F4: clr.b   (A0)+
+0025F6: dbra    D0, $25f4
+

@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M55",
+  "prompt": "Set a breakpoint that halts at the console expression PlayerX+2, forcing it to be read as an expression rather than a symbol or an address.",
+  "expect": "CANNOT",
+  "about": "breakpoint_at"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at refuses by: expr"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at refuses expr forcing; by accepts auto symbol address only"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at refuses expressions; only symbols or addresses can have breakpoints."
+   ],
+   "right": true
+  }
+ ]
+}

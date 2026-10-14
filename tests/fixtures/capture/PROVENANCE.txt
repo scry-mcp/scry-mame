@@ -1,0 +1,20 @@
+Captured live on radendur (the patched build, a fresh start per pass), by a capture watch and a
+count watch declared through `server.watch_add` with the code on disk, then `run_for`; the files
+are the ones the periodic hook wrote in the scratch, copied as they were, each row with its beam
+line and its time.
+
+counter.txt, counter.rows          `watch_add(ref="2031fc", mode="capture", fmt="u16[2]",
+                                   trigger="2031fe")` declared one frame after the start (so
+                                   the boot's clearing write is not in it), then 240 frames: the
+                                   frame counter's long,
+                                   triggered on its low word, which IRQ_VBLANK writes once a
+                                   frame. The control, `watch_add(ref="2031fe", mode="count",
+                                   width=1)` over the same pass, totalled 230, the rows' count.
+counter-capped.txt, .rows          the same pass with the row cap lowered to 3: three rows and
+                                   227 counted in `overflow_rows`; the control totalled 230.
+blit.txt, blit.rows                `watch_add(ref="700010", mode="capture", fmt="u16[5]",
+                                   trigger="70001e")` over 14 frames: the blitter's words 8..0xc,
+                                   triggered on word 0xf (0x0000 arms a blit, 0xffff fires it),
+                                   written by two routines, BLIT_DRIVER_A and BLIT_DRIVER_B. The
+                                   control on 0x70001e totalled 14.
+installed.txt                      the console's answer to the counter capture's install line.

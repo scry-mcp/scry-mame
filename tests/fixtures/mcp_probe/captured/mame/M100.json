@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M100",
+  "prompt": "Show me tilemap 2 exactly as the driver's own tilemap system composes it, scroll and priorities included.",
+  "expect": "CANNOT",
+  "about": "gfx_view"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M100: CANNOT no tool renders a tilemap as the driver's tilemap system composes it"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M100: CANNOT no tool reads tilemap data as the driver composes it with hardware scrolling"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M100: CANNOT No tilemap tool exists; the server cannot show the driver's tilemap system output."
+   ],
+   "right": true
+  }
+ ]
+}

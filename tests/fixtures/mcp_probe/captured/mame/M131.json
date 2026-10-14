@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M131",
+  "prompt": "The palette of this board is written with out instructions to the two-byte io port hex 1e: film the frames in which that port is written, keeping at most 12 pictures.",
+  "tool": "gfx_film",
+  "args": {
+   "trigger": {
+    "any_of": [
+     "0x1e",
+     "0x1E"
+    ]
+   },
+   "length": 2,
+   "space": "io",
+   "keep": 12
+  },
+  "grammar": [
+   "io"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M131: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x1e\", \"length\": 2, \"space\": \"io\", \"frames\": 300, \"keep\": 12}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M131: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x1e\", \"length\": 2, \"space\": \"io\", \"keep\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M131: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x1e\", \"space\": \"io\", \"keep\": 12}}"
+   ],
+   "right": false
+  }
+ ]
+}

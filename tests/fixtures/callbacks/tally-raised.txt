@@ -1,0 +1,7 @@
+MCP_TALLY 70001e_2 seq=7 frame=904 total=978 values=2 pcs=4 overflow_values=0 overflow_pcs=0 data_width=16 endianness=big cpu=:maincpu errors=678
+p 1fd2 148
+p 217c 2
+p 1fb8 148
+p 21ac 2
+e mcp:3: planted fault
+end

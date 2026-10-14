@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M10",
+  "prompt": "Let the machine run, waiting up to 7.5 seconds for it to stop.",
+  "tool": "resume",
+  "args": {
+   "seconds": 7.5
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M10: {\"tool\": \"resume\", \"args\": {\"seconds\": 7.5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M10: {\"tool\": \"resume\", \"args\": {\"seconds\": 7.5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M10: {\"tool\": \"resume\", \"args\": {\"seconds\": 7.5}}"
+   ],
+   "right": true
+  }
+ ]
+}

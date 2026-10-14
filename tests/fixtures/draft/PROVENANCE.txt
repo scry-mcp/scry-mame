@@ -1,0 +1,25 @@
+Captured live, never authored: the `evidence.locates` of the report `gfx_draft` wrote on a real
+machine, as `mame_evidence.record_locate` kept them, re-serialised with sorted keys.
+
+lineup-locates.json.gz  the V30 board of lineup-mame (`mamelineup`, set `lineup`, the canonical
+                        romset), two `gfx_locate` answers over one session, each on a range of
+                        the cpu's program space (no region or share holds this board's
+                        graphics):
+                        1. at `Draw_BNumber`'s first hit and two frames on, the digit: `ref`
+                           `81A20` (`_Numbers`), `count` 10, which is the whole table (it runs to
+                           `_Push_Start` at `830A0` in the map, ten one-byte-a-pixel 24x24
+                           digits), patch `[52, 104, 24, 24]`, `transparent` 0, flips `none`,
+                           layout 24x24, 8 planes `STEP8(0,1)`, xoffset `0..184` by 8, yoffset
+                           `0..4416` by 192, charincrement 4608. One match, tile 1 at (52, 104).
+                        2. at `Draw_Insert_Coins` and two frames on, the INSERT COINS strip:
+                           `ref` `7DF20`, `count` 19 (the strip's width, 1216 bytes, over 64 a
+                           tile), patch `[84, 8, 152, 8]`, flips `none`, layout 8x8, 8 planes
+                           `STEP8(0,1)`, xoffset `STEP8(0,8)`, yoffset `STEP8(0,1216)`,
+                           charincrement 64. Many matches, every window varying along one axis
+                           or with a rarest pen smaller than the tile's side.
+                        Both matches are true: ROM `7DF20` is what `Draw_Insert_Coins` copies to
+                        video memory, and `_Numbers` is the table `Draw_BNumber` reads.
+
+Both answers carry `searched_whole` true for their one candidate.
+
+A change in what `record_locate` keeps is RE-CAPTURED here, never patched in the fixture.

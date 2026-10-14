@@ -1,0 +1,38 @@
+{
+ "task": {
+  "id": "M34",
+  "prompt": "Write the bytes 12 34 AB to memory at LivesLeft.",
+  "tool": "write",
+  "args": {
+   "ref": "LivesLeft",
+   "data_hex": {
+    "any_of": [
+     "1234AB",
+     "12 34 AB",
+     "1234ab",
+     "12 34 ab"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"12 34 AB\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234ab\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

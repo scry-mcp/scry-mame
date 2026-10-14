@@ -1,0 +1,3 @@
+0F2038: move.w  #$0, $20351c.l
+0F2040: jsr     $25dc.w
+0025DC: movem.l D0-D7/A0-A5, -(A7)

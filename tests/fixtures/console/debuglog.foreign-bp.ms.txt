@@ -1,0 +1,11 @@
+41 141B0A3
+Stopped at breakpoint 1
+42
+42
+42
+400
+42
+Data dumped successfully
+1469041
+Device ':maincpu' breakpoints:
+    1 @ 000400

@@ -1,0 +1,3 @@
+MAME_MCP_GFX_BLOCK kind=space tag=program size=1024 bytewidth=1 endian=big
+MAME_MCP_GFX_PENS tag=:palette entries=2048 pens=ff11ffdd,ff55bbff,ff55aaff,ff5599ff,ff888888,ffdd22ee,ffdd2244,ff22ddbb,ff33bbaa,ff1188ff,ff4477bb,ff5566aa,ff446677,ff115555,ff5577dd,ff5577aa
+MAME_MCP_LUA_END#1	true	nil

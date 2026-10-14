@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M52",
+  "prompt": "Restore the savestate named bossfight.",
+  "tool": "state_load",
+  "args": {
+   "name": "bossfight"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M52: {\"tool\": \"state_load\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M52: {\"tool\": \"state_load\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M52: {\"tool\": \"state_load\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

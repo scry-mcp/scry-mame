@@ -1,0 +1,36 @@
+{
+ "task": {
+  "id": "M32",
+  "prompt": "Search the symbol class VARS of the symbol file for the single byte C9.",
+  "tool": "find",
+  "args": {
+   "symbol_class": "VARS",
+   "data_hex": {
+    "any_of": [
+     "C9",
+     "c9"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"c9\", \"symbol_class\": \"VARS\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

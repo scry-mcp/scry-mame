@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M120",
+  "prompt": "Show me the screen of the frames in which the blitter fired during the boot, before anything was armed in this session to keep them.",
+  "expect": "CANNOT",
+  "about": "gfx_film"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M120: CANNOT gfx_film captures future frames only; past frames are not available unless captured beforehand"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT film must be armed before boot; no tool recovers frames not recorded"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT Frames before film arming are not kept; films capture from their arming point onward."
+   ],
+   "right": true
+  }
+ ]
+}

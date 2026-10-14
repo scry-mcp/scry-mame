@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M151",
+  "prompt": "Over 12 frames, log which code locations run and keep that log at /tmp/e5-window.trace.",
+  "tool": "trace",
+  "args": {
+   "frames": 12,
+   "dest": "/tmp/e5-window.trace"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

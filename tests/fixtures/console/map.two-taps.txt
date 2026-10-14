@@ -1,0 +1,4 @@
+   Read: 2031FE logical program == 2031FE physical program -> memory@200000
+  Write: 2031FE logical program == 2031FE physical program -> (mcp_tally_2031fe_1) (mcp_capture_2031fc_4_t2031fe) memory@200000
+  Fetch: 2031FE logical program == 2031FE physical program -> memory@200000
+

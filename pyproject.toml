@@ -1,0 +1,86 @@
+[project]
+name = "scry-mame"
+version = "0.1.0"
+description = "Persistent debug session against MAME's gdbstub, and its MCP server"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    # UPPER-BOUNDED on purpose: `MCPServer` is a 2.x API. Without the bound a future
+    # 3.x installs cleanly and then fails at import, which is a broken install that
+    # looks like a broken server.
+    "mcp>=2.1.0,<3",
+    # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
+    # its release tag so a build reads exactly the core it was tested against.
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.1.0",
+]
+
+[dependency-groups]
+dev = ["mypy>=1.11", "pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
+
+[project.scripts]
+scry-mame = "server:main"
+
+[tool.hatch.build.targets.wheel]
+# A GLOB, not a list of names: a hand-kept list is a whitelist that goes short the day a module
+# is added, and the wheel then dies at import on somebody else's machine while every test here
+# stays green. Anchored to the package root, so the tests do not ship.
+include = ["/*.py"]
+# The root conftest loads the test-time shape guard; it is the suite's, not the server's.
+exclude = ["/conftest.py"]
+
+[tool.hatch.metadata]
+# `scry-core` is pinned by its git tag, a direct reference hatchling refuses unless told.
+allow-direct-references = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "SIM", "W"]
+# N818 wants every exception renamed to `...Error`. The concept is called INVALID across every
+# tool here (exit code 3, and the word the programs print), so the class that raises it is
+# `Invalid`: one spelling per concept outranks a generic naming convention.
+ignore = ["N818"]
+
+[tool.mypy]
+# NO PATH LIST: a hand-kept list of directories is always one short of the tree. The ONE
+# exclusion is the root `conftest.py`: mypy names a module by its file, the root one and
+# `tests/conftest.py` are both `conftest`, and with two of them mypy refuses the run before
+# checking anything. The root one is a single import of the core's shape guard, checked there.
+exclude = ["^conftest\\.py$"]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+warn_return_any = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# A TIER THAT LAUNCHES EMULATORS MAY NOT BE REACHED BY ACCIDENT: a stranger running `pytest` from
+# a clone would otherwise launch an emulator per case. Opting in is explicit (`pytest -m live`),
+# and a command-line `-m` beats this one.
+markers = ["live: drives a REAL emulator; deselected by default, opt in with `-m live`"]
+# `--cov` IS HERE SO EVERY `pytest` JUDGES THE FLOOR: without the flag pytest-cov registers no
+# plugin, and a bare run exits 0 having measured nothing. A partial run goes red on the floor by
+# construction, because the floor is the whole repository's: pass `--no-cov` for one of those.
+addopts = "-m 'not live' --cov"
+
+[tool.coverage.run]
+branch = true
+parallel = true
+concurrency = ["multiprocessing", "thread"]
+source = ["."]
+omit = [".venv/*"]
+
+[tool.coverage.report]
+# THE FLOOR IS THE VENDOR'S: coverage.py's `fail_under`, judged by pytest-cov at the end of every
+# `--cov` run. The number is the total the run that fixed it measured, raised by hand from a run.
+# It counts lines EXECUTED, not asserted: what proves a test bites is having seen it red.
+fail_under = 98.98
+precision = 2
+show_missing = true

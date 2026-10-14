@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M110",
+  "prompt": "Stop the palette write log of the RAMDAC vgadac.",
+  "tool": "palette_log",
+  "args": {
+   "palette_port": "vgadac",
+   "clear": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

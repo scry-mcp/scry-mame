@@ -1,0 +1,3 @@
+MAME_MCP_SCREEN tag=:screen w=256 h=256 frame=2400 palette=:palette entries=8
+MAME_MCP_GFX_BLOCK kind=share tag=:characterram size=4096 bytewidth=1 endian=little
+MAME_MCP_LUA_END#4	true	nil

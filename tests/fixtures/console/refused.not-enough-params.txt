@@ -1,0 +1,4 @@
+>print
+ ^
+not enough parameters for command
+

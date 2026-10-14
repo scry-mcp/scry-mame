@@ -1,0 +1,18 @@
+{
+ "task": {
+  "id": "M22",
+  "prompt": "Clear every watch declaration.",
+  "tool": "watch_clear",
+  "args": {
+   "all": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M22: {\"tool\": \"watch_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

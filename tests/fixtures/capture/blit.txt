@@ -1,0 +1,2 @@
+MCP_CAPTURE 700010_10_t70001e seq=15 frame=14 total=14 rows=14 overflow_rows=0 data_width=16 endianness=big cpu=:maincpu errors=0
+end

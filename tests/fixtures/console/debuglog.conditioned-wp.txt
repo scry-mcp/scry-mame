@@ -1,0 +1,142 @@
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+0 22
+Stopped at watchpoint 1 writing 00 to 2031FE (PC=000025F4)
+0
+0
+2ECDC
+25F6
+25F6
+[*0] :maincpu
+[1] :subcpu
+0
+Data dumped successfully
+2ECDC
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+0 2ECDC
+Stopped at watchpoint 1 writing 00 to 2031FF (PC=000025F4)
+0
+0
+2ECF2
+25F6
+25F6
+[*0] :maincpu
+[1] :subcpu
+0
+Data dumped successfully
+2ECF2
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+0 2ECF2
+0
+Stopped at VBLANK
+0
+4E006
+25F4
+25F4
+[*0] :maincpu
+[1] :subcpu
+0
+Data dumped successfully
+1
+Stopped at VBLANK
+1
+25F4
+2
+Stopped at VBLANK
+2
+25F6
+3
+Stopped at VBLANK
+3
+25F6
+3
+3
+25F6
+[*0] :maincpu
+[1] :subcpu
+3
+Data dumped successfully
+138006
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+3 138006
+4
+Stopped at VBLANK
+4
+26E4
+5
+Stopped at VBLANK
+5
+26E4
+6
+Stopped at VBLANK
+6
+2744
+6
+6
+2744
+[*0] :maincpu
+[1] :subcpu
+6
+Data dumped successfully
+222002
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+6 222002
+7
+Stopped at VBLANK
+7
+2744
+8
+Stopped at VBLANK
+8
+27AC
+9
+Stopped at VBLANK
+9
+27AC
+9
+9
+27AC
+[*0] :maincpu
+[1] :subcpu
+9
+Data dumped successfully
+30C000
+[*0] :maincpu
+[1] :subcpu
+[*0] :maincpu
+[1] :subcpu
+9 30C000
+A
+Stopped at VBLANK
+A
+2814
+B
+Stopped at VBLANK
+B
+2814
+C
+Stopped at VBLANK
+C
+28BE
+C
+C
+28BE
+[*0] :maincpu
+[1] :subcpu
+C
+Data dumped successfully
+3F6007

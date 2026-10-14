@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M44",
+  "prompt": "Run the MAME debugger command `dump 2A40,30` and give me its text.",
+  "tool": "debug",
+  "args": {
+   "command": {
+    "any_of": [
+     "dump 2A40,30",
+     "dump 2a40,30"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

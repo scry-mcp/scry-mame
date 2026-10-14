@@ -1,0 +1,4 @@
+   Read: 0020 logical io == 0020 physical io -> unmapped
+  Write: 0020 logical io == 0020 physical io -> unmapped
+  Fetch: 0020 logical io == 0020 physical io -> unmapped
+

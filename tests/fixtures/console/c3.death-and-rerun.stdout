@@ -1,0 +1,46 @@
+       /|  /|    /|     /|  /|    _______
+      / | / |   / |    / | / |   /      /
+     /  |/  |  /  |   /  |/  |  /  ____/ 
+    /       | /   |  /       | /  /_     
+   /        |/    | /        |/  __/     
+  /  /|  /|    /| |/  /|  /|    /____    
+ /  / | / |   / |    / | / |        /    
+/ _/  |/  /  /  |___/  |/  /_______/     
+         /  /                            
+        / _/                             
+
+mame 0.289	
+Copyright (C) Nicola Salmoria and the MAME team
+
+Lua 5.4	
+Copyright (C) Lua.org, PUC-Rio
+
+[1;36m[MAME][0m> 3_pal16v8.u40 NOT FOUND (NO GOOD DUMP KNOWN) (tried in radendur)
+4_pal16v8.u73 NOT FOUND (NO GOOD DUMP KNOWN) (tried in radendur)
+WARNING: the machine might not run correctly.
+
+
+MAME debugger version 0.289 (mame0289-dirty)
+Currently targeting radendur (Radical Enduro (early prototype))
+gdbstub: listening on address localhost port 23946
+local f, e = load("manager.machine.video.throttled = false\nlocal screen = nil\nfor _, s in pairs(manager.machine.screens) do screen = s break end\nmanager.machine:logerror(string.format(\"MAME_MCP_THROTTLE#1 throttled=%s frame=%d\\n\",\n    tostring(manager.machine.video.throttled), screen and screen:frame_number() or -1))\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#1", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#1", ok, err) end
+MAME_MCP_LUA_END#1	true	nil
+[1;36m[MAME][0m> local f, e = load("print(2)", "=mcp") if f == nil then print("MAME_MCP_LUA_END#2", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#2", ok, err) end
+2
+MAME_MCP_LUA_END#2	true	nil
+[1;36m[MAME][0m> local f, e = load("if _G._mame_mcp_input_release then _G._mame_mcp_input_release() end\nlocal p = manager.machine.ioport.ports[\":P1\"]\nif p == nil then error(\"no port \" .. \":P1\") end\nlocal f = p.fields[\"Coin 1\"]\nif f == nil then error(\"port \" .. \":P1\" .. \" has no field \" .. \"Coin 1\") end\nlocal screen = nil\nfor _, s in pairs(manager.machine.screens) do screen = s break end\nlocal start = screen and screen:frame_number() or -1\nlocal before = p:read()\nf:set_value(1)\nlocal done = false\n_G._mame_mcp_input_release = function() done = true f:clear_value() end\n_G._mame_mcp_input = emu.add_machine_frame_notifier(function()\n    if done then return end\n    local frame = screen and screen:frame_number() or -1\n    if frame - start >= 1 then\n        done = true\n        local held = p:read()\n        f:clear_value()\n        manager.machine:logerror(string.format(\n            \"MAME_MCP_INPUT#3 release frame=%d port_held=%08x\\n\", frame, held))\n    end\nend)\nmanager.machine:logerror(string.format(\n    \"MAME_MCP_INPUT#3 set name=%q player=%d mask=%08x defvalue=%08x port_before=%08x frame=%d\\n\",\n    f.name, f.player, f.mask, f.defvalue, before, start))\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#3", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#3", ok, err) end
+MAME_MCP_LUA_END#3	true	nil
+[1;36m[MAME][0m> local f, e = load("if _G._mame_mcp_record_release then _G._mame_mcp_record_release() end\nlocal v = manager.machine.video\nlocal screen = nil\nfor _, s in pairs(manager.machine.screens) do screen = s break end\nif screen == nil then error(\"this machine has no screen to record\") end\n-- BEGIN AND END FROM THE SAME PLACE IN THE FRAME: the chunk itself is evaluated by the\n-- console's periodic hook, at a point of the frame that is not the notifier's, so a\n-- recording begun here and ended there came out one frame short on some runs and exact\n-- on others. Begun on the first notifier call, it holds the frame of that call (the\n-- notifier runs before the frame's video write) and one per later call, so the count\n-- is exact whatever the console's own timing.\nlocal counted = -1\nlocal done = false\n_G._mame_mcp_record_release = function()\n    done = true\n    if v.is_recording then v:end_recording() end\nend\n_G._mame_mcp_record = emu.add_machine_frame_notifier(function()\n    if done then return end\n    if counted < 0 then\n        v:begin_recording(\"/var/folders/9p/smf5trpd0js052m0tvsgwzd00000gn/T/mame-mcp-q8h3wx0m/snap/record-1.avi\", \"avi\")\n        counted = 0\n        manager.machine:logerror(string.format(\n            \"MAME_MCP_RECORD#4 begin frame=%d recording=%s\\n\", screen:frame_number(),\n            tostring(v.is_recording)))\n        return\n    end\n    counted = counted + 1\n    if counted >= 2 - 1 then\n        done = true\n        v:end_recording()\n        manager.machine:logerror(string.format(\"MAME_MCP_RECORD#4 end frame=%d\\n\", screen:frame_number()))\n    end\nend)\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#4", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#4", ok, err) end
+MAME_MCP_LUA_END#4	true	nil
+[1;36m[MAME][0m> local f, e = load("local screen = nil\nfor _, s in pairs(manager.machine.screens) do screen = s break end\nif screen == nil then error(\"no screen\") end\nlocal w, h = screen.width, screen.height\nlocal n = 8\nlocal cw, ch, ox, oy = nil, nil, nil, nil\nlocal sig = 0\nfor gy = 0, n - 1 do\n  for gx = 0, n - 1 do\n    local x, y\n    if cw then\n      x, y = ox + gx * cw, oy + gy * ch\n    else\n      x = math.floor(gx * w / n + w / (2 * n))\n      y = math.floor(gy * h / n + h / (2 * n))\n    end\n    sig = (sig * 31 + screen:pixel(x, y)) % 0x7fffffff\n  end\nend\nprint(string.format(\"MAME_MCP_SIG w=%d h=%d grid=%d sig=%d\", w, h, n, sig))\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#5", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#5", ok, err) end
+MAME_MCP_SIG w=336 h=252 grid=8 sig=0
+MAME_MCP_LUA_END#5	true	nil
+[LUA ERROR] in thread: [string "		local ln = require('linenoise')..."]:2: attempt to call a table value (field 'setcompletion')
+stack traceback:
+	[string "		local ln = require('linenoise')..."]:2: in main chunk
+MAME_MCP_SIG w=336 h=252 grid=8 sig=0
+MAME_MCP_LUA_END#5	true	nil
+[1;36m[MAME][0m> local f, e = load("local mem = manager.machine.memory\nlocal function block(name)\n  for _, cand in ipairs({name, \":\" .. name}) do\n    if mem.shares[cand] then return \"share\", cand, mem.shares[cand] end\n    if mem.regions[cand] then return \"region\", cand, mem.regions[cand] end\n  end\n  return nil\nend\nlocal function tags()\n  local t = {}\n  for tag in pairs(mem.shares) do t[#t + 1] = tag .. \"=share\" end\n  for tag in pairs(mem.regions) do t[#t + 1] = tag .. \"=region\" end\n  table.sort(t)\n  return table.concat(t, \",\")\nend\nlocal kind, tag, blk, start\nlocal offset = 0\nlocal addr = nil\nif addr then\n  local space = manager.machine.debugger.visible_cpu.spaces[\"program\"]\n  local hit = nil\n  for _, e in ipairs(space.map.entries) do\n    if e.address_start <= addr and addr <= e.address_end then hit = e break end\n  end\n  if hit == nil then\n    print(string.format(\"MAME_MCP_BLOCK_NOENTRY addr=%x\", addr))\n  elseif hit.share == nil and hit.region == nil then\n    print(string.format(\"MAME_MCP_BLOCK_NOBLOCK start=%x end=%x\", hit.address_start,\n                        hit.address_end))\n  else\n    kind, tag, blk = block(hit.share or hit.region)\n    if kind == nil then\n      print(\"MAME_MCP_BLOCK_NONE name=\" .. (hit.share or hit.region) .. \" tags=\" .. tags())\n    else\n      start = hit.address_start\n      offset = addr - start + (hit.share and 0 or (hit.region_offset or 0))\n    end\n  end\nelse\n  kind, tag, blk = block(\"maincpu\")\n  if kind == nil then print(\"MAME_MCP_BLOCK_NONE name=\" .. \"maincpu\" .. \" tags=\" .. tags()) end\nend\nif kind then\n  local length = 4\n  if offset + length > blk.size then\n    print(string.format(\"MAME_MCP_BLOCK_OUTSIDE kind=%s tag=%s size=%d offset=%d length=%d\",\n                        kind, tag, blk.size, offset, length))\n  else\n    local t = {}\n    for i = offset, offset + length - 1 do t[#t + 1] = string.format(\"%02x\", blk:read_u8(i)) end\n    print(string.format(\"MAME_MCP_BLOCK kind=%s tag=%s size=%d bytewidth=%d endian=%s \"\n                        .. \"start=%s offset=%d hex=%s\", kind, tag, blk.size, blk.bytewidth,\n                        tostring(blk.endianness), start and string.format(\"%x\", start) or \"-\",\n                        offset, table.concat(t)))\n  end\nend\n", "=mcp") if f == nil then print("MAME_MCP_LUA_END#6", false, e) else local ok, err = pcall(f) print("MAME_MCP_LUA_END#6", ok, err) end
+MAME_MCP_BLOCK kind=region tag=:maincpu size=1048576 bytewidth=2 endian=big start=- offset=0 hex=00201000
+MAME_MCP_LUA_END#6	true	nil
+[1;36m[MAME][0m> 

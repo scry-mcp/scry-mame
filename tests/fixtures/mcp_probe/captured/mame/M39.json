@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M39",
+  "prompt": "Give me one number for what is on screen: a 12 by 12 grid on the fixed lattice whose cells are 20 by 18 pixels, offset by x 4 and y 2, waiting up to 9 seconds.",
+  "tool": "screen_signature",
+  "args": {
+   "grid": 12,
+   "cell": [
+    20,
+    18
+   ],
+   "origin": [
+    4,
+    2
+   ],
+   "seconds": 9
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M39: {\"tool\": \"screen_signature\", \"args\": {\"grid\": 12, \"cell\": [20, 18], \"origin\": [4, 2], \"seconds\": 9.0}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M39: {\"tool\": \"screen_signature\", \"args\": {\"grid\": 12, \"cell\": [20, 18], \"origin\": [4, 2], \"seconds\": 9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M39: {\"tool\": \"screen_signature\", \"args\": {\"grid\": 12, \"cell\": [20, 18], \"origin\": [4, 2], \"seconds\": 9}}"
+   ],
+   "right": true
+  }
+ ]
+}

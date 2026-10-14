@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M150",
+  "prompt": "For 375 ms of emulated time, list every program location the processor reaches, matched to the symbol names.",
+  "tool": "trace",
+  "args": {
+   "milliseconds": 375
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M150: {\"tool\": \"trace\", \"args\": {\"milliseconds\": 375}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M150: {\"tool\": \"trace\", \"args\": {\"milliseconds\": 375}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M150: {\"tool\": \"trace\", \"args\": {\"milliseconds\": 375}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+Device ':maincpu' registerpoints:
+   10 if 1
+    F if d1==10000e
+    E if d1==10000d
+    D if d1==10000c
+    C if d1==10000b
+    B if d1==10000a
+    A if d1==100009
+    9 if d1==100008
+    8 if d1==100007
+    7 if d1==100006
+    6 if d1==100005
+    5 if d1==100004
+    4 if d1==100003
+    3 if d1==100002
+    2 if d1==100001
+    1 if d1==100000
+

@@ -1,0 +1,3 @@
+MAME_MCP_GFX_BLOCK kind=region tag=:gfx1 size=16384 bytewidth=1 endian=little
+MAME_MCP_GFX_PENS tag=:palette entries=2048 pens=ff8866bb,ffff0000,ffcc0000,ff660000,ffccff88,ff77cc44,ff449933,ffff77ff,ffff9900,ff990000,ff00bb22,ff777777,ffcccccc,ff000000,ff889999,ffffffff
+MAME_MCP_LUA_END#7	true	nil

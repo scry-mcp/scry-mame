@@ -1,0 +1,45 @@
+{
+ "task": {
+  "id": "M81",
+  "prompt": "On the cpu tagged audiocpu, patch its program ROM at VoiceTable with the bytes 00 FF, writing them into the ROM region behind that address rather than through the program space.",
+  "tool": "write",
+  "args": {
+   "ref": "VoiceTable",
+   "data_hex": {
+    "any_of": [
+     "00FF",
+     "00 FF",
+     "00ff",
+     "00 ff"
+    ]
+   },
+   "region": true,
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00 FF\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00ff\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

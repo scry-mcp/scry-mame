@@ -1,0 +1,49 @@
+MAME_MCP_MACHINE_BEGIN
+CPU :maincpu type=m68000 name=Motorola MC68000 spaces=cpu_space,program
+REGS :maincpu A0,A1,A2,A3,A4,A5,A6,CURFLAGS,CURPC,D0,D1,D2,D3,D4,D5,D6,D7,IR,PC,SP,SR,USP
+SPACE :maincpu cpu_space data_width=16 endianness=big entries=7 address_mask=ffffff
+ENTRY :maincpu cpu_space 1 start=fffff3 end=fffff3 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 2 start=fffff5 end=fffff5 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 3 start=fffff7 end=fffff7 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 4 start=fffff9 end=fffff9 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 5 start=fffffb end=fffffb mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 6 start=fffffd end=fffffd mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu cpu_space 7 start=ffffff end=ffffff mirror=0 mask=0 share=- region=- region_offset=0
+SPACE :maincpu program data_width=16 endianness=big entries=13 address_mask=ffffff
+ENTRY :maincpu program 1 start=0 end=fffff mirror=0 mask=0 share=- region=:maincpu region_offset=0
+ENTRY :maincpu program 2 start=200000 end=20ffff mirror=10000 mask=0 share=mainram region=- region_offset=0
+ENTRY :maincpu program 3 start=700000 end=70001f mirror=0 mask=0 share=blitram region=- region_offset=0
+ENTRY :maincpu program 4 start=720001 end=720001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 5 start=720003 end=720003 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 6 start=720005 end=720005 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 7 start=740000 end=740001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 8 start=760000 end=760001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 9 start=780000 end=78000f mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 10 start=7a0000 end=7a0001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 11 start=7c0000 end=7c0001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 12 start=7e0000 end=7e0001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :maincpu program 13 start=7e0002 end=7e0003 mirror=0 mask=0 share=- region=- region_offset=0
+CPU :subcpu type=m68000 name=Motorola MC68000 spaces=cpu_space,program
+REGS :subcpu A0,A1,A2,A3,A4,A5,A6,CURFLAGS,CURPC,D0,D1,D2,D3,D4,D5,D6,D7,IR,PC,SP,SR,USP
+SPACE :subcpu cpu_space data_width=16 endianness=big entries=7 address_mask=ffffff
+ENTRY :subcpu cpu_space 1 start=fffff3 end=fffff3 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 2 start=fffff5 end=fffff5 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 3 start=fffff7 end=fffff7 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 4 start=fffff9 end=fffff9 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 5 start=fffffb end=fffffb mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 6 start=fffffd end=fffffd mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu cpu_space 7 start=ffffff end=ffffff mirror=0 mask=0 share=- region=- region_offset=0
+SPACE :subcpu program data_width=16 endianness=big entries=5 address_mask=ffffff
+ENTRY :subcpu program 1 start=0 end=fffff mirror=0 mask=0 share=- region=:subcpu region_offset=0
+ENTRY :subcpu program 2 start=200000 end=20ffff mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu program 3 start=780000 end=780001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu program 4 start=700000 end=700001 mirror=0 mask=0 share=- region=- region_offset=0
+ENTRY :subcpu program 5 start=740000 end=740001 mirror=0 mask=0 share=- region=- region_offset=0
+REGION :gfx1 size=16777216 bytewidth=1 endianness=little
+REGION :maincpu size=1048576 bytewidth=2 endianness=big
+REGION :plds size=741 bytewidth=1 endianness=little
+REGION :subcpu size=1048576 bytewidth=2 endianness=big
+SHARE :blitram size=32 bytewidth=2 endianness=big
+SHARE :mainram size=65536 bytewidth=2 endianness=big
+SCREEN :screen width=336 height=252 refresh=50.080128
+MAME_MCP_MACHINE_END

@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M107",
+  "prompt": "Show the blit at index 3 of frame 88 of the draw command tiledraw as it lands on screen, zoomed by its own scale registers.",
+  "expect": "CANNOT",
+  "about": "gfx_blit_source"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M107: CANNOT no tool shows a blit on screen with its scale applied"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M107: CANNOT no tool shows how scaled blits land on screen; gfx_blit_source reads source only"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M107: CANNOT No tool renders blits with scale registers applied to screen; gfx_blit_source shows unscaled source data."
+   ],
+   "right": true
+  }
+ ]
+}

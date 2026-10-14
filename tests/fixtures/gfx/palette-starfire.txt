@@ -1,0 +1,2 @@
+MAME_MCP_PAL_NONE name=- palettes=
+MAME_MCP_LUA_END#1	true	nil

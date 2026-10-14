@@ -1,0 +1,7 @@
+0.000002125
+Stopped at watchpoint 1 writing 00 to 2031FC (PC=000025F4)
+25F6
+25F6
+0
+Data dumped successfully
+0.011979000

@@ -1,0 +1,1 @@
+MCP_TALLY installed tally_id=2031fc_4_t2031fe trigger=2031fe data_width=16 endianness=big cpu=:maincpu

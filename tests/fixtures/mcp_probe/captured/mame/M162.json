@@ -1,0 +1,50 @@
+{
+ "task": {
+  "id": "M162",
+  "prompt": "Search the 8x8 screen patch at x 16, y 24 for a tile of the region gfx1, starting 0x400 bytes into it, under the loaded manifest's format chars8.",
+  "tool": "gfx_locate",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx1",
+     ":gfx1"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     1024,
+     "0x400"
+    ]
+   },
+   "patch": [
+    16,
+    24,
+    8,
+    8
+   ],
+   "layouts": [
+    "chars8"
+   ]
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+Captured live through the mame server's own tools (`start`, `run_for`, `debug`), by a
+one-off script outside this tree: MAME's own console tracer, `trace <absolute path>,<cpu>`,
+armed at a stop, then `run_for(frames=2)`, then `trace off,<cpu>`. Condensed (no `noloop`),
+so a loop the tracer recognised is one `(loops for N instructions)` line. Each board booted
+fresh with a new empty state directory and run at least 600 frames before the window.
+
+  radendur-maincpu-2f.trace.gz  radendur (TCH's `radendu` build), :maincpu, 68000
+  radendur-subcpu-2f.trace      radendur, :subcpu, 68000 (four lines)
+  speedf-2f.trace.gz            Speed Fight (its project's `mamespeedf` build), :maincpu, V30
+  circus-2f.trace               circus (stock MAME, debug build), :maincpu, 6502
+  radendur-maincpu-parked-step3.trace  radendur :maincpu, armed at the stop `start` parks
+      the machine on (pc 0xf2034, from `history`), then `step(count=3)`: the file holds the
+      three instructions after the parked one, never the parked one itself
+  radendur-maincpu-parked-1f.trace     radendur :maincpu over `run_for(frames=1)`; the run's
+      survey stopped on :maincpu at pc 0xba6, the file's last line, logged on arrival
+  radendur-subcpu-ignored-2f.trace    radendur :subcpu over `run_for(frames=2)` after 60
+      frames and `debug("ignore :subcpu")`: no instruction line, only the interrupt lines
+      the tracer's interrupt hook still writes for an ignored cpu
+
+Files above 200 KB are gzipped. The hex before `: ` is the pc, padded to the program
+space's logical width: six digits on the 68000, five on the V30, four on the 6502.

@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M22b",
+  "prompt": "Clear the watch declared as ScoreTbl.",
+  "tool": "watch_clear",
+  "args": {
+   "ref": "ScoreTbl"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M22b: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"ScoreTbl\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22b: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"ScoreTbl\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22b: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"ScoreTbl\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

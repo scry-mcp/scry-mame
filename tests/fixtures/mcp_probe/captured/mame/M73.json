@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M73",
+  "prompt": "Execute one instruction of the cpu tagged soundcpu.",
+  "tool": "step",
+  "args": {
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  },
+  "allow": [
+   "count",
+   "mode"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M106",
+  "prompt": "Decode the region gfx1 under the format page8 that the loaded manifest defines, tiles 0 to 3, in grey because I do not want the machine's colours.",
+  "tool": "gfx_view",
+  "args": {
+   "layout": "page8",
+   "tag": {
+    "any_of": [
+     "gfx1",
+     ":gfx1"
+    ]
+   },
+   "palette": "none",
+   "count": 4
+  },
+  "grammar": [
+   "none"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"page8\", \"palette\": \"none\", \"first\": 0, \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"palette\": \"none\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"page8\", \"palette\": \"none\", \"first\": 0, \"count\": 4}}"
+   ],
+   "right": true
+  }
+ ]
+}

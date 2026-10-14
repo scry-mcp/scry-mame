@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M135",
+  "prompt": "What does the debugger see of the cpu tagged soundcpu alone right now: is it visible, ignored or suspended, and where is its program counter?",
+  "tool": "cpu_info",
+  "args": {
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M135: {\"tool\": \"cpu_info\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M135: {\"tool\": \"cpu_info\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M135: {\"tool\": \"cpu_info\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

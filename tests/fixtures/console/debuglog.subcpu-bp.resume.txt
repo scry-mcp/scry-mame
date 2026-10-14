@@ -1,0 +1,9 @@
+1.218048312
+Stopped at breakpoint 1
+542
+542
+3C
+Data dumped successfully
+Device ':subcpu' breakpoints:
+    1 @ 000542
+1.218048187

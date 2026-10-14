@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M48",
+  "prompt": "Switch real-speed throttling off, waiting up to 3 seconds for it to apply.",
+  "tool": "throttle",
+  "args": {
+   "on": false,
+   "seconds": 3
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3.0}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+   ],
+   "right": true
+  }
+ ]
+}

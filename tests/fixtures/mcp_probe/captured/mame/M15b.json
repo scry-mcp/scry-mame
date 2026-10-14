@@ -1,0 +1,18 @@
+{
+ "task": {
+  "id": "M15b",
+  "prompt": "Clear every breakpoint declaration.",
+  "tool": "breakpoint_clear",
+  "args": {
+   "all": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M15b: {\"tool\": \"breakpoint_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

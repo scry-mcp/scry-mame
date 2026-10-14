@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M118",
+  "prompt": "The film's contact sheet: give me the page of kept frames that starts at place 12 of its list.",
+  "tool": "gfx_film",
+  "args": {
+   "first": 12
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M118: {\"tool\": \"gfx_film\", \"args\": {\"first\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M118: {\"tool\": \"gfx_film\", \"args\": {\"first\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M118: {\"tool\": \"gfx_film\", \"args\": {\"first\": 12}}"
+   ],
+   "right": true
+  }
+ ]
+}

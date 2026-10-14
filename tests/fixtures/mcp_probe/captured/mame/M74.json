@@ -1,0 +1,42 @@
+{
+ "task": {
+  "id": "M74",
+  "prompt": "Run to hex address 2A40 in the program of the cpu tagged soundcpu, counting the control already declared at FrameTick on the way.",
+  "tool": "run_to",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x2A40",
+     "0x2a40"
+    ]
+   },
+   "control": "FrameTick",
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"control\": \"FrameTick\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"cpu\": \"soundcpu\", \"control\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"control\": \"FrameTick\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

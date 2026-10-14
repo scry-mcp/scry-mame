@@ -1,0 +1,2 @@
+MAME_MCP_GFX_BLOCK_NONE name=nosuch tags=:gfx1=region,:gfx2=region,:maincpu=region,:proms=region,:ram=share,:videoram=share
+MAME_MCP_LUA_END#3	true	nil

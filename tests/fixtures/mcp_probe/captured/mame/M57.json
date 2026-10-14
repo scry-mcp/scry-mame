@@ -1,0 +1,47 @@
+{
+ "task": {
+  "id": "M57",
+  "prompt": "Count the hits at hex address 201060 on the cpu tagged soundcpu, without ever halting there and without changing which cpu the debugger shows.",
+  "tool": "breakpoint_at",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x201060"
+    ]
+   },
+   "role": "control",
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  },
+  "allow": [
+   "by"
+  ],
+  "grammar": [
+   "control"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"cpu\": \"soundcpu\", \"role\": \"control\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"cpu\": \"soundcpu\", \"role\": \"control\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"by\": \"address\", \"role\": \"control\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M112",
+  "prompt": "Which instruction set pen 12's colour at frame 200, long before any palette write log was armed in this session?",
+  "expect": "CANNOT",
+  "about": "palette_log"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M112: CANNOT palette_log history before arming is not available"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only logs future writes; no tool records historical writes before session began"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes after arming; frame 200 before session start is inaccessible."
+   ],
+   "right": true
+  }
+ ]
+}

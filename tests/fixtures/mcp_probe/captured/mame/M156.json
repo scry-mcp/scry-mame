@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M156",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
+  "expect": "CANNOT",
+  "about": "start"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M156: CANNOT boot_lua requires a file path; the task provides inline code without a file reference"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua requires a file path; inline script not supported"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_lua\": \"/tmp/fury_boot.lua\"}}"
+   ],
+   "right": false
+  }
+ ]
+}

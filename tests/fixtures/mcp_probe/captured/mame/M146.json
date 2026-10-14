@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M146",
+  "prompt": "Write every note to /tmp/mcp-probe-game.comments.tsv.",
+  "tool": "comment_save",
+  "args": {
+   "dest": "/tmp/mcp-probe-game.comments.tsv"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M146: {\"tool\": \"comment_save\", \"args\": {\"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M146: {\"tool\": \"comment_save\", \"args\": {\"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M146: {\"tool\": \"comment_save\", \"args\": {\"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

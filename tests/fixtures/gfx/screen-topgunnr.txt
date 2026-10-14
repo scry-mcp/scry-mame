@@ -1,0 +1,2 @@
+MAME_MCP_SCREEN_KIND tag=:screen type=vector
+MAME_MCP_LUA_END#1	true	nil

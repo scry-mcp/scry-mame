@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M134",
+  "prompt": "How many breakpoints and watches are declared on each cpu?",
+  "tool": "cpu_info"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M134: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M134: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M134: {\"tool\": \"cpu_info\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

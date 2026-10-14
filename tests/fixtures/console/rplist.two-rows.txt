@@ -1,0 +1,4 @@
+Device ':maincpu' registerpoints:
+    2 if d1==
+    1 if d1==7fff
+

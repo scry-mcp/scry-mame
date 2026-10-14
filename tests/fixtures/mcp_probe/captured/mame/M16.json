@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M16",
+  "prompt": "Stop the machine wherever in the program register d2 comes to hold the hex value 77ab.",
+  "tool": "regpoint_add",
+  "args": {
+   "condition": {
+    "any_of": [
+     "d2==77ab",
+     "d2==0x77ab",
+     "D2==77ab",
+     "D2==0x77ab",
+     "d2==77AB",
+     "d2==0x77AB",
+     "D2==77AB",
+     "D2==0x77AB"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

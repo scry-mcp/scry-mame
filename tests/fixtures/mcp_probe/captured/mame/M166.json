@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M166",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it on the main display, but launch it without taking my focus away from the app I am typing in.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "/opt/fury/roms",
+   "reference_rom": "/opt/fury/roms/fury.bin",
+   "shared": true,
+   "display": "main",
+   "background": true
+  },
+  "grammar": [
+   "main"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"display\": \"main\", \"background\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

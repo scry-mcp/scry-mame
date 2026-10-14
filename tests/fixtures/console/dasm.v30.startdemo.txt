@@ -1,0 +1,22 @@
+F5E2F: 06             push    ds1
+F5E30: 1E             push    ds0
+F5E31: 1E             push    ds0
+F5E32: 07             pop     ds1
+F5E33: 0E             push    ps
+F5E34: 1F             pop     ds0
+F5E35: 8B D8          mov     bw,aw
+F5E37: D1 E3          shl     bw,1
+F5E39: D1 E3          shl     bw,1
+F5E3B: 26 8B B7 45 CE mov     ix,ds1:[bw-31BBh]
+F5E40: BF 35 CA       mov     iy,0CA35h
+F5E43: 2E 8B 0C       mov     cw,ps:[ix]
+F5E46: 83 C1 04       add     cw,4h
+F5E49: F3 A4          rep     movbkb  
+F5E4B: 26 8B B7 47 CE mov     ix,ds1:[bw-31B9h]
+F5E50: BF 3D CC       mov     iy,0CC3Dh
+F5E53: 8B 0C          mov     cw,[ix]
+F5E55: 83 C1 04       add     cw,4h
+F5E58: F3 A4          rep     movbkb  
+F5E5A: 1F             pop     ds0
+F5E5B: 07             pop     ds1
+F5E5C: C6 06 34 CA 00 mov     byte ptr [0CA34h],0h

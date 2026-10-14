@@ -1,0 +1,2 @@
+MCP_FILM film seq=10 frame=281 judged=6 met=6 taken=2 dropped=4 dropped_first=278 dropped_last=281 lost_reset=0 lost_load=0 lost_skipped=0 pending=0 finished=1 first=276 last=281 judge_ticks=651084 picture_ticks=1697416 tps=1000000000
+end

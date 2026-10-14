@@ -1,0 +1,4 @@
+Device ':maincpu' program space watchpoints:
+    1 @ 2031FE-2031FF write if (wpdata&3)==0
+    2 @ 2031FC-2031FD write if wpdata==
+

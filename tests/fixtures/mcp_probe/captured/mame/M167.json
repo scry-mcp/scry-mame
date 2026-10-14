@@ -1,0 +1,61 @@
+{
+ "task": {
+  "id": "M167",
+  "prompt": "On the cpu tagged audiocpu, add one row every time the sound latch at hex address 6000 is READ, with the value read, without ever stopping the machine.",
+  "tool": "watch_add",
+  "args": {
+   "any_of": [
+    {
+     "ref": "0x6000",
+     "mode": "capture",
+     "trigger_type": "r",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    },
+    {
+     "ref": "0x6000",
+     "mode": "capture",
+     "trigger": "0x6000",
+     "trigger_type": "r",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    }
+   ]
+  },
+  "allow": [
+   "by"
+  ],
+  "grammar": [
+   "capture",
+   "r"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"length\": 1, \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": false
+  }
+ ]
+}

@@ -1,0 +1,3 @@
+MAME_MCP_SCREEN tag=:screen w=336 h=252 frame=898 palette=:palette entries=256
+MCP_FILM_ARM snap_w=336 snap_h=252 data_width=16 endianness=big refresh=50.080128
+MAME_MCP_LUA_END#1	true	nil

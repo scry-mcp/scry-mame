@@ -1,0 +1,4 @@
+>zzz 1;print pc
+ ^
+unknown command
+

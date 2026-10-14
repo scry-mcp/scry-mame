@@ -1,0 +1,5 @@
+[luaengine] MAME_MCP_INPUT#3 set name="Coin 1" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=301
+[luaengine] MAME_MCP_INPUT#3 release frame=305 port_held=0000dbff
+[luaengine] MAME_MCP_RECORD#5 begin frame=301 recording=true
+[luaengine] MAME_MCP_RECORD#5 end frame=330
+[luaengine] MAME_MCP_THROTTLE#6 throttled=false frame=341

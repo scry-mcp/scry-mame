@@ -1,0 +1,7 @@
+0.000002125
+Stopped at registerpoint 1
+F2234
+F2234
+15
+Data dumped successfully
+0.441415812

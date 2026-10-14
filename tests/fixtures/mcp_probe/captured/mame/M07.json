@@ -1,0 +1,32 @@
+{
+ "task": {
+  "id": "M07",
+  "prompt": "Run the machine for 250 milliseconds of emulated time, bounded by 20 wall-clock seconds, with every change watch disarmed for the run.",
+  "tool": "run_for",
+  "args": {
+   "milliseconds": 250,
+   "seconds": 20,
+   "disarm_watches": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20.0, \"disarm_watches\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20, \"disarm_watches\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20, \"disarm_watches\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

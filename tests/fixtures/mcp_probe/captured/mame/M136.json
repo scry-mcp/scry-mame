@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M136",
+  "prompt": "This board has no map. Open a value search over the 65536 bytes from hex 200000 of the cpu tagged audiocpu, in 16-bit cells.",
+  "tool": "scan_start",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x200000"
+    ]
+   },
+   "length": 65536,
+   "cell_bytes": 2,
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan_start\", \"args\": {\"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

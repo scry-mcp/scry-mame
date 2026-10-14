@@ -1,0 +1,5 @@
+error("captured top-level failure")
+error: 	[string "..."]:2: captured top-level failure
+[1;36m[MAME][0m> local x = nil + 1
+error: 	[string "..."]:2: attempt to perform arithmetic on a nil value
+[1;36m[MAME][0m> 

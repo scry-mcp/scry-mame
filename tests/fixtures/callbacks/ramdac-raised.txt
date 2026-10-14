@@ -1,0 +1,3 @@
+MCP_RAMDAC ramdac_720001_1_720003 seq=7 frame=904 total=4608 index_writes=6 unsynced=0 desyncs=0 rows=1542 overflow_rows=0 notifiers=2 data_width=16 endianness=big cpu=:maincpu partial_writes=0 errors=3072
+e mcp:3: planted fault
+end

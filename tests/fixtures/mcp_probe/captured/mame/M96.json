@@ -1,0 +1,76 @@
+{
+ "task": {
+  "id": "M96",
+  "prompt": "Tiles in the layout {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"} start at the symbol SpriteBuf in the program space of the cpu tagged subcpu. Show 4 of them through the palette device tagged ppu_pal, from pen 96.",
+  "tool": "gfx_view",
+  "args": {
+   "ref": "SpriteBuf",
+   "cpu": {
+    "any_of": [
+     "subcpu",
+     ":subcpu"
+    ]
+   },
+   "count": 4,
+   "palette": {
+    "any_of": [
+     "ppu_pal",
+     ":ppu_pal"
+    ]
+   },
+   "pen_base": {
+    "any_of": [
+     96,
+     "0x60"
+    ]
+   },
+   "layout": {
+    "width": 8,
+    "height": 8,
+    "planes": 1,
+    "planeoffset": [
+     0
+    ],
+    "xoffset": {
+     "any_of": [
+      "{ STEP8(0,1) }",
+      "STEP8(0,1)",
+      [
+       "STEP8(0,1)"
+      ]
+     ]
+    },
+    "yoffset": {
+     "any_of": [
+      "{ STEP8(0,8) }",
+      "STEP8(0,8)",
+      [
+       "STEP8(0,8)"
+      ]
+     ]
+    },
+    "charincrement": "8*8"
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"first\": 0, \"count\": 4, \"pen_base\": 96}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"count\": 4, \"pen_base\": 96}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M96: {\"tool\": \"gfx_view\", \"args\": {\"ref\": \"SpriteBuf\", \"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"pen_base\": 96, \"count\": 4, \"cpu\": \"subcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,3 @@
+MCP_CAPTURE 2031fc_4_t2031fe seq=7 frame=904 total=2 rows=2 overflow_rows=0 data_width=16 endianness=big cpu=:maincpu errors=4
+e mcp:3: planted fault
+end

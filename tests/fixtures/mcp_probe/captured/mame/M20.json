@@ -1,0 +1,44 @@
+{
+ "task": {
+  "id": "M20",
+  "prompt": "At every stop, read the 12 bytes at SpriteBuf as unsigned bytes, forcing SpriteBuf to be taken as a symbol.",
+  "tool": "watch_add",
+  "args": {
+   "any_of": [
+    {
+     "ref": "SpriteBuf",
+     "mode": "show",
+     "length": 12,
+     "fmt": "u8",
+     "by": "symbol"
+    },
+    {
+     "ref": "SpriteBuf",
+     "mode": "show",
+     "fmt": "u8[12]",
+     "by": "symbol"
+    },
+    {
+     "ref": "SpriteBuf",
+     "mode": "show",
+     "length": 12,
+     "fmt": "u8[12]",
+     "by": "symbol"
+    }
+   ]
+  },
+  "grammar": [
+   "show",
+   "u8",
+   "symbol"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

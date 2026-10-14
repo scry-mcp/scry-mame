@@ -1,0 +1,50 @@
+{
+ "task": {
+  "id": "M58",
+  "prompt": "Stop the machine whenever the 2 bytes at hex address 3FF0 are written by the cpu tagged soundcpu.",
+  "tool": "watch_add",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x3FF0",
+     "0x3ff0"
+    ]
+   },
+   "mode": "change",
+   "length": 2,
+   "cpu": {
+    "any_of": [
+     "soundcpu",
+     ":soundcpu"
+    ]
+   }
+  },
+  "allow": [
+   "by",
+   "fmt"
+  ],
+  "grammar": [
+   "change"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

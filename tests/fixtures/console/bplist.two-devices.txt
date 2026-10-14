@@ -1,0 +1,6 @@
+Device ':maincpu' breakpoints:
+    1 @ 000400
+    2 @ 0004A0 if d0==1
+Device ':subcpu' breakpoints:
+    3 @ 000400
+

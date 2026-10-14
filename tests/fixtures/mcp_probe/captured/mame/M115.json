@@ -1,0 +1,48 @@
+{
+ "task": {
+  "id": "M115",
+  "prompt": "From now on, keep the screen of every frame in which the 16-bit register at hex address 7f0010 is written with the value 0x1234 by the instruction at hex address 2a40: at most 8 pictures, judging the next 300 frames.",
+  "tool": "gfx_film",
+  "args": {
+   "trigger": {
+    "any_of": [
+     "0x7f0010"
+    ]
+   },
+   "length": 2,
+   "value": {
+    "any_of": [
+     4660,
+     "0x1234"
+    ]
+   },
+   "pc": {
+    "any_of": [
+     "0x2a40"
+    ]
+   },
+   "keep": 8,
+   "frames": 300
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"length\": 2, \"frames\": 300, \"keep\": 8, \"dest\": \"/tmp/mcp-probe-film\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"keep\": 8, \"frames\": 300}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"length\": 2, \"keep\": 8, \"frames\": 300}}"
+   ],
+   "right": true
+  }
+ ]
+}

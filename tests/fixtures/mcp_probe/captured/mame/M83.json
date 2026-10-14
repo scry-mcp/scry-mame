@@ -1,0 +1,55 @@
+{
+ "task": {
+  "id": "M83",
+  "prompt": "On the cpu tagged audiocpu, halt whenever VoiceCount is written with a zero, and only then.",
+  "tool": "watch_add",
+  "args": {
+   "ref": "VoiceCount",
+   "mode": "change",
+   "condition": {
+    "any_of": [
+     "wpdata==0",
+     "wpdata == 0",
+     "wpdata==0x0",
+     "wpdata == 0x0",
+     "(wpdata==0)",
+     "!wpdata"
+    ]
+   },
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  },
+  "allow": [
+   "length",
+   "fmt",
+   "by"
+  ],
+  "grammar": [
+   "change"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"cpu\": \"audiocpu\", \"condition\": \"wpdata==0x00\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

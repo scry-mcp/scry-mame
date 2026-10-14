@@ -1,0 +1,3 @@
+MCP_FILM film seq=8 frame=904 judged=5 met=1 taken=1 dropped=0 dropped_first=-1 dropped_last=-1 lost_reset=0 lost_load=0 lost_skipped=0 pending=0 finished=0 first=900 last=904 judge_ticks=621040 picture_ticks=1874334 tps=1000000000 baseline_frame=898 baseline_value=0 errors=678
+e mcp:4: planted fault
+end

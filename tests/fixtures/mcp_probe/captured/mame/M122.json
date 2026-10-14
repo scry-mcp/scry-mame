@@ -1,0 +1,54 @@
+{
+ "task": {
+  "id": "M122",
+  "prompt": "Show the share charram, starting 512 bytes into it, under every candidate layout at the default depths and size, through the palette device ppu_pal from pen 48, waiting up to 9 seconds.",
+  "tool": "gfx_sweep",
+  "args": {
+   "tag": {
+    "any_of": [
+     "charram",
+     ":charram"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     512,
+     "0x200"
+    ]
+   },
+   "palette": {
+    "any_of": [
+     "ppu_pal",
+     ":ppu_pal"
+    ]
+   },
+   "pen_base": {
+    "any_of": [
+     48,
+     "0x30"
+    ]
+   },
+   "seconds": 9
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+   ],
+   "right": true
+  }
+ ]
+}

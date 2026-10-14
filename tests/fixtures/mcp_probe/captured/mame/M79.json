@@ -1,0 +1,36 @@
+{
+ "task": {
+  "id": "M79",
+  "prompt": "Look up the symbol VoiceTable in the symbol table of the cpu tagged audiocpu.",
+  "tool": "symbols_find",
+  "args": {
+   "name": "VoiceTable",
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M79: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"VoiceTable\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M79: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"VoiceTable\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M79: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"VoiceTable\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

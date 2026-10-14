@@ -1,0 +1,5 @@
+Device ':maincpu' program space watchpoints:
+    1 @ 203200-203201 write
+Device ':subcpu' program space watchpoints:
+    2 @ 008000-008001 write
+

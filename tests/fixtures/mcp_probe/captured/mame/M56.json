@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M56",
+  "prompt": "Make the cpu tagged audiocpu the one the debugger shows, so the calls that name no cpu act on it.",
+  "tool": "focus",
+  "args": {
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M56: {\"tool\": \"focus\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M56: {\"tool\": \"focus\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M56: {\"tool\": \"focus\", \"args\": {\"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

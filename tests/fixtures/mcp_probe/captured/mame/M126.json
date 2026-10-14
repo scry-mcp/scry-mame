@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M126",
+  "prompt": "Rank the candidates of sweep 1 from the most to the least likely to be the real format.",
+  "expect": "CANNOT",
+  "about": "gfx_sweep"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M126: CANNOT gfx_sweep does not rank candidates by likelihood"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT no tool ranks sweep candidates; ranking requires criteria not provided by tools"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT No tool ranks sweep candidates; human judgment is required to assess likelihood."
+   ],
+   "right": true
+  }
+ ]
+}

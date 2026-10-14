@@ -1,0 +1,5 @@
+Device ':maincpu' registerpoints:
+    1 if d1==7fff
+Device ':subcpu' registerpoints:
+    2 if d1==7fff
+

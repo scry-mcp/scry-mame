@@ -1,0 +1,76 @@
+{
+ "task": {
+  "id": "M97",
+  "prompt": "Which tile of the region gfx1 is the 8x8 patch of the screen at x 88, y 96? The layout is {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, and this hardware never flips a tile.",
+  "tool": "gfx_locate",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx1",
+     ":gfx1"
+    ]
+   },
+   "patch": [
+    88,
+    96,
+    8,
+    8
+   ],
+   "flips": [
+    "none"
+   ],
+   "layouts": [
+    {
+     "width": 8,
+     "height": 8,
+     "planes": 1,
+     "planeoffset": [
+      0
+     ],
+     "xoffset": {
+      "any_of": [
+       "{ STEP8(0,1) }",
+       "STEP8(0,1)",
+       [
+        "STEP8(0,1)"
+       ]
+      ]
+     },
+     "yoffset": {
+      "any_of": [
+       "{ STEP8(0,8) }",
+       "STEP8(0,8)",
+       [
+        "STEP8(0,8)"
+       ]
+      ]
+     },
+     "charincrement": "8*8"
+    }
+   ]
+  },
+  "grammar": [
+   "none"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"STEP8(0,1)\", \"yoffset\": \"STEP8(0,8)\", \"charincrement\": \"8*8\"}], \"tag\": \"gfx1\", \"patch\": [88, 96, 8, 8], \"flips\": [\"none\"]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+   ],
+   "right": true
+  }
+ ]
+}

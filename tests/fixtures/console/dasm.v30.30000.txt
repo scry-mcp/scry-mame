@@ -1,0 +1,74 @@
+30000: FA                di      
+30001: FC                clr1    dir
+30002: E9 49 00          br      3004Eh
+30005: E8 B2 50          call    350BAh
+30008: B8 00 00          mov     aw,0h
+3000B: E8 D1 50          call    350DFh
+3000E: E8 69 14          call    3147Ah
+30011: E8 A6 50          call    350BAh
+30014: E8 5D 01          call    30174h
+30017: BE 00 80          mov     ix,8000h
+3001A: E8 E1 12          call    312FEh
+3001D: BE 48 80          mov     ix,8048h
+30020: E8 DB 12          call    312FEh
+30023: E8 E5 16          call    3170Bh
+30026: E8 19 17          call    31742h
+30029: 72 DA             bc      30005h
+3002B: EB E7             br      30014h
+3002D: 44                inc     sp
+3002E: 61                pop     r
+3002F: 74 65             be      30096h
+30031: 20 3A             and     [bp+ix],bh
+30033: 20 30             and     [bw+ix],dh
+30035: 37                adjba   
+30036: 2F                adj4s   
+30037: 30 35             xor     [iy],dh
+30039: 2F                adj4s   
+3003A: 32 36 20 54       xor     dh,[5420h]
+3003E: 69 6D 65 20 3A    mul     bp,[iy+65h],3A20h
+30043: 20 30             and     [bw+ix],dh
+30045: 30 3A             xor     [bp+ix],bh
+30047: 30 30             xor     [bw+ix],dh
+30049: 3A 30             cmp     dh,[bw+ix]
+3004B: 30 20             xor     [bw+ix],ah
+3004D: 00 33             add     [bp+iy],dh
+3004F: C0 8E C0 33 FF    ror     byte ptr [bp+33C0h],-1h
+30054: B9 00 02          mov     cw,200h
+30057: B8 AC 00          mov     aw,0ACh
+3005A: AB                stmw    
+3005B: 8C C8             mov     aw,ps
+3005D: AB                stmw    
+3005E: E2 F7             dbnz    30057h
+30060: B8 00 10          mov     aw,1000h
+30063: 8E C0             mov     ds1,aw
+30065: 33 C0             xor     aw,aw
+30067: 33 FF             xor     iy,iy
+30069: B9 00 7D          mov     cw,7D00h
+3006C: F3 AB             rep     stmw    
+3006E: B8 00 20          mov     aw,2000h
+30071: 8E D8             mov     ds0,aw
+30073: 33 F6             xor     ix,ix
+30075: B8 40 00          mov     aw,40h
+30078: 8E C0             mov     ds1,aw
+3007A: 33 FF             xor     iy,iy
+3007C: B9 00 7D          mov     cw,7D00h
+3007F: F3 A5             rep     movbkw  
+30081: B8 40 00          mov     aw,40h
+30084: 8E D8             mov     ds0,aw
+30086: 8E D0             mov     ss,aw
+30088: BC DF 99          mov     sp,99DFh
+3008B: 8B EC             mov     bp,sp
+3008D: C7 06 46 8D 01 00 mov     word ptr [8D46h],1h
+30093: 33 C0             xor     aw,aw
+30095: 8E C0             mov     ds1,aw
+30097: BE 08 00          mov     ix,8h
+3009A: B8 AD 00          mov     aw,0ADh
+3009D: 26 89 04          mov     ds1:[ix],aw
+300A0: 26 8C 4C 02       mov     ds1:[ix+2h],ps
+300A4: B8 00 10          mov     aw,1000h
+300A7: 8E C0             mov     ds1,aw
+300A9: E9 59 FF          br      30005h
+300AC: CF                reti    
+300AD: 55                push    bp
+300AE: 50                push    aw
+300AF: 53                push    bw

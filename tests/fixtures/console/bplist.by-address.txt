@@ -1,0 +1,4 @@
+Device ':maincpu' breakpoints:
+    2 @ 000400 if temp1++
+    1 @ 0004A0 if (++temp0)==0
+

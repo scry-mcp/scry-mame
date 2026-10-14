@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M17",
+  "prompt": "List every registerpoint declaration and its state.",
+  "tool": "regpoint_list"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M17: {\"tool\": \"regpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M17: {\"tool\": \"regpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M17: {\"tool\": \"regpoint_list\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

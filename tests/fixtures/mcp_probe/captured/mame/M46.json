@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M46",
+  "prompt": "Press the field P1 Button 3 of port :IN2 with the value 2, hold it for 9 frames, bounded by 25 wall-clock seconds.",
+  "tool": "input",
+  "args": {
+   "port": ":IN2",
+   "field": "P1 Button 3",
+   "value": {
+    "any_of": [
+     2,
+     "0x2"
+    ]
+   },
+   "frames": 9,
+   "seconds": 25
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M46: {\"tool\": \"input\", \"args\": {\"port\": \":IN2\", \"field\": \"P1 Button 3\", \"value\": 2, \"frames\": 9, \"seconds\": 25}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M46: {\"tool\": \"input\", \"args\": {\"port\": \":IN2\", \"field\": \"P1 Button 3\", \"value\": 2, \"frames\": 9, \"seconds\": 25}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M46: {\"tool\": \"input\", \"args\": {\"port\": \":IN2\", \"field\": \"P1 Button 3\", \"value\": 2, \"frames\": 9, \"seconds\": 25}}"
+   ],
+   "right": true
+  }
+ ]
+}

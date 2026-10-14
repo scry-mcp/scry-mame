@@ -1,0 +1,32 @@
+{
+ "task": {
+  "id": "M45",
+  "prompt": "Evaluate the Lua script `print(manager.machine.system.name)` on the machine, waiting up to 7 seconds; I promise it only reads.",
+  "tool": "lua",
+  "args": {
+   "script": "print(manager.machine.system.name)",
+   "seconds": 7,
+   "read_only": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M45: {\"tool\": \"lua\", \"args\": {\"script\": \"print(manager.machine.system.name)\", \"seconds\": 7.0, \"read_only\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M45: {\"tool\": \"lua\", \"args\": {\"script\": \"print(manager.machine.system.name)\", \"seconds\": 7, \"read_only\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M45: {\"tool\": \"lua\", \"args\": {\"script\": \"print(manager.machine.system.name)\", \"seconds\": 7, \"read_only\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

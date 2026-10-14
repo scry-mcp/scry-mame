@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M49",
+  "prompt": "Save a savestate named bossfight.",
+  "tool": "state_save",
+  "args": {
+   "name": "bossfight"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M49: {\"tool\": \"state_save\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M49: {\"tool\": \"state_save\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M49: {\"tool\": \"state_save\", \"args\": {\"name\": \"bossfight\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

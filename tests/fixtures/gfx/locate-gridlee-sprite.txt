@@ -1,0 +1,3 @@
+MAME_MCP_SCREEN tag=:screen w=256 h=240 frame=900 palette=:palette entries=2048
+MAME_MCP_GFX_BLOCK kind=region tag=:gfx1 size=16384 bytewidth=1 endian=little
+MAME_MCP_LUA_END#11	true	nil

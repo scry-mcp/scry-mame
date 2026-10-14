@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M04",
+  "prompt": "End the MAME session.",
+  "tool": "close"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M04: {\"tool\": \"close\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M04: {\"tool\": \"close\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M04: {\"tool\": \"close\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

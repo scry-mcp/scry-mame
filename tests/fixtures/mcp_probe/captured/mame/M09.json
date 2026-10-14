@@ -1,0 +1,34 @@
+{
+ "task": {
+  "id": "M09",
+  "prompt": "Execute the next 5 instructions, running each call to its return as one step.",
+  "tool": "step",
+  "args": {
+   "mode": "over",
+   "count": 5
+  },
+  "grammar": [
+   "over"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

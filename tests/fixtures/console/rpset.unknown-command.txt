@@ -1,0 +1,4 @@
+>rpzzzset {1}
+ ^
+unknown command
+

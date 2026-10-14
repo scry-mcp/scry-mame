@@ -1,0 +1,18 @@
+{
+ "task": {
+  "id": "M18b",
+  "prompt": "Clear every registerpoint declaration.",
+  "tool": "regpoint_clear",
+  "args": {
+   "all": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M18b: {\"tool\": \"regpoint_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M140",
+  "prompt": "Run a value search over the io ports 0 to 255 for the value 5.",
+  "expect": "CANNOT",
+  "about": "scan_start"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M140: CANNOT scan_start only searches program space; io ports cannot be scanned this way"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT scan_start does not support io space; only program space may be scanned"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The scan_start tool only searches program space, not io ports."
+   ],
+   "right": true
+  }
+ ]
+}

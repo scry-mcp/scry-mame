@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M38",
+  "prompt": "Save a PNG of the screen as it is now to /tmp/mcp-probe-title.png.",
+  "tool": "snapshot",
+  "args": {
+   "dest": "/tmp/mcp-probe-title.png"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,2 @@
+MCP_CAPTURE 2031fc_4_t2031fe seq=241 frame=241 total=230 rows=3 overflow_rows=227 data_width=16 endianness=big cpu=:maincpu errors=0
+end

@@ -1,0 +1,41 @@
+{
+ "task": {
+  "id": "M05",
+  "prompt": "Re-validate the live machine against the reference image {root}/LICENSE: its 16 bytes at hex address 1A0, with the image's first byte at address 0.",
+  "tool": "rom_check",
+  "args": {
+   "reference_rom": "{root}/LICENSE",
+   "reference_addr": {
+    "any_of": [
+     "0x1A0",
+     "0x1a0"
+    ]
+   },
+   "reference_base": {
+    "any_of": [
+     "0x0"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

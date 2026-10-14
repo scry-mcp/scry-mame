@@ -1,0 +1,36 @@
+{
+ "task": {
+  "id": "M153",
+  "prompt": "Which code does the second processor, subcpu, run during the next 8 frames? I want every location it reaches.",
+  "tool": "trace",
+  "args": {
+   "frames": 8,
+   "cpu": {
+    "any_of": [
+     "subcpu",
+     ":subcpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M153: {\"tool\": \"trace\", \"args\": {\"frames\": 8, \"cpu\": \"subcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M153: {\"tool\": \"trace\", \"args\": {\"frames\": 8, \"cpu\": \"subcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M153: {\"tool\": \"trace\", \"args\": {\"frames\": 8, \"cpu\": \"subcpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

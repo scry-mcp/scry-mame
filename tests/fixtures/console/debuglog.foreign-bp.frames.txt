@@ -1,0 +1,54 @@
+Breakpoint 1 set
+3C 1296005
+Stopped at breakpoint 1
+3D
+3D
+400
+3D
+Stopped at VBLANK
+3D
+BA6
+BA6
+3D
+Data dumped successfully
+Stopped at breakpoint 1
+3E
+3E
+400
+3E
+Stopped at VBLANK
+3E
+BA6
+BA6
+3E
+Data dumped successfully
+Stopped at breakpoint 1
+3F
+3F
+400
+3F
+Stopped at VBLANK
+3F
+B9C
+B9C
+3F
+Data dumped successfully
+Stopped at breakpoint 1
+40
+40
+400
+40
+Stopped at VBLANK
+40
+BB0
+BB0
+40
+Data dumped successfully
+Stopped at breakpoint 1
+41
+41
+400
+400
+41
+Data dumped successfully
+141B0A3

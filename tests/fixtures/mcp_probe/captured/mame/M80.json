@@ -1,0 +1,44 @@
+{
+ "task": {
+  "id": "M80",
+  "prompt": "Patch the ROM live: put the bytes 4E 71 at hex address 1C06. The program space has no write side there, so the bytes have to go into the memory region that backs that address.",
+  "tool": "write",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x1C06",
+     "0x1c06"
+    ]
+   },
+   "data_hex": {
+    "any_of": [
+     "4E71",
+     "4E 71",
+     "4e71",
+     "4e 71"
+    ]
+   },
+   "region": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

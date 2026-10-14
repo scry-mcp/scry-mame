@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M23",
+  "prompt": "Which symbol is the run-time address hex 5C3E inside?",
+  "tool": "symbols_find",
+  "args": {
+   "linear": {
+    "any_of": [
+     "0x5C3E",
+     "0x5c3e"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

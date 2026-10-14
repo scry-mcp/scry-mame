@@ -1,0 +1,19 @@
+MCP_FILM_FRAME k=1 frame=900 hits=75 read_at=901
+h 21ac ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+h 1fd2 ffff 899
+said MAME_MCP_SCREEN tag=:screen w=336 h=252 frame=901 palette=:palette entries=256
+end

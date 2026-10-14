@@ -1,0 +1,27 @@
+{
+ "task": {
+  "id": "M139",
+  "prompt": "Drop the open value scan.",
+  "tool": "scan_clear"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

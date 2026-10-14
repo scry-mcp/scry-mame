@@ -1,0 +1,52 @@
+Captured live, never authored: these are the bytes the boot harness (`mame_machine.MACHINE_LUA`,
+through MAME's `-autoboot_script`) wrote into the session's scratch on a real machine.
+
+radendur.txt   the 68000 board of tch-blitter (`radendu`, set `radendur`): TWO MC68000 with
+               distinct tags, which is the multi-cpu case the single-cpu assumption elsewhere
+               in this server would have got wrong. It carries the shapes the parser has to
+               tell apart: an entry that names a REGION with its offset, one that names a
+               SHARE, one that names NEITHER (a handler keeping its values off the bus), an
+               entry with a MIRROR, and a `cpu_space` beside a `program` space on each cpu.
+               The same bytes came back from the console route at the park, which is the
+               measurement that decided the harness owns the live half.
+               Every CPU line carries the device's shortname as `type=`, every SPACE line
+               that space's address mask, and a REGS line per cpu the names of its state
+               entries, which its console symbol table takes as its
+               registers: re-captured once the gather wrote each. All four read ffffff on this board, so the case
+               that tells one cpu's mask from another's derives a variant by REPLACING the
+               sub cpu's program mask, and says so.
+
+A change in MAME's Lua output is RE-CAPTURED here, never patched in the fixture: a fixture
+edited by hand stops being evidence about the thing it is supposed to describe.
+
+Captured from MAME's own `-listxml`, each run against the build that carries the set, in the
+exact form the server runs it (`<binary> <system> -listxml`), stdout verbatim:
+
+listxml-radendur.xml  the tch-blitter build (`radendu radendur -listxml`): the MULTI-CPU case
+                      again, from the other source, with both 68000s' clocks; a screen with its
+                      rotation; and the board's ROM files, of which the undumped ones carry
+                      NO crc and NO sha1 at all, which is the absent-field case the parser
+                      must not fill in.
+listxml-lineup.xml    the lineup build (`mamelineup lineup -listxml`): a SINGLE V30 at a
+                      different clock, so a reading that hard-wired two cpus or one clock is
+                      red against it.
+
+BOTH documents carry more than one <machine>: the set asked for, plus one per DEVICE the
+board is built from, which on a real board is most of the document. The parser is scoped to the
+set's own element for that reason. On neither of these builds does a device machine carry a chip, a rom or a display
+of its own, so that exclusion has no case to be proven red against on this host.
+
+ONE FILE HERE IS NOT A CAPTURE, and it says so on the line above the part that is not:
+
+listxml-device-with-hardware.xml   listxml-radendur.xml with THREE lines added by hand, inside
+                                   the `ramdac` device machine: a marker comment, a
+                                   `<chip type="cpu">` and a `<rom>`. Everything else is the
+                                   capture, byte for byte.
+
+                                   It exists because neither MAME build on the machine this was
+                                   written on has a device machine carrying hardware of its own,
+                                   so the half of the scoping that EXCLUDES another machine's
+                                   chips had nothing to be proved red against. The shape it
+                                   adds is one MAME's own DTD declares, not one invented for
+                                   the test; what it is NOT is evidence about this board, and
+                                   no test may read it as such. Its only job is to be excluded.

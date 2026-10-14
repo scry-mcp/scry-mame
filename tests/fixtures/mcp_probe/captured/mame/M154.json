@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M154",
+  "prompt": "Over 6 frames I need, for every code location the CPU runs, exactly how many times it ran, uncondensed.",
+  "tool": "trace",
+  "args": {
+   "frames": 6,
+   "noloop": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M154: {\"tool\": \"trace\", \"args\": {\"frames\": 6, \"noloop\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M154: {\"tool\": \"trace\", \"args\": {\"frames\": 6, \"noloop\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M154: {\"tool\": \"trace\", \"args\": {\"frames\": 6, \"noloop\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

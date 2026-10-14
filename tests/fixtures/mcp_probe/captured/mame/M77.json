@@ -1,0 +1,36 @@
+{
+ "task": {
+  "id": "M77",
+  "prompt": "Remove the watch declarations of VoiceCount placed on the cpu tagged audiocpu, and only those.",
+  "tool": "watch_clear",
+  "args": {
+   "ref": "VoiceCount",
+   "cpu": {
+    "any_of": [
+     "audiocpu",
+     ":audiocpu"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M77: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"VoiceCount\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M77: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"VoiceCount\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M77: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"VoiceCount\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+ "task": {
+  "id": "M85",
+  "prompt": "On the cpu tagged audiocpu, keep the 8 bytes at VoiceTable, read as unsigned bytes, every time VoiceTrigger is written, one row each, never halting.",
+  "tool": "watch_add",
+  "args": {
+   "any_of": [
+    {
+     "ref": "VoiceTable",
+     "mode": "capture",
+     "length": 8,
+     "trigger": "VoiceTrigger",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    },
+    {
+     "ref": "VoiceTable",
+     "mode": "capture",
+     "fmt": "u8[8]",
+     "trigger": "VoiceTrigger",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    },
+    {
+     "ref": "VoiceTable",
+     "mode": "capture",
+     "length": 8,
+     "fmt": "u8",
+     "trigger": "VoiceTrigger",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    },
+    {
+     "ref": "VoiceTable",
+     "mode": "capture",
+     "length": 8,
+     "fmt": "u8[8]",
+     "trigger": "VoiceTrigger",
+     "cpu": {
+      "any_of": [
+       "audiocpu",
+       ":audiocpu"
+      ]
+     }
+    }
+   ]
+  },
+  "allow": [
+   "by"
+  ],
+  "grammar": [
+   "capture",
+   "u8"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"length\": 8, \"fmt\": \"u8[8]\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"length\": 8, \"fmt\": \"u8\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"length\": 8, \"fmt\": \"u8\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

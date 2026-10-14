@@ -1,0 +1,44 @@
+{
+ "task": {
+  "id": "M90",
+  "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to /tmp/mcp-probe-pal.png.",
+  "tool": "palette",
+  "args": {
+   "palette": {
+    "any_of": [
+     "ppu_pal",
+     ":ppu_pal"
+    ]
+   },
+   "first": {
+    "any_of": [
+     32,
+     "0x20"
+    ]
+   },
+   "count": 12,
+   "scale": 2,
+   "dest": "/tmp/mcp-probe-pal.png"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

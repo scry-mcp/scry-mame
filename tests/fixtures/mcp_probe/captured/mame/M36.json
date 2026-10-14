@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M36",
+  "prompt": "Soft-reset the machine.",
+  "tool": "reset",
+  "args": {}
+ },
+ "runs": [
+  {
+   "lines": [
+    "M36: {\"tool\": \"reset\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M36: {\"tool\": \"reset\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M36: {\"tool\": \"reset\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

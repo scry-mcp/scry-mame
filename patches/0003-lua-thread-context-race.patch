@@ -1,0 +1,84 @@
+lua-thread-context-race: thread_context::start and its worker no longer race on the context's Lua state
+version: 3
+base: 9c28def3407cf3386d5c6bea932312741acb7992
+
+This is the fleet's canonical copy of a change proposed upstream to MAME. A MAME repository
+vendors it as patches/0003-lua-thread-context-race.patch and applies it after its own patches.
+
+What it fixes: `thread_context::start` (src/frontend/mame/luaengine.cpp) hands the loaded chunk
+to a detached worker that runs it on the context's one lua_State, while the main thread is still
+popping the load result off that same state on its way out of start(); and the worker destroys
+its result and the function after `m_busy` clears, when the next start() may already be loading
+on the state. Both are data races on one Lua state, and the console plugin opens them once per
+console line. The change destroys the load result before the worker exists, and has the worker
+release its result and the function under the mutex before it clears m_busy.
+
+diff --git a/src/frontend/mame/luaengine.cpp b/src/frontend/mame/luaengine.cpp
+index 9ad7cea8..73e8e9ed 100644
+--- a/src/frontend/mame/luaengine.cpp
++++ b/src/frontend/mame/luaengine.cpp
+@@ -115,34 +115,44 @@ public:
+ 		if (m_busy)
+ 			return false;
+ 
+-		sol::load_result res = m_state.load(scr);
+-		if (!res.valid())
++		// res pops m_state's stack when destroyed, so it has to be gone before the worker starts
++		sol::protected_function func;
+ 		{
+-			sol::error err = res;
+-			luaL_error(s, err.what());
+-			return false; // unreachable - luaL_error throws
++			sol::load_result res = m_state.load(scr);
++			if (!res.valid())
++			{
++				sol::error err = res;
++				luaL_error(s, err.what());
++				return false; // unreachable - luaL_error throws
++			}
++			func = res.get<sol::protected_function>();
+ 		}
+ 
+ 		std::thread th(
+-				[this, func = res.get<sol::protected_function>()] ()
++				[this, func = std::move(func)] () mutable
+ 				{
+-					auto ret = func();
+-					std::unique_lock<std::mutex> result_lock(m_guard);
+-					if (ret.valid())
++					// ret and func touch m_state when released, so both go under the lock and before m_busy clears
++					std::unique_lock<std::mutex> result_lock(m_guard, std::defer_lock);
+ 					{
+-						auto result = ret.get<std::optional<char const *> >();
+-						if (!result)
+-							osd_printf_error("[LUA ERROR] in thread: return value must be string\n");
+-						else if (!*result)
+-							m_result.clear();
++						auto ret = func();
++						result_lock.lock();
++						if (ret.valid())
++						{
++							auto result = ret.get<std::optional<char const *> >();
++							if (!result)
++								osd_printf_error("[LUA ERROR] in thread: return value must be string\n");
++							else if (!*result)
++								m_result.clear();
++							else
++								m_result = *result;
++						}
+ 						else
+-							m_result = *result;
+-					}
+-					else
+-					{
+-						sol::error err = ret;
+-						osd_printf_error("[LUA ERROR] in thread: %s\n", err.what());
++						{
++							sol::error err = ret;
++							osd_printf_error("[LUA ERROR] in thread: %s\n", err.what());
++						}
+ 					}
++					func = sol::protected_function();
+ 					m_busy = false;
+ 				});
+ 		m_busy = true;

@@ -1,0 +1,53 @@
+{
+ "task": {
+  "id": "M163",
+  "prompt": "Show the region gfx3, starting 0x2000 bytes into it, under every candidate layout at the default depths and size, through the palette device tagged ppu_pal from pen 0x50.",
+  "tool": "gfx_sweep",
+  "args": {
+   "tag": {
+    "any_of": [
+     "gfx3",
+     ":gfx3"
+    ]
+   },
+   "offset": {
+    "any_of": [
+     8192,
+     "0x2000"
+    ]
+   },
+   "palette": {
+    "any_of": [
+     "ppu_pal",
+     ":ppu_pal"
+    ]
+   },
+   "pen_base": {
+    "any_of": [
+     80,
+     "0x50"
+    ]
+   }
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

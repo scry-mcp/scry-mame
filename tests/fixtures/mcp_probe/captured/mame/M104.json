@@ -1,0 +1,22 @@
+{
+ "task": {
+  "id": "M104",
+  "prompt": "Show the graphics the blit at index 3 of frame 88 of the draw command tiledraw reads, with 2 pixels of margin round it, at scale 3.",
+  "tool": "gfx_blit_source",
+  "args": {
+   "draw_command": "tiledraw",
+   "frame": 88,
+   "index": 3,
+   "margin": 2,
+   "scale": 3
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M104: {\"tool\": \"gfx_blit_source\", \"args\": {\"draw_command\": \"tiledraw\", \"frame\": 88, \"index\": 3, \"margin\": 2, \"scale\": 3}}"
+   ],
+   "right": true
+  }
+ ]
+}

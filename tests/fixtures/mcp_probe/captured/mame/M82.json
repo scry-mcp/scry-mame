@@ -1,0 +1,53 @@
+{
+ "task": {
+  "id": "M82",
+  "prompt": "Stop the machine only when the byte at hex address 700011 is written with the value hex 25, and tell me who wrote it; any other value written there must not stop it.",
+  "tool": "watch_add",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x700011"
+    ]
+   },
+   "mode": "change",
+   "condition": {
+    "any_of": [
+     "wpdata==0x25",
+     "wpdata==25",
+     "wpdata == 0x25",
+     "wpdata == 25",
+     "(wpdata==0x25)",
+     "(wpdata==25)"
+    ]
+   }
+  },
+  "allow": [
+   "length",
+   "fmt",
+   "by"
+  ],
+  "grammar": [
+   "change"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

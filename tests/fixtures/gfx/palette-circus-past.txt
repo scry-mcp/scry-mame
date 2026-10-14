@@ -1,0 +1,2 @@
+MAME_MCP_PAL_PAST tag=:palette entries=2
+MAME_MCP_LUA_END#2	true	nil

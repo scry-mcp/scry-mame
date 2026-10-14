@@ -1,0 +1,38 @@
+{
+ "task": {
+  "id": "M114",
+  "prompt": "Which palette pen is the pixel at x 46, y 160 of the screen, and show me where on the screen it sits, enlarged 4 times.",
+  "tool": "screen_view",
+  "args": {
+   "mode": "pixel",
+   "point": [
+    46,
+    160
+   ],
+   "scale": 4
+  },
+  "grammar": [
+   "pixel"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 4}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,633 @@
+12E6: bmi $12e3
+12E8: lda $0a
+12EA: sta $3000
+12ED: lda $0b
+12EF: sta $2000
+12F2: lda $d000
+12F5: sta $1f
+12F7: jsr $1914
+1914: lda $31
+1916: beq $191a
+191A: lda $21
+191C: tax
+191D: and #$0c
+191F: beq $199c
+1921: nop
+1922: dec $3b
+1924: bne $1967
+1967: dec $25
+1969: bne $1980
+196B: nop
+196C: lda $3a
+196E: sta $25
+1970: clc
+1971: lda $08
+1973: adc $0a
+1975: sta $0a
+1977: cmp #$04
+1979: bcs $1980
+1980: dec $24
+1982: bne $198b
+198B: clc
+198C: lda $09
+198E: adc $0b
+1990: sta $0b
+1992: cmp #$f0
+1994: bcc $199b
+199B: rts
+12FA: jsr $15fb
+15FB: lda $02
+15FD: and #$80
+15FF: bne $1632
+1601: nop
+1602: lda $09
+1604: bmi $1608
+1606: nop
+1607: rts
+12FD: jsr $1867
+1867: lda $02
+1869: bmi $1875
+186B: nop
+186C: lda $39
+186E: bne $1875
+1875: rts
+1300: dec $1b
+1302: bne $1308
+1304: nop
+1305: jsr $1157
+1157: lda #$02
+1159: sta $1b
+115B: lda $02
+115D: and #$10
+115F: beq $1167
+1167: ldx #$04
+1169: stx $04
+116B: inc $1c
+116D: bmi $11b5
+11B5: jsr $12b5
+12B5: lda #$40
+12B7: bne $12c6
+12C6: sta $01
+12C8: lda #$00
+12CA: sta $00
+12CC: rts
+11B8: lda #$05
+11BA: sta $1e
+11BC: ldx $04
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+11CB: nop
+11CC: dey
+11CD: ldx $04
+11CF: lda $10, x
+11D1: sta $06
+11D3: lda #$07
+11D5: sta $1d
+11D7: lsr $06
+11D9: bcs $11f0
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+11E4: dec $1d
+11E6: bpl $11d7
+11D7: lsr $06
+11D9: bcs $11f0
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 47 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 4 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 12 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+1204: ldx $04
+1206: lda $1e
+1208: cmp #$03
+120A: beq $1212
+120C: nop
+120D: cmp #$01
+120F: bne $1218
+1218: jmp $11be
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+11CB: nop
+11CC: dey
+11CD: ldx $04
+11CF: lda $10, x
+11D1: sta $06
+11D3: lda #$07
+11D5: sta $1d
+11D7: lsr $06
+11D9: bcs $11f0
+
+   (loops for 78 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+1204: ldx $04
+1206: lda $1e
+1208: cmp #$03
+120A: beq $1212
+1212: lda $1c
+1214: eor #$ff
+1216: sta $1c
+1218: jmp $11be
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+11CD: ldx $04
+11CF: lda $10, x
+11D1: sta $06
+11D3: lda #$07
+11D5: sta $1d
+11D7: lsr $06
+11D9: bcs $11f0
+
+   (loops for 6 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 8 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 2 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 4 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 42 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+1204: ldx $04
+1206: lda $1e
+1208: cmp #$03
+120A: beq $1212
+120C: nop
+120D: cmp #$01
+120F: bne $1218
+1218: jmp $11be
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+
+   (loops for 47 instructions)
+
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+
+   (loops for 2 instructions)
+
+11D7: lsr $06
+11D9: bcs $11f0
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+
+   (loops for 32 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+1204: ldx $04
+1206: lda $1e
+1208: cmp #$03
+120A: beq $1212
+120C: nop
+120D: cmp #$01
+120F: bne $1218
+1211: nop
+1212: lda $1c
+1214: eor #$ff
+1216: sta $1c
+1218: jmp $11be
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+11CB: nop
+11CC: dey
+11CD: ldx $04
+11CF: lda $10, x
+11D1: sta $06
+11D3: lda #$07
+11D5: sta $1d
+11D7: lsr $06
+11D9: bcs $11f0
+
+   (loops for 11 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 13 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 47 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 4 instructions)
+
+11DB: nop
+11DC: lda #$00
+11DE: sta ($00), y
+11E0: dey
+11E1: sta ($00), y
+11E3: dey
+
+   (loops for 12 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+1204: ldx $04
+1206: lda $1e
+1208: cmp #$03
+120A: beq $1212
+120C: nop
+120D: cmp #$01
+120F: bne $1218
+1218: jmp $11be
+11BE: stx $04
+11C0: ldx $1e
+11C2: ldy $121b, x
+11C5: lda $1c
+11C7: and #$08
+11C9: beq $11cd
+11CB: nop
+11CC: dey
+11CD: ldx $04
+11CF: lda $10, x
+11D1: sta $06
+11D3: lda #$07
+11D5: sta $1d
+11D7: lsr $06
+11D9: bcs $11f0
+
+   (loops for 10 instructions)
+
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+
+   (loops for 4 instructions)
+
+11F0: lda #$07
+11F2: and $1c
+11F4: tax
+11F5: lda $1221, x
+11F8: sta ($00), y
+11FA: dey
+11FB: sec
+11FC: sbc #$01
+11FE: sta ($00), y
+1200: dey
+1201: jmp $11e4
+
+   (loops for 2 instructions)
+
+11D7: lsr $06
+11D9: bcs $11f0
+
+   (loops for 11 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 13 instructions)
+
+11E4: dec $1d
+11E6: bpl $11d7
+
+   (loops for 45 instructions)
+
+11E8: dec $04
+11EA: dec $1e
+11EC: bpl $1204
+11EE: nop
+11EF: rts
+1308: lda $c000
+130B: bpl $1308
+130D: rts
+1454: jsr $1243
+1243: lda $a000
+1246: bmi $124c
+1248: nop
+1249: lda #$00
+124B: rts
+1457: lda $48
+1459: bne $1484
+145B: nop
+145C: dec $44
+145E: bne $1451
+1451: jsr $12e3
+12E3: lda $c000
+12E6: bmi $12e3
+12E3: lda $c000
+12E6: bmi $12e3
+
+   (loops for 2586 instructions)
+
+12E8: lda $0a
+12EA: sta $3000
+12ED: lda $0b
+12EF: sta $2000
+12F2: lda $d000
+12F5: sta $1f
+12F7: jsr $1914
+1914: lda $31
+1916: beq $191a
+191A: lda $21
+191C: tax
+191D: and #$0c
+191F: beq $199c
+1921: nop
+1922: dec $3b
+1924: bne $1967
+1926: nop
+1927: lda #$08
+1929: sta $3b
+192B: txa
+192C: and #$10
+192E: beq $1941
+1941: lda $09
+1943: bpl $1955
+1955: txa
+1956: and #$07
+1958: cmp #$07
+195A: bne $1962
+1962: inc $21
+1964: jsr $1b2c
+1B2C: lda $20
+1B2E: and #$f0
+1B30: sta $20
+1B32: lda $21
+1B34: and #$0f
+1B36: jsr $14a8
+14A8: ora $20
+14AA: bne $14af
+14AF: sta $20
+14B1: sta $8000
+14B4: rts
+1B39: rts
+1967: dec $25
+1969: bne $1980
+1980: dec $24
+1982: bne $198b
+198B: clc
+198C: lda $09
+198E: adc $0b
+1990: sta $0b
+1992: cmp #$f0
+1994: bcc $199b
+199B: rts
+12FA: jsr $15fb
+15FB: lda $02
+15FD: and #$80
+15FF: bne $1632
+1601: nop
+1602: lda $09
+1604: bmi $1608
+1606: nop
+1607: rts
+12FD: jsr $1867
+1867: lda $02
+1869: bmi $1875
+186B: nop
+186C: lda $39
+186E: bne $1875
+1875: rts
+1300: dec $1b
+1302: bne $1308
+1308: lda $c000
+130B: bpl $1308
+1308: lda $c000
+130B: bpl $1308
+
+   (loops for 218 instructions)
+
+130D: rts
+1454: jsr $1243
+1243: lda $a000
+1246: bmi $124c
+1248: nop
+1249: lda #$00
+124B: rts
+1457: lda $48
+1459: bne $1484
+145B: nop
+145C: dec $44
+145E: bne $1451
+1451: jsr $12e3
+12E3: lda $c000
+12E6: bmi $12e3
+12E3: lda $c000
+12E6: bmi $12e3
+
+   (loops for 318 instructions)
+   (interrupted at 12E6, IRQ 0)
+
+1A05: pha
+1A06: txa
+1A07: pha
+1A08: tya
+1A09: pha
+1A0A: lda $00
+1A0C: pha
+1A0D: lda $01
+1A0F: pha
+1A10: lda $0b
+1A12: cmp #$b0
+1A14: bcs $1a2b
+1A2B: jsr $1d12
+1D12: lda $0b
+1D14: cmp #$df
+1D16: bcc $1d20
+1D20: cmp #$d6
+1D22: bcc $1d29
+1D24: nop
+1D25: jsr $1d5c
+1D5C: ldx #$00
+1D5E: jsr $1e9d
+1E9D: lda $02
+1E9F: and #$10
+1EA1: beq $1ea9
+1EA9: lda $1c
+1EAB: and #$0f
+1EAD: eor #$ff
+1EAF: sec
+1EB0: adc $0a
+1EB2: adc #$0f
+1EB4: sta $33
+1EB6: bmi $1eba
+1EB8: nop
+1EB9: inx
+1EBA: rts
+1D61: jmp $1d80
+1D80: lda $33
+1D82: tay
+1D83: lda #$01
+1D85: sta $33
+1D87: tya
+1D88: and #$70
+1D8A: lsr a
+1D8B: lsr a
+1D8C: lsr a
+1D8D: lsr a
+1D8E: tay
+1D8F: lda $0f, x
+1D91: lsr a
+1D92: dey
+1D93: bmi $1d9b
+1D95: nop
+1D96: asl $33
+1D98: jmp $1d91
+1D91: lsr a
+1D92: dey
+1D93: bmi $1d9b
+1D95: nop
+1D96: asl $33
+1D98: jmp $1d91
+
+   (loops for 21 instructions)
+
+1D9B: bcs $1d9f
+1D9D: nop
+1D9E: rts
+1D28: rts
+1A2E: lda #$8f
+1A30: jsr $14ad
+14AD: and $20
+14AF: sta $20
+14B1: sta $8000
+14B4: rts
+1A33: jsr $1c7a
+1C7A: lda $0a
+1C7C: cmp #$e2
+1C7E: bcs $1c89
+1C80: nop
+1C81: cmp #$18
+1C83: bcc $1c9e
+1C85: nop
+1C86: jmp $1cc8
+1CC8: lda $d000
+1CCB: rts
+1A36: jmp $1a1f
+1A1F: pla
+1A20: sta $01
+1A22: pla
+1A23: sta $00
+1A25: pla
+1A26: tay
+1A27: pla
+1A28: tax
+1A29: pla
+1A2A: rti
+12E6: bmi $12e3
+12E3: lda $c000
+12E6: bmi $12e3
+12E3: lda $c000

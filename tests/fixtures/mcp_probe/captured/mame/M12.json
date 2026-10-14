@@ -1,0 +1,42 @@
+{
+ "task": {
+  "id": "M12",
+  "prompt": "Declare a breakpoint at hex address 3E12 that only counts its hits and never halts the machine.",
+  "tool": "breakpoint_at",
+  "args": {
+   "ref": {
+    "any_of": [
+     "0x3E12",
+     "0x3e12"
+    ]
+   },
+   "role": "control"
+  },
+  "allow": [
+   "by"
+  ],
+  "grammar": [
+   "control"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"by\": \"address\", \"role\": \"control\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

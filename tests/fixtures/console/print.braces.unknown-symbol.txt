@@ -1,0 +1,3 @@
+Error in expression: eax==5
+                     ^unknown symbol
+

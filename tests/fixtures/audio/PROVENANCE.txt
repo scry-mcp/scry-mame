@@ -1,0 +1,28 @@
+Captured live, every file written by MAME's own mixer (`sound:start_recording`), through the
+mame server's tools driven by a one-off script outside this tree, each board booted fresh.
+
+  lineup-ay-tone.wav.gz     Line UP (`lineup`, its project's build), 60 frames run, then a Lua
+                            chunk pinning the AY's tone A at period 0x40, volume 15, the other
+                            channels and the noise off (a write tap substituting the pinned value
+                            for whatever the game writes to registers 0, 1, 7 and 8, plus a write
+                            of each every frame), then `audio_record(frames=30)`. Its `begin` and
+                            `end` marks are in marks.json, as error.log held them.
+  lineup-plain.wav.gz       the same board and run with no poke: the attract's own sound,
+                            `audio_record(frames=30)`.
+  lineup-closed-empty.wav.gz  `start_recording` then `stop_recording` in one chunk: the header of
+                            a file that never received a mixer update.
+  lineup-unfinished.wav.gz  a copy taken 5 frames into a recording still open: MAME writes both
+                            sizes only when it closes the file.
+  radendur-stereo.wav.gz    radendur (TCH's `radendu`), a 7-frame recording made before the tool
+                            existed, by a draft of its script that printed the marks' times to
+                            nine decimals (as marks.json holds them): its speaker has two
+                            inputs.
+
+Files:
+  PROVENANCE.txt
+  lineup-ay-tone.wav.gz
+  lineup-closed-empty.wav.gz
+  lineup-plain.wav.gz
+  lineup-unfinished.wav.gz
+  marks.json
+  radendur-stereo.wav.gz

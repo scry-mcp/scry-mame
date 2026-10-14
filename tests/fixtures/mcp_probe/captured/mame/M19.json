@@ -1,0 +1,39 @@
+{
+ "task": {
+  "id": "M19",
+  "prompt": "Stop the machine whenever the two 16-bit values at ScoreTbl are written, and tell me who wrote them, reading them as u16[2].",
+  "tool": "watch_add",
+  "args": {
+   "ref": "ScoreTbl",
+   "mode": "change",
+   "fmt": "u16[2]"
+  },
+  "allow": [
+   "length",
+   "by"
+  ],
+  "grammar": [
+   "change"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M19: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"ScoreTbl\", \"mode\": \"change\", \"length\": 4, \"fmt\": \"u16[2]\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M19: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"ScoreTbl\", \"mode\": \"change\", \"fmt\": \"u16[2]\", \"length\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M19: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"ScoreTbl\", \"mode\": \"change\", \"fmt\": \"u16[2]\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

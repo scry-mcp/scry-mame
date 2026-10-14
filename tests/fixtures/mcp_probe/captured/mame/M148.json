@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M148",
+  "prompt": "Remove every note at once.",
+  "expect": "CANNOT",
+  "about": "comment_delete"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M148: {\"tool\": \"comment_clear\", \"args\": {}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M148: CANNOT comment_delete requires non-empty ref and has no bulk delete; cannot remove all notes in one call"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M148: CANNOT comment_delete requires a ref and does not support deleting all comments at once."
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+schema: 1
+systems: [speedf]
+palette_ports:
+  pal:
+    palette: palette
+    cpu: maincpu
+    space: io
+    protocol: latch
+    data_port: 0x8
+    index_port: 0xa
+    index_flag_mask: 0x8000
+    pen_count: 1024
+    order: [r, g, b]
+    component_bits: 5
+    auto_increment: true
+    status: declared
+    source: "speedf-mame patches/0001-speedf-integration.patch, paldat_w and paloff_w"

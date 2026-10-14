@@ -1,0 +1,4 @@
+2010EE: dc.w    $1842; ILLEGAL
+000552: rte
+2010EE: dc.w    $1842; ILLEGAL
+000552: rte

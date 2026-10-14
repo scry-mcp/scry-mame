@@ -1,0 +1,32 @@
+{
+ "task": {
+  "id": "M141",
+  "prompt": "Record the sound of the next 120 frames to /tmp/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
+  "tool": "audio_record",
+  "args": {
+   "frames": 120,
+   "dest": "/tmp/mcp-probe-sound.wav",
+   "seconds": 30
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+   ],
+   "right": true
+  }
+ ]
+}

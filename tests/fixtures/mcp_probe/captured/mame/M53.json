@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M53",
+  "prompt": "Hard-reset the machine, re-creating it, but keep this same session and emulator process.",
+  "expect": "CANNOT",
+  "about": "reset"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M53: CANNOT a hard reset kills the gdbstub connection; close then start is required"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT hard reset requires close then start in separate calls"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT Hard reset re-creates the machine, killing the gdbstub connection; the instructions note there is no hard reset that preserves the session."
+   ],
+   "right": true
+  }
+ ]
+}

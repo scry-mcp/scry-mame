@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M54",
+  "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
+  "expect": "CANNOT",
+  "about": "read_memory"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M54: CANNOT the server runs one machine per session"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M54: CANNOT server does not support multiple simultaneous sessions"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M54: CANNOT No second machine session exists; a second start() call is required first."
+   ],
+   "right": true
+  }
+ ]
+}
