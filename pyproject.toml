@@ -74,7 +74,10 @@ branch = true
 parallel = true
 concurrency = ["multiprocessing", "thread"]
 source = ["."]
-omit = [".venv/*"]
+# A demo's own `demo.py` runs against a live emulator and a ROM the repository does not carry:
+# the live tier runs it (`tests/live/live_check.py`), never the unit suite. What the demos share,
+# `demos/free_set.py`, is plain logic and is measured.
+omit = [".venv/*", "demos/*/*"]
 
 [tool.coverage.report]
 # THE FLOOR IS THE VENDOR'S: coverage.py's `fail_under`, judged by pytest-cov at the end of every
