@@ -63,10 +63,13 @@ process listens on the port and then which holds the far end of the connection
 (`mame_stub_owner.py`, through `lsof`, a host dependency of `start`):
 
 - nothing on the port yet is the boot under way, waited for like a refused dial;
-- another process listening is refused `host_failed` naming the port and that pid, and is never
-  dialled, so its one connection is not taken;
-- a far end held by another process (the race the listener check cannot close) is refused the
-  same way, the connection closed before its first byte, so nothing is sent to that process;
+- another process listening is never dialled, so its one connection is not taken;
+- a far end held by another process (the race the listener check cannot close) has the
+  connection closed before its first byte, so nothing is sent to that process;
+- either of those on a port `start` picked itself is launched again, on another port it picks,
+  under the cap below and listed in `start_retries` as `port_served`; on the caller's own
+  `stub_port` it is refused `host_failed` naming the port and that pid, since another launch
+  there would meet the same process;
 - a MAME that exits before it accepts is a death, as above;
 - a connection nobody accepts within `seconds` (never less than one request's wait) is a stub
   that did not answer, `session_broken`;
@@ -101,16 +104,18 @@ connection was accepted, which of its questions failed (`phase`: `qSupported`, `
 `threads`, or `unknown`) and after how long.
 
 **A MAME that dies BY A SIGNAL before its gdbstub answers, other than an assertion's abort or a
-stub with no description of the first cpu, and a live stub that answers without being ready,
-are launched again, at most `START_RETRIES_MAX`
-more times.** MAME can die inside its own Lua console thread at boot (the console plugin's
+stub with no description of the first cpu, a live stub that answers without being ready, and,
+on a port `start` picked itself, a port another process took first, are launched again, at most
+`START_RETRIES_MAX` more times.** MAME can die inside its own Lua console thread at boot (the console plugin's
 thread and the main thread race on one `lua_State`, and it falls in `ll_require`), and the
 server cannot prevent a crash inside the emulator, only react to it.
 `patches/0003-lua-thread-context-race.patch` removes the race from a build that carries it; on
 any build, a relaunch is listed in `start_retries` and every reply's `session.console` counts
 the console reader's deaths and the chunks it ran again. A signal at boot is never
 the caller's argument's fault, so a bounded relaunch is honest; an EXIT CODE is (missing ROMs,
-an unknown system, a bad flag) and would answer the same again, so it is refused at once. So is
+an unknown system, a bad flag) and would answer the same again, so it is refused at once, except
+the one MAME gives with `Fatal error: gdbstub: failed to start listening on address ... port N`
+for a port it picked: another process held it, and another launch picks another. So is
 an ASSERTION's abort, SIGABRT with the `Assertion failed` line the macOS libc prints: the same
 build asserts the same way on every launch. When that assertion is in `input_sdl3.cpp`, the
 refusal's `note` names the way round it. A stub with no description of the board's FIRST cpu

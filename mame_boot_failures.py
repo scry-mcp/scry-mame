@@ -14,6 +14,8 @@ import re
 import signal
 from typing import Any
 
+from scry_core import reply_contract as contract
+
 import gdb_session as gs
 import mame_state as st
 
@@ -22,17 +24,19 @@ ONE_CONNECTION = "MAME serves one connection per session, so a second is never d
 
 
 class LaunchFailed(st.Invalid):
-    """`session_broken` for a launch that failed before a session existed. `relaunch()` says
-    whether launching again can change the answer (never, unless a subclass says so),
-    `evidence()` is its `start_retries` entry and `what` its relaunch's progress line."""
+    """A launch that failed before a session existed, `session_broken` unless a subclass names
+    its code. `relaunch(port_picked)` says whether launching again can change the answer (never,
+    unless a subclass says so), given whether the gdbstub's port was this server's pick, which a
+    relaunch picks afresh; `evidence()` is its `start_retries` entry and `what` its relaunch's
+    progress line."""
 
     def __init__(self, message: str, what: str, evidence: dict[str, Any],
-                 **fields: Any) -> None:
-        super().__init__("session_broken", message, **fields)
+                 code: contract.Code = "session_broken", **fields: Any) -> None:
+        super().__init__(code, message, **fields)
         self.what = what
         self._evidence = evidence
 
-    def relaunch(self) -> bool:
+    def relaunch(self, port_picked: bool) -> bool:
         return False
 
     @property
@@ -87,26 +91,38 @@ def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invali
     return DiedBeforeStub(exit_code, after_s, stdout_tail)
 
 
+# What MAME prints before it exits when its gdbstub cannot listen on the port it was given.
+_PORT_TAKEN = re.compile(r"Fatal error: gdbstub: failed to start listening on address \S+ port \d+")
+
+
 class DiedBeforeStub(LaunchFailed):
     """A MAME that EXITED before its gdbstub answered. Launched again when a signal ended it,
     other than an assertion's abort; an exit code is MAME refusing what the caller gave it, and
-    would answer the same again."""
+    would answer the same again, except a port taken before MAME could listen on it
+    (`port_taken`) when a relaunch picks another."""
 
     def __init__(self, exit_code: int, after_s: float, stdout_tail: str) -> None:
         self.exit_code = exit_code
+        self.stdout_tail = stdout_tail
         self.asserted = exit_code == -signal.SIGABRT and ASSERTION_MARK in stdout_tail
-        note = ({"note": SDL3_JOYSTICK_NOTE}
+        note: dict[str, Any] = ({"note": SDL3_JOYSTICK_NOTE}
                 if self.asserted and SDL3_JOYSTICK_MARK in stdout_tail else {})
-        own = {"exit_code": exit_code, "after_s": st.spent_s(after_s), "stdout_tail": stdout_tail}
+        own: dict[str, Any] = {"exit_code": exit_code, "after_s": st.spent_s(after_s),
+                               "stdout_tail": stdout_tail}
         ended = (f"died by signal {-exit_code}" if exit_code < 0
                  else f"exited with code {exit_code}")
+        what = (f"MAME {ended}: another process held its gdbstub port"
+                if self.port_taken() else f"MAME {ended} before its gdbstub answered")
         super().__init__(f"MAME exited with code {exit_code} after {after_s:.1f} s, before its "
-                         "gdbstub answered: its own words are in `stdout_tail`",
-                         f"MAME {ended} before its gdbstub answered",
+                         "gdbstub answered: its own words are in `stdout_tail`", what,
                          {"kind": "died", **own}, **own, **note)
 
-    def relaunch(self) -> bool:
-        return self.exit_code < 0 and not self.asserted
+    def relaunch(self, port_picked: bool) -> bool:
+        return (self.exit_code < 0 and not self.asserted) or (port_picked and self.port_taken())
+
+    def port_taken(self) -> bool:
+        """MAME's own line that another process held its gdbstub port, and an exit code."""
+        return self.exit_code > 0 and _PORT_TAKEN.search(self.stdout_tail) is not None
 
 
 # The handshake failures of a LIVE process that mean its stub answered before it was ready,
@@ -120,16 +136,34 @@ class StubNotReady(LaunchFailed):
     carries, `stdout_tail` among it."""
 
     def __init__(self, error: gs.SessionError, after_s: float, **live: Any) -> None:
-        own = {"error": type(error).__name__, "phase": error.phase, "reply": error.reply,
-               "after_s": st.spent_s(after_s)}
+        own: dict[str, Any] = {"error": type(error).__name__, "phase": error.phase,
+                               "reply": error.reply, "after_s": st.spent_s(after_s)}
         super().__init__(f"{handshake_failed(error.phase, after_s, error)}; MAME was alive, so "
                          "its stub was not ready",
                          f"its gdbstub was not ready ({type(error).__name__} at {error.phase})",
                          {"kind": "stub_not_ready", **own, "stdout_tail": live["stdout_tail"]},
                          **own, **live)
 
-    def relaunch(self) -> bool:
+    def relaunch(self, port_picked: bool) -> bool:
         return True
+
+
+class PortServed(LaunchFailed):
+    """Another process serves the gdbstub's port (`mame_stub_owner.StubNotOurs`), proved before
+    anything was sent: `host_failed`, launched again when the port was this server's pick, since
+    a relaunch picks another, never on the caller's own `stub_port`."""
+
+    def __init__(self, error: gs.SessionError, port_picked: bool, **live: Any) -> None:
+        then = ("launched again on another port" if port_picked
+                else "your `stub_port` is another process's, so pick another or omit it")
+        super().__init__(f"{error}. The launched MAME is killed; {then}",
+                         "another process serves its gdbstub port",
+                         {"kind": "port_served", "error": str(error)}, code="host_failed",
+                         **live)
+        self._picked = port_picked
+
+    def relaunch(self, port_picked: bool) -> bool:
+        return port_picked
 
 
 def fold_attempt(attempts: list[dict[str, Any]], at_s: float, error: BaseException) -> None:

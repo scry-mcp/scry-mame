@@ -434,6 +434,7 @@ class Judged:
     # Its answer, when `judge` already waited for it (a `symbols` mapping names cpus).
     listed: machine.Listed | None = None
     background: bool = False      # `judge_background`'s answer
+    picked: bool = False          # the port is this server's pick, not the caller's `stub_port`
 
 
 def collect(judged: Judged) -> machine.Listed:
@@ -669,6 +670,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
             "session on a port you did not ask for would leave your other client talking to "
             "nothing"
         )
+    picked = not port
     port = port or free_port()
     cfg_source = judge_cfg(cfg, system) if cfg else None
     if boot_lua:
@@ -730,7 +732,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     asked = machine.ask_listxml(binary, system) if listed is None else (None, "")
     return Judged(flags, port, display, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
-                  throttle_from_frame, asked, cfg_source, listed, background=behind)
+                  throttle_from_frame, asked, cfg_source, listed, background=behind,
+                  picked=picked)
 
 
 # How much of MAME's own output rides on a refused `start`: the last lines are where a
@@ -890,9 +893,7 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
             break
         except owner.StubNotOurs as e:
             STATE.ses = None
-            raise st.Invalid("host_failed", f"{e}. The launched MAME is killed; `start` again, "
-                             "and with no `stub_port` it picks another port",
-                             **_alive_fields(judged)) from None
+            raise failures.PortServed(e, judged.picked, **_alive_fields(judged)) from None
         except owner.StubUnproved as e:
             STATE.ses = None
             raise st.Invalid("host_failed", f"{e}. The launched MAME is killed",
@@ -1000,7 +1001,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                                display, port, state_dir, throttle_from_frame, types, cfg,
                                background, retries, progress)
             except failures.LaunchFailed as failed:
-                if not failed.relaunch() or len(retries) == START_RETRIES_MAX:
+                if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
                 retries.append(failed.evidence())
                 progress(len(retries), START_RETRIES_MAX,

@@ -457,8 +457,8 @@ def start(
       maps each non-CODE class of a map to a `0x` base or to `rom`. `types`: a file of `name:
       format` lines. Several cpus: `symbols` `{cpu: path}`, `bases` `{cpu: {class: base}}`,
       `types` `{cpu: file}`.
-    - `shared=True`: somebody WATCHES (big window, real speed); `display` (`main` | `secondary`)
-      says where and needs `shared=True`. `throttle_from_frame`: flat out until it.
+    - `shared=True`: somebody WATCHES (big window, real speed); `display` (`main` | `secondary`),
+      its screen, needs it. `throttle_from_frame`: flat out until it.
     - `background`: `true` behind, your focus kept; `false` in front; omitted, by `shared`.
     - `boot_lua`, an EXISTING harness file, never Lua text (no tool here writes one;
       never `manager.machine:exit()`), `env` for it, `inipath`,
@@ -468,8 +468,8 @@ def start(
     Refused before anything is spawned: a live session, a relative path, a missing file, a cpu
     the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
     a `stub_port` in use,
-    a `reference_addr` OUTSIDE the image; a `system` the binary lacks. Another pid's stub:
-    `host_failed`. 16 bytes that do not match: `readback_refused`, closed.
+    a `reference_addr` OUTSIDE the image; a `system` the binary lacks. A stranger on your
+    `stub_port`: `host_failed`. 16 bytes that do not match: `readback_refused`, closed.
 
     Reply: `system`, `binary`, `binary_origin`, `version`, `pid`, `stub_port`, `scratch_dir`,
     `state_dir`, `cfg`, `debugger`, `errorlog_path`, `stdout_path`, `rom_check`,

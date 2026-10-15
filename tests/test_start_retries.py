@@ -1,6 +1,7 @@
 """`start` relaunches a MAME that died BY A SIGNAL before its gdbstub answered, other than an
-assertion's abort or a stub with no description of the first cpu, and a live stub that answered
-without being ready; nothing else (the why is `REFERENCE.md`, *The session*).
+assertion's abort or a stub with no description of the first cpu, a live stub that answered
+without being ready, and, when the port was its own pick, a gdbstub port another process took;
+nothing else (the why is `REFERENCE.md`, *The session*).
 
 THE DOUBLES ARE REAL PROCESSES. Death by a signal is a property of the process, so the
 emulator here is a shell script that sends SIGSEGV to itself, and `Popen` hands back its real
@@ -51,7 +52,8 @@ IMAGE = bytes(range(256)) * 64
 # dies by SIGABRT, the way a failed `assert` ends a debug MAME; FATAL prints its line and dies by
 # SIGSEGV, the way a stock MAME ends when its stub has no description of the first cpu. A booted
 # double prints the debugger's banner as MAME does, BANNER_AFTER seconds after it can be dialled,
-# or never when that is None.
+# or never when that is None. While the count is at or below LOST it ends the way a MAME whose
+# gdbstub port was taken under it does: MAME's fatal line naming the port it was given, exit 3.
 DOUBLE = """#!/bin/sh
 case " $* " in *" -listxml "*) exit 0 ;; *" -version "*) echo "0.0 (double)"; exit 0 ;; esac
 here=$(dirname "$0")
@@ -60,6 +62,11 @@ n=$(( $(cat "$here/launches" 2>/dev/null || echo 0) + 1 ))
 echo "$n" > "$here/launches"
 echo "launch $n"
 [ -n "%(exit)s" ] && exit %(exit)s
+if [ "$n" -le %(lost)d ]; then
+  port=; prev=; for a in "$@"; do [ "$prev" = "-debugger_port" ] && port=$a; prev=$a; done
+  echo "Fatal error: gdbstub: failed to start listening on address localhost port $port" >&2
+  exit 3
+fi
 [ -n "%(hang)s" ] && exec sleep 60
 [ -n "%(abort)s" ] && { echo "%(abort)s"; kill -ABRT $$; }
 [ -n "%(fatal)s" ] && { echo "Ignoring MAME exception: %(fatal)s"
@@ -73,10 +80,10 @@ exec sleep 60
 
 def _double(tmp_path: Path, deaths: int = 0, exit_code: str = "", hang: bool = False,
             late: float = 0, abort: str = "", fatal: str = "",
-            banner_after: float | None = 0) -> Path:
+            banner_after: float | None = 0, lost: int = 0) -> Path:
     binary = tmp_path / "segv-mame"
     binary.write_text(DOUBLE % {"deaths": deaths, "exit": exit_code, "hang": "y" if hang else "",
-                                "late": late, "abort": abort, "fatal": fatal,
+                                "late": late, "abort": abort, "fatal": fatal, "lost": lost,
                                 "banner": "" if banner_after is None else
                                 f"sleep {banner_after}; printf '%s' '{BANNER_LINE}'"})
     binary.chmod(0o755)
@@ -89,8 +96,8 @@ def _double(tmp_path: Path, deaths: int = 0, exit_code: str = "", hang: bool = F
 def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, binary: Path,
            wait: float = 10.0, real_grace: bool = False,
            handshake: Callable[..., None] | None = None,
-           dial: Callable[[], None] | None = None, request_s: float | None = None
-           ) -> dict[str, Any]:
+           dial: Callable[[], None] | None = None, request_s: float | None = None,
+           **start_kw: Any) -> dict[str, Any]:
     ses = _stub_boot(monkeypatch, tmp_path, IMAGE, 0)
     if request_s is not None:
         ses.timeout = request_s
@@ -110,7 +117,7 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, binary: Path,
     rom = tmp_path / "rom.bin"
     rom.write_bytes(IMAGE)
     out: dict[str, Any] = s.start(binary=str(binary), system="m68k", rompath=str(tmp_path),
-                                  reference_rom=str(rom), seconds=wait)
+                                  reference_rom=str(rom), seconds=wait, **start_kw)
     return out
 
 
@@ -203,7 +210,7 @@ def test_the_unserved_cpu_is_read_wherever_its_line_lands_and_however_mame_ends(
 ])
 def test_a_death_without_the_fatal_line_stays_a_death(tail: str) -> None:
     refusal = failures.death_refusal(-11, 1.5, tail)
-    assert isinstance(refusal, failures.DiedBeforeStub) and refusal.relaunch(), refusal
+    assert isinstance(refusal, failures.DiedBeforeStub) and refusal.relaunch(True), refusal
 
 
 def test_a_handshake_cut_by_the_unserved_cpus_death_is_refused_at_once(
@@ -228,13 +235,59 @@ def test_a_handshake_cut_by_the_unserved_cpus_death_is_refused_at_once(
     assert _launches(tmp_path) == 1, out
 
 
-@pytest.mark.parametrize("code", [2, 0])
+@pytest.mark.parametrize("lost", [1, launch.START_RETRIES_MAX])
+def test_a_port_taken_before_mame_bound_it_is_relaunched_on_a_fresh_one(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, lost: int
+) -> None:
+    """A port picked free and taken by another process before MAME listened on it: MAME says so
+    and exits 3, which is not the caller's input being refused, so the launch is made again on a
+    port picked afresh, and each lost launch rides on the reply with MAME's own line."""
+    picked = iter(range(41001, 41001 + launch.START_RETRIES_MAX + 1))
+    monkeypatch.setattr(launch, "free_port", lambda: next(picked))
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, lost=lost))
+    try:
+        assert out["status"] == "ok", out
+        assert _launches(tmp_path) == lost + 1
+        assert [d["exit_code"] for d in out["start_retries"]] == [3] * lost, out
+        for n, retry in enumerate(out["start_retries"]):
+            assert f"failed to start listening on address localhost port {41001 + n}" in \
+                retry["stdout_tail"], retry
+    finally:
+        s.close()
+
+
+def test_a_port_lost_on_every_launch_is_refused_after_the_cap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Lost on every launch, the relaunches stop at the cap like any other, and the last loss
+    is the refusal, MAME's own line in its tail."""
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, lost=launch.START_RETRIES_MAX + 1))
+    assert out["status"] == "INVALID" and out["code"] == "session_broken", out
+    assert out["exit_code"] == 3, out
+    assert _launches(tmp_path) == launch.START_RETRIES_MAX + 1
+    assert len(out["start_retries"]) == launch.START_RETRIES_MAX, out
+    assert "failed to start listening" in out["stdout_tail"], out
+
+
+def test_a_port_the_caller_named_is_never_relaunched_on_another(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The caller's `stub_port` is the caller's: a session on a port they did not ask for would
+    leave their other client talking to nothing, so a lost race on it is refused at once."""
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, lost=1), stub_port=launch.free_port())
+    assert out["status"] == "INVALID" and out["code"] == "session_broken", out
+    assert _launches(tmp_path) == 1
+    assert out["start_retries"] == [], out
+
+
+@pytest.mark.parametrize("code", [2, 0, 3])
 def test_an_exit_code_before_the_stub_is_never_relaunched(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, code: int
 ) -> None:
     """(c) An exit code is MAME refusing something the caller gave it (missing ROMs, a bad
     flag): launching it again would answer the same, so it is refused at once. Zero is the
-    boundary: an exit, not a signal."""
+    boundary: an exit, not a signal; 3 is the code a port taken under MAME exits with, refused
+    here because MAME did not say its port was taken."""
     out = _start(monkeypatch, tmp_path, _double(tmp_path, exit_code=str(code)))
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert _launches(tmp_path) == 1
@@ -322,7 +375,8 @@ def test_a_launch_failure_is_relaunched_only_when_its_class_says_so() -> None:
     """The default closes: a failure class that does not say launching again can change the
     answer is refused at once, so a new one cannot be relaunched by omission."""
     failed = failures.LaunchFailed("m", "w", {"kind": "k"})
-    assert failed.relaunch() is False and failed.kind == "k"
+    assert failed.relaunch(True) is False and failed.relaunch(False) is False
+    assert failed.kind == "k"
 
 
 def test_a_dial_that_failed_on_a_live_process_is_refused_at_once_with_its_attempts(
@@ -796,21 +850,68 @@ def test_a_handshake_that_never_answers_is_refused_without_a_second_dial(
     assert "accepted the connection" in out["message"], out["message"]
 
 
-def test_a_stub_proved_to_be_another_process_is_refused_naming_the_port_and_never_relaunched(
+def test_a_stub_proved_to_be_another_process_on_its_own_pick_is_relaunched_on_another_port(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The dial's proof found another pid on the port (`mame_stub_owner`): `host_failed`, the
-    port and that pid named, the launched MAME killed, and no relaunch, because a relaunch on
-    the same port would meet the same process."""
+    """The dial's proof found another pid on the port this server picked (`mame_stub_owner`):
+    another instance took it first, nothing was sent to it, and a relaunch picks another, so
+    the launch is made again and the stranger rides on the reply."""
+    calls = [0]
+
+    def dial() -> None:
+        calls[0] += 1
+        if calls[0] == 1:
+            raise owner.StubNotOurs(4242, [777], 1)
+        if not (tmp_path / "booted").exists():
+            raise OSError("connection refused")
+
+    out = _start(monkeypatch, tmp_path, _double(tmp_path), dial=dial)
+    try:
+        assert out["status"] == "ok", out
+        assert calls[0] >= 2, "the second launch was dialled"
+        [served] = out["start_retries"]
+        assert served["kind"] == "port_served", served
+        assert "port 4242 is served by pid 777" in served["error"], served
+    finally:
+        s.close()
+
+
+def test_a_stub_proved_to_be_another_process_on_the_callers_port_is_refused_at_once(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """On the caller's own `stub_port` a relaunch would meet the same process: `host_failed`,
+    the port and that pid named, the launched MAME killed, never relaunched."""
     def dial() -> None:
         raise owner.StubNotOurs(4242, [777], 1)
 
-    out = _start(monkeypatch, tmp_path, _double(tmp_path, hang=True), wait=5.0, dial=dial)
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, hang=True), wait=5.0, dial=dial,
+                 stub_port=launch.free_port())
     assert out["status"] == "INVALID" and out["code"] == "host_failed", out
     assert "port 4242 is served by pid 777" in out["message"], out
-    assert "with no `stub_port` it picks another port" in out["message"]
+    assert "your `stub_port` is another process's" in out["message"], out
     assert out["start_retries"] == [], "refused at once, never relaunched"
     assert mstate.STATE.proc is None, "the launched MAME was killed with the refused start"
+
+
+# MAME's own line, as a run that lost the race printed it.
+CARD_LINE = ("Fatal error: gdbstub: failed to start listening on address localhost port 61726")
+
+
+@pytest.mark.parametrize("exit_code, tail, taken", [
+    (3, CARD_LINE, True),
+    (3, "launch 1\n" + CARD_LINE + "\n", True),
+    (0, CARD_LINE, False),
+    (-11, CARD_LINE, False),
+    (3, "Fatal error: gdbstub: cpuname m68000 not found in gdb stub descriptions", False),
+    (3, "Fatal error: gdbstub: failed to start listening on address localhost port", False),
+    (3, "", False),
+])
+def test_a_port_taken_is_mames_own_line_and_an_exit_code(exit_code: int, tail: str,
+                                                         taken: bool) -> None:
+    died = failures.DiedBeforeStub(exit_code, 1.0, tail)
+    assert died.port_taken() is taken
+    assert died.relaunch(port_picked=False) is (exit_code < 0)
+    assert died.relaunch(port_picked=True) is (taken or exit_code < 0)
 
 
 def test_a_real_launch_is_watched_by_a_guardian_that_ends_with_the_refused_start(
