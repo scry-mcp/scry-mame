@@ -119,12 +119,12 @@ def _verdict() -> None:
 
 def register_x_control() -> None:
     """Register the control with the matrix: BEFORE every other section, so the watch spans them."""
-    section("X", X_TITLE, X_CONTROL)(_control)
+    section("X", X_TITLE, X_CONTROL, alone=True)(_control)
 
 
 def register_x_verdict() -> None:
     """Register the verdict with the matrix: AFTER every other section."""
-    section("X", X_VERDICT_TITLE, X_VERDICT)(_verdict)
+    section("X", X_VERDICT_TITLE, X_VERDICT, alone=True)(_verdict)
 
 
 if __name__ == "__main__":

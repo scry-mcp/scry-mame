@@ -412,3 +412,17 @@ def test_the_bench_root_is_the_variable_or_the_users_data_and_the_manifest_lives
     assert boards._root() == Path.cwd() / "relative"
     assert boards.bench_missing("dual/").endswith(
         f"`python -m scry_core.live_bench check --bench {tmp_path}`"), "the remedy names --bench"
+
+
+def test_importing_the_harness_makes_no_directory(tmp_path: Path) -> None:
+    """Every file that imports the harness (this suite among them) used to leave a scratch
+    directory behind; the run makes its scratch when it first writes there, and an import
+    writes nothing."""
+    import os
+    import subprocess
+
+    env = {**os.environ, "TMPDIR": str(tmp_path)}
+    done = subprocess.run([sys.executable, "-c", "import live_harness"], cwd=LIVE, env=env,
+                          capture_output=True, text=True, check=False)
+    assert done.returncode == 0, done.stderr[-2000:]
+    assert list(tmp_path.iterdir()) == [], list(tmp_path.iterdir())

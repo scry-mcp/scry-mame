@@ -13,6 +13,12 @@ and BLOCKED when it could not be run, with the reason (`run_sections` says how i
 
     timeout 1800 uv run python tests/live/live_matrix.py
 
+`MAME_LIVE_SECTIONS` names the letters to run (all of them unset). `MAME_LIVE_JOBS` runs each
+letter as a process of its own, as many at once as it says (unset, half the host's CPUs; `1`,
+one after another in this process), merged from the summaries they declare through
+`scry_core.live_pool`; section X, the focus gate, opens and closes the run in this process, so
+its watch spans every job.
+
 m68k-dual and section H's V30 boards run on their copies on the bench (`bench_boards`); a board
 that cannot run there is BLOCKED with the reason.
 Blocks D, J, K and Q, section H's circus and section T's 1942 also drive the free boards of
