@@ -5,6 +5,9 @@ it against the ROM on disk, read memory by symbol, run to a target with a contro
 and prove the honesty guarantees still fire after the rename.
 """
 
+import os
+import subprocess
+import sys
 import tempfile
 import time
 import wave
@@ -14,14 +17,18 @@ from typing import Any
 from bench_boards import M68K_DUAL_SYSTEM, MANIFEST, REFERENCE_ROM, SYMBOLS, m68k_dual_missing
 from live_harness import (
     BOOT,
+    FREE_BINARY,
+    FREE_ROMS,
     check,
     finish,
+    free_boards_missing,
     ignored_of,
     invalid,
     isolate_state,
     rearm_pairs,
     visible_of,
 )
+from scry_core.demo import readme_drift
 
 from gfx_layouts import BYTES_8X8  # isort: skip -- beside the harness
 
@@ -31,10 +38,18 @@ import mame_machine as machine  # isort: skip
 import server as s  # isort: skip
 
 #   uv run python tests/live/live_check.py
-# Every check here is on m68k-dual, so a bench without its copies leaves nothing to examine.
-if why := m68k_dual_missing():
+# Every check here but the last is on m68k-dual, and the last runs the starfire demo on the
+# stock MAME: a host without either leaves something unexamined, so it is INVALID, not a pass.
+ROOT = Path(__file__).resolve().parents[2]
+DEMO_DIR = ROOT / "demos" / "starfire"
+STARFIRE_ZIP = Path(FREE_ROMS).resolve() / "starfire.zip"
+if why := m68k_dual_missing() or free_boards_missing() or (
+        "" if STARFIRE_ZIP.is_file() else f"no starfire.zip in MAME_TEST_ROMS ({FREE_ROMS})"):
     invalid(why)
 isolate_state("mame-live-check-state-")
+#: The bound on the whole demo, above the runner's own bound on one call so a hung call ends as
+#: the demo's FAIL first: Star Fire's netlist sound keeps MAME below real speed.
+DEMO_TIMEOUT_S = 1800
 
 print("== start(): the machine must come up and prove itself against the ROM")
 r = s.start(**BOOT, symbols=SYMBOLS)
@@ -1219,5 +1234,39 @@ check("a focus typed through debug that ignores a cpu MAME is not live on runs n
       and "was not live, so nothing ran" in str(r.get("note")), str(r)[:240])
 s.debug(command="observe maincpu")
 check("the contract session closes", s.close().get("closed") is True)
+
+print("\n== the starfire demo: it still passes, and its README still shows what the server answers")
+# The README block shows paths under the repository's own `tmp/`, so the run reaches the ROM and
+# the stock MAME through links there: the transcript then reads `./tmp/...` on any host and
+# matches the block line for line.
+links = ROOT / "tmp"
+for link, target in ((links / "roms" / "starfire.zip", STARFIRE_ZIP),
+                     (links / "bin" / "mame", Path(FREE_BINARY).resolve())):
+    link.parent.mkdir(parents=True, exist_ok=True)
+    if link.is_symlink():
+        link.unlink()
+    link.symlink_to(target)
+try:
+    ran = subprocess.run(
+        [sys.executable, str(DEMO_DIR / "demo.py"), "--rompath", str(links / "roms")],
+        cwd=ROOT, env={**os.environ, "MAME_BINARY": str(links / "bin" / "mame")},
+        capture_output=True, text=True, timeout=DEMO_TIMEOUT_S)
+    code, out, err = ran.returncode, ran.stdout, ran.stderr
+except subprocess.TimeoutExpired as e:
+    code, out, err = -1, str(e.stdout or ""), f"no verdict within {DEMO_TIMEOUT_S} s"
+verdict = [ln for ln in out.splitlines() if ln.startswith(("DEMO", "FAIL", "INVALID"))]
+check("the starfire demo runs with every step OK", code == 0,
+      f"rc {code}: {verdict}" + (f" {err.strip()[-300:]}" if code else ""))
+run_dir = ROOT / "tmp" / "demos" / "starfire"
+try:
+    drift = (readme_drift(DEMO_DIR / "README.md", run_dir / "transcript.normalised.md")
+             if code == 0 else "the run failed, so there is nothing to compare")
+except Exception as e:  # a README the block cannot be read from is this check's FAIL
+    drift = f"{type(e).__name__}: {e}"
+check("the starfire demo's README block is what this run answered", drift == "", drift)
+same_picture = code == 0 and (DEMO_DIR / "screen.png").read_bytes() == (
+    run_dir / "screen.png").read_bytes()
+check("the starfire demo's screen.png is this run's capture", same_picture,
+      "" if same_picture else "the committed picture is not the run's")
 
 finish("LIVE CHECK")
