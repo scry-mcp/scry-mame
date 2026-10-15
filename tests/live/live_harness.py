@@ -714,7 +714,8 @@ def run_sections(name: str) -> None:
     `name`: exit 0 with no FAIL, 1 with any, 3 when nothing ran, the plan names a cell twice, or
     a pooled merge cannot be believed. With more than one job (`MAME_LIVE_JOBS`, unset half the
     host's CPUs) the sections that are not `alone` run as jobs of their own, one per letter."""
-    for sig in (signal.SIGTERM, signal.SIGHUP):
+    # SIGHUP is POSIX's; Windows has SIGTERM alone.
+    for sig in (signal.SIGTERM, getattr(signal, "SIGHUP", signal.SIGTERM)):
         signal.signal(sig, _leave)
     chosen = _chosen()
     summary = os.environ.get(SUMMARY_VAR, "")
