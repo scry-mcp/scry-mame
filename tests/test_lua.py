@@ -502,6 +502,10 @@ def test_inputs_value_comes_back_as_the_32_bit_value_the_port_took(
     ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
     out = s.input(port=":P1", field="Coin 1", value=-1, frames=4)
     assert out["status"] == "ok" and out["value"] == "0xffffffff", out
+    # THE ROUTE, the word the DOSBox-X server uses for its own in-guest one: set from MAME's Lua,
+    # inside the machine.
+    assert out["route"] == "ioport", out
+
 
 
 def test_input_queues_the_script_and_reads_the_port_back_off_the_marks(

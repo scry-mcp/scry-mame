@@ -85,6 +85,7 @@ from matrix_audio import register_l
 from matrix_comments import register_m
 from matrix_console import register_c16
 from matrix_cpus import register_r
+from matrix_focus import register_x_control, register_x_verdict
 from matrix_inputs import register_o
 from matrix_landing import register_v
 from matrix_lifetime import register_p
@@ -128,6 +129,10 @@ import mame_watches as mwatches  # isort: skip
 import server as s  # isort: skip
 from scry_core import value_format as vf  # isort: skip
 from mame_state import REPLY_BUDGET_CHARS, STATE  # isort: skip
+
+# THE FOCUS GATE'S CONTROL OPENS THE RUN, before any other section is registered, so the watch it
+# starts samples every one of them; its verdict is registered last, below.
+register_x_control()
 
 # ================================================================ Block A: states x tools
 #
@@ -4152,6 +4157,8 @@ register_u()
 register_v()
 register_w()
 register_h()
+# THE FOCUS GATE'S VERDICT CLOSES THE RUN, after every section, H included.
+register_x_verdict()
 
 
 # ======================================================================== the run itself

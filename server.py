@@ -2344,9 +2344,10 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     `lines_ahead`, `drain_steps` and `reader_steps` (the pipe, stepped off BEFORE this script
     is sent, and the steps that cost), the
     console's account (`thread_errors`, `console_reruns`, `resent`, its `note`: see `lua`);
-    `port`, `field`, `value`, `frames`, `name`, `player`, `mask`, `defvalue`, `port_before`,
-    `frame_set`, `released`, `port_held`, `frame_released`, `active` (the port READ BACK at the
-    release: false when the press never reached it); then {STOP_FIELDS}. A run another stop cuts
+    `route` (`ioport`: set inside the machine), `port`, `field`, `value`, `frames`, `name`,
+    `player`, `mask`, `defvalue`, `port_before`, `frame_set`, `released`, `port_held`,
+    `frame_released`, `active` (the port READ BACK at the release: false when the press never
+    reached it); then {STOP_FIELDS}. A run another stop cuts
     short leaves the field HELD and says so (`released: false`, `frame_release_planned`, a `note`).
     A script the console ran twice is INVALID (`console_rerun`): the field was set twice.
 

@@ -2074,7 +2074,8 @@ the same family releases the previous one's effect first:
   `frames` frames of the counter and releases it, and the port is READ BACK at the release,
   so `active` is computed from the port against the field's own default, never assumed. A
   game that detects an EDGE needs a release between two presses, so a double press is two
-  calls. Lines already in the console's pipe (a `throttle` asked while stopped leaves one) are
+  calls. The press is set on the field from inside the machine, so it takes no window, no
+  focus and no host event, and the reply's `route` says so: `ioport`. Lines already in the console's pipe (a `throttle` asked while stopped leaves one) are
   stepped off BEFORE the script is sent, so the frames asked for are spent on this input and
   not on somebody else's line. A run whose frames the console had not read the line by leaves
   the script `pending`, and the note counts the frames that DID pass rather than asserting

@@ -608,7 +608,8 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
                     "the script ran and logged no `set` mark: the field was not proved held",
                     marks=seen)
             mask, defvalue = int(set_line["mask"], 16), int(set_line["defvalue"], 16)
-            own = dict(port=port, field=field, value=f"0x{value & 0xFFFFFFFF:08x}", frames=frames,
+            own = dict(route="ioport", port=port, field=field,
+                       value=f"0x{value & 0xFFFFFFFF:08x}", frames=frames,
                        name=set_line["name"], player=int(set_line["player"]),
                        mask=f"{mask:#010x}", defvalue=f"{defvalue:#010x}",
                        port_before=f"{int(set_line['port_before'], 16):#010x}",

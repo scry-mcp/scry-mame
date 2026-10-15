@@ -391,7 +391,7 @@ def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
 
 
 def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
-              binary: str = FREE_BINARY) -> dict[str, Any]:
+              binary: str = FREE_BINARY, **launch: Any) -> dict[str, Any]:
     """A free board booted on `binary` (the stock MAME unless named), `start` checking its image
     at `addr`, and refused unless it booted (`require_booted`); `ini_extra` added to its ini
     (`no_joystick_ini`)."""
@@ -401,13 +401,13 @@ def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
     return require_booted(system, call(
         "start", binary=binary, system=system, rompath=FREE_ROMS, reference_rom=image,
         reference_addr=addr, reference_base=addr, inipath=no_joystick_ini(ini_extra),
-        seconds=START_WAIT_S))
+        seconds=START_WAIT_S, **launch))
 
 
-def circus_boot(ini_extra: str = "") -> dict[str, Any]:
+def circus_boot(ini_extra: str = "", **launch: Any) -> dict[str, Any]:
     """circus, checked against its one program ROM, which its cpu sees at 0x1000, `ini_extra`
-    added to its ini."""
-    return free_boot("circus", ["9004a.1a"], "0x1000", ini_extra)
+    added to its ini, `launch` passed to `start` (`background`)."""
+    return free_boot("circus", ["9004a.1a"], "0x1000", ini_extra, **launch)
 
 
 def _boards_missing(binary: str, variable: str, what: str, boards: str) -> str:
