@@ -1,11 +1,9 @@
 """The gridlee demo: Videa's Gridlee (1983) on a stock MAME, driven by the calls the README's
 prompt asks an MCP client to make, each answer checked. `--help` says how to run it.
 
-What it walks: three coins leave a value scan with three bytes holding 3, and change watches on
-two of them tell them apart: the coin routine increments one (`INC $042B`) and then adds one in
-BCD to the other (`ADDA $042C`, `DAA`, `STA $042C`). A START is stopped by the watch on the BCD
-byte, and the routine that wrote it decrements the binary byte just before. A saved state takes
-the START back, and the picture is the game in play.
+What it proves, by address: the coin routine's two writes of the credits, the START's two
+(each watch stopping the machine at its writer, the START still held), and the trail the
+history shows behind the second. The README tells the story.
 """
 
 from __future__ import annotations
@@ -26,9 +24,14 @@ RAM, RAM_BYTES = "0x0", 0x800
 #: The credits in binary and in BCD, and the instructions that write them: taken from a run,
 #: asserted on every run since.
 CREDITS_BIN, CREDITS_BCD = "0x42b", "0x42c"
-COIN_BIN_PC, COIN_BCD_PC, START_BCD_PC = "0x0000b583", "0x0000b58c", "0x0000d67f"
-#: Where the START's routine takes a credit: the binary decrement, then one taken in BCD.
-START_ROUTINE = "0xd676"
+COIN_BIN_PC, COIN_BCD_PC = "0x0000b583", "0x0000b58c"
+START_BIN_PC, START_BCD_PC = "0x0000d676", "0x0000d67f"
+#: Where each watch's stop hands the machine back: the instruction after its writer.
+COIN_BIN_STOP, COIN_BCD_STOP = "0x0000b586", "0x0000b58f"
+START_BIN_STOP, START_BCD_STOP = "0x0000d679", "0x0000d682"
+#: The history's window: the START's five-instruction routine, the stop's own instruction last,
+#: and the call into the routine before it, with one to spare.
+TRAIL = 8
 COIN = {"port": ":IN1", "field": "Coin 1", "frames": 4, "seconds": RUN_S}
 START = {"port": ":IN1", "field": "1 Player Start", "frames": 4, "seconds": RUN_S}
 #: Half a second after an input, long enough for the game to act on it.
@@ -79,12 +82,13 @@ def dropped(reply: Reply, run: Run) -> str:
     return "the fourth coin, held four frames and released"
 
 
-def wrote(addr: str, pc: str, value: int, what: str) -> Any:
+def wrote(addr: str, pc: str, stop: str, value: int, what: str) -> Any:
     def check(reply: Reply, run: Run) -> str:
         expect(reply["verdict"] == "OTHER_STOP", f"verdict {reply['verdict']}")
         hit = reply["watch_hit"]
         expect((hit["addr"], hit["writer_pc"], hit["after"]) == (at(addr), pc, value),
                f"{hit['addr']} written {hit['after']} by {hit['writer_pc']}")
+        expect(reply["pc"] == stop, f"the machine was handed back at {reply['pc']}, not {stop}")
         return f"{what}: {hit['lines'][0]}"
     return check
 
@@ -109,29 +113,35 @@ def credits_are(binary: int, bcd: int) -> Any:
     return check
 
 
-def unwatched(reply: Reply, run: Run) -> str:
-    expect(reply["declarations_cleared"] == 1, f"{reply['declarations_cleared']} cleared")
-    return f"the watch on {CREDITS_BIN} cleared; the one on {CREDITS_BCD} stays"
+def listing_addr(pc: str) -> str:
+    """`pc` as MAME's listings print an address: `0x0000d676` is `D676`."""
+    return f"{int(pc, 16):04X}"
 
 
 def taken(reply: Reply, run: Run) -> str:
     lines = folded(reply["lines"])
-    want = ["DEC $042B", "LDA #$99", "ADDA $042C", "DAA", "STA $042C"]
-    got = [ln.split(" ", 1)[-1] for ln in lines]
-    order = [next((i for i, g in enumerate(got) if g.endswith(w)), -1) for w in want]
-    expect(-1 not in order and order == sorted(order), f"the START's routine is not {want}: "
+    routine = [(START_BIN_PC, "DEC $042B"), (START_BIN_STOP, "LDA #$99"),
+               ("0xd67b", "ADDA $042C"), ("0xd67e", "DAA"), (START_BCD_PC, "STA $042C")]
+    want = [f"{listing_addr(pc)}: {text}" for pc, text in routine]
+    order = [lines.index(w) if w in lines else -1 for w in want]
+    expect(-1 not in order and order == sorted(order), f"the trail is not {want}: "
                                                        f"{reply['lines']}")
-    return "the START's routine: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C"
+    expect(bool(lines) and lines[-1].startswith(f"{listing_addr(START_BCD_STOP)}:"),
+           f"the trail does not end at the stop, {START_BCD_STOP}: {reply['lines']}")
+    return "the trail: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C"
 
 
 def regs(reply: Reply, run: Run) -> str:
-    expect(bool(reply["regs"].get("PC")), f"no PC in {reply['regs']}")
+    expect(int(reply["regs"].get("PC") or "-1", 16) == int(START_BCD_STOP, 16),
+           f"PC {reply['regs'].get('PC')}, not the stop's {START_BCD_STOP}")
     return f"the stop landed at PC {reply['regs']['PC']}, A {reply['regs']['A']}"
 
 
 def cleared(reply: Reply, run: Run) -> str:
-    expect(reply["declarations_cleared"] == 1, f"{reply['declarations_cleared']} cleared")
-    return "the last watch cleared"
+    expect(reply["declarations_cleared"] == 2
+           and sorted(reply["disarmed"]) == ["1 @ 042B-042B write", "2 @ 042C-042C write"],
+           f"{reply['declarations_cleared']} cleared, {reply['disarmed']} disarmed")
+    return "both watches cleared"
 
 
 STEPS = [
@@ -148,18 +158,21 @@ STEPS = [
         {"op": "watch_add", "ref": CREDITS_BIN, "mode": "change", "fmt": "u8"},
         {"op": "watch_add", "ref": CREDITS_BCD, "mode": "change", "fmt": "u8"}]}, watching),
     Step("coin 4", "input", COIN, dropped),
-    Step("binary", "run_for", SETTLE, wrote(CREDITS_BIN, COIN_BIN_PC, 4, "the binary credits")),
-    Step("bcd", "run_for", SETTLE, wrote(CREDITS_BCD, COIN_BCD_PC, 4, "the BCD credits")),
+    Step("binary", "run_for", SETTLE,
+         wrote(CREDITS_BIN, COIN_BIN_PC, COIN_BIN_STOP, 4, "the binary credits")),
+    Step("bcd", "run_for", SETTLE,
+         wrote(CREDITS_BCD, COIN_BCD_PC, COIN_BCD_STOP, 4, "the BCD credits")),
     Step("writer", "disassemble", {"ref": "0xb583", "length": 12}, listed),
     Step("settle", "run_for", SETTLE, settled),
     Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
     Step("save", "state_save", {"name": "four_credits"}, free_set.saved),
-    Step("one watch", "watch_clear", {"ref": CREDITS_BIN}, unwatched),
     Step("press start", "input", START,
-         wrote(CREDITS_BCD, START_BCD_PC, 3, "START stopped on the BCD credits")),
-    Step("start code", "disassemble", {"ref": START_ROUTINE, "length": 12}, taken),
+         wrote(CREDITS_BIN, START_BIN_PC, START_BIN_STOP, 3, "START stopped on the binary")),
+    Step("start bcd", "run_for", {"frames": 1, "seconds": RUN_S},
+         wrote(CREDITS_BCD, START_BCD_PC, START_BCD_STOP, 3, "then on the BCD credits")),
+    Step("trail", "history", {"limit": TRAIL}, taken),
     Step("registers", "registers", {}, regs),
-    Step("unwatch", "watch_clear", {"ref": CREDITS_BCD}, cleared),
+    Step("unwatch", "watch_clear", {"all": True}, cleared),
     Step("play", "run_for", {"milliseconds": 8000, "seconds": RUN_S},
          lambda reply, run: f"the game plays on: {free_set.ran(reply, run)}"),
     Step("after start", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(3, 0x03)),

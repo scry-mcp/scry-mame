@@ -6,9 +6,9 @@ Videa's *Gridlee* (1983) runs on a 6809. This demo drops three coins into it and
 for the credits, and the search does not end on one byte: three of them hold 3. Change watches on
 two of them tell the story the scan cannot: the coin routine increments one (`INC $042B`) and
 then adds one in BCD to the other (`ADDA $042C`, `DAA`, `STA $042C`), so the game keeps its
-credits twice, in binary and in BCD. A START is stopped by the watch on the BCD byte, and the
-routine that wrote it decrements the binary byte just before. A saved state takes the START
-back, and the picture is the game in play.
+credits twice, in binary and in BCD. A START is stopped by each watch in turn, at the binary
+decrement and then at the BCD store, and the history behind that stop is the routine that took
+the credit. A saved state takes the START back, and the picture is the game in play.
 
 ## The ROM
 
@@ -51,21 +51,21 @@ Give this to an MCP client with this server connected:
 > keep only the bytes that equal the number of coins so far. Put a watch that stops on a change of
 > `0x42b` and another on `0x42c`, drop a fourth coin, and run half a second at a time until both
 > have stopped the machine and a third half second runs clean: tell me which instruction writes
-> each, and disassemble 12 bytes from `0xb583`. Read both bytes and save a state. Clear the watch
-> on `0x42b`, press `1 Player Start` and tell me which instruction the watch on `0x42c` names,
-> disassemble 12 bytes from `0xd676`, and show me the registers. Clear that watch, let the game play for
-> eight seconds, read both bytes, take a picture of the screen, load the state back, read them
-> again and close the session.
+> each, and disassemble 12 bytes from `0xb583`. Read both bytes and save a state. Press
+> `1 Player Start` and tell me which instruction each watch names as the START takes the credit,
+> running one frame on after the first stop; show me the last eight instructions the cpu ran and
+> the registers. Clear both watches, let the game play for eight seconds, read both bytes, take a
+> picture of the screen, load the state back, read them again and close the session.
 
 ## What it walks
 
 | Family | Calls |
 |---|---|
 | Session | `start` (checked against the ROM), `close` |
-| Measure | `run_for` by emulated milliseconds, with its frame and cycle survey |
+| Measure | `run_for` by emulated milliseconds and by frames, with its frame and cycle survey |
 | Memory | `scan_start` and `scan_filter`; `watch_add` (through `perform`) and `watch_clear`; `read_memory` |
-| Debug | each watch's stop naming its writer, `disassemble` (the coin routine and the START's), `registers` |
-| Control | `input` (the coin slot and the START button; the watch stops the START while it is still held) |
+| Debug | each watch's stop naming its writer, `disassemble` (the coin routine), the START's trail in `history`, `registers` |
+| Control | `input` (the coin slot and the START button; the watches stop the START while it is still held) |
 | Automate | `perform` (coin, run, filter in one call; both watches in one), `state_save`, `state_load` (verified) |
 | Screen | `screen_view` |
 
@@ -1933,42 +1933,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**15. `watch_clear`**: OK one watch: the watch on 0x42b cleared; the one on 0x42c stays
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "ref": "0x42b"
-}
-```
-
-```json
-{
-  "summary": "watch_clear 0x42b: 1 cleared, 1 disarmed",
-  "status": "ok",
-  "declarations_cleared": 1,
-  "disarmed": [
-    "1 @ 042B-042B write"
-  ],
-  "while_running": false,
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
-  }
-}
-```
-
-</details>
-
-**16. `input`**: OK press start: START stopped on the BCD credits: Stopped at watchpoint 2 writing 03 to 042C (PC=D67F)
+**15. `input`**: OK press start: START stopped on the binary: Stopped at watchpoint 1 writing 03 to 042B (PC=D676)
 
 <details><summary>call and reply</summary>
 
@@ -1988,8 +1953,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "verdict": "OTHER_STOP",
   "frame_before": 702,
   "frame_after": 703,
-  "cycles": 21118,
-  "polls": 3,
+  "cycles": 5189,
+  "polls": 2,
   "lines_ahead": 0,
   "drain_steps": 0,
   "reader_steps": 0,
@@ -2017,40 +1982,41 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   },
   "frame_release_planned": 706,
   "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
-  "how": "watch 0x42c: 0x0000042c written by pc 0x0000d67f",
+  "how": "watch 0x42b: 0x0000042b written by pc 0x0000d676",
   "stop_seq": 13,
-  "pc": "0x0000fd80",
+  "pc": "0x0000d679",
   "cpu": ":maincpu",
   "frame": 703,
   "regs": {
-    "A": "0xdd",
-    "B": "0xdd",
-    "D": "0xdddd",
-    "X": "0x1080",
-    "Y": "0x03ff",
-    "U": "0x0433",
-    "PC": "0xfd80",
-    "S": "0x07f0",
-    "CC": "0xd9",
+    "A": "0xcb",
+    "B": "0xff",
+    "D": "0xcbff",
+    "X": "0x0431",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xd679",
+    "S": "0x07fc",
+    "CC": "0xa0",
     "DP": "0x00"
   },
   "dasm": [
-    "FD80: 0C B2    INC    <$B2",
-    "FD82: 96 B2    LDA    <$B2",
-    "FD84: 84 03    ANDA   #$03",
-    "FD86: 26 04    BNE    $FD8C",
-    "FD88: 0C B3    INC    <$B3",
-    "FD8A: 0C B4    INC    <$B4",
-    "FD8C: B6 03 BE LDA    $03BE",
-    "FD8F: 26 28    BNE    $FDB9",
-    "FD91: F6 95 01 LDB    $9501",
-    "FD94: 1F 98    TFR    B,A",
-    "FD96: D0 BD    SUBB   <$BD",
-    "FD98: C4 0F    ANDB   #$0F",
-    "FD9A: 85 10    BITA   #$10",
-    "FD9C: 26 01    BNE    $FD9F",
-    "FD9E: 50       NEGB",
-    "FD9F: DB BF    ADDB   <$BF"
+    "D679: 86 99    LDA    #$99",
+    "D67B: BB 04 2C ADDA   $042C",
+    "D67E: 19       DAA",
+    "D67F: B7 04 2C STA    $042C",
+    "D682: 39       RTS",
+    "D683: 8E 04 31 LDX    #$0431",
+    "D686: C6 5F    LDB    #$5F",
+    "D688: 6F 85    CLR    B,X",
+    "D68A: 5A       DECB",
+    "D68B: 2A FB    BPL    $D688",
+    "D68D: 39       RTS",
+    "D68E: 0F B9    CLR    <$B9",
+    "D690: D6 9A    LDB    <$9A",
+    "D692: 86 03    LDA    #$03",
+    "D694: 3D       MUL",
+    "D695: 8E AB 76 LDX    #$AB76",
+    "D698: 3A       ABX"
   ],
   "errorlog": {
     "lines_total": 0,
@@ -2058,6 +2024,155 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "lines": []
   },
   "watches": [
+    {
+      "ref": "0x42b",
+      "by": "address",
+      "cpu": ":maincpu",
+      "mode": "change",
+      "length": 1,
+      "fmt": "u8",
+      "state": "armed",
+      "entry": "1 @ 042B-042B write",
+      "reading": {
+        "available": true,
+        "value": 3,
+        "raw_hex": "03"
+      },
+      "addr": "0x0000042b"
+    },
+    {
+      "ref": "0x42c",
+      "by": "address",
+      "cpu": ":maincpu",
+      "mode": "change",
+      "length": 1,
+      "fmt": "u8",
+      "state": "armed",
+      "entry": "2 @ 042C-042C write",
+      "reading": {
+        "available": true,
+        "value": 4,
+        "raw_hex": "04"
+      },
+      "addr": "0x0000042c"
+    }
+  ],
+  "watch_hit": {
+    "ref": "0x42b",
+    "addr": "0x0000042b",
+    "cpu": ":maincpu",
+    "index": 1,
+    "writes_total": 1,
+    "truncated": false,
+    "writer_pc": "0x0000d676",
+    "writes": [
+      {
+        "wrote": "0x03",
+        "to": "0x0000042b",
+        "pc": "0x0000d676"
+      }
+    ],
+    "values_from": "memory",
+    "before": 4,
+    "after": 3,
+    "lines": [
+      "Stopped at watchpoint 1 writing 03 to 042B (PC=D676)"
+    ]
+  },
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "altering_writes": 0,
+    "console": {
+      "thread_errors": 0,
+      "reruns": 0,
+      "lost": 0
+    }
+  }
+}
+```
+
+</details>
+
+**16. `run_for`**: OK start bcd: then on the BCD credits: Stopped at watchpoint 2 writing 03 to 042C (PC=D67F)
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 1,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "run_for 1 frame: OTHER_STOP, frame 703 to 703",
+  "status": "ok",
+  "verdict": "OTHER_STOP",
+  "frame_before": 703,
+  "frame_after": 703,
+  "cycles": 0,
+  "polls": 1,
+  "how": "watch 0x42c: 0x0000042c written by pc 0x0000d67f",
+  "stop_seq": 14,
+  "pc": "0x0000d682",
+  "cpu": ":maincpu",
+  "frame": 703,
+  "regs": {
+    "A": "0x03",
+    "B": "0xff",
+    "D": "0x03ff",
+    "X": "0x0431",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xd682",
+    "S": "0x07fc",
+    "CC": "0x81",
+    "DP": "0x00"
+  },
+  "dasm": [
+    "D682: 39          RTS",
+    "D683: 8E 04 31    LDX    #$0431",
+    "D686: C6 5F       LDB    #$5F",
+    "D688: 6F 85       CLR    B,X",
+    "D68A: 5A          DECB",
+    "D68B: 2A FB       BPL    $D688",
+    "D68D: 39          RTS",
+    "D68E: 0F B9       CLR    <$B9",
+    "D690: D6 9A       LDB    <$9A",
+    "D692: 86 03       LDA    #$03",
+    "D694: 3D          MUL",
+    "D695: 8E AB 76    LDX    #$AB76",
+    "D698: 3A          ABX",
+    "D699: A6 80       LDA    ,X+",
+    "D69B: B7 01 BC    STA    $01BC",
+    "D69E: EC 84       LDD    ,X",
+    "D6A0: 10 83 10 10 CMPD   #$1010"
+  ],
+  "errorlog": {
+    "lines_total": 0,
+    "truncated": false,
+    "lines": []
+  },
+  "watches": [
+    {
+      "ref": "0x42b",
+      "by": "address",
+      "cpu": ":maincpu",
+      "mode": "change",
+      "length": 1,
+      "fmt": "u8",
+      "state": "armed",
+      "entry": "1 @ 042B-042B write",
+      "reading": {
+        "available": true,
+        "value": 3,
+        "raw_hex": "03"
+      },
+      "addr": "0x0000042b"
+    },
     {
       "ref": "0x42c",
       "by": "address",
@@ -2113,40 +2228,32 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**17. `disassemble`**: OK start code: the START's routine: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C
+**17. `history`**: OK trail: the trail: DEC $042B, then LDA #$99, ADDA $042C, DAA, STA $042C
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "ref": "0xd676",
-  "length": 12
+  "limit": 8
 }
 ```
 
 ```json
 {
-  "summary": "disassemble 0xd676: 5 lines at 0x0000d676",
+  "summary": "history: 8 instructions of 8 asked",
   "status": "ok",
-  "addr": "0x0000d676",
-  "length": 12,
+  "asked": 8,
   "lines": [
-    "D676: 7A 04 2B DEC    $042B",
-    "D679: 86 99    LDA    #$99",
-    "D67B: BB 04 2C ADDA   $042C",
-    "D67E: 19       DAA",
-    "D67F: B7 04 2C STA    $042C"
+    "D68D: RTS",
+    "C5AD: JSR    $D676",
+    "D676: DEC    $042B",
+    "D679: LDA    #$99",
+    "D67B: ADDA   $042C",
+    "D67E: DAA",
+    "D67F: STA    $042C",
+    "D682: RTS"
   ],
   "cpu": ":maincpu",
-  "flow": [
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown"
-  ],
-  "flow_source": "none",
-  "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified",
   "session": {
     "alive": true,
     "running": false,
@@ -2163,7 +2270,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**18. `registers`**: OK registers: the stop landed at PC 0xfd80, A 0xdd
+**18. `registers`**: OK registers: the stop landed at PC 0xd682, A 0x03
 
 <details><summary>call and reply</summary>
 
@@ -2176,15 +2283,15 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "summary": "registers: 10 registers",
   "status": "ok",
   "regs": {
-    "A": "0xdd",
-    "B": "0xdd",
-    "D": "0xdddd",
-    "X": "0x1080",
-    "Y": "0x03ff",
-    "U": "0x0433",
-    "PC": "0xfd80",
-    "S": "0x07f0",
-    "CC": "0xd9",
+    "A": "0x03",
+    "B": "0xff",
+    "D": "0x03ff",
+    "X": "0x0431",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xd682",
+    "S": "0x07fc",
+    "CC": "0x81",
     "DP": "0x00"
   },
   "register_bits": {
@@ -2216,22 +2323,23 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**19. `watch_clear`**: OK unwatch: the last watch cleared
+**19. `watch_clear`**: OK unwatch: both watches cleared
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "ref": "0x42c"
+  "all": true
 }
 ```
 
 ```json
 {
-  "summary": "watch_clear 0x42c: 1 cleared, 1 disarmed",
+  "summary": "watch_clear all: 2 cleared, 2 disarmed",
   "status": "ok",
-  "declarations_cleared": 1,
+  "declarations_cleared": 2,
   "disarmed": [
+    "1 @ 042B-042B write",
     "2 @ 042C-042C write"
   ],
   "while_running": false,
@@ -2251,7 +2359,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**20. `run_for`**: OK play: the game plays on: ran to frame 1177, 10000002 cycles
+**20. `run_for`**: OK play: the game plays on: ran to frame 1176, 10000004 cycles
 
 <details><summary>call and reply</summary>
 
@@ -2264,48 +2372,46 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 ```json
 {
-  "summary": "run_for 8000 ms: ELAPSED, frame 703 to 1177",
+  "summary": "run_for 8000 ms: ELAPSED, frame 703 to 1176",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 703,
-  "frame_after": 1177,
-  "emulated_before_s": 11.894801,
-  "emulated_after_s": 19.894802,
-  "cycles": 10000002,
+  "frame_after": 1176,
+  "emulated_before_s": 11.882069,
+  "emulated_after_s": 19.882072,
+  "cycles": 10000004,
   "reads": "<volatile>",
   "how": "the console's `gtime` stop",
-  "stop_seq": 14,
-  "pc": "0x0000a815",
+  "stop_seq": 15,
+  "pc": "0x0000a633",
   "cpu": ":maincpu",
-  "frame": 1177,
+  "frame": 1176,
   "regs": {
-    "A": "0x21",
-    "B": "0x7c",
-    "D": "0x217c",
-    "X": "0x0168",
-    "Y": "0x00dd",
-    "U": "0x000c",
-    "PC": "0xa815",
-    "S": "0x07fe",
-    "CC": "0x69",
+    "A": "0x00",
+    "B": "0x00",
+    "D": "0x0000",
+    "X": "0x0204",
+    "Y": "0x00f1",
+    "U": "0x0238",
+    "PC": "0xa633",
+    "S": "0x0800",
+    "CC": "0xe4",
     "DP": "0x00"
   },
   "dasm": [
-    "A815: A6 0B    LDA    $B,X",
-    "A817: A7 C1    STA    ,U++",
-    "A819: EC 0C    LDD    $C,X",
-    "A81B: ED C1    STD    ,U++",
-    "A81D: A6 0E    LDA    $E,X",
-    "A81F: A7 C1    STA    ,U++",
-    "A821: EC 0F    LDD    $F,X",
-    "A823: ED C1    STD    ,U++",
-    "A825: A6 88 11 LDA    $11,X",
-    "A828: A7 C1    STA    ,U++",
-    "A82A: EC 88 12 LDD    $12,X",
-    "A82D: ED C1    STD    ,U++",
-    "A82F: 10 9C 82 CMPY   <$82",
-    "A832: 2D C9    BLT    $A7FD",
-    "A834: 39       RTS"
+    "A633: 24 FC    BCC    $A631",
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "A640: 7E F0 00 JMP    $F000",
+    "A643: BD B5 2B JSR    $B52B",
+    "A646: BD C5 67 JSR    $C567",
+    "A649: B6 04 28 LDA    $0428",
+    "A64C: 81 0C    CMPA   #$0C",
+    "A64E: 24 51    BCC    $A6A1",
+    "A650: B6 96 00 LDA    $9600"
   ],
   "errorlog": {
     "lines_total": 130,
@@ -2372,7 +2478,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**22. `screen_view`**: OK screen: the game in play, 256x240, sha256 b457eff58745
+**22. `screen_view`**: OK screen: the game in play, 256x240, sha256 0c1f099a0cae
 
 <details><summary>call and reply</summary>
 
@@ -2386,13 +2492,13 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 ```json
 {
-  "summary": "screen_view render :screen frame 1177 from indices; 512x480 PNG x2, inline",
+  "summary": "screen_view render :screen frame 1176 from indices; 512x480 PNG x2, inline",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 256,
   "height": 240,
-  "frame_screen": 1177,
+  "frame_screen": 1176,
   "palette": ":palette",
   "entries": 2048,
   "screen_indexed": true,
@@ -2405,7 +2511,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "image": {
     "path": "./tmp/demos/gridlee/screen.png",
     "bytes": 8175,
-    "sha256": "b457eff58745da7bdda6f20f95e3dcb7c0a71166a54ad8a3a6cc20bcbf40faca",
+    "sha256": "0c1f099a0caeb830ec9022c58ed2317731cd7d197dedfb07d572148eb1b434ce",
     "width": 512,
     "height": 480,
     "scale": 2,
@@ -2419,40 +2525,39 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "console_reruns": 0,
   "resent": 0,
   "call": "MAME_MCP_LUA_END#6",
-  "pc_before": "0x0000a815",
+  "pc_before": "0x0000a633",
   "how": "screen_view: one step",
-  "stop_seq": 15,
-  "pc": "0x0000a817",
+  "stop_seq": 16,
+  "pc": "0x0000a631",
   "cpu": ":maincpu",
-  "frame": 1177,
+  "frame": 1176,
   "regs": {
-    "A": "0x3e",
-    "B": "0x7c",
-    "D": "0x3e7c",
-    "X": "0x0168",
-    "Y": "0x00dd",
-    "U": "0x000c",
-    "PC": "0xa817",
-    "S": "0x07fe",
-    "CC": "0x61",
+    "A": "0x00",
+    "B": "0x00",
+    "D": "0x0000",
+    "X": "0x0204",
+    "Y": "0x00f1",
+    "U": "0x0238",
+    "PC": "0xa631",
+    "S": "0x0800",
+    "CC": "0xe4",
     "DP": "0x00"
   },
   "dasm": [
-    "A817: A7 C1    STA    ,U++",
-    "A819: EC 0C    LDD    $C,X",
-    "A81B: ED C1    STD    ,U++",
-    "A81D: A6 0E    LDA    $E,X",
-    "A81F: A7 C1    STA    ,U++",
-    "A821: EC 0F    LDD    $F,X",
-    "A823: ED C1    STD    ,U++",
-    "A825: A6 88 11 LDA    $11,X",
-    "A828: A7 C1    STA    ,U++",
-    "A82A: EC 88 12 LDD    $12,X",
-    "A82D: ED C1    STD    ,U++",
-    "A82F: 10 9C 82 CMPY   <$82",
-    "A832: 2D C9    BLT    $A7FD",
-    "A834: 39       RTS",
-    "A835: B6 03 B9 LDA    $03B9"
+    "A631: 04 B4    LSR    <$B4",
+    "A633: 24 FC    BCC    $A631",
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "A640: 7E F0 00 JMP    $F000",
+    "A643: BD B5 2B JSR    $B52B",
+    "A646: BD C5 67 JSR    $C567",
+    "A649: B6 04 28 LDA    $0428",
+    "A64C: 81 0C    CMPA   #$0C",
+    "A64E: 24 51    BCC    $A6A1",
+    "A650: B6 96 00 LDA    $9600"
   ],
   "errorlog": {
     "lines_total": 0,
@@ -2501,7 +2606,7 @@ Also attached: image/png.
   },
   "output": "State load attempted.  Please refer to window message popup for results.",
   "how": "stateload four_credits",
-  "stop_seq": 16,
+  "stop_seq": 17,
   "pc": "0x0000ae19",
   "cpu": ":maincpu",
   "frame": 702,
