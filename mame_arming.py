@@ -28,8 +28,9 @@ from mame_state import STATE
 
 # The `by` VOCABULARY: what a declaration is made by, or `auto` to have it decided.
 BY_OPTIONS = ("auto", *dec.BY)
-# Every stop the console logs for a row of one of the debugger's lists that sends NO packet
-# under a run the console started: a breakpoint's and a registerpoint's.
+# The stop lines of the rows this module lists (a breakpoint's and a registerpoint's), which send
+# NO packet under a run the console started; a watchpoint's line is `mame_watches`', beside the
+# parser that names its writer.
 _LISTED_STOP_LINE = re.compile(r"Stopped at (break|register)point [0-9A-Fa-f]+\b")
 
 
@@ -191,10 +192,10 @@ def debuglog_since(scratch: Path) -> list[str]:
     return since
 
 
-def console_stop_in(lines: list[str]) -> bool:
-    """Whether the console logged a breakpoint's or a registerpoint's stop among `lines`: what
-    a run the console started looks for after each landing, to know the landing is a stop
-    worth surveying."""
+def listed_stop_in(lines: list[str]) -> bool:
+    """Whether the console logged a breakpoint's or a registerpoint's stop among `lines`; the
+    watchpoint's half is `mame_watches.stop_line_in`, and `mame_running.stop_logged_in` asks
+    both."""
     return any(_LISTED_STOP_LINE.search(ln) for ln in lines)
 
 

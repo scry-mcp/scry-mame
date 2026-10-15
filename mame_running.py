@@ -243,7 +243,7 @@ def stop_logged_in(lines: list[str]) -> bool:
     log: a breakpoint's, a registerpoint's or a watchpoint's. What a run the console started
     looks for after each landing, since such a run sends no packet and the stop can land with
     the counter's tick; kept here, beside the survey, so the two name the same families."""
-    return arming.console_stop_in(lines) or watches.stop_line_in(lines)
+    return arming.listed_stop_in(lines) or watches.stop_line_in(lines)
 
 
 #: The survey's keys that name a stop nobody's tool asked for, each popped into `how`.
