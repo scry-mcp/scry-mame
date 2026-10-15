@@ -101,6 +101,7 @@ from matrix_removals import (
 from matrix_stamps import register_t
 from matrix_states import register_q
 from matrix_traces import register_n
+from matrix_watch_tick import register_w
 from reader_fault import reader_fault, reader_fault_counts
 
 from evidence import (  # isort: skip -- it imports the server's files, so after the harness
@@ -4149,6 +4150,7 @@ register_s()
 register_t()
 register_u()
 register_v()
+register_w()
 register_h()
 
 

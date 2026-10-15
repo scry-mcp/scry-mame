@@ -46,6 +46,7 @@ import mame_lists as mlists  # noqa: E402
 import mame_map as mmap  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_rearm as rearming  # noqa: E402
+import mame_running as running  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
@@ -1639,6 +1640,44 @@ def test_a_stop_from_a_watch_re_armed_from_a_prior_session_says_it_was_a_leftove
     assert "re-armed" in how, how
 
 
+def _frame_run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ticks: bool, writes: bool,
+               stale: str = "") -> tuple[dict[str, Any], list[str], list[int]]:
+    """`run_for(frames=3)` over a change watch on `frame_lo`, every `gvblank` intercepted: each
+    moves the counter when `ticks`, and with `writes` the watch fires in the first (the byte
+    written and the console's stop line logged). `stale` is log the previous stop already
+    surveyed. Returns the reply, the `gvblank`s sent, and the pc of every survey taken."""
+    ses = _watching(monkeypatch, tmp_path)
+    ses.memory[0x2031FC] = bytes.fromhex("00000037")
+    s.watch_add(ref="frame_lo", mode="change", length=4)
+    log = tmp_path / "debug.log"
+    log.write_text("F2034\n" + stale)
+    monkeypatch.setattr(mstate.STATE, "debuglog_mark", log.stat().st_size)
+    monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
+    ses.last_stop_packet = ""
+    sent: list[str] = []
+    surveyed: list[int] = []
+    real, real_survey = ses.monitor, running.survey
+
+    def console(command: str, timeout: float = 10.0) -> str:
+        if command == "gvblank":
+            sent.append(command)
+            ses.frame += int(ticks)
+            if writes and len(sent) == 1:
+                with log.open("a") as fh:
+                    fh.write(STOP_LINE + "25F6\n")
+                ses.memory[0x2031FC] = bytes.fromhex("00000038")
+            return ""
+        return real(command, timeout)
+
+    def survey(ses_: Any, scratch: Path) -> dict[str, Any]:
+        surveyed.append(len(sent))
+        return real_survey(ses_, scratch)
+
+    ses.monitor = console  # type: ignore[method-assign]
+    monkeypatch.setattr(running, "survey", survey)
+    return s.run_for(frames=3), sent, surveyed
+
+
 def test_a_frame_run_cut_by_a_watch_between_two_vblanks_is_a_stop_and_sends_nothing_after(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
@@ -1647,29 +1686,52 @@ def test_a_frame_run_cut_by_a_watch_between_two_vblanks_is_a_stop_and_sends_noth
     packet); the stop is surveyed, named from the debugger's own log, and no `gvblank`
     follows it. Resuming every hit with the next `gvblank` makes a run over a latch written
     each frame come back ELAPSED, with every write it passed through lost."""
-    ses = _watching(monkeypatch, tmp_path)
-    ses.memory[0x2031FC] = bytes.fromhex("00000037")
-    s.watch_add(ref="frame_lo", mode="change", length=4)
-    (tmp_path / "debug.log").write_text("F2034\n")
-    monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
-    ses.last_stop_packet = ""
-    sent: list[str] = []
-    real = ses.monitor
-
-    def counting(command: str, timeout: float = 10.0) -> str:
-        if command == "gvblank":
-            sent.append(command)               # the counter never ticks: the watch fired first
-            (tmp_path / "debug.log").open("a").write(STOP_LINE + "25F6\n")
-            ses.memory[0x2031FC] = bytes.fromhex("00000038")
-            return ""
-        return real(command, timeout)
-
-    ses.monitor = counting  # type: ignore[method-assign]
-    out = s.run_for(frames=3)
+    out, sent, _ = _frame_run(monkeypatch, tmp_path, ticks=False, writes=True)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
     assert out["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["how"]
     assert out["watch_hit"]["after"] == 0x38 and out["frame_before"] == out["frame_after"]
     assert sent == ["gvblank"], sent
+
+
+def test_a_frame_run_cut_by_a_watch_that_lands_with_the_tick_is_a_stop_and_sends_nothing_after(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The watch fires in a frame whose tick the run already took, so the counter MOVED and the
+    pc is on no row of this server's: only the console's line says the landing is a stop, and a
+    `gvblank` sent after it would carry the machine past the writer (live section W)."""
+    out, sent, surveyed = _frame_run(monkeypatch, tmp_path, ticks=True, writes=True)
+    assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
+    assert out["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["how"]
+    assert out["frame_after"] == out["frame_before"] + 1, out
+    assert sent == ["gvblank"] and surveyed == [1], (sent, surveyed)
+
+
+@pytest.mark.parametrize("stale", ["", STOP_LINE + "25F6\n"])
+def test_a_frame_run_whose_landings_all_tick_with_no_new_stop_line_surveys_only_its_end(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, stale: str,
+) -> None:
+    """The control beside the case above: every landing ticks and the console logs no stop
+    line during the run, so nothing stopped the machine early, the run is ELAPSED, and the
+    survey is taken once, at its end: a landing surveyed for nothing costs console reads at
+    every frame. A stop line the previous survey already read is behind the run's cursor."""
+    out, sent, surveyed = _frame_run(monkeypatch, tmp_path, ticks=True, writes=False, stale=stale)
+    assert out["status"] == "ok" and out["verdict"] == "ELAPSED", out
+    assert sent == ["gvblank"] * 3 and surveyed == [3], (sent, surveyed)
+
+
+@pytest.mark.parametrize(("line", "stop"), [
+    (STOP_LINE, True),
+    ("Stopped at watchpoint 2 writing 03 to 042C\n", True),        # a writer on another cpu
+    ("Stopped at breakpoint 3\n", True),
+    ("Stopped at registerpoint 1\n", True),
+    ("Stopped at VBLANK\n", False),                                # a frame stop's own line
+    ("Watchpoint 1 set\n", False),
+    ("F2034\n", False),
+])
+def test_the_stop_lines_a_frame_run_looks_for(line: str, stop: bool) -> None:
+    """Every family the survey names off the log, and the console's other lines, which are not
+    a stop somebody armed."""
+    assert running.stop_logged_in(["D682\n", line]) is stop
 
 
 def test_a_watch_hit_lists_at_most_the_shared_ceiling_of_writes_and_says_so(

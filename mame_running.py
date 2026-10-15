@@ -238,6 +238,14 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     return seen
 
 
+def stop_logged_in(lines: list[str]) -> bool:
+    """Whether the console logged, among `lines`, a stop of any family `survey` names off the
+    log: a breakpoint's, a registerpoint's or a watchpoint's. What a run the console started
+    looks for after each landing, since such a run sends no packet and the stop can land with
+    the counter's tick; kept here, beside the survey, so the two name the same families."""
+    return arming.console_stop_in(lines) or watches.stop_line_in(lines)
+
+
 #: The survey's keys that name a stop nobody's tool asked for, each popped into `how`.
 _NAMED_STOPS = ("watch_how", "breakpoint_how", "regpoint_how")
 

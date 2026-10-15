@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import Any, TypeVar
 
 import gdb_session as gs
-import mame_arming as arming
 import mame_breakpoints as breakpoints
 import mame_clear as mclear
 import mame_conditions as conditions
@@ -686,19 +685,21 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
         # `gvblank` was heading for, the counter has not ticked, and the next `gvblank` would
         # simply resume it: with a `stop` breakpoint on the per-frame irq, `run_for(frames=5)`
         # would come back ELAPSED with the row crossed five times. A run the
-        # console starts sends NO stop packet, so the tell is the COUNTER: a `gvblank` that
-        # moved it by nothing stopped early, and only then is the stop surveyed (a watch is
-        # named from the debugger's own log there, a row by its address). A row the machine
-        # lands on WITH the tick is surveyed too: a stop breakpoint sitting on the vblank
-        # handler fired there. A control never counts, wherever the machine lands. A
-        # breakpoint TYPED THROUGH `debug` lands with the tick as well and leaves only the
-        # console's line, so the log is looked at after EVERY landing and the line is a stop.
+        # console starts sends NO stop packet, so the first tell is the COUNTER: a `gvblank`
+        # that moved it by nothing stopped early. It is not the only one, because the counter
+        # ticks as a run leaves a vblank stop: a watch that fires later in that frame, or a
+        # breakpoint typed through `debug`, halts the machine with the counter MOVED, and
+        # leaves nothing but the console's `Stopped at ...` line. So the log is looked at
+        # after EVERY landing, and a watchpoint's, breakpoint's or registerpoint's line there
+        # is a stop. A row the machine lands on WITH the tick is surveyed too: a stop
+        # breakpoint sitting on the vblank handler fired there. A control never counts,
+        # wherever the machine lands.
         pc = ses.current_pc()
         landing = pc
         lines, peeked = files.lines_since(log, peeked)
         # A ROW AT THIS PC IS ASKED ITS CPU only when one sits there: the stop's cpu costs a
         # console read, and most landings have no row at their pc.
-        if (last == landed_from or arming.console_stop_in(lines)
+        if (last == landed_from or running.stop_logged_in(lines)
                 or (breakpoints.bp_owned_at(pc, None) is not None
                     and running.halts(pc, cpus.visible_cpu(ses)))):
             seen = running.survey(ses, scratch)

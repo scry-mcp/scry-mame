@@ -1401,13 +1401,14 @@ the run by frames while another cpu is visible, as it does when the debugger ign
 by milliseconds stops on any cpu. The last landing is proved at rest, two readings a tenth of a
 second apart, before the run is ELAPSED: the readings that confirm each landing come milliseconds
 apart, and on a machine running flat out they agree without it having stopped. A stop breakpoint or
-a change watch that halts the machine inside either run ends it as `OTHER_STOP` (by frames the tell
-is a `gvblank` that moved the counter by nothing, since a console-started run sends no stop packet),
-and a control's row never counts as a stop wherever the machine lands, which is also what keeps
+a change watch that halts the machine inside either run ends it as `OTHER_STOP`. By frames a
+console-started run sends no stop packet, so the tell is a `gvblank` that moved the counter by
+nothing, or a `Stopped at ...` line in the console's log, looked for after every `gvblank`: the
+counter ticks as a run leaves a vblank stop, so a stop later in that frame lands with it moved. A
+control's row never counts as a stop wherever the machine lands, which is also what keeps
 `stop`'s `how` from naming a control. A breakpoint typed through `debug` ends either run as
 `OTHER_STOP` too, named ``breakpoint <n> at <pc>, typed through `debug`: `debug("bpclear 0x<n>")`
-removes it``: it leaves no stop packet and can land WITH the tick, so the only trace is the
-console's own `Stopped at breakpoint <n>` line, which is looked for after every `gvblank` and read
+removes it``: its only trace is the console's own `Stopped at breakpoint <n>` line, read
 off the same `debug.log` a foreign watchpoint is named from; the index is what says whose the row
 is, and a row this server armed keeps its own name. Every survey reads that line, so a `resume` or a
 `stop` that lands on such a row names it the same way. A registerpoint (the console's `rpset`) is

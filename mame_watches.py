@@ -1492,6 +1492,13 @@ _NO_BEFORE_MEMORY = ("no value was read before this write: the watch's bytes are
 _NO_BEFORE_BUS = "the first write logged since the watch was armed: no earlier write to compare"
 
 
+def stop_line_in(lines: list[str]) -> bool:
+    """Whether the console logged a watchpoint's stop among `lines`: what a run the console
+    started looks for after each landing, since such a run sends no packet and the stop can
+    land with the counter's tick."""
+    return any(_STOP_LINE.search(ln) for ln in lines)
+
+
 def watch_packet_addr(ses: gs.Session) -> int | None:
     """The address a watchpoint's stop packet names, or None when the last stop was not a
     watchpoint's. What `run_to` reads to tell a watch stop from its own target."""
