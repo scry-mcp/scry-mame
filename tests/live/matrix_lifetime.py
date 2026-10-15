@@ -191,7 +191,14 @@ def _p_quit(t: list[str]) -> None:
 # a session that inherited it would hold it armed without ever being cut by it.
 SEEDED = {"kind": "breakpoint", "by": "symbol", "ref": "exception_handler",
           "origin": "another-session", "created_at": "2026-01-01T00:00:00+00:00"}
-STORE_KEY = dec.store_key(str(BOOT["system"]), SYMBOLS)
+
+
+def _store_key() -> str:
+    """The m68k-dual board's key in the project store, asked when a cell needs it: at import
+    it would refuse a host whose bench has no m68k-dual, and take every other section with it."""
+    return dec.store_key(str(BOOT["system"]), SYMBOLS)
+
+
 # How far apart the two lists of the age cell are, and how much later than that the second may
 # read: flooring two readings adds up to a second, the list call's latency the rest, so the slack
 # bounds a wrong unit, never a slow host.
@@ -213,14 +220,14 @@ def _declare_all() -> list[dict[str, Any]]:
 
 
 def _stored_rows(path: Path) -> list[tuple[str, str]]:
-    rows = json.loads(path.read_text()).get(STORE_KEY, []) if path.exists() else []
+    rows = json.loads(path.read_text()).get(_store_key(), []) if path.exists() else []
     return sorted((r.get("kind", ""), r.get("ref", "")) for r in rows)
 
 
 def _p_own_store(t: list[str]) -> None:
     project = dec.default_path()
     project.parent.mkdir(parents=True, exist_ok=True)
-    project.write_text(json.dumps({STORE_KEY: [SEEDED]}))
+    project.write_text(json.dumps({_store_key(): [SEEDED]}))
     before = _sha(project)
     own = Path(fresh("-state")) / "declarations.json"
     r = boot(state_dir=str(own.parent))

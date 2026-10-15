@@ -5,7 +5,9 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -414,15 +416,26 @@ def test_the_bench_root_is_the_variable_or_the_users_data_and_the_manifest_lives
         f"`python -m scry_core.live_bench check --bench {tmp_path}`"), "the remedy names --bench"
 
 
+def _imported(module: str, tmp_path: Path, **env: str) -> subprocess.CompletedProcess[str]:
+    """`module` imported in a fresh interpreter from the live tier, its temporary directory
+    `tmp_path`, with no setting of the developer's shell deciding the answer."""
+    clean = {k: v for k, v in os.environ.items() if k != "MAME_BACKGROUND"}
+    return subprocess.run([sys.executable, "-c", f"import {module}"], cwd=LIVE,
+                          env={**clean, "TMPDIR": str(tmp_path), **env}, capture_output=True,
+                          text=True, check=False)
+
+
 def test_importing_the_harness_makes_no_directory(tmp_path: Path) -> None:
     """Every file that imports the harness (this suite among them) used to leave a scratch
     directory behind; the run makes its scratch when it first writes there, and an import
     writes nothing."""
-    import os
-    import subprocess
-
-    env = {**os.environ, "TMPDIR": str(tmp_path)}
-    done = subprocess.run([sys.executable, "-c", "import live_harness"], cwd=LIVE, env=env,
-                          capture_output=True, text=True, check=False)
+    done = _imported("live_harness", tmp_path)
     assert done.returncode == 0, done.stderr[-2000:]
     assert list(tmp_path.iterdir()) == [], list(tmp_path.iterdir())
+
+
+def test_the_matrix_imports_on_a_host_whose_bench_is_empty(tmp_path: Path) -> None:
+    """A stranger's clone has no bench: the boards that need it are BLOCKED by the run, never a
+    matrix that cannot be imported at all."""
+    done = _imported("live_matrix", tmp_path / "t", MAME_LIVE_BENCH=str(tmp_path / "bench"))
+    assert done.returncode == 0, done.stderr[-2000:]
