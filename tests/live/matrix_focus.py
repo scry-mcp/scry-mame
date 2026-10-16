@@ -1,15 +1,17 @@
-"""Section X of the live matrix: whether any MAME this run launched came to the front, sampled
-from outside the run (`scry_core.focus_watch`) for its whole length.
+"""Section X of the live matrix: whether any MAME this run launched came to the front, or any
+display's Space moved, sampled from outside the run (`scry_core.focus_watch`) for its whole
+length.
 
 It is registered twice, FIRST and LAST. First, the control, in the same harness the verdict is
-taken in: one quick start forced in front, which the watch must see in front, and one behind,
-which it must not; a watch that cannot see the first clears nothing. Then the watch keeps
+taken in: one quick start forced in front, which the watch must see in front, one behind, which it
+must not, and the owner's Space moved and put back on purpose, which it must see move; a watch
+that does not hold all three clears nothing. Then the watch keeps
 sampling while every other section runs, and last its samples since the control are judged
 against the names of the binaries this run launches. A control that did not hold, a run too
 short, or a watch that could not sample leaves the verdict BLOCKED, never green and never a
 server's FAIL. Judged by process name: another MAME of the same binary name in front counts.
-The control's front start takes the owner's focus for a few seconds: a run that includes this
-section is announced.
+The control's front start takes the owner's focus for a few seconds and its Space control moves
+the owner's Space and back: a run that includes this section is announced.
 
     uv run python tests/live/matrix_focus.py      # the control alone; its verdict is BLOCKED
 """
@@ -39,9 +41,11 @@ X_TITLE = "the focus gate: the control, then the watch runs beside every section
 X_CONTROL = [
     "the control: a start forced in front is seen in front",
     "the control: a start behind is never in front",
+    "the control: a Space moved on purpose is seen moved",
 ]
 X_VERDICT_TITLE = "the focus gate: what the watch saw while the sections ran"
-X_VERDICT = ["no MAME this run launched came to the front while the sections ran"]
+X_VERDICT = ["no MAME this run launched came to the front and no Space moved while the sections "
+             "ran"]
 HOLD_S = 4.0
 #: Shorter than this, a judged window says too little about a run to be its verdict.
 MIN_WINDOW_MS = 60_000
@@ -88,10 +92,18 @@ def _control() -> None:
     seen = focus_watch.judge(watch.samples, names, start_ms=front[0], end_ms=front[1])
     cell(X_CONTROL[0], seen.status == "TOOK_FOCUS", seen.reason)
     clean = focus_watch.judge(watch.samples, names, start_ms=behind[0], end_ms=behind[1])
-    cell(X_CONTROL[1], clean.status == "CLEAN", clean.reason)
-    # A WATCH THAT DID NOT HOLD ITS CONTROL CLEARS NOTHING: the verdict is judged only after both.
-    if seen.status == "TOOK_FOCUS" and clean.status == "CLEAN":
-        _SINCE.append(behind[1])
+    if clean.status == "SPACE_CHANGED":
+        # A Space move names nobody (the verdict below says why), here as there.
+        blocked(X_CONTROL[1], clean.reason)
+    else:
+        cell(X_CONTROL[1], clean.status == "CLEAN", clean.reason)
+    began, ended, why = focus_watch.move_space()
+    moved = focus_watch.judge(watch.samples, names, start_ms=began, end_ms=ended)
+    held = moved.status == "SPACE_CHANGED" and not why
+    cell(X_CONTROL[2], held, f"{why}; {moved.reason}" if why else moved.reason)
+    # A WATCH THAT DID NOT HOLD ITS CONTROL CLEARS NOTHING: the verdict is judged only after all.
+    if seen.status == "TOOK_FOCUS" and clean.status == "CLEAN" and held:
+        _SINCE.append(ended)
 
 
 def _verdict() -> None:
@@ -113,6 +125,12 @@ def _verdict() -> None:
     if v.status == "INVALID":
         # THE INSTRUMENT, not the server: a sample it could not take, or a stretch unsampled.
         blocked(X_VERDICT[0], f"the watch cannot judge the run: {v.reason}; record {watch.path}")
+        return
+    if v.status == "SPACE_CHANGED":
+        # A SPACE MOVE NAMES NOBODY: the owner may have made it. Never green, never the
+        # server's FAIL on that alone: the record is there to read.
+        blocked(X_VERDICT[0], f"a Space moved and nothing names who moved it: {v.reason}; "
+                              f"record {watch.path}")
         return
     cell(X_VERDICT[0], v.status == "CLEAN", f"{v.status}: {v.reason}; record {watch.path}")
 
