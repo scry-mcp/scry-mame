@@ -439,3 +439,149 @@ def test_the_matrix_imports_on_a_host_whose_bench_is_empty(tmp_path: Path) -> No
     matrix that cannot be imported at all."""
     done = _imported("live_matrix", tmp_path / "t", MAME_LIVE_BENCH=str(tmp_path / "bench"))
     assert done.returncode == 0, done.stderr[-2000:]
+
+
+# ================================================================ run_sections, with no machine
+
+
+def _sections(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **env: str) -> ModuleType:
+    """The harness ready to run sections of the test's own: its scratch under `tmp_path`, no
+    machine to close, no declaration store moved, no signal handler left on this process, and
+    the run's variables as given (unset otherwise)."""
+    h = _harness(monkeypatch, tmp_path)
+    monkeypatch.setattr(h, "SCRATCH", tmp_path / "scratch")
+    monkeypatch.setattr(h, "TRANSCRIPT", tmp_path / "scratch" / "transcript.jsonl")
+    monkeypatch.setattr(h, "ensure_closed", lambda: None)
+    monkeypatch.setattr(h, "isolate_state", lambda _prefix: "")
+    monkeypatch.setattr(h.signal, "signal", lambda *_a: None)
+    for var in (h.SECTIONS_VAR, h.JOBS_VAR, h.SUMMARY_VAR):
+        monkeypatch.delenv(var, raising=False)
+    for var, value in env.items():
+        monkeypatch.setenv(var, value)
+    return h
+
+
+def _exit_of(h: ModuleType) -> object:
+    with pytest.raises(SystemExit) as stop:
+        h.run_sections("TEST")
+    return stop.value.code
+
+
+def _three(h: ModuleType) -> None:
+    """A section that passes, one that raises half-way, and one that forgets a cell."""
+    h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
+
+    def half() -> None:
+        h.cell("b1", True)
+        raise RuntimeError("the stub hung")
+    h.section("B", "raises", ["b1", "b2"])(half)
+    h.section("C", "forgets", ["c1", "c2"])(lambda: h.cell("c1", True))
+
+
+def test_a_run_in_one_process_blocks_what_a_section_left_and_passes_on_no_fail(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    _three(h)
+    assert _exit_of(h) == h.EXIT_PASSED
+    out = capsys.readouterr().out
+    assert "jobs: 1, every section in this process" in out
+    assert "PLANNED 5  RUN 3  OK 3  FAIL 0  BLOCKED 2" in out
+    assert dict(h.BLOCKED) == {"b2": "section aborted: RuntimeError: the stub hung",
+                               "c2": "never reached: the section ended without judging it"}
+
+
+def test_a_run_that_is_a_job_declares_every_cell_it_planned(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    summary = tmp_path / "summary.json"
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_SUMMARY=str(summary))
+    _three(h)
+    h.section("D", "fails", ["d1"])(lambda: h.cell("d1", False, "it said no"))
+    assert _exit_of(h) == h.EXIT_FAILED
+    got = h.live_pool.read_summary(summary)
+    assert got.outcomes == {"a1": "OK", "b1": "OK", "b2": "BLOCKED", "c1": "OK",
+                            "c2": "BLOCKED", "d1": "FAIL"}
+    assert got.reasons["d1"] == "it said no" and "RuntimeError" in got.reasons["b2"]
+
+
+@pytest.mark.parametrize(("env", "plan", "code", "said"), [
+    ({"MAME_LIVE_SECTIONS": "AZ"}, [("A", ["a1"])], 3, "names no section ['Z']"),
+    ({"MAME_LIVE_JOBS": "0"}, [("A", ["a1"])], 2, "is not a job count"),
+    ({"MAME_LIVE_JOBS": "two"}, [("A", ["a1"])], 2, "is not a job count"),
+    ({"MAME_LIVE_JOBS": "1"}, [("A", ["a1"]), ("B", ["a1"])], 3, "names these cells twice"),
+    ({"MAME_LIVE_JOBS": "1"}, [("A", ["a1"])], 3, "no cell ran"),
+])
+def test_a_run_that_cannot_give_a_verdict_says_so_and_exits_apart(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str],
+        env: dict[str, str], plan: list[tuple[str, list[str]]], code: int, said: str) -> None:
+    h = _sections(monkeypatch, tmp_path, **env)
+    for letter, labels in plan:
+        h.section(letter, letter, labels)(lambda: None)
+    assert _exit_of(h) == code
+    assert said in capsys.readouterr().out
+
+
+def test_a_pooled_run_adopts_each_job_s_cells_and_runs_the_alone_ones_here(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="2")
+    lp = h.live_pool
+    order: list[str] = []
+    h.section("X", "spans the run", ["x1"], alone=True)(lambda: order.append("X"))
+    h.section("A", "pooled", ["a1", "a2"])(lambda: order.append("A"))
+    h.section("B", "pooled", ["b1"])(lambda: order.append("B"))
+    child = tmp_path / "child.jsonl"
+    child.write_text('{"from": "a job"}\n')
+
+    def run_pool(jobs: list[object], workers: int, out: Path, var: str,
+                 on_done: object) -> object:
+        order.append("pool")
+        assert workers == 2 and var == h.SUMMARY_VAR
+        assert [(j.name, dict(j.env), j.planned) for j in jobs] == [  # type: ignore[attr-defined]
+            ("A", {h.SECTIONS_VAR: "A", h.JOBS_VAR: "1"}, ("a1", "a2")),
+            ("B", {h.SECTIONS_VAR: "B", h.JOBS_VAR: "1"}, ("b1",))]
+        a = lp.JobResult(jobs[0], 1, out / "A.log", 1.0, lp.Summary(
+            ("a1", "a2"), {"a1": "OK", "a2": "FAIL"}, {"a2": "no"}, str(child), 1.0))
+        b = lp.JobResult(jobs[1], 7, out / "B.log", 1.0, lp.Summary(
+            ("b1",), {"b1": "BLOCKED"}, {"b1": "no bench"}, str(tmp_path / "gone"), 1.0))
+        for r in (a, b):
+            on_done(r)  # type: ignore[operator]
+        return lp.PoolResult([a, b], "", {"a1": "OK", "a2": "FAIL", "b1": "BLOCKED"},
+                             {"a2": "no", "b1": "no bench"})
+    monkeypatch.setattr(lp, "run_pool", run_pool)
+    assert _exit_of(h) == h.EXIT_FAILED
+    out = capsys.readouterr().out
+    assert order == ["X", "pool"], "the alone section runs here, the pooled ones as jobs"
+    assert "[A] OK 1 FAIL 1 BLOCKED 0" in out and "[B] OK 0 FAIL 0 BLOCKED 1" in out
+    assert any("JOB B EXITED 7, WHICH ITS SUMMARY DOES NOT EXPLAIN" in f for f in h.failures)
+    assert "a2" in h.failures and dict(h.BLOCKED)["b1"] == "no bench"
+    assert '{"from": "a job"}' in (tmp_path / "scratch" / "transcript.jsonl").read_text()
+
+
+def test_a_pool_that_cannot_be_believed_makes_the_run_invalid(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="4")
+    h.section("A", "pooled", ["a1"])(lambda: None)
+    h.section("B", "pooled", ["b1"])(lambda: None)
+    lp = h.live_pool
+    monkeypatch.setattr(lp, "run_pool", lambda *_a, **_k: lp.PoolResult(
+        [], "a job declared a cell it never planned", {"a1": "OK", "b1": "OK"}))
+    assert _exit_of(h) == h.EXIT_INVALID
+    assert "INVALID: a job declared a cell it never planned" in capsys.readouterr().out
+
+
+def test_one_pooled_letter_is_no_pool_and_runs_here(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="4")
+    h.section("A", "alone in the pool", ["a1"])(lambda: h.cell("a1", True))
+    monkeypatch.setattr(h.live_pool, "run_pool", lambda *_a, **_k: pytest.fail("pooled"))
+    assert _exit_of(h) == h.EXIT_PASSED
+
+
+def test_a_signal_that_ends_the_run_is_an_exit_its_children_see(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    h = _sections(monkeypatch, tmp_path)
+    with pytest.raises(SystemExit) as stop:
+        h._leave(15, None)
+    assert stop.value.code == 128 + 15
