@@ -522,28 +522,28 @@ def status() -> dict[str, Any]:
 
 
 @tool("Close the MAME session", summary=summaries.close, session_before=True)
-def close(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """End the session: MAME is asked to `quit` through its console and killed only if it has not
     gone within the grace period. The scratch (snapshots included) is deleted; a `state_dir` stays.
-    Works on a RUNNING machine too. Takes no argument and refuses nothing: with no session it
-    answers `closed: false`.
+    Works on a RUNNING machine too. Refuses nothing: with no session it answers `closed: false`.
 
     Reply: `closed`, `stdout_tail` and `errorlog_tail` (the last words of each channel, read before
-    the scratch goes), `ended_by` (`quit`: a clean exit that wrote its cfg; `exited`: it exited and
-    wrote none; `killed`: SIGKILL after the grace period; `died`: it had already exited; `none`: no
-    session), `state_written`, `exit_code` (unavailable with its `why` when SIGKILLed and still not
-    reaped: an emulator may still be on the machine), `cfg` (`installed_path`, `changed`: did MAME
-    rewrite the copy, `available: false` with its `why` when a file could not be read back;
-    unavailable when no cfg was given; the repo's file is never touched), `console_pending_before`,
-    `console_drained` and a `note` (the Lua pipe, emptied before the `quit`), and `average_speed`
-    when it ends a run (`percent` with the two deltas, or `available: false` with its `why`; absent
-    on a broken session). The `session` block describes the state BEFORE closing, plus any throttle
-    found not applied, which `session_describes` says in the reply: `alive: true` beside `closed:
-    true` is that, not a contradiction.
+    the scratch goes) when the end was not a clean `quit` with exit code 0, or with `detail=True`,
+    else `omitted` names them with `how`; `ended_by` (`quit`: a clean exit that wrote its cfg;
+    `exited`: it exited and wrote none; `killed`: SIGKILL after the grace period; `died`: it had
+    already exited; `none`: no session), `state_written`, `exit_code` (unavailable with its `why`
+    when SIGKILLed and still not reaped: an emulator may still be on the machine), `cfg`
+    (`installed_path`, `changed`: did MAME rewrite the copy, `available: false` with its `why` when
+    a file could not be read back; unavailable when no cfg was given; the repo's file is never
+    touched), `console_pending_before`, `console_drained` and a `note` (the Lua pipe, emptied
+    before the `quit`), and `average_speed` when it ends a run (`percent` with the two deltas, or
+    `available: false` with its `why`; absent on a broken session). The `session` block describes
+    the state BEFORE closing, plus any throttle found not applied, which `session_describes` says
+    in the reply: `alive: true` beside `closed: true` is that, not a contradiction.
 
     Reference: REFERENCE.md, The session.
     """
-    return launch.close(_progress(ctx))
+    return launch.close(_progress(ctx), detail)
 
 
 @tool("Show another cpu", summary=summaries.focus)
@@ -1247,38 +1247,40 @@ def symbols_find(name: str = "", linear: str = "", limit: int = 10,
 
 
 @tool("Map the machine", summary=summaries.machine_map, read_only=True, idempotent=True)
-def machine_map(cpu: str = "") -> dict[str, Any]:
+def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, Any]:
     """WHAT THE MACHINE IS, rather than what is on it: its cpus and their spaces, every address map
     entry and the share or region it names, the blocks by tag and size, its screens, and its ROM
-    files with their crc. Cached at `start()`, so it is free, reads nothing off the machine, alters
-    nothing, and answers the same every time. Answers on a RUNNING machine too.
+    files with their crc. Cached at `start()`: free, the same every time, and answered on a
+    RUNNING machine too.
 
     Arguments: `cpu`, a tag in either spelling (`maincpu` or `:maincpu`), narrows `cpus`, `spaces`,
     `address_map` and `symbol_coverage` to one; the blocks, screens and ROM files stay whole.
+    `sections` names the sections to answer; left out, all but `rom_files` (then in `omitted`).
 
-    Refused: a tag this machine lacks (`unknown_ref` naming the ones it has); no machine
-    (`no_session`); a session that broke (`session_broken`).
+    Refused: an empty or unknown `sections` (`bad_argument`); a tag this machine lacks
+    (`unknown_ref` naming the ones it has); no machine (`no_session`); a broken session
+    (`session_broken`).
 
     Reply: `cpus` (`cpu`, `type` (MAME's shortname, `m68000`), `name`, `clock_hz`, `spaces`),
     `spaces` (`cpu`, `space`, `data_width_bits`, `endianness`, `entries`, and the space's last
-    address `address_mask` where a source backs it),
-    `address_map` (`cpu`, `space`, `index`, `start`, `end`, `share` or `region`+`region_offset`
-    by the full tag `regions` and `shares` carry, and the ENTRY's own `mirror` and
-    `address_mask` when not zero), `regions` and `shares` (`tag`,
-    `size`, `bytewidth`, `endianness`), `screens` (`tag`, `width`, `height`, `refresh_hz`,
+    address `address_mask` where a source backs it), `address_map` (`cpu`, `space`, `index`,
+    `start`, `end`, `share` or `region`+`region_offset` by the full tag `regions` and `shares`
+    carry, and the ENTRY's own `mirror` and `address_mask` when not zero), `regions` and `shares`
+    (`tag`, `size`, `bytewidth`, `endianness`), `screens` (`tag`, `width`, `height`, `refresh_hz`,
     `rotation`, `type`), `rom_files` (`name`, `size`, `crc`, `sha1`, `dump_status`, `region`,
-    `offset`), `symbol_coverage` (one row per class of each cpu's table: `cpu`, `span`,
-    `symbols`, `base`; an empty list when no table has classes), `counts` (each section's full
-    count), `truncated` (a boolean: each list section is cut to {LIST_MAX} rows), `sources` (which
-    source backs each section; a field none backs is ABSENT), `note` (a disagreement
+    `offset`), `symbol_coverage` (one row per class of each cpu's table: `cpu`, `span`, `symbols`,
+    `base`; an empty list when no table has classes), `counts` (each section's full count),
+    `truncated` (a boolean: each list section is cut to {LIST_MAX} rows), `sources` (which source
+    backs each section; a field none backs is ABSENT), `omitted`/`how`, `note` (a disagreement
     between sources, the live value kept; banked ranges; and that this is the machine as `start`
-    read it), and `frame_symbol` (the frame counter's name; unavailable, saying what that
-    changes, on a board with none).
+    read it), and `frame_symbol` (the frame counter's name; unavailable, saying what that changes,
+    on a board with none).
 
     Reference: REFERENCE.md, Reading and writing.
     """
+    args.check("machine_map", sections=sections)
     st.refuse_broken(STATE.alive())
-    return machine.machine_map(cpu)
+    return machine.machine_map(cpu, sections)
 
 
 @tool("Read memory", summary=summaries.read_memory, read_only=True)

@@ -20,6 +20,8 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
+from scry_core import narrowing
+
 import gdb_session as gs
 import mame_binary as binaries
 import mame_boot_failures as failures
@@ -1164,10 +1166,19 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     return started
 
 
-def close(progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+#: How a clean close that left MAME's last words out asks for them, and that it is the only way:
+#: the scratch they were read from goes with this close.
+CLOSE_HOW = ("close(detail=True) keeps the channels' last words on a clean quit too; once a close "
+             "has answered they are gone with the scratch")
+
+
+def close(progress: mprogress.Progress = mprogress.no_progress,
+          detail: bool = False) -> dict[str, Any]:
     """The body of the `close` tool. The `session` block describes the state as it was
     BEFORE closing: built after the kill it would read `altered: false` about a session
-    that had been written to."""
+    that had been written to. The last words come back when the end was not a clean `quit`
+    with exit code 0, or with `detail`: a clean quit's are the console's echo and the error
+    log's routine lines, which a caller asks for before closing if it wants them."""
     # WHAT NOBODY READ IS COUNTED FIRST, so the session block below says of the console
     # what the log shows and not only what the lua-family readers happened to read.
     if STATE.scratch is not None:
@@ -1208,7 +1219,9 @@ def close(progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any
         reply = menvelope.envelope({"closed": False, **ended,
                                     "note": "there was no session to close"})
     else:
-        reply = menvelope.envelope({"closed": True, **tails, **ended})
+        clean = ended["ended_by"] == "quit" and ended.get("exit_code") == 0
+        words = tails if detail or not clean else narrowing.omission(list(tails), CLOSE_HOW)
+        reply = menvelope.envelope({"closed": True, **words, **ended})
     reply.update(speed)
     if ended["ended_by"] != "none":
         reply["console_pending_before"] = pending_before

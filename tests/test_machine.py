@@ -20,6 +20,7 @@ import mame_cpus as cpus
 import mame_machine as machine
 import mame_read as read
 import mame_state as st
+import mame_summaries as summaries
 from mame_state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "machine"
@@ -556,6 +557,10 @@ def _cached(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, dump: str = "",
     monkeypatch.setattr(STATE, "machine_map", machine.cache(tmp_path, static))
 
 
+#: Every section, for the cases that judge the whole map.
+EVERY = list(machine.MAP_SECTIONS)
+
+
 def test_machine_map_with_no_machine_is_refused_and_never_answered_empty(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -569,8 +574,9 @@ def test_the_reply_carries_every_section_its_sources_and_the_full_counts(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     _cached(monkeypatch, tmp_path)
-    reply = machine.machine_map()
+    reply = machine.machine_map(sections=list(machine.MAP_SECTIONS))
     assert set(machine.SECTIONS) <= set(reply)
+    assert "omitted" not in reply and "how" not in reply
     assert reply["counts"] == {"cpus": 2, "spaces": 4, "address_map": 32, "regions": 4,
                                "shares": 2, "screens": 1, "rom_files": 22,
                                "symbol_coverage": 0}
@@ -585,6 +591,43 @@ def test_the_reply_carries_every_section_its_sources_and_the_full_counts(
     assert set(reply["sources"]) == set(reply["counts"])
     assert reply["session"]["altered"] is False
     assert reply["cpu"]["available"] is False, "no cpu was asked for, so none is named"
+
+
+def test_the_default_map_leaves_the_rom_files_out_and_says_how_to_ask(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _cached(monkeypatch, tmp_path)
+    reply = machine.machine_map()
+    assert "rom_files" not in reply and "rom_files" not in reply["counts"]
+    assert "rom_files" not in reply["sources"]
+    assert reply["omitted"] == ["rom_files"] and "sections=" in reply["how"]
+    line = summaries.machine_map({}, reply)
+    assert line.endswith(", left out: rom_files (see `omitted`)"), line
+    assert reply["counts"]["address_map"] == len(reply["address_map"]) == 32
+
+
+def test_sections_answers_only_the_ones_named_in_the_reply_order(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _cached(monkeypatch, tmp_path)
+    reply = machine.machine_map(sections=["rom_files", "cpus"])
+    assert [k for k in reply if k in machine.MAP_SECTIONS] == ["cpus", "rom_files"]
+    assert set(reply["counts"]) == set(reply["sources"]) == {"cpus", "rom_files"}
+    assert reply["cpus"][0]["cpu"] == ":maincpu"
+    assert "spaces" in reply["omitted"] and "symbol_coverage" in reply["omitted"]
+    # Asked without `symbol_coverage`, the note says nothing about its classes.
+    assert "classes" not in str(reply["note"])
+
+
+@pytest.mark.parametrize("sections, said", [([], "a list naming at least one section"),
+                                            (["cpus", "roms"], "'roms', none of them")])
+def test_a_bad_section_list_is_refused_before_the_machine_is_asked(
+    monkeypatch: pytest.MonkeyPatch, sections: list[str], said: str
+) -> None:
+    monkeypatch.setattr(STATE, "machine_map", {})
+    with pytest.raises(st.Invalid) as refused:
+        machine.machine_map(sections=sections)
+    assert refused.value.code == "bad_argument" and said in str(refused.value)
 
 
 def test_two_calls_answer_the_same_bytes_and_spawn_nothing(
@@ -615,9 +658,9 @@ def test_a_cpu_narrows_only_what_belongs_to_one_and_answers_the_full_tag(
     """The blocks, the screens and the ROM files are the BOARD's: narrowing them to a cpu
     would answer that the other cpu's ROMs do not exist."""
     _cached(monkeypatch, tmp_path)
-    whole = machine.machine_map()
+    whole = machine.machine_map(sections=EVERY)
     for spelling in (":subcpu", "subcpu"):
-        one = machine.machine_map(cpu=spelling)
+        one = machine.machine_map(cpu=spelling, sections=EVERY)
         assert one["cpu"] == ":subcpu", spelling
         assert [c["cpu"] for c in one["cpus"]] == [":subcpu"]
         assert "tag" not in one["cpus"][0]
@@ -651,7 +694,7 @@ def test_a_section_past_the_ceiling_is_cut_and_says_so_with_the_full_count(
     over = read.LOG_LIMIT_MAX + 7
     one = STATE.machine_map["address_map"][0]
     STATE.machine_map["address_map"] = [dict(one, index=i) for i in range(over)]
-    reply = machine.machine_map()
+    reply = machine.machine_map(sections=EVERY)
     assert len(reply["address_map"]) == read.LOG_LIMIT_MAX
     assert reply["counts"]["address_map"] == over, "the count is of the machine, not the reply"
     assert reply["truncated"] is True
@@ -735,14 +778,14 @@ def test_the_summary_says_what_the_board_is_and_never_just_ok(
     reading `ok` would say nothing about the machine that was asked about."""
     import server as srv
     _cached(monkeypatch, tmp_path)
-    reply = machine.machine_map()
+    reply = machine.machine_map(sections=EVERY)
     line = srv._summary("machine_map", {}, reply)
     assert "2 cpus" in line and "32 address map entries" in line and "22 ROM files" in line
     assert "1 screen," in line, "one of a section is said in the singular"
-    narrowed = machine.machine_map(cpu="subcpu")
+    narrowed = machine.machine_map(cpu="subcpu", sections=EVERY)
     assert "of :subcpu" in srv._summary("machine_map", {"cpu": "subcpu"}, narrowed)
     STATE.machine_map["address_map"] *= 20
-    cut = machine.machine_map()
+    cut = machine.machine_map(sections=EVERY)
     assert "sections cut" in srv._summary("machine_map", {}, cut)
     assert "640 address map entries" in srv._summary("machine_map", {}, cut), "the FULL count"
 

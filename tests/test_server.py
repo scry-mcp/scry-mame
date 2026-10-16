@@ -1347,16 +1347,59 @@ class _RecordingSession(SessionFields):
         self.events.append("close")
 
 
+def _closing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, exits: bool,
+             code: int = 0) -> None:
+    scratch = tmp_path / f"{launch.SCRATCH_PREFIX}tails"
+    scratch.mkdir()
+    (scratch / "stdout.log").write_text("bye\n")
+    (scratch / "error.log").write_text("[luaengine] routine\n")
+    monkeypatch.setattr(mstate.STATE, "scratch", scratch)
+    ses = _RecordingSession()
+    mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=exits, code=code)  # type: ignore[assignment]
+
+
+def test_a_clean_close_names_the_last_words_it_left_out(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _closing(monkeypatch, tmp_path, exits=True)
+    closed = s.close()
+    assert closed["ended_by"] == "quit" and closed["exit_code"] == 0, closed
+    assert "stdout_tail" not in closed and "errorlog_tail" not in closed, closed
+    assert closed["omitted"] == ["stdout_tail", "errorlog_tail"]
+    assert closed["how"] == launch.CLOSE_HOW and "detail=True" in closed["how"]
+    assert closed["summary"].endswith(", last words left out (see `omitted`)"), closed["summary"]
+
+
+def test_a_quit_that_exits_nonzero_keeps_the_last_words_unasked(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The crash on the way out MAME's Lua collector is known for: `quit` was taken, the code
+    says something went wrong, and the words are what says what."""
+    _closing(monkeypatch, tmp_path, exits=True, code=-11)
+    closed = s.close()
+    assert closed["ended_by"] == "quit" and closed["exit_code"] == -11, closed
+    assert closed["stdout_tail"] == "bye\n" and "omitted" not in closed, closed
+
+
+def test_a_close_that_had_to_kill_keeps_the_last_words_unasked(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _closing(monkeypatch, tmp_path, exits=False)
+    closed = s.close()
+    assert closed["ended_by"] == "killed", closed
+    assert closed["stdout_tail"] == "bye\n" and "omitted" not in closed, closed
+
+
 class _ExitingProcess:
     """A process that exits when asked through `quit`, or never, and records the order."""
 
     pid = 99
 
-    def __init__(self, events: list[str], exits: bool) -> None:
-        self.events, self.exits, self.gone = events, exits, False
+    def __init__(self, events: list[str], exits: bool, code: int = 0) -> None:
+        self.events, self.exits, self.gone, self.code = events, exits, False, code
 
     def poll(self) -> int | None:
-        return 0 if self.gone else None
+        return self.code if self.gone else None
 
     def wait(self, timeout: float | None = None) -> int:
         import subprocess
@@ -1367,7 +1410,7 @@ class _ExitingProcess:
             self.events.append("wait")
         if self.exits or "kill" in self.events:
             self.gone = True
-            return 0
+            return self.code
         raise subprocess.TimeoutExpired("mame", timeout or 0)
 
     def kill(self) -> None:
@@ -1388,8 +1431,9 @@ def test_close_carries_the_tail_of_each_log_before_the_scratch_goes(
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
-    closed = s.close()
+    closed = s.close(detail=True)
     assert closed["ended_by"] == "quit" and "how" not in closed, closed
+    assert "omitted" not in closed, closed
     assert closed["stdout_tail"].endswith("Segmentation fault\n"), closed["stdout_tail"]
     assert closed["errorlog_tail"] == "[luaengine] MAME_MCP_THROTTLE#1\n"
     assert not scratch.exists(), "the scratch still dies with the session"
@@ -1417,7 +1461,7 @@ def test_close_asks_mame_to_quit_before_it_kills() -> None:
     closed = s.close()
     assert closed["closed"] is True and closed["session"]["alive"] is True, "as it was BEFORE"
     assert closed["ended_by"] == "quit" and closed["exit_code"] == 0 and "reap_failed" not in closed
-    assert list(closed)[0] == "summary" and closed["summary"] == "close: quit, exit code 0"
+    assert list(closed)[0] == "summary" and closed["summary"].startswith("close: quit, exit code 0")
     assert ses.events == ["quit", "wait", "close"], ses.events
     assert "kill" not in ses.events, "a clean exit needs no signal"
     assert mstate.STATE.ses is None and mstate.STATE.proc is None
@@ -5617,7 +5661,7 @@ def test_close_lists_its_fields_in_the_order_its_docstring_promises(
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
-    keys = list(s.close())
+    keys = list(s.close(detail=True))
     promised = ["closed", "stdout_tail", "errorlog_tail", "ended_by", "exit_code"]
     assert [k for k in keys if k in promised] == promised, keys
 
@@ -6449,7 +6493,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     mstate.STATE.scratch, mstate.STATE.system = scratch, "m68k-dual"
     closed = s.close()
     assert closed["ended_by"] == "quit" and closed["state_written"] is True, closed
-    assert closed["summary"] == "close: quit, exit code 0"
+    assert closed["summary"].startswith("close: quit, exit code 0")
     (scratch / "cfg").mkdir(parents=True)
     cfg.write_text("<mameconfig/>")
     os.utime(cfg, ns=(1_000_000_000, 1_000_000_000))

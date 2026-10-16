@@ -2709,11 +2709,14 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, exit code 0",
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "stdout_tail": "<volatile>",
-  "errorlog_tail": "to 806C = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 806D = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 806E = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 806F = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8070 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8071 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8072 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8073 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8074 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8075 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8076 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8077 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8078 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8079 = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807A = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807B = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807C = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807D = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807E = FF & FF\n[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807F = FF & FF\n",
+  "omitted": [
+    "stdout_tail",
+    "errorlog_tail"
+  ],
+  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
   "ended_by": "quit",
   "exit_code": 0,
   "state_written": true,

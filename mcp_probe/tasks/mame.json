@@ -335,5 +335,7 @@
       "cpu": {"any_of": ["audiocpu", ":audiocpu"]}}]},
    "allow": ["by"], "grammar": ["capture", "r"]},
   {"id": "M168", "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base.",
-   "tool": "start", "args": {"system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin"}}
+   "tool": "start", "args": {"system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin"}},
+  {"id": "M169", "prompt": "End the MAME session, and keep what MAME printed last on each of its channels even if it quits cleanly.", "tool": "close", "args": {"detail": true}},
+  {"id": "M170", "prompt": "I am auditing the ROM set: list the machine's ROM files with their crc and sha1, and nothing else of the machine.", "tool": "machine_map", "args": {"sections": ["rom_files"]}, "grammar": ["rom_files"]}
 ]}

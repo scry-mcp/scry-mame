@@ -234,7 +234,15 @@ reports `average_speed`: the speed the host held over the last run window, compu
 the debugger's own emulated clock over the wall clock, because MAME suppresses its own
 speed line on a debugger exit. A clock that could not be read is said in that field
 (`available: false`, with its `why`) and `close` answers all the same: it is the one way out
-of every state, and the speed is decoration on it.
+of every state, and the speed is decoration on it. The channels' last words (`stdout_tail`,
+`errorlog_tail`) come back when the end was not a clean `quit` with exit code 0, which is when
+they say something; on a clean one they come back only with `detail=True`, and the reply's
+`omitted` names them with `how`.
+
+**A reply that answers less than everything says so.** Where the whole answer is larger than
+the question usually asked (`close`'s last words on a clean quit, `machine_map`'s `rom_files`),
+the default reply answers that question and carries `omitted`, the names it left out, and
+`how`, the argument that brings them; a reply that left nothing out carries neither.
 
 **The console's pipe is emptied before the exit is asked for**, because a chunk MAME's Lua
 state still holds at `quit` can take its collector down on the way out; `console_pending_before`
@@ -1756,6 +1764,13 @@ their crc and sha1. It is CACHED AT `start` and serves that cache: no subprocess
 the machine, no step, nothing altered, and the same answer every time, which is why it is the
 one tool here that declares `idempotentHint` as well as `readOnlyHint`. It answers on a
 RUNNING machine for the same reason: nothing in it is a value read off one.
+
+**It answers every section but `rom_files` unless asked.** `sections` names the ones to answer
+(`cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
+`symbol_coverage`); left out, the ROM files are not answered and `omitted` names them, with
+`how`. `counts` and `sources` cover the sections answered, so `symbol_coverage` below is
+present, empty or not, only when it is one of them. An empty or unknown list is refused
+`bad_argument` before the machine is asked.
 
 **Two of its sources are the emulator's, because neither of those carries the whole answer,
 and each SECTION says which backs it** (`sources`). MAME's `-listxml`, run once against THIS

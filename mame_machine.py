@@ -33,6 +33,8 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
+from scry_core import narrowing
+
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_inputs as inputs
@@ -629,7 +631,21 @@ NO_CLASSES_NOTE = ("`symbol_coverage` is empty: this session's symbol table carr
                    "at all), so there is no span to report and none is invented")
 
 
-def machine_map(cpu: str = "") -> dict[str, Any]:
+#: Every section `machine_map` answers, in reply order.
+MAP_SECTIONS: tuple[str, ...] = (*SECTIONS, SYMBOL_SECTION)
+#: What a map answers when asked for no section: the board's shape. Left out: `rom_files`, a
+#: crc and a sha1 per chip, the question of a ROM audit and not of a debugging session.
+DEFAULT_SECTIONS = frozenset(MAP_SECTIONS) - {"rom_files"}
+#: How a map that left a section out asks for it.
+MAP_HOW = "sections=[...] names the sections to answer"
+
+
+def check_machine_map(sections: list[str] | None = None, **_: Any) -> list[str]:
+    """`machine_map`'s machine-independent half, and the sections it answers."""
+    return narrowing.sections(sections, MAP_SECTIONS, DEFAULT_SECTIONS)
+
+
+def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, Any]:
     """The body of the `machine_map` tool: the cache `start` built, narrowed and bounded.
 
     The reply is a deep COPY: handing back the cache's own rows let a caller that touched one
@@ -639,6 +655,7 @@ def machine_map(cpu: str = "") -> dict[str, Any]:
     `truncated` is a boolean for the reason that lives beside `mame_read.LOG_LIMIT_MAX`; which
     section was cut needs no field, a section shorter than its own `counts` entry being the one.
     """
+    asked = check_machine_map(sections)
     if not STATE.machine_map:
         st.no_machine()
     chosen, wanted = select(STATE.machine_map, cpu)
@@ -646,20 +663,23 @@ def machine_map(cpu: str = "") -> dict[str, Any]:
     # its own slice, its own count, its own term in the truncation test and its own place in
     # the reply: the same decision written twice, and the second copy is the one that gets
     # forgotten when the ceiling moves.
-    rows = {**{name: chosen[name] for name in SECTIONS},
-            SYMBOL_SECTION: symbol_coverage(wanted)}
+    rows = {name: symbol_coverage(wanted) if name == SYMBOL_SECTION else chosen[name]
+            for name in asked}
     shown = {name: copy.deepcopy(items[:read.LOG_LIMIT_MAX]) for name, items in rows.items()}
     # A CPU IS NAMED `cpu` IN EVERY ROW OF THE REPLY, its own row too, as `cpu_info` names it:
     # the cache keeps `tag`, which the inventory's parsers and readers key by.
-    shown["cpus"] = [{"cpu": row["tag"], **{k: v for k, v in row.items() if k != "tag"}}
-                     for row in shown["cpus"]]
-    note = st.join_notes(chosen["note"], None if shown[SYMBOL_SECTION] else NO_CLASSES_NOTE)
+    if "cpus" in shown:
+        shown["cpus"] = [{"cpu": row["tag"], **{k: v for k, v in row.items() if k != "tag"}}
+                         for row in shown["cpus"]]
+    note = st.join_notes(chosen["note"], None if shown.get(SYMBOL_SECTION, True)
+                         else NO_CLASSES_NOTE)
     reply: dict[str, Any] = {
         **shown,
         "counts": {name: len(items) for name, items in rows.items()},
         "truncated": any(len(shown[name]) < len(rows[name]) for name in rows),
-        "sources": copy.deepcopy(chosen["sources"]),
+        "sources": {n: copy.deepcopy(v) for n, v in chosen["sources"].items() if n in asked},
         "note": note,
+        **narrowing.omission([n for n in MAP_SECTIONS if n not in asked], MAP_HOW),
     }
     reply = st.merged(reply, read.frame_fields())
     reply["cpu"] = wanted or st.unavailable(st.NO_CPU_NAMED_WHY)

@@ -2179,11 +2179,14 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "close: quit, exit code 0",
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "stdout_tail": "<volatile>",
-  "errorlog_tail": "lver nl_gcr_438_double_double_d32effa2b0ea54a1 found ...\n[:sound_nl] netlist INFO: External static solver nl_gcr_27_double_double_649ebca7fa6793ed found ...\n[:sound_nl] netlist INFO: External static solver nl_gcr_9_double_double_bd1514d7defd4062 found ...\n[:sound_nl] netlist INFO: External static solver nl_gcr_9_double_double_bd1514d7defd4062 found ...\n[:sound_nl] netlist INFO: External static solver nl_gcr_23_double_double_b75e0baeb501e907 found ...\n[:sound_nl] netlist INFO: External static solver nl_gcr_7_double_double_feae15b80dd73620 found ...\nSoft reset\n[luaengine] MAME_MCP_INPUT#1 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=179\n\n[luaengine] MAME_MCP_INPUT#1 release frame=183 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=214\n\n[luaengine] MAME_MCP_INPUT#2 release frame=218 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#3 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=249\n\n[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#4 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=284\n\n[luaengine] MAME_MCP_INPUT#4 release frame=288 port_held=000000f9\n\n[luaengine] MAME_MCP_INPUT#5 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000000 port_before=000000f8 frame=314\n\n[luaengine] MAME_MCP_INPUT#5 release frame=318 port_held=000000f9\n\n",
+  "omitted": [
+    "stdout_tail",
+    "errorlog_tail"
+  ],
+  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
   "ended_by": "quit",
   "exit_code": 0,
   "state_written": true,

@@ -43,6 +43,7 @@ import mame_gfx as mgfx
 import mame_inputs as inputs
 import mame_locate as mlocate
 import mame_lua as mlua
+import mame_machine as machine
 import mame_manifest as manifest
 import mame_palette as mpalette
 import mame_progress as mprogress
@@ -161,6 +162,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "watch_clear": watches.check_watch_clear,
     "regpoint_clear": regpoints.check_regpoint_clear,
     "debug": mwrite.check_debug,
+    "machine_map": machine.check_machine_map,
 }
 
 #: OPERATIONS WITH NO MACHINE-INDEPENDENT HALF, named so an absent entry above is a decision and not
@@ -168,7 +170,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
 #: capture it wrote, a state on its disk -- or they take none.
 MACHINE_JUDGES = frozenset({
     "breakpoint_list", "watch_list", "regpoint_list", "comment_list",
-    "state_list", "captures", "stop", "status", "machine_map", "reset", "cpu_info",
+    "state_list", "captures", "stop", "status", "reset", "cpu_info",
     "scan_clear",
 })
 

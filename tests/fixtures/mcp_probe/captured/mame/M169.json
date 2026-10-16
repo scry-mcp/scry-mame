@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M169",
+  "prompt": "End the MAME session, and keep what MAME printed last on each of its channels even if it quits cleanly.",
+  "tool": "close",
+  "args": {
+   "detail": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M169: {\"tool\": \"close\", \"args\": {\"detail\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M169: {\"tool\": \"close\", \"args\": {\"detail\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M169: {\"tool\": \"close\", \"args\": {\"detail\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

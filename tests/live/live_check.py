@@ -105,7 +105,11 @@ check("the last address of the ROM entry is inside it, at the block's last byte"
       f"offset={last.get('offset')} ({last.get('code', '')}: {str(last.get('message', ''))[:60]})")
 
 print("\n== machine_map(): what the board IS, from the cache start built")
-mm = s.machine_map()
+mm = s.machine_map(sections=list(machine.MAP_SECTIONS))
+short = s.machine_map()
+check("the default map leaves the ROM files out and names them, the rest whole",
+      "rom_files" not in short and short.get("omitted") == ["rom_files"]
+      and short.get("address_map") == mm.get("address_map"), str(short.get("omitted")))
 cpus = {c.get("cpu"): c for c in mm.get("cpus", [])}
 check("both 68000s are there, with distinct tags",
       mm.get("status") == "ok" and sorted(cpus) == [":maincpu", ":subcpu"], str(sorted(cpus)))

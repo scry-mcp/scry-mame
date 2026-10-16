@@ -94,9 +94,10 @@ def close(args: dict[str, Any], reply: dict[str, Any]) -> str:
             "exited": "exited without writing its state",
             "killed": "killed after the grace period"}[reply["ended_by"]]
     code = reply["exit_code"]
+    left = ", last words left out (see `omitted`)" if reply.get("omitted") else ""
     if isinstance(code, dict):
-        return f"close: {when}, reap failed, no exit code"
-    return f"close: {when}, exit code {code}"
+        return f"close: {when}, reap failed, no exit code{left}"
+    return f"close: {when}, exit code {code}{left}"
 
 
 def focus(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -314,8 +315,10 @@ def machine_map(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # how much there is.
     shape = _sections(reply["counts"])
     cut = ", some sections cut (see `counts`)" if reply["truncated"] else ""
+    left = reply.get("omitted") or []
+    out = f", left out: {', '.join(left)} (see `omitted`)" if left else ""
     of = f" of {_filtered_on(reply)}" if _filtered_on(reply) else ""
-    return f"machine_map{of}: {shape or 'nothing this gather recognised'}{cut}"
+    return f"machine_map{of}: {shape or 'nothing this gather recognised'}{cut}{out}"
 
 
 def read_memory(args: dict[str, Any], reply: dict[str, Any]) -> str:

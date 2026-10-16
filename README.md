@@ -357,7 +357,7 @@ carries no default of its own.
 |---|---|
 | `start` | boots the system with the debugger attached, proves the ROM against the reference image, reads the symbol file (one per cpu when given a mapping), re-arms what the declaration store held, each declaration on its own cpu, and parks the machine stopped; refused while a session is live; a boot that dies by a signal (an assertion's abort, or a first cpu the stub cannot describe, excepted) or meets a stub not ready is launched again, boundedly, each attempt launched again in `start_retries` |
 | `status` | is it up, is it running, where it last stopped, what it has written, what its files are, which cpus there are |
-| `close` | ends it, asking MAME to quit through its console before it ever kills, so `cfg/` and `nvram/` get written; says which ending it got (`ended_by`) and the host's `average_speed` over the last run |
+| `close` | ends it, asking MAME to quit through its console before it ever kills, so `cfg/` and `nvram/` get written; says which ending it got (`ended_by`) and the host's `average_speed` over the last run; MAME's last words come back on an unclean end, or with `detail=True` |
 | `rom_check` | a known-answer read of the reference image's first bytes on the STOPPED machine |
 | `focus` | makes another cpu the debugger's visible one and reads it back: through the gdbstub's thread patch, proving nothing ran; without it, through the console's own `focus`, whose ignored cpus and run it reports |
 | `cpu_info` | what the debugger sees of each cpu at the call, moving nothing: which cpu is visible, which are ignored or suspended, each program counter, and what is declared on each |
@@ -393,7 +393,7 @@ carries no default of its own.
 | `scan_clear` | drop the open scan |
 | `history` | the last `limit` instructions executed, the console's own trail |
 | `symbols_find` | a name in the table of `cpu`, or which symbol a runtime address is inside, and what the address IS to the machine (`ram`, `rom`, `latch`, `unmapped`) |
-| `machine_map` | what the machine IS, not what is on it: its cpus with their clocks and spaces, every address map entry and the share or region it names, the blocks by tag and size, the screens, the ROM files with their crc. Cached at `start`, so it costs nothing and answers the same every time; every section names the source that backs it |
+| `machine_map` | what the machine IS, not what is on it: its cpus with their clocks and spaces, every address map entry and the share or region it names, the blocks by tag and size, the screens and, asked by `sections`, the ROM files with their crc. Cached at `start`, so it costs nothing and answers the same every time; every section names the source that backs it |
 | `write` | bytes at a `ref`, READ BACK (`readback`, `verified`); the session is altered for good. On ROM it goes nowhere and names the region behind it; `region=True` patches that region live, in its own byte order |
 | `set_register` | a register forced and read back; a 16-bit register answers to its short name too |
 | `reset` | the soft reset, applied and read back against the boot pc; a hard reset is refused |

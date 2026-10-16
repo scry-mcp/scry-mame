@@ -46,6 +46,7 @@ import mame_gfx as mgfx  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_lua as mlua  # noqa: E402
+import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
@@ -170,6 +171,7 @@ OWNERS = {
 
 OWNERS.update({
     "breakpoint_clear": breakpoints.check_breakpoint_clear, "debug": mwrite.check_debug,
+    "machine_map": machine.check_machine_map,
     "watch_clear": watches.check_watch_clear, "regpoint_clear": regpoints.check_regpoint_clear,
     "resume": running.check_resume, "throttle": mlua.check_throttle,
     "record": mrec.check_record, "input": mlua.check_input,
@@ -258,6 +260,7 @@ def test_every_module_body_asks_its_own_check() -> None:
         "trace": mtrace.trace,
         "breakpoint_clear": breakpoints.breakpoint_clear, "watch_clear": watches.watch_clear,
         "regpoint_clear": regpoints.regpoint_clear, "debug": mwrite.debug,
+        "machine_map": machine.machine_map,
     }
     assert set(bodies) == set(sequence.BY_OP), sorted(set(bodies) ^ set(sequence.BY_OP))
     for op, body in bodies.items():

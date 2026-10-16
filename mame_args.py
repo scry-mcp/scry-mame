@@ -40,7 +40,8 @@ BY_TOOL: dict[str, Callable[..., Any]] = {
     "drive": sequence.check_drive,
 }
 
-#: DELIBERATELY WITHOUT AN ENTRY: the batch's own list, plus `close`, which takes nothing to judge.
+#: DELIBERATELY WITHOUT AN ENTRY: the batch's own list, plus `close`, whose one flag the schema
+#: judges and which no batch can reach.
 #: Named rather than omitted: an absent entry and a forgotten one look identical, and a test holds
 #: this set plus `BY_TOOL` to the server's own registry.
 MACHINE_JUDGES = sequence.MACHINE_JUDGES | {"close"}
