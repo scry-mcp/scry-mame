@@ -163,12 +163,14 @@ def probe_check(tool: str, given: dict[str, Any], effective: dict[str, Any]) -> 
     args.check(tool, **inputs.numbers_read(_BODIES[tool], effective))
 
 
-def _end_cancelled(name: str, on_cancel: cancel.OnCancel, began: float) -> None:
+def _end_cancelled(name: str, on_cancel: cancel.OnCancel, began: float) -> dict[str, Any]:
     """THE END A CANCELLED CALL DECLARED, applied at once: the end its own bound would have given
     it, under the shield so that end's own waits run to completion. `stop` for a tool that comes
     back STOPPED (the `stop` tool's own path: a machine already stopped is left so), `kill` for
     one whose failure path ends the emulator, `none` for one that leaves the machine as it was.
-    What it left is recorded for the next reply."""
+    What it left is recorded for the next reply, and so is the account of a stop the machine
+    reached on its own that this call found (or its end did), which its reply would have said:
+    returned for the wrapper to keep past the end of the call."""
     left: cancel.Left | None = None
     with cancel.shielded():
         try:
@@ -187,7 +189,8 @@ def _end_cancelled(name: str, on_cancel: cancel.OnCancel, began: float) -> None:
         ses = STATE.ses
         left = ("closed" if ses is None or not STATE.machine_alive()
                 else "running" if ses.running else "stopped")
-    STATE.cancelled = cancel.Cancelled(name, time.monotonic() - began, left)
+    STATE.cancelled = cancel.recorded(STATE.cancelled, name, time.monotonic() - began, left)
+    return dict(STATE.found_stop_last)
 
 
 def tool(
@@ -241,12 +244,14 @@ def tool(
         def wrapped(*a: Any, **k: Any) -> Any:
             with LOCK:
                 latched_before = STATE.broken
+                # A CALL CANCELLED WHILE IT WAITED FOR THE LOCK did nothing, so it has no end
+                # to apply and nothing to record.
+                cancel.check()
                 began = time.monotonic()
                 _nested[0] += 1
                 reply: dict[str, Any] | None = None
+                found: dict[str, Any] = {}
                 try:
-                    # A CALL CANCELLED WHILE IT WAITED FOR THE LOCK touches nothing.
-                    cancel.check()
                     # A COUNT IS AN INT TO EVERY BODY: an integral float a direct call or a
                     # `perform` step carried is made the int it equals (`integral_counts`).
                     # AND A NUMBER IS AN INT TOO: every argument the tool declares `NumberArg`,
@@ -289,13 +294,16 @@ def tool(
                     # A CANCELLED CALL ends as it declared and answers nothing: the request is
                     # gone, so the record waits for the next reply. Anything else is not ours.
                     if cancel.is_cancellation(e):
-                        _end_cancelled(fn.__name__, on_cancel or "none", began)
+                        found = _end_cancelled(fn.__name__, on_cancel or "none", began)
                     raise
                 finally:
                     # The wrapper is the one place that knows the OUTER call is over, a call
                     # that escaped without a reply included. A `finally`, because an exception
-                    # re-raised from one `except` clause never reaches a sibling clause.
+                    # re-raised from one `except` clause never reaches a sibling clause. A
+                    # cancelled call had no reply, so what it found waits for the next.
                     STATE.end_call()
+                    if found:
+                        STATE.found_stop_last = found
                     # THE IDLE CLOCK RESTARTS WHEN A CALL ENDS (`mame_idle`).
                     idle.IDLE.touch()
                     _nested[0] -= 1

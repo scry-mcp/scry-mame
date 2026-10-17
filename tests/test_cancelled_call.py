@@ -224,3 +224,51 @@ def test_a_call_cancelled_while_it_waited_for_the_lock_touches_nothing(
     with pytest.raises(asyncio.CancelledError):
         s.write(ref="0x100", data_hex="aa")
     assert ses.writes == writes
+
+
+@pytest.mark.parametrize("end", ["stop", "kill"])
+def test_a_call_cancelled_in_the_queue_applies_no_end_and_keeps_no_record(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any],
+        end: str) -> None:
+    """Cancelled before its body ran, the call did nothing, so it has nothing to end: a queued
+    `start` that killed the session it never touched would be the worst of it."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+    killed: list[bool] = []
+    def kill(*a: Any, **k: Any) -> dict[str, Any]:
+        killed.append(True)
+        return {}
+    monkeypatch.setattr(mstate.STATE, "kill", kill)
+    _cancel_at(monkeypatch, 1)
+    with pytest.raises(asyncio.CancelledError):
+        waiting_tool[end]()
+    assert ses.running is True and killed == []
+    assert mstate.STATE.cancelled is None
+
+
+def test_a_second_cancel_keeps_the_name_of_the_first_no_reply_reported(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
+    _running(monkeypatch, tmp_path).running = True
+    for _ in range(2):
+        _cancel_at(monkeypatch, 2)
+        with pytest.raises(asyncio.CancelledError):
+            waiting_tool["none"]()
+    assert s.status()["cancelled"]["earlier"] == ["wait_none"]
+
+
+def test_the_stop_end_hands_the_next_reply_a_stop_the_machine_had_reached_on_its_own(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
+    """The end's stop reply goes to nobody, so what it found rides on the next one."""
+    import mame_running as running
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+
+    def stop(*a: Any, **k: Any) -> dict[str, Any]:
+        ses.running = False                    # the machine was found at a stop of its own
+        mstate.STATE.found_stop_last = {"stop_seq": 3, "pc": "0x100"}
+        return {"status": "ok", "stopped_on_its_own": dict(mstate.STATE.found_stop_last)}
+    monkeypatch.setattr(running, "stop", stop)
+    _cancel_at(monkeypatch, 2)
+    with pytest.raises(asyncio.CancelledError):
+        waiting_tool["stop"]()
+    assert s.status().get("stopped_on_its_own", {}).get("stop_seq") == 3
