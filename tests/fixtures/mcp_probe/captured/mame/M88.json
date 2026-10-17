@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "M88",
-  "prompt": "Print register d0 in hex through the debugger console with the line printf \"d0=%x\",d0; it only prints, so it must not count as a write.",
+  "prompt": "Print register d0 in hex through the debugger console. The command is `printf \"d0=%x\",d0` and it only prints, so it must not count as a write.",
   "tool": "debug",
   "args": {
    "command": "printf \"d0=%x\",d0"
