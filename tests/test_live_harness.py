@@ -675,3 +675,32 @@ def test_a_run_of_no_frame_is_refused_before_any_call(monkeypatch: pytest.Monkey
                                                       tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="at least one frame"):
         _run_frames(monkeypatch, tmp_path, 0, [])
+
+
+def _focus_section(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> ModuleType:
+    """Section X's module, on the harness `_harness` loads, on no machine."""
+    _harness(monkeypatch, tmp_path)
+    monkeypatch.delitem(sys.modules, "matrix_focus", raising=False)
+    spec = importlib.util.spec_from_file_location("matrix_focus", LIVE / "matrix_focus.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_focus_gate_names_a_held_boards_binary_and_skips_one_the_bench_lacks(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    x = _focus_section(monkeypatch, tmp_path)
+    monkeypatch.setattr(x.bench_boards, "board_missing",
+                        lambda board: "" if board == "m68k-dual-alt" else "copies ABSENT")
+    names = x._names()
+    assert "altmame" in names and "dualmame" not in names and "v30mame" not in names
+
+
+def test_a_bench_defect_reaching_the_focus_gates_names_is_raised_never_dropped(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A binary dropped from the names in silence would let the verdict read CLEAN over it."""
+    x = _focus_section(monkeypatch, tmp_path)
+    monkeypatch.setattr(x, "BENCH_BOARDS", ("no-such-board",))
+    with pytest.raises(KeyError, match="no-such-board"):
+        x._names()
