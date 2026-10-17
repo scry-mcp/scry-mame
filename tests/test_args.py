@@ -449,11 +449,11 @@ def test_the_instructions_name_every_operation_that_answers_while_running() -> N
     docstrings and the refusal's `answers_while_running` kept them."""
     text = s.mcp.instructions or ""
     running = text[text.index("While it runs"):text.index("`rom_check`:")]
-    files = text[text.index("Files:"):text.index("A SESSION.")]
+    files = text[text.index("Files, any state:"):text.index("A SESSION.")]
     media = set(media_tools.TOOLS)
     missing = sorted(op for op in sequence.RUNNING_OK_OPS - media if f"`{op}`" not in running)
     assert not missing, f"the instructions' running paragraph does not name {missing}"
-    # The media file tools answer in ANY state and are named once, where the tools are.
+    # The media file tools answer in ANY state, are named once where the tools are, and say so.
     assert all(f"`{op}`" in files for op in media), files
 
 

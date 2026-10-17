@@ -189,8 +189,7 @@ class Envelope(MCPServer):
 # own running-ok operations, the last stop's registers, the two batch tools (which wait for a
 # stop before a step that needs one) and `close`. The list is the server's because it names
 # tools.
-# The media file tools answer in any state too; their own descriptions say so ("it needs no
-# machine"), since the `instructions` have no room left to.
+# The media file tools answer in any state too, and the instructions say so once, beside them.
 _ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
                           "registers(from_last_stop=True)", "perform", "drive", "close"]
 
@@ -207,7 +206,7 @@ mcp = Envelope(
         "`comment_add`, `comment_delete`, `comment_load`. Lua: `input`, `record`, "
         "`audio_record`, "
         "`state_save`, `state_load`, `lua`. "
-        "Files: `image_diff`, `series_diff`, "
+        "Files, any state: `image_diff`, `series_diff`, "
         "`region_track`, `golden_check`, `audio_measure`, `audio_diff`.\n\n"
         "A SESSION. `start` parks the machine STOPPED. "
         "`run_to`, `run_for`, `step` stop it again with a survey; `run_to`'s target has no "
@@ -215,7 +214,7 @@ mcp = Envelope(
         "`resume` lets it RUN. While it runs the readers refuse (`not_stopped`); these "
         "answer: " + ", ".join(f"`{name}`" for name in _ANSWERS_WHILE_RUNNING) + ". "
         "`rom_check`: 16 bytes at `reference_addr` vs `reference_rom` at `reference_base`. "
-        "`memdump`, `snapshot`, `series_capture`, `region_track` answer with a PATH.\n\n"
+        "`memdump`, `snapshot` answer with a PATH.\n\n"
         "CPUS: no `cpu` acts on the VISIBLE one (stops move it), lists or clears all; named, moves "
         "only `step`'s.\n\n"
         "ADDRESSES are written `0x`, a condition as typed; any other ref is a symbol, bare hex "

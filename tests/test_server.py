@@ -453,8 +453,13 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
     # The tools that answer with a PATH, and only those: a caller told everything comes back in
     # the reply would read a file-returning tool as a broken one, and one told `log` returns a
     # path looks for a field its reply, which carries `lines`, does not have.
-    assert ("`memdump`, `snapshot`, `series_capture`, `region_track` answer with a PATH"
+    # `series_capture` and `region_track` answer with a path too, and their own descriptions say
+    # so: the room went to saying the file tools answer in any state, which no description
+    # placed after a refusal could.
+    assert ("`memdump`, `snapshot` answer with a PATH"
             in " ".join(text.split())), "the instructions do not name the file-returning tools"
+    assert "Files, any state: `image_diff`" in " ".join(text.split()), (
+        "a caller with the machine running would stop it before a file tool")
     assert "16 bytes" in text, "a spot check must not read as the whole image"
     assert "STOPPED" in text, (
         "rom_check is a memory read, and a read against a RUNNING machine does not come back as "
