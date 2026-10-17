@@ -147,7 +147,8 @@ WAIT_ARGS = ("seconds", "settle_seconds")
 
 
 class Blocked(Exception):
-    """A call the matrix refuses to make, and why: the cell it belonged to is BLOCKED."""
+    """A call the matrix refuses to make, or a run the host could not carry to what a cell reads
+    (`run_frames`), and why: the cell it belonged to is BLOCKED."""
 
 
 @dataclass
@@ -261,6 +262,46 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
 
 def last_wall() -> float:
     return float(PENDING[-1]["wall_s"]) if PENDING else 0.0
+
+# A RUN COUNTED IN FRAMES COSTS WALL TIME AT THE BOARD'S OWN SPEED, and a board boots throttled to
+# real speed: so a frame run goes in legs, each inside one call's wait with room to spare, and each
+# must reach its frames before a cell reads the screen or a count. A leg whose bound ran out short
+# of them says the host could not hold the board's speed, which is BLOCKED naming it, never a FAIL
+# of whatever the cell read next; any other answer is the cell's to judge.
+#: The speed a leg is sized for, and the leg: half of one call's wait at that speed.
+REAL_SPEED_FPS = 60
+LEG_FRAMES = int(WAIT_CEILING_S * REAL_SPEED_FPS) // 2
+
+
+def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
+    """Run `frames` from where the machine stands, in legs of at most `leg_frames`, each later
+    leg asking for what the counter says is left. The last leg's reply, or the first that is no
+    ELAPSED run counted on the frame counter (a refusal, a stop that cut it, a run that would not
+    settle), for the cell to judge; `Blocked` when a leg's bound ran out short of its frames."""
+    if frames < 1:
+        raise ValueError(f"run_frames runs at least one frame, not {frames}")
+    end: int | None = None
+    left = frames
+    while True:
+        leg = min(left, leg_frames)
+        began = time.monotonic()
+        reply = call("run_for", frames=leg, seconds=WAIT_CEILING_S)
+        spent = time.monotonic() - began
+        before, after = reply.get("frame_before"), reply.get("frame_after")
+        if not (isinstance(before, int) and isinstance(after, int)):
+            return reply
+        if (reply.get("code") == "not_settled" and after < before + leg
+                and spent >= WAIT_CEILING_S):
+            raise Blocked(f"run_for({leg} frames, {WAIT_CEILING_S:g} s) reached frame {after} "
+                          f"of {before + leg} in {spent:.1f} s: the host could not hold the "
+                          "board's speed, so this known answer was not reached")
+        if not ok(reply) or reply.get("verdict") != "ELAPSED":
+            return reply
+        end = before + frames if end is None else end
+        left = end - after
+        if left <= 0:
+            return reply
+
 
 
 # ------------------------------------------------------------------ what every reply promises
@@ -589,8 +630,9 @@ def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
         try:
             run(cells)
         except Blocked as e:
-            # A CALL THE MATRIX REFUSED (a wait past the ceiling, a bench copy gone wrong): the
-            # cells it left open could not be run, which is BLOCKED and never a FAIL.
+            # A CALL THE MATRIX REFUSED (a wait past the ceiling, a bench copy gone wrong) or a
+            # run the host could not carry: the cells it left open could not be run, which is
+            # BLOCKED and never a FAIL.
             for label in mine:
                 if label not in judged:
                     blocked(label, str(e))

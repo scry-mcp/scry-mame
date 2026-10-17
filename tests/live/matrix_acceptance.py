@@ -47,6 +47,7 @@ from live_harness import (
     refused,
     require_booted,
     run_boards,
+    run_frames,
     run_sections,
     said,
     section,
@@ -104,7 +105,8 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
 
 
-RUN_STEP_FRAMES = 100   # frames a single run_for is asked for, so each one fits one call's wait
+#: The leg these boards' runs go in: they hold less than the real speed `LEG_FRAMES` is sized for.
+RUN_STEP_FRAMES = 100
 
 
 
@@ -124,12 +126,11 @@ def palette_manifest(name: str, label: str) -> str:
     return str(out)
 
 def _run_frames(frames: int) -> list[str]:
-    """Run `frames` frames in steps of RUN_STEP_FRAMES, answering what each step that was not
-    ELAPSED said: a cell after a run that stopped short judges a machine that never got there."""
-    assert frames % RUN_STEP_FRAMES == 0, f"{frames} is not a whole number of steps"
-    replies = [call("run_for", frames=RUN_STEP_FRAMES, seconds=WAIT_CEILING_S)
-               for _ in range(frames // RUN_STEP_FRAMES)]
-    return [said(r, 60) for r in replies if not (ok(r) and r.get("verdict") == "ELAPSED")]
+    """Run `frames` (`run_frames`, in legs of `RUN_STEP_FRAMES`): what the run said when it was
+    no ELAPSED one, empty when it was, since a cell after a run that stopped short judges a
+    machine that never got there."""
+    r = run_frames(frames, RUN_STEP_FRAMES)
+    return [] if ok(r) and r.get("verdict") == "ELAPSED" else [said(r, 60)]
 
 
 def _palette_log_matches(port: str, pens: tuple[int, ...]) -> tuple[bool, str]:

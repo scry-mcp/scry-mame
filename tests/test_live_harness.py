@@ -585,3 +585,93 @@ def test_a_signal_that_ends_the_run_is_an_exit_its_children_see(
     with pytest.raises(SystemExit) as stop:
         h._leave(15, None)
     assert stop.value.code == 128 + 15
+
+
+class _Runs:
+    """A scripted `run_for`: each leg's reply in turn, on a clock the leg advances by its own
+    `spent` seconds, so a bound that ran out is told apart from a quick answer."""
+
+    def __init__(self, replies: list[tuple[dict[str, object], float]]) -> None:
+        self.replies, self.now = list(replies), 0.0
+        self.asked: list[object] = []
+
+    def call(self, tool: str, **kw: object) -> dict[str, object]:
+        assert tool == "run_for" and set(kw) == {"frames", "seconds"}
+        self.asked.append(kw["frames"])
+        reply, spent = self.replies.pop(0)
+        self.now += spent
+        return reply
+
+    def clock(self) -> float:
+        return self.now
+
+
+def _reply(**body: object) -> dict[str, object]:
+    """A reply in the envelope every one keeps: `summary` first, `session` last."""
+    return {"summary": "s", **body, "session": {}}
+
+
+def _elapsed(before: int, after: int) -> dict[str, object]:
+    return _reply(status="ok", verdict="ELAPSED", frame_before=before, frame_after=after)
+
+
+def _short(before: int, after: int, message: str) -> dict[str, object]:
+    return _reply(status="INVALID", code="not_settled", frame_before=before, frame_after=after,
+                  message=message)
+
+
+def _run_frames(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, frames: int,
+                replies: list[tuple[dict[str, object], float]],
+                **kw: int) -> tuple[_Runs, dict[str, object] | BaseException]:
+    h = _harness(monkeypatch, tmp_path)
+    runs = _Runs(replies)
+    monkeypatch.setattr(h, "call", runs.call)
+    monkeypatch.setattr(h.time, "monotonic", runs.clock)
+    try:
+        return runs, h.run_frames(frames, **kw)
+    except h.Blocked as e:
+        return runs, e
+
+
+def test_a_frame_run_goes_in_legs_and_the_next_asks_what_the_counter_left(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    runs, got = _run_frames(monkeypatch, tmp_path, 700, [
+        (_elapsed(3, 303), 5.0), (_elapsed(303, 608), 5.0), (_elapsed(608, 703), 2.0)])
+    assert runs.asked == [300, 300, 95]           # the overshoot to 608 is not run again
+    assert got == _elapsed(608, 703)
+
+
+def test_a_leg_its_bound_cut_short_is_blocked_naming_what_it_reached(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    runs, got = _run_frames(monkeypatch, tmp_path, 600, [
+        (_elapsed(0, 300), 5.0), (_short(300, 485, "reached 485 of the 600 asked for"), 10.0)])
+    assert isinstance(got, BaseException) and runs.asked == [300, 300]
+    assert "reached frame 485 of 600 in 10.0 s" in str(got) and "speed" in str(got)
+
+
+@pytest.mark.parametrize("reply, spent", [
+    # every frame landed and the counter still moves: the server's defect, not the host's
+    (_short(0, 300, "reached 300 of the 300 asked for and still moves"), 4.0),
+    # a session that failed quickly, short of the frames: no bound ran out
+    (_short(0, 120, "the session failed before its landing was confirmed"), 2.0),
+    (_reply(status="ok", verdict="OTHER_STOP", frame_before=0, frame_after=40), 1.0),
+    (_reply(status="INVALID", code="bad_argument", message="no"), 0.0),
+])
+def test_any_other_answer_is_the_cells_to_judge_and_no_later_leg_is_sent(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, reply: dict[str, object],
+        spent: float) -> None:
+    runs, got = _run_frames(monkeypatch, tmp_path, 600, [(reply, spent)])
+    assert got == reply and runs.asked == [300]
+
+
+def test_the_leg_follows_the_caller_and_no_run_of_nothing_is_asked(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    runs, _ = _run_frames(monkeypatch, tmp_path, 200, [(_elapsed(0, 100), 1.0),
+                                                       (_elapsed(100, 200), 1.0)], leg_frames=100)
+    assert runs.asked == [100, 100]
+
+
+def test_a_run_of_no_frame_is_refused_before_any_call(monkeypatch: pytest.MonkeyPatch,
+                                                      tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="at least one frame"):
+        _run_frames(monkeypatch, tmp_path, 0, [])

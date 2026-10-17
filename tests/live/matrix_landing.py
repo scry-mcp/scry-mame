@@ -1,7 +1,8 @@
 """Section V of the live matrix: a control on the instruction a frame stop lands on, on
 m68k-dual-alt, where that instruction is the first of the handler the vblank interrupt enters.
 
-Two arms over one run by frames (`breakpoints.count_landing` says why they differ). The server's:
+Two arms over one run by frames, in `run_frames`' legs, whose stops between them the server
+counts as it counts any (`breakpoints.count_landing` says why the arms differ). The server's:
 a control there counts as many hits as a control on the next instruction. MAME's own: a logging
 breakpoint there, typed through `debug`, logs fewer lines than one on the next instruction. The
 day MAME evaluates that instruction the second arm goes red, and the server's correction is the
@@ -24,6 +25,7 @@ from live_harness import (
     ok,
     require_booted,
     run_boards,
+    run_frames,
     said,
     section,
 )
@@ -50,7 +52,7 @@ def _v_m68k_dual_alt(_cells: list[str]) -> None:
     controls = [call("breakpoint_at", ref=ref, role="control") for ref in (HANDLER, INSIDE)]
     raw = [call("debug", command=f'bp {ref[2:]},1,{{logerror "{word} %d\\n",frame ; g}}')
            for ref, word in ((HANDLER, AT_HANDLER), (INSIDE, AT_INSIDE))]
-    run = call("run_for", frames=RUN_FRAMES, seconds=10.0)
+    run = run_frames(RUN_FRAMES)
     rows = {b.get("ref"): b for b in call("breakpoint_list").get("breakpoints") or []}
     first, inside = (rows.get(ref, {}).get("hits_since_armed") for ref in (HANDLER, INSIDE))
     logged_first, logged_inside = _logged(AT_HANDLER), _logged(AT_INSIDE)

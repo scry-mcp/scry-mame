@@ -81,6 +81,7 @@ from live_harness import (
     rearm_pairs,
     refused,
     run_boards,
+    run_frames,
     run_sections,
     said,
     section,
@@ -2898,7 +2899,7 @@ def counted_changes(said_by: str, first: int, last: int) -> tuple[int, int] | No
 
 def _d_circus(t: list[str]) -> None:
     circus_boot()
-    call("run_for", frames=600, seconds=10.0)
+    run_frames(600)
     before = call("status")["session"]["altering_writes"]
     r = call("screen_view", scale=1)
     cell(t[0], ok(r) and r.get("screen_indexed") is True and r.get("entries") == 2
@@ -2917,7 +2918,7 @@ def _d_circus(t: list[str]) -> None:
     cell(t[2], ok(r) and r.get("matched") is False and near.get("is_a_match") is False
          and near.get("disagree", 0) > 0, said(r))
     armed = call("gfx_film", trigger="0x2000", keep=2, frames=4)
-    call("run_for", frames=6, seconds=10.0)
+    run_frames(6)
     film = call("gfx_film")
     armed_film = armed.get("film") or {}
     mismatch = armed_film.get("mismatch") or {}
@@ -2937,7 +2938,7 @@ def _d_circus(t: list[str]) -> None:
     # both see the same first write, which is the film's baseline
     armed = call("gfx_film", trigger="0x2000", changed=True, keep=2, frames=120)
     call("lua", script=CHANGE_COUNTER_LUA % (0x2000, 0x2000))
-    call("run_for", frames=125, seconds=10.0)
+    run_frames(125)
     film = call("gfx_film")
     said_by = str(call("lua", script=CHANGE_COUNTER_READ).get("output", ""))
     judged = film.get("judged_frames")
@@ -2951,7 +2952,7 @@ def _d_circus(t: list[str]) -> None:
          f"counter over {window}: {counted}; {said(film)}")
     call("gfx_film", clear=True)
     call("gfx_film", trigger="0x1f", changed=True, keep=2, frames=60)
-    call("run_for", frames=65, seconds=10.0)
+    run_frames(65)
     film = call("gfx_film")
     cell(t[20], ok(film) and film.get("judged") == 60 and film.get("met") == 0
          and "nothing_kept" in film and film.get("baseline_value") == "0x73", said(film))
@@ -2960,7 +2961,7 @@ def _d_circus(t: list[str]) -> None:
     # lost, and each drawn one is read at the next frame that drew, which its file counts
     call("lua", script="manager.machine.video.frameskip = 6")
     call("gfx_film", trigger="0x3000", keep=4, frames=8)
-    call("run_for", frames=14, seconds=10.0)
+    run_frames(14)
     film = call("gfx_film")
     cell(t[18], ok(film) and film.get("kept") == 4 and film.get("refused") == 0
          and film.get("lost") == {"skipped": 4}, said(film))
@@ -2969,7 +2970,7 @@ def _d_circus(t: list[str]) -> None:
 
 def _d_gridlee(t: list[str]) -> None:
     free_boot("gridlee", ["gridfnla.bin"], "0xa000")
-    call("run_for", frames=900, seconds=10.0)
+    run_frames(900)
     r = call("palette")
     cell(t[3], ok(r) and r.get("entries") == 2048 and r.get("count") == 256
          and r.get("truncated") is True, said(r))
@@ -3014,7 +3015,7 @@ def _d_starfire(t: list[str]) -> None:
          f"{said(render, 50)} / {[said(r, 30) for r in index_modes]} / {said(pal, 50)}")
     # the byte its main loop writes every frame, found with a count watch over its scratch RAM
     armed = call("gfx_film", trigger="0x8014", keep=2, frames=4)
-    call("run_for", frames=6, seconds=10.0)
+    run_frames(6)
     film = call("gfx_film")
     files = [Path(str(c["path"])) for c in film.get("cells", [])]
     colour = all(p.is_file() and p.read_bytes()[25] == 2 for p in files)
@@ -3050,7 +3051,7 @@ def _d_discovery(t: list[str]) -> None:
     clown is `clownlayout`, drawn at `256 - clown_y - 16`, `256 - clown_x - 16 - 1`, and the game
     copies RAM 0x0a and 0x0b to the ports that latch them."""
     circus_boot()
-    call("run_for", frames=600, seconds=10.0)
+    run_frames(600)
     sweep = call("gfx_sweep", tag="gfx2", planes=[1], sizes=[[16, 16]], count=16)
     strips = next((c["id"] for c in sweep.get("candidates", [])
                    if c["what"] == "1bpp 16x16 cells down"), "")
@@ -3100,9 +3101,7 @@ def _d_hardhat(t: list[str]) -> None:
     """The hall of fame at frame 2400: its text is pen 5 over pen 0, two banks for a 1-bit char,
     drawn from `characterram` a bit a pixel (`exidy.cpp`, `draw_background`)."""
     free_boot("hardhat", ["hhl-2.11a"], "0xa000")
-    ran: dict[str, Any] = {}
-    for _ in range(4):                     # each leg inside one call's wait
-        ran = call("run_for", frames=600, seconds=10.0)
+    ran = run_frames(2400)
     codes = bytes.fromhex(str(call("read_block", tag="videoram", offset=3 * 32 + 6,
                                    length=7).get("hex", "")))
     if ran.get("frame_after") != 2400:
@@ -3820,7 +3819,7 @@ def _taps(addrs: tuple[int, ...]) -> list[int]:
 
 def _j_m68k_dual(t: list[str]) -> None:
     boot(symbols={MAIN: SYMBOLS, SUB: SUB_SYMBOLS})
-    call("run_for", frames=600, seconds=10.0)
+    run_frames(600)
     before = _where()
     opened = call("scan_start", ref="0x200000", length=0x10000, cpu="maincpu")
     shut = call("scan_filter", operator="!")
