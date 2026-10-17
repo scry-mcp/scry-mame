@@ -240,7 +240,7 @@
                                "summaries": true}, "grammar": ["run_for"]},
   {"id": "M87", "prompt": "Which debugger is the live session attached to, and could a capture taken here land a frame away from an autoboot golden taken at the same frame count?",
    "tool": "status"},
-  {"id": "M88", "prompt": "Print register d0 in hex through the debugger console with the line printf \"d0=%x\",d0; it only prints, so it must not count as a write.",
+  {"id": "M88", "prompt": "Print register d0 in hex through the debugger console. The command is `printf \"d0=%x\",d0` and it only prints, so it must not count as a write.",
    "tool": "debug", "args": {"command": "printf \"d0=%x\",d0"}},
   {"id": "M89", "prompt": "The machine is stopped at frame 1320. In one call, advance one frame at a time until the frame counter reads 1390, keeping every stop the watches make along the way and letting the server count the steps and the stops; I cannot know in advance how many steps that takes.",
    "tool": "perform", "args": {"steps": [{"op": "run_for", "frames": 1}], "summaries": true, "until_frame": 1390},
