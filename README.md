@@ -43,8 +43,14 @@ measurement here, never a silence.
 - **Press its inputs and prove it.** `input` presses a field by MAME's own names (`:P1`,
   `Coin 1`), holds it for N frames and reads the port back. `record` writes an AVI of exactly
   N frames; `audio_record` writes the sound of N frames as a WAV, its levels in the reply;
-  `screen_signature` folds the screen into one number so "did the image change?" costs no PNG;
   `throttle` switches real speed at a place.
+- **A number before a picture.** `screen_signature` answers "did the image change?" with one
+  string, the same one a frame of a series has over the same crop; `series_capture` keeps
+  frames as PNGs and a manifest at emulation speed, and `image_diff`, `series_diff`,
+  `region_track` and `golden_check` answer about PNGs and series with numbers, the three that
+  compare a series or goldens refusing a result their own control could not have contradicted.
+  `audio_measure` and `audio_diff` do the same for what `audio_record` writes: the sound
+  comes back as numbers and a path, never as sound.
 - **One call per turn, not one per step.** `perform` runs a list of operations, checked whole
   before the first runs, stopping at the first failure with the account; `drive` is LOOK,
   ACT, VERIFY in one round trip against the emulator log.
@@ -248,11 +254,23 @@ end the list puts back the one it found: `visible_cpu` is the tag after the list
 ### Did the screen change, without a PNG
 
 ```
-screen_signature(grid=8)
--> {"signature": 2837384238, "frame": 2210, "grid": 8, ...}
-run_for(frames=1)
-screen_signature(grid=8)
--> {"signature": 2837384238, ...}          the same number: nothing on screen moved
+screen_signature()
+-> {"signature": "37e17e837ca05908", "crop": [0, 0, 336, 252], ...}
+run_for(frames=60)
+screen_signature()
+-> {"signature": "3c2676fe286b9fb9", ...}  another string: the screen moved
+```
+
+### Which frames changed, without a picture
+
+From a stop at frame 20; the series runs the machine to two frames past `last`, and a `crop`
+asks the same of a region.
+
+```
+series_capture(first=21, last=32)
+-> {"manifest": ".../series-1/manifest.json", "count": 12, "distinct": 10, ...}
+region_track(manifest=".../series-1/manifest.json", measure="changed_pixels")
+-> {"transitions": [[24, 14790], [25, 23888], [26, 30995], ...], "gaps": [1, 1, 1, ...], ...}
 ```
 
 ### Fly to a late scene, then measure at real speed
@@ -406,7 +424,14 @@ carries no default of its own.
 | `record` | an AVI of exactly `frames` frames, checked by its own header |
 | `audio_record` | the mixer's output over exactly `frames` frames, as a WAV checked by its own header |
 | `throttle` | real speed on or off, switched at a PLACE: pending on a stopped machine, applied on a running one |
-| `screen_signature` | one number for what is on screen, a `grid` x `grid` fold of the pixels |
+| `screen_signature` | one string for what is on screen or on a `crop` of it, the signature a series row and both servers share |
+| `series_capture` | frames of the screen kept at emulation speed as PNGs and one manifest, no picture in the reply |
+| `image_diff` | two PNGs compared pixel by pixel, with a crop, a shift and a tolerance: how many differ and where |
+| `series_diff` | two series compared frame by frame, after checking each can tell its frames apart |
+| `region_track` | the frames where a region of a series changes, by signature, changed pixels or a match against a reference |
+| `golden_check` | a series or a directory of PNGs against goldens written by `shasum -a 256` |
+| `audio_measure` | a WAV measured: whether it sounded, its peak and RMS in dBFS, its onset, its silences and whether it clipped, as numbers |
+| `audio_diff` | two WAVs compared: exact, or how far apart by signal to error and by the shape of their energy envelopes |
 | `palette` | the live pens of a palette device, as a table and as a labelled swatch picture: the colours of a board whose colour RAM is a write-only RAMDAC |
 | `screen_view` | the screen as the PENS it holds, each pixel's palette index recovered exactly and the palette put back and proven: the picture, the pens asked for isolated, a histogram with the unused pens, or one pixel's pen, shown where it sits and, with a palette write log armed, the write that set it |
 | `gfx_view` | bytes as tiles under a format you state in MAME's own `gfx_layout` terms, `RGN_FRAC` and `STEPn` included, through the live pens or a grey ramp that says it is not real colour |

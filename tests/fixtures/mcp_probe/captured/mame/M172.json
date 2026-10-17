@@ -1,0 +1,34 @@
+{
+ "task": {
+  "id": "M172",
+  "prompt": "Keep exactly frames 500, 520 and 540 of the whole screen; they can go to the session's scratch.",
+  "tool": "series_capture",
+  "args": {
+   "frames": [
+    500,
+    520,
+    540
+   ]
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M172: {\"tool\": \"series_capture\", \"args\": {\"frames\": [500, 520, 540]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M172: {\"tool\": \"series_capture\", \"args\": {\"frames\": [500, 520, 540]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M172: {\"tool\": \"series_capture\", \"args\": {\"frames\": [500, 520, 540]}}"
+   ],
+   "right": true
+  }
+ ]
+}

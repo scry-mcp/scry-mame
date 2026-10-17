@@ -39,6 +39,7 @@ from live_harness import (
     section,
 )
 from matrix_acceptance import V30, v30_boot
+from scry_core import traffic
 
 from mame_transport import lua_string
 
@@ -59,7 +60,7 @@ AY_PERIOD_A = 0x40
 AY_PERIOD_B = 0x80
 AY_TONE_TOLERANCE = 0.05
 AY_PIN_LUA = """local io = manager.machine.devices[":maincpu"].spaces["io"]
-local regs = {{0, %(period)d}, {1, 0}, {7, 0x3E}, {8, 0x0F}}
+local regs = {{0, %(period)d}, {1, 0}, {7, 0x3E}, {8, %(volume)d}}
 local pin = {} for _, rv in ipairs(regs) do pin[rv[1]] = rv[2] end
 local sel = -1
 _G._mame_matrix_ay_tap = io:install_write_tap(0x0000, 0x0003, "matrix-ay-pin",
@@ -115,6 +116,11 @@ L_CELLS = [f"L{n} {text}" for n, text in enumerate([
     "circus: under an ini naming wavwrite the refused recording leaves the session's file "
     "recording past its last frame, logs no end mark, and the file is whole when closed; the "
     "refusal names the frames its run advanced",
+    "v30 S3: audio_measure hears the pinned tone (an onset, not silent) and calls the AY pinned "
+    "at volume 0 silent",
+    "v30 S3: audio_diff finds two recordings of one pinned tone the same, and the halved tone "
+    "different",
+    "v30 S3 cost: the question is answered in numbers, with no picture and no sound sent",
 ])]
 
 
@@ -283,15 +289,22 @@ def _l_m68k_dual(t: list[str]) -> None:
     call("close")
 
 
-def _ay_tone(period: int) -> tuple[float | None, dict[str, Any]]:
-    """A fresh v30, the AY pinned at `period`, 30 frames recorded: the tone and the reply."""
+def _ay_recording(period: int, volume: int = 0x0F) -> tuple[Path, dict[str, Any]]:
+    """A fresh v30, the AY pinned at `period` and `volume`, 30 frames recorded: the file and the
+    reply."""
     v30_boot(V30)
     call("run_for", frames=60, seconds=WAIT_CEILING_S)
-    call("lua", script=AY_PIN_LUA % {"period": period})
+    call("lua", script=AY_PIN_LUA % {"period": period, "volume": volume})
     dest = Path(fresh(".wav"))
     r = call("audio_record", frames=30, dest=str(dest), seconds=WAIT_CEILING_S)
     call("close")
-    return (tone_hz(dest) if ok(r) and dest.is_file() else None), r
+    return dest, r
+
+
+def _ay_tone(period: int) -> tuple[float | None, dict[str, Any], Path]:
+    """The tone of `_ay_recording`, the reply and the file."""
+    dest, r = _ay_recording(period)
+    return (tone_hz(dest) if ok(r) and dest.is_file() else None), r, dest
 
 
 def _near(hz: float | None, want: float) -> bool:
@@ -300,20 +313,51 @@ def _near(hz: float | None, want: float) -> bool:
 
 def _l_v30(t: list[str]) -> None:
     want_a = AY_CLOCK_HZ / (16 * AY_PERIOD_A)
-    hz_a, r = _ay_tone(AY_PERIOD_A)
+    hz_a, r, wav_a = _ay_tone(AY_PERIOD_A)
     cell(t[7], _near(hz_a, want_a) and r.get("sample_min") != r.get("sample_max"),
          f"{hz_a} Hz against {want_a:g} / {said(r)}")
     want_b = AY_CLOCK_HZ / (16 * AY_PERIOD_B)
-    hz_b, r = _ay_tone(AY_PERIOD_B)
+    hz_b, r, wav_b = _ay_tone(AY_PERIOD_B)
     # the tone halves: near its own prediction AND near half of what the first pin measured
     cell(t[8], _near(hz_b, want_b) and hz_a is not None and _near(hz_b, hz_a / 2),
          f"{hz_b} Hz against {want_b:g} and half of {hz_a} / {said(r)}")
+    # S3, the new way: the question a session asks of a recording, answered in numbers. The
+    # hand way does not exist through the server: `audio_record` says how many samples and
+    # their range, and nothing about when the window sounded or whether two recordings match.
+    # The four new-way replies are kept here: the harness hands `PENDING` to the transcript at
+    # every cell, so a slice of it taken across a cell is empty.
+    heard = call("audio_measure", path=str(wav_a))
+    muted_path, muted_r = _ay_recording(AY_PERIOD_A, volume=0)
+    muted = call("audio_measure", path=str(muted_path)) if ok(muted_r) else muted_r
+    m = (heard.get("measures") or [{}])[0]
+    q = (muted.get("measures") or [{}])[0]
+    # The AY at volume 0 rests at a steady level away from zero: silent, with no onset and no
+    # plateau, though its peak says where it rests.
+    cell(t[12], ok(heard) and m.get("silent") is False and m.get("onset_s") is not None
+         and ok(muted) and q.get("silent") is True and q.get("onset_s") is None
+         and q.get("clipped") is False and q.get("peak_dbfs") is not None,
+         f"pinned {m.get('peak_dbfs')} dBFS onset {m.get('onset_s')}; volume 0 silent "
+         f"{q.get('silent')}, onset {q.get('onset_s')}, clipped {q.get('clipped')}, peak "
+         f"{q.get('peak_dbfs')} dBFS")
+    again, again_r = _ay_recording(AY_PERIOD_A)
+    same = call("audio_diff", a=str(again), b=str(wav_a)) if ok(again_r) else again_r
+    other = call("audio_diff", a=str(wav_b), b=str(wav_a))
+    cell(t[13], ok(same) and same.get("class") in ("exact", "inaudible")
+         and ok(other) and other.get("class") == "different",
+         f"same tone {same.get('class')} {same.get('snr_db')} dB; halved {other.get('class')} "
+         f"{other.get('snr_db')} dB")
+    replies = [r for r in (heard, muted, same, other) if ok(r)]
+    units = sum(traffic.json_units(r) for r in replies)
+    tokens = sum(traffic.image_tokens(r) for r in replies)
+    cell(t[14], len(replies) == 4 and tokens == 0,
+         f"new way: {len(replies)} calls, {units} text units, {tokens} image tokens; hand way: "
+         "not answerable through the server")
 
 
 L_BOARDS = (
     Board(_l_circus, (0, 1, 2, 3, 4, 5), free_boards_missing),
     Board(_l_m68k_dual, (6,), m68k_dual_missing),
-    Board(_l_v30, (7, 8), lambda: board_missing("v30")),
+    Board(_l_v30, (7, 8, 12, 13, 14), lambda: board_missing("v30")),
     Board(_l_swap, (9,), free_boards_missing),
     Board(_l_release, (10,), free_boards_missing),
     Board(_l_wavwrite, (11,), free_boards_missing),

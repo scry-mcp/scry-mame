@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import re
 
+from scry_core import picture, series
+
 import mame_advance as advance
 import mame_blits as mblits
 import mame_comment_file as mcomment_file
@@ -23,7 +25,6 @@ import mame_lexer as lexer
 import mame_locate as mlocate
 import mame_lua as mlua
 import mame_palette as mpalette
-import mame_picture as picture
 import mame_ramdac as mramdac
 import mame_read as read
 import mame_savestates as savestates
@@ -48,16 +49,9 @@ STOP_FIELDS = (
     "`why`), `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or "
     "`regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine)"
 )
-PICTURE = (
-    "The PNG is attached after the JSON when within the inline ceiling "
-    f"({picture.INLINE_SIDE_MAX} px a side, {picture.INLINE_TOKENS_MAX} tiles of "
-    f"{picture.TOKEN_SIDE} px); `image` names it either way (`path`, `sha256`, `width`, "
-    "`height`, `scale`, `indexed`, `inline`, `not_inlined`)"
-)
-PICTURE_ARGS = (
-    f"`scale` 0, the largest integer enlargement up to {picture.SCALE_MAX} that fits; "
-    "`dest` a new absolute path, else the scratch, gone at `close`"
-)
+# The picture's two sentences are scry-core's, the same on both servers.
+PICTURE = picture.DESCRIBED
+PICTURE_ARGS = picture.ARGUMENTS
 CPU_READS = (
     "Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); "
     "a build without it serves its first cpu alone, whatever is visible, and refuses another "
@@ -98,8 +92,8 @@ DOC_VALUES: dict[str, str] = {
     "FILM_KEEP_MAX": str(mfilm.KEEP_MAX), "BLIT_MARGIN_MAX": str(mblits.MARGIN_MAX),
     "READ_MAX": str(read.READ_MAX), "LIST_MAX": str(read.LOG_LIMIT_MAX),
     "SYMBOLS_MAX": str(read.SYMBOLS_LIMIT_MAX), "HISTORY_MAX": str(read.HISTORY_MAX),
-    "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "GRID_MIN": str(mlua.GRID_MIN),
-    "GRID_MAX": str(mlua.GRID_MAX), "STEP_MAX": str(advance.step_max()),
+    "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "STEP_MAX": str(advance.step_max()),
+    "SERIES_MAX": str(series.SERIES_MAX),
     "WAIT_MAX_S": f"{inputs.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX), "STATE_NAME_MAX": str(savestates.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),

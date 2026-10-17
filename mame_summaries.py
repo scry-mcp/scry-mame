@@ -486,8 +486,16 @@ def gfx_draft(args: dict[str, Any], reply: dict[str, Any]) -> str:
                if reply["not_proved"] else ""))
 
 
+def series_capture(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    lost = sum(b - a + 1 for a, b in reply["lost"])
+    tail = f", {prose.counted(lost, 'frame')} lost" if lost else ""
+    return (f"series_capture: {prose.counted(reply['count'], 'frame')} {reply['first']}.."
+            f"{reply['last']}, {reply['distinct']} distinct{tail}, manifest {reply['manifest']}")
+
+
 def screen_signature(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return f"screen_signature {reply['grid']}x{reply['grid']}: {reply['signature']}"
+    x, y, w, h = reply["crop"]
+    return f"screen_signature {w}x{h} at [{x}, {y}]: {reply['signature']}"
 
 
 def log(args: dict[str, Any], reply: dict[str, Any]) -> str:

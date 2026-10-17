@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import media_tools
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -256,7 +257,9 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
     assert s.registers()["code"] == "session_broken"
 
 
-_STILL_ANSWER = {"close", "status"}
+# The media file tools read files and never the machine, so a broken session leaves them as it
+# leaves `status`: answering.
+_STILL_ANSWER = {"close", "status", *media_tools.TOOLS}
 
 
 @pytest.mark.parametrize("name", [t for t in _tools() if t not in _STILL_ANSWER])
@@ -274,6 +277,19 @@ def test_every_tool_but_close_and_status_answers_session_broken_on_a_broken_sess
 
 def test_the_walk_over_the_tools_examined_the_ones_that_still_answer() -> None:
     assert set(_tools()) >= _STILL_ANSWER, "the exemptions name tools the server lacks"
+
+
+@pytest.mark.parametrize("name", sorted(media_tools.TOOLS))
+def test_a_media_file_tool_answers_on_a_broken_session(
+    name: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The exemption above, held: a file tool reads files only, so a latched session leaves its
+    answer its own (here, the missing file's refusal), never `session_broken`."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.broken = NOT_A_STOP
+    out = getattr(s, name)(**_ARGS[name])
+    assert out["status"] == "INVALID" and out["code"] == "bad_argument", (name, out)
+    assert "is not a file" in out["message"], (name, out)
 
 
 # ------------------------------------------------ the interrupt at the bound not answered

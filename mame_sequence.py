@@ -22,6 +22,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core import media_tools
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
 
@@ -56,6 +57,7 @@ import mame_running as running
 import mame_savestates as savestates
 import mame_scan as mscan
 import mame_screen as mscreen
+import mame_series as mseries
 import mame_state as st
 import mame_sweep as msweep
 import mame_trace as mtrace
@@ -76,7 +78,9 @@ RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot", "
                   "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list",
                   "watch_clear", "regpoint_add", "regpoint_list", "regpoint_clear",
                   "comment_list", "comment_save", "symbols_find", "throttle", "machine_map",
-                  "gfx_load", "palette_log", "gfx_film", "scan_clear"}
+                  "gfx_load", "palette_log", "gfx_film", "scan_clear",
+                  # the media file tools read files, never the machine
+                  *media_tools.TOOLS}
 # The one op among them with a gesture that needs a stop: a film's arming reads the screen.
 _STOPPED_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
     "gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")), bool(a.get("clear")))}
@@ -140,7 +144,8 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "record": mrec.check_record,
     "audio_record": maudio.check_audio_record,
     "input": mlua.check_input,
-    "screen_signature": mlua.check_screen_signature,
+    "screen_signature": mscreen.check_screen_signature,
+    "series_capture": mseries.check_series_capture,
     "lua": mlua.check_lua,
     "state_save": savestates.check_state_name,
     "state_load": savestates.check_state_name,
@@ -163,6 +168,8 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "regpoint_clear": regpoints.check_regpoint_clear,
     "debug": mwrite.check_debug,
     "machine_map": machine.check_machine_map,
+    # The media file tools' judges are scry-core's, beside their bodies.
+    **{name: spec.check for name, spec in media_tools.TOOLS.items()},
 }
 
 #: OPERATIONS WITH NO MACHINE-INDEPENDENT HALF, named so an absent entry above is a decision and not
@@ -519,7 +526,7 @@ REF_ARGS: dict[str, tuple[str, ...]] = {
 MOVES_VISIBLE = frozenset({
     "focus", "step", "run_to", "run_for", "resume", "trace", "debug", "stop", "log_wait",
     "reset", "state_load", "lua", "input", "record", "audio_record", "screen_signature",
-    "gfx_film"})
+    "gfx_film", "series_capture"})
 #: The declaring operations, whose rows stored by name stay reachable by that name.
 _DECLARES = {"breakpoint_at": "breakpoint", "watch_add": "watch", "comment_add": "comment"}
 

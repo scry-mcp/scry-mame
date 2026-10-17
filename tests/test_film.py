@@ -28,6 +28,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
+from scry_core import picture  # noqa: E402
 from session_doubles import MAP_ROM, io_board, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 from test_lua import _channel, _ChannelSession  # noqa: E402
@@ -35,7 +36,6 @@ from test_lua import _channel, _ChannelSession  # noqa: E402
 import mame_callbacks as mcallbacks
 import mame_film as mf  # noqa: E402
 import mame_font as font  # noqa: E402
-import mame_picture as picture  # noqa: E402
 import mame_sheet as msheet  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_tap as mtap  # noqa: E402
@@ -703,7 +703,7 @@ def test_a_snapshot_whose_bytes_are_not_its_declared_size_is_refused(
 
 
 def test_an_animation_refuses_no_frames_and_frames_that_differ() -> None:
-    import mame_png as png
+    from scry_core import png
     one = png.Raster(2, 1, bytes(6))
     with pytest.raises(ValueError, match="at least one frame"):
         png.encode_animation([], (1, 60))

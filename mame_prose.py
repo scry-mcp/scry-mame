@@ -1,5 +1,5 @@
 """HOW A COUNT IS SAID in a summary, a note or a refusal: the one plural rule, and the verb that
-agrees with it. A leaf every module may import, the lowest included (`mame_png`, `mame_inputs`),
+agrees with it. A leaf every module may import, the lowest included (`mame_inputs`),
 so no module reaches a sentence through the session's state.
 
 THE RULE IS GRAMMATICAL, never `(s)`: `1 byte`, `48 bytes`, `0 lines`. `(s)` was the commoner

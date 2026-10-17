@@ -35,6 +35,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
+from scry_core import png as mpng  # noqa: E402
 from session_doubles import add_symbol, refused, with_stamps  # noqa: E402
 from test_gfx import _mark, _png  # noqa: E402
 from test_lua import _channel, _ChannelSession  # noqa: E402
@@ -44,7 +45,6 @@ import mame_capture as capture  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_manifest as mm  # noqa: E402
-import mame_png as mpng  # noqa: E402
 import mame_read  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402

@@ -27,6 +27,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from scry_core import picture, png
+
 import gdb_session as gs
 import mame_callbacks as callbacks
 import mame_capture as capture
@@ -36,8 +38,6 @@ import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as mm
 import mame_palette as mpalette
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
@@ -350,7 +350,7 @@ def check_gfx_blits(draw_command: str = "", frame: int | None = None, area: list
     if first and not detail and area is None:
         raise st.Invalid("bad_argument", f"first={first}: `first` pages a listing, and only "
                          "`detail=True` or an `area` lists blits")
-    return picture.check_picture(scale, dest)
+    return inputs.picture_args(scale, dest)
 
 
 def _check_command(draw_command: str) -> None:
@@ -446,7 +446,8 @@ def gfx_blits(ses: gs.Session, scratch: Path, draw_command: str, frame: int | No
                                       | {p.page for p in cmd.planes if p.page} | {
         o.field for p in cmd.planes for o in (p.origin_x, p.origin_y) if o.field})
     fields["image"] = picture.publish(mscreen.colour_crop(cap, 0, 0, cap.width, cap.height),
-                                      scale, dest_path, scratch, "blits", marks)
+                                      scale, dest_path, scratch, "blits", STATE.record_image,
+                                      marks)
     return running.stop_reply(ses, scratch, f"gfx_blits: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
@@ -498,7 +499,7 @@ def check_gfx_blit_source(draw_command: str = "", frame: int | None = None,
         inputs.check_ref(pc, "pc")      # a symbol or a `0x` address, as `gfx_film`'s `pc` is
     inputs.natural("margin", margin, f" is 0..{MARGIN_MAX} pixels round the rectangle",
                    hi=MARGIN_MAX)
-    return picture.check_picture(scale, dest)
+    return inputs.picture_args(scale, dest)
 
 
 def _pick(got: Rows, index: int | None, pc: str) -> Blit:
@@ -612,12 +613,13 @@ def gfx_blit_source(ses: gs.Session, scratch: Path, draw_command: str, frame: in
                                 "drew")
     exact = png.Raster(wide, high, bytes(pixels), tuple(pens))
     if not margin:
-        fields["image"] = picture.publish(exact, scale, dest_path, scratch, "source")
+        fields["image"] = picture.publish(exact, scale, dest_path, scratch, "source",
+                                          STATE.record_image)
     else:
-        fields["data"] = picture.data_file(exact, scratch, "source-data")
+        fields["data"] = picture.data_file(exact, scratch, "source-data", STATE.record_image)
         st.add_note(fields, MARGIN_NOTE)
         fields["image"] = picture.publish(_margin_view(exact, margin, w, h), scale, dest_path,
-                                          scratch, "source",
+                                          scratch, "source", STATE.record_image,
                                           rings=[(margin, margin, w, h, RING_COLOUR, 1)])
     return running.stop_reply(ses, scratch, f"gfx_blit_source: {common['evaluated_by']}",
                               **st.merged(fields, common))

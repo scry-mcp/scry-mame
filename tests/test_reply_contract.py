@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import media_tools
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -46,7 +47,9 @@ def _tools() -> list[str]:
             for d in node.decorator_list)
     ]
     assert len(names) > 20, "the walk found almost no tools, so it examined nothing"
-    return names
+    # And the media file tools, which the server registers by name through scry-core's
+    # `register` rather than by a decorated function of its own.
+    return names + list(media_tools.TOOLS)
 
 
 # The arguments a tool needs to be CALLED at all; the gate refuses before any is judged.
@@ -59,6 +62,14 @@ _ARGS: dict[str, dict[str, Any]] = {
     "run_to": {"ref": "0x4a0", "control": "0x4b0"},
     "run_for": {"milliseconds": 16},
     "trace": {"frames": 2},
+    "series_capture": {"frames": [10 ** 6]},
+    # The media file tools: absolute paths of files that are not there, refused for the path.
+    "image_diff": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
+    "series_diff": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
+    "region_track": {"manifest": "/nonexistent/m.json"},
+    "golden_check": {"manifest": "/nonexistent/m.json", "checksums": "/nonexistent/g.sha256"},
+    "audio_measure": {"path": "/nonexistent/s.wav"},
+    "audio_diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
     "breakpoint_at": {"ref": "0x4a0"},
     "watch_add": {"ref": "0x4a0", "mode": "show", "length": 2},
     "regpoint_add": {"condition": "d1==7fff"},
@@ -134,7 +145,9 @@ def test_every_tool_answers_the_contract_with_no_machine(
     if name in ("status", "close"):
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
-    contract.check_refusal(name, reply, "bad_argument" if name == "start" else "no_session")
+    # `start` refuses its argument; a media tool needs no machine and refuses its missing file.
+    contract.check_refusal(name, reply, "bad_argument" if name == "start" or name in
+                           media_tools.TOOLS else "no_session")
 
 
 class _Running(SessionFields):
@@ -163,7 +176,8 @@ class _Alive:
 _READERS = ["registers", "read_memory", "read_block", "disassemble", "find", "history", "memdump",
             "debug", "comment_add", "comment_delete", "comment_load",
             "step", "run_to", "run_for", "write", "set_register", "reset", "rom_check",
-            "resume", "scan_start", "scan_filter", "trace"]
+            "resume", "scan_start", "scan_filter", "trace", "series_capture",
+            "screen_signature"]
 
 
 @pytest.mark.parametrize("name", _READERS)

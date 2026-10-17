@@ -5,6 +5,7 @@ it against the ROM on disk, read memory by symbol, run to a target with a contro
 and prove the honesty guarantees still fire after the rename.
 """
 
+import hashlib
 import os
 import subprocess
 import sys
@@ -26,6 +27,7 @@ from live_harness import (
     invalid,
     isolate_state,
     rearm_pairs,
+    said,
     visible_of,
 )
 from scry_core.demo import readme_drift
@@ -594,9 +596,10 @@ check("snapshot carries the sha256 of the bytes it wrote",
       r.get("status") == "ok" and len(str(r.get("sha256", ""))) == 64, str(r.get("sha256"))[:16])
 altered_before = s.status()["session"]["altered"]
 sig1 = s.screen_signature()
-check("screen_signature answers a number from a grid of the screen",
-      sig1.get("status") == "ok" and isinstance(sig1.get("signature"), int)
-      and sig1.get("grid") == 8 and sig1.get("width", 0) > 0,
+check("screen_signature answers 16 hex characters for the whole screen",
+      sig1.get("status") == "ok" and isinstance(sig1.get("signature"), str)
+      and len(sig1["signature"]) == 16 and sig1.get("width", 0) > 0
+      and sig1.get("crop") == [0, 0, sig1.get("width"), sig1.get("height")],
       f"sig={sig1.get('signature')} {sig1.get('width')}x{sig1.get('height')} "
       f"{sig1.get('evaluated_by')}")
 check("and it alters nothing (the count of writes is what it was)",
@@ -610,6 +613,53 @@ r = s.run_for(frames=120, seconds=30.0)
 sig3 = s.screen_signature()
 check("120 frames of boot paint a different screen", sig3.get("signature") != sig1.get("signature"),
       f"{sig1.get('signature')} -> {sig3.get('signature')}")
+part = s.screen_signature(crop=[0, 0, 16, 16])
+check("a crop signs another string, over the rectangle it names",
+      part.get("status") == "ok" and part.get("crop") == [0, 0, 16, 16]
+      and part.get("signature") != sig3.get("signature"), said(part))
+
+print("\n== media: a series of frames, its numbers, and its goldens")
+frame_now = r.get("frame_after")
+series_dir = Path(tempfile.mkdtemp(prefix="scry-live-series-")) / "boot"
+ser = s.series_capture(first=frame_now + 1, last=frame_now + 30, dest=str(series_dir))
+check("series_capture writes 30 frames and a manifest, no picture in the reply",
+      ser.get("status") == "ok" and ser.get("count") == 30 and "image" not in ser
+      and Path(str(ser.get("manifest"))).is_file() and ser.get("kept_after_close") is True,
+      said(ser))
+manifest = str(ser.get("manifest"))
+track = s.region_track(manifest=manifest)
+# THE CONTROL AGREES WITH THE SERIES: a series of more than one signature has transitions, and
+# one of a single signature is the control's refusal, never a clean zero.
+moving = ser.get("distinct", 0) > 1
+check("region_track agrees with the series' own count of signatures",
+      (track.get("status") == "ok" and track.get("transitions_total", 0) >= 1) if moving
+      else track.get("code") == "control_silent", said(track))
+frames_png = sorted(series_dir.glob("f*.png"))
+same = s.image_diff(a=str(frames_png[0]), b=str(frames_png[0]))
+check("image_diff of a frame with itself finds nothing", same.get("differing_pixels") == 0
+      and same.get("bbox") is None, said(same))
+pair = s.series_diff(a=manifest, b=manifest)
+check("series_diff of a series with itself is all identical, or the control's refusal",
+      (pair.get("identical") == 30) if moving else pair.get("code") == "control_silent",
+      said(pair))
+sums = series_dir / "goldens.sha256"
+sums.write_text("".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
+                        for p in frames_png))
+gold = s.golden_check(manifest=manifest, checksums=str(sums))
+check("golden_check matches the series against its own goldens",
+      gold.get("matched") == 30 and gold.get("differing") == [], said(gold))
+
+print("\n== media: a recording measured and compared with itself")
+rec = s.audio_record(frames=30, seconds=30.0)
+measured = s.audio_measure(path=str(rec.get("path")))
+check("audio_measure answers a channel's measures for audio_record's file",
+      measured.get("status") == "ok" and len(measured.get("measures") or []) == rec.get("channels"),
+      said(measured))
+twin = s.audio_diff(a=str(rec.get("path")), b=str(rec.get("path")))
+silent = all(m.get("silent") for m in measured.get("measures") or [])
+check("audio_diff of a recording with itself is exact, or the control's refusal in silence",
+      (twin.get("class") == "exact") if not silent else twin.get("code") == "control_silent",
+      said(twin))
 
 print("\n== graphics: the pens, the screen as pens, bytes as tiles, a patch searched")
 altered_before = s.status()["session"]["altered"]

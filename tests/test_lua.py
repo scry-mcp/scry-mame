@@ -1662,9 +1662,9 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
     slept: list[float] = []
     monkeypatch.setattr(time, "sleep", lambda s_: slept.append(s_))
     ses.reader_late = 1
-    ses.answers = {1: b"MAME_MCP_SIG w=320 h=224 grid=8 sig=2140790385\n" + ses.sentinel(1)}
-    out = s.screen_signature(seconds=1.0)
-    assert out["status"] == "ok" and out["signature"] == 2140790385, out
+    ses.answers = {1: b"2140790385\n" + ses.sentinel(1)}
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
+    assert out["status"] == "ok" and out["output"] == "2140790385\n", out
     assert out["evaluated_by"] == "2 steps" and out["reader_steps"] == 1, out
     assert out["lines_ahead"] == 0 and ses.stepped == 2 and out["session"]["altered"] is False
     # THE SETTLE: the first sleep of the call is the reader's settle, after the write and
@@ -1675,7 +1675,7 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
     # is set to one so the case does not race the bound on a loaded host.
     monkeypatch.setattr(transport, "READER_STEPS_MAX", 1)
     ses.reader_late = 20
-    out = refused("reader", s.screen_signature(seconds=0.4))
+    out = refused("reader", s.lua("print(1)", seconds=0.4, read_only=True))
     assert out["reader_steps"] == 1 and out["pending"] is True, out
     assert ses.stepped == 2 + 1 + 1, ses.stepped
     # The double's fidelity: a late reader is a step that consumed nothing.
@@ -1699,14 +1699,14 @@ def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply
     a reply with nothing to say carries the zeros rather than nothing."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
-    sig = b"MAME_MCP_SIG w=320 h=224 grid=8 sig=%d\n"
+    sig = b"%d\n"
     ses.answers = {1: sig % 11 + ses.sentinel(1), 2: sig % 22 + ses.sentinel(2),
                    3: b"7\n" + ses.sentinel(3)}
-    out = s.screen_signature(seconds=1.0)
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["thread_errors"] == 0 and out["console_reruns"] == 0 and "note" not in out, out
     ses.reader_dies = 1
-    out = s.screen_signature(seconds=1.0)
-    assert out["status"] == "ok" and out["signature"] == 22, out
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
+    assert out["status"] == "ok" and out["output"] == "22\n", out
     assert out["thread_errors"] == 1 and out["console_reruns"] == 1, out
     assert out["reader_steps"] == 1 and "AGAIN" in out["note"], out
     # The raw form says the same, where it matters most: its script may have written.
@@ -1766,25 +1766,25 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
     evaluated. Sending it again runs it once, which is what the caller asked for; twice is a
     refusal that says the script never ran, not one that calls it pending."""
     ses = _channel(monkeypatch, tmp_path)
-    sig = b"MAME_MCP_SIG w=320 h=224 grid=8 sig=%d\n"
+    sig = b"%d\n"
     ses.answers = {2: sig % 22 + ses.sentinel(2)}
     ses.reader_eats = 1
-    out = s.screen_signature(seconds=1.0)
-    assert out["status"] == "ok" and out["signature"] == 22, out
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
+    assert out["status"] == "ok" and out["output"] == "22\n", out
     assert out["resent"] == 1 and out["call"] == "MAME_MCP_LUA_END#2", out
     assert out["thread_errors"] == 1 and out["console_reruns"] == 0, out
     assert out["evaluated_by"] == "2 steps" and out["reader_steps"] == 0 and ses.stepped == 2
     # The next call costs one step: the eaten line is not counted as still ahead.
     ses.answers[3] = sig % 33 + ses.sentinel(3)
-    out = s.screen_signature(seconds=1.0)
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["evaluated_by"] == "one step" and out["lines_ahead"] == 0, out
     ses.reader_eats = 2
-    out = refused("NEVER evaluated", s.screen_signature(seconds=1.0))
+    out = refused("NEVER evaluated", s.lua("print(1)", seconds=1.0, read_only=True))
     assert out["code"] == "reader_died" and out["pending"] is False and out["resent"] == 1, out
     assert out["thread_errors"] == 2 and out["console_reruns"] == 0, out
     # And the two lines it died holding are not phantom debt for the call after.
     ses.answers[6] = sig % 66 + ses.sentinel(6)
-    out = s.screen_signature(seconds=1.0)
+    out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["lines_ahead"] == 0 and out["evaluated_by"] == "one step", out
     # The raw form says `resent` the same way.
     ses.answers[8] = b"9\n" + ses.sentinel(8)
@@ -1884,7 +1884,7 @@ def test_a_call_whose_emulator_died_while_it_waited_says_so_instead_of_pending(
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=1))
     ses.reader_late = 20
-    out = refused("exited with code -11", s.screen_signature(seconds=5.0))
+    out = refused("exited with code -11", s.lua("print(1)", seconds=5.0, read_only=True))
     assert out["code"] == "session_broken" and out["exit_code"] == -11, out
     assert "pending" not in out["message"], out
     assert "was stepped 1 time for it" in out["message"], out
@@ -1962,47 +1962,6 @@ def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note
     ses.answers[3] = b"8\n" + ses.sentinel(3)
     clean = s.lua("print(8)")
     assert clean["resent"] == 0 and "note" not in clean, clean
-
-def test_screen_signature_hashes_a_grid_of_pixels_through_one_step_and_alters_nothing(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The 64-pixel signature a repo's own `nav-phase.lua` computes, as a typed tool, so a
-    golden's "is the race painting" needs no raw `lua` (altered always).
-    The script prints the grid it sampled and the hash; the reply carries both, and the
-    session is NOT altered: a pixel is read, nothing is written."""
-    ses = _channel(monkeypatch, tmp_path)
-    ses.answers = {1: b"MAME_MCP_SIG w=320 h=224 grid=8 sig=2140790385\n" + ses.sentinel(1)}
-    out = s.screen_signature()
-    assert out["status"] == "ok", out
-    assert out["signature"] == 2140790385 and out["grid"] == 8
-    assert out["width"] == 320 and out["height"] == 224 and out["evaluated_by"] == "one step"
-    assert out["session"]["altered"] is False and ses.stepped == 1
-    assert out["call"] == "MAME_MCP_LUA_END#1" and out["cell"]["available"] is False
-    assert out["origin"]["available"] is False
-    assert out["summary"] == "screen_signature 8x8: 2140790385", out["summary"]
-    sent = ses.stdin.getvalue().decode()
-    assert "screen:pixel(" in sent and "% 0x7fffffff" in sent, "the repo's own formula"
-    refused("grid", s.screen_signature(grid=1))
-    refused("grid", s.screen_signature(grid=65))
-    # THE REPO'S OWN LATTICE: a fixed cell from a fixed offset, which need not be the
-    # centred one, declared and sent as such; half a lattice is refused.
-    ses.answers[2] = b"MAME_MCP_SIG w=320 h=224 grid=8 sig=896136150\n" + ses.sentinel(2)
-    out = s.screen_signature(cell=[40, 28], origin=[8, 8])
-    assert out["status"] == "ok" and out["cell"] == [40, 28] and out["origin"] == [8, 8], out
-    assert "40, 28, 8, 8" in ses.stdin.getvalue().decode()
-    refused("together", s.screen_signature(cell=[40, 28]))
-    refused("above zero", s.screen_signature(cell=[0, 28], origin=[8, 8]))
-    # A LATTICE THAT LEAVES THE SCREEN would fold MAME's off-screen zeros into a number that
-    # never changes: the script says so with the screen's size, and it is refused.
-    ses.answers[3] = b"MAME_MCP_SIG_OFFSCREEN w=320 h=224\n" + ses.sentinel(3)
-    out = refused("leaves the 320x224 screen", s.screen_signature(cell=[100, 28], origin=[0, 0]))
-    assert out["code"] == "bad_argument" and "thread_errors" in out, out
-    # An expiry says the machine moved, that NOTHING was altered, and under which sentinel
-    # the answer will land (a repo read "is altered" beside `altered: false`).
-    monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.2)
-    out = refused("alters nothing", s.screen_signature(seconds=0.2))
-    assert out["call"] == "MAME_MCP_LUA_END#4" and out["session"]["altered"] is False
-
 
 # ------------------------------------------------------------------------------ drive
 
@@ -2119,19 +2078,6 @@ def test_a_missing_stdout_log_is_a_pending_line_with_nothing_seen(
     (ses.scratch / "stdout.log").unlink()
     out = refused("no sentinel for the line", s.lua("print(1)", seconds=0.2))
     assert out["code"] == "wait_expired" and out["seen_bytes"] == 0
-
-
-def test_screen_signature_refuses_its_bound_a_raising_script_and_a_missing_line(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    ses = _channel(monkeypatch, tmp_path)
-    refused("not a bound", s.screen_signature(seconds=0))
-    ses.answers[1] = ses.sentinel(1, ok=False, error="no screen")
-    out = refused("raised", s.screen_signature())
-    assert out["code"] == "unexpected_answer"
-    ses.answers[2] = b"something else\n" + ses.sentinel(2)
-    out = refused("no signature line", s.screen_signature())
-    assert out["code"] == "unexpected_answer"
 
 
 # ------------------------------------------------------ the wrappers and the pipe's floor
@@ -3365,3 +3311,15 @@ def test_inputs_own_script_raising_is_coded_by_what_it_raised(error: str, code: 
     """The console prefixes the chunk's place (`mcp:N:`): the port and the field the script
     refuses on its own are the caller's names resolving to nothing."""
     assert lua.input_refusal_code(error) == code
+
+
+def test_a_read_only_chunk_that_expires_says_it_altered_nothing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """An expiry says the machine was stepped and that NOTHING was altered, and under which
+    sentinel the answer will land: a reader that read "is altered" beside `altered: false`."""
+    _channel(monkeypatch, tmp_path)
+    monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
+    out = refused("alters nothing", s.lua("print(1)", seconds=0.2, read_only=True))
+    assert out["code"] == "wait_expired" and out["session"]["altered"] is False, out
+    assert out["call"] == "MAME_MCP_LUA_END#1", out

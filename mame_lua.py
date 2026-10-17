@@ -104,43 +104,6 @@ manager.machine:logerror(string.format("%(mark)s throttled=%%s frame=%%d\\n",
 """
 
 
-# THE SIGNATURE A REPO'S OWN LUA COMPUTES BY HAND: a grid of pixels
-# spread over the screen, folded into one number; enough to say whether the image CHANGED,
-# which is the only direct proof that a scene is painting. The formula is that script's, so
-# a number this tool answers compares with one the repo's own script printed.
-SIG_LUA = """local screen = nil
-for _, s in pairs(manager.machine.screens) do screen = s break end
-if screen == nil then error("no screen") end
-local w, h = screen.width, screen.height
-local n = %(grid)d
-local cw, ch, ox, oy = %(cell_w)s, %(cell_h)s, %(offset_x)s, %(offset_y)s
-if cw and (ox + (n - 1) * cw >= w or oy + (n - 1) * ch >= h) then
-  print(string.format("MAME_MCP_SIG_OFFSCREEN w=%%d h=%%d", w, h))
-  return
-end
-local sig = 0
-for gy = 0, n - 1 do
-  for gx = 0, n - 1 do
-    local x, y
-    if cw then
-      x, y = ox + gx * cw, oy + gy * ch
-    else
-      x = math.floor(gx * w / n + w / (2 * n))
-      y = math.floor(gy * h / n + h / (2 * n))
-    end
-    sig = (sig * 31 + screen:pixel(x, y)) %% 0x7fffffff
-  end
-end
-print(string.format("MAME_MCP_SIG w=%%d h=%%d grid=%%d sig=%%d", w, h, n, sig))
-"""
-_SIG_LINE = re.compile(r"MAME_MCP_SIG w=(\d+) h=(\d+) grid=(\d+) sig=(\d+)")
-# A LATTICE THAT LEAVES THE SCREEN folds MAME's off-screen zero (`screen_device::pixel`,
-# src/emu/screen.cpp) into the number, which then stays the same whatever the screen shows: the
-# script refuses it with the screen's size, which only the machine knows.
-_SIG_OFFSCREEN = re.compile(r"MAME_MCP_SIG_OFFSCREEN w=(\d+) h=(\d+)")
-GRID_MIN, GRID_MAX = 2, 64
-
-
 # ---------------------------------------------------- the halves that need no machine
 #
 # Each is the machine-independent half of one tool in this module, exposed so the server can ask it
@@ -168,71 +131,10 @@ def check_throttle(on: bool = True, seconds: float = 5.0, **_: Any) -> None:
     inputs.seconds_bound(seconds)
 
 
-#: `screen_signature`'s `cell` and `origin` with no lattice asked: the grid divides the screen.
-NO_LATTICE_WHY = "no lattice was given, so the grid divides the screen evenly"
-
-
-def check_screen_signature(grid: int = 8, seconds: float = EVAL_WAIT_S,
-                           cell: list[int] | None = None,
-                           origin: list[int] | None = None, **_: Any) -> None:
-    """`screen_signature`'s machine-independent half: the grid, the bound, and the lattice's shape.
-    Where the screen IS, and how big, is the machine's."""
-    inputs.count("grid", grid, GRID_MAX, ": a side of the sample grid", lo=GRID_MIN)
-    inputs.seconds_bound(seconds)
-    if (cell is None) != (origin is None):
-        raise st.Invalid("bad_argument", "`cell` and `origin` come together: a lattice is both")
-    if cell is not None and origin is not None and not (
-            inputs.is_naturals(cell, 2, 1) and inputs.is_naturals(origin, 2)):
-        raise st.Invalid("bad_argument",
-            "`cell` is [width, height] above zero and `origin` [x, y] at or above zero")
-
-
 def check_lua(script: str, seconds: float = EVAL_WAIT_S, **_: Any) -> None:
     """The `lua` TOOL's machine-independent half: the script, and the bound on waiting for it."""
     transport.check_script(script)
     inputs.seconds_bound(seconds)
-
-
-def screen_signature(ses: gs.Session, scratch: Path, grid: int, seconds: float,
-                     cell: list[int] | None = None, origin: list[int] | None = None,
-                     progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `screen_signature` tool: `grid` x `grid` pixels, one number. With
-    `cell` (width, height) and `origin` (x, y) the sample is `origin + index * cell`, the
-    fixed lattice a repo's own script uses, which is not always the centred one; without
-    them each cell of the screen is sampled at its
-    centre."""
-    check_screen_signature(grid, seconds, cell, origin)
-    lattice = ({"cell_w": cell[0], "cell_h": cell[1], "offset_x": origin[0], "offset_y": origin[1]}
-               if cell is not None and origin is not None else
-               {"cell_w": "nil", "cell_h": "nil", "offset_x": "nil", "offset_y": "nil"})
-    pc_before = ses.current_pc()
-    answer, ahead, evaluated_by, reader_steps, resent, seq = transport.evaluate(
-        ses, scratch, SIG_LUA % {"grid": grid, **lattice}, seconds, progress, pc_before,
-        alters=False)
-    if not answer.ok:
-        raise st.Invalid("unexpected_answer", f"the signature script raised: {answer.error}",
-                         pc_before=st.hex_addr(pc_before), **transport.console_did(answer, resent))
-    off = _SIG_OFFSCREEN.search(answer.text)
-    if off is not None:
-        assert cell is not None and origin is not None       # the script checks a lattice only
-        raise st.Invalid("bad_argument",
-            f"the lattice origin {origin} + {grid - 1} x cell {cell} leaves the "
-            f"{off.group(1)}x{off.group(2)} screen, where MAME reads every pixel as 0 and the "
-            "signature would not change whatever is drawn",
-                         pc_before=st.hex_addr(pc_before), **transport.console_did(answer, resent))
-    m = _SIG_LINE.search(answer.text)
-    if m is None:
-        raise st.Invalid("unexpected_answer",
-            f"the console printed no signature line: {answer.text.strip()[-200:]!r}",
-                         pc_before=st.hex_addr(pc_before), **transport.console_did(answer, resent))
-    return running.stop_reply(ses, scratch, f"screen_signature: {evaluated_by}",
-                              signature=int(m.group(4)), grid=int(m.group(3)),
-                              width=int(m.group(1)), height=int(m.group(2)),
-                              cell=st.or_unavailable(cell, NO_LATTICE_WHY),
-                              origin=st.or_unavailable(origin, NO_LATTICE_WHY),
-                              evaluated_by=evaluated_by, lines_ahead=ahead,
-                              reader_steps=reader_steps, **transport.console_did(answer, resent),
-                              call=st.sentinel_line(seq), pc_before=st.hex_addr(pc_before))
 
 
 def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,

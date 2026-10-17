@@ -68,6 +68,7 @@ from pydantic import ValidationError
 # and the server is launchable only with `--directory` pointing here.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from scry_core import media_tools, picture  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
@@ -99,7 +100,6 @@ import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
 import mame_map as mmap  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
-import mame_picture as picture  # noqa: E402
 import mame_progress as mprogress  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
@@ -110,6 +110,7 @@ import mame_savestates as savestates  # noqa: E402
 import mame_scan as mscan  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_sequence as sequence  # noqa: E402
+import mame_series as mseries  # noqa: E402
 import mame_space as mspace  # noqa: E402
 import mame_state as st  # noqa: E402
 import mame_summaries as summaries  # noqa: E402
@@ -131,7 +132,7 @@ class Envelope(MCPServer):
     refusal.
 
     THE PICTURE. A graphics tool's body names its PNG in `image`; the picture itself is
-    attached here, beside the JSON (`mame_picture.attached`), so a tool body and a test deal in
+    attached here, beside the JSON (`scry_core.picture.attached`), so a tool body and a test deal in
     a plain dict and the attachment is built in one place."""
 
     async def call_tool(self, name: str, arguments: dict[str, Any],
@@ -188,32 +189,32 @@ class Envelope(MCPServer):
 # own running-ok operations, the last stop's registers, the two batch tools (which wait for a
 # stop before a step that needs one) and `close`. The list is the server's because it names
 # tools.
-_ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS),
+# The media file tools answer in any state too, and the instructions say so once, beside them.
+_ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
                           "registers(from_last_stop=True)", "perform", "drive", "close"]
 
 mcp = Envelope(
     "mame",
     instructions=(
         "A live MAME debug session.\n\n"
-        "TOOLS. Session: `start`, `rom_check`, `focus`. "
-        "Advance: `run_to`, `run_for`, `step`, `resume`, `trace`. Read: "
+        "TOOLS. `start`, `rom_check`, `focus`. "
+        "Advance: `run_to`, `run_for`, `step`, `resume`, `trace`, `series_capture`. Read: "
         "`read_memory`, `read_block`, `registers`, `disassemble`, `find`, `history`, "
         "`palette`, `screen_view`, `gfx_view`, `gfx_locate`, "
-        "`gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`. "
-        "Write: `write`, `set_register`, `reset`. Scan: `scan_start`, `scan_filter`. "
-        "Comments: `comment_add`, `comment_delete`, `comment_load`. Lua: `input`, `record`, "
+        "`gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`, `screen_signature`, "
+        "`scan_start`, `scan_filter`. Write: `write`, `set_register`, `reset`, `debug`, "
+        "`comment_add`, `comment_delete`, `comment_load`. Lua: `input`, `record`, "
         "`audio_record`, "
-        "`state_save`, `state_load`, `screen_signature`, `lua`. "
-        "Console: `debug`.\n\n"
+        "`state_save`, `state_load`, `lua`. "
+        "Files: `image_diff`, `series_diff`, "
+        "`region_track`, `golden_check`, `audio_measure`, `audio_diff`.\n\n"
         "A SESSION. `start` parks the machine STOPPED. "
-        "`run_to`, `run_for` and `step` stop it again, with a survey; "
-        "`run_to`'s target has no stop of its own. "
+        "`run_to`, `run_for`, `step` stop it again with a survey; `run_to`'s target has no "
+        "stop of its own. "
         "`resume` lets it RUN. While it runs the readers refuse (`not_stopped`); these "
-        "answer: " + ", ".join(f"`{name}`" for name in _ANSWERS_WHILE_RUNNING) + ". A stop "
-        "reached on its own is `stopped_on_its_own`. `rom_check` reads 16 bytes at "
-        "`reference_addr` against `reference_rom` at `reference_base`. A wait that ran out "
-        "is `verdict: TIMEOUT`, `ok`. "
-        "`memdump` and `snapshot` answer with a PATH.\n\n"
+        "answer: " + ", ".join(f"`{name}`" for name in _ANSWERS_WHILE_RUNNING) + ". "
+        "`rom_check`: 16 bytes at `reference_addr` vs `reference_rom` at `reference_base`. "
+        "`memdump`, `snapshot`, `series_capture`, `region_track` answer with a PATH.\n\n"
         "CPUS: no `cpu` acts on the VISIBLE one (stops move it), lists or clears all; named, moves "
         "only `step`'s.\n\n"
         "ADDRESSES are written `0x`, a condition as typed; any other ref is a symbol, bare hex "
@@ -1615,35 +1616,83 @@ def snapshot(dest: str = "") -> dict[str, Any]:
 
 
 @tool("Signature of the screen", summary=summaries.screen_signature)
-def screen_signature(grid: int = 8, seconds: float = mlua.EVAL_WAIT_S,
-                     cell: list[int] | None = None, origin: list[int] | None = None,
+def screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_WAIT_S,
                      ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
-    """One number for what is on screen: `grid` x `grid` pixels, folded into one hash, so two
-    signatures compare and a changed image is a changed number. It answers "is the menu still up"
-    without a PNG crossing the conversation; for the exact image, `snapshot`, whose `sha256` is
-    the hash a golden compares.
+    """One hex string for what is on screen, or on `crop` of it, so "is it the same screen" is
+    answered by comparing two strings and no picture crosses the conversation. It is the
+    signature every Scry tool computes (`scry-sig/1`: the crop's colours, pixel by pixel), so it
+    equals the one `series_capture` writes for a frame over the same crop, and a palette change
+    is a new signature.
 
-    Arguments: `grid` ({GRID_MIN}..{GRID_MAX}); by default the pixels are the centre of each cell of
-    the screen, and with `cell` ([width, height], above zero) and `origin` ([x, y], at or above
-    zero) the fixed lattice `origin + index * cell`, which compares with a number a repo's own
-    script printed; a lattice that leaves the screen is refused with its size, since MAME reads
-    every pixel off it as zero. `seconds`: the wait for the answer, (0, {WAIT_MAX_S}].
+    `crop` `[x, y, width, height]`, default the whole screen. `seconds`: (0, {WAIT_MAX_S}].
 
-    Through the Lua console, so it costs what a `lua` call costs and the screen it reads is the one
-    AFTER the instruction at the stop's pc. It does NOT alter the session. {NEEDS_STOPPED}.
+    One step, the whole screen read in one chunk AFTER the instruction at the stop's pc, nothing
+    altered. {NEEDS_STOPPED}.
 
-    Reply: `signature`, `grid`, `cell`, `origin`, `width`, `height`, the console's account as
-    `lua` reports it (`evaluated_by`, `lines_ahead`, `reader_steps`, `resent`, `thread_errors`,
-    `console_reruns`, its `note`), `call` (this call's sentinel, `MAME_MCP_LUA_END#N`),
-    `pc_before`, then {STOP_FIELDS}. A `wait_expired` says the machine was stepped and nothing was
-    altered: the number, when it comes, lands in `log` (channel `process`) as that sentinel
-    followed by a tab.
+    Reply: `signature` (16 hex characters), `kind` (`pixel`), `width` and `height` (the
+    screen's), `crop` (the rectangle hashed), `screen`, `frame_screen`, the console's account,
+    the survey. `bad_argument`: `crop` off the screen; `no_channel` or `ambiguous_ref`: no
+    screen or several, or a vector screen.
 
-    Reference: REFERENCE.md, Input and the screen.
+    Reference: REFERENCE.md, Media files.
     """
-    args.check("screen_signature", grid=grid, seconds=seconds, cell=cell, origin=origin)
-    return mlua.screen_signature(*_stopped("a screen signature"), grid, seconds, cell, origin,
-                                 _progress(ctx))
+    args.check("screen_signature", crop=crop, seconds=seconds)
+    return mscreen.screen_signature(*_stopped("a screen signature"), crop, seconds,
+                                    _progress(ctx))
+
+
+@tool("Capture a series of frames", summary=summaries.series_capture)
+def series_capture(frames: list[int] | None = None, first: int | None = None,
+                   last: int | None = None, step: int = 1, crop: list[int] | None = None,
+                   dest: str = "", seconds: float = mseries.SECONDS_DEFAULT,
+                   ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+    """FRAMES OF THE SCREEN KEPT INSIDE MAME at emulation speed, as PNGs and one manifest:
+    the series `series_diff`, `region_track` and `golden_check` read, with no picture in the
+    reply. It runs the machine two frames past the last and stops there.
+
+    The frames, by the frame counter `run_for(frames=...)` counts, all still to come: `frames`
+    (a list, ascending) or `first`, `last` and `step`, at most {SERIES_MAX}. `crop` `[x, y,
+    width, height]`, default the whole screen. `dest`: a new absolute directory, kept after
+    `close`; else one in the scratch, gone at `close` (`kept_after_close` says which).
+    `seconds`: the run's wall-clock bound, (0, {WAIT_MAX_S}]. {NEEDS_STOPPED}.
+
+    Each frame is MAME's own rendering of it, read by a frame notifier one frame late as
+    `gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`.
+
+    Reply: `manifest` (its path), `count`, `first`, `last`, `distinct` (signatures over the
+    crop), `frames_asked`, `lost` ([first, last] runs), `kept_after_close`, `frame_source`
+    (`frame_number`), then the run's own fields and the survey as `run_for` reports them.
+    `bad_argument`: a frame not ahead of the machine, a crop off the screen, a `dest` already
+    there; `cut_by_other_stop`: a stop cut the run before the last frame.
+
+    Reference: REFERENCE.md, Media files.
+    """
+    args.check("series_capture", frames=frames, first=first, last=last, step=step, crop=crop,
+               dest=dest, seconds=seconds)
+    return mseries.series_capture(*_stopped("a series of frames"), frames, first, last, step,
+                                  crop, dest, seconds, _progress(ctx))
+
+
+# THE MEDIA FILE TOOLS are scry-core's, one body and one description for both servers, each
+# registered through this server's own `tool`, its bare fields made a reply by `envelope` as
+# this server's own bodies make theirs; bound here by name so `probe_check` and a direct call
+# find them as they find every other tool.
+def _media_tool(title: str, **kw: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def register(body: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(body)
+        def answered(*a: Any, **k: Any) -> dict[str, Any]:
+            return menvelope.envelope(body(*a, **k))
+        return tool(title, **kw)(answered)
+    return register
+
+
+_MEDIA = media_tools.register(_media_tool, media_tools.IMAGE_TOOLS + media_tools.AUDIO_TOOLS)
+image_diff = _MEDIA["image_diff"]
+series_diff = _MEDIA["series_diff"]
+region_track = _MEDIA["region_track"]
+golden_check = _MEDIA["golden_check"]
+audio_measure = _MEDIA["audio_measure"]
+audio_diff = _MEDIA["audio_diff"]
 
 
 # ---------------------------------------------------------------------------- graphics

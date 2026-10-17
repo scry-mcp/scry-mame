@@ -31,18 +31,20 @@ packed with `=I4`, the host's order too, so `array("I")` reads every part of it 
 from __future__ import annotations
 
 import re
+import sys
 from array import array
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from scry_core import judges, picture, png
+from scry_core.raster import signature as raster_signature
 
 import gdb_session as gs
 import mame_chunk as chunk
 import mame_inputs as inputs
 import mame_lua as mlua
 import mame_palette as mpalette
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_ramdac as mramdac
@@ -97,11 +99,11 @@ CAPTURE_LUA = """local function mcp_capture(path, want_indices)
   if type(frame) == "function" then frame = scr:frame_number() end
   local pal = scr.palette
   local head = string.format("tag=%%s w=%%d h=%%d frame=%%d", tag, scr.width, scr.height, frame)
-  if pal ~= nil and (pal.shadows_enabled or pal.highlights_enabled) then
+  if want_indices and pal ~= nil and (pal.shadows_enabled or pal.highlights_enabled) then
     print(string.format("MAME_MCP_SCREEN_SHADOWS %%s palette=%%s", head, pal.device.tag))
     return nil
   end
-  if pal ~= nil and pal.entries > %(encodable)d then
+  if want_indices and pal ~= nil and pal.entries > %(encodable)d then
     print(string.format("MAME_MCP_SCREEN_TOO_MANY %%s entries=%%d", head, pal.entries))
     return nil
   end
@@ -274,6 +276,59 @@ def capture(ses: gs.Session, scratch: Path, want_indices: bool, seconds: float,
     return captured(text, path, common), common
 
 
+def check_read_on_time(frame: int, read_at: int, skipped: int) -> None:
+    """A frame kept by a notifier was read at the next frame that drew, or it is not the bitmap
+    MAME finished for it (`mame_film` says why the read is one frame late)."""
+    if read_at != frame + 1 + skipped:
+        raise st.Invalid("readback_refused", f"frame {frame}'s picture was read at frame "
+                         f"{read_at}, not at the next one that drew (it waited out {skipped} "
+                         "skipped), so it is not the bitmap MAME finished for it")
+
+
+def check_same_size(cap: Capture, frame: int, width: int, height: int, what: str) -> None:
+    """A frame kept by a notifier is the size the screen had when `what` was armed."""
+    if (cap.width, cap.height) != (width, height):
+        raise st.Invalid("readback_refused", f"the screen is {cap.width}x{cap.height} at frame "
+                         f"{frame} and was {width}x{height} when the {what} was armed: its "
+                         "frames no longer share one size, nor its crop")
+
+
+def rgb_cells(cap: Capture) -> bytes:
+    """The screen's colours as RGB triplets, row-major: the cells `scry_core.raster` hashes and
+    a PNG of the screen holds. `pixels()`'s words are the host's order (the module docstring), so
+    the bytes are taken out of each word by position in that order."""
+    raw = cap.colours.tobytes()
+    r, g, b = (2, 1, 0) if sys.byteorder == "little" else (1, 2, 3)
+    out = bytearray(len(cap.colours) * 3)
+    out[0::3], out[1::3], out[2::3] = raw[r::4], raw[g::4], raw[b::4]
+    return bytes(out)
+
+
+def check_screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_WAIT_S,
+                           **_: Any) -> None:
+    """`screen_signature`'s machine-independent half: the crop's shape and the bound. Whether
+    the crop lies on the screen is the machine's to say."""
+    if crop is not None:
+        judges.rect("crop", crop)
+    inputs.seconds_bound(seconds)
+
+
+def screen_signature(ses: gs.Session, scratch: Path, crop: list[int] | None, seconds: float,
+                     progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+    """The body of the `screen_signature` tool: the whole screen read in one chunk (the capture
+    the views share, colours only, so no pen is touched) and `scry_core.raster`'s signature of
+    it, or of `crop`."""
+    check_screen_signature(crop, seconds)
+    cap, common = capture(ses, scratch, False, seconds, progress)
+    x0, y0, w, h = crop if crop is not None else (0, 0, cap.width, cap.height)
+    inside(cap, x0, y0, w, h, "crop", common)
+    signature = raster_signature("pixel", cap.width, cap.height, rgb_cells(cap), [x0, y0, w, h])
+    return running.stop_reply(ses, scratch, f"screen_signature: {common['evaluated_by']}",
+                              signature=signature, kind="pixel", width=cap.width,
+                              height=cap.height, crop=[x0, y0, w, h], screen=cap.tag,
+                              frame_screen=cap.frame, **common)
+
+
 # ------------------------------------------------------------------ the tool
 
 def check_screen_view(mode: str = "render", pens: list[int] | None = None,
@@ -303,7 +358,7 @@ def check_screen_view(mode: str = "render", pens: list[int] | None = None,
     if mode == "histogram" and (scale or dest):
         raise st.Invalid("bad_argument", "mode `histogram` answers no picture, so `scale` and "
                          "`dest` would do nothing")
-    return picture.check_picture(scale, dest)
+    return inputs.picture_args(scale, dest)
 
 
 def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | None,
@@ -344,7 +399,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         rings: list[picture.Ring] = [(x - cx, y - cy, 1, 1, rgb, gap)
                                      for gap, rgb in enumerate(POINT_RINGS, 1)]
         fields["image"] = picture.publish(colour_crop(cap, cx, cy, cw, ch), scale, dest_path,
-                                          scratch, "pixel", rings=rings,
+                                          scratch, "pixel", STATE.record_image, rings=rings,
                                           border=len(POINT_RINGS))
         return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                                   mode=mode, **st.merged(fields, common))
@@ -373,7 +428,8 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         fields["pens"] = sorted(selected)
         fields["isolate_color"] = "#{:02x}{:02x}{:02x}".format(*ISOLATE_COLOUR)
     shown = raster(cap, area, x0, y0, w, h, selected if mode == "isolate" else None)
-    fields["image"] = picture.publish(shown, scale, dest_path, scratch, "screen")
+    fields["image"] = picture.publish(shown, scale, dest_path, scratch, "screen",
+                                      STATE.record_image)
     return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                               mode=mode, **st.merged(fields, common))
 

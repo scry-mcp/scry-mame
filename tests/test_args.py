@@ -27,6 +27,7 @@ from collections.abc import Callable
 from typing import Any
 
 import pytest
+from scry_core import media_tools
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -58,6 +59,7 @@ import mame_savestates as savestates  # noqa: E402
 import mame_scan as mscan  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_sequence as sequence  # noqa: E402
+import mame_series as mseries  # noqa: E402
 import mame_state as st  # noqa: E402
 import mame_sweep as msweep  # noqa: E402
 import mame_trace as mtrace  # noqa: E402
@@ -70,6 +72,12 @@ SERVER = pathlib.Path(s.__file__)
 
 def _registered() -> set[str]:
     return {t.name for t in asyncio.run(s.mcp.list_tools())}
+
+
+#: THE MEDIA FILE TOOLS have scry-core's bodies, registered with no body in this server: each
+#: core body asks its own judge, which scry-core's suite holds, so no `args.check` call site
+#: exists here for them to be bound to.
+MEDIA = set(media_tools.TOOLS)
 
 
 def _call_sites() -> dict[str, set[str]]:
@@ -109,7 +117,7 @@ def test_every_checked_tool_actually_asks_its_check() -> None:
     and have no `args.check(...)` in its body at all -- so its arguments are judged after the gate
     and the table says otherwise. The lines were inserted mechanically, and an omitted
     insertion is exactly the failure a mechanical edit has."""
-    missing = sorted(set(args.BY_TOOL) - set(_call_sites()))
+    missing = sorted(set(args.BY_TOOL) - set(_call_sites()) - MEDIA)
     assert not missing, f"in BY_TOOL but never asked by the tool body: {missing}"
 
 
@@ -120,7 +128,7 @@ def test_no_tool_in_machine_judges_asks_for_a_check_anyway() -> None:
     assert not pointless, f"these ask for a check the table says they do not have: {pointless}"
 
 
-@pytest.mark.parametrize("tool", sorted(args.BY_TOOL))
+@pytest.mark.parametrize("tool", sorted(set(args.BY_TOOL) - MEDIA))
 def test_each_call_site_passes_what_its_check_takes(tool: str) -> None:
     """A KEYWORD A CHECK CANNOT TAKE IS A TypeError; ONE IT SWALLOWS IS AN ARGUMENT NOBODY JUDGES.
     Most of these checks end in `**_` so they can be reached from a batch step's loose dict, which
@@ -176,7 +184,7 @@ OWNERS.update({
     "resume": running.check_resume, "throttle": mlua.check_throttle,
     "record": mrec.check_record, "input": mlua.check_input,
     "audio_record": maudio.check_audio_record,
-    "screen_signature": mlua.check_screen_signature, "lua": mlua.check_lua,
+    "screen_signature": mscreen.check_screen_signature, "lua": mlua.check_lua,
     "state_save": savestates.check_state_name, "state_load": savestates.check_state_name,
     "rom_check": launch.check_rom_check, "start": launch.check_start,
     "focus": mfocus.check_focus,
@@ -189,7 +197,8 @@ OWNERS.update({
     "scan_start": mscan.check_scan_start, "scan_filter": mscan.check_scan_filter,
     "comment_add": comments.check_comment_add, "comment_delete": comments.check_comment_delete,
     "comment_save": comments.check_comment_save, "comment_load": comments.check_comment_load,
-    "trace": mtrace.check_trace,
+    "trace": mtrace.check_trace, "series_capture": mseries.check_series_capture,
+    **{name: spec.check for name, spec in media_tools.TOOLS.items()},
 })
 
 
@@ -246,7 +255,7 @@ def test_every_module_body_asks_its_own_check() -> None:
         "write": mwrite.write, "set_register": mwrite.set_register,
         "record": mrec.record, "input": mlua.input_field,
         "audio_record": maudio.audio_record,
-        "screen_signature": mlua.screen_signature, "lua": mlua.lua,
+        "screen_signature": mscreen.screen_signature, "lua": mlua.lua,
         "state_save": savestates.state_save, "state_load": savestates.state_load,
         "focus": mfocus.focus,
         "palette": mpalette.palette, "screen_view": mscreen.screen_view,
@@ -260,7 +269,8 @@ def test_every_module_body_asks_its_own_check() -> None:
         "trace": mtrace.trace,
         "breakpoint_clear": breakpoints.breakpoint_clear, "watch_clear": watches.watch_clear,
         "regpoint_clear": regpoints.regpoint_clear, "debug": mwrite.debug,
-        "machine_map": machine.machine_map,
+        "machine_map": machine.machine_map, "series_capture": mseries.series_capture,
+        **{name: spec.body for name, spec in media_tools.TOOLS.items()},
     }
     assert set(bodies) == set(sequence.BY_OP), sorted(set(bodies) ^ set(sequence.BY_OP))
     for op, body in bodies.items():
@@ -438,9 +448,13 @@ def test_the_instructions_name_every_operation_that_answers_while_running() -> N
     that reads nothing else, and three names had fallen out of the prose while their own
     docstrings and the refusal's `answers_while_running` kept them."""
     text = s.mcp.instructions or ""
-    running = text[text.index("While it runs"):text.index("A stop reached on its own")]
-    missing = sorted(op for op in sequence.RUNNING_OK_OPS if f"`{op}`" not in running)
+    running = text[text.index("While it runs"):text.index("`rom_check`:")]
+    files = text[text.index("Files:"):text.index("A SESSION.")]
+    media = set(media_tools.TOOLS)
+    missing = sorted(op for op in sequence.RUNNING_OK_OPS - media if f"`{op}`" not in running)
     assert not missing, f"the instructions' running paragraph does not name {missing}"
+    # The media file tools answer in ANY state and are named once, where the tools are.
+    assert all(f"`{op}`" in files for op in media), files
 
 
 @pytest.mark.parametrize("addr", ["0xffff1", "0x10000000"])

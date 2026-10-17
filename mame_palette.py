@@ -16,17 +16,18 @@ import re
 from pathlib import Path
 from typing import Any, NoReturn
 
+from scry_core import picture, png
+
 import gdb_session as gs
 import mame_chunk as chunk
 import mame_inputs as inputs
 import mame_lua as mlua
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_running as running
 import mame_state as st
 import mame_transport as transport
+from mame_state import STATE
 
 COUNT_MAX = 256
 ROW_PENS = 16
@@ -96,7 +97,7 @@ def check_palette(palette: str = "", first: int = 0, count: int = 0, scale: int 
     inputs.pen("first", first)
     inputs.natural("count", count, f": 0 reads to the end (at most {COUNT_MAX} pens), or name "
                    f"1..{COUNT_MAX}; page a larger palette with `first`", hi=COUNT_MAX)
-    return picture.check_picture(scale, dest)
+    return inputs.picture_args(scale, dest)
 
 
 def unknown(name: str, have: list[str], common: dict[str, Any]) -> NoReturn:
@@ -142,7 +143,7 @@ def palette(ses: gs.Session, scratch: Path, name: str, first: int, count: int, s
     if indirect:
         fields["indirect"] = [int(v) for v in m.group(8).split(",") if v]
     fields["image"] = picture.publish(swatch(first, argb, entries), scale, dest_path, scratch,
-                                      "palette")
+                                      "palette", STATE.record_image)
     return running.stop_reply(ses, scratch, f"palette: {common['evaluated_by']}",
                               **st.merged(fields, common))
 

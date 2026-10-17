@@ -339,6 +339,13 @@ class State:
             self.last_stop["watch_hit"] = dict(watch_hit)
         return self.last_stop
 
+    def record_image(self, path: Path) -> None:
+        """A picture a graphics tool wrote, listed among the session's captures once: a film's
+        sheet drawn again on a later read is the same file."""
+        entry = ("image", str(path))
+        if entry not in self.captures:
+            self.captures.append(entry)
+
     def end_call(self) -> None:
         """The OUTER call is over, and with it the one-time account of a stop the machine
         reached on its own: it rode on this call's reply, and kept it would ride on the next,

@@ -453,8 +453,8 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
     # The tools that answer with a PATH, and only those: a caller told everything comes back in
     # the reply would read a file-returning tool as a broken one, and one told `log` returns a
     # path looks for a field its reply, which carries `lines`, does not have.
-    assert "`memdump` and `snapshot` answer with a PATH" in " ".join(text.split()), (
-        "the instructions do not name exactly the file-returning tools")
+    assert ("`memdump`, `snapshot`, `series_capture`, `region_track` answer with a PATH"
+            in " ".join(text.split())), "the instructions do not name the file-returning tools"
     assert "16 bytes" in text, "a spot check must not read as the whole image"
     assert "STOPPED" in text, (
         "rom_check is a memory read, and a read against a RUNNING machine does not come back as "
@@ -478,7 +478,9 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "memdump",
         "perform", "palette", "screen_view", "gfx_view", "gfx_locate", "gfx_load", "gfx_blits",
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
-        "screen_signature", "drive",
+        "screen_signature", "drive", "series_capture",
+        "image_diff", "series_diff", "region_track", "golden_check", "audio_measure",
+        "audio_diff",
         "read_memory", "read_block", "record", "audio_record", "registers", "regpoint_add",
         "regpoint_clear",
         "regpoint_list", "reset", "resume", "run_for", "trace", "comment_add", "comment_list",
@@ -2634,7 +2636,9 @@ def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
                          "log_wait", "registers", "breakpoint_list", "rom_check",
                          "watch_list", "regpoint_list", "symbols_find",
                          "state_list", "captures", "machine_map",
-                         "cpu_info", "comment_list"}, read_only
+                         "cpu_info", "comment_list",
+                         "image_diff", "series_diff", "golden_check", "audio_measure",
+                         "audio_diff"}, read_only
     # IDEMPOTENT IS A STRONGER CLAIM than read-only and almost nothing here can make it: a
     # reader of a machine that moves answers differently on the second call. Held as an exact
     # set so a tool that grows a cache, or loses one, cannot drift into or out of it quietly.
@@ -6851,3 +6855,14 @@ def test_each_mark_reads_its_own_channel_and_a_missing_file_is_zero(tmp_path: Pa
     assert files.log_mark(tmp_path) == 0, "the emulator's channel is not the process's"
     files.log_path(tmp_path, "emulator").write_bytes(b"y" * 3)
     assert files.log_mark(tmp_path) == 3 and transport.stdout_mark(tmp_path) == 7
+
+
+def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> None:
+    """The file tools' bodies are scry-core's and answer bare fields; through this server each
+    wears the envelope every other reply wears: `status`, `session` and its own summary."""
+    from scry_core import png
+    pic = tmp_path / "a.png"
+    pic.write_bytes(png.encode(png.Raster(2, 2, bytes(12))))
+    r = s.image_diff(a=str(pic), b=str(pic))
+    assert r["status"] == "ok" and "session" in r, r
+    assert r["summary"].startswith("image_diff: no pixel differs"), r["summary"]

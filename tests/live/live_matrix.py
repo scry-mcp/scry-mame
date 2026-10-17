@@ -27,14 +27,18 @@ variables); section S's multi-cpu boards need a build whose stub serves a
 thread per cpu (`multicpu_missing`). Unset, those cells are BLOCKED.
 """
 
+import functools
 import hashlib
 import inspect
 import json
+import math
 import os
 import re
+import struct
 import subprocess
 import tempfile
 import time
+import wave
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -95,6 +99,7 @@ from matrix_focus import register_x_control, register_x_verdict
 from matrix_inputs import register_o
 from matrix_landing import register_v
 from matrix_lifetime import register_p
+from matrix_media import register_y
 from matrix_multicpu import register_s
 from matrix_palette_stamps import register_u
 from matrix_removals import (
@@ -133,6 +138,7 @@ import mame_savestates as msavestates  # isort: skip
 import mame_screen as mscreen  # isort: skip
 import mame_watches as mwatches  # isort: skip
 import server as s  # isort: skip
+from scry_core import png, series  # isort: skip
 from scry_core import value_format as vf  # isort: skip
 from mame_state import REPLY_BUDGET_CHARS, STATE  # isort: skip
 
@@ -196,6 +202,28 @@ def _manifest_ready(args: dict[str, Any]) -> dict[str, Any]:
 #: The film every state's probe reads: the blitter's strobe, the value that fires a blit.
 FILM: dict[str, Any] = {"trigger": BLIT_TRIGGER, "length": 2, "value": 0xFFFF, "keep": 2,
                         "frames": 4}
+
+
+def _series_ahead() -> dict[str, Any]:
+    """A one-frame series two frames ahead of a stopped machine, read off its own screen's
+    counter; with no session, or a running one, any frame: the call is the state's refusal."""
+    here = s.status()
+    if not here.get("alive") or here.get("running"):
+        return {"frames": [1], "seconds": 10.0}
+    now = s.screen_signature().get("frame_screen", 0)
+    return {"frames": [now + 2], "seconds": 10.0}
+
+
+#: The media file tools, probed with a file that is not there: they read files and never the
+#: machine, so in EVERY state the answer is the missing file's own refusal.
+MEDIA_ABSENT: dict[str, dict[str, Any]] = {
+    "image_diff": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
+    "series_diff": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
+    "region_track": {"manifest": "/nonexistent/m.json"},
+    "golden_check": {"manifest": "/nonexistent/m.json", "checksums": "/nonexistent/g.sha256"},
+    "audio_measure": {"path": "/nonexistent/s.wav"},
+    "audio_diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
+}
 
 
 def _film_ready(args: dict[str, Any]) -> dict[str, Any]:
@@ -278,6 +306,8 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin")},
     "snapshot": dict,
     "screen_signature": dict,
+    "series_capture": _series_ahead,
+    **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
     "screen_view": lambda: {"mode": "histogram"},
     "gfx_view": lambda: {"layout": BYTES_8X8, "palette": "none", "tag": "maincpu", "count": 16},
@@ -362,7 +392,9 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "reset": lambda r: r.get("kind") == "softreset",
     "memdump": lambda r: r.get("bytes") == 16,
     "snapshot": lambda r: r.get("bytes", 0) > 0,
-    "screen_signature": lambda r: isinstance(r.get("signature"), int),
+    "screen_signature": lambda r: isinstance(r.get("signature"), str)
+    and len(r["signature"]) == 16,
+    "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
     "screen_view": lambda r: sum(n for _, n in r.get("histogram", []))
     == r.get("width", 0) * r.get("height", 0) > 0,
@@ -448,7 +480,10 @@ RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
 def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     """A tool's reply in a state against its contract, and whether the session block then agrees
     with the machine the state leaves behind."""
-    if state in ("none", "closed"):
+    if tool in MEDIA_ABSENT:
+        good = refused(r, "bad_argument") and "is not a file" in str(r.get("message"))
+        agrees = session_is(r, state not in ("none", "closed"), state == "running")
+    elif state in ("none", "closed"):
         if tool == "status":
             good = ok(r) and r.get("alive") is False
         elif tool == "close":
@@ -521,19 +556,17 @@ def run_state(state: str, tools: list[str]) -> None:
 # The order inside a state is the order that keeps the state: everything that leaves the
 # machine where it found it first, then the calls that move it, the transitions last.
 STOPPED_ORDER = [
-    "status", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory",
-    "read_block", "registers", "disassemble", "find", "history", "scan_start", "scan_filter",
-    "scan_clear", "focus", "log", "snapshot",
-    "captures", "state_list",
-    "breakpoint_at", "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list",
-    "watch_clear", "regpoint_add", "regpoint_list", "regpoint_clear", "comment_add",
-    "comment_list", "comment_save", "comment_load", "comment_delete", "debug", "lua",
-    "screen_signature", "palette", "screen_view", "gfx_view", "gfx_locate", "gfx_sweep",
-    "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source", "palette_log", "gfx_film", "write",
-    "set_register", "run_to",
-    "run_for", "trace", "step", "input", "record", "audio_record", "memdump", "state_save",
-    "state_load", "reset",
-    "throttle", "perform", "drive", "log_wait", "stop", "start", "resume", "close",
+    "status", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory", "read_block",
+    "registers", "disassemble", "find", "history", "scan_start", "scan_filter", "scan_clear",
+    "focus", "log", "snapshot", "captures", "state_list", "breakpoint_at", "breakpoint_list",
+    "breakpoint_clear", "watch_add", "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
+    "regpoint_clear", "comment_add", "comment_list", "comment_save", "comment_load",
+    "comment_delete", "debug", "lua", "screen_signature", "image_diff", "series_diff",
+    "region_track", "golden_check", "audio_measure", "audio_diff", "palette", "screen_view",
+    "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
+    "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "series_capture",
+    "trace", "step", "input", "record", "audio_record", "memdump", "state_save", "state_load",
+    "reset", "throttle", "perform", "drive", "log_wait", "stop", "start", "resume", "close"
 ]
 RUNNING_ORDER = (
     [t for t in STOPPED_ORDER if t not in RUNNING_ANSWERS and t not in ("start", "resume")]
@@ -1038,15 +1071,15 @@ STOPPED_CASES: list[Case] = [
     Case("watch_add.condition the console cannot evaluate", "watch_add",
          {"ref": "0x200000", "mode": "change", "length": 2, "condition": "wpdata=="},
          is_refused("bad_argument")),
-    *counts("screen_signature", "grid", {}, 64, lambda r: r.get("grid") == 64, floor=2),
-    Case("screen_signature.grid absent", "screen_signature", {},
-         is_ok(lambda r: r.get("grid") == 8)),
+    Case("screen_signature.crop absent", "screen_signature", {},
+         is_ok(lambda r: r.get("crop") == [0, 0, r.get("width"), r.get("height")])),
     *waits("screen_signature", "seconds", {}, absent=None),
-    Case("screen_signature.seconds absent", "screen_signature", {"grid": 4}, is_ok()),
-    Case("screen_signature.cell without origin", "screen_signature", {"cell": [8, 8]},
+    Case("screen_signature.seconds absent", "screen_signature", {"crop": [0, 0, 8, 8]},
+         is_ok(lambda r: r.get("crop") == [0, 0, 8, 8])),
+    Case("screen_signature.crop off the screen", "screen_signature",
+         {"crop": [0, 0, 1, 100000]}, is_refused("bad_argument")),
+    Case("screen_signature.crop of no width", "screen_signature", {"crop": [0, 0, 0, 8]},
          is_refused("bad_argument")),
-    Case("screen_signature.cell and origin", "screen_signature",
-         {"cell": [8, 8], "origin": [0, 0]}, is_ok(lambda r: r.get("cell") == [8, 8])),
     Case("lua.script at max 16000 chars", "lua", {"script": _lua_of(16000), "read_only": True},
          is_ok(lambda r: r.get("output") == "1\n")),
     Case("lua.script one past max", "lua", {"script": _lua_of(16001)},
@@ -2267,11 +2300,40 @@ def c9_reset() -> None:
     cell(C9[6], r.get("session", {}).get("altered") is True, str(r.get("session")))
 
 
-def _every_op_once(state: str) -> list[dict[str, Any]]:
+def _media_files() -> dict[str, str]:
+    """Files whose answers are known, for the media file tools in a batch, which cannot read a
+    path an earlier step returns: a series of two different 2x2 frames with its goldens, and a
+    one-second WAV of a tone."""
+    folder = Path(fresh("-series"))
+    folder.mkdir()
+    for frame, level in ((0, 0), (1, 255)):
+        (folder / series.frame_name(frame)).write_bytes(
+            png.encode(png.Raster(2, 2, bytes([level]) * 12)))
+    manifest = series.write_manifest(folder, "mame", "frame_number", None, [0, 1])["manifest"]
+    sums = folder / "goldens.sha256"
+    sums.write_text("".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
+                            for p in sorted(folder.glob("f*.png"))))
+    tone = fresh(".wav")
+    with wave.open(tone, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(8000)
+        w.writeframes(b"".join(struct.pack("<h", round(8000 * math.sin(i / 4)))
+                               for i in range(8000)))
+    return {"png": str(folder / series.frame_name(0)), "manifest": str(manifest),
+            "sums": str(sums), "wav": tone}
+
+
+def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
     """A batch holding every operation `perform` accepts, in an order the machine can take: the
-    console ops stopped, then `resume`, the running-ok ops, and `stop`."""
+    series first, its frames just ahead of `frame_now` (where the machine stands before the
+    batch, which nothing has advanced yet), the console ops stopped, then `resume`, the
+    running-ok ops, and `stop`."""
     tsv = fresh(".tsv")
+    media = _media_files()
     return [
+        {"op": "series_capture", "first": frame_now + 1, "last": frame_now + 2,
+         "seconds": 10.0},
         {"op": "status"}, {"op": "machine_map"}, {"op": "cpu_info"},
         {"op": "symbols_find", "name": "irq_vblank"},
         {"op": "read_memory", "ref": "0x400", "length": 4},
@@ -2294,6 +2356,12 @@ def _every_op_once(state: str) -> list[dict[str, Any]]:
         {"op": "debug", "command": "print pc"},
         {"op": "lua", "script": "print(1)", "read_only": True}, {"op": "screen_signature"},
         {"op": "palette", "count": 4}, {"op": "screen_view", "mode": "histogram"},
+        {"op": "image_diff", "a": media["png"], "b": media["png"]},
+        {"op": "series_diff", "a": media["manifest"], "b": media["manifest"]},
+        {"op": "region_track", "manifest": media["manifest"]},
+        {"op": "golden_check", "manifest": media["manifest"], "checksums": media["sums"]},
+        {"op": "audio_measure", "path": media["wav"]},
+        {"op": "audio_diff", "a": media["wav"], "b": media["wav"]},
         {"op": "gfx_view", "layout": BYTES_8X8, "palette": "none", "tag": "maincpu", "count": 4},
         {"op": "gfx_locate", "layouts": [BYTES_8X8], "patch": [0, 0, 8, 8], "tag": "maincpu",
          "count": 4},
@@ -2347,7 +2415,7 @@ C10 = [
 @section("C", "10. batches", C10)
 def c10_batches() -> None:
     boot()
-    steps = _every_op_once("c10")
+    steps = _every_op_once("c10", int(call("screen_signature").get("frame_screen") or 0))
     ops = {st_["op"] for st_ in steps}
     accepted = set(s._step_ops())
     cell(C10[0], ops == accepted,
@@ -4162,6 +4230,7 @@ register_t()
 register_u()
 register_v()
 register_w()
+register_y()
 register_h()
 # THE FOCUS GATE'S VERDICT CLOSES THE RUN, after every section, H included.
 register_x_verdict()

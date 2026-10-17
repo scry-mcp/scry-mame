@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M181",
+  "prompt": "Measure the whole recording /tmp/rec/title.wav, every channel.",
+  "tool": "audio_measure",
+  "args": {
+   "path": "/tmp/rec/title.wav"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

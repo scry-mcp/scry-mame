@@ -19,6 +19,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
+from scry_core import picture as mpicture  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_film import _read_label  # noqa: E402
 from test_gfx import _mark, _png, _serve  # noqa: E402
@@ -27,7 +28,6 @@ from test_lua import _channel, _ChannelSession  # noqa: E402
 import mame_evidence as evidence  # noqa: E402
 import mame_font as font  # noqa: E402
 import mame_layout as ml  # noqa: E402
-import mame_picture as mpicture  # noqa: E402
 import mame_sheet as msheet  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_sweep as msweep  # noqa: E402

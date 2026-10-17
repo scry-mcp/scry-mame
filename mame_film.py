@@ -53,6 +53,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scry_core import picture, png
+
 import gdb_session as gs
 import mame_callbacks as callbacks
 import mame_chunk as chunk
@@ -65,8 +67,6 @@ import mame_iotaps as iotaps
 import mame_lua as mlua
 import mame_map as mmap
 import mame_mismatch as mmismatch
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
@@ -606,16 +606,9 @@ def convert(film: Film, base: Path) -> Cell:
             raise st.Invalid("unexpected_answer", f"{base.name}.txt is not a whole frame file")
         if meta.said.startswith("MCP_FILM_ERROR"):
             raise st.Invalid("unexpected_answer", f"the capture raised: {meta.said[15:]}")
-        if meta.read_at != meta.frame + 1 + meta.skipped:
-            raise st.Invalid("readback_refused", f"frame {meta.frame}'s picture was read at "
-                             f"frame {meta.read_at}, not at the next one that drew (it waited "
-                             f"out {meta.skipped} skipped), so it is not the bitmap MAME "
-                             "finished for it")
+        mscreen.check_read_on_time(meta.frame, meta.read_at, meta.skipped)
         cap = mscreen.captured(meta.said, base.with_suffix(".bin"), {})
-        if (cap.width, cap.height) != (film.width, film.height):
-            raise st.Invalid("readback_refused", f"the screen is {cap.width}x{cap.height} at "
-                             f"frame {meta.frame} and was {film.width}x{film.height} when the "
-                             "film was armed: its frames no longer share one size, nor its crop")
+        mscreen.check_same_size(cap, meta.frame, film.width, film.height, "film")
         pens = list(array("I", base.with_suffix(".pens").read_bytes()))
         if cap.indices is not None and len(pens) != len(cap.pens):
             raise st.Invalid("unexpected_answer", f"{prose.counted(len(pens), 'pen')} "
@@ -836,9 +829,12 @@ def read_film(scratch: Path, first: int) -> dict[str, Any]:
     fields["listed"] = {"first": first, "count": len(page), "of": len(cells)}
     if first + len(page) < len(cells):
         fields["next_first"] = first + len(page)
-    fields["image"] = picture.publish(msheet.compose(lay, [(labels(c, film), c.rgb) for c in page]),
-                                      0, film.dir / f"sheet-{first}.png",
-                                      scratch, "sheet")
+    # THE SHEET IS THE FILM'S OWN and is drawn again on every read, as the frames it lists grow,
+    # so the one before is taken away first: the exclusive write refuses a file already there.
+    composed = msheet.compose(lay, [(labels(c, film), c.rgb) for c in page])
+    sheet = film.dir / f"sheet-{first}.png"
+    sheet.unlink(missing_ok=True)
+    fields["image"] = picture.publish(composed, 0, sheet, scratch, "sheet", STATE.record_image)
     if rec["anim_kept"] != len(cells):
         rec["animation"] = animation(film, cells)
         rec["anim_kept"] = len(cells)

@@ -121,11 +121,9 @@ def test_a_count_held_to_a_range_refuses_a_bool_and_a_string_and_takes_a_json_nu
     inputs.count("limit", 2.0, 400)  # type: ignore[arg-type]
 
 
-def test_a_lattice_cell_or_origin_refuses_a_bool() -> None:
-    out = s.screen_signature(cell=[True, True], origin=[0, 0])
-    assert out["status"] == "INVALID" and "`cell`" in out["message"], out
-    out = s.screen_signature(cell=[8, 8], origin=[False, 0])
-    assert out["status"] == "INVALID" and "`origin`" in out["message"], out
+def test_a_signature_crop_refuses_a_bool() -> None:
+    out = s.screen_signature(crop=[0, 0, True, 8])
+    assert out["status"] == "INVALID" and out["message"].startswith("crop="), out
 
 
 @pytest.mark.parametrize("value", [True, False, "5"])
@@ -246,27 +244,19 @@ def test_every_count_judge_takes_an_integral_float_and_refuses_the_rest(
 
 @pytest.mark.parametrize("value", [True, "8", 5, [True, 1], [1, "2"], [1, 2, 3], None])
 @pytest.mark.parametrize(("name", "judge"), [
-    ("cell", lambda v: s.screen_signature(cell=v, origin=[0, 0])),
-    ("origin", lambda v: s.screen_signature(cell=[8, 8], origin=v)),
+    ("crop", lambda v: s.screen_signature(crop=v)),
     ("point", lambda v: s.screen_view(mode="pixel", point=v)),
 ])
 def test_a_list_of_naturals_is_one_rule_and_never_a_type_error(
         name: str, judge: Any, value: Any) -> None:
-    """`cell`, `origin` and `point` are lists of naturals, judged by one predicate: a number, a
-    string or a list of the wrong length is refused in the caller's sentence, never a
-    `TypeError` from `len()` on what was not a list."""
-    if value is None and name != "point":
-        return                  # cell and origin come together: None is the other refusal
+    """`crop` and `point` are lists of naturals, judged by one predicate: a number, a string or
+    a list of the wrong length is refused in the caller's sentence, never a `TypeError` from
+    `len()` on what was not a list."""
+    if value is None and name == "crop":
+        return                  # no crop is the whole screen, an answer and not a refusal
     out = judge(value)
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
     assert f"`{name}`" in out["message"] or f"{name}=" in out["message"], out["message"]
-
-
-@pytest.mark.parametrize("value", [True, False, "8", 8.5, None])
-def test_the_signature_grid_refuses_what_is_not_a_count_in_its_sentence(value: Any) -> None:
-    out = s.screen_signature(grid=value)
-    assert out["status"] == "INVALID" and out["message"].startswith("grid"), out
-    assert out["message"] in (f"grid is a count; got {value!r}",) or "is outside" in out["message"]
 
 
 @pytest.mark.parametrize("value", [True, "1", 5, [True], [-1], [3.0], ["16"]])

@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, NoReturn, overload
 
 from pydantic import Field
+from scry_core import picture
 from scry_core.reply_contract import Invalid
 
 import mame_prose as prose
@@ -141,7 +142,7 @@ def is_natural(value: object, lo: int = 0, hi: int | None = None) -> bool:
 
 def is_naturals(value: object, n: int | None = None, lo: int = 0) -> bool:
     """`value` is a list of `n` naturals at or above `lo` (any length when `n` is None): a point,
-    a lattice's cell or origin, a list of pens. The list is asked for before its length, so a
+    a rectangle's corner, a list of pens. The list is asked for before its length, so a
     number or a string is refused here rather than raising in `len()`."""
     return (isinstance(value, list | tuple) and (n is None or len(value) == n)
             and all(is_natural(v, lo) for v in value))
@@ -578,6 +579,13 @@ def optional_dest(dest: str) -> Path | None:
     """A tool's `dest`, `fresh_dest`'s, or None when it is empty: the file then lands in the
     scratch under a name the tool chooses."""
     return fresh_dest("dest", dest) if dest else None
+
+
+def picture_args(scale: int = 0, dest: str = "") -> Path | None:
+    """What every graphics tool judges before the machine: the scale (`scry_core.picture`'s
+    range), and a `dest` that is a fresh absolute path, handed back as the `Path` it built."""
+    picture.check_scale(scale)
+    return optional_dest(dest)
 
 
 def regex(name: str, pattern: object) -> re.Pattern[str]:

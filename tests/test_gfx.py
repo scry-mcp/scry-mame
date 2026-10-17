@@ -31,6 +31,8 @@ from mcp.types import CallToolResult
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
+from scry_core import picture as mpicture  # noqa: E402
+from scry_core import png, raster  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_lua import _channel, _ChannelSession  # noqa: E402
 
@@ -39,7 +41,6 @@ import mame_gfx as gfx  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
-import mame_picture as mpicture  # noqa: E402
 import mame_progress as mprogress  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_state as mstate  # noqa: E402
@@ -73,6 +74,84 @@ def _png(out: dict[str, Any]) -> png_read.Png:
 def _left_clean(ses: _ChannelSession) -> None:
     left = sorted(p.name for p in ses.scratch.glob("*.bin"))
     assert left == [], f"a chunk's file was left in the scratch: {left}"
+
+
+# ------------------------------------------------------------------ screen_signature
+
+def _signature_by_hand(words: array[int], width: int, crop: list[int]) -> str:
+    """The `scry-sig/1` definition worked from the capture's raw ARGB words, written here
+    rather than called, so the server is held to the definition and not to its own helper."""
+    x0, y0, w, h = crop
+    cells = b"".join(bytes(((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF))
+                     for y in range(y0, y0 + h) for c in words[y * width + x0:y * width + x0 + w])
+    return hashlib.blake2b(b"scry-sig/1|pixel|%dx%d|" % (w, h) + cells, digest_size=8).hexdigest()
+
+
+def test_screen_signature_hashes_the_whole_screen_by_the_core_definition(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    words = array("I", _capture("gridlee-screen")[:256 * 240 * 4])
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    out = s.screen_signature()
+    assert out["status"] == "ok", out
+    assert out["signature"] == _signature_by_hand(words, 256, [0, 0, 256, 240])
+    assert (out["kind"], out["width"], out["height"], out["crop"]) == ("pixel", 256, 240,
+                                                                         [0, 0, 256, 240])
+    assert out["screen"] == ":screen" and out["frame_screen"] == 900
+    assert out["session"]["altered"] is False and out["evaluated_by"] == "one step"
+    assert "image" not in out, "a signature answers a string, never a picture"
+    assert out["summary"] == f"screen_signature 256x240 at [0, 0]: {out['signature']}"
+    sent = ses.stdin.getvalue().decode()
+    assert "mcp_capture(" in sent and ", false)" in sent, "colours only: no pen is touched"
+    _left_clean(ses)
+
+
+def test_a_cropped_signature_is_the_crops_and_one_off_the_screen_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    words = array("I", _capture("gridlee-screen")[:256 * 240 * 4])
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    whole = s.screen_signature()["signature"]
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    out = s.screen_signature(crop=[16, 40, 32, 24])
+    assert out["signature"] == _signature_by_hand(words, 256, [16, 40, 32, 24])
+    assert out["signature"] != whole and out["crop"] == [16, 40, 32, 24]
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    out = refused("leaves the 256x240 screen", s.screen_signature(crop=[250, 0, 7, 1]))
+    assert out["code"] == "bad_argument"
+    _left_clean(ses)
+
+
+def test_the_signature_of_the_screen_is_the_signature_of_its_picture(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """One definition across tools: the PNG `screen_view` writes at scale 1 hashes, through
+    `scry_core.raster`, to the string `screen_signature` answers at the same stop."""
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    view = s.screen_view(scale=1, crop=[8, 8, 64, 48])
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    sig = s.screen_signature(crop=[8, 8, 64, 48])
+    picture = png.decode(Path(view["image"]["path"]).read_bytes())
+    assert raster.picture_signature(picture) == sig["signature"]
+
+
+def test_every_picture_a_view_writes_is_listed_among_the_sessions_captures(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The views publish through scry-core with this server's recorder: what `captures` reads
+    back. Listed once, however many times the same file is recorded."""
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    view = s.screen_view(scale=1)
+    _serve(ses, "palette-circus")
+    pal = s.palette()
+    for out in (view, pal):
+        assert ("image", out["image"]["path"]) in mstate.STATE.captures, out["summary"]
+    mstate.STATE.record_image(Path(view["image"]["path"]))
+    assert mstate.STATE.captures.count(("image", view["image"]["path"])) == 1
 
 
 # ------------------------------------------------------------------ palette

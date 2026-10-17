@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M180",
+  "prompt": "Measure the recording /tmp/rec/boot.wav between 0.5 and 2 seconds, only its left channel: did it sound, how loud, and when did it start?",
+  "tool": "audio_measure",
+  "args": {
+   "path": "/tmp/rec/boot.wav",
+   "window": [
+    0.5,
+    2
+   ],
+   "channel": 0
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M180: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/boot.wav\", \"window\": [0.5, 2], \"channel\": 0}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M180: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/boot.wav\", \"window\": [0.5, 2], \"channel\": 0}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M180: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/boot.wav\", \"window\": [0.5, 2], \"channel\": 0}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -20,6 +20,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from scry_core import picture, png
+
 import gdb_session as gs
 import mame_evidence as evidence
 import mame_gfx as gfx
@@ -27,13 +29,12 @@ import mame_inputs as inputs
 import mame_layout as ml
 import mame_lua as mlua
 import mame_palette as mpalette
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_running as running
 import mame_sheet as sheet
 import mame_state as st
+from mame_state import STATE
 
 SWEEP_MAX = 16             # candidates on one sheet, which a person reads cell by cell
 COUNT_MAX = 64             # tiles a cell shows
@@ -136,7 +137,7 @@ def check_gfx_sweep(tag: str = "", ref: str = "", offset: int = 0, count: int = 
                          f"{prose.agrees(len(cands), 'is', 'are')} past the "
                          f"{SWEEP_MAX} one sheet holds: narrow `planes` or `sizes`",
                          candidates=len(cands))
-    return cands, picture.check_picture(scale, dest)
+    return cands, inputs.picture_args(scale, dest)
 
 
 def _cell(res: ml.Resolved, data: bytes, start: int, n: int,
@@ -230,7 +231,7 @@ def gfx_sweep(ses: gs.Session, scratch: Path, tag: str, ref: str, offset: int, c
                          f"{blk.tag} ({blk.size:#x} bytes) from offset {start:#x}",
                          size=blk.size, candidates=listed, **common)
     page, factor = _page(cells)
-    image = picture.publish(page, scale, dest_path, scratch, "sweep")
+    image = picture.publish(page, scale, dest_path, scratch, "sweep", STATE.record_image)
     source = gfx.source_fields(blk, start, addr, on)
     n = evidence.record_sweep(evidence.source_of(source), pal_tag, pen_base, kept, image)
     fields: dict[str, Any] = {

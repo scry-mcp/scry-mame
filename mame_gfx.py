@@ -16,6 +16,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scry_core import picture, png
+
 import gdb_session as gs
 import mame_block as block
 import mame_chunk as chunk
@@ -25,8 +27,6 @@ import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as manifest
 import mame_palette as mpalette
-import mame_picture as picture
-import mame_png as png
 import mame_progress as mprogress
 import mame_prose as prose
 import mame_region as region
@@ -267,7 +267,7 @@ def check_gfx_view(layout: Any = None, palette: str = "none", tag: str = "", ref
                          "(`palette`), empty for the machine's only one, or `none` for a grey "
                          "ramp that says it is not the machine's colours")
     check_pen_base(palette, pen_base)
-    return lay, picture.check_picture(scale, dest)
+    return lay, inputs.picture_args(scale, dest)
 
 
 def check_pen_base(palette: str, pen_base: int) -> None:
@@ -335,6 +335,6 @@ def gfx_view(ses: gs.Session, scratch: Path, layout: Any, palette: str, tag: str
         fields["note"] = ("palette `none`: a grey ramp over the pixel values, NOT the machine's "
                           "colours; the PNG's index is the pixel value either way")
     fields["image"] = picture.publish(png.Raster(width, height, bytes(canvas), tuple(colours)),
-                                      scale, dest_path, scratch, "gfx")
+                                      scale, dest_path, scratch, "gfx", STATE.record_image)
     return running.stop_reply(ses, scratch, f"gfx_view: {common['evaluated_by']}",
                               **st.merged(fields, common))

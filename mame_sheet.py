@@ -2,7 +2,7 @@
 inline ceiling unenlarged; the page is then enlarged by a whole factor where one fits.
 
 WHY WHOLE CELLS AND PAGES. A sheet that shrank its cells to fit would resample them, the
-plausible wrong picture `mame_picture` refuses to attach; so a page holds the largest grid of
+plausible wrong picture `scry_core.picture` refuses to attach; so a page holds the largest grid of
 whole cells the ceiling takes, and the caller pages through the rest. A cell is as wide as the
 widest label of every cell on every page, so the pages of one sheet lay out alike and a cell is
 found at the same place whichever page it is on.
@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from scry_core import picture, png
+
 import mame_font as font
-import mame_picture as picture
-import mame_png as png
 
 # Each label in the 5x7 font at twice its size, over its picture, cells a gap apart on dark.
 LABEL_SCALE = 2
