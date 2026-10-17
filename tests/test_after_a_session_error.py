@@ -1113,7 +1113,7 @@ def test_the_descriptions_say_what_each_changed_reply_carries() -> None:
 
 
 def test_the_instructions_and_the_reference_say_any_tool_latches() -> None:
-    """A session error no tool answered latches wherever it surfaces (the server's `tool`
+    """A session error no tool answered latches wherever it surfaces (`mame_mcp.tool`
     wrapper), so the contract names no short list of tools that latch: such a list reads as
     "the others never do", which is false."""
     latching = "`session_broken` LATCHES until `close`"

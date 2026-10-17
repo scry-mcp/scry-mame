@@ -15,6 +15,7 @@ from test_server import _boot_args, _stub_boot  # noqa: E402
 
 import mame_idle as idle  # noqa: E402
 import mame_launch as launch  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
@@ -109,7 +110,7 @@ def test_main_watches_with_the_tool_lock_the_machine_and_close(
     monkeypatch.setattr(clock, "watch", lambda *a: watched.append(a))
     monkeypatch.setattr(s.mcp, "run", lambda *a, **k: None)
     s.main()
-    assert watched == [(s._LOCK, mstate.STATE.machine_alive, launch.close)], watched
+    assert watched == [(mame_mcp.LOCK, mstate.STATE.machine_alive, launch.close)], watched
 
 
 def test_the_watch_survives_a_close_that_raises_and_says_so(

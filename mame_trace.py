@@ -235,7 +235,7 @@ def _left(path: Path, closed: bool | None) -> dict[str, Any]:
 def _with_trace(reply: dict[str, Any], block: dict[str, Any]) -> dict[str, Any]:
     """`reply` with `trace` added: the survey's own `cpu` and `pc` stay at the top level, so the
     trace's live under their own key. Closing the tracer may have stopped a machine the run
-    left running, which the `session` block the server's `tool` composes afterwards says."""
+    left running, which the `session` block `mame_mcp.tool` composes afterwards says."""
     reply["trace"] = block
     return reply
 

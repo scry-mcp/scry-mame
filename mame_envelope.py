@@ -1,7 +1,7 @@
 """THE SHAPE EVERY REPLY TAKES: `status`, the tool's own fields, then the `session` block that says
 whether the machine is alive, running and written to. It is built FROM the state the server
 holds (`mame_state`). Every body closes its reply through `envelope`; the block the caller reads
-is composed again by the server's `tool` once the body is done (`server._finished`), so it says
+is composed again by `mame_mcp.tool` once the body is done (`mame_mcp._finished`), so it says
 what the machine is doing after the call.
 """
 
@@ -43,10 +43,10 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
 
     `status` is `ok` unless the tool's own fields declared the answer INVALID (`invalid` above, or a
     raised `Invalid` the server's wrapper turns into one), and the `session` block at the end (which
-    the server's `tool` composes again after the body, `close`'s aside) carries `alive`, `running`,
+    `mame_mcp.tool` composes again after the body, `close`'s aside) carries `alive`, `running`,
     `altered` and the `altering_writes` count (see the server's module docstring), with a `note`
     beside them once the machine has been written to. The one-line `summary` that opens every reply
-    is added by the server's `tool`, which knows the tool's name and arguments; this function does
+    is added by `mame_mcp.tool`, which knows the tool's name and arguments; this function does
     not. The contract's guard runs on the result, so a malformed refusal is a programmer's error
     here and never a reply.
     """
@@ -64,7 +64,7 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
 
 def session_block() -> dict[str, Any]:
     """The `session` block alone, READ off the state and writing none of it: `envelope`'s, and
-    the one the server's `tool` composes after a body (`server._finished`)."""
+    the one `mame_mcp.tool` composes after a body (`mame_mcp._finished`)."""
     n = STATE.altered()
     alive = STATE.ses is not None and STATE.proc is not None and STATE.proc.poll() is None
     broken = STATE.broken

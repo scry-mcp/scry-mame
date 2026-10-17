@@ -9,6 +9,7 @@ under the cap is the text a model was probed with, and the shape guard wraps the
 from pathlib import Path
 from types import ModuleType
 
+import mame_mcp
 import server
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,4 +29,4 @@ def load() -> dict[str, ModuleType]:
     return {"mame": server}
 
 
-CHECKS = {"mame": server.probe_check}
+CHECKS = {"mame": mame_mcp.probe_check}

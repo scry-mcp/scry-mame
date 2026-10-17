@@ -27,6 +27,7 @@ import mame_gfx as mgfx  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_lua as mlua  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_scan as mscan  # noqa: E402
@@ -208,8 +209,8 @@ def test_every_body_receives_the_integer_whichever_spelling_the_caller_used(
         seen.append(a[at])
         return menvelope.invalid("no_session", "the body was reached")
     monkeypatch.setattr(module, name, body)
-    monkeypatch.setattr(s, "_stopped", lambda _why: (object(), tmp_path))
-    monkeypatch.setattr(s, "_contact", lambda: (object(), tmp_path))
+    monkeypatch.setattr(s, "stopped", lambda _why: (object(), tmp_path))
+    monkeypatch.setattr(s, "contact", lambda: (object(), tmp_path))
     for spelled in ("0x12", 0x12):
         reply = getattr(s, tool)(**others, **{arg: spelled})
         assert reply["message"] == "the body was reached", reply
@@ -304,12 +305,11 @@ def test_a_sign_or_a_bare_0x_is_refused_in_words_that_fit_it(given: str) -> None
 def test_the_probe_judges_a_number_as_the_tool_reads_it() -> None:
     """The probe asks the server's own check about a call it never makes: a `0x` answer is
     judged on the integer it spells, decimal text refused as the tool refuses it."""
-    import server
-    server.probe_check("set_register", {}, {"name": "d0", "value": "0x2f00", "cpu": ""})
+    mame_mcp.probe_check("set_register", {}, {"name": "d0", "value": "0x2f00", "cpu": ""})
     with pytest.raises(mstate.Invalid, match="value='4660'"):
-        server.probe_check("set_register", {}, {"name": "d0", "value": "4660", "cpu": ""})
+        mame_mcp.probe_check("set_register", {}, {"name": "d0", "value": "4660", "cpu": ""})
     with pytest.raises(mstate.Invalid, match="0..0xff"):
-        server.probe_check("gfx_film", {}, {"trigger": "0x400", "value": "0x100"})
+        mame_mcp.probe_check("gfx_film", {}, {"trigger": "0x400", "value": "0x100"})
 
 
 @pytest.mark.parametrize("tool,others,arg", [

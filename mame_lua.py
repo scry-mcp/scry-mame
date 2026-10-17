@@ -218,7 +218,7 @@ def one_event(seen: list[str], tag: str, event: str) -> dict[str, str] | None:
 def with_fields(ran: dict[str, Any], **fields: Any) -> dict[str, Any]:
     """The run's reply with the wrapper's own fields added where the docstrings list them:
     before the stop survey, which begins at `how`; a run with no survey (a refusal) takes them
-    at the end. The `session` block is the server's `tool`'s, composed after this call read
+    at the end. The `session` block is `mame_mcp.tool`'s, composed after this call read
     its answer, so it agrees with the console counters that answer moved. A `note` the wrapper
     adds joins the run's own, after it."""
     keys = [k for k in ran if k != "session"]

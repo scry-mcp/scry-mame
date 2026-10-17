@@ -13,6 +13,7 @@ against the previous code:
 """
 
 import ast
+import asyncio
 import hashlib
 import inspect
 import io
@@ -60,6 +61,7 @@ import mame_inputs as inputs
 import mame_launch as launch
 import mame_lists as mlists  # noqa: E402
 import mame_machine as machine  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_progress as mprogress  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
@@ -348,14 +350,14 @@ def test_with_no_window_app_no_helper_is_looked_for_anywhere(
 def test_the_tools_are_serialized() -> None:
     """Two calls at once over ONE machine steal each other's breakpoint stops.
 
-    The probe is REMOVED from the registry afterwards. `@s.tool` registers into the real server,
-    so without the cleanup this test left a tool named after itself in the live surface, and any
-    assertion about that surface became order-dependent. Found by the roster gate below on its
-    first run, which is what a roster gate is for.
+    The probe is REMOVED from the registry afterwards. `@mame_mcp.tool` registers into the real
+    server, so without the cleanup this test left a tool named after itself in the live surface,
+    and any assertion about that surface became order-dependent. Found by the roster gate below
+    on its first run, which is what a roster gate is for.
     """
     order: list[str] = []
 
-    @s.tool("Slow probe", summary=lambda args, reply: "slow_probe: ok")
+    @mame_mcp.tool("Slow probe", summary=lambda args, reply: "slow_probe: ok")
     def slow_probe() -> dict[str, str]:
         order.append("enter")
         threading.Event().wait(0.05)
@@ -370,6 +372,8 @@ def test_the_tools_are_serialized() -> None:
     # Serialized, entries and exits alternate. Without the lock, they overlap.
     assert order == ["enter", "leave"] * 3
     s.mcp._tool_manager.remove_tool("slow_probe")
+    mame_mcp._SUMMARIES.pop("slow_probe", None)
+    mame_mcp._BODIES.pop("slow_probe", None)
 
 
 def test_the_mame_line_carries_the_harness_and_the_port() -> None:
@@ -3858,11 +3862,11 @@ def test_the_progress_bridge_reaches_the_context_from_a_worker_thread() -> None:
     context it is the no-op, so a direct call or a test paints nothing."""
     import anyio
 
-    assert s._progress(None) is mprogress.no_progress
+    assert mame_mcp.progress_of(None) is mprogress.no_progress
     ctx = _RecordingCtx()
 
     async def main() -> None:
-        report = s._progress(ctx)  # type: ignore[arg-type]
+        report = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
         await anyio.to_thread.run_sync(lambda: report(2.0, 8.0, "tick"))
 
     anyio.run(main)
@@ -3877,10 +3881,10 @@ def test_each_call_gets_a_bridge_of_its_own_that_never_goes_backwards() -> None:
     ctx = _RecordingCtx()
 
     async def main() -> None:
-        first = s._progress(ctx)  # type: ignore[arg-type]
+        first = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
         for p in (1.0, 2.0, 1.0):
             await anyio.to_thread.run_sync(first, p, None, f"{p:g}")
-        second = s._progress(ctx)  # type: ignore[arg-type]
+        second = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
         await anyio.to_thread.run_sync(lambda: second(1.0, None, "fresh"))
 
     anyio.run(main)
@@ -4598,7 +4602,7 @@ def test_the_survey_says_when_the_console_gave_no_listing(
 
 def test_the_tools_carry_the_clients_context_to_their_waits() -> None:
     """End to end: a tool called with the SDK's context, from the worker thread the SDK uses,
-    ticks through it. Dropping the `_progress(ctx)` argument at a call site leaves every
+    ticks through it. Dropping the `progress_of(ctx)` argument at a call site leaves every
     direct test green; this one goes red."""
     import anyio
 
@@ -5679,7 +5683,7 @@ def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
     """The summary is one line a person reads without the JSON, so a long refusal is cut
     there: at a word, with a mark that says the rest is in `message`, never mid-word."""
     message = "the write side of 0x4a0 is unmapped: " + "a change watch there can never fire " * 6
-    line = s._summary("watch_add", {}, {"status": "INVALID", "code": "bad_argument",
+    line = mame_mcp._summary("watch_add", {}, {"status": "INVALID", "code": "bad_argument",
                                         "message": message})
     head = "watch_add: INVALID (bad_argument), "
     assert line.startswith(head), line
@@ -5687,7 +5691,7 @@ def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
     assert shown.endswith("...") and len(shown) <= 124, shown
     kept = shown.removesuffix("...")
     assert message.startswith(kept) and message[len(kept)] == " ", "cut at a word, never inside one"
-    short = s._summary("x", {}, {"status": "INVALID", "code": "c", "message": "short"})
+    short = mame_mcp._summary("x", {}, {"status": "INVALID", "code": "c", "message": "short"})
     assert short == "x: INVALID (c), short"
 
 
@@ -6740,7 +6744,7 @@ def test_the_summary_line_of_each_tool_says_what_came_back(
     whose case fell out of `_summary` reads `<name>: ok` and two calls of it cannot be told
     apart. Each case here is a tool's line with its reply's own fields, and the branch of a
     line that reads one way or the other (stale, while running, cut, mutates, seen)."""
-    assert s._summary(name, args, {"status": "ok", **reply}) == expected
+    assert mame_mcp._summary(name, args, {"status": "ok", **reply}) == expected
 
 
 def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any() -> None:
@@ -6748,12 +6752,13 @@ def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any
              "binary": "/opt/mame/mame", "binary_origin": "PATH", "symbols_total": 61,
              "pc": "0x000f2034", "machine": {n: 0 for n in machine.SECTIONS},
              "declarations": {"rearm": {"rearmed": []}}, "start_retries": []}
-    assert s._summary("start", {}, reply) == (
+    assert mame_mcp._summary("start", {}, reply) == (
         "start m68k-dual on /opt/mame/mame (PATH): rom_check OK, 61 symbols, pc 0x000f2034")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": ":maincpu"}]
-    assert s._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0 on :maincpu")
+    assert mame_mcp._summary("start", {}, reply).endswith(
+        ", 1 declaration re-armed: 0x4a0 on :maincpu")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": None}]
-    assert s._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0")
+    assert mame_mcp._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0")
 
 
 def test_a_refusal_is_clipped_for_the_summary_line_at_a_word_and_never_inside_one() -> None:
@@ -6771,14 +6776,7 @@ def test_a_refusal_is_clipped_for_the_summary_line_at_a_word_and_never_inside_on
 def test_the_schemas_refusal_carries_its_body_as_structured_content_too() -> None:
     """The seam answers the client twice, as text and as the structured half a typed client
     reads: the same body in both, or one of the two halves says nothing."""
-    from pydantic import ValidationError
-
-    tool = s.mcp._tool_manager.get_tool("read_memory")
-    assert tool is not None
-    model = tool.fn_metadata.arg_model
-    with pytest.raises(ValidationError) as caught:
-        model.model_validate({"ref": 5, "length": 16})
-    result = s.Envelope._refused("read_memory", {"ref": 5, "length": 16}, caught.value)
+    result = asyncio.run(s.mcp.call_tool("read_memory", {"ref": 5, "length": 16}))
     body = result.structured_content
     assert body is not None and body["status"] == "INVALID" and body["code"] == "bad_argument"
     assert body["summary"].startswith("read_memory: INVALID (bad_argument)")

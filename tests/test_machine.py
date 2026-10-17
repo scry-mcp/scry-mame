@@ -776,18 +776,18 @@ def test_the_summary_says_what_the_board_is_and_never_just_ok(
 ) -> None:
     """Under `perform(summaries=True)` the summary is ALL an earlier step keeps, so a line
     reading `ok` would say nothing about the machine that was asked about."""
-    import server as srv
+    import mame_mcp
     _cached(monkeypatch, tmp_path)
     reply = machine.machine_map(sections=EVERY)
-    line = srv._summary("machine_map", {}, reply)
+    line = mame_mcp._summary("machine_map", {}, reply)
     assert "2 cpus" in line and "32 address map entries" in line and "22 ROM files" in line
     assert "1 screen," in line, "one of a section is said in the singular"
     narrowed = machine.machine_map(cpu="subcpu", sections=EVERY)
-    assert "of :subcpu" in srv._summary("machine_map", {"cpu": "subcpu"}, narrowed)
+    assert "of :subcpu" in mame_mcp._summary("machine_map", {"cpu": "subcpu"}, narrowed)
     STATE.machine_map["address_map"] *= 20
     cut = machine.machine_map(sections=EVERY)
-    assert "sections cut" in srv._summary("machine_map", {}, cut)
-    assert "640 address map entries" in srv._summary("machine_map", {}, cut), "the FULL count"
+    assert "sections cut" in mame_mcp._summary("machine_map", {}, cut)
+    assert "640 address map entries" in mame_mcp._summary("machine_map", {}, cut), "the FULL count"
 
 
 def test_every_space_carries_its_own_mask_and_a_cpu_is_judged_by_its_own() -> None:

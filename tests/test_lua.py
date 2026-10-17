@@ -1504,7 +1504,7 @@ def test_start_reports_its_progress_while_the_gdbstub_is_slow(
 
     ses.dial = slow_connect  # type: ignore[method-assign]
     ticks: list[str] = []
-    monkeypatch.setattr(s, "_progress", lambda ctx: (lambda p, t, m: ticks.append(m)))
+    monkeypatch.setattr(s, "progress_of", lambda ctx: (lambda p, t, m: ticks.append(m)))
     out = s.start(**_boot_args(tmp_path, image), seconds=5.0)
     try:
         assert out["status"] == "ok", out

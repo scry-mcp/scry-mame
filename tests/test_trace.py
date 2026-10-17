@@ -25,10 +25,10 @@ import gdb_session as gs
 import mame_advance as advance
 import mame_cpus as cpus
 import mame_envelope as menvelope
+import mame_mcp
 import mame_running as running
 import mame_state as mstate
 import mame_trace as mtrace
-import server as s
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "trace"
 TAG = ":maincpu"
@@ -287,8 +287,8 @@ def call(ses: Console, **kw: Any) -> dict[str, Any]:
             "noloop": False, **kw}
     scratch = mstate.STATE.scratch
     assert scratch is not None
-    # Closed as the server's `tool` closes it: `session` last, composed after the body.
-    return s._finished("trace", args, mtrace.trace(ses, scratch, **args))  # type: ignore[arg-type]
+    # Closed as `mame_mcp.tool` closes it: `session` last, composed after the body.
+    return mame_mcp._finished("trace", args, mtrace.trace(ses, scratch, **args))  # type: ignore[arg-type]
 
 
 def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> None:

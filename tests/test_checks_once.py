@@ -23,6 +23,7 @@ import mame_files as files
 import mame_film as mfilm
 import mame_inputs as inputs
 import mame_locate as mlocate
+import mame_mcp
 import mame_running as running
 import mame_screen as mscreen
 import mame_sequence as sequence
@@ -330,8 +331,8 @@ def test_every_body_behind_a_tool_receives_an_integral_float_as_the_int_it_equal
     float. A fractional float is left as it came, for its judge to refuse."""
     seen: dict[str, Any] = {}
     for tool in ("step", "screen_view"):
-        monkeypatch.setitem(s._SUMMARIES, tool, lambda args, reply: "the body ran")
-    monkeypatch.setattr(s, "_stopped", lambda what: (None, None))
+        monkeypatch.setitem(mame_mcp._SUMMARIES, tool, lambda args, reply: "the body ran")
+    monkeypatch.setattr(s, "stopped", lambda what: (None, None))
     monkeypatch.setattr(advance, "step", lambda ses, scratch, count, mode, cpu: seen.update(
         count=count) or menvelope.envelope({}))
     monkeypatch.setattr(mscreen, "screen_view", lambda *a, **k: seen.update(point=a[4]) or (
@@ -375,8 +376,8 @@ def test_the_isolate_pens_written_0x_reach_the_body_as_the_ints_they_spell(
     """Every pen takes `0x`, each of a list's too: the wrapper reads them, and the body is handed
     the integers."""
     seen: dict[str, Any] = {}
-    monkeypatch.setitem(s._SUMMARIES, "screen_view", lambda args, reply: "the body ran")
-    monkeypatch.setattr(s, "_stopped", lambda what: (None, None))
+    monkeypatch.setitem(mame_mcp._SUMMARIES, "screen_view", lambda args, reply: "the body ran")
+    monkeypatch.setattr(s, "stopped", lambda what: (None, None))
     monkeypatch.setattr(mscreen, "screen_view", lambda *a, **k: seen.update(pens=a[3]) or (
         menvelope.envelope({})))
     s.screen_view(mode="isolate", pens=["0x31", 50])

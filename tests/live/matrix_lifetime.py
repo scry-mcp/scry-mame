@@ -50,7 +50,8 @@ import mame_guardian as guardian  # isort: skip
 import mame_idle as idle  # isort: skip
 import mame_launch as launch  # isort: skip
 import mame_stub_owner as stub_owner  # isort: skip
-import server as s  # isort: skip
+import mame_mcp
+
 from mame_state import STATE  # isort: skip
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -164,7 +165,7 @@ def _p_idle(t: list[str]) -> None:
     before = isinstance(pid, int) and alive(pid)
     clock = idle.IDLE
     clock.last_call -= idle.IDLE_CLOSE_S + 1
-    reaped = clock.reap(s._LOCK, STATE.machine_alive, launch.close)
+    reaped = clock.reap(mame_mcp.LOCK, STATE.machine_alive, launch.close)
     gone = isinstance(pid, int) and gone_within(pid, WITHIN_S)
     note = str(call("status").get("note", ""))
     cell(t[3], before and reaped and gone and "with no tool call" in note,

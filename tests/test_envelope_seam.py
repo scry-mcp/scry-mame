@@ -20,6 +20,7 @@ from pydantic import TypeAdapter, ValidationError
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
+import mame_mcp  # noqa: E402
 import server as s  # noqa: E402
 
 
@@ -75,7 +76,7 @@ def test_a_genuine_defect_is_not_dressed_up_as_a_refusal(defect: Exception | Non
 
 # ------------------------------------------- and the refusal is built over the ONE machine
 #
-# THE SEAM IS OUTSIDE `tool()`'s WRAPPER, so it is outside the `_LOCK` that wrapper holds. That
+# THE SEAM IS OUTSIDE `tool()`'s WRAPPER, so it is outside the `LOCK` that wrapper holds. That
 # would be a torn read on its own; what makes it a write is that building the reply ends in
 # `mame_envelope.envelope`, which CLEARS `found_stop_last` -- the one-time account of a stop the
 # machine reached on its own. A call the schema refused could take that account away from the
@@ -83,14 +84,14 @@ def test_a_genuine_defect_is_not_dressed_up_as_a_refusal(defect: Exception | Non
 
 
 def _lock_held_elsewhere() -> tuple[threading.Thread, threading.Event, list[float]]:
-    """A thread that takes `_LOCK` and holds it until told to let go, with the moment it did.
-    ANOTHER thread is the point: `_LOCK` is an `RLock`, so a hold taken on the same thread
+    """A thread that takes `LOCK` and holds it until told to let go, with the moment it did.
+    ANOTHER thread is the point: `LOCK` is an `RLock`, so a hold taken on the same thread
     would prove nothing about a second call."""
     held, let_go = threading.Event(), threading.Event()
     released_at: list[float] = []
 
     def holder() -> None:
-        with s._LOCK:
+        with mame_mcp.LOCK:
             held.set()
             let_go.wait(5.0)
             released_at.append(time.monotonic())
@@ -127,14 +128,9 @@ def test_the_schema_refusal_is_built_under_the_session_lock() -> None:
 
 
 def test_the_wait_for_the_lock_is_off_the_event_loop() -> None:
-    """AND IT CANNOT BE A PLAIN `with _LOCK:` IN THE COROUTINE, which is why this case exists
-    beside the one above. Every tool body here is synchronous, so the SDK runs it on a worker
-    thread (`anyio.to_thread.run_sync`) and it is that thread which holds the lock; a bounded
-    wait reports its progress through `_progress`, which reaches the event loop from the
-    worker with `anyio.from_thread.run`. A loop parked in `_LOCK.acquire()` never runs that
-    callback, so the worker never finishes and never releases the lock, and the loop never
-    gets it: both sides wait for ever. The wait therefore goes to a worker thread too, and
-    what proves it is the loop still turning while the refusal is pending."""
+    """AND IT CANNOT BE A PLAIN `with LOCK:` IN THE COROUTINE, which deadlocks
+    (`scry_core.envelope.Envelope.call_tool` says why): the loop still turning while the
+    refusal is pending is what proves the wait went to a worker thread."""
     keeper, let_go, released_at = _lock_held_elsewhere()
     ticked_at: list[float] = []
 

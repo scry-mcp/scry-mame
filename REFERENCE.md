@@ -2934,12 +2934,15 @@ module:
   memory packet goes through the one method that selects its thread; memory, registers, the
   protocol's `monitor` escape hatch into MAME's console (the `debug` tool), and the reader of
   the project's symbol file in both its shapes.
-- **`server.py`**: the MCP server: the registrations, the one-line `summary` every reply opens
-  with, the lock over the one machine, the seam that turns the schema's own refusal into the
-  envelope, and the one tool that is a known-answer read (`rom_check`). Its `instructions`
-  string is what a session receives at connection, and every tool's description is written
-  for the client, inside the prefix the client delivers: what it does, its arguments, what it
-  refuses, what it returns, and the section of this reference that holds the why.
+- **`server.py`**: the tools, each registered with its description and its one-line
+  `summary`, and the one tool that is a known-answer read (`rom_check`). Every tool's
+  description is written for the client, inside the prefix the client delivers: what it does,
+  its arguments, what it refuses, what it returns, and the section of this reference that holds
+  the why.
+- **`mame_mcp.py`**: the MCP boundary every tool is wrapped in: the server object and its
+  `instructions` (what a session receives at connection), the lock over the one machine, the
+  decorator that registers a tool and closes its reply (`summary` first, `session` last), the
+  reply a call the schema refused gets, and the progress line of a bounded wait.
 - **`mame_state.py`**: what is held between calls (the process, the session, each cpu's symbols, the
   breakpoints this server armed, the scratch, the last stop as its survey saw it).
 - **`mame_envelope.py`**: the envelope every reply carries, built from that state: `status`, the

@@ -22,6 +22,7 @@ from test_server import _running  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import mame_envelope as menvelope  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_sequence as sequence  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
@@ -38,10 +39,11 @@ def late_tool() -> Any:
         reply["late"] = 2
         return reply
 
-    registered = s.tool("A late body", summary=lambda args, reply: "late: done")(late_body)
+    registered = mame_mcp.tool("A late body", summary=lambda args, reply: "late: done")(late_body)
     yield registered
     s.mcp._tool_manager._tools.pop("late_body", None)
-    s._SUMMARIES.pop("late_body", None)
+    mame_mcp._SUMMARIES.pop("late_body", None)
+    mame_mcp._BODIES.pop("late_body", None)
 
 
 def test_the_decorator_puts_session_last_and_composes_it_after_the_body(
@@ -62,13 +64,13 @@ def test_a_schema_refusal_is_closed_by_the_same_composer(
     """The schema's refusal never reaches the decorator, so it calls the composer itself: its
     block is the one composed from the state, here a machine the double has running."""
     seen: list[str] = []
-    real = s._finished
+    real = mame_mcp._finished
 
     def spy(name: str, *a: Any, **k: Any) -> dict[str, Any]:
         seen.append(name)
         return real(name, *a, **k)
 
-    monkeypatch.setattr(s, "_finished", spy)
+    monkeypatch.setattr(mame_mcp, "_finished", spy)
     _running(monkeypatch, tmp_path).running = True
     res = asyncio.run(s.mcp.call_tool("run_for", {"frames": [1, 2]}))
     out = json.loads("".join(c.text for c in res.content if getattr(c, "text", None)))

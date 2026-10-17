@@ -46,9 +46,10 @@ def test_every_task_is_captured_and_judged_as_it_was() -> None:
 
 
 def test_the_probe_reads_the_server_the_suite_imports() -> None:
+    import mame_mcp
     import server
 
-    assert REPO.modules["mame"] is server and REPO.checks["mame"] is server.probe_check
+    assert REPO.modules["mame"] is server and REPO.checks["mame"] is mame_mcp.probe_check
 
 
 def test_every_instructions_and_tool_description_fits_the_client_cap() -> None:

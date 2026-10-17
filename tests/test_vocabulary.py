@@ -111,6 +111,6 @@ def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
 ])
 def test_a_trace_summary_says_each_count_in_its_number(
         frames: int, t: dict[str, object], said: str) -> None:
-    import server as s
+    import mame_mcp
 
-    assert s._summary("trace", {"frames": frames}, {"trace": t}) == said
+    assert mame_mcp._summary("trace", {"frames": frames}, {"trace": t}) == said

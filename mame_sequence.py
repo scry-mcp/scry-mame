@@ -368,7 +368,7 @@ def _leaves_running(_op: str, reply: dict[str, Any]) -> bool:
     wildcard-not-enumeration argument is written at `mame_write.py` for the classifier that
     decides which commands those are.
 
-    THE FIELD IS THE `session` BLOCK'S, which the server's `tool` composes after the step's
+    THE FIELD IS THE `session` BLOCK'S, which `mame_mcp.tool` composes after the step's
     body, so it says what the machine is doing once the step is over. It is safe to trust
     here because the caller asks only for an op OUTSIDE `RUNNING_OK_OPS`: a running-ok reader
     on a machine already moving carries the same `running: true`, and this is never asked

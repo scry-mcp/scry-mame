@@ -46,21 +46,12 @@ project.
 from __future__ import annotations
 
 import functools
-import inspect
-import json
 import sys
-import threading
 from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated, Any
 
-import anyio.from_thread
-import anyio.to_thread
-from mcp.server import MCPServer
 from mcp.server.mcpserver import Context
-from mcp.server.mcpserver.exceptions import ToolError
-from mcp.types import CallToolResult, TextContent, ToolAnnotations
-from pydantic import ValidationError
 
 # The gdbstub client and the modules live next door, and this file starts in two ways: as a
 # script (`python server.py`, which puts its directory on sys.path) and as the package's
@@ -68,10 +59,9 @@ from pydantic import ValidationError
 # and the server is launchable only with `--directory` pointing here.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from scry_core import media_tools, picture  # noqa: E402
+from scry_core import media_tools  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
 import mame_advance as advance  # noqa: E402
 import mame_args as args  # noqa: E402
 import mame_audio as maudio  # noqa: E402
@@ -82,7 +72,6 @@ import mame_comments as comments  # noqa: E402
 import mame_cpu_info as mcpu_info  # noqa: E402
 import mame_cpus as cpus  # noqa: E402
 import mame_declarations as dec  # noqa: E402
-import mame_docs as docs  # noqa: E402
 import mame_draft as mdraft  # noqa: E402
 import mame_envelope as menvelope  # noqa: E402
 import mame_files as files  # noqa: E402
@@ -100,7 +89,6 @@ import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
 import mame_map as mmap  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_recording as mrec
@@ -118,310 +106,10 @@ import mame_sweep as msweep  # noqa: E402
 import mame_trace as mtrace  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import mame_write as mwrite  # noqa: E402
+from mame_mcp import LOCK, progress_of, tool  # noqa: E402
+from mame_mcp import mcp as mcp  # noqa: E402  (the probe and the clients read `server.mcp`)
+from mame_running import contact, stopped  # noqa: E402
 from mame_state import STATE  # noqa: E402
-
-
-class Envelope(MCPServer):
-    """THE MCP BOUNDARY, where two things happen once for every tool.
-
-    THE SCHEMA'S REFUSAL. The SDK validates every call against the tool's schema before the
-    tool runs, and its refusal is its own error text, outside the reply shape every tool here
-    promises. Nothing is validated twice: the refusal is caught here, once, and given the
-    envelope (`summary`, `status`, `code`, `message`, `session`) so a caller reads one shape.
-    Any other error keeps the SDK's path: a defect in a tool body is never dressed as a
-    refusal.
-
-    THE PICTURE. A graphics tool's body names its PNG in `image`; the picture itself is
-    attached here, beside the JSON (`scry_core.picture.attached`), so a tool body and a test deal in
-    a plain dict and the attachment is built in one place."""
-
-    async def call_tool(self, name: str, arguments: dict[str, Any],
-                        context: Context[Any, Any] | None = None) -> Any:
-        try:
-            return picture.attached(await super().call_tool(name, arguments, context))
-        except ToolError as e:
-            cause = strict.refused_by_schema(e)
-            if cause is None:
-                raise
-            # OFF THE EVENT LOOP, AND THAT IS NOT A PREFERENCE. See `_refused` for the lock;
-            # what forces the worker thread is that a plain `with _LOCK:` here DEADLOCKS. Every
-            # tool body is synchronous, so the SDK runs it on a worker thread and that thread
-            # is what holds the lock; a bounded wait reports progress from there through
-            # `_progress`, which needs the event loop (`anyio.from_thread.run`). A loop parked
-            # in `_LOCK.acquire()` never runs that callback, so the worker never finishes and
-            # never lets go, and the loop never gets the lock. Both sides wait for ever.
-            return await anyio.to_thread.run_sync(self._refused, name, arguments, cause)
-
-    @staticmethod
-    def _refused(name: str, arguments: dict[str, Any], cause: ValidationError) -> Any:
-        """The refusal's reply, built over the ONE machine like every other reply.
-
-        THE SEAM SITS OUTSIDE `tool()`'s WRAPPER and so outside the `_LOCK` that wrapper
-        holds, which would be a torn read of the state group `envelope()` gathers. It is
-        worse than that: this path WRITES, ending the call (`State.end_call`), the one-time
-        account of a stop the machine reached on its own. Unlocked, a call the schema refused
-        could take that account away from the call that was building the reply meant to carry
-        it, and the stop would be reported to nobody.
-
-        NOTHING ON THIS PATH CAN ALREADY HOLD THE LOCK, established by reading rather than
-        relied on: the schema refuses BEFORE the tool body runs, so this call never reached
-        the wrapper that takes it, and no tool in this package dispatches through
-        `call_tool`. `_LOCK` being an `RLock` is not what makes this safe.
-        """
-        with _LOCK:
-            # `start` promises `start_retries` on every reply, and this one launched nothing.
-            launched: dict[str, Any] = {"start_retries": []} if name == "start" else {}
-            reply = menvelope.invalid("bad_argument", strict.schema_refusal(cause), **launched)
-            STATE.end_call()
-            body = _finished(name, arguments, reply)
-        text = TextContent(type="text", text=json.dumps(body, indent=2))
-        return CallToolResult(content=[text], structured_content=body)
-
-
-# The name it REPORTS must be the name it is INSTALLED as (`claude mcp add mame`), which is also
-# what namespaces its tools as `mcp__mame__*`: a name that is not the registration is the name of
-# nothing, harmless while private and confusing the day somebody else installs it. THE
-# `instructions` ARE THE SERVER'S OWN, the channel an MCP client documents for this and the one a
-# session receives without asking: what the protocol delivers cannot come out short or carry a
-# truncated name, as a copy pasted by hand can.
-# What answers while the machine RUNS, named in every refusal so the caller can decide
-# without provoking a stop, and in the `instructions` below from the same list: the batch's
-# own running-ok operations, the last stop's registers, the two batch tools (which wait for a
-# stop before a step that needs one) and `close`. The list is the server's because it names
-# tools.
-# The media file tools answer in any state too, and the instructions say so once, beside them.
-_ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
-                          "registers(from_last_stop=True)", "perform", "drive", "close"]
-
-mcp = Envelope(
-    "mame",
-    instructions=(
-        "A live MAME debug session.\n\n"
-        "TOOLS. `start`, `rom_check`, `focus`. "
-        "Advance: `run_to`, `run_for`, `step`, `resume`, `trace`, `series_capture`. Read: "
-        "`read_memory`, `read_block`, `registers`, `disassemble`, `find`, `history`, "
-        "`palette`, `screen_view`, `gfx_view`, `gfx_locate`, "
-        "`gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`, `screen_signature`, "
-        "`scan_start`, `scan_filter`. Write: `write`, `set_register`, `reset`, `debug`, "
-        "`comment_add`, `comment_delete`, `comment_load`. Lua: `input`, `record`, "
-        "`audio_record`, "
-        "`state_save`, `state_load`, `lua`. "
-        "Files, any state: `image_diff`, `series_diff`, "
-        "`region_track`, `golden_check`, `audio_measure`, `audio_diff`.\n\n"
-        "A SESSION. `start` parks the machine STOPPED. "
-        "`run_to`, `run_for`, `step` stop it again with a survey; `run_to`'s target has no "
-        "stop of its own. "
-        "`resume` lets it RUN. While it runs the readers refuse (`not_stopped`); these "
-        "answer: " + ", ".join(f"`{name}`" for name in _ANSWERS_WHILE_RUNNING) + ". "
-        "`rom_check`: 16 bytes at `reference_addr` vs `reference_rom` at `reference_base`. "
-        "`memdump`, `snapshot` answer with a PATH.\n\n"
-        "CPUS: no `cpu` acts on the VISIBLE one (stops move it), lists or clears all; named, moves "
-        "only `step`'s.\n\n"
-        "ADDRESSES are written `0x`, a condition as typed; any other ref is a symbol, bare hex "
-        "naming none refused. Breakpoints are at PLACES, never expressions.\n\n"
-        "EVERY REPLY carries `summary`, `status` (`ok`, or `INVALID` with `code` and "
-        "`message`) and `session` (`altered` after a write). A "
-        "wrong TYPE is the schema's `bad_argument`. `not_settled`: "
-        "`stop`, and if `stop` fails as well, `close` then `start`. "
-        "`session_broken` LATCHES until `close`.\n\n"
-        "Reference: REFERENCE.md."
-    ),
-)
-
-# ONE LOCK FOR ONE MACHINE. The server keeps ONE session in a global and the transport can hand
-# over two calls at once. Without it, two overlapping `run_to` calls trample each other's
-# breakpoints and steal each other's stops: the first collects the second's stop and returns a
-# verdict about a PC that is not its own. A debugger that reports the wrong stop is worse than a
-# slow one, so the tools serialize. Full stop.
-_LOCK = threading.RLock()
-
-
-def _summary(name: str, args: dict[str, Any], reply: dict[str, Any]) -> str:
-    """The one line the MCP client shows for a call (`mame_summaries`): the envelope's for a
-    refusal, the tool's own otherwise."""
-    if reply.get("status") == "INVALID":
-        return summaries.refusal(name, reply)
-    return _SUMMARIES[name](args, reply)
-
-
-#: Each registered tool's summary, filled by `tool` as it registers them.
-_SUMMARIES: dict[str, summaries.Summary] = {}
-
-
-def _finished(name: str, args: dict[str, Any], reply: dict[str, Any],
-              session_before: bool = False) -> dict[str, Any]:
-    """The reply a caller reads, closed in ONE place for every path (the decorator's and the
-    schema's refusal): `summary` first, the tool's own fields, `session` last.
-
-    THE `session` BLOCK IS COMPOSED HERE, AFTER THE BODY, from the state the server holds: a
-    body that released the machine or latched the session once its envelope was built would
-    otherwise hand back a block describing the machine before it did. A tool registered with
-    `session_before` keeps the block its body built: `close`'s, the state BEFORE the close."""
-    body = {k: v for k, v in reply.items() if k != "session"}
-    kept = reply.get("session") if session_before else None
-    session = kept if kept is not None else menvelope.session_block()
-    return {"summary": _summary(name, args, reply), **body, "session": session}
-
-
-def probe_check(tool: str, given: dict[str, Any], effective: dict[str, Any]) -> None:
-    """This server's pre-gate judge in the shape `scry_core.probe.Check` takes: each tool body
-    calls `args.check` with its own values, defaults included, every number read first as the
-    `tool()` wrapper reads it (`numbers_read`), so the probe judges a call the way the tool
-    would. `given` is not used: the bodies judge what they run with."""
-    args.check(tool, **inputs.numbers_read(globals()[tool], effective))
-
-
-def tool(
-    title: str, *, summary: summaries.Summary, read_only: bool = False, idempotent: bool = False,
-    session_before: bool = False,
-) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """Registers an MCP tool, SERIALIZES it over the one machine (see `_LOCK`), and puts the
-    one-line `summary` first in its reply: `summary` is the tool's own line
-    (`mame_summaries`), REQUIRED, so a tool registered without one fails at import.
-
-    `title` is what the client shows for the tool, and `read_only` becomes the protocol's
-    `readOnlyHint`: a reader declares it so a client may run readers in parallel, which is
-    honest here because every tool takes the lock anyway. Anything that advances the machine,
-    writes to it, or writes a FILE (`memdump`, `snapshot`) is not read-only.
-
-    `idempotent` becomes `idempotentHint`, and it is a STRONGER claim than read-only: calling
-    it again changes nothing AND answers the same. Almost nothing here can say that, because
-    almost everything reads a machine that moves; what can is a tool serving a cache built
-    once at `start`. Declared wrongly it would invite a client to repeat a call whose answer
-    had moved underneath it, so it stays false unless the tool's own data cannot change.
-
-    `session_before` keeps the `session` block the body built instead of composing it after
-    (`_finished`): only `close`, whose block is the state BEFORE the kill, so that `altered` is
-    the truth about the session it ended.
-
-    THREE kinds of exception are translated and no more: `NotStopped`, into the INVALID reply
-    that names the last stop and the tools that answer while the machine runs; every other
-    `SessionError`, through `running.session_error_reply`, which says which of them are an
-    answer and which LATCH the session; and `Invalid`, the tools' own refusals, answered as
-    `session_broken` when the call itself latched the session. Widening that to `Exception`
-    would turn every genuine bug into "I examined nothing". A tool that takes a
-    `ctx` (the protocol's `Context`, for the progress line of a bounded wait) gets it from the
-    SDK and it is kept out of the summary's arguments.
-    """
-
-    def register(fn: Callable[..., Any]) -> Callable[..., Any]:
-        signature = inspect.signature(fn)
-        _SUMMARIES[fn.__name__] = summary
-
-        @functools.wraps(fn)
-        def wrapped(*a: Any, **k: Any) -> Any:
-            with _LOCK:
-                latched_before = STATE.broken
-                reply: dict[str, Any] | None = None
-                try:
-                    # A COUNT IS AN INT TO EVERY BODY: an integral float a direct call or a
-                    # `perform` step carried is made the int it equals (`integral_counts`).
-                    # AND A NUMBER IS AN INT TOO: every argument the tool declares `NumberArg`,
-                    # and each item of a `NumberList`, is read here, as `perform` reads a
-                    # step's, before the body judges it (`inputs.as_read` tells mypy so).
-                    called = signature.bind_partial(*a, **k)
-                    for name, value in called.arguments.items():
-                        ann = signature.parameters[name].annotation
-                        if isinstance(ann, str):
-                            called.arguments[name] = inputs.integral_counts(value, ann)
-                    called.arguments.update(inputs.numbers_read(fn, dict(called.arguments)))
-                    reply = fn(*called.args, **called.kwargs)
-                except gs.NotStopped as e:
-                    # THE GUEST RUNS AND THIS READER CANNOT ANSWER: say where the machine was
-                    # last seen and which tools do answer now, so the caller can decide
-                    # without provoking a stop (the running-guest contract).
-                    reply = menvelope.invalid("not_stopped", str(e), last_stop=STATE.as_of(),
-                                              answers_while_running=_ANSWERS_WHILE_RUNNING)
-                except gs.SessionError as e:
-                    # Every session error but `NotStopped`, answered here, where every tool
-                    # passes, so no path a tool left unguarded escapes as an execution failure.
-                    reply = running.session_error_reply(e, fn.__name__)
-                except st.Invalid as e:
-                    # Past the two above, ONLY `Invalid` is translated: a bug (an
-                    # AttributeError, a broken regex, a session error) escapes as an execution
-                    # failure, never as "I examined nothing" wearing a verdict. A stop the call
-                    # made before it refused is recorded as its own first (`record_own_stop`).
-                    # A refusal a tool built out of a request that LATCHED on this call names
-                    # the wrong cause (an argument, an answer), so the latch answers instead.
-                    latched = STATE.ses
-                    reason = latched.broken if latched is not None else None
-                    if latched is not None and reason and not latched_before:
-                        reply = running.session_broke(
-                            latched, gs.SessionError(reason), f"under `{fn.__name__}`",
-                            "Nothing this call read is handed back")
-                    else:
-                        running.record_own_stop(fn.__name__)
-                        reply = menvelope.envelope(e.reply())
-                finally:
-                    # The wrapper is the one place that knows the OUTER call is over, a call
-                    # that escaped without a reply included. A `finally`, because an exception
-                    # re-raised from one `except` clause never reaches a sibling clause.
-                    STATE.end_call()
-                    # THE IDLE CLOCK RESTARTS WHEN A CALL ENDS (`mame_idle`).
-                    idle.IDLE.touch()
-                assert reply is not None      # every path above either built one or raised
-                bound = signature.bind_partial(*a, **k)
-                bound.apply_defaults()               # a summary reads what the call RAN with
-                args = dict(bound.arguments)
-                args.pop("ctx", None)
-                # Under the lock: the `session` block is read off the one machine's state.
-                return _finished(fn.__name__, args, reply, session_before)
-
-        # THE DOCSTRING IS A LITERAL WITH PLACEHOLDERS, filled here: a string composed with
-        # `+` is an expression, not a docstring, so `__doc__` comes out None and the client
-        # shows the tool with no description at all.
-        wrapped.__doc__ = docs.filled(fn.__name__, fn.__doc__ or "")
-        return mcp.tool(title=title,
-                        annotations=ToolAnnotations(read_only_hint=read_only,
-                                                    idempotent_hint=idempotent))(wrapped)
-
-    return register
-
-
-def _progress(ctx: Context[Any, Any] | None) -> mprogress.Progress:
-    """The progress line of one call, bridged from the worker thread the SDK runs a synchronous
-    tool in to the request's `Context` on the event loop, and rebased so it never goes back
-    (`mprogress.RebasedProgress`). With no context (a direct call, a test) nothing is painted and
-    nothing is reported."""
-    if ctx is None:
-        return mprogress.no_progress
-
-    def report(progress: float, total: float | None, message: str) -> None:
-        anyio.from_thread.run(ctx.report_progress, progress, total, message)
-
-    return mprogress.RebasedProgress(report)
-
-
-def _contact() -> tuple[gs.Session, Path]:
-    """The live machine and its scratch, whatever it is doing: the gate of the tools that
-    answer on a RUNNING machine. A stop the machine reached on its own is recorded here, by
-    whichever tool makes the first contact after it (`running.observe_stop`)."""
-    ses, scratch = STATE.live()
-    st.refuse_broken(ses)
-    running.observe_stop(ses, scratch)
-    st.refuse_broken(ses)      # a request inside the observation may have latched it
-    return ses, scratch
-
-
-def _stopped(what: str) -> tuple[gs.Session, Path]:
-    """The live machine, STOPPED, or the refusal that names the last stop: the gate of every
-    reader and every advance.
-
-    WHAT CROSSES THIS GATE AND WHAT DOES NOT. An argument whose validity depends on the machine is
-    judged on the far side of it, because with no machine there is nothing to judge it against: a
-    `ref` is a symbol in THAT machine's table. An argument whose validity does not -- a `length`, a
-    regex, a `dest` this server requires to be absolute -- is judged by `mame_args` BEFORE the tool
-    gets here, because it is exactly as wrong with a machine as without one and "no machine
-    running" withholds the only thing the caller needed to hear.
-
-    The rule is two-sided on purpose: judging everything before the gate tells a caller off about a
-    `length` on a machine that does not exist, and judging nothing before it hides a refusal that
-    needs no machine behind one.
-    """
-    ses, scratch = _contact()
-    running.require_stopped(ses, what)
-    return ses, scratch
-
 
 # ----------------------------------------------------------------------------- session
 
@@ -491,7 +179,7 @@ def start(
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
                         inipath, seconds, shared, boot_lua, env, bases, reference_base, display,
                         stub_port, state_dir, throttle_from_frame, types, cfg,
-                        background=background, progress=_progress(ctx))
+                        background=background, progress=progress_of(ctx))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -544,7 +232,7 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
 
     Reference: REFERENCE.md, The session.
     """
-    return launch.close(_progress(ctx), detail)
+    return launch.close(progress_of(ctx), detail)
 
 
 @tool("Show another cpu", summary=summaries.focus)
@@ -577,7 +265,7 @@ def focus(cpu: str) -> dict[str, Any]:
     Reference: REFERENCE.md, The session.
     """
     args.check("focus", cpu=cpu)
-    return mfocus.focus(*_stopped("a focus"), cpu)
+    return mfocus.focus(*stopped("a focus"), cpu)
 
 
 @tool("What the debugger sees of each cpu", summary=summaries.cpu_info, read_only=True)
@@ -606,7 +294,7 @@ def cpu_info(cpu: str = "") -> dict[str, Any]:
 
     Reference: REFERENCE.md, The session.
     """
-    return mcpu_info.cpu_info(_contact()[0], cpu)
+    return mcpu_info.cpu_info(contact()[0], cpu)
 
 
 @tool("Check the ROM against its image", summary=summaries.rom_check, read_only=True)
@@ -628,7 +316,7 @@ def rom_check(
     """
     args.check("rom_check", reference_rom=reference_rom, reference_addr=reference_addr,
                reference_base=reference_base)
-    return launch.rom_check(_stopped("a known-answer read")[0], reference_rom, reference_addr,
+    return launch.rom_check(stopped("a known-answer read")[0], reference_rom, reference_addr,
                             reference_base, cpu)
 
 
@@ -668,7 +356,7 @@ def run_to(ref: str, control: str = "", seconds: float = 30.0,
     Reference: REFERENCE.md, Advancing the machine.
     """
     args.check("run_to", ref=ref, seconds=seconds, condition=condition, control=control)
-    return advance.run_to(*_stopped("a run to a place"), ref, control, seconds, _progress(ctx),
+    return advance.run_to(*stopped("a run to a place"), ref, control, seconds, progress_of(ctx),
                           condition=condition, disarm_watches=disarm_watches, cpu=cpu)
 
 
@@ -700,7 +388,7 @@ def run_for(milliseconds: int = 0, frames: int = 0, seconds: float = 30.0,
     Reference: REFERENCE.md, Advancing the machine.
     """
     args.check("run_for", milliseconds=milliseconds, frames=frames, seconds=seconds)
-    return advance.run_for(*_stopped("a run by time"), milliseconds, seconds, _progress(ctx),
+    return advance.run_for(*stopped("a run by time"), milliseconds, seconds, progress_of(ctx),
                            disarm_watches=disarm_watches, frames=frames)
 
 
@@ -733,8 +421,8 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds: float
     """
     args.check("trace", milliseconds=milliseconds, frames=frames, dest=dest, seconds=seconds,
                noloop=noloop)
-    return mtrace.trace(*_stopped("a trace"), milliseconds, frames, dest, seconds, cpu, noloop,
-                        _progress(ctx))
+    return mtrace.trace(*stopped("a trace"), milliseconds, frames, dest, seconds, cpu, noloop,
+                        progress_of(ctx))
 
 
 @tool("Step instructions", summary=summaries.step)
@@ -766,7 +454,7 @@ def step(count: int = 1, mode: Annotated[str, inputs.vocabulary(advance.STEP_MOD
     Reference: REFERENCE.md, Advancing the machine.
     """
     args.check("step", count=count, mode=mode)
-    return advance.step(*_stopped("a step"), count, mode, cpu)
+    return advance.step(*stopped("a step"), count, mode, cpu)
 
 
 @tool("Resume the machine", summary=summaries.resume)
@@ -788,7 +476,7 @@ def resume(seconds: float = 0.0, ctx: Context[Any, Any] | None = None) -> dict[s
     Reference: REFERENCE.md, Advancing the machine.
     """
     args.check("resume", seconds=seconds)
-    return running.resume(*_contact(), seconds, _progress(ctx))
+    return running.resume(*contact(), seconds, progress_of(ctx))
 
 
 @tool("Stop a running machine", summary=summaries.stop)
@@ -806,7 +494,7 @@ def stop() -> dict[str, Any]:
 
     Reference: REFERENCE.md, Advancing the machine.
     """
-    return running.stop(*_contact())
+    return running.stop(*contact())
 
 
 @tool("Declare a breakpoint", summary=summaries.breakpoint_at)
@@ -845,7 +533,7 @@ def breakpoint_at(ref: str,
     Reference: REFERENCE.md, Declarations.
     """
     args.check("breakpoint_at", ref=ref, by=by, role=role, condition=condition)
-    return breakpoints.breakpoint_at(_contact()[0], ref, by, role, condition, cpu)
+    return breakpoints.breakpoint_at(contact()[0], ref, by, role, condition, cpu)
 
 
 @tool("List the breakpoint declarations", summary=summaries.breakpoint_list, read_only=True)
@@ -867,7 +555,7 @@ def breakpoint_list(cpu: str = "") -> dict[str, Any]:
 
     Reference: REFERENCE.md, Declarations.
     """
-    return breakpoints.breakpoint_list(_contact()[0], cpu)
+    return breakpoints.breakpoint_list(contact()[0], cpu)
 
 
 @tool("Clear breakpoint declarations", summary=summaries.breakpoint_clear)
@@ -891,7 +579,7 @@ def breakpoint_clear(ref: str = "", cpu: str = "", all: bool = False) -> dict[st
     Reference: REFERENCE.md, Declarations.
     """
     args.check("breakpoint_clear", ref=ref, all=all)
-    return breakpoints.breakpoint_clear(_contact()[0], ref, cpu, all)
+    return breakpoints.breakpoint_clear(contact()[0], ref, cpu, all)
 
 
 # --------------------------------------------------------------------------- registerpoints
@@ -927,7 +615,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Declarations.
     """
     args.check("regpoint_add", condition=condition)
-    return regpoints.regpoint_add(_contact()[0], condition, cpu)
+    return regpoints.regpoint_add(contact()[0], condition, cpu)
 
 
 @tool("List the registerpoint declarations", summary=summaries.regpoint_list, read_only=True)
@@ -947,7 +635,7 @@ def regpoint_list(cpu: str = "") -> dict[str, Any]:
 
     Reference: REFERENCE.md, Declarations.
     """
-    return regpoints.regpoint_list(_contact()[0], cpu)
+    return regpoints.regpoint_list(contact()[0], cpu)
 
 
 @tool("Clear registerpoint declarations", summary=summaries.regpoint_clear)
@@ -968,7 +656,7 @@ def regpoint_clear(ref: str = "", cpu: str = "", all: bool = False) -> dict[str,
     Reference: REFERENCE.md, Declarations.
     """
     args.check("regpoint_clear", ref=ref, all=all)
-    return regpoints.regpoint_clear(_contact()[0], ref, cpu, all)
+    return regpoints.regpoint_clear(contact()[0], ref, cpu, all)
 
 
 # --------------------------------------------------------------------------------- comments
@@ -1001,7 +689,7 @@ def comment_add(ref: str, text: str, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Declarations.
     """
     args.check("comment_add", ref=ref, text=text)
-    return comments.comment_add(*_stopped("comment_add"), ref, text, cpu)
+    return comments.comment_add(*stopped("comment_add"), ref, text, cpu)
 
 
 @tool("List the comments", summary=summaries.comment_list, read_only=True)
@@ -1018,7 +706,7 @@ def comment_list(cpu: str = "") -> dict[str, Any]:
 
     Reference: REFERENCE.md, Declarations.
     """
-    return comments.comment_list(_contact()[0], cpu)
+    return comments.comment_list(contact()[0], cpu)
 
 
 @tool("Delete a comment", summary=summaries.comment_delete)
@@ -1038,7 +726,7 @@ def comment_delete(ref: str, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Declarations.
     """
     args.check("comment_delete", ref=ref)
-    return comments.comment_delete(*_stopped("comment_delete"), ref, cpu)
+    return comments.comment_delete(*stopped("comment_delete"), ref, cpu)
 
 
 @tool("Save the comments to a file", summary=summaries.comment_save)
@@ -1061,7 +749,7 @@ def comment_save(dest: str) -> dict[str, Any]:
     Reference: REFERENCE.md, Declarations.
     """
     args.check("comment_save", dest=dest)
-    _contact()
+    contact()
     return comments.comment_save(dest)
 
 
@@ -1083,7 +771,7 @@ def comment_load(path: str) -> dict[str, Any]:
     Reference: REFERENCE.md, Declarations.
     """
     args.check("comment_load", path=path)
-    return comments.comment_load(*_stopped("comment_load"), path)
+    return comments.comment_load(*stopped("comment_load"), path)
 
 
 # ----------------------------------------------------------------------------- watches
@@ -1134,8 +822,8 @@ def watch_add(ref: str, mode: Annotated[str, inputs.vocabulary(dec.WATCH_MODES)]
     args.check("watch_add", ref=ref, mode=mode, length=length, fmt=fmt, by=by,
                condition=condition, trigger=trigger, space=space, trigger_type=trigger_type)
     if space == mspace.IO:
-        return iotaps.watch_add(_contact()[0], ref, mode, length, fmt, by, cpu, trigger)
-    return watches.watch_add(_contact()[0], ref, mode, length, fmt, by, cpu, condition, trigger,
+        return iotaps.watch_add(contact()[0], ref, mode, length, fmt, by, cpu, trigger)
+    return watches.watch_add(contact()[0], ref, mode, length, fmt, by, cpu, condition, trigger,
                              trigger_type)
 
 
@@ -1166,7 +854,7 @@ def watch_list(cpu: str = "") -> dict[str, Any]:
 
     Reference: REFERENCE.md, Declarations.
     """
-    ses = _contact()[0]
+    ses = contact()[0]
     reply = watches.watch_list(ses, cpu)
     reply["watches"] += iotaps.rows(None, at_stop=False,
                                     cpu=cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None)
@@ -1195,7 +883,7 @@ def watch_clear(ref: str = "", cpu: str = "", all: bool = False,
     Reference: REFERENCE.md, Declarations.
     """
     args.check("watch_clear", ref=ref, all=all, space=space)
-    ses = _contact()[0]
+    ses = contact()[0]
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     if space == mspace.IO:
         return iotaps.watch_clear(ses, ref, only)
@@ -1239,7 +927,7 @@ def symbols_find(name: str = "", linear: str = "", limit: int = 10,
     Reference: REFERENCE.md, Names for addresses.
     """
     args.check("symbols_find", name=name, linear=linear, limit=limit)
-    ses, _scratch = _contact()
+    ses, _scratch = contact()
     on = cpus.chosen(ses, cpu)                  # whose table, and whose map says what it IS
     named = on if inputs.cpu_given(cpu) else None
     # STOPPED, the console says what each address IS (`memory`); running, it cannot be asked.
@@ -1299,7 +987,7 @@ def read_memory(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("read_memory", ref=ref, length=length)
-    return read.read_memory(_stopped("a memory read")[0], ref, length, cpu)
+    return read.read_memory(stopped("a memory read")[0], ref, length, cpu)
 
 
 @tool("Read a memory share or region", summary=summaries.read_block)
@@ -1335,8 +1023,8 @@ def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0, lengt
     offset = inputs.as_read(offset)
     args.check("read_block", tag=tag, ref=ref, offset=offset, length=length, seconds=seconds,
                cpu=cpu)
-    ses, scratch = _stopped("a block read")
-    return block.read_block(ses, scratch, tag, ref, offset, length, seconds, _progress(ctx), cpu)
+    ses, scratch = stopped("a block read")
+    return block.read_block(ses, scratch, tag, ref, offset, length, seconds, progress_of(ctx), cpu)
 
 
 @tool("Read the registers", summary=summaries.registers, read_only=True)
@@ -1359,8 +1047,8 @@ def registers(from_last_stop: bool = False, cpu: str = "") -> dict[str, Any]:
     """
     args.check("registers", from_last_stop=from_last_stop, cpu=cpu)
     if from_last_stop:
-        return read.registers_at_last_stop(_contact()[0], cpu)
-    return read.registers(_stopped("a register read")[0], cpu)
+        return read.registers_at_last_stop(contact()[0], cpu)
+    return read.registers(stopped("a register read")[0], cpu)
 
 
 @tool("Disassemble", summary=summaries.disassemble, read_only=True)
@@ -1388,7 +1076,7 @@ def disassemble(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("disassemble", ref=ref, length=length)
-    return read.disassemble(*_stopped("a disassembly"), ref, length, cpu)
+    return read.disassemble(*stopped("a disassembly"), ref, length, cpu)
 
 
 @tool("Find bytes in memory", summary=summaries.find, read_only=True)
@@ -1418,7 +1106,7 @@ def find(data_hex: str, ref: str = "", length: int = 0,
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("find", data_hex=data_hex, ref=ref, length=length, symbol_class=symbol_class)
-    return read.find(_stopped("a memory search")[0], data_hex, ref, length, symbol_class, cpu)
+    return read.find(stopped("a memory search")[0], data_hex, ref, length, symbol_class, cpu)
 
 
 @tool("Start a value scan", summary=summaries.scan_start)
@@ -1442,7 +1130,7 @@ def scan_start(ref: str, length: int,
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("scan_start", ref=ref, length=length, cell_bytes=cell_bytes)
-    ses, scratch = _stopped("a value scan")
+    ses, scratch = stopped("a value scan")
     return mscan.scan_start(ses, scratch, ref, length, cell_bytes, cpu)
 
 
@@ -1466,7 +1154,7 @@ def scan_filter(operator: Annotated[str, inputs.vocabulary(mscan.OPERATORS)] = "
     """
     value = inputs.as_read(value)
     args.check("scan_filter", operator=operator, value=value)
-    ses, scratch = _stopped("a value scan")
+    ses, scratch = stopped("a value scan")
     return mscan.scan_filter(ses, scratch, operator, value)
 
 
@@ -1477,7 +1165,7 @@ def scan_clear() -> dict[str, Any]:
 
     Reference: REFERENCE.md, Reading and writing.
     """
-    _contact()
+    contact()
     return mscan.scan_clear()
 
 
@@ -1495,7 +1183,7 @@ def history(limit: int = 32, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("history", limit=limit)
-    return read.history(_stopped("the instruction trail")[0], limit, cpu)
+    return read.history(stopped("the instruction trail")[0], limit, cpu)
 
 
 # ------------------------------------------------------------------------------- write
@@ -1526,7 +1214,7 @@ def write(ref: str, data_hex: str, cpu: str = "", region: bool = False) -> dict[
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("write", ref=ref, data_hex=data_hex)
-    return mwrite.write(*_stopped("a memory write"), ref, data_hex, cpu, region)
+    return mwrite.write(*stopped("a memory write"), ref, data_hex, cpu, region)
 
 
 @tool("Force a register", summary=summaries.set_register)
@@ -1547,7 +1235,7 @@ def set_register(name: str, value: inputs.NumberArg, cpu: str = "") -> dict[str,
     """
     value = inputs.as_read(value)
     args.check("set_register", name=name, value=value)
-    return mwrite.set_register(_stopped("a register write")[0], name, value, cpu)
+    return mwrite.set_register(stopped("a register write")[0], name, value, cpu)
 
 
 @tool("Reset the machine", summary=summaries.reset)
@@ -1570,7 +1258,7 @@ def reset() -> dict[str, Any]:
 
     Reference: REFERENCE.md, Reading and writing.
     """
-    return mwrite.reset(*_stopped("a reset"))
+    return mwrite.reset(*stopped("a reset"))
 
 
 # ------------------------------------------------------------------------------- files
@@ -1595,7 +1283,7 @@ def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("memdump", ref=ref, length=length, dest=dest)
-    return files.memdump(_stopped("a memory dump")[0], ref, length, dest, cpu)
+    return files.memdump(stopped("a memory dump")[0], ref, length, dest, cpu)
 
 
 @tool("Snapshot the screen to a PNG", summary=summaries.snapshot)
@@ -1612,7 +1300,7 @@ def snapshot(dest: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("snapshot", dest=dest)
-    return files.snapshot(*_contact(), dest)
+    return files.snapshot(*contact(), dest)
 
 
 @tool("Signature of the screen", summary=summaries.screen_signature)
@@ -1637,8 +1325,8 @@ def screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_W
     Reference: REFERENCE.md, Media files.
     """
     args.check("screen_signature", crop=crop, seconds=seconds)
-    return mscreen.screen_signature(*_stopped("a screen signature"), crop, seconds,
-                                    _progress(ctx))
+    return mscreen.screen_signature(*stopped("a screen signature"), crop, seconds,
+                                    progress_of(ctx))
 
 
 @tool("Capture a series of frames", summary=summaries.series_capture)
@@ -1669,8 +1357,8 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
     """
     args.check("series_capture", frames=frames, first=first, last=last, step=step, crop=crop,
                dest=dest, seconds=seconds)
-    return mseries.series_capture(*_stopped("a series of frames"), frames, first, last, step,
-                                  crop, dest, seconds, _progress(ctx))
+    return mseries.series_capture(*stopped("a series of frames"), frames, first, last, step,
+                                  crop, dest, seconds, progress_of(ctx))
 
 
 # THE MEDIA FILE TOOLS are scry-core's, one body and one description for both servers, each
@@ -1724,8 +1412,8 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
     first = inputs.as_read(first)
     args.check("palette", palette=palette, first=first, count=count, scale=scale, dest=dest,
                seconds=seconds)
-    return mpalette.palette(*_stopped("a palette read"), palette, first, count, scale, dest,
-                            seconds, _progress(ctx))
+    return mpalette.palette(*stopped("a palette read"), palette, first, count, scale, dest,
+                            seconds, progress_of(ctx))
 
 
 @tool("The screen as palette indices", summary=summaries.screen_view)
@@ -1764,8 +1452,8 @@ def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render
     pen_list = inputs.list_as_read(pens)
     args.check("screen_view", mode=mode, pens=pen_list, point=point, crop=crop, scale=scale,
                dest=dest, seconds=seconds)
-    return mscreen.screen_view(*_stopped("a screen read"), mode, pen_list, point, crop, scale, dest,
-                               seconds, _progress(ctx))
+    return mscreen.screen_view(*stopped("a screen read"), mode, pen_list, point, crop, scale, dest,
+                               seconds, progress_of(ctx))
 
 
 @tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view)
@@ -1805,8 +1493,8 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
     args.check("gfx_view", layout=layout, palette=palette, tag=tag, ref=ref, offset=offset,
                first=first, count=count, columns=columns, pen_base=pen_base, scale=scale,
                dest=dest, seconds=seconds, cpu=cpu)
-    return mgfx.gfx_view(*_stopped("a graphics read"), layout, palette, tag, ref, offset, first,
-                         count, columns, pen_base, scale, dest, cpu, seconds, _progress(ctx))
+    return mgfx.gfx_view(*stopped("a graphics read"), layout, palette, tag, ref, offset, first,
+                         count, columns, pen_base, scale, dest, cpu, seconds, progress_of(ctx))
 
 
 @tool("Find a screen patch in a block", summary=summaries.gfx_locate)
@@ -1851,8 +1539,8 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
     args.check("gfx_locate", layouts=layouts, patch=patch, tag=tag, ref=ref, offset=offset,
                first=first, count=count, transparent=transparent, flips=flips,
                seconds=seconds, cpu=cpu)
-    return mlocate.gfx_locate(*_stopped("a graphics search"), layouts, patch, tag, ref, offset,
-                              first, count, transparent, flips, cpu, seconds, _progress(ctx))
+    return mlocate.gfx_locate(*stopped("a graphics search"), layouts, patch, tag, ref, offset,
+                              first, count, transparent, flips, cpu, seconds, progress_of(ctx))
 
 
 @tool("A block under candidate layouts", summary=summaries.gfx_sweep)
@@ -1896,8 +1584,8 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
     args.check("gfx_sweep", tag=tag, ref=ref, offset=offset, count=count, planes=planes,
                sizes=sizes, palette=palette, pen_base=pen_base, scale=scale, dest=dest,
                seconds=seconds, cpu=cpu)
-    return msweep.gfx_sweep(*_stopped("a graphics sweep"), tag, ref, offset, count, planes,
-                            sizes, palette, pen_base, scale, dest, cpu, seconds, _progress(ctx))
+    return msweep.gfx_sweep(*stopped("a graphics sweep"), tag, ref, offset, count, planes,
+                            sizes, palette, pen_base, scale, dest, cpu, seconds, progress_of(ctx))
 
 
 @tool("Draft a gfx.yaml from the evidence", summary=summaries.gfx_draft)
@@ -1929,7 +1617,7 @@ def gfx_draft(dest: str = "", choose: dict[str, Any] | None = None) -> dict[str,
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("gfx_draft", dest=dest, choose=choose)
-    _, scratch = _stopped("a draft")
+    _, scratch = stopped("a draft")
     return mdraft.gfx_draft(scratch, dest, choose)
 
 
@@ -1996,8 +1684,8 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
     args.check("gfx_blits", draw_command=draw_command, frame=frame, area=area, detail=detail,
                first=first,
                scale=scale, dest=dest, seconds=seconds)
-    return mblits.gfx_blits(*_stopped("a screen read"), draw_command, frame, area, detail, first,
-                            scale, dest, seconds, _progress(ctx))
+    return mblits.gfx_blits(*stopped("a screen read"), draw_command, frame, area, detail, first,
+                            scale, dest, seconds, progress_of(ctx))
 
 
 @tool("A blit's source, unscaled", summary=summaries.gfx_blit_source)
@@ -2033,8 +1721,8 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
     """
     args.check("gfx_blit_source", draw_command=draw_command, frame=frame, index=index, pc=pc,
                margin=margin, scale=scale, dest=dest, seconds=seconds)
-    return mblits.gfx_blit_source(*_stopped("a graphics read"), draw_command, frame, index, pc,
-                                  margin, scale, dest, seconds, _progress(ctx))
+    return mblits.gfx_blit_source(*stopped("a graphics read"), draw_command, frame, index, pc,
+                                  margin, scale, dest, seconds, progress_of(ctx))
 
 
 @tool("Log a palette's port writes", summary=summaries.palette_log)
@@ -2074,7 +1762,7 @@ def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
     pen = inputs.as_read(pen)
     args.check("palette_log", palette_port=palette_port, pen=pen, limit=limit, clear=clear,
                arm=arm)
-    return mramdac.palette_log(_contact()[1], palette_port, pen, limit, clear, arm)
+    return mramdac.palette_log(contact()[1], palette_port, pen, limit, clear, arm)
 
 
 @tool("Film the frames where a write happened", summary=summaries.gfx_film)
@@ -2121,9 +1809,9 @@ def gfx_film(trigger: str = "", length: Annotated[int, inputs.vocabulary(mfilm.L
     args.check("gfx_film", trigger=trigger, length=length, value=value, changed=changed, pc=pc,
                cpu=cpu, frames=frames, keep=keep, crop=crop, film_dir=film_dir, first=first,
                clear=clear, seconds=seconds, space=space)
-    ses, scratch = _stopped("arming a film") if mfilm.arms(trigger, clear) else _contact()
+    ses, scratch = stopped("arming a film") if mfilm.arms(trigger, clear) else contact()
     return mfilm.gfx_film(ses, scratch, trigger, length, value, changed, pc, cpu, frames, keep,
-                          crop, film_dir, first, clear, seconds, _progress(ctx), space)
+                          crop, film_dir, first, clear, seconds, progress_of(ctx), space)
 
 
 @tool("Read the log", summary=summaries.log, read_only=True)
@@ -2153,7 +1841,7 @@ def log(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_CHANNE
     Reference: REFERENCE.md, The log.
     """
     args.check("log", pattern=pattern, channel=channel, limit=limit)
-    ses, scratch = _contact()
+    ses, scratch = contact()
     reply = files.log(scratch, pattern, limit, channel, labels)
     running.note_throttle_lift(ses, reply.get("lines", []), launch.THROTTLE_MARK)
     return reply
@@ -2186,10 +1874,10 @@ def log_wait(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_C
     Reference: REFERENCE.md, The log.
     """
     args.check("log_wait", pattern=pattern, channel=channel, seconds=seconds)
-    ses, scratch = _contact()
+    ses, scratch = contact()
     reply = files.log_wait(
         ses, scratch, lambda: STATE.proc is not None and STATE.proc.poll() is None,
-        lambda: running.observe_stop(ses, scratch), pattern, seconds, channel, _progress(ctx))
+        lambda: running.observe_stop(ses, scratch), pattern, seconds, channel, progress_of(ctx))
     line = reply.get("line")
     if isinstance(line, str) and line:
         running.note_throttle_lift(ses, [line], launch.THROTTLE_MARK)
@@ -2251,9 +1939,9 @@ def drive(act: list[dict[str, Any]], expect: str = "", seconds: float | None = N
     refusal = sequence.refuse_act(act, _step_ops(), pattern)
     if refusal is not None:
         return refusal
-    ses, scratch = _contact()
+    ses, scratch = contact()
     return sequence.drive(ses, scratch, _step_ops(), act, expect, seconds, pattern, limit,
-                          settle_seconds, _progress(ctx), summaries=summaries)
+                          settle_seconds, progress_of(ctx), summaries=summaries)
 
 
 @tool("Run a sequence of steps", summary=summaries.perform)
@@ -2297,9 +1985,9 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
     refusal = sequence.refuse_steps(steps, _step_ops())
     if refusal is not None:
         return refusal
-    ses, scratch = _contact()
+    ses, scratch = contact()
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
-    return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), _progress(ctx),
+    return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), progress_of(ctx),
                               summaries=summaries, until_frame=until_frame)
 
 
@@ -2332,7 +2020,7 @@ def debug(command: str) -> dict[str, Any]:
     Reference: REFERENCE.md, The console.
     """
     args.check("debug", command=command)
-    return mwrite.debug(*_stopped("a console command"), command)
+    return mwrite.debug(*stopped("a console command"), command)
 
 
 # ----------------------------------------------------------------------------- the Lua channel
@@ -2370,7 +2058,7 @@ def lua(script: str, seconds: float = mlua.EVAL_WAIT_S, read_only: bool = False,
     Reference: REFERENCE.md, The console.
     """
     args.check("lua", script=script, seconds=seconds)
-    return mlua.lua(*_stopped("a Lua script"), script, seconds, read_only, _progress(ctx))
+    return mlua.lua(*stopped("a Lua script"), script, seconds, read_only, progress_of(ctx))
 
 
 @tool("Hold an input field", summary=summaries.input)
@@ -2406,8 +2094,8 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     """
     value = inputs.as_read(value)
     args.check("input", port=port, field=field, frames=frames, seconds=seconds)
-    return mlua.input_field(*_stopped("an input"), port, field, value, frames, seconds,
-                            _progress(ctx))
+    return mlua.input_field(*stopped("an input"), port, field, value, frames, seconds,
+                            progress_of(ctx))
 
 
 @tool("Record frames to an AVI", summary=summaries.record)
@@ -2439,7 +2127,7 @@ def record(frames: int, dest: str = "", seconds: float = 60.0,
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("record", frames=frames, dest=dest, seconds=seconds)
-    return mrec.record(*_stopped("a recording"), frames, dest, seconds, _progress(ctx))
+    return mrec.record(*stopped("a recording"), frames, dest, seconds, progress_of(ctx))
 
 
 @tool("Record the sound to a WAV", summary=summaries.audio_record)
@@ -2471,8 +2159,8 @@ def audio_record(frames: int, dest: str = "", seconds: float = 60.0,
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("audio_record", frames=frames, dest=dest, seconds=seconds)
-    return maudio.audio_record(*_stopped("an audio recording"), frames, dest, seconds,
-                               _progress(ctx))
+    return maudio.audio_record(*stopped("an audio recording"), frames, dest, seconds,
+                               progress_of(ctx))
 
 
 @tool("Switch the throttle", summary=summaries.throttle)
@@ -2503,7 +2191,7 @@ def throttle(on: bool, seconds: float = 5.0,
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("throttle", on=on, seconds=seconds)
-    return mlua.throttle(*_contact(), on, seconds, _progress(ctx))
+    return mlua.throttle(*contact(), on, seconds, progress_of(ctx))
 
 
 @tool("Save the machine state", summary=summaries.state_save)
@@ -2526,7 +2214,7 @@ def state_save(name: str) -> dict[str, Any]:
     Reference: REFERENCE.md, Saved states.
     """
     args.check("state_save", name=name)
-    return savestates.state_save(*_stopped("a state save"), name)
+    return savestates.state_save(*stopped("a state save"), name)
 
 
 @tool("List this session's captures", summary=summaries.captures, read_only=True)
@@ -2545,7 +2233,7 @@ def captures() -> dict[str, Any]:
 
     Reference: REFERENCE.md, Input and the screen.
     """
-    _contact()
+    contact()
     return mrec.captures()
 
 
@@ -2563,7 +2251,7 @@ def state_list() -> dict[str, Any]:
 
     Reference: REFERENCE.md, Saved states.
     """
-    _contact()
+    contact()
     return savestates.state_list()
 
 
@@ -2593,14 +2281,14 @@ def state_load(name: str) -> dict[str, Any]:
     Reference: REFERENCE.md, Saved states.
     """
     args.check("state_load", name=name)
-    return savestates.state_load(*_stopped("a state load"), name)
+    return savestates.state_load(*stopped("a state load"), name)
 
 
 strict.strict_arguments(mcp)
 
 
 def main() -> None:
-    idle.IDLE.watch(_LOCK, STATE.machine_alive, launch.close)
+    idle.IDLE.watch(LOCK, STATE.machine_alive, launch.close)
     try:
         mcp.run()
     finally:

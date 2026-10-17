@@ -13,7 +13,6 @@ A side effect worth knowing: macOS writes a crash report for each self-SIGSEGV (
 dies the way MAME does.
 """
 
-import json
 import signal
 import sys
 import time
@@ -33,6 +32,7 @@ import gdb_session as gs  # noqa: E402
 import mame_boot_failures as failures  # noqa: E402
 import mame_files as files  # noqa: E402
 import mame_launch as launch  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_stub_owner as owner  # noqa: E402
 import server as s  # noqa: E402
@@ -545,7 +545,7 @@ def test_a_live_stub_not_ready_is_relaunched_and_says_where_it_was_not(
     like a death, under the same cap, the entry says which of the three it was, and the
     relaunch says so on the progress line."""
     lines: list[str] = []
-    monkeypatch.setattr(s, "_progress", lambda ctx: lambda done, total, said: lines.append(said))
+    monkeypatch.setattr(s, "progress_of", lambda ctx: lambda done, total, said: lines.append(said))
     out = _start(monkeypatch, tmp_path, _double(tmp_path),
                  handshake=_not_ready(tmp_path, error, 1))
     try:
@@ -774,8 +774,7 @@ def test_a_refusal_before_any_launch_also_carries_start_retries(tmp_path: Path) 
 def test_a_start_the_schema_refuses_also_carries_start_retries() -> None:
     """The schema refuses a wrong TYPE before the tool body runs, in the server's envelope:
     that is a `start` reply too, and the field is promised on every one."""
-    out = s.Envelope._refused("start", {"seconds": "soon"}, _schema_error())
-    body = json.loads(out.content[0].text)
+    body = mame_mcp.refusal("start", {"seconds": "soon"}, _schema_error())
     assert body["code"] == "bad_argument" and body["start_retries"] == [], body
 
 

@@ -605,3 +605,34 @@ def stop(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     except gs.SessionError as e:
         return _stop_failed(ses, e)
     return _survey_read_stop(ses, scratch, _interrupt_or_row, interrupted=True)
+
+
+def contact() -> tuple[gs.Session, Path]:
+    """The live machine and its scratch, whatever it is doing: the gate of the tools that
+    answer on a RUNNING machine. A stop the machine reached on its own is recorded here, by
+    whichever tool makes the first contact after it (`observe_stop`)."""
+    ses, scratch = STATE.live()
+    st.refuse_broken(ses)
+    observe_stop(ses, scratch)
+    st.refuse_broken(ses)      # a request inside the observation may have latched it
+    return ses, scratch
+
+
+def stopped(what: str) -> tuple[gs.Session, Path]:
+    """The live machine, STOPPED, or the refusal that names the last stop: the gate of every
+    reader and every advance.
+
+    WHAT CROSSES THIS GATE AND WHAT DOES NOT. An argument whose validity depends on the machine is
+    judged on the far side of it, because with no machine there is nothing to judge it against: a
+    `ref` is a symbol in THAT machine's table. An argument whose validity does not -- a `length`, a
+    regex, a `dest` this server requires to be absolute -- is judged by `mame_args` BEFORE the tool
+    gets here, because it is exactly as wrong with a machine as without one and "no machine
+    running" withholds the only thing the caller needed to hear.
+
+    The rule is two-sided on purpose: judging everything before the gate tells a caller off about a
+    `length` on a machine that does not exist, and judging nothing before it hides a refusal that
+    needs no machine behind one.
+    """
+    ses, scratch = contact()
+    require_stopped(ses, what)
+    return ses, scratch

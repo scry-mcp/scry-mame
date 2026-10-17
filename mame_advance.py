@@ -251,7 +251,7 @@ def _with_watches_disarmed(ses: gs.Session, disarm: bool,
                 rearmed = watches.rearm_after_pass(ses, disarmed)
             except gs.SessionError as e:
                 ses.latch(f"re-arming the watches after the pass failed: {e}")
-    # A latch the re-arm made is newer than the block the run built: the server's `tool`
+    # A latch the re-arm made is newer than the block the run built: `mame_mcp.tool`
     # composes the block after the body, so the reply says the channel broke.
     if rearmed and isinstance(reply.get("watches"), list):
         watches.place_after_pass(ses, reply["watches"], rearmed)

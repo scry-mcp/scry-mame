@@ -32,6 +32,7 @@ import mame_envelope as menvelope  # noqa: E402
 import mame_files as mfiles  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_lua as mlua  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_progress as mprogress  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
@@ -398,7 +399,7 @@ def test_perform_dispatches_throttle_on_a_running_machine_without_waiting_for_a_
     out = s.perform(steps=[{"op": "resume"}, {"op": "throttle", "on": False}], settle_seconds=0.05)
     assert out["status"] == "ok" and out["steps_completed"] == 2, out
     assert out["ran"][1]["reply"]["pending"] is False and ses.running
-    assert "throttle" in s._ANSWERS_WHILE_RUNNING and "throttle" in sequence.RUNNING_OK_OPS
+    assert "throttle" in mame_mcp._ANSWERS_WHILE_RUNNING and "throttle" in sequence.RUNNING_OK_OPS
     # THE CONTROL: with the op missing from the one list, the same steps wait for a stop
     # that never comes and fail, which is what the drifted second copy did.
     monkeypatch.setattr(sequence, "RUNNING_OK_OPS", sequence.RUNNING_OK_OPS - {"throttle"})

@@ -1245,7 +1245,7 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
         reply["session_describes"] = ("the state BEFORE this close, so `altered` is the truth "
                                       "about the session that just ended; `status` now "
                                       "reports alive: false")
-    # THE BLOCK OF THE STATE BEFORE THE CLOSE, kept by the server's `tool` (`close` is
+    # THE BLOCK OF THE STATE BEFORE THE CLOSE, kept by `mame_mcp.tool` (`close` is
     # registered with `session_before`), which puts it last.
     reply["session"] = ({**before, "throttles_not_applied": not_applied} if not_applied
                         else before)

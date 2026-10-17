@@ -377,7 +377,7 @@ def test_series_capture_answers_through_the_server_with_each_argument_where_it_w
         console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The registered tool, not the module function: every argument reaches the body in its own
     place, and the reply wears this server's envelope."""
-    monkeypatch.setattr(s, "_stopped", lambda what: (_Session(), tmp_path))
+    monkeypatch.setattr(s, "stopped", lambda what: (_Session(), tmp_path))
     dest = tmp_path / "kept"
     out = cast(dict[str, Any], s.series_capture(first=101, last=105, step=2, crop=[1, 1, 2, 1],
                                                 dest=str(dest), seconds=10.0))
