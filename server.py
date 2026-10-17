@@ -426,7 +426,7 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds: float
                         bridge(ctx))
 
 
-@tool("Step instructions", summary=summaries.step)
+@tool("Step instructions", summary=summaries.step, on_cancel="stop")
 def step(count: int = 1, mode: Annotated[str, inputs.vocabulary(advance.STEP_MODES)] = "into",
          cpu: str = "") -> dict[str, Any]:
     """Execute `count` (1..{STEP_MAX}) instructions of `cpu` (`subcpu`; the visible one when empty)

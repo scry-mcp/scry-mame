@@ -278,8 +278,9 @@ def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
     leg asking for what the counter says is left. The last leg's reply, or the first that is no
     ELAPSED run counted on the frame counter (a refusal, a stop that cut it, a run that would not
     settle), for the cell to judge; `Blocked` when a leg's bound ran out short of its frames."""
-    if frames < 1:
-        raise ValueError(f"run_frames runs at least one frame, not {frames}")
+    if frames < 1 or leg_frames < 1:
+        raise ValueError(f"run_frames runs at least one frame in legs of at least one, not "
+                         f"{frames} in legs of {leg_frames}")
     end: int | None = None
     left = frames
     while True:
@@ -290,7 +291,9 @@ def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
         before, after = reply.get("frame_before"), reply.get("frame_after")
         if not (isinstance(before, int) and isinstance(after, int)):
             return reply
-        if (reply.get("code") == "not_settled" and after < before + leg
+        # A LOADED HOST RUNS SLOW, it does not stop: a counter that stood still for the whole
+        # bound is the cell's to judge, never blamed on the host.
+        if (reply.get("code") == "not_settled" and before < after < before + leg
                 and spent >= WAIT_CEILING_S):
             raise Blocked(f"run_for({leg} frames, {WAIT_CEILING_S:g} s) reached frame {after} "
                           f"of {before + leg} in {spent:.1f} s: the host could not hold the "

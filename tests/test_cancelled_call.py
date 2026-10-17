@@ -272,3 +272,127 @@ def test_the_stop_end_hands_the_next_reply_a_stop_the_machine_had_reached_on_its
     with pytest.raises(asyncio.CancelledError):
         waiting_tool["stop"]()
     assert s.status().get("stopped_on_its_own", {}).get("stop_seq") == 3
+
+
+def test_a_schema_refusal_whose_call_was_cancelled_spends_no_account(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """Its reply goes to nobody, so the record another cancelled call left must wait for the
+    next one."""
+    from pydantic import BaseModel, ValidationError
+
+    class _M(BaseModel):
+        n: int
+    try:
+        _M(n="x")  # type: ignore[arg-type]
+    except ValidationError as e:
+        cause = e
+    mstate.STATE.cancelled = cancel.Cancelled("run_for", 1.0, "stopped")
+    _cancel_at(monkeypatch, 1)
+    with pytest.raises(asyncio.CancelledError):
+        mame_mcp.refusal("read_memory", {"ref": 5}, cause)
+    assert mstate.STATE.cancelled is not None and mstate.STATE.cancelled.tool == "run_for"
+    mstate.STATE.cancelled = None
+
+
+def test_a_start_cancelled_before_its_session_is_up_is_killed_without_a_grace(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
+    """Nobody can ask a MAME with no session to quit, so waiting for it to is time held."""
+    from test_server import _AliveProcess
+    monkeypatch.setattr(mstate.STATE, "ses", None)
+    monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
+    graces: list[bool] = []
+
+    def kill(progress: Any = None, grace: bool = True) -> dict[str, Any]:
+        graces.append(grace)
+        return {}
+    monkeypatch.setattr(mstate.STATE, "kill", kill)
+    _cancel_at(monkeypatch, 2)
+    with pytest.raises(asyncio.CancelledError):
+        waiting_tool["kill"]()
+    assert graces == [False], graces
+    mstate.STATE.cancelled = None
+
+
+def test_a_step_of_a_sequence_cancelled_is_the_sequences_cancel_alone(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
+    _running(monkeypatch, tmp_path)
+    _cancel_at(monkeypatch, 3)                 # perform's entry, the step's entry, its wait
+    with pytest.raises(asyncio.CancelledError):
+        s.perform(steps=[{"op": "wait_none"}], settle_seconds=0.0)
+    out = s.status()
+    assert out["cancelled"]["tool"] == "perform" and "earlier" not in out["cancelled"], out
+
+
+def test_the_stop_a_cancel_made_is_not_called_a_refusal(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _running(monkeypatch, tmp_path)
+    s.breakpoint_at(ref="0x4a0", role="control")
+    _cancel_at(monkeypatch, 3)
+    with pytest.raises(asyncio.CancelledError):
+        s.run_to(ref="0x25a4", control="0x4a0", seconds=30.0)
+    how = s.status()["last_stop"]["how"]
+    assert "refused" not in how and "cancel" in how, how
+
+
+def test_a_machine_that_died_under_the_cancelled_call_is_left_closed(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+
+    class _Dead:
+        pid = 4242
+
+        def poll(self) -> int:
+            return 1
+    _cancel_at(monkeypatch, 2)
+
+    monkeypatch.setattr(mstate.STATE, "proc", _Dead())
+    with pytest.raises(asyncio.CancelledError):
+        waiting_tool["stop"]()
+    assert mstate.STATE.cancelled is not None and mstate.STATE.cancelled.left == "closed"
+    mstate.STATE.cancelled = None
+
+
+def test_a_step_over_cancelled_while_it_waits_for_rest_is_stopped_as_its_own(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`over` is a console run: cancelled in the wait for the pc to settle (`_settled_pc`, a
+    bounded wait that polls), it ends as its bound does, stopped."""
+    from test_server import _AliveProcess, _install, _RegisterSession
+
+    import mame_advance as advance
+    ses = _RegisterSession(bits=32, frame=10, stop_after=50)
+    _install(monkeypatch, ses, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
+
+    def cancelled_while_settling(_ses: Any) -> bool:
+        raise asyncio.CancelledError
+    monkeypatch.setattr(advance, "_settled_pc", cancelled_while_settling)
+    with pytest.raises(asyncio.CancelledError):
+        s.step(mode="over")
+    record = mstate.STATE.cancelled
+    assert record is not None and record.left == "stopped", record
+    mstate.STATE.cancelled = None
+
+
+def test_a_run_for_cancelled_at_its_last_line_has_already_recorded_its_landing(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """The last progress line is a poll: met there, a cancel must find the landing recorded,
+    or the machine rests where no record says it is."""
+    from test_server import _AliveProcess, _install, _RegisterSession
+
+    import mame_advance as advance
+    ses = _RegisterSession(bits=32, frame=10, stop_after=4)
+    _install(monkeypatch, ses, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
+    monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
+    seq_before = (mstate.STATE.last_stop or {}).get("seq", 0)
+
+    def cancelled_at_the_last_line(self: Any, *a: Any, **k: Any) -> None:
+        raise asyncio.CancelledError
+    monkeypatch.setattr(mprogress.Ticker, "finish", cancelled_at_the_last_line)
+    with pytest.raises(asyncio.CancelledError):
+        s.run_for(frames=3)
+    assert (mstate.STATE.last_stop or {}).get("seq", 0) > seq_before, mstate.STATE.last_stop
+    mstate.STATE.cancelled = None

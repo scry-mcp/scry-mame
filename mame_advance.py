@@ -752,13 +752,16 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                                      f"{running.STOP_RECOVERS}", frame_before=before,
                                      frame_after=last,
                                      **through)
+    seen = running.survey(ses, scratch)
+    landed = running.finish_stop(ses, seen, FRAMES_END, verdict="ELAPSED", frame_before=before,
+                                 frame_after=last,
+                                 **_cycles(ses, cycles_before, stale_why, counted_on,
+                                           seen["cpu"]), polls=sent, **through)
+    # THE LANDING IS RECORDED BEFORE THE LAST LINE: that send is a poll, and a cancel met there
+    # would otherwise leave the machine at rest where no record says it is.
     clock.finish(frames, "run_for {asked}: frame {frame} of {target}, done",
                  asked=prose.counted(frames, "frame"), frame=last, target=target)
-    seen = running.survey(ses, scratch)
-    return running.finish_stop(ses, seen, FRAMES_END, verdict="ELAPSED", frame_before=before,
-                               frame_after=last,
-                               **_cycles(ses, cycles_before, stale_why, counted_on,
-                                         seen["cpu"]), polls=sent, **through)
+    return landed
 
 
 def _cycles(ses: gs.Session, cycles_before: int | None, stale_why: str | None,

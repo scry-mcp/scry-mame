@@ -50,6 +50,9 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
     `call_tool`. `LOCK` being an `RLock` is not what makes this safe.
     """
     with LOCK:
+        # A REFUSAL WHOSE CALL WAS CANCELLED while it queued answers nobody, so it spends no
+        # one-time account (a cancelled call's record, a stop found on its own).
+        cancel.check()
         # `start` promises `start_retries` on every reply, and this one launched nothing.
         launched: dict[str, Any] = {"start_retries": []} if name == "start" else {}
         reply = menvelope.invalid("bad_argument", strict.schema_refusal(cause), **launched)
@@ -177,9 +180,11 @@ def _end_cancelled(name: str, on_cancel: cancel.OnCancel, began: float) -> dict[
             # A stop the call made on its way (an interrupt in a `finally`, a step a Lua read
             # bought) is its own, recorded as a refused call's is, never found later as one the
             # machine reached by itself.
-            running.record_own_stop(name)
+            running.record_own_stop(name, "the stop it made when its call was cancelled")
             if on_cancel == "kill" and (STATE.ses is not None or STATE.proc is not None):
-                STATE.kill()                 # with its grace: `cfg/` and `nvram/` are written
+                # With its grace when a session can be asked to quit (`cfg/` and `nvram/` are
+                # written); a MAME still booting has nobody to ask, so waiting for it holds time.
+                STATE.kill(grace=STATE.ses is not None)
             elif (on_cancel == "stop" and STATE.ses is not None and STATE.ses.running
                     and running.stop(*running.contact()).get("status") != "ok"):
                 left = "unknown"
@@ -293,7 +298,9 @@ def tool(
                 except BaseException as e:
                     # A CANCELLED CALL ends as it declared and answers nothing: the request is
                     # gone, so the record waits for the next reply. Anything else is not ours.
-                    if cancel.is_cancellation(e):
+                    # Only the OUTERMOST call ends: a step of a `perform` cancelled is the
+                    # sequence's cancel, ended as the sequence declared.
+                    if cancel.is_cancellation(e) and _nested[0] == 1:
                         found = _end_cancelled(fn.__name__, on_cancel or "none", began)
                     raise
                 finally:

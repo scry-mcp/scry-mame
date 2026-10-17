@@ -432,7 +432,7 @@ def _found(ses: gs.Session, scratch: Path, packet: str | None) -> None:
                              **run_speed(ses)}
 
 
-def record_own_stop(tool: str) -> None:
+def record_own_stop(tool: str, how: str = "the step it took before it refused") -> None:
     """A STOP THE REFUSING CALL MADE IS ITS OWN. `read_block`, `lua` and `screen_signature`
     buy their evaluation with a real single step, and some of their refusals come after it
     (an answer that names no block, a script that raised, one that never came), as do
@@ -448,7 +448,7 @@ def record_own_stop(tool: str) -> None:
             or getattr(ses, "stop_count", None) in (None, STATE.last_stop.get("stop_count"))):
         return
     try:
-        _remember(ses, survey(ses, scratch), f"{tool}: the step it took before it refused")
+        _remember(ses, survey(ses, scratch), f"{tool}: {how}")
     except gs.SessionError:
         return
 

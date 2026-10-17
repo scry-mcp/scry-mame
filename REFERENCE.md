@@ -663,20 +663,22 @@ running, and `perform`'s and `drive`'s `settle_seconds=0` never waits for a stop
 A wait that can run for seconds reports its progress about once a second, as MCP progress
 notifications a client paints in the call's row: the frames or milliseconds done of those
 asked, a count it is waiting on, or the seconds of the bound when time is all there is. A step
-of `perform` or `drive` reports through the sequence's own line,
+of `perform` or `drive` reports through the sequence's own line (an `until_frame` list reports the
+frames instead),
 `perform step 2 of 5 (run_for): ...`, so the line never goes back.
 
-A call the client cancels ends at once, the way its own bound would have ended it, and answers
-nothing: the protocol sends no response to a cancelled request. The next reply, whatever tool it
-is, says once what that call left: in `cancelled` (`tool`, `after_s`, `left`, one of `stopped`,
+A call the client cancels ends at the next poll of its wait, the way its own bound would have
+ended it, and answers nothing: the protocol sends no response to a cancelled request. A tool
+with no wait of its own (a read, a single console command) runs to its end first. The next reply, whatever tool it
+is, says once what that call left (a step of a sequence is the sequence's cancel): in `cancelled` (`tool`, `after_s`, `left`, one of `stopped`,
 `running`, `closed` or `unknown`, and `earlier`, the cancelled calls before it that no reply
 reported) and in its summary, `after a cancelled run_for (stopped): ...`. A call cancelled while
 it waited for another to finish did nothing, and leaves no record. Each tool declares its end:
 
 | End | What the cancel leaves | Tools |
 |---|---|---|
-| `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `run_to`, `run_for`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
-| `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` | `start`, `close` |
+| `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `step`, `run_to`, `run_for`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
+| `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` when a session is up to be asked; a MAME still booting is killed at once | `start`, `close` |
 | `none` | the machine as the call found it | `resume`, `read_block`, `screen_signature`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_blits`, `gfx_blit_source`, `gfx_film`, `log_wait`, `drive`, `lua`, `throttle` |
 
 Any other tool that meets a cancel ends `none`.

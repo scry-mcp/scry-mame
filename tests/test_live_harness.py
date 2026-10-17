@@ -654,6 +654,8 @@ def test_a_leg_its_bound_cut_short_is_blocked_naming_what_it_reached(
     (_short(0, 300, "reached 300 of the 300 asked for and still moves"), 4.0),
     # a session that failed quickly, short of the frames: no bound ran out
     (_short(0, 120, "the session failed before its landing was confirmed"), 2.0),
+    # the bound ran out with the counter standing still: no load explains no frame at all
+    (_short(5, 5, "reached 5 of the 305 asked for"), 10.0),
     (_reply(status="ok", verdict="OTHER_STOP", frame_before=0, frame_after=40), 1.0),
     (_reply(status="INVALID", code="bad_argument", message="no"), 0.0),
 ])
@@ -662,6 +664,12 @@ def test_any_other_answer_is_the_cells_to_judge_and_no_later_leg_is_sent(
         spent: float) -> None:
     runs, got = _run_frames(monkeypatch, tmp_path, 600, [(reply, spent)])
     assert got == reply and runs.asked == [300]
+
+
+def test_a_leg_of_no_frames_is_refused_before_anything_is_asked(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="leg"):
+        _run_frames(monkeypatch, tmp_path, 5, [], leg_frames=0)
 
 
 def test_the_leg_follows_the_caller_and_no_run_of_nothing_is_asked(

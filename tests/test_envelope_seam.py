@@ -77,8 +77,8 @@ def test_a_genuine_defect_is_not_dressed_up_as_a_refusal(defect: Exception | Non
 # ------------------------------------------- and the refusal is built over the ONE machine
 #
 # THE SEAM IS OUTSIDE `tool()`'s WRAPPER, so it is outside the `LOCK` that wrapper holds. That
-# would be a torn read on its own; what makes it a write is that building the reply ends in
-# `mame_envelope.envelope`, which CLEARS `found_stop_last` -- the one-time account of a stop the
+# would be a torn read on its own; what makes it a write is that the refusal ends the call
+# (`State.end_call`), which CLEARS `found_stop_last` -- the one-time account of a stop the
 # machine reached on its own. A call the schema refused could take that account away from the
 # call that was building the reply meant to carry it.
 
