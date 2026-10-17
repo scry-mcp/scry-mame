@@ -49,6 +49,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_chunk as chunk
 import mame_evidence as evidence
@@ -57,7 +59,6 @@ import mame_inputs as inputs
 import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as manifest
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_running as running
 import mame_screen as screen

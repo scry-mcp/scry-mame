@@ -545,7 +545,7 @@ def test_a_live_stub_not_ready_is_relaunched_and_says_where_it_was_not(
     like a death, under the same cap, the entry says which of the three it was, and the
     relaunch says so on the progress line."""
     lines: list[str] = []
-    monkeypatch.setattr(s, "progress_of", lambda ctx: lambda done, total, said: lines.append(said))
+    monkeypatch.setattr(s, "bridge", lambda ctx: lambda done, total, said: lines.append(said))
     out = _start(monkeypatch, tmp_path, _double(tmp_path),
                  handshake=_not_ready(tmp_path, error, 1))
     try:

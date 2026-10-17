@@ -54,6 +54,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import picture, png
+from scry_core import progress as mprogress
 
 import gdb_session as gs
 import mame_callbacks as callbacks
@@ -67,7 +68,6 @@ import mame_iotaps as iotaps
 import mame_lua as mlua
 import mame_map as mmap
 import mame_mismatch as mmismatch
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
 import mame_running as running

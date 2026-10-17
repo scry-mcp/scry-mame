@@ -38,13 +38,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
 
+from scry_core import cancel
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_advance as advance
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
 import mame_running as running
@@ -299,14 +301,16 @@ def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: 
             broke = running.session_error_reply(
                 e, "trace", tail="The file is named in the reply's `trace` block")
         except BaseException:
-            _close(ses, scratch, tag)
+            with cancel.shielded():          # a cancelled call's cleanup is not cancelled again
+                _close(ses, scratch, tag)
             raise
         closed = _close(ses, scratch, tag)
         if closed is False:
             return _unclosed(path, tag, f"raised `{broke['code']}` ({e})")
         return _with_trace(broke, _left(path, closed))
     except BaseException:
-        _close(ses, scratch, tag)
+        with cancel.shielded():
+            _close(ses, scratch, tag)
         raise
     closed = _close(ses, scratch, tag)
     if closed is None and reply.get("status") != "ok":

@@ -11,8 +11,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, NoReturn
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
-import mame_progress as mprogress
 import mame_state as st
 import mame_transport as transport
 from mame_state import STATE

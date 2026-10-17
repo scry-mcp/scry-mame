@@ -20,11 +20,12 @@ import time
 from pathlib import Path
 from typing import Any
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_inputs as inputs
-import mame_progress as mprogress
 import mame_read as read
 import mame_running as running
 import mame_state as st

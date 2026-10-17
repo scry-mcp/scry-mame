@@ -33,6 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import png_read  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core import png, raster  # noqa: E402
+from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_lua import _channel, _ChannelSession  # noqa: E402
 
@@ -41,7 +42,6 @@ import mame_gfx as gfx  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402

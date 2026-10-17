@@ -34,6 +34,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
     MAP_ROM,
@@ -62,7 +63,6 @@ import mame_launch as launch
 import mame_lists as mlists  # noqa: E402
 import mame_machine as machine  # noqa: E402
 import mame_mcp  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_scan as mscan  # noqa: E402
@@ -3856,42 +3856,6 @@ class _RecordingCtx:
         self.got.append((progress, total, message))
 
 
-def test_the_progress_bridge_reaches_the_context_from_a_worker_thread() -> None:
-    """The SDK runs a synchronous tool in a worker thread and `report_progress` is a
-    coroutine on the event loop; the bridge is what carries one to the other. Without a
-    context it is the no-op, so a direct call or a test paints nothing."""
-    import anyio
-
-    assert mame_mcp.progress_of(None) is mprogress.no_progress
-    ctx = _RecordingCtx()
-
-    async def main() -> None:
-        report = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
-        await anyio.to_thread.run_sync(lambda: report(2.0, 8.0, "tick"))
-
-    anyio.run(main)
-    assert ctx.got == [(2.0, 8.0, "tick")]
-
-
-def test_each_call_gets_a_bridge_of_its_own_that_never_goes_backwards() -> None:
-    """The protocol's progress MUST increase within a request: the bridge rebases a wait that
-    starts again at zero inside one call, and a second call starts from its own zero."""
-    import anyio
-
-    ctx = _RecordingCtx()
-
-    async def main() -> None:
-        first = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
-        for p in (1.0, 2.0, 1.0):
-            await anyio.to_thread.run_sync(first, p, None, f"{p:g}")
-        second = mame_mcp.progress_of(ctx)  # type: ignore[arg-type]
-        await anyio.to_thread.run_sync(lambda: second(1.0, None, "fresh"))
-
-    anyio.run(main)
-    assert ctx.got == [(1.0, None, "1"), (2.0, None, "2"), (3.0, None, "1"),
-                       (1.0, None, "fresh")]
-
-
 def test_the_sdk_injects_the_context_and_the_schema_does_not_show_it() -> None:
     """`ctx` is found by its type through the wrapper (`functools.wraps` carries the
     annotations), it is not an argument the client can pass, and it stays out of the summary."""
@@ -4602,7 +4566,7 @@ def test_the_survey_says_when_the_console_gave_no_listing(
 
 def test_the_tools_carry_the_clients_context_to_their_waits() -> None:
     """End to end: a tool called with the SDK's context, from the worker thread the SDK uses,
-    ticks through it. Dropping the `progress_of(ctx)` argument at a call site leaves every
+    ticks through it. Dropping the `bridge(ctx)` argument at a call site leaves every
     direct test green; this one goes red."""
     import anyio
 
@@ -4792,7 +4756,9 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "stdout_log": open(tmp_log := tempfile.mkstemp()[1], "wb"),  # noqa: SIM115 (kill closes it)
     }
     fresh = mstate.State()
-    untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq"})
+    # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
+    # for the next reply to say.
+    untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq", "cancelled"})
     assert untouched == [], f"fields this test does not dirty: {untouched}"
     for name, value in dirty.items():
         setattr(mstate.STATE, name, value)
@@ -6022,7 +5988,7 @@ def test_a_run_by_frames_that_elapsed_says_so_with_its_clock_its_polls_and_its_p
     assert out["verdict"] == "ELAPSED" and "elapsed" not in out["how"], out
     assert (out["frame_before"], out["frame_after"], out["polls"]) == (10, 12, 2), out
     assert out["cycles"] == 2 * ses.cycles_per_frame, out
-    assert said[0] == "run_for 2 frames: frame 11 of 12, 0s", said
+    assert said[0] == "run_for 2 frames: frame 11 of 12, 0s of 5s", said
     assert ses.last_stop_packet == "", "the packet of the stop before the run is not this stop's"
     assert ses.commands.count("print frame") == 2 * 2 + 2 + 1, (
         "two agreeing reads confirm each landing, two a gap apart prove the last one at rest, "

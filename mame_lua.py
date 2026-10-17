@@ -41,6 +41,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
+from scry_core import cancel
+from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
 import gdb_session as gs
@@ -48,7 +50,6 @@ import mame_advance as advance
 import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_running as running
 import mame_state as st
@@ -584,7 +585,14 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
             # A STOP BEFORE THE NEXT FRAME: the line waits in the pipe exactly as it does on a
             # machine that was stopped already, and is recorded the same way.
             return pending()
-        if clock.expired():
+        try:
+            expired = clock.expired()
+        except BaseException as e:
+            # A CANCELLED WAIT leaves the switch in the pipe exactly as an expired one does.
+            if cancel.is_cancellation(e):
+                STATE.throttles_pending.append({"mark": tag, "on": on, "seq": seq})
+            raise
+        if expired:
             # STILL IN THE PIPE, and applied whenever it is evaluated: recorded, so its mark is
             # looked for later and its absence is said, never lost with this refusal.
             STATE.throttles_pending.append({"mark": tag, "on": on, "seq": seq})
@@ -592,6 +600,7 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
                 f"no {tag} mark in error.log within {seconds:g} s: the switch is "
                 "still pending, and `status` lists it in `throttles_pending`", pending=True,
                 mark=tag)
-        clock.tick("throttle: waiting for the mark, {elapsed:.0f}s")
+        clock.tick("throttle: waiting for the mark, {elapsed:.0f}s of {seconds:g}s",
+                   seconds=seconds)
         time.sleep(files.LOG_POLL_S)
 

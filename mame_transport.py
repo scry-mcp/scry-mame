@@ -22,9 +22,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_files as files
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_state as st
 from mame_state import STATE
@@ -353,7 +354,8 @@ def await_answer(scratch: Path, line: str, seq: int, seconds: float,
             raise died_waiting(gone, "the console's answer", seen_bytes=len(raw))
         if clock.expired():
             raise _not_answered(seconds, len(raw))
-        clock.tick("lua: waiting for the console's answer, {elapsed:.0f}s")
+        clock.tick("lua: waiting for the console's answer, {elapsed:.0f}s of {seconds:g}s",
+                   seconds=seconds)
         time.sleep(POLL_S)
 
 
@@ -565,7 +567,8 @@ def evaluate(ses: gs.Session, scratch: Path, script: str, seconds: float,
             ses.step()
             reader_steps += 1
             stepped_at = time.monotonic()
-        clock.tick("lua: waiting for the console's answer, {elapsed:.0f}s")
+        clock.tick("lua: waiting for the console's answer, {elapsed:.0f}s of {seconds:g}s",
+                   seconds=seconds)
         time.sleep(POLL_S)
     return answer, ahead, _steps_word(ahead + 1 + reader_steps + resent), reader_steps, resent, seq
 

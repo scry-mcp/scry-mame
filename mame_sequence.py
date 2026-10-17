@@ -15,6 +15,7 @@ stops at the first step that answers INVALID with the steps that ran as the acco
 
 from __future__ import annotations
 
+import contextlib
 import inspect
 import re
 import time
@@ -23,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import media_tools
+from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
 
@@ -47,7 +49,6 @@ import mame_lua as mlua
 import mame_machine as machine
 import mame_manifest as manifest
 import mame_palette as mpalette
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_ramdac as mramdac
 import mame_read as read
@@ -755,7 +756,8 @@ def account_of(ran: list[dict[str, Any]], summaries: bool, keep_last: bool, scra
 
 def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,
               progress: mprogress.Progress = mprogress.no_progress, tail_wait: bool = True,
-              summaries: bool = False, until_frame: int = 0) -> dict[str, Any]:
+              summaries: bool = False, until_frame: int = 0,
+              name: str = "perform") -> dict[str, Any]:
     """Execute steps in order, STOPPING at the first failure with a full account: `ran` (each
     step, the cpu its reply names, and its reply, or with `summaries` its summary line,
     `account_of` says which), `failed_at` and `failed`, `steps_completed`; the tail when the list
@@ -764,15 +766,15 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
     `TIMEOUT` when a wait ran out, the list ending there); and, on a machine with several cpus,
     `visible_cpu` (the tag after the list) and `visible_cpu_kept`
     (`_keep_visible`). With `until_frame` the list repeats until a stop reply's `frame`
-    reaches it (`_steps`), and the reply says so in `until_frame` and `frame_reached`."""
+    reaches it (`_steps`), and the reply says so in `until_frame` and `frame_reached`. Each step
+    reports its own progress through the list's, as `<name> step i of n (<op>): ...`."""
     refusal = refuse_steps(steps, ops) or refuse_machine(ses, steps)
     if refusal is not None:
         return refusal
     several = len(cpus.cpu_list(ses)) > 1
     was = cpus.visible_cpu(ses) if several and not ses.running else None
     code, message, fields, asked = _steps(ses, scratch, steps, settle_seconds, ops, progress,
-                                          tail_wait,
-                                          summaries, until_frame)
+                                          tail_wait, summaries, until_frame, name)
     if several:
         # ONE SHAPE FOR `visible_cpu` in every reply, `debug`'s and this one's: the tag; how the
         # list kept it is an account of its own.
@@ -789,7 +791,7 @@ def _frame_of(reply: dict[str, Any]) -> int | None:
 
 def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,
            progress: mprogress.Progress, tail_wait: bool, summaries: bool, until_frame: int = 0,
-           ) -> tuple[contract.Code | None, str, dict[str, Any], str | None]:
+           name: str = "perform") -> tuple[contract.Code | None, str, dict[str, Any], str | None]:
     """The steps run, as the refusal's code and message (None and "" for a list that ran to its
     end), the reply's fields, and the visible cpu the last step that set one read back: a
     `focus`, or a `debug` line that read it back after a `focus`, `ignore` or `observe`.
@@ -816,6 +818,7 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
     here = st.last_stop_frame()
     window_start = here if until_frame and not started_blind else None
     clock = mprogress.Ticker(UNTIL_SECONDS_MAX, progress)
+    began = clock.began
     # WHETHER THE LIST WAITED FOR ANYTHING, which is what earns it a verdict: a list that waited
     # for nothing has nothing to judge (`TARGET` once every wait it made was met).
     waited = bool(until_frame)
@@ -848,7 +851,13 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
             # landed: it earns no verdict.
             waited = waited or settle_seconds > 0
             running_now = False
-        reply = ops[op](**args)          # bound up front, before any step ran
+        # A STEP HAS NO REQUEST OF ITS OWN: its progress goes out on the list's line, unless
+        # the list counts frames of a window, which is then the line (`until_frame`).
+        steps_line = (contextlib.nullcontext() if until_frame else
+                      mprogress.within(progress, f"{name} step {i + 1} of {len(steps)} ({op})",
+                                       began))
+        with steps_line:
+            reply = ops[op](**args)      # bound up front, before any step ran
         if reply.get("status") != "ok":
             return ("step_failed", f"step {i} ({op!r}) failed: {reply.get('message')}",
                     {**account_of(ran, summaries, keep_last=False, scratch=scratch,
@@ -1071,7 +1080,8 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     # THE ACT'S TAIL DOES NOT WAIT WHEN THE VERIFY IS THE WAIT: `perform` waits `settle_seconds`
     # for a stop after a trailing `resume`, and with an `expect` that wait would run out before
     # the verify began.
-    ran = run_steps(ses, scratch, act, settle_seconds, ops, progress, tail_wait=not expect,
+    ran = run_steps(ses, scratch, act, settle_seconds, ops, progress, name="drive",
+                    tail_wait=not expect,
                     summaries=summaries)
     account = _account(ran)
     if ran.get("status") != "ok":

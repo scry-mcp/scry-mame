@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import picture, png
+from scry_core import progress as mprogress
 
 import gdb_session as gs
 import mame_block as block
@@ -27,7 +28,6 @@ import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as manifest
 import mame_palette as mpalette
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_region as region
 import mame_running as running

@@ -20,6 +20,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, TypeVar, overload
 
+from scry_core import cancel
+from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
 import gdb_session as gs
@@ -27,7 +29,6 @@ import mame_declarations as dec
 import mame_guardian as guardian
 import mame_idle as idle
 import mame_inputs as inputs
-import mame_progress as mprogress
 
 if TYPE_CHECKING:
     import mame_cycles
@@ -116,6 +117,10 @@ class State:
         # mint the same stamp -- which they could if a `close` sent it back to zero. It is set
         # HERE and deliberately not in `_reset`.
         self.start_seq = 0
+        # A CALL THE CLIENT CANCELLED has no reply of its own, so what it left rides on the next
+        # reply that closes, whatever tool that is, and is then forgotten (`take_cancelled`).
+        # Not in `_reset` either: the next call may be the `close` or `start` that kills.
+        self.cancelled: cancel.Cancelled | None = None
         self._reset()
 
     def _reset(self) -> None:
@@ -345,6 +350,11 @@ class State:
         entry = ("image", str(path))
         if entry not in self.captures:
             self.captures.append(entry)
+
+    def take_cancelled(self) -> cancel.Cancelled | None:
+        """The record a cancelled call left, handed once to the next reply that closes."""
+        record, self.cancelled = self.cancelled, None
+        return record
 
     def end_call(self) -> None:
         """The OUTER call is over, and with it the one-time account of a stop the machine

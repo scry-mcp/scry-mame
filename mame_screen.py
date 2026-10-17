@@ -38,6 +38,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import judges, picture, png
+from scry_core import progress as mprogress
 from scry_core.raster import signature as raster_signature
 
 import gdb_session as gs
@@ -45,7 +46,6 @@ import mame_chunk as chunk
 import mame_inputs as inputs
 import mame_lua as mlua
 import mame_palette as mpalette
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_ramdac as mramdac
 import mame_ramdac_lua as rlua

@@ -17,12 +17,12 @@ from pathlib import Path
 from typing import Any, NoReturn
 
 from scry_core import picture, png
+from scry_core import progress as mprogress
 
 import gdb_session as gs
 import mame_chunk as chunk
 import mame_inputs as inputs
 import mame_lua as mlua
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_running as running
 import mame_state as st

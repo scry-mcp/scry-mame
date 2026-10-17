@@ -17,6 +17,7 @@ from scry_core import media_tools
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import captured, published, refused  # noqa: E402
 from test_gdb_session import _wired  # noqa: E402
 from test_reply_contract import _ARGS, _tools  # noqa: E402
@@ -26,7 +27,6 @@ import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402
 import mame_files as files  # noqa: E402
 import mame_lists as mlists  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_state as mstate  # noqa: E402

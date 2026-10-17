@@ -23,6 +23,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
@@ -33,7 +34,6 @@ import mame_files as mfiles  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_lua as mlua  # noqa: E402
 import mame_mcp  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_sequence as sequence  # noqa: E402

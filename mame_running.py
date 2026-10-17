@@ -18,6 +18,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_arming as arming
 import mame_breakpoints as breakpoints
@@ -27,7 +29,6 @@ import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
 import mame_iotaps as iotaps
-import mame_progress as mprogress
 import mame_read as read
 import mame_regpoints as regpoints
 import mame_state as st

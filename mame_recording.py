@@ -18,6 +18,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
 import gdb_session as gs
@@ -26,7 +27,6 @@ import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
 import mame_lua as mlua
-import mame_progress as mprogress
 import mame_read as read
 import mame_state as st
 import mame_transport as transport

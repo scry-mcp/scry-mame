@@ -29,12 +29,12 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import fresh, judges, png, series
+from scry_core import progress as mprogress
 
 import gdb_session as gs
 import mame_advance as advance
 import mame_chunk as chunk
 import mame_inputs as inputs
-import mame_progress as mprogress
 import mame_read as read
 import mame_screen as mscreen
 import mame_state as st

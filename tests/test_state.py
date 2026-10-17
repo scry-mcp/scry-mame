@@ -1,9 +1,4 @@
-"""`mame_state`'s and `mame_progress`'s arithmetic and bookkeeping, held on a clock this file
-moves by hand.
-
-The bounded waits all share `Ticker`, so its edges (the bound itself, the moment a report is
-due) are asked here once, exactly at the edge, rather than inferred from the loops that each
-cross it somewhere in the middle.
+"""`mame_state`'s arithmetic and bookkeeping, held on a clock this file moves by hand.
 """
 
 import os
@@ -15,8 +10,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+
 import mame_files as files  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_state as mstate  # noqa: E402
 
 
@@ -35,117 +30,6 @@ def clock(monkeypatch: pytest.MonkeyPatch) -> _Clock:
     c = _Clock()
     monkeypatch.setattr("mame_state.time.monotonic", c)
     return c
-
-
-def test_a_bound_expires_at_its_deadline_and_leaves_nothing_after_it(clock: _Clock) -> None:
-    t = mprogress.Ticker(5.0, mprogress.no_progress)
-    clock.at += 4.0
-    assert t.expired() is False and t.left() == 1.0
-    clock.at += 1.0
-    assert t.expired() is True and t.left() == 0.0, "the deadline itself is expired, 0 left"
-    clock.at += 3.0
-    assert t.expired() is True and t.left() == 0.0, "past it, never a negative wait"
-
-
-def test_elapsed_is_rounded_to_a_millisecond_unless_asked(clock: _Clock) -> None:
-    t = mprogress.Ticker(5.0, mprogress.no_progress)
-    clock.at += 1.23456
-    assert t.elapsed() == 1.235 and t.elapsed(1) == 1.2
-
-
-def test_a_report_is_due_once_per_period_and_never_at_once(clock: _Clock) -> None:
-    said: list[tuple[float, float | None, str]] = []
-    t = mprogress.Ticker(10.0, lambda e, s, m: said.append((e, s, m)))
-    t.expired()
-    t.tick("{elapsed:.1f}s")
-    assert said == [], "no report before a period has passed"
-    clock.at += mprogress.PROGRESS_EVERY_S
-    t.expired()
-    t.tick("{elapsed:.1f}s")
-    assert [m for _, _, m in said] == ["1.0s"], "due exactly one period in"
-    clock.at += mprogress.PROGRESS_EVERY_S / 2
-    t.expired()
-    t.tick("{elapsed:.1f}s")
-    assert len(said) == 1, "and not again inside the next period"
-    clock.at += mprogress.PROGRESS_EVERY_S / 2
-    t.expired()
-    t.tick("{elapsed:.1f}s")
-    assert [m for _, _, m in said] == ["1.0s", "2.0s"] and said[-1][0] == 2.0
-    assert all(total is None for _, total, _ in said), said
-
-
-def test_a_work_report_carries_its_pair_on_the_same_period(clock: _Clock) -> None:
-    said: list[tuple[float, float | None, str]] = []
-    t = mprogress.Ticker(10.0, lambda p, total, m: said.append((p, total, m)))
-    t.expired()
-    t.report(0, 4, "frame {frame}", frame=10)
-    assert said == [], "no report before a period has passed"
-    clock.at += mprogress.PROGRESS_EVERY_S
-    t.expired()
-    t.report(3, 4, "frame {frame}, {elapsed:.0f}s", frame=13)
-    t.report(4, 4, "frame {frame}, {elapsed:.0f}s", frame=14)
-    assert said == [(3, 4, "frame 13, 1s")], "once per period, whatever the work did meanwhile"
-    clock.at += mprogress.PROGRESS_EVERY_S
-    t.expired()
-    t.report(-2, 4, "behind the start")
-    clock.at += mprogress.PROGRESS_EVERY_S
-    t.expired()
-    t.report(9, 4, "past the end")
-    assert [p for p, _, _ in said[1:]] == [0, 4], "clamped into [0, total]"
-
-
-def test_a_finish_is_sent_at_once_at_its_total() -> None:
-    said: list[tuple[float, float | None, str]] = []
-    t = mprogress.Ticker(10.0, lambda p, total, m: said.append((p, total, m)))
-    t.finish(4, "frame {frame}, done", frame=14)
-    assert said == [(4, 4, "frame 14, done")], "never held back by the period"
-
-
-def _rebased() -> tuple[mprogress.RebasedProgress, list[tuple[float, float | None, str]]]:
-    sent: list[tuple[float, float | None, str]] = []
-    return mprogress.RebasedProgress(lambda p, t, m: sent.append((p, t, m))), sent
-
-
-def test_a_rebased_progress_passes_an_increasing_sequence_through_unchanged() -> None:
-    report, sent = _rebased()
-    report(1.0, None, "a")
-    report(2.5, None, "b")
-    report(3.0, 8.0, "c")
-    assert sent == [(1.0, None, "a"), (2.5, None, "b"), (3.0, 8.0, "c")]
-
-
-def test_a_restart_inside_one_call_continues_from_the_last_value_sent() -> None:
-    """A retry after a wait, or a second Ticker in one call, begins again at its own zero: the
-    client is told a value above everything it was told before, never a smaller one."""
-    report, sent = _rebased()
-    for elapsed in (1.0, 2.0, 3.0):
-        report(elapsed, None, f"waiting {elapsed:g}s")
-    report(1, 3, "retry 1 of 3")              # start's retry: a count, below the last raw
-    report(1.0, None, "again 1s")             # the new Ticker's first: not above what was sent
-    report(2.0, None, "again 2s")
-    assert sent == [(1.0, None, "waiting 1s"), (2.0, None, "waiting 2s"),
-                    (3.0, None, "waiting 3s"), (4.0, 6.0, "retry 1 of 3"),
-                    (5.0, None, "again 2s")], sent
-    values = [p for p, _, _ in sent]
-    assert all(b > a for a, b in zip(values, values[1:], strict=False))
-
-
-def test_a_second_restart_is_based_on_the_value_sent_not_on_the_raw_one() -> None:
-    """After one rebase the value sent and the raw one differ, and only the value sent keeps the
-    line rising: based on the raw one, the third segment would fall below what was sent."""
-    report, sent = _rebased()
-    for raw in (1.0, 2.0, 3.0):
-        report(raw, None, "first")
-    report(1.0, 3.0, "second")                # sent 4.0 of 6.0
-    report(0.5, None, "third")
-    assert sent[-2:] == [(4.0, 6.0, "second"), (4.5, None, "third")], sent
-
-
-def test_a_value_not_above_the_last_one_sent_is_not_sent_nor_its_message() -> None:
-    report, sent = _rebased()
-    report(2.0, 4.0, "two")
-    report(2.0, 4.0, "two again")
-    assert sent == [(2.0, 4.0, "two")]
 
 
 def test_two_starts_of_one_process_in_one_second_never_share_an_origin(
@@ -299,7 +183,7 @@ def test_a_fresh_session_reads_the_emulator_log_from_its_first_byte(tmp_path: Pa
 # session reads, so its first reader never meets None where it iterates or compares.
 _NONE_UNTIL_START = {"boot_pc", "cfg", "first_cpu", "guard", "manifest",
                      "proc",
-                     "reference", "run_release", "scratch", "ses", "session_origin",
+                     "reference", "run_release", "scratch", "ses", "session_origin", "cancelled",
                      "scan", "stale_counter", "state_signature", "stdout_log", "store"}
 
 

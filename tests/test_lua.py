@@ -28,6 +28,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import blank_session, refused  # noqa: E402
 from test_server import _install, _RegisterSession  # noqa: E402
 
@@ -37,7 +38,6 @@ import mame_envelope as menvelope  # noqa: E402
 import mame_files as mfiles  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_lua as lua  # noqa: E402
-import mame_progress as mprogress  # noqa: E402
 import mame_recording as mrec
 import mame_running as running  # noqa: E402
 import mame_state as mstate  # noqa: E402
@@ -1504,7 +1504,7 @@ def test_start_reports_its_progress_while_the_gdbstub_is_slow(
 
     ses.dial = slow_connect  # type: ignore[method-assign]
     ticks: list[str] = []
-    monkeypatch.setattr(s, "progress_of", lambda ctx: (lambda p, t, m: ticks.append(m)))
+    monkeypatch.setattr(s, "bridge", lambda ctx: (lambda p, t, m: ticks.append(m)))
     out = s.start(**_boot_args(tmp_path, image), seconds=5.0)
     try:
         assert out["status"] == "ok", out

@@ -28,11 +28,12 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypeVar, overload
 
+from scry_core import progress as mprogress
+
 import gdb_session as gs
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_inputs as inputs
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
 import mame_state as st
@@ -263,6 +264,8 @@ def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr
 # counters through the second would otherwise be unreadable through the server. There is no
 # `guest` channel: an arcade board has no port of the program's own.
 LOG_CHANNELS = ("emulator", "process", "all")
+#: How much of the newest line a waiting `log_wait` shows in its progress line.
+LAST_LINE_SHOWN = 40
 NO_GUEST = ". There is no `guest` channel: an arcade board has no port of the program's own"
 LOG_FILES = {"emulator": "error.log", "process": "stdout.log"}
 
@@ -508,8 +511,9 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
         if seen:
             return found(seen, False, total - len(fresh) + fresh.index(seen[0]))
         clock.tick("log_wait {channel} /{pattern}/: {elapsed:.0f}s of {seconds:g}s, {arrived} "
-                   "lines arrived", channel=channel, pattern=pattern, seconds=seconds,
-                   arrived=total - len(lines))
+                   "lines arrived{last}", channel=channel, pattern=pattern, seconds=seconds,
+                   arrived=total - len(lines),
+                   last=f", last: {fresh[-1].strip()[:LAST_LINE_SHOWN]}" if fresh else "")
     late = last_look()
     if late is not None:
         return late

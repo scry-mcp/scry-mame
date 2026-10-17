@@ -14,9 +14,12 @@ from __future__ import annotations
 
 import contextlib
 import time
-from collections.abc import Callable, Hashable
+from collections.abc import Callable, Hashable, Iterator
 from pathlib import Path
 from typing import Any, TypeVar
+
+from scry_core import cancel
+from scry_core import progress as mprogress
 
 import gdb_session as gs
 import mame_breakpoints as breakpoints
@@ -29,7 +32,6 @@ import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
 import mame_lists as mlists
-import mame_progress as mprogress
 import mame_prose as prose
 import mame_read as read
 import mame_running as running
@@ -519,6 +521,19 @@ def run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
 #
 # `console_run` rides along because the release was a CONSOLE command (`gvblank`, `gtime`), and
 # the stub sends no stop packet for a run it did not start: the stop is proved on the counter.
+@contextlib.contextmanager
+def _console_run(ses: gs.Session) -> Iterator[None]:
+    """A run the CONSOLE started is in flight inside this block, and it sends no stop packet: a
+    cancelled call that unwinds out of it leaves the machine marked RUNNING, as the bound's own
+    bail-out does, so the end the call declared stops it and proves the rest (`running.stop`)."""
+    try:
+        yield
+    except BaseException as e:
+        if cancel.is_cancellation(e):
+            _left_running(ses)
+        raise
+
+
 def _left_running(ses: gs.Session, unprovable: bool = False) -> None:
     """Mark the session RUNNING because a bail-out handed the machine back moving;
     `unprovable` when the frame counter is the thing that did not move, so it cannot prove
@@ -630,104 +645,113 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
     landing = _landing_left(counted_on)
     if landing is not None and landing != ses.current_pc():
         landing = None
-    while last < target:
-        if clock.expired():
+    with _console_run(ses):
+        while last < target:
+            if clock.expired():
+                _left_running(ses)
+                return menvelope.invalid("not_settled",
+                                         f"the frame counter reached {last} of the {target} asked "
+                                         "for "
+                                         f"in {seconds:g} s: the machine may be RUNNING under a "
+                                         "`gvblank` this server cannot see end. "
+                                         f"{running.STOP_RECOVERS}",
+                                         frame_before=before, frame_after=last, **through)
+            landed_from = last
+            readings: list[int] = []
+            try:
+                ses.monitor("gvblank")
+                sent += 1
+                if landing is not None:
+                    breakpoints.count_landing(landing, counted_on)
+                    landing = None
+                # CONFIRMED ON THE COUNTER: the console answers while the run to the vblank is
+                # still landing, so the reading is taken until two in a row agree.
+                while not clock.expired():
+                    readings.append(read.frame(ses))
+                    if len(readings) >= 2 and readings[-1] == readings[-2]:
+                        break
+                    time.sleep(VBLANK_SETTLE_S)
+            except gs.CommandTooLong:
+                raise                  # refused before a byte went out: nothing was let go of
+            except gs.SessionError as e:
+                return _release_unconfirmed(ses, "gvblank", e, frame_before=before,
+                                            frame_after=readings[-1] if readings else last,
+                                            **through)
+            last = readings[-1] if readings else last
+            # THE ALIGNING TICK IS NOT PART OF THE RUN, and `cycles` is the clock behind the
+            # frames ASKED FOR. From a mid-frame stop the first `gvblank` reaches that frame's own
+            # vblank WITHOUT moving the counter (the comment above this function), so its cycles
+            # fell inside a span whose `frame_after - frame_before` was still exactly N: a
+            # session's first `run_for(frames=1)` would report about twice a later one's cycles,
+            # and an instrument silently inflated like that cannot be caught by reading its output.
+            #
+            # THE RULE IS BOUNDED BY ITS OWN CONDITION rather than by a flag: while the counter
+            # still reads `before` nothing that was asked for has landed, so everything burned so
+            # far is alignment and the baseline moves to here. The moment it moves this can never
+            # fire again, which is why no general "was that tick an alignment?" question has to be
+            # answered. `polls` is untouched: it counts the `gvblank`s sent, honestly, and it is
+            # the only tell a caller has that the alignment fired.
+            if last == before:
+                stale_why = None              # the aligning tick executed: `totalcycles` is current
+                try:
+                    cycles_before = read.print_values(ses, ["totalcycles"])[0]
+                except gs.SessionError:
+                    # unreadable is None, never a span over the wrong thing
+                    cycles_before = None
+            # A STOP THIS SERVER ARMED CAN LAND BETWEEN TWO VBLANKS: a breakpoint on a routine
+            # that runs every frame, or a change watch, halts the machine BEFORE the vblank this
+            # `gvblank` was heading for, the counter has not ticked, and the next `gvblank` would
+            # simply resume it: with a `stop` breakpoint on the per-frame irq, `run_for(frames=5)`
+            # would come back ELAPSED with the row crossed five times. A run the
+            # console starts sends NO stop packet, so the first tell is the COUNTER: a `gvblank`
+            # that moved it by nothing stopped early. It is not the only one, because the counter
+            # ticks as a run leaves a vblank stop: a watch that fires later in that frame, or a
+            # breakpoint typed through `debug`, halts the machine with the counter MOVED, and
+            # leaves nothing but the console's `Stopped at ...` line. So the log is looked at
+            # after EVERY landing, and a watchpoint's, breakpoint's or registerpoint's line there
+            # is a stop. A row the machine lands on WITH the tick is surveyed too: a stop
+            # breakpoint sitting on the vblank handler fired there. A control never counts,
+            # wherever the machine lands.
+            pc = ses.current_pc()
+            landing = pc
+            lines, peeked = files.lines_since(log, peeked)
+            # A ROW AT THIS PC IS ASKED ITS CPU only when one sits there: the stop's cpu costs a
+            # console read, and most landings have no row at their pc.
+            if (last == landed_from or running.stop_logged_in(lines)
+                    or (breakpoints.bp_owned_at(pc, None) is not None
+                        and running.halts(pc, cpus.visible_cpu(ses)))):
+                seen = running.survey(ses, scratch)
+                peeked = STATE.debuglog_mark
+                if running.cut_by_a_stop(seen, pc):
+                    return running.finish_stop(ses, seen, running.attribute(pc, seen["cpu"]),
+                                               verdict="OTHER_STOP", frame_before=before,
+                                               frame_after=last,
+                                               **_cycles(ses, cycles_before, stale_why,
+                                                         counted_on, seen["cpu"]), polls=sent,
+                                               **through)
+            if last == before and sent > frames + 1:
+                _left_running(ses, unprovable=True)
+                return menvelope.invalid("no_progress",
+                                         f"the frame counter did not move over {sent} `gvblank`s: "
+                                         "nothing was emulated, and the counter cannot tell that "
+                                         "from "
+                                         "a machine still RUNNING under the last `gvblank`",
+                                         frame_before=before, frame_after=last, **through)
+            clock.report(min(last - before, frames), frames,
+                         "run_for {asked}: frame {frame} of {target}, {elapsed:.0f}s of {bound:g}s",
+                         asked=prose.counted(frames, "frame"), frame=last, target=target,
+                         bound=seconds)
+        if not running.frame_at_rest(ses, reads=2):
             _left_running(ses)
             return menvelope.invalid("not_settled",
                                      f"the frame counter reached {last} of the {target} asked for "
-                                     f"in {seconds:g} s: the machine may be RUNNING under a "
-                                     "`gvblank` this server cannot see end. "
-                                     f"{running.STOP_RECOVERS}",
-                                     frame_before=before, frame_after=last, **through)
-        landed_from = last
-        readings: list[int] = []
-        try:
-            ses.monitor("gvblank")
-            sent += 1
-            if landing is not None:
-                breakpoints.count_landing(landing, counted_on)
-                landing = None
-            # CONFIRMED ON THE COUNTER: the console answers while the run to the vblank is
-            # still landing, so the reading is taken until two in a row agree.
-            while not clock.expired():
-                readings.append(read.frame(ses))
-                if len(readings) >= 2 and readings[-1] == readings[-2]:
-                    break
-                time.sleep(VBLANK_SETTLE_S)
-        except gs.CommandTooLong:
-            raise                  # refused before a byte went out: nothing was let go of
-        except gs.SessionError as e:
-            return _release_unconfirmed(ses, "gvblank", e, frame_before=before,
-                                        frame_after=readings[-1] if readings else last,
-                                        **through)
-        last = readings[-1] if readings else last
-        # THE ALIGNING TICK IS NOT PART OF THE RUN, and `cycles` is the clock behind the
-        # frames ASKED FOR. From a mid-frame stop the first `gvblank` reaches that frame's own
-        # vblank WITHOUT moving the counter (the comment above this function), so its cycles
-        # fell inside a span whose `frame_after - frame_before` was still exactly N: a
-        # session's first `run_for(frames=1)` would report about twice a later one's cycles,
-        # and an instrument silently inflated like that cannot be caught by reading its output.
-        #
-        # THE RULE IS BOUNDED BY ITS OWN CONDITION rather than by a flag: while the counter
-        # still reads `before` nothing that was asked for has landed, so everything burned so
-        # far is alignment and the baseline moves to here. The moment it moves this can never
-        # fire again, which is why no general "was that tick an alignment?" question has to be
-        # answered. `polls` is untouched: it counts the `gvblank`s sent, honestly, and it is
-        # the only tell a caller has that the alignment fired.
-        if last == before:
-            stale_why = None              # the aligning tick executed: `totalcycles` is current
-            try:
-                cycles_before = read.print_values(ses, ["totalcycles"])[0]
-            except gs.SessionError:
-                cycles_before = None      # unreadable is None, never a span over the wrong thing
-        # A STOP THIS SERVER ARMED CAN LAND BETWEEN TWO VBLANKS: a breakpoint on a routine
-        # that runs every frame, or a change watch, halts the machine BEFORE the vblank this
-        # `gvblank` was heading for, the counter has not ticked, and the next `gvblank` would
-        # simply resume it: with a `stop` breakpoint on the per-frame irq, `run_for(frames=5)`
-        # would come back ELAPSED with the row crossed five times. A run the
-        # console starts sends NO stop packet, so the first tell is the COUNTER: a `gvblank`
-        # that moved it by nothing stopped early. It is not the only one, because the counter
-        # ticks as a run leaves a vblank stop: a watch that fires later in that frame, or a
-        # breakpoint typed through `debug`, halts the machine with the counter MOVED, and
-        # leaves nothing but the console's `Stopped at ...` line. So the log is looked at
-        # after EVERY landing, and a watchpoint's, breakpoint's or registerpoint's line there
-        # is a stop. A row the machine lands on WITH the tick is surveyed too: a stop
-        # breakpoint sitting on the vblank handler fired there. A control never counts,
-        # wherever the machine lands.
-        pc = ses.current_pc()
-        landing = pc
-        lines, peeked = files.lines_since(log, peeked)
-        # A ROW AT THIS PC IS ASKED ITS CPU only when one sits there: the stop's cpu costs a
-        # console read, and most landings have no row at their pc.
-        if (last == landed_from or running.stop_logged_in(lines)
-                or (breakpoints.bp_owned_at(pc, None) is not None
-                    and running.halts(pc, cpus.visible_cpu(ses)))):
-            seen = running.survey(ses, scratch)
-            peeked = STATE.debuglog_mark
-            if running.cut_by_a_stop(seen, pc):
-                return running.finish_stop(ses, seen, running.attribute(pc, seen["cpu"]),
-                                           verdict="OTHER_STOP", frame_before=before,
-                                           frame_after=last,
-                                           **_cycles(ses, cycles_before, stale_why,
-                                                     counted_on, seen["cpu"]), polls=sent,
-                                           **through)
-        if last == before and sent > frames + 1:
-            _left_running(ses, unprovable=True)
-            return menvelope.invalid("no_progress",
-                                     f"the frame counter did not move over {sent} `gvblank`s: "
-                                     "nothing was emulated, and the counter cannot tell that from "
-                                     "a machine still RUNNING under the last `gvblank`",
-                                     frame_before=before, frame_after=last, **through)
-        clock.report(min(last - before, frames), frames,
-                     "run_for {asked}: frame {frame} of {target}, {elapsed:.0f}s",
-                     asked=prose.counted(frames, "frame"), frame=last, target=target)
-    if not running.frame_at_rest(ses, reads=2):
-        _left_running(ses)
-        return menvelope.invalid("not_settled",
-                                 f"the frame counter reached {last} of the {target} asked for and "
-                                 "still moves: no `gvblank` held the machine, so it is RUNNING. "
-                                 f"{running.STOP_RECOVERS}", frame_before=before, frame_after=last,
-                                 **through)
+                                     "and "
+                                     "still moves: no `gvblank` held the machine, so it is "
+                                     "RUNNING. "
+                                     ""
+                                     f"{running.STOP_RECOVERS}", frame_before=before,
+                                     frame_after=last,
+                                     **through)
     clock.finish(frames, "run_for {asked}: frame {frame} of {target}, done",
                  asked=prose.counted(frames, "frame"), frame=last, target=target)
     seen = running.survey(ses, scratch)
@@ -812,54 +836,56 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     ses.drain_stop_reply()
     readings: list[int | float] = []
     verdict = "ELAPSED"
-    try:
-        if not wait_for_rest(
-                readings, lambda: read.rest_reading(ses), seconds, progress=progress,
-                report=lambda clock: clock.tick(
-                    "run_for {ms} ms: {what} {frame}, {elapsed:.0f}s of {seconds:g}s",
-                    ms=milliseconds, what="clock" if clocked else "frame", frame=readings[-1],
-                    seconds=seconds)):
-            raise gs.SessionError(f"{what} was still moving at {seconds} s")
-        after = readings[-1]
-    except gs.SessionError:
-        # A run the CONSOLE started sends no stop packet, so the interrupt is the one that
-        # does not wait for one (`halt`), and the proof of the stop is the same one the
-        # ELAPSED path uses: the counter (or the clock) no longer moving. One reading after the 0x03
-        # proved nothing about a machine that had not processed it yet.
-        with contextlib.suppress(gs.SessionError, OSError):
-            ses.halt()
-        settled: list[int | float] = []
+    with _console_run(ses):
         try:
-            steady = wait_for_rest(settled, lambda: read.rest_reading(ses),
-                                    running.CONSOLE_HALT_SETTLE_S, sleep_first=True)
-        except gs.ExpressionRefused as e:
-            # AN ANSWER, AND STILL NO PROOF OF REST: the machine was released, so the
-            # refusal lets go of it rather than answering `no_channel` as if nothing ran.
-            _left_running(ses)
-            return menvelope.invalid("not_settled",
-                                     f"`gtime` was sent and {what} could no longer be read "
-                                     f"({e}): nothing proves the machine came to rest, so it "
-                                     f"may be RUNNING. {running.STOP_RECOVERS}",
-                                     frame_before=counted(frame_before),
-                                     frame_after=st.unavailable(f"not read after the run: {e}"),
-                                     emulated_after_s=st.unavailable(
-                                         f"not read after the run: {e}"), **times)
-        if not steady:
-            _left_running(ses)
-            return menvelope.invalid(
-                "not_settled",
-                f"the machine did not come to rest within "
-                f"{running.CONSOLE_HALT_SETTLE_S} s of the "
-                f"interrupt at the bound: {what} still moved "
-                f"({settled[-FRAME_STABLE_READS:]}). It may be RUNNING, and this "
-                f"server cannot see a run the console started. {running.STOP_RECOVERS}",
-                frame_before=counted(frame_before),
-                frame_after=counted(None) if clocked else settled[-1],
-                emulated_after_s=(timed(settled[-1]) if clocked else st.unavailable(
-                    "not read: the machine did not come to rest")), **times)
-        after = settled[-1]
-        readings.extend(settled)
-        verdict = "TIMEOUT"
+            if not wait_for_rest(
+                    readings, lambda: read.rest_reading(ses), seconds, progress=progress,
+                    report=lambda clock: clock.tick(
+                        "run_for {ms} ms: {what} {frame}, {elapsed:.0f}s of {seconds:g}s",
+                        ms=milliseconds, what="clock" if clocked else "frame", frame=readings[-1],
+                        seconds=seconds)):
+                raise gs.SessionError(f"{what} was still moving at {seconds} s")
+            after = readings[-1]
+        except gs.SessionError:
+            # A run the CONSOLE started sends no stop packet, so the interrupt is the one that
+            # does not wait for one (`halt`), and the proof of the stop is the same one the
+            # ELAPSED path uses: the counter (or the clock) no longer moving. One reading after the
+            # 0x03
+            # proved nothing about a machine that had not processed it yet.
+            with contextlib.suppress(gs.SessionError, OSError):
+                ses.halt()
+            settled: list[int | float] = []
+            try:
+                steady = wait_for_rest(settled, lambda: read.rest_reading(ses),
+                                        running.CONSOLE_HALT_SETTLE_S, sleep_first=True)
+            except gs.ExpressionRefused as e:
+                # AN ANSWER, AND STILL NO PROOF OF REST: the machine was released, so the
+                # refusal lets go of it rather than answering `no_channel` as if nothing ran.
+                _left_running(ses)
+                return menvelope.invalid("not_settled",
+                                         f"`gtime` was sent and {what} could no longer be read "
+                                         f"({e}): nothing proves the machine came to rest, so it "
+                                         f"may be RUNNING. {running.STOP_RECOVERS}",
+                                         frame_before=counted(frame_before),
+                                         frame_after=st.unavailable(f"not read after the run: {e}"),
+                                         emulated_after_s=st.unavailable(
+                                             f"not read after the run: {e}"), **times)
+            if not steady:
+                _left_running(ses)
+                return menvelope.invalid(
+                    "not_settled",
+                    f"the machine did not come to rest within "
+                    f"{running.CONSOLE_HALT_SETTLE_S} s of the "
+                    f"interrupt at the bound: {what} still moved "
+                    f"({settled[-FRAME_STABLE_READS:]}). It may be RUNNING, and this "
+                    f"server cannot see a run the console started. {running.STOP_RECOVERS}",
+                    frame_before=counted(frame_before),
+                    frame_after=counted(None) if clocked else settled[-1],
+                    emulated_after_s=(timed(settled[-1]) if clocked else st.unavailable(
+                        "not read: the machine did not come to rest")), **times)
+            after = settled[-1]
+            readings.extend(settled)
+            verdict = "TIMEOUT"
     times["emulated_after_s"] = timed(after if clocked else ses.emulated_seconds())
     frame_after = counted(None if clocked else int(after))
     # `how` NAMES WHAT STOPPED IT, never the verdict again: the console's own end of the run,
@@ -983,47 +1009,49 @@ def _step(ses: gs.Session, scratch: Path, count: int, mode: str, stepped: str | 
                                   instructions_completed=completed,
                                   **others())
     try:
-        for _ in range(count):
-            try:
-                ses.monitor("over")
-            except (gs.CommandTooLong, gs.ConnectionFailed):
-                raise
-            except gs.SessionError as e:
-                return _release_unconfirmed(ses, "over", e, mode=mode,
-                                            instructions_completed=completed)
-            ses.last_stop_packet = ""
-            ses.drain_stop_reply()
-            if not _settled_pc(ses):
-                # AN `over` ACROSS A CALL THAT NEVER RETURNS leaves the machine running with no
-                # stop packet to come: it is halted here, and the reply says how far it got.
-                with contextlib.suppress(gs.SessionError, OSError):
-                    ses.halt()
+        with _console_run(ses):
+            for _ in range(count):
+                try:
+                    ses.monitor("over")
+                except (gs.CommandTooLong, gs.ConnectionFailed):
+                    raise
+                except gs.SessionError as e:
+                    return _release_unconfirmed(ses, "over", e, mode=mode,
+                                                instructions_completed=completed)
+                ses.last_stop_packet = ""
                 ses.drain_stop_reply()
                 if not _settled_pc(ses):
-                    # STILL MOVING after the interrupt: the machine may be RUNNING, and the
-                    # session says so, as a console `g` does, so the readers refuse instead
-                    # of sampling a moving machine.
-                    _left_running(ses)
-                    return menvelope.invalid("not_settled",
-                                             f"step over {completed + 1} of {count}: the machine "
-                                             f"did not come to rest within "
-                                             f"{running.CONSOLE_HALT_SETTLE_S} s after `over` "
-                                             "and an interrupt; it may still be RUNNING. "
-                                             f"{running.STOP_RECOVERS}",
-                                             mode=mode, instructions_completed=completed)
-                return running.stop_reply(
-                    ses, scratch, "interrupt after a step over still moving at its bound",
-                    status="INVALID", code="not_settled", mode=mode,
-                    instructions_completed=completed,
-                    **others(),
-                    message=(f"step over {completed + 1} of {count} was still moving "
-                             f"{running.CONSOLE_HALT_SETTLE_S} s after `over` and was "
-                             "interrupted; whether the call it stepped over would have "
-                             "returned later was not seen"))
-            completed += 1
-            if (cut := _elsewhere(ses, scratch, stepped, completed, count, mode,
-                                  others)) is not None:
-                return cut
+                    # AN `over` ACROSS A CALL THAT NEVER RETURNS leaves the machine running with no
+                    # stop packet to come: it is halted here, and the reply says how far it got.
+                    with contextlib.suppress(gs.SessionError, OSError):
+                        ses.halt()
+                    ses.drain_stop_reply()
+                    if not _settled_pc(ses):
+                        # STILL MOVING after the interrupt: the machine may be RUNNING, and the
+                        # session says so, as a console `g` does, so the readers refuse instead
+                        # of sampling a moving machine.
+                        _left_running(ses)
+                        return menvelope.invalid("not_settled",
+                                                 f"step over {completed + 1} of {count}: the "
+                                                 "machine "
+                                                 f"did not come to rest within "
+                                                 f"{running.CONSOLE_HALT_SETTLE_S} s after `over` "
+                                                 "and an interrupt; it may still be RUNNING. "
+                                                 f"{running.STOP_RECOVERS}",
+                                                 mode=mode, instructions_completed=completed)
+                    return running.stop_reply(
+                        ses, scratch, "interrupt after a step over still moving at its bound",
+                        status="INVALID", code="not_settled", mode=mode,
+                        instructions_completed=completed,
+                        **others(),
+                        message=(f"step over {completed + 1} of {count} was still moving "
+                                 f"{running.CONSOLE_HALT_SETTLE_S} s after `over` and was "
+                                 "interrupted; whether the call it stepped over would have "
+                                 "returned later was not seen"))
+                completed += 1
+                if (cut := _elsewhere(ses, scratch, stepped, completed, count, mode,
+                                      others)) is not None:
+                    return cut
     except gs.SessionError as e:
         # A console that REFUSES kept its place and bails out above as `not_settled`; a
         # connection that is gone, or a request that ran out and latched, answers nothing,
