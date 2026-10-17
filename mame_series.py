@@ -28,7 +28,7 @@ from array import array
 from pathlib import Path
 from typing import Any
 
-from scry_core import fresh, judges, png, raster, series
+from scry_core import fresh, judges, png, series
 
 import gdb_session as gs
 import mame_advance as advance
@@ -207,7 +207,8 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
         if m is None:
             chunk.no_line("series arming", text, common)
         width, height = int(m.group(2)), int(m.group(3))
-        area = list(raster.inside(crop, width, height, "the screen"))
+        area = [0, 0, width, height] if crop is None else list(crop)
+        mscreen.on_screen(width, height, area[0], area[1], area[2], area[3], "crop", common)
     except BaseException:
         _finish_quietly(ses, scratch, seconds, progress)
         raise

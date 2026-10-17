@@ -189,7 +189,8 @@ class Envelope(MCPServer):
 # own running-ok operations, the last stop's registers, the two batch tools (which wait for a
 # stop before a step that needs one) and `close`. The list is the server's because it names
 # tools.
-# The media file tools answer in any state too, and the instructions say so once, beside them.
+# The media file tools answer in any state too; their own descriptions say so ("it needs no
+# machine"), since the `instructions` have no room left to.
 _ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
                           "registers(from_last_stop=True)", "perform", "drive", "close"]
 
@@ -1659,8 +1660,8 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
     Each frame is MAME's own rendering of it, read by a frame notifier one frame late as
     `gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`.
 
-    Reply: `manifest` (its path), `count`, `first`, `last`, `distinct` (signatures over the
-    crop), `frames_asked`, `lost` ([first, last] runs), `kept_after_close`, `frame_source`
+    Reply: `manifest` (its path), `count`, `first`, `last`, `crop`, `distinct` (signatures over
+    it), `frames_asked`, `lost` ([first, last] runs), `kept_after_close`, `frame_source`
     (`frame_number`), then the run's own fields and the survey as `run_for` reports them.
     `bad_argument`: a frame not ahead of the machine, a crop off the screen, a `dest` already
     there; `cut_by_other_stop`: a stop cut the run before the last frame.

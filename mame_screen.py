@@ -438,11 +438,17 @@ def inside(cap: Capture, x: int, y: int, w: int, h: int, name: str,
            common: dict[str, Any]) -> None:
     """The rectangle named `name` (`crop`, `area`; `point` for one pixel) is on the screen, or
     the refusal that names the screen's size."""
-    if x + w > cap.width or y + h > cap.height:
+    on_screen(cap.width, cap.height, x, y, w, h, name, common)
+
+
+def on_screen(width: int, height: int, x: int, y: int, w: int, h: int, name: str,
+              common: dict[str, Any]) -> None:
+    """`inside` for a screen known by its size alone, as a series knows it when it arms."""
+    if x + w > width or y + h > height:
         what = (f"point [{x}, {y}] is off" if name == "point"
                 else f"{name} [{x}, {y}] + {w}x{h} leaves")
-        raise st.Invalid("bad_argument", f"{what} the {cap.width}x{cap.height} screen",
-                         width=cap.width, height=cap.height, **common)
+        raise st.Invalid("bad_argument", f"{what} the {width}x{height} screen",
+                         width=width, height=height, **common)
 
 
 def raster(cap: Capture, area: list[int] | None, x0: int, y0: int, w: int, h: int,

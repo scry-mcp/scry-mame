@@ -18,6 +18,7 @@ the same question sixty frames later, which must come out no.
     uv run python tests/live/matrix_media.py
 """
 
+import json
 from pathlib import Path
 
 from bench_boards import m68k_dual_missing
@@ -72,6 +73,13 @@ def _changes(pictures: list[bytes]) -> list[int]:
     return [i for i in range(1, len(pictures)) if pictures[i] != pictures[i - 1]]
 
 
+def _kept(manifest: str) -> list[tuple[png.Raster, str]]:
+    """Each frame of a series as its PNG decodes, beside the signature its row says."""
+    folder = Path(manifest).parent
+    rows = json.loads(Path(manifest).read_text(encoding="utf-8"))["frames"]
+    return [(png.decode((folder / r["path"]).read_bytes()), r["signature"]) for r in rows]
+
+
 def _y_m68k_dual(t: list[str]) -> None:
     boot()
     call("run_for", frames=S1_FROM, seconds=WAIT_CEILING_S)
@@ -102,11 +110,20 @@ def _y_m68k_dual(t: list[str]) -> None:
              if ok(series) else series)
     new = [f - first for f, _ in track.get("transitions", [])] if ok(track) else []
     new_cost = _cost(start)
-    cell(t[1], ok(loaded) and ok(track) and bool(hand) and new == hand
+    # The series' frames ARE the hand way's: the same pixels, and each row signed as its picture
+    # is. Which frames changed is not enough, a consistent wrong colour moves no change.
+    kept = _kept(series["manifest"]) if ok(series) else []
+    same = len(kept) == len(pictures) and all(
+        raster.rgb(picture) == hand_rgb and signature == raster.picture_signature(picture)
+        for (picture, signature), hand_rgb in zip(kept, pictures, strict=False))
+    cell(t[1], ok(loaded) and ok(track) and bool(hand) and new == hand and same
          and new_cost["image_tokens"] == 0,
-         f"changes at offsets {new} (hand {hand}); cost {new_cost}; {said(track)}")
-    cell(t[2], new_cost["calls"] < hand_cost["calls"] and new_cost["image_tokens"] == 0
-         < hand_cost["image_tokens"], f"hand {hand_cost}, new {new_cost}")
+         f"changes at offsets {new} (hand {hand}), pixels and signatures as the hand way's "
+         f"{same}; cost {new_cost}; {said(track)}")
+    # Cheaper only counts when the new way answered: a refused series is one call too.
+    cell(t[2], ok(series) and ok(track) and new_cost["calls"] < hand_cost["calls"]
+         and new_cost["image_tokens"] == 0 < hand_cost["image_tokens"],
+         f"hand {hand_cost}, new {new_cost}")
     # S2: the golden is the screen at this stop.
     golden = fresh(".png")
     made = call("screen_view", scale=1, dest=golden)

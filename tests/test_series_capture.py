@@ -8,7 +8,7 @@ import json
 import sys
 from array import array
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 from scry_core import png
@@ -22,6 +22,7 @@ import mame_chunk as mchunk  # noqa: E402
 import mame_read as mread  # noqa: E402
 import mame_series as mseries  # noqa: E402
 import mame_state as mstate  # noqa: E402
+import server as s  # noqa: E402
 
 W, H = 4, 2
 
@@ -184,7 +185,8 @@ def test_a_series_that_cannot_be_trusted_is_refused_and_leaves_nothing(
 
 def test_a_crop_off_the_screen_is_refused_after_the_notifier_is_removed(
         console: _Console, tmp_path: Path) -> None:
-    with pytest.raises(mstate.Invalid, match=r"crop \[3, 0\] \+ 2x1 leaves the screen"):
+    # Said as `screen_signature` and `screen_view` say it on this server, with the screen's size.
+    with pytest.raises(mstate.Invalid, match=r"^crop \[3, 0\] \+ 2x1 leaves the \d+x\d+ screen$"):
         _capture(tmp_path, crop=[3, 0, 2, 1])
     assert console.finished == 1 and console.ran_frames is None
 
@@ -369,3 +371,16 @@ def test_a_machine_left_running_is_not_sent_the_finish_after_a_failed_arming(
     with pytest.raises(mstate.Invalid, match="printed no series"):
         mseries.series_capture(session, tmp_path, None, 101, 105, 2, None, "", 10.0)  # type: ignore[arg-type]
     assert console.finished == 0
+
+
+def test_series_capture_answers_through_the_server_with_each_argument_where_it_was_named(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The registered tool, not the module function: every argument reaches the body in its own
+    place, and the reply wears this server's envelope."""
+    monkeypatch.setattr(s, "_stopped", lambda what: (_Session(), tmp_path))
+    dest = tmp_path / "kept"
+    out = cast(dict[str, Any], s.series_capture(first=101, last=105, step=2, crop=[1, 1, 2, 1],
+                                                dest=str(dest), seconds=10.0))
+    assert out["status"] == "ok" and "session" in out, out
+    assert (out["count"], out["first"], out["last"], out["crop"]) == (3, 101, 105, [1, 1, 2, 1])
+    assert out["kept_after_close"] is True and Path(out["manifest"]).parent == dest, out

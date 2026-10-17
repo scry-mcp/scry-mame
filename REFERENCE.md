@@ -2644,9 +2644,9 @@ audio gates' measures: a peak and an RMS in dBFS; silence as an RMS under 0.5% o
 spans quieter than -60 dBFS lasting 50 ms or more; the onset as the first sample over 2% of the
 peak; clipping as the longest run of flat samples near the peak, because a clipped top is flat
 at any level. An emulated chip at rest sits at a steady level, not at zero (the AY on the v30
-board at volume 0 does), and a steady level is no sound: the RMS and the comparison
-read the window less its mean, the onset, the silences and the plateau read it against the level
-it starts at, and the peak is read as written, the headroom left. Two recordings are compared
+board at volume 0 does), and a steady level is no sound: the RMS, the comparison and the
+plateau read the window less its mean, the silences read it through a DC blocker, the onset
+against the level it starts at, and the peak is read as written, the headroom left. Two recordings are compared
 channel by channel, the worst grading, never through a
 mixdown (a channel in antiphase cancels and two swapped channels average to one sound): by their
 signal-to-error ratio (`exact`, `inaudible` at 60 dB or more, `audible` from 30, `different`
