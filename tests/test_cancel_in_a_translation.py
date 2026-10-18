@@ -33,6 +33,7 @@ def refusing() -> Iterator[Any]:
     s.mcp._tool_manager._tools.pop("refuses", None)
     mame_mcp._SUMMARIES.pop("refuses", None)
     mame_mcp._BODIES.pop("refuses", None)
+    mame_mcp.BOUNDARY.declared_ends.pop("refuses", None)
 
 
 def test_a_cancel_met_while_the_refusal_is_built_applies_the_declared_end(

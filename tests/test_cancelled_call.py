@@ -58,6 +58,7 @@ def waiting_tool() -> Iterator[Any]:
         s.mcp._tool_manager._tools.pop(f"wait_{end}", None)
         mame_mcp._SUMMARIES.pop(f"wait_{end}", None)
         mame_mcp._BODIES.pop(f"wait_{end}", None)
+        mame_mcp.BOUNDARY.declared_ends.pop(f"wait_{end}", None)
 
 
 def _lock_is_free() -> bool:
@@ -258,20 +259,18 @@ def test_a_second_cancel_keeps_the_name_of_the_first_no_reply_reported(
 
 def test_the_stop_end_hands_the_next_reply_a_stop_the_machine_had_reached_on_its_own(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
-    """The end's stop reply goes to nobody, so what it found rides on the next one."""
-    import mame_running as running
+    """The end's stop reply goes to nobody, so what it found rides on the next one. The stop is
+    found where it is in the server, by the contact the end makes (`running.contact`), never
+    planted by a double of `running.stop`."""
     ses = _running(monkeypatch, tmp_path)
     ses.running = True
-
-    def stop(*a: Any, **k: Any) -> dict[str, Any]:
-        ses.running = False                    # the machine was found at a stop of its own
-        mstate.STATE.found_stop_last = {"stop_seq": 3, "pc": "0x100"}
-        return {"status": "ok", "stopped_on_its_own": dict(mstate.STATE.found_stop_last)}
-    monkeypatch.setattr(running, "stop", stop)
+    ses.stops_after_polls = 1                  # the stop packet waits for the first poll
     _cancel_at(monkeypatch, 2)
     with pytest.raises(asyncio.CancelledError):
         waiting_tool["stop"]()
-    assert s.status().get("stopped_on_its_own", {}).get("stop_seq") == 3
+    found = s.status().get("stopped_on_its_own", {})
+    assert ses.interrupted == 0, "the end interrupted a machine that had already stopped"
+    assert found.get("stop_seq") == mstate.STATE.last_stop["seq"], found
 
 
 def test_a_schema_refusal_whose_call_was_cancelled_spends_no_account(
@@ -396,3 +395,53 @@ def test_a_run_for_cancelled_at_its_last_line_has_already_recorded_its_landing(
         s.run_for(frames=3)
     assert (mstate.STATE.last_stop or {}).get("seq", 0) > seq_before, mstate.STATE.last_stop
     mstate.STATE.cancelled = None
+
+
+def test_until_frame_lands_the_list_before_its_last_line_a_cancel_can_meet(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """The last line of a window (`Ticker.finish`) is a poll: the list's landing (the visible cpu
+    put back) comes before it, as `run_for`'s does, so a cancel met there leaves nothing undone."""
+    from test_perform import FRAME_STEP, _frames_and_the_watch
+
+    import mame_cpus as mcpus
+    import mame_sequence as sequence
+    ses = _frames_and_the_watch(monkeypatch, tmp_path)
+    start = ses.frame
+    monkeypatch.setitem(mstate.STATE.last_stop, "frame", start)
+    landed: list[str] = []
+    monkeypatch.setattr(mcpus, "cpu_list", lambda ses: [":maincpu", ":sub"])
+
+    def keep_visible(ses: Any, was: Any, asked: Any) -> dict[str, Any]:
+        landed.append("kept")
+        return {"after": ":maincpu"}
+    monkeypatch.setattr(sequence, "_keep_visible", keep_visible)
+
+    real_finish = mprogress.Ticker.finish
+
+    def cancelled_at_the_windows_last_line(self: Any, total: float, template: str, /,
+                                           **k: Any) -> None:
+        if template.startswith("perform until frame"):
+            raise asyncio.CancelledError
+        real_finish(self, total, template, **k)
+    monkeypatch.setattr(mprogress.Ticker, "finish", cancelled_at_the_windows_last_line)
+    with pytest.raises(asyncio.CancelledError):
+        sequence.run_steps(ses, tmp_path, [FRAME_STEP], 1.0, s._step_ops(), summaries=True,
+                           until_frame=start + 2)
+    assert landed == ["kept"]
+
+
+def test_a_call_cancelled_as_its_body_returned_is_recorded_and_its_account_waits(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A `status` that found a stop of its own and whose cancel came as it returned: its reply
+    goes to nobody, so the next one says both that it was cancelled and what it found; no end is
+    applied, since the body reached its own."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+    ses.stops_after_polls = 1
+    _cancel_at(monkeypatch, 2)               # the poll after the body, not the entry's
+    with pytest.raises(asyncio.CancelledError):
+        s.status()
+    out = s.status()
+    assert out["cancelled"]["tool"] == "status" and out["cancelled"]["left"] == "stopped", out
+    assert out.get("stopped_on_its_own", {}).get("stop_seq") == mstate.STATE.last_stop["seq"]
+    assert ses.interrupted == 0
