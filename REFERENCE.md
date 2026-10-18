@@ -2966,8 +2966,9 @@ module:
   the why.
 - **`mame_mcp.py`**: the MCP boundary every tool is wrapped in: the server object and its
   `instructions` (what a session receives at connection), the lock over the one machine, the
-  decorator that registers a tool and closes its reply (`summary` first, `session` last), the
-  reply a call the schema refused gets, and the progress line of a bounded wait.
+  decorator that registers a tool, and this server's hooks into `scry_core.boundary` (how a
+  body is called and which errors are answers, how a cancelled call ends, the reply a call the
+  schema refused gets); the core closes every reply (`summary` first, `session` last).
 - **`mame_state.py`**: what is held between calls (the process, the session, each cpu's symbols, the
   breakpoints this server armed, the scratch, the last stop as its survey saw it).
 - **`mame_envelope.py`**: the envelope every reply carries, built from that state: `status`, the

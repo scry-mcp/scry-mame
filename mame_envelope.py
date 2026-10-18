@@ -1,8 +1,8 @@
 """THE SHAPE EVERY REPLY TAKES: `status`, the tool's own fields, then the `session` block that says
 whether the machine is alive, running and written to. It is built FROM the state the server
 holds (`mame_state`). Every body closes its reply through `envelope`; the block the caller reads
-is composed again by `mame_mcp.tool` once the body is done (`mame_mcp._finished`), so it says
-what the machine is doing after the call.
+is composed again by `mame_mcp.tool` once the body is done
+(`scry_core.boundary.Boundary.finished`), so it says what the machine is doing after the call.
 """
 
 from __future__ import annotations
@@ -64,7 +64,7 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
 
 def session_block() -> dict[str, Any]:
     """The `session` block alone, READ off the state and writing none of it: `envelope`'s, and
-    the one `mame_mcp.tool` composes after a body (`mame_mcp._finished`)."""
+    the one `mame_mcp.tool` composes after a body (`scry_core.boundary.Boundary.finished`)."""
     n = STATE.altered()
     alive = STATE.ses is not None and STATE.proc is not None and STATE.proc.poll() is None
     broken = STATE.broken

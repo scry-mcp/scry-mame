@@ -64,13 +64,13 @@ def test_a_schema_refusal_is_closed_by_the_same_composer(
     """The schema's refusal never reaches the decorator, so it calls the composer itself: its
     block is the one composed from the state, here a machine the double has running."""
     seen: list[str] = []
-    real = mame_mcp._finished
+    real = mame_mcp.BOUNDARY.finished
 
     def spy(name: str, *a: Any, **k: Any) -> dict[str, Any]:
         seen.append(name)
         return real(name, *a, **k)
 
-    monkeypatch.setattr(mame_mcp, "_finished", spy)
+    monkeypatch.setattr(mame_mcp.BOUNDARY, "finished", spy)
     _running(monkeypatch, tmp_path).running = True
     res = asyncio.run(s.mcp.call_tool("run_for", {"frames": [1, 2]}))
     out = json.loads("".join(c.text for c in res.content if getattr(c, "text", None)))

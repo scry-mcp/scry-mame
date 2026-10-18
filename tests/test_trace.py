@@ -288,7 +288,7 @@ def call(ses: Console, **kw: Any) -> dict[str, Any]:
     scratch = mstate.STATE.scratch
     assert scratch is not None
     # Closed as `mame_mcp.tool` closes it: `session` last, composed after the body.
-    return mame_mcp._finished("trace", args, mtrace.trace(ses, scratch, **args))  # type: ignore[arg-type]
+    return mame_mcp.BOUNDARY.finished("trace", args, mtrace.trace(ses, scratch, **args))  # type: ignore[arg-type]
 
 
 def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> None:
