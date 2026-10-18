@@ -2015,7 +2015,8 @@ def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
     Kept: what moved the machine, as steps (a reader that steps the guest included), and the
     reads that are checks (`read_memory`, `read_block`, `registers`, `screen_signature`,
     `golden_check`), each holding to what its reply said (`recorded`); a run the wall clock ended
-    (a `resume` and the call that found it stopped, or `stop`) becomes the frames it took.
+    (a `resume` and the call that found it stopped, or `stop`) becomes the frames it took, then
+    a `run_to` its place.
     Dropped, each named with why: a refused call, any other read, a write only to the host. Cut,
     named: the first call no replay can place (made while the machine ran, ended with no reply, a
     refusal after the machine moved, past {RECORD_MAX} calls).

@@ -2119,7 +2119,7 @@ What the export keeps is what moved the machine and what was checked:
 | `registers` | a check of `regs` |
 | `screen_signature` | a check of `signature`, and of the `pc` and `frame` of the step it reads by |
 | `golden_check` | a check of `matched`, `differing`, `missing` and `extra` |
-| a `resume` and the call that found the machine stopped again (or, when none did, the stop the export finds), a `resume(seconds=)` that came back stopped | `run_for(frames=<the frames the run took>)`, holding to the stop it reached: only a count of frames replays the same way |
+| a `resume` and the call that found the machine stopped again (or, when none did, the stop the export finds), a `resume(seconds=)` that came back stopped | `run_for(frames=<the frames the run took>)` holding to the frame, then, with a control declared, `run_to(ref=<the stop's pc>)` holding to the stop: only a count of frames replays the same way, and it ends at the frame's edge while the stop landed somewhere inside the frame |
 | any other read, `throttle`, `snapshot`, `memdump`, `comment_*`, the picture and `gfx_*` tools, the scan | dropped, named in the reply with why; one that stepped the guest to read it is kept as a step |
 | a call the server refused | dropped, named; one that moved the machine first ends the document |
 | a call made while the machine ran, or one that ended with no reply | the end of the document: the reply's `cut` names it and why |
@@ -2131,15 +2131,18 @@ document's `needs.states` lists the saved states it loads and does not save, whi
 checks against `state_list` before it plays anything. A recording holds at most 5000 calls, past
 which the export says it is cut there.
 
-What a replay cannot hold to, it says at the step (`diverged`) rather than passing over it. A run
-the export turned into frames ends at the frame's vblank: a `stop` or a breakpoint that landed
-mid-frame replays only where the machine waits at the same place, and diverges on `pc`
-elsewhere. The document carries the `start`'s arguments as given, host paths included (`--binary`
+What a replay cannot hold to, it says at the step (`diverged`) rather than passing over it. The
+`run_to` after a run's frames goes to the first arrival at the stop's `pc` in that frame, which
+is the stop only when the machine reached that place once there, or each time alike (a wait
+loop). `run_to` needs a control declared (`breakpoint_at(role="control")`) and refuses a place a
+breakpoint sits at: a run that ended with no control declared, or at a breakpoint, holds its
+frames to the whole stop instead, which holds only where the frame's edge is that place, and one
+that ended inside the frame it began in is cut there. The document carries the `start`'s arguments as given, host paths included (`--binary`
 and `--rompath` replace the emulator's and the sets'), and the start re-arms the declarations it
 finds stored, as any start does; a file a step wrote by name (`dest`, a saved state) is there on
 the next replay and the step refuses it, so a session meant for a bench leaves `dest` empty and
-keeps its states in a directory of its own; and a `golden_check` holds to files the replay does
-not write when the calls that wrote them were dropped.
+keeps its states in a directory of its own. A `golden_check` over files dropped calls wrote is
+dropped too: the replay would not write them, so it would hold to the session's own.
 
 ## Input and the screen
 

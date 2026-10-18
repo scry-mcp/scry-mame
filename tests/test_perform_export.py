@@ -5,6 +5,7 @@ call, and the tool's own reply."""
 
 from __future__ import annotations
 
+import inspect
 import json
 import sys
 from collections.abc import Iterator
@@ -62,7 +63,8 @@ def test_the_machine_around_a_call_is_the_last_stop_as_an_advance_spells_it(
     got = mame_mcp._machine()
     stop = mstate.STATE.last_stop
     assert got == recording.Machine(running=False, frame=stop["frame"], seq=stop["seq"],
-                                    stop={"pc": stop["pc"], "frame": stop["frame"]})
+                                    stop={"pc": stop["pc"], "frame": stop["frame"]},
+                                    reachable=bool(mstate.STATE.controls))
     ses.running = True
     assert mame_mcp._machine() == recording.Machine(running=True, frame=None, seq=stop["seq"])
 
@@ -103,3 +105,39 @@ def test_a_board_with_no_frame_counter_is_read_as_its_stop_says_it(
     got = mame_mcp._machine()
     assert got.frame is None and got.stop["frame"] == mstate.frame_shown(None)
 
+
+
+def test_a_run_a_stop_ended_goes_on_to_its_place_by_run_to() -> None:
+    """Frames end at a frame's edge and a stop lands anywhere inside its frame, so the export
+    follows a run's frames with `run_to` at the stop's `pc`: an argument `run_to` takes, a field
+    its reply carries."""
+    op, argument, field = mame_mcp.RECORDER.reach or ("", "", "")
+    assert (op, argument, field) == ("run_to", "ref", "pc")
+    assert argument in inspect.signature(s.run_to).parameters
+    assert field in mame_mcp.RECORDER.stop_fields
+
+
+
+def test_a_stop_with_no_control_declared_is_one_run_to_cannot_be_taken_from(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`run_to` refuses with no control declared, so the export does not write one there."""
+    _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "controls", {})
+    assert mame_mcp._machine().reachable is False
+    monkeypatch.setattr(mstate.STATE, "controls", {("0x80", ":maincpu"): {}})
+    assert mame_mcp._machine().reachable is True
+
+
+def test_a_stop_at_a_declared_breakpoint_is_one_run_to_cannot_be_taken_from(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`run_to` refuses a target a breakpoint already sits at (a stop there could not be told
+    from the target's), so a stop a breakpoint made is not `reachable` either."""
+    _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "controls", {("0x80", ":maincpu"): {}})
+    at = int(mstate.STATE.last_stop["pc"], 16)
+    monkeypatch.setattr(mstate.STATE, "breakpoints",
+                        {1: {"addr": at, "owner": (hex(at), None), "cpu": None}})
+    assert mame_mcp._machine().reachable is False
+    monkeypatch.setattr(mstate.STATE, "breakpoints",
+                        {1: {"addr": at + 1, "owner": (hex(at + 1), None), "cpu": None}})
+    assert mame_mcp._machine().reachable is True
