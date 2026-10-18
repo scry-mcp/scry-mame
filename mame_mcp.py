@@ -243,7 +243,10 @@ def _machine() -> recording.Machine:
 
 #: The session's recording: what `perform_export` writes (REFERENCE.md, From an investigation to
 #: a bench). `rom_check` answers about the files, never the machine, and is no step of a list.
-RECORDER = recording.Recorder("mame", _machine, stop_fields=("pc", "frame"),
+# `live` is what `start` refuses over (`mame_launch`): a start refused there touched nothing.
+RECORDER = recording.Recorder("mame", _machine,
+                              lambda: STATE.ses is not None and STATE.machine_alive(),
+                              stop_fields=("pc", "frame"),
                               outside=frozenset({"close", "rom_check"}))
 
 BOUNDARY = boundary.Boundary(

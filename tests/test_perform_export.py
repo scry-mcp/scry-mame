@@ -85,13 +85,17 @@ DECLARED = {
                      "gfx_blit_source", "gfx_film", "palette_log", "scan_start", "scan_filter",
                      "scan_clear", "image_diff", "series_diff", "region_track", "audio_measure",
                      "audio_diff"), "drop"),
+    # The readers dropped by default, named so a reader that turns into a step is seen.
+    **dict.fromkeys(("breakpoint_list", "captures", "comment_list", "cpu_info", "disassemble",
+                     "find", "history", "log", "log_wait", "machine_map", "regpoint_list",
+                     "rom_check", "state_list", "status", "symbols_find", "watch_list"), "drop"),
 }
 
 
 def test_each_tool_is_exported_as_it_is_declared_and_the_rest_as_steps_or_dropped_reads() -> None:
     declared = mame_mcp.RECORDER.declared
     for tool, kind in declared.items():
-        want = DECLARED.get(tool, "drop" if kind.read_only else "step")
+        want = DECLARED.get(tool, "step")
         assert kind.export_as == want, (tool, kind.export_as, want)
     assert set(DECLARED) <= set(declared), sorted(set(DECLARED) - set(declared))
 
@@ -103,3 +107,17 @@ def test_a_board_with_no_frame_counter_is_read_as_its_stop_says_it(
     got = mame_mcp._machine()
     assert got.stop["frame"] == mstate.frame_shown(None)
 
+
+
+def test_a_start_refused_over_the_live_session_keeps_its_recording(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, recorder: recording.Recorder) -> None:
+    _running(monkeypatch, tmp_path)
+    s.write(ref="0x4a0", data_hex="ab")
+    image = tmp_path / "image.bin"
+    image.write_bytes(bytes(16))
+    refused = s.start(system="board", rompath=str(tmp_path), reference_rom=str(image))
+    assert refused["status"] == "INVALID" and refused["code"] == "session_live", refused
+    assert refused["session"]["alive"] is True
+    rec = recorder.recording
+    assert rec is not None and rec.start == {"system": "board"}
+    assert [c.op for c in rec.calls] == ["write"]

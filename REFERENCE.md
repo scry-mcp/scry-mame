@@ -2126,7 +2126,9 @@ What the export keeps is what moved the machine and what was checked:
 
 `perform` and `drive` are recorded as their steps. A step's check is `"recorded": {<field>:
 <value>}` inside it, and `perform` holds the step's own reply to it: a mismatch is INVALID
-`diverged` at that step, with `field`, `recorded` and `got`, the list stopping there. The
+`diverged` at that step, with `field`, `recorded` and `got`, the list stopping there. Under
+`until_frame` every lap holds each step to its `recorded` again, so a stop recorded on the first
+lap diverges on the second: an exported document carries no `until_frame`. The
 document's `needs.states` lists the saved states it loads and does not save, which the runner
 checks against `state_list` before it plays anything. A recording holds at most 5000 calls, past
 which the export says it is cut there.

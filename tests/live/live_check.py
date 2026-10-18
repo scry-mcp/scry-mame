@@ -1395,7 +1395,7 @@ played = subprocess.run([sys.executable, "-m", "scry_core.replay", str(bench / "
                          "--transcript", str(bench / "edited" / "t.md")],
                         cwd=ROOT, capture_output=True, text=True, timeout=600)
 check("the edited document diverges at that step and field (exit 1)",
-      played.returncode == 1 and f"diverged at step {at} " in played.stdout
+      played.returncode == 1 and f"diverged at step {at + 1} of " in played.stdout
       and f": {field} recorded 'edited'" in played.stdout,
       f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
 
