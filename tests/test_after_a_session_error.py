@@ -258,8 +258,9 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
 
 
 # The media file tools read files and never the machine, so a broken session leaves them as it
-# leaves `status`: answering.
-_STILL_ANSWER = {"close", "status", *media_tools.TOOLS}
+# leaves `status`: answering; and so does `perform_export`, which writes what the session did,
+# a broken one's included.
+_STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS}
 
 
 @pytest.mark.parametrize("name", [t for t in _tools() if t not in _STILL_ANSWER])

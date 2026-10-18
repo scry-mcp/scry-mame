@@ -15,7 +15,7 @@ from collections.abc import Callable
 from typing import Any
 
 from pydantic import ValidationError
-from scry_core import boundary, cancel, envelope, media_tools
+from scry_core import boundary, cancel, envelope, media_tools, recording
 from scry_core import strict_arguments as strict
 
 import gdb_session as gs
@@ -63,7 +63,8 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
 # tools.
 # The media file tools answer in any state too, and the instructions say so once, beside them.
 _ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
-                          "registers(from_last_stop=True)", "perform", "drive", "close"]
+                          "registers(from_last_stop=True)", "perform", "drive", "perform_export",
+                          "close"]
 
 mcp = envelope.Envelope(
     "mame",
@@ -89,8 +90,8 @@ mcp = envelope.Envelope(
         "the next reply says `cancelled`.\n\n"
         "CPUS: no `cpu` acts on the VISIBLE one (stops move it), lists or clears all; named, moves "
         "only `step`'s.\n\n"
-        "ADDRESSES are written `0x`, a condition as typed; any other ref is a symbol, bare hex "
-        "naming none refused. Breakpoints are at PLACES, never expressions.\n\n"
+        "ADDRESSES are `0x`, a condition as typed; any other ref is a symbol, bare hex "
+        "naming none refused. Breakpoints are PLACES, never expressions.\n\n"
         "EVERY REPLY carries `summary`, `status` (`ok`, or `INVALID` with `code` and "
         "`message`) and `session` (`altered` after a write). A "
         "wrong TYPE is the schema's `bad_argument`. `not_settled`: "
@@ -227,15 +228,35 @@ def _keep_cancelled(record: cancel.Cancelled) -> None:
     STATE.cancelled = record
 
 
+def _machine() -> recording.Machine:
+    """The machine around a recorded call: whether it runs, and the last stop's frame, number
+    and place as an advance's reply spells them (`pc`, `frame`), so a `run_for` that replaces a
+    run holds to the same two fields. A stop that arrived while nobody read it is the call's to
+    find, and its reply says it (`stopped_on_its_own`), which is where the export ends the run."""
+    ses = STATE.ses
+    stop = STATE.last_stop
+    moving = ses is not None and bool(ses.running)
+    if moving or not stop:
+        return recording.Machine(running=moving, frame=None, seq=stop.get("seq"))
+    return recording.Machine(running=False, frame=stop.get("frame"), seq=stop.get("seq"),
+                             stop={"pc": stop["pc"], "frame": st.frame_shown(stop["frame"])})
+
+
+#: The session's recording: what `perform_export` writes (REFERENCE.md, From an investigation to
+#: a bench). `rom_check` answers about the files, never the machine, and is no step of a list.
+RECORDER = recording.Recorder("mame", _machine, stop_fields=("pc", "frame"),
+                              outside=frozenset({"close", "rom_check"}))
+
 BOUNDARY = boundary.Boundary(
     mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after, line=_summary,
     session_block=menvelope.session_block, take_cancelled=STATE.take_cancelled,
-    keep_cancelled=_keep_cancelled, doc=docs.filled)
+    keep_cancelled=_keep_cancelled, doc=docs.filled, recorder=RECORDER)
 
 
 def tool(
     title: str, *, summary: summaries.Summary, read_only: bool = False, idempotent: bool = False,
     session_before: bool = False, on_cancel: cancel.OnCancel | None = None,
+    replay: recording.ExportAs | None = None,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Registers an MCP tool, SERIALIZES it over the one machine (see `LOCK`), and puts the
     one-line `summary` first in its reply: `summary` is the tool's own line
@@ -256,12 +277,14 @@ def tool(
     kill, so that `altered` is the truth about the session it ended). `on_cancel` is how the
     tool ends when the client cancels its call (`_end_cancelled`); the rest of the contract,
     the `ctx` rule included, is `scry_core.boundary.Boundary.tool`'s, and which errors become
-    replies is `_invoke`'s.
+    replies is `_invoke`'s. `replay` is what its calls become in an exported session
+    (`scry_core.replay`; REFERENCE.md, From an investigation to a bench).
     """
 
     def register(fn: Callable[..., Any]) -> Callable[..., Any]:
         wrapped = BOUNDARY.tool(title, read_only=read_only, idempotent=idempotent,
-                                session_before=session_before, on_cancel=on_cancel)(fn)
+                                session_before=session_before, on_cancel=on_cancel,
+                                replay=replay)(fn)
         _SUMMARIES[fn.__name__] = summary
         _BODIES[fn.__name__] = fn
         return wrapped

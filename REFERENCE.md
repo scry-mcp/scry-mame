@@ -2094,6 +2094,53 @@ and a check ran at all, `seen` whether the expected line arrived. `summaries` is
 `perform`'s, applied to the act's `ran` by the same rule, with the same count and the same
 files under `act`.
 
+## From an investigation to a bench
+
+Every session is recorded from the `start` that succeeds, and cleared by the next one; `close`
+keeps it. `perform_export(path)` writes it as `perform`'s own document, and the runner plays it
+back with no model, from this repository:
+
+```sh
+uv run python -m scry_core.replay <document> [--binary PATH] [--rompath DIR] [--transcript PATH]
+```
+
+It exits 0 when every step held, 1 when a step diverged or failed, 2 on a usage error, and 3 when
+nothing was demonstrated (a document that is not one, a start the server refused, a saved state
+it loads and the server lacks, a server that did not start); the whole transcript goes to
+`tmp/replays/<document stem>/transcript.md`.
+
+What the export keeps is what moved the machine and what was checked:
+
+| A call of | Becomes |
+|---|---|
+| a tool that changes the machine or what the next call acts on (`write`, `run_to`, `run_for`, `step`, `trace`, `input`, `record`, `audio_record`, `series_capture`, `focus`, `state_load`, a declaration...) | a step; one that left the machine at a new stop holds to its `pc` and `frame` |
+| `read_memory` | a check of `hex` |
+| `read_block` | a check of `hex`, and of the `pc` and `frame` of the step it reads by |
+| `registers` | a check of `regs` |
+| `screen_signature` | a check of `signature`, and of the `pc` and `frame` of the step it reads by |
+| `golden_check` | a check of `matched`, `differing`, `missing` and `extra` |
+| a `resume` and the call that found the machine stopped again (or, when none did, the stop the export finds), a `resume(seconds=)` that came back stopped | `run_for(frames=<the frames the run took>)`, holding to the stop it reached: only a count of frames replays the same way |
+| any other read, `throttle`, `snapshot`, `memdump`, `comment_*`, the picture and `gfx_*` tools, the scan | dropped, named in the reply with why; one that stepped the guest to read it is kept as a step |
+| a call the server refused | dropped, named; one that moved the machine first ends the document |
+| a call made while the machine ran, or one that ended with no reply | the end of the document: the reply's `cut` names it and why |
+
+`perform` and `drive` are recorded as their steps. A step's check is `"recorded": {<field>:
+<value>}` inside it, and `perform` holds the step's own reply to it: a mismatch is INVALID
+`diverged` at that step, with `field`, `recorded` and `got`, the list stopping there. The
+document's `needs.states` lists the saved states it loads and does not save, which the runner
+checks against `state_list` before it plays anything. A recording holds at most 5000 calls, past
+which the export says it is cut there.
+
+What a replay cannot hold to, it says at the step (`diverged`) rather than passing over it. A run
+the export turned into frames ends at the frame's vblank: a `stop` or a breakpoint that landed
+mid-frame replays only where the machine waits at the same place, and diverges on `pc`
+elsewhere. The document carries the `start`'s arguments as given, host paths included (`--binary`
+and `--rompath` replace the emulator's and the sets'), and the start re-arms the declarations it
+finds stored, as any start does; a file a step wrote by name (`dest`, a saved state) is there on
+the next replay and the step refuses it, so a session meant for a bench leaves `dest` empty and
+keeps its states in a directory of its own; and a `golden_check` holds to files the replay does
+not write when the calls that wrote them were dropped.
+
 ## Input and the screen
 
 The typed wrappers over the Lua channel are scripts this server composed, each knowing what

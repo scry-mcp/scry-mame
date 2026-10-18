@@ -41,10 +41,11 @@ BY_TOOL: dict[str, Callable[..., Any]] = {
 }
 
 #: DELIBERATELY WITHOUT AN ENTRY: the batch's own list, plus `close`, whose one flag the schema
-#: judges and which no batch can reach.
+#: judges and which no batch can reach, and `perform_export`, whose path the export itself judges
+#: before it reads anything (`scry_core.recording.export`).
 #: Named rather than omitted: an absent entry and a forgotten one look identical, and a test holds
 #: this set plus `BY_TOOL` to the server's own registry.
-MACHINE_JUDGES = sequence.MACHINE_JUDGES | {"close"}
+MACHINE_JUDGES = sequence.MACHINE_JUDGES | {"close", "perform_export"}
 
 #: Every tool `check` will answer for, computed once: this is on the path of every call.
 KNOWN = frozenset(BY_TOOL) | MACHINE_JUDGES

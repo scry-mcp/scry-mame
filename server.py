@@ -59,7 +59,7 @@ from mcp.server.mcpserver import Context
 # and the server is launchable only with `--directory` pointing here.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from scry_core import media_tools  # noqa: E402
+from scry_core import media_tools, recording  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core.progress import bridge  # noqa: E402
 
@@ -107,7 +107,7 @@ import mame_sweep as msweep  # noqa: E402
 import mame_trace as mtrace  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import mame_write as mwrite  # noqa: E402
-from mame_mcp import LOCK, tool  # noqa: E402
+from mame_mcp import LOCK, RECORDER, tool  # noqa: E402
 from mame_mcp import mcp as mcp  # noqa: E402  (the probe and the clients read `server.mcp`)
 from mame_running import contact, stopped  # noqa: E402
 from mame_state import STATE  # noqa: E402
@@ -458,7 +458,7 @@ def step(count: int = 1, mode: Annotated[str, inputs.vocabulary(advance.STEP_MOD
     return advance.step(*stopped("a step"), count, mode, cpu)
 
 
-@tool("Resume the machine", summary=summaries.resume, on_cancel="none")
+@tool("Resume the machine", summary=summaries.resume, on_cancel="none", replay="wall")
 def resume(seconds: float = 0.0, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Let the machine RUN. With `seconds` at zero (the default) it comes back at once and the
     machine runs with NO deadline, until a breakpoint fires, `stop`, or `close`; with a bound it
@@ -480,7 +480,7 @@ def resume(seconds: float = 0.0, ctx: Context[Any, Any] | None = None) -> dict[s
     return running.resume(*contact(), seconds, bridge(ctx))
 
 
-@tool("Stop a running machine", summary=summaries.stop)
+@tool("Stop a running machine", summary=summaries.stop, replay="wall")
 def stop() -> dict[str, Any]:
     """Stop a RUNNING machine where it is (the stub's interrupt) and survey the stop.
 
@@ -663,7 +663,7 @@ def regpoint_clear(ref: str = "", cpu: str = "", all: bool = False) -> dict[str,
 # --------------------------------------------------------------------------------- comments
 
 
-@tool("Add a comment", summary=summaries.comment_add)
+@tool("Add a comment", summary=summaries.comment_add, replay="drop")
 def comment_add(ref: str, text: str, cpu: str = "") -> dict[str, Any]:
     """Put `text` on `ref` of a cpu as a COMMENT: a declaration in the store, and the line MAME's
     own disassembly shows (`disassemble` ends it ` // <text>`). By symbol it follows the symbol
@@ -710,7 +710,7 @@ def comment_list(cpu: str = "") -> dict[str, Any]:
     return comments.comment_list(contact()[0], cpu)
 
 
-@tool("Delete a comment", summary=summaries.comment_delete)
+@tool("Delete a comment", summary=summaries.comment_delete, replay="drop")
 def comment_delete(ref: str, cpu: str = "") -> dict[str, Any]:
     """Delete the comment at the place `ref` names on a cpu (the visible one when `cpu` is empty),
     however that comment was spelled, from the store and from MAME's pane. One at a time: `ref`
@@ -730,7 +730,7 @@ def comment_delete(ref: str, cpu: str = "") -> dict[str, Any]:
     return comments.comment_delete(*stopped("comment_delete"), ref, cpu)
 
 
-@tool("Save the comments to a file", summary=summaries.comment_save)
+@tool("Save the comments to a file", summary=summaries.comment_save, replay="drop")
 def comment_save(dest: str) -> dict[str, Any]:
     """Write every comment of the store, every cpu, to `dest`, the comment file (REFERENCE.md): a
     header line, then one line per comment, `ref`, `cpu`, `created_at` and `text` separated by
@@ -754,7 +754,7 @@ def comment_save(dest: str) -> dict[str, Any]:
     return comments.comment_save(dest)
 
 
-@tool("Load comments from a file", summary=summaries.comment_load)
+@tool("Load comments from a file", summary=summaries.comment_load, replay="drop")
 def comment_load(path: str) -> dict[str, Any]:
     """Read the comment file at `path` (absolute) into the store and MAME's pane, all or
     nothing: a bad header, a row short of a column, a text or ref that breaks the format, a cpu
@@ -973,7 +973,7 @@ def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, A
     return machine.machine_map(cpu, sections)
 
 
-@tool("Read memory", summary=summaries.read_memory, read_only=True)
+@tool("Read memory", summary=summaries.read_memory, read_only=True, replay=("hex",))
 def read_memory(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
     """Read `length` bytes of memory at `ref` (a symbol name or a `0x` address), `length` in
     1..{READ_MAX}, of `cpu` (`subcpu`; the visible one when empty). {CPU_READS}. {SPACE_BOUND}.
@@ -991,7 +991,8 @@ def read_memory(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
     return read.read_memory(stopped("a memory read")[0], ref, length, cpu)
 
 
-@tool("Read a memory share or region", summary=summaries.read_block, on_cancel="none")
+@tool("Read a memory share or region", summary=summaries.read_block, on_cancel="none",
+      replay=("hex", "pc", "frame"))
 def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0, length: int = 16,
                seconds: float = mlua.EVAL_WAIT_S, cpu: str = "",
                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
@@ -1028,7 +1029,7 @@ def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0, lengt
     return block.read_block(ses, scratch, tag, ref, offset, length, seconds, bridge(ctx), cpu)
 
 
-@tool("Read the registers", summary=summaries.registers, read_only=True)
+@tool("Read the registers", summary=summaries.registers, read_only=True, replay=("regs",))
 def registers(from_last_stop: bool = False, cpu: str = "") -> dict[str, Any]:
     """Every register of `cpu` (`subcpu`; the visible one when empty), by the name MAME's gdbstub
     gives it, each printed at its own declared width. {CPU_READS}. {NEEDS_STOPPED}.
@@ -1110,7 +1111,7 @@ def find(data_hex: str, ref: str = "", length: int = 0,
     return read.find(stopped("a memory search")[0], data_hex, ref, length, symbol_class, cpu)
 
 
-@tool("Start a value scan", summary=summaries.scan_start)
+@tool("Start a value scan", summary=summaries.scan_start, replay="drop")
 def scan_start(ref: str, length: int,
                cell_bytes: Annotated[int, inputs.vocabulary(mscan.CELL_BYTES)] = 1,
                cpu: str = "") -> dict[str, Any]:
@@ -1135,7 +1136,7 @@ def scan_start(ref: str, length: int,
     return mscan.scan_start(ses, scratch, ref, length, cell_bytes, cpu)
 
 
-@tool("Filter the value scan", summary=summaries.scan_filter)
+@tool("Filter the value scan", summary=summaries.scan_filter, replay="drop")
 def scan_filter(operator: Annotated[str, inputs.vocabulary(mscan.OPERATORS)] = "=",
                 value: inputs.NumberArg | None = None) -> dict[str, Any]:
     """Keep the cells of the open scan whose value satisfies `operator` (`=`, `!` not equal,
@@ -1159,7 +1160,7 @@ def scan_filter(operator: Annotated[str, inputs.vocabulary(mscan.OPERATORS)] = "
     return mscan.scan_filter(ses, scratch, operator, value)
 
 
-@tool("Clear the value scan", summary=summaries.scan_clear)
+@tool("Clear the value scan", summary=summaries.scan_clear, replay="drop")
 def scan_clear() -> dict[str, Any]:
     """End the value scan `scan_start` opened. Reply: `cleared`, with a `note` when none was
     open. It is the server's own state, so it answers on a RUNNING machine.
@@ -1264,7 +1265,7 @@ def reset() -> dict[str, Any]:
 
 # ------------------------------------------------------------------------------- files
 
-@tool("Dump memory to a file", summary=summaries.memdump)
+@tool("Dump memory to a file", summary=summaries.memdump, replay="drop")
 def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     """Write `length` bytes of memory from `ref` of `cpu` (`subcpu`; the visible one when empty) to
     the file `dest`, and CHECK the file.
@@ -1287,7 +1288,7 @@ def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     return files.memdump(stopped("a memory dump")[0], ref, length, dest, cpu)
 
 
-@tool("Snapshot the screen to a PNG", summary=summaries.snapshot)
+@tool("Snapshot the screen to a PNG", summary=summaries.snapshot, replay="drop")
 def snapshot(dest: str = "") -> dict[str, Any]:
     """Save a PNG of the screen as it is NOW, numbered in the scratch, or moved to `dest`.
 
@@ -1304,7 +1305,8 @@ def snapshot(dest: str = "") -> dict[str, Any]:
     return files.snapshot(*contact(), dest)
 
 
-@tool("Signature of the screen", summary=summaries.screen_signature, on_cancel="none")
+@tool("Signature of the screen", summary=summaries.screen_signature, on_cancel="none",
+      replay=("signature", "pc", "frame"))
 def screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_WAIT_S,
                      ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """One hex string for what is on screen, or on `crop` of it, so "is it the same screen" is
@@ -1386,7 +1388,8 @@ audio_diff = _MEDIA["audio_diff"]
 
 # ---------------------------------------------------------------------------- graphics
 
-@tool("The live pens of a palette device", summary=summaries.palette, on_cancel="none")
+@tool("The live pens of a palette device", summary=summaries.palette, on_cancel="none",
+      replay="drop")
 def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scale: int = 0,
             dest: str = "",
             seconds: float = mlua.EVAL_WAIT_S,
@@ -1417,7 +1420,8 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
                             seconds, bridge(ctx))
 
 
-@tool("The screen as palette indices", summary=summaries.screen_view, on_cancel="none")
+@tool("The screen as palette indices", summary=summaries.screen_view, on_cancel="none",
+      replay="drop")
 def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render",
                 pens: inputs.NumberList | None = None,
                 point: list[int] | None = None, crop: list[int] | None = None, scale: int = 0,
@@ -1457,7 +1461,8 @@ def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render
                                seconds, bridge(ctx))
 
 
-@tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view, on_cancel="none")
+@tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view, on_cancel="none",
+      replay="drop")
 def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "", ref: str = "",
              offset: inputs.NumberArg = 0, first: int = 0, count: int = 0, columns: int = 16,
              pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "", cpu: str = "",
@@ -1498,7 +1503,8 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
                          count, columns, pen_base, scale, dest, cpu, seconds, bridge(ctx))
 
 
-@tool("Find a screen patch in a block", summary=summaries.gfx_locate, on_cancel="none")
+@tool("Find a screen patch in a block", summary=summaries.gfx_locate, on_cancel="none",
+      replay="drop")
 def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str = "", ref: str = "",
                offset: inputs.NumberArg = 0, first: int = 0, count: int = 0,
                transparent: inputs.NumberArg | None = None,
@@ -1544,7 +1550,8 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
                               first, count, transparent, flips, cpu, seconds, bridge(ctx))
 
 
-@tool("A block under candidate layouts", summary=summaries.gfx_sweep, on_cancel="none")
+@tool("A block under candidate layouts", summary=summaries.gfx_sweep, on_cancel="none",
+      replay="drop")
 def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
               count: int = msweep.COUNT_DEFAULT,
               planes: list[Annotated[int, inputs.bounds(1, ml.PLANES_MAX)]] | None = None,
@@ -1589,7 +1596,7 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
                             sizes, palette, pen_base, scale, dest, cpu, seconds, bridge(ctx))
 
 
-@tool("Draft a gfx.yaml from the evidence", summary=summaries.gfx_draft)
+@tool("Draft a gfx.yaml from the evidence", summary=summaries.gfx_draft, replay="drop")
 def gfx_draft(dest: str = "", choose: dict[str, Any] | None = None) -> dict[str, Any]:
     """Write a `gfx.yaml` DRAFT from what THIS session proved, and a JSON report beside it
     holding every figure. A format is `proved` on a source by a `gfx_locate` match whose window
@@ -1622,7 +1629,7 @@ def gfx_draft(dest: str = "", choose: dict[str, Any] | None = None) -> dict[str,
     return mdraft.gfx_draft(scratch, dest, choose)
 
 
-@tool("Load the project's graphics manifest", summary=summaries.gfx_load)
+@tool("Load the project's graphics manifest", summary=summaries.gfx_load, replay="drop")
 def gfx_load(path: str) -> dict[str, Any]:
     """Load a project's `gfx.yaml` (an ABSOLUTE `path`): named `formats` in `gfx_view`'s layout
     terms, `assets` (a region or share read under a format through a palette), draw `commands`
@@ -1651,7 +1658,7 @@ def gfx_load(path: str) -> dict[str, Any]:
     return manifest.gfx_load(path)
 
 
-@tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none")
+@tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none", replay="drop")
 def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | None = None,
               detail: bool = False, first: int = 0, scale: int = 0, dest: str = "",
               seconds: float = mlua.EVAL_WAIT_S,
@@ -1689,7 +1696,8 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
                             scale, dest, seconds, bridge(ctx))
 
 
-@tool("A blit's source, unscaled", summary=summaries.gfx_blit_source, on_cancel="none")
+@tool("A blit's source, unscaled", summary=summaries.gfx_blit_source, on_cancel="none",
+      replay="drop")
 def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | None = None,
                     pc: str = "", margin: int = 0, scale: int = 0, dest: str = "",
                     seconds: float = mlua.EVAL_WAIT_S,
@@ -1726,7 +1734,7 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
                                   margin, scale, dest, seconds, bridge(ctx))
 
 
-@tool("Log a palette's port writes", summary=summaries.palette_log)
+@tool("Log a palette's port writes", summary=summaries.palette_log, replay="drop")
 def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
                 limit: int = mramdac.LIMIT_DEFAULT, clear: bool = False,
                 arm: bool = False) -> dict[str, Any]:
@@ -1766,7 +1774,8 @@ def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
     return mramdac.palette_log(contact()[1], palette_port, pen, limit, clear, arm)
 
 
-@tool("Film the frames where a write happened", summary=summaries.gfx_film, on_cancel="none")
+@tool("Film the frames where a write happened", summary=summaries.gfx_film, on_cancel="none",
+      replay="drop")
 def gfx_film(trigger: str = "", length: Annotated[int, inputs.vocabulary(mfilm.LENGTHS)] = 1,
              value: inputs.NumberArg | None = None,
              changed: bool = False, pc: str = "",
@@ -1890,9 +1899,10 @@ def log_wait(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_C
 def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
     """Op name -> the wrapped tool it dispatches to, built at call time so it names the
     tools by their live registrations rather than a second hand-kept list: every tool but
-    the lifecycle (`start`, `close`, `rom_check`) and the two batch tools themselves,
-    `perform` and `drive` (the reason is in `perform`'s docstring)."""
-    lifecycle = {"start", "close", "rom_check", "perform", "drive"}
+    the lifecycle (`start`, `close`, `rom_check`), the two batch tools themselves, `perform`
+    and `drive` (the reason is in `perform`'s docstring), and `perform_export`, which writes
+    the session the list belongs to."""
+    lifecycle = {"start", "close", "rom_check", "perform", "drive", "perform_export"}
     # The module's own binding first, so a step dispatches to whatever this module calls the tool
     # now; the registration's function for a tool registered elsewhere.
     return {t.name: globals().get(t.name, t.fn) for t in mcp._tool_manager.list_tools()
@@ -1951,20 +1961,21 @@ def drive(act: list[dict[str, Any]], expect: str = "", seconds: float | None = N
 def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries: bool = False,
             until_frame: int = 0, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run a LIST of the server's own operations in order, in ONE round trip, stopping at the
-    first failure with the whole account. A goldens run is one call: a control, then `run_to`
-    each marker and `snapshot` it.
+    first failure with the whole account.
 
     Arguments: `steps`, a non-empty list, each `{"op": <tool name>, ...its arguments}`, any tool but
-    `start`, `close`, `rom_check`, `perform` and `drive`. While the machine runs (after a `resume`
-    or a run typed through `debug`, or from the start) only running-ok ops go on at once, and before
-    the next console op the sequence WAITS up to `settle_seconds` (0..{WAIT_MAX_S}) for the machine
-    to stop, proved by the stub's packet or, for a run the console started, by the frame counter.
+    `start`, `close`, `rom_check`, `perform`, `drive` and `perform_export`. While the machine runs
+    only running-ok ops go on at once, and before the next console op the sequence WAITS up to
+    `settle_seconds` (0..{WAIT_MAX_S}) for the machine to stop.
     `summaries=True` keeps every stop of a long list and counts them: each step but the one that
     matters (last, left running, failing) becomes a compact row; `ran` shows the first {ROWS_SHOWN}
     (`truncated`, of `steps_total`), `ran_path` and `replies_path` all, and `stops` counts the
     stops. `until_frame=F` (with summaries and a `run_for` step) repeats the list until a stop reads
     frame F, within {UNTIL_STEPS_MAX} steps and {WAIT_MAX_S} s: never a list you size; `no_channel`
     with no frame counter.
+
+    A step's `recorded`, `{field: value}`, is what its reply must hold (a replay,
+    `perform_export`): else INVALID `diverged` there, with `field`, `recorded` and `got`.
 
     Refused before the first step runs: the WHOLE list is checked (ops, argument names, types,
     the values the tools refuse alone, each step's `cpu`, a bare hex ref whose table is known),
@@ -1992,6 +2003,32 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
     return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), bridge(ctx),
                               summaries=summaries, until_frame=until_frame)
+
+
+@tool("Export the session as a replay", summary=summaries.perform_export)
+def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
+    """Write what this session did since its `start` to `path` as `perform`'s own document, so
+    an investigation becomes a bench: `uv run python -m scry_core.replay <path>`, from this
+    server's repository, plays it with no model and exits 0 when every step held. Answers in any
+    state, a closed session's included.
+
+    Kept: what moved the machine, as steps (a reader that steps the guest included), and the
+    reads that are checks (`read_memory`, `read_block`, `registers`, `screen_signature`,
+    `golden_check`), each holding to what its reply said (`recorded`); a run the wall clock ended
+    (a `resume` and the call that found it stopped, or `stop`) becomes the frames it took.
+    Dropped, each named with why: a refused call, any other read, a write only to the host. Cut,
+    named: the first call no replay can place (made while the machine ran, ended with no reply, a
+    refusal after the machine moved, past {RECORD_MAX} calls).
+
+    `path` absolute or `~`-led, ending `.json`; refused if it is there unless `overwrite`.
+
+    Reply: `path`, `steps`, `checks`, `dropped` (the last {DROPPED_SHOWN}, each `call`, `op`,
+    `why`) and `dropped_total`, `cut` (`call`, `op`, `why`, or null) and `replay`, the runner's
+    command line. `no_recording` before a `start` succeeded, or after one was cancelled.
+
+    Reference: REFERENCE.md, From an investigation to a bench.
+    """
+    return menvelope.envelope(recording.export(RECORDER, path, overwrite))
 
 
 @tool("Debugger console command", summary=summaries.debug)
@@ -2166,7 +2203,7 @@ def audio_record(frames: int, dest: str = "", seconds: float = 60.0,
                                bridge(ctx))
 
 
-@tool("Switch the throttle", summary=summaries.throttle, on_cancel="none")
+@tool("Switch the throttle", summary=summaries.throttle, on_cancel="none", replay="drop")
 def throttle(on: bool, seconds: float = 5.0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Switch real-speed throttling `on` or off at a PLACE: stopped at a breakpoint, ask for it

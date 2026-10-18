@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M187",
+  "prompt": "Export only the last ten calls of this session as a replay document.",
+  "expect": "CANNOT",
+  "about": "perform_export"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes the whole session since start; it has no option to export only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes the whole session since start, and no tool exports only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export always writes the whole session since start and has no option to export only the last ten calls."
+   ],
+   "right": true
+  }
+ ]
+}

@@ -526,6 +526,13 @@ def captures(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 # -------------------------------------------------------------------------- sequences
 
+def perform_export(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    cut = f", cut at call {reply['cut']['call']}" if reply.get("cut") else ""
+    return (f"perform_export: {prose.counted(reply['steps'], 'step')}, "
+            f"{prose.counted(reply['checks'], 'check')}, "
+            f"{reply['dropped_total']} dropped{cut} to {reply['path']}")
+
+
 def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # THE COUNT AND THE TAIL ON THE LINE: `ok` told two lists apart by nothing, and under
     # `summaries=True` a nested list's line is all its caller keeps.

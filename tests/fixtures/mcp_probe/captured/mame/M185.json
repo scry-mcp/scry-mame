@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M185",
+  "prompt": "Save the session as a replay document named session.json in the bench folder of my home directory.",
+  "tool": "perform_export",
+  "args": {
+   "path": "~/bench/session.json"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M185: {\"tool\": \"perform_export\", \"args\": {\"path\": \"~/bench/session.json\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M185: {\"tool\": \"perform_export\", \"args\": {\"path\": \"~/bench/session.json\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M185: {\"tool\": \"perform_export\", \"args\": {\"path\": \"~/bench/session.json\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

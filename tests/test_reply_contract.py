@@ -96,6 +96,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "log": {"pattern": ".", "channel": "emulator"},
     "log_wait": {"pattern": ".", "channel": "emulator", "seconds": 0.01},
     "perform": {"steps": [{"op": "status"}]},
+    "perform_export": {"path": "/nonexistent/session.json"},
     "drive": {"act": [{"op": "status"}], "pattern": "."},
     "debug": {"command": "bplist"},
     "lua": {"script": "print(1)"},
@@ -145,9 +146,10 @@ def test_every_tool_answers_the_contract_with_no_machine(
     if name in ("status", "close"):
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
-    # `start` refuses its argument; a media tool needs no machine and refuses its missing file.
-    contract.check_refusal(name, reply, "bad_argument" if name == "start" or name in
-                           media_tools.TOOLS else "no_session")
+    # `start` refuses its argument; a media tool and the export need no machine and refuse the
+    # path they were given.
+    contract.check_refusal(name, reply, "bad_argument" if name in ("start", "perform_export")
+                           or name in media_tools.TOOLS else "no_session")
 
 
 class _Running(SessionFields):

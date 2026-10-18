@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 
-from scry_core import picture, series
+from scry_core import picture, recording, series
 
 import mame_advance as advance
 import mame_blits as mblits
@@ -74,6 +74,7 @@ DOC_VALUES: dict[str, str] = {
     "REGPOINT_MATCH": dec.REF_MATCH["regpoint"],
     "PICTURE": PICTURE, "PICTURE_ARGS": PICTURE_ARGS,
     "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
+    "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(recording.RECORD_MAX),
     "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(mscreen.PENS_MAX),
     "GFX_PLANES_MAX": str(ml.PLANES_MAX), "GFX_TILES_MAX": str(mgfx.VIEW_TILES_MAX),

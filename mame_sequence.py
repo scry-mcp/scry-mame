@@ -24,7 +24,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import media_tools
+from scry_core import media_tools, recording
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
@@ -308,7 +308,10 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
                             "message": f"is not a step ({step!r}): see `operations` for the "
                                        "server's own operation names"})
             continue
-        args = {k: v for k, v in step.items() if k != "op"}
+        args = recording.step_arguments(step)
+        if (why := recording.refuse_recorded(step)) is not None:
+            refused.append({"step": i, "op": op, "code": "bad_argument", "message": why})
+            continue
         # `ctx` is the SDK's, injected when the client calls a tool, never an argument a
         # step may carry: a stray value would reach the progress bridge as a context.
         if "ctx" in args:
@@ -840,7 +843,7 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
             break
         step = steps[i % len(steps)]
         op = str(step["op"])
-        args = {k: v for k, v in step.items() if k != "op"}
+        args = recording.step_arguments(step)
         if running_now and not answers_running(op, args):
             # A CONSOLE STEP NEEDS A STOPPED MACHINE: wait for the stop a breakpoint or a
             # watch will produce, bounded, and refuse naming the boundary if none comes.
@@ -876,6 +879,15 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
                                   since=since, also=[reply]),
                      "steps_completed": len(ran), "failed_at": i,
                      "failed": {"op": op, "reply": reply}, **until,
+                     **({"frame_reached": _reached(reached)} if until else {})}, asked, _no_line)
+        if (apart := recording.diverged(step.get(recording.RECORDED) or {}, reply)) is not None:
+            # A REPLAY THAT LEFT THE SESSION IT REPLAYS stops where it left, which is where a
+            # desync is cheapest to read: every step after it would only compound it.
+            message, fields = recording.divergence(i, op, reply, apart)
+            return ("diverged", message,
+                    {**account_of(ran, summaries, keep_last=False, scratch=scratch,
+                                  since=since, also=[reply]),
+                     "steps_completed": len(ran), **fields, **until,
                      **({"frame_reached": _reached(reached)} if until else {})}, asked, _no_line)
         ran.append(_entry(op, reply))
         shown = reply.get("cpu") if op == "focus" else (

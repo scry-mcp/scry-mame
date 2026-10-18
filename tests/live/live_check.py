@@ -6,12 +6,14 @@ and prove the honesty guarantees still fire after the rename.
 """
 
 import hashlib
+import json
 import os
 import subprocess
 import sys
 import tempfile
 import time
 import wave
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -47,8 +49,10 @@ ROOT = Path(__file__).resolve().parents[2]
 #: Every demo directory, found rather than listed, so a new one is run and required too.
 DEMOS = tuple(sorted(d.name for d in (ROOT / "demos").iterdir() if (d / "demo.py").is_file()))
 ZIPS = {name: Path(FREE_ROMS).resolve() / f"{name}.zip" for name in DEMOS}
+#: The board the bench at the end records and replays, beside the demos' own.
+BENCH_ZIP = Path(FREE_ROMS).resolve() / "circus.zip"
 if why := m68k_dual_missing() or free_boards_missing() or ", ".join(
-        f"no {name}.zip in MAME_TEST_ROMS ({FREE_ROMS})" for name, z in ZIPS.items()
+        f"no {z.name} in MAME_TEST_ROMS ({FREE_ROMS})" for z in (*ZIPS.values(), BENCH_ZIP)
         if not z.is_file()):
     invalid(why)
 isolate_state("mame-live-check-state-")
@@ -1330,5 +1334,68 @@ for name in DEMOS:
         run_dir / "screen.png").read_bytes()
     check(f"the {name} demo's screen.png is this run's capture", same_picture,
           "" if same_picture else "the committed picture is not the run's")
+
+print("\n== from an investigation to a bench: a circus session exported and replayed, twice, "
+      "and once edited")
+bench = Path(tempfile.mkdtemp(prefix="mame-live-replay-"))
+circus_image = bench / "circus.bin"
+with zipfile.ZipFile(BENCH_ZIP) as z:
+    circus_image.write_bytes(z.read("9004a.1a"))
+r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+            reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
+            seconds=30.0)
+check("circus starts for the bench", r.get("status") == "ok", str(r.get("summary")))
+ports = s.lua("for tag, port in pairs(manager.machine.ioport.ports) do "
+              "for name in pairs(port.fields) do print(tag .. '|' .. name) end end",
+              read_only=True)
+coin = next((ln.split("|", 1) for ln in str(ports.get("output", "")).splitlines()
+             if ln.endswith("|Coin 1")), None)
+check("circus has a Coin 1 field to press", coin is not None, str(ports.get("output"))[:200])
+s.breakpoint_at(ref="0x80", role="control")   # a `brk` the game never reaches
+landed = s.run_to(ref="0x12f7", seconds=30.0)  # the main loop, every frame
+read = s.read_memory(ref="0x0", length=8)
+if coin is not None:
+    s.input(port=coin[0], field=coin[1], frames=4, seconds=30.0)
+s.breakpoint_clear(all=True)
+s.run_for(frames=30, seconds=30.0)
+s.resume()
+time.sleep(1.0)
+stopped = s.stop()
+regs = s.registers()
+check("the session's calls answered", all(x.get("status") == "ok"
+                                          for x in (landed, read, stopped, regs)),
+      str([x.get("summary") for x in (landed, read, stopped, regs)]))
+document = bench / "circus-session.json"
+exported = s.perform_export(path=str(document))
+check("perform_export writes the session with its steps and checks and nothing cut "
+      f"({exported.get('cut')})",
+      exported.get("status") == "ok" and exported.get("steps", 0) >= 6
+      and exported.get("checks", 0) >= 2 and exported.get("cut") is None,
+      str(exported.get("summary")))
+again = s.perform_export(path=str(document))
+check("a second export over the first is refused without overwrite",
+      again.get("status") == "INVALID" and "overwrite" in str(again.get("message")),
+      str(again.get("message"))[:80])
+s.close()
+replay = [sys.executable, "-m", "scry_core.replay", str(document), "--binary", FREE_BINARY,
+          "--rompath", str(Path(FREE_ROMS).resolve())]
+for n in (1, 2):
+    played = subprocess.run([*replay, "--transcript", str(bench / f"replay-{n}" / "t.md")],
+                            cwd=ROOT, capture_output=True, text=True, timeout=600)
+    check(f"replay {n} holds at every step (exit 0)", played.returncode == 0,
+          f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
+edited = json.loads(document.read_text())
+at = next(i for i, step in enumerate(edited["steps"]) if "recorded" in step)
+field = next(iter(edited["steps"][at]["recorded"]))
+edited["steps"][at]["recorded"][field] = "edited"
+(bench / "edited.json").write_text(json.dumps(edited))
+played = subprocess.run([sys.executable, "-m", "scry_core.replay", str(bench / "edited.json"),
+                         "--binary", FREE_BINARY, "--rompath", str(Path(FREE_ROMS).resolve()),
+                         "--transcript", str(bench / "edited" / "t.md")],
+                        cwd=ROOT, capture_output=True, text=True, timeout=600)
+check("the edited document diverges at that step and field (exit 1)",
+      played.returncode == 1 and f"diverged at step {at} " in played.stdout
+      and f": {field} recorded 'edited'" in played.stdout,
+      f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
 
 finish("LIVE CHECK")
