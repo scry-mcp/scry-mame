@@ -20,7 +20,6 @@ from scry_core import strict_arguments as strict
 
 import gdb_session as gs
 import mame_args as args
-import mame_breakpoints as breakpoints
 import mame_docs as docs
 import mame_envelope as menvelope
 import mame_idle as idle
@@ -230,28 +229,22 @@ def _keep_cancelled(record: cancel.Cancelled) -> None:
 
 
 def _machine() -> recording.Machine:
-    """The machine around a recorded call: whether it runs, and the last stop's frame, number
-    and place as an advance's reply spells them (`pc`, `frame`), so a `run_for` that replaces a
-    run holds to the same two fields. A stop that arrived while nobody read it is the call's to
-    find, and its reply says it (`stopped_on_its_own`), which is where the export ends the run.
-    `run_to`, the advance the export goes on to a stop's place with, refuses with no control
-    declared and at a place a breakpoint sits at, so a stop with either is not `reachable`."""
+    """The machine around a recorded call: whether it runs, and the last stop's number and place
+    as an advance's reply spells them (`pc`, `frame`), which is how the export tells a call that
+    moved the machine."""
     ses = STATE.ses
     stop = STATE.last_stop
     moving = ses is not None and bool(ses.running)
     if moving or not stop:
-        return recording.Machine(running=moving, frame=None, seq=stop.get("seq"))
-    return recording.Machine(running=False, frame=stop.get("frame"), seq=stop.get("seq"),
-                             stop={"pc": stop["pc"], "frame": st.frame_shown(stop["frame"])},
-                             reachable=bool(STATE.controls) and breakpoints.bp_owned_at(
-                                 int(stop["pc"], 16), stop.get("cpu")) is None)
+        return recording.Machine(running=moving, seq=stop.get("seq"))
+    return recording.Machine(running=False, seq=stop.get("seq"),
+                             stop={"pc": stop["pc"], "frame": st.frame_shown(stop["frame"])})
 
 
 #: The session's recording: what `perform_export` writes (REFERENCE.md, From an investigation to
 #: a bench). `rom_check` answers about the files, never the machine, and is no step of a list.
 RECORDER = recording.Recorder("mame", _machine, stop_fields=("pc", "frame"),
-                              outside=frozenset({"close", "rom_check"}),
-                              reach=("run_to", "ref", "pc"))
+                              outside=frozenset({"close", "rom_check"}))
 
 BOUNDARY = boundary.Boundary(
     mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after, line=_summary,

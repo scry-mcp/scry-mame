@@ -1357,25 +1357,22 @@ read = s.read_memory(ref="0x0", length=8)
 if coin is not None:
     s.input(port=coin[0], field=coin[1], frames=4, seconds=30.0)
 s.breakpoint_clear(all=True)
-s.breakpoint_at(ref="0x80", role="control")   # again: the run's `run_to` in the replay needs it
 s.run_for(frames=30, seconds=30.0)
-s.resume()
+regs = s.registers()
+s.resume()                                    # the release: the document ends here
 time.sleep(1.0)
 stopped = s.stop()
-regs = s.registers()
 check("the session's calls answered", all(x.get("status") == "ok"
-                                          for x in (landed, read, stopped, regs)),
-      str([x.get("summary") for x in (landed, read, stopped, regs)]))
+                                          for x in (landed, read, regs, stopped)),
+      str([x.get("summary") for x in (landed, read, regs, stopped)]))
 document = bench / "circus-session.json"
 exported = s.perform_export(path=str(document))
-check("perform_export writes the session with its steps and checks and nothing cut "
-      f"({exported.get('cut')})",
+cut = exported.get("cut") or {}
+check("perform_export writes the session up to the release, and the cut names it "
+      f"({cut})",
       exported.get("status") == "ok" and exported.get("steps", 0) >= 6
-      and exported.get("checks", 0) >= 2 and exported.get("cut") is None,
+      and exported.get("checks", 0) >= 2 and cut.get("op") == "resume",
       str(exported.get("summary")))
-ops = [step["op"] for step in json.loads(document.read_text())["steps"]]
-check("the run the stop ended is its frames, then a run_to its place",
-      any(ops[i:i + 2] == ["run_for", "run_to"] for i in range(len(ops) - 1)), str(ops))
 again = s.perform_export(path=str(document))
 check("a second export over the first is refused without overwrite",
       again.get("status") == "INVALID" and "overwrite" in str(again.get("message")),
