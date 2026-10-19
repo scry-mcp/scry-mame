@@ -10,7 +10,6 @@ import json
 import os
 import subprocess
 import sys
-import tempfile
 import time
 import wave
 import zipfile
@@ -22,12 +21,14 @@ from live_harness import (
     BOOT,
     FREE_BINARY,
     FREE_ROMS,
+    begin,
     check,
     finish,
     free_boards_missing,
     ignored_of,
     invalid,
     isolate_state,
+    live_tmp,
     rearm_pairs,
     said,
     visible_of,
@@ -55,6 +56,7 @@ if why := m68k_dual_missing() or free_boards_missing() or ", ".join(
         f"no {z.name} in MAME_TEST_ROMS ({FREE_ROMS})" for z in (*ZIPS.values(), BENCH_ZIP)
         if not z.is_file()):
     invalid(why)
+begin()
 isolate_state("mame-live-check-state-")
 #: The bound on one whole demo: generous, since a board can emulate well below real speed under
 #: the debugger, and a demo that hits it is a FAIL with the lines it printed so far.
@@ -179,7 +181,7 @@ r = s.log(pattern=".", channel="emulator", limit=3)
 check("log reads the driver's log and counts it",
       r.get("status") == "ok" and isinstance(r.get("lines_total"), int)
       and len(r.get("lines", [])) == min(3, r.get("lines_total", 0)), str(r.get("summary"))[:60])
-dump = Path(tempfile.mkdtemp(prefix="mame-live-")) / "vectors.bin"
+dump = live_tmp("mame-live-") / "vectors.bin"
 r = s.memdump(ref="0x0", length=256, dest=str(dump))
 check("memdump writes and checks the file", r.get("bytes") == 256 and dump.is_file(),
       str(r.get("summary"))[:60])
@@ -343,7 +345,7 @@ check("disassemble ends the line with the text", line.endswith(" // live check")
 listed = s.comment_list()
 check("comment_list shows it", [c.get("ref") for c in listed.get("comments", [])]
       == ["irq_vblank"], str(listed.get("summary")))
-tsv = str(Path(tempfile.mkdtemp(prefix="mame-live-check-comments-")) / "c.comments.tsv")
+tsv = str(live_tmp("mame-live-check-comments-") / "c.comments.tsv")
 r = s.comment_save(dest=tsv)
 check("comment_save writes one row under the header",
       r.get("comments_total") == 1 and Path(tsv).read_text().count("\n") == 2,
@@ -624,7 +626,7 @@ check("a crop signs another string, over the rectangle it names",
 
 print("\n== media: a series of frames, its numbers, and its goldens")
 frame_now = r.get("frame_after")
-series_dir = Path(tempfile.mkdtemp(prefix="scry-live-series-")) / "boot"
+series_dir = live_tmp("scry-live-series-") / "boot"
 ser = s.series_capture(first=frame_now + 1, last=frame_now + 30, dest=str(series_dir))
 check("series_capture writes 30 frames and a manifest, no picture in the reply",
       ser.get("status") == "ok" and ser.get("count") == 30 and "image" not in ser
@@ -762,7 +764,7 @@ check("gfx_sweep draws gfx1 under its 8-bit candidates on one labelled, attached
       sweep.get("status") == "ok" and [c["shown"] for c in sweep.get("candidates", [])]
       == [8, 8, 8] and (sweep.get("image") or {}).get("inline") is True,
       str(sweep.get("summary")))
-draft_dir = Path(tempfile.mkdtemp(prefix="mame-live-draft-"))
+draft_dir = live_tmp("mame-live-draft-")
 draft = s.gfx_draft(dest=str(draft_dir / "m68k-dual-gfx.yaml"))
 check("gfx_draft writes a draft the loader takes and its report beside it",
       draft.get("status") == "ok"
@@ -784,7 +786,7 @@ check("an expectation a stopped machine did not meet is wait_stopped with the ac
       and r.get("act", {}).get("steps_completed") == 1, str(r.get("code")))
 
 print("\n== perform: a goldens run in ONE call, and run_for by frames")
-snap_dir = Path(tempfile.mkdtemp(prefix="mame-live-goldens-"))
+snap_dir = live_tmp("mame-live-goldens-")
 r = s.perform(steps=[
     {"op": "breakpoint_at", "ref": "irq_vblank", "role": "control"},
     {"op": "run_to", "ref": "0x4a0", "seconds": 20.0},
@@ -1095,7 +1097,7 @@ check("every range in the reply is one the machine declared, and each is well fo
 s.close()
 
 print("\n== machine_map(): symbol_coverage against a table that carries classes")
-table = Path(tempfile.mkdtemp(prefix="mame-live-symbols-")) / "m68k-dual.map"
+table = live_tmp("mame-live-symbols-") / "m68k-dual.map"
 table.write_text(
     "boot_entry\tF2034\t_TEXT\t0\tCODE\n"
     "irq_vblank\t400\t_TEXT\t0\tCODE\n"
@@ -1268,7 +1270,7 @@ r = s.focus(cpu="nosuchcpu")
 check("a cpu the machine lacks is unknown_ref naming its cpus",
       r.get("code") == "unknown_ref" and r.get("cpus") == [":maincpu", ":subcpu"], str(r))
 s.focus(cpu="subcpu")
-dump = Path(tempfile.mkdtemp(prefix="mame-live-")) / "sub-vectors.bin"
+dump = live_tmp("mame-live-") / "sub-vectors.bin"
 r = s.memdump(ref="0x0", length=16, dest=str(dump))
 check("memdump with the sub cpu visible saves its memory and checks it through its thread",
       r.get("status") == "ok" and r.get("cpu") == ":subcpu" and dump.is_file(), str(r)[:160])
@@ -1337,7 +1339,7 @@ for name in DEMOS:
 
 print("\n== from an investigation to a bench: a circus session exported and replayed, twice, "
       "and once edited")
-bench = Path(tempfile.mkdtemp(prefix="mame-live-replay-"))
+bench = live_tmp("mame-live-replay-")
 circus_image = bench / "circus.bin"
 with zipfile.ZipFile(BENCH_ZIP) as z:
     circus_image.write_bytes(z.read("9004a.1a"))

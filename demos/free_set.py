@@ -16,7 +16,11 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
 
+from scry_core import live_host
 from scry_core.demo import Demo, Reply, Run, Step, StepFailed, main
+from scry_core.reply_contract import Invalid
+
+import mame_binary  # isort: skip -- the repository root, which each demo puts on the path
 
 __all__ = ["RUN_S", "Demo", "Reply", "Run", "Step", "demo", "expect", "main"]
 
@@ -42,8 +46,10 @@ def url(system: str) -> str:
 
 
 def precheck(system: str) -> Callable[[Run], str]:
-    """Why the demo cannot run: a relative path the server would refuse, or no zip of the set
-    in `--rompath`, said with where to get it."""
+    """Why the demo cannot run: a relative path the server would refuse, no zip of the set in
+    `--rompath`, said with where to get it, or a host that cannot start MAME (`live_host.canary`,
+    with no joystick provider as the demo's own ini). A binary that resolves to nothing is left
+    to `start`, which names the ladder."""
     def check(run: Run) -> str:
         relative = [f"--{k} {v}" for k, v in run.options.items()
                     if k in ("rompath", "binary") and not Path(v).is_absolute()]
@@ -55,7 +61,12 @@ def precheck(system: str) -> Callable[[Run], str]:
                     f"{url(system)} (free for non-commercial use, from mamedev.org only), put "
                     f"it in a directory, check it with `mame -rompath <dir> -verifyroms "
                     f"{system}` and pass that directory as --rompath")
-        return ""
+        try:
+            binary = mame_binary.resolve(run.options.get("binary", "")).path
+        except Invalid:
+            return ""
+        return live_host.canary(mame_binary.canary_argv(binary, system, rompath,
+                                                        "-joystickprovider", "none"))
     return check
 
 

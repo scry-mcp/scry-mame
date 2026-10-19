@@ -12,11 +12,13 @@ them.
 import contextlib
 import errno
 import os
+import shutil
 import socket
 import stat
 import tempfile
 import threading
 import time
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
@@ -395,7 +397,16 @@ def test_a_link_into_a_directory_nobody_may_search_is_answered_like_a_dangling_o
         locked.chmod(0o700)
 
 
-def _not_a_file(sta: Path, tmp_path: Path, kind: str) -> tuple[Path, str]:
+@pytest.fixture
+def short_tmp() -> Iterator[Path]:
+    """A temporary directory with a SHORT path, where an AF_UNIX socket can be bound, removed
+    after the test (a `tmp_path` is too long for one)."""
+    short = Path(tempfile.mkdtemp(prefix="s"))
+    yield short
+    shutil.rmtree(short, ignore_errors=True)
+
+
+def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[Path, str]:
     """`d.sta` in `sta` made as `kind`, and the words its `why` must hold: what the path
     resolves to, judged through a link as well as on the path itself."""
     path = sta / "d.sta"
@@ -411,7 +422,7 @@ def _not_a_file(sta: Path, tmp_path: Path, kind: str) -> tuple[Path, str]:
         return path, "a link to /dev/null, which is a character device"
     if kind == "socket":
         # AN AF_UNIX PATH IS SHORT: bound under a short temporary name, and linked into place.
-        short = Path(tempfile.mkdtemp(prefix="s")) / "s"
+        short = short_tmp / "s"
         sock = socket.socket(socket.AF_UNIX)
         sock.bind(str(short))
         sock.close()          # the file it bound stays, and is what the case needs
@@ -435,11 +446,11 @@ _NOT_FILES = ["directory", "link to a directory", "fifo", "socket", "link to a d
 
 @pytest.mark.parametrize("kind", _NOT_FILES)
 def test_state_list_lists_a_sta_that_is_no_file_with_null_bytes_and_says_what_it_is(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str) -> None:
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str, short_tmp: Path) -> None:
     """The name is taken, so it is shown as a dangling link is: `bytes`, `frame` and `pc` null,
     and a `why` saying what is there, never the directory's own size as a state's."""
     _, sta = _state_folder(monkeypatch, tmp_path)
-    path, what = _not_a_file(sta, tmp_path, kind)
+    path, what = _not_a_file(sta, tmp_path, kind, short_tmp)
     out = s.state_list()
     assert out["status"] == "ok", out
     (row,) = out["states"]
@@ -450,11 +461,11 @@ def test_state_list_lists_a_sta_that_is_no_file_with_null_bytes_and_says_what_it
 
 @pytest.mark.parametrize("kind", _NOT_FILES)
 def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceback(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str) -> None:
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str, short_tmp: Path) -> None:
     """Judged before anything opens it (a FIFO would block the open for good), by what the
     path resolves to, so a link to a directory is refused as the directory is."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
-    path, what = _not_a_file(sta, tmp_path, kind)
+    path, what = _not_a_file(sta, tmp_path, kind, short_tmp)
     out = refused("not a state", s.state_load(name="d"))
     assert out["code"] == "unknown_ref", out
     assert str(path) in out["message"] and what in out["message"], out

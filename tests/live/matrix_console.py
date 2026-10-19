@@ -12,13 +12,12 @@ other, then ignored, which runs nothing (REFERENCE.md, *The console*).
     uv run python tests/live/matrix_console.py
 """
 
-import tempfile
 import time
 from pathlib import Path
 from typing import Any
 
 from bench_boards import SUB_SYMBOLS, SYMBOLS
-from live_harness import boot, call, cell, ok, run_sections, said, section
+from live_harness import boot, call, cell, live_tmp, ok, run_sections, said, section
 
 from mame_state import STATE  # isort: skip -- found through the path the harness sets
 
@@ -58,7 +57,7 @@ def c16_console() -> None:
     named = [call("debug", command=f"{word} {SUB}") for word in ("suspend", "resume")]
     cell(t[1], all(ok(r) and r.get("mutates") is True for r in named),
          "; ".join(said(r, 60) for r in named))
-    log = tempfile.mkdtemp(prefix="mame-live-c16-")
+    log = str(live_tmp("mame-live-c16-"))
     acted = call("debug", command=f"trace {log}/a.log,{MAIN},noloop,{{print pc}}")
     call("debug", command=f"trace off,{MAIN}")
     plain = call("debug", command=f"trace {log}/b.log,{MAIN}")

@@ -37,6 +37,7 @@ from live_harness import (
     call,
     cell,
     fresh,
+    live_tmp,
     ok,
     refused,
     run_boards,
@@ -127,9 +128,12 @@ def _p_foreign(t: list[str]) -> None:
 def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
     """A child server started in `mode`, then SIGKILLed: MAME's pid, whether it was that
     server's child before the kill, and whether it was gone within the guardian's polls."""
+    # ITS TEMPORARY DIRECTORY IS THIS RUN'S: a server killed outright never removes the scratch
+    # its session made, so that scratch has to land where the run's own end takes it.
     server = subprocess.Popen(
         [sys.executable, "-c", SERVER, str(MAME_DIR), json.dumps(BOOT), mode],
-        stdout=subprocess.PIPE, text=True)
+        stdout=subprocess.PIPE, text=True,
+        env={**os.environ, "TMPDIR": f"{live_tmp('mame-live-sigkill-')}{os.sep}"})
     assert server.stdout is not None
     try:
         started: dict[str, Any] = json.loads(server.stdout.readline() or "{}")

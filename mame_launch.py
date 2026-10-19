@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import judges, narrowing, prose
+from scry_core import judges, live_host, narrowing, prose
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -61,10 +61,9 @@ DISPLAYS = ("main", "secondary")
 SHARED_DISPLAY_VAR = "WINDOW_SHARED_DISPLAY"
 # What `start`'s `display` takes: a display, or "" for not given.
 DISPLAY_OPTIONS = ("", *DISPLAYS)
-# THE BACKGROUND LAUNCH. macOS makes a newly launched app with a window the frontmost one, so
-# every start would take the owner's focus; SDL3 reads this hint before `SDL_Init` and keeps the
-# app behind. The captures do not move with it: MAME draws them from the emulated screen.
-BACKGROUND_VAR = "SDL_MAC_BACKGROUND_APP"
+# THE BACKGROUND LAUNCH (`live_host.BACKGROUND_VAR` says why). The captures do not move with it:
+# MAME draws them from the emulated screen.
+BACKGROUND_VAR = live_host.BACKGROUND_VAR
 # How often the boot asks the gdbstub's port whether it listens yet.
 BOOT_POLL_S = 0.3
 # THE DEBUGGER CONSOLE'S BANNER, printed when the debugger console is built (`debugcon.cpp`). A
@@ -874,6 +873,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
         cmd, stdin=subprocess.PIPE, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
         env=launch_environment(given, judged.background), cwd=STATE.scratch,
     )
+    if (ledger := live_host.EmulatorLedger.from_environment()) is not None:
+        ledger.record(STATE.proc.pid, cmd[0])
     STATE.guard = guardian.spawn(STATE.proc)
     # THE LONGEST WAIT A SESSION MAKES, and the one the owner watches: the boot of a whole
     # arcade board until its gdbstub listens and its debugger's banner is out. It reports where it

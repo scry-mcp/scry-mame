@@ -54,6 +54,12 @@ def _harness(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, background: str | 
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    # ITS SCRATCH IS THE TEST'S: a unit case that writes a transcript or evidence would otherwise
+    # leave a `mame-live-matrix-*` directory in the host's temporary directory.
+    monkeypatch.setattr(module, "RUN", module.live_host.LiveRun(tmp_path / "scratch", job=False))
+    monkeypatch.setattr(module, "SCRATCH", tmp_path / "scratch")
+    monkeypatch.setattr(module, "TRANSCRIPT", tmp_path / "scratch" / "transcript.jsonl")
+    monkeypatch.setattr(module, "EVIDENCE", tmp_path / "scratch" / "evidence")
     return module
 
 
@@ -451,15 +457,24 @@ def _sections(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **env: str) -> Mo
     machine to close, no declaration store moved, no signal handler left on this process, and
     the run's variables as given (unset otherwise)."""
     h = _harness(monkeypatch, tmp_path)
-    monkeypatch.setattr(h, "SCRATCH", tmp_path / "scratch")
-    monkeypatch.setattr(h, "TRANSCRIPT", tmp_path / "scratch" / "transcript.jsonl")
     monkeypatch.setattr(h, "ensure_closed", lambda: None)
     monkeypatch.setattr(h, "isolate_state", lambda _prefix: "")
     monkeypatch.setattr(h.signal, "signal", lambda *_a: None)
-    for var in (h.SECTIONS_VAR, h.JOBS_VAR, h.SUMMARY_VAR):
+    # The run's end is called by the case, never left on this process's exit (`registered`
+    # keeps what it would have been); the host is one that answers the canary; what the run sets
+    # in the environment is undone with the case.
+    registered: list[object] = []
+    monkeypatch.setattr(h.atexit, "register", registered.append)
+    monkeypatch.setattr(h, "registered", registered, raising=False)
+    monkeypatch.setattr(h, "_canary_argv", lambda: ["mame", "board"])
+    monkeypatch.setattr(h.live_host, "canary", lambda _argv: "")
+    for var in (h.SECTIONS_VAR, h.JOBS_VAR, h.SUMMARY_VAR, h.live_host.LEDGER_VAR,
+                h.live_host.SCRATCH_VAR):
         monkeypatch.delenv(var, raising=False)
     for var, value in env.items():
         monkeypatch.setenv(var, value)
+    monkeypatch.setattr(h, "RUN", h.live_host.LiveRun(tmp_path / "scratch",
+                                                      job=h.SUMMARY_VAR in env))
     return h
 
 
@@ -532,7 +547,9 @@ def test_a_pooled_run_adopts_each_job_s_cells_and_runs_the_alone_ones_here(
     h.section("X", "spans the run", ["x1"], alone=True)(lambda: order.append("X"))
     h.section("A", "pooled", ["a1", "a2"])(lambda: order.append("A"))
     h.section("B", "pooled", ["b1"])(lambda: order.append("B"))
-    child = tmp_path / "child.jsonl"
+    (tmp_path / f"{h.SCRATCH_PREFIX}A").mkdir()
+    (tmp_path / f"{h.SCRATCH_PREFIX}B").mkdir()
+    child = tmp_path / f"{h.SCRATCH_PREFIX}A" / "transcript.jsonl"
     child.write_text('{"from": "a job"}\n')
 
     def run_pool(jobs: list[object], workers: int, out: Path, var: str,
@@ -540,12 +557,13 @@ def test_a_pooled_run_adopts_each_job_s_cells_and_runs_the_alone_ones_here(
         order.append("pool")
         assert workers == 2 and var == h.SUMMARY_VAR
         assert [(j.name, dict(j.env), j.planned) for j in jobs] == [  # type: ignore[attr-defined]
-            ("A", {h.SECTIONS_VAR: "A", h.JOBS_VAR: "1"}, ("a1", "a2")),
-            ("B", {h.SECTIONS_VAR: "B", h.JOBS_VAR: "1"}, ("b1",))]
+            ("A", {h.SECTIONS_VAR: "A", h.JOBS_VAR: "1", **h.RUN.job_env("A")}, ("a1", "a2")),
+            ("B", {h.SECTIONS_VAR: "B", h.JOBS_VAR: "1", **h.RUN.job_env("B")}, ("b1",))]
         a = lp.JobResult(jobs[0], 1, out / "A.log", 1.0, lp.Summary(
             ("a1", "a2"), {"a1": "OK", "a2": "FAIL"}, {"a2": "no"}, str(child), 1.0))
         b = lp.JobResult(jobs[1], 7, out / "B.log", 1.0, lp.Summary(
-            ("b1",), {"b1": "BLOCKED"}, {"b1": "no bench"}, str(tmp_path / "gone"), 1.0))
+            ("b1",), {"b1": "BLOCKED"}, {"b1": "no bench"},
+            str(tmp_path / f"{h.SCRATCH_PREFIX}B" / "gone"), 1.0))
         for r in (a, b):
             on_done(r)  # type: ignore[operator]
         return lp.PoolResult([a, b], "", {"a1": "OK", "a2": "FAIL", "b1": "BLOCKED"},
@@ -560,7 +578,7 @@ def test_a_pooled_run_adopts_each_job_s_cells_and_runs_the_alone_ones_here(
     assert '{"from": "a job"}' in (tmp_path / "scratch" / "transcript.jsonl").read_text()
 
 
-def test_a_pool_that_cannot_be_believed_makes_the_run_invalid(
+def test_a_pool_that_cannot_be_believed_makes_the_run_invalid_and_keeps_its_scratch(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
         capsys: pytest.CaptureFixture[str]) -> None:
     h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="4")
@@ -569,8 +587,12 @@ def test_a_pool_that_cannot_be_believed_makes_the_run_invalid(
     lp = h.live_pool
     monkeypatch.setattr(lp, "run_pool", lambda *_a, **_k: lp.PoolResult(
         [], "a job declared a cell it never planned", {"a1": "OK", "b1": "OK"}))
-    assert _exit_of(h) == h.EXIT_INVALID
-    assert "INVALID: a job declared a cell it never planned" in capsys.readouterr().out
+    with pytest.raises(SystemExit) as stop:
+        h.run_sections("TEST")
+    out = capsys.readouterr().out.rstrip().splitlines()
+    assert stop.value.code == h.EXIT_INVALID
+    assert out[-2:] == [f"kept: {tmp_path / 'scratch'}",
+                        "INVALID: a job declared a cell it never planned"]
 
 
 def test_one_pooled_letter_is_no_pool_and_runs_here(
@@ -587,6 +609,167 @@ def test_a_signal_that_ends_the_run_is_an_exit_its_children_see(
     with pytest.raises(SystemExit) as stop:
         h._leave(15, None)
     assert stop.value.code == 128 + 15
+
+
+# ======================================================== the run on its host and its scratch
+
+
+def _ended(h: ModuleType, *, invalid: bool = False) -> object:
+    """`run_sections`' exit code, then what the process's exit would run (`registered`)."""
+    with pytest.raises(SystemExit) as stop:
+        h.run_sections("TEST")
+    for f in h.registered:
+        f()
+    return stop.value.code
+
+
+def test_a_run_registers_its_end_for_every_way_out(monkeypatch: pytest.MonkeyPatch,
+                                                   tmp_path: Path) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
+    _ended(h)
+    assert h.registered == [h._unfinished]
+
+
+def test_a_green_run_removes_its_scratch_and_its_jobs(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="2")
+    lp = h.live_pool
+    h.section("A", "pooled", ["a1"])(lambda: None)
+    h.section("B", "pooled", ["b1"])(lambda: None)
+    handed: list[str] = []
+
+    def run_pool(jobs: list[object], *_a: object, **_k: object) -> object:
+        for j in jobs:
+            scratch = Path(j.env[h.live_host.SCRATCH_VAR])  # type: ignore[attr-defined]
+            scratch.mkdir(parents=True)
+            handed.append(str(scratch))
+        return lp.PoolResult([], "", {"a1": "OK", "b1": "OK"}, {})
+    monkeypatch.setattr(lp, "run_pool", run_pool)
+    assert _ended(h) == h.EXIT_PASSED
+    assert all(Path(x).parent.parent == tmp_path / "scratch" for x in handed) and len(handed) == 2
+    assert "scratch removed, the transcript with it" in capsys.readouterr().out
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["identity.json"]
+
+
+def test_a_red_run_keeps_its_scratch_and_names_it_as_its_last_word_but_the_verdict(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    h.section("C", "fails here", ["c1"])(lambda: h.cell("c1", False))
+    assert _ended(h) == h.EXIT_FAILED
+    out = capsys.readouterr().out.rstrip().splitlines()
+    assert out[-2:] == [f"kept: {tmp_path / 'scratch'}", "==> TEST FAILED"]
+
+
+def test_a_pooled_job_leaves_its_scratch_to_the_run_that_adopts_it_and_proves_nothing(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_SUMMARY=str(tmp_path / "summary.json"))
+    monkeypatch.setenv(h.live_host.LEDGER_VAR, str(tmp_path / "the parents.tsv"))
+    monkeypatch.setattr(h.live_host, "canary", lambda _argv: pytest.fail("a second canary"))
+    monkeypatch.setattr(h.live_host.EmulatorLedger, "reap", lambda _s: pytest.fail("reaped"))
+    h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
+    h.scratch()
+    assert _ended(h) == h.EXIT_PASSED
+    out = capsys.readouterr().out
+    assert "scratch removed" not in out and "kept:" not in out
+    assert (tmp_path / "scratch").is_dir()
+
+
+@pytest.mark.parametrize("plan", [[("A", ["a1"]), ("B", ["a1"])], [("A", ["a1"])]],
+                         ids=["a cell planned twice", "no cell ran"])
+def test_a_run_that_ends_invalid_keeps_its_scratch_and_says_invalid_last(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str],
+        plan: list[tuple[str, list[str]]]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    for letter, labels in plan:
+        h.section(letter, letter, labels)(lambda: None)
+    assert _ended(h) == h.EXIT_INVALID
+    out = capsys.readouterr().out.rstrip().splitlines()
+    assert out[-2] == f"kept: {tmp_path / 'scratch'}" and out[-1].startswith("INVALID: ")
+
+
+def test_a_run_that_breaks_or_is_signalled_keeps_its_scratch_and_names_it(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+
+    def signalled() -> None:
+        h._leave(15, None)
+    h.section("A", "signalled", ["a1"])(signalled)
+    assert _ended(h) == 128 + 15
+    assert f"kept: {tmp_path / 'scratch'}" in capsys.readouterr().out
+
+
+def test_a_host_that_cannot_start_mame_refuses_the_run_before_any_section_and_makes_nothing(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    ran: list[str] = []
+    h.section("A", "would start", ["a1"])(lambda: ran.append("A"))
+    monkeypatch.setattr(h.live_host, "canary", lambda _argv: "mamed did not return")
+    assert _ended(h) == h.EXIT_INVALID
+    assert ran == [] and not (tmp_path / "scratch").exists()
+    assert "INVALID: host canary: mamed did not return" in capsys.readouterr().err
+
+
+def test_invalid_ends_the_run_itself_so_its_verdict_is_the_last_word(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path)
+    h.scratch()
+    with pytest.raises(SystemExit) as stop:
+        h.invalid("the bench is off its pins")
+    said = capsys.readouterr()
+    assert stop.value.code == h.EXIT_INVALID and h.RUN.finished
+    assert said.out.rstrip().endswith(f"kept: {tmp_path / 'scratch'}")
+    assert said.err == "INVALID: the bench is off its pins\n"
+
+
+def test_a_section_letter_that_names_none_launches_no_canary(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_SECTIONS="Z")
+    h.section("A", "a", ["a1"])(lambda: None)
+    monkeypatch.setattr(h.live_host, "canary", lambda _argv: pytest.fail("a canary launched"))
+    assert _ended(h) == h.EXIT_INVALID
+
+
+def test_the_canary_is_the_first_boot_s_board_or_the_free_circus_or_none(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    h = _harness(monkeypatch, tmp_path)
+    monkeypatch.setattr(h, "m68k_dual_missing", lambda: "")
+    board = h._canary_argv()
+    assert board[:4] == [str(h.BOOT["binary"]), str(h.BOOT["system"]), "-rompath",
+                         str(h.BOOT["rompath"])] and "-joystickprovider" not in board
+    monkeypatch.setattr(h, "m68k_dual_missing", lambda: "no bench")
+    monkeypatch.setattr(h, "free_boards_missing", lambda: "")
+    circus = h._canary_argv()
+    assert circus[1] == "circus" and circus[4:6] == ["-joystickprovider", "none"]
+    monkeypatch.setattr(h, "free_boards_missing", lambda: "no free boards")
+    assert h._canary_argv() is None
+
+
+def test_an_emulator_that_outlived_the_run_fails_it_by_name_beside_the_verdict(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
+    order: list[str] = []
+    monkeypatch.setattr(h.STATE, "kill", lambda: order.append("kill"))
+
+    def reap(_self: object) -> object:
+        order.append("reap")
+        return h.live_host.Leftovers(2, 2, ((41, "U"),))
+    monkeypatch.setattr(h.live_host.EmulatorLedger, "reap", reap)
+    assert _ended(h) == h.EXIT_FAILED
+    out = capsys.readouterr().out
+    assert order == ["kill", "reap"]
+    assert "FAIL  2 emulator(s) outlived the run" in out and "pid 41 state U" in out
+    assert out.rstrip().endswith("==> TEST FAILED")
+    assert os.environ[h.live_host.LEDGER_VAR] == str(tmp_path / "scratch" /
+                                                     h.live_host.LEDGER_NAME)
 
 
 class _Runs:

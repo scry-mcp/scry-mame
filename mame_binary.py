@@ -26,6 +26,13 @@ PATH_RUNG = "PATH"
 VERSION_TIMEOUT_S = 5.0
 
 
+def canary_argv(binary: str, system: str, rompath: str, *extra: str) -> list[str]:
+    """`system` on `binary` in a form that initialises SDL as a session's boot does and ENDS BY
+    ITSELF: one second of the machine, no video, no sound (`scry_core.live_host.canary`)."""
+    return [binary, system, "-rompath", rompath, *extra, "-video", "none", "-sound", "none",
+            "-seconds_to_run", "1", "-nothrottle", "-skip_gameinfo"]
+
+
 @dataclass(frozen=True)
 class Resolved:
     path: str

@@ -4565,7 +4565,7 @@ def test_the_survey_says_when_the_console_gave_no_listing(
     assert stepped["dasm"] == ["25a4: move.l d0,d1", "25a4+2: rts"]
 
 
-def test_the_tools_carry_the_clients_context_to_their_waits() -> None:
+def test_the_tools_carry_the_clients_context_to_their_waits(tmp_path: Path) -> None:
     """End to end: a tool called with the SDK's context, from the worker thread the SDK uses,
     ticks through it. Dropping the `bridge(ctx)` argument at a call site leaves every
     direct test green; this one goes red."""
@@ -4580,7 +4580,7 @@ def test_the_tools_carry_the_clients_context_to_their_waits() -> None:
 
     async def main() -> None:
         with pytest.MonkeyPatch.context() as mp:
-            ses = _running(mp, Path(tempfile.mkdtemp()))
+            ses = _running(mp, tmp_path)
             mp.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
             mp.setattr(running, "RESUME_POLL_S", 0.0)
             mp.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
@@ -4802,7 +4802,8 @@ def test_start_refuses_while_a_session_is_live(
     assert mstate.STATE.ses is ses, "the live session was left alone"  # type: ignore[comparison-overlap]
 
 
-def test_the_doubles_surface_is_derived_from_the_package_and_held_to_the_real_session() -> None:
+def test_the_doubles_surface_is_derived_from_the_package_and_held_to_the_real_session(
+        tmp_path: Path) -> None:
     """Every attribute the package reads on a session is derived by AST from the package's
     own source, per file against that file's own imports
     (so prose cannot contribute and `subprocess.run` cannot either), and held in two
@@ -4827,7 +4828,7 @@ def test_the_doubles_surface_is_derived_from_the_package_and_held_to_the_real_se
         assert sentinel in called, (
             f"the derivation no longer sees `{sentinel}`, which the package plainly calls on "
             "a session: it has gone blind and this check is empty")
-    double = _RunningSession(Path(tempfile.mkdtemp()))
+    double = _RunningSession(tmp_path)
     for name in sorted(called):
         assert hasattr(g.Session, name), f"the package calls `Session.{name}`, which does not exist"
         assert callable(getattr(double, name, None)), (
@@ -6829,3 +6830,35 @@ def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> 
     r = s.image_diff(a=str(pic), b=str(pic))
     assert r["status"] == "ok" and "session" in r, r
     assert r["summary"].startswith("image_diff: no pixel differs"), r["summary"]
+
+
+def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_included(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The run's proof that no emulator outlived it reads this ledger: a start whose MAME
+    never answered is exactly the one that used to stay behind unrecorded. The fake writes its
+    own pid, which is the one the ledger has to hold; outside a live run nothing is written."""
+    from scry_core import live_host
+
+    pid_file = tmp_path / "pid"
+    binary = fake_mame(tmp_path)
+    binary.write_text(f'#!/bin/sh\ncase "$*" in *-listxml*) exit 0;; esac\n'
+                      f'echo $$ > {pid_file}\nexit 0\n')
+    rom = tmp_path / "ref.bin"
+    rom.write_bytes(b"\x00" * 16)
+    ledger = tmp_path / "emulators.tsv"
+    for named in (True, False):
+        pid_file.unlink(missing_ok=True)
+        if named:
+            monkeypatch.setenv(live_host.LEDGER_VAR, str(ledger))
+        else:
+            monkeypatch.delenv(live_host.LEDGER_VAR)
+            ledger.unlink()
+        reply = s.start(binary=str(binary), system="none", rompath=str(tmp_path),
+                        reference_rom=str(rom), seconds=1.0)
+        assert reply["status"] == "INVALID", reply
+        assert pid_file.is_file(), "the fake MAME never ran"
+        if named:
+            pid = int(pid_file.read_text())
+            assert live_host.EmulatorLedger(ledger).recorded() == {pid: binary.name}
+        else:
+            assert not ledger.exists()

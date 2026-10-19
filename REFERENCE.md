@@ -3217,6 +3217,13 @@ or wrong is BLOCKED naming what is wrong rather than run on something else.
 The live half is deselected by default (`-m live`), so a stranger running `pytest tests` from a
 clone never launches an emulator per case.
 
+**A live run refuses a host that cannot start MAME, and proves it left none running.** Before
+its first start it launches the board once in a form that ends by itself; one that does not
+return is INVALID naming the host, and nothing else is launched. Every MAME a session starts is
+recorded where it is spawned, and at the end of the run one still alive is killed and FAILS the
+run by name. A green run removes its scratch, its jobs' with it; a red, INVALID or broken one
+keeps it and prints its path (`scry_core.live_host`).
+
 ### Proving a change
 
 The session that edits this server cannot exercise its change through it: a running server

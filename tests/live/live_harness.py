@@ -23,7 +23,6 @@ import sys
 import tempfile
 import time
 import traceback
-import uuid
 import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -31,13 +30,14 @@ from itertools import count
 from pathlib import Path
 from typing import Any, cast
 
-from scry_core import live_pool
+from scry_core import live_host, live_pool
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 # The server's own files, found through the path just set, which is why they come after it.
 from evidence import keep  # noqa: E402
 
+import mame_binary  # noqa: E402
 import server as s  # noqa: E402
 from mame_state import STATE  # noqa: E402
 
@@ -48,6 +48,7 @@ from bench_boards import (  # noqa: E402  # isort: skip
     REFERENCE_ROM,
     SYMBOLS,
     args_missing,
+    m68k_dual_missing,
 )
 
 # THE THREE OUTCOMES, spelled once for every live script: a run that examined nothing is never
@@ -55,8 +56,22 @@ from bench_boards import (  # noqa: E402  # isort: skip
 EXIT_PASSED, EXIT_FAILED, EXIT_INVALID = 0, 1, 3
 
 
+# THIS RUN ON ITS HOST (`scry_core.live_host`): its scratch, its canary, its ledger, its end.
+SCRATCH_PREFIX = "mame-live-matrix-"
+# Where a run that is one job of another declares what it judged; set by that run, never by hand.
+SUMMARY_VAR = "MAME_LIVE_SUMMARY"
+RUN = live_host.LiveRun.for_process(SCRATCH_PREFIX, job=bool(os.environ.get(SUMMARY_VAR)))
+
+
+def _unfinished() -> None:
+    """The end of a run `finish` never reached: closed, proved and kept (`LiveRun.unfinished`)."""
+    RUN.unfinished(lambda: STATE.kill())
+
+
 def invalid(message: str) -> None:
-    """Refuse the whole run: nothing here is a verdict about the server."""
+    """Refuse the whole run: nothing here is a verdict about the server. The run is ended first
+    (`_unfinished`), so the verdict is the last line."""
+    _unfinished()
     print(f"INVALID: {message}", file=sys.stderr)
     sys.exit(EXIT_INVALID)
 
@@ -90,7 +105,7 @@ def isolate_state(prefix: str) -> str:
     The store's location is read when the session starts, so this runs before the `start` it is
     meant for.
     """
-    os.environ["XDG_STATE_HOME"] = tempfile.mkdtemp(prefix=prefix)
+    os.environ["XDG_STATE_HOME"] = str(live_tmp(prefix))
     return os.environ["XDG_STATE_HOME"]
 
 
@@ -117,12 +132,49 @@ def finish(name: str) -> None:
     failing labels AND the word that judges them together; a verdict at the end with its
     reasons only at the top of a long run is the truncation trap that reads a red run as green.
     """
+    _close_run()
+    RUN.finished = True
     print()
     print(f"{len(failures)} check(s) failed")
     for label in failures:
         print(f"  FAIL  {label}")
+    RUN.leave(kept=bool(failures))
     print(f"==> {name} " + ("FAILED" if failures else "PASSED"))
     sys.exit(EXIT_FAILED if failures else EXIT_PASSED)
+
+
+# ============================================================ the run on its host
+
+
+def _canary_argv() -> list[str] | None:
+    """The canary in the form of the run's first boot: the bench's board when it is there, else
+    the free boards' circus as `free_boot` starts it; None when this host has neither."""
+    if not m68k_dual_missing():
+        return mame_binary.canary_argv(str(BOOT["binary"]), str(BOOT["system"]),
+                                       str(BOOT["rompath"]))
+    if not free_boards_missing():
+        return mame_binary.canary_argv(FREE_BINARY, "circus", FREE_ROMS,
+                                       "-joystickprovider", "none")
+    return None
+
+
+def begin() -> None:
+    """THE RUN'S FIRST ACT ON THE HOST, before its first `start`: a signal made an exit, the end
+    that runs on every way out, and the canary and the ledger (`live_host.LiveRun.begin`)."""
+    # SIGHUP is POSIX's; Windows has SIGTERM alone.
+    for sig in (signal.SIGTERM, getattr(signal, "SIGHUP", signal.SIGTERM)):
+        signal.signal(sig, _leave)
+    atexit.register(_unfinished)
+    if why := RUN.begin(_canary_argv(), "MAME"):
+        invalid(why)
+
+
+def _close_run() -> None:
+    """The machine this process holds closed, every MAME the run launched proved gone, and one
+    still alive a failure of the run by name."""
+    if line := RUN.close(lambda: STATE.kill()):
+        print(line)
+        failures.append(line.removeprefix("FAIL  "))
 
 
 # ============================================================ the matrix's ledger
@@ -130,13 +182,18 @@ def finish(name: str) -> None:
 # THIS RUN'S SCRATCH, named at import because cells are declared with paths inside it, and made
 # by `scratch()` when a run first writes there: every file that imports the harness, a unit
 # suite included, would otherwise leave a directory behind.
-SCRATCH = Path(tempfile.gettempdir()) / f"mame-live-matrix-{uuid.uuid4().hex[:12]}"
+SCRATCH = RUN.scratch
 TRANSCRIPT = SCRATCH / "transcript.jsonl"
 
 
 def scratch() -> Path:
-    SCRATCH.mkdir(mode=0o700, exist_ok=True)
-    return SCRATCH
+    return RUN.made()
+
+
+def live_tmp(prefix: str) -> Path:
+    """A new directory of this run, under its scratch, so `finish` removes it with the rest."""
+    return Path(tempfile.mkdtemp(prefix=prefix, dir=scratch()))
+
 
 # ONE CALL'S OWN WAIT (the matrix's rule B1), and the reason a cell is BLOCKED rather than run: a
 # matrix that waits on a hung channel measures the wait. A `start`'s boot wait is exempt, since a
@@ -663,8 +720,6 @@ def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
 
 SECTIONS_VAR = "MAME_LIVE_SECTIONS"
 JOBS_VAR = "MAME_LIVE_JOBS"
-# Where a run that is one job of another declares what it judged; set by that run, never by hand.
-SUMMARY_VAR = "MAME_LIVE_SUMMARY"
 
 
 def _chosen() -> list[Section]:
@@ -697,7 +752,7 @@ def _pool(pooled: list[Section], workers: int) -> live_pool.PoolResult:
     letters = sorted({sec.block for sec in pooled})
     script = str(Path(sys.argv[0]).resolve())
     jobs = [live_pool.Job(letter, [sys.executable, script],
-                          env={SECTIONS_VAR: letter, JOBS_VAR: "1"},
+                          env={SECTIONS_VAR: letter, JOBS_VAR: "1", **RUN.job_env(letter)},
                           planned=tuple(x for sec in pooled if sec.block == letter
                                         for x in sec.labels))
             for letter in letters]
@@ -747,6 +802,13 @@ def _declare(path: Path, chosen: list[Section], elapsed_s: float) -> None:
         tuple(outcomes), outcomes, reasons, str(scratch() / TRANSCRIPT.name), round(elapsed_s, 3)))
 
 
+def _invalid_run(why: str) -> None:
+    """A run with no verdict: ended first, so INVALID is its last line."""
+    _unfinished()
+    print(f"INVALID: {why}")
+    raise SystemExit(EXIT_INVALID)
+
+
 def _leave(signum: int, _frame: object) -> None:
     """`timeout` ends a run with SIGTERM and a closed terminal with SIGHUP: turned into an exit,
     a pooled run's stop reaches its children, which run in process groups of their own."""
@@ -759,12 +821,10 @@ def run_sections(name: str) -> None:
     `name`: exit 0 with no FAIL, 1 with any, 3 when nothing ran, the plan names a cell twice, or
     a pooled merge cannot be believed. With more than one job (`MAME_LIVE_JOBS`, unset half the
     host's CPUs) the sections that are not `alone` run as jobs of their own, one per letter."""
-    # SIGHUP is POSIX's; Windows has SIGTERM alone.
-    for sig in (signal.SIGTERM, getattr(signal, "SIGHUP", signal.SIGTERM)):
-        signal.signal(sig, _leave)
     chosen = _chosen()
     summary = os.environ.get(SUMMARY_VAR, "")
     workers = _workers()
+    begin()
     pooled = ([sec for sec in chosen if not sec.alone] if workers > 1 and not summary else [])
     if len({sec.block for sec in pooled}) < 2:
         pooled = []              # one job is no pool: it runs here, its rows live
@@ -775,8 +835,7 @@ def run_sections(name: str) -> None:
     dupes = sorted({x for x in planned if planned.count(x) > 1})
     print(f"cells PLANNED: {len(planned)} in {len(chosen)} sections")
     if dupes:
-        print(f"INVALID: the plan names these cells twice: {dupes}")
-        raise SystemExit(EXIT_INVALID)
+        _invalid_run(f"the plan names these cells twice: {dupes}")
     t0 = time.monotonic()
     invalid = ""
     try:
@@ -822,10 +881,8 @@ def run_sections(name: str) -> None:
     print(f"cells: PLANNED {len(planned)}  RUN {run}  OK {TALLY['OK']}  FAIL {TALLY['FAIL']}  "
           f"BLOCKED {TALLY['BLOCKED']}")
     if invalid:
-        print(f"INVALID: {invalid}")
-        raise SystemExit(EXIT_INVALID)
+        _invalid_run(invalid)
     if run == 0:
-        print("INVALID: no cell ran, so there is no verdict")
-        raise SystemExit(EXIT_INVALID)
+        _invalid_run("no cell ran, so there is no verdict")
     assert len(failures) == TALLY["FAIL"], "the harness and the tally disagree"
     finish(name)

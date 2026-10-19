@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from scry_core import live_host
 from scry_core.demo import Reply, Run, StepFailed
 
 from demos import free_set
@@ -36,8 +37,34 @@ def test_a_demo_says_why_it_cannot_run(options: dict[str, str], said: str) -> No
     assert free_set.precheck("someset")(Run(dir=Path("/x"), options=options)).startswith(said)
 
 
-def test_a_demo_with_its_zip_runs(tmp_path: Path) -> None:
+def _mame(tmp_path: Path, body: str) -> Path:
+    """A MAME of the test's own: a script whose `body` is what the canary sees it do."""
+    binary = tmp_path / "mame"
+    binary.write_text(f"#!/bin/sh\n{body}\n")
+    binary.chmod(0o755)
+    return binary
+
+
+def test_a_demo_with_its_zip_on_a_host_that_starts_mame_runs(tmp_path: Path) -> None:
     roms = _zip(tmp_path / "roms", ("a.bin", ROM))
+    binary = _mame(tmp_path, 'test "$2 $3 $4" = "-rompath $(dirname "$0")/roms -joystickprovider"')
+    run = Run(dir=tmp_path, options={"rompath": str(roms), "binary": str(binary)})
+    assert free_set.precheck("someset")(run) == ""
+
+
+def test_a_demo_on_a_host_that_cannot_start_mame_says_so_before_any_step(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    roms = _zip(tmp_path / "roms", ("a.bin", ROM))
+    binary = _mame(tmp_path, "sleep 600")
+    monkeypatch.setattr(live_host, "CANARY_S", 0.5)
+    run = Run(dir=tmp_path, options={"rompath": str(roms), "binary": str(binary)})
+    assert "the host cannot start this emulator" in free_set.precheck("someset")(run)
+
+
+def test_a_binary_that_resolves_to_nothing_is_left_to_start_to_name(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    roms = _zip(tmp_path / "roms", ("a.bin", ROM))
+    monkeypatch.setenv("PATH", str(tmp_path / "empty"))
     assert free_set.precheck("someset")(Run(dir=tmp_path, options={"rompath": str(roms)})) == ""
 
 

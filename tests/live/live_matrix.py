@@ -36,7 +36,6 @@ import os
 import re
 import struct
 import subprocess
-import tempfile
 import time
 import wave
 from collections.abc import Callable
@@ -77,6 +76,7 @@ from live_harness import (
     fresh,
     fresh_state,
     last_wall,
+    live_tmp,
     ok,
     rearm_pairs,
     refused,
@@ -3090,7 +3090,7 @@ def _d_discovery(t: list[str]) -> None:
         last = call("gfx_locate", layouts=[strips], patch=[0, 0, 248, 256], tag="gfx2",
                     seconds=10.0)
     cell(t[12], ok(sweep) and bool(strips) and last.get("matched") is True, said(last))
-    dest = Path(tempfile.mkdtemp(prefix="mame-live-draft-")) / "circus-gfx.yaml"
+    dest = live_tmp("mame-live-draft-") / "circus-gfx.yaml"
     draft = call("gfx_draft", dest=str(dest))
     report = (json.loads(Path(draft["report"]["path"]).read_text()) if ok(draft) else {})
     done = [c for c in report.get("correlations", []) if c.get("command")]

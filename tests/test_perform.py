@@ -1087,13 +1087,13 @@ def test_a_batch_whose_files_cannot_be_written_keeps_its_account(
     assert "No space left" in out["ran_path"]["why"], out["ran_path"]
 
 
-def test_a_row_with_a_lone_surrogate_is_written_as_json() -> None:
+def test_a_row_with_a_lone_surrogate_is_written_as_json(tmp_path: Path) -> None:
     """A step can echo what the caller typed into its summary, and a lone surrogate does not
     encode as UTF-8: the rows are written with JSON's own escapes, so every one lands."""
     import json
 
     import mame_files as files
-    path = Path(tempfile.mkdtemp()) / "rows.jsonl"
+    path = tmp_path / "rows.jsonl"
     files.write_jsonl(path, [{"summary": "log \ud800"}])
     assert json.loads(path.read_text(encoding="ascii")) == {"summary": "log \ud800"}
 
