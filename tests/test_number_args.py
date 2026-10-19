@@ -49,7 +49,7 @@ def test_an_integer_or_a_0x_string_is_the_integer_it_spells(given: object, want:
 
 
 @pytest.mark.parametrize("given,says", [
-    ("4660", "decimal text"), ("ff", "decimal text"), ("", "decimal text"),
+    ("4660", "decimal text"), ("ff", "decimal text"), ("", "is empty"),
     ("-0x10", "decimal text"), ("0x", "starts like hex"), ("0xg", "starts like hex"),
     ("0x1_0", "starts like hex"), (True, "integer or a `0x`"), (False, "integer or a `0x`"),
     (6.0, "integer or a `0x`"), (None, "integer or a `0x`"), ([16], "integer or a `0x`"),

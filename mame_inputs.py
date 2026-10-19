@@ -184,34 +184,16 @@ def hex_arg(name: str, value: str) -> int:
 #: The annotation of a value, a byte offset or a pen base: a JSON integer or a `0x` string, so
 #: the schema a client reads offers both and `number_arg` decides (REFERENCE.md, *Names for
 #: addresses*, says why).
-NumberArg = int | str
+NumberArg = judges.NumberArg
 
 #: The widest number MAME's debugger holds: its expressions are 64-bit.
 NUMBER_BITS = 64
 
 
 def number_arg(name: str, value: object) -> int:
-    """`value` as the integer it is or spells (`0x`, read as `hex_arg` reads an address), or the
-    refusal naming `name`: decimal text, a bool, a float, a sign before `0x`, and anything past
-    `NUMBER_BITS`, which a `0x` string could spell past what any reply or script can print. The
-    tool's own range is judged after this, on the integer."""
-    if isinstance(value, bool) or not isinstance(value, int | str):
-        raise Invalid("bad_argument",
-                      f"{name} is an integer or a `0x` hex string; got {value!r}")
-    if isinstance(value, str):
-        text = value.strip()
-        if text[:2].lower() == "0x" and not ADDRESS.fullmatch(text):
-            raise Invalid("bad_argument", f"{name}={value!r} starts like hex and is not: `0x` "
-                                          "is followed by hex digits")
-        if not ADDRESS.fullmatch(text):
-            raise Invalid("bad_argument", f"{name}={value!r} is not an integer or a `0x` hex "
-                                          "string: decimal text is refused, since bare digits "
-                                          "read either way")
-        value = int(text, 16)
-    if value.bit_length() > NUMBER_BITS:
-        raise Invalid("bad_argument", f"{name} is wider than {NUMBER_BITS} bits, the widest "
-                                      "number MAME's debugger holds")
-    return value
+    """`value` as the integer it is or spells (`scry_core.judges.number`, the one grammar both
+    servers hold), at most `NUMBER_BITS` wide."""
+    return judges.number(name, value, NUMBER_BITS, "MAME's debugger")
 
 
 #: A list of numbers, each a `NumberArg` (a list of pens).
