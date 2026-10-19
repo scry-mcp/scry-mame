@@ -34,6 +34,7 @@ import gdb_session as gs
 import mame_advance as advance
 import mame_chunk as chunk
 import mame_inputs as inputs
+import mame_palette as mpalette
 import mame_read as read
 import mame_screen as mscreen
 import mame_state as st
@@ -90,13 +91,7 @@ local function put(path, data)
   local f = assert(io.open(path, "wb"))
   f:write(data) f:close()
 end
-local function pens()
-  local pal = scr.palette
-  if pal == nil then return "" end
-  local p = {}
-  for i = 0, pal.entries - 1 do p[i + 1] = string.pack("=I4", pal:pen_color(i)) end
-  return table.concat(p)
-end
+%(pens)s
 t.sub = emu.add_machine_frame_notifier(function()
   if t.done then return end
   local ok, err = pcall(function()
@@ -153,7 +148,7 @@ def arm_script(folder: Path, frames: list[int] | None, first: int | None, last: 
     console line, which only a long `frames` list can do."""
     script = ARM_LUA % {"dir": transport.lua_string(str(folder)), "last": wanted[-1],
                         "wanted": wanted_lua(frames, first, last, step),
-                        "capture": mscreen.capture_lua()}
+                        "capture": mscreen.capture_lua(), "pens": mscreen.FRAME_PENS_LUA}
     if len(script) > CONSOLE_CHARS:
         raise st.Invalid("bad_argument", f"a list of {len(wanted)} frames does not fit in one "
                          f"console line ({len(script)} of {CONSOLE_CHARS} characters): name an "
@@ -214,8 +209,8 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
         # A RUN THAT MAY STILL BE MOVING is answered as `run_for` answered it, and nothing is
         # sent to its console: the notifier stays armed until the next `series_capture` takes
         # it down, or `close` takes the machine.
-        return {**run, "note": "the series notifier is still armed: the next series_capture "
-                "removes it, or close does"}
+        return st.merged(run, {"note": "the series notifier is still armed: the next "
+                               "series_capture removes it, or close does"})
     done = _finish(ses, scratch, seconds, progress)
     if run.get("status") != "ok":
         return run
@@ -243,8 +238,10 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
         STATE.record_image(folder / series.frame_name(frame))
     body = {k: v for k, v in run.items() if k not in ("summary", "session")}
     account = {k: common[k] for k in CONSOLE_ACCOUNT if k in common}
-    return {**body, **reply, "crop": area, "lost": series.runs(lost),
-            **series.tail(len(wanted), kept, FRAME_SOURCE), **account}
+    # MERGED, never spread: a field `run_for` and the series both said would otherwise be
+    # overwritten in silence
+    return st.merged(body, reply, {"crop": area, "lost": series.runs(lost)},
+                     series.tail(len(wanted), kept, FRAME_SOURCE), account)
 
 
 def _develop(folder: Path, frame: int, width: int, height: int, area: list[int],
@@ -268,11 +265,12 @@ def _develop(folder: Path, frame: int, width: int, height: int, area: list[int],
     if cap.indices is None:
         picture = mscreen.colour_crop(cap, x, y, w, h)
     else:
-        pens = list(array("I", base.with_suffix(".pens").read_bytes()))
+        pens = array("I", base.with_suffix(".pens").read_bytes())
         if len(pens) != len(cap.pens):
             raise st.Invalid("unexpected_answer", f"{len(pens)} pens were saved at frame {frame} "
                              f"and the screen has {len(cap.pens)}")
-        lut = [bytes(((p >> 16) & 0xFF, (p >> 8) & 0xFF, p & 0xFF)) for p in pens]
+        rgb = mpalette.rgb_bytes(pens)
+        lut = [rgb[3 * i:3 * i + 3] for i in range(len(pens))]
         picture = png.Raster(w, h, b"".join(lut[i] for i in cap.window(x, y, w, h)))
     fresh.create(folder / series.frame_name(frame), png.encode(picture), "the frame")
 

@@ -1342,12 +1342,13 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
 
     The frames, by the frame counter `run_for(frames=...)` counts, all still to come: `frames`
     (a list, ascending) or `first`, `last` and `step`, at most {SERIES_MAX}. `crop` `[x, y,
-    width, height]`, default the whole screen. `dest`: a new absolute directory, kept after
-    `close`; else one in the scratch, gone at `close` (`kept_after_close` says which).
+    width, height]`, default the whole screen. `dest`: a new absolute or `~`-led directory, kept
+    after `close`; else one in the scratch, gone at `close` (`kept_after_close` says which).
     `seconds`: the run's wall-clock bound, (0, {WAIT_MAX_S}]. {NEEDS_STOPPED}.
 
     Each frame is MAME's own rendering of it, read by a frame notifier one frame late as
-    `gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`.
+    `gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`. Its
+    PNG is RGB where `gfx_film`'s may be indexed: compare the two with `image_diff`.
 
     Reply: `manifest` (its path), `count`, `first`, `last`, `crop`, `distinct` (signatures over
     it), `frames_asked`, `lost` ([first, last] runs), `kept_after_close`, `frame_source`

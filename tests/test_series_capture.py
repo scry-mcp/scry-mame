@@ -20,6 +20,7 @@ from session_doubles import blank_session  # noqa: E402
 import mame_advance as madvance  # noqa: E402
 import mame_chunk as mchunk  # noqa: E402
 import mame_read as mread  # noqa: E402
+import mame_screen as mscreen  # noqa: E402
 import mame_series as mseries  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
@@ -294,6 +295,21 @@ def test_a_run_that_may_still_be_moving_is_answered_without_the_console(
     out = mseries.series_capture(session, tmp_path, None, 101, 105, 2, None, "", 10.0)  # type: ignore[arg-type]
     assert console.finished == 0, "nothing is sent to a machine that may be running"
     assert "still armed" in out["note"]
+    assert mscreen.FRAME_PENS_LUA in console.scripts[0], "the pens are the one shared function"
+
+
+def test_a_note_the_run_carried_is_kept_beside_the_series_own(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A run on a board of several cpus says how it was routed; a run still moving keeps that
+    note and adds the series' own, joined, never one in place of the other."""
+    console.running_after = True
+    plain = console.run_for
+
+    def routed(*a: Any, **k: Any) -> dict[str, Any]:
+        return {**plain(*a, **k), "note": "sent through :maincpu"}
+    monkeypatch.setattr(madvance, "run_for", routed)
+    out = mseries.series_capture(_Session(), tmp_path, None, 101, 105, 2, None, "", 10.0)  # type: ignore[arg-type]
+    assert "sent through :maincpu" in out["note"] and "still armed" in out["note"], out
 
 
 def test_an_arming_that_failed_still_takes_the_notifier_down(console: _Console,
@@ -384,3 +400,17 @@ def test_series_capture_answers_through_the_server_with_each_argument_where_it_w
     assert out["status"] == "ok" and "session" in out, out
     assert (out["count"], out["first"], out["last"], out["crop"]) == (3, 101, 105, [1, 1, 2, 1])
     assert out["kept_after_close"] is True and Path(out["manifest"]).parent == dest, out
+
+
+def test_a_field_the_run_and_the_series_both_say_is_refused_never_overwritten(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The reply is merged, so a `run_for` field the series also answers (`crop` here) is two
+    answers to one question and fails loudly instead of one silently replacing the other."""
+    plain = console.run_for
+
+    def saying_crop(*a: Any, **k: Any) -> dict[str, Any]:
+        return {**plain(*a, **k), "crop": [9, 9, 9, 9]}
+    monkeypatch.setattr(madvance, "run_for", saying_crop)
+    with pytest.raises(TypeError, match=r"\['crop'\] said by two sources"):
+        _capture(tmp_path)
+    assert not list((tmp_path / "series").glob("series-*")), "the failed series left its folder"

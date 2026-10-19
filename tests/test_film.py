@@ -37,6 +37,7 @@ from test_lua import _channel, _ChannelSession  # noqa: E402
 import mame_callbacks as mcallbacks
 import mame_film as mf  # noqa: E402
 import mame_font as font  # noqa: E402
+import mame_screen as mscreen
 import mame_sheet as msheet  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_tap as mtap  # noqa: E402
@@ -246,6 +247,7 @@ def test_the_install_marks_the_frame_and_reads_its_picture_at_the_next_notifier(
     assert "return v:snapshot_pixels()" in script[judge:], (
         "the frame's own rendering is taken at its own notifier")
     assert "pens = pens()" in script[judge:], "the frame's own pens are saved at its notifier"
+    assert mscreen.FRAME_PENS_LUA in script, "the pens are saved by the one shared function"
     assert 'add_machine_reset_notifier(guarded(t, function() lost("lost_reset") end))' in script
     assert 'add_machine_post_load_notifier(guarded(t, function() lost("lost_load") end))' in script
     assert "if t.judged >= frames_max and t.pend == nil then" in script
@@ -324,6 +326,9 @@ def test_a_read_converts_each_kept_frame_to_an_indexed_png_in_its_own_pens(
     pens = bytearray((folder / "frame-1.pens").read_bytes())
     pens[4 * unused:4 * unused + 4] = (0xFF123456).to_bytes(4, sys.byteorder)
     (folder / "frame-1.pens").write_bytes(bytes(pens))
+    # A picture already listed (a sheet drawn of it first) is listed once: the film records
+    # through the session's one image recorder.
+    mstate.STATE.captures.append(("image", str(folder / "frame-1.png")))
     out = s.gfx_film()
     assert out["status"] == "ok", out
     assert (out["state"], out["judged"], out["met"], out["kept"], out["refused"]) == (
@@ -341,6 +346,8 @@ def test_a_read_converts_each_kept_frame_to_an_indexed_png_in_its_own_pens(
                                "symbol": "BLIT_PROGRAM+0x1a8",
                                "path": str(Path(out["film"]["film_dir"], "frame-1.png"))}
     assert not list(folder.glob("frame-*.bin")), "the raw files are gone once converted"
+    images = [p for kind, p in mstate.STATE.captures if kind == "image"]
+    assert images.count(str(folder / "frame-1.png")) == 1, images
 
 
 def test_a_frame_whose_picture_is_not_mames_rendering_of_it_is_refused(

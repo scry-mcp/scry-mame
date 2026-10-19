@@ -55,6 +55,7 @@ from typing import Any
 
 from scry_core import fresh, png
 from scry_core import progress as mprogress
+from scry_core import raster as core_raster
 
 import gdb_session as gs
 import mame_callbacks as callbacks
@@ -453,13 +454,7 @@ local tap = sp:install_write_tap(lo, lo + nb - 1, "mcp_film_" .. id,
   if t.nhits <= {HITS_KEPT} then t.hits[t.nhits] = string.format("h %x %x %d", pc, val, frame()) end
 end))
 local function untap() if tapped then tapped = false tap:remove() end end
-local function pens()
-  local pal = scr.palette
-  if pal == nil then return "" end
-  local p = {{}}
-  for i = 0, pal.entries - 1 do p[i + 1] = string.pack("=I4", pal:pen_color(i)) end
-  return table.concat(p)
-end
+{mscreen.FRAME_PENS_LUA}
 local function develop(fr)
   local p = t.pend
   t.pend = nil
@@ -649,11 +644,10 @@ def _cell(film: Film, meta: FrameMeta, cap: mscreen.Capture, pens: list[int],
     data = png.encode(raster)
     target = base.with_suffix(".png")
     target.write_bytes(data)
-    STATE.captures.append(("image", str(target)))
-    lut = [bytes(c) for c in raster.palette or ()]
-    rgb = raster.pixels if raster.palette is None else b"".join(lut[v] for v in raster.pixels)
+    STATE.record_image(target)
     return Cell(meta.k, meta.frame, meta.hits, meta.listed, target,
-                hashlib.sha256(data).hexdigest(), raster.palette is not None, rgb)
+                hashlib.sha256(data).hexdigest(), raster.palette is not None,
+                core_raster.rgb(raster))
 
 
 # ------------------------------------------------------------------ the sheet and the animation

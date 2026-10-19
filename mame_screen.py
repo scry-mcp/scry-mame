@@ -31,7 +31,6 @@ packed with `=I4`, the host's order too, so `array("I")` reads every part of it 
 from __future__ import annotations
 
 import re
-import sys
 from array import array
 from dataclasses import dataclass
 from pathlib import Path
@@ -159,8 +158,7 @@ class Capture:
     pens: list[int]            # the saved pens, ARGB
 
     def rgb(self, pen: int) -> tuple[int, int, int]:
-        c = self.pens[pen]
-        return ((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF)
+        return mpalette.pen_rgb(self.pens[pen])
 
     def window(self, x: int, y: int, w: int, h: int) -> list[int]:
         """The pens of the `w` x `h` rectangle at (`x`, `y`), row-major."""
@@ -242,6 +240,18 @@ def parse_capture(text: str, path: Path, common: dict[str, Any]) -> Capture:
     return Capture(tag, w, h, frame, pal_tag, colours, indices, pens)
 
 
+#: The pens the screen's palette holds NOW, as one string of host-order ARGB words: what a
+#: frame's notifier saves so the frame is developed in its own colours, a frame later (the film
+#: and the series both; `scr` is the chunk's screen).
+FRAME_PENS_LUA = """local function pens()
+  local pal = scr.palette
+  if pal == nil then return "" end
+  local p = {}
+  for i = 0, pal.entries - 1 do p[i + 1] = string.pack("=I4", pal:pen_color(i)) end
+  return table.concat(p)
+end"""
+
+
 def capture_lua() -> str:
     """The capture's function definition, for a chunk to call as `capture_call` says."""
     return CAPTURE_LUA % {"encodable": ENCODABLE_PENS}
@@ -293,17 +303,6 @@ def check_same_size(cap: Capture, frame: int, width: int, height: int, what: str
                          "frames no longer share one size, nor its crop")
 
 
-def rgb_cells(cap: Capture) -> bytes:
-    """The screen's colours as RGB triplets, row-major: the cells `scry_core.raster` hashes and
-    a PNG of the screen holds. `pixels()`'s words are the host's order (the module docstring), so
-    the bytes are taken out of each word by position in that order."""
-    raw = cap.colours.tobytes()
-    r, g, b = (2, 1, 0) if sys.byteorder == "little" else (1, 2, 3)
-    out = bytearray(len(cap.colours) * 3)
-    out[0::3], out[1::3], out[2::3] = raw[r::4], raw[g::4], raw[b::4]
-    return bytes(out)
-
-
 def check_screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_WAIT_S,
                            **_: Any) -> None:
     """`screen_signature`'s machine-independent half: the crop's shape and the bound. Whether
@@ -322,7 +321,8 @@ def screen_signature(ses: gs.Session, scratch: Path, crop: list[int] | None, sec
     cap, common = capture(ses, scratch, False, seconds, progress)
     x0, y0, w, h = crop if crop is not None else (0, 0, cap.width, cap.height)
     inside(cap, x0, y0, w, h, "crop", common)
-    signature = raster_signature("pixel", cap.width, cap.height, rgb_cells(cap), [x0, y0, w, h])
+    signature = raster_signature("pixel", cap.width, cap.height, mpalette.rgb_bytes(cap.colours),
+                                 [x0, y0, w, h])
     return running.stop_reply(ses, scratch, f"screen_signature: {common['evaluated_by']}",
                               signature=signature, kind="pixel", width=cap.width,
                               height=cap.height, crop=[x0, y0, w, h], screen=cap.tag,
@@ -454,12 +454,15 @@ def raster(cap: Capture, area: list[int] | None, x0: int, y0: int, w: int, h: in
             isolate: set[int] | None) -> png.Raster:
     """The crop as a picture: indexed when the screen's pens fit a PLTE (each PNG index is the
     pen), RGB otherwise; `isolate` draws the set in `ISOLATE_COLOUR` and every other pen grey."""
+    table = mpalette.rgb_bytes(cap.pens)        # every pen's RGB in one pass, read by slice
+
     def shown(pen: int) -> tuple[int, int, int]:
+        r, g, b = table[3 * pen:3 * pen + 3]
         if isolate is None:
-            return cap.rgb(pen)
+            return r, g, b
         if pen in isolate:
             return ISOLATE_COLOUR
-        luma = sum(w * v for w, v in zip(LUMA_WEIGHTS, cap.rgb(pen), strict=True))
+        luma = sum(w * v for w, v in zip(LUMA_WEIGHTS, (r, g, b), strict=True))
         grey = GREY_LOW + luma * (GREY_HIGH - GREY_LOW) // (255 * sum(LUMA_WEIGHTS))
         return (grey, grey, grey)
 
@@ -473,7 +476,7 @@ def raster(cap: Capture, area: list[int] | None, x0: int, y0: int, w: int, h: in
 
 def colour_crop(cap: Capture, x0: int, y0: int, w: int, h: int) -> png.Raster:
     """The crop in the colours the screen showed, RGB: what a picture marked over is drawn on."""
-    words = [c for row in range(y0, y0 + h)
-             for c in cap.colours[row * cap.width + x0:row * cap.width + x0 + w]]
-    lut = {c: bytes(((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF)) for c in set(words)}
-    return png.Raster(w, h, b"".join(lut[c] for c in words))
+    rows = array("I")
+    for row in range(y0, y0 + h):
+        rows.extend(cap.colours[row * cap.width + x0:row * cap.width + x0 + w])
+    return png.Raster(w, h, mpalette.rgb_bytes(rows))

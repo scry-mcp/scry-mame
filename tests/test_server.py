@@ -5602,7 +5602,7 @@ def test_a_tilde_path_is_expanded_and_a_relative_one_says_why(
     assert inputs.absolute("binary", "~/mame") == tmp_path / "mame"
     with pytest.raises(mstate.Invalid, match="must be an absolute path or start with `~`"):
         inputs.absolute("binary", "upstream/v30")
-    assert inputs.absolute("binary", "/Users/x/mame") == Path("/Users/x/mame")
+    assert inputs.absolute("binary", str(tmp_path / "mame")) == tmp_path / "mame"
 
 
 def _refusal_text(fn: Any, *a: Any) -> str:

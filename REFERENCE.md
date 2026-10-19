@@ -2707,7 +2707,12 @@ frame late from the notifier for the reason `gfx_film` gives (*Graphics*). A wan
 frameskip did not draw is listed in `lost`, never filled in. Its colours are the pens saved at
 its own end, so a palette that moves while the picture waits to be read does not repaint it.
 The run goes two frames past the last, where the machine stops. With `dest` the series outlives
-`close`; without it, it lives in the scratch and goes with it.
+`close`; without it, it lives in the scratch and goes with it. **On an indexed screen a series
+frame is an RGB PNG and a film frame an indexed one**, on purpose: the film's index is the pen,
+which a colour PNG would lose, and a series is for comparing what the screen showed. So there
+the same frame from the two never has the same bytes, and a golden of one never matches the
+other by `golden_check`; `image_diff` reads the colours a picture shows, so it compares the two.
+(A direct-colour screen, or a palette past 256 pens, gives RGB to both.)
 
 **The file tools** (`image_diff`, `series_diff`, `region_track`, `golden_check`) read files
 and touch no machine, so they answer with the machine running or with none, and they are

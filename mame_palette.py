@@ -13,6 +13,9 @@ named is a picture that gets the pen wrong.
 from __future__ import annotations
 
 import re
+import sys
+from array import array
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, NoReturn
 
@@ -84,6 +87,24 @@ _GLYPHS = {
 }
 _GLYPH_W = 3
 _INK, _PAPER = (255, 255, 255), (32, 32, 32)
+
+
+def rgb_bytes(words: Sequence[int]) -> bytes:
+    """THE ONE PEN-TO-RGB: ARGB words (a pen, a pixel of `pixels()`) as RGB triplets. The words
+    are 32-bit in the host's order (`mame_screen`'s module docstring says why), so each channel
+    is taken out of the words' bytes by position, one slice per channel over the whole run rather
+    than three shifts per word."""
+    raw = (words if isinstance(words, array) else array("I", words)).tobytes()
+    r, g, b = (2, 1, 0) if sys.byteorder == "little" else (1, 2, 3)
+    out = bytearray(len(raw) // 4 * 3)
+    out[0::3], out[1::3], out[2::3] = raw[r::4], raw[g::4], raw[b::4]
+    return bytes(out)
+
+
+def pen_rgb(word: int) -> tuple[int, int, int]:
+    """One ARGB word as its RGB (`rgb_bytes`)."""
+    r, g, b = rgb_bytes([word])
+    return r, g, b
 
 
 def check_palette(palette: str = "", first: int = 0, count: int = 0, scale: int = 0,
@@ -192,8 +213,7 @@ def swatch(first: int, argb: list[int], entries: int) -> png.Raster:
             k = row * ROW_PENS + col
             if k >= len(argb):
                 break
-            rgb = ((argb[k] >> 16) & 0xFF, (argb[k] >> 8) & 0xFF, argb[k] & 0xFF)
-            cell_row = bytes(rgb) * CELL
+            cell_row = bytes(pen_rgb(argb[k])) * CELL
             for y in range(CELL):
                 i = ((row * CELL + y) * width + label_w + col * CELL) * 3
                 px[i:i + 3 * CELL] = cell_row
@@ -260,4 +280,4 @@ def parse_pens(text: str, palette: str, pen_base: int, n: int,
     if m is None:
         chunk.no_line("pens", text, common)
     argb = [int(v, 16) for v in m.group(3).split(",") if v]
-    return m.group(1), [((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF) for c in argb]
+    return m.group(1), [pen_rgb(c) for c in argb]
