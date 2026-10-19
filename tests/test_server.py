@@ -34,6 +34,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
@@ -3893,7 +3894,7 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
     log.write_text("boot\n")
     ses = _running(monkeypatch, tmp_path)
     ses.go()
-    monkeypatch.setattr(files, "LOG_POLL_S", 0.0)
+    monkeypatch.setattr(core_wait, "POLL_S", 0.0)
     monkeypatch.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
 
     def writes(line: str) -> Callable[[], None]:
@@ -3930,7 +3931,7 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
             pass
 
     clock = _Clock()
-    monkeypatch.setattr(files, "time", clock)
+    monkeypatch.setattr(core_wait, "time", clock)
     monkeypatch.setattr(mstate, "time", clock)
     monkeypatch.setattr(mprogress, "time", clock)  # the Ticker reads the same scripted clock
     # A line landing between the final read and the deadline is found by the last look (the

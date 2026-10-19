@@ -14,7 +14,6 @@ MAME's mixer writes, for `audio_record` and for `captures`.
 
 from __future__ import annotations
 
-import codecs
 import hashlib
 import json
 import os
@@ -28,6 +27,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypeVar, overload
 
+from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import prose
 
@@ -39,7 +39,7 @@ import mame_read as read
 import mame_state as st
 from mame_state import STATE
 
-# How often `log_wait` reads the log again: the log is a file on disk, so the wait polls it.
+# How often a wait on a file the emulator writes reads it again: a file on disk is polled.
 LOG_POLL_S = 0.1
 
 # How long a tool waits for a file the emulator writes at its own pace after the command that
@@ -255,8 +255,6 @@ def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr
 # counters through the second would otherwise be unreadable through the server. There is no
 # `guest` channel: an arcade board has no port of the program's own.
 LOG_CHANNELS = ("emulator", "process", "all")
-#: How much of the newest line a waiting `log_wait` shows in its progress line.
-LAST_LINE_SHOWN = 40
 NO_GUEST = ". There is no `guest` channel: an arcade board has no port of the program's own"
 LOG_FILES = {"emulator": "error.log", "process": "stdout.log"}
 
@@ -377,31 +375,10 @@ def errorlog_since(scratch: Path, mark: int) -> tuple[list[str], int]:
     return lines_since(log_path(scratch, "emulator"), mark)
 
 
-def lines_since(log: Path, mark: int) -> tuple[list[str], int]:
-    """The WHOLE lines a log gained since byte `mark`, and the byte after the last of
-    them, which is the next mark. A half-written line stops being a line: the read is cut at
-    the last newline, so a line is only ever seen whole, and once, however the writer's
-    flushes fall. The mark is where the read
-    actually ended, never the size the file had a moment before it. A log that is not there
-    yet, or that is SHORTER than the mark (MAME rewrote it), is read from its start: a mark
-    past the end describes a file that no longer exists. Two logs are read this way: MAME's
-    `error.log` (what the driver logged) and its `debug.log` (what the debugger console
-    printed, which is where a watchpoint stop names its writer)."""
-    if not log.exists():
-        return [], 0
-    if mark > log.stat().st_size:
-        mark = 0
-    with open(log, "rb") as fh:
-        fh.seek(mark)
-        raw = fh.read()
-    # MAME opens `error.log` with a byte-order mark: it is the file's, not the first line's,
-    # and the mark returned still counts its bytes, so the next read starts past it.
-    bom = len(codecs.BOM_UTF8) if mark == 0 and raw.startswith(codecs.BOM_UTF8) else 0
-    raw = raw[bom:]
-    cut = raw.rfind(b"\n") + 1
-    text = raw[:cut].decode("utf-8", errors="replace")
-    lines = [line.rstrip("\r") for line in text.split("\n")[:-1]]
-    return lines, mark + bom + cut
+# The whole lines a log gained since a byte mark, the core's reader: MAME's `error.log` (what the
+# driver logged) and its `debug.log` (what the debugger console printed, which is where a
+# watchpoint stop names its writer) are read this way.
+lines_since = core_wait.lines_since
 
 
 def check_snapshot(dest: str = "", **_: Any) -> Path | None:
@@ -424,104 +401,69 @@ def check_snapshot(dest: str = "", **_: Any) -> Path | None:
 def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
              on_stop: Callable[[], None], pattern: str, seconds: float, channel: str,
              progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `log_wait` tool. `on_stop` records a stop the wait found (the
-    running module's survey, handed in because that module imports this one), so the refusal
-    names the stop the machine is IN and the reply carries `stopped_on_its_own`."""
+    """The body of the `log_wait` tool, on the core's wait (`scry_core.log_wait`). `on_stop`
+    records a stop the wait found (the running module's survey, handed in because that module
+    imports this one), so the refusal names the stop the machine is IN and the reply carries
+    `stopped_on_its_own`."""
     rx = check_log_wait(pattern, channel, seconds)
     files = channel_files(scratch, channel)
-    clock = mprogress.Ticker(seconds, progress)
-    marks: dict[str, int] = {}
-    lines: list[str] = []
-    for tag, path in files:
-        mine, marks[tag] = lines_since(path, 0)
-        lines.extend(tagged(tag, ln, channel) for ln in mine)
-    total = len(lines)
+    marks = {tag: 0 for tag, _ in files}
+    recorded = False
+    parked = not ses.running
 
-    def found(hit: list[str], already: bool, before: int) -> dict[str, Any]:
-        return menvelope.envelope({
-            "verdict": "TARGET",
-            "pattern": pattern, "channel": channel, "line": hit[0], "already": already,
-            "lines_total": len(hit), "lines_before": before, "arrived_during": total - len(lines),
-            "waited_s": 0.0 if already else st.spent_s(clock.seconds()),
-            "lines_examined": total,
-        })
-
-    def fresh_lines() -> list[str]:
+    def fresh() -> list[str]:
         """What every file of the channel gained since its mark, tagged, marks moved."""
-        nonlocal total
         out: list[str] = []
         for tag, path in files:
             mine, marks[tag] = lines_since(path, marks[tag])
             out.extend(tagged(tag, ln, channel) for ln in mine)
-        total += len(out)
         return out
 
-    def last_look() -> dict[str, Any] | None:
-        """One last read before any refusal from inside the wait: the loop checks the
-        condition first and reads last, so a line written in between was never looked for."""
-        fresh = fresh_lines()
-        hit = [ln for ln in fresh if rx.search(ln)]
-        return found(hit, False, total - len(fresh) + fresh.index(hit[0])) if hit else None
+    def stopped() -> bool:
+        # Asked passively (no console round trip); a stop the poll consumed is recorded once.
+        nonlocal recorded
+        if ses.running and not ses.poll_stop(0.0):
+            return False
+        if not recorded:
+            on_stop()
+            recorded = True
+        return True
 
-    hits = [ln for ln in lines if rx.search(ln)]
-    if hits:
-        return found(hits, True, lines.index(hits[0]))
-
-    def stopped(reason: str) -> dict[str, Any]:
-        on_stop()
-        late = last_look()
-        if late is not None:
-            return late
+    got = core_wait.wait(rx, fresh, seconds=seconds, stopped=stopped, alive=alive,
+                         progress=progress, label=f"log_wait {channel} /{pattern}/")
+    if isinstance(got, core_wait.Found):
+        return menvelope.envelope({"verdict": "TARGET", "pattern": pattern, "channel": channel,
+                                   **got.fields(), "waited_s": st.spent_s(got.waited_s)})
+    if got.how == "STOPPED":
+        reason = ("the machine is STOPPED at the debugger" if parked else
+                  "the machine STOPPED as the bound expired" if got.at_bound else
+                  "the machine STOPPED during the wait")
         return menvelope.invalid("wait_stopped",
                                  f"{reason}: a stopped machine logs nothing, so the wait for "
                                  f"/{pattern}/ cannot end. "
-                                 f"{prose.counted(total - len(lines), 'line')} arrived during "
-                                 f"{clock.elapsed(1)} s of it and none matched: `resume` lets it "
+                                 f"{prose.counted(got.arrived_during, 'line')} arrived during "
+                                 f"{got.waited_s} s of it and none matched: `resume` lets it "
                                  "run, then `log_wait` again",
                                  pattern=pattern, last_stop=STATE.as_of())
-
-    if not ses.running:
-        return stopped("the machine is STOPPED at the debugger")
-    while not clock.expired():
-        # A breakpoint can fire during the wait; asked passively (no console round trip).
-        if ses.poll_stop(0.0):
-            return stopped("the machine STOPPED during the wait")
-        if not alive():
-            late = last_look()
-            if late is not None:
-                return late
-            ses.latch("the emulator exited during a wait")
-            return menvelope.invalid("session_broken",
-                                     f"the emulator is GONE, {clock.elapsed(1)} s into a {seconds} "
-                                     f"s wait for /{pattern}/, and a final read of the log found "
-                                     "nothing matching either. Nothing more will be written",
-                                     pattern=pattern)
-        time.sleep(LOG_POLL_S)
-        fresh = fresh_lines()
-        seen = [ln for ln in fresh if rx.search(ln)]
-        if seen:
-            return found(seen, False, total - len(fresh) + fresh.index(seen[0]))
-        clock.tick("log_wait {channel} /{pattern}/: {elapsed:.0f}s of {seconds:g}s, {arrived} "
-                   "lines arrived{last}", channel=channel, pattern=pattern, seconds=seconds,
-                   arrived=total - len(lines),
-                   last=f", last: {fresh[-1].strip()[:LAST_LINE_SHOWN]}" if fresh else "")
-    late = last_look()
-    if late is not None:
-        return late
-    if ses.poll_stop(0.0):
-        return stopped("the machine STOPPED as the bound expired")
-    during = total - len(lines)
+    if got.how == "GONE":
+        ses.latch("the emulator exited during a wait")
+        return menvelope.invalid("session_broken",
+                                 f"the emulator is GONE, {got.waited_s} s into a {seconds} "
+                                 f"s wait for /{pattern}/, and a final read of the log found "
+                                 "nothing matching either. Nothing more will be written",
+                                 pattern=pattern)
+    during = got.arrived_during
     silent = ("" if during else " The driver logged NOTHING at all in this window, so the "
                                 "question may be whether it logs rather than what it logged.")
     # THE BOUND RAN OUT AND THE WAIT ANSWERED: a verdict, not a refusal (the machine is still
     # running, and the caller decides whether to wait longer).
     return menvelope.envelope({
         "verdict": "TIMEOUT", "pattern": pattern, "channel": channel, "arrived_during": during,
-        "lines_examined": total, "waited_s": st.spent_s(clock.seconds()),
-        "note": f"nothing matched /{pattern}/ in {clock.elapsed(1)} s: "
-                f"{prose.counted(during, 'line')} arrived DURING the wait ({total} in the log), "
-                f"so this is a bound that expired and not 'there was nothing to match "
-                f"against'.{silent} The machine is still running"})
+        "lines_examined": got.lines_examined, "waited_s": st.spent_s(got.waited_s),
+        "note": f"nothing matched /{pattern}/ in {got.waited_s} s: "
+                f"{prose.counted(during, 'line')} arrived DURING the wait "
+                f"({got.lines_examined} in the log), so this is a bound that expired and not "
+                f"'there was nothing to match against'.{silent} The machine is still running"})
 
 
 # WHY, for the reader of this code (the client gets the docstring above the code):

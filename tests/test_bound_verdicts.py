@@ -153,3 +153,18 @@ def test_drive_puts_its_check_in_a_verdict_and_an_act_that_ran_out_verifies_noth
     ses.running = False
     out = s.drive(act=[{"op": "registers"}], expect="never")
     assert out["status"] == "INVALID" and out["code"] == "wait_stopped", out
+
+
+def test_a_list_that_waited_mid_way_and_ends_running_carries_no_target(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """`TARGET` says every wait the list made ended at a stop; a list that waited mid-way and
+    then ended with the machine running, nothing declared to stop it, is `still_running` and
+    carries no verdict."""
+    ses = _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(sequence, "STOP_POLL_S", 0.0)
+    ses.stops_after_polls = 2                    # the first resume's stop lands a moment later
+    out = s.perform(steps=[{"op": "resume"}, {"op": "registers"}, {"op": "resume"},
+                           {"op": "status"}], settle_seconds=2.0)
+    assert out["status"] == "ok" and out.get("still_running") is True, out
+    assert "verdict" not in out, out

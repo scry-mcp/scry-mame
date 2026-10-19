@@ -1018,7 +1018,7 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
             final = {"verdict": "TIMEOUT",
                      "note": f"the sequence ended with the machine running and it did not "
                              f"stop within {settle_seconds:g}s"}
-    if waited and "verdict" not in final:
+    if waited and "verdict" not in final and "still_running" not in final:
         final = {"verdict": "TARGET", **final}
     tail = [final["stopped"]] if "stopped" in final else []
     return _Ran(None, "", {**account_of(ran, summaries, keep_last=True, scratch=scratch,
