@@ -32,7 +32,7 @@ def test_a_note_is_added_after_the_one_the_reply_already_carries() -> None:
 def test_an_unread_datum_is_unavailable_with_its_reason() -> None:
     assert mstate.unavailable("the stub refused") == {"available": False,
                                                       "why": "the stub refused"}
-    with pytest.raises(AssertionError):
+    with pytest.raises(TypeError, match="says why"):
         mstate.unavailable(" ")
 
 

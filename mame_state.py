@@ -19,7 +19,7 @@ import subprocess
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, TypeVar, overload
+from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 
 from scry_core import cancel, picture, screen_map
 from scry_core import progress as mprogress
@@ -727,7 +727,8 @@ def hex_addr(addr: int) -> str:
 
 # THE REPLY VOCABULARY OF A REASON: `note` is a reply's note, or a sub-object's, one string;
 # `why` is a row's or a field's reason; a datum that could not be read is `unavailable(why)`
-# in place of its value. One builder for each, so a note is joined one way everywhere.
+# in place of its value, spelled by the contract's builder (`unavailable` below). One builder for
+# each, so a note is joined one way everywhere.
 NOTE_SEPARATOR = "; "
 
 
@@ -746,20 +747,8 @@ def add_note(reply: dict[str, Any], *parts: str | None) -> dict[str, Any]:
     return reply
 
 
-_T = TypeVar("_T")
-
-
-def unavailable(why: str) -> dict[str, Any]:
-    """A datum that could not be read, in place of its value: never a null beside a sibling
-    key, so a reader finds the reason where it looked for the value."""
-    assert why.strip(), "an unread datum says why"
-    return {"available": False, "why": why}
-
-
-def or_unavailable(value: _T | None, why: str) -> _T | dict[str, Any]:
-    """`value`, or `unavailable(why)` in its place when there is none: the one spelling of a
-    datum that does not apply here, so no reply carries a null."""
-    return unavailable(why) if value is None else value
+unavailable = contract.unavailable
+or_unavailable = contract.or_unavailable
 
 
 #: `cfg` when none was given to `start`.
