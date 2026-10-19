@@ -397,7 +397,7 @@ def test_a_regpoint_list_on_a_running_machine_is_dated(
     ses.running = True
     out = s.regpoint_list()
     assert out["session"]["running"] is True and out["last_stop"] == mstate.STATE.as_of()
-    assert out["last_stop"] is not None
+    assert "pc" in out["last_stop"], "dated by a stop the list read at"
 
 
 # ------------------------------------------------------------------ the re-arm at start

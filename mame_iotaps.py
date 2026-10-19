@@ -195,7 +195,8 @@ def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[
     for owner, rec in taps(cpu):
         evaluate = capture.evaluate if rec["mode"] == "capture" else tally.evaluate
         shown = st.ROWS_SHOWN if at_stop or rec["mode"] == "capture" else tally.BUCKETS_MAX
-        out.append({**mspace.shown(owner[0]), "by": "address", "cpu": owner[1],
+        out.append({**mspace.shown(owner[0]), "by": "address",
+                    "cpu": st.or_unavailable(owner[1], st.NO_CPU_READ_WHY),
                     "stored": False, "mode": rec["mode"], "length": rec["width"],
                     "fmt": rec["fmt"],
                     "created_at": st.or_unavailable(rec.get("created_at"), arming.UNDATED_WHY),

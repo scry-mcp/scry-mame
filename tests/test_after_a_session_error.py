@@ -10,7 +10,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 from scry_core import media_tools
@@ -1563,3 +1563,19 @@ def test_a_silent_control_whose_target_removal_is_not_confirmed_says_both_in_one
     assert "never fired" in out["message"] and "may still be armed" in out["note"], out
     assert out["note"].startswith(f"{advance.CONTROL_HINT}; the temporary breakpoint at 0x4a0 "
                                   "may still be armed"), ("both, the hint first, one `; `", out)
+
+
+def test_a_stop_found_on_a_console_that_marks_no_cpu_says_so(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A console with no `cpulist` marks no visible cpu: the stop a contact found carries that
+    as unavailable, as every other stop reply does, never a null."""
+    seen: dict[str, Any] = {"pc": "0x00000400", "cpu": None, "frame": 3, "regs": {}}
+    monkeypatch.setattr(running, "survey", lambda ses, scratch: dict(seen))
+    monkeypatch.setattr(running, "attribute", lambda pc, cpu: "breakpoint")
+    monkeypatch.setattr(running, "run_speed", lambda ses: {})
+    monkeypatch.setattr(running, "_remember", lambda ses, seen, how: (
+        {"seq": 2, "pc": seen["pc"], "cpu": seen["cpu"], "frame": seen["frame"], "how": how,
+         "packet": "S05"}, how))
+    running._found(cast(g.Session, object()), tmp_path, None)
+    found = mstate.STATE.found_stop_last
+    assert found is not None and found["cpu"]["available"] is False, found

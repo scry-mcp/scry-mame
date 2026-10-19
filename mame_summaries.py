@@ -523,7 +523,7 @@ def captures(args: dict[str, Any], reply: dict[str, Any]) -> str:
 # -------------------------------------------------------------------------- sequences
 
 def perform_export(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    cut = f", cut at call {reply['cut']['call']}" if reply.get("cut") else ""
+    cut = f", cut at call {reply['cut']['call']}" if "call" in reply.get("cut", {}) else ""
     return (f"perform_export: {prose.counted(reply['steps'], 'step')}, "
             f"{prose.counted(reply['checks'], 'check')}, "
             f"{reply['dropped_total']} dropped{cut} to {reply['path']}")

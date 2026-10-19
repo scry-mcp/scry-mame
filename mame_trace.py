@@ -40,6 +40,7 @@ from typing import Any, cast
 
 from scry_core import cancel, prose
 from scry_core import progress as mprogress
+from scry_core import sequence_account as account
 
 import gdb_session as gs
 import mame_advance as advance
@@ -381,7 +382,7 @@ def _account(path: Path, set_path: Path, tag: str, mask: int | None, noloop: boo
     survey_pc = reply.get("pc")
     ended = None
     stopped_on = reply.get("cpu")
-    if stopped_on is not None and stopped_on != tag:
+    if isinstance(stopped_on, str) and stopped_on != tag:
         notes.append(f"the run stopped on {stopped_on}, not {tag}, so {tag}'s last line is "
                      "the last instruction it began, which a core that yields mid-instruction "
                      "finishes only after the window")
@@ -407,7 +408,7 @@ def _account(path: Path, set_path: Path, tag: str, mask: int | None, noloop: boo
     if not STATE.table(tag).table:
         notes.append(f"{tag} has no symbol table, so no address is placed")
     rows, summary, unplaced = join(counts, read.placer(tag), noloop)
-    files.write_jsonl(set_path, rows)
+    account.write_jsonl(set_path, rows)
     block: dict[str, Any] = {
         "cpu": tag, "path": str(path), "bytes": size, "set_path": str(set_path),
         "instructions": executed, "addresses": len(rows), "unplaced": unplaced,

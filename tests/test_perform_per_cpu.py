@@ -226,7 +226,8 @@ def test_a_debug_line_that_shows_a_cpu_is_the_cpu_kept_and_one_that_read_none_is
     kept = out["visible_cpu_kept"]
     assert kept["asked"] == SUB and ses.visible_cpu == SUB, kept
     ses.visible_cpu = MAIN
-    ops = _ops(debug={"visible_cpu": None}, focus={"cpu": SUB})
+    ops = _ops(debug={"visible_cpu": {"available": False, "why": "none read"}},
+               focus={"cpu": SUB})
     out = sequence.run_steps(ses, tmp_path, [{"op": "focus", "cpu": "subcpu"},
                                              {"op": "debug", "command": "ignore"}], 1.0,
                              ops)  # type: ignore[arg-type]
@@ -238,7 +239,8 @@ def test_a_reply_whose_cpu_is_unknown_adds_none_to_the_account(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     out = sequence.run_steps(ses, tmp_path, [{"op": "registers"}], 1.0,
-                             _ops(registers={"cpu": None}))  # type: ignore[arg-type]
+                             _ops(registers={"cpu": {"available": False,
+                                                     "why": "none read"}}))  # type: ignore[arg-type]
     assert "cpu" not in out["ran"][0], out["ran"]
 
 

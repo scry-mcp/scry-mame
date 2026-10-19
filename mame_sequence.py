@@ -28,6 +28,7 @@ from typing import Any
 from scry_core import media_tools, prose, recording
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import sequence_account as account
 from scry_core import value_format as vf
 
 import gdb_session as gs
@@ -325,7 +326,9 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
             # THE VOCABULARY IS NAMED ONCE, in the reply's own `operations` field, never inside
             # the message: a message is repeated in `errors`, in the joined refusal and in the
             # summary, and a list of every operation in each copy buries the one step that failed.
-            refused.append({"step": i, "op": op, "code": "bad_argument",
+            refused.append({"step": i,
+                            "op": st.or_unavailable(op, "the step names no `op`"),
+                            "code": "bad_argument",
                             "message": f"is not a step ({step!r}): see `operations` for the "
                                        "server's own operation names"})
             continue
@@ -505,7 +508,7 @@ def refuse_steps(steps: list[Any], ops: Ops) -> dict[str, Any] | None:
     refused = preflight(steps, ops)
     if not refused:
         return None
-    unknown_op = any(e["op"] not in ops for e in refused)
+    unknown_op = any(not isinstance(e["op"], str) or e["op"] not in ops for e in refused)
     return _list_refused("bad_argument", refused,
                          **({"operations": sorted(ops)} if unknown_op else {}))
 
@@ -663,122 +666,38 @@ def _entry(op: str, reply: dict[str, Any]) -> dict[str, Any]:
             "reply": reply}
 
 
-#: What a compact row keeps of a STOP besides its summary line: where and when it stopped, what
-#: stopped it, and its number, spelled as the full reply spells them.
-_STOP_KEPT = ("how", "pc", "frame", "stop_seq")
+def _stop_extra(reply: dict[str, Any], cut: dict[str, Any]) -> None:
+    """What a stop's compact row keeps beyond its keys: its `watch_hit` without the lists (its
+    `writes`), and its `regpoint_hit`."""
+    if isinstance(hit := reply.get("watch_hit"), dict):
+        cut["watch_hit"] = {k: v for k, v in hit.items() if not isinstance(v, list)}
+    if "regpoint_hit" in reply:
+        cut["regpoint_hit"] = reply["regpoint_hit"]
 
 
-def _is_stop(reply: dict[str, Any]) -> bool:
-    """Whether `reply` is a stop's: every one carries the number `finish_stop` gave it."""
-    return isinstance(reply.get("stop_seq"), int)
-
-
-def _stops_in(reply: dict[str, Any]) -> list[dict[str, Any]]:
-    """Every stop `reply` surveys: its own, and the one the machine reached on its own that
-    this contact found and recorded (`stopped_on_its_own`), which carries its number too."""
-    found = reply.get("stopped_on_its_own")
-    return [r for r in (reply, found) if isinstance(r, dict) and _is_stop(r)]
-
-
-def _brief(entry: dict[str, Any], step: int) -> dict[str, Any]:
-    """A step's COMPACT ROW: its index in the list, its op and cpu, and its reply cut to the
-    line the client paints and the verdict (`summary`, every tool's first field; `status`,
-    what a caller reading `ran[i]["reply"]["status"]` still finds). A STOP keeps what makes
-    it one: `_STOP_KEPT`, its `watch_hit` and its `regpoint_hit`. The rule is the stop without
-    its lists (`regs`, `dasm`, `errorlog`, `watches`, a hit's `writes`), which stay in the
-    full reply."""
-    reply = entry["reply"]
-    cut = {"summary": reply.get("summary"), "status": reply.get("status")}
-    if _is_stop(reply):
-        cut.update({k: reply.get(k) for k in _STOP_KEPT})
-        if isinstance(hit := reply.get("watch_hit"), dict):
-            cut["watch_hit"] = {k: v for k, v in hit.items() if not isinstance(v, list)}
-        if "regpoint_hit" in reply:
-            cut["regpoint_hit"] = reply["regpoint_hit"]
-    if "stopped_on_its_own" in reply:
-        cut["stopped_on_its_own"] = reply["stopped_on_its_own"]
-    return {"step": step, **{k: v for k, v in entry.items() if k != "reply"}, "reply": cut}
-
-
-def _stops(replies: list[dict[str, Any]], first: int, last: int) -> dict[str, Any]:
-    """THE MACHINE'S COUNT OF THE STOPS it numbered from `first` to `last`, so no reader has to
-    assemble one: the range, the stops the replies surveyed in it, a count per `how` with the
-    writer taken off (`mame_watches.how_key`: one watch is one key, whoever wrote), and
-    `unaccounted`, the stops numbered in the range that no reply surveyed. That one is
-    reported and never refused: a stop a refusing reader took, or one a console command
-    released the machine to, is real. The range runs from the session's counter before the
-    call to the newer of its counter after it and the newest stop a reply carries, so a stop
-    numbered after the last one surveyed counts too, and so do the surveyed ones when the
-    record was cleared. No stop numbered is `null` for both ends."""
-    seen: dict[int, str] = {}
-    for reply in replies:
-        for stop in _stops_in(reply):
-            seq = int(stop["stop_seq"])
-            if first <= seq <= last:
-                seen[seq] = watches.how_key(str(stop.get("how")))
-    by_how: dict[str, int] = {}
-    for how in seen.values():
-        by_how[how] = by_how.get(how, 0) + 1
-    numbered = last >= first
-    unnumbered = st.unavailable("no stop was numbered in the list")
-    return {"stop_seq_first": first if numbered else unnumbered,
-            "stop_seq_last": last if numbered else unnumbered, "surveyed": len(seen),
-            "by_how": by_how, "unaccounted": last - first + 1 - len(seen) if numbered else 0}
-
-
-def _files(scratch: Path, rows: list[dict[str, Any]],
-           replies: list[dict[str, Any]]) -> dict[str, Any]:
-    """The two files of a batch with summaries, numbered per call. They are written after every
-    step ran, so the machine has already moved: a scratch that refuses them costs the files,
-    said where each path would be (`st.unavailable`), and never the account beside them."""
-    stem = scratch / f"batch-{STATE.next_number('batches')}"
-    ran_path = stem.with_suffix(".ran.jsonl")
-    try:
-        return {"ran_path": files.write_jsonl(ran_path, rows),
-                "replies_path": files.write_jsonl(stem.with_suffix(".replies.jsonl"), replies)}
-    except OSError as e:
-        # THE PAIR OR NEITHER: a first file the reply does not name is one nobody finds.
-        ran_path.unlink(missing_ok=True)
-        return {"ran_path": st.unavailable(str(e)), "replies_path": st.unavailable(str(e))}
+#: THIS SERVER'S HALF OF THE ACCOUNT (`scry_core.sequence_account`): a stop's compact row keeps
+#: where and when it stopped, what stopped it and its number, spelled as the full reply spells
+#: them, and is counted by `how` with the writer taken off (one watch is one key, whoever
+#: wrote). The rule is the stop without its lists (`regs`, `dasm`, `errorlog`, `watches`, a
+#: hit's `writes`), which stay in the full reply.
+SHAPE = account.Shape(kept=("how", "pc", "frame", "stop_seq"),
+                      how=lambda stop: watches.how_key(str(stop.get("how"))),
+                      extra=_stop_extra)
+_stops_in = account.stops_in
 
 
 def account_of(ran: list[dict[str, Any]], summaries: bool, keep_last: bool, scratch: Path,
                since: int, also: list[dict[str, Any]] | None = None) -> dict[str, Any]:
-    """`ran` as the reply carries it, and with `summaries` what the machine counted. Without
-    `summaries`, `ran` as it is: each step's full reply.
-
-    With `summaries`, every step is cut to its compact row (`_brief`) except the one that
-    matters, kept whole (`keep_last`): the last of a list that completed, whose stop is the one
-    the list was heading for, and the step that left the machine running when a console step
-    could not follow it, whose `session.running` and `waited_s` say so. A list that failed at a step
-    keeps that step whole under `failed`, so nothing in `ran` is the one that matters then.
-    `ran` shows the FIRST `ROWS_SHOWN` compact rows and the kept step, with `steps_total` and
-    `truncated`; every step's compact row goes to `ran_path` and its full reply to
-    `replies_path`, JSON Lines in the scratch, numbered per call so two calls never share a
-    file. `stops` is `_stops` over the stops the session numbered since `since`, read off the
-    steps' replies and `also`'s (the step that failed, the stop the tail waited for), which
-    are whole in the reply and not in the files.
-
-    WHY: a series of captures a frame apart is a `run_for` and a `snapshot` per capture, and
-    each `run_for` carries registers, a listing and the watches, so the reply crossed the
-    client's ceiling and had to be saved and queried for the few fields that mattered; cut to
-    a summary line, it lost every stop's hit, and the count a reader then assembled was the
-    number that came out wrong."""
-    if not summaries:
-        return {"ran": ran}
-    rows = [_brief(r, i) for i, r in enumerate(ran)]
-    briefed = len(ran) - 1 if keep_last and ran else len(ran)
-    shown = rows[:min(briefed, st.ROWS_SHOWN)] + [{"step": i, **ran[i]}
-                                                   for i in range(briefed, len(ran))]
-    replies = [r["reply"] for r in ran] + (also or [])
-    # THE RANGE ENDS AT THE NEWEST STOP ANY REPLY CARRIES, or at the record's if that is newer:
-    # a session buried mid-list clears the record, and a range read off it alone would then
-    # hide the stops the rows above still show.
-    last = max([int(STATE.last_stop.get("seq", 0))]
-               + [int(stop["stop_seq"]) for r in replies for stop in _stops_in(r)])
-    return {"ran": shown, "steps_total": len(ran), "truncated": briefed > st.ROWS_SHOWN,
-            **_files(scratch, rows, [{"step": i, **r} for i, r in enumerate(ran)]),
-            "stops": _stops(replies, since + 1, last)}
+    """`ran` as the reply carries it, and with `summaries` what the machine counted
+    (`scry_core.sequence_account.account`): the kept step is the one that matters, the last of
+    a list that completed, whose stop is the one the list was heading for, and the step that
+    left the machine running when a console step could not follow it, whose
+    `session.running` and `waited_s` say so; a list that failed at a step keeps that step whole
+    under `failed`. The files go to the scratch, numbered per call."""
+    return account.account(ran, summaries, keep_last, since,
+                           int(STATE.last_stop.get("seq", 0)), SHAPE,
+                           lambda: scratch / f"batch-{STATE.next_number('batches')}", also,
+                           rows_shown=st.ROWS_SHOWN)
 
 
 def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,

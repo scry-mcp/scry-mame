@@ -2243,19 +2243,21 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
          "linear": "0x0000ce34", "symbol": "DEMOSTATE", "delta": 0x404},
     ], "only the one direct operand resolves; the register-relative ones are left alone"
     # TWO RELOCATED CLASSES answer one entry each per operand, and a class with no symbol
-    # below the address answers `symbol: null` rather than another class's name.
+    # below the address answers `symbol` unavailable rather than another class's name.
     use_table(monkeypatch, bases={"DATA": 0x400, "OTHER": 0x20000})
+    none_below = {"available": False, "why": "no symbol of class OTHER lies at or below it"}
     out = s.disassemble("0xf5e2f", length=48)
     assert [(r["class"], r["linear"], r["symbol"], r["delta"]) for r in out["resolved"]] == [
-        ("DATA", "0x0000ce34", "DEMOSTATE", 0x404), ("OTHER", "0x0002ca34", None, None)]
+        ("DATA", "0x0000ce34", "DEMOSTATE", 0x404), ("OTHER", "0x0002ca34", none_below, none_below)]
     # AN EMPTY TABLE still resolves the address: the symbol is what is missing, not the base.
     use_table(monkeypatch, table={})
     use_table(monkeypatch, classes={})
     use_table(monkeypatch, bases={"DATA": 0x400})
     out = s.disassemble("0xf5e2f", length=48)
+    below = {"available": False, "why": "no symbol of class DATA lies at or below it"}
     assert out["resolved"] == [{"line": 21, "operand": "0CA34h", "offset": 0xCA34,
-                                "class": "DATA", "linear": "0x0000ce34", "symbol": None,
-                                "delta": None}]
+                                "class": "DATA", "linear": "0x0000ce34", "symbol": below,
+                                "delta": below}]
     # THE CONTROL: a board with no bases (a 68000 with a YAML table) carries no `resolved`
     # at all, rather than an empty list that reads as "nothing to resolve here".
     use_table(monkeypatch, bases={})

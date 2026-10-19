@@ -2077,8 +2077,8 @@ def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
     `path` absolute or `~`-led, ending `.json`; refused if it is there unless `overwrite`.
 
     Reply: `path`, `steps`, `checks`, `dropped` (the last {DROPPED_SHOWN}, each `call`, `op`,
-    `why`) and `dropped_total`, `cut` (`call`, `op`, `why`, or null) and `replay`, the runner's
-    command line. `no_recording` before a `start` succeeded, after one was cancelled, or
+    `why`) and `dropped_total`, `cut` (`call`, `op`, `why`, or unavailable) and `replay`, the
+    runner's command line. `no_recording` before a `start` succeeded, after one was cancelled, or
     when no recorded call is a step a replay could take.
 
     Reference: REFERENCE.md, From an investigation to a bench.

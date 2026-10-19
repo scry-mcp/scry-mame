@@ -58,6 +58,9 @@ ANSWERED = [
 ]
 
 
+#: A refused command the console's answer does not place, as the reply spells it.
+UNPINNED = {"available": False, "why": "the console's answer does not say which command it was"}
+
 def _console(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, answers: dict[str, str]) -> object:
     """A running double whose console answers the captured text for the lines named, and
     what the double answers on its own for the rest (the survey's own reads)."""
@@ -182,7 +185,8 @@ def test_a_pinned_parse_error_keeps_its_not_run_beside_errors_that_could_not_be_
     ses = _console(monkeypatch, tmp_path, {line: captured("refused.two-unpinned-then-parse.txt")})
     out = s.debug(command=line)
     assert out["code"] == "bad_argument" and "running" not in out, out
-    assert [r["index"] for r in out["refused"]] == [None, None, 2] and out["refused_total"] == 3
+    assert [r["index"] for r in out["refused"]] == [UNPINNED, UNPINNED, 2], out
+    assert out["refused_total"] == 3
     assert out["not_run"] == ["g"] and getattr(ses, "running") is False  # noqa: B009
     assert out["mutates"] is False
 
@@ -207,7 +211,7 @@ def test_the_bare_comparison_is_an_expression_to_the_console_and_judged_by_mames
     `print d1==1234` is pinned on itself."""
     out = _refused(monkeypatch, tmp_path, "refused.assign-then-comparison",
                    "d1=1234;print d1==1234")
-    assert out["refused"][0]["index"] is None and "could not be told" in out["message"]
+    assert out["refused"][0]["index"] == UNPINNED and "could not be told" in out["message"]
     assert out["not_run"] == [] and out["mutates"] is True and out["session"]["altered"] is True
     assert console.is_expression("print d1==1234") and not console.is_expression("print {d1==1234}")
     assert console.is_expression("do d0=1") and console.is_expression("d0++")
@@ -218,7 +222,7 @@ def test_the_bare_comparison_is_an_expression_to_the_console_and_judged_by_mames
 def test_two_malformed_assignments_on_one_line_cannot_be_pinned(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     out = _refused(monkeypatch, tmp_path, "refused.assignment-two", "d0=;d1=")
-    assert out["refused"][0]["index"] is None and out["refused"][0]["command"] is None
+    assert out["refused"][0]["index"] == UNPINNED and out["refused"][0]["command"] == UNPINNED
     assert out["not_run"] == [] and "could not be told" in out["message"]
 
 
@@ -246,8 +250,8 @@ def test_an_error_that_cannot_be_pinned_names_the_line_and_counts_every_command(
     neither says which, so each names the whole line and nothing is left uncounted."""
     out = _refused(monkeypatch, tmp_path, "refused.bpclear-two", "bpclear 0x7;bpclear 0x8")
     assert "could not be told from the answer" in out["message"], out["message"]
-    assert [r["index"] for r in out["refused"]] == [None, None] and out["refused_total"] == 2
-    assert out["refused"][0]["command"] is None
+    assert [r["index"] for r in out["refused"]] == [UNPINNED, UNPINNED], out
+    assert out["refused_total"] == 2 and out["refused"][0]["command"] == UNPINNED
 
 
 def test_the_refusal_fields_are_bounded_like_output_is() -> None:

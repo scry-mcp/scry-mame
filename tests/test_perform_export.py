@@ -46,7 +46,7 @@ def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
     s.status()
     s.comment_add(ref="0x4a0", text="the loop")
     out = s.perform_export(path=str(tmp_path / "s.json"))
-    assert out["status"] == "ok" and out["cut"] is None, out
+    assert out["status"] == "ok" and out["cut"]["available"] is False, out
     doc = json.loads((tmp_path / "s.json").read_text())
     assert doc["server"] == "mame" and doc["start"] == {"system": "board"}
     assert [st["op"] for st in doc["steps"]] == ["write", "registers", "read_memory"]

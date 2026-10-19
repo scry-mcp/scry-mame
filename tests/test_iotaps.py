@@ -426,3 +426,16 @@ def test_a_port_is_judged_by_the_io_bus_and_never_by_the_program_buss_width(
         {"cpu": ":maincpu", "space": "io", "data_width_bits": io_width}]})
     out = s.watch_add(ref=f"{port:#x}", mode="count", length=length, space="io")
     assert (out["status"] == "INVALID") is splits, out
+
+
+def test_an_io_tap_on_no_named_cpu_lists_its_cpu_as_unavailable(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A tap armed while `cpulist` marked no cpu has no cpu to name: its row says so, as every
+    row of a watch does, never a null."""
+    _io_board(monkeypatch, tmp_path)
+    s.watch_add(ref="0x6", mode="count", length=2, space="io")
+    ((_owner, rec),) = mstate.STATE.tallies.items()
+    monkeypatch.setattr(mstate.STATE, "tallies", {("0x6@io", None): rec})
+    (row,) = [w for w in s.watch_list()["watches"] if w.get("space") == "io"]
+    assert row["cpu"]["available"] is False, row

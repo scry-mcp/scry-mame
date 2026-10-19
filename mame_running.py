@@ -234,7 +234,7 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
                  *iotaps.rows(frame, at_stop=True)]
     if evaluated:
         seen["watches"] = evaluated
-    if watched is not None:
+    if watched is not None and watched[1] is not None:
         seen["watch_hit"] = watched[1]
     return seen
 
@@ -426,7 +426,8 @@ def _found(ses: gs.Session, scratch: Path, packet: str | None) -> None:
     seen = survey(ses, scratch)
     record, _how = _remember(ses, seen, attribute(int(seen["pc"], 16), seen["cpu"]))
     STATE.found_stop_last = {"stop_seq": record["seq"], "pc": record["pc"],
-                             "cpu": record["cpu"], "frame": st.frame_shown(record["frame"]),
+                             "cpu": st.or_unavailable(record["cpu"], st.NO_CPU_READ_WHY),
+                             "frame": st.frame_shown(record["frame"]),
                              "how": record["how"],
                              "packet": record["packet"] if packet is None else packet,
                              **run_speed(ses)}
@@ -475,9 +476,10 @@ def require_stopped(ses: gs.Session, what: str) -> None:
     as something that was not hex."""
     if ses.running:
         stop = STATE.as_of()
-        on = f" on {stop['cpu']}" if stop and stop.get("cpu") else ""
+        stopped = "pc" in stop
+        on = f" on {stop['cpu']}" if stopped and isinstance(stop.get("cpu"), str) else ""
         where = (f"last seen stopped at pc {stop['pc']}{on} ({stop['how']}, {stop['since_s']} s "
-                 f"ago)" if stop else "no stop recorded yet")
+                 f"ago)" if stopped else "no stop recorded yet")
         raise gs.NotStopped(
             f"the machine was released and no stop has been read since, so it is taken as "
             f"RUNNING and {what} has no state to answer from; {where}. "

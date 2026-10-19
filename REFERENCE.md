@@ -1747,7 +1747,7 @@ description states and an odd start allowed; the space is the cpu's program spac
 `scan_filter(operator, value)` keeps the cells whose value satisfies `=`, `!`, `>`, `>=`, `<`
 or `<=` (unsigned) against `value`, or, with none, against what each cell held when
 `scan_start` opened the scan, so a cell changed once keeps passing `!` and one written back to
-its opening value stops, as in scry-dosbox-x (whose `iterations` is null for a scan its server did
+its opening value stops, as in scry-dosbox-x (whose `iterations` is unavailable for a scan its server did
 not open, which a scan here cannot be); `scan_clear` ends it. Each read is the console's `save`
 from the first survivor to the last, which at `scan_start` is the whole range (a cell outside
 that span can no longer change the answer), compared in Python: it reads through handlers, where

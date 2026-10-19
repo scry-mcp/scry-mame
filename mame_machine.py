@@ -677,7 +677,7 @@ def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, A
         "counts": {name: len(items) for name, items in rows.items()},
         "truncated": any(len(shown[name]) < len(rows[name]) for name in rows),
         "sources": {n: copy.deepcopy(v) for n, v in chosen["sources"].items() if n in asked},
-        "note": note,
+        **({"note": note} if note is not None else {}),
         **narrowing.omission([n for n in MAP_SECTIONS if n not in asked], MAP_HOW),
     }
     reply = st.merged(reply, read.frame_fields())

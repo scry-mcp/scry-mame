@@ -331,7 +331,7 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
     """Every DIRECT memory operand in a listing, resolved under every class base: the
     operand as printed, its offset, and per class the linear address `read_memory` and
     `watch_add` take and the nearest symbol OF THAT CLASS at or below it, with the distance
-    (`symbol` null when the class has none below it: a routine of another class would be
+    (`symbol` unavailable when the class has none below it: a routine of another class would be
     a plausible name for a datum).
 
     A segmented board prints such an operand as the offset inside its class (the map's
@@ -354,7 +354,8 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
                 linear = base + offset
                 addrs, names = by_class[klass]
                 at = bisect.bisect_right(addrs, linear) - 1
-                symbol, delta = (None, None) if at < 0 else (names[at], linear - addrs[at])
+                below = st.unavailable(f"no symbol of class {klass} lies at or below it")
+                symbol, delta = (below, below) if at < 0 else (names[at], linear - addrs[at])
                 out.append({"line": i, "operand": f"{m.group(1)}h", "offset": offset,
                             "class": klass, "linear": st.hex_addr(linear), "symbol": symbol,
                             "delta": delta})
@@ -474,7 +475,7 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     }
     if class_of is not None:
         reply["symbol_class"] = class_of
-    reply["cpu"] = on
+    reply["cpu"] = st.or_unavailable(on, st.NO_CPU_READ_WHY)
     return menvelope.envelope(reply)
 
 

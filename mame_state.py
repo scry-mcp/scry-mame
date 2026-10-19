@@ -366,11 +366,11 @@ class State:
         unrelated one. The record itself stays (`status` shows it)."""
         self.found_stop_last = {}
 
-    def as_of(self) -> dict[str, Any] | None:
+    def as_of(self) -> dict[str, Any]:
         """The last stop as a dated reference for an answer given while the machine runs,
-        or None when this session has not stopped yet."""
+        unavailable when this session has not stopped yet."""
         if not self.last_stop:
-            return None
+            return unavailable(NO_STOP_YET_WHY)
         return {"stop_seq": self.last_stop["seq"], "pc": self.last_stop["pc"],
                 "cpu": or_unavailable(self.last_stop.get("cpu"), NO_CPU_READ_WHY),
                 "frame": frame_shown(self.last_stop["frame"]),
@@ -510,7 +510,7 @@ class State:
         (the grace period ran out, or none was given), `died` (the process had already exited
         on its own, and `poll` held its code, which is not "no session") or `none` (nothing
         was running);
-        `state_written` is that proof as read (true, false, or null when there was no
+        `state_written` is that proof as read (true, false, or unavailable when there was no
         directory to read it in), `exit_code` is what the process returned, and
         a SIGKILLed process still not reaped has `exit_code` unavailable, its `why` saying so,
         because there was nothing to read, and `close` answers rather than raising.
@@ -750,6 +750,9 @@ def add_note(reply: dict[str, Any], *parts: str | None) -> dict[str, Any]:
 unavailable = contract.unavailable
 or_unavailable = contract.or_unavailable
 
+
+#: `last_stop` before the session's first stop.
+NO_STOP_YET_WHY = "this session has not stopped yet"
 
 #: `cfg` when none was given to `start`.
 NO_CFG_WHY = "no cfg was given, so MAME runs on its defaults"

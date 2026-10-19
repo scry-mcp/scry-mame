@@ -24,13 +24,13 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core import sequence_account  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
 import mame_envelope as menvelope  # noqa: E402
-import mame_files as mfiles  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_lua as mlua  # noqa: E402
 import mame_mcp  # noqa: E402
@@ -1073,29 +1073,17 @@ def test_a_batch_whose_files_cannot_be_written_keeps_its_account(
 ) -> None:
     """The files are written after every step ran, so the machine has already moved: a scratch
     that refuses them costs the files, said with the reason, and never the account."""
-    import mame_files as files
     _cut_by_the_watch(monkeypatch, tmp_path)
 
     def refuses(path: Path, rows: object) -> str:
         raise OSError(28, "No space left on device")
 
-    monkeypatch.setattr(files, "write_jsonl", refuses)
+    monkeypatch.setattr(sequence_account, "write_jsonl", refuses)
     out = s.perform(steps=_runs(2), summaries=True)
     assert out["status"] == "ok" and out["stops"]["surveyed"] == 2, out
     assert out["ran_path"] == out["replies_path"], "the pair or neither"
     assert out["ran_path"]["available"] is False, out["ran_path"]
     assert "No space left" in out["ran_path"]["why"], out["ran_path"]
-
-
-def test_a_row_with_a_lone_surrogate_is_written_as_json(tmp_path: Path) -> None:
-    """A step can echo what the caller typed into its summary, and a lone surrogate does not
-    encode as UTF-8: the rows are written with JSON's own escapes, so every one lands."""
-    import json
-
-    import mame_files as files
-    path = tmp_path / "rows.jsonl"
-    files.write_jsonl(path, [{"summary": "log \ud800"}])
-    assert json.loads(path.read_text(encoding="ascii")) == {"summary": "log \ud800"}
 
 
 @pytest.mark.parametrize("extra", [0, 1])
@@ -1129,9 +1117,9 @@ def test_a_compact_row_keeps_a_registerpoints_hit_and_counts_its_stop_by_its_nam
     reply = {"summary": "resume: halted", "status": "ok", "how": "registerpoint 'd1==7fff'",
              "pc": "0x000f2234", "frame": 9, "stop_seq": 7, "regs": {"D1": "0x7fff"},
              "regpoint_hit": {"ref": "d1==7fff", "index": 1, "cpu": ":maincpu"}}
-    row = sequence._brief({"op": "resume", "reply": reply}, 3)
+    row = sequence_account.brief({"op": "resume", "reply": reply}, 3, sequence.SHAPE)
     assert row["reply"]["regpoint_hit"] == reply["regpoint_hit"] and "regs" not in row["reply"]
-    stops = sequence._stops([reply], 7, 7)
+    stops = sequence_account.stops([reply], 7, 7, sequence.SHAPE)
     assert stops["by_how"] == {"registerpoint 'd1==7fff'": 1} and stops["unaccounted"] == 0
 
 
@@ -1281,14 +1269,14 @@ def test_the_batch_files_are_written_as_a_pair_or_not_at_all(
     """A second file that cannot be written takes the first with it: the reply names neither,
     and a file it does not name is one nobody would find."""
     _frames_and_the_watch(monkeypatch, tmp_path)
-    real = mfiles.write_jsonl
+    real = sequence_account.write_jsonl
 
     def second_fails(path: Path, rows: Any) -> str:
         if path.name.endswith(".replies.jsonl"):
             raise OSError("disk full")
         return str(real(path, rows))
 
-    monkeypatch.setattr(mfiles, "write_jsonl", second_fails)
+    monkeypatch.setattr(sequence_account, "write_jsonl", second_fails)
     out = s.perform(steps=_runs(2), summaries=True)
     assert out["ran_path"] == {"available": False, "why": "disk full"} == out["replies_path"], out
     scratch = mstate.STATE.scratch
@@ -1303,7 +1291,8 @@ def test_until_frame_refuses_a_stop_that_carries_no_frame(
     ses = _frames_and_the_watch(monkeypatch, tmp_path)
 
     def no_frame(**_: Any) -> dict[str, Any]:
-        return menvelope.envelope({"how": "elapsed", "stop_seq": 99, "frame": None,
+        return menvelope.envelope({"how": "elapsed", "stop_seq": 99,
+                                   "frame": mstate.unavailable("no counter"),
                                    "pc": "0x00000000"})
 
     monkeypatch.setattr(s, "run_for", no_frame)

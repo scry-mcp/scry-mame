@@ -15,7 +15,6 @@ MAME's mixer writes, for `audio_record` and for `captures`.
 from __future__ import annotations
 
 import hashlib
-import json
 import os
 import re
 import shutil
@@ -118,14 +117,6 @@ def read_text(name: str, path: str, thing: str, **fields: Any) -> str:
         raise not_utf8(path, e, **fields) from None
     except OSError as e:
         raise unreadable(thing, path, e, **fields) from None
-
-
-def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> str:
-    """`rows` as JSON Lines at `path`, one row a line, and the path as a reply names it. JSON's
-    own escapes keep every row ASCII, so a lone surrogate a caller typed lands as `\\ud800`
-    rather than failing the encoding half-way through the file."""
-    path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="ascii")
-    return str(path)
 
 
 def check_memdump(length: int, dest: str, ref: str = "", **_: Any) -> Path:

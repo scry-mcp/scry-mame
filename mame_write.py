@@ -219,7 +219,8 @@ def reset(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     seen = running.survey(ses, scratch)
     return running.finish_stop(ses, seen, "softreset",
                                kind="softreset", pc=st.hex_addr(pc),
-                               boot_pc=st.hex_addr(boot) if boot is not None else None,
+                               boot_pc=st.hex_addr(boot) if boot is not None else
+                               st.unavailable("`start` read no pc at its park"),
                                verified=boot is not None and pc == boot,
                                frame_at_reset=st.frame_shown(seen["frame"]),
                                **({"taps_across": across} if across else {}))
