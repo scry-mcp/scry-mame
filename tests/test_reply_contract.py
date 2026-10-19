@@ -123,7 +123,8 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_sweep": {"tag": "gfx1"},
     "gfx_draft": {},
     "map_load": {"path": "/nonexistent/x.scry-map.json"},
-    "map_save": {"path": "/nonexistent/x.scry-map.json"},
+    # An absolute path on every host, so what refuses is the empty map, not the spelling.
+    "map_save": {"path": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
     "map_add": {"screen": "s", "match": [[0, 0, 1, 1]]},
 }
 
