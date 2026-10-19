@@ -1330,7 +1330,7 @@ def test_a_relative_or_unusable_state_dir_is_refused_and_leaves_no_scratch(
     rom = tmp_path / "ref.bin"
     rom.write_bytes(bytes(64))
     common = dict(binary=str(binary), system="none", rompath=str(tmp_path), reference_rom=str(rom))
-    refused("ABSOLUTE",
+    refused("must be an absolute path",
     s.start(state_dir="state", **common))
     a_file = tmp_path / "a-file"
     a_file.write_text("not a directory")
@@ -1671,7 +1671,7 @@ def test_memdump_refuses_a_bad_dest_before_touching_the_console(
     commands."""
     ses = _ConsoleSession(bytes(64))
     _console(monkeypatch, tmp_path, ses)
-    refused("ABSOLUTE",
+    refused("must be an absolute path",
     s.memdump("0", length=16, dest="dump.bin"))
     existing = tmp_path / "there.bin"
     existing.write_bytes(b"x")
@@ -1679,7 +1679,7 @@ def test_memdump_refuses_a_bad_dest_before_touching_the_console(
     s.memdump("0", length=16, dest=str(existing)))
     refused("length",
     s.memdump("0", length=0, dest=str(tmp_path / "fresh.bin")))
-    refused("does not exist",
+    refused("is not a directory",
     s.memdump("0", length=16, dest=str(tmp_path / "missing" / "dump.bin")))
     refused("comma",
     s.memdump("0", length=16, dest=str(tmp_path / "a,b.bin")))
@@ -2041,9 +2041,9 @@ def test_snapshot_with_a_dest_moves_the_file_there(
     assert not list((scratch / "snap").iterdir()), "nothing left behind in the scratch"
     refused("exists",
     s.snapshot(dest=str(dest)))
-    refused("ABSOLUTE",
+    refused("must be an absolute path",
     s.snapshot(dest="frame.png"))
-    refused("does not exist",
+    refused("is not a directory",
     s.snapshot(dest=str(tmp_path / "missing" / "frame.png")))
     assert ses.commands == ["snap snapshot-1.png"], "the refusals touched no console"
 
@@ -3099,9 +3099,9 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "memdump-length": lambda: s.memdump(
         ref="0x0", length=0, dest=str(_FRESH.parent / "mame-boundary-probe-never-written.bin")),
     "memdump-relative": lambda: s.memdump(ref="0x0", length=4, dest="relative.bin"),
-    "memdump-tilde": lambda: s.memdump(ref="0x0", length=4, dest="~/probe.bin"),
+    "memdump-nul": lambda: s.memdump(ref="0x0", length=4, dest="/tmp/pro\x00be.bin"),
     "snapshot-relative": lambda: s.snapshot(dest="relative.png"),
-    "snapshot-tilde": lambda: s.snapshot(dest="~/probe.png"),
+    "snapshot-nul": lambda: s.snapshot(dest="/tmp/pro\x00be.png"),
     "record-frames": lambda: s.record(frames=0, dest="/tmp/probe.avi"),
     "record-relative": lambda: s.record(frames=4, dest="relative.avi"),
     "audio_record-frames": lambda: s.audio_record(frames=0, dest="/tmp/probe.wav"),
@@ -3203,7 +3203,7 @@ def test_a_batch_is_refused_whole_before_any_step_runs_even_with_no_machine(
         assert (out["ran"] == []
                 and out["steps_completed"] == 0), "a step ran before the list was refused"
         assert out["failed_at"] == 1, out
-        assert "ABSOLUTE path" in out["errors"][0]["message"], out["errors"][0]
+        assert "must be an absolute path" in out["errors"][0]["message"], out["errors"][0]
 
 
 def test_a_warm_batch_is_also_refused_whole_for_a_later_steps_path(
@@ -5538,7 +5538,7 @@ def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
     refused("comment", s.start(**args, cfg=str(cfg)))
     cfg.write_text(CFG_OK.replace('name="m68k"', 'name="v30"'))
     refused("v30", s.start(**args, cfg=str(cfg)))
-    refused("ABSOLUTE", s.start(**args, cfg="run/cfg/v30.cfg"))
+    refused("must be an absolute path", s.start(**args, cfg="run/cfg/v30.cfg"))
     refused("no such cfg", s.start(**args, cfg=str(tmp_path / "missing.cfg")))
     assert s.status()["alive"] is False, "nothing was spawned"
 
@@ -5593,17 +5593,16 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     assert launch.cfg_parse_error(scratch) == line.strip()
 
 
-def test_a_tilde_path_is_named_as_unexpanded_and_not_as_relative() -> None:
-    """A `~` path is ABSOLUTE to the person who typed it, and nothing here expands it: this
-    argument never goes through a shell. Calling it "relative" and saying "give it
-    absolutely" invites them to retype the same string and meet the same refusal with
-    nothing new, which is a remedy that cannot work."""
-    said = inputs.absolute_hint("~/Code/v30-mame/upstream/v30")
-    assert "RELATIVE" not in said, said
-    assert "~" in said and "expands it" in said, said
-    # The two it must keep telling apart, unchanged.
-    assert "RELATIVE" in inputs.absolute_hint("upstream/v30")
-    assert inputs.absolute_hint("/Users/x/mame") == ""
+def test_a_tilde_path_is_expanded_and_a_relative_one_says_why(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A `~` path is ABSOLUTE to the person who typed it and no shell stands between them and
+    this argument, so the judge expands it; a relative one is refused saying why."""
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+    assert inputs.absolute("binary", "~/mame") == tmp_path / "mame"
+    with pytest.raises(mstate.Invalid, match="must be an absolute path or start with `~`"):
+        inputs.absolute("binary", "upstream/v30")
+    assert inputs.absolute("binary", "/Users/x/mame") == Path("/Users/x/mame")
 
 
 def _refusal_text(fn: Any, *a: Any) -> str:
@@ -5616,17 +5615,11 @@ def _refusal_text(fn: Any, *a: Any) -> str:
 
 
 def test_every_path_refusal_names_the_remedy_and_not_only_the_rule() -> None:
-    """A remedy on `start`'s five paths only, and NOT on the `dest` of
-    `snapshot`/`memdump`/`record`, nor on `cfg`/`state_dir`, leaves those saying "must be an
-    ABSOLUTE path" and stopping there. That names
-    the rule and withholds the fix: a caller who types `~/x.png` is told to give an absolute
-    path, retypes the same string because `~` IS absolute to them, and meets the same
-    refusal with nothing new. One hint, every path, so the two cannot drift apart again."""
-    tilde = _refusal_text(inputs.fresh_dest, "dest", "~/x.png")
-    assert "expands it" in tilde, tilde
-    assert "RELATIVE" not in tilde, tilde
+    """A refusal that only says "must be an absolute path" names the rule and withholds the
+    reason: every path argument says why a relative one is refused, in one sentence."""
     relative = _refusal_text(inputs.fresh_dest, "dest", "snap/x.png")
-    assert "absolutely" in relative, relative
+    assert "would be judged in one directory and used in another" in relative, relative
+    assert "start with `~`" in relative, relative
 
 
 def test_close_lists_its_fields_in_the_order_its_docstring_promises(

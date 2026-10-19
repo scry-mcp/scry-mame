@@ -679,7 +679,7 @@ def gfx_draft(scratch: Path, dest: str = "", choose: dict[str, Any] | None = Non
               ) -> dict[str, Any]:
     """The body of the `gfx_draft` tool: the draft and its report from the evidence."""
     check_gfx_draft(dest, choose)
-    out = Path(dest) if dest else scratch / DRAFT_NAME
+    out = inputs.writable_path("dest", dest) if dest else scratch / DRAFT_NAME
     report = report_path(out)
     _refuse_foreign(out, report)
     recorded, new = _choose(choose) if choose is not None else (None, False)

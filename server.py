@@ -45,7 +45,6 @@ project.
 
 from __future__ import annotations
 
-import functools
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -1365,19 +1364,11 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
 
 
 # THE MEDIA FILE TOOLS are scry-core's, one body and one description for both servers, each
-# registered through this server's own `tool`, its bare fields made a reply by `envelope` as
-# this server's own bodies make theirs; bound here by name so `probe_check` and a direct call
-# find them as they find every other tool.
-def _media_tool(title: str, **kw: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    def register(body: Callable[..., Any]) -> Callable[..., Any]:
-        @functools.wraps(body)
-        def answered(*a: Any, **k: Any) -> dict[str, Any]:
-            return menvelope.envelope(body(*a, **k))
-        return tool(title, **kw)(answered)
-    return register
-
-
-_MEDIA = media_tools.register(_media_tool, media_tools.IMAGE_TOOLS + media_tools.AUDIO_TOOLS)
+# registered through this server's own `tool`, its bare fields made a reply by `envelope` as this
+# server's own bodies make theirs; bound here by name so `probe_check` and a direct call find
+# them as they find every other tool.
+_MEDIA = media_tools.register(tool, media_tools.IMAGE_TOOLS + media_tools.AUDIO_TOOLS,
+                              menvelope.envelope)
 image_diff = _MEDIA["image_diff"]
 series_diff = _MEDIA["series_diff"]
 region_track = _MEDIA["region_track"]

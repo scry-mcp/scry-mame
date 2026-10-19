@@ -53,7 +53,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scry_core import picture, png
+from scry_core import fresh, png
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -62,7 +62,6 @@ import mame_chunk as chunk
 import mame_cpus as cpus
 import mame_declarations as dec
 import mame_envelope as menvelope
-import mame_files as files
 import mame_inputs as inputs
 import mame_iotaps as iotaps
 import mame_lua as mlua
@@ -262,13 +261,6 @@ end
 """
 
 
-def _film_dir(scratch: Path, film_dir: Path | None) -> Path:
-    """Where the film's files go, not made yet: `arm` makes it once nothing can refuse."""
-    if film_dir is not None:
-        return film_dir
-    return files.first_free(scratch, lambda number: f"film-{number}")
-
-
 def arm(ses: gs.Session, scratch: Path, trigger: str, length: int, value: int | None,
         changed: bool, pc: str, cpu: str, frames: int, keep: int, crop: list[int] | None,
         dest_path: Path | None, seconds: float, progress: mprogress.Progress,
@@ -321,20 +313,24 @@ def arm(ses: gs.Session, scratch: Path, trigger: str, length: int, value: int | 
     if crop is not None:
         mscreen.inside(cap, crop[0], crop[1], crop[2], crop[3], "crop", common)
     mismatch = mmismatch.measure(cap, snap, snap_w, snap_h)
-    film = Film(trigger.strip(), trig, length, value, pc.strip(), pc_addr, on, frames, keep,
-                (crop[0], crop[1], crop[2], crop[3]) if crop else None,
-                _film_dir(scratch, dest_path), cap.tag, cap.width, cap.height,
-                float(m.group(5)), mismatch is None, mmismatch.why(mismatch), changed, space,
-                mismatch)
-    owner: dec.Owner = (OWNER, on)
-    head = film.dir / "film.txt"
-    # THE FILM'S FILES ARE NOT THE TAP'S: they stay when it is removed, as the tool says, and a
-    # later film writes to a directory of its own, so none of them can be read as its numbers
-    sent = mtap.send_tap(scratch, owner, FILM_ID,
-                         install_script(film, head), REGISTRY,
-                         [], addr=trig, width=length, path=head, film=film, cells={},
-                         refused={}, anim_kept=-1)
-    film.dir.mkdir()               # made now, so an arming refused above leaves nothing behind
+    where = fresh.directory(dest_path, scratch, lambda number: f"film-{number}", "the film")
+    # MADE BEFORE THE INSTALL NAMES IT, and taken away again if the install is refused, so a
+    # refused arming leaves nothing behind
+    with fresh.taken_back(where):
+        film = Film(trigger.strip(), trig, length, value, pc.strip(), pc_addr, on, frames, keep,
+                    (crop[0], crop[1], crop[2], crop[3]) if crop else None,
+                    where, cap.tag, cap.width, cap.height,
+                    float(m.group(5)), mismatch is None, mmismatch.why(mismatch), changed, space,
+                    mismatch)
+        owner: dec.Owner = (OWNER, on)
+        head = film.dir / "film.txt"
+        # THE FILM'S FILES ARE NOT THE TAP'S: they stay when it is removed, as the tool says,
+        # and a later film writes to a directory of its own, so none of them can be read as
+        # its numbers
+        sent = mtap.send_tap(scratch, owner, FILM_ID,
+                             install_script(film, head), REGISTRY,
+                             [], addr=trig, width=length, path=head, film=film, cells={},
+                             refused={}, anim_kept=-1)
     # THE INSTALL'S OWN ACCOUNT under names of its own: the chunk's account (`call`,
     # `lines_ahead`) rides beside it in the same reply
     fields = {"armed_now": True, "film": film.fields(), "trigger_maps_to": maps_to,
@@ -834,7 +830,7 @@ def read_film(scratch: Path, first: int) -> dict[str, Any]:
     composed = msheet.compose(lay, [(labels(c, film), c.rgb) for c in page])
     sheet = film.dir / f"sheet-{first}.png"
     sheet.unlink(missing_ok=True)
-    fields["image"] = picture.publish(composed, 0, sheet, scratch, "sheet", STATE.record_image)
+    fields["image"] = st.publish(composed, 0, sheet, scratch, "sheet")
     if rec["anim_kept"] != len(cells):
         rec["animation"] = animation(film, cells)
         rec["anim_kept"] = len(cells)

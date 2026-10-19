@@ -8,9 +8,7 @@ docstring it registers, and a placeholder nothing fills fails the import.
 
 from __future__ import annotations
 
-import re
-
-from scry_core import picture, recording, series
+from scry_core import docs, picture, recording, series
 
 import mame_advance as advance
 import mame_blits as mblits
@@ -49,16 +47,13 @@ STOP_FIELDS = (
     "`why`), `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or "
     "`regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine)"
 )
-# The picture's two sentences are scry-core's, the same on both servers.
-PICTURE = picture.DESCRIBED
-PICTURE_ARGS = picture.ARGUMENTS
 CPU_READS = (
     "Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); "
     "a build without it serves its first cpu alone, whatever is visible, and refuses another "
     "(`bad_argument`)"
 )
 NUMBER_ARG = "an integer or a `0x` string"
-DEST_FILE = f"absolute, in a directory that exists, with {inputs.PATH_CHARS}"
+DEST_FILE = f"absolute or `~`-led, in a directory that exists, with {inputs.PATH_CHARS}"
 SPACE_BOUND = (
     "A range whose last byte lies past that cpu's program space (the address mask `start` "
     "read) is `bad_argument` naming the mask; with no mask known the range is the console's"
@@ -72,7 +67,8 @@ DOC_VALUES: dict[str, str] = {
     "SPACE_BOUND": SPACE_BOUND, "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
     "BREAKPOINT_MATCH": dec.REF_MATCH["breakpoint"], "WATCH_MATCH": dec.REF_MATCH["watch"],
     "REGPOINT_MATCH": dec.REF_MATCH["regpoint"],
-    "PICTURE": PICTURE, "PICTURE_ARGS": PICTURE_ARGS,
+    # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
+    **picture.DOC_VALUES, **series.DOC_VALUES,
     "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
     "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(recording.RECORD_MAX),
     "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
@@ -94,7 +90,6 @@ DOC_VALUES: dict[str, str] = {
     "READ_MAX": str(read.READ_MAX), "LIST_MAX": str(read.LOG_LIMIT_MAX),
     "SYMBOLS_MAX": str(read.SYMBOLS_LIMIT_MAX), "HISTORY_MAX": str(read.HISTORY_MAX),
     "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "STEP_MAX": str(advance.step_max()),
-    "SERIES_MAX": str(series.SERIES_MAX),
     "WAIT_MAX_S": f"{inputs.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX), "STATE_NAME_MAX": str(savestates.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
@@ -107,15 +102,8 @@ DOC_VALUES: dict[str, str] = {
     "NOLOOP_MS_MAX": str(mtrace.NOLOOP_MILLISECONDS_MAX),
     "TRACE_SYMBOLS_SHOWN": str(mtrace.SYMBOLS_SHOWN),
 }
-_PLACEHOLDER = re.compile(r"\{[A-Z][A-Z0-9_]*\}")
 
 
 def filled(name: str, doc: str) -> str:
-    """`doc` with every `{NAME}` of `DOC_VALUES` filled, or a failure at import naming what is
-    left: a placeholder that reaches a client reads as a word, not as a number that is missing."""
-    for key, value in DOC_VALUES.items():
-        doc = doc.replace("{" + key + "}", value)
-    left = _PLACEHOLDER.findall(doc)
-    if left:
-        raise TypeError(f"{name}'s docstring names {left}, which nothing fills")
-    return doc
+    """`doc` with this server's `DOC_VALUES` filled (`scry_core.docs.filled`)."""
+    return docs.filled(name, doc, DOC_VALUES)

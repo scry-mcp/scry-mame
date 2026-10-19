@@ -258,6 +258,17 @@ def _comment_source() -> str:
 
 #: TOOL -> a valid call, built fresh each time (a `dest` or a state name is new per call). Every
 #: wait is inside the ceiling.
+
+def _exported(r: dict[str, Any]) -> bool:
+    """A `perform_export` reply that wrote what it says: its file is `perform`'s own document,
+    holding the steps it counts."""
+    try:
+        doc = json.loads(Path(str(r.get("path"))).read_text())
+    except (OSError, ValueError):
+        return False
+    return (isinstance(r.get("steps"), int) and r["steps"] >= 1
+            and isinstance(doc, dict) and len(doc.get("steps") or []) == r["steps"])
+
 PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "start": lambda: {**BOOT, "symbols": SYMBOLS},
     "status": dict,
@@ -327,6 +338,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "drive": lambda: {"act": [{"op": "run_for", "frames": 1, "seconds": 10.0}],
                       "settle_seconds": 2.0},
     "perform": lambda: {"steps": [{"op": "registers"}], "settle_seconds": 2.0},
+    "perform_export": lambda: {"path": fresh(".json")},
     "debug": lambda: {"command": "print pc"},
     "lua": lambda: {"script": "print(1)", "read_only": True},
     "input": lambda: {"port": ":P1", "field": "Coin 1", "frames": 1, "seconds": 10.0},
@@ -346,7 +358,7 @@ RUNNING_ANSWERS = {"status", "log", "log_wait", "snapshot", "symbols_find", "thr
                    "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
                    "regpoint_clear", "comment_list", "comment_save", "state_list", "captures",
                    "machine_map", "cpu_info", "gfx_load", "palette_log", "gfx_film", "scan_clear",
-                   "stop", "close"}
+                   "perform_export", "stop", "close"}
 
 #: The fields a valid call's reply must carry on a STOPPED machine, one predicate per tool,
 #: each from that tool's own `Reply:` paragraph.
@@ -416,6 +428,7 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "log": lambda r: isinstance(r.get("lines_total"), int),
     "drive": lambda r: r.get("act", {}).get("steps_completed") == 1,
     "perform": lambda r: r.get("steps_completed") == 1,
+    "perform_export": _exported,
     "debug": lambda r: isinstance(r.get("output"), str),
     "lua": lambda r: r.get("output") == "1\n",
     "input": lambda r: r.get("released") is True,
@@ -491,6 +504,11 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
             good = ok(r) and r.get("closed") is False and r.get("ended_by") == "none"
         elif tool == "start":
             good = ok(r) and r.get("rom_check") == "OK"
+        elif tool == "perform_export":
+            # Nothing is recorded before the first `start`; after `close` the closed session's
+            # recording is still the last one, and it exports with no machine.
+            good = (refused(r, "no_recording") if state == "none"
+                    else ok(r) and _exported(r))
         else:
             good = refused(r, "no_session")
         agrees = session_is(r, tool == "start", False)
@@ -507,6 +525,8 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     else:
         if tool == "start":
             good = refused(r, "session_live")
+        elif tool == "perform_export":
+            good = refused(r, "no_recording") and "cut at call 1" in str(r.get("message"))
         elif tool in RUNNING_ANSWERS:
             good = ok(r) and RUNNING_SAYS[tool](r)
         elif tool in ("perform", "drive"):
@@ -567,7 +587,8 @@ STOPPED_ORDER = [
     "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
     "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "series_capture",
     "trace", "step", "input", "record", "audio_record", "memdump", "state_save", "state_load",
-    "reset", "throttle", "perform", "drive", "log_wait", "stop", "start", "resume", "close"
+    "reset", "throttle", "perform", "drive", "perform_export", "log_wait", "stop", "start",
+    "resume", "close"
 ]
 RUNNING_ORDER = (
     [t for t in STOPPED_ORDER if t not in RUNNING_ANSWERS and t not in ("start", "resume")]
@@ -575,7 +596,7 @@ RUNNING_ORDER = (
        "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list", "watch_clear",
        "regpoint_add", "regpoint_list", "regpoint_clear", "comment_list", "comment_save",
        "state_list", "captures", "machine_map", "cpu_info", "gfx_load", "palette_log",
-       "gfx_film", "scan_clear", "resume",
+       "gfx_film", "scan_clear", "perform_export", "resume",
        "start",
        "stop", "close"])
 # NO SESSION, and AFTER `close`: every tool but the two that end the state go first, then

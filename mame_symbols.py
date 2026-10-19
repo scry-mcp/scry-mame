@@ -14,6 +14,7 @@ import hashlib
 from dataclasses import dataclass, replace
 from pathlib import Path
 
+from scry_core import judges
 from scry_core import value_format as vf
 
 import gdb_session as gs
@@ -29,6 +30,13 @@ Given = str | dict[str, str]
 Bases = dict[str, str] | dict[str, dict[str, str]]
 #: `types` beside one path, or one file per cpu beside a mapping.
 Types = str | dict[str, str]
+
+
+def expanded(files: Given) -> Given:
+    """`files` (one path, or one per cpu) with each `~` expanded (`judges.expanded`)."""
+    if isinstance(files, dict):
+        return {cpu: judges.expanded(path) for cpu, path in files.items()}
+    return judges.expanded(files)
 
 
 def is_mapping(symbols: Given) -> bool:

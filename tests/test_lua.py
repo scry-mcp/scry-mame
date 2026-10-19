@@ -46,6 +46,9 @@ import mame_transport as transport  # noqa: E402
 import mame_write as mwrite  # noqa: E402
 import server as s  # noqa: E402
 
+#: How the one refusal of a relative path begins (scry-core's judge).
+R_ABS = "must be an absolute path"
+
 FIXTURES = Path(__file__).parent / "fixtures"
 CONSOLE = (FIXTURES / "console.stdout").read_bytes()
 MARKS = (FIXTURES / "console.error.log").read_text().splitlines()
@@ -808,7 +811,7 @@ def test_record_refuses_a_missing_file_a_wrong_header_and_fewer_than_two_frames(
     out = refused("cannot end a recording on the call that begins it", s.record(frames=1))
     assert out["code"] == "bad_argument"
     refused("frames=0 is below 2: the frame notifier cannot end", s.record(frames=0))
-    refused("ABSOLUTE", s.record(frames=2, dest="rel.avi"))
+    refused(R_ABS, s.record(frames=2, dest="rel.avi"))
 
 
 def test_record_raised_or_cut_short_is_said_in_the_consoles_words_or_as_still_open(

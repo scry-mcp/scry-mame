@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import narrowing
+from scry_core import judges, narrowing
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -152,7 +152,7 @@ def reference_rom_file(reference_rom: str) -> Path:
     one, and the sentence lives here so the two cannot say it differently."""
     ref = inputs.input_file("reference_rom", reference_rom, "reference ROM")
     if not os.access(ref, os.R_OK):
-        raise st.Invalid("bad_argument", f"the reference ROM {reference_rom} is not readable")
+        raise st.Invalid("bad_argument", f"the reference ROM {ref} is not readable")
     return ref
 
 
@@ -599,7 +599,7 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
                 state_dir: str = "", cfg: str = "", types: syms.Types = "", display: str = "",
                 **_: Any) -> None:
     """`start`'s machine-independent half, asked by `judge` first: the shape of every path
-    argument (`inputs.absolute`: absolute, no `~` nobody expands, no NUL and no lone surrogate)
+    argument (`inputs.absolute`: absolute or `~`-led, no NUL and no lone surrogate)
     in the order `judge` reads them, and `display`'s word, which is wrong on any machine.
     Whether each file is there, and what it holds, is the host's, and `judge`'s."""
     if binary:          # empty climbs `mame_binary`'s ladder, which judges what it lands on
@@ -650,8 +650,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     # A MISSING ROM DIRECTORY IS THE WORST SHAPED FAILURE IF IT REACHES MAME: it starts without
     # its ROMs, the gdbstub never listens, and the caller waits the whole `seconds` to be told
     # the STUB did not answer.
-    if not inputs.absolute("rompath", rompath).is_dir():
-        inputs.no_such("ROM directory", rompath)
+    if not (roms := inputs.absolute("rompath", rompath)).is_dir():
+        inputs.no_such("ROM directory", str(roms))
     if display and not shared:
         raise st.Invalid("bad_argument",
             f"display={display!r} on a quick run: nobody is watching a quick run, so it never "
@@ -994,6 +994,13 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
     as if the caller had called `start` again: nothing of a failed attempt is reused but its
     evidence, which every reply carries as `start_retries`, refusals included, so an empty
     list is an answer and never a missing field."""
+    # `~` EXPANDED ONCE, HERE, where every path is handed on as text (MAME's command line, a
+    # `;`-split list, a mapping's values), so no later reader meets it unexpanded.
+    binary, rompath, reference_rom, boot_lua, cfg, state_dir = (
+        judges.expanded(v) for v in (binary, rompath, reference_rom, boot_lua, cfg, state_dir))
+    inipath = ";".join(judges.expanded(p) for p in inipath.split(";")) if inipath else inipath
+    symbols = syms.expanded(symbols)
+    types = syms.expanded(types)
     retries: list[dict[str, Any]] = []
     try:
         while True:
@@ -1327,7 +1334,7 @@ def rom_check(ses: gs.Session, reference_rom: str, reference_addr: str, referenc
     addr = inputs.hex_arg("reference_addr", reference_addr)
     on, thread = cpus.thread_for(ses, cpu)
     try:
-        ses.self_check(Path(reference_rom).read_bytes(), addr,
+        ses.self_check(reference_rom_file(reference_rom).read_bytes(), addr,
                        base=inputs.hex_arg("reference_base", reference_base), thread=thread)
     except gs.Mismatch as e:
         # THE IMAGE IS ONE CPU'S: a mismatch names the cpu that was read, so an image checked

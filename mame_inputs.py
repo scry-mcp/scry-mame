@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, NoReturn, overload
 
 from pydantic import Field
-from scry_core import picture
+from scry_core import judges, picture
 from scry_core.reply_contract import Invalid
 
 import mame_prose as prose
@@ -468,57 +468,20 @@ WAIT_MAX_S = 600.0
 _PATH_BREAK = re.compile(r'[,;"\s()\[\]{}\x00-\x1f\x7f-\x9f]')
 
 
-#: A lone surrogate: no file call can encode one, so a path holding it fails wherever it lands.
-_SURROGATE = re.compile(r"[\ud800-\udfff]")
-
-
 def path_break(text: str) -> str | None:
-    """The first character of `text` the rule above forbids, or None. A lone surrogate is
-    `absolute`'s, judged before this."""
+    """The first character of `text` the rule above forbids, or None."""
     return found.group() if (found := _PATH_BREAK.search(text)) else None
 
 
-def absolute_hint(path: str) -> str:
-    """The half of `absolute`'s refusal that says what to DO about it. A refusal that only says
-    "must be an ABSOLUTE path" names the RULE and withholds the FIX, so a caller who typed
-    `~/x.png` retypes the same string, because `~` IS absolute to a person, and gets the same
-    refusal with nothing new."""
-    if path.startswith("~"):
-        return (" (a `~` path, and nothing here expands it: `~` is the SHELL's, and this "
-                "argument never goes through one. Write the home directory out in full)")
-    if path.startswith("/"):
-        return ""
-    return (" (a RELATIVE path, and this server runs MAME from a scratch directory of its "
-            "own, so a relative path is not resolved against your project: give it "
-            "absolutely)")
-
-
 def absolute(name: str, value: str, **fields: Any) -> Path:
-    """THE ONE JUDGE OF A PATH ARGUMENT: absolute, not empty, holding no NUL and no lone
-    surrogate, or refused naming `name` with the remedy (`absolute_hint`); `fields` ride on the
-    refusal. A caller whose argument is optional asks only when it was given, since `""` means
-    "not given".
-
-    Every path argument goes through it, inputs and every `dest` alike, so a caller learns one
-    rule and meets one sentence. THE SERVER RUNS MAME FROM A SCRATCH DIRECTORY OF ITS OWN, so a
-    relative path would be judged in one directory and used in another; nothing here expands
-    `~`, which is the shell's; a NUL ends a C string and a lone surrogate cannot be encoded, so
-    no file call can take a path holding either. A path that reaches a console line is judged
-    there too (`path_break`)."""
-    if not value:
-        raise Invalid("bad_argument", f"{name} is empty: give an absolute path", **fields)
-    if "\0" in value:
-        raise Invalid("bad_argument",
-                      f"{name}={value!r} holds a NUL, which no file name can hold", **fields)
-    if lone := _SURROGATE.search(value):
-        raise Invalid("bad_argument", f"{name}={value!r} holds a lone surrogate "
-                      f"{lone.group()!r}, which no file call can encode", **fields)
-    path = Path(value)
-    if not path.is_absolute():
-        raise Invalid("bad_argument",
-                      f"{name}={value!r} must be an ABSOLUTE path{absolute_hint(value)}",
-                      **fields)
-    return path
+    """THE ONE JUDGE OF A PATH ARGUMENT is scry-core's (`scry_core.judges.absolute`), shared with
+    the other server and the media file tools: absolute or `~`-led, `~` expanded, not empty, no
+    NUL and no lone surrogate, or refused naming `name`; `fields` ride on the refusal. A caller
+    whose argument is optional asks only when it was given, since `""` means "not given". THE
+    SERVER RUNS MAME FROM A SCRATCH DIRECTORY OF ITS OWN, which is why a relative path is refused:
+    it would be judged in one directory and used in another. A path that reaches a console line
+    is judged there too (`path_break`)."""
+    return judges.absolute(name, value, **fields)
 
 
 def no_such(thing: str, path: str, **fields: Any) -> NoReturn:
@@ -535,7 +498,7 @@ def input_file(name: str, value: str, thing: str, **fields: Any) -> Path:
     `is_file()` and never `exists()`, which answers yes to a directory carrying the name."""
     path = absolute(name, value, **fields)
     if not path.is_file():
-        no_such(thing, value, **fields)
+        no_such(thing, str(path), **fields)
     return path
 
 
@@ -544,35 +507,33 @@ PATH_CHARS = "no comma, semicolon, quote, whitespace, bracket or control charact
 
 
 def writable_path(name: str, value: str) -> Path:
-    """A file a tool is about to WRITE, judged before any console: `absolute`, holding nothing
-    `path_break` forbids, in a directory that exists.
+    """A file a tool is about to WRITE, judged before any console: scry-core's
+    `judges.writable_file` (absolute or `~`-led, in a directory that exists), and holding nothing
+    `path_break` forbids once expanded, since the expanded text is what a console line carries.
 
     `path_break` holds for every `dest`, whether or not the tool's path reaches the console
     (`memdump`'s does, as `save`'s parameter), so a caller learns one contract for a file a tool
-    writes rather than one per tool; and a missing directory would fail AFTER the console did
-    its work, as a bare traceback, or be made where the caller never asked for one."""
-    dest = absolute(name, value)
-    if broken := path_break(value):
-        raise Invalid("bad_argument",
-            f"{name}={value!r} holds {broken!r}: a path here holds {PATH_CHARS}, so one rule "
-            "serves every console line it may reach")
-    if not dest.parent.exists():
-        raise Invalid("bad_argument",
-            f"{name}={value!r}: its directory {dest.parent} does not exist")
-    if not dest.parent.is_dir():
-        raise Invalid("bad_argument", f"{name}={value!r}: {dest.parent} is not a directory")
+    writes rather than one per tool."""
+    dest = judges.writable_file(name, value)
+    _console_safe(name, value, dest)
     return dest
 
 
 def fresh_dest(name: str, value: str) -> Path:
-    """`writable_path`, and not there yet: a refusal after the console wrote the file would leave
-    one nobody asked for, and an accepted call would overwrite somebody's."""
-    dest = writable_path(name, value)
-    # A link is something there even when it points nowhere, and this tool never replaces it.
-    if dest.exists() or dest.is_symlink():
-        raise Invalid("bad_argument",
-            f"{name}={value!r} already exists; this tool never overwrites")
+    """`writable_path`, and not there yet (`judges.fresh_file`): a refusal after the console
+    wrote the file would leave one nobody asked for, and an accepted call would overwrite
+    somebody's."""
+    dest = judges.fresh_file(name, value)
+    _console_safe(name, value, dest)
     return dest
+
+
+def _console_safe(name: str, value: str, dest: Path) -> None:
+    if broken := path_break(str(dest)):
+        raise Invalid("bad_argument",
+            f"{name}={value!r} holds {broken!r}{'' if str(dest) == value else f' (as {dest})'}: "
+            f"a path here holds {PATH_CHARS}, so one rule serves every console line it may "
+            "reach")
 
 
 def optional_dest(dest: str) -> Path | None:

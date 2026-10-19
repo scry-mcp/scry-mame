@@ -430,7 +430,7 @@ def test_a_choice_is_judged_before_the_machine(choose: Any) -> None:
     refused("choose", s.gfx_draft(choose=choose))
 
 
-@pytest.mark.parametrize(("dest", "said"), [("relative.yaml", "ABSOLUTE"),
+@pytest.mark.parametrize(("dest", "said"), [("relative.yaml", "must be an absolute path"),
                                            ("{tmp}/draft.yml", "a `.yaml` file")])
 def test_the_dest_is_judged_before_the_machine(dest: str, said: str, tmp_path: Path) -> None:
     refused(f"dest=.*{said}", s.gfx_draft(dest=dest.format(tmp=tmp_path)))
@@ -1013,7 +1013,7 @@ def test_a_draft_goes_where_its_dest_says_and_makes_no_directory(monkeypatch: py
     (tmp_path / "sub1").mkdir()
     dest = tmp_path / "sub1" / "circus-gfx.yaml"
     assert s.gfx_draft(dest=str(dest))["status"] == "ok" and dest.is_file()
-    refused("does not exist", s.gfx_draft(dest=str(tmp_path / "sub2" / "circus-gfx.yaml")))
+    refused("is not a directory", s.gfx_draft(dest=str(tmp_path / "sub2" / "circus-gfx.yaml")))
     assert not (tmp_path / "sub2").exists()
 
 

@@ -103,12 +103,6 @@ def test_each_kind_of_scratch_file_counts_on_its_own() -> None:
             state.next_number("recordings")] == [1, 2, 1]
 
 
-def test_the_first_free_name_skips_the_ones_taken(tmp_path: Path) -> None:
-    for n in (1, 2):
-        (tmp_path / f"shot-{n}.png").write_bytes(b"")
-    assert files.first_free(tmp_path, lambda n: f"shot-{n}.png") == tmp_path / "shot-3.png"
-
-
 @pytest.mark.parametrize("data_width", [16, 32, 64])
 @pytest.mark.parametrize("endianness", ["big", "little"])
 def test_every_lane_of_a_bus_word_is_found_where_its_bytes_are(

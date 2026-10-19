@@ -166,15 +166,16 @@ asked after the inputs are judged so a refused input spawns nothing, or `{"avail
 "why": ...}` when it printed nothing, did not return in 5 s or could not run; the start goes on
 either way.
 
-**Every path argument is an absolute path, judged at the argument.** One rule serves every path
-this server takes: `binary`, `rompath`, each element of `inipath`, `reference_rom`, `symbols`
-and `types` and each entry of their mappings, `boot_lua`, `cfg`, `state_dir`, `gfx_load`'s
-`path`, and every `dest`. A relative path is refused because MAME runs from a scratch directory
-of the server's own, so it would be judged in one directory and used in another; a `~` path
-because nothing here expands it (`~` is the shell's, and these arguments never go through one);
-a NUL or a lone surrogate because no file call can take either; an empty one where the argument
-is required. The refusal of a relative or `~` path is one sentence, `<argument>=<value> must be
-an ABSOLUTE path`, followed by the hint that says what to do about it. `start` judges every
+**Every path argument is absolute or starts with `~`, judged at the argument.** One rule, scry-core's,
+serves every path this server takes: `binary`, `rompath`, each element of `inipath`,
+`reference_rom`, `symbols` and `types` and each entry of their mappings, `boot_lua`, `cfg`,
+`state_dir`, `gfx_load`'s `path`, every `dest`, and the media file tools' paths. A relative path
+is refused because MAME runs from a scratch directory of the server's own, so it would be judged
+in one directory and used in another; `~` (and `~user`) is expanded as a shell would, because it
+is what a person types and no shell stands between a client and the argument; a NUL or a lone
+surrogate is refused because no file call can take either; an empty one where the argument is
+required. The refusal of a relative path is one sentence, "`<argument>=<value>` must be an
+absolute path or start with `~`", followed by why. `start` judges every
 input before it writes anything into `state_dir`. An `inipath` element that does not exist is
 handed to MAME, which skips an ini directory it cannot find; an empty one is refused.
 

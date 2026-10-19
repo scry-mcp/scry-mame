@@ -12,12 +12,12 @@ whose run did not settle, and the check of the finished file.
 
 from __future__ import annotations
 
-import struct
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from scry_core import avi
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
@@ -94,12 +94,6 @@ _G._mame_mcp_record = emu.add_machine_frame_notifier(function()
     end
 end)
 """ + ARMED_LUA
-
-# An AVI as MAME's writer lays it out: `RIFF`, `AVI `, then the `hdrl` list whose first chunk
-# is `avih`, whose fifth dword is the total frame count. Read at fixed offsets because the
-# writer's layout is fixed; a file that does not start this way is not one MAME finished.
-AVI_TOTAL_FRAMES_AT = 48
-
 
 def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -> Path | None:
     """`record`'s machine-independent half: how many frames, the bound on waiting for them, and the
@@ -285,15 +279,12 @@ NOT_FINISHED_WHY = "the file does not read as a finished recording"
 
 
 def _avi_frames(path: Path) -> int | None:
-    """The frame count an AVI declares in its `avih` header, or None when the file is not
-    a finished AVI. Waited for briefly: the writer closes the file after the notifier."""
+    """The frame count an AVI declares in its main header (`scry_core.avi`), or None when the
+    file is not an AVI with one. Waited for briefly: the writer closes the file after the
+    notifier."""
     def declared() -> int | None:
-        if path.is_file() and path.stat().st_size >= AVI_TOTAL_FRAMES_AT + 4:
-            with open(path, "rb") as fh:
-                head = fh.read(AVI_TOTAL_FRAMES_AT + 4)
-            if head[:4] == b"RIFF" and head[8:12] == b"AVI " and head[24:28] == b"avih":
-                return int(struct.unpack_from("<I", head, AVI_TOTAL_FRAMES_AT)[0])
-        return None
+        found = avi.header(path)
+        return None if found is None else found.frames
 
     return files.wait_for(declared, files.FILE_WAIT_S, files.FILE_POLL_S)
 

@@ -32,7 +32,6 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import mame_envelope as menvelope
@@ -674,19 +673,19 @@ def read(path: str) -> Manifest:
     the reply contract knows. A refusal names the manifest that stays loaded, since a failed edit
     unloads nothing."""
     still = {"still_loaded": _still_loaded()}
-    inputs.input_file("path", path, "manifest", **still)
+    file = inputs.input_file("path", path, "manifest", **still)
     try:
-        data = Path(path).read_bytes()
+        data = file.read_bytes()
     except OSError as e:
-        raise files.unreadable("manifest", path, e, **still) from None
+        raise files.unreadable("manifest", str(file), e, **still) from None
     try:
         text = data.decode("utf-8")
-        man = parse(mame_yaml.loads(text), path, hashlib.sha256(data).hexdigest())
+        man = parse(mame_yaml.loads(text), str(file), hashlib.sha256(data).hexdigest())
         return dataclasses.replace(man, draft=text.split("\n", 1)[0] == DRAFT_MARKER)
     except UnicodeDecodeError as e:
-        raise files.not_utf8(path, e, **still) from None
+        raise files.not_utf8(str(file), e, **still) from None
     except (mame_yaml.YamlError, ManifestError) as e:
-        raise st.Invalid("bad_argument", f"{path}: {e}; nothing was loaded from it",
+        raise st.Invalid("bad_argument", f"{file}: {e}; nothing was loaded from it",
                          **still) from None
 
 

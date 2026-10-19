@@ -96,7 +96,7 @@ def check_trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds:
     if not dest:
         return None
     path = inputs.fresh_dest("dest", dest)
-    inputs.fresh_dest("dest's set file", dest + SET_SUFFIX)
+    inputs.fresh_dest("dest's set file", str(path) + SET_SUFFIX)
     return path
 
 

@@ -80,8 +80,8 @@ def test_a_task_whose_right_answer_the_server_refuses_is_refused() -> None:
 
 
 @pytest.mark.parametrize(("boot_lua", "said"), [
-    ("emu.print('booted')", "boot_lua=\"emu.print('booted')\" must be an ABSOLUTE path"),
-    ("~/harness.lua", "boot_lua='~/harness.lua' must be an ABSOLUTE path (a `~` path"),
+    ("emu.print('booted')", "boot_lua=\"emu.print('booted')\" must be an absolute path"),
+    ("harness.lua", "boot_lua='harness.lua' must be an absolute path"),
 ])
 def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str, said: str) -> None:
     """`start` is judged by `launch.start`'s own half, the shape of its paths: inline Lua where

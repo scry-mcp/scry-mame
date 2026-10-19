@@ -37,6 +37,9 @@ import mame_summaries as summaries  # noqa: E402
 import mame_transport as transport  # noqa: E402
 import server as s  # noqa: E402
 
+#: How the one refusal of a relative path begins (scry-core's judge).
+R_ABS = "must be an absolute path"
+
 AUDIO = Path(__file__).parent / "fixtures" / "audio"
 MARKS = json.loads((AUDIO / "marks.json").read_text())
 
@@ -418,7 +421,7 @@ def test_frames_is_a_count_of_two_or_more_and_never_another_type(
 
 def test_dest_is_absolute_and_new(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    refused("ABSOLUTE", s.audio_record(frames=2, dest="rel.wav"))
+    refused(R_ABS, s.audio_record(frames=2, dest="rel.wav"))
     there = tmp_path / "there.wav"
     there.write_bytes(b"x")
     refused("already exists", s.audio_record(frames=2, dest=str(there)))

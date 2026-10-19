@@ -31,6 +31,9 @@ import server as s  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent / "live"))
 from gfx_layouts import CIRCUS_CHAR  # noqa: E402
 
+#: How the one refusal of a relative path begins (scry-core's judge).
+R_ABS = "must be an absolute path"
+
 MANIFEST = Path(__file__).parent / "fixtures" / "gfx" / "manifest-blitter.yaml"
 
 
@@ -465,7 +468,7 @@ def test_a_manifest_needs_a_box_start_and_the_plane_role_needs_planes(tmp_path: 
 
 
 @pytest.mark.parametrize(("path", "said"), [("", "path is empty"),
-                                            ("gfx.yaml", "ABSOLUTE path")])
+                                            ("gfx.yaml", R_ABS)])
 def test_a_path_that_is_not_absolute_is_refused_by_its_shape(path: str, said: str) -> None:
     with pytest.raises(mstate.Invalid, match=said):
         mm.check_gfx_load(path)
@@ -571,7 +574,7 @@ def test_a_bad_file_is_refused_before_the_machine_is_asked(monkeypatch: pytest.M
     """The file is the caller's to fix whatever the machine: with no session the refusal is still
     about the file, not `no_session`."""
     blank_session(monkeypatch)
-    refused(r"ABSOLUTE path", s.gfx_load(path="gfx.yaml"))
+    refused(R_ABS, s.gfx_load(path="gfx.yaml"))
 
 
 # ------------------------------------------------------------------ a format by name

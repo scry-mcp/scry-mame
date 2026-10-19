@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 from typing import Any, NoReturn
 
-from scry_core import picture, png
+from scry_core import png
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -27,7 +27,6 @@ import mame_prose as prose
 import mame_running as running
 import mame_state as st
 import mame_transport as transport
-from mame_state import STATE
 
 COUNT_MAX = 256
 ROW_PENS = 16
@@ -142,8 +141,8 @@ def palette(ses: gs.Session, scratch: Path, name: str, first: int, count: int, s
         fields["alpha"] = [v >> 24 for v in argb]
     if indirect:
         fields["indirect"] = [int(v) for v in m.group(8).split(",") if v]
-    fields["image"] = picture.publish(swatch(first, argb, entries), scale, dest_path, scratch,
-                                      "palette", STATE.record_image)
+    fields["image"] = st.publish(swatch(first, argb, entries), scale, dest_path, scratch,
+                                 "palette")
     return running.stop_reply(ses, scratch, f"palette: {common['evaluated_by']}",
                               **st.merged(fields, common))
 

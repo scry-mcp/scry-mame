@@ -113,7 +113,7 @@ def test_a_wrong_argument_does_not_fall_through_to_the_variable(
         binaries.resolve(str(tmp_path / "nope" / "mame"))
 
 
-@pytest.mark.parametrize("given", ["mame", "bin/mame", "~/mame"])
+@pytest.mark.parametrize("given", ["mame", "bin/mame", "./mame"])
 def test_a_relative_path_is_refused_in_the_argument_and_in_the_variable(
         given: str, on_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(Invalid) as refusal:

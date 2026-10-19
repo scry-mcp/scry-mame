@@ -72,15 +72,6 @@ def wait_for(check: Callable[[], Waited], bound_s: float, poll_s: float) -> Wait
         time.sleep(poll_s)
 
 
-def first_free(folder: Path, name: Callable[[int], str]) -> Path:
-    """The first `folder / name(n)`, counting `n` from 1, that is not there yet: read off the
-    folder, so a name a caller's own `dest` or an earlier call already took is skipped."""
-    number = 1
-    while (folder / name(number)).exists():
-        number += 1
-    return folder / name(number)
-
-
 def whole_file(path: Path, length: int, said: str, command: str, after: str = "",
                **fields: Any) -> None:
     """Refuse unless the file a console `command` was to write is there and `length` bytes;

@@ -398,9 +398,9 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         fields.update(crop=[cx, cy, cw, ch], point_in_crop=[x - cx, y - cy])
         rings: list[picture.Ring] = [(x - cx, y - cy, 1, 1, rgb, gap)
                                      for gap, rgb in enumerate(POINT_RINGS, 1)]
-        fields["image"] = picture.publish(colour_crop(cap, cx, cy, cw, ch), scale, dest_path,
-                                          scratch, "pixel", STATE.record_image, rings=rings,
-                                          border=len(POINT_RINGS))
+        fields["image"] = st.publish(colour_crop(cap, cx, cy, cw, ch), scale, dest_path,
+                                     scratch, "pixel", rings=rings,
+                                     border=len(POINT_RINGS))
         return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                                   mode=mode, **st.merged(fields, common))
     x0, y0, w, h = crop if crop is not None else (0, 0, cap.width, cap.height)
@@ -428,8 +428,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         fields["pens"] = sorted(selected)
         fields["isolate_color"] = "#{:02x}{:02x}{:02x}".format(*ISOLATE_COLOUR)
     shown = raster(cap, area, x0, y0, w, h, selected if mode == "isolate" else None)
-    fields["image"] = picture.publish(shown, scale, dest_path, scratch, "screen",
-                                      STATE.record_image)
+    fields["image"] = st.publish(shown, scale, dest_path, scratch, "screen")
     return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                               mode=mode, **st.merged(fields, common))
 

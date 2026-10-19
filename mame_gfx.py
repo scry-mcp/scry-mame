@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scry_core import picture, png
+from scry_core import png
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -334,7 +334,7 @@ def gfx_view(ses: gs.Session, scratch: Path, layout: Any, palette: str, tag: str
     if not real:
         fields["note"] = ("palette `none`: a grey ramp over the pixel values, NOT the machine's "
                           "colours; the PNG's index is the pixel value either way")
-    fields["image"] = picture.publish(png.Raster(width, height, bytes(canvas), tuple(colours)),
-                                      scale, dest_path, scratch, "gfx", STATE.record_image)
+    fields["image"] = st.publish(png.Raster(width, height, bytes(canvas), tuple(colours)),
+                                 scale, dest_path, scratch, "gfx")
     return running.stop_reply(ses, scratch, f"gfx_view: {common['evaluated_by']}",
                               **st.merged(fields, common))

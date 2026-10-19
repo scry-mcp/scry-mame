@@ -230,7 +230,7 @@ def test_palette_with_several_devices_and_no_tag_is_ambiguous(
     ({"first": -1}, "first=-1"),
     ({"palette": "a b"}, "whitespace"),
     ({"scale": 99}, "scale=99"),
-    ({"dest": "relative.png"}, "ABSOLUTE"),
+    ({"dest": "relative.png"}, "must be an absolute path"),
     ({"seconds": 0}, "seconds"),
 ])
 def test_palette_arguments_are_judged_before_the_machine(kwargs: dict[str, Any],

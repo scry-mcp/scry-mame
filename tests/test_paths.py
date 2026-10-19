@@ -25,10 +25,16 @@ from session_doubles import fake_mame, refused
 from test_lua import _channel
 from test_server import _never_spawns
 
+import mame_binary as mbinary
 import mame_files as files
+import mame_launch as mlaunch
+import mame_machine as mmachine
 import mame_state as mstate
 import mame_symbols as syms
 import server as s
+
+#: How the one refusal of a relative path begins (scry-core's judge).
+R_ABS = "must be an absolute path"
 
 
 def _common(tmp_path: Path) -> dict[str, Any]:
@@ -55,20 +61,19 @@ def here(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
 
 
 @pytest.mark.parametrize(("argument", "value", "named", "remedy"), [
-    ("binary", "fake-mame", "binary=", "RELATIVE"),
-    ("binary", "~/fake-mame", "binary=", "expands it"),
-    ("rompath", "roms", "rompath=", "RELATIVE"),
-    ("reference_rom", "ref.bin", "reference_rom=", "RELATIVE"),
-    ("symbols", "game.map", "symbols=", "RELATIVE"),
-    ("symbols", {"maincpu": "game.map"}, "symbols['maincpu']=", "RELATIVE"),
-    ("boot_lua", "boot.lua", "boot_lua=", "RELATIVE"),
-    ("inipath", "run", "inipath=", "RELATIVE"),
-    ("cfg", "v30.cfg", "cfg=", "RELATIVE"),
-    ("state_dir", "run", "state_dir=", "RELATIVE"),
+    ("binary", "fake-mame", "binary=", "must be an absolute path"),
+    ("rompath", "roms", "rompath=", "must be an absolute path"),
+    ("reference_rom", "ref.bin", "reference_rom=", "must be an absolute path"),
+    ("symbols", "game.map", "symbols=", "must be an absolute path"),
+    ("symbols", {"maincpu": "game.map"}, "symbols['maincpu']=", "must be an absolute path"),
+    ("boot_lua", "boot.lua", "boot_lua=", "must be an absolute path"),
+    ("inipath", "run", "inipath=", "must be an absolute path"),
+    ("cfg", "v30.cfg", "cfg=", "must be an absolute path"),
+    ("state_dir", "run", "state_dir=", "must be an absolute path"),
 ])
 def test_a_relative_path_that_exists_from_here_is_refused_naming_its_argument(
         here: Path, argument: str, value: Any, named: str, remedy: str) -> None:
-    out = refused("ABSOLUTE path", s.start(**(_common(here) | {argument: value})))
+    out = refused("must be an absolute path", s.start(**(_common(here) | {argument: value})))
     assert out["code"] == "bad_argument" and named in out["message"], out
     assert remedy in out["message"], "the remedy rides with the rule"
 
@@ -79,7 +84,7 @@ def test_a_relative_types_file_is_refused_naming_its_argument(
         here: Path, types: Any, named: str) -> None:
     symbols = ({"maincpu": str(here / "game.map")} if isinstance(types, dict)
                else str(here / "game.map"))
-    out = refused("ABSOLUTE path", s.start(**_common(here), symbols=symbols, types=types))
+    out = refused(R_ABS, s.start(**_common(here), symbols=symbols, types=types))
     assert named in out["message"], out
 
 
@@ -107,7 +112,7 @@ def test_an_inipath_that_does_not_exist_is_handed_to_mame(here: Path,
 def test_a_relative_reference_rom_is_refused_by_rom_check_too(here: Path) -> None:
     """`rom_check` takes the same file through the same judge, before it asks for a session."""
     _common(here)
-    out = refused("ABSOLUTE path", s.rom_check(reference_rom="ref.bin"))
+    out = refused("must be an absolute path", s.rom_check(reference_rom="ref.bin"))
     assert "reference_rom=" in out["message"], out
 
 
@@ -124,18 +129,24 @@ def test_a_nul_in_a_path_is_refused_naming_it(here: Path, call: Any, named: str)
     assert out["code"] == "bad_argument" and named in out["message"], out
 
 
-def test_a_tilde_or_relative_manifest_gets_the_remedy_and_keeps_what_is_loaded(
-        here: Path) -> None:
-    tilde = refused("ABSOLUTE path", s.gfx_load(path="~/gfx.yaml"))
-    assert "expands it" in tilde["message"] and "still_loaded" in tilde, tilde
-    relative = refused("ABSOLUTE path", s.gfx_load(path="gfx.yaml"))
-    assert "RELATIVE" in relative["message"], relative
+def test_a_relative_manifest_gets_the_remedy_and_keeps_what_is_loaded(here: Path) -> None:
+    relative = refused("must be an absolute path", s.gfx_load(path="gfx.yaml"))
+    assert "would be judged in one directory" in relative["message"], relative
+    assert "still_loaded" in relative, relative
     assert refused("path is empty", s.gfx_load(path=""))["code"] == "bad_argument"
 
 
+def test_a_manifest_from_home_is_looked_for_there(here: Path,
+                                                  monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HOME", str(here))
+    monkeypatch.setenv("USERPROFILE", str(here))
+    out = s.gfx_load(path="~/absent.yaml")
+    assert out.get("code") == "bad_argument" and str(here / "absent.yaml") in out["message"], out
+
+
 def test_gfx_drafts_dest_takes_the_same_rule(here: Path) -> None:
-    out = refused("ABSOLUTE path", s.gfx_draft(dest="draft.yaml"))
-    assert "dest=" in out["message"] and "RELATIVE" in out["message"], out
+    out = refused("must be an absolute path", s.gfx_draft(dest="draft.yaml"))
+    assert "dest=" in out["message"], out
 
 
 def test_a_missing_input_file_is_no_such_whichever_tool_reads_it(here: Path) -> None:
@@ -151,13 +162,13 @@ def test_the_absolute_rule_is_said_once_for_every_argument(here: Path) -> None:
     """One sentence: the same words whichever argument and whichever tool trips it, the
     argument's name the only difference."""
     sym = str(here / "game.map")
-    said = {arg: refused("ABSOLUTE", s.start(**(_common(here) | {arg: "rel"})))["message"]
+    said = {arg: refused(R_ABS, s.start(**(_common(here) | {arg: "rel"})))["message"]
             for arg in ("binary", "rompath", "reference_rom", "symbols", "boot_lua", "cfg",
                         "state_dir", "inipath")}
-    said["types"] = refused("ABSOLUTE", s.start(**_common(here), symbols=sym,
+    said["types"] = refused("must be an absolute path", s.start(**_common(here), symbols=sym,
                                                 types="rel"))["message"]
-    said["path"] = refused("ABSOLUTE", s.gfx_load(path="rel"))["message"]
-    said["dest"] = refused("ABSOLUTE", s.memdump(ref="0x0", length=4, dest="rel"))["message"]
+    said["path"] = refused("must be an absolute path", s.gfx_load(path="rel"))["message"]
+    said["dest"] = refused(R_ABS, s.memdump(ref="0x0", length=4, dest="rel"))["message"]
     shapes = {m.replace(f"{arg}=", "<arg>=", 1) for arg, m in said.items()}
     assert len(shapes) == 1, shapes
 
@@ -172,7 +183,7 @@ def test_a_refused_input_file_leaves_a_persistent_state_dir_untouched(
     `cfg/` and `nvram/` are made in it: a path, an address outside the image, a `bases` with no
     symbol file to apply it to."""
     fresh = here / "fresh-state"
-    refused("ABSOLUTE path|no such|OUTSIDE|no `symbols` file",
+    refused("must be an absolute path|no such|OUTSIDE|no `symbols` file",
             s.start(**_common(here), state_dir=str(fresh), **bad))
     assert not fresh.exists(), sorted(p.name for p in fresh.iterdir())
 
@@ -465,7 +476,7 @@ def test_gfx_drafts_dest_holds_none_of_the_characters_no_dest_may_hold(
 def test_gfx_drafts_dest_needs_a_directory_that_exists(here: Path) -> None:
     """Its writer made a missing directory; a `dest` is written where the caller's directory
     already is, for this tool as for every other."""
-    refused("does not exist", s.gfx_draft(dest=f"{here}/newboard/gfx.yaml"))
+    refused("is not a directory", s.gfx_draft(dest=f"{here}/newboard/gfx.yaml"))
     assert not (here / "newboard").exists()
 
 
@@ -598,3 +609,50 @@ def test_a_sta_gone_between_the_listing_and_its_stat_is_left_out_never_a_traceba
     assert out["status"] == "ok", out
     assert [r["name"] for r in out["states"]] == ["kept"], out
     assert refused("no state named", s.state_load(name="gone"))["code"] == "unknown_ref"
+
+
+def test_a_home_path_reaches_mame_expanded(here: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A `~` passes the judge, so the text MAME is handed must be the expanded one: MAME runs
+    from a scratch of its own, where `~/roms` would name nothing and the stub would wait out
+    its bound."""
+    monkeypatch.setenv("HOME", str(here))
+    monkeypatch.setenv("USERPROFILE", str(here))
+    seen: list[list[str]] = []
+    real = mlaunch.build_command
+
+    def build(*a: Any, **k: Any) -> list[str]:
+        seen.append(real(*a, **k))
+        raise mstate.Invalid("host_failed", "the case ends at the command line")
+    monkeypatch.setattr(mlaunch, "build_command", build)
+    monkeypatch.setattr(mmachine, "ask_listxml", lambda *_a: (None, "not asked here"))
+    monkeypatch.setattr(mbinary, "facts", lambda r: {"binary": r.path})
+    out = s.start(**_common(here) | {"rompath": "~/roms", "boot_lua": "~/boot.lua",
+                                     "state_dir": "~/run", "inipath": "~/run",
+                                     "reference_rom": "~/ref.bin"})
+    assert "the case ends at the command line" in out["message"], out
+    argv = seen[0]
+    assert not [a for a in argv if a.startswith("~")], argv
+    assert argv[argv.index("-rompath") + 1] == str(here / "roms")
+    assert argv[argv.index("-inipath") + 1] == str(here / "run")
+
+
+def test_a_home_manifest_and_draft_are_read_and_written_there(
+        here: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HOME", str(here))
+    monkeypatch.setenv("USERPROFILE", str(here))
+    (here / "m.yaml").write_text("not: a manifest\n")
+    out = s.gfx_load(path="~/m.yaml")
+    assert "cannot read" not in out.get("message", "") and "no such" not in out.get(
+        "message", ""), out
+    assert str(here / "m.yaml") in out.get("message", str(here / "m.yaml")), out
+
+
+def test_a_console_path_is_judged_as_the_console_sees_it(
+        here: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A home with a space passes `~/x.bin` as typed; the console line carries the expansion."""
+    home = here / "a b"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("USERPROFILE", str(home))
+    out = refused("holds ' '", s.memdump(ref="0x0", length=4, dest="~/x.bin"))
+    assert f"(as {home / 'x.bin'})" in out["message"], out

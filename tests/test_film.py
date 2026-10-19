@@ -14,6 +14,7 @@ console's `map 0x70001e` on m68k-dual.
 
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import gzip
 import json
@@ -164,7 +165,7 @@ def _png(path: Path) -> png_read.Png:
     ({"trigger": "0x70001e", "frames": mf.FRAMES_MAX + 1}, f"frames={mf.FRAMES_MAX + 1}"),
     ({"trigger": "0x70001e", "keep": mf.KEEP_MAX + 1}, f"keep={mf.KEEP_MAX + 1}"),
     ({"trigger": "0x70001e", "crop": [0, 0, 0, 4]}, "crop="),
-    ({"trigger": "0x70001e", "film_dir": "relative/dir"}, "ABSOLUTE"),
+    ({"trigger": "0x70001e", "film_dir": "relative/dir"}, "must be an absolute path"),
     ({"first": -1}, "first=-1"),
     ({"trigger": "0x70001e", "changed": True, "value": 1}, "`changed` and `value`"),
     ({"changed": True}, "go with `trigger`"),
@@ -1171,3 +1172,23 @@ def test_reading_a_film_none_armed_asks_for_the_call_that_arms_one(
     out = refused(re.escape("no film is armed in this session: `gfx_film(trigger=...)` arms one"),
                   s.gfx_film())
     assert out["code"] == "needs_call", out
+
+
+def test_the_film_directory_is_there_when_the_install_names_it_and_a_cancel_takes_it_back(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The install writes the film's header into its directory, so the directory is made
+    first; a cancel met inside the install takes the scratch's `film-<n>` back as a refusal
+    does."""
+    ses = _session(monkeypatch, tmp_path)
+    seen: list[bool] = []
+
+    def cancelled(*a: Any, **k: Any) -> dict[str, Any]:
+        seen.append(k["path"].parent.is_dir())
+        raise KeyboardInterrupt
+    monkeypatch.setattr(mtap, "send_tap", cancelled)
+    _serve_arm(ses, "m68k-dual")
+    with contextlib.suppress(KeyboardInterrupt):
+        s.gfx_film(trigger="0x70001e")
+    assert seen == [True], "the directory was not there when the install named it"
+    assert not list(ses.scratch.glob("film-*")), "the cancelled arming left its directory"

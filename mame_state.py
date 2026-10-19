@@ -11,6 +11,7 @@ does it in ONE place and every tool sees it. The reply built from it is `mame_en
 from __future__ import annotations
 
 import contextlib
+import functools
 import os
 import re
 import shutil
@@ -20,7 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, TypeVar, overload
 
-from scry_core import cancel
+from scry_core import cancel, picture
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
@@ -584,6 +585,10 @@ class State:
 
 
 STATE = State()
+#: scry-core's picture writers with this server's recorder bound once: every picture a tool
+#: writes is listed among the session's captures, so none can forget to say so.
+publish = functools.partial(picture.publish, record=STATE.record_image)
+data_file = functools.partial(picture.data_file, record=STATE.record_image)
 
 
 # THE REFUSAL is `scry_core.reply_contract`'s class, re-exported so every module raises one

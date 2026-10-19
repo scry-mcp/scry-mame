@@ -316,12 +316,12 @@ def test_the_one_hex_parser_refuses_what_is_not_hex(value: str) -> None:
 
 
 @pytest.mark.parametrize(("dest", "expected"), [
-    ("relative/x.png", "RELATIVE path"),
-    ("~/x.png", "`~` path"),
+    ("relative/x.png", "must be an absolute path or start with `~`"),
+    ("/x\x00y.png", "holds a NUL"),
 ])
 def test_a_dest_is_judged_as_a_path_with_no_machine_in_sight(dest: str, expected: str) -> None:
-    """The refusal this whole change is about, asked of the table directly: no session, no
-    emulator, and the two categories still told apart by WHY each one fails."""
+    """The refusal asked of the table directly: no session, no emulator, and two faults told
+    apart by WHY each one fails."""
     with pytest.raises(st.Invalid) as caught:
         args.check("snapshot", dest=dest)
     assert expected in str(caught.value)
@@ -482,7 +482,7 @@ _START_OK = {"binary": "/b/mame", "rompath": "/r", "reference_rom": "/r/rom.bin"
 
 @pytest.mark.parametrize(("given", "name"), [
     ({"binary": "mame"}, "binary"),
-    ({"reference_rom": "~/rom.bin"}, "reference_rom"),
+    ({"reference_rom": "rom.bin"}, "reference_rom"),
     ({"rompath": "roms"}, "rompath"),
     ({"inipath": "/a;ini"}, r"inipath\[1\]"),
     ({"cfg": "x.cfg"}, "cfg"),
@@ -508,9 +508,9 @@ def test_starts_machine_independent_half_judges_every_path_by_its_name(
 def test_starts_path_shapes_are_judged_in_the_order_judge_reads_them() -> None:
     """Two paths wrong at once: the one `judge` reads first is the one named."""
     with pytest.raises(st.Invalid, match=r"^binary="):
-        launch.check_start(binary="mame", rompath="/r", reference_rom="~/rom.bin")
+        launch.check_start(binary="mame", rompath="/r", reference_rom="rom.bin")
     with pytest.raises(st.Invalid, match=r"^reference_rom="):
-        launch.check_start(binary="/b/mame", rompath="roms", reference_rom="~/rom.bin")
+        launch.check_start(binary="/b/mame", rompath="roms", reference_rom="rom.bin")
 
 
 def test_a_start_refused_for_the_shape_of_a_path_still_carries_start_retries() -> None:

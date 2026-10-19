@@ -23,7 +23,6 @@ from __future__ import annotations
 
 import contextlib
 import re
-import shutil
 from array import array
 from pathlib import Path
 from typing import Any
@@ -44,6 +43,8 @@ from mame_state import STATE
 #: The run's frames past the last one asked: one for its notifier to read it at, one more for a
 #: stop that landed inside the frame the run began in.
 RUN_TAIL = 2
+#: What a series' frame numbers count here: the emulated frame counter `run_for` counts.
+FRAME_SOURCE = "frame_number"
 #: The run's wall-clock bound by default: a series runs the machine, as `run_for` does.
 SECONDS_DEFAULT = 60.0
 _ARMED = re.compile(r"MCP_SERIES_ARMED frame=(\d+) w=(\d+) h=(\d+)")
@@ -172,23 +173,14 @@ def series_capture(ses: gs.Session, scratch: Path, frames: list[int] | None, fir
     if wanted[0] <= now:
         raise st.Invalid("bad_argument", f"frame {wanted[0]} is not ahead of the machine, which "
                          f"is at frame {now}: a series records frames still to come")
-    if dest:
-        folder, kept = inputs.fresh_dest("dest", dest), True
-        try:
-            folder.mkdir()
-        except OSError as e:
-            raise st.Invalid("bad_argument", f"dest: {folder} cannot be created: {e}") from None
-    else:
-        folder = fresh.numbered_dir(scratch / "series", lambda n: f"series-{n}", "the series")
-        kept = False
-    try:
+    folder = fresh.directory(inputs.optional_dest(dest), scratch / "series",
+                             lambda n: f"series-{n}", "the series")
+    with fresh.taken_back(folder):
         script = arm_script(folder, frames, first, last, step, wanted)
-        reply = _captured(ses, scratch, folder, kept, wanted, crop, script, seconds, progress)
-    except BaseException:
-        shutil.rmtree(folder, ignore_errors=True)
-        raise
+        reply = _captured(ses, scratch, folder, bool(dest), wanted, crop, script, seconds,
+                          progress)
     if reply.get("status") != "ok":           # the run's own refusal: no series came of it
-        shutil.rmtree(folder, ignore_errors=True)
+        fresh.remove_dir(folder)
         return reply
     for raw in folder.glob("raw-*"):
         raw.unlink(missing_ok=True)
@@ -246,13 +238,13 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
     if not kept_frames:
         raise st.Invalid("no_progress", "the run reached the last frame and every wanted frame "
                          "was skipped by frameskip, so none was drawn")
-    reply = series.write_manifest(folder, "mame", "frame_number", crop, kept_frames)
+    reply = series.write_manifest(folder, "mame", FRAME_SOURCE, crop, kept_frames)
     for frame in kept_frames:
         STATE.record_image(folder / series.frame_name(frame))
     body = {k: v for k, v in run.items() if k not in ("summary", "session")}
     account = {k: common[k] for k in CONSOLE_ACCOUNT if k in common}
-    return {**body, **reply, "crop": area, "frames_asked": len(wanted), "lost": series.runs(lost),
-            "kept_after_close": kept, "frame_source": "frame_number", **account}
+    return {**body, **reply, "crop": area, "lost": series.runs(lost),
+            **series.tail(len(wanted), kept, FRAME_SOURCE), **account}
 
 
 def _develop(folder: Path, frame: int, width: int, height: int, area: list[int],

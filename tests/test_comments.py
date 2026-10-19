@@ -33,6 +33,9 @@ import mame_state as mstate  # noqa: E402
 import mame_summaries as summaries  # noqa: E402
 import server as s  # noqa: E402
 
+#: How the one refusal of a relative path begins (scry-core's judge).
+R_ABS = "must be an absolute path"
+
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "comments"
 MAIN, SUB = ":maincpu", ":subcpu"
 STAMP = "2026-10-02T00:30:00+00:00"
@@ -510,9 +513,9 @@ def test_save_refuses_a_file_that_is_not_a_comment_file_and_leaves_it(
 def test_save_judges_the_path_before_the_session(monkeypatch: pytest.MonkeyPatch,
                                                  tmp_path: Path) -> None:
     monkeypatch.setattr(mstate.STATE, "ses", None)
-    refused("ABSOLUTE", s.comment_save(dest="relative.tsv"))
+    refused(R_ABS, s.comment_save(dest="relative.tsv"))
     assert s.comment_save(dest=str(tmp_path / "x.tsv"))["code"] == "no_session"
-    refused("ABSOLUTE", s.comment_load(path="relative.tsv"))
+    refused(R_ABS, s.comment_load(path="relative.tsv"))
     refused("pointer", s.comment_add(ref="[fade]+0x4", text="t"))
     refused("ref='' is empty", s.comment_delete(ref=""))
     refused("the text", s.comment_add(ref="fade", text=""))

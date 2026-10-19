@@ -445,9 +445,8 @@ def gfx_blits(ses: gs.Session, scratch: Path, draw_command: str, frame: int | No
     fields["not_proved"] = not_proved(cmd, set(cmd.fields) | (set(cmd.flags) if listing else set())
                                       | {p.page for p in cmd.planes if p.page} | {
         o.field for p in cmd.planes for o in (p.origin_x, p.origin_y) if o.field})
-    fields["image"] = picture.publish(mscreen.colour_crop(cap, 0, 0, cap.width, cap.height),
-                                      scale, dest_path, scratch, "blits", STATE.record_image,
-                                      marks)
+    fields["image"] = st.publish(mscreen.colour_crop(cap, 0, 0, cap.width, cap.height),
+                                 scale, dest_path, scratch, "blits", marks=marks)
     return running.stop_reply(ses, scratch, f"gfx_blits: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
@@ -613,13 +612,12 @@ def gfx_blit_source(ses: gs.Session, scratch: Path, draw_command: str, frame: in
                                 "drew")
     exact = png.Raster(wide, high, bytes(pixels), tuple(pens))
     if not margin:
-        fields["image"] = picture.publish(exact, scale, dest_path, scratch, "source",
-                                          STATE.record_image)
+        fields["image"] = st.publish(exact, scale, dest_path, scratch, "source")
     else:
-        fields["data"] = picture.data_file(exact, scratch, "source-data", STATE.record_image)
+        fields["data"] = st.data_file(exact, scratch, "source-data")
         st.add_note(fields, MARGIN_NOTE)
-        fields["image"] = picture.publish(_margin_view(exact, margin, w, h), scale, dest_path,
-                                          scratch, "source", STATE.record_image,
-                                          rings=[(margin, margin, w, h, RING_COLOUR, 1)])
+        fields["image"] = st.publish(_margin_view(exact, margin, w, h), scale, dest_path,
+                                     scratch, "source",
+                                     rings=[(margin, margin, w, h, RING_COLOUR, 1)])
     return running.stop_reply(ses, scratch, f"gfx_blit_source: {common['evaluated_by']}",
                               **st.merged(fields, common))

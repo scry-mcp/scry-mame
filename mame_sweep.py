@@ -34,7 +34,6 @@ import mame_prose as prose
 import mame_running as running
 import mame_sheet as sheet
 import mame_state as st
-from mame_state import STATE
 
 SWEEP_MAX = 16             # candidates on one sheet, which a person reads cell by cell
 COUNT_MAX = 64             # tiles a cell shows
@@ -231,7 +230,7 @@ def gfx_sweep(ses: gs.Session, scratch: Path, tag: str, ref: str, offset: int, c
                          f"{blk.tag} ({blk.size:#x} bytes) from offset {start:#x}",
                          size=blk.size, candidates=listed, **common)
     page, factor = _page(cells)
-    image = picture.publish(page, scale, dest_path, scratch, "sweep", STATE.record_image)
+    image = st.publish(page, scale, dest_path, scratch, "sweep")
     source = gfx.source_fields(blk, start, addr, on)
     n = evidence.record_sweep(evidence.source_of(source), pal_tag, pen_base, kept, image)
     fields: dict[str, Any] = {
