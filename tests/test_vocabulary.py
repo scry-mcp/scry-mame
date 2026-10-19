@@ -11,7 +11,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import mame_mcp  # noqa: E402
 import mame_state as mstate  # noqa: E402
+import server  # noqa: E402,F401 -- registers the tools whose summaries are read here
 
 
 def test_notes_join_the_parts_said_in_order_and_once() -> None:
@@ -99,6 +101,4 @@ def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
 ])
 def test_a_trace_summary_says_each_count_in_its_number(
         frames: int, t: dict[str, object], said: str) -> None:
-    import mame_mcp
-
     assert mame_mcp.BOUNDARY.line("trace", {"frames": frames}, {"status": "ok", "trace": t}) == said
