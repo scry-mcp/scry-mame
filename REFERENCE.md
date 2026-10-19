@@ -681,15 +681,13 @@ end applied, and what its reply carried (a stop it found, what a stop applied) i
 next reply instead. A cancel that arrives after the server's last look, while the reply is on
 its way, is not seen.
 
-Each tool declares its end:
+Every tool ends one of three ways, and one that declares no end ends `none`:
 
 | End | What the cancel leaves | Tools |
 |---|---|---|
 | `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `step`, `run_to`, `run_for`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
 | `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` when a session is up to be asked; a MAME still booting is killed at once | `start`, `close` |
-| `none` | the machine as the call found it | `resume`, `read_block`, `screen_signature`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_blits`, `gfx_blit_source`, `gfx_film`, `log_wait`, `drive`, `lua`, `throttle` |
-
-Any other tool that meets a cancel ends `none`.
+| `none` | the machine as the call found it | `status`, `focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `breakpoint_list`, `breakpoint_clear`, `regpoint_add`, `regpoint_list`, `regpoint_clear`, `comment_add`, `comment_list`, `comment_delete`, `comment_save`, `comment_load`, `watch_add`, `watch_list`, `watch_clear`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan_start`, `scan_filter`, `scan_clear`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `image_diff`, `series_diff`, `region_track`, `golden_check`, `audio_measure`, `audio_diff`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `state_save`, `captures`, `state_list`, `state_load` |
 
 ## Names for addresses
 
@@ -2105,10 +2103,13 @@ back with no model, from this repository:
 uv run python -m scry_core.replay <document> [--binary PATH] [--rompath DIR] [--transcript PATH]
 ```
 
-It exits 0 when every step held, 1 when a step diverged or failed, 2 on a usage error, and 3 when
-nothing was demonstrated (a document that is not one, a start the server refused, a saved state
-it loads and the server lacks, a server that did not start); the whole transcript goes to
-`tmp/replays/<document stem>/transcript.md`.
+It exits 0 when every step held, 1 when a step diverged or failed in the server's own words (or
+`perform`'s `held`, the steps it held to their `recorded` answer, is not the document's count), 2
+on a usage error, and 3 when nothing was demonstrated: a document that is not one or holds no
+step with a `recorded` answer, a start the server refused, a saved state it loads and the server
+lacks, declarations the replay's store holds unlike the recorded start's, and a server that
+broke (did not start, died or timed out mid-call, answered an error result, refused the list
+whole). The whole transcript goes to `tmp/replays/<document stem>/transcript.md`.
 
 What the export keeps is what moved the machine and what was checked:
 
@@ -2124,23 +2125,33 @@ What the export keeps is what moved the machine and what was checked:
 | any other read, `throttle`, `snapshot`, `memdump`, `comment_*`, the picture and `gfx_*` tools, the scan | dropped, named in the reply with why; one that stepped the guest to read it is kept as a step |
 | a call the server refused | dropped, named; one that moved the machine first ends the document |
 | a call that ended with no reply, or around which the machine could not be read | the end of the document: the reply's `cut` names it and why |
+| a call that found the machine elsewhere than the call before it left it | the end of the document, named: the motion happened outside every recorded call |
+| a kept step that wrote a file the session named (`dest`) | the end of the document, named: a replay finds the file there and the step refuses it |
+| a `debug` line | a step whose answer is never held to: what a typed command printed is the console's; one that moved the machine holds to its stop like any advance |
 
 `perform` and `drive` are recorded as their steps. A step's check is `"recorded": {<field>:
 <value>}` inside it, and `perform` holds the step's own reply to it: a mismatch is INVALID
-`diverged` at that step, with `field`, `recorded` and `got`, the list stopping there. Under
+`diverged` at that step, with `field`, `recorded` and `got`, the list stopping there. A caller
+keys on `failed_at`, which a failed step and a diverged one both carry; the code says which (the
+machine differs, not the step). `held` counts the steps that matched. Under
 `until_frame` every lap holds each step to its `recorded` again, so a stop recorded on the first
 lap diverges on the second: an exported document carries no `until_frame`. The
-document's `needs.states` lists the saved states it loads and does not save, which the runner
-checks against `state_list` before it plays anything. A recording holds at most 5000 calls, past
-which the export says it is cut there.
+document names the server's entry file (`entry`, here `server.py`). Its `needs.states` lists the
+saved states it loads and does not save, which the runner checks against `state_list` before it
+plays anything; `needs.declarations` the breakpoints, watches and registerpoints the store held as
+the recorded `start` began, which the runner holds the replay's `breakpoint_list`, `watch_list` and
+`regpoint_list` to. A recording keeps at most as many calls as `perform` runs steps under
+`until_frame` (5000), counted over the calls the export keeps, past which the export says it is cut
+there.
 
 What a replay cannot hold to, it says at the step (`diverged`) rather than passing over it. So a
 session meant for a bench advances by `run_for`, `run_to` and `step`, which stop where the
 machine does on every run, and leaves `resume` for the end. The document carries the `start`'s arguments as given, host paths included (`--binary`
 and `--rompath` replace the emulator's and the sets'), and the start re-arms the declarations it
-finds stored, as any start does; a file a step wrote by name (`dest`, a saved state) is there on
-the next replay and the step refuses it, so a session meant for a bench leaves `dest` empty and
-keeps its states in a directory of its own. A `golden_check` over files dropped calls wrote is
+finds stored, as any start does, which is why the runner checks them first. A session meant for
+a bench leaves `dest` empty and keeps its states in a directory of its own. A Lua reader's step
+count follows the wall clock, so on a rare run its step lands elsewhere and the replay says so at
+that step (`diverged`). A `golden_check` over files dropped calls wrote is
 dropped too: the replay would not write them, so it would hold to the session's own.
 
 ## Input and the screen

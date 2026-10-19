@@ -20,6 +20,8 @@ from scry_core import strict_arguments as strict
 
 import gdb_session as gs
 import mame_args as args
+import mame_arming as arming
+import mame_declarations as dec
 import mame_docs as docs
 import mame_envelope as menvelope
 import mame_idle as idle
@@ -63,8 +65,8 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
 # tools.
 # The media file tools answer in any state too, and the instructions say so once, beside them.
 _ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
-                          "registers(from_last_stop=True)", "perform", "drive", "perform_export",
-                          "close"]
+                          "registers(from_last_stop=True)",
+                          *sorted(sequence.NOT_STEPS - {"start", "rom_check"})]
 
 mcp = envelope.Envelope(
     "mame",
@@ -110,36 +112,23 @@ mcp = envelope.Envelope(
 LOCK = threading.RLock()
 
 
-def _summary(name: str, args: dict[str, Any], reply: dict[str, Any]) -> str:
-    """The one line the MCP client shows for a call (`mame_summaries`): the envelope's for a
-    refusal, the tool's own otherwise."""
-    if reply.get("status") == "INVALID":
-        return summaries.refusal(name, reply)
-    return _SUMMARIES[name](args, reply)
-
-
-#: Each registered tool's summary, filled by `tool` as it registers them.
-_SUMMARIES: dict[str, summaries.Summary] = {}
-#: Each registered tool's own body, unwrapped, which the probe's judge reads arguments against.
-_BODIES: dict[str, Callable[..., Any]] = {}
-
-
 def probe_check(tool: str, given: dict[str, Any], effective: dict[str, Any]) -> None:
     """This server's pre-gate judge in the shape `scry_core.probe.Check` takes: each tool body
     calls `args.check` with its own values, defaults included, every number read first as the
     `tool()` wrapper reads it (`numbers_read`), so the probe judges a call the way the tool
     would. `given` is not used: the bodies judge what they run with."""
-    args.check(tool, **inputs.numbers_read(_BODIES[tool], effective))
+    args.check(tool, **inputs.numbers_read(BOUNDARY.bodies[tool], effective))
 
 
-def _end_cancelled(name: str, on_cancel: cancel.OnCancel) -> tuple[cancel.Left, object]:
+def _end_cancelled(name: str, on_cancel: cancel.OnCancel
+                   ) -> tuple[cancel.Left, dict[str, Any] | None]:
     """THE END A CANCELLED CALL DECLARED, applied at once: the end its own bound would have given
     it, under the shield so that end's own waits run to completion. `stop` for a tool that comes
     back STOPPED (the `stop` tool's own path: a machine already stopped is left so), `kill` for
     one whose failure path ends the emulator, `none` for one that leaves the machine as it was.
     Returned: what it left, and the account of a stop the machine reached on its own that this
-    call found (or its end did), which its reply would have said, kept past the end of the call
-    by `_after`."""
+    call found (or its end did), in the reply's own words, which its reply would have said and
+    the next one says instead (`_keep_accounts`)."""
     left: cancel.Left | None = None
     with cancel.shielded():
         try:
@@ -160,11 +149,11 @@ def _end_cancelled(name: str, on_cancel: cancel.OnCancel) -> tuple[cancel.Left, 
         ses = STATE.ses
         left = ("closed" if ses is None or not STATE.machine_alive()
                 else "running" if ses.running else "stopped")
-    return left, dict(STATE.found_stop_last)
+    found = dict(STATE.found_stop_last)
+    return left, {"stopped_on_its_own": found} if found else None
 
 
-def _invoke(fn: Callable[..., Any], signature: inspect.Signature, a: tuple[Any, ...],
-            k: dict[str, Any]) -> dict[str, Any]:
+def _invoke(fn: Callable[..., Any], called: inspect.BoundArguments) -> dict[str, Any]:
     """The body called the way this server reads its arguments, and THREE kinds of exception
     translated into replies and no more: `NotStopped`, into the INVALID reply that names the
     last stop and the tools that answer while the machine runs; every other `SessionError`,
@@ -179,9 +168,8 @@ def _invoke(fn: Callable[..., Any], signature: inspect.Signature, a: tuple[Any, 
         # every argument the tool declares `NumberArg`, and each item of a `NumberList`, is read
         # here, as `perform` reads a step's, before the body judges it (`inputs.as_read` tells
         # mypy so).
-        called = signature.bind_partial(*a, **k)
         for name, value in called.arguments.items():
-            ann = signature.parameters[name].annotation
+            ann = called.signature.parameters[name].annotation
             if isinstance(ann, str):
                 called.arguments[name] = inputs.integral_counts(value, ann)
         called.arguments.update(inputs.numbers_read(fn, dict(called.arguments)))
@@ -213,15 +201,20 @@ def _invoke(fn: Callable[..., Any], signature: inspect.Signature, a: tuple[Any, 
         return menvelope.envelope(e.reply())
 
 
-def _after(found: object) -> None:
+def _after() -> None:
     """After every call, a step of a sequence included, whichever way it ended: the one-time
-    account it rode on goes with it (`State.end_call`). A cancelled call had no reply, so the
-    account of a stop it found (`_end_cancelled`'s return) waits for the next; and THE IDLE
-    CLOCK RESTARTS WHEN A CALL ENDS (`mame_idle`)."""
+    account it rode on goes with it (`State.end_call`); and THE IDLE CLOCK RESTARTS WHEN A CALL
+    ENDS (`mame_idle`)."""
     STATE.end_call()
-    if isinstance(found, dict) and found:
-        STATE.found_stop_last = found
     idle.IDLE.touch()
+
+
+def _keep_accounts(reply: dict[str, Any]) -> None:
+    """THE ACCOUNT A REPLY NOBODY READS CARRIED GOES BACK for the next one: a stop the machine
+    reached on its own, found by a call cancelled as it returned, by a step of a cancelled
+    sequence, or by a cancelled call's end."""
+    if reply.get("stopped_on_its_own"):
+        STATE.found_stop_last = dict(reply["stopped_on_its_own"])
 
 
 def _keep_cancelled(record: cancel.Cancelled) -> None:
@@ -244,15 +237,36 @@ def _machine() -> recording.Machine:
 #: The session's recording: what `perform_export` writes (REFERENCE.md, From an investigation to
 #: a bench). `rom_check` answers about the files, never the machine, and is no step of a list.
 # `live` is what `start` refuses over (`mame_launch`): a start refused there touched nothing.
-RECORDER = recording.Recorder("mame", _machine,
-                              lambda: STATE.ses is not None and STATE.machine_alive(),
-                              stop_fields=("pc", "frame"),
-                              outside=frozenset({"close", "rom_check"}))
+#: Each kind of declaration a `start` re-arms, by the tool that lists it (`<kind>_list`) and the
+#: field its rows are under.
+_LISTS = {kind: (f"{kind}_list", key) for kind, key in dec.COUNT_KEYS.items()}
 
+
+def _declared() -> dict[str, list[str]]:
+    """The declarations the store holds, by `ref`, under the tool that lists each kind: what a
+    `start` re-arms, so a replay can be held to the same."""
+    held: dict[str, list[str]] = {tool: [] for tool, _ in _LISTS.values()}
+    for d in arming.store().declarations():
+        if d.kind in _LISTS:
+            held[_LISTS[d.kind][0]].append(d.ref)
+    return held
+
+
+RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _machine,
+                              lambda: STATE.ses is not None and STATE.machine_alive(),
+                              declarations=_declared, lists=dict(_LISTS.values()),
+                              stop_fields=("pc", "frame"),
+                              outside=sequence.NOT_STEPS - sequence.SEQUENCES - {"start"},
+                              sequences=sequence.SEQUENCES, start_tool="start",
+                              states=("state_save", "state_load", "name"))
+
+# THE HOOKS ARE BOUND HERE, ONCE, AT IMPORT: a test that replaces one patches the name the hook
+# calls through (`STATE`, `running`), never the hook itself, which the boundary already holds.
 BOUNDARY = boundary.Boundary(
-    mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after, line=_summary,
-    session_block=menvelope.session_block, take_cancelled=STATE.take_cancelled,
-    keep_cancelled=_keep_cancelled, doc=docs.filled, recorder=RECORDER)
+    mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after,
+    refusal_line=summaries.refusal, session_block=menvelope.session_block,
+    take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
+    give_back=_keep_accounts, recorder=RECORDER)
 
 
 def tool(
@@ -283,12 +297,5 @@ def tool(
     (`scry_core.replay`; REFERENCE.md, From an investigation to a bench).
     """
 
-    def register(fn: Callable[..., Any]) -> Callable[..., Any]:
-        wrapped = BOUNDARY.tool(title, read_only=read_only, idempotent=idempotent,
-                                session_before=session_before, on_cancel=on_cancel,
-                                replay=replay)(fn)
-        _SUMMARIES[fn.__name__] = summary
-        _BODIES[fn.__name__] = fn
-        return wrapped
-
-    return register
+    return BOUNDARY.tool(title, summary=summary, read_only=read_only, idempotent=idempotent,
+                         session_before=session_before, on_cancel=on_cancel, replay=replay)

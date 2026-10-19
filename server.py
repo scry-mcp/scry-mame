@@ -1894,11 +1894,10 @@ def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
     the lifecycle (`start`, `close`, `rom_check`), the two batch tools themselves, `perform`
     and `drive` (the reason is in `perform`'s docstring), and `perform_export`, which writes
     the session the list belongs to."""
-    lifecycle = {"start", "close", "rom_check", "perform", "drive", "perform_export"}
     # The module's own binding first, so a step dispatches to whatever this module calls the tool
     # now; the registration's function for a tool registered elsewhere.
     return {t.name: globals().get(t.name, t.fn) for t in mcp._tool_manager.list_tools()
-            if t.name not in lifecycle}
+            if t.name not in sequence.NOT_STEPS}
 
 
 @tool("Drive an input and verify it", summary=summaries.drive, on_cancel="none")
@@ -1974,12 +1973,12 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
     INVALID with `errors` listing EVERY refused step, nothing run. Anything else, at its step.
 
     Reply: `ran` (each step's `op`, the `cpu` its reply names, and `reply`), `steps_completed`,
-    `failed_at` (unavailable on success); on a step's refusal INVALID (`step_failed`) with `failed`
-    (`op`, `reply`); once it waited, `verdict`: `TARGET` (a list ending running adds
-    `stopped`, the survey) or `TIMEOUT` (the steps after the wait unsent, a `note`); with no
-    wait, `not_stopped` before a console step, or `still_running`; `until_frame` and
-    `frame_reached`. With several cpus, `visible_cpu` and `visible_cpu_kept`: the list
-    puts back the cpu it found, or its last `focus`'s.
+    `held` (the steps held to their `recorded` answer), `failed_at` (unavailable on success); on a
+    step's refusal INVALID (`step_failed`) with `failed` (`op`, `reply`); once it waited, `verdict`:
+    `TARGET` (a list ending running adds `stopped`, the survey) or `TIMEOUT` (the steps after the
+    wait unsent, a `note`); with no wait, `not_stopped` before a console step, or `still_running`;
+    `until_frame` and `frame_reached`. With several cpus, `visible_cpu` and `visible_cpu_kept`: the
+    list puts back the cpu it found, or its last `focus`'s.
 
     Reference: REFERENCE.md, Sequences in one call.
     """
@@ -2007,10 +2006,11 @@ def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
     Kept: what moved the machine, as steps (a reader that steps the guest included), and the
     reads that are checks (`read_memory`, `read_block`, `registers`, `screen_signature`,
     `golden_check`), each holding to what its reply said (`recorded`).
-    Dropped, each named with why: a refused call, any other read, a write only to the host. Cut,
-    named: the first call no replay can place (a `resume`, whose run stops inside a frame where no
-    replay reaches, a wall-clock bound that ended a run, no reply, a refusal after the machine
-    moved, past {RECORD_MAX} calls).
+    Dropped, each named with why: a refused call, any other read, a call that changes nothing in
+    the emulated machine. Cut, named: the first call no replay can place (a `resume`, whose run
+    stops inside a frame where no replay reaches, a wall-clock bound that ended a run, no reply, a
+    refusal after the machine moved, a machine found elsewhere than the call before left it, a
+    step that wrote a file the session named, past {RECORD_MAX} calls kept).
 
     `path` absolute or `~`-led, ending `.json`; refused if it is there unless `overwrite`.
 

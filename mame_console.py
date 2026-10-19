@@ -26,9 +26,10 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
+from scry_core import prose
+
 import gdb_session as gs
 import mame_lexer as lexer
-import mame_prose as prose
 
 # AN ASSIGNMENT ANYWHERE ON THE LINE CAN WRITE, and no prefix could ever see it: the console's
 # own parser executes a one-parameter line holding `=`, `++` or `--` as an expression (`d0=1234`

@@ -38,11 +38,11 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scry_core import prose
 from scry_core import value_format as vf
 
 import mame_callbacks as callbacks
 import mame_declarations as dec
-import mame_prose as prose
 import mame_read as read
 import mame_space as mspace
 import mame_state as st

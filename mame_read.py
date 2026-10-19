@@ -14,13 +14,14 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core import prose
+
 import gdb_session as gs
 import mame_console as console
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_flow as flow
 import mame_inputs as inputs
-import mame_prose as prose
 import mame_state as st
 from mame_state import STATE
 

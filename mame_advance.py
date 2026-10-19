@@ -18,7 +18,7 @@ from collections.abc import Callable, Hashable, Iterator
 from pathlib import Path
 from typing import Any, TypeVar
 
-from scry_core import cancel
+from scry_core import cancel, prose
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -32,7 +32,6 @@ import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
 import mame_lists as mlists
-import mame_prose as prose
 import mame_read as read
 import mame_running as running
 import mame_state as st

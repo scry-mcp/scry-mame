@@ -29,12 +29,12 @@ from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypeVar, overload
 
 from scry_core import progress as mprogress
+from scry_core import prose
 
 import gdb_session as gs
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_inputs as inputs
-import mame_prose as prose
 import mame_read as read
 import mame_state as st
 from mame_state import STATE

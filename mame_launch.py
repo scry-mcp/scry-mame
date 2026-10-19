@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import judges, narrowing
+from scry_core import judges, narrowing, prose
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -35,7 +35,6 @@ import mame_guardian as guardian
 import mame_idle as idle
 import mame_inputs as inputs
 import mame_machine as machine
-import mame_prose as prose
 import mame_read as read
 import mame_rearm as rearming
 import mame_regpoints as regpoints

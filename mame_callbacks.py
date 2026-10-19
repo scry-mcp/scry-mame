@@ -19,7 +19,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-import mame_prose as prose
+from scry_core import prose
+
 import mame_state as st
 
 # The characters of the first error a dump keeps: it rides on every survey of its tap.

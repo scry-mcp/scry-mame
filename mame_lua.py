@@ -41,7 +41,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from scry_core import cancel
+from scry_core import cancel, prose
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
@@ -50,7 +50,6 @@ import mame_advance as advance
 import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
-import mame_prose as prose
 import mame_running as running
 import mame_state as st
 import mame_transport as transport

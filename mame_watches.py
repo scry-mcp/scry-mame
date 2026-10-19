@@ -41,6 +41,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, assert_never
 
+from scry_core import prose
 from scry_core import value_format as vf
 
 import gdb_session as gs
@@ -56,7 +57,6 @@ import mame_files as files
 import mame_inputs as inputs
 import mame_lists as mlists
 import mame_map as mmap
-import mame_prose as prose
 import mame_read as read
 import mame_space as mspace
 import mame_state as st

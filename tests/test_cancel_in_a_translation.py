@@ -31,8 +31,8 @@ def refusing() -> Iterator[Any]:
     tool = mame_mcp.tool("refuses", summary=lambda a, r: "refused", on_cancel="stop")(refuses)
     yield tool
     s.mcp._tool_manager._tools.pop("refuses", None)
-    mame_mcp._SUMMARIES.pop("refuses", None)
-    mame_mcp._BODIES.pop("refuses", None)
+    mame_mcp.BOUNDARY.summaries.pop("refuses", None)
+    mame_mcp.BOUNDARY.bodies.pop("refuses", None)
     mame_mcp.BOUNDARY.declared_ends.pop("refuses", None)
 
 

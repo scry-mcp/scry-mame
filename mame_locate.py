@@ -50,6 +50,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
+from scry_core import prose
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -59,7 +60,6 @@ import mame_inputs as inputs
 import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as manifest
-import mame_prose as prose
 import mame_running as running
 import mame_screen as screen
 import mame_state as st

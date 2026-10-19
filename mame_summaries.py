@@ -19,8 +19,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
+from scry_core import prose
+
 import mame_callbacks as callbacks
-import mame_prose as prose
 
 #: A tool's summary: the call's arguments (defaults applied) and its reply, to one line.
 Summary = Callable[[dict[str, Any], dict[str, Any]], str]

@@ -53,7 +53,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scry_core import fresh, png
+from scry_core import fresh, png, prose
 from scry_core import progress as mprogress
 from scry_core import raster as core_raster
 
@@ -68,7 +68,6 @@ import mame_iotaps as iotaps
 import mame_lua as mlua
 import mame_map as mmap
 import mame_mismatch as mmismatch
-import mame_prose as prose
 import mame_read as read
 import mame_running as running
 import mame_screen as mscreen

@@ -15,7 +15,8 @@ from __future__ import annotations
 from array import array
 from typing import Any
 
-import mame_prose as prose
+from scry_core import prose
+
 import mame_screen as mscreen
 import mame_state as st
 

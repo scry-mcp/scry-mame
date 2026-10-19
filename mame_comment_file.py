@@ -23,7 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 
-import mame_prose as prose
+from scry_core import prose
 
 #: Line 1, exactly: the version mark a reader checks before anything else.
 HEADER = "# comments v1: ref\tcpu\tcreated_at\ttext"

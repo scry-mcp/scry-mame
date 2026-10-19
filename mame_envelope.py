@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from scry_core import prose
 from scry_core import reply_contract as contract
 
-import mame_prose as prose
 import mame_state as st
 from mame_state import STATE
 

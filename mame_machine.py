@@ -33,12 +33,11 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import narrowing
+from scry_core import narrowing, prose
 
 import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_inputs as inputs
-import mame_prose as prose
 import mame_read as read
 import mame_state as st
 import mame_transport as transport

@@ -12,7 +12,7 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.18.2",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.21.0",
 ]
 
 [dependency-groups]
@@ -67,7 +67,7 @@ markers = ["live: drives a REAL emulator; deselected by default, opt in with `-m
 addopts = "-m 'not live' --cov"
 # The shape guard (scry-core's `reply_shapes` plugin) wraps these: the contract every envelope goes
 # through, and the MCP boundary whose `_summary` every reply crosses.
-reply_shapes_anchors = ["scry_core.reply_contract", "mame_mcp"]
+reply_shapes_anchors = ["scry_core.reply_contract", "scry_core.boundary"]
 
 [tool.coverage.run]
 branch = true

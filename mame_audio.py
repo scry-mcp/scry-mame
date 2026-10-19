@@ -22,12 +22,12 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
+from scry_core import prose
 
 import gdb_session as gs
 import mame_files as files
 import mame_inputs as inputs
 import mame_lua as mlua
-import mame_prose as prose
 import mame_recording as mrec
 import mame_state as st
 import mame_transport as transport

@@ -56,8 +56,8 @@ def waiting_tool() -> Iterator[Any]:
     yield dict(zip(cancel.ON_CANCEL, made, strict=True))
     for end in cancel.ON_CANCEL:
         s.mcp._tool_manager._tools.pop(f"wait_{end}", None)
-        mame_mcp._SUMMARIES.pop(f"wait_{end}", None)
-        mame_mcp._BODIES.pop(f"wait_{end}", None)
+        mame_mcp.BOUNDARY.summaries.pop(f"wait_{end}", None)
+        mame_mcp.BOUNDARY.bodies.pop(f"wait_{end}", None)
         mame_mcp.BOUNDARY.declared_ends.pop(f"wait_{end}", None)
 
 

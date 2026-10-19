@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from scry_core import picture, png
+from scry_core import picture, png, prose
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -39,7 +39,6 @@ import mame_layout as ml
 import mame_lua as mlua
 import mame_manifest as mm
 import mame_palette as mpalette
-import mame_prose as prose
 import mame_read as read
 import mame_running as running
 import mame_screen as mscreen

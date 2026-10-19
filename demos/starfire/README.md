@@ -574,6 +574,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "visible_cpu": ":maincpu",
   "visible_cpu_kept": {
     "before": ":maincpu",
@@ -834,6 +835,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "visible_cpu": ":maincpu",
   "visible_cpu_kept": {
     "before": ":maincpu",
@@ -1090,6 +1092,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "visible_cpu": ":maincpu",
   "visible_cpu_kept": {
     "before": ":maincpu",
@@ -1882,6 +1885,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "visible_cpu": ":maincpu",
   "visible_cpu_kept": {
     "before": ":maincpu",

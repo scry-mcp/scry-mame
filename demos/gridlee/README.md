@@ -627,6 +627,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "session": {
     "alive": true,
     "running": false,
@@ -887,6 +888,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "session": {
     "alive": true,
     "running": false,
@@ -1146,6 +1148,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "session": {
     "alive": true,
     "running": false,
@@ -1278,6 +1281,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "available": false,
     "why": "no step failed"
   },
+  "held": 0,
   "session": {
     "alive": true,
     "running": false,

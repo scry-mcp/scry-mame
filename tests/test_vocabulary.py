@@ -79,18 +79,6 @@ def test_a_span_is_spelled_to_the_tenth_and_a_measured_time_to_the_microsecond()
     assert mstate.measured_s(1.23456789) == 1.234568 and mstate.measured_s(None) is None
 
 
-def test_a_count_in_prose_takes_its_noun_in_the_number_it_has() -> None:
-    """One plural rule for every count a summary, a note or a refusal writes: the noun in the
-    number the count has, never `(s)` and never a plural beside 1."""
-    import mame_prose as prose
-
-    assert prose.counted(1, "byte") == "1 byte" and prose.counted(48, "byte") == "48 bytes"
-    assert prose.counted(0, "line") == "0 lines"
-    assert prose.counted(2, "entry", "entries") == "2 entries"
-    assert prose.counted(1, "entry", "entries") == "1 entry"
-    assert (prose.agrees(1, "was", "were"), prose.agrees(2, "was", "were")) == ("was", "were")
-
-
 @pytest.mark.parametrize(("claims", "said"), [(1, "1 raw `lua` call was declared"),
                                               (2, "2 raw `lua` calls were declared")])
 def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
@@ -113,4 +101,4 @@ def test_a_trace_summary_says_each_count_in_its_number(
         frames: int, t: dict[str, object], said: str) -> None:
     import mame_mcp
 
-    assert mame_mcp._summary("trace", {"frames": frames}, {"trace": t}) == said
+    assert mame_mcp.BOUNDARY.line("trace", {"frames": frames}, {"status": "ok", "trace": t}) == said

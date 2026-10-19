@@ -34,12 +34,13 @@ import hashlib
 from dataclasses import dataclass
 from typing import Any
 
+from scry_core import prose
+
 import mame_envelope as menvelope
 import mame_evidence as evidence
 import mame_files as files
 import mame_inputs as inputs
 import mame_layout as ml
-import mame_prose as prose
 import mame_space as mspace
 import mame_state as st
 import mame_watches as watches

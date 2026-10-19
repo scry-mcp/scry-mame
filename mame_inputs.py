@@ -22,10 +22,8 @@ from pathlib import Path
 from typing import Any, NoReturn, overload
 
 from pydantic import Field
-from scry_core import judges, picture
+from scry_core import judges, picture, prose
 from scry_core.reply_contract import Invalid
-
-import mame_prose as prose
 
 
 def check_ref(ref: object, name: str = "ref") -> None:

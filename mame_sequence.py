@@ -16,6 +16,7 @@ stops at the first step that answers INVALID with the steps that ran as the acco
 from __future__ import annotations
 
 import contextlib
+import dataclasses
 import functools
 import inspect
 import re
@@ -24,7 +25,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import media_tools, recording
+from scry_core import media_tools, prose, recording
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
@@ -50,7 +51,6 @@ import mame_lua as mlua
 import mame_machine as machine
 import mame_manifest as manifest
 import mame_palette as mpalette
-import mame_prose as prose
 import mame_ramdac as mramdac
 import mame_read as read
 import mame_recording as mrec
@@ -68,6 +68,14 @@ import mame_write as mwrite
 from mame_state import STATE
 
 Ops = dict[str, Callable[..., dict[str, Any]]]
+
+#: The two tools whose steps ARE the calls: a list, and one act with its expectation.
+SEQUENCES = frozenset({"perform", "drive"})
+#: THE TOOLS THAT ARE NO STEP OF A SEQUENCE, named once: the session's own lifecycle (`start`,
+#: `close`, `rom_check`, which answers about the files), the sequences themselves, and the export
+#: of the session a list belongs to. What a list may not call, what the recording keeps out, what
+#: the pre-gate has no half of and what answers while the machine runs are each read off it.
+NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export"}
 
 # Ops that may run on a RUNNING machine: they read a file or the log, arm through a stub
 # that takes it while running (measured), or ask the session. Everything else needs a
@@ -777,18 +785,19 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
         return refusal
     several = len(cpus.cpu_list(ses)) > 1
     was = cpus.visible_cpu(ses) if several and not ses.running else None
-    code, message, fields, asked, send_last_line = _steps(ses, scratch, steps, settle_seconds, ops,
-                                                     progress, tail_wait, summaries, until_frame,
-                                                     name)
+    run = _steps(ses, scratch, steps, settle_seconds, ops, progress, tail_wait, summaries,
+                 until_frame, name)
+    fields = {**run.fields, "held": run.held}
     if several:
         # ONE SHAPE FOR `visible_cpu` in every reply, `debug`'s and this one's: the tag; how the
         # list kept it is an account of its own.
-        kept = _keep_visible(ses, was, asked)
+        kept = _keep_visible(ses, was, run.asked)
         fields["visible_cpu"], fields["visible_cpu_kept"] = kept["after"], kept
     # THE LIST HAS LANDED BEFORE ITS LAST LINE: that send is a poll, and a cancel met there would
     # otherwise leave the visible cpu where a stop moved it.
-    send_last_line()
-    return menvelope.invalid(code, message, **fields) if code else menvelope.envelope(fields)
+    run.last_line()
+    return (menvelope.invalid(run.code, run.message, **fields) if run.code
+            else menvelope.envelope(fields))
 
 
 def _frame_of(reply: dict[str, Any]) -> int | None:
@@ -801,14 +810,26 @@ def _no_line() -> None:
     """The last line of a list that has none to send."""
 
 
+@dataclasses.dataclass(frozen=True)
+class _Ran:
+    """A list's run: the refusal's `code` and `message` (None and "" for a list that ran to its
+    end), the reply's `fields`, the visible cpu the last step that set one read back (`asked`: a
+    `focus`, or a `debug` line that read it back after a `focus`, `ignore` or `observe`), the
+    window's `last_line`, sent by the caller once the list has landed, and how many steps `held`
+    to the answer a recording kept for them."""
+    code: contract.Code | None
+    message: str
+    fields: dict[str, Any]
+    asked: str | None
+    last_line: Callable[[], None]
+    held: int
+
+
 def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,
            progress: mprogress.Progress, tail_wait: bool, summaries: bool, until_frame: int = 0,
            name: str = "perform",
-           ) -> tuple[contract.Code | None, str, dict[str, Any], str | None, Callable[[], None]]:
-    """The steps run, as the refusal's code and message (None and "" for a list that ran to its
-    end), the reply's fields, the visible cpu the last step that set one read back (a `focus`,
-    or a `debug` line that read it back after a `focus`, `ignore` or `observe`), and the window's
-    last line, sent by the caller once the list has landed.
+           ) -> _Ran:
+    """The steps run (`_Ran`).
 
     WITH `until_frame` THE LIST IS A CYCLE, repeated until a stop reply carries a `frame` at or
     past it, because the steps a window of frames takes are its frames plus the stops inside it,
@@ -818,6 +839,7 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
     whose stop reads it, even mid-list. `UNTIL_STEPS_MAX` and `UNTIL_SECONDS_MAX` bound it, and
     a stop that carries no frame ends it, since nothing then says whether the window is over."""
     ran: list[dict[str, Any]] = []
+    held = 0                       # the steps whose `recorded` answer this run matched
     send_last_line: Callable[[], None] = _no_line
     # A LIST BEGUN ON A RUNNING MACHINE (after a `resume`) waits for its stop before its first
     # console step, as one that released the machine itself does.
@@ -857,11 +879,13 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
                            **({"frame_reached": _reached(reached)} if until else {})}
                 if not settle_seconds:
                     # NO WAIT WAS ASKED, so nothing ran out: the step could not be sent at all.
-                    return "not_stopped", why, {**account, "failed_at": i}, asked, _no_line
+                    return _Ran("not_stopped", why, {**account, "failed_at": i}, asked, _no_line,
+                                held)
                 # THE WAIT RAN OUT: a verdict, and the list ends here with what it completed.
-                return None, "", {**account, "failed_at": _none_failed(), "verdict": "TIMEOUT",
-                                  "note": f"{why}; it and the steps after it were not sent"}, \
-                    asked, _no_line
+                return _Ran(None, "", {**account, "failed_at": _none_failed(),
+                                       "verdict": "TIMEOUT",
+                                       "note": f"{why}; it and the steps after it were not sent"},
+                            asked, _no_line, held)
             # A wait with `settle_seconds` 0 was not asked for, even when the stop had already
             # landed: it earns no verdict.
             waited = waited or settle_seconds > 0
@@ -874,21 +898,24 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
         with steps_line:
             reply = ops[op](**args)      # bound up front, before any step ran
         if reply.get("status") != "ok":
-            return ("step_failed", f"step {i} ({op!r}) failed: {reply.get('message')}",
-                    {**account_of(ran, summaries, keep_last=False, scratch=scratch,
-                                  since=since, also=[reply]),
-                     "steps_completed": len(ran), "failed_at": i,
-                     "failed": {"op": op, "reply": reply}, **until,
-                     **({"frame_reached": _reached(reached)} if until else {})}, asked, _no_line)
+            return _Ran("step_failed", f"step {i} ({op!r}) failed: {reply.get('message')}",
+                        {**account_of(ran, summaries, keep_last=False, scratch=scratch,
+                                      since=since, also=[reply]),
+                         "steps_completed": len(ran), "failed_at": i,
+                         "failed": {"op": op, "reply": reply}, **until,
+                         **({"frame_reached": _reached(reached)} if until else {})},
+                        asked, _no_line, held)
         if (apart := recording.diverged(step.get(recording.RECORDED) or {}, reply)) is not None:
             # A REPLAY THAT LEFT THE SESSION IT REPLAYS stops where it left, which is where a
             # desync is cheapest to read: every step after it would only compound it.
             message, fields = recording.divergence(i, op, reply, apart)
-            return ("diverged", message,
-                    {**account_of(ran, summaries, keep_last=False, scratch=scratch,
-                                  since=since, also=[reply]),
-                     "steps_completed": len(ran), **fields, **until,
-                     **({"frame_reached": _reached(reached)} if until else {})}, asked, _no_line)
+            return _Ran("diverged", message,
+                        {**account_of(ran, summaries, keep_last=False, scratch=scratch,
+                                      since=since, also=[reply]),
+                         "steps_completed": len(ran), **fields, **until,
+                         **({"frame_reached": _reached(reached)} if until else {})},
+                        asked, _no_line, held)
+        held += bool(step.get(recording.RECORDED))
         ran.append(_entry(op, reply))
         shown = reply.get("cpu") if op == "focus" else (
             reply.get("visible_cpu") if op == "debug" else None)
@@ -907,22 +934,22 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
         if until_frame and _stops_in(reply):
             frame = _frame_of(reply)
             if frame is None:
-                return ("unexpected_answer",
-                        f"step {i - 1} stopped with no frame read, so nothing says whether "
-                        f"frame {until_frame} was reached: the list ends here",
-                        {**account_of(ran, summaries, keep_last=True, scratch=scratch,
-                                      since=since),
-                         "steps_completed": len(ran), "failed_at": _none_failed(), **until,
-                         "frame_reached": _reached(reached)}, asked, _no_line)
+                return _Ran("unexpected_answer",
+                            f"step {i - 1} stopped with no frame read, so nothing says whether "
+                            f"frame {until_frame} was reached: the list ends here",
+                            {**account_of(ran, summaries, keep_last=True, scratch=scratch,
+                                          since=since),
+                             "steps_completed": len(ran), "failed_at": _none_failed(), **until,
+                             "frame_reached": _reached(reached)}, asked, _no_line, held)
             if started_blind and reached is None and frame >= until_frame:
-                return ("bad_argument",
-                        f"the machine was running when the list began and its first stop "
-                        f"already reads frame {frame}, at or past until_frame={until_frame}: "
-                        "nothing of the window was walked",
-                        {**account_of(ran, summaries, keep_last=True, scratch=scratch,
-                                      since=since),
-                         "steps_completed": len(ran), "failed_at": _none_failed(), **until,
-                         "frame_reached": _reached(frame)}, asked, _no_line)
+                return _Ran("bad_argument",
+                            f"the machine was running when the list began and its first stop "
+                            f"already reads frame {frame}, at or past until_frame={until_frame}: "
+                            "nothing of the window was walked",
+                            {**account_of(ran, summaries, keep_last=True, scratch=scratch,
+                                          since=since),
+                             "steps_completed": len(ran), "failed_at": _none_failed(), **until,
+                             "frame_reached": _reached(frame)}, asked, _no_line, held)
             reached = frame
             template = "perform until frame {until}: frame {frame}, {steps}"
             if frame >= until_frame:
@@ -938,16 +965,16 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
                 clock.report(frame - window_start, until_frame - window_start, template,
                              until=until_frame, frame=frame, steps=prose.counted(len(ran), "step"))
     if until_frame and (reached is None or reached < until_frame):
-        return (None, "",
-                {**account_of(ran, summaries, keep_last=True, scratch=scratch, since=since),
-                 "steps_completed": len(ran), "failed_at": _none_failed(), "verdict": "TIMEOUT",
-                 **until,
-                 "frame_reached": _reached(reached),
-                 "note": f"until_frame={until_frame} was not reached in "
-                         f"{prose.counted(len(ran), 'step')} and {clock.elapsed():.0f} s (the "
-                         f"bounds are {UNTIL_STEPS_MAX} steps and {UNTIL_SECONDS_MAX:g} s): the "
-                         f"last frame read was {reached}"},
-                asked, _no_line)
+        return _Ran(None, "",
+                    {**account_of(ran, summaries, keep_last=True, scratch=scratch, since=since),
+                     "steps_completed": len(ran), "failed_at": _none_failed(), "verdict": "TIMEOUT",
+                     **until,
+                     "frame_reached": _reached(reached),
+                     "note": f"until_frame={until_frame} was not reached in "
+                             f"{prose.counted(len(ran), 'step')} and {clock.elapsed():.0f} s "
+                             f"(the bounds are {UNTIL_STEPS_MAX} steps and "
+                             f"{UNTIL_SECONDS_MAX:g} s): the last frame read was {reached}"},
+                    asked, _no_line, held)
     final: dict[str, Any] = {}
     if running_now and not tail_wait:
         final = {"still_running": True,
@@ -975,11 +1002,11 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
     if waited and "verdict" not in final:
         final = {"verdict": "TARGET", **final}
     tail = [final["stopped"]] if "stopped" in final else []
-    return None, "", {**account_of(ran, summaries, keep_last=True, scratch=scratch,
-                                   since=since, also=tail),
-                      "steps_completed": len(ran), "failed_at": _none_failed(), **final, **until,
-                      **({"frame_reached": _reached(reached)} if until else {})}, \
-        asked, send_last_line
+    return _Ran(None, "", {**account_of(ran, summaries, keep_last=True, scratch=scratch,
+                                        since=since, also=tail),
+                           "steps_completed": len(ran), "failed_at": _none_failed(), **final,
+                           **until, **({"frame_reached": _reached(reached)} if until else {})},
+                asked, send_last_line, held)
 
 
 # A LIST THAT ALTERNATES CPUS DOES NOT LEAVE THE VISIBLE CPU MOVED unless a step asked for it.

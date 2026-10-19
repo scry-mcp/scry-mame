@@ -22,7 +22,8 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Any
 
-import mame_prose as prose
+from scry_core import prose
+
 import mame_state as st
 
 LAYOUT_KEYS = ("width", "height", "planes", "planeoffset", "xoffset", "yoffset", "charincrement")

@@ -17,9 +17,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from scry_core import prose
+
 import gdb_session as gs
 import mame_files as files
-import mame_prose as prose
 import mame_state as st
 from mame_state import STATE
 

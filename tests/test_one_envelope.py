@@ -42,8 +42,8 @@ def late_tool() -> Any:
     registered = mame_mcp.tool("A late body", summary=lambda args, reply: "late: done")(late_body)
     yield registered
     s.mcp._tool_manager._tools.pop("late_body", None)
-    mame_mcp._SUMMARIES.pop("late_body", None)
-    mame_mcp._BODIES.pop("late_body", None)
+    mame_mcp.BOUNDARY.summaries.pop("late_body", None)
+    mame_mcp.BOUNDARY.bodies.pop("late_body", None)
 
 
 def test_the_decorator_puts_session_last_and_composes_it_after_the_body(

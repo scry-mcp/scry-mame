@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from scry_core import prose
+
 import gdb_session as gs
 import mame_arming as arming
 import mame_breakpoints as breakpoints
@@ -16,7 +18,6 @@ import mame_conditions as conditions
 import mame_declarations as dec
 import mame_lists as mlists
 import mame_map as mmap
-import mame_prose as prose
 import mame_space as mspace
 import mame_state as st
 import mame_watches as watches

@@ -14,6 +14,8 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Literal, NamedTuple
 
+from scry_core import prose
+
 import gdb_session as gs
 import mame_arming as arming
 import mame_cpus as cpus
@@ -21,7 +23,6 @@ import mame_declarations as dec
 import mame_envelope as menvelope
 import mame_inputs as inputs
 import mame_lists as mlists
-import mame_prose as prose
 import mame_state as st
 from mame_state import STATE
 

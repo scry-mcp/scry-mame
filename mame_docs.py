@@ -70,7 +70,7 @@ DOC_VALUES: dict[str, str] = {
     # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES,
     "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
-    "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(recording.RECORD_MAX),
+    "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
     "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(mscreen.PENS_MAX),
     "GFX_PLANES_MAX": str(ml.PLANES_MAX), "GFX_TILES_MAX": str(mgfx.VIEW_TILES_MAX),

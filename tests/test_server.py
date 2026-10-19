@@ -372,8 +372,8 @@ def test_the_tools_are_serialized() -> None:
     # Serialized, entries and exits alternate. Without the lock, they overlap.
     assert order == ["enter", "leave"] * 3
     s.mcp._tool_manager.remove_tool("slow_probe")
-    mame_mcp._SUMMARIES.pop("slow_probe", None)
-    mame_mcp._BODIES.pop("slow_probe", None)
+    mame_mcp.BOUNDARY.summaries.pop("slow_probe", None)
+    mame_mcp.BOUNDARY.bodies.pop("slow_probe", None)
 
 
 def test_the_mame_line_carries_the_harness_and_the_port() -> None:
@@ -5643,7 +5643,7 @@ def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
     """The summary is one line a person reads without the JSON, so a long refusal is cut
     there: at a word, with a mark that says the rest is in `message`, never mid-word."""
     message = "the write side of 0x4a0 is unmapped: " + "a change watch there can never fire " * 6
-    line = mame_mcp._summary("watch_add", {}, {"status": "INVALID", "code": "bad_argument",
+    line = mame_mcp.BOUNDARY.line("watch_add", {}, {"status": "INVALID", "code": "bad_argument",
                                         "message": message})
     head = "watch_add: INVALID (bad_argument), "
     assert line.startswith(head), line
@@ -5651,7 +5651,7 @@ def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
     assert shown.endswith("...") and len(shown) <= 124, shown
     kept = shown.removesuffix("...")
     assert message.startswith(kept) and message[len(kept)] == " ", "cut at a word, never inside one"
-    short = mame_mcp._summary("x", {}, {"status": "INVALID", "code": "c", "message": "short"})
+    short = mame_mcp.BOUNDARY.line("x", {}, {"status": "INVALID", "code": "c", "message": "short"})
     assert short == "x: INVALID (c), short"
 
 
@@ -6704,7 +6704,7 @@ def test_the_summary_line_of_each_tool_says_what_came_back(
     whose case fell out of `_summary` reads `<name>: ok` and two calls of it cannot be told
     apart. Each case here is a tool's line with its reply's own fields, and the branch of a
     line that reads one way or the other (stale, while running, cut, mutates, seen)."""
-    assert mame_mcp._summary(name, args, {"status": "ok", **reply}) == expected
+    assert mame_mcp.BOUNDARY.line(name, args, {"status": "ok", **reply}) == expected
 
 
 def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any() -> None:
@@ -6712,13 +6712,13 @@ def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any
              "binary": "/opt/mame/mame", "binary_origin": "PATH", "symbols_total": 61,
              "pc": "0x000f2034", "machine": {n: 0 for n in machine.SECTIONS},
              "declarations": {"rearm": {"rearmed": []}}, "start_retries": []}
-    assert mame_mcp._summary("start", {}, reply) == (
+    assert mame_mcp.BOUNDARY.line("start", {}, reply) == (
         "start m68k-dual on /opt/mame/mame (PATH): rom_check OK, 61 symbols, pc 0x000f2034")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": ":maincpu"}]
-    assert mame_mcp._summary("start", {}, reply).endswith(
+    assert mame_mcp.BOUNDARY.line("start", {}, reply).endswith(
         ", 1 declaration re-armed: 0x4a0 on :maincpu")
     reply["declarations"]["rearm"]["rearmed"] = [{"ref": "0x4a0", "cpu": None}]
-    assert mame_mcp._summary("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0")
+    assert mame_mcp.BOUNDARY.line("start", {}, reply).endswith(", 1 declaration re-armed: 0x4a0")
 
 
 def test_a_refusal_is_clipped_for_the_summary_line_at_a_word_and_never_inside_one() -> None:
