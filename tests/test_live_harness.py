@@ -14,6 +14,8 @@ from types import ModuleType
 
 import pytest
 
+import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+
 LIVE = Path(__file__).parent / "live"
 
 

@@ -21,6 +21,7 @@ import mame_machine as machine
 import mame_read as read
 import mame_state as st
 import mame_summaries as summaries
+import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
 from mame_state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "machine"

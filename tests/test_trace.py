@@ -29,6 +29,7 @@ import mame_mcp
 import mame_running as running
 import mame_state as mstate
 import mame_trace as mtrace
+import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "trace"
 TAG = ":maincpu"

@@ -26,6 +26,7 @@ import mame_conditions as conditions  # noqa: E402
 import mame_lists as mlists  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_watches as watches  # noqa: E402
+import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
 
 
 @pytest.mark.parametrize("addr", [0xD0, 0xA7, 0xDE, 0x400])
