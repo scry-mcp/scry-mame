@@ -168,8 +168,9 @@ def test_a_write_is_atomic_and_a_failed_one_leaves_no_temporary(
         raise OSError("disk full")
 
     monkeypatch.setattr(os, "replace", boom)
-    with pytest.raises(OSError, match="disk full"):
+    with pytest.raises(mstate.Invalid, match="disk full") as e:
         store.add(dec.Declaration("breakpoint", "symbol", "x"))
+    assert e.value.code == "host_failed", "the server chose the store's path"
     assert [p.name for p in path.parent.iterdir()] == ["declarations.json"]
     assert json.loads(path.read_text())["k"][0]["ref"] == "frame", "the file is whole"
 

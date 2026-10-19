@@ -1,0 +1,45 @@
+{
+ "format": "scry-map/1",
+ "application": "circus",
+ "screens": [
+  {
+   "name": "attract",
+   "kind": "pixel",
+   "size": [
+    248,
+    256
+   ],
+   "match": [
+    {
+     "crop": [
+      0,
+      0,
+      248,
+      8
+     ],
+     "signature": "b1864ba66e926dfd"
+    },
+    {
+     "crop": [
+      40,
+      144,
+      150,
+      8
+     ],
+     "signature": "b96379304706dea7"
+    }
+   ],
+   "controls": [
+    {
+     "name": "high_score",
+     "rect": [
+      40,
+      112,
+      184,
+      8
+     ]
+    }
+   ]
+  }
+ ]
+}

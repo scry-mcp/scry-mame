@@ -50,6 +50,7 @@ import mame_locate as mlocate
 import mame_lua as mlua
 import mame_machine as machine
 import mame_manifest as manifest
+import mame_maps as mmaps
 import mame_palette as mpalette
 import mame_ramdac as mramdac
 import mame_read as read
@@ -88,7 +89,7 @@ RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot", "
                   "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list",
                   "watch_clear", "regpoint_add", "regpoint_list", "regpoint_clear",
                   "comment_list", "comment_save", "symbols_find", "throttle", "machine_map",
-                  "gfx_load", "palette_log", "gfx_film", "scan_clear",
+                  "gfx_load", "palette_log", "gfx_film", "scan_clear", "map_load", "map_save",
                   # the media file tools read files, never the machine
                   *media_tools.TOOLS}
 # The one op among them with a gesture that needs a stop: a film's arming reads the screen.
@@ -96,9 +97,18 @@ _STOPPED_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
     "gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")), bool(a.get("clear")))}
 
 
+#: The one gesture of a stopped reader that answers on a running machine: the registers as the
+#: last stop surveyed them, which reads no cpu.
+_RUNNING_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
+    "registers": lambda a: a.get("from_last_stop") is True}
+
+
 def answers_running(op: str, args: dict[str, Any]) -> bool:
     """Whether this step answers on a running machine (`RUNNING_OK_OPS`, less a gesture of
-    theirs that needs a stop), so the sequence sends it without waiting for one."""
+    theirs that needs a stop, plus a gesture of a reader that needs none), so the sequence
+    sends it without waiting for one."""
+    if (runs := _RUNNING_GESTURE.get(op)) is not None and runs(args):
+        return True
     needs_stop = _STOPPED_GESTURE.get(op)
     return op in RUNNING_OK_OPS and not (needs_stop is not None and needs_stop(args))
 
@@ -155,6 +165,9 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "audio_record": maudio.check_audio_record,
     "input": mlua.check_input,
     "screen_signature": mscreen.check_screen_signature,
+    "map_load": mmaps.check_map_load,
+    "map_save": mmaps.check_map_save,
+    "map_add": mmaps.check_map_add,
     "series_capture": mseries.check_series_capture,
     "lua": mlua.check_lua,
     "state_save": savestates.check_state_name,
@@ -188,7 +201,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
 MACHINE_JUDGES = frozenset({
     "breakpoint_list", "watch_list", "regpoint_list", "comment_list",
     "state_list", "captures", "stop", "status", "reset", "cpu_info",
-    "scan_clear",
+    "scan_clear", "map_find",
 })
 
 # -------------------------------------------------------------------------- the sequence
@@ -437,14 +450,16 @@ def _account(ran: dict[str, Any]) -> dict[str, Any]:
 
 
 def refuse_act(act: list[Any], ops: Ops, pattern: str,
-               ses: Any = None) -> dict[str, Any] | None:
+               ses: Any = None, shape: bool = True) -> dict[str, Any] | None:
     """`drive`'s shape for an act refused before anything moved, or None when it is sound: `act`,
     `verify` and `looked` all present, in the shapes the tool documents, so a caller parses one
     reply whether the refusal came before the machine or after a step. `looked` is honest about
     having looked at nothing: `available` is false and every count is zero. With the session,
-    the cpus and the refs the steps name are judged too (`refuse_machine`)."""
+    the cpus and the refs the steps name are judged too (`refuse_machine`); `shape` False when
+    the caller already judged the act's shape, so it is judged once."""
     try:
-        refusal = refuse_steps(act, ops) or (None if ses is None else refuse_machine(ses, act))
+        refusal = ((refuse_steps(act, ops) if shape else None)
+                   or (None if ses is None else refuse_machine(ses, act)))
     except st.Invalid as e:
         return drive_refused(e.code, str(e), pattern)
     if refusal is None:
@@ -769,7 +784,8 @@ def account_of(ran: list[dict[str, Any]], summaries: bool, keep_last: bool, scra
 def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,
               progress: mprogress.Progress = mprogress.no_progress, tail_wait: bool = True,
               summaries: bool = False, until_frame: int = 0,
-              name: str = "perform") -> dict[str, Any]:
+              name: str = "perform", shape_judged: bool = False,
+              machine_judged: bool = False) -> dict[str, Any]:
     """Execute steps in order, STOPPING at the first failure with a full account: `ran` (each
     step, the cpu its reply names, and its reply, or with `summaries` its summary line,
     `account_of` says which), `failed_at` and `failed`, `steps_completed`; the tail when the list
@@ -779,8 +795,11 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
     `visible_cpu` (the tag after the list) and `visible_cpu_kept`
     (`_keep_visible`). With `until_frame` the list repeats until a stop reply's `frame`
     reaches it (`_steps`), and the reply says so in `until_frame` and `frame_reached`. Each step
-    reports its own progress through the list's, as `<name> step i of n (<op>): ...`."""
-    refusal = refuse_steps(steps, ops) or refuse_machine(ses, steps)
+    reports its own progress through the list's, as `<name> step i of n (<op>): ...`.
+    `shape_judged` and `machine_judged` say the caller already judged the list (`refuse_steps`,
+    `refuse_machine`): each judge runs once a call, and the machine's asks the console."""
+    refusal = ((None if shape_judged else refuse_steps(steps, ops))
+               or (None if machine_judged else refuse_machine(ses, steps)))
     if refusal is not None:
         return refusal
     several = len(cpus.cpu_list(ses)) > 1
@@ -1125,7 +1144,7 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     # rule look like from the outside; it is gone rather than disabled.
     # THE CPUS THE STEPS NAME, judged against the machine before anything moves, in the
     # refusal's own shape (`refuse_act`).
-    refusal = refuse_act(act, ops, pattern, ses)
+    refusal = refuse_act(act, ops, pattern, ses, shape=False)   # its shape: the server's, before
     if refusal is not None:
         return refusal
     # THE MARK, before anything moves: where the emulator log ends now.
@@ -1134,8 +1153,8 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     # for a stop after a trailing `resume`, and with an `expect` that wait would run out before
     # the verify began.
     ran = run_steps(ses, scratch, act, settle_seconds, ops, progress, name="drive",
-                    tail_wait=not expect,
-                    summaries=summaries)
+                    tail_wait=not expect, summaries=summaries, shape_judged=True,
+                    machine_judged=True)
     account = _account(ran)
     if ran.get("status") != "ok":
         return menvelope.invalid("step_failed",

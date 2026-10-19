@@ -122,6 +122,9 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_film": {},
     "gfx_sweep": {"tag": "gfx1"},
     "gfx_draft": {},
+    "map_load": {"path": "/nonexistent/x.scry-map.json"},
+    "map_save": {"path": "/nonexistent/x.scry-map.json"},
+    "map_add": {"screen": "s", "match": [[0, 0, 1, 1]]},
 }
 
 
@@ -148,8 +151,11 @@ def test_every_tool_answers_the_contract_with_no_machine(
         return
     # `start` refuses its argument; a media tool and the export need no machine and refuse the
     # path they were given.
-    contract.check_refusal(name, reply, "bad_argument" if name in ("start", "perform_export")
-                           or name in media_tools.TOOLS else "no_session")
+    # A map's file tools need no machine either: a load refuses the missing file, a save the
+    # empty map.
+    expected = {"map_load": "bad_argument", "map_save": "needs_call"}.get(name)
+    contract.check_refusal(name, reply, expected or ("bad_argument" if name in (
+        "start", "perform_export") or name in media_tools.TOOLS else "no_session"))
 
 
 class _Running(SessionFields):

@@ -20,11 +20,11 @@ from __future__ import annotations
 import dataclasses
 import json
 import os
-import tempfile
 from collections.abc import Collection
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from scry_core import fresh
 from scry_core import value_format as vf
 
 import mame_comment_file as cf
@@ -804,11 +804,5 @@ class DeclarationStore:
         raw = self._read_raw()
         raw[self._identity] = [d.to_dict() for d in self._items]
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        fd, tmp = tempfile.mkstemp(dir=self._path.parent, suffix=".tmp")
-        try:
-            with os.fdopen(fd, "w", encoding="utf-8") as fh:
-                json.dump(raw, fh, indent=2, sort_keys=True)
-            os.replace(tmp, self._path)
-        except BaseException:
-            Path(tmp).unlink(missing_ok=True)
-            raise
+        fresh.replace(self._path, json.dumps(raw, indent=2, sort_keys=True).encode(),
+                      "the declarations file", named_by_caller=False)

@@ -49,6 +49,7 @@ import mame_locate as mlocate  # noqa: E402
 import mame_lua as mlua  # noqa: E402
 import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
+import mame_maps as mmaps  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
@@ -198,6 +199,8 @@ OWNERS.update({
     "comment_add": comments.check_comment_add, "comment_delete": comments.check_comment_delete,
     "comment_save": comments.check_comment_save, "comment_load": comments.check_comment_load,
     "trace": mtrace.check_trace, "series_capture": mseries.check_series_capture,
+    "map_load": mmaps.check_map_load, "map_save": mmaps.check_map_save,
+    "map_add": mmaps.check_map_add,
     **{name: spec.check for name, spec in media_tools.TOOLS.items()},
 })
 
@@ -266,7 +269,8 @@ def test_every_module_body_asks_its_own_check() -> None:
         "scan_start": mscan.scan_start, "scan_filter": mscan.scan_filter,
         "comment_add": comments.comment_add, "comment_delete": comments.comment_delete,
         "comment_save": comments.comment_save, "comment_load": comments.comment_load,
-        "trace": mtrace.trace,
+        "trace": mtrace.trace, "map_load": mmaps.map_load, "map_save": mmaps.map_save,
+        "map_add": mmaps.map_add,
         "breakpoint_clear": breakpoints.breakpoint_clear, "watch_clear": watches.watch_clear,
         "regpoint_clear": regpoints.regpoint_clear, "debug": mwrite.debug,
         "machine_map": machine.machine_map, "series_capture": mseries.series_capture,
@@ -448,7 +452,7 @@ def test_the_instructions_name_every_operation_that_answers_while_running() -> N
     that reads nothing else, and three names had fallen out of the prose while their own
     docstrings and the refusal's `answers_while_running` kept them."""
     text = s.mcp.instructions or ""
-    running = text[text.index("While it runs"):text.index("`rom_check`:")]
+    running = text[text.index("While it runs"):text.index("`memdump`, `snapshot` answer")]
     files = text[text.index("Files, any state:"):text.index("A SESSION.")]
     media = set(media_tools.TOOLS)
     missing = sorted(op for op in sequence.RUNNING_OK_OPS - media if f"`{op}`" not in running)

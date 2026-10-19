@@ -540,10 +540,12 @@ def optional_dest(dest: str) -> Path | None:
     return fresh_dest("dest", dest) if dest else None
 
 
-def picture_args(scale: int = 0, dest: str = "") -> Path | None:
+def picture_args(scale: int = 0, dest: str = "", attach: bool = True) -> Path | None:
     """What every graphics tool judges before the machine: the scale (`scry_core.picture`'s
-    range), and a `dest` that is a fresh absolute path, handed back as the `Path` it built."""
+    range), whether to attach the picture (a view's), and a `dest` that is a fresh absolute path,
+    handed back as the `Path` it built."""
     picture.check_scale(scale)
+    picture.check_attach(attach)
     return optional_dest(dest)
 
 

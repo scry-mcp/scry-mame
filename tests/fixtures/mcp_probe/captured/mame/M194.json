@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M194",
+  "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.",
+  "tool": "map_save",
+  "args": {
+   "path": "/tmp/maps/circus.scry-map.json",
+   "overwrite": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M194: {\"tool\": \"map_save\", \"args\": {\"path\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M194: {\"tool\": \"map_save\", \"args\": {\"path\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M194: {\"tool\": \"map_save\", \"args\": {\"path\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

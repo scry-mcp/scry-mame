@@ -260,7 +260,9 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
 # The media file tools read files and never the machine, so a broken session leaves them as it
 # leaves `status`: answering; and so does `perform_export`, which writes what the session did,
 # a broken one's included.
-_STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS}
+#: A map's file tools read and write map files only, as the media file tools read theirs.
+MAP_FILE_TOOLS = {"map_load", "map_save"}
+_STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS, *MAP_FILE_TOOLS}
 
 
 @pytest.mark.parametrize("name", [t for t in _tools() if t not in _STILL_ANSWER])
@@ -291,6 +293,17 @@ def test_a_media_file_tool_answers_on_a_broken_session(
     out = getattr(s, name)(**_ARGS[name])
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", (name, out)
     assert "is not a file" in out["message"], (name, out)
+
+
+@pytest.mark.parametrize(("name", "code"), [("map_load", "bad_argument"),
+                                            ("map_save", "needs_call")])
+def test_a_map_file_tool_answers_on_a_broken_session(
+    name: str, code: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _running(monkeypatch, tmp_path)
+    ses.broken = NOT_A_STOP
+    out = getattr(s, name)(**_ARGS[name])
+    assert out["status"] == "INVALID" and out["code"] == code, (name, out)
 
 
 # ------------------------------------------------ the interrupt at the bound not answered

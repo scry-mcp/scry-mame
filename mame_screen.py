@@ -333,7 +333,7 @@ def screen_signature(ses: gs.Session, scratch: Path, crop: list[int] | None, sec
 def check_screen_view(mode: str = "render", pens: list[int] | None = None,
                       point: list[int] | None = None, crop: list[int] | None = None,
                       scale: int = 0, dest: str = "", seconds: float = mlua.EVAL_WAIT_S,
-                      **_: Any) -> Path | None:
+                      attach: bool = True, **_: Any) -> Path | None:
     """`screen_view`'s machine-independent half: the mode, the arguments that mode takes and no
     other (an argument a mode would ignore is refused, never dropped), and their shapes."""
     inputs.seconds_bound(seconds)
@@ -354,18 +354,19 @@ def check_screen_view(mode: str = "render", pens: list[int] | None = None,
     if crop is not None and (mode == "pixel" or not inputs.is_rectangle(crop)):
         raise st.Invalid("bad_argument", f"crop={crop!r} is [x, y, width, height] with a width "
                          "and a height above zero, and mode `pixel` takes `point` instead")
-    if mode == "histogram" and (scale or dest):
-        raise st.Invalid("bad_argument", "mode `histogram` answers no picture, so `scale` and "
-                         "`dest` would do nothing")
-    return inputs.picture_args(scale, dest)
+    if mode == "histogram" and (scale or dest or attach is not True):
+        raise st.Invalid("bad_argument", "mode `histogram` answers no picture, so `scale`, "
+                         "`dest` and `attach` would do nothing")
+    return inputs.picture_args(scale, dest, attach)
 
 
 def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | None,
                 point: list[int] | None, crop: list[int] | None, scale: int, dest: str,
                 seconds: float,
-                progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+                progress: mprogress.Progress = mprogress.no_progress,
+                attach: bool = True) -> dict[str, Any]:
     """The body of the `screen_view` tool."""
-    dest_path = check_screen_view(mode, pens, point, crop, scale, dest, seconds)
+    dest_path = check_screen_view(mode, pens, point, crop, scale, dest, seconds, attach)
     # THE PIXEL QUESTION'S THIRD ANSWER, who set the pen, is dumped by the same chunk, so the pen,
     # its colour and its last write are one state (`mame_ramdac_lua.dump_lua`)
     cap, common = capture(ses, scratch, True, seconds, progress,
@@ -399,7 +400,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
                                      for gap, rgb in enumerate(POINT_RINGS, 1)]
         fields["image"] = st.publish(colour_crop(cap, cx, cy, cw, ch), scale, dest_path,
                                      scratch, "pixel", rings=rings,
-                                     border=len(POINT_RINGS))
+                                     border=len(POINT_RINGS), attach=attach)
         return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                                   mode=mode, **st.merged(fields, common))
     x0, y0, w, h = crop if crop is not None else (0, 0, cap.width, cap.height)
@@ -427,7 +428,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         fields["pens"] = sorted(selected)
         fields["isolate_color"] = "#{:02x}{:02x}{:02x}".format(*ISOLATE_COLOUR)
     shown = raster(cap, area, x0, y0, w, h, selected if mode == "isolate" else None)
-    fields["image"] = st.publish(shown, scale, dest_path, scratch, "screen")
+    fields["image"] = st.publish(shown, scale, dest_path, scratch, "screen", attach=attach)
     return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
                               mode=mode, **st.merged(fields, common))
 

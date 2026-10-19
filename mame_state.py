@@ -21,7 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, TypeVar, overload
 
-from scry_core import cancel, picture
+from scry_core import cancel, picture, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 
@@ -122,6 +122,9 @@ class State:
         # reply that closes, whatever tool that is, and is then forgotten (`take_cancelled`).
         # Not in `_reset` either: the next call may be the `close` or `start` that kills.
         self.cancelled: cancel.Cancelled | None = None
+        # THE SCREEN MAPS outlive a session too: the file layer a `map_load` read stays, and a
+        # `start` empties the session layer and forgets the last identification.
+        self.maps = screen_map.Maps()
         self._reset()
 
     def _reset(self) -> None:

@@ -1486,3 +1486,34 @@ def test_a_film_arming_step_waits_for_a_stop_and_its_read_does_not(
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
     assert out["steps_completed"] == 1 and "failed" not in out, "the arming was never sent"
     assert ses.running
+
+
+def test_a_list_sends_the_last_stops_registers_to_a_running_machine_at_once() -> None:
+    """The instructions' running table names `registers(from_last_stop=True)`, which reads no
+    cpu: a list sends it without waiting for a stop, and the plain reader still waits."""
+    from mame_sequence import answers_running
+    assert answers_running("registers", {"from_last_stop": True})
+    assert not answers_running("registers", {})
+    assert not answers_running("registers", {"from_last_stop": False})
+    assert answers_running("log", {}) and not answers_running("read_memory", {"ref": "0x0"})
+
+
+def test_a_list_is_judged_once_a_call_its_shape_and_its_machine_halves_alike(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The shape before the machine is fetched, the machine's half once it is: never again
+    inside the run, where the machine's half asks the console for the cpus."""
+    _running(monkeypatch, tmp_path)
+    shapes: list[int] = []
+    machines: list[int] = []
+    shape, machine = sequence.refuse_steps, sequence.refuse_machine
+    monkeypatch.setattr(sequence, "refuse_steps",
+                        lambda *a: shapes.append(1) or shape(*a))   # type: ignore[func-returns-value]
+    monkeypatch.setattr(sequence, "refuse_machine",
+                        lambda *a: machines.append(1) or machine(*a))  # type: ignore[func-returns-value]
+    assert s.perform(steps=[{"op": "status"}])["status"] == "ok"
+    assert (len(shapes), len(machines)) == (1, 1)
+    shapes.clear()
+    machines.clear()
+    assert s.drive(act=[{"op": "status"}])["status"] == "ok"
+    assert (len(shapes), len(machines)) == (1, 1)

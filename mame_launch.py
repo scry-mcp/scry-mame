@@ -1098,6 +1098,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         listed = collect(judged)
         assert STATE.ses is not None
         STATE.system = system
+        STATE.maps.started()
         # THE ONE PATH'S TABLE IS THE FIRST CPU'S: the stub's thread 1, else the first cpu
         # `cpulist` lists, else the first `-listxml` names.
         STATE.first_cpu = (cpus.stub_cpu(STATE.ses)

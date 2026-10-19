@@ -1660,3 +1660,62 @@ def test_a_cpu_space_range_is_read_for_the_span_every_candidate_needs(
     s.gfx_locate(layouts=[GRID_FB], patch=[96, 96, 8, 8], ref="0x800", count=7680, flips=["none"])
     span = 7679 * 4 + 7 * 128 + 4
     assert f", {0x800}, {span})" in ses.stdin.getvalue().decode()
+
+
+# ------------------------------------------------------------------ attach
+
+
+def test_a_view_asked_not_to_attach_writes_its_picture_and_says_why(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """`attach` false keeps the picture out of the reply and still writes the file it names."""
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-circus", screen="circus-screen")
+    screen = s.screen_view(scale=1, attach=False)
+    assert screen["status"] == "ok", screen
+    assert screen["image"]["inline"] is False and screen["image"]["not_inlined"] == "attach=false"
+    assert Path(screen["image"]["path"]).is_file()
+
+
+def test_a_view_attaches_its_picture_unless_asked_not_to(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-circus", screen="circus-screen")
+    shown = s.screen_view(scale=1)
+    assert shown["image"]["inline"] is True and "not_inlined" not in shown["image"], shown
+
+
+def test_the_pixel_crop_asked_not_to_attach_goes_to_its_dest_unattached(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    dest = tmp_path / "pixel.png"
+    out = s.screen_view(mode="pixel", point=[100, 100], dest=str(dest), attach=False)
+    assert out["status"] == "ok", out
+    assert out["image"]["not_inlined"] == "attach=false" and out["image"]["path"] == str(dest)
+    assert dest.is_file()
+
+
+def test_gfx_view_asked_not_to_attach_writes_its_picture_and_says_why(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "gfx-circus", block="circus-gfx1")
+    out = s.gfx_view(layout=CIRCUS_CHAR, palette="palette", tag="gfx1", scale=1, attach=False)
+    assert out["status"] == "ok", out
+    assert out["image"]["inline"] is False and out["image"]["not_inlined"] == "attach=false"
+    assert Path(out["image"]["path"]).is_file()
+
+
+@pytest.mark.parametrize(("call", "said"), [
+    (lambda: s.screen_view(mode="histogram", attach=False), "would do nothing"),
+    (lambda: s.screen_view(attach="no"), "attach is a boolean"),
+    (lambda: s.gfx_view(layout=CIRCUS_CHAR, tag="gfx1", attach=1), "attach is a boolean"),
+], ids=["histogram has no picture", "screen_view", "gfx_view"])
+def test_an_attach_that_is_no_yes_or_no_or_would_do_nothing_is_refused(
+        call: Any, said: str) -> None:
+    refused = call()
+    assert refused["status"] == "INVALID" and refused["code"] == "bad_argument", refused
+    assert said in refused["message"]

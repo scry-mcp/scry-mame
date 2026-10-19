@@ -1,26 +1,26 @@
 {
  "task": {
   "id": "M55",
-  "prompt": "Set a breakpoint that halts at the console expression PlayerX+2, forcing it to be read as an expression rather than a symbol or an address.",
+  "prompt": "Set an execution breakpoint at the code address the console expression PlayerX+2 evaluates to, with breakpoint_at forced to read its ref as an expression rather than as a symbol or an address.",
   "expect": "CANNOT",
   "about": "breakpoint_at"
  },
  "runs": [
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses by: expr"
+    "M55: CANNOT breakpoint_at refuses expression refs (by \"expr\"), so a breakpoint on the value of PlayerX+2 must be declared as a register point instead."
    ],
    "right": true
   },
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses expr forcing; by accepts auto symbol address only"
+    "M55: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX+2\", \"by\": \"expr\"}}"
    ],
-   "right": true
+   "right": false
   },
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses expressions; only symbols or addresses can have breakpoints."
+    "M55: CANNOT breakpoint_at refuses an expression as a place, so a console expression cannot be declared as a breakpoint ref."
    ],
    "right": true
   }

@@ -27,7 +27,7 @@ from array import array
 from pathlib import Path
 from typing import Any
 
-from scry_core import fresh, judges, png, series
+from scry_core import fresh, judges, png, raster, series
 from scry_core import progress as mprogress
 
 import gdb_session as gs
@@ -223,8 +223,8 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
                          f"time(s), first: {done['first_error']}")
     lost = sorted(int(f) for f in done["lost"].split(",") if f)
     kept_frames = [f for f in wanted if (folder / f"raw-{f}.txt").exists()]
-    for frame in kept_frames:
-        _develop(folder, frame, width, height, area, common)
+    signed = {frame: _develop(folder, frame, width, height, area, common)
+              for frame in kept_frames}
     missing = sorted(set(wanted) - set(kept_frames) - set(lost))
     if missing:
         raise st.Invalid("unexpected_answer", f"{len(missing)} wanted frame(s) came out of the "
@@ -233,7 +233,7 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
     if not kept_frames:
         raise st.Invalid("no_progress", "the run reached the last frame and every wanted frame "
                          "was skipped by frameskip, so none was drawn")
-    reply = series.write_manifest(folder, "mame", FRAME_SOURCE, crop, kept_frames)
+    reply = series.write_manifest(folder, "mame", FRAME_SOURCE, crop, kept_frames, signed)
     for frame in kept_frames:
         STATE.record_image(folder / series.frame_name(frame))
     body = {k: v for k, v in run.items() if k not in ("summary", "session")}
@@ -245,10 +245,11 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
 
 
 def _develop(folder: Path, frame: int, width: int, height: int, area: list[int],
-             common: dict[str, Any]) -> None:
+             common: dict[str, Any]) -> str:
     """Frame `frame`'s dump as its PNG, in the colours of the pens saved at its own end, its
     reading checked: read at the next frame that drew, of the armed size, and a capture the
-    chunk did not refuse (`mscreen.captured`, which names the refusal)."""
+    chunk did not refuse (`mscreen.captured`, which names the refusal). Answers the picture's
+    signature, which the manifest takes rather than decoding the file back."""
     base = folder / f"raw-{frame}"
     text = base.with_suffix(".txt").read_text(encoding="utf-8", errors="replace")
     head = _FRAME.match(text)
@@ -273,6 +274,7 @@ def _develop(folder: Path, frame: int, width: int, height: int, area: list[int],
         lut = [rgb[3 * i:3 * i + 3] for i in range(len(pens))]
         picture = png.Raster(w, h, b"".join(lut[i] for i in cap.window(x, y, w, h)))
     fresh.create(folder / series.frame_name(frame), png.encode(picture), "the frame")
+    return raster.picture_signature(picture)
 
 
 def _finish(ses: gs.Session, scratch: Path, seconds: float,

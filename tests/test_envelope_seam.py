@@ -199,7 +199,7 @@ def test_a_wrong_type_an_encoded_list_and_an_unknown_name_are_refused(
 
 _SAMPLE: dict[Any, Any] = {str: "0", int: 2, float: 1.0, bool: False, dict[str, Any]: {},
                            dict[str, Any] | str: {}, list[dict[str, Any] | str]: [{}],
-                           list[int]: [0, 0, 8, 8]}
+                           list[int]: [0, 0, 8, 8], list[list[int]]: [[0, 0, 8, 8]]}
 
 
 def test_every_tool_that_takes_ctx_still_accepts_a_valid_call() -> None:

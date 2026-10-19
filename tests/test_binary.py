@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import binaries as core_binaries
 from scry_core.reply_contract import Invalid
 from session_doubles import refused
 from test_server import _running, _stub_boot, _StubProcess
@@ -70,7 +71,7 @@ def test_nothing_resolvable_is_refused_naming_all_three_rungs(
     monkeypatch.setenv("PATH", str(tmp_path / "empty"))
     with pytest.raises(Invalid) as refusal:
         binaries.resolve("")
-    assert refusal.value.code == "bad_argument"
+    assert refusal.value.code == "host_failed", "the host's PATH, the host's to fix"
     for rung in ("`binary` held nothing", "MAME_BINARY held nothing", "no `mame`"):
         assert rung in str(refusal.value), (rung, str(refusal.value))
 
@@ -151,7 +152,7 @@ def test_a_version_call_that_prints_nothing_is_unavailable(tmp_path: Path) -> No
 
 def test_a_version_call_that_hangs_is_unavailable_within_its_bound(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(binaries, "VERSION_TIMEOUT_S", 0.2)
+    monkeypatch.setattr(core_binaries, "VERSION_TIMEOUT_S", 0.2)
     got = binaries.version(str(build(tmp_path, version="exec sleep 5")))
     assert isinstance(got, dict) and got["available"] is False
     assert "did not return in 0.2 s" in got["why"], got
@@ -227,4 +228,4 @@ def test_start_with_no_rung_resolving_is_refused_in_the_envelope(
     monkeypatch.setenv("PATH", str(tmp_path / "empty"))
     out = _start(monkeypatch, tmp_path)
     refused("no MAME binary resolves from the PATH rung", out)
-    assert out["code"] == "bad_argument" and out["start_retries"] == [], out
+    assert out["code"] == "host_failed" and out["start_retries"] == [], out

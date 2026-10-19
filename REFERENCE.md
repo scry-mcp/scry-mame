@@ -155,8 +155,8 @@ replies are where a session is described.
 **Which MAME runs is resolved for each launch, and said.** The ladder is the `binary` argument
 (an absolute path), else the `MAME_BINARY` variable, else the `mame` the PATH finds, and the
 first rung holding a value is the one taken. A relative value is refused at its argument or
-variable; one naming no executable file is refused (`bad_argument`) naming what all three rungs
-held and why the one taken is not a program (`no such file`, `a directory`, `not executable`),
+variable; one naming no executable file is refused naming what all three rungs held (`bad_argument`
+when it was the `binary` argument, `host_failed` when it was the host's variable or PATH) and why the one taken is not a program (`no such file`, `a directory`, `not executable`),
 and is never passed over for the next, because a caller who named a build and got another would
 be measuring the wrong emulator. The ladder is climbed after the session gate, so a live or
 broken session answers as such whatever executable `binary` or `MAME_BINARY` names, and a
@@ -687,7 +687,7 @@ Every tool ends one of three ways, and one that declares no end ends `none`:
 |---|---|---|
 | `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `step`, `run_to`, `run_for`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
 | `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` when a session is up to be asked; a MAME still booting is killed at once | `start`, `close` |
-| `none` | the machine as the call found it | `status`, `focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `breakpoint_list`, `breakpoint_clear`, `regpoint_add`, `regpoint_list`, `regpoint_clear`, `comment_add`, `comment_list`, `comment_delete`, `comment_save`, `comment_load`, `watch_add`, `watch_list`, `watch_clear`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan_start`, `scan_filter`, `scan_clear`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `image_diff`, `series_diff`, `region_track`, `golden_check`, `audio_measure`, `audio_diff`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `state_save`, `captures`, `state_list`, `state_load` |
+| `none` | the machine as the call found it | `status`, `focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `breakpoint_list`, `breakpoint_clear`, `regpoint_add`, `regpoint_list`, `regpoint_clear`, `comment_add`, `comment_list`, `comment_delete`, `comment_save`, `comment_load`, `watch_add`, `watch_list`, `watch_clear`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan_start`, `scan_filter`, `scan_clear`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `map_load`, `map_add`, `map_find`, `map_save`, `image_diff`, `series_diff`, `region_track`, `golden_check`, `audio_measure`, `audio_diff`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `state_save`, `captures`, `state_list`, `state_load` |
 
 ## Names for addresses
 
@@ -2120,7 +2120,7 @@ What the export keeps is what moved the machine and what was checked:
 | `read_block` | a check of `hex`, and of the `pc` and `frame` of the step it reads by |
 | `registers` | a check of `regs` |
 | `screen_signature` | a check of `signature`, and of the `pc` and `frame` of the step it reads by |
-| `golden_check` | a check of `matched`, `differing`, `missing` and `extra` |
+| `golden_check` | a check of `matched`, `differing_total`, `missing_total`, `extra_total` and the `differing`, `missing` and `extra` lists |
 | a `resume` (a release), a `resume(seconds=)` that came back stopped, a call whose wall-clock bound ended it (`TIMEOUT`) | the end of the document, named in the reply's `cut`: whatever ends such a run, the clock or a breakpoint, stops the cpu at a place inside its frame that no replayed advance reaches (a count of frames ends at the frame's edge, a `run_to` at the first arrival), and every stop after it inherits the shift |
 | any other read, `throttle`, `snapshot`, `memdump`, `comment_*`, the picture and `gfx_*` tools, the scan | dropped, named in the reply with why; one that stepped the guest to read it is kept as a step |
 | a call the server refused | dropped, named; one that moved the machine first ends the document |
@@ -2258,22 +2258,26 @@ They are operations of `perform` too, where each step's `image` is named by path
 `gfx_film`, works differently: it keeps the frames in which a write happened, inside MAME, as
 the machine runs (below).
 
-**The picture.** Each answers with ONE PNG, written to the scratch (or to `dest`: `close`
-deletes the scratch, so a picture meant to outlive the session takes one), named in
-the reply's `image` (`path`, `sha256`, `bytes`, `width`, `height`, `scale`, `indexed`,
-`inline`) and attached after the JSON when the model can see it as it is. Past a side of
-1568 px, or past 1568 tiles of 28 px, the API resamples a picture, and a resampled picture of
-pixel art is a plausible wrong one: pens blend, one-pixel lines vanish. So such a picture is
-written and not attached, `not_inlined` says why, and the caller asks for a `crop` or a smaller
-`scale`. Inside the ceiling a small picture is enlarged by an integer factor, nearest
-neighbour, so each pixel is a square of one pen (`scale=0`, the default, is the largest factor
-up to 8 that fits). The attachment is the file, hashed again at the MCP boundary. An indexed
-PNG keeps each pixel's index in the file, so the file is the data and a golden can compare
-pens: the screen is indexed when its palette has at most 256 entries (the PNG index IS the
-pen), a tile sheet always (the index is the pixel value). A picture that is a VIEW of the data
-(a margin dimmed, a point ringed, boxes outlined) is RGB, since an indexed file cannot dim a pen
-without a second palette entry a 256-pen board does not have; where the data matters beside it,
-the reply names it too (`gfx_blit_source`'s `data`).
+**The picture.** Each answers with ONE PNG, written to the scratch (or to `dest`: `close` deletes
+the scratch, so a picture meant to outlive the session takes one), named in the reply's `image`
+(`path`, `sha256`, `bytes`, `width`, `height`, `scale`, `indexed`, `border`, `inline`,
+`not_inlined`) and attached after the JSON when the model can see it as it is. Past a side of 1568
+px, or past 1568 tiles of 28 px, the API resamples a picture, and a resampled picture of pixel art
+is a plausible wrong one: pens blend, one-pixel lines vanish. So such a picture is written and not
+attached, `not_inlined` says why, and the caller asks for a `crop` or a smaller `scale`.
+`screen_view` and `gfx_view` can be asked not to attach (`attach` false: the file is written and
+named, `not_inlined: "attach=false"`), and a picture inside a sequence's step is never attached,
+since only a reply's own picture crosses: the step's own picture says `inline: false`,
+`not_inlined: "nested"`. `palette`, `gfx_sweep`, `gfx_blits`, `gfx_blit_source` and `gfx_film` take
+no `attach`: they attach within the ceiling as above. Inside the ceiling a small picture is
+enlarged by an integer factor, nearest neighbour, so each pixel is a square of one pen (`scale=0`,
+the default, is the largest factor up to 8 that fits). The attachment is the file, hashed again at
+the MCP boundary. An indexed PNG keeps each pixel's index in the file, so the file is the data and
+a golden can compare pens: the screen is indexed when its palette has at most 256 entries (the PNG
+index IS the pen), a tile sheet always (the index is the pixel value). A picture that is a VIEW of
+the data (a margin dimmed, a point ringed, boxes outlined) is RGB, since an indexed file cannot dim
+a pen without a second palette entry a 256-pen board does not have; where the data matters beside
+it, the reply names it too (`gfx_blit_source`'s `data`).
 
 **`palette`** reads a palette device's pens as MAME holds them, `manager.machine.palettes`: on
 the boards this server drives the colour RAM is a write-only RAMDAC or an array inside the
@@ -2282,31 +2286,31 @@ at its left, because a pen counted across a row is a pen named wrong. `truncated
 means on every tool here, that the answer was cut: only a read to the end (`count` 0) past the
 cap is; a `count` the caller chose cut nothing, however many pens come after it.
 
-**`screen_view`** recovers the index of every pixel. Stock `screen:pixels()` resolves an
-indexed screen to colours through the palette, so ONE chunk saves every pen, sets pen `i` to
-the colour `i`, reads the screen, puts every pen back, reads them back and reads the screen
-again, into one file. No guest instruction runs inside a chunk, so nothing the game does can
-see the encoded pens, and the encoding and its read run under `pcall`, so the pens go back even
-when that read raises. Four checks make the reply INVALID rather than a picture: an index past
-the palette's entries; an index whose saved pen is not the colour the screen showed (a palette
-adjusted by contrast or gamma draws other colours than its pens); a pen that did not read back
-as it was saved; a screen that changed across the restore. A pen that did not come back is the
-one case that counts as a write, because then the machine is not as the game left it. A
-palette with shadows or highlights draws indices past its entries, which the encoding cannot
-name, and is refused; so is a vector or LCD screen (`screen_type`), for which MAME would hand
-back a blank bitmap, and a machine with several screens. A screen drawn in direct colour names
-no palette whatever palette devices the machine has: `render` shows its colours and the index
-modes refuse. `frame_screen` is the screen's own counter, beside the stop's `frame`. Mode
-`isolate` draws the pens asked for in ONE saturated colour, `isolate_color`, and every other pen
-grey by its luminance, in a band with no black and no white: dimming the rest left a dark pen
-sunk in a screen gone dark round it, and a hue over greys stands out whatever the pen's own
-colour; the PNG stays indexed, its index still the pen. Mode `pixel` answers the pen and its
-colour with a picture of where the point is: a crop round it (`crop`, `point_in_crop`), kept
-inside the screen, in the screen's colours, the point ringed white then black just outside its
-own pixel, which no ring covers. At the screen's edge the point is at the crop's edge too, so the
-picture carries a grey `border` as wide as the rings reach, outside the screen, on every side.
-It also answers who set the pen's colour, `set_by`, when
-`palette_log` is logging the ports that set it (below).
+**`screen_view`** recovers the index of every pixel. Stock `screen:pixels()` resolves an indexed
+screen to colours through the palette, so ONE chunk saves every pen, sets pen `i` to the colour
+`i`, reads the screen, puts every pen back, reads them back and reads the screen again, into one
+file. No guest instruction runs inside a chunk, so nothing the game does can see the encoded pens,
+and the encoding and its read run under `pcall`, so the pens go back even when that read raises.
+Four checks make the reply INVALID rather than a picture: an index past the palette's entries; an
+index whose saved pen is not the colour the screen showed (a palette adjusted by contrast or gamma
+draws other colours than its pens); a pen that did not read back as it was saved; a screen that
+changed across the restore. A pen that did not come back is the one case that counts as a write,
+because then the machine is not as the game left it. A palette with shadows or highlights draws
+indices past its entries, which the encoding cannot name, and is refused; so is a vector or LCD
+screen (`screen_type`), for which MAME would hand back a blank bitmap, and a machine with several
+screens; so is a palette of more than 2^24 entries, which one colour per pen cannot encode. A
+screen drawn in direct colour names no palette whatever palette devices the machine has: `render`
+shows its colours and the index modes refuse. `frame_screen` is the screen's own counter, beside
+the stop's `frame`. Mode `isolate` draws the pens asked for in ONE saturated colour,
+`isolate_color`, and every other pen grey by its luminance, in a band with no black and no white:
+dimming the rest left a dark pen sunk in a screen gone dark round it, and a hue over greys stands
+out whatever the pen's own colour; the PNG stays indexed, its index still the pen. Mode `pixel`
+answers the pen and its colour with a picture of where the point is: a crop round it (`crop`,
+`point_in_crop`), kept inside the screen, in the screen's colours, the point ringed white then
+black just outside its own pixel, which no ring covers. At the screen's edge the point is at the
+crop's edge too, so the picture carries a grey `border` as wide as the rings reach, outside the
+screen, on every side. It also answers who set the pen's colour, `set_by`, when `palette_log` is
+logging the ports that set it (below).
 
 **`gfx_view`** decodes bytes under a layout stated in MAME's own `gfx_layout` terms, the seven
 fields a `GFXDECODE_ENTRY` names, in bits, with the macros drivers write them with:
@@ -2725,15 +2729,18 @@ the same frame from the two never has the same bytes, and a golden of one never 
 other by `golden_check`; `image_diff` reads the colours a picture shows, so it compares the two.
 (A direct-colour screen, or a palette past 256 pens, gives RGB to both.)
 
-**The file tools** (`image_diff`, `series_diff`, `region_track`, `golden_check`) read files
-and touch no machine, so they answer with the machine running or with none, and they are
-scry-core's, the same body and text on both servers; `region_track` writes one file, the
-whole track as JSON, beside the manifest. Every series and golden comparison carries its control,
-because a result that cannot come out the other way is no result: a series whose frames never
-change says nothing about another (`control_silent` naming it), two series with no frame in
-common compare nothing, a region whose measure never moves was missed, and goldens whose names
-meet no file examined nothing. Reading a manifest hashes every file it lists, so a frame
-changed since it was written is refused rather than trusted.
+**The file tools** (`image_diff`, `series_diff`, `region_track`, `golden_check`) read files and
+touch no machine, so they answer with the machine running or with none, and they are scry-core's,
+the same body and text on both servers; `region_track` writes one file, the whole track as JSON,
+beside the manifest. Every series and golden comparison carries its control, because a result that
+cannot come out the other way is no result: a series whose frames never change says nothing about
+another (`control_silent` naming it), two series with no frame in common compare nothing, a region
+whose measure never moves was missed, and goldens whose names meet no file examined nothing.
+Reading a manifest hashes every file it lists and signs each picture again, so a frame changed
+since it was written, or a row edited by hand, is refused rather than trusted. `golden_check` lists
+at most `limit` names in each of `differing`, `missing` and `extra` (40 unless asked, up to 1000),
+their whole counts beside them (`differing_total`, `missing_total`, `extra_total`), and a list it
+cut says so in `omitted` and `how`.
 
 **Sound is measured, never sent.** The model cannot take audio in, so `audio_measure` and
 `audio_diff` answer what `audio_record` wrote as numbers beside its path, with a tracker's own
@@ -2761,6 +2768,48 @@ also makes pixel art more legible to a vision model, since smaller patches relat
 content raise its accuracy
 ([Wang et al., *Scaling Laws in Patchification*, arXiv:2502.03738](https://arxiv.org/abs/2502.03738)).
 The saving comes from the order above, not from shrinking a picture.
+
+## Screen maps
+
+A screen map names an application's screens and the controls on each, so a caller asks "which
+screen is this" and gets a name instead of a picture. It is a file, `<application>.scry-map.json`,
+kept in the application's own repository beside the program (`tests/live/circus.scry-map.json`
+is circus's, the live check's), in the format `scry-map/1`:
+
+```json
+{"format": "scry-map/1", "application": "circus",
+ "screens": [{"name": "attract", "kind": "pixel", "size": [248, 256],
+              "match": [{"crop": [0, 0, 248, 8], "signature": "<16 hex>"}],
+              "controls": [{"name": "high_score", "rect": [40, 112, 184, 8]}]}]}
+```
+
+Everything is in the screen's pixels. A screen is known by the `scry-sig/1` signatures
+(`screen_signature`'s) of regions that stay still on it, never by the whole screen, whose
+signature a sprite or a counter changes from one stop to the next: circus's map signs its header
+and the line `ONE PLAYER 1 COIN`, and none of the balloons, the clown or the seesaw. A screen
+matches when its size is the screen's and every region's signature is. Names are unique in the
+file and in their screen, every rectangle lies on its screen, and a file that breaks any of it is
+refused whole, naming the first fault.
+
+**Two layers, both kept by the server.** `map_load` reads a file into the FILE layer, replacing
+any loaded one; it lives as long as the server and a `start` keeps it. `map_add` maps the screen
+in front of the caller into the SESSION layer, signing each region off one capture; a `start`
+empties that layer, since its screens were read off another run. `map_find` tries the session's
+screens first, then the file's, and captures the screen ONCE for all of them, the size compared
+before any signature: each capture is a Lua chunk, and a map of many screens must not cost one
+per screen. `map_save` writes the two layers as one file, the session winning, and that file
+becomes the file layer: the session's screens are `promoted`. A file already there is refused
+unless `overwrite`. `map_load` and `map_save` touch files only, so they answer while the machine
+runs and on a broken session; `map_add` and `map_find` need it stopped.
+
+**Identification only.** A board takes its inputs by port and field (`input`): there is no
+pointer to aim, so a map's controls are places to read, and `map_find` answers each one's
+`rect` and `centre`.
+
+**In an export** (From an investigation to a bench), `map_load` and `map_add` are steps, so a
+replay knows the map an identification was made against; `map_find` is a check holding to what
+it matched (`matched`, `screen`) and where (`pc`, `frame`: its capture can step the machine);
+`map_save` is dropped, since a replay would find its file there.
 
 ## Saved states
 

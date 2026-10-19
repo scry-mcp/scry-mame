@@ -490,7 +490,7 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
         "screen_signature", "drive", "series_capture",
         "image_diff", "series_diff", "region_track", "golden_check", "audio_measure",
-        "audio_diff",
+        "audio_diff", "map_load", "map_add", "map_find", "map_save",
         "read_memory", "read_block", "record", "audio_record", "registers", "regpoint_add",
         "regpoint_clear",
         "regpoint_list", "reset", "resume", "run_for", "trace", "comment_add", "comment_list",
@@ -4758,16 +4758,21 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
-    # for the next reply to say.
-    untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq", "cancelled"})
+    # for the next reply to say. `maps` is the server's: a map file loaded outlives a session.
+    untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq", "cancelled",
+                                                        "maps"})
     assert untouched == [], f"fields this test does not dirty: {untouched}"
     for name, value in dirty.items():
         setattr(mstate.STATE, name, value)
+    mstate.STATE.maps.application = "kept"
     mstate.STATE.kill()
+    assert mstate.STATE.maps.application == "kept", "a loaded map went with the session"
+    mstate.STATE.maps.application = ""
     Path(tmp_log).unlink(missing_ok=True)
     assert dirty["guard"].poll() is not None, "the guardian outlived the session it watched"
     stale = {name: getattr(mstate.STATE, name) for name in vars(fresh)
-             if name != "start_seq" and getattr(mstate.STATE, name) != getattr(fresh, name)}
+             if name not in ("start_seq", "maps")
+             and getattr(mstate.STATE, name) != getattr(fresh, name)}
     assert stale == {}, f"fields a killed session left behind: {stale}"
 
 

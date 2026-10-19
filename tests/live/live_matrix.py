@@ -318,6 +318,10 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin")},
     "snapshot": dict,
     "screen_signature": dict,
+    "map_load": lambda: {"path": "/nonexistent/m.scry-map.json"},
+    "map_add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
+    "map_find": dict,
+    "map_save": lambda: {"path": fresh(".scry-map.json"), "overwrite": True},
     "series_capture": _series_ahead,
     **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
@@ -407,6 +411,8 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "snapshot": lambda r: r.get("bytes", 0) > 0,
     "screen_signature": lambda r: isinstance(r.get("signature"), str)
     and len(r["signature"]) == 16,
+    "map_add": lambda r: r.get("kind") == "pixel" and len(str(r["match"][0]["signature"])) == 16,
+    "map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
     "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
     "screen_view": lambda r: sum(n for _, n in r.get("histogram", []))
@@ -497,6 +503,14 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     if tool in MEDIA_ABSENT:
         good = refused(r, "bad_argument") and "is not a file" in str(r.get("message"))
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
+    elif tool in ("map_load", "map_save"):
+        # A map's files, in any state: a load of a file that is not there refused by name; a
+        # save `needs_call` before anything is mapped, then the maps the server holds, written.
+        good = (refused(r, "bad_argument") and "no map file" in str(r.get("message"))
+                if tool == "map_load" else
+                refused(r, "needs_call") if state == "none" else
+                ok(r) and Path(str(r.get("path"))).is_file())
+        agrees = session_is(r, state not in ("none", "closed"), state == "running")
     elif state in ("none", "closed"):
         if tool == "status":
             good = ok(r) and r.get("alive") is False
@@ -582,7 +596,8 @@ STOPPED_ORDER = [
     "focus", "log", "snapshot", "captures", "state_list", "breakpoint_at", "breakpoint_list",
     "breakpoint_clear", "watch_add", "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
     "regpoint_clear", "comment_add", "comment_list", "comment_save", "comment_load",
-    "comment_delete", "debug", "lua", "screen_signature", "image_diff", "series_diff",
+    "comment_delete", "debug", "lua", "screen_signature", "map_add", "map_find", "map_save",
+    "map_load", "image_diff", "series_diff",
     "region_track", "golden_check", "audio_measure", "audio_diff", "palette", "screen_view",
     "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
     "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "series_capture",

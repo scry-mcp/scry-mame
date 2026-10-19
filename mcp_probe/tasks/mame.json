@@ -145,7 +145,7 @@
   {"id": "M52", "prompt": "Restore the savestate named bossfight.", "tool": "state_load", "args": {"name": "bossfight"}},
   {"id": "M53", "prompt": "Hard-reset the machine, re-creating it, but keep this same session and emulator process.",
    "expect": "CANNOT", "about": "reset"},
-  {"id": "M55", "prompt": "Set a breakpoint that halts at the console expression PlayerX+2, forcing it to be read as an expression rather than a symbol or an address.",
+  {"id": "M55", "prompt": "Set an execution breakpoint at the code address the console expression PlayerX+2 evaluates to, with breakpoint_at forced to read its ref as an expression rather than as a symbol or an address.",
    "expect": "CANNOT", "about": "breakpoint_at"},
   {"id": "M54", "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
    "expect": "CANNOT", "about": "read_memory"},
@@ -352,5 +352,12 @@
   {"id": "M184", "prompt": "Export this session as a replay to /tmp/bench/circus.json, replacing the document already there.", "tool": "perform_export", "args": {"path": "/tmp/bench/circus.json", "overwrite": true}},
   {"id": "M185", "prompt": "Save the session as a replay document named session.json in the bench folder of my home directory.", "tool": "perform_export", "args": {"path": "~/bench/session.json"}},
   {"id": "M186", "prompt": "In one call, run 60 frames and have the call stop as diverged unless that run's stop is at pc 0x00001a2c on frame 160.", "tool": "perform", "args": {"steps": [{"op": "run_for", "frames": 60, "recorded": {"pc": {"any_of": ["0x00001a2c", "0x1a2c", "0x00001A2C"]}, "frame": 160}}]}, "allow": ["settle_seconds", "summaries"], "grammar": ["run_for"]},
-  {"id": "M187", "prompt": "Export only the last ten calls of this session as a replay document.", "expect": "CANNOT", "about": "perform_export"}
+  {"id": "M187", "prompt": "Export only the last ten calls of this session as a replay document.", "expect": "CANNOT", "about": "perform_export"},
+  {"id": "M188", "prompt": "Save a picture of the screen's top-left 48 by 40 pixels to /tmp/mcp-probe-quiet.png, but do not attach it to your reply: I only need the file.", "tool": "screen_view", "args": {"dest": "/tmp/mcp-probe-quiet.png", "attach": false, "crop": [0, 0, 48, 40]}, "allow": ["mode"]},
+  {"id": "M189", "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to /tmp/mcp-probe-gfx.png without attaching it to the reply.", "tool": "gfx_view", "args": {"layout": "tiles8", "tag": {"any_of": ["gfx1", ":gfx1"]}, "count": 16, "dest": "/tmp/mcp-probe-gfx.png", "attach": false}, "allow": ["palette"]},
+  {"id": "M190", "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256, listing at most 5 names in each list.", "tool": "golden_check", "args": {"dir": "/tmp/shots", "checksums": "/tmp/shots.sha256", "limit": 5}},
+  {"id": "M191", "prompt": "Load the screen map /tmp/maps/circus.scry-map.json.", "tool": "map_load", "args": {"path": "/tmp/maps/circus.scry-map.json"}},
+  {"id": "M192", "prompt": "The machine is stopped on the attract screen. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, with a place named credits at x 160, y 240, 80 by 12.", "tool": "map_add", "args": {"screen": "attract", "match": [[0, 0, 248, 12]], "controls": [{"name": "credits", "rect": [160, 240, 80, 12]}]}},
+  {"id": "M193", "prompt": "The machine is stopped. Which of the mapped screens is it showing right now?", "tool": "map_find", "args": {}},
+  {"id": "M194", "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.", "tool": "map_save", "args": {"path": "/tmp/maps/circus.scry-map.json", "overwrite": true}}
 ]}

@@ -77,14 +77,17 @@ def test_the_export_and_the_lifecycle_are_never_recorded_and_never_a_step() -> N
 DECLARED = {
     "read_memory": ("hex",), "read_block": ("hex", "pc", "frame"), "registers": ("regs",),
     "screen_signature": ("signature", "pc", "frame"),
-    "golden_check": ("matched", "differing", "missing", "extra"),
+    "golden_check": ("matched", "differing_total", "missing_total", "extra_total", "differing",
+                     "missing", "extra"),
     "resume": "wall", "stop": "wall",
     **dict.fromkeys(("throttle", "snapshot", "memdump", "comment_add", "comment_delete",
                      "comment_save", "comment_load", "palette", "screen_view", "gfx_view",
                      "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits",
                      "gfx_blit_source", "gfx_film", "palette_log", "scan_start", "scan_filter",
                      "scan_clear", "image_diff", "series_diff", "region_track", "audio_measure",
-                     "audio_diff"), "drop"),
+                     "audio_diff", "map_save"), "drop"),
+    # A replay knows the map an identification was made against, and holds the find to it.
+    "map_find": ("matched", "screen", "pc", "frame"),
     # The readers dropped by default, named so a reader that turns into a step is seen.
     **dict.fromkeys(("breakpoint_list", "captures", "comment_list", "cpu_info", "disassemble",
                      "find", "history", "log", "log_wait", "machine_map", "regpoint_list",

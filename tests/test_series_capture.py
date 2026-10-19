@@ -146,6 +146,26 @@ def test_a_series_is_written_frame_by_frame_and_named_by_its_frame(console: _Con
     assert ("image", str(manifest.parent / "f000105.png")) in mstate.STATE.captures
 
 
+def test_a_frame_this_server_encoded_is_signed_without_decoding_it_back(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The manifest signs the picture the server encoded, so no frame is decoded back; and the
+    signature it records is the one its file decodes to."""
+    decoded: list[int] = []
+    real = png.decode
+
+    def counted(data: bytes) -> png.Raster:
+        decoded.append(1)
+        return real(data)
+    monkeypatch.setattr(png, "decode", counted)
+    out = _capture(tmp_path)
+    assert decoded == [], "a frame decoded back for its signature"
+    monkeypatch.undo()
+    from scry_core import raster
+    for row in json.loads(Path(out["manifest"]).read_text())["frames"]:
+        picture = png.decode((Path(out["manifest"]).parent / row["path"]).read_bytes())
+        assert row["signature"] == raster.picture_signature(picture), row
+
+
 def test_a_crop_and_a_dest_shape_the_series(console: _Console, tmp_path: Path) -> None:
     dest = tmp_path / "kept"
     out = _capture(tmp_path, frames=[101, 105], first=None, last=None, step=1,

@@ -1,11 +1,10 @@
 """MCP server owning one live MAME debug session, so questions cost milliseconds.
 
-WHY AN MCP AND NOT A SCRIPT. The expensive part was never the question, it was the state:
-each shell command is a fresh process, so a debug session died between one question and the
-next and every follow-up paid another boot: measured on a 68000 arcade driver, seconds for a
-boot and tens of seconds to reach a late attract screen, against about a millisecond per
-query on a session that stays put. An MCP is a long-lived process that holds that state,
-which is exactly the missing piece.
+WHY AN MCP AND NOT A SCRIPT. The expensive part is never the question, it is the state:
+each shell command is a fresh process, so a debug session dies between one question and the
+next and every follow-up pays another boot, and reaching a late attract screen pays it many
+times over, where a query on a session that stays put costs its round trip. An MCP is a
+long-lived process that holds that state, which is exactly the missing piece.
 
 WHAT IT DELIBERATELY DOES NOT DO. Counting how many times a routine runs across a whole
 attract cycle is a WHOLE-RUN question, and paying a run for it is correct; forcing it through
@@ -36,7 +35,7 @@ one spelling per concept wherever two servers name one: `debug` for the console,
 `run_to` for a run to a place, `read_memory` for bytes, `ref` for how a place is named, `seconds`
 for how long a wait may take, `count` for how many steps, the `breakpoint_*` verbs, and
 `memdump(ref, length, dest)` with its subject first. One spelling per concept is the fleet's
-rule for every tool surface, and the two emulator servers were the one place it was broken.
+rule for every tool surface, and two servers of one fleet are where it is easiest to break.
 
 The server knows no game: the system, the ROM paths and the symbol file come from the caller,
 and the binary from its argument, `MAME_BINARY` or the PATH, so the same server serves every
@@ -88,6 +87,7 @@ import mame_lua as mlua  # noqa: E402
 import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
 import mame_map as mmap  # noqa: E402
+import mame_maps as mmaps  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
@@ -148,13 +148,14 @@ def start(
       `types` `{cpu: file}`.
     - `shared=True`: somebody WATCHES (big window, real speed); `display` (`main` | `secondary`),
       its screen, needs it. `throttle_from_frame`: flat out until it.
-    - `background`: `true` behind, your focus kept; `false` in front; omitted, by `shared`.
+    - `background`: `true` behind, your focus kept, watched (`shared`) or not; `false` in front;
+      omitted, by `shared`.
     - `boot_lua`, an EXISTING harness file, never Lua text (no tool here writes one;
       never `manager.machine:exit()`), `env` for it, `inipath`,
       `seconds` (the stub's wait, (0, {WAIT_MAX_S}]), `stub_port` (`0`: a free one).
     - `state_dir` (empty: disposable; else kept), `cfg`.
 
-    Refused before anything is spawned: a live session, a relative path, a missing file, a cpu
+    Refused before anything is spawned: a live session, a missing file, a cpu
     the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
     a `stub_port` in use,
     a `reference_addr` OUTSIDE the image; a `system` the binary lacks. A stranger on your
@@ -163,7 +164,7 @@ def start(
     Reply: `system`, `binary`, `binary_origin`, `version`, `pid`, `stub_port`, `scratch_dir`,
     `state_dir`, `cfg`, `debugger`, `errorlog_path`, `stdout_path`, `rom_check`,
     `symbols_total`, `symbols_typed`, `symbols_format`, `symbols_by_class` (first cpu),
-    `symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine` (counts), what
+    `symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine`, what
     reached the driver (`env`, `display`, `background`, `flags`, `throttle_from_frame`,
     `boot_lua_path`), `declarations` and `start_retries`.
 
@@ -1148,8 +1149,8 @@ def scan_filter(operator: Annotated[str, inputs.vocabulary(mscan.OPERATORS)] = "
     (filters since `scan_start`, this one included), `closed`, `hits` (each `addr` and its `value`
     now, address order), `hits_total` (the survivors), `truncated`, `cpu`, `space`: `hits` whole
     when at most {LIST_MAX} survive, else empty with `truncated` true. None left CLOSES the scan
-    (`hits` empty, `hits_total` 0). No scan open, or a value wider than the cell, is `bad_argument`;
-    a refused filter leaves the scan as it was. {NEEDS_STOPPED}.
+    (`hits` empty, `hits_total` 0). No scan open is `needs_call`; a value wider than the cell is
+    `bad_argument`; a refused filter leaves the scan as it was. {NEEDS_STOPPED}.
 
     Reference: REFERENCE.md, Reading and writing.
     """
@@ -1331,6 +1332,66 @@ def screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_W
                                     bridge(ctx))
 
 
+# ------------------------------------------------------------------- the screen maps
+
+
+@tool("Load a screen map", summary=summaries.map_load)
+def map_load(path: str) -> dict[str, Any]:
+    """{MAP_LOAD}.
+
+    Reference: REFERENCE.md, Screen maps.
+    """
+    args.check("map_load", path=path)
+    return mmaps.map_load(path)
+
+
+@tool("Map the screen in front of you", summary=summaries.map_add, on_cancel="none")
+def map_add(screen: str, match: list[list[int]], controls: list[dict[str, Any]] | None = None,
+            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+    """Map the screen the machine shows NOW as `screen` in the SESSION layer: one capture signs
+    each `match` crop (`[x, y, width, height]`, 1..16, regions that stay still on that screen,
+    never a moving sprite or a counter), and `controls` (`[{"name", "rect"}]`, a `rect` shaped as
+    a crop) name its controls, in the screen's pixels. A screen of the same name in the file is
+    shadowed (`shadows_file`). A board takes its inputs by port and field (`input`): a control is
+    a place to read, not one to click. {NEEDS_STOPPED}; a `start` empties the session layer.
+
+    Reply: `screen`, `kind`, `size`, `match` (each crop with its `signature`), `controls`,
+    `replaced`, `shadows_file`, the console's account, the survey. Refused: a misshapen name, crop
+    or control, a rectangle off the screen (`bad_argument`).
+
+    Reference: REFERENCE.md, Screen maps.
+    """
+    args.check("map_add", screen=screen, match=match, controls=controls)
+    return mmaps.map_add(*stopped("a screen map"), screen, match, controls, bridge(ctx))
+
+
+@tool("Which mapped screen is this", summary=summaries.map_find, on_cancel="none",
+      replay=("matched", "screen", "pc", "frame"))
+def map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+    """WHICH MAPPED SCREEN the machine shows, from ONE capture and no picture: the session layer
+    first, then the file's; a screen matches when its size is the screen's and every region's
+    signature is. {NEEDS_STOPPED}.
+
+    Reply: `matched`; matched, `screen`, `layer` (`session` or `file`), `kind`, `size`,
+    `controls` (each `name`, `rect`, `centre`); not matched, `kind`, `size`, `screens_mapped`,
+    `screens_tried` (of that size); the console's account, the survey. Refused: no screen mapped
+    (`needs_call`).
+
+    Reference: REFERENCE.md, Screen maps.
+    """
+    return mmaps.map_find(*stopped("a screen map"), bridge(ctx))
+
+
+@tool("Save the screen map", summary=summaries.map_save, replay="drop")
+def map_save(path: str, overwrite: bool = False) -> dict[str, Any]:
+    """{MAP_SAVE}.
+
+    Reference: REFERENCE.md, Screen maps.
+    """
+    args.check("map_save", path=path, overwrite=overwrite)
+    return mmaps.map_save(path, overwrite)
+
+
 @tool("Capture a series of frames", summary=summaries.series_capture, on_cancel="stop")
 def series_capture(frames: list[int] | None = None, first: int | None = None,
                    last: int | None = None, step: int = 1, crop: list[int] | None = None,
@@ -1417,11 +1478,11 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
 def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render",
                 pens: inputs.NumberList | None = None,
                 point: list[int] | None = None, crop: list[int] | None = None, scale: int = 0,
-                dest: str = "", seconds: float = mlua.EVAL_WAIT_S,
+                dest: str = "", attach: bool = True, seconds: float = mlua.EVAL_WAIT_S,
                 ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen as the PENS it holds: every pixel's palette index recovered exactly by one Lua
-    chunk that encodes each pen as its own index, reads the screen, and puts every pen back,
-    proving it did. {PICTURE}; up to 256 pens the PNG is indexed and its index IS the pen.
+    chunk that sets pen i to the colour i, reads the screen and puts every pen back.
+    {PICTURE}; up to 256 pens the PNG is indexed and its index IS the pen.
 
     `mode`: `render` (the picture; a direct-colour screen shows its colours), `isolate` (to SEE
     where the `pens` you name are, 1..{SCREEN_PENS_MAX}, all in `isolate_color` over the rest in
@@ -1431,16 +1492,16 @@ def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render
     (`point` `[x, y]`: `pen`, `color`, and `set_by`, the pen's newest `palette_log` write, same
     step, with `agrees`, or unavailable with why; the picture is a crop round the point,
     `point_in_crop` ringed, in a `border`). `crop` `[x, y, width, height]` narrows all but
-    `pixel`. `scale`, `dest` (`pixel` too): {PICTURE_ARGS}.
+    `pixel`. `scale`, `dest` (`pixel` too): {PICTURE_ARGS}; {PICTURE_ATTACH}.
     `seconds`: (0, {WAIT_MAX_S}].
 
     One step, the screen AFTER the instruction at the stop's pc, nothing altered. {NEEDS_STOPPED}.
 
     Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
     `screen_indexed` (false: direct colour), `crop`, the
-    mode's fields, `image`, the console's account, the survey. `no_channel`: an index mode on a
-    direct-colour screen, a vector or LCD screen (`screen_type`), shadows or highlights on, more
-    pens than 24 bits name; `no_channel` or `ambiguous_ref`: no screen or several;
+    mode's fields, `image`, the console's account, the survey. `no_channel`: no pens to read (an
+    index mode in direct colour, a vector or LCD screen, shadows or highlights, over 2^24 pens);
+    `no_channel` or `ambiguous_ref`: no screen or several;
     `readback_refused`: a pen not back (a write) or a failed check;
     `bad_argument`: `point` or `crop` off the screen.
 
@@ -1448,17 +1509,17 @@ def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render
     """
     pen_list = inputs.list_as_read(pens)
     args.check("screen_view", mode=mode, pens=pen_list, point=point, crop=crop, scale=scale,
-               dest=dest, seconds=seconds)
+               dest=dest, attach=attach, seconds=seconds)
     return mscreen.screen_view(*stopped("a screen read"), mode, pen_list, point, crop, scale, dest,
-                               seconds, bridge(ctx))
+                               seconds, bridge(ctx), attach)
 
 
 @tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view, on_cancel="none",
       replay="drop")
 def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "", ref: str = "",
              offset: inputs.NumberArg = 0, first: int = 0, count: int = 0, columns: int = 16,
-             pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "", cpu: str = "",
-             seconds: float = mlua.EVAL_WAIT_S,
+             pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "",
+             attach: bool = True, cpu: str = "", seconds: float = mlua.EVAL_WAIT_S,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Bytes as tiles under a format YOU state in MAME's `gfx_layout` terms, not what a driver
     believes. {PICTURE}; the PNG is indexed, its index the pixel value.
@@ -1475,7 +1536,7 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
     `first`, `count` (0: what the block holds, at most {GFX_TILES_MAX}), `columns`
     (1..{GFX_COLUMNS_MAX}). `palette`: `none` (grey, not real), a device tag or empty for the only
     one, its pens `pen_base` .. `pen_base + 2^planes - 1` read live. `scale`,
-    `dest`: {PICTURE_ARGS}. `seconds`: (0, {WAIT_MAX_S}].
+    `dest`: {PICTURE_ARGS}; {PICTURE_ATTACH}. `seconds`: (0, {WAIT_MAX_S}].
 
     One step; the state AFTER the stop's instruction; unaltered. {NEEDS_STOPPED}.
 
@@ -1490,9 +1551,10 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
     pen_base = inputs.as_read(pen_base)
     args.check("gfx_view", layout=layout, palette=palette, tag=tag, ref=ref, offset=offset,
                first=first, count=count, columns=columns, pen_base=pen_base, scale=scale,
-               dest=dest, seconds=seconds, cpu=cpu)
+               dest=dest, attach=attach, seconds=seconds, cpu=cpu)
     return mgfx.gfx_view(*stopped("a graphics read"), layout, palette, tag, ref, offset, first,
-                         count, columns, pen_base, scale, dest, cpu, seconds, bridge(ctx))
+                         count, columns, pen_base, scale, dest, cpu, seconds, bridge(ctx),
+                         attach)
 
 
 @tool("Find a screen patch in a block", summary=summaries.gfx_locate, on_cancel="none",
@@ -1896,7 +1958,7 @@ def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
     the session the list belongs to."""
     # The module's own binding first, so a step dispatches to whatever this module calls the tool
     # now; the registration's function for a tool registered elsewhere.
-    return {t.name: globals().get(t.name, t.fn) for t in mcp._tool_manager.list_tools()
+    return {t.name: globals().get(t.name, t.fn) for t in strict.registered(mcp)
             if t.name not in sequence.NOT_STEPS}
 
 
@@ -1993,7 +2055,7 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
     ses, scratch = contact()
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
     return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), bridge(ctx),
-                              summaries=summaries, until_frame=until_frame)
+                              summaries=summaries, until_frame=until_frame, shape_judged=True)
 
 
 @tool("Export the session as a replay", summary=summaries.perform_export)

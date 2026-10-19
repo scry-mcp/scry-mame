@@ -8,7 +8,7 @@ docstring it registers, and a placeholder nothing fills fails the import.
 
 from __future__ import annotations
 
-from scry_core import docs, picture, recording, series
+from scry_core import docs, picture, recording, screen_map, series
 
 import mame_advance as advance
 import mame_blits as mblits
@@ -68,7 +68,7 @@ DOC_VALUES: dict[str, str] = {
     "BREAKPOINT_MATCH": dec.REF_MATCH["breakpoint"], "WATCH_MATCH": dec.REF_MATCH["watch"],
     "REGPOINT_MATCH": dec.REF_MATCH["regpoint"],
     # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
-    **picture.DOC_VALUES, **series.DOC_VALUES,
+    **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES,
     "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
     "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
     "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),

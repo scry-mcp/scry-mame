@@ -426,6 +426,7 @@ carries no default of its own.
 | `audio_record` | the mixer's output over exactly `frames` frames, as a WAV checked by its own header |
 | `throttle` | real speed on or off, switched at a PLACE: pending on a stopped machine, applied on a running one |
 | `screen_signature` | one string for what is on screen or on a `crop` of it, the signature a series row and both servers share |
+| `map_load`, `map_add`, `map_find`, `map_save` | a screen map: an application's screens, each known by the signatures of stable regions, and the named controls on each, places to read; `map_find` says which screen is showing off one read |
 | `series_capture` | frames of the screen kept at emulation speed as PNGs and one manifest, no picture in the reply |
 | `image_diff` | two PNGs compared pixel by pixel, with a crop, a shift and a tolerance: how many differ and where |
 | `series_diff` | two series compared frame by frame, after checking each can tell its frames apart |

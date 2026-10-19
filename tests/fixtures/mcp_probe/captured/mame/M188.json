@@ -1,0 +1,40 @@
+{
+ "task": {
+  "id": "M188",
+  "prompt": "Save a picture of the screen's top-left 48 by 40 pixels to /tmp/mcp-probe-quiet.png, but do not attach it to your reply: I only need the file.",
+  "tool": "screen_view",
+  "args": {
+   "dest": "/tmp/mcp-probe-quiet.png",
+   "attach": false,
+   "crop": [
+    0,
+    0,
+    48,
+    40
+   ]
+  },
+  "allow": [
+   "mode"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M188: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-quiet.png\"}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+   ],
+   "right": true
+  }
+ ]
+}

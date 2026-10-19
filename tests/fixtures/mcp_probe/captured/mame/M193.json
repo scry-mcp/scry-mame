@@ -1,0 +1,28 @@
+{
+ "task": {
+  "id": "M193",
+  "prompt": "The machine is stopped. Which of the mapped screens is it showing right now?",
+  "tool": "map_find",
+  "args": {}
+ },
+ "runs": [
+  {
+   "lines": [
+    "M193: {\"tool\": \"map_find\", \"args\": {}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M193: {\"tool\": \"map_find\"}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M193: {\"tool\": \"map_find\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

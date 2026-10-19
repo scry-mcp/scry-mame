@@ -19,7 +19,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from scry_core import prose
+from scry_core import prose, screen_map
 
 import mame_callbacks as callbacks
 
@@ -29,17 +29,10 @@ Summary = Callable[[dict[str, Any], dict[str, Any]], str]
 # Bytes a read's summary line shows whole; past it the line says how many it left out, never a
 # cut inside a byte that reads as a shorter value.
 HEX_BYTES_SHOWN = 64
-# Where a refusal's prose is cut for the line: the whole of it is in `message`.
-REFUSAL_CHARS_SHOWN = 120
 
 
-def clipped(text: str, limit: int = REFUSAL_CHARS_SHOWN) -> str:
-    """A long refusal cut for the summary line: at a word, with a mark saying the rest is in
-    `message`. A cut inside a word reads as a word that does not exist."""
-    if len(text) <= limit:
-        return text
-    cut = text.rfind(" ", 0, limit + 1)
-    return text[:cut if cut > 0 else limit] + "..."
+#: A refusal's line, and the cut of its prose, are scry-core's, alike on both servers.
+clipped, refusal = prose.clipped, prose.refusal
 
 
 def hex_clipped(hex_text: str) -> str:
@@ -48,11 +41,6 @@ def hex_clipped(hex_text: str) -> str:
     shown = hex_text[:HEX_BYTES_SHOWN * 2]
     rest = (len(hex_text) - len(shown)) // 2
     return shown + (f"... ({rest} more bytes in `hex`)" if rest else "")
-
-
-def refusal(name: str, reply: dict[str, Any]) -> str:
-    """Every tool's line for an INVALID reply: the code, and the prose cut at a word."""
-    return f"{name}: INVALID ({reply.get('code')}), {clipped(str(reply.get('message', '')))}"
 
 
 def _on_off(value: object) -> str:
@@ -499,6 +487,13 @@ def screen_signature(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"screen_signature {w}x{h} at [{x}, {y}]: {reply['signature']}"
 
 
+# The screen maps' four lines are scry-core's, alike on both servers.
+map_load = screen_map.load_line
+map_add = screen_map.add_line
+map_find = screen_map.find_line
+map_save = screen_map.save_line
+
+
 def log(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return (f"log {args['channel']} /{args['pattern']}/: {len(reply['lines'])} of "
             f"{prose.counted(reply['lines_total'], 'line')}")
@@ -657,7 +652,8 @@ def state_load(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 
 def state_list(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return f"state_list: {len(reply['states'])} states in {reply['state_dir']}"
+    return (f"state_list: {prose.counted(len(reply['states']), 'state')} in "
+            f"{reply['state_dir']}")
 
 
 def gfx_load(args: dict[str, Any], reply: dict[str, Any]) -> str:

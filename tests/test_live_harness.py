@@ -478,6 +478,13 @@ def _sections(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **env: str) -> Mo
     return h
 
 
+def _launched(h: ModuleType) -> None:
+    """What a section's server does at its spawn: one launch in the ledger the run named, of a
+    pid long gone, so the end check has something to examine and finds it not alive."""
+    if (ledger := h.live_host.EmulatorLedger.from_environment()) is not None:
+        ledger.record(99999999, "mamed")
+
+
 def _exit_of(h: ModuleType) -> object:
     with pytest.raises(SystemExit) as stop:
         h.run_sections("TEST")
@@ -486,7 +493,10 @@ def _exit_of(h: ModuleType) -> object:
 
 def _three(h: ModuleType) -> None:
     """A section that passes, one that raises half-way, and one that forgets a cell."""
-    h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
+    def passes() -> None:
+        _launched(h)
+        h.cell("a1", True)
+    h.section("A", "passes", ["a1"])(passes)
 
     def half() -> None:
         h.cell("b1", True)
@@ -598,7 +608,11 @@ def test_a_pool_that_cannot_be_believed_makes_the_run_invalid_and_keeps_its_scra
 def test_one_pooled_letter_is_no_pool_and_runs_here(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="4")
-    h.section("A", "alone in the pool", ["a1"])(lambda: h.cell("a1", True))
+
+    def alone() -> None:
+        _launched(h)
+        h.cell("a1", True)
+    h.section("A", "alone in the pool", ["a1"])(alone)
     monkeypatch.setattr(h.live_pool, "run_pool", lambda *_a, **_k: pytest.fail("pooled"))
     assert _exit_of(h) == h.EXIT_PASSED
 
@@ -645,6 +659,7 @@ def test_a_green_run_removes_its_scratch_and_its_jobs(
             scratch = Path(j.env[h.live_host.SCRATCH_VAR])  # type: ignore[attr-defined]
             scratch.mkdir(parents=True)
             handed.append(str(scratch))
+        _launched(h)
         return lp.PoolResult([], "", {"a1": "OK", "b1": "OK"}, {})
     monkeypatch.setattr(lp, "run_pool", run_pool)
     assert _ended(h) == h.EXIT_PASSED

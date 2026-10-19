@@ -250,7 +250,7 @@ def source_fields(blk: Block, start: int, addr: int | None, on: str) -> dict[str
 def check_gfx_view(layout: Any = None, palette: str = "none", tag: str = "", ref: str = "",
                    offset: int = 0, first: int = 0, count: int = 0, columns: int = 16,
                    pen_base: int = 0, scale: int = 0, dest: str = "",
-                   seconds: float = mlua.EVAL_WAIT_S, cpu: str = "",
+                   seconds: float = mlua.EVAL_WAIT_S, cpu: str = "", attach: bool = True,
                    **_: Any) -> tuple[ml.Layout | None, Path | None]:
     """`gfx_view`'s machine-independent half: the layout whole, the source, the tiles, the
     palette's name and base, and the picture's own arguments; handed back parsed and built. A
@@ -266,7 +266,7 @@ def check_gfx_view(layout: Any = None, palette: str = "none", tag: str = "", ref
                          "(`palette`), empty for the machine's only one, or `none` for a grey "
                          "ramp that says it is not the machine's colours")
     check_pen_base(palette, pen_base)
-    return lay, inputs.picture_args(scale, dest)
+    return lay, inputs.picture_args(scale, dest, attach)
 
 
 def check_pen_base(palette: str, pen_base: int) -> None:
@@ -286,10 +286,11 @@ def grey_ramp(planes: int) -> list[tuple[int, int, int]]:
 def gfx_view(ses: gs.Session, scratch: Path, layout: Any, palette: str, tag: str, ref: str,
              offset: int, first: int, count: int, columns: int, pen_base: int, scale: int,
              dest: str, cpu: str, seconds: float,
-             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+             progress: mprogress.Progress = mprogress.no_progress,
+             attach: bool = True) -> dict[str, Any]:
     """The body of the `gfx_view` tool: ONE evaluation reads the source and the pens."""
     lay, dest_path = check_gfx_view(layout, palette, tag, ref, offset, first, count, columns,
-                                    pen_base, scale, dest, seconds, cpu)
+                                    pen_base, scale, dest, seconds, cpu, attach)
     if lay is None:
         lay = manifest.named_layout(layout)
         check_source(tag, ref, offset, count, [lay], cpu)
@@ -334,6 +335,6 @@ def gfx_view(ses: gs.Session, scratch: Path, layout: Any, palette: str, tag: str
         fields["note"] = ("palette `none`: a grey ramp over the pixel values, NOT the machine's "
                           "colours; the PNG's index is the pixel value either way")
     fields["image"] = st.publish(png.Raster(width, height, bytes(canvas), tuple(colours)),
-                                 scale, dest_path, scratch, "gfx")
+                                 scale, dest_path, scratch, "gfx", attach=attach)
     return running.stop_reply(ses, scratch, f"gfx_view: {common['evaluated_by']}",
                               **st.merged(fields, common))

@@ -1401,4 +1401,47 @@ check("the edited document diverges at that step and field (exit 1)",
       and f": {field} recorded 'edited'" in played.stdout,
       f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
 
+print("\n== screen maps: circus's attract screen, found by its map, and not once it changed")
+CIRCUS_MAP = Path(__file__).parent / "circus.scry-map.json"
+r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+            reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
+            seconds=30.0)
+check("circus starts for its map", r.get("status") == "ok", str(r.get("summary")))
+loaded = s.map_load(path=str(CIRCUS_MAP))
+check("map_load reads circus's map: one screen, one place",
+      (loaded.get("application"), loaded.get("screens"), loaded.get("controls"))
+      == ("circus", 1, 1), str(loaded.get("summary")))
+s.run_for(frames=200, seconds=30.0)
+found = s.map_find()
+check("map_find names the attract screen off one capture, from the file layer",
+      (found.get("matched"), found.get("screen"), found.get("layer")) == (True, "attract", "file")
+      and [c.get("name") for c in found.get("controls", [])] == ["high_score"],
+      str(found.get("summary")))
+# A second region of another crop, so the find signs two crops off its one capture, and a session
+# screen that matches beside the file's: the session layer is tried first.
+added = s.map_add(screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
+first = s.map_find()
+check("with both layers matching, the session's screen is the one named",
+      (first.get("screen"), first.get("layer")) == ("header", "session"), str(first.get("summary")))
+saved = s.map_save(path=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
+check("map_add maps the screen in front; map_save writes both layers, the session's promoted",
+      added.get("status") == "ok" and saved.get("screens") == 2
+      and saved.get("promoted") == ["header"], f"{added.get('summary')} / {saved.get('summary')}")
+# THE CONTROL FIRST: a frame with nothing written still matches, so the negative below is the
+# write's doing and not one frame's worth of attract animation inside a region.
+s.run_for(frames=1, seconds=30.0)
+still = s.map_find()
+check("one frame later, with nothing written, the attract screen still matches",
+      (still.get("matched"), still.get("screen")) == (True, "attract"), str(still.get("summary")))
+# THE NEGATIVE: one tile of the header changed in video RAM (0x4000, a tile a byte, 32 a row),
+# drawn by the next frame, and neither screen the map holds is that screen any more.
+tile = int(str(s.read_memory(ref="0x4002", length=1).get("hex")), 16)
+s.write(ref="0x4002", data_hex=f"{(tile + 1) & 0xFF:02x}")
+s.run_for(frames=1, seconds=30.0)
+changed = s.map_find()
+check("a screen whose region changed matches no screen of the map",
+      changed.get("status") == "ok" and changed.get("matched") is False
+      and changed.get("screens_tried") == 2, str(changed.get("summary")))
+s.close()
+
 finish("LIVE CHECK")

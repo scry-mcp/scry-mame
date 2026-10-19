@@ -19,11 +19,10 @@ from __future__ import annotations
 import dataclasses
 import os
 import re
-import tempfile
 from pathlib import Path
 from typing import Any
 
-from scry_core import prose
+from scry_core import fresh, prose
 from scry_core import value_format as vf
 
 import gdb_session as gs
@@ -153,7 +152,7 @@ def _apply(adds: list[dec.Declaration] | None = None,
     that went bad under the session is the same failure as one that cannot be written."""
     try:
         arming.store().apply(adds or [], replaces or [], removes or [])
-    except (OSError, dec.DeclarationError) as e:
+    except (OSError, st.Invalid, dec.DeclarationError) as e:
         return f"the declaration store could not be written ({e}): the change is held in memory"
     return None
 
@@ -418,25 +417,13 @@ def comment_save(dest: str) -> dict[str, Any]:
                                          "which the server reads at every `start`: give the "
                                          "comment file another path")
     old = _old_rows(path, dest)
-    mode = path.stat().st_mode & 0o777 if old is not None else NEW_FILE_MODE
     rows = [cf.Row(d.ref, d.cpu or "", str(d.created_at), d.text) for d in pane.comments()]
     try:
         text = cf.render(rows)
     except cf.CommentFileError as e:
         raise st.Invalid("host_failed", f"the store holds a comment the comment file cannot "
                                         f"hold ({e}), so nothing was written") from None
-    try:
-        fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
-        try:
-            with os.fdopen(fd, "wb") as fh:
-                fh.write(text.encode("utf-8"))
-            os.chmod(tmp, mode)
-            os.replace(tmp, path)
-        except BaseException:
-            Path(tmp).unlink(missing_ok=True)
-            raise
-    except OSError as e:
-        raise st.Invalid("host_failed", f"{dest} could not be written: {e}") from None
+    fresh.replace(path, text.encode("utf-8"), "dest:", new_mode=NEW_FILE_MODE)
     kept = {_row_key(r) for r in rows}
     dropped = sorted({(r.ref, r.cpu) for r in old or [] if _row_key(r) not in kept},
                      key=lambda k: (k[1], k[0]))
