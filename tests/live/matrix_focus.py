@@ -34,7 +34,7 @@ from live_harness import (
     fresh,
     section,
 )
-from scry_core import focus_watch
+from scry_core import focus_gate, focus_watch
 
 X_TITLE = "the focus gate: the control, then the watch runs beside every section"
 X_CONTROL = [
@@ -66,7 +66,7 @@ def _hold(background: bool) -> tuple[int, int]:
     began = focus_watch.now_ms()
     circus_boot(background=background)
     call("resume")
-    time.sleep(focus_watch.HOLD_S)
+    time.sleep(focus_gate.HOLD_S)
     ensure_closed()
     return began, focus_watch.now_ms()
 
@@ -82,19 +82,19 @@ def _control() -> None:
         for label in X_CONTROL:
             blocked(label, missing)
         return
-    c = focus_watch.control(watch, _names(), _hold)
+    c = focus_gate.control(watch, _names(), _hold)
     for label, judged in zip(X_CONTROL, (c.front, c.behind, c.space), strict=True):
         _cell(label, judged)
     if c.since is not None:
         _SINCE.append(c.since)
 
 
-def _cell(label: str, judged: focus_watch.Judged) -> None:
-    """A `focus_watch` outcome as this matrix's cell."""
+def _cell(label: str, judged: focus_gate.Judged) -> None:
+    """A `focus_gate` outcome as this matrix's cell."""
     if judged.status == "BLOCKED":
         blocked(label, judged.reason)
     else:
-        cell(label, judged.status == "PASS", judged.reason)
+        cell(label, judged.status == "OK", judged.reason)
 
 
 def _verdict() -> None:
@@ -102,8 +102,8 @@ def _verdict() -> None:
         blocked(X_VERDICT[0], "the control section never started the watch")
         return
     names = _names()                    # before the watch is taken: a raise leaves it to its owner
-    _cell(X_VERDICT[0], focus_watch.verdict(_WATCH.pop(), names, _SINCE[0] if _SINCE else None,
-                                            focus_watch.now_ms()))
+    _cell(X_VERDICT[0], focus_gate.verdict(_WATCH.pop(), names, _SINCE[0] if _SINCE else None,
+                                           focus_watch.now_ms()))
 
 
 def register_x_control() -> None:
