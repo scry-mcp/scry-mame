@@ -145,6 +145,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "flags": "<volatile>",
   "throttle_from_frame": 0,
   "boot_lua_path": "<volatile>",
+  "presence": true,
   "machine": {
     "cpus": 2,
     "spaces": 2,
