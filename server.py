@@ -440,7 +440,8 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
 
 
 @tool("Step instructions", summary=summaries.step, on_cancel="stop")
-def step(count: int = 1, mode: Annotated[str, vocab.enum(advance.STEP_MODES)] = "into",
+def step(count: Annotated[int, vocab.bounds(1, advance.step_max())] = 1,
+         mode: Annotated[str, vocab.enum(advance.STEP_MODES)] = "into",
          cpu: str = "") -> dict[str, Any]:
     """Execute `count` (1..{STEP_MAX}) instructions of `cpu` (`subcpu`; the visible one when empty)
     and stop, the ceiling keeping the longest walk of `over`s inside the bound every wait takes (a

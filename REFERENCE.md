@@ -430,9 +430,9 @@ describes the state before it, whole, and says so). **Its alarms ride on every r
 `alive`, `running`, `altered`, `broken` with the reason once a session broke, `console` (lines
 lost, reader deaths, chunks run twice) once any of its counts is not zero,
 `throttles_not_applied`, `read_only_claims`, and a `note` once the session is modified or a `lua`
-call was declared read-only. **What only counts rides on `start` and `status`**:
-`altering_writes` (how many calls wrote to the machine) and `console` while its counts are
-zero. Every other reply names that half in `omitted` beside `how`, so the short block is never
+call was declared read-only. **What only counts rides on `start`, `status` and `close`**
+(`close`'s being the last account of the session it ends): `altering_writes` (how many calls
+wrote to the machine) and `console` while its counts are zero. Every other reply names that half in `omitted` beside `how`, so the short block is never
 read as the whole one. Whether the machine runs is said
 there, and at the top level only by `status`, whose subject it is. Every
 refusal of an argument's shape names it and comes before the emulator is touched; what only the

@@ -1094,7 +1094,7 @@ class StartReply(MameEnvelope, total=False):
     pc: str
     phase: str
     pid: int
-    presence: bool | dict[str, Any]
+    presence: bool
     registers: list[Any]
     reply: str
     rom_check: str

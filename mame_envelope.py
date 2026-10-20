@@ -67,7 +67,7 @@ def session_block(whole: bool = False) -> dict[str, Any]:
     """The `session` block, READ off the state and writing none of it: `envelope`'s, and the one
     `mame_mcp.tool` composes after a body (`scry_core.boundary.Boundary.finished`). Its alarms
     ride on every reply; what only counts rides whole on `start` and `status`
-    (`scry_core.session_block`)."""
+    (`scry_core.session_block`), and on `close` as the last account of the session it ends."""
     n = STATE.altered()
     alive = STATE.ses is not None and STATE.proc is not None and STATE.proc.poll() is None
     broken = STATE.broken
