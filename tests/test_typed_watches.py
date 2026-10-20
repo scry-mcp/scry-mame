@@ -55,7 +55,8 @@ def test_a_stop_renders_every_shape_and_a_change_watch_takes_the_sized_width(
     assert ses.watchpoints[-1][:2] == (0x2031FC, 8), "the watchpoint spans the array"
     out = s.step()
     (w,) = out["watches"]
-    assert w["reading"]["value"] == [1, 2, 3, 4] and w["length"] == 8
+    assert w["reading"]["value"] == [1, 2, 3, 4]
+    assert s.watch_list()["watches"][0]["length"] == 8
 
 
 def test_a_symbol_typed_in_the_yaml_reads_as_its_type_with_no_format_named(

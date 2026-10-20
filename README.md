@@ -84,9 +84,9 @@ on, so a board on one of those needs a MAME that includes it. And MAME's Lua con
 crash a boot (a data race on its one Lua state): `patches/0003-lua-thread-context-race.patch` is
 the fix, proposed upstream as mamedev/mame#16229. A MAME built without it (an upstream build, a
 packaged one) may lose a boot to that race, which `start` relaunches and lists in
-`start_retries`, and every reply's `session.console` counts the console reader's deaths and the
-chunks it ran again (`thread_errors`, `reruns`); the builds this server is tested against carry
-it.
+`start_retries`, and the session block's `console` counts the console reader's deaths and the
+chunks it ran again (`thread_errors`, `reruns`) from the first one on; the builds this server is
+tested against carry it.
 Beside it, `patches/0004-gdbstub-one-thread-per-cpu.patch` makes the stub serve one GDB thread
 per cpu, so a client can read the registers and memory of any cpu on the board, and switch the
 visible cpu, without letting the machine run. `patches/0005-debugger-fatal-exit-live-cpu.patch`
@@ -108,7 +108,9 @@ start(binary="/path/to/mame", system="myboard", rompath="/path/to/proj/roms",
 -> {"summary": "start myboard: rom_check OK, 305 symbols, pc 0x000ffff0", "status": "ok",
     "rom_check": "OK", "symbols_total": 305,
     "symbols_by_class": {"DATA": 43, "CODE": 201, "TILES": 61},
-    "pc": "0x000ffff0", ..., "session": {"alive": true, "altered": false, "altering_writes": 0}}
+    "pc": "0x000ffff0", ...,
+    "session": {"alive": true, "running": false, "altered": false, "altering_writes": 0,
+                "console": {"thread_errors": 0, "reruns": 0, "lost": 0}}}
 rom_check(reference_rom="/path/to/proj/build/game.bin", reference_addr="0x30000")
 -> {"rom_check": "OK", "deterministic": true, ...}
 registers()                   -> every register at its cpu's declared width
@@ -143,7 +145,8 @@ run_to(ref="Next_Frame", control="Start_Machine_Code")
     "verdict": "TARGET", "control_hits": 1, "pc": "0x00031883",
     "regs": {"EAX": "0x0000", "EBX": "0x2584", "ESP": "0x99d2", "EIP": "0x1883",
              "CS": "0x3000", "DS": "0x0040", ...},
-    "session": {"alive": true, "altered": false, "altering_writes": 0}}
+    "session": {"alive": true, "running": false, "altered": false,
+                "omitted": ["altering_writes", "console"], "how": "`status` answers ..."}}
 ```
 
 A `run_to` that timed out with no control counted is `INVALID` (`control_silent`) and still
@@ -158,7 +161,8 @@ read_memory(ref="Player1", length=16)
 -> {"summary": "read_memory Player1: 16 bytes at 0x00008400: 01000300010000000300000000000000",
     "status": "ok", "addr": "0x00008400", "length": 16,
     "hex": "01000300010000000300000000000000",
-    "session": {"alive": true, "altered": false, "altering_writes": 0}}
+    "session": {"alive": true, "running": false, "altered": false,
+                "omitted": ["altering_writes", "console"], "how": "`status` answers ..."}}
 ```
 
 `Player1` is a DATA symbol: the map's own address for it is the ROM copy of its initial

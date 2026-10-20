@@ -564,11 +564,15 @@ r = s.watch_add(ref="0x20351c", mode="count", length=1)
 check("a one-byte tally on the 16-bit bus is accepted (the tap is bus-aligned, filtered)",
       r.get("status") == "ok", str(r.get("summary") or r.get("message")))
 r = s.run_for(frames=60)
-items = {w.get("ref"): w for w in r.get("watches", [])}
+at_stop = {w.get("ref"): w for w in r.get("watches", [])}
+# THE TABLES ARE THE LIST'S: a stop's row of a tap is its count as of the stop.
+items = {w.get("ref"): w for w in s.watch_list().get("watches", [])}
 t = items.get("0x2031fc", {})
 check("after sixty frames the tally is installed and read as of THIS stop",
       t.get("installed") is True and t.get("state") == "tallied"
-      and t.get("frame_as_of") == r.get("frame") and t.get("superseded") is False,
+      and t.get("frame_as_of") == r.get("frame") and t.get("superseded") is False
+      and at_stop.get("0x2031fc", {}).get("total") == t.get("total")
+      and "superseded" not in at_stop.get("0x2031fc", {}),
       f"state={t.get('state')} as_of={t.get('frame_as_of')} frame={r.get('frame')}")
 check("the vblank handler wrote the frame counter, two words per long, from one pc",
       t.get("total", 0) >= 100 and t.get("writers_total") == 1
@@ -1189,7 +1193,7 @@ check("state_save and state_load carry no per-call trio",
       not any(k in saved or k in loaded for k in PER_CALL), f"load keys {sorted(loaded)}")
 check("state_load's console text is `output`, and `console` is only the session's counters",
       isinstance(loaded.get("output"), str) and "console" not in loaded
-      and isinstance(loaded.get("session", {}).get("console"), dict), repr(loaded.get("output")))
+      and isinstance(s.status()["session"].get("console"), dict), repr(loaded.get("output")))
 s.close()
 r = s.start(**BOOT, symbols=SYMBOLS)
 rearm = r.get("declarations", {}).get("rearm", {})
@@ -1368,14 +1372,14 @@ check("the session's calls answered", all(x.get("status") == "ok"
                                           for x in (landed, read, regs, stopped)),
       str([x.get("summary") for x in (landed, read, regs, stopped)]))
 document = bench / "circus-session.json"
-exported = s.perform_export(path=str(document))
+exported = s.perform_export(dest=str(document))
 cut = exported.get("cut") or {}
 check("perform_export writes the session up to the release, and the cut names it "
       f"({cut})",
       exported.get("status") == "ok" and exported.get("steps", 0) >= 6
       and exported.get("checks", 0) >= 2 and cut.get("op") == "resume",
       str(exported.get("summary")))
-again = s.perform_export(path=str(document))
+again = s.perform_export(dest=str(document))
 check("a second export over the first is refused without overwrite",
       again.get("status") == "INVALID" and "overwrite" in str(again.get("message")),
       str(again.get("message"))[:80])
@@ -1423,7 +1427,7 @@ added = s.map_add(screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
 first = s.map_find()
 check("with both layers matching, the session's screen is the one named",
       (first.get("screen"), first.get("layer")) == ("header", "session"), str(first.get("summary")))
-saved = s.map_save(path=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
+saved = s.map_save(dest=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
 check("map_add maps the screen in front; map_save writes both layers, the session's promoted",
       added.get("status") == "ok" and saved.get("screens") == 2
       and saved.get("promoted") == ["header"], f"{added.get('summary')} / {saved.get('summary')}")

@@ -306,7 +306,7 @@ def test_regpoint_add_evaluates_stores_arms_and_reads_the_list_back(
         "entry": "1 if d1==7fff", "index": 1, "cpu": ":maincpu"}
     assert out["summary"] == "regpoint_add d1==7fff: armed, index 1"
     assert _sent(ses) == ["print {d1==7fff}", "rplist", "rpset {d1==7fff}", "rplist"]
-    assert out["session"]["altered"] is False and out["session"]["altering_writes"] == 0, (
+    assert out["session"]["altered"] is False and s.status()["session"]["altering_writes"] == 0, (
         "a registerpoint is the debugger's bookkeeping, as a breakpoint is")
     assert s.status()["in_debugger"]["regpoints"] == [{"ref": "d1==7fff", "cpu": ":maincpu"}]
 

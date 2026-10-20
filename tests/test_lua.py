@@ -358,7 +358,7 @@ def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     assert out["evaluated_by"] == "one step"
     assert out["pc_before"] == "0x00000400" and out["pc"] == "0x00000404"
     assert ses.stepped == 1
-    assert out["session"]["altered"] is True and out["session"]["altering_writes"] == 1
+    assert out["session"]["altered"] is True and _whole()["altering_writes"] == 1
     assert out["how"] == "lua: one step"
     assert out["summary"].startswith("lua: 12 chars back, pc 0x00000404")
     assert "note" not in out, "a script that printed needs no hint"
@@ -366,7 +366,7 @@ def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     # ITS sentinel, not the first one's.
     ses.answers[2] = b"PROBE 20 35\n" + ses.sentinel(2)
     again = s.lua(script)
-    assert again["output"] == "PROBE 20 35\n" and again["session"]["altering_writes"] == 2
+    assert again["output"] == "PROBE 20 35\n" and _whole()["altering_writes"] == 2
 
 
 def test_an_empty_output_from_a_script_that_never_printed_says_where_the_channel_is(
@@ -978,7 +978,7 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     # ONE WORD, ONE SHAPE: `console` is the session's block of counters on every reply, so
     # the text the debugger console printed for `stateload` is `output`, as `debug` names it.
     assert isinstance(loaded["output"], str) and "console" not in loaded, loaded
-    assert isinstance(loaded["session"]["console"], dict)
+    assert isinstance(_whole()["console"], dict)
     assert "stateload live" in ses.commands
     assert "taps_across" not in loaded, "no tap, nothing named"
     # A LIVE TAP counted across the load: the reply names it, as `reset`'s does.
@@ -2171,7 +2171,7 @@ def test_a_queued_wrapper_drains_the_pipe_first_and_says_how_deep_it_was(
     assert out["status"] == "ok", out
     assert out["lines_ahead"] == 1, out
     assert "reader_steps" in out, out
-    assert 1 not in mstate.STATE.lua_pending and out["session"]["console"]["lost"] == 0, (
+    assert 1 not in mstate.STATE.lua_pending and _whole()["console"]["lost"] == 0, (
         "settled by its sentinel: it ran, and nothing is lost")
     # The input's own frames were its own: the field was released, not left held.
     assert out["released"] is True, out
@@ -2193,7 +2193,7 @@ def test_a_wrapper_whose_reader_died_before_the_echo_says_so_and_counts_nothing_
     assert "lost" not in out["message"], out
     assert out["pending"] is True and out["resent"] == 0 and out["lines_ahead"] == 0, out
     assert out["thread_errors"] == 1, out
-    assert out["session"]["console"]["lost"] == 0 and mstate.STATE.lua_lost == 0, out
+    assert _whole()["console"]["lost"] == 0 and mstate.STATE.lua_lost == 0, out
     assert transport.pending_lines(tmp_path) == 1, "the line is still ahead in the pipe"
 
 
@@ -2468,7 +2468,7 @@ def test_a_lua_refused_for_somebody_elses_backlog_is_not_counted_as_a_call(
         transport.send("print(0)")
     refused_write = refused("still ahead", s.lua("print(1)"))
     assert refused_write["session"]["altered"] is False, refused_write["session"]
-    assert refused_write["session"]["altering_writes"] == 0, refused_write["session"]
+    assert _whole()["altering_writes"] == 0, refused_write["session"]
     refused_read = refused("still ahead", s.lua("print(1)", read_only=True))
     assert "read_only_claims" not in refused_read["session"], refused_read["session"]
 
@@ -2508,7 +2508,8 @@ def test_a_clean_session_reports_three_zeros_and_not_an_absent_object(
     ses.answers = {1: b"7\n" + ses.sentinel(1)}
     out = s.lua("print(7)", seconds=1.0)
     assert out["status"] == "ok", out
-    assert out["session"]["console"] == {"thread_errors": 0, "reruns": 0, "lost": 0}, out
+    assert "console" not in out["session"], "three zeros are no alarm"
+    assert _whole()["console"] == {"thread_errors": 0, "reruns": 0, "lost": 0}, out
 
 
 def test_a_reader_death_is_held_against_the_session_and_still_there_two_replies_later(
@@ -2537,7 +2538,7 @@ def test_a_chunk_the_console_ran_again_is_counted_for_the_session(
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: b"7\n" + ses.sentinel(1), 2: b"8\n" + ses.sentinel(2)}
     out = s.lua("print(7)", seconds=1.0)
-    assert out["session"]["console"]["reruns"] == 0, out
+    assert _whole()["console"]["reruns"] == 0, out
     ses.reader_dies = 1
     out = s.lua("print(8)", seconds=1.0)
     assert out["console_reruns"] == 1, out
@@ -3326,3 +3327,8 @@ def test_a_read_only_chunk_that_expires_says_it_altered_nothing(
     out = refused("alters nothing", s.lua("print(1)", seconds=0.2, read_only=True))
     assert out["code"] == "wait_expired" and out["session"]["altered"] is False, out
     assert out["call"] == "MAME_MCP_LUA_END#1", out
+
+
+def _whole() -> dict[str, Any]:
+    """The whole `session` block, as `status` carries it, read off the state as it is now."""
+    return menvelope.session_block(True)

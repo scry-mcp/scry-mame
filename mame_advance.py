@@ -21,6 +21,7 @@ from typing import Any, TypeVar
 from scry_core import cancel, prose
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
@@ -139,7 +140,7 @@ def step_max() -> int:
 def check_step(count: int = 1, mode: str = "into", **_: Any) -> None:
     """`step`'s machine-independent half: how many, and which of two words."""
     inputs.count("count", count, step_max(), ": a longer walk is `run_to` or `run_for`")
-    inputs.one_of("mode", mode, STEP_MODES)
+    vocab.one_of("mode", mode, STEP_MODES)
 
 
 # WHY, for the reader of this code (the client gets the docstring above the code):

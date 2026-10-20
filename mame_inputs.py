@@ -21,8 +21,8 @@ from collections.abc import Callable, Collection, Mapping
 from pathlib import Path
 from typing import Any, NoReturn, overload
 
-from pydantic import Field
 from scry_core import judges, picture, prose, steps
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import Invalid
 
 
@@ -386,36 +386,13 @@ def count(name: str, value: int, hi: int | None = None, tail: str = "", lo: int 
         raise Invalid("bad_argument", f"{name}={value!r} is below {lo}{tail}")
 
 
-#: The words of a closed vocabulary: names, or integers such as a write's byte lengths.
-Words = tuple[str, ...] | tuple[int, ...]
-
-
-def vocabulary(options: Words) -> Any:
-    """The schema half of a closed vocabulary, for `Annotated[str, vocabulary(TUPLE)]` (or `int`,
-    or a list's item): the tuple its judge holds, published as its JSON-schema `enum`, so a
-    client sees the words where it builds the call. Validation stays the judge's (`one_of`, or
-    the list's own), and so does the refusal."""
-    return Field(json_schema_extra={"enum": list(options)})
-
-
-def bounds(lo: int, hi: int) -> Any:
-    """The schema half of an integer range, for a list's item: `minimum` and `maximum`, published
-    and never validated here, so the list's own judge keeps its sentence."""
-    return Field(json_schema_extra={"minimum": lo, "maximum": hi})
-
-
-def one_of(name: str, value: object, options: Words, tail: str = "") -> None:
-    """A scalar held to a closed vocabulary: `mode is one of (...); got 'x'`, one sentence for
-    every scalar closed vocabulary a tool argument has, `tail` added after it; a list's items
-    are judged by the list's own sentence. A bool is refused even where 1 is a word, since `True`
-    equals 1 and is never what a caller meant."""
-    if isinstance(value, bool) or value not in options:
-        raise Invalid("bad_argument", f"{name} is one of {options}; got {value!r}{tail}")
-
-
 # THE CEILING ON EVERY WAIT a tool takes: the server answers one call at a time, so a wait with
 # no ceiling would hold every other call behind an answer that may never arrive.
 WAIT_MAX_S = 600.0
+#: A wait's schema half, `Annotated[float, WAIT_BOUNDS]`, as `seconds_bound` judges it: above 0
+#: and at most `WAIT_MAX_S`; `WAIT_OR_NONE_BOUNDS` for the two whose 0 means no wait at all.
+WAIT_BOUNDS = vocab.bounds(0, WAIT_MAX_S, open_lo=True)
+WAIT_OR_NONE_BOUNDS = vocab.bounds(0, WAIT_MAX_S)
 
 
 # WHAT A PATH HANDED TO THE CONSOLE, OR WRITTEN AS A `dest`, MAY NOT HOLD. The console's command

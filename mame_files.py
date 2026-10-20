@@ -29,6 +29,7 @@ from scry_core import judges, prose
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
@@ -261,7 +262,7 @@ def log_path(scratch: Path, channel: str) -> Path:
 
 
 def check_channel(channel: str) -> None:
-    inputs.one_of("channel", channel, LOG_CHANNELS, tail=NO_GUEST)
+    vocab.one_of("channel", channel, LOG_CHANNELS, tail=NO_GUEST)
 
 
 def channel_files(scratch: Path, channel: str) -> list[tuple[str, Path]]:

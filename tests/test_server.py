@@ -214,7 +214,8 @@ def test_altered_counts_both_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(mstate.STATE, "console_writes", 1)
     envelope = menvelope.envelope({})
     assert envelope["session"]["altered"] is True
-    assert envelope["session"]["altering_writes"] == 1
+    assert menvelope.session_block(True)["altering_writes"] == 1
+    assert envelope["session"]["omitted"] == ["altering_writes", "console"]
     assert "MODIFIED" in envelope["session"]["note"]
     assert list(envelope) == ["status", "session"], "status first, the session block last"
 
@@ -1650,7 +1651,7 @@ def test_a_long_console_answer_goes_to_a_file_and_the_envelope_stays(
     assert out["output_chars"] == len(long)
     path = Path(out["output_path"])
     assert path.parent == scratch and path.read_text() == long
-    assert "altered" in out["session"] and "altering_writes" in out["session"]
+    assert "altered" in out["session"] and "altering_writes" in out["session"]["omitted"]
     assert out["mutates"] is False
     short = s.debug("print pc")
     assert short["clipped"] is False and "output_path" not in short
@@ -1815,7 +1816,7 @@ def test_memdump_writes_the_bytes_and_checks_them_against_a_read(
     assert dest.read_bytes() == image[0x123 : 0x123 + 0x800]
     # `0x` on both numbers: a bare `d0` would be the REGISTER to MAME's expression parser.
     assert ses.commands == ["cpulist", f"save {dest},0x123,0x800"], ses.commands
-    assert out["session"]["altered"] is False and out["session"]["altering_writes"] == 0, \
+    assert out["session"]["altered"] is False and s.status()["session"]["altering_writes"] == 0, \
         "a file write is not a machine write"
     # A dump shorter than the control window compares only what there is.
     small = s.memdump("0xd0", length=8, dest=str(tmp_path / "small.bin"))
@@ -3882,9 +3883,10 @@ def test_the_session_block_says_whether_the_machine_runs(
     assert menvelope.envelope({})["session"]["running"] is False
     ses.go()
     assert menvelope.envelope({})["session"]["running"] is True
-    assert list(menvelope.envelope({})["session"]) == ["alive", "running", "altered",
-                                                       "altering_writes",
-                                                       "console"]
+    assert list(menvelope.envelope({})["session"]) == ["alive", "running", "altered", "omitted",
+                                                       "how"]
+    assert list(menvelope.session_block(True)) == ["alive", "running", "altered",
+                                                   "altering_writes", "console"]
 
 
 def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
@@ -6944,3 +6946,20 @@ def test_judge_carries_presence_to_the_boot(
                           background=None, presence=asked)
     machine.listxml(judged.listxml, judged.binary, judged.system, judged.wait)
     assert judged.presence is asked
+
+
+def test_any_one_console_count_not_zero_is_an_alarm_on_every_reply(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(mstate.STATE, "ses", None)
+    for field in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
+        for name in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
+            monkeypatch.setattr(mstate.STATE, name, int(name == field))
+        block = menvelope.envelope({})["session"]
+        assert sum(block["console"].values()) == 1, (field, block)
+        assert "console" not in block.get("omitted", []), field
+    for name in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
+        monkeypatch.setattr(mstate.STATE, name, 0)
+    assert "console" not in menvelope.envelope({})["session"]
+    assert menvelope.session_block(whole=True)["console"] == {
+        "thread_errors": 0, "reruns": 0, "lost": 0}

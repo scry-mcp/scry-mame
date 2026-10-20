@@ -10,7 +10,7 @@ read off a watch that no longer resolves.
 import sys
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -286,12 +286,17 @@ def test_a_read_watch_arms_nothing_and_is_evaluated_at_every_stop(
     assert ses.watchpoints == []
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     stop = s.step()
+    # A STOP SHOWS WHAT THE WATCH READS NOW; its declaration and placement are `watch_list`'s,
+    # and the stop says so.
     assert stop["watches"] == [{
-        "ref": "frame_lo", "by": "symbol", "cpu": ":maincpu", "mode": "show", "length": 4,
-        "fmt": "u32",
+        "ref": "frame_lo", "cpu": ":maincpu",
         "state": "evaluated", "reading": {"available": True, "value": 0x38, "raw_hex": "00000038"},
-        "addr": "0x002031fc",
     }]
+    assert stop["watches_omitted"] == ["addr", "by", "fmt", "length", "mode"]
+    assert stop["watches_how"] == watches.STOP_HOW
+    listed = s.watch_list()["watches"]
+    assert {k: listed[0][k] for k in stop["watches_omitted"]} == {
+        "addr": "0x002031fc", "by": "symbol", "fmt": "u32", "length": 4, "mode": "show"}
     assert "watches" not in s.status(), "a survey field, not a status one"
 
 
@@ -315,7 +320,9 @@ def test_one_read_watch_speaks_one_vocabulary_in_all_three_tools(
     added = s.watch_add(ref="frame_lo", mode="show", length=4)
     listed = s.watch_list()["watches"]
     surveyed = s.step()["watches"]
-    assert [fields(added), *map(fields, listed), *map(fields, surveyed)] == [reading] * 3
+    assert [fields(added), *map(fields, listed)] == [reading] * 2
+    assert [{k: w.get(k) for k in ("state", "reading")} for w in surveyed] == [
+        {k: reading[k] for k in ("state", "reading")}], "a stop reads the same, placed or not"
     ses.go()
     running = s.watch_list()["watches"]
     assert [(w["state"], "reading" in w) for w in running] == [
@@ -1870,7 +1877,7 @@ def test_a_survey_evaluates_every_declaration_after_an_unresolved_or_a_bus_watch
 ) -> None:
     """The rows a stop survey skips with `continue` must not end the survey: a watch after an
     unresolved one, or after a bus-sourced one, is still evaluated, and the bus row carries
-    its address beside its reading."""
+    its reading, its address in the list."""
     ses = _watching(monkeypatch, tmp_path)
     ses.latches.add(0x740000)
     s.watch_add(ref="scene_id", mode="show", length=2)              # unresolved
@@ -1879,7 +1886,8 @@ def test_a_survey_evaluates_every_declaration_after_an_unresolved_or_a_bus_watch
     rows = s.step()["watches"]
     assert [(r["ref"], r["state"]) for r in rows] == [
         ("scene_id", "unresolved"), ("0x740000", "armed"), ("frame_lo", "evaluated")], rows
-    assert rows[1]["addr"] == "0x00740000" and rows[1]["reading"]["state"] == "bus", rows[1]
+    assert rows[1]["reading"]["state"] == "bus", rows[1]
+    assert s.watch_list()["watches"][1]["addr"] == "0x00740000", "where it is, the list says"
 
 
 def test_a_survey_that_cannot_read_wplist_places_by_its_record_and_says_gone_without_one(
@@ -1997,3 +2005,39 @@ def test_a_tap_on_a_mapped_side_keeps_its_note_untouched() -> None:
                                    "memory@200000", trigger=True) == "installed"
     assert mmap.with_unmapped_note("installed", "unmapped", 0x2, "io", None, trigger=True
                                       ).startswith("installed; the trigger: nothing")
+
+
+def test_a_stop_keeps_a_taps_count_and_its_alarms_while_they_hold_and_names_the_rest() -> None:
+    tally = {"ref": "0x20351c", "by": "address", "cpu": ":maincpu", "mode": "count",
+             "length": 1, "fmt": "u8", "tally_id": "t1", "addr": "0x0020351c",
+             "installed": True, "pending": False, "install_resent": 0, "state": "tallied",
+             "frame_as_of": 9, "superseded": False, "total": 12, "since_last_stop": 3,
+             "values": [{"value": 1}], "writers": [{"pc": "0x40e"}], "values_total": 1,
+             "overflow_values": 0, "writers_total": 1, "overflow_pcs": 0,
+             "callback_errors": {"count": 0}}
+    rows, left = watches.at_stop([tally, {**tally, "ref": "b", "superseded": True,
+                                          "install_resent": 1, "reset": True,
+                                          "across": {"from": "s"}, "why": "older"}])
+    assert rows[0] == {"ref": "0x20351c", "cpu": ":maincpu", "state": "tallied", "total": 12,
+                       "since_last_stop": 3, "callback_errors": {"count": 0}}
+    assert {k: rows[1][k] for k in ("superseded", "install_resent", "reset", "across", "why")} \
+        == {"superseded": True, "install_resent": 1, "reset": True, "across": {"from": "s"},
+            "why": "older"}
+    assert "values" in left and "writers" in left and "frame_as_of" in left
+    assert "total" not in left and "superseded" in left, "named where it was left out"
+
+
+def test_a_pass_places_a_row_again_with_only_what_a_stop_shows(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    placed = {"state": "armed", "entry": "2 @ 0x2031fc", "index": 2, "addr": "0x002031fc"}
+    monkeypatch.setattr(watches, "_placement", lambda held, decl, addr: dict(placed))
+    monkeypatch.setattr(watches, "_wplist_or_error", lambda ses: [])
+    decl = type("D", (), {"ref": "frame_lo", "cpu": ":maincpu", "kind": "watch",
+                          "watch_mode": "change", "owner": ("frame_lo", ":maincpu")})()
+    monkeypatch.setattr(arming, "store",
+                        lambda: type("S", (), {"declarations": lambda self: [decl]})())
+    monkeypatch.setitem(mstate.STATE.armed_watches, decl.owner, {"addr": 0x2031FC})
+    rows = [{"ref": "frame_lo", "cpu": ":maincpu", "state": "gone"}]
+    watches.place_after_pass(cast(Any, None), rows, [decl.owner])
+    assert rows == [{"ref": "frame_lo", "cpu": ":maincpu", "state": "armed"}]

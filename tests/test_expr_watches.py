@@ -118,8 +118,7 @@ def test_a_stop_reads_the_frame_and_every_expression_in_one_print(
     ses.commands.clear()
     out = s.step()
     watched = {w["ref"]: w for w in out["watches"]}
-    assert watched["beamy"] == {"ref": "beamy", "by": "expr", "mode": "expr",
-                                "state": "evaluated",
+    assert watched["beamy"] == {"ref": "beamy", "state": "evaluated",
                                 "reading": {"available": True, "value": 0xF8, "hex": "0xf8"}}
     assert watched["totalcycles"]["reading"]["value"] == 0x7A124B
     prints = [c for c in ses.commands if c.startswith("print ")]

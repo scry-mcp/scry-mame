@@ -322,7 +322,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "map_load": lambda: {"path": "/nonexistent/m.scry-map.json"},
     "map_add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
     "map_find": dict,
-    "map_save": lambda: {"path": fresh(".scry-map.json"), "overwrite": True},
+    "map_save": lambda: {"dest": fresh(".scry-map.json"), "overwrite": True},
     "series_capture": _series_ahead,
     **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
@@ -343,7 +343,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "drive": lambda: {"act": [{"op": "run_for", "frames": 1, "seconds": 10.0}],
                       "settle_seconds": 2.0},
     "perform": lambda: {"steps": [{"op": "registers"}], "settle_seconds": 2.0},
-    "perform_export": lambda: {"path": fresh(".json")},
+    "perform_export": lambda: {"dest": fresh(".json")},
     "debug": lambda: {"command": "print pc"},
     "lua": lambda: {"script": "print(1)", "read_only": True},
     "input": lambda: {"port": ":P1", "field": "Coin 1", "frames": 1, "seconds": 10.0},
@@ -1707,13 +1707,15 @@ def dumper_fault_cell(label: str, registry: str, item_id: str, ref: str, dump: P
     if names is None or not any(n == str(errorlog) for n in names):
         blocked(label, f"lsof could not be read, or did not list error.log open: {detail}")
         return
-    cell(label, before.get("superseded") is False and len(logged) == 1
+    cell(label, "superseded" not in before and len(logged) == 1
          and FAULT in logged[0] and tmp.exists() and str(tmp) not in names
          and w.get("superseded") is True and "the dumper raised writing a newer one" in why
          and FAULT in why, detail)
 
 
 def writes(r: dict[str, Any]) -> int:
+    """How many calls wrote to the machine, off a reply whose block is whole (`start`,
+    `status`): every other reply names the count in `omitted`."""
     return int(r.get("session", {}).get("altering_writes", -1))
 
 
@@ -1788,7 +1790,7 @@ def c1_declarations() -> None:
     # game's.
     r = call("run_for", frames=60, seconds=10.0, disarm_watches=True)
     tally = by_ref(r.get("watches")).get("0x2031fc", {})
-    cell(C1[10], tally.get("installed") is True and tally.get("total", 0) > 0,
+    cell(C1[10], tally.get("state") == "tallied" and tally.get("total", 0) > 0,
          f"{r.get('verdict')} {tally}"[:160])
     call("breakpoint_at", ref="vec_trapv")
     bps = by_ref(call("breakpoint_list").get("breakpoints"))
@@ -2015,7 +2017,7 @@ def c4_altered() -> None:
             kw = {k: (v.format(dest=fresh(".bin")) if isinstance(v, str) and "{dest}" in v
                       else v) for k, v in kw.items()}
             r = call(tool, **kw)
-        w1 = writes(r)
+        w1 = writes(call("status"))
         moved = w1 > w0
         good = whole(r) and (alters is None or moved is alters)
         if alters:
@@ -2190,7 +2192,10 @@ def _c7_judge(mode: str, w: dict[str, Any], stop: dict[str, Any]) -> bool:
         return (w.get("state") == "evaluated" and reading.get("available") is True
                 and "value" in reading and "raw_hex" in reading)
     if mode == "count":
-        return w.get("installed") is True and w.get("frame_as_of") == stop.get("frame")
+        # A STOP'S ROW OF A TAP is its count as of this stop: `superseded` rides only when the
+        # dump on disk is older than the stop (its frame is `watch_list`'s).
+        return (w.get("state") == "tallied" and isinstance(w.get("total"), int)
+                and "superseded" not in w)
     if mode == "expr":
         return isinstance(reading.get("value"), int) and "hex" in reading
     return w.get("state") in ("evaluated", "null_pointer")
@@ -2333,7 +2338,7 @@ def c9_reset() -> None:
     cell(C9[4], r.get("verdict") == "TIMEOUT" and r.get("control_hits", 0) > 0, said(r))
     r = call("run_for", frames=5, seconds=10.0, disarm_watches=True)
     t = by_ref(r.get("watches")).get("0x20351c", {})
-    cell(C9[5], t.get("installed") is True and isinstance(t.get("total"), int),
+    cell(C9[5], t.get("state") == "tallied" and isinstance(t.get("total"), int),
          f"total {t0} before the reset, {t.get('total')} after")
     cell(C9[6], r.get("session", {}).get("altered") is True, str(r.get("session")))
 
@@ -2369,6 +2374,9 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
     running-ok ops, and `stop`."""
     tsv = fresh(".tsv")
     media = _media_files()
+    maps = Path(fresh("-maps"))
+    maps.mkdir()
+    screen_map = str(maps / "batch.scry-map.json")
     return [
         {"op": "series_capture", "first": frame_now + 1, "last": frame_now + 2,
          "seconds": 10.0},
@@ -2393,6 +2401,8 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "comment_delete", "ref": "irq_vblank"},
         {"op": "debug", "command": "print pc"},
         {"op": "lua", "script": "print(1)", "read_only": True}, {"op": "screen_signature"},
+        {"op": "map_add", "screen": "batch", "match": [[0, 0, 8, 8]]}, {"op": "map_find"},
+        {"op": "map_save", "dest": screen_map}, {"op": "map_load", "path": screen_map},
         {"op": "palette", "count": 4}, {"op": "screen_view", "mode": "histogram"},
         {"op": "image_diff", "a": media["png"], "b": media["png"]},
         {"op": "series_diff", "a": media["manifest"], "b": media["manifest"]},
@@ -2721,7 +2731,7 @@ def c14_region_write() -> None:
         writes_before = call("status")["session"]["altering_writes"]
         r = call("write", ref="0x200000", data_hex="00", cpu=tag, region=True)
         cell(t[6], refused(r, "bad_argument") and "answers ram at 0x200000" in str(
-             r.get("message")) and r["session"]["altering_writes"] == writes_before, said(r))
+             r.get("message")) and writes(call("status")) == writes_before, said(r))
         r = call("write", ref=ref, data_hex=before, cpu=tag, region=True)
         cell(t[7], ok(r) and r.get("verified") is True and word(addr) == before
              and word(REGION_END) == end_before, f"{said(r)} / {word(addr)} (was {before})")
@@ -2941,7 +2951,7 @@ def _d_circus(t: list[str]) -> None:
     r = call("screen_view", scale=1)
     cell(t[0], ok(r) and r.get("screen_indexed") is True and r.get("entries") == 2
          and r.get("image",
-                   {}).get("indexed") is True and r["session"]["altering_writes"] == before,
+                   {}).get("indexed") is True and writes(call("status")) == before,
          said(r))
     code = call("read_block", tag="videoram", offset=12 * 32 + 11, length=1).get("hex", "")
     r = call("gfx_locate", layouts=[CIRCUS_CHAR], patch=[88, 96, 8, 8], tag="gfx1",
@@ -3117,9 +3127,10 @@ def _d_discovery(t: list[str]) -> None:
          and [fields.get(r, {}).get(k) for r in ("dest_x", "dest_y")
               for k in ("word", "sign", "add")] == [10, -1, 240, 11, -1, 239], said(draft))
     control = [c for c in report.get("correlations", []) if c["capture"]["addr"] == "0x00004080"]
-    cell(t[14], len(control) == 1 and isinstance(control[0]["command"], dict)
-         and control[0]["command"].get("available") is False,
-         str(control)[:110])
+    # THE REPORT IS A FILE, not a reply: a correlation that proved no command carries `command`
+    # null and says why, which is the draft's promise for data that is no sprite table.
+    cell(t[14], len(control) == 1 and control[0]["command"] is None
+         and bool(control[0].get("why")), str(control)[:110])
     loaded = call("gfx_load", path=str(dest))
     blits = call("gfx_blits", draw_command="write_2000", detail=True)
     box = ((blits.get("blits") or [{}])[0]).get("box", {})
@@ -3269,10 +3280,11 @@ def block_e() -> None:
     text = len(json.dumps(summary, indent=2))
     cell(t[7], ok(summary) and "blits" not in summary and text < REPLY_BUDGET_CHARS,
          f"{summary.get('blits_in_frame')} blits, {text} characters of text")
-    survey = [w for w in summary.get("watches", []) if w.get("mode") == "capture"]
     listed = [w for w in call("watch_list").get("watches", []) if w.get("mode") == "capture"]
-    cell(t[8], bool(survey) and all("first_rows" not in w and w.get("rows_listed_by")
-                                    == "watch_list" for w in survey)
+    captured = {w.get("ref") for w in listed}
+    survey = [w for w in summary.get("watches", []) if w.get("ref") in captured]
+    cell(t[8], bool(survey) and all("first_rows" not in w for w in survey)
+         and summary.get("watches_how") == mwatches.STOP_HOW
          and bool(listed) and all(w.get("first_rows") for w in listed),
          f"{len(survey)} in the survey, {len(listed)} listed")
     screen = call("screen_view", scale=1)
@@ -4070,12 +4082,13 @@ def _k_circus(_cells: list[str]) -> None:
             for ref in ("0x20", "0x36", "0x1f", "0x1b")]
     ran = call("run_for", frames=1, seconds=5.0)
     rows = ran.get("watches") or []
-    queued = [w.get("installed") for w in rows]
+    queued = [w.get("installed", True) for w in rows]
     later = [call("run_for", frames=1, seconds=5.0) for _ in range(3)][-1]
-    settled = [(w.get("installed"), w.get("install_resent")) for w in later.get("watches") or []]
-    lost = (later.get("session") or {}).get("console", {}).get("lost")
+    settled = [(w.get("installed", True), w.get("install_resent", 0))
+               for w in later.get("watches") or []]
+    lost = call("status")["session"]["console"]["lost"]
     detail = (f"lines_ahead {[a.get('lines_ahead') for a in adds]}; after one frame installed "
-              f"{queued}, resent {[w.get('install_resent') for w in rows]}; "
+              f"{queued}, resent {[w.get('install_resent', 0) for w in rows]}; "
               f"three frames on {settled}, lost {lost}")
     if not (ok(planted) and "planted" in str(planted.get("output"))):
         blocked(t[6], f"the reader fault was not planted, so nothing was held: {detail}")
@@ -4083,7 +4096,7 @@ def _k_circus(_cells: list[str]) -> None:
         blocked(t[6], f"no install was still queued after the frame, nothing to judge: {detail}")
     else:
         cell(t[6], all(ok(a) for a in adds) and ok(ran) and ok(later)
-             and [w.get("install_resent") for w in rows] == [0, 0, 0, 0]
+             and [w.get("install_resent", 0) for w in rows] == [0, 0, 0, 0]
              and settled == [(True, 0)] * 4 and lost == 0, detail)
     call("watch_clear", all=True)
     refs = ("0x20", "0x36", "0x1f", "0x1b")
@@ -4132,11 +4145,13 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
         return r
 
     def mine(r: dict[str, Any], ref: str) -> dict[str, Any]:
-        return next((w for w in r.get("watches") or [] if w.get("tally_id") == tid(ref)), {})
+        return next((w for w in r.get("watches") or [] if w.get("ref") == ref), {})
 
     def seen(r: dict[str, Any], ref: str) -> tuple[Any, Any, Any]:
+        """A stop's row of the tap: whether it is installed, its state and how often its install
+        was sent again, each alarm carried only while it holds."""
         w = mine(r, ref)
-        return w.get("installed"), w.get("state"), w.get("install_resent")
+        return w.get("installed", bool(w)), w.get("state"), w.get("install_resent", 0)
 
     def fault(ref: str, **how: Any) -> bool:
         planted = reader_fault(f"tally-{tid(ref)}.txt", **how)

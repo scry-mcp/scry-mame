@@ -12,6 +12,7 @@ import re
 from typing import Any
 
 from scry_core import value_format as vf
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
@@ -257,8 +258,8 @@ def check_breakpoint_at(ref: str, by: str = "auto", role: str = "stop",
     address) are `Declaration`'s and are asked of it rather than restated here.
     """
     inputs.check_ref(ref) if vf.parse_pointer(ref) is None else None
-    inputs.one_of("role", role, dec.ROLES)
-    inputs.one_of("by", by, BREAKPOINT_BY)     # its own words: a refusal lists none it refuses
+    vocab.one_of("role", role, dec.ROLES)
+    vocab.one_of("by", by, BREAKPOINT_BY)     # its own words: a refusal lists none it refuses
     if condition.strip():
         conditions.check_condition(condition)
     # `Declaration` validates itself in `__post_init__`, so CONSTRUCTING one is the whole of asking,

@@ -4,7 +4,7 @@ builds the call, and the two cannot drift because there is one tuple. `breakpoin
 publishes the words a breakpoint takes, which its declaration narrows from the judge's. A list
 whose items are held the same way publishes them on its items, an `enum` or a range.
 
-The judge stays the argument's own (`inputs.one_of`, or the list's), so a word outside the list
+The judge stays the argument's own (`vocab.one_of`, or the list's), so a word outside the list
 is still the server's `bad_argument` sentence and never a schema error of the SDK's. A
 vocabulary that depends on the machine (its cpus, its screens, its palettes) has no static list
 and gets no enum.
@@ -32,13 +32,13 @@ import mame_breakpoints as breakpoints  # noqa: E402
 import mame_declarations as dec  # noqa: E402
 import mame_files as mfiles  # noqa: E402
 import mame_film as mfilm  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_scan as mscan  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_space as mspace  # noqa: E402
+import mame_state as mstate  # noqa: E402
 import mame_state as st  # noqa: E402
 import mame_sweep as msweep  # noqa: E402
 import mame_watches as watches  # noqa: E402
@@ -46,7 +46,7 @@ import server as s  # noqa: E402
 
 PACKAGE = Path(__file__).resolve().parent.parent
 
-Words = inputs.Words
+from scry_core.vocabulary import Words  # noqa: E402
 
 #: Every argument held to a fixed vocabulary, and the words it publishes.
 CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
@@ -130,7 +130,7 @@ def test_no_argument_publishes_an_enum_no_judge_holds() -> None:
 
 
 def _judged(path: Path) -> list[tuple[int, str, Words]]:
-    """Every `inputs.one_of("name", value, options)` in `path`: its line, the argument it names
+    """Every `vocab.one_of("name", value, options)` in `path`: its line, the argument it names
     and its options, evaluated in the module's own namespace (every `mame_*.py` is imported by
     the server)."""
     tree = ast.parse(path.read_text())
@@ -139,7 +139,7 @@ def _judged(path: Path) -> list[tuple[int, str, Words]]:
     for node in ast.walk(tree):
         if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
                 and node.func.attr == "one_of" and isinstance(node.func.value, ast.Name)
-                and node.func.value.id == "inputs" and len(node.args) == 3):
+                and node.func.value.id == "vocab" and len(node.args) == 3):
             name = node.args[0].value if isinstance(node.args[0], ast.Constant) else ""
             found.append((node.lineno, str(name),
                           tuple(eval(ast.unparse(node.args[2]), dict(namespace)))))
@@ -147,12 +147,12 @@ def _judged(path: Path) -> list[tuple[int, str, Words]]:
 
 
 def test_every_closed_vocabulary_the_server_judges_is_published(tmp_path: Path) -> None:
-    """Each argument a module holds to a tuple with `inputs.one_of` is one the table above
+    """Each argument a module holds to a tuple with `vocab.one_of` is one the table above
     publishes under that name with those words, and each row has its judge, so a closed
     argument cannot arrive without its enum. Checked against a planted module first, so an
     empty scan is a finding and not a scan that read nothing."""
     planted = tmp_path / "planted.py"
-    planted.write_text('inputs.one_of("x", x, ("a", "b"))\nchunk.one_of("y", y, "ys", "", [])\n')
+    planted.write_text('vocab.one_of("x", x, ("a", "b"))\nchunk.one_of("y", y, "ys", "", [])\n')
     assert _judged(planted) == [(1, "x", ("a", "b"))], "the control did not fire"
     sources = sorted(PACKAGE.glob("mame_*.py"))
     found = {(name, words) for src in sources for _, name, words in _judged(src)}
@@ -161,7 +161,7 @@ def test_every_closed_vocabulary_the_server_judges_is_published(tmp_path: Path) 
                                f"published and judged by nothing: {published - found}"
     # EVERY CALL OF THE JUDGE IS ONE THE SCAN READ: a keyword or an aliased form would be a
     # judge it cannot see. `chunk.one_of` judges a session's words and `_one_of` a file's.
-    calls = sum(len(re.findall(r"(?<![\w.])inputs\.one_of\(", src.read_text())) for src in sources)
+    calls = sum(len(re.findall(r"(?<![\w.])vocab\.one_of\(", src.read_text())) for src in sources)
     assert calls == sum(len(_judged(src)) for src in sources), "a judge the scan cannot read"
 
 
@@ -272,3 +272,66 @@ def test_a_sequence_step_still_judges_a_closed_arguments_type(
     wrong, said = ("5", "an integer") if integer else (5, "a string")
     out = s.perform(steps=[{"op": tool, **NEEDS.get(tool, {}), arg: wrong}])
     assert f"{arg} is {said}; got {wrong!r}" in out.get("message", ""), out
+
+
+#: Every scalar argument held to a range, and the bounds its judge holds it to: the wait bound
+#: of every tool that takes `seconds` or `settle_seconds` is read off the schema itself below.
+import mame_blits as mblits  # noqa: E402
+import mame_gfx as mgfx  # noqa: E402
+import mame_inputs as inputs  # noqa: E402
+import mame_ramdac as mramdac  # noqa: E402
+import mame_read as mread  # noqa: E402
+
+RANGES: list[tuple[str, str, int, int]] = [
+    ("read_memory", "length", 1, mread.READ_MAX),
+    ("read_block", "length", 1, mread.READ_MAX),
+    ("disassemble", "length", 1, mread.READ_MAX),
+    ("symbols_find", "limit", 1, mread.SYMBOLS_LIMIT_MAX),
+    ("history", "limit", 1, mread.HISTORY_MAX),
+    ("log", "limit", 1, mread.LOG_LIMIT_MAX),
+    ("drive", "limit", 1, mread.LOG_LIMIT_MAX),
+    ("gfx_sweep", "count", 1, msweep.COUNT_MAX),
+    ("gfx_blit_source", "margin", 0, mblits.MARGIN_MAX),
+    ("palette_log", "limit", 0, mramdac.LIMIT_MAX),
+    ("gfx_view", "columns", 1, mgfx.COLUMNS_MAX),
+    ("start", "stub_port", 0, launch.PORT_MAX),
+]
+WAITS = ("seconds", "settle_seconds")
+
+
+def _scalar(prop: dict[str, Any]) -> dict[str, Any]:
+    """The scalar branch of an optional argument (`T | None`), or the argument itself."""
+    return next((b for b in prop.get("anyOf", []) if b.get("type") != "null"), prop)
+
+
+@pytest.mark.parametrize(("tool", "arg", "lo", "hi"), RANGES,
+                         ids=[f"{t}.{a}" for t, a, _, _ in RANGES])
+def test_a_ranged_argument_publishes_its_judges_bounds(tool: str, arg: str, lo: int,
+                                                       hi: int) -> None:
+    prop = _scalar(_schemas()[tool]["properties"][arg])
+    assert (prop.get("minimum"), prop.get("maximum")) == (lo, hi), prop
+
+
+def test_every_wait_publishes_the_one_wait_bound_and_every_published_range_has_a_row() -> None:
+    with pytest.raises(mstate.Invalid):
+        inputs.seconds_bound(0)        # the judge refuses the floor the schema leaves open
+    published, waits = set(), 0
+    for tool, schema in _schemas().items():
+        for arg, prop in schema["properties"].items():
+            scalar = _scalar(prop)
+            if "maximum" not in scalar or scalar.get("type") == "array":
+                continue
+            published.add((tool, arg))
+            if arg in WAITS:
+                waits += 1
+                # 0 IS A WAIT OF ITS OWN only where a judge says what it means (`resume`'s no
+                # deadline, a list's never wait); everywhere else the judge refuses it.
+                low = ("minimum" if arg == "settle_seconds" or tool == "resume"
+                       else "exclusiveMinimum")
+                assert (scalar.get(low), scalar["maximum"]) == (0, inputs.WAIT_MAX_S), (tool, arg)
+    rows = {(t, a) for t, a, _, _ in RANGES}
+    assert waits >= 20, "the waits were not found: the schema read examined nothing"
+    assert {p for p in published if p[1] not in WAITS} == rows
+    every_wait = {(t, a) for t, schema in _schemas().items() for a in schema["properties"]
+                  if a in WAITS}
+    assert every_wait <= published, every_wait - published

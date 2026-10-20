@@ -299,11 +299,11 @@ def _annotation(tool: str, arg: str) -> str:
 
 @pytest.mark.parametrize(("annotation", "bare"), [
     ("int", "int"),
-    ("Annotated[int, inputs.vocabulary(mfilm.LENGTHS)]", "int"),
-    ("list[Annotated[int, inputs.bounds(1, ml.PLANES_MAX)]] | None", "list[int] | None"),
-    ("list[list[Annotated[int, inputs.vocabulary(msweep.SIDES)]]] | None",
+    ("Annotated[int, vocab.enum(mfilm.LENGTHS)]", "int"),
+    ("list[Annotated[int, vocab.bounds(1, ml.PLANES_MAX)]] | None", "list[int] | None"),
+    ("list[list[Annotated[int, vocab.enum(msweep.SIDES)]]] | None",
      "list[list[int]] | None"),
-    ("Annotated[str, inputs.vocabulary((\"\", *launch.DISPLAYS))]", "str"),
+    ("Annotated[str, vocab.enum((\"\", *launch.DISPLAYS))]", "str"),
 ])
 def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
         annotation: str, bare: str) -> None:

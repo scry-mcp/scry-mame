@@ -500,6 +500,15 @@ class State:
             return None
         return path.exists() and path.stat().st_mtime_ns > marker
 
+    def repaintable(self, scratch: Path) -> gs.Session | None:
+        """This session's console when the session `scratch` belongs to holds a stopped machine
+        that is alive and unbroken, else None: what a repaint between calls may be sent to."""
+        ses = self.ses
+        if (ses is None or self.scratch != scratch or ses.running or self.broken is not None
+                or not self.machine_alive()):
+            return None
+        return ses
+
     def machine_alive(self) -> bool:
         """Whether this session's MAME is running: spawned, and not exited."""
         return self.proc is not None and self.proc.poll() is None

@@ -11,6 +11,7 @@ from typing import Any
 
 from scry_core import prose
 from scry_core import reply_contract as contract
+from scry_core import session_block as blocks
 
 import mame_state as st
 from mame_state import STATE
@@ -44,11 +45,11 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
     `status` is `ok` unless the tool's own fields declared the answer INVALID (`invalid` above, or a
     raised `Invalid` the server's wrapper turns into one), and the `session` block at the end (which
     `mame_mcp.tool` composes again after the body, `close`'s aside) carries `alive`, `running`,
-    `altered` and the `altering_writes` count (see the server's module docstring), with a `note`
-    beside them once the machine has been written to. The one-line `summary` that opens every reply
-    is added by `mame_mcp.tool`, which knows the tool's name and arguments; this function does
-    not. The contract's guard runs on the result, so a malformed refusal is a programmer's error
-    here and never a reply.
+    `altered` and each alarm while it holds, with a `note` beside them once the machine has been
+    written to (`session_block` says which half rides where). The one-line `summary` that opens
+    every reply is added by `mame_mcp.tool`, which knows the tool's name and arguments; this
+    function does not. The contract's guard runs on the result, so a malformed refusal is a
+    programmer's error here and never a reply.
     """
     out: dict[str, Any] = {"status": extra.get("status", "ok")}
     out.update(extra)
@@ -62,40 +63,43 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
     return contract.check_envelope(out)
 
 
-def session_block() -> dict[str, Any]:
-    """The `session` block alone, READ off the state and writing none of it: `envelope`'s, and
-    the one `mame_mcp.tool` composes after a body (`scry_core.boundary.Boundary.finished`)."""
+def session_block(whole: bool = False) -> dict[str, Any]:
+    """The `session` block, READ off the state and writing none of it: `envelope`'s, and the one
+    `mame_mcp.tool` composes after a body (`scry_core.boundary.Boundary.finished`). Its alarms
+    ride on every reply; what only counts rides whole on `start` and `status`
+    (`scry_core.session_block`)."""
     n = STATE.altered()
     alive = STATE.ses is not None and STATE.proc is not None and STATE.proc.poll() is None
     broken = STATE.broken
-    session: dict[str, Any] = {
+    alarms: dict[str, Any] = {
         "alive": alive,
         # A BROKEN SESSION CLAIMS NEITHER: `running` is what the flag TAKES the machine to be,
         # and a channel that lost its place supports no such reading, so `broken` answers.
         "running": bool(alive and STATE.ses is not None and STATE.ses.running and not broken),
         "altered": bool(n),
-        "altering_writes": n,
-        # PRESENT ON EVERY REPLY, three zeros and all, for the reason
-        # `mame_transport.console_did` gives its own fields: a zero is read as looked-at, and an
-        # object that appears only when something went wrong is one a caller never learns to read.
-        "console": console_counts(),
     }
+    console = console_counts()
+    fixed: dict[str, Any] = {"altering_writes": n}
+    # THE CONSOLE'S COUNTS ARE AN ALARM ONCE ANY IS NOT ZERO: a line lost, a reader that died or a
+    # chunk run twice, and from then on what the session reports rests on that channel. Three
+    # zeros are a count, on `start` and `status`.
+    (alarms if any(console.values()) else fixed)["console"] = console
     # ON EVERY REPLY UNTIL IT IS DEALT WITH. A throttle that did not land makes every
     # timing this session goes on to take a timing of a speed nobody asked for, and the
     # call that would naturally report it is one nobody is obliged to make.
     if broken:
-        session["broken"] = broken
+        alarms["broken"] = broken
     if STATE.throttles_not_applied:
-        session["throttles_not_applied"] = [dict(r) for r in STATE.throttles_not_applied]
+        alarms["throttles_not_applied"] = [dict(r) for r in STATE.throttles_not_applied]
     if STATE.lua_read_only_claims:
-        session["read_only_claims"] = STATE.lua_read_only_claims
-        st.add_note(session,
+        alarms["read_only_claims"] = STATE.lua_read_only_claims
+        st.add_note(alarms,
             f"{prose.counted(STATE.lua_read_only_claims, 'raw `lua` call')} "
             f"{prose.agrees(STATE.lua_read_only_claims, 'was', 'were')} declared read_only BY THE "
             "CALLER and are not counted as writes. Nothing verified that claim: a Lua string can "
             "read a byte or rewrite RAM and the text does not say which, so `altered` here rests "
             "on the caller's word for those calls")
     if n:
-        st.add_note(session, "this session has been MODIFIED: what is measured here does not "
-                             "describe a normal run of the game")
-    return session
+        st.add_note(alarms, "this session has been MODIFIED: what is measured here does not "
+                            "describe a normal run of the game")
+    return blocks.block(alarms, fixed, whole)

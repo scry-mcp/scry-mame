@@ -235,7 +235,11 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     evaluated = [*watches.evaluate_watches(ses, fresh, expressions, frame),
                  *iotaps.rows(frame, at_stop=True)]
     if evaluated:
-        seen["watches"] = evaluated
+        # WHAT THE SHORT ROWS LEFT OUT is said beside them, under names of their own: a stop's
+        # `how` already says what stopped it.
+        seen["watches"], left = watches.at_stop(evaluated)
+        if left:
+            seen["watches_omitted"], seen["watches_how"] = left, watches.STOP_HOW
     if watched is not None and watched[1] is not None:
         seen["watch_hit"] = watched[1]
     return seen

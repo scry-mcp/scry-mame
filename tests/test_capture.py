@@ -208,7 +208,7 @@ def test_a_capture_surveys_its_rows_as_the_periodic_wrote_them(
     assert item["rows_path"] == str(capture.paths(tmp_path, COUNTER_ID)[1])
     # A STOP NAMES THE CAPTURE AND COUNTS IT, and lists none of its rows: every reply carries a
     # survey, whatever the call was about, and the rows are `watch_list`'s
-    assert "first_rows" not in item and item["rows_listed_by"] == "watch_list", item
+    assert "first_rows" not in item, item
     assert _survey(ses, 240)["since_last_stop"] == 0, "the same dump is no new row"
     listed = s.watch_list()["watches"][0]
     assert listed["state"] == "captured" and listed["rows_kept"] == 230

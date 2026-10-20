@@ -7,6 +7,8 @@ in either without an import cycle.
 
 from __future__ import annotations
 
+from scry_core import vocabulary as vocab
+
 import mame_declarations as dec
 import mame_inputs as inputs
 import mame_state as st
@@ -68,7 +70,7 @@ def check_space(space: str, mode: str, ref: str, by: str, trigger: str) -> None:
     expr are the debugger's, which watches and reads the program space), and the port spelled as
     a number, a count's `ref` or a capture's `trigger`. A capture's block stays in the program
     space and takes a symbol or an address, as there."""
-    inputs.one_of("space", space, SPACES)
+    vocab.one_of("space", space, SPACES)
     if space != IO:
         return
     if mode not in dec.TAP_MODES:

@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from scry_core import prose
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -93,7 +94,7 @@ NO_VALUE = unavailable(NO_VALUE_WHY)
 def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: Any) -> None:
     """`scan_start`'s machine-independent half: the cell's size, and a length of whole cells."""
     inputs.check_ref(ref)
-    inputs.one_of("cell_bytes", cell_bytes, CELL_BYTES)
+    vocab.one_of("cell_bytes", cell_bytes, CELL_BYTES)
     cell = cell_bytes
     inputs.count("length", length, tail=f": a length counts bytes, one {cell}-byte cell at least",
                  lo=cell)
@@ -110,7 +111,7 @@ def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: A
 def check_scan_filter(operator: str = "=", value: int | None = None, **_: Any) -> None:
     """`scan_filter`'s machine-independent half; the value against the width is the open
     scan's to judge."""
-    inputs.one_of("operator", operator, OPERATORS)
+    vocab.one_of("operator", operator, OPERATORS)
     if value is not None:
         inputs.natural("value", value, " is not a whole number from 0: a scan compares unsigned")
 

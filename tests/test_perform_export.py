@@ -32,7 +32,7 @@ def recorder(monkeypatch: pytest.MonkeyPatch) -> Iterator[recording.Recorder]:
 def test_with_nothing_recorded_the_export_is_no_recording(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(mame_mcp.RECORDER, "recording", None)
-    out = s.perform_export(path=str(tmp_path / "s.json"))
+    out = s.perform_export(dest=str(tmp_path / "s.json"))
     assert out["status"] == "INVALID" and out["code"] == "no_recording", out
     assert not (tmp_path / "s.json").exists()
 
@@ -45,7 +45,7 @@ def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
     read = s.read_memory(ref="0x4a0", length=1)
     s.status()
     s.comment_add(ref="0x4a0", text="the loop")
-    out = s.perform_export(path=str(tmp_path / "s.json"))
+    out = s.perform_export(dest=str(tmp_path / "s.json"))
     assert out["status"] == "ok" and out["cut"]["available"] is False, out
     doc = json.loads((tmp_path / "s.json").read_text())
     assert doc["server"] == "mame" and doc["start"] == {"system": "board"}

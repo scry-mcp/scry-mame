@@ -23,6 +23,7 @@ from xml.parsers import expat
 from scry_core import guardian, judges, live_host, narrowing, prose
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -604,6 +605,10 @@ def judge_state_dir(state_dir: str) -> Path:
     return state
 
 
+#: The highest TCP port.
+PORT_MAX = 65535
+
+
 def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
                 symbols: syms.Given = "", inipath: str = "", boot_lua: str = "",
                 state_dir: str = "", cfg: str = "", types: syms.Types = "", display: str = "",
@@ -625,7 +630,7 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
         inputs.absolute(name, path)
     if state_dir:
         inputs.absolute("state_dir", state_dir)
-    inputs.one_of("display", display, DISPLAY_OPTIONS)
+    vocab.one_of("display", display, DISPLAY_OPTIONS)
 
 
 def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
@@ -674,8 +679,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     # THE WAIT FOR THE STUB, held like every other wait: zero or less would spawn an emulator
     # only to report that it never answered, and no bound at all would hold the one lock.
     inputs.seconds_bound(wait)
-    inputs.natural("stub_port", port, " is not a TCP port (0 picks a free one, else 1..65535)",
-                   hi=65535)
+    inputs.natural("stub_port", port, f" is not a TCP port (0 picks a free one, else "
+                   f"1..{PORT_MAX})", hi=PORT_MAX)
     if port and not port_is_free(port):
         raise st.Invalid("bad_argument",
             f"stub_port {port} is not free: something holds it, or it is still closing, and a "
@@ -1211,7 +1216,8 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
     # what the log shows and not only what the lua-family readers happened to read.
     if STATE.scratch is not None:
         transport.count_unread(STATE.scratch)
-    before = menvelope.envelope({})["session"]
+    # WHOLE: the block of the session this call ends is its last account, counts included.
+    before = menvelope.session_block(whole=True)
     # THE PIPE IS EMPTIED BEFORE THE EXIT IS ASKED FOR. A chunk left unevaluated is one
     # MAME's Lua state still holds at `quit`, and its collector took one down on the way
     # out (SIGSEGV in `lua_engine::close`); a clean exit is what writes `cfg/` and `nvram/`,

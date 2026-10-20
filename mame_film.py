@@ -56,6 +56,7 @@ from typing import Any
 from scry_core import fresh, png, prose
 from scry_core import progress as mprogress
 from scry_core import raster as core_raster
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -224,12 +225,12 @@ def check_gfx_film(trigger: str = "", length: int = 1, value: int | None = None,
         raise st.Invalid("bad_argument", "`changed` and `value` are two conditions on the value "
                          "a write lands: one names it, the other asks that it moved; give one")
     inputs.check_ref(trigger, "trigger")
-    inputs.one_of("space", space, mspace.SPACES)
+    vocab.one_of("space", space, mspace.SPACES)
     if space == mspace.IO:
         mspace.port(trigger, "trigger")
     if pc.strip():
         inputs.check_ref(pc, "pc")
-    inputs.one_of("length", length, LENGTHS, tail=LENGTH_WHY)
+    vocab.one_of("length", length, LENGTHS, tail=LENGTH_WHY)
     if value is not None:
         top = (1 << (8 * length)) - 1
         inputs.natural("value", value, ": what the write lands on the "

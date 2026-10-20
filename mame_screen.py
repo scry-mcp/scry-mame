@@ -38,6 +38,7 @@ from typing import Any
 
 from scry_core import judges, picture, png, prose
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 from scry_core.raster import signature as raster_signature
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -338,7 +339,7 @@ def check_screen_view(mode: str = "render", pens: list[int] | None = None,
     """`screen_view`'s machine-independent half: the mode, the arguments that mode takes and no
     other (an argument a mode would ignore is refused, never dropped), and their shapes."""
     inputs.seconds_bound(seconds)
-    inputs.one_of("mode", mode, tuple(MODES))
+    vocab.one_of("mode", mode, tuple(MODES))
     if (pens is not None) != (mode == "isolate"):
         raise st.Invalid("bad_argument", "`pens` goes with mode `isolate`, and `isolate` needs "
                          "it: the pens to show")

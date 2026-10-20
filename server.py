@@ -61,6 +61,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from scry_core import media_tools, process_name, recording  # noqa: E402
 from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
+from scry_core import vocabulary as vocab
 from scry_core.progress import bridge  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
@@ -123,15 +124,15 @@ def start(
     symbols: str | dict[str, str] = "",
     reference_addr: str = "0x0",
     inipath: str = "",
-    seconds: float = 8.0,
+    seconds: Annotated[float, inputs.WAIT_BOUNDS] = 8.0,
     shared: bool = False,
     background: bool | None = None,
     boot_lua: str = "",
     env: dict[str, str] | None = None,
     bases: dict[str, str] | dict[str, dict[str, str]] | None = None,
     reference_base: str = "0x0",
-    display: Annotated[str, inputs.vocabulary(launch.DISPLAY_OPTIONS)] = "",
-    stub_port: int = 0,
+    display: Annotated[str, vocab.enum(launch.DISPLAY_OPTIONS)] = "",
+    stub_port: Annotated[int, vocab.bounds(0, launch.PORT_MAX)] = 0,
     state_dir: str = "",
     throttle_from_frame: int = 0,
     types: str | dict[str, str] = "",
@@ -332,7 +333,8 @@ def rom_check(
 
 
 @tool("Run to a place, with a control", summary=summaries.run_to, on_cancel="stop")
-def run_to(ref: str, control: str = "", seconds: float = 30.0,
+def run_to(ref: str, control: str = "",
+           seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
            disarm_watches: bool = False, condition: str = "", cpu: str = "",
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run to `ref` and stop, with the session's CONTROLS counting meanwhile.
@@ -366,7 +368,8 @@ def run_to(ref: str, control: str = "", seconds: float = 30.0,
 
 
 @tool("Run for emulated time", summary=summaries.run_for, on_cancel="stop")
-def run_for(milliseconds: int = 0, frames: int = 0, seconds: float = 30.0,
+def run_for(milliseconds: int = 0, frames: int = 0,
+            seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
             disarm_watches: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run the machine for `milliseconds` of EMULATED time, or for `frames` of the frame COUNTER
     (exactly one of the two), and wait until it has STOPPED.
@@ -398,9 +401,9 @@ def run_for(milliseconds: int = 0, frames: int = 0, seconds: float = 30.0,
 
 
 @tool("Trace what a run executes", summary=summaries.trace, on_cancel="stop")
-def trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds: float = 60.0,
-          cpu: str = "", noloop: bool = False,
-          ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
+          seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0, cpu: str = "",
+          noloop: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run as `run_for` does with MAME's own tracer on one cpu, then hand back every address
     that cpu executed, joined to its symbols. It takes no `ref`: the window is frames or
     milliseconds, and no trace runs until a place is reached (`run_to` goes there, untraced).
@@ -431,7 +434,7 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds: float
 
 
 @tool("Step instructions", summary=summaries.step, on_cancel="stop")
-def step(count: int = 1, mode: Annotated[str, inputs.vocabulary(advance.STEP_MODES)] = "into",
+def step(count: int = 1, mode: Annotated[str, vocab.enum(advance.STEP_MODES)] = "into",
          cpu: str = "") -> dict[str, Any]:
     """Execute `count` (1..{STEP_MAX}) instructions of `cpu` (`subcpu`; the visible one when empty)
     and stop, the ceiling keeping the longest walk of `over`s inside the bound every wait takes (a
@@ -463,7 +466,8 @@ def step(count: int = 1, mode: Annotated[str, inputs.vocabulary(advance.STEP_MOD
 
 
 @tool("Resume the machine", summary=summaries.resume, on_cancel="none", replay="wall")
-def resume(seconds: float = 0.0, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def resume(seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 0.0,
+           ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Let the machine RUN. With `seconds` at zero (the default) it comes back at once and the
     machine runs with NO deadline, until a breakpoint fires, `stop`, or `close`; with a bound it
     waits up to `seconds` for a stop and, if none comes, LEAVES IT RUNNING (unlike `run_to`, which
@@ -504,8 +508,8 @@ def stop() -> dict[str, Any]:
 
 @tool("Declare a breakpoint", summary=summaries.breakpoint_at)
 def breakpoint_at(ref: str,
-                  by: Annotated[str, inputs.vocabulary(breakpoints.BREAKPOINT_BY)] = "auto",
-                  role: Annotated[str, inputs.vocabulary(dec.ROLES)] = "stop",
+                  by: Annotated[str, vocab.enum(breakpoints.BREAKPOINT_BY)] = "auto",
+                  role: Annotated[str, vocab.enum(dec.ROLES)] = "stop",
                   condition: str = "", cpu: str = "") -> dict[str, Any]:
     """Declare an execution breakpoint at `ref`, a PLACE in the code, and arm it on a cpu, as a
     `stop` or a `control` (never halts: MAME counts its hits in one of its {TEMPS} `temp`
@@ -782,12 +786,12 @@ def comment_load(path: str) -> dict[str, Any]:
 # ----------------------------------------------------------------------------- watches
 
 @tool("Declare a watch", summary=summaries.watch_add)
-def watch_add(ref: str, mode: Annotated[str, inputs.vocabulary(dec.WATCH_MODES)],
+def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
               length: int = 0, fmt: str = "auto",
-              by: Annotated[str, inputs.vocabulary(watches.WATCH_BY)] = "auto",
+              by: Annotated[str, vocab.enum(watches.WATCH_BY)] = "auto",
               cpu: str = "", condition: str = "", trigger: str = "",
-              space: Annotated[str, inputs.vocabulary(mspace.SPACES)] = "program",
-              trigger_type: Annotated[str, inputs.vocabulary(dec.TRIGGER_TYPES)] = "w",
+              space: Annotated[str, vocab.enum(mspace.SPACES)] = "program",
+              trigger_type: Annotated[str, vocab.enum(dec.TRIGGER_TYPES)] = "w",
               ) -> dict[str, Any]:
     """Declare a WATCH at `ref`, in its cpu's byte order. STORED, re-armed at the next `start`.
 
@@ -868,7 +872,7 @@ def watch_list(cpu: str = "") -> dict[str, Any]:
 
 @tool("Clear watch declarations", summary=summaries.watch_clear)
 def watch_clear(ref: str = "", cpu: str = "", all: bool = False,
-                space: Annotated[str, inputs.vocabulary(mspace.SPACES)] = "program",
+                space: Annotated[str, vocab.enum(mspace.SPACES)] = "program",
                 ) -> dict[str, Any]:
     """Clear watch declarations: those named by the `ref` their `watch_add` reply carried, with
     its `space` (`io` for an io tap's), or every one with `all=True` and no `ref` or `space`, on
@@ -901,7 +905,8 @@ def watch_clear(ref: str = "", cpu: str = "", all: bool = False,
 # -------------------------------------------------------------------------------- read
 
 @tool("Look a symbol up", summary=summaries.symbols_find, read_only=True)
-def symbols_find(name: str = "", linear: str = "", limit: int = 10,
+def symbols_find(name: str = "", linear: str = "",
+                 limit: Annotated[int, vocab.bounds(1, read.SYMBOLS_LIMIT_MAX)] = 10,
                  cpu: str = "") -> dict[str, Any]:
     """Look a symbol up in a cpu's table, the one `start` loaded for it: `cpu`'s (`subcpu`),
     else the visible cpu's, named in the reply as `cpu`. One question per call: `name` (exact
@@ -978,7 +983,8 @@ def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, A
 
 
 @tool("Read memory", summary=summaries.read_memory, read_only=True, replay=("hex",))
-def read_memory(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
+def read_memory(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)] = 16,
+                cpu: str = "") -> dict[str, Any]:
     """Read `length` bytes of memory at `ref` (a symbol name or a `0x` address), `length` in
     1..{READ_MAX}, of `cpu` (`subcpu`; the visible one when empty). {CPU_READS}. {SPACE_BOUND}.
 
@@ -997,8 +1003,10 @@ def read_memory(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
 
 @tool("Read a memory share or region", summary=summaries.read_block, on_cancel="none",
       replay=("hex", "pc", "frame"))
-def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0, length: int = 16,
-               seconds: float = mlua.EVAL_WAIT_S, cpu: str = "",
+def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
+               length: Annotated[int, vocab.bounds(1, read.READ_MAX)] = 16,
+               seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+               cpu: str = "",
                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Read `length` bytes (1..{READ_MAX}) of a memory BLOCK MAME keeps by tag: a SHARE (a block a
     map entry writes through a handler and reads nowhere, so `read_memory` there answers zeros with
@@ -1058,7 +1066,8 @@ def registers(from_last_stop: bool = False, cpu: str = "") -> dict[str, Any]:
 
 
 @tool("Disassemble", summary=summaries.disassemble, read_only=True)
-def disassemble(ref: str, length: int = 16, cpu: str = "") -> dict[str, Any]:
+def disassemble(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)] = 16,
+                cpu: str = "") -> dict[str, Any]:
     """Disassemble `length` BYTES (1..{READ_MAX}) from `ref` of `cpu` (`subcpu`; the visible one
     when empty), as MAME's own `dasm` prints them.
 
@@ -1117,7 +1126,7 @@ def find(data_hex: str, ref: str = "", length: int = 0,
 
 @tool("Start a value scan", summary=summaries.scan_start, replay="drop")
 def scan_start(ref: str, length: int,
-               cell_bytes: Annotated[int, inputs.vocabulary(mscan.CELL_BYTES)] = 1,
+               cell_bytes: Annotated[int, vocab.enum(mscan.CELL_BYTES)] = 1,
                cpu: str = "") -> dict[str, Any]:
     """Open a VALUE SCAN, the search for a variable no map names, in one cpu's PROGRAM space
     only: there is no `space` argument, and io ports are never scanned. Every cell of
@@ -1141,7 +1150,7 @@ def scan_start(ref: str, length: int,
 
 
 @tool("Filter the value scan", summary=summaries.scan_filter, replay="drop")
-def scan_filter(operator: Annotated[str, inputs.vocabulary(mscan.OPERATORS)] = "=",
+def scan_filter(operator: Annotated[str, vocab.enum(mscan.OPERATORS)] = "=",
                 value: inputs.NumberArg | None = None) -> dict[str, Any]:
     """Keep the cells of the open scan whose value satisfies `operator` (`=`, `!` not equal,
     `>`, `>=`, `<`, `<=`, unsigned) against `value` ({NUMBER_ARG}), or, with no
@@ -1176,7 +1185,8 @@ def scan_clear() -> dict[str, Any]:
 
 
 @tool("Instruction history", summary=summaries.history, read_only=True)
-def history(limit: int = 32, cpu: str = "") -> dict[str, Any]:
+def history(limit: Annotated[int, vocab.bounds(1, read.HISTORY_MAX)] = 32,
+            cpu: str = "") -> dict[str, Any]:
     """The last `limit` (1..{HISTORY_MAX}, MAME's own depth) instructions `cpu` (`subcpu`; the
     visible one when empty) executed before the stop, as MAME's `history` lists them, oldest first.
 
@@ -1311,7 +1321,8 @@ def snapshot(dest: str = "") -> dict[str, Any]:
 
 @tool("Signature of the screen", summary=summaries.screen_signature, on_cancel="none",
       replay=("signature", "pc", "frame"))
-def screen_signature(crop: list[int] | None = None, seconds: float = mlua.EVAL_WAIT_S,
+def screen_signature(crop: list[int] | None = None,
+                     seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                      ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """One hex string for what is on screen, or on `crop` of it, so "is it the same screen" is
     answered by comparing two strings and no picture crosses the conversation. It is the
@@ -1387,19 +1398,20 @@ def map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
 
 
 @tool("Save the screen map", summary=summaries.map_save, replay="drop")
-def map_save(path: str, overwrite: bool = False) -> dict[str, Any]:
+def map_save(dest: str, overwrite: bool = False) -> dict[str, Any]:
     """{MAP_SAVE}.
 
     Reference: REFERENCE.md, Screen maps.
     """
-    args.check("map_save", path=path, overwrite=overwrite)
-    return mmaps.map_save(path, overwrite)
+    args.check("map_save", dest=dest, overwrite=overwrite)
+    return mmaps.map_save(dest, overwrite)
 
 
 @tool("Capture a series of frames", summary=summaries.series_capture, on_cancel="stop")
 def series_capture(frames: list[int] | None = None, first: int | None = None,
                    last: int | None = None, step: int = 1, crop: list[int] | None = None,
-                   dest: str = "", seconds: float = mseries.SECONDS_DEFAULT,
+                   dest: str = "",
+                   seconds: Annotated[float, inputs.WAIT_BOUNDS] = mseries.SECONDS_DEFAULT,
                    ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """FRAMES OF THE SCREEN KEPT INSIDE MAME at emulation speed, as PNGs and one manifest:
     the series `series_diff`, `region_track` and `golden_check` read, with no picture in the
@@ -1449,7 +1461,7 @@ audio_diff = _MEDIA["audio_diff"]
       replay="drop")
 def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scale: int = 0,
             dest: str = "",
-            seconds: float = mlua.EVAL_WAIT_S,
+            seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
             ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The pens of a palette device as MAME holds them NOW, as a table and a swatch ({ROW_PENS}
     a row, the row's first pen in hex at its left): the route to the colours on a board whose colour
@@ -1479,10 +1491,10 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
 
 @tool("The screen as palette indices", summary=summaries.screen_view, on_cancel="none",
       replay="drop")
-def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render",
-                pens: inputs.NumberList | None = None,
-                point: list[int] | None = None, crop: list[int] | None = None, scale: int = 0,
-                dest: str = "", attach: bool = True, seconds: float = mlua.EVAL_WAIT_S,
+def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
+                pens: inputs.NumberList | None = None, point: list[int] | None = None,
+                crop: list[int] | None = None, scale: int = 0, dest: str = "", attach: bool = True,
+                seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                 ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen as the PENS it holds: every pixel's palette index recovered exactly by one Lua
     chunk that sets pen i to the colour i, reads the screen and puts every pen back.
@@ -1521,9 +1533,11 @@ def screen_view(mode: Annotated[str, inputs.vocabulary(mscreen.MODES)] = "render
 @tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view, on_cancel="none",
       replay="drop")
 def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "", ref: str = "",
-             offset: inputs.NumberArg = 0, first: int = 0, count: int = 0, columns: int = 16,
-             pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "",
-             attach: bool = True, cpu: str = "", seconds: float = mlua.EVAL_WAIT_S,
+             offset: inputs.NumberArg = 0, first: int = 0, count: int = 0,
+             columns: Annotated[int, vocab.bounds(1, mgfx.COLUMNS_MAX)] = 16,
+             pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "", attach: bool = True,
+             cpu: str = "",
+             seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Bytes as tiles under a format YOU state in MAME's `gfx_layout` terms, not what a driver
     believes. {PICTURE}; the PNG is indexed, its index the pixel value.
@@ -1566,8 +1580,8 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
 def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str = "", ref: str = "",
                offset: inputs.NumberArg = 0, first: int = 0, count: int = 0,
                transparent: inputs.NumberArg | None = None,
-               flips: list[Annotated[str, inputs.vocabulary(mlocate.FLIPS)]] | None = None,
-               cpu: str = "", seconds: float = mlua.EVAL_WAIT_S,
+               flips: list[Annotated[str, vocab.enum(mlocate.FLIPS)]] | None = None, cpu: str = "",
+               seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Search a screen `patch` `[x, y, width, height]` for a block's tiles under `layouts`, a
     LIST of 1..{LOCATE_LAYOUTS_MAX} candidates (plural even for one), each `gfx_view`'s `layout`
@@ -1611,11 +1625,12 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
 @tool("A block under candidate layouts", summary=summaries.gfx_sweep, on_cancel="none",
       replay="drop")
 def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
-              count: int = msweep.COUNT_DEFAULT,
-              planes: list[Annotated[int, inputs.bounds(1, ml.PLANES_MAX)]] | None = None,
-              sizes: list[list[Annotated[int, inputs.vocabulary(msweep.SIDES)]]] | None = None,
+              count: Annotated[int, vocab.bounds(1, msweep.COUNT_MAX)] = msweep.COUNT_DEFAULT,
+              planes: list[Annotated[int, vocab.bounds(1, ml.PLANES_MAX)]] | None = None,
+              sizes: list[list[Annotated[int, vocab.enum(msweep.SIDES)]]] | None = None,
               palette: str = "none", pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "",
-              cpu: str = "", seconds: float = mlua.EVAL_WAIT_S,
+              cpu: str = "",
+              seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """A block no format is known for, drawn under a FIXED family of candidate layouts as ONE
     sheet, each cell labelled with its id (`S1C3`) and what it is; nothing is ranked. {PICTURE}.
@@ -1719,7 +1734,7 @@ def gfx_load(path: str) -> dict[str, Any]:
 @tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none", replay="drop")
 def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | None = None,
               detail: bool = False, first: int = 0, scale: int = 0, dest: str = "",
-              seconds: float = mlua.EVAL_WAIT_S,
+              seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """WHO PAINTED THIS AREA: every blit of a `frame`, from the capture the loaded manifest's
     `draw_command` describes, as a box over the screen, one colour per writer pc. {PICTURE}; RGB, a
@@ -1757,8 +1772,9 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
 @tool("A blit's source, unscaled", summary=summaries.gfx_blit_source, on_cancel="none",
       replay="drop")
 def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | None = None,
-                    pc: str = "", margin: int = 0, scale: int = 0, dest: str = "",
-                    seconds: float = mlua.EVAL_WAIT_S,
+                    pc: str = "", margin: Annotated[int, vocab.bounds(0, mblits.MARGIN_MAX)] = 0,
+                    scale: int = 0, dest: str = "",
+                    seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                     ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The rectangle ONE blit reads, decoded from the manifest command's `asset` under the live
     palette. {PICTURE}; with no `margin` it is indexed, its index the pixel value.
@@ -1794,7 +1810,8 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
 
 @tool("Log a palette's port writes", summary=summaries.palette_log, replay="drop")
 def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
-                limit: int = mramdac.LIMIT_DEFAULT, clear: bool = False,
+                limit: Annotated[int, vocab.bounds(0, mramdac.LIMIT_MAX)] = mramdac.LIMIT_DEFAULT,
+                clear: bool = False,
                 arm: bool = False) -> dict[str, Any]:
     """WHO SET THIS PEN'S COLOUR, on a board whose colour RAM is write-only: every write to the
     ports of the loaded manifest's `palette_port`, placed on its pen by the device's own law
@@ -1834,13 +1851,13 @@ def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
 
 @tool("Film the frames where a write happened", summary=summaries.gfx_film, on_cancel="none",
       replay="drop")
-def gfx_film(trigger: str = "", length: Annotated[int, inputs.vocabulary(mfilm.LENGTHS)] = 1,
+def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)] = 1,
              value: inputs.NumberArg | None = None,
              changed: bool = False, pc: str = "",
              cpu: str = "", frames: int = mfilm.FRAMES_DEFAULT, keep: int = mfilm.KEEP_DEFAULT,
              crop: list[int] | None = None, film_dir: str = "", first: int = 0, clear: bool = False,
-             seconds: float = mlua.EVAL_WAIT_S,
-             space: Annotated[str, inputs.vocabulary(mspace.SPACES)] = "program",
+             seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+             space: Annotated[str, vocab.enum(mspace.SPACES)] = "program",
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """THE FRAMES IN WHICH A WRITE HAPPENED, kept inside MAME at emulation speed: a tap marks the
     frame, a notifier judges it and keeps its indexed screen.
@@ -1883,8 +1900,9 @@ def gfx_film(trigger: str = "", length: Annotated[int, inputs.vocabulary(mfilm.L
 
 
 @tool("Read the log", summary=summaries.log, read_only=True)
-def log(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_CHANNELS)],
-        limit: int = 40, labels: bool = False) -> dict[str, Any]:
+def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
+        limit: Annotated[int, vocab.bounds(1, read.LOG_LIMIT_MAX)] = 40,
+        labels: bool = False) -> dict[str, Any]:
     """The newest lines of one `channel` of what MAME writes, matching the regex `pattern` (`.`
     for every line; never empty).
 
@@ -1916,8 +1934,8 @@ def log(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_CHANNE
 
 
 @tool("Wait for a log line", summary=summaries.log_wait, read_only=True, on_cancel="none")
-def log_wait(pattern: str, channel: Annotated[str, inputs.vocabulary(files.LOG_CHANNELS)],
-             seconds: float = 30.0,
+def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
+             seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """WHEN a line of `channel` matching the regex `pattern` (`.` for any; never empty) was
     logged: at once if the log
@@ -1967,8 +1985,10 @@ def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
 
 
 @tool("Drive an input and verify it", summary=summaries.drive, on_cancel="none")
-def drive(act: list[dict[str, Any]], expect: str = "", seconds: float | None = None,
-          pattern: str = ".", limit: int = 40, settle_seconds: float = 30.0,
+def drive(act: list[dict[str, Any]], expect: str = "",
+          seconds: Annotated[float, inputs.WAIT_BOUNDS] | None = None,
+          pattern: str = ".", limit: Annotated[int, vocab.bounds(1, read.LOG_LIMIT_MAX)] = 40,
+          settle_seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 30.0,
           summaries: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """LOOK, ACT, VERIFY in one call: the way a browser is driven, for an arcade board. The
     channel is the EMULATOR log (`error.log`: what the driver and this server's scripts
@@ -2015,8 +2035,10 @@ def drive(act: list[dict[str, Any]], expect: str = "", seconds: float | None = N
 
 
 @tool("Run a sequence of steps", summary=summaries.perform, on_cancel="stop")
-def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries: bool = False,
-            until_frame: int = 0, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def perform(steps: list[dict[str, Any]],
+            settle_seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 30.0,
+            summaries: bool = False, until_frame: int = 0,
+            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run a LIST of the server's own operations in order, in ONE round trip, stopping at the
     first failure with the whole account.
 
@@ -2063,7 +2085,7 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
 
 
 @tool("Export the session as a replay", summary=recording.export_summary)
-def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
+def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     """{EXPORTS}
 
     Kept: what moved the machine, as steps (a reader that steps the guest included), and the
@@ -2079,7 +2101,7 @@ def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
 
     Reference: REFERENCE.md, From an investigation to a bench.
     """
-    return menvelope.envelope(recording.export(RECORDER, path, overwrite))
+    return menvelope.envelope(recording.export(RECORDER, dest, overwrite))
 
 
 @tool("Debugger console command", summary=summaries.debug)
@@ -2117,8 +2139,9 @@ def debug(command: str) -> dict[str, Any]:
 # ----------------------------------------------------------------------------- the Lua channel
 
 @tool("Evaluate Lua on the machine", summary=summaries.lua, on_cancel="none")
-def lua(script: str, seconds: float = mlua.EVAL_WAIT_S, read_only: bool = False,
-        ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def lua(script: str,
+        seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+        read_only: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Evaluate a Lua `script` on MAME's own Lua console (the whole scripting API). THE RAW
     FORM: prefer the typed wrappers (`input`, `record`, `audio_record`, `throttle`, `state_save`,
     `state_load`).
@@ -2154,7 +2177,7 @@ def lua(script: str, seconds: float = mlua.EVAL_WAIT_S, read_only: bool = False,
 
 @tool("Hold an input field", summary=summaries.input, on_cancel="stop")
 def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
-          seconds: float = 30.0,
+          seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
           ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Press an input by NAME, as MAME names it, hold it for `frames` frames of the frame
     counter and release it, then hand the machine back stopped one frame later. Reports its
@@ -2190,7 +2213,8 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
 
 
 @tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop")
-def record(frames: int, dest: str = "", seconds: float = 60.0,
+def record(frames: int, dest: str = "",
+           seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0,
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Record exactly `frames` frames of the screen to an AVI, bounded by the frame counter
     (begun and ended by the machine's own frame notifier, so the count is emulated frames and
@@ -2222,7 +2246,8 @@ def record(frames: int, dest: str = "", seconds: float = 60.0,
 
 
 @tool("Record the sound to a WAV", summary=summaries.audio_record, on_cancel="stop")
-def audio_record(frames: int, dest: str = "", seconds: float = 60.0,
+def audio_record(frames: int, dest: str = "",
+                 seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0,
                  ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Record the sound of exactly `frames` frames to a WAV: the mixer's own output, the
     speakers' input mix before any effect, begun and ended by the machine's frame notifier as
@@ -2255,7 +2280,7 @@ def audio_record(frames: int, dest: str = "", seconds: float = 60.0,
 
 
 @tool("Switch the throttle", summary=summaries.throttle, on_cancel="none", replay="drop")
-def throttle(on: bool, seconds: float = 5.0,
+def throttle(on: bool, seconds: Annotated[float, inputs.WAIT_BOUNDS] = 5.0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Switch real-speed throttling `on` or off at a PLACE: stopped at a breakpoint, ask for it
     and `resume`, and the machine runs at real speed from its first frame. The switch is evaluated

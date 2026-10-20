@@ -8,9 +8,10 @@ container would be the wrong one: it is composed into the snapshot and the recor
 
 WHEN IT IS DRAWN is MAME's frame-done hook (`emu.register_frame_done`), the one the UI's own
 overlays use, which runs at every repaint: every frame while the machine runs, and while the
-debugger holds it at the stop and at each command a call sends through the debugger's console
-(a register or memory read through the stub does not repaint). So a stopped machine shows the
-state of its last repaint until the next such command or the next run.
+debugger holds it at the stop and at each command sent through the debugger's console (a
+register or memory read through the stub does not repaint). So once a call that ends stopped is
+over and `held` is in the file, the adapter sends one console command of its own (`REPAINT`),
+between calls, and the window goes dim as it would on a machine that repaints by itself.
 
 THE STATE travels in a file of the session's scratch, one word, replaced whole (`os.replace`),
 and read by the hook at each repaint: no console line, so nothing queues behind the debugger,
@@ -21,6 +22,7 @@ at `start`, from `scry_core.presence.LOOK`.
 from __future__ import annotations
 
 import os
+from collections.abc import Callable
 from pathlib import Path
 
 from scry_core import presence
@@ -120,6 +122,12 @@ if not set_up then stopped(why) end
 #: How often a running machine's drawer reads the state file: well inside the latency a state
 #: change may take to show, and far below the frame rate of a machine running flat out.
 REREAD_S = 0.05
+#: THE REPAINT: a console command that touches nothing (pc, the cycle count and memory are the
+#: same across it) and repaints a stopped machine once. A `print` of a constant answers at once.
+REPAINT = "print 0"
+#: How long the repaint waits for the server's lock at a time, asking again whether it is still due.
+LOCK_POLL_S = 0.05
+
 #: What the drawer writes, beside the state file, when it raises.
 BROKEN_FILE = "presence.broken"
 
@@ -153,3 +161,24 @@ class FileAdapter:
         part = self._path.with_suffix(".part")
         part.write_text(state + "\n", encoding="ascii")
         os.replace(part, self._path)
+
+    def repaint(self, still: Callable[[], bool]) -> None:
+        """`REPAINT` sent through the session's console, under the server's lock: waited for in
+        short turns while `still()` holds, so a driving call that takes the lock first makes it
+        moot at once; sent only to this session's machine, alive, unbroken and stopped (a running
+        one repaints by itself), and never while a Lua line waits in the console's pipe, which a
+        console command would have MAME evaluate there and then."""
+        # IMPORTED HERE: the server's lock, its state and the transport read this module.
+        import mame_mcp
+        import mame_transport as transport
+        from mame_state import STATE
+        while still():
+            if not mame_mcp.LOCK.acquire(timeout=LOCK_POLL_S):
+                continue
+            try:
+                if (still() and (ses := STATE.repaintable(self._path.parent)) is not None
+                        and not transport.pending_lines(self._path.parent)):
+                    ses.monitor(REPAINT)
+                return
+            finally:
+                mame_mcp.LOCK.release()

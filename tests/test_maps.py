@@ -76,21 +76,21 @@ def test_saved_screens_become_the_file_layer_and_load_back(
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     _ok(s.map_add(screen="board", match=[STRIP], controls=[PLACE]))
     path = tmp_path / "gridlee.scry-map.json"
-    saved = _ok(s.map_save(path=str(path)))
+    saved = _ok(s.map_save(dest=str(path)))
     assert saved["promoted"] == ["board"] and json.loads(path.read_text())["application"] == (
         "gridlee")
-    refused("there", s.map_save(path=str(path)))
+    refused("there", s.map_save(dest=str(path)))
     mstate.STATE.maps = screen_map.Maps()
     loaded = _ok(s.map_load(path=str(path)))
     assert (loaded["application"], loaded["screens"], loaded["controls"]) == ("gridlee", 1, 1)
 
 
 @pytest.mark.parametrize(("call", "code"), [
-    (lambda p: s.map_save(path=str(p / "x.scry-map.json")), "needs_call"),
+    (lambda p: s.map_save(dest=str(p / "x.scry-map.json")), "needs_call"),
     (lambda p: s.map_load(path=str(p / "no.scry-map.json")), "bad_argument"),
     (lambda p: s.map_load(path="relative.scry-map.json"), "bad_argument"),
-    (lambda p: s.map_save(path=str(p / "x.json")), "bad_argument"),
-    (lambda p: s.map_save(path=str(p / "x.scry-map.json"), overwrite="yes"), "bad_argument"),
+    (lambda p: s.map_save(dest=str(p / "x.json")), "bad_argument"),
+    (lambda p: s.map_save(dest=str(p / "x.scry-map.json"), overwrite="yes"), "bad_argument"),
     (lambda p: s.map_add(screen="", match=[STRIP]), "bad_argument"),
     (lambda p: s.map_add(screen="s", match=[]), "bad_argument"),
 ], ids=["save with nothing mapped", "a file that is not there", "a relative path",

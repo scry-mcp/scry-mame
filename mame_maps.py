@@ -33,8 +33,8 @@ def check_map_load(path: object = "", **_: Any) -> None:
     screen_map.check_path("path", path)
 
 
-def check_map_save(path: object = "", overwrite: object = False, **_: Any) -> None:
-    screen_map.check_save(path, overwrite)
+def check_map_save(dest: object = "", overwrite: object = False, **_: Any) -> None:
+    screen_map.check_save(dest, overwrite)
 
 
 def check_map_add(screen: object = "", match: object = None, controls: object = None,
@@ -48,10 +48,10 @@ def map_load(path: str) -> dict[str, Any]:
     return menvelope.envelope(STATE.maps.load(path))
 
 
-def map_save(path: str, overwrite: bool) -> dict[str, Any]:
+def map_save(dest: str, overwrite: bool) -> dict[str, Any]:
     """The body of `map_save`: the two layers as one file, in any state."""
-    check_map_save(path, overwrite)
-    return menvelope.envelope(STATE.maps.save(path, overwrite))
+    check_map_save(dest, overwrite)
+    return menvelope.envelope(STATE.maps.save(dest, overwrite))
 
 
 def map_add(ses: gs.Session, scratch: Path, screen: str, match: list[list[int]],

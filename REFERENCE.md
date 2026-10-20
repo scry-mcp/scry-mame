@@ -111,8 +111,8 @@ on a port `start` picked itself, a port another process took first, are launched
 thread and the main thread race on one `lua_State`, and it falls in `ll_require`), and the
 server cannot prevent a crash inside the emulator, only react to it.
 `patches/0003-lua-thread-context-race.patch` removes the race from a build that carries it; on
-any build, a relaunch is listed in `start_retries` and every reply's `session.console` counts
-the console reader's deaths and the chunks it ran again. A signal at boot is never
+any build, a relaunch is listed in `start_retries` and the session block's `console` counts
+the console reader's deaths and the chunks it ran again, on every reply from the first one on. A signal at boot is never
 the caller's argument's fault, so a bounded relaunch is honest; an EXIT CODE is (missing ROMs,
 an unknown system, a bad flag) and would answer the same again, so it is refused at once, except
 the one MAME gives with `Fatal error: gdbstub: failed to start listening on address ... port N`
@@ -244,7 +244,9 @@ they say something; on a clean one they come back only with `detail=True`, and t
 **A reply that answers less than everything says so.** Where the whole answer is larger than
 the question usually asked (`close`'s last words on a clean quit, `machine_map`'s `rom_files`),
 the default reply answers that question and carries `omitted`, the names it left out, and
-`how`, the argument that brings them; a reply that left nothing out carries neither.
+`how`, the call or argument that brings them; a reply that left nothing out carries neither. The
+session block carries its own pair, and the stop survey spells it `watches_omitted` and
+`watches_how`, its `how` being what stopped the machine.
 
 **The console's pipe is emptied before the exit is asked for**, because a chunk MAME's Lua
 state still holds at `quit` can take its collector down on the way out; `console_pending_before`
@@ -394,15 +396,18 @@ them, and refuses `io` on a cpu that has none, `bad_argument` naming the cpus th
 from `start` to `close`, bright while a call that drives the machine runs (one that can move the
 guest on or change what it holds: it lets the machine run, feeds it input, records it running,
 writes it, resets or restores it). So whoever sits at the host can tell whether to keep their
-hands off, and whether there is still a session to wait for. A stopped machine is repainted at
-the stop and at each command a call sends through the debugger's console, and the server sends
-none of its own, so after a call that leaves it stopped the window keeps the bright edge of that
-stop until the next such call repaints it dim; a running machine fades back to dim over a couple of seconds once the call
-ends. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not
+hands off, and whether there is still a session to wait for. A stopped machine is repainted only
+at the stop and at each command sent through the debugger's console, so once a driving call that
+leaves it stopped is over, the server sends one command of its own (`print 0`, which moves
+neither the pc, the cycle count nor memory), between calls, and the edge goes dim; a call that
+begins first makes it unnecessary, and so does a Lua line still waiting in the console's pipe,
+which the command would have MAME evaluate there and then. A running machine fades back to dim over a couple of seconds
+once the call ends. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not
 the machine. `start(presence=False)` leaves it off.
 
 `start` and `status` (with a session open) say `presence`: `true` drawn, `false` asked off, or
-unavailable with why, when its last state could not be delivered, the drawer stopped or could
+unavailable with why, when its last state could not be delivered, its repaint of a stopped
+machine failed (not retried; the next state that lands clears it), the drawer stopped or could
 not be set up, or MAME has exited. A failure there never changes any other
 call's reply.
 
@@ -414,11 +419,16 @@ does show it. Only the edge is drawn on MAME: there is no guest pointer to mark.
 
 ## What every reply carries
 
-Every reply opens with a one-line `summary` and closes with a `session` block (`alive`,
-`running`, `altered`, `altering_writes` (how many calls wrote to the machine), `console`, `broken` with the reason once a session
-broke, and a `note` once the session is modified or a `lua` call was declared read-only),
-composed once the tool's work is done, so it says what the machine is doing after the call
-(`close`'s alone describes the state before it, and says so). Whether the machine runs is said
+Every reply opens with a one-line `summary` and closes with a `session` block, composed once the
+tool's work is done, so it says what the machine is doing after the call (`close`'s alone
+describes the state before it, whole, and says so). **Its alarms ride on every reply**:
+`alive`, `running`, `altered`, `broken` with the reason once a session broke, `console` (lines
+lost, reader deaths, chunks run twice) once any of its counts is not zero,
+`throttles_not_applied`, `read_only_claims`, and a `note` once the session is modified or a `lua`
+call was declared read-only. **What only counts rides on `start` and `status`**:
+`altering_writes` (how many calls wrote to the machine) and `console` while its counts are
+zero. Every other reply names that half in `omitted` beside `how`, so the short block is never
+read as the whole one. Whether the machine runs is said
 there, and at the top level only by `status`, whose subject it is. Every
 refusal of an argument's shape names it and comes before the emulator is touched; what only the
 machine can decide (a tag it lacks, a value its console refused, a run that did not end as
@@ -488,7 +498,8 @@ and the session says so rather than declaring itself intact. A measurement on a 
 is not a measurement of the game, and the reader three questions later has no other way to
 know.
 
-**What the console channel did to this session is in `session.console`, on every reply.**
+**What the console channel did to this session is in `session.console`: on `start`, `status`
+and `close` always, on every other reply once a count is not zero.**
 Three counts, cumulative: `thread_errors`, how many times the Lua console's reader died;
 `reruns`, how many chunks the console ran AGAIN, an earlier call's or the call's own; `lost`,
 how many lines it took and never evaluated. Each is counted when a lua-family call reads its
@@ -498,9 +509,9 @@ the close, and three zeros before `close` describe what has been read rather tha
 of what the console did. They are three and not one because a reader that restarted harmlessly and a
 chunk that WROTE TWICE are not the same event, and the per-call fields that distinguish them
 (`thread_errors`, `console_reruns`, `resent`) describe one line's window and are gone from the
-next answer. A healthy session reports three zeros rather than omitting the object, because
-a zero that is always there is read as looked-at, and an object that appears only when
-something went wrong is one a caller never learns to read. The per-call trio is narrower: it
+next answer. A healthy session reports its three zeros where a caller asks what the session is,
+so a zero there is read as looked-at; on every other reply `console` is named in the block's
+`omitted` until a count moves, so its absence is said and never silent. The per-call trio is narrower: it
 rides, zeros included, on every reply that read a Lua chunk's answer back, and on no other (a
 wrapper's pending reply carries `resent` alone). The tools that read one are the Lua family's
 `lua`, `input`, `record` and `audio_record`, and the readers that compose one chunk,
@@ -587,7 +598,10 @@ and its refusal of another word names every declaration's, `expr` and `pointer` 
 which the declaration then refuses for a breakpoint. A list whose items are held the same way
 publishes them on its items: an `enum` on each of `gfx_locate`'s `flips` and on each side of
 `gfx_sweep`'s `sizes`, a `minimum` and `maximum` on each of `gfx_sweep`'s `planes`; the list's own judge still answers,
-refusing an empty list and a repeated item too. A vocabulary that depends on the machine (its
+refusing an empty list and a repeated item too. A scalar held to a range publishes it as
+`minimum` and `maximum` (every wait, `length`, `limit`, `count`, `columns`, `margin`,
+`stub_port`); a wait's floor is `exclusiveMinimum` 0, except `resume`'s and `settle_seconds`, where
+0 means no wait; the judge still refuses, in its own sentence. A vocabulary that depends on the machine (its
 cpus, its screens, its palettes) has no static list and publishes none.
 
 **One spelling per concept.** `debug` for the console (`monitor` is the gdb protocol's word,
@@ -601,8 +615,9 @@ log, `<list>_total` for how many a list holds, listed or not (a scan's addresses
 `frame_<event>_planned` for a frame not reached yet and `frames` only for a count of them, a
 span of frames `frame_begin` to `frame_end` with its end inclusive, `<what>_frames` the first
 and last frame of a set (`judged_frames`, `dropped_frames`),
-`<what>_s` for a reply's seconds, `path` for the file a tool reads or writes (`comment_load`'s
-argument as well as its reply) and `<what>_path` for any other file a reply names, always the
+`<what>_s` for a reply's seconds, `dest` for the file a call writes (`memdump`, `map_save`,
+`perform_export`...), `path` for the file a call reads (`comment_load`, `map_load`) and for the
+file a reply names, and `<what>_path` for any other file a reply names, always the
 whole path (`boot_lua_path`; a film cell's `path`), `<what>_dir` for a directory (`scratch_dir`,
 `state_dir`, `film_dir`),
 `<done>_by` for who or what did it (`written_by`, `chosen_by`, `set_by`, `evaluated_by`;
@@ -947,7 +962,8 @@ of the value grammar (a scalar `u16`, N of them by `length`; an array `u16[8]`; 
 the table types reading as its type with no format named) in its cpu's own byte order. With
 no `fmt` the widest unsigned format the length is a whole number of is chosen (`length=2` is
 `u16`), so a narrow watch needs no format. A **show** watch arms nothing: its value rides in
-`watches` on every stop survey, and `watch_add` and `watch_list` read it too whenever the
+`watches` on every stop survey (its reading; the rest is `watch_list`'s), and `watch_add` and
+`watch_list` read it too whenever the
 machine is stopped. All three speak one vocabulary on two axes, each in its own field.
 `state` is where the watch is PLACED (`evaluated` for a show or expr watch, which arms
 nothing; `armed`, `disabled`, `gone` or `stale` for a change watch, read against the
@@ -1029,20 +1045,22 @@ keeping only the writes that land inside it) that counts every write by value an
 never stops the machine for one. The install is SENT to the Lua console, like a `throttle` asked
 while stopped, and evaluated when the console next reads a line (*The console* says when), so
 `watch_add` moves nothing and answers `installed: false` with `pending: true`; a periodic hook writes each tally to a
-file in the scratch at every debugger stop, and the stop survey reads it back as of that stop:
-`installed` and `pending`, both booleans (`installed` true; false with `pending` true until the
-console answers; false with the console's own words in its `why`, which is how a tap MAME refuses is
-reported rather than counting zero for ever), `frame_as_of`, `superseded` (the tally on disk is
-older than the stop surveyed), `total`, `since_last_stop` (at a STOP only: a `watch_list` between
-two stops is a look and consumes nothing, and a total that fell is a `reset`, never a negative
-count), `values` (each bus write decoded to the bytes it landed, with `value` in the watch's own
-format when one write covers the range whole and `partial` otherwise; a 68000 writes a long as two
-words, so a u32 tally sees words), `writers` (`pc`, `count`, and `symbol` when the table places it),
-the top rows in a survey and the whole tables in `watch_list`, with `overflow_values` and
-`overflow_pcs` past the bucket cap. Both tables are cumulative since the install, not since the last
+file in the scratch at every debugger stop. A stop's row carries the count as of that stop:
+`state`, `total`, `since_last_stop` (at a STOP only: a `watch_list` between two stops is a look
+and consumes nothing, and a total that fell is a `reset`, never a negative count), and each alarm
+while it holds: `installed: false` and `pending: true`, `superseded` (the tally on disk is older
+than the stop surveyed), `install_resent`, `why` and `callback_errors`. `watch_list` answers the
+rest: `installed` and `pending`, both booleans (`installed` true; false with `pending` true until
+the console answers; false with the console's own words in its `why`, which is how a tap MAME
+refuses is reported rather than counting zero for ever), `frame_as_of`, `values` (each bus write
+decoded to the bytes it landed, with `value` in the watch's own format when one write covers the
+range whole and `partial` otherwise; a 68000 writes a long as two words, so a u32 tally sees
+words), `writers` (`pc`, `count`, and `symbol` when the table places it), whole, with
+`overflow_values` and `overflow_pcs` past the bucket cap. Both tables are cumulative since the install, not since the last
 stop, and capped at that one number of rows each: a write whose value, or whose writer, found its
 table full is counted in `overflow_*`, and that value or writer is never named; only
-`since_last_stop` is per stop. A tally of zero is a measurement, said beside the frame it is as of;
+`since_last_stop` is per stop. A tally of zero is a measurement, said beside the frame it is as of
+(`watch_list`'s `frame_as_of`);
 a dump the hook has not written is `no_dump_yet`. A range that splits a bus word of its cpu's
 program space, covering part of one at an edge (a word at an odd address on a 16-bit bus, which a
 V30 writes as two bytes), is refused `bad_argument` before anything is sent: a write lands in one
@@ -1075,7 +1093,8 @@ The install is proved rather than assumed. An install line the console ECHOED AN
 EVALUATED (no sentinel, and behind the echo a dead reader, the console reporting the line's
 own top-level failure, or a prompt: every reader prints one before it reads, and the console
 starts the next reader only once it is done with the line, so a prompt behind the echo is the
-console gone past it) is sent again once, at the next survey, and `install_resent` says so
+console gone past it) is sent again once, at the next survey, and `install_resent` says so (at
+a stop while it is not zero)
 (the console trio's `resent` counts a call's own line); a second loss is the state
 `install_lost` with `installed: false` and a `why`, because a tally that never installed is a
 zero that reads as a measurement. Nothing else ages a line, frames least of all: the console
@@ -1083,7 +1102,7 @@ runs a line only once the reader that echoed it is idle, and a reader can stay b
 frames. A line echoed and not yet run, or not yet echoed, is `pending` and waits, for as long
 as the console never gets past it. The reply to `watch_add` carries
 `tally_id`, `installed: false` with `pending: true`, `lines_ahead`, `call` (the console line's number), a `note`,
-and both `write_maps_to` and `read_maps_to`; a survey's `values` are ordered most written
+and both `write_maps_to` and `read_maps_to`; `watch_list`'s `values` are ordered most written
 first, with `values_total` beside the top rows.
 
 **A callback that raises is counted, never read as a zero.** The taps, the notifiers and the
@@ -1149,11 +1168,12 @@ takes in line; the rest is in `rows_path`, which holds every row. That ceiling h
 row is bounded too, and a struct's field names are the caller's: so a capture's format is
 refused at `watch_add` when its widest decoded block prints wider than the widest an array or
 a string makes over the largest block a capture holds, and a stored one past it is `unarmable` at
-`start`. A stop's survey lists NO row
-and says `rows_listed_by: "watch_list"`: every reply carries a survey whatever the call was
-about, and a block of rows in each one drowned the answer that was asked for. Beside them:
-`rows_kept`, `overflow_rows`, `rows_max`, `since_last_stop`, `trigger_addr`, `trigger_type`,
-`source` (a write capture's) and `tally_id`, the tap's id as a count watch's is. The
+`start`. A stop's row of a capture lists NO row of the capture, only its `total` and
+`since_last_stop` beside the alarms every tap row carries: every reply carries a survey whatever
+the call was about, and a block of rows in each one would drown the answer that was asked for.
+`watch_list` adds `rows_kept`, `overflow_rows`, `rows_max`, `rows_path`, `first_rows`,
+`trigger_addr`, `trigger_type`, `source` (a write capture's) and `tally_id`, the tap's id as a
+count watch's is. The
 block is at most `SHOW_WATCH_MAX` bytes (the tool's description gives the number), as a show
 watch is, since each row carries it; a capture is by
 symbol or by address, never through a pointer; one ref carries one declaration, so the same
@@ -1615,10 +1635,17 @@ against the machine with the reply it already holds.
   and `truncated`, in `log`'s words. The
   field is spelled `errorlog`, and a caller reading `reply["log"]` off a survey finds nothing, in
   silence.
-- `watches` evaluates every declared watch, when there is any: `state` is where it is PLACED, as
-  `watch_list` places it, and `reading` what was read (`available: true`, `value`, `raw_hex`; an
+- `watches` evaluates every declared watch, when there is any, each row cut to what a stop
+  needs: `ref` (with its `cpu`, and `space` for an io tap), `state`, where it is PLACED, as
+  `watch_list` places it, and `reading`, what was read (`available: true`, `value`, `raw_hex`; an
   expr watch's `value` with `hex`, `available: false` with `why`, or `bus` with `last_wrote` for a
-  write-only register).
+  write-only register); a pointer watch's `pointer` and `addr` (the place moves with the
+  pointer, and after a move the debugger refused it is the armed one); a count's or a capture's
+  `total` and `since_last_stop`; and every alarm while it holds (`why`, `moved`,
+  `callback_errors`, `reset`, `superseded`, `installed: false`, `pending: true`,
+  `install_resent`). The declaration, the debugger's row and a tap's tables are `watch_list`'s:
+  `watches_omitted` names the keys the rows left out and `watches_how` says so, because every
+  reply that ends at a stop carries the survey, whatever the call was about.
 - `watch_hit` rides when a change watch stopped it, naming who wrote the byte; `regpoint_hit`
   when a registerpoint of this server did (`ref`, `condition`, `index`, `cpu`, `pc`, and a `note` that
   it is STILL ARMED and fires again one instruction on while its condition holds).
@@ -2121,7 +2148,7 @@ files under `act`.
 ## From an investigation to a bench
 
 Every session is recorded from the `start` that succeeds, and cleared by the next one; `close`
-keeps it. `perform_export(path)` writes it as `perform`'s own document, and the runner plays it
+keeps it. `perform_export(dest)` writes it as `perform`'s own document, and the runner plays it
 back with no model, from this repository:
 
 ```sh
@@ -2824,7 +2851,7 @@ in front of the caller into the SESSION layer, signing each region off one captu
 empties that layer, since its screens were read off another run. `map_find` tries the session's
 screens first, then the file's, and captures the screen ONCE for all of them, the size compared
 before any signature: each capture is a Lua chunk, and a map of many screens must not cost one
-per screen. `map_save` writes the two layers as one file, the session winning, and that file
+per screen. `map_save(dest)` writes the two layers as one file, the session winning, and that file
 becomes the file layer: the session's screens are `promoted`. A file already there is refused
 unless `overwrite`. `map_load` and `map_save` touch files only, so they answer while the machine
 runs and on a broken session; `map_add` and `map_find` need it stopped.
@@ -2895,6 +2922,14 @@ and a save's frame, pc and registers are read after it, so they are the file's. 
 pending operation, each replacing the one before, so a `debug` line that had several held
 completes only the last, and the note says so. An operation still held after the step, or a
 step that brings no stop, is `not_settled`, because it would land in the next run.
+
+**A recording repeats from one saved state only on a driver whose game logic does not run while
+the screen is drawn.** One that does its game logic from `screen_update` (circus finds the
+clown's collisions there and raises its interrupt from it) does not: what the game does next
+depends on when the screen was last drawn, which is not part of the saved state, so `state_load`
+then `record` can give two different recordings with nothing between them. A recording compared
+as a regression check is made on a driver whose logic does not draw (1942 is one), or against a
+tolerance; the readers, `lua` and the console change nothing of it.
 
 ## The console
 
@@ -3124,8 +3159,9 @@ module:
 - **`mame_progress.py`**: the progress line of a bounded wait (`Ticker`) and the one rule a
   call's notifications keep, never going backwards.
 - **`mame_inputs.py`**: the judge of every input two tools share (a count, a yes or no, a ref,
-  an address argument written `0x`, a number given as an integer or `0x`, a closed vocabulary, a
-  wait, a regular expression, a path), each rule written once.
+  an address argument written `0x`, a number given as an integer or `0x`, a wait and its
+  schema bounds, a regular expression, a path), each rule written once; a closed vocabulary is
+  `scry_core.vocabulary`'s.
 - **`mame_args.py`**: the table of which argument each tool judges BEFORE the session gate,
   one function per rule owned by the module that does the work, read by the surface and by
   the batch executor alike.
@@ -3219,8 +3255,9 @@ module:
   something evaluated later or leave `totalcycles` stale, and the console's own refusals.
 - **`mame_lexer.py`**: beneath that grammar, where a quoted string ends, what counts as an
   assignment and which debugger temps a line writes.
-- **`mame_sequence.py`**: the executor behind `perform` and `drive`, taking its operation
-  table FROM the server.
+- **`mame_sequence.py`**: this server's half of `perform` and `drive` over
+  `scry_core.sequence` (how a stop is proved, the visible cpu kept, `until_frame`'s window),
+  taking its operation table FROM the server.
 - **`mame_lua.py`**: the Lua CHANNEL and the typed wrappers composed on it (`input`,
   `throttle`), and the queued run every wrapper makes.
 - **`mame_transport.py`**: the bytes of the channel: a chunk sent down stdin, its answer framed

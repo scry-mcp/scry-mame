@@ -437,7 +437,6 @@ def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str, frame: int |
         return item
     item.update(rows_kept=head["rows"], overflow_rows=head["overflow_rows"], rows_max=ROWS_MAX)
     if at_stop:
-        item["rows_listed_by"] = "watch_list"
         return item
     listed = first_rows(rec["rows_path"], min(shown, head["rows"]))
     item["first_rows"] = [row_fields(r, "" if reads else fmt, width, head["data_width"],

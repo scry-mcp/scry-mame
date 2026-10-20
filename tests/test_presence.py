@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 import sys
 from pathlib import Path
+from typing import Any
 
 from scry_core import presence
 
@@ -105,3 +106,110 @@ def test_a_mame_that_exited_is_said_in_place_of_true(tmp_path: Path) -> None:
     said_now = state.presence_shown()
     assert isinstance(said_now, dict) and said_now["available"] is False, said_now
     state.presence.close()
+
+
+class _Console:
+    """A session double: whether it runs, and every console command it was sent."""
+
+    def __init__(self, running: bool = False) -> None:
+        self.running: bool = running
+        self.broken: str | None = None
+        self.sent: list[str] = []
+
+    def monitor(self, command: str) -> str:
+        self.sent.append(command)
+        return "0"
+
+
+class _Alive:
+    def poll(self) -> None:
+        return None
+
+
+def _session(monkeypatch: Any, scratch: Path, ses: _Console) -> mpresence.FileAdapter:
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
+    monkeypatch.setattr(mstate.STATE, "proc", _Alive())
+    monkeypatch.setattr(mstate.STATE, "scratch", scratch)
+    return mpresence.FileAdapter(scratch)
+
+
+def test_the_repaint_sends_one_console_command_to_a_stopped_machine_under_the_lock(
+        monkeypatch: Any, tmp_path: Path) -> None:
+    import mame_mcp
+    ses = _Console()
+    held: list[bool] = []
+
+    def still() -> bool:
+        held.append(mame_mcp.LOCK._is_owned())  # type: ignore[attr-defined]
+        return True
+    _session(monkeypatch, tmp_path, ses).repaint(still)
+    assert ses.sent == [mpresence.REPAINT] and held[-1] is True
+
+
+def test_the_repaint_sends_nothing_to_a_running_broken_gone_or_other_session(
+        monkeypatch: Any, tmp_path: Path) -> None:
+    for field, value in (("running", True), ("broken", "the channel lost its place")):
+        ses = _Console()
+        setattr(ses, field, value)
+        _session(monkeypatch, tmp_path, ses).repaint(lambda: True)
+        assert ses.sent == []
+    ses = _Console()
+    _session(monkeypatch, tmp_path, ses)
+    mpresence.FileAdapter(tmp_path / "another").repaint(lambda: True)
+    assert ses.sent == [], "a writer left over from another session repaints nothing"
+    monkeypatch.setattr(mstate.STATE, "ses", None)
+    mpresence.FileAdapter(tmp_path).repaint(lambda: True)
+
+
+def test_a_repaint_waits_for_a_call_holding_the_lock_and_gives_up_once_moot(
+        monkeypatch: Any, tmp_path: Path) -> None:
+    import threading
+
+    import mame_mcp
+    ses = _Console()
+    adapter = _session(monkeypatch, tmp_path, ses)
+    still = threading.Event()
+    still.set()
+    mame_mcp.LOCK.acquire()
+    worker = threading.Thread(target=adapter.repaint, args=(still.is_set,))
+    worker.start()
+    worker.join(0.3)
+    assert worker.is_alive() and ses.sent == [], "it waits while a call holds the lock"
+    still.clear()                             # a driving call began: the repaint is moot
+    worker.join(2)
+    mame_mcp.LOCK.release()
+    assert not worker.is_alive() and ses.sent == []
+
+
+class _Exited:
+    def poll(self) -> int:
+        return 0
+
+
+def test_the_repaint_sends_nothing_to_a_machine_that_exited_or_with_a_lua_line_pending(
+        monkeypatch: Any, tmp_path: Path) -> None:
+    import mame_transport as transport
+    ses = _Console()
+    adapter = _session(monkeypatch, tmp_path, ses)
+    monkeypatch.setattr(mstate.STATE, "proc", _Exited())
+    adapter.repaint(lambda: True)
+    assert ses.sent == []
+    monkeypatch.setattr(mstate.STATE, "proc", _Alive())
+    monkeypatch.setattr(transport, "pending_lines", lambda scratch: 1)
+    adapter.repaint(lambda: True)
+    assert ses.sent == [], "a console command would have MAME evaluate the queued line"
+    monkeypatch.setattr(transport, "pending_lines", lambda scratch: 0)
+    adapter.repaint(lambda: True)
+    assert ses.sent == [mpresence.REPAINT]
+
+
+def test_a_repaint_sends_once_and_not_at_all_when_it_went_moot_under_the_lock(
+        monkeypatch: Any, tmp_path: Path) -> None:
+    ses = _Console()
+    adapter = _session(monkeypatch, tmp_path, ses)
+    answers = iter([True, True, True, True])
+    adapter.repaint(lambda: next(answers))
+    assert ses.sent == [mpresence.REPAINT], "one command, then done"
+    moot = iter([True, False])               # true at the door, false once the lock is held
+    adapter.repaint(lambda: next(moot))
+    assert ses.sent == [mpresence.REPAINT]

@@ -97,7 +97,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "log": {"pattern": ".", "channel": "emulator"},
     "log_wait": {"pattern": ".", "channel": "emulator", "seconds": 0.01},
     "perform": {"steps": [{"op": "status"}]},
-    "perform_export": {"path": "/nonexistent/session.json"},
+    "perform_export": {"dest": "/nonexistent/session.json"},
     "drive": {"act": [{"op": "status"}], "pattern": "."},
     "debug": {"command": "bplist"},
     "lua": {"script": "print(1)"},
@@ -125,7 +125,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_draft": {},
     "map_load": {"path": "/nonexistent/x.scry-map.json"},
     # An absolute path on every host, so what refuses is the empty map, not the spelling.
-    "map_save": {"path": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
+    "map_save": {"dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
     "map_add": {"screen": "s", "match": [[0, 0, 1, 1]]},
 }
 

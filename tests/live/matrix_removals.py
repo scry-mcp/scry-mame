@@ -31,7 +31,10 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
         return f"{int(ref, 16):x}_{length}"
 
     def item(r: dict[str, Any], ref: str) -> dict[str, Any]:
-        return next((w for w in r.get("watches") or [] if w.get("tally_id") == tid(ref)), {})
+        """`ref`'s tap whole, after the call `r` answered: a stop's row is its count alone, and
+        whether it is installed or pending is `watch_list`'s."""
+        listed = call("watch_list").get("watches") or []
+        return next((w for w in listed if w.get("tally_id") == tid(ref)), {})
 
     def log() -> bytes:
         return Path(str(call("status").get("stdout_path"))).read_bytes()
@@ -140,7 +143,9 @@ def k_redeclare_live(t: str, ref: str, length: int) -> None:
     the display after a console command takes a queued line at its next command (REFERENCE.md,
     *The console*), so without the hold the window this reads in would not exist."""
     def item(r: dict[str, Any]) -> dict[str, Any]:
-        return next((w for w in r.get("watches") or [] if w.get("ref") == ref), {})
+        """`ref`'s tap whole, after the call `r` answered (`watch_list`'s, as above)."""
+        listed = call("watch_list").get("watches") or []
+        return next((w for w in listed if w.get("ref") == ref), {})
 
     first = call("watch_add", ref=ref, mode="count", length=length)
     call("step")

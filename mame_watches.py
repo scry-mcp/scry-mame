@@ -43,6 +43,7 @@ from typing import Any, assert_never
 
 from scry_core import prose
 from scry_core import value_format as vf
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -240,9 +241,9 @@ def check_watch_add(ref: str, mode: str, length: int = 0, fmt: str = "auto",
     """`watch_add`'s machine-independent half: the vocabularies, the `expr` rules, a class in
     `fmt`, a condition's mode and shape, a trigger's and its type, and the space's. Resolving a
     POINTER's base needs the table, so that stays past the gate."""
-    inputs.one_of("mode", mode, dec.WATCH_MODES)
-    inputs.one_of("by", by, WATCH_BY)
-    inputs.one_of("trigger_type", trigger_type, dec.TRIGGER_TYPES)
+    vocab.one_of("mode", mode, dec.WATCH_MODES)
+    vocab.one_of("by", by, WATCH_BY)
+    vocab.one_of("trigger_type", trigger_type, dec.TRIGGER_TYPES)
     if trigger_type == "r":
         # A READ'S TRIGGER IS ITS REF: with no block, what a row holds and what makes it are one
         # place, so naming it twice is allowed and naming it once is enough.
@@ -1163,22 +1164,56 @@ def _placement(rows: list[dict[str, Any]] | gs.SessionError, decl: dec.Declarati
     return _change_placement(decl, rows, addr)
 
 
+#: WHAT A WATCH IS AT A STOP: which watch (`ref`, and its `cpu` and `space` where it has them),
+#: what it reads now (`reading`, where a pointer points, or a tap's `total` and
+#: `since_last_stop`), where it stands (`state`), and every alarm while it holds. Its
+#: declaration, the debugger's row and a tap's tables are `watch_list`'s: every reply that ends at
+#: a stop carries the survey, whatever the call was about.
+STOP_KEYS = ("ref", "cpu", "space", "state", "pointer", "reading", "total", "since_last_stop",
+             "reset", "why", "moved", "callback_errors")
+#: Alarms a tap's row carries whether or not they hold (`superseded` false, `install_resent` 0, a
+#: tap `installed` and not `pending`): a stop keeps each only while it does, so a tap that is not
+#: counting says so at the stop.
+_STOP_ALARM_WHEN: dict[str, Callable[[Any], bool]] = {
+    "superseded": bool, "install_resent": bool, "across": bool, "pending": bool,
+    "installed": lambda v: v is False}
+#: What a stop's short rows say of the rest.
+STOP_HOW = ("`watch_list` answers each watch whole: its declaration, the debugger's row for it, "
+            "and a count's or a capture's tables")
+
+
+def at_stop(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    """`rows` as a stop shows them (`STOP_KEYS`), and the names of the keys left out of any."""
+    short, left = [], set()
+    for row in rows:
+        # A POINTER'S ROW KEEPS WHERE IT READ: the place moves with the pointer, and after a move
+        # the debugger refused it is the armed one, not where the pointer points.
+        kept = {k: v for k, v in row.items()
+                if k in STOP_KEYS or (k in _STOP_ALARM_WHEN and _STOP_ALARM_WHEN[k](v))
+                or (k == "addr" and "pointer" in row)}
+        left |= row.keys() - kept.keys()
+        short.append(kept)
+    return short, sorted(left)
+
+
 def place_after_pass(ses: gs.Session, rows: list[dict[str, Any]],
                      refs: list[dec.Owner]) -> None:
     """Place again, in `rows` (a stop's `watches`, edited in place), every row the survey
     found `gone` among `refs`, the change watches a pass re-armed: the survey was read while
-    they were off. One `wplist`, read after the re-arm, and only when a row needs it."""
+    they were off. One `wplist`, read after the re-arm, and only when a row needs it; a row
+    takes back what a stop shows of its placement (`STOP_KEYS`)."""
     decls = {(d.ref, d.cpu): d for d in arming.store().declarations()
              if d.kind == "watch" and d.watch_mode == "change" and d.owner in refs}
     held: list[dict[str, Any]] | gs.SessionError | None = None
     for row in rows:
         cpu = row.get("cpu")              # unavailable on a row that names none: the key's None
         decl = decls.get((str(row.get("ref")), cpu if isinstance(cpu, str) else None))
-        if decl is None or row.get("mode") != "change" or row.get("state") != "gone":
+        if decl is None or row.get("state") != "gone":
             continue
         if held is None:
             held = _wplist_or_error(ses)
-        row.update(_placement(held, decl, int(STATE.armed_watches[decl.owner]["addr"])))
+        placed = _placement(held, decl, int(STATE.armed_watches[decl.owner]["addr"]))
+        row.update({k: v for k, v in placed.items() if k in STOP_KEYS})
 
 
 #: An expr watch's `length` and `fmt`: it reads an expression, never a span of bytes.
@@ -1279,7 +1314,7 @@ def check_watch_clear(ref: str = "", all: bool = False, space: str = mspace.PROG
     base, else a segmented address refused, else one token that starts like an address and is
     not one refused. An expression watch's text is matched as declared."""
     mclear.check_clear(ref, all, "watch")
-    inputs.one_of("space", space, mspace.SPACES)
+    vocab.one_of("space", space, mspace.SPACES)
     if all:
         if space != mspace.PROGRAM:
             raise st.Invalid("bad_argument", f'space="{space}" names where a `ref` is, and '
