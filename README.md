@@ -18,8 +18,8 @@ measurement here, never a silence.
   debugger attached, proves the loaded ROM against your reference image, reads your symbol
   file and parks the machine stopped, ready. Registers, memory, a disassembly, the driver's
   own log, a screenshot: each one is a call. While a session holds the window an orange edge
-  marks it, bright while a call drives the machine, never in a capture (`presence=False`
-  turns it off).
+  marks it, bright while a call drives the machine, never in the server's own captures or
+  screen reads (`presence=False` turns it off).
 - **Names, not addresses.** Load the linker's own map or a YAML of `addr`/`name` pairs and
   say `Player1`, not `0x008400`. A class that lives in RAM is relocated the way the running
   board sees it (`bases={"DATA": "0x400"}`), so a symbol of any class reads at its live address.
