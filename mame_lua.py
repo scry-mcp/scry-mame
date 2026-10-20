@@ -42,8 +42,10 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import cancel, prose
+from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
 import mame_advance as advance
@@ -520,7 +522,7 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
                 # THE RUN WAS CUT SHORT (another stop, or its bound) before the notifier released
                 # the field: it is STILL HELD, and the notifier releases it at the frame named
                 # here, on whatever run reaches it. Said in the reply, never hidden in a refusal.
-                held_why = st.unavailable("the field is still HELD: the port is read at its "
+                held_why = unavailable("the field is still HELD: the port is read at its "
                                           "release, which the run has not reached")
                 return with_fields(ran, **own, released=False, active=held_why,
                              port_held=held_why,
@@ -601,5 +603,5 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
                 mark=tag)
         clock.tick("throttle: waiting for the mark, {elapsed:.0f}s of {seconds:g}s",
                    seconds=seconds)
-        time.sleep(files.LOG_POLL_S)
+        time.sleep(core_wait.POLL_S)          # a log on disk is read as the log wait reads it
 

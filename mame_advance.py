@@ -20,6 +20,8 @@ from typing import Any, TypeVar
 
 from scry_core import cancel, prose
 from scry_core import progress as mprogress
+from scry_core import reply_contract as contract
+from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
 import mame_breakpoints as breakpoints
@@ -336,7 +338,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
     if row is None or (cond and not row.get("condition")):
         return _target_not_listed(ses, armed_as, row)
     clock = mprogress.Ticker(seconds, progress)
-    verdict = "TIMEOUT"
+    verdict = contract.TIMEOUT
     broken: gs.SessionError | None = None
     try:
         ses.go()
@@ -352,9 +354,9 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
             stopped_on = cpus.visible_cpu(ses)
             if (pc == a_target and watches.watch_packet_addr(ses) is None
                     and cpus.same_cpu(on, stopped_on)):
-                verdict = "TARGET"
+                verdict = contract.TARGET
             else:
-                verdict = "OTHER_STOP"
+                verdict = contract.OTHER_STOP
             break
     except gs.SessionError as e:
         # The stub closed the connection, or sent something that was not a stop: the session
@@ -369,7 +371,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         # the same gamble. On a broken session the removal is attempted and its failure is
         # not the news.
         unanswered: gs.Timeout | None = None
-        if verdict == "TIMEOUT" and broken is None:
+        if verdict == contract.TIMEOUT and broken is None:
             try:
                 ses.interrupt()
             except gs.Timeout as e:
@@ -421,9 +423,9 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         late["note"] = (f"the temporary breakpoint at {ref} may still be armed (row "
                         f"{mclear.row_index(row['index'])}), so a later run may stop there; "
                         f"{mclear.pasted_clear('breakpoint', row['index'])} removes it")
-    how = ({"TARGET": f"target {ref}", "TIMEOUT": at_bound}.get(verdict)
+    how = ({contract.TARGET: f"target {ref}", contract.TIMEOUT: at_bound}.get(verdict)
            or running.name_stop(ses))
-    if verdict == "OTHER_STOP" and control_hits == 0:
+    if verdict == contract.OTHER_STOP and control_hits == 0:
         # THE RUN WAS CUT BEFORE THE CONTROL HAD ITS CHANCE: another stop (a watch, a
         # registerpoint, a foreign breakpoint) ended the run first, so the control's silence
         # over that shortened window says nothing about the control, and calling it cold would
@@ -436,7 +438,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
             "it. Clear what stopped it, or, for a watch, disarm the watches for the pass "
             "(`disarm_watches=True`), and run "
             "again"))
-    if verdict != "TARGET" and control_hits == 0:
+    if verdict != contract.TARGET and control_hits == 0:
         # INVALID, and still a STOP: the machine is where the bound or the other stop left
         # it, and the survey rides on this reply like any other's. Left unrecorded, the next
         # contact found a stop the record did not describe and reported this server's own
@@ -454,7 +456,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
                     ses, scratch, at, CONTROL_DASM_BYTES, on)})
             except gs.SessionError as e:
                 control_dasm.append({**dec.owner_fields(owner),
-                                     "dasm": st.unavailable(str(e))})
+                                     "dasm": unavailable(str(e))})
         names = ", ".join(ref for ref, _cpu in owners)
         # ONE NOTE: the target's removal, when unconfirmed, is said beside the control's hint.
         silent = {**late, "note": st.join_notes(CONTROL_HINT, late.get("note"))}
@@ -465,7 +467,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
             "Check that the control really is hot on this screen."))
     own: dict[str, Any] = {"condition": cond} if cond else {}
     seen = running.survey(ses, scratch)
-    if verdict == "TARGET":
+    if verdict == contract.TARGET:
         # THE ROW AT THE TARGET IS THE RUN'S OWN, even while a refused removal leaves it
         # listed: the survey would otherwise name it a row typed through `debug`.
         seen.pop("breakpoint_how", None)
@@ -723,7 +725,7 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                 peeked = STATE.debuglog_mark
                 if running.cut_by_a_stop(seen, pc):
                     return running.finish_stop(ses, seen, running.attribute(pc, seen["cpu"]),
-                                               verdict="OTHER_STOP", frame_before=before,
+                                               verdict=contract.OTHER_STOP, frame_before=before,
                                                frame_after=last,
                                                **_cycles(ses, cycles_before, stale_why,
                                                          counted_on, seen["cpu"]), polls=sent,
@@ -752,8 +754,8 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                                      frame_after=last,
                                      **through)
     seen = running.survey(ses, scratch)
-    landed = running.finish_stop(ses, seen, FRAMES_END, verdict="ELAPSED", frame_before=before,
-                                 frame_after=last,
+    landed = running.finish_stop(ses, seen, FRAMES_END, verdict=contract.ELAPSED,
+                                 frame_before=before, frame_after=last,
                                  **_cycles(ses, cycles_before, stale_why, counted_on,
                                            seen["cpu"]), polls=sent, **through)
     # THE LANDING IS RECORDED BEFORE THE LAST LINE: that send is a poll, and a cancel met there
@@ -769,7 +771,7 @@ def _cycles(ses: gs.Session, cycles_before: int | None, stale_why: str | None,
     rewind or a reset left stale (`stale_why`, `mame_cycles.stale_cycles_why`), or because
     `_span` could not measure one."""
     if stale_why is not None:
-        return {"cycles": st.unavailable(stale_why)}
+        return {"cycles": unavailable(stale_why)}
     return {"cycles": _span(ses, cycles_before, counted_on, stopped_on)}
 
 
@@ -780,15 +782,15 @@ def _span(ses: gs.Session, cycles_before: int | None, counted_on: str | None,
     moves, so a span across two cpus is no clock at all; an unreadable counter is said, never
     guessed."""
     if cycles_before is None:
-        return st.unavailable("`totalcycles` could not be read before the run, so there is no "
+        return unavailable("`totalcycles` could not be read before the run, so there is no "
                               "baseline")
     if None not in (counted_on, stopped_on) and counted_on != stopped_on:
-        return st.unavailable(f"counted on {counted_on} and stopped on {stopped_on}: each cpu "
+        return unavailable(f"counted on {counted_on} and stopped on {stopped_on}: each cpu "
                               "keeps its own `totalcycles`, so a span across the two is no clock")
     try:
         return read.print_values(ses, ["totalcycles"])[0] - cycles_before
     except gs.SessionError as e:
-        return st.unavailable(f"`totalcycles` could not be read after the run: {e}")
+        return unavailable(f"`totalcycles` could not be read after the run: {e}")
 
 
 def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
@@ -820,13 +822,13 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     # A READING THAT IS NOT THERE SAYS WHY, in the place of its value: a board with no counter
     # has no frame, and a console that answers no `time` has no emulated clock.
     def counted(frame: int | None) -> int | dict[str, Any]:
-        return frame if frame is not None else st.unavailable(
+        return frame if frame is not None else unavailable(
             f"{read.FRAMELESS_WHY}: `emulated_before_s` and `emulated_after_s` are this run's "
             "clock")
 
     def timed(clock: float | None) -> float | dict[str, Any]:
         return (st.measured_s(clock) if clock is not None
-                else st.unavailable("the console's `time` answered no time"))
+                else unavailable("the console's `time` answered no time"))
 
     times: dict[str, Any] = {"emulated_before_s": timed(emulated_before)}
     ses.monitor(f"gtime {milliseconds:#x}")
@@ -837,7 +839,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     ses.last_stop_packet = ""
     ses.drain_stop_reply()
     readings: list[int | float] = []
-    verdict = "ELAPSED"
+    verdict = contract.ELAPSED
     with _console_run(ses):
         try:
             if not wait_for_rest(
@@ -869,8 +871,8 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                                          f"({e}): nothing proves the machine came to rest, so it "
                                          f"may be RUNNING. {running.STOP_RECOVERS}",
                                          frame_before=counted(frame_before),
-                                         frame_after=st.unavailable(f"not read after the run: {e}"),
-                                         emulated_after_s=st.unavailable(
+                                         frame_after=unavailable(f"not read after the run: {e}"),
+                                         emulated_after_s=unavailable(
                                              f"not read after the run: {e}"), **times)
             if not steady:
                 _left_running(ses)
@@ -883,16 +885,16 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                     f"server cannot see a run the console started. {running.STOP_RECOVERS}",
                     frame_before=counted(frame_before),
                     frame_after=counted(None) if clocked else settled[-1],
-                    emulated_after_s=(timed(settled[-1]) if clocked else st.unavailable(
+                    emulated_after_s=(timed(settled[-1]) if clocked else unavailable(
                         "not read: the machine did not come to rest")), **times)
             after = settled[-1]
             readings.extend(settled)
-            verdict = "TIMEOUT"
+            verdict = contract.TIMEOUT
     times["emulated_after_s"] = timed(after if clocked else ses.emulated_seconds())
     frame_after = counted(None if clocked else int(after))
     # `how` NAMES WHAT STOPPED IT, never the verdict again: the console's own end of the run,
     # in words with no number in them, so a count of stops by `how` adds the runs up.
-    how = "the console's `gtime` stop" if verdict == "ELAPSED" else "interrupt at the bound"
+    how = "the console's `gtime` stop" if verdict == contract.ELAPSED else "interrupt at the bound"
     # THE SURVEY IS READ BEFORE THE VERDICT IS NAMED: a watch or a breakpoint this server
     # armed can cut the run before its time, before a frame has even elapsed, and that is a
     # stop of its own with the writer in it, an `OTHER_STOP`. Judged by the frame counter
@@ -918,7 +920,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                 if after < before else
                 "shorter than one frame, or nothing emulated; this is not a run")))
     if cut:
-        verdict, how = "OTHER_STOP", running.attribute(pc, seen["cpu"])
+        verdict, how = contract.OTHER_STOP, running.attribute(pc, seen["cpu"])
     # THE CYCLES THE RUN TOOK, the exact clock behind an emulated duration, so a duration in
     # milliseconds is checked against the cpu's clock rather than believed.
     return running.finish_stop(ses, seen, how, verdict=verdict, frame_before=counted(frame_before),
@@ -957,7 +959,7 @@ def _moved(before: cpus.PcReading, after: cpus.PcReading) -> dict[str, Any]:
     """One cpu's program counter register before and after a step, or unavailable saying why it
     was not read."""
     if isinstance(before, str) or isinstance(after, str):
-        return st.unavailable(before if isinstance(before, str) else str(after))
+        return unavailable(before if isinstance(before, str) else str(after))
     return {"reg": before[0], "before": st.hex_addr(before[1]), "after": st.hex_addr(after[1])}
 
 

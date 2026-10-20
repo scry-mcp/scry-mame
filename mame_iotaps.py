@@ -16,6 +16,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable
+
 import gdb_session as gs
 import mame_arming as arming
 import mame_capture as capture
@@ -108,7 +110,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: st
     check_has_io(on)
     scratch = STATE.scratch
     assert scratch is not None
-    reply: dict[str, Any] = {"mode": mode, "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+    reply: dict[str, Any] = {"mode": mode, "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
                              "space": mspace.IO}
     if mode == "count":
         chosen, addr = "address", mspace.port(ref, "ref")
@@ -129,7 +131,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: st
         sent = watches.send_count(scratch, owner, addr, width, mspace.IO, unchecked, maps_to,
                                   read_maps_to)
         reply.update(write_maps_to=maps_to,
-                     read_maps_to=st.or_unavailable(read_maps_to, mmap.NO_READ_SIDE_WHY))
+                     read_maps_to=or_unavailable(read_maps_to, mmap.NO_READ_SIDE_WHY))
     else:
         chosen = arming.decide_by(ref, by, on, "watch")
         tally.check_count_watch(chosen, mode)
@@ -196,11 +198,11 @@ def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[
         evaluate = capture.evaluate if rec["mode"] == "capture" else tally.evaluate
         shown = st.ROWS_SHOWN if at_stop or rec["mode"] == "capture" else tally.BUCKETS_MAX
         out.append({**mspace.shown(owner[0]), "by": "address",
-                    "cpu": st.or_unavailable(owner[1], st.NO_CPU_READ_WHY),
+                    "cpu": or_unavailable(owner[1], st.NO_CPU_READ_WHY),
                     "stored": False, "mode": rec["mode"], "length": rec["width"],
                     "fmt": rec["fmt"],
-                    "created_at": st.or_unavailable(rec.get("created_at"), arming.UNDATED_WHY),
-                    "age_s": st.or_unavailable(st.age_s(rec.get("created_at")),
+                    "created_at": or_unavailable(rec.get("created_at"), arming.UNDATED_WHY),
+                    "age_s": or_unavailable(st.age_s(rec.get("created_at")),
                                                arming.UNDATED_WHY),
                     **evaluate(scratch, owner, rec["width"], rec["fmt"], frame, shown,
                                at_stop)})

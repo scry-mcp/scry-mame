@@ -24,6 +24,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 from scry_core import cancel, picture, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_declarations as dec
@@ -747,8 +748,6 @@ def add_note(reply: dict[str, Any], *parts: str | None) -> dict[str, Any]:
     return reply
 
 
-unavailable = contract.unavailable
-or_unavailable = contract.or_unavailable
 
 
 #: `last_stop` before the session's first stop.

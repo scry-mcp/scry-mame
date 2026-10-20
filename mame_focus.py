@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_cpus as cpus
@@ -103,8 +104,8 @@ def _by_stub(ses: gs.Session, tag: str, was: str | None, thread: int) -> dict[st
     unread = sorted(t for t in before if before[t] is None or after.get(t) is None)
     unchanged = [t for t in before if t not in unread and before[t] == after[t]]
     reply: dict[str, Any] = {
-        "cpu": st.or_unavailable(visible, NO_VISIBLE_AFTER_WHY),
-        "was": st.or_unavailable(was, NO_WAS_WHY), "via": "stub",
+        "cpu": or_unavailable(visible, NO_VISIBLE_AFTER_WHY),
+        "was": or_unavailable(was, NO_WAS_WHY), "via": "stub",
         "machine_ran": frame_after != frame_before or len(unchanged) + len(unread) < len(before),
         "frame": st.frame_shown(frame_after), "unchanged": unchanged}
     if unread:
@@ -126,12 +127,12 @@ def _by_console(ses: gs.Session, scratch: Path, tag: str, was: str | None) -> di
         raise st.Invalid("unexpected_answer",
                          f"the console's `focus {tag}` answered {answer.strip()!r}")
     ignored = cpus.ignored(ses)
-    base: dict[str, Any] = {"was": st.or_unavailable(was, NO_WAS_WHY), "via": "console",
+    base: dict[str, Any] = {"was": or_unavailable(was, NO_WAS_WHY), "via": "console",
                             "machine_ran": tag != was,
-                            "ignored": st.or_unavailable(ignored, "`ignore` answered neither of "
+                            "ignored": or_unavailable(ignored, "`ignore` answered neither of "
                                                                   "its shapes")}
     if tag == was:
-        return menvelope.envelope({"cpu": st.or_unavailable(cpus.visible_cpu(ses),
+        return menvelope.envelope({"cpu": or_unavailable(cpus.visible_cpu(ses),
                                                             NO_VISIBLE_AFTER_WHY), **base})
     if ignored is None or settled_visible(ses, ignored) is None:
         # No packet comes for a run the console started: the next contact proves the stop.

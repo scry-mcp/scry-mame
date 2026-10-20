@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import fresh
-from scry_core import reply_contract as contract
 from scry_core import value_format as vf
+from scry_core.reply_contract import unavailable
 
 import mame_comment_file as cf
 import mame_inputs as inputs
@@ -97,7 +97,7 @@ Owner = tuple[str, str | None]
 def owner_fields(owner: Owner) -> dict[str, Any]:
     """An owner as a reply names it: its `ref` and its `cpu`, unavailable when none was read."""
     return {"ref": owner[0], "cpu": owner[1] if owner[1] is not None else
-            contract.unavailable("no cpu was read for it: the visible cpu was unknown")}
+            unavailable("no cpu was read for it: the visible cpu was unknown")}
 
 
 def fmt_for_width(width: int) -> str:

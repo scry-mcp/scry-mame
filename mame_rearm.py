@@ -160,12 +160,9 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
                     # armed for it, and the start goes on to the next declaration.
                     out["unarmable"].append({**name, "why": str(e)})
                     continue
-                if refusal is not None and "unknown symbol" in refusal:
-                    STATE.conditions_unresolved.add(("breakpoint", decl.owner))
-                    out["unresolved"].append(name)
+                if conditions.refused_on_rearm(refusal, cond, "breakpoint", decl.owner, name,
+                                               out):
                     continue
-                if refusal is not None:
-                    why = f"the debugger did not evaluate `{cond}`: {refusal}"
             row = None
             if why is None:
                 row, unadoptable = breakpoints.stop_row(held("bp"), decl.owner, res.addr, cond)
@@ -198,13 +195,7 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
             except (st.Invalid, gs.SessionError) as e:
                 out["unarmable"].append({**name, "why": str(e)})
                 continue
-            if refusal is not None and "unknown symbol" in refusal:
-                STATE.conditions_unresolved.add(("watch", decl.owner))
-                out["unresolved"].append(name)
-                continue
-            if refusal is not None:
-                out["unarmable"].append({**name, "why": f"the debugger did not evaluate "
-                                                        f"`{cond}`: {refusal}"})
+            if conditions.refused_on_rearm(refusal, cond, "watch", decl.owner, name, out):
                 continue
         refused, maps_to, read_maps_to = mmap.change_watch_side(ses, res.addr, arm_on)
         refused = refused or watches.watch_aliased(decl.owner, res.addr, decl.width, None)

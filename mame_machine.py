@@ -34,6 +34,7 @@ from typing import Any
 from xml.parsers import expat
 
 from scry_core import narrowing, prose
+from scry_core.reply_contract import unavailable
 
 import mame_cpus as cpus
 import mame_envelope as menvelope
@@ -616,11 +617,11 @@ def symbol_coverage(only: str = "") -> list[dict[str, Any]]:
             base = table.bases.get(klass)
             rows.append({
                 "class": klass,
-                "cpu": cpu or st.unavailable(UNNAMED_TABLE_WHY),
+                "cpu": cpu or unavailable(UNNAMED_TABLE_WHY),
                 "span": {"from": st.hex_addr(lo), "length": hi - lo + 1, **read.CLASS_SPAN},
                 "symbols": sum(1 for k in table.classes.values() if k == klass),
                 "base": (st.hex_addr(base) if base is not None
-                         else st.unavailable(NO_BASE_WHY)),
+                         else unavailable(NO_BASE_WHY)),
             })
     return rows
 
@@ -681,5 +682,5 @@ def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, A
         **narrowing.omission([n for n in MAP_SECTIONS if n not in asked], MAP_HOW),
     }
     reply = st.merged(reply, read.frame_fields())
-    reply["cpu"] = wanted or st.unavailable(st.NO_CPU_NAMED_WHY)
+    reply["cpu"] = wanted or unavailable(st.NO_CPU_NAMED_WHY)
     return menvelope.envelope(reply)

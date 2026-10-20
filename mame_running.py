@@ -19,6 +19,8 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
+from scry_core import reply_contract as contract
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_arming as arming
@@ -139,19 +141,19 @@ def stop_registers(ses: gs.Session, cpu: str | None) -> dict[str, Any]:
     if not ses.threads:
         served = cpus.stub_cpu(ses)
         if cpu not in (None, served):
-            return st.unavailable(f"{cpu}'s registers are read through its own thread of the "
+            return unavailable(f"{cpu}'s registers are read through its own thread of the "
                                   f"gdbstub's thread patch, and this build's stub serves only "
                                   f"{served}")
         thread = 1
     else:
         found = cpus.thread_of(ses, cpu) if cpu is not None else 1
         if found is None:
-            return st.unavailable(f"the stub names no thread for {cpu}")
+            return unavailable(f"the stub names no thread for {cpu}")
         thread = found
     try:
         cpus.described(ses, cpu, thread)
     except st.Invalid as e:
-        return st.unavailable(str(e))
+        return unavailable(str(e))
     return read.fmt_regs(ses, thread)
 
 
@@ -194,7 +196,7 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     try:
         dasm = read.dasm_lines(ses, scratch, pc, DASM_BYTES)
     except gs.SessionError as e:
-        dasm = st.unavailable(str(e))
+        dasm = unavailable(str(e))
     since, STATE.errorlog_mark = files.errorlog_since(scratch, STATE.errorlog_mark)
     # JUDGED OFF THE LINES ALREADY IN HAND. A throttle left pending proves itself by a
     # mark in this same log, so the one place that reads the log at every stop is the
@@ -352,7 +354,7 @@ def run_speed(ses: gs.Session) -> dict[str, Any]:
     except gs.SessionError as e:
         # THE END OF THE RUN IS REAL AND THE SPEED IS DECORATION: a clock that could not be
         # read is said on its account, which is published all the same.
-        return {"average_speed": st.unavailable(str(e))}
+        return {"average_speed": unavailable(str(e))}
     return {"average_speed": speed} if speed is not None else {}
 
 
@@ -370,7 +372,7 @@ def finish_stop(ses: gs.Session, seen: dict[str, Any], how: str, **base: Any) ->
     host held over it (`average_speed`), read from the window `resume` opened."""
     record, how = _remember(ses, seen, how)
     return menvelope.envelope({**base, "how": how, "stop_seq": record["seq"], **seen,
-                               "cpu": st.or_unavailable(seen["cpu"], st.NO_CPU_READ_WHY),
+                               "cpu": or_unavailable(seen["cpu"], st.NO_CPU_READ_WHY),
                                "frame": st.frame_shown(seen["frame"]), **run_speed(ses)})
 
 
@@ -426,7 +428,7 @@ def _found(ses: gs.Session, scratch: Path, packet: str | None) -> None:
     seen = survey(ses, scratch)
     record, _how = _remember(ses, seen, attribute(int(seen["pc"], 16), seen["cpu"]))
     STATE.found_stop_last = {"stop_seq": record["seq"], "pc": record["pc"],
-                             "cpu": st.or_unavailable(record["cpu"], st.NO_CPU_READ_WHY),
+                             "cpu": or_unavailable(record["cpu"], st.NO_CPU_READ_WHY),
                              "frame": st.frame_shown(record["frame"]),
                              "how": record["how"],
                              "packet": record["packet"] if packet is None else packet,
@@ -516,10 +518,10 @@ def resume(ses: gs.Session, scratch: Path, seconds: float,
         return session_broke(ses, e, f"{clock.elapsed(1)} s into the wait",
                              "Nothing about the run was measured")
     if not ses.running:
-        return _survey_read_stop(ses, scratch, attribute, verdict="OTHER_STOP",
+        return _survey_read_stop(ses, scratch, attribute, verdict=contract.OTHER_STOP,
                                  waited_s=st.spent_s(clock.seconds()))
     return menvelope.envelope({
-        "verdict": "TIMEOUT", "waited_s": st.spent_s(clock.seconds()),
+        "verdict": contract.TIMEOUT, "waited_s": st.spent_s(clock.seconds()),
         "note": f"no stop arrived within {seconds:g} s, so the machine was LEFT RUNNING; the "
                 "readers refuse until a stop is read (`stop`, a breakpoint, `log_wait` "
                 "meanwhile)",

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import steps
 from session_doubles import refused
 
 import mame_advance as advance
@@ -306,7 +307,7 @@ def _annotation(tool: str, arg: str) -> str:
 ])
 def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
         annotation: str, bare: str) -> None:
-    assert inputs.unannotated(annotation) == bare
+    assert steps.unannotated(annotation) == bare
 
 
 def test_a_count_published_with_a_schema_half_still_reaches_its_body_as_an_int() -> None:

@@ -29,6 +29,7 @@ from typing import Any
 
 from scry_core import picture, png, prose
 from scry_core import progress as mprogress
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_callbacks as callbacks
@@ -416,8 +417,8 @@ def gfx_blits(ses: gs.Session, scratch: Path, draw_command: str, frame: int | No
         "frames_with_blits": _span(got.frames),
         "blits_in_frame": len(got.blits), "legend": legend,
         "colors_repeat": len(colours) > len(PC_COLOURS),
-        "by_plane": [{"plane": plane or st.unavailable(NO_PLANE_WHY),
-                      "page": st.or_unavailable(page, NO_PAGE_WHY), "blits": n, "on_screen": on}
+        "by_plane": [{"plane": plane or unavailable(NO_PLANE_WHY),
+                      "page": or_unavailable(page, NO_PAGE_WHY), "blits": n, "on_screen": on}
                      for (plane, page), (n, on) in sorted(
                          planes.items(), key=lambda kv: (kv[0][0], -1 if kv[0][1] is None
                                                          else kv[0][1]))],
@@ -426,11 +427,11 @@ def gfx_blits(ses: gs.Session, scratch: Path, draw_command: str, frame: int | No
         fields["area"] = area
         fields["covering"] = len(listable)
         top = _topmost(cmd, [row for _, row in listable])
-        fields["topmost"] = st.or_unavailable(top, "no blit covers the area")
+        fields["topmost"] = or_unavailable(top, "no blit covers the area")
         st.add_note(fields, COVERING_NOTE)
     if listing:
         # a writer is placed in the symbol table for the rows shown, never for the whole frame
-        page = [{**row, "plane": st.or_unavailable(row["plane"], NO_PLANE_WHY),
+        page = [{**row, "plane": or_unavailable(row["plane"], NO_PLANE_WHY),
                  **_pc_fields(pc, got.cpu)}
                 for pc, row in listable[first:first + st.ROWS_SHOWN]]
         fields["listed"] = {"first": first, "count": len(page), "of": len(listable)}
@@ -474,7 +475,7 @@ def _topmost(cmd: mm.Command, shown: list[dict[str, Any]]) -> dict[str, Any] | N
     order = {p.name: p.order for p in cmd.planes}
     best = max(shown, key=lambda item: (order.get(item["plane"], 0), item["index"]))
     return {"index": best["index"], "n": best["n"], "pc": best["pc"],
-            "plane": st.or_unavailable(best["plane"], NO_PLANE_WHY)}
+            "plane": or_unavailable(best["plane"], NO_PLANE_WHY)}
 
 
 # ------------------------------------------------------------------ gfx_blit_source

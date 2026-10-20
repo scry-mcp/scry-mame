@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, NoReturn, overload
 
 from pydantic import Field
-from scry_core import judges, picture, prose
+from scry_core import judges, picture, prose, steps
 from scry_core.reply_contract import Invalid
 
 
@@ -96,32 +96,13 @@ def _count(value: object) -> bool:
     return isinstance(value, int) or (isinstance(value, float) and value.is_integer())
 
 
-def unannotated(annotation: str) -> str:
-    """A parameter's annotation, as source text, with every `Annotated[T, ...]` written as its
-    `T`: the schema half rides on the type and changes nothing about what the value is, so a
-    reader of the text judges `Annotated[int, ...]` as the `int` it wraps."""
-    out, at = [], 0
-    while (start := annotation.find("Annotated[", at)) != -1:
-        out.append(annotation[at:start])
-        depth, i, comma = 1, start + len("Annotated["), -1
-        while depth:
-            c = annotation[i]
-            depth += (c == "[") - (c == "]")
-            if c == "," and depth == 1 and comma == -1:
-                comma = i
-            i += 1
-        out.append(unannotated(annotation[start + len("Annotated["):comma]).strip())
-        at = i
-    return "".join(out) + annotation[at:]
-
-
 def integral_counts(value: object, annotation: str) -> object:
     """`value` with an integral float made the int it equals wherever `annotation` (a tool
     parameter's, as a string) declares a count: `int`, or a list of them, with or without
     `| None`, a schema half included (`unannotated`), at any depth of lists. The judges take
     `6.0` as the count 6 (`_count`), and this is what makes every body behind them receive the
     int, so a `range()` or a `%x` downstream never meets a float."""
-    parts = sorted(p.strip() for p in unannotated(annotation).split("|"))
+    parts = sorted(p.strip() for p in steps.unannotated(annotation).split("|"))
     kind = next((p for p in parts if p != "None"), "") if len(parts) <= 2 else ""
 
     def convert(v: object, kind: str) -> object:

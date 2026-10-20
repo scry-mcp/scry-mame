@@ -18,6 +18,7 @@ from typing import Any
 
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_declarations as dec
@@ -46,11 +47,11 @@ def decl_row(decl: dec.Declaration) -> dict[str, Any]:
     `start`, raw addresses over the same build included, reads otherwise exactly like one
     declared here. `age_s` is the half that tells an old row from a recent one in a store
     other sessions share, computed now (`st.age_s`)."""
-    return {"ref": decl.ref, "by": decl.by, "cpu": st.or_unavailable(decl.cpu, NO_DECL_CPU_WHY),
-            "created_at": st.or_unavailable(decl.created_at, UNDATED_WHY),
-            "origin": st.or_unavailable(decl.origin, NO_ORIGIN_WHY),
+    return {"ref": decl.ref, "by": decl.by, "cpu": or_unavailable(decl.cpu, NO_DECL_CPU_WHY),
+            "created_at": or_unavailable(decl.created_at, UNDATED_WHY),
+            "origin": or_unavailable(decl.origin, NO_ORIGIN_WHY),
             "inherited": decl.origin != STATE.session_origin,
-            "age_s": st.or_unavailable(st.age_s(decl.created_at), UNDATED_WHY)}
+            "age_s": or_unavailable(st.age_s(decl.created_at), UNDATED_WHY)}
 
 
 def stale_why() -> str:

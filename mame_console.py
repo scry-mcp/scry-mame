@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from scry_core import prose
-from scry_core import reply_contract as contract
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_lexer as lexer
@@ -341,8 +341,8 @@ class Refusals:
     def fields(self, commands: list[str]) -> dict[str, Any]:
         """The reply's own fields for the refusal, bounded."""
         unpinned = "the console's answer does not say which command it was"
-        listed = [{"index": contract.or_unavailable(r.index, unpinned),
-                   "command": contract.or_unavailable(r.command, unpinned), "error": r.error}
+        listed = [{"index": or_unavailable(r.index, unpinned),
+                   "command": or_unavailable(r.command, unpinned), "error": r.error}
                   for r in self.refused[:REFUSED_LISTED_MAX]]
         return {"refused": listed, "refused_total": len(self.refused),
                 "not_run": [commands[k] for k in self.not_run]}

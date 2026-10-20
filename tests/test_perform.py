@@ -25,6 +25,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import sequence_account  # noqa: E402
+from scry_core import steps as step_judge  # noqa: E402
+from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
@@ -1292,7 +1294,7 @@ def test_until_frame_refuses_a_stop_that_carries_no_frame(
 
     def no_frame(**_: Any) -> dict[str, Any]:
         return menvelope.envelope({"how": "elapsed", "stop_seq": 99,
-                                   "frame": mstate.unavailable("no counter"),
+                                   "frame": unavailable("no counter"),
                                    "pc": "0x00000000"})
 
     monkeypatch.setattr(s, "run_for", no_frame)
@@ -1458,7 +1460,7 @@ def _optional_count(count: int | None = None, mode: str | int | None = None) -> 
 def test_an_optional_scalar_takes_null_and_judges_anything_else_as_the_scalar(
     args: dict[str, Any], refusal: str | None,
 ) -> None:
-    said = sequence._wrong_type(_optional_count, args)
+    said = step_judge.wrong_type(_optional_count, args)
     assert (said is None) if refusal is None else (said or "").startswith(refusal), said
 
 

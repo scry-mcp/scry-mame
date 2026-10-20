@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from scry_core.reply_contract import unavailable  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -30,10 +31,10 @@ def test_a_note_is_added_after_the_one_the_reply_already_carries() -> None:
 
 
 def test_an_unread_datum_is_unavailable_with_its_reason() -> None:
-    assert mstate.unavailable("the stub refused") == {"available": False,
+    assert unavailable("the stub refused") == {"available": False,
                                                       "why": "the stub refused"}
     with pytest.raises(TypeError, match="says why"):
-        mstate.unavailable(" ")
+        unavailable(" ")
 
 
 def test_merged_fields_join_their_notes_and_keep_their_order() -> None:

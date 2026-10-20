@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
     MAP_ROM,
@@ -4587,7 +4588,7 @@ def test_the_tools_carry_the_clients_context_to_their_waits(tmp_path: Path) -> N
             mp.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
             mp.setattr(running, "RESUME_POLL_S", 0.0)
             mp.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
-            mp.setattr(files, "LOG_POLL_S", 0.0)
+            mp.setattr(core_wait, "POLL_S", 0.0)
             await anyio.to_thread.run_sync(lambda: s.resume(seconds=0.02, ctx=_Ctx()))
             assert got and got[-1].startswith("resume: running")
             got.clear()
@@ -6154,7 +6155,7 @@ def test_each_reason_a_run_has_no_cycles_is_its_own(monkeypatch: pytest.MonkeyPa
     assert "each cpu keeps its own" in str(
         advance._span(None, 100, ":maincpu", ":subcpu"))  # type: ignore[arg-type]
     monkeypatch.setattr(read, "print_values", refused)
-    assert advance._span(None, 100, ":maincpu", ":maincpu") == mstate.unavailable(  # type: ignore[arg-type]
+    assert advance._span(None, 100, ":maincpu", ":maincpu") == unavailable(  # type: ignore[arg-type]
         "`totalcycles` could not be read after the run: the console refused `print totalcycles`")
 
 

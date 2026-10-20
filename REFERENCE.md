@@ -2103,13 +2103,14 @@ back with no model, from this repository:
 uv run python -m scry_core.replay <document> [--binary PATH] [--rompath DIR] [--transcript PATH]
 ```
 
-It exits 0 when every step held, 1 when a step diverged or failed in the server's own words (or
-`perform`'s `held`, the steps it held to their `recorded` answer, is not the document's count), 2
-on a usage error, and 3 when nothing was demonstrated: a document that is not one or holds no
-step with a `recorded` answer, a start the server refused, a saved state it loads and the server
-lacks, declarations the replay's store holds unlike the recorded start's, and a server that
-broke (did not start, died or timed out mid-call, answered an error result, refused the list
-whole). The whole transcript goes to `tmp/replays/<document stem>/transcript.md`.
+It exits as its `--help` prints: 0 when every step held, 1 when a step diverged or failed in the
+server's own words (or `perform`'s `held`, the steps it held to their `recorded` answer, is not
+the document's count), 2 on a usage error, and 3 when nothing was demonstrated: a document that
+is not one or holds no step with a `recorded` answer, a start the server refused, a saved state
+it loads and the server lacks, declarations the replay's store holds unlike the recorded
+start's, and a server that broke (did not start, died or timed out mid-call, answered an error
+result, refused the list whole). The whole transcript goes to `tmp/replays/<document
+stem>/transcript.md`.
 
 What the export keeps is what moved the machine and what was checked:
 
@@ -2730,17 +2731,18 @@ other by `golden_check`; `image_diff` reads the colours a picture shows, so it c
 (A direct-colour screen, or a palette past 256 pens, gives RGB to both.)
 
 **The file tools** (`image_diff`, `series_diff`, `region_track`, `golden_check`) read files and
-touch no machine, so they answer with the machine running or with none, and they are scry-core's,
-the same body and text on both servers; `region_track` writes one file, the whole track as JSON,
-beside the manifest. Every series and golden comparison carries its control, because a result that
-cannot come out the other way is no result: a series whose frames never change says nothing about
-another (`control_silent` naming it), two series with no frame in common compare nothing, a region
-whose measure never moves was missed, and goldens whose names meet no file examined nothing.
-Reading a manifest hashes every file it lists and signs each picture again, so a frame changed
-since it was written, or a row edited by hand, is refused rather than trusted. `golden_check` lists
-at most `limit` names in each of `differing`, `missing` and `extra` (40 unless asked, up to 1000),
-their whole counts beside them (`differing_total`, `missing_total`, `extra_total`), and a list it
-cut says so in `omitted` and `how`.
+touch no machine, so they answer with the machine running or with none, and they are
+scry-core's, the same body and text on both servers; `region_track` writes one file, the whole
+track as JSON, beside the manifest. Every series and golden comparison carries its control,
+because a result that cannot come out the other way is no result: a series whose frames never
+change says nothing about another (`control_silent` naming it), two series with no frame in
+common compare nothing, a region whose measure never moves was missed, and goldens whose names
+meet no file examined nothing. Reading a manifest hashes every file it lists and signs each
+picture again, so a frame changed since it was written, or a row edited by hand, is refused
+rather than trusted. `golden_check` lists at most `limit` names in each of `differing`,
+`missing` and `extra` (the default and the ceiling are the ones `golden_check`'s description
+prints), their whole counts beside them (`differing_total`, `missing_total`, `extra_total`), and
+a list it cut says so in `omitted` and `how`.
 
 **Sound is measured, never sent.** The model cannot take audio in, so `audio_measure` and
 `audio_diff` answer what `audio_record` wrote as numbers beside its path, with a tracker's own

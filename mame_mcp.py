@@ -243,19 +243,10 @@ def _machine() -> recording.Machine:
 _LISTS = {kind: (f"{kind}_list", key) for kind, key in dec.COUNT_KEYS.items()}
 
 
-def _declared() -> dict[str, list[str]]:
-    """The declarations the store holds, by `ref`, under the tool that lists each kind: what a
-    `start` re-arms, so a replay can be held to the same."""
-    held: dict[str, list[str]] = {tool: [] for tool, _ in _LISTS.values()}
-    for d in arming.store().declarations():
-        if d.kind in _LISTS:
-            held[_LISTS[d.kind][0]].append(d.ref)
-    return held
-
-
 RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _machine,
                               lambda: STATE.ses is not None and STATE.machine_alive(),
-                              declarations=_declared, lists=dict(_LISTS.values()),
+                              declarations=lambda: arming.store().declarations(),
+                              kinds=_LISTS,
                               stop_fields=("pc", "frame"),
                               outside=sequence.NOT_STEPS - sequence.SEQUENCES - {"start"},
                               sequences=sequence.SEQUENCES, start_tool="start",
@@ -275,27 +266,10 @@ def tool(
     session_before: bool = False, on_cancel: cancel.OnCancel | None = None,
     replay: recording.ExportAs | None = None,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """Registers an MCP tool, SERIALIZES it over the one machine (see `LOCK`), and puts the
-    one-line `summary` first in its reply: `summary` is the tool's own line
-    (`mame_summaries`), REQUIRED, so a tool registered without one fails at import.
-
-    `title` is what the client shows for the tool, and `read_only` becomes the protocol's
-    `readOnlyHint`: a reader declares it so a client may run readers in parallel, which is
-    honest here because every tool takes the lock anyway. Anything that advances the machine,
-    writes to it, or writes a FILE (`memdump`, `snapshot`) is not read-only.
-
-    `idempotent` becomes `idempotentHint`, and it is a STRONGER claim than read-only: calling
-    it again changes nothing AND answers the same. Almost nothing here can say that, because
-    almost everything reads a machine that moves; what can is a tool serving a cache built
-    once at `start`. Declared wrongly it would invite a client to repeat a call whose answer
-    had moved underneath it, so it stays false unless the tool's own data cannot change.
-
-    `session_before` keeps the `session` block the body built (`close`'s, the state BEFORE the
-    kill, so that `altered` is the truth about the session it ended). `on_cancel` is how the
-    tool ends when the client cancels its call (`_end_cancelled`); the rest of the contract,
-    the `ctx` rule included, is `scry_core.boundary.Boundary.tool`'s, and which errors become
-    replies is `_invoke`'s. `replay` is what its calls become in an exported session
-    (`scry_core.replay`; REFERENCE.md, From an investigation to a bench).
+    """Registers an MCP tool on this server's boundary (`scry_core.boundary.Boundary.tool`, the
+    contract), serialised over the one machine (see `LOCK`), `summary` its line in
+    `mame_summaries`; `on_cancel` ends at `_end_cancelled`, and which errors become replies is
+    `_invoke`'s. What can be idempotent here is a tool serving a cache built once at `start`.
     """
 
     return BOUNDARY.tool(title, summary=summary, read_only=read_only, idempotent=idempotent,

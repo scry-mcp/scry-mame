@@ -29,7 +29,9 @@ from scry_core import media_tools, prose, recording
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import sequence_account as account
+from scry_core import steps as step_judge
 from scry_core import value_format as vf
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_advance as advance
@@ -282,36 +284,12 @@ def validate_settle(settle_seconds: float) -> None:
     inputs.seconds_bound(settle_seconds, name="settle_seconds", zero_means="never wait")
 
 
-_TYPED: dict[str, tuple[type | tuple[type, ...], str]] = {
-    "int": (int, "an integer"), "float": ((int, float), "a number"),
-    "str": (str, "a string"), "bool": (bool, "a boolean"),
-}
-
-
-def _wrong_type(fn: Any, args: dict[str, Any]) -> str | None:
-    """The first argument whose value is not what the tool's own signature declares, as the
-    refusal names it, or None. A bool is never an integer here: `True` for a count is a
-    mistake, not a 1. The scalar annotations are judged, and a scalar `| None` too (a
-    `None` passes it, anything else is judged as the scalar); a step's remaining shapes are
-    the check's business."""
-    for name, param in inspect.signature(fn).parameters.items():
-        if name not in args:
-            continue
-        ann = inputs.unannotated(param.annotation) if isinstance(param.annotation, str) \
-            else getattr(param.annotation, "__name__", "")
-        parts = [part.strip() for part in ann.split("|")]
-        value = args[name]
-        if "None" in parts and len(parts) == 2:
-            if value is None:
-                continue
-            parts.remove("None")
-        typed = _TYPED.get(parts[0]) if len(parts) == 1 else None
-        if typed is None:
-            continue
-        want, word = typed
-        if (isinstance(value, bool) and want is not bool) or not isinstance(value, want):
-            return f"{name} is {word}; got {value!r}"
-    return None
+def _as_wrapped(params: dict[str, inspect.Parameter], args: dict[str, Any]) -> dict[str, Any]:
+    """A step's arguments as this server's tool wrapper passes them: an integral float is the
+    count it equals (`inputs.integral_counts`)."""
+    return {n: inputs.integral_counts(v, params[n].annotation)
+            if n in params and isinstance(params[n].annotation, str) else v
+            for n, v in args.items()}
 
 
 def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
@@ -327,42 +305,16 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
             # the message: a message is repeated in `errors`, in the joined refusal and in the
             # summary, and a list of every operation in each copy buries the one step that failed.
             refused.append({"step": i,
-                            "op": st.or_unavailable(op, "the step names no `op`"),
+                            "op": or_unavailable(op, "the step names no `op`"),
                             "code": "bad_argument",
                             "message": f"is not a step ({step!r}): see `operations` for the "
                                        "server's own operation names"})
             continue
-        args = recording.step_arguments(step)
-        if (why := recording.refuse_recorded(step)) is not None:
-            refused.append({"step": i, "op": op, "code": "bad_argument", "message": why})
+        refusal, args = step_judge.judge(ops[op], step, prepare=_as_wrapped)
+        if refusal is not None:
+            refused.append({"step": i, "op": op, **refusal})
             continue
-        # `ctx` is the SDK's, injected when the client calls a tool, never an argument a
-        # step may carry: a stray value would reach the progress bridge as a context.
-        if "ctx" in args:
-            refused.append({"step": i, "op": op, "code": "bad_argument",
-                            "message": "carries `ctx`, which is not a step argument: the "
-                                       "client's context is not something a step names"})
-            continue
-        try:
-            # BIND against the REAL tool signature (functools.wraps exposes it), so a bad
-            # ARGUMENT NAME is the sequence's fault to report, and a TypeError raised inside
-            # a tool later is not swallowed as "bad arguments" but escapes as the bug it is.
-            inspect.signature(ops[op]).bind(**args)
-        except TypeError as e:
-            takes = [n for n in inspect.signature(ops[op]).parameters if n != "ctx"]
-            refused.append({"step": i, "op": op, "code": "bad_argument",
-                            "message": f"has bad arguments: {e}; `takes` names `{op}`'s",
-                            "takes": takes})
-            continue
-        # AS THE TOOL'S WRAPPER WILL PASS IT: an integral float is the count it equals.
         params = inspect.signature(ops[op]).parameters
-        args = {n: inputs.integral_counts(v, params[n].annotation)
-                if n in params and isinstance(params[n].annotation, str) else v
-                for n, v in args.items()}
-        wrong = _wrong_type(ops[op], args)
-        if wrong is not None:
-            refused.append({"step": i, "op": op, "code": "bad_argument", "message": wrong})
-            continue
         check = BY_OP.get(op)
         try:
             # A number reaches the check as the integer the tool itself reads.
@@ -436,11 +388,11 @@ NOTHING_LOOKED_WHY = "the act was refused before anything ran, so the log was no
 
 def _reached(frame: int | None) -> int | dict[str, Any]:
     """`until_frame`'s `frame_reached`, or why there is none: no stop of the list read one."""
-    return st.or_unavailable(frame, "no stop of the list read a frame")
+    return or_unavailable(frame, "no stop of the list read a frame")
 
 
 def _none_failed() -> dict[str, Any]:
-    return st.unavailable(NO_FAILURE_WHY)
+    return unavailable(NO_FAILURE_WHY)
 
 
 def _account(ran: dict[str, Any]) -> dict[str, Any]:
@@ -486,7 +438,7 @@ def drive_refused(code: contract.Code, message: str, pattern: str,
                              **named,
                              verify={"checked": False,
                                      "why": "the act was refused before anything ran"},
-                             looked={"emulator": st.unavailable(NOTHING_LOOKED_WHY)})
+                             looked={"emulator": unavailable(NOTHING_LOOKED_WHY)})
 
 
 def refuse_steps(steps: list[Any], ops: Ops) -> dict[str, Any] | None:
@@ -683,7 +635,6 @@ def _stop_extra(reply: dict[str, Any], cut: dict[str, Any]) -> None:
 SHAPE = account.Shape(kept=("how", "pc", "frame", "stop_seq"),
                       how=lambda stop: watches.how_key(str(stop.get("how"))),
                       extra=_stop_extra)
-_stops_in = account.stops_in
 
 
 def account_of(ran: list[dict[str, Any]], summaries: bool, keep_last: bool, scratch: Path,
@@ -740,7 +691,7 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
 
 def _frame_of(reply: dict[str, Any]) -> int | None:
     """The newest frame a reply's stops carry, the one a run `until_frame` is judged by."""
-    known = [f for s in _stops_in(reply) if isinstance(f := s.get("frame"), int)]
+    known = [f for s in account.stops_in(reply) if isinstance(f := s.get("frame"), int)]
     return max(known) if known else None
 
 
@@ -811,17 +762,17 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
                 why = (f"the machine was still running {settle_seconds:g}s after the previous "
                        f"step, so the console step {op!r} cannot be sent. A breakpoint, a "
                        "registerpoint or a watch has to stop it first")
-                account = {**account_of(ran, summaries, keep_last=True, scratch=scratch,
-                                        since=since),
-                           "steps_completed": len(ran), **until,
-                           **({"frame_reached": _reached(reached)} if until else {})}
+                so_far = {**account_of(ran, summaries, keep_last=True, scratch=scratch,
+                                       since=since),
+                          "steps_completed": len(ran), **until,
+                          **({"frame_reached": _reached(reached)} if until else {})}
                 if not settle_seconds:
                     # NO WAIT WAS ASKED, so nothing ran out: the step could not be sent at all.
-                    return _Ran("not_stopped", why, {**account, "failed_at": i}, asked, _no_line,
+                    return _Ran("not_stopped", why, {**so_far, "failed_at": i}, asked, _no_line,
                                 held)
                 # THE WAIT RAN OUT: a verdict, and the list ends here with what it completed.
-                return _Ran(None, "", {**account, "failed_at": _none_failed(),
-                                       "verdict": "TIMEOUT",
+                return _Ran(None, "", {**so_far, "failed_at": _none_failed(),
+                                       "verdict": contract.TIMEOUT,
                                        "note": f"{why}; it and the steps after it were not sent"},
                             asked, _no_line, held)
             # A wait with `settle_seconds` 0 was not asked for, even when the stop had already
@@ -869,7 +820,7 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
             running_now = running_now and ses.running
             released_last = False
         i += 1
-        if until_frame and _stops_in(reply):
+        if until_frame and account.stops_in(reply):
             frame = _frame_of(reply)
             if frame is None:
                 return _Ran("unexpected_answer",
@@ -905,7 +856,8 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
     if until_frame and (reached is None or reached < until_frame):
         return _Ran(None, "",
                     {**account_of(ran, summaries, keep_last=True, scratch=scratch, since=since),
-                     "steps_completed": len(ran), "failed_at": _none_failed(), "verdict": "TIMEOUT",
+                     "steps_completed": len(ran), "failed_at": _none_failed(),
+                     "verdict": contract.TIMEOUT,
                      **until,
                      "frame_reached": _reached(reached),
                      "note": f"until_frame={until_frame} was not reached in "
@@ -934,11 +886,11 @@ def _steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops:
             final = {"stopped": running.stop_reply(ses, scratch, running.name_stop(ses))}
             waited = waited or settle_seconds > 0
         else:
-            final = {"verdict": "TIMEOUT",
+            final = {"verdict": contract.TIMEOUT,
                      "note": f"the sequence ended with the machine running and it did not "
                              f"stop within {settle_seconds:g}s"}
     if waited and "verdict" not in final and "still_running" not in final:
-        final = {"verdict": "TARGET", **final}
+        final = {"verdict": contract.TARGET, **final}
     tail = [final["stopped"]] if "stopped" in final else []
     return _Ran(None, "", {**account_of(ran, summaries, keep_last=True, scratch=scratch,
                                         since=since, also=tail),
@@ -957,10 +909,10 @@ def _keep_visible(ses: Any, was: str | None, asked: str | None) -> dict[str, Any
     when the list began running or with none visible, `after` by the account's own `why`."""
     kept = _kept_visible(ses, was, asked)
     if kept["before"] is None:
-        kept["before"] = st.unavailable("the list began with the machine running, or `cpulist` "
+        kept["before"] = unavailable("the list began with the machine running, or `cpulist` "
                                         "marked no cpu visible")
     if kept["after"] is None:
-        kept["after"] = st.unavailable(str(kept.get("why") or "no cpu was read visible"))
+        kept["after"] = unavailable(str(kept.get("why") or "no cpu was read visible"))
     return kept
 
 
@@ -1026,7 +978,7 @@ def _verify(ses: Any, scratch: Path, pat: re.Pattern[str], wait_s: float, mark: 
         since, _end = files.errorlog_since(scratch, mark)
         hits = [ln for ln in since if pat.search(ln)]
         if hits:
-            return {"checked": True, "seen": True, "verdict": "TARGET", "expected": expect,
+            return {"checked": True, "seen": True, "verdict": contract.TARGET, "expected": expect,
                     "line": hits[0],
                     "lines_before": since.index(hits[0]), "lines_total": len(hits),
                     "waited_s": st.spent_s(clock.seconds())}
@@ -1041,7 +993,7 @@ def _verify(ses: Any, scratch: Path, pat: re.Pattern[str], wait_s: float, mark: 
         if running.came_to_rest(ses, scratch, 0.0):
             continue                     # the stop is noted; the next pass reads and returns
         if clock.expired():
-            return {"checked": True, "seen": False, "verdict": "TIMEOUT", "expected": expect,
+            return {"checked": True, "seen": False, "verdict": contract.TIMEOUT, "expected": expect,
                     "waited_s": st.spent_s(clock.seconds()),
                     "why": f"no new line matching {expect!r} within {wait_s:g} s, the machine "
                            "still running"}
@@ -1083,10 +1035,10 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     checked: dict[str, Any] = {"checked": False,
                                 "why": "no `expect` given; the act's own steps carried "
                                        "whatever verification they asked for"}
-    if ran.get("verdict") == "TIMEOUT":
+    if ran.get("verdict") == contract.TIMEOUT:
         # AN ACT THAT RAN OUT ITS WAIT DID NOT DO WHAT IT WAS ASKED, so nothing it did is
         # checked: the verdict is the act's, and the verify says why there is none.
-        checked = {"checked": False, **st.unavailable(
+        checked = {"checked": False, **unavailable(
             "the act ran out its wait before it ended (`act.verdict` TIMEOUT), so there is no "
             "effect of the whole act to verify")}
     elif expect_rx is not None:

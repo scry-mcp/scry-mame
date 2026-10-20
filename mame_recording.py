@@ -20,6 +20,7 @@ from typing import Any, NamedTuple
 from scry_core import avi
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_advance as advance
@@ -123,7 +124,7 @@ NOT_BEGUN_WHY = "the recording has NOT begun: the script's frame notifier has no
 
 def not_read(keys: tuple[str, ...], why: str) -> dict[str, Any]:
     """Each of `keys` as `unavailable`, for the reason one recording state gives them all."""
-    return {key: st.unavailable(why) for key in keys}
+    return {key: unavailable(why) for key in keys}
 
 
 def _not_begun(ran: dict[str, Any], what: str, armed: dict[str, str], path: Path,
@@ -154,8 +155,8 @@ def _frames_said(before: int | None) -> Iterator[None]:
     except st.Invalid as refusal:
         if "frame_before" not in refusal.fields:
             refusal.fields.update(
-                frame_before=st.or_unavailable(before, NO_FRAME_READ_WHY),
-                frame_after=st.or_unavailable(st.last_stop_frame(), NO_FRAME_READ_WHY))
+                frame_before=or_unavailable(before, NO_FRAME_READ_WHY),
+                frame_after=or_unavailable(st.last_stop_frame(), NO_FRAME_READ_WHY))
         raise
 
 
@@ -302,17 +303,17 @@ def captures() -> dict[str, Any]:
     for kind, path_s in STATE.captures:
         path = Path(path_s)
         entry: dict[str, Any] = {"kind": kind, "path": path_s, "present": path.is_file()}
-        gone = st.unavailable("the file is gone")
+        gone = unavailable("the file is gone")
         entry["bytes"] = path.stat().st_size if entry["present"] else gone
         # EVERY KEY OF A KIND ON EVERY ROW OF IT, unavailable with its why when nothing on disk
         # says it: a key that comes and goes is a shape a reader has to guess.
         if kind == "avi":
             frames = _avi_frames(path) if entry["present"] else None
             entry["avi_frames"] = (frames if frames is not None else gone if not entry["present"]
-                                   else st.unavailable(NOT_FINISHED_WHY))
+                                   else unavailable(NOT_FINISHED_WHY))
         if kind == "wav":
             wav = files.wav_header(path) if entry["present"] else None
-            unread = gone if not entry["present"] else st.unavailable(NOT_FINISHED_WHY)
+            unread = gone if not entry["present"] else unavailable(NOT_FINISHED_WHY)
             entry["samples"] = wav.samples if wav else unread
             entry["channels"] = wav.channels if wav else unread
             entry["sample_rate_hz"] = wav.sample_rate if wav else unread

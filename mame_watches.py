@@ -43,6 +43,7 @@ from typing import Any, assert_never
 
 from scry_core import prose
 from scry_core import value_format as vf
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_arming as arming
@@ -788,7 +789,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     arming.refuse_conflict(decl)
     res = arming.resolve_decl(decl)
     reply: dict[str, Any] = {"ref": ref, "by": chosen, "mode": mode, "length": width,
-                             "fmt": fmt, "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+                             "fmt": fmt, "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
                              "while_running": running}
     if cond:
         conditions.condition_fields(reply, typed, cond)
@@ -884,7 +885,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
                  state=mlists.row_state(armed), index=armed["index"], entry=armed["entry"],
                  cpu=armed["cpu"],
                  write_maps_to=armed["maps_to"],
-                 read_maps_to=st.or_unavailable(armed["read_maps_to"], mmap.NO_READ_SIDE_WHY),
+                 read_maps_to=or_unavailable(armed["read_maps_to"], mmap.NO_READ_SIDE_WHY),
                  values_from=armed["values_from"])
     return menvelope.envelope(st.add_note(reply, cpus.ignored_note(ses, armed["cpu"])))
 
@@ -986,7 +987,7 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
         sent = send_count(scratch, owner, addr, width, mspace.PROGRAM, unchecked, maps_to,
                           read_maps_to)
         return None, {"write_maps_to": maps_to,
-                      "read_maps_to": st.or_unavailable(read_maps_to,
+                      "read_maps_to": or_unavailable(read_maps_to,
                                                         mmap.NO_READ_SIDE_WHY), **sent}
     # A STORED CAPTURE IS JUDGED AS A DECLARED ONE: a row stored before the format bound, or by
     # another server, re-arms at `start` through here and not through `watch_add`.
@@ -1021,7 +1022,7 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
                 sent["note"], f"the trigger: nothing in the machine handles a read at "
                 f"{trigger:#x}, so the cpu reading it gets the bus's unmapped value") or ""
         return None, {"trigger_addr": st.hex_addr(trigger),
-                      "trigger_maps_to": st.or_unavailable(trigger_read, mmap.NO_READ_SIDE_WHY),
+                      "trigger_maps_to": or_unavailable(trigger_read, mmap.NO_READ_SIDE_WHY),
                       **sent}
     try:
         src = capture.source(addr, width, owner[1], mmap.read_side(ses, owner[1]))
@@ -1087,7 +1088,7 @@ def _tally_state(decl: dec.Declaration, addr: int, frame: int | None, shown: int
 def _reading(ses: gs.Session, decl: dec.Declaration, addr: int, raw: bytes | None = None,
              cpu: str | None = None) -> tuple[dict[str, Any], bytes | None]:
     """A watch's bytes read NOW, as the `reading` every reader of a watch gives them: available
-    with `value` and `raw_hex`, or `st.unavailable` with the stub's refusal and never a zero. It
+    with `value` and `raw_hex`, or `unavailable` with the stub's refusal and never a zero. It
     is its own field because it is its own axis: the row's `state` says where the watch is
     PLACED, and a change watch is `armed` and read at the same stop."""
     assert decl.width is not None and decl.fmt is not None
@@ -1097,14 +1098,14 @@ def _reading(ses: gs.Session, decl: dec.Declaration, addr: int, raw: bytes | Non
         raw = raw or _read_exact(ses, addr, decl.width, cpu)
         value = _value(raw, decl.width, decl.fmt, decode_order(ses, cpu, decl.fmt))
     except gs.SessionError as e:
-        return st.unavailable(str(e)), None
+        return unavailable(str(e)), None
     return {"available": True, "value": value, "raw_hex": raw.hex()}, raw
 
 
 def _expr_reading(value: int | gs.SessionError) -> dict[str, Any]:
     """An expression's `reading`: its value with `hex`, or the console's refusal."""
     if isinstance(value, gs.SessionError):
-        return st.unavailable(str(value))
+        return unavailable(str(value))
     return {"available": True, "value": value, "hex": f"{value:#x}"}
 
 
@@ -1192,8 +1193,8 @@ def _rows(ses: gs.Session, decls: list[dec.Declaration],
         if decl.kind != "watch":
             continue
         item = {**arming.decl_row(decl), "mode": decl.watch_mode,
-                "length": st.or_unavailable(decl.width, EXPR_NO_BYTES_WHY),
-                "fmt": st.or_unavailable(row_fmt(decl), EXPR_NO_BYTES_WHY)}
+                "length": or_unavailable(decl.width, EXPR_NO_BYTES_WHY),
+                "fmt": or_unavailable(row_fmt(decl), EXPR_NO_BYTES_WHY)}
         if decl.condition:
             conditions.typed_condition(item, decl)
         res = arming.resolve_decl(decl)
@@ -1254,7 +1255,7 @@ def watch_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
         "watches": rows,
         "foreign": [r["entry"] for r in held if r["index"] not in mine],
     }
-    reply["cpu"] = st.or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
+    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
     # A REMOVAL IS READ HERE, because its declaration is already gone and the
     # per-declaration survey has nothing left to reach it through. It is READ and never
     # resent: `read_removal_answers` says why that asymmetry with the install is the point.
@@ -1391,7 +1392,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
             continue
         assert decl.width is not None and decl.fmt is not None
         item = {"ref": decl.ref, "by": decl.by,
-                "cpu": st.or_unavailable(decl.cpu, arming.NO_DECL_CPU_WHY), "mode": decl.watch_mode,
+                "cpu": or_unavailable(decl.cpu, arming.NO_DECL_CPU_WHY), "mode": decl.watch_mode,
                 "length": decl.width, "fmt": row_fmt(decl)}
         if decl.condition:
             conditions.typed_condition(item, decl)
@@ -1409,7 +1410,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
                 armed = STATE.armed_watches.get(decl.owner)
                 item.update(place(decl, int(armed["addr"]))
                             if armed is not None else {"state": "unresolved"},
-                            reading=st.unavailable(str(e)))
+                            reading=unavailable(str(e)))
                 out.append(item)
                 continue
             item["pointer"] = info
@@ -1446,10 +1447,10 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
             # the console's log, and the read side is named so the reader knows why.
             item.update(place(decl, res.addr), addr=st.hex_addr(res.addr),
                         reading={"state": "bus",
-                                 "last_wrote": st.or_unavailable(
+                                 "last_wrote": or_unavailable(
                                      armed["last_wrote"], "nothing has written it since it was "
                                                           "armed"),
-                                 "read_maps_to": st.or_unavailable(armed["read_maps_to"],
+                                 "read_maps_to": or_unavailable(armed["read_maps_to"],
                                                                    mmap.NO_READ_SIDE_WHY)})
             out.append(item)
             continue
@@ -1556,7 +1557,7 @@ def watch_stop(ses: gs.Session, since: list[str]
              and int(mm.group(1), 16) == armed["index"]]
     writes: list[dict[str, Any]] = [{"wrote": f"0x{mm.group(2).lower()}",
                                      "to": st.hex_addr(int(mm.group(3), 16)),
-               "pc": st.or_unavailable(_writer(mm), _NO_WRITER)} for _ln, mm in lines]
+               "pc": or_unavailable(_writer(mm), _NO_WRITER)} for _ln, mm in lines]
     # THE SAME CEILING AS EVERY OTHER LIST, and the LAST writes are the ones kept: a latch
     # written many times a frame puts hundreds of writes in one reply, and the write that
     # stopped the machine is the last one.
@@ -1572,11 +1573,11 @@ def watch_stop(ses: gs.Session, since: list[str]
         # THE VALUES ARE THE WRITES: what the console logged is what reached the handler,
         # and a memory read here would answer the read side, which is not this register.
         hit["before"] = (armed["last_wrote"] if armed["last_wrote"] is not None
-                         else st.unavailable(_NO_BEFORE_BUS))
+                         else unavailable(_NO_BEFORE_BUS))
         hit["after"] = armed["last_wrote"] = int(writes[-1]["wrote"], 16)
     else:
         last = armed.get("last")
-        hit["before"] = st.unavailable(_NO_BEFORE_MEMORY)
+        hit["before"] = unavailable(_NO_BEFORE_MEMORY)
         decoded = False
         try:
             order = decode_order(ses, armed["cpu"], decl.fmt)
@@ -1586,9 +1587,9 @@ def watch_stop(ses: gs.Session, since: list[str]
             hit["after"] = _value(now, decl.width, decl.fmt, order)
             fresh[owner] = now
         except gs.SessionError as e:
-            hit["after"] = st.unavailable(str(e))
+            hit["after"] = unavailable(str(e))
             if isinstance(last, bytes) and not decoded:
-                hit["before"] = st.unavailable(str(e))     # read before, not decoded
+                hit["before"] = unavailable(str(e))     # read before, not decoded
     hit["lines"] = [ln for ln, _mm in lines]
     # A LEFTOVER FROM AN EARLIER SESSION SAYS SO, in the stop itself and not only in
     # `start`'s rearm block. The store keeps a declaration's original origin across a

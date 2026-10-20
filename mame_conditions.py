@@ -211,3 +211,19 @@ def check_condition(condition: str) -> str:
             "evaluation: a condition compares (`==`, `!=`, `<`, `>=`) and never assigns; a "
             "command that writes goes through `debug`")
     assert_never(rule)
+
+
+def refused_on_rearm(refusal: str | None, cond: str, kind: str, owner: dec.Owner,
+                     name: dict[str, Any], out: dict[str, list[Any]]) -> bool:
+    """A condition the console would not evaluate, sorted where a re-arm reports it: a name
+    this build lacks is `unresolved` (kept, and armed again once the name exists), any other
+    refusal `unarmable` with the console's words. True when the declaration was sorted."""
+    if refusal is None:
+        return False
+    if "unknown symbol" in refusal:
+        STATE.conditions_unresolved.add((kind, owner))
+        out["unresolved"].append(name)
+    else:
+        out["unarmable"].append({**name, "why": f"the debugger did not evaluate `{cond}`: "
+                                                f"{refusal}"})
+    return True

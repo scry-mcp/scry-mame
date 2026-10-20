@@ -18,14 +18,7 @@ CAPTURED = ("mame",)
 
 
 def load() -> dict[str, ModuleType]:
-    """The server's MODULE by its registered name: `.mcp` is the server, and each tool is the
-    module attribute of the same name.
-
-    The server is imported with this file, so the repository's root must already be importable
-    (the hook runs from it; a test puts it on `sys.path` first), and a test configures the probe
-    at COLLECTION, never
-    inside a test body: the shape guard wraps its declared anchors once collection ends, and
-    fails on one imported after it."""
+    """The server's module by its registered name (`scry_core.probe_checks` says how)."""
     return {"mame": server}
 
 

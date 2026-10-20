@@ -39,6 +39,7 @@ from typing import Any
 from scry_core import judges, picture, png, prose
 from scry_core import progress as mprogress
 from scry_core.raster import signature as raster_signature
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -378,7 +379,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
                          screen=cap.tag, **common)
     fields: dict[str, Any] = {
         "screen": cap.tag, "width": cap.width, "height": cap.height, "frame_screen": cap.frame,
-        "palette": st.or_unavailable(cap.palette, "the screen is direct colour: no palette device "
+        "palette": or_unavailable(cap.palette, "the screen is direct colour: no palette device "
                                                   "draws it"),
         "entries": len(cap.pens),
         "screen_indexed": cap.indices is not None,
@@ -424,7 +425,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         fields["pixels"] = len(hits)
         fields["bbox"] = ([min(x for x, _ in hits), min(y for _, y in hits),
                            max(x for x, _ in hits), max(y for _, y in hits)] if hits
-                          else st.unavailable("no pixel holds the pens asked for"))
+                          else unavailable("no pixel holds the pens asked for"))
         fields["pens"] = sorted(selected)
         fields["isolate_color"] = "#{:02x}{:02x}{:02x}".format(*ISOLATE_COLOUR)
     shown = raster(cap, area, x0, y0, w, h, selected if mode == "isolate" else None)

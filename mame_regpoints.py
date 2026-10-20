@@ -12,6 +12,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable
+
 import gdb_session as gs
 import mame_arming as arming
 import mame_clear as mclear
@@ -234,7 +236,7 @@ def regpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
             out.append(item)
     reply: dict[str, Any] = {"regpoints": out,
                              "foreign": [r["entry"] for r in held if r["index"] not in mine]}
-    reply["cpu"] = st.or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
+    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
     if ses.running:
         reply["last_stop"] = STATE.as_of()
     return menvelope.envelope(reply)
@@ -311,13 +313,9 @@ def rearm(ses: gs.Session, out: dict[str, Any]) -> None:
         except (st.Invalid, gs.SessionError) as e:
             out["unarmable"].append({**name, "why": str(e)})
             continue
-        if refusal is not None and "unknown symbol" in refusal:
-            STATE.conditions_unresolved.add(("regpoint", decl.owner))
-            out["unresolved"].append(name)
-        elif refusal is not None:
-            out["unarmable"].append({**name, "why": "the debugger did not evaluate "
-                                                    f"`{cond}`: {refusal}"})
-        elif (first := next((d.ref for d, c, _i in sent if c == cond), None)) is not None:
+        if conditions.refused_on_rearm(refusal, cond, "regpoint", decl.owner, name, out):
+            continue
+        if (first := next((d.ref for d, c, _i in sent if c == cond), None)) is not None:
             out["unarmable"].append({**name, "why": _shared_why(cond, first, visible,
                                                                 "was just sent for", None)})
         elif (row := _adoptable(visible, held, cond)) is not None:

@@ -29,6 +29,7 @@ from typing import Any
 
 from scry_core import fresh, judges, png, raster, series
 from scry_core import progress as mprogress
+from scry_core import reply_contract as contract
 
 import gdb_session as gs
 import mame_advance as advance
@@ -214,7 +215,7 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
     done = _finish(ses, scratch, seconds, progress)
     if run.get("status") != "ok":
         return run
-    if run.get("verdict") != "ELAPSED":
+    if run.get("verdict") != contract.ELAPSED:
         raise st.Invalid("cut_by_other_stop", f"the run stopped with verdict {run.get('verdict')} "
                          f"({run.get('how')}) before the last frame was read: no series is "
                          "written from part of one", frame_after=run.get("frame_after"))

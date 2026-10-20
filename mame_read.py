@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import prose
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_console as console
@@ -141,7 +142,7 @@ def frame_fields() -> dict[str, Any]:
     """What `start`, `status` and `machine_map` say of the counter: its name, or on a board
     with none `unavailable` saying what that changes."""
     symbol = frame_symbol()
-    return {"frame_symbol": symbol if symbol is not None else st.unavailable(FRAMELESS_NOTE)}
+    return {"frame_symbol": symbol if symbol is not None else unavailable(FRAMELESS_NOTE)}
 
 
 def frame(ses: gs.Session) -> int:
@@ -237,7 +238,7 @@ def read_memory(ses: gs.Session, ref: str, length: int, cpu: str = "") -> dict[s
     space_bound(addr, length, on)
     data = ses.read(addr, length, thread=thread)
     return menvelope.envelope({"addr": st.hex_addr(addr), "length": length, "hex": data.hex(),
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY)})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY)})
 
 
 def dasm_lines(ses: gs.Session, scratch: Path, addr: int, length: int,
@@ -280,7 +281,7 @@ def disassemble(ses: gs.Session, scratch: Path, ref: str, length: int,
     except gs.SessionError as e:
         return menvelope.invalid("unexpected_answer", str(e))
     reply: dict[str, Any] = {"addr": st.hex_addr(addr), "length": length, "lines": lines,
-                             "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY)}
+                             "cpu": or_unavailable(on, st.NO_CPU_READ_WHY)}
     reply |= flows(ses, scratch, addr, length, on, lines)
     table = STATE.table(on)
     if table.bases:
@@ -354,7 +355,7 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
                 linear = base + offset
                 addrs, names = by_class[klass]
                 at = bisect.bisect_right(addrs, linear) - 1
-                below = st.unavailable(f"no symbol of class {klass} lies at or below it")
+                below = unavailable(f"no symbol of class {klass} lies at or below it")
                 symbol, delta = (below, below) if at < 0 else (names[at], linear - addrs[at])
                 out.append({"line": i, "operand": f"{m.group(1)}h", "offset": offset,
                             "class": klass, "linear": st.hex_addr(linear), "symbol": symbol,
@@ -475,7 +476,7 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     }
     if class_of is not None:
         reply["symbol_class"] = class_of
-    reply["cpu"] = st.or_unavailable(on, st.NO_CPU_READ_WHY)
+    reply["cpu"] = or_unavailable(on, st.NO_CPU_READ_WHY)
     return menvelope.envelope(reply)
 
 
@@ -517,7 +518,7 @@ def history(ses: gs.Session, limit: int, cpu: str = "") -> dict[str, Any]:
     note = ({} if lines else
             {"note": f"{on} has retired no instruction yet, so MAME keeps no trail for it"})
     return menvelope.envelope({"asked": limit, "lines": lines,
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY), **note})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY), **note})
 
 
 # WHY, for the reader of this code (the client gets the docstring above the code):
@@ -537,7 +538,7 @@ def registers(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     lay = cpus.described(ses, on, thread)
     return menvelope.envelope({"regs": fmt_regs(ses, thread),
                                "register_bits": dict(lay.register_bits),
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY)})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY)})
 
 
 def registers_at_last_stop(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
@@ -555,7 +556,7 @@ def registers_at_last_stop(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     widths = ({} if "available" in stop["regs"]
               else dict(cpus.layout(ses, stop.get("cpu")).register_bits))
     return menvelope.envelope({"regs": dict(stop["regs"]),
-                               "cpu": st.or_unavailable(stop.get("cpu"), st.NO_CPU_READ_WHY),
+                               "cpu": or_unavailable(stop.get("cpu"), st.NO_CPU_READ_WHY),
                                "superseded": True,
                                "last_stop": STATE.as_of(), "register_bits": widths})
 
@@ -660,7 +661,7 @@ def symbols_find(name: str, linear: str, limit: int,
         hits = ([key] if key in table else
                 sorted((n for n in table if n.startswith(key)), key=lambda n: table[n]))
         return menvelope.envelope({
-            "query": name, "cpu": st.or_unavailable(cpu, st.NO_CPU_READ_WHY),
+            "query": name, "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY),
             "symbols_total": len(hits),
             "symbols": [{"name": n, "addr": st.hex_addr(table[n]), "memory": memory(table[n])}
                         for n in hits[:limit]],
@@ -675,7 +676,7 @@ def symbols_find(name: str, linear: str, limit: int,
                                  linear=st.hex_addr(addr), cpu=cpu)
     base, best = placed
     return menvelope.envelope({"linear": st.hex_addr(addr),
-                               "cpu": st.or_unavailable(cpu, st.NO_CPU_READ_WHY), "name": best,
+                               "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY), "name": best,
                                "addr": st.hex_addr(base), "delta": addr - base,
                                "memory": memory(base),
                                **note})

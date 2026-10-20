@@ -51,6 +51,7 @@ from typing import Any
 
 from scry_core import progress as mprogress
 from scry_core import prose
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -78,9 +79,9 @@ def _shown(match: dict[str, Any]) -> dict[str, Any]:
     """A match as the reply shows it: a `base` or a `byte` it has none of says why in its place,
     while the row the evidence keeps stays as found."""
     return {**match,
-            "base": st.or_unavailable(match["base"], "matched through a pen map, which `pen_map` "
+            "base": or_unavailable(match["base"], "matched through a pen map, which `pen_map` "
                                                      "carries instead of a palette bank"),
-            "byte": st.or_unavailable(match["byte"], "the tile starts inside a byte")}
+            "byte": or_unavailable(match["byte"], "the tile starts inside a byte")}
 
 
 def check_gfx_locate(layouts: Any = None, patch: list[int] | None = None, tag: str = "",
@@ -263,18 +264,18 @@ def gfx_locate(ses: gs.Session, scratch: Path, layouts: Any, patch: list[int], t
     fields: dict[str, Any] = {
         "patch": patch, "screen": cap.tag, "frame_screen": cap.frame, "palette": cap.palette,
         **gfx.source_fields(blk, start, addr, on),
-        "transparent": st.or_unavailable(transparent, "no `transparent`: every pixel compared"),
+        "transparent": or_unavailable(transparent, "no `transparent`: every pixel compared"),
         "flips": list(tried), "candidates": rows,
         "matched": bool(matches), "matches_total": len(matches),
         "matches": [_shown(m) for m in matches[:MATCHES_SHOWN]],
         "ambiguous": bool(ambiguous), "ambiguous_windows": ambiguous,
-        "pen_map": st.or_unavailable(pen_map, "the single-bank search matched, so no pen map "
+        "pen_map": or_unavailable(pen_map, "the single-bank search matched, so no pen map "
                                               "was tried"),
     }
     if not matches:
         if best is not None:
             best["complete"] = not budget.cut
-        fields["nearest"] = best if best is not None else st.unavailable(
+        fields["nearest"] = best if best is not None else unavailable(
             "no window came close enough to name (the note says why)")
         if best is None:
             st.add_note(fields,

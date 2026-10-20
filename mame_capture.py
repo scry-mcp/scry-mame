@@ -53,6 +53,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from scry_core import value_format as vf
+from scry_core.reply_contract import unavailable
 
 import mame_callbacks as callbacks
 import mame_declarations as dec
@@ -388,8 +389,8 @@ def row_fields(row: Row, fmt: str, width: int,
     block decoded in the watch's format; a read's row has no block."""
     out: dict[str, Any] = {
         "n": row.n,
-        "frame": st.unavailable(NO_SCREEN_WHY) if row.frame == callbacks.NO_FRAME else row.frame,
-        "line": st.unavailable(NO_SCREEN_WHY) if row.line == callbacks.NO_FRAME else row.line,
+        "frame": unavailable(NO_SCREEN_WHY) if row.frame == callbacks.NO_FRAME else row.frame,
+        "line": unavailable(NO_SCREEN_WHY) if row.line == callbacks.NO_FRAME else row.line,
         "time_s": row.time_attoseconds / ATTOSECONDS_PER_SECOND, "pc": st.hex_addr(row.pc),
         "data": read.hex_at_width(row.data, data_width),
         "mask": read.hex_at_width(row.mask, data_width)}
@@ -400,7 +401,7 @@ def row_fields(row: Row, fmt: str, width: int,
         try:
             out["block"] = vf.parse(fmt).decode(row.block, endianness, width)
         except vf.FormatError as e:
-            out["block"] = st.unavailable(str(e))
+            out["block"] = unavailable(str(e))
     return out
 
 

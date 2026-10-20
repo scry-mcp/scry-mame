@@ -20,8 +20,7 @@ import re
 from typing import Any
 
 from scry_core import prose
-
-import mame_state as st
+from scry_core.reply_contract import or_unavailable
 
 # The characters of the first error a dump keeps: it rides on every survey of its tap.
 FIRST_ERROR_MAX_CHARS = 300
@@ -139,7 +138,7 @@ def reply(dump: dict[str, Any]) -> dict[str, Any] | None:
     if dump.get("errors") is None:
         return None
     return {"count": dump["errors"],
-            "first": st.or_unavailable(dump.get("first_error"), NONE_RAISED_WHY)}
+            "first": or_unavailable(dump.get("first_error"), NONE_RAISED_WHY)}
 
 
 def said(errors: dict[str, Any] | None, whose: str = "its") -> str:

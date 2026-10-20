@@ -22,6 +22,7 @@ from typing import Any
 
 import pytest
 from scry_core import media_tools
+from scry_core.reply_contract import unavailable  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -227,7 +228,7 @@ def test_the_envelope_refuses_a_malformed_refusal(monkeypatch: pytest.MonkeyPatc
     ok = menvelope.envelope({"verdict": "TARGET"})
     assert ok["status"] == "ok" and ok["verdict"] == "TARGET"
     # A ROW'S OR A FIELD'S `why` IS AN OK REPLY'S OWN WORD, and an unread datum is its shape.
-    rows = menvelope.envelope({"rows": [{"why": "a row's"}], "cycles": mstate.unavailable("n")})
+    rows = menvelope.envelope({"rows": [{"why": "a row's"}], "cycles": unavailable("n")})
     assert rows["status"] == "ok" and rows["cycles"] == {"available": False, "why": "n"}
     bad = menvelope.invalid("control_silent", "cold", control_hits=0)
     assert list(bad)[:3] == ["status", "code", "message"] and bad["control_hits"] == 0

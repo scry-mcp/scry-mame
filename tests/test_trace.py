@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import SessionFields, use_table
 
 import gdb_session as gs
@@ -421,9 +422,9 @@ def test_a_cpu_the_run_did_not_stop_on_keeps_its_last_line_and_says_why(
 
 
 @pytest.mark.parametrize("survey", [{"pc": mstate.hex_addr(0x402)},
-                                    {"cpu": mstate.unavailable("no cpu marked"),
+                                    {"cpu": unavailable("no cpu marked"),
                                      "pc": mstate.hex_addr(0x402)},
-                                    {"cpu": TAG, "pc": mstate.unavailable("not read")}],
+                                    {"cpu": TAG, "pc": unavailable("not read")}],
                          ids=["naming no cpu", "with its cpu unavailable", "with no pc"])
 def test_a_survey_naming_no_cpu_corrects_no_end_edge(board: Any, survey: dict[str, Any]) -> None:
     """The end edge needs the cpu the run stopped on and its pc: a survey without either corrects

@@ -98,7 +98,7 @@ def test_the_declarations_the_recorder_reads_are_the_refs_the_list_tools_answer(
     assert s.breakpoint_at(ref="0x4a0")["status"] == "ok"
     assert s.watch_add(ref="frame_lo", mode="change", length=4)["status"] == "ok"
     assert s.regpoint_add(condition="pc == 0x10")["status"] == "ok"
-    declared = mame_mcp._declared()
+    declared = mame_mcp.RECORDER._stored()
     for tool, key in mame_mcp.RECORDER.lists.items():
         listed = getattr(s, tool)()
         assert listed["status"] == "ok", (tool, listed.get("message"))

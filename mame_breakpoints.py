@@ -12,6 +12,7 @@ import re
 from typing import Any
 
 from scry_core import value_format as vf
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_arming as arming
@@ -332,7 +333,7 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
         arming.store().replace(earlier, decl)
     is_new = arming.store().add(decl)
     reply: dict[str, Any] = {"ref": ref, "by": chosen, "role": role,
-                             "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+                             "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
                              "stored": True, "already_stored": not is_new,
                              "while_running": running}
     if cond:
@@ -420,7 +421,7 @@ def breakpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
         "breakpoints": out,
         "foreign": [r["entry"] for r in held if r["index"] not in mine],
     }
-    reply["cpu"] = st.or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
+    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
     if ses.running:
         reply["last_stop"] = STATE.as_of()
     return menvelope.envelope(reply)

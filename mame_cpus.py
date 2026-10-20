@@ -16,6 +16,8 @@ import re
 from collections.abc import Callable
 from typing import Any
 
+from scry_core.reply_contract import unavailable
+
 import gdb_session as gs
 import mame_inputs as inputs
 import mame_space as mspace
@@ -164,9 +166,9 @@ def pc_readings(ses: gs.Session) -> dict[str, PcReading]:
 
 
 def pc_fields(reading: PcReading) -> dict[str, Any]:
-    """A `pc_reading` as a reply carries it: `reg` and `value`, or `st.unavailable` with why."""
+    """A `pc_reading` as a reply carries it: `reg` and `value`, or `unavailable` with why."""
     if isinstance(reading, str):
-        return st.unavailable(reading)
+        return unavailable(reading)
     return {"reg": reading[0], "value": st.hex_addr(reading[1])}
 
 

@@ -17,6 +17,8 @@ import struct
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from scry_core.reply_contract import unavailable
+
 import gdb_session as gs
 import mame_cpus as cpus
 import mame_cycles as cycles
@@ -110,7 +112,7 @@ def state_list() -> dict[str, Any]:
     for path in sorted(folder.glob("*.sta")) if folder.is_dir() else []:
         why = _not_a_state(path)
         if why is not None:
-            gone = st.unavailable(why)
+            gone = unavailable(why)
             states.append({"name": path.stem, "path": str(path), "bytes": gone, "frame": gone,
                            "pc": gone})
             continue
@@ -124,8 +126,8 @@ def state_list() -> dict[str, Any]:
         states.append({
             "name": path.stem, "path": str(path), "bytes": size,
             "frame": (st.frame_shown(known["frame"]) if known
-                      else st.unavailable(NOT_WRITTEN_HERE)),
-            "pc": st.hex_addr(known["pc"]) if known else st.unavailable(NOT_WRITTEN_HERE),
+                      else unavailable(NOT_WRITTEN_HERE)),
+            "pc": st.hex_addr(known["pc"]) if known else unavailable(NOT_WRITTEN_HERE),
         })
     return menvelope.envelope({"state_dir": str(folder), "states": states})
 
@@ -265,7 +267,7 @@ def _shown(ses: gs.Session, cpu: str, reg: str, text: str | None) -> str | dict[
     """A register's digits as every reply spells a register, `0x` at its width, in its cpu's
     byte order; the stub's own digits where that order is not established."""
     if text is None:
-        return st.unavailable("the register was not read on this side")
+        return unavailable("the register was not read on this side")
     lay = ses.layout(cpus.thread_of(ses, cpu) or 1)
     try:
         value = int.from_bytes(bytes.fromhex(text), lay.byte_order)
@@ -328,7 +330,7 @@ def _stateload(ses: gs.Session, scratch: Path, name: str, path: Path,
     rom_check: str | dict[str, Any]
     checks: dict[str, str] = {}
     if STATE.reference is None:
-        rom_check = st.unavailable("this session holds no reference image to check against")
+        rom_check = unavailable("this session holds no reference image to check against")
     else:
         ref, addr, base = STATE.reference
         try:
@@ -340,16 +342,16 @@ def _stateload(ses: gs.Session, scratch: Path, name: str, path: Path,
     seen = running.survey(ses, scratch)
     saved = STATE.states.get(name)
     # The reply spells the saved pc as it spells every pc, hex; the record keeps the int.
-    shown = st.unavailable(NOT_WRITTEN_HERE) if saved is None else {
+    shown = unavailable(NOT_WRITTEN_HERE) if saved is None else {
         "frame": st.frame_shown(saved["frame"]), "pc": st.hex_addr(saved["pc"])}
     verified: bool | dict[str, Any] | None
     if saved is None or before is None:
-        verified = st.unavailable(NOT_WRITTEN_HERE)
+        verified = unavailable(NOT_WRITTEN_HERE)
     else:
         judged = _judged(ses, name, saved, before, seen)
         verified = judged.verified
         if judged.why is not None:
-            verified = st.unavailable(judged.why)
+            verified = unavailable(judged.why)
         if judged.unjudged:
             checks["note"] = (f"{', '.join(judged.unjudged)} read at the save could not be read "
                               "after the load, so it was not judged")

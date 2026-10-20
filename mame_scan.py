@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from scry_core import prose
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_cpus as cpus
@@ -86,7 +87,7 @@ class Scan:
 
 #: `scan_filter`'s `value` when none was given: each cell is held against its own opening value.
 NO_VALUE_WHY = "no `value` was given, so each cell was compared with its value at `scan_start`"
-NO_VALUE = st.unavailable(NO_VALUE_WHY)
+NO_VALUE = unavailable(NO_VALUE_WHY)
 
 
 def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: Any) -> None:
@@ -167,7 +168,7 @@ def scan_start(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
     STATE.scan = scan
     return menvelope.envelope({"addr": st.hex_addr(addr), "length": length,
                                "cell_bytes": scan.cell_bytes, "hits_total": len(opening),
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
                                "space": mspace.PROGRAM})
 
 

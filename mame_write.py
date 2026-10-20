@@ -15,6 +15,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable, unavailable
+
 import gdb_session as gs
 import mame_capture as capture
 import mame_clear as mclear
@@ -86,7 +88,7 @@ def write(ses: gs.Session, scratch: Path, ref: str, data_hex: str, cpu: str = ""
     # the value at arm time as what the writer read.
     landed = {"addr": st.hex_addr(addr), "bytes_written": len(data), "readback": readback.hex(),
               "verified": readback == data,
-              "cpu": st.or_unavailable(on, NO_WRITE_CPU_WHY), **placed}
+              "cpu": or_unavailable(on, NO_WRITE_CPU_WHY), **placed}
     if not landed["verified"] and not region:
         try:
             landed |= rom_target(ses, addr, on, len(data))
@@ -190,7 +192,7 @@ def set_register(ses: gs.Session, name: str, value: int, cpu: str = "") -> dict[
     return menvelope.envelope({"register": register, "value": read.hex_at_width(value, bits),
                                "readback": read.hex_at_width(back, bits),
                                "verified": back == value,
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY)})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY)})
 
 
 # Right after the call the PC is still where it was, and stepping shows it jump to the boot
@@ -220,7 +222,7 @@ def reset(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     return running.finish_stop(ses, seen, "softreset",
                                kind="softreset", pc=st.hex_addr(pc),
                                boot_pc=st.hex_addr(boot) if boot is not None else
-                               st.unavailable("`start` read no pc at its park"),
+                               unavailable("`start` read no pc at its park"),
                                verified=boot is not None and pc == boot,
                                frame_at_reset=st.frame_shown(seen["frame"]),
                                **({"taps_across": across} if across else {}))
@@ -355,10 +357,10 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
         # console meanwhile: the visible cpu is read once that run stopped.
         ran = live is not None and live in (ignored or [])
         visible = mfocus.settled_visible(ses, ignored or []) if ran else cpus.visible_cpu(ses)
-        reply["visible_cpu"] = st.or_unavailable(
+        reply["visible_cpu"] = or_unavailable(
             visible, "no stop was read after the run the line started, so no cpu is visible yet"
             if ran else "`cpulist` marked no cpu visible")
-        reply["ignored"] = st.or_unavailable(ignored, "`ignore` answered neither of its shapes")
+        reply["ignored"] = or_unavailable(ignored, "`ignore` answered neither of its shapes")
         if ran and visible is None:
             ses.running = True
             STATE.console_run = True

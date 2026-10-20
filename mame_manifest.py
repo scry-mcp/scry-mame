@@ -35,6 +35,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from scry_core import prose
+from scry_core.reply_contract import unavailable
 
 import mame_envelope as menvelope
 import mame_evidence as evidence
@@ -258,13 +259,13 @@ class Manifest:
                              "trigger_addr": st.hex_addr(c.trigger),
                              "fires_with": ("any write" if c.fire_value is None
                                             else f"{c.fire_value:#x}"),
-                             "asset": c.asset or st.unavailable("the command names no asset"),
+                             "asset": c.asset or unavailable("the command names no asset"),
                              "roles": sorted(c.fields),
                              "flags": sorted(c.flags),
                              "planes": [p.name for p in c.planes]}
                          for n, c in self.commands.items()},
             "palette_ports": {n: {"palette": r.palette, "space": r.space, "protocol": r.protocol,
-                            "index_port": (st.unavailable(NO_INDEX_PORT_WHY)
+                            "index_port": (unavailable(NO_INDEX_PORT_WHY)
                                            if r.index_port is None
                                            else st.hex_addr(r.index_port)),
                             "data_port": st.hex_addr(r.data_port),
@@ -282,7 +283,7 @@ NO_INDEX_PORT_WHY = "this protocol takes no index port"
 
 
 def _mask(value: int | None) -> str | dict[str, Any]:
-    return (st.unavailable("only a latch's index word carries a flag") if value is None
+    return (unavailable("only a latch's index word carries a flag") if value is None
             else f"{value:#x}")
 
 
@@ -696,7 +697,7 @@ def _still_loaded() -> str | dict[str, Any]:
     """The manifest a refusal leaves loaded, which every refusal names: a failed load unloads
     nothing."""
     return (STATE.manifest.path if STATE.manifest
-            else st.unavailable("no manifest was loaded in this session"))
+            else unavailable("no manifest was loaded in this session"))
 
 
 def check_gfx_load(path: str = "", **_: Any) -> None:
@@ -716,7 +717,7 @@ def gfx_load(path: str) -> dict[str, Any]:
                          system=STATE.system,
                          still_loaded=_still_loaded())
     replaced = (STATE.manifest.path if STATE.manifest else
-                st.unavailable("no manifest was loaded in this session before this one"))
+                unavailable("no manifest was loaded in this session before this one"))
     STATE.manifest = man
     old = ({"note": f"{path} spells its palette ports section `{PALETTE_PORTS_OLD}`, read as "
                     f"`{PALETTE_PORTS}`, the name to move it to"} if man.old_section else {})

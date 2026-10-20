@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable, unavailable
+
 import gdb_session as gs
 import mame_cpus as cpus
 import mame_declarations as dec
@@ -49,17 +51,17 @@ def cpu_info(ses: gs.Session, cpu: str) -> dict[str, Any]:
         """`value`, or `unavailable` for a cpu `cpulist` does not list, or a listing the console
         did not answer."""
         if tag not in tags:
-            return st.unavailable(UNLISTED_WHY)
-        return value if known is not None else st.unavailable(
+            return unavailable(UNLISTED_WHY)
+        return value if known is not None else unavailable(
             "the console did not answer this listing")
 
     rows = [{"cpu": tag,
              "visible": reading(tag, tag == visible, visible),
              "ignored": reading(tag, tag in (ignored or []), ignored),
              "suspended": reading(tag, tag in (suspended or []), suspended),
-             "pc": (cpus.pc_fields(pcs[tag]) if tag in pcs else st.unavailable(
+             "pc": (cpus.pc_fields(pcs[tag]) if tag in pcs else unavailable(
                  UNLISTED_WHY if tag not in tags
                  else "the machine is RUNNING: no pc is read off a moving machine")),
              "declarations": counts[tag]} for tag in shown]
-    reply: dict[str, Any] = {"cpus": rows, "cpu": st.or_unavailable(wanted, st.NO_CPU_NAMED_WHY)}
+    reply: dict[str, Any] = {"cpus": rows, "cpu": or_unavailable(wanted, st.NO_CPU_NAMED_WHY)}
     return menvelope.envelope(reply)

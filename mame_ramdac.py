@@ -41,6 +41,8 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable, unavailable
+
 import mame_callbacks as callbacks
 import mame_capture as capture
 import mame_declarations as dec
@@ -327,7 +329,7 @@ def replay(path: Path, r: mm.PalettePort) -> Iterator[tuple[Row, str | None]]:
 
 
 def _frame(frame: int) -> int | dict[str, Any]:
-    return st.unavailable(capture.NO_SCREEN_WHY) if frame == callbacks.NO_FRAME else frame
+    return unavailable(capture.NO_SCREEN_WHY) if frame == callbacks.NO_FRAME else frame
 
 
 def _writer(n: int, frame: int, pc: int, by: str, cpu: str | None) -> dict[str, Any]:
@@ -341,9 +343,9 @@ def pen_fields(p: PenWrite, r: mm.PalettePort, cpu: str | None) -> dict[str, Any
     of them."""
     comps = components_of(p, r)
     col = colour(comps, r.component_bits)
-    out = {"pen": p.pen, "color": st.or_unavailable(col, INCOMPLETE_WHY),
+    out = {"pen": p.pen, "color": or_unavailable(col, INCOMPLETE_WHY),
            "complete": col is not None,
-           "components": {k: st.or_unavailable(c, UNSEEN_WHY)
+           "components": {k: or_unavailable(c, UNSEEN_WHY)
                           for k, c in zip(mm.COMPONENTS, comps, strict=True)}}
     if p.word is not None:
         out["word"] = f"{p.word:#x}"
@@ -368,7 +370,7 @@ def setters(pens: list[PenWrite], cpu: str | None) -> list[dict[str, Any]]:
 def _setters_fields(every: list[dict[str, Any]], path: Path) -> dict[str, Any]:
     """The first `SETTERS_LISTED_MAX` setters, their total, and the file holding them all, written
     whole or not at all. The dump has been read by now: a scratch that refuses the file costs the
-    file, said where `setters_path` would be (`st.unavailable`), and never the read."""
+    file, said where `setters_path` would be (`unavailable`), and never the read."""
     fields: dict[str, Any] = {"setters": every[:SETTERS_LISTED_MAX], "setters_total": len(every)}
     tmp = path.with_name(path.name + ".tmp")
     try:
@@ -376,7 +378,7 @@ def _setters_fields(every: list[dict[str, Any]], path: Path) -> dict[str, Any]:
         tmp.replace(path)
     except OSError as e:
         tmp.unlink(missing_ok=True)
-        return {**fields, "setters_path": st.unavailable(str(e))}
+        return {**fields, "setters_path": unavailable(str(e))}
     return {**fields, "setters_path": str(path)}
 
 
@@ -387,8 +389,8 @@ UNSTAMPED_WHY = "this row was written before the log's rows carried their line a
 def _when(row: Row) -> dict[str, Any]:
     """A row's `line` and `time_s`, as a capture row says them (`mame_capture.row_fields`)."""
     if row.time_attoseconds is None:
-        return {"line": st.unavailable(UNSTAMPED_WHY), "time_s": st.unavailable(UNSTAMPED_WHY)}
-    return {"line": st.or_unavailable(row.line, capture.NO_SCREEN_WHY),
+        return {"line": unavailable(UNSTAMPED_WHY), "time_s": unavailable(UNSTAMPED_WHY)}
+    return {"line": or_unavailable(row.line, capture.NO_SCREEN_WHY),
             "time_s": row.time_attoseconds / capture.ATTOSECONDS_PER_SECOND}
 
 
@@ -421,13 +423,13 @@ def row_fields(row: Row, col: str | None, r: mm.PalettePort, cpu: str | None) ->
         placed = {"unsynced": True} if row.pen is None else {"pen": row.pen}
         out.update(placed, word=f"{row.value:#x}", mask=f"{row.mask:#x}")
         if row.pen is not None:
-            out["color"] = st.or_unavailable(col, INCOMPLETE_WHY)
+            out["color"] = or_unavailable(col, INCOMPLETE_WHY)
         return out
     if row.pen is None or row.slot is None:
         out.update(unsynced=True, value=f"0x{row.value:0{value_digits}x}")
         return out
     out.update(pen=row.pen, component=r.order[row.slot], value=f"0x{row.value:0{value_digits}x}",
-               color=st.or_unavailable(col, INCOMPLETE_WHY))
+               color=or_unavailable(col, INCOMPLETE_WHY))
     return out
 
 
@@ -461,7 +463,7 @@ def check_palette_log(palette_port: str = "", pen: int | None = None,
 def _entry(r: mm.PalettePort) -> dict[str, Any]:
     return {"palette_port": r.name, "palette": r.palette, "cpu": cpu_of(r), "space": r.space,
             "protocol": r.protocol,
-            "index_port": (st.unavailable(mm.NO_INDEX_PORT_WHY) if r.index_port is None
+            "index_port": (unavailable(mm.NO_INDEX_PORT_WHY) if r.index_port is None
                            else st.hex_addr(r.index_port)),
             "data_port": st.hex_addr(r.data_port),
             "order": "".join(r.order), "component_bits": r.component_bits,
@@ -545,7 +547,7 @@ def palette_log(scratch: Path, palette_port: str, pen: int | None, limit: int,
     if pen is None:
         fields.update(_setters_fields(setters(written, cpu), Path(rec["setters_path"])))
     else:
-        fields["pen_state"] = (pen_fields(shown[0], r, cpu) if shown else st.unavailable(
+        fields["pen_state"] = (pen_fields(shown[0], r, cpu) if shown else unavailable(
             f"no write of pen {pen} has been logged since the log was armed"))
     # the newest `limit` rows, placed in the symbol table once kept rather than all of them
     kept: collections.deque[tuple[Row, str | None]] = collections.deque(maxlen=limit)
@@ -586,7 +588,7 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
     man = STATE.manifest
     name = st.bare_tag(palette)
     if man is None:
-        return {"set_by": st.unavailable(
+        return {"set_by": unavailable(
             "no manifest is loaded: `gfx_load` a gfx.yaml whose `palette_ports` names this "
             "palette, "
             "then `palette_log(palette_port=..., arm=True)` arms the log that answers who set "
@@ -594,22 +596,22 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
     r = next((x for x in man.palette_ports.values() if st.bare_tag(x.palette) == name
               and pen in x.pens()), None)
     if r is None:
-        return {"set_by": st.unavailable(
+        return {"set_by": unavailable(
             f"the loaded manifest names no `palette_ports` entry that sets pen {pen} of palette "
             f"{palette}, so no write to it can be logged")}
     try:
         rec = armed(r)
     except st.Invalid as e:
-        return {"set_by": st.unavailable(str(e))}
+        return {"set_by": unavailable(str(e))}
     if rec is None:
-        return {"set_by": st.unavailable(
+        return {"set_by": unavailable(
             f"no palette write log is armed on palette port {r.name!r}: `palette_log(palette_port="
             f"\"{r.name}\", arm=True)` arms it, and it records from when the console next reads a "
             "line, so run the frames that set the pen again")}
     # past `armed`, the record's cpu is the entry's, so its owner is the entry's
     item, dump = mtap.read_tap(scratch, owner_of(r), None, False, parse_dump, "logged")
     if dump is None:
-        return {"set_by": st.unavailable(item.get("why", (
+        return {"set_by": unavailable(item.get("why", (
             f"the log of palette port {r.name!r} has nothing on disk ({item.get('state')})")))}
     p = dump["pens"].get(pen)
     errors = item.get("callback_errors")
@@ -617,7 +619,7 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
         why = f"no write to pen {pen} since the log of palette port {r.name!r} was armed"
         if clause := callbacks.said(errors, "the log's"):
             why += f"; but {clause}, so a write that set it may not have been logged"
-        return {"set_by": st.unavailable(why)}
+        return {"set_by": unavailable(why)}
     out = {"palette_port": r.name, **pen_fields(p, r, dump["cpu"])}
     if errors is not None:
         out["callback_errors"] = errors
@@ -636,7 +638,7 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
                                                       dump["cpu"])
             fields["rows_cut"] = dump["overflow_rows"] > 0
     else:
-        out["agrees"] = st.unavailable(INCOMPLETE_WHY)
+        out["agrees"] = unavailable(INCOMPLETE_WHY)
     if notes:
         st.add_note(fields, *notes)
     return fields
@@ -649,5 +651,5 @@ def _same_colour(path: Path, r: mm.PalettePort, pen: int, col: str,
     for row, after in replay(path, r):
         if row.pen == pen and after == col:
             hit = row
-    return (st.unavailable("no kept data write left the pen this colour") if hit is None
+    return (unavailable("no kept data write left the pen this colour") if hit is None
             else row_fields(hit, col, r, cpu))

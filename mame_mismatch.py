@@ -16,9 +16,9 @@ from array import array
 from typing import Any
 
 from scry_core import prose
+from scry_core.reply_contract import unavailable
 
 import mame_screen as mscreen
-import mame_state as st
 
 RGB = 0xFFFFFF             # a colour word without its alpha
 FLIPS = (("x", True, False), ("y", False, True), ("xy", True, True))
@@ -58,7 +58,7 @@ def measure(cap: mscreen.Capture, snap: bytes, snap_w: int,
     """The `mismatch` of the snapshot `snap` (`snap_w` x `snap_h` words, which the caller has
     checked) against the screen `cap`, or None when it is the bare screen."""
     w, h = cap.width, cap.height
-    uncompared = st.unavailable("the snapshot and the screen differ in size, so no pixel was "
+    uncompared = unavailable("the snapshot and the screen differ in size, so no pixel was "
                                 "compared")
     out: dict[str, Any] = {"screen_size": [w, h], "snapshot_size": [snap_w, snap_h],
                            "differing_pixels": uncompared, "screen_pixels": w * h,
@@ -73,7 +73,7 @@ def measure(cap: mscreen.Capture, snap: bytes, snap_w: int,
         return None
     pens = {p & RGB for p in cap.pens}
     in_pens: bool | dict[str, Any] = (all(got[i] in pens for i in apart) if pens else
-                                      st.unavailable("the screen holds no pens to compare with"))
+                                      unavailable("the screen holds no pens to compare with"))
     flip = _flip(shown, got, w, h)
     if flip != "none":
         candidate = "orientation"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vendored-version: 1 (every server's copy is this file; a sweep compares this stamp)
 # The wiring of `pre-commit.sh`: its one line reaches scry-core's hook, through the real jscpd and
 # the real probe check. What the hook decides is tested in scry-core; here the CONTROL (this tree
 # passes) and one planted clone (blocked at 1) are what shows the line works.

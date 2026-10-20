@@ -434,7 +434,7 @@ r = s.registers(from_last_stop=True)
 check("the last stop's registers answer, superseded", r.get("superseded") is True
       and "stale" not in r and "regs" in r)
 r = s.status()
-check("status says running", r.get("running") is True and r.get("last_stop") is not None)
+check("status says running", r.get("running") is True and "pc" in (r.get("last_stop") or {}))
 r = s.snapshot()
 check("snapshot answers while running", r.get("bytes", 0) > 0, str(r.get("bytes")))
 r = s.log_wait(pattern=".", channel="emulator", seconds=5.0)
@@ -643,7 +643,7 @@ check("region_track agrees with the series' own count of signatures",
 frames_png = sorted(series_dir.glob("f*.png"))
 same = s.image_diff(a=str(frames_png[0]), b=str(frames_png[0]))
 check("image_diff of a frame with itself finds nothing", same.get("differing_pixels") == 0
-      and same.get("bbox") is None, said(same))
+      and (same.get("bbox") or {}).get("available") is False, said(same))
 pair = s.series_diff(a=manifest, b=manifest)
 check("series_diff of a series with itself is all identical, or the control's refusal",
       (pair.get("identical") == 30) if moving else pair.get("code") == "control_silent",

@@ -14,7 +14,6 @@ MAME's mixer writes, for `audio_record` and for `captures`.
 
 from __future__ import annotations
 
-import hashlib
 import os
 import re
 import shutil
@@ -26,9 +25,11 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypeVar, overload
 
+from scry_core import judges, prose
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
-from scry_core import prose
+from scry_core import reply_contract as contract
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_cpus as cpus
@@ -37,9 +38,6 @@ import mame_inputs as inputs
 import mame_read as read
 import mame_state as st
 from mame_state import STATE
-
-# How often a wait on a file the emulator writes reads it again: a file on disk is polled.
-LOG_POLL_S = 0.1
 
 # How long a tool waits for a file the emulator writes at its own pace after the command that
 # asked for it (a `snap`'s PNG, a `statesave`, the AVI a recording closes on its way out), and
@@ -139,7 +137,7 @@ def memdump(ses: gs.Session, ref: str, length: int, dest: str, cpu: str = "") ->
         return refused
     return menvelope.envelope({
         "addr": st.hex_addr(addr), "length": length, "path": str(dest_path),
-        "bytes": dest_path.stat().st_size, "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+        "bytes": dest_path.stat().st_size, "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
     })
 
 
@@ -423,7 +421,8 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
     got = core_wait.wait(rx, fresh, seconds=seconds, stopped=stopped, alive=alive,
                          progress=progress, label=f"log_wait {channel} /{pattern}/")
     if isinstance(got, core_wait.Found):
-        return menvelope.envelope({"verdict": "TARGET", "pattern": pattern, "channel": channel,
+        return menvelope.envelope({"verdict": contract.TARGET, "pattern": pattern,
+                                   "channel": channel,
                                    **got.fields(), "waited_s": st.spent_s(got.waited_s)})
     if got.how == "STOPPED":
         reason = ("the machine is STOPPED at the debugger" if parked else
@@ -438,23 +437,15 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
                                  pattern=pattern, last_stop=STATE.as_of())
     if got.how == "GONE":
         ses.latch("the emulator exited during a wait")
-        return menvelope.invalid("session_broken",
-                                 f"the emulator is GONE, {got.waited_s} s into a {seconds} "
-                                 f"s wait for /{pattern}/, and a final read of the log found "
-                                 "nothing matching either. Nothing more will be written",
+        return menvelope.invalid("session_broken", core_wait.gone_message(pattern, got, seconds),
                                  pattern=pattern)
-    during = got.arrived_during
-    silent = ("" if during else " The driver logged NOTHING at all in this window, so the "
-                                "question may be whether it logs rather than what it logged.")
     # THE BOUND RAN OUT AND THE WAIT ANSWERED: a verdict, not a refusal (the machine is still
     # running, and the caller decides whether to wait longer).
     return menvelope.envelope({
-        "verdict": "TIMEOUT", "pattern": pattern, "channel": channel, "arrived_during": during,
-        "lines_examined": got.lines_examined, "waited_s": st.spent_s(got.waited_s),
-        "note": f"nothing matched /{pattern}/ in {got.waited_s} s: "
-                f"{prose.counted(during, 'line')} arrived DURING the wait "
-                f"({got.lines_examined} in the log), so this is a bound that expired and not "
-                f"'there was nothing to match against'.{silent} The machine is still running"})
+        "verdict": contract.TIMEOUT, "pattern": pattern, "channel": channel,
+        "arrived_during": got.arrived_during, "lines_examined": got.lines_examined,
+        "waited_s": st.spent_s(got.waited_s),
+        "note": core_wait.timeout_note(pattern, got, "in the log", "driver")})
 
 
 # WHY, for the reader of this code (the client gets the docstring above the code):
@@ -484,8 +475,7 @@ def snapshot(ses: gs.Session, scratch: Path, dest: str) -> dict[str, Any]:
     STATE.captures.append(("png", str(final)))
     # THE HASH THE GOLDENS COMPARE, over the bytes handed back: a repo checked every capture
     # against its own `checksums.sha256` by hand, and the server had the bytes all along.
-    return menvelope.envelope({"path": str(final), "bytes": final.stat().st_size,
-                               "sha256": hashlib.sha256(final.read_bytes()).hexdigest()})
+    return menvelope.envelope(judges.file_facts(final))
 
 
 def _complete_png(path: Path) -> bool:

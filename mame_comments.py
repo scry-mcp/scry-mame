@@ -24,6 +24,7 @@ from typing import Any
 
 from scry_core import fresh, prose
 from scry_core import value_format as vf
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_arming as arming
@@ -140,7 +141,7 @@ def _store_fields() -> dict[str, Any]:
     alone names a file a tool wrote, so the store's own file sits one level down."""
     store = arming.store()
     return {"declarations": {"persistent": store.persistent,
-                             "path": (st.unavailable(dec.SESSION_LIVED_WHY) if store.path is None
+                             "path": (unavailable(dec.SESSION_LIVED_WHY) if store.path is None
                                       else str(store.path))}}
 
 
@@ -266,7 +267,7 @@ def comment_add(ses: gs.Session, scratch: Path, ref: str, text: str,
     if failed:
         return _host_failed(failed, note, comment=item, replaced_comments=replaced, cpu=on)
     return menvelope.envelope({"comment": item, "replaced_comments": replaced, **_store_fields(),
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY), **note})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY), **note})
 
 
 def _broke_after_store(error: gs.SessionError, tool: str, failed: str | None) -> dict[str, Any]:
@@ -292,7 +293,7 @@ def comment_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     rows = [row(d) for d in pane.comments() if only is None or d.cpu == only]
     reply: dict[str, Any] = {"comments": rows[:st.ROWS_SHOWN], "comments_total": len(rows),
                              "truncated": len(rows) > st.ROWS_SHOWN, **_store_fields(),
-                             "cpu": st.or_unavailable(only, st.NO_CPU_NAMED_WHY)}
+                             "cpu": or_unavailable(only, st.NO_CPU_NAMED_WHY)}
     if ses.running:
         reply["last_stop"] = STATE.as_of()
     return menvelope.envelope(reply)
@@ -345,7 +346,7 @@ def comment_delete(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> d
     if failed:
         return _host_failed(failed, note, deleted=gone, cpu=on)
     return menvelope.envelope({"deleted": gone, **_store_fields(),
-                               "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY), **note})
+                               "cpu": or_unavailable(on, st.NO_CPU_READ_WHY), **note})
 
 
 def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
@@ -429,7 +430,7 @@ def comment_save(dest: str) -> dict[str, Any]:
                      key=lambda k: (k[1], k[0]))
     return menvelope.envelope({
         "path": str(path), "comments_total": len(rows),
-        "dropped_comments": [{"ref": ref, "cpu": cpu or st.unavailable(NO_ROW_CPU_WHY)}
+        "dropped_comments": [{"ref": ref, "cpu": cpu or unavailable(NO_ROW_CPU_WHY)}
                              for ref, cpu in dropped[:st.ROWS_SHOWN]],
         "dropped_total": len(dropped), "truncated": len(dropped) > st.ROWS_SHOWN,
         **_notes(None if old is None else

@@ -333,8 +333,9 @@ def _l_v30(t: list[str]) -> None:
     q = (muted.get("measures") or [{}])[0]
     # The AY at volume 0 rests at a steady level away from zero: silent, with no onset and no
     # plateau, though its peak says where it rests.
-    cell(t[12], ok(heard) and m.get("silent") is False and m.get("onset_s") is not None
-         and ok(muted) and q.get("silent") is True and q.get("onset_s") is None
+    cell(t[12], ok(heard) and m.get("silent") is False and isinstance(m.get("onset_s"), float)
+         and ok(muted) and q.get("silent") is True
+         and (q.get("onset_s") or {}).get("available") is False
          and q.get("clipped") is False and q.get("peak_dbfs") is not None,
          f"pinned {m.get('peak_dbfs')} dBFS onset {m.get('onset_s')}; volume 0 silent "
          f"{q.get('silent')}, onset {q.get('onset_s')}, clipped {q.get('clipped')}, peak "

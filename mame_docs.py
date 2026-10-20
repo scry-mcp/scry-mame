@@ -68,7 +68,7 @@ DOC_VALUES: dict[str, str] = {
     "BREAKPOINT_MATCH": dec.REF_MATCH["breakpoint"], "WATCH_MATCH": dec.REF_MATCH["watch"],
     "REGPOINT_MATCH": dec.REF_MATCH["regpoint"],
     # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
-    **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES,
+    **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
     "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
     "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
     "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),

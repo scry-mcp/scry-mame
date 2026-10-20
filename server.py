@@ -2058,12 +2058,9 @@ def perform(steps: list[dict[str, Any]], settle_seconds: float = 30.0, summaries
                               summaries=summaries, until_frame=until_frame, shape_judged=True)
 
 
-@tool("Export the session as a replay", summary=summaries.perform_export)
+@tool("Export the session as a replay", summary=recording.export_summary)
 def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
-    """Write what this session did since its `start` to `path` as `perform`'s own document, so
-    an investigation becomes a bench: `uv run python -m scry_core.replay <path>`, from this
-    server's repository, plays it with no model and exits 0 when every step held. Answers in any
-    state, a closed session's included.
+    """{EXPORTS}
 
     Kept: what moved the machine, as steps (a reader that steps the guest included), and the
     reads that are checks (`read_memory`, `read_block`, `registers`, `screen_signature`,
@@ -2074,12 +2071,7 @@ def perform_export(path: str, overwrite: bool = False) -> dict[str, Any]:
     refusal after the machine moved, a machine found elsewhere than the call before left it, a
     step that wrote a file the session named, past {RECORD_MAX} calls kept).
 
-    `path` absolute or `~`-led, ending `.json`; refused if it is there unless `overwrite`.
-
-    Reply: `path`, `steps`, `checks`, `dropped` (the last {DROPPED_SHOWN}, each `call`, `op`,
-    `why`) and `dropped_total`, `cut` (`call`, `op`, `why`, or unavailable) and `replay`, the
-    runner's command line. `no_recording` before a `start` succeeded, after one was cancelled, or
-    when no recorded call is a step a replay could take.
+    {EXPORT_REPLY}
 
     Reference: REFERENCE.md, From an investigation to a bench.
     """

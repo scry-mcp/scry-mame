@@ -462,7 +462,7 @@ def _says_running(r: dict[str, Any]) -> bool:
 
 RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "scan_clear": lambda r: r.get("cleared") in (True, False),
-    "status": lambda r: r.get("running") is True and r.get("last_stop") is not None,
+    "status": lambda r: r.get("running") is True and "pc" in (r.get("last_stop") or {}),
     "log": lambda r: isinstance(r.get("lines_total"), int),
     "log_wait": lambda r: "line" in r,
     "snapshot": lambda r: r.get("bytes", 0) > 0,
@@ -3116,7 +3116,9 @@ def _d_discovery(t: list[str]) -> None:
          and [fields.get(r, {}).get(k) for r in ("dest_x", "dest_y")
               for k in ("word", "sign", "add")] == [10, -1, 240, 11, -1, 239], said(draft))
     control = [c for c in report.get("correlations", []) if c["capture"]["addr"] == "0x00004080"]
-    cell(t[14], len(control) == 1 and control[0]["command"] is None, str(control)[:110])
+    cell(t[14], len(control) == 1 and isinstance(control[0]["command"], dict)
+         and control[0]["command"].get("available") is False,
+         str(control)[:110])
     loaded = call("gfx_load", path=str(dest))
     blits = call("gfx_blits", draw_command="write_2000", detail=True)
     box = ((blits.get("blits") or [{}])[0]).get("box", {})

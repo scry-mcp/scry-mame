@@ -22,6 +22,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core.reply_contract import or_unavailable, unavailable
+
 import mame_callbacks as callbacks
 import mame_declarations as dec
 import mame_files as mfiles
@@ -349,7 +351,7 @@ def mark_across(event: str) -> list[dict[str, str | None]]:
     counting and says so in `across`, rather than being reset behind the caller's back."""
     before = st.last_stop_frame()
     for rec in STATE.tallies.values():
-        rec.setdefault("across", []).append({"event": event, "frame_from": st.or_unavailable(
+        rec.setdefault("across", []).append({"event": event, "frame_from": or_unavailable(
             before, "no stop had read a frame before it")})
     return [{**mspace.shown(ref), "cpu": cpu} for ref, cpu in STATE.tallies]
 
@@ -408,7 +410,7 @@ def read_tap(scratch: Path, owner: dec.Owner, frame: int | None, at_stop: bool,
         return item, None
     no_frame = dump["frame"] == callbacks.NO_FRAME
     item.update(state=state,
-                frame_as_of=(st.unavailable("the dump was written with no frame counter to "
+                frame_as_of=(unavailable("the dump was written with no frame counter to "
                                             "read") if no_frame else dump["frame"]),
                 superseded=(not no_frame and frame is not None and dump["frame"] < frame),
                 total=dump["total"])

@@ -20,6 +20,7 @@ from collections.abc import Callable
 from typing import Any
 
 from scry_core import prose, screen_map
+from scry_core import reply_contract as contract
 
 import mame_callbacks as callbacks
 
@@ -139,7 +140,7 @@ def step(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def resume(args: dict[str, Any], reply: dict[str, Any]) -> str:
     if not args["seconds"]:
         return "resume: running, no wait asked"
-    if reply["verdict"] == "OTHER_STOP":
+    if reply["verdict"] == contract.OTHER_STOP:
         return f"resume: OTHER_STOP at pc {reply['pc']} ({reply['how']})"
     return f"resume: TIMEOUT, still running after {reply['waited_s']} s"
 
@@ -500,7 +501,7 @@ def log(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 
 def log_wait(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    if reply["verdict"] == "TIMEOUT":
+    if reply["verdict"] == contract.TIMEOUT:
         return (f"log_wait {args['channel']} /{args['pattern']}/: TIMEOUT, no match in "
                 f"{reply['waited_s']} s, {prose.counted(reply['arrived_during'], 'line')} arrived")
     when = "already there" if reply["already"] else f"after {reply['waited_s']} s"
@@ -522,13 +523,6 @@ def captures(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 # -------------------------------------------------------------------------- sequences
 
-def perform_export(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    cut = f", cut at call {reply['cut']['call']}" if "call" in reply.get("cut", {}) else ""
-    return (f"perform_export: {prose.counted(reply['steps'], 'step')}, "
-            f"{prose.counted(reply['checks'], 'check')}, "
-            f"{reply['dropped_total']} dropped{cut} to {reply['path']}")
-
-
 def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # THE COUNT AND THE TAIL ON THE LINE: `ok` told two lists apart by nothing, and under
     # `summaries=True` a nested list's line is all its caller keeps.
@@ -549,7 +543,7 @@ def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def drive(args: dict[str, Any], reply: dict[str, Any]) -> str:
     verify = reply.get("verify") or {}
     act = reply.get("act") or {}
-    if act.get("verdict") == "TIMEOUT":
+    if act.get("verdict") == contract.TIMEOUT:
         return "drive: act TIMEOUT, nothing verified"
     seen = (f"effect seen, {verify['verdict']}" if verify.get("seen") else
             f"effect not seen, {verify['verdict']}" if verify.get("checked")
@@ -640,7 +634,7 @@ def state_save(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 def _datum(value: Any) -> str:
     """A reply's datum as a summary says it: `unavailable` where it could not be read, its
-    reason left to the reply (`st.unavailable`)."""
+    reason left to the reply (`unavailable`)."""
     return "unavailable" if isinstance(value, dict) and value.get("available") is False else str(
         value)
 

@@ -22,6 +22,7 @@ from xml.parsers import expat
 
 from scry_core import judges, live_host, narrowing, prose
 from scry_core import progress as mprogress
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_binary as binaries
@@ -311,7 +312,7 @@ def cfg_report() -> dict[str, Any]:
     """The cfg this session installed, for `start` and `status`: unavailable when MAME runs on
     its defaults."""
     if STATE.cfg is None:
-        return st.unavailable(st.NO_CFG_WHY)
+        return unavailable(st.NO_CFG_WHY)
     return {"source_path": str(STATE.cfg["source"]),
             "installed_path": str(STATE.cfg["installed"]),
             "replaced": bool(STATE.cfg["replaced"])}
@@ -706,8 +707,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
         else:
             store = dec.DeclarationStore(system, None)
             declarations = {"persistent": False,
-                            "path": st.unavailable(dec.SESSION_LIVED_WHY),
-                            "key": st.unavailable(dec.SESSION_LIVED_WHY)}
+                            "path": unavailable(dec.SESSION_LIVED_WHY),
+                            "key": unavailable(dec.SESSION_LIVED_WHY)}
     except dec.DeclarationError as e:
         raise st.Invalid("host_failed", str(e)) from None
     declarations["held"] = len(store.declarations())
@@ -760,7 +761,7 @@ def _alive_fields(judged: Judged, keep: bool = True) -> dict[str, Any]:
     survives the scratch (a launch `start` relaunches keeps none, or its copies would push the
     kept ones out). The failed start then kills it."""
     assert STATE.proc is not None and STATE.scratch is not None
-    return {"exit_code": st.unavailable("MAME is still running"), "pid": STATE.proc.pid,
+    return {"exit_code": unavailable("MAME is still running"), "pid": STATE.proc.pid,
             "stub_port": judged.port, "alive": True,
             "stdout_tail": _stdout_tail(STATE.scratch),
             **(keep_failed_start(STATE.scratch, judged.system) if keep else {})}
@@ -806,7 +807,7 @@ def keep_failed_start(scratch: Path, system: str) -> dict[str, Any]:
         for old in sorted(folder.glob("[0-9]*T*Z-*.log"))[:-FAILED_STARTS_KEPT]:
             old.unlink()
     except OSError as e:
-        return {"stdout_kept": st.unavailable(str(e))}
+        return {"stdout_kept": unavailable(str(e))}
     return {"stdout_kept": str(kept)}
 
 
@@ -1346,5 +1347,5 @@ def rom_check(ses: gs.Session, reference_rom: str, reference_addr: str, referenc
         "rom_check": "OK",
         "deterministic": ses.determinism(addr, thread=thread),
         "query_s": st.measured_s(ses.cost_per_query(addr, times=50, thread=thread)),
-        "cpu": st.or_unavailable(on, st.NO_CPU_READ_WHY),
+        "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
     })

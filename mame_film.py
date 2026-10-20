@@ -56,6 +56,7 @@ from typing import Any
 from scry_core import fresh, png, prose
 from scry_core import progress as mprogress
 from scry_core import raster as core_raster
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_callbacks as callbacks
@@ -136,14 +137,14 @@ class Film:
         out: dict[str, Any] = {
             "trigger": self.trigger, "trigger_addr": st.hex_addr(self.trigger_addr),
             "length": self.length,
-            "value": (st.unavailable("no `value` was given") if self.value is None
+            "value": (unavailable("no `value` was given") if self.value is None
                       else self.shown(self.value)),
             "changed": self.changed,
-            "pc": self.pc or st.unavailable("no `pc` was given"),
-            "pc_addr": (st.unavailable("no `pc` was given") if self.pc_addr is None
+            "pc": self.pc or unavailable("no `pc` was given"),
+            "pc_addr": (unavailable("no `pc` was given") if self.pc_addr is None
                         else st.hex_addr(self.pc_addr)),
             "cpu": self.cpu, "frames": self.frames, "keep": self.keep,
-            "crop": list(self.crop) if self.crop else st.unavailable("no `crop`: the whole screen"),
+            "crop": list(self.crop) if self.crop else unavailable("no `crop`: the whole screen"),
             "film_dir": str(self.dir),
             "screen": self.screen, "checked": self.checked, "space": self.space}
         if self.check_why:
@@ -697,13 +698,13 @@ NO_HIT_WHY = "the frame lists no hit"
 
 
 def _cell_fields(cell: Cell, film: Film) -> dict[str, Any]:
-    nothing = st.unavailable(NO_HIT_WHY)
+    nothing = unavailable(NO_HIT_WHY)
     first: dict[str, Any] = {"pc": nothing, "value": nothing}
     if cell.first_hit is not None:
         first = {k: v for k, v in _hit(*cell.first_hit, film, film.cpu).items()
                  if k != "counter"}
     return {"k": cell.k, "frame": cell.frame, "hits_in_frame": cell.hits,
-            "hit_counters": st.or_unavailable(cell.hit_counters, NO_HIT_WHY), **first,
+            "hit_counters": or_unavailable(cell.hit_counters, NO_HIT_WHY), **first,
             "path": str(cell.file)}
 
 
@@ -743,12 +744,12 @@ def _counts(head: dict[str, Any], rec: dict[str, Any]) -> dict[str, Any]:
         "state": "finished" if head["finished"] else "judging",
         "judged": head["judged"],
         "judged_frames": ([head["first"], head["last"]] if head["judged"]
-                          else st.unavailable("no frame was judged yet")),
+                          else unavailable("no frame was judged yet")),
         "met": head["met"], "kept": len(rec["cells"]), "refused": len(rec["refused"]),
         "dropped_total": head["dropped"],
         # the first and last frame dropped, as `judged_frames` spans the judged ones
         "dropped_frames": ([head["dropped_first"], head["dropped_last"]] if head["dropped"]
-                           else st.unavailable("no frame was dropped")),
+                           else unavailable("no frame was dropped")),
         "lost": {r: head[f"lost_{r}"] for r in LOST_REASONS if head[f"lost_{r}"]},
         "pending_picture": bool(head["pending"]),
         "cost": {"judge_s_per_frame": st.measured_s(head["judge_ticks"] / tps
@@ -764,7 +765,7 @@ def _baseline(head: dict[str, Any], film: Film) -> dict[str, Any]:
     """Where a `changed` film's comparison started: its first write, which met nothing; both
     null before any write."""
     if head["baseline_frame"] < 0:
-        before = st.unavailable("no write has landed yet, so there is no baseline")
+        before = unavailable("no write has landed yet, so there is no baseline")
         return {"frame_baseline": before, "baseline_value": before}
     return {"frame_baseline": head["baseline_frame"],
             "baseline_value": film.shown(head["baseline_value"])}

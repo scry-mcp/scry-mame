@@ -79,7 +79,7 @@ def test_anything_but_the_header_on_line_one_is_refused(text: str, words: str) -
     (f"x\t:m\t{STAMP}\t a", "whitespace"),
     (f"x\t:m\t{STAMP}\ta ", "whitespace"),
     (f"x\t:m\t{STAMP}\ta\x07", "is not printable"),
-    (f"x\t:m\t{STAMP}\ta\rb", "is not printable"),
+    (f"x\t:m\t{STAMP}\ta\rb", "a carriage return that does not end the line"),
     (f"x\t:m\t{STAMP}\t" + "y" * (cf.TEXT_MAX_BYTES + 1), f"past the {cf.TEXT_MAX_BYTES}"),
 ])
 def test_a_row_breaking_a_rule_is_refused_on_its_line(row: str, words: str | None) -> None:

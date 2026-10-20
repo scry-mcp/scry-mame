@@ -41,6 +41,7 @@ from typing import Any, cast
 from scry_core import cancel, prose
 from scry_core import progress as mprogress
 from scry_core import sequence_account as account
+from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_advance as advance
@@ -229,8 +230,8 @@ def _close(ses: gs.Session, scratch: Path, tag: str) -> bool | None:
 def _left(path: Path, closed: bool | None) -> dict[str, Any]:
     return {"path": str(path),
             "bytes": (path.stat().st_size if path.exists()
-                      else st.unavailable("the tracer wrote no file")),
-            "closed": st.or_unavailable(closed, "the session broke, so the tracer could not be "
+                      else unavailable("the tracer wrote no file")),
+            "closed": or_unavailable(closed, "the session broke, so the tracer could not be "
                                                 "asked to close")}
 
 
