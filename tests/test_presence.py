@@ -40,7 +40,8 @@ def test_the_drawer_draws_on_the_ui_container_from_the_look_and_reads_its_file(
     assert f"local RGB, EDGE, STEPS = {0x123456}, 0.05, 3" in text
     assert f"local ACTING, HELD, FADE, REREAD = 0.9, 0.45, 1.5, {mpresence.REREAD_S!r}" in text
     assert 'execution_state == "run"' in text, "a stopped machine is never drawn a fade"
-    assert '"' + str(tmp_path).replace("\\", "\\\\") + '/a\\"b/presence.state"' in text
+    state = str(tmp_path / 'a"b' / mpresence.STATE_FILE)
+    assert '"' + state.replace("\\", "\\\\").replace('"', '\\"') + '"' in text
     assert text.startswith("-- ") and "\nlocal set_up, why = pcall(function()" in text
     assert text.rstrip().endswith("if not set_up then stopped(why) end"), \
         "a drawer that could not be set up writes why, as one that raised does"
