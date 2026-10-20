@@ -50,6 +50,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 from mcp.server.mcpserver import Context
+from pydantic import Field
 
 # The gdbstub client and the modules live next door, and this file starts in two ways: as a
 # script (`python server.py`, which puts its directory on sys.path) and as the package's
@@ -57,7 +58,8 @@ from mcp.server.mcpserver import Context
 # and the server is launchable only with `--directory` pointing here.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from scry_core import media_tools, recording  # noqa: E402
+from scry_core import media_tools, process_name, recording  # noqa: E402
+from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core.progress import bridge  # noqa: E402
 
@@ -135,6 +137,7 @@ def start(
     types: str | dict[str, str] = "",
     cfg: str = "",
     binary: str = "",
+    presence: Annotated[bool, Field(description=scry_presence.ARGUMENT)] = True,
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -155,7 +158,7 @@ def start(
       `seconds` (the stub's wait, (0, {WAIT_MAX_S}]), `stub_port` (`0`: a free one).
     - `state_dir` (empty: disposable; else kept), `cfg`.
 
-    Refused before anything is spawned: a live session, a missing file, a cpu
+    Refused before any spawn: a live session, a missing file, a cpu
     the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
     a `stub_port` in use,
     a `reference_addr` OUTSIDE the image; a `system` the binary lacks. A stranger on your
@@ -166,7 +169,7 @@ def start(
     `symbols_total`, `symbols_typed`, `symbols_format`, `symbols_by_class` (first cpu),
     `symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine`, what
     reached the driver (`env`, `display`, `background`, `flags`, `throttle_from_frame`,
-    `boot_lua_path`), `declarations` and `start_retries`.
+    `boot_lua_path`), `presence`, `declarations` and `start_retries`.
 
     Reference: REFERENCE.md, The session.
     """
@@ -180,7 +183,7 @@ def start(
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
                         inipath, seconds, shared, boot_lua, env, bases, reference_base, display,
                         stub_port, state_dir, throttle_from_frame, types, cfg,
-                        background=background, progress=bridge(ctx))
+                        background=background, presence=presence, progress=bridge(ctx))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -191,7 +194,8 @@ def status() -> dict[str, Any]:
     Reply: `alive`; with no machine, a `note` when the server closed the last session after an hour
     with no call; with `exit_code` and a `note` when MAME died under the session (`close` collects
     its last words before anything is deleted); when alive also `system`, `pid`, `stub_port`,
-    `scratch_dir`, `state_dir`, `cfg`, `debugger` (`attached`, and a `note`: a capture taken at a
+    `scratch_dir`, `state_dir`, `cfg`, `presence` (`true` drawn, `false` asked off, or why not),
+    `debugger` (`attached`, and a `note`: a capture taken at a
     stop here can land a frame away from an autoboot golden), `fingerprint` (the build the
     declarations are judged against, the first cpu's) and `fingerprints` (each cpu's),
     `errorlog_path`, `stdout_path`, `running`, `pc` (the machine's, read now; absent while it runs
@@ -2375,6 +2379,7 @@ strict.strict_arguments(mcp)
 
 
 def main() -> None:
+    process_name.set_title("scry-mame")
     idle.IDLE.watch(LOCK, STATE.machine_alive, launch.close)
     try:
         mcp.run()

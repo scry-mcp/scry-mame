@@ -103,6 +103,7 @@ from matrix_lifetime import register_p
 from matrix_media import register_y
 from matrix_multicpu import register_s
 from matrix_palette_stamps import register_u
+from matrix_presence import register_z
 from matrix_removals import (
     K_CAPTURE_LEFTOVER,
     K_REDECLARE_LIVE,
@@ -4268,6 +4269,7 @@ register_u()
 register_v()
 register_w()
 register_y()
+register_z()
 register_h()
 # THE FOCUS GATE'S VERDICT CLOSES THE RUN, after every section, H included.
 register_x_verdict()

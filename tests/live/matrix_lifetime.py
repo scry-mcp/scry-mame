@@ -3,7 +3,7 @@ its emulator stops, and the declarations store a session with its own `state_dir
 
 The stub is proved to be this launch's MAME by its pid around the dial (`mame_stub_owner`).
 The emulator stops in one of three ways, each proved by its process being gone: an ordered
-`close` asks it to quit, the server's death takes it along (`mame_guardian`), and a session
+`close` asks it to quit, the server's death takes it along (`scry_core.guardian`), and a session
 idle past the bound is closed (`mame_idle`). Each cell carries its control: the foreign
 listener read back for a dial it must not have had, the same SIGKILL with the guardian
 withheld, the MAME seen alive before the bound or the `close` ended it. A `state_dir` session
@@ -45,9 +45,9 @@ from live_harness import (
     said,
     section,
 )
+from scry_core import guardian
 
 import mame_declarations as dec  # isort: skip -- found through the path the harness sets
-import mame_guardian as guardian  # isort: skip
 import mame_idle as idle  # isort: skip
 import mame_launch as launch  # isort: skip
 import mame_stub_owner as stub_owner  # isort: skip
@@ -71,16 +71,16 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
 ], start=1)]
 
 MAME_DIR = Path(launch.__file__).resolve().parent
-WITHIN_S = 5 * guardian.GUARDIAN_POLL_S
+WITHIN_S = 5 * guardian.POLL_S
 
 # The server stand-in for the SIGKILL: the server's own `start`, the guardian withheld when
 # told to (the control), MAME's pid printed, then a wait to be killed in.
 SERVER = """
 import json, sys, time
 sys.path.insert(0, sys.argv[1])
-import mame_guardian
+from scry_core import guardian
 if sys.argv[3] == "bare":
-    mame_guardian.spawn = lambda mame: None
+    guardian.spawn = lambda *a, **k: None
 import server as s
 r = s.start(**json.loads(sys.argv[2]))
 print(json.dumps({"status": r["status"], "pid": r.get("pid"), "said": r.get("summary")}),

@@ -359,5 +359,8 @@
   {"id": "M191", "prompt": "Load the screen map /tmp/maps/circus.scry-map.json.", "tool": "map_load", "args": {"path": "/tmp/maps/circus.scry-map.json"}},
   {"id": "M192", "prompt": "The machine is stopped on the attract screen. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, with a place named credits at x 160, y 240, 80 by 12.", "tool": "map_add", "args": {"screen": "attract", "match": [[0, 0, 248, 12]], "controls": [{"name": "credits", "rect": [160, 240, 80, 12]}]}},
   {"id": "M193", "prompt": "The machine is stopped. Which of the mapped screens is it showing right now?", "tool": "map_find", "args": {}},
-  {"id": "M194", "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.", "tool": "map_save", "args": {"path": "/tmp/maps/circus.scry-map.json", "overwrite": true}}
+  {"id": "M194", "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.", "tool": "map_save", "args": {"path": "/tmp/maps/circus.scry-map.json", "overwrite": true}},
+  {"id": "M195", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
+   "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "presence": false}},
+  {"id": "M196", "prompt": "Is this session's window being marked as driven right now, or could the marking not be drawn?", "tool": "status"}
 ]}

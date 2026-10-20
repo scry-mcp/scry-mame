@@ -1,0 +1,15 @@
+{
+ "task": {
+  "id": "M196",
+  "prompt": "Is this session's window being marked as driven right now, or could the marking not be drawn?",
+  "tool": "status"
+ },
+ "runs": [
+  {
+   "lines": [
+    "M196: {\"tool\": \"status\", \"args\": {}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,343 @@
+"""Section Z of the live matrix: the presence edge, drawn over the window and never in the
+evidence, on circus. Why it cannot reach the evidence is `mame_presence`'s to say; this section
+proves each claim on a running MAME, each with a control that can go red.
+
+DRAWN: the drawer counts the repaints it draws in each state, read back through `lua`; a run
+(`acting`) and the console commands of a stopped machine (`held`) must each raise their own count
+by the frames they drew. SEEN: the host's capture of the window with the edge `acting` against the
+same stopped machine with it `off` differs on all four sides of the content and nowhere deeper
+than the edge, towards orange; a host that does not grant the capture BLOCKS that cell.
+
+NEVER IN THE EVIDENCE: `snapshot`, `screen_view` and `screen_signature` compared byte for byte
+with the edge `acting` and `off` on one stopped machine, and `record` and `series_capture` from
+one saved state, with the edge off twice first (two recordings that disagree say nothing of the
+edge, so the cell is BLOCKED), then held at `acting` by the state file, then lit by the session
+itself as it would be. Where the state file is written here, the session's writer is set aside
+and given time to land what it had pending, so the file is the test's alone; every such leg reads
+the drawer's count, so a drawer that drew nothing cannot pass it. The reds: the production drawer
+moved onto the screen's container must change a stopped `snapshot`; and the bitmap readers and
+the recordings, which nothing drawn at frame-done reaches, must differ across a machine moved on.
+
+`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
+
+    uv run python tests/live/matrix_presence.py
+"""
+
+from __future__ import annotations
+
+import contextlib
+import hashlib
+import os
+import re
+import time
+from collections.abc import Iterator
+from pathlib import Path
+from typing import Any
+
+from live_harness import (
+    Board,
+    blocked,
+    boards_cover,
+    call,
+    cell,
+    circus_boot,
+    fresh,
+    invalid,
+    ok,
+    run_boards,
+    run_sections,
+    scratch,
+    section,
+    zips_missing,
+)
+from scry_core import presence, window_capture
+
+import mame_presence as mpresence  # isort: skip -- found through the path the harness sets
+from mame_state import STATE  # isort: skip
+
+Z_TITLE = "the presence edge, drawn over the window and never in the evidence"
+Z_CELLS = [
+    "circus: start reports presence true, status says the same, and the edge was drawn held "
+    "before either answered",
+    "circus: a run raises the acting repaints and console commands while stopped the held ones",
+    "circus: the host's capture with the edge acting differs from it off on all four sides of "
+    "the content and nowhere deeper than the edge, towards orange",
+    "circus: snapshot, screen_view and screen_signature are byte-identical acting and off",
+    "circus: record and series_capture from one saved state are byte-identical off, acting by "
+    "file and lit by the session",
+    "circus: the drawer on the screen's container changes a stopped snapshot: the stills can fail",
+    "circus: the bitmap readers and the recordings differ across a moved machine: their "
+    "comparison can fail",
+    "circus: start(presence=False) draws nothing, writes no state and says false",
+]
+#: How far from a side the edge may reach in a capture: its width, with room for the scaling
+#: the window applies and the anti-aliased border of the last band.
+EDGE_REACH = 2.5
+#: How much of the captured window the changed box must span: the whole content, which is all of
+#: the capture but its title bar.
+CONTENT_SPAN = 0.75
+#: Long enough for the session's writer to land a state it had pending.
+QUIET_S = 0.3
+#: The frames each recording leg records, and the run before the state they start from.
+LEG_FRAMES = 20
+RUN_FRAMES = 60
+#: How far the machine is moved for the reds that compare across it: circus's attract screen
+#: holds still for stretches shorter than this.
+MOVE_FRAMES = 600
+
+
+def _written(tool: str, suffix: str, **kw: Any) -> str:
+    """`tool` writing to a fresh `dest`, and the digest of what it wrote there: of the file, or
+    of a series folder's frames in order; "" when the call failed or nothing was written."""
+    dest = Path(fresh(suffix))
+    if not ok(call(tool, dest=str(dest), **kw)):
+        return ""
+    if dest.is_dir():
+        frames = sorted(dest.glob("*.png"))
+        return (hashlib.sha256(b"".join(f.read_bytes() for f in frames)).hexdigest()
+                if frames else "")
+    return hashlib.sha256(dest.read_bytes()).hexdigest() if dest.is_file() else ""
+
+
+def _frames() -> dict[str, int] | None:
+    """The drawer's repaint counts, `{held, acting}`; -1 each where no drawer runs; None when the
+    read itself failed, which no cell may take for an answer."""
+    r = call("lua", script="local f = _G.scry_presence_frames "
+                           "if f then print(f.held, f.acting) else print(-1, -1) end",
+             read_only=True)
+    words = str(r.get("output") or "").split()
+    if not ok(r) or len(words) != 2:
+        return None
+    return {"held": int(words[0]), "acting": int(words[1])}
+
+
+def _rise(before: dict[str, int] | None, after: dict[str, int] | None, state: str) -> int:
+    """How many repaints `state` gained between two reads; -1 when either read failed."""
+    return -1 if before is None or after is None else after[state] - before[state]
+
+
+def _state_file() -> Path:
+    assert STATE.scratch is not None
+    return STATE.scratch / mpresence.STATE_FILE
+
+
+def _put(path: Path, word: str) -> None:
+    """`word` written whole, the way the session's adapter writes it."""
+    part = path.with_suffix(".part")
+    part.write_text(word + "\n", encoding="ascii")
+    os.replace(part, path)
+
+
+@contextlib.contextmanager
+def _by_hand() -> Iterator[None]:
+    """The session's writer set aside, and given time to land what it had pending, so nothing
+    but this section writes the state file until the block ends."""
+    held, STATE.presence = STATE.presence, None
+    time.sleep(QUIET_S)
+    try:
+        yield
+    finally:
+        STATE.presence = held
+
+
+def _repaint() -> None:
+    """One still call that goes through the debugger's console, which repaints a stopped MAME."""
+    call("cpu_info")
+
+
+def _paint(state: str) -> None:
+    _put(_state_file(), state)
+    _repaint()
+
+
+def _frame() -> int:
+    stop = call("status").get("last_stop")
+    frame = stop.get("frame") if isinstance(stop, dict) else None
+    if not isinstance(frame, int):
+        invalid(f"status names no frame to start a series after: {stop!r}")
+        return 0
+    return frame
+
+
+def _stills() -> dict[str, str]:
+    return {"snapshot": _written("snapshot", ".png"),
+            "screen_view": _written("screen_view", ".png", attach=False),
+            "screen_signature": str(call("screen_signature").get("signature", ""))}
+
+
+def _record(tool: str, name: str) -> str:
+    """`tool` once from the saved state `name`."""
+    call("state_load", name=name)
+    if tool == "record":
+        return _written("record", ".avi", frames=LEG_FRAMES, seconds=10.0)
+    at = _frame()
+    return _written("series_capture", "-series", first=at + 1, last=at + LEG_FRAMES // 5,
+                    seconds=10.0)
+
+
+def _legs(tool: str, name: str) -> dict[str, Any]:
+    """`tool` from `name`: off twice and acting by the file, the writer set aside; then once more
+    with the session lighting the edge itself."""
+    with _by_hand():
+        off = []
+        for _ in range(2):
+            _put(_state_file(), "off")
+            off.append(_record(tool, name))
+        _put(_state_file(), "acting")
+        by_file = _record(tool, name)
+    lit = _record(tool, name)
+    return {"off": off, "by_file": by_file, "lit": lit}
+
+
+def _z_circus(t: list[str]) -> None:
+    started = circus_boot(presence=True)
+    at_start = _frames()                 # the first call: whatever `start` itself repainted
+    status = call("status")
+    cell(t[0], started.get("presence") is True and status.get("presence") is True
+         and at_start is not None and at_start["held"] >= 1,
+         f"start {started.get('presence')!r}, status {status.get('presence')!r}, repaints "
+         f"before any other call {at_start}")
+    # THE RECORDINGS FIRST, from a state saved at a frame's end, with no Lua chunk evaluated
+    # between the save and the last recording: one evaluated after a save makes the recordings
+    # of that state disagree, with the edge off as on, and the instrument check below BLOCKS the
+    # cell if they disagree anyway. So the drawer's count is read before the run that ends at
+    # the save and after every leg, and the rise it must show is what that run and the legs that
+    # draw drew between them.
+    first = _frames()
+    call("run_for", frames=RUN_FRAMES, seconds=10.0)
+    call("state_save", name="z")
+    runs = {tool: _legs(tool, "z") for tool in ("record", "series_capture")}
+    drawn = _rise(first, _frames(), "acting")
+    owed = RUN_FRAMES + 2 * (LEG_FRAMES + LEG_FRAMES // 5)
+    broken = {tool: r for tool, r in runs.items()
+              if not all([*r["off"], r["by_file"], r["lit"]])}
+    unrepeatable = {tool: r["off"] for tool, r in runs.items()
+                    if tool not in broken and r["off"][0] != r["off"][1]}
+    if broken:
+        cell(t[4], False, f"a recording leg failed or wrote nothing: {broken}")
+    elif unrepeatable:
+        blocked(t[4], f"two recordings from one state with the edge off differ: {unrepeatable}")
+    else:
+        cell(t[4], all(r["off"][0] == r["by_file"] == r["lit"] for r in runs.values())
+             and drawn >= owed, f"{runs}; acting repaints {drawn} of at least {owed}")
+
+    call("run_for", frames=60, seconds=10.0)
+    before = _frames()
+    call("run_for", frames=60, seconds=10.0)
+    after_run = _frames()
+    for _ in range(3):
+        _repaint()
+    after_commands = _frames()
+    cell(t[1], _rise(before, after_run, "acting") >= 30
+         and _rise(after_run, after_commands, "held") >= 2,
+         f"before {before}, after a run of 60 frames {after_run}, after three console "
+         f"commands {after_commands}")
+
+    # SEEN, and the stills, on one stopped machine.
+    with _by_hand():
+        _paint("off")
+        off_stills = _stills()
+        off_window = _window("off")
+        drawn_before = _frames()
+        _paint("acting")
+        acting_stills = _stills()
+        acting_window = _window("acting")
+        drawn_after = _frames()
+    drew = _rise(drawn_before, drawn_after, "acting")
+    if isinstance(off_window, str) or isinstance(acting_window, str):
+        blocked(t[2], off_window if isinstance(off_window, str) else str(acting_window))
+    else:
+        _judge_window(t[2], off_window, acting_window)
+    cell(t[3], all(off_stills.values()) and off_stills == acting_stills and drew > 0,
+         f"off {off_stills}, acting {acting_stills}, acting repaints between {drew}")
+
+    # THE RED OF EVERYTHING FRAME-DONE CANNOT REACH: the same comparisons across a machine one
+    # run apart.
+    moved_before = {**_stills(), "record": _record("record", "z"),
+                    "series_capture": _record("series_capture", "z")}
+    call("run_for", frames=MOVE_FRAMES, seconds=10.0)
+    call("state_save", name="z2")       # at a frame's end too, as `z` was
+    moved_after = {**_stills(), "record": _record("record", "z2"),
+                   "series_capture": _record("series_capture", "z2")}
+    keys = ("screen_view", "screen_signature", "record", "series_capture")
+    cell(t[6], all(moved_before[k] and moved_after[k] and moved_before[k] != moved_after[k]
+                   for k in keys), f"before {moved_before}, after {moved_after}")
+    call("close")
+
+    _z_leak(t[5])
+
+    quiet = circus_boot(presence=False)
+    quiet_status = call("status")
+    counts = _frames()
+    cell(t[7], quiet.get("presence") is False and quiet_status.get("presence") is False
+         and counts == {"held": -1, "acting": -1} and not _state_file().exists(),
+         f"start {quiet.get('presence')!r}, status {quiet_status.get('presence')!r}, "
+         f"repaints {counts}, state file {_state_file().exists()}")
+    call("close")
+
+
+def _judge_window(label: str, off: window_capture.Image, acting: window_capture.Image) -> None:
+    try:
+        d = window_capture.difference(off, acting)
+    except ValueError as e:
+        blocked(label, f"the window changed between its two captures: {e}")
+        return
+    reach = EDGE_REACH * presence.LOOK.edge
+    x0, y0, x1, y1 = d.box
+    perimeter = 2 * ((x1 - x0) + (y1 - y0))
+    cell(label, d.changed >= perimeter and min(d.span) >= CONTENT_SPAN and min(d.sides) > 0
+         and d.deepest <= reach and d.delta[0] > d.delta[1] > d.delta[2],
+         f"{d.changed} pixels changed (a frame of the box needs {perimeter}) over "
+         f"{d.span[0]:.2f} x {d.span[1]:.2f} of the window, by side {d.sides}, the deepest "
+         f"{d.deepest:.4f} of the box's shorter side in (bound {reach:.4f}), mean change "
+         f"{tuple(round(v, 1) for v in d.delta)}")
+
+
+def _window(tag: str) -> window_capture.Image | str:
+    """The window captured, or why the host would not."""
+    assert STATE.proc is not None
+    try:
+        return window_capture.capture(STATE.proc.pid, scratch() / f"z-window-{tag}.png")
+    except window_capture.Blocked as e:
+        return str(e)
+
+
+def _z_leak(label: str) -> None:
+    """THE RED of the stills: the production drawer, moved onto the screen's container and
+    reading a file of this cell's own, as a caller's boot harness. Two snapshots with it off
+    agree first, so a difference with it on is the drawer's."""
+    leak_state = scratch() / "z-leak.state"
+    _put(leak_state, "off")
+    leaking, moved = re.subn(r"manager\.machine\.render\.ui_container",
+                             "manager.machine.screens[':screen'].container",
+                             mpresence.drawer(scratch()))
+    path_moved = leaking.count(f"{scratch() / mpresence.STATE_FILE}")
+    if moved != 1 or path_moved != 1:
+        invalid(f"the leaking drawer could not be derived ({moved} containers, {path_moved} "
+                "paths moved): the production drawer changed shape")
+    leaking = leaking.replace(str(scratch() / mpresence.STATE_FILE), str(leak_state))
+    harness = scratch() / "z-leak.lua"
+    harness.write_text(leaking.replace("_G.scry_presence_frames", "_G.scry_leak_frames"))
+    circus_boot(presence=False, boot_lua=str(harness))
+    call("run_for", frames=60, seconds=10.0)
+    snaps: list[str] = []
+    for state in ("off", "off", "acting"):
+        _put(leak_state, state)
+        _repaint()
+        snaps.append(_written("snapshot", ".png"))
+    cell(label, all(snaps) and snaps[0] == snaps[1] != snaps[2], f"off, off, acting: {snaps}")
+    call("close")
+
+
+Z_BOARDS = (Board(_z_circus, tuple(range(len(Z_CELLS))), lambda: zips_missing("circus")),)
+boards_cover("Z", Z_CELLS, Z_BOARDS)
+
+
+def register_z() -> None:
+    """Register section Z with the matrix: after every section registered before it."""
+    section("Z", Z_TITLE, Z_CELLS)(lambda: run_boards(Z_CELLS, Z_BOARDS))
+
+
+if __name__ == "__main__":
+    register_z()
+    run_sections("SECTION Z")

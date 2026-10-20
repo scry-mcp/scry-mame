@@ -791,7 +791,7 @@ def _stub_boot(
     return ses
 
 
-def _boot_args(tmp_path: Path, image: bytes) -> dict[str, str]:
+def _boot_args(tmp_path: Path, image: bytes) -> dict[str, Any]:
     """The `start` arguments that pass every check against a `_stub_boot` session serving
     `image` at address 0 (the defaults for `reference_addr` and `reference_base`)."""
     binary = fake_mame(tmp_path)
@@ -4708,6 +4708,16 @@ def test_run_to_reads_bplist_back_after_arming_its_two_breakpoints(
     assert "bplist" in ses.commands
 
 
+class _ClosedPresence:
+    """A session's presence as `kill` meets it: closed once, and nothing else asked of it."""
+
+    def __init__(self) -> None:
+        self.closed = 0
+
+    def close(self) -> None:
+        self.closed += 1
+
+
 def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     """Deleting one reset line from `kill` left the suite green: nothing exercised a close
     followed by a fresh session and read what the old one left. `armed_watches` is the one
@@ -4759,6 +4769,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log := tempfile.mkstemp()[1], "wb"),  # noqa: SIM115 (kill closes it)
+        "presence": _ClosedPresence(), "presence_reply": True,
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
@@ -5047,7 +5058,7 @@ def test_a_comparison_typed_through_debug_is_a_read_and_an_assignment_or_an_acti
 
 
 def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
-                  exit_code: int | None, wait: float) -> Any:
+                  exit_code: int | None, wait: float, presence: bool = False) -> Any:
     """`boot` against a gdbstub that refuses every connection and a process whose `poll`
     answers `exit_code` (None: alive). Hands back the refusal it raised."""
     from types import SimpleNamespace
@@ -5074,11 +5085,56 @@ def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
     judged = SimpleNamespace(
         state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
         system="sys", rompath=str(tmp_path), port=1, flags=[], inipath="", wait=wait,
-        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False)
+        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
+        presence=presence)
     with pytest.raises(mstate.Invalid) as e:
         launch.boot(judged)  # type: ignore[arg-type]
     assert mstate.STATE.ses is None
     return e.value
+
+
+@pytest.mark.parametrize("presence", [True, False])
+def test_boot_composes_the_drawer_exactly_when_presence_is_asked(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, presence: bool) -> None:
+    _boot_against(monkeypatch, tmp_path, exit_code=None, wait=0.05, presence=presence)
+    script = (tmp_path / "boot.lua").read_text(encoding="utf-8")
+    assert ("register_frame_done" in script) is presence
+
+
+def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[object] = []
+
+    class Stop(Exception):
+        pass
+
+    def judge(**kw: Any) -> None:
+        seen.append(kw["presence"])
+        raise Stop
+    from types import SimpleNamespace
+    monkeypatch.setattr(launch, "judge", judge)
+    import mame_binary
+    monkeypatch.setattr(mame_binary, "resolve", lambda b: SimpleNamespace(path=b))
+    monkeypatch.setattr(mstate.STATE, "ses", None)
+    for asked in (True, False):
+        with pytest.raises(Stop):
+            launch.start("mame", "sys", "/r", "/r/x.bin", "", "0x0", "", 1.0, False, "", None,
+                         None, "0x0", "", 0, "", presence=asked)
+    assert seen == [True, False]
+
+
+def test_the_boundary_tells_the_session_s_presence_of_each_call(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    heard: list[tuple[str, str]] = []
+
+    class Heard:
+        def began(self, tool: str) -> None:
+            heard.append(("began", tool))
+
+        def ended(self, tool: str) -> None:
+            heard.append(("ended", tool))
+    monkeypatch.setattr(mstate.STATE, "presence", Heard())
+    assert s.status()["status"] == "ok"
+    assert heard == [("began", "status"), ("ended", "status")]
 
 
 def test_boot_names_a_gdbstub_that_never_answers_within_its_wait(
@@ -6281,7 +6337,8 @@ def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestl
     judged = SimpleNamespace(
         state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
         system="sys", rompath=str(tmp_path), port=23999, flags=[], inipath="", wait=0.05,
-        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False)
+        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
+        presence=False)
     with pytest.raises(mstate.Invalid) as e:
         launch.boot(judged)  # type: ignore[arg-type]
     assert ports and set(ports) == {23999}, ports
@@ -6871,3 +6928,18 @@ def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_includ
             assert live_host.EmulatorLedger(ledger).recorded() == {pid: binary.name}
         else:
             assert not ledger.exists()
+
+
+@pytest.mark.parametrize("asked", [True, False])
+def test_judge_carries_presence_to_the_boot(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: bool
+) -> None:
+    """What `start` was asked of the presence reaches the boot that composes the drawer."""
+    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
+    args = _boot_args(tmp_path, bytes(16))
+    judged = launch.judge(**args, symbols="", reference_addr="0x0", inipath="", wait=1.0,
+                          shared=False, boot_lua="", env=None, bases=None, reference_base="0x0",
+                          display="", port=0, state_dir="", throttle_from_frame=0,
+                          background=None, presence=asked)
+    machine.listxml(judged.listxml, judged.binary, judged.system, judged.wait)
+    assert judged.presence is asked

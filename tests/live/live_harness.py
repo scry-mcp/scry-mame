@@ -77,8 +77,11 @@ def invalid(message: str) -> None:
 
 
 # m68k-dual's boot, every live script's: the board on the bench (`bench_boards`).
+# THE PRESENCE EDGE IS OFF in every start of the live tiers but section Z's, which asks for it by
+# name: the tiers are a battery, and the edge is for the owner watching a session. Here for the
+# direct callers, in `call` for the rest.
 BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_ROMS,
-            reference_rom=REFERENCE_ROM, reference_addr="0x0", seconds=25.0)
+            reference_rom=REFERENCE_ROM, reference_addr="0x0", seconds=25.0, presence=False)
 
 # WHETHER THIS RUN'S MACHINES TAKE THE OWNER'S FOCUS, asked per run and never per cell: unset,
 # each `start` keeps its own default; `1` or `0` forces every one of this run behind or in front.
@@ -301,6 +304,8 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
         raise Blocked(why)
     if tool == "start" and BACKGROUND is not None:
         kw.setdefault("background", BACKGROUND)
+    if tool == "start":
+        kw.setdefault("presence", False)    # as `BOOT` says why
     params = inspect.signature(fn).parameters
     for name in WAIT_ARGS:
         if name in params and not (tool == "start" and name == "seconds"):

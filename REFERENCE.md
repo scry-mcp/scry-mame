@@ -46,9 +46,10 @@ that listened and was lost reads as something else first.
 **A MAME this server spawned does not outlive it, nor an abandoned session.** MAME has no reason
 of its own to exit (end-of-file on its Lua console only stops the console, and a dropped stub
 connection leaves the machine running), and a server that is SIGKILLed or crashes runs no
-cleanup. So a guardian process beside every MAME, in a session of its own, SIGKILLs it the
-moment the server is gone (MAME ignores SIGTERM), and `close` stops the guardian with the MAME
-(`mame_guardian.py`). And a session no tool has touched for an hour (`IDLE_CLOSE_S` in
+cleanup. So a guardian process beside every MAME, in a session of its own, SIGKILLs it within
+one poll of the server being gone (MAME ignores SIGTERM), and `close` stops the guardian with
+the MAME (`scry_core.guardian`, which says why Windows has none; named `scry-mame-guardian` in
+the host's process list). And a session no tool has touched for an hour (`IDLE_CLOSE_S` in
 `mame_idle.py`, counted from the end of the last call, so a call's own wait never counts) is
 closed by the server itself, the ordinary `close`, a running machine included: the next reply
 that finds no machine says so, in the `no_session` refusal's message and in `status`'s `note`.
@@ -386,6 +387,29 @@ cpu for a tool that lists or clears (`machine_map`, `cpu_info`, the `_list` and 
 default: a tool takes only the spaces it implements and refuses any other `bad_argument` naming
 them, and refuses `io` on a cpu that has none, `bad_argument` naming the cpus that have one, as
 `watch_add` and `gfx_film` do. A watch row names its `space` only when it is `io`.
+
+### The presence indicator
+
+**While a session holds the window, the window says so**: an orange edge on its inner sides, dim
+from `start` to `close`, bright while a call that drives the machine runs (one that can move the
+guest on or change what it holds: it lets the machine run, feeds it input, records it running,
+writes it, resets or restores it). So whoever sits at the host can tell whether to keep their
+hands off, and whether there is still a session to wait for. A stopped machine is repainted only
+at the stop and at each command a call sends through the debugger's console, so after a call
+that leaves it stopped the window keeps the bright edge of that stop until the next such call
+repaints it dim; a running machine fades back to dim over a couple of seconds once the call
+ends. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not
+the machine. `start(presence=False)` leaves it off.
+
+`start` and `status` say `presence`: `true` drawn, `false` asked off, or unavailable with why,
+when its last state could not be delivered or the drawer stopped. A failure there never changes
+any other call's reply.
+
+**It is drawn by MAME's own Lua over the window, never into the evidence.** The edge goes on the
+UI container, which the window shows and the snapshot target does not, so `snapshot` and
+`record` never carry it, and `screen_view`, `screen_signature` and `series_capture` read the
+screen's own bitmap, which no container reaches. A recording of the window made from outside
+does show it. Only the edge is drawn on MAME: there is no guest pointer to mark.
 
 ## What every reply carries
 
@@ -3108,10 +3132,11 @@ module:
   probe, `start` and `close`.
 - **`mame_binary.py`**: which MAME `start` runs, by the ladder *The session* sets out, and the
   build's own version line.
-- **`mame_stub_owner.py`**, **`mame_guardian.py`**, **`mame_idle.py`**: whose gdbstub a port
-  serves, proved by the process that holds it; the guardian beside every MAME, so it dies with
-  the server however the server ends; and the idle bound, which closes a session no tool has
-  touched for `IDLE_CLOSE_S`.
+- **`mame_stub_owner.py`**, **`mame_idle.py`**: whose gdbstub a port serves, proved by the
+  process that holds it; and the idle bound, which closes a session no tool has touched for
+  `IDLE_CLOSE_S`. The guardian beside every MAME is scry-core's.
+- **`mame_presence.py`**: the presence edge, the Lua that draws it over the window and the
+  file its state travels in, and which tools drive the machine.
 - **`mame_boot_failures.py`**: what a launch that failed before its session existed says, and
   whether `start` launches it again: a death, a stub not ready, the assertion's abort, a first
   cpu the stub cannot describe, and the dial attempts of one boot.

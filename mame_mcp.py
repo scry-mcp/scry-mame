@@ -15,7 +15,7 @@ from collections.abc import Callable
 from typing import Any
 
 from pydantic import ValidationError
-from scry_core import boundary, cancel, envelope, media_tools, recording
+from scry_core import boundary, cancel, envelope, media_tools, presence, recording
 from scry_core import strict_arguments as strict
 
 import gdb_session as gs
@@ -258,7 +258,9 @@ BOUNDARY = boundary.Boundary(
     mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after,
     refusal_line=summaries.refusal, session_block=menvelope.session_block,
     take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
-    give_back=_keep_accounts, recorder=RECORDER)
+    give_back=_keep_accounts, recorder=RECORDER,
+    # PRESENCE hears every outermost call, so the window lights while one drives the machine.
+    listener=presence.Slot(lambda: STATE.presence))
 
 
 def tool(

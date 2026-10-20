@@ -1,0 +1,22 @@
+{
+ "task": {
+  "id": "M195",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "/opt/fury/roms",
+   "reference_rom": "/opt/fury/roms/fury.bin",
+   "presence": false
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M195: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"binary\": \"/opt/fury/mamed\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"presence\": false}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -20,7 +20,8 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import judges, live_host, narrowing, prose
+from scry_core import guardian, judges, live_host, narrowing, prose
+from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -32,10 +33,10 @@ import mame_cpus as cpus
 import mame_declarations as dec
 import mame_envelope as menvelope
 import mame_files as files
-import mame_guardian as guardian
 import mame_idle as idle
 import mame_inputs as inputs
 import mame_machine as machine
+import mame_presence as mpresence
 import mame_read as read
 import mame_rearm as rearming
 import mame_regpoints as regpoints
@@ -84,6 +85,9 @@ CLOSED_EXIT_WAIT_S = 1.0
 # How long the placement helper is given to answer: it reads the display topology and
 # prints flags, and one that hangs would hold `start`, and the one lock, forever.
 HELPER_TIMEOUT_S = 15.0
+
+#: What the guardian beside every MAME is called in the host's process list.
+GUARDIAN_NAME = "scry-mame-guardian"
 
 # THE THROTTLE ON ARRIVAL, which is a boot harness and not a live switch, and the measurement
 # behind that shape: MAME's debugger console has NO throttle command (the whole command table
@@ -378,10 +382,12 @@ def launch_environment(given: dict[str, str], background: bool) -> dict[str, str
     return spawned
 
 
-def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int) -> str:
+def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
+                 presence: bool = False) -> str:
     """Write the ONE `-autoboot_script` this server sends, and return its path for the command
-    line: the machine's inventory always, the throttle when a frame was asked for, and the
-    caller's own harness chained after both with `dofile`.
+    line: the machine's inventory always, the throttle when a frame was asked for, the presence
+    drawer when presence is on (`mame_presence`), and the caller's own harness chained after
+    them with `dofile`.
 
     ONE function because there is ONE script: MAME takes a single `-autoboot_script`, so every
     harness the server wants has to be composed into it, and the chaining rule (whose text goes
@@ -392,6 +398,8 @@ def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int) -> str:
     text = machine.harness(scratch / machine.DUMP_NAME)
     if throttle_from_frame:
         text += THROTTLE_LUA % {"var": THROTTLE_FRAME_VAR, "mark": THROTTLE_MARK}
+    if presence:
+        text += mpresence.drawer(scratch)
     if boot_lua:
         text += f"dofile({transport.lua_string(str(Path(boot_lua).resolve()))})\n"
     path = scratch / "boot.lua"
@@ -435,6 +443,7 @@ class Judged:
     # Its answer, when `judge` already waited for it (a `symbols` mapping names cpus).
     listed: machine.Listed | None = None
     background: bool = False      # `judge_background`'s answer
+    presence: bool = False        # the caller's `presence`
     picked: bool = False          # the port is this server's pick, not the caller's `stub_port`
 
 
@@ -622,7 +631,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           boot_lua: str, env: dict[str, str] | None, bases: syms.Bases | None,
           reference_base: str, display: str, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
-          background: bool | None = None) -> Judged:
+          background: bool | None = None, presence: bool = False) -> Judged:
     """EVERY REFUSAL OF THE CALLER'S INPUT, before the emulator exists: judged after the boot,
     a bad path or symbol surfaces as a bare error from deep inside naming the path but not the
     argument, with the caller unsure whether a machine is now running. The shape of every path
@@ -734,7 +743,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     return Judged(flags, port, display, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
                   throttle_from_frame, asked, cfg_source, listed, background=behind,
-                  picked=picked)
+                  presence=presence, picked=picked)
 
 
 # How much of MAME's own output rides on a refused `start`: the last lines are where a
@@ -861,7 +870,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     # THE SERVER ALWAYS WRITES THE SCRIPT NOW, because the inventory is gathered on every
     # start: the caller's own harness is chained inside it rather than reaching the command
     # line on its own, and `boot_lua_path` in the reply names the composed script.
-    harness = boot_harness(STATE.scratch, judged.boot_lua, judged.throttle_from_frame)
+    harness = boot_harness(STATE.scratch, judged.boot_lua, judged.throttle_from_frame,
+                           judged.presence)
     cmd = build_command(judged.binary, judged.system, judged.rompath, judged.port, judged.flags,
                         str(STATE.scratch), judged.inipath, harness, judged.state_dir)
     # stdout and stderr land in one file in the scratch, named in the reply: sent to DEVNULL,
@@ -876,7 +886,7 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     )
     if (ledger := live_host.EmulatorLedger.from_environment()) is not None:
         ledger.record(STATE.proc.pid, cmd[0])
-    STATE.guard = guardian.spawn(STATE.proc)
+    STATE.guard = guardian.spawn(STATE.proc, GUARDIAN_NAME)
     # THE LONGEST WAIT A SESSION MAKES, and the one the owner watches: the boot of a whole
     # arcade board until its gdbstub listens and its debugger's banner is out. It reports where it
     # is, like every bounded wait.
@@ -988,7 +998,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
           display: str, port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
-          background: bool | None = None,
+          background: bool | None = None, *, presence: bool,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, and again for a `failures.LaunchFailed` that
     says so, up to `START_RETRIES_MAX` more times. Each relaunch is a WHOLE fresh launch,
@@ -1009,7 +1019,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                 return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
                                display, port, state_dir, throttle_from_frame, types, cfg,
-                               background, retries, progress)
+                               background, presence, retries, progress)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
@@ -1032,7 +1042,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             reference_addr: str, inipath: str, wait: float, shared: bool, boot_lua: str,
             env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
             display: str, port: int, state_dir: str, throttle_from_frame: int,
-            types: syms.Types, cfg: str, background: bool | None,
+            types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress) -> dict[str, Any]:
     """ONE launch: judge, boot under one guard, re-arm, park, reply."""
     # ONE MACHINE PER SERVER, and ending it is the caller's act: a start over a live session
@@ -1056,7 +1066,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    shared=shared, boot_lua=boot_lua, env=env, bases=bases,
                    reference_base=reference_base, display=display, port=port,
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
-                   cfg=cfg, background=background)
+                   cfg=cfg, background=background, presence=presence)
     # FROM THE SCRATCH ON, EVERYTHING SITS UNDER ONE GUARD. If the ROM check fails, the session
     # is KILLED: an error merely propagated leaves the lying session alive and reachable, and
     # the next call measures on it quite happily. A guarantee that leaves
@@ -1125,6 +1135,12 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         # park below decode anything.
         STATE.ses.know_endianness(cpus.program_endianness(STATE.ses, STATE.machine_map,
                                                           STATE.first_cpu))
+        # PRESENCE OPENS BEFORE THE CONSOLE IS FIRST ASKED ANYTHING: a stopped MAME repaints at
+        # each console command, so the ones this start sends from here on draw the edge, and the
+        # window shows it by the time the reply says it is drawn.
+        if judged.presence:
+            STATE.presence, STATE.presence_reply = scry_presence.Presence.open(
+                mpresence.FileAdapter(STATE.scratch), mpresence.DRIVING_TOOLS)
         # WHICH NAME THE FRAME COUNTER ANSWERS TO, asked before the re-arm and the park, both
         # of which survey the frame: a board with no screen device has none to survey.
         STATE.frame_symbol = read.probe_frame_symbol(STATE.ses)
@@ -1159,6 +1175,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "flags": judged.flags,
             "throttle_from_frame": throttle_from_frame,
             "boot_lua_path": harness,
+            "presence": STATE.presence_shown(),
             # THE MACHINE'S SHAPE AS COUNTS, never as rows: `start` already carries a lot,
             # and a board's whole inventory riding on every one of them would be paid for by
             # every caller whether or not they wanted it. `machine_map` serves the rows, free.
@@ -1306,6 +1323,7 @@ def status() -> dict[str, Any]:
         "state_dir": STATE.state_dir,
         "cfg": cfg_report(),
         "debugger": debugger_report(),
+        "presence": STATE.presence_shown(),
         "fingerprint": STATE.fingerprint(),
         "fingerprints": dict(STATE.fingerprints),
         **channels(),

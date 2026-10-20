@@ -21,16 +21,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 
-from scry_core import cancel, picture, screen_map
+from scry_core import cancel, guardian, picture, presence, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
 import mame_declarations as dec
-import mame_guardian as guardian
 import mame_idle as idle
 import mame_inputs as inputs
+import mame_presence as mpresence
 
 if TYPE_CHECKING:
     import mame_cycles
@@ -138,8 +138,12 @@ class State:
         lists is what caught that, and it stays -- as a net under this, not as the support.
         """
         self.proc: subprocess.Popen[bytes] | None = None
-        # THE GUARDIAN BESIDE `proc` (`mame_guardian`), stopped with the session it watches.
+        # THE GUARDIAN BESIDE `proc` (`scry_core.guardian`), stopped with the session it watches.
         self.guard: subprocess.Popen[bytes] | None = None
+        # THE PRESENCE OF THIS SESSION (`mame_presence`), when it is drawn, and what `start`
+        # answered about it: `true` drawn, `false` asked off, else why it could not be.
+        self.presence: presence.Presence | None = None
+        self.presence_reply: bool | dict[str, Any] = False
         self.ses: gs.Session | None = None
         # THE SYMBOL TABLES, ONE PER CPU, by the cpu's tag (`mame_symbols`): each cpu runs its
         # own program, so a name is an address in one cpu's table. What each table carries
@@ -393,6 +397,14 @@ class State:
                           "is deleted, then `start` a new one", exit_code=code)
         return self.ses
 
+    def presence_shown(self) -> bool | dict[str, Any]:
+        """What `start` and `status` say of the presence: `true` drawn, `false` asked off, or
+        why it is not drawn: a last delivery that failed, or a drawer that stopped."""
+        if self.presence is None:
+            return self.presence_reply
+        why = mpresence.broken(self.scratch) if self.scratch is not None else ""
+        return unavailable(f"the drawer stopped: {why}") if why else self.presence.reply()
+
     def live(self) -> tuple[gs.Session, Path]:
         """The live session and its scratch, or the refusal `alive` gives when there is none."""
         ses = self.alive()
@@ -566,9 +578,9 @@ class State:
                 "no session was running" if ended["ended_by"] == "none" else
                 "MAME had already exited, so this close saw no write" if ended["ended_by"] == "died"
                 else "there was no cfg file to read MAME's write from")
-        # THE TEARDOWN COMES FIRST, because these three fields hold something to CLOSE or to
-        # DELETE and not merely a value to drop: the connection, the captured stdout, and the
-        # directory this session owns. `_reset` below only sets values.
+        # THE TEARDOWN COMES FIRST, because these four fields hold something to CLOSE or to
+        # DELETE and not merely a value to drop: the connection, the captured stdout, the
+        # presence's writer, and the directory this session owns. `_reset` below only sets values.
         # GUARDED LIKE THE QUIT ABOVE AND THE RMTREE BELOW: a close that raised here skipped
         # `_reset`, so the dead session's fields stood under an error about something else.
         if self.ses:
@@ -577,6 +589,9 @@ class State:
         if self.stdout_log:
             with contextlib.suppress(OSError):
                 self.stdout_log.close()
+        # The presence's writer stops before the scratch that holds its file is deleted.
+        if self.presence is not None:
+            self.presence.close()
         # The scratch is this session's and dies with it. A `state_dir` is the CALLER's: it was
         # named so that `cfg/` and `nvram/` outlive one boot, and nothing here deletes it.
         if self.scratch and self.scratch.exists():
