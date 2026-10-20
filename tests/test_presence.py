@@ -41,7 +41,9 @@ def test_the_drawer_draws_on_the_ui_container_from_the_look_and_reads_its_file(
     assert f"local ACTING, HELD, FADE, REREAD = 0.9, 0.45, 1.5, {mpresence.REREAD_S!r}" in text
     assert 'execution_state == "run"' in text, "a stopped machine is never drawn a fade"
     assert '"' + str(tmp_path).replace("\\", "\\\\") + '/a\\"b/presence.state"' in text
-    assert text.startswith("-- ") and "\npcall(function()" in text
+    assert text.startswith("-- ") and "\nlocal set_up, why = pcall(function()" in text
+    assert text.rstrip().endswith("if not set_up then stopped(why) end"), \
+        "a drawer that could not be set up writes why, as one that raised does"
 
 
 def test_a_state_replaces_the_file_whole(tmp_path: Path) -> None:
@@ -55,46 +57,45 @@ def test_a_state_replaces_the_file_whole(tmp_path: Path) -> None:
 def test_status_and_start_say_what_the_session_holds() -> None:
     state = mstate.State()
     assert state.presence_shown() is False
-    state.presence_reply = {"available": False, "why": "x"}
+    state.presence = presence.Shown(refused={"available": False, "why": "x"})
     assert state.presence_shown() == {"available": False, "why": "x"}
 
-    class Shown:
+    class Drawn:
         def reply(self) -> bool:
             return True
-    state.presence = Shown()  # type: ignore[assignment]
+    state.presence = presence.Shown(held=Drawn())  # type: ignore[arg-type]
     assert state.presence_shown() is True
 
 
 def test_kill_closes_the_presence_and_forgets_it(tmp_path: Path) -> None:
     state = mstate.State()
-    p, said = presence.Presence.open(mpresence.FileAdapter(tmp_path), mpresence.DRIVING_TOOLS)
-    assert p is not None and said is True
-    state.presence, state.presence_reply = p, said
+    state.presence = presence.Presence.open(mpresence.FileAdapter(tmp_path),
+                                            mpresence.DRIVING_TOOLS)
+    p = state.presence.held
+    assert p is not None and state.presence_shown() is True
     state.kill(grace=False)
     assert not p._thread.is_alive()
-    forgotten: object = state.presence      # read after the kill, which mypy cannot see reset it
-    assert forgotten is None and state.presence_shown() is False
+    assert state.presence == presence.Shown() and state.presence_shown() is False
 
 
 def test_a_drawer_that_stopped_is_said_in_place_of_true(tmp_path: Path) -> None:
     state = mstate.State()
-    p, said = presence.Presence.open(mpresence.FileAdapter(tmp_path), mpresence.DRIVING_TOOLS)
-    assert p is not None
-    state.presence, state.presence_reply, state.scratch = p, said, tmp_path
+    state.presence = presence.Presence.open(mpresence.FileAdapter(tmp_path),
+                                            mpresence.DRIVING_TOOLS)
+    state.scratch = tmp_path
     assert state.presence_shown() is True and mpresence.broken(tmp_path) == ""
     (tmp_path / mpresence.BROKEN_FILE).write_text("attempt to index a nil value (ui_target)")
     assert state.presence_shown() == {
         "available": False, "why": "the drawer stopped: attempt to index a nil value (ui_target)"}
     (tmp_path / mpresence.BROKEN_FILE).write_text("")
     assert mpresence.broken(tmp_path) == "no reason given"
-    p.close()
+    state.presence.close()
 
 
 def test_a_mame_that_exited_is_said_in_place_of_true(tmp_path: Path) -> None:
     state = mstate.State()
-    p, said = presence.Presence.open(mpresence.FileAdapter(tmp_path), mpresence.DRIVING_TOOLS)
-    assert p is not None and said is True
-    state.presence, state.presence_reply = p, said
+    state.presence = presence.Presence.open(mpresence.FileAdapter(tmp_path),
+                                            mpresence.DRIVING_TOOLS)
 
     class Exited:
         def poll(self) -> int:
@@ -102,4 +103,4 @@ def test_a_mame_that_exited_is_said_in_place_of_true(tmp_path: Path) -> None:
     state.proc = Exited()  # type: ignore[assignment]
     said_now = state.presence_shown()
     assert isinstance(said_now, dict) and said_now["available"] is False, said_now
-    p.close()
+    state.presence.close()

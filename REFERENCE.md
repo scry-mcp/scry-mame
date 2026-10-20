@@ -394,17 +394,17 @@ them, and refuses `io` on a cpu that has none, `bad_argument` naming the cpus th
 from `start` to `close`, bright while a call that drives the machine runs (one that can move the
 guest on or change what it holds: it lets the machine run, feeds it input, records it running,
 writes it, resets or restores it). So whoever sits at the host can tell whether to keep their
-hands off, and whether there is still a session to wait for. A stopped machine is repainted only
-at the stop and at each command a call sends through the debugger's console, so after a call
-that leaves it stopped the window keeps the bright edge of that stop until the next such call
-repaints it dim; a running machine fades back to dim over a couple of seconds once the call
+hands off, and whether there is still a session to wait for. A stopped machine is repainted at
+the stop and at each command a call sends through the debugger's console, and the server sends
+none of its own, so after a call that leaves it stopped the window keeps the bright edge of that
+stop until the next such call repaints it dim; a running machine fades back to dim over a couple of seconds once the call
 ends. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not
 the machine. `start(presence=False)` leaves it off.
 
 `start` and `status` say `presence`: `true` drawn, `false` asked off (or, in `status`, no
 session open), or unavailable with why, when its last state could not be delivered, the drawer
-stopped, or MAME has exited. A failure there never changes
-any other call's reply.
+stopped or could not be set up, or MAME has exited. A failure there never changes any other
+call's reply.
 
 **It is drawn by MAME's own Lua over the window, never into the evidence.** The edge goes on the
 UI container, which the window shows and the snapshot target does not, so `snapshot` and

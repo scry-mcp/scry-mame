@@ -2379,7 +2379,7 @@ strict.strict_arguments(mcp)
 
 
 def main() -> None:
-    process_name.set_title("scry-mame")
+    process_name.set_title(launch.PROCESS_NAME)
     idle.IDLE.watch(LOCK, STATE.machine_alive, launch.close)
     try:
         mcp.run()

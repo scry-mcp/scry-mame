@@ -50,7 +50,8 @@ from live_harness import (
     section,
     zips_missing,
 )
-from scry_core import presence, window_capture
+from scry_core import presence as scry_presence
+from scry_core import window_capture
 
 import mame_presence as mpresence  # isort: skip -- found through the path the harness sets
 from mame_state import STATE  # isort: skip
@@ -70,12 +71,6 @@ Z_CELLS = [
     "comparison can fail",
     "circus: start(presence=False) draws nothing, writes no state and says false",
 ]
-#: How far from a side the edge may reach in a capture: its width, with room for the scaling
-#: the window applies and the anti-aliased border of the last band.
-EDGE_REACH = 2.5
-#: How much of the captured window the changed box must span: the whole content, which is all of
-#: the capture but its title bar.
-CONTENT_SPAN = 0.75
 #: Long enough for the session's writer to land a state it had pending.
 QUIET_S = 0.3
 #: The frames each recording leg records, and the run before the state they start from.
@@ -130,14 +125,17 @@ def _put(path: Path, word: str) -> None:
 
 @contextlib.contextmanager
 def _by_hand() -> Iterator[None]:
-    """The session's writer set aside, and given time to land what it had pending, so nothing
-    but this section writes the state file until the block ends."""
-    held, STATE.presence = STATE.presence, None
+    """The session's writer stopped, so nothing but this section writes the state file until the
+    block ends; a fresh one is opened after."""
+    STATE.presence.close()
+    STATE.presence = scry_presence.Shown()
     time.sleep(QUIET_S)
     try:
         yield
     finally:
-        STATE.presence = held
+        assert STATE.scratch is not None
+        STATE.presence = scry_presence.Presence.open(mpresence.FileAdapter(STATE.scratch),
+                                                     mpresence.DRIVING_TOOLS)
 
 
 def _repaint() -> None:
@@ -282,15 +280,7 @@ def _judge_window(label: str, off: window_capture.Image, acting: window_capture.
     except ValueError as e:
         blocked(label, f"the window changed between its two captures: {e}")
         return
-    reach = EDGE_REACH * presence.LOOK.edge
-    x0, y0, x1, y1 = d.box
-    perimeter = 2 * ((x1 - x0) + (y1 - y0))
-    cell(label, d.changed >= perimeter and min(d.span) >= CONTENT_SPAN and min(d.sides) > 0
-         and d.deepest <= reach and d.delta[0] > d.delta[1] > d.delta[2],
-         f"{d.changed} pixels changed (a frame of the box needs {perimeter}) over "
-         f"{d.span[0]:.2f} x {d.span[1]:.2f} of the window, by side {d.sides}, the deepest "
-         f"{d.deepest:.4f} of the box's shorter side in (bound {reach:.4f}), mean change "
-         f"{tuple(round(v, 1) for v in d.delta)}")
+    cell(label, *window_capture.edge_verdict(d))
 
 
 def _window(tag: str) -> window_capture.Image | str:

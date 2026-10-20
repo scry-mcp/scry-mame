@@ -35,6 +35,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import log_wait as core_wait
+from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import (  # noqa: E402
@@ -4769,7 +4770,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log := tempfile.mkstemp()[1], "wb"),  # noqa: SIM115 (kill closes it)
-        "presence": _ClosedPresence(), "presence_reply": True,
+        "presence": presence_mod.Shown(held=_ClosedPresence()),  # type: ignore[arg-type]
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
@@ -5132,7 +5133,7 @@ def test_the_boundary_tells_the_session_s_presence_of_each_call(
 
         def ended(self, tool: str) -> None:
             heard.append(("ended", tool))
-    monkeypatch.setattr(mstate.STATE, "presence", Heard())
+    monkeypatch.setattr(mstate.STATE, "presence", presence_mod.Shown(held=Heard()))  # type: ignore[arg-type]
     assert s.status()["status"] == "ok"
     assert heard == [("began", "status"), ("ended", "status")]
 

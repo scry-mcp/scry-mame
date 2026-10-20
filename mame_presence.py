@@ -57,11 +57,16 @@ STILL_TOOLS = frozenset({
 # clock while the machine RUNS; a stopped machine is repainted only now and then, so what a
 # repaint there draws is the state as it is, never a frame of a fade. While the machine runs the
 # file is read at most every `REREAD` seconds, so a thousand frames a second do not cost a
-# thousand reads. A drawer that raises draws no more and writes why beside the state file, where
-# `status` reads it.
+# thousand reads. A drawer that raises, or one that could not be set up at all, draws no more and
+# writes why beside the state file, where `status` reads it.
 DRAWER = """-- Written by the mame MCP server for ONE session: the presence edge.
-pcall(function()
-  local path, broke = %(path)s, %(broke)s
+local path, broke = %(path)s, %(broke)s
+local function stopped(err)
+  local f = io.open(broke, "w")
+  if f then f:write(tostring(err)); f:close() end
+  manager.machine:logerror("MAME_MCP_PRESENCE stopped: " .. tostring(err) .. "\\n")
+end
+local set_up, why = pcall(function()
   local RGB, EDGE, STEPS = %(rgb)d, %(edge)r, %(steps)d
   local ACTING, HELD, FADE, REREAD = %(acting)r, %(held)r, %(fade)r, %(reread)r
   local now, since, read_at, broken = "off", -1e9, -1e9, false
@@ -105,12 +110,11 @@ pcall(function()
     end)
     if not ok then
       broken = true
-      local f = io.open(broke, "w")
-      if f then f:write(tostring(err)); f:close() end
-      manager.machine:logerror("MAME_MCP_PRESENCE stopped: " .. tostring(err) .. "\\n")
+      stopped(err)
     end
   end)
 end)
+if not set_up then stopped(why) end
 """
 
 #: How often a running machine's drawer reads the state file: well inside the latency a state

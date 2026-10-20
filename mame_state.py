@@ -140,10 +140,8 @@ class State:
         self.proc: subprocess.Popen[bytes] | None = None
         # THE GUARDIAN BESIDE `proc` (`scry_core.guardian`), stopped with the session it watches.
         self.guard: subprocess.Popen[bytes] | None = None
-        # THE PRESENCE OF THIS SESSION (`mame_presence`), when it is drawn, and what `start`
-        # answered about it: `true` drawn, `false` asked off, else why it could not be.
-        self.presence: presence.Presence | None = None
-        self.presence_reply: bool | dict[str, Any] = False
+        # THE PRESENCE OF THIS SESSION (`mame_presence`), set by `start`.
+        self.presence = presence.Shown()
         self.ses: gs.Session | None = None
         # THE SYMBOL TABLES, ONE PER CPU, by the cpu's tag (`mame_symbols`): each cpu runs its
         # own program, so a name is an address in one cpu's table. What each table carries
@@ -401,12 +399,12 @@ class State:
         """What `start` and `status` say of the presence: `true` drawn, `false` asked off or no
         session, or why it is not drawn: a last delivery that failed, a drawer that stopped, or
         a MAME that has exited, whatever the last delivery said."""
-        if self.presence is None:
-            return self.presence_reply
+        if self.presence.held is None:
+            return self.presence.refused
         if self.proc is not None and self.proc.poll() is not None:
             return unavailable("MAME has exited under this session")
         why = mpresence.broken(self.scratch) if self.scratch is not None else ""
-        return unavailable(f"the drawer stopped: {why}") if why else self.presence.reply()
+        return unavailable(f"the drawer stopped: {why}") if why else self.presence.held.reply()
 
     def live(self) -> tuple[gs.Session, Path]:
         """The live session and its scratch, or the refusal `alive` gives when there is none."""
@@ -593,13 +591,15 @@ class State:
             with contextlib.suppress(OSError):
                 self.stdout_log.close()
         # The presence's writer stops before the scratch that holds its file is deleted.
-        if self.presence is not None:
-            self.presence.close()
+        self.presence.close()
         # The scratch is this session's and dies with it. A `state_dir` is the CALLER's: it was
         # named so that `cfg/` and `nvram/` outlive one boot, and nothing here deletes it.
         if self.scratch and self.scratch.exists():
             shutil.rmtree(self.scratch, ignore_errors=True)
-        guardian.stop(self.guard)
+        # The guardian stops only once MAME is reaped: stopped earlier, a server dying in between
+        # would leave it unwatched.
+        if self.proc is None or self.proc.poll() is not None:
+            guardian.stop(self.guard)
         # AND EVERY FIELD GOES BACK THROUGH THE ONE LIST THAT BUILDS A FRESH STATE. Written out
         # a second time here, this is where a field added to `__init__` was left standing.
         self._reset()

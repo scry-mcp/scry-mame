@@ -86,8 +86,10 @@ CLOSED_EXIT_WAIT_S = 1.0
 # prints flags, and one that hangs would hold `start`, and the one lock, forever.
 HELPER_TIMEOUT_S = 15.0
 
-#: What the guardian beside every MAME is called in the host's process list.
-GUARDIAN_NAME = "scry-mame-guardian"
+#: What this server, and after it the guardian beside every MAME, are called in the host's
+#: process list.
+PROCESS_NAME = "scry-mame"
+GUARDIAN_NAME = guardian.name_of(PROCESS_NAME)
 
 # THE THROTTLE ON ARRIVAL, which is a boot harness and not a live switch, and the measurement
 # behind that shape: MAME's debugger console has NO throttle command (the whole command table
@@ -886,7 +888,7 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     )
     if (ledger := live_host.EmulatorLedger.from_environment()) is not None:
         ledger.record(STATE.proc.pid, cmd[0])
-    STATE.guard = guardian.spawn(STATE.proc, GUARDIAN_NAME)
+    STATE.guard = guardian.spawn(STATE.proc, PROCESS_NAME)
     # THE LONGEST WAIT A SESSION MAKES, and the one the owner watches: the boot of a whole
     # arcade board until its gdbstub listens and its debugger's banner is out. It reports where it
     # is, like every bounded wait.
@@ -1139,7 +1141,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         # each console command, so the ones this start sends from here on draw the edge, and the
         # window shows it by the time the reply says it is drawn.
         if judged.presence:
-            STATE.presence, STATE.presence_reply = scry_presence.Presence.open(
+            STATE.presence = scry_presence.Presence.open(
                 mpresence.FileAdapter(STATE.scratch), mpresence.DRIVING_TOOLS)
         # WHICH NAME THE FRAME COUNTER ANSWERS TO, asked before the re-arm and the park, both
         # of which survey the frame: a board with no screen device has none to survey.

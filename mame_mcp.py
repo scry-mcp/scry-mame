@@ -260,7 +260,7 @@ BOUNDARY = boundary.Boundary(
     take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
     give_back=_keep_accounts, recorder=RECORDER,
     # PRESENCE hears every outermost call, so the window lights while one drives the machine.
-    listener=presence.Slot(lambda: STATE.presence))
+    listener=presence.Slot(lambda: STATE.presence.held))
 
 
 def tool(
