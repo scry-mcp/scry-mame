@@ -58,7 +58,12 @@ from pydantic import Field
 # and the server is launchable only with `--directory` pointing here.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from scry_core import media_tools, process_name, recording  # noqa: E402
+from scry_core import (  # noqa: E402
+    media_tools,
+    process_name,
+    recording,
+    reply_schema,  # noqa: E402
+)
 from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core import vocabulary as vocab
@@ -96,6 +101,7 @@ import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_recording as mrec
 import mame_regpoints as regpoints  # noqa: E402
+import mame_replies  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_savestates as savestates  # noqa: E402
 import mame_scan as mscan  # noqa: E402
@@ -946,7 +952,9 @@ def symbols_find(name: str = "", linear: str = "",
 
 
 @tool("Map the machine", summary=summaries.machine_map, read_only=True, idempotent=True)
-def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, Any]:
+def machine_map(cpu: str = "",
+                sections: list[Annotated[str, vocab.enum(machine.MAP_SECTIONS)]] | None = None,
+                ) -> dict[str, Any]:
     """WHAT THE MACHINE IS, rather than what is on it: its cpus and their spaces, every address map
     entry and the share or region it names, the blocks by tag and size, its screens, and its ROM
     files with their crc. Cached at `start()`: free, the same every time, and answered on a
@@ -2401,6 +2409,7 @@ def state_load(name: str) -> dict[str, Any]:
 
 
 strict.strict_arguments(mcp)
+reply_schema.declare(mcp, mame_replies.MODELS)
 
 
 def main() -> None:

@@ -35,6 +35,7 @@ import mame_film as mfilm  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
+import mame_machine as mmachine  # noqa: E402
 import mame_scan as mscan  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_space as mspace  # noqa: E402
@@ -75,6 +76,7 @@ ITEMS: list[tuple[str, str, int, Callable[[], dict[str, Any]]]] = [
     ("gfx_locate", "flips", 1, lambda: {"enum": list(mlocate.FLIPS)}),
     ("gfx_sweep", "sizes", 2, lambda: {"enum": list(msweep.SIDES)}),
     ("gfx_sweep", "planes", 1, lambda: {"minimum": 1, "maximum": ml.PLANES_MAX}),
+    ("machine_map", "sections", 1, lambda: {"enum": list(mmachine.MAP_SECTIONS)}),
 ]
 
 

@@ -212,7 +212,7 @@ the shape a board's repository already keeps (`symbols-<set>_<cpu>.yaml`), a cpu
 `{cpu: path}`, and either one in the other shape is refused, since it does not say whose
 program it describes. A mapping names cpus, so `start` waits for `-listxml` before it spawns
 anything and refuses a cpu the machine lacks. The four fields above describe the first cpu's
-table, and `symbols_by_cpu` counts every table loaded, by its cpu. The declarations store keeps
+table, and `symbols_by_cpu` counts every table loaded for a named cpu, by its cpu. The declarations store keeps
 the first cpu's file as its key, so a start that adds another cpu's table keeps what was
 declared before; a mapping that gives the first cpu no table keys it by the first cpu it does
 give one, named in the key.
@@ -418,6 +418,11 @@ screen's own bitmap, which no container reaches. A recording of the window made 
 does show it. Only the edge is drawn on MAME: there is no guest pointer to mark.
 
 ## What every reply carries
+
+**Every tool publishes its reply's field names** as its `outputSchema` (its model is in
+`mame_replies.py`), with `status` required and no constraint on any value: any datum may come back as
+`unavailable(why)`, so a published type could refuse a real reply. The test suite holds every
+reply it builds to the model's types strictly, so a field no model names fails a run.
 
 Every reply opens with a one-line `summary` and closes with a `session` block, composed once the
 tool's work is done, so it says what the machine is doing after the call (`close`'s alone
@@ -880,7 +885,7 @@ it was last declared, so a caller who did not declare it clears by `ref`.
 
 A declaration is stamped with its cpu's build FINGERPRINT (system, ROM image and
 that cpu's symbol file, hashed, with the tag for any cpu but the first; `start` and `status`
-report the first cpu's as `fingerprint`, and `status` each cpu's as `fingerprints`), so a
+report the first cpu's as `fingerprint`, and `status` each named cpu's as `fingerprints`), so a
 rebuild of one cpu's program leaves the other's raw addresses alone, and a raw address is
 re-armed at the
 next `start` only over the same fingerprint, whoever declared it, and listed `stale` over

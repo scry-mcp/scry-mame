@@ -326,13 +326,15 @@ def cfg_report() -> dict[str, Any]:
 
 
 def symbols_fields() -> dict[str, Any]:
-    """What `start` answers about the tables it loaded: the first cpu's `symbols` (the count),
-    `symbols_typed`, `symbols_format` and `symbols_by_class`, as they always were, and
-    `symbols_by_cpu`, each loaded table's count by the cpu it belongs to."""
+    """What `start` answers about the tables it loaded: the first cpu's count
+    (`symbols_total`), `symbols_typed`, `symbols_format` and `symbols_by_class`, and
+    `symbols_by_cpu`, each table loaded for a named cpu counted by its tag. A flat table names no
+    cpu, so it is counted in `symbols_total` alone."""
     first = STATE.table()
     return {"symbols_total": len(first.table), "symbols_typed": len(first.types),
             "symbols_format": first.format, "symbols_by_class": first.by_class,
-            "symbols_by_cpu": {cpu: len(t.table) for cpu, t in STATE.tables.items()}}
+            "symbols_by_cpu": {cpu: len(t.table) for cpu, t in STATE.tables.items()
+                               if cpu is not None}}
 
 
 def channels() -> dict[str, str]:
@@ -1333,7 +1335,8 @@ def status() -> dict[str, Any]:
         "debugger": debugger_report(),
         "presence": STATE.presence_shown(),
         "fingerprint": STATE.fingerprint(),
-        "fingerprints": dict(STATE.fingerprints),
+        # BY CPU TAG: a flat table's names no cpu, and is `fingerprint`.
+        "fingerprints": {cpu: f for cpu, f in STATE.fingerprints.items() if cpu is not None},
         **channels(),
         "running": ses.running and not broken,
         **({"pc": pc} if pc is not None else {}),
