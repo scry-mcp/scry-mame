@@ -260,12 +260,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -297,12 +296,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -422,12 +420,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -496,12 +493,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -613,12 +609,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     }
@@ -633,12 +628,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -758,12 +752,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -833,12 +826,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -874,12 +866,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     }
@@ -894,12 +885,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1019,12 +1009,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -1093,12 +1082,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -1134,12 +1122,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     }
@@ -1154,12 +1141,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1226,12 +1212,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     },
@@ -1267,12 +1252,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "alive": true,
           "running": false,
           "altered": false,
-          "altering_writes": 0,
-          "console": {
-            "thread_errors": 0,
-            "reruns": 0,
-            "lost": 0
-          }
+          "omitted": [
+            "altering_writes",
+            "console"
+          ],
+          "how": "call `status`"
         }
       }
     }
@@ -1287,12 +1271,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1390,47 +1373,43 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1503,37 +1482,34 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -1560,12 +1536,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1635,37 +1610,34 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -1692,12 +1664,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1742,12 +1713,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1820,47 +1790,43 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1890,12 +1856,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -1930,12 +1895,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2036,37 +2000,34 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 4,
         "raw_hex": "04"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -2093,12 +2054,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2169,37 +2129,34 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "watches": [
     {
       "ref": "0x42b",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "1 @ 042B-042B write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042b"
+      }
     },
     {
       "ref": "0x42c",
-      "by": "address",
       "cpu": ":maincpu",
-      "mode": "change",
-      "length": 1,
-      "fmt": "u8",
       "state": "armed",
-      "entry": "2 @ 042C-042C write",
       "reading": {
         "available": true,
         "value": 3,
         "raw_hex": "03"
-      },
-      "addr": "0x0000042c"
+      }
     }
   ],
+  "watches_omitted": [
+    "addr",
+    "by",
+    "entry",
+    "fmt",
+    "length",
+    "mode"
+  ],
+  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -2226,12 +2183,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2268,12 +2224,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2321,12 +2276,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2357,12 +2311,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2441,12 +2394,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2476,12 +2428,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2578,12 +2529,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "alive": true,
     "running": false,
     "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2655,13 +2605,12 @@ Also attached: image/png.
     "alive": true,
     "running": false,
     "altered": true,
-    "altering_writes": 1,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    },
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game"
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2691,13 +2640,12 @@ Also attached: image/png.
     "alive": true,
     "running": false,
     "altered": true,
-    "altering_writes": 1,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    },
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game"
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": [
+      "altering_writes",
+      "console"
+    ],
+    "how": "call `status`"
   }
 }
 ```
@@ -2736,13 +2684,13 @@ Also attached: image/png.
     "alive": true,
     "running": false,
     "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
     "altering_writes": 1,
     "console": {
       "thread_errors": 0,
       "reruns": 0,
       "lost": 0
-    },
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game"
+    }
   }
 }
 ```

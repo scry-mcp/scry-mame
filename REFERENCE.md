@@ -433,7 +433,8 @@ lost, reader deaths, chunks run twice) once any of its counts is not zero,
 call was declared read-only. **What only counts rides on `start`, `status` and `close`**
 (`close`'s being the last account of the session it ends): `altering_writes` (how many calls
 wrote to the machine) and `console` while its counts are zero. Every other reply names that half in `omitted` beside `how`, so the short block is never
-read as the whole one. Whether the machine runs is said
+read as the whole one, unless naming it would cost more than the half itself (`altering_writes`
+alone, once `console` is an alarm), which then rides whole. Whether the machine runs is said
 there, and at the top level only by `status`, whose subject it is. Every
 refusal of an argument's shape names it and comes before the emulator is touched; what only the
 machine can decide (a tag it lacks, a value its console refused, a run that did not end as
@@ -594,14 +595,14 @@ never dropped. A direct call (a test, a harness) is judged by the same rule behi
 every count is one judge's, so a bool or a string is refused in the tool's own sentence, an
 integral float such as `6.0` is the count it equals (what a client's schema hands over as `6`),
 and a fractional one, `nan` or an infinity is refused. An argument held to a fixed vocabulary
-(`mode`, `by`, `role`, `space`, `cell_bytes`, `operator`, `channel`, `display`, `gfx_film`'s
-`length`) lists its words as its schema's `enum`, made from the tuple the tool judges it
+(`mode`, `by`, `role`, `space`, `cell_bytes`, `operator`, `channel`, `display`, `watch_add`'s
+`trigger_type`, `gfx_film`'s `length`) lists its words as its schema's `enum`, made from the tuple the tool judges it
 against; a word outside it still reaches the tool and is refused there, `bad_argument` naming
 the list. `display`'s list holds `""`, which is not given; `length`'s words are the integers
-1, 2 and 4. `breakpoint_at`'s `by` lists the three a breakpoint takes,
-and its refusal of another word names every declaration's, `expr` and `pointer` among them,
-which the declaration then refuses for a breakpoint. A list whose items are held the same way
-publishes them on its items: an `enum` on each of `gfx_locate`'s `flips` and on each side of
+1, 2 and 4. `breakpoint_at`'s `by` lists the three a breakpoint takes
+(`auto`, `symbol`, `address`), and its refusal of any other word, `expr` and `pointer` among
+them, names those three alone. A list whose items are held the same way publishes them on its
+items: an `enum` on each of `machine_map`'s `sections`, of `gfx_locate`'s `flips` and on each side of
 `gfx_sweep`'s `sizes`, a `minimum` and `maximum` on each of `gfx_sweep`'s `planes`; the list's own judge still answers,
 refusing an empty list and a repeated item too. A scalar held to a range publishes it as
 `minimum` and `maximum` (every wait, `length`, `limit`, `count`, `columns`, `margin`,
@@ -3161,8 +3162,9 @@ module:
   breakpoints this server armed, the scratch, the last stop as its survey saw it).
 - **`mame_envelope.py`**: the envelope every reply carries, built from that state: `status`, the
   tool's fields, the `session` block.
-- **`mame_progress.py`**: the progress line of a bounded wait (`Ticker`) and the one rule a
-  call's notifications keep, never going backwards.
+- **`mame_replies.py`**: each tool's reply model, published by field name as its `outputSchema`
+  and held to every reply the suite builds (`scry_core.reply_schema`).
+- **`mame_maps.py`**: the screen maps, over `scry_core.screen_map`.
 - **`mame_inputs.py`**: the judge of every input two tools share (a count, a yes or no, a ref,
   an address argument written `0x`, a number given as an integer or `0x`, a wait and its
   schema bounds, a regular expression, a path), each rule written once; a closed vocabulary is
@@ -3307,8 +3309,8 @@ module:
   conditioned film, `gfx_film`; the contact sheet it answers with; the 5x7 font the sheet is
   labelled in; how MAME's snapshot differs from the screen, the film's `mismatch`.
 - **`scry_core.reply_contract`**, **`scry_core.value_format`**,
-  **`scry_core.strict_arguments`**: the refusal contract, the watch value grammar and the strict
-  schema, held once in the `scry-core` package both Scry servers pin.
+  **`scry_core.strict_arguments`**, **`scry_core.progress`**: the refusal contract, the watch
+  value grammar, the strict schema and the progress line of a bounded wait, held once in the `scry-core` package both Scry servers pin.
 - **`mame_summaries.py`**, **`mame_docs.py`**: the one line every reply opens with, one function
   per tool; and what a tool's description states that the code already knows, filled from the
   constants that enforce it at registration.
