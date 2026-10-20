@@ -401,8 +401,9 @@ repaints it dim; a running machine fades back to dim over a couple of seconds on
 ends. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not
 the machine. `start(presence=False)` leaves it off.
 
-`start` and `status` say `presence`: `true` drawn, `false` asked off, or unavailable with why,
-when its last state could not be delivered or the drawer stopped. A failure there never changes
+`start` and `status` say `presence`: `true` drawn, `false` asked off (or, in `status`, no
+session open), or unavailable with why, when its last state could not be delivered, the drawer
+stopped, or MAME has exited. A failure there never changes
 any other call's reply.
 
 **It is drawn by MAME's own Lua over the window, never into the evidence.** The edge goes on the

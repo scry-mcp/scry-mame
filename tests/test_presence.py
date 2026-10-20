@@ -88,3 +88,18 @@ def test_a_drawer_that_stopped_is_said_in_place_of_true(tmp_path: Path) -> None:
     (tmp_path / mpresence.BROKEN_FILE).write_text("")
     assert mpresence.broken(tmp_path) == "no reason given"
     p.close()
+
+
+def test_a_mame_that_exited_is_said_in_place_of_true(tmp_path: Path) -> None:
+    state = mstate.State()
+    p, said = presence.Presence.open(mpresence.FileAdapter(tmp_path), mpresence.DRIVING_TOOLS)
+    assert p is not None and said is True
+    state.presence, state.presence_reply = p, said
+
+    class Exited:
+        def poll(self) -> int:
+            return 0
+    state.proc = Exited()  # type: ignore[assignment]
+    said_now = state.presence_shown()
+    assert isinstance(said_now, dict) and said_now["available"] is False, said_now
+    p.close()

@@ -398,10 +398,13 @@ class State:
         return self.ses
 
     def presence_shown(self) -> bool | dict[str, Any]:
-        """What `start` and `status` say of the presence: `true` drawn, `false` asked off, or
-        why it is not drawn: a last delivery that failed, or a drawer that stopped."""
+        """What `start` and `status` say of the presence: `true` drawn, `false` asked off or no
+        session, or why it is not drawn: a last delivery that failed, a drawer that stopped, or
+        a MAME that has exited, whatever the last delivery said."""
         if self.presence is None:
             return self.presence_reply
+        if self.proc is not None and self.proc.poll() is not None:
+            return unavailable("MAME has exited under this session")
         why = mpresence.broken(self.scratch) if self.scratch is not None else ""
         return unavailable(f"the drawer stopped: {why}") if why else self.presence.reply()
 
