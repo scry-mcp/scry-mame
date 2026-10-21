@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from scry_core import declaration_rows
 from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
@@ -201,9 +202,11 @@ def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[
                     "cpu": or_unavailable(owner[1], st.NO_CPU_READ_WHY),
                     "stored": False, "mode": rec["mode"], "length": rec["width"],
                     "fmt": rec["fmt"],
-                    "created_at": or_unavailable(rec.get("created_at"), arming.UNDATED_WHY),
-                    "age_s": or_unavailable(st.age_s(rec.get("created_at")),
-                                               arming.UNDATED_WHY),
+                    "created_at": or_unavailable(rec.get("created_at"),
+                                                 declaration_rows.UNDATED_WHY),
+                    "age_s": or_unavailable(declaration_rows.age_s(rec.get("created_at"),
+                                                                   st.utc_now()),
+                                            declaration_rows.UNDATED_WHY),
                     **evaluate(scratch, owner, rec["width"], rec["fmt"], frame, shown,
                                at_stop)})
     return out

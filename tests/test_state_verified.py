@@ -53,6 +53,12 @@ class _BlockSession(_ChannelSession):
         if word == "stateload" and not self.ignores_load:
             self.pc, saved = self.saved_blocks[name]
             self.blocks = {t: dict(b) for t, b in saved.items()}
+            # THE LOADED MACHINE WRITES ON BOTH CHANNELS, after the mark the load answers.
+            scratch = mstate.STATE.scratch
+            if scratch is not None:
+                for log in ("error.log", "stdout.log"):
+                    with (scratch / log).open("a") as fh:
+                        fh.write("after the load\n")
         return str(super().monitor(command, timeout))
 
 
@@ -314,3 +320,21 @@ def test_a_cpu_readable_at_the_save_and_not_after_the_load_is_named(
     out = s.state_load(name="a")
     assert out["status"] == "ok" and out["verified"] is True, out
     assert ":subcpu" in out.get("note", "") and "not judged" in out["note"], out
+
+
+def test_a_load_answers_where_each_channel_ended_as_it_was_sent(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _board(monkeypatch, tmp_path, threads=_TWO)
+    assert s.state_save(name="a")["status"] == "ok"
+    _moved(ses, 2)
+    scratch = mstate.STATE.scratch
+    assert scratch is not None
+    (scratch / "error.log").write_text("before the load\n")
+    (scratch / "stdout.log").write_text("boot\nbefore the load\n")
+    before = {"emulator": len("before the load\n"), "process": len("boot\nbefore the load\n")}
+    out = s.state_load(name="a")
+    assert out["status"] == "ok", out
+    assert out["mark"] == before, out
+    after = s.log(pattern=".", channel="process", since_mark=out["mark"]["process"])
+    assert after["lines"] == ["after the load"], after

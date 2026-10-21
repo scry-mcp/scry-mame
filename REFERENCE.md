@@ -2052,6 +2052,17 @@ the stop, and a stop that lands during the wait ends it the same way after one l
 the log. `channel="guest"` is refused naming the two channels an arcade board has: there is
 no guest port here.
 
+**`since_mark` asks "after Y".** A machine that replays a saved timeline writes lines that look
+like the ones before the load, so content cannot tell them apart; a position can. `state_load`
+answers `mark`, where each channel's file ended as the load was sent, and `log` and `log_wait`
+take `since_mark`, that channel's number: only whole lines written after it are read, and for
+`log_wait` "already" means "since the mark". 0, the default, reads the whole log. A negative
+one, one past where the file ends now (a mark of another session, a log rewritten shorter) and
+any but 0 over `all` are refused `bad_argument`: one position cannot name a place in two files,
+so `all` is asked channel by channel. The mark is a position in the file, not a moment: a line the
+emulator had not yet flushed when the load was sent (the process's stdout is buffered) lands after
+it.
+
 `start` and `status` report `errorlog_path` and `stdout_path`, both in the scratch: MAME's own
 `error.log`, and its stdout and stderr in one file. A third file sits beside them
 unreported, `debug.log` (`-debuglog`): the debugger console's own output, which the stop
@@ -2905,6 +2916,8 @@ link to one, a FIFO (whose open would hold the call until a writer came), a sock
 That name is taken by something that is not a state, so `state_load` refuses it `unknown_ref`
 saying what is there, and `state_save` refuses it as already there. A `.sta` removed while the
 folder is read is not listed.
+`state_load`'s `mark` is where each log channel ended as the load was sent: `since_mark` reads
+what came after it (*The log*).
 
 **MAME can HOLD a save or a load instead of running it in the command.** It refuses to save or
 load while an anonymous timer is pending (`device_scheduler::can_save`), logs "Failed save state

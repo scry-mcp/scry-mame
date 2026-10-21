@@ -8,7 +8,7 @@ docstring it registers, and a placeholder nothing fills fails the import.
 
 from __future__ import annotations
 
-from scry_core import docs, picture, recording, screen_map, series
+from scry_core import docs, log_marks, picture, recording, screen_map, series
 
 import mame_advance as advance
 import mame_blits as mblits
@@ -88,6 +88,7 @@ DOC_VALUES: dict[str, str] = {
     "FILM_FRAMES": str(mfilm.FRAMES_DEFAULT), "FILM_KEEP": str(mfilm.KEEP_DEFAULT),
     "FILM_KEEP_MAX": str(mfilm.KEEP_MAX), "BLIT_MARGIN_MAX": str(mblits.MARGIN_MAX),
     "READ_MAX": str(read.READ_MAX), "LIST_MAX": str(read.LOG_LIMIT_MAX),
+    **log_marks.DOC_VALUES,
     "SYMBOLS_MAX": str(read.SYMBOLS_LIMIT_MAX), "HISTORY_MAX": str(read.HISTORY_MAX),
     "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "STEP_MAX": str(advance.step_max()),
     "WAIT_MAX_S": f"{inputs.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),

@@ -1127,6 +1127,7 @@ class StateLoadReply(MameEnvelope, total=False):
     errorlog: dict[str, Any]
     frame: int | dict[str, Any]
     held: str
+    mark: dict[str, Any]
     name: str
     note: str
     output: str

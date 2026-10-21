@@ -5,18 +5,18 @@ here is the judgement around the two commands. A save is vouched for by the file
 not by what the console printed; a load is refused BEFORE the console when the header is
 not this machine's, because MAME's own refusal says nothing on the console, and after it the
 frame, the pc and every readable cpu's registers are compared with what the save recorded.
-A `.sta` that holds no state (`_not_a_state`) is judged before anything opens it.
+A `.sta` that holds no state (`state_files.not_a_state`) is judged before anything opens it.
 """
 
 from __future__ import annotations
 
 import os
 import re
-import stat
 import struct
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from scry_core import state_files
 from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
@@ -70,47 +70,18 @@ ALREADY_AS_SAVED = ("the machine already read as the save before the load (the f
                     "reads the same")
 
 
-# WHAT IS NOT A STATE, judged by what the path RESOLVES to, before anything opens it: a link
-# through which no file is reached, and anything that is not a regular file (a directory, a
-# link to one, a FIFO, whose open would block the call for good). The name is taken all the
-# same, and `state_save` refuses it, so `state_list` shows it with each of the state's numbers
-# unavailable, saying what is there.
-_KINDS = ((stat.S_ISDIR, "a directory"), (stat.S_ISFIFO, "a FIFO"), (stat.S_ISSOCK, "a socket"),
-          (stat.S_ISCHR, "a character device"), (stat.S_ISBLK, "a block device"))
-
-
-def _not_a_state(path: Path) -> str | None:
-    """Why the `.sta` at `path` holds no state, else None (a regular file, or nothing there)."""
-    # `os.path.exists` here, not `Path.exists`: on some supported interpreters the latter raises
-    # `PermissionError` for a target in a directory this process may not search, and no file is
-    # reached through such a link either
-    linked = path.is_symlink()
-    if not os.path.exists(path):
-        return (f"the file is a link to {os.readlink(path)}, and no file is reached through it"
-                if linked else None)
-    try:
-        mode = os.stat(path).st_mode
-    except FileNotFoundError:
-        return None      # gone since it was looked for: nothing is there
-    if stat.S_ISREG(mode):
-        return None
-    kind = next((name for test, name in _KINDS if test(mode)), "not a regular file")
-    there = f"a link to {os.readlink(path)}, which is {kind}" if linked else kind
-    return f"the file is {there}, not a state"
-
-
 def state_list() -> dict[str, Any]:
     """The body of the `state_list` tool: every `.sta` in this session's folder, with its
     size, and the frame and pc when THIS session wrote it; a state an earlier session
     wrote carries each as `unavailable` saying so, as `state_load` says of it, and a `.sta`
-    that holds no state (`_not_a_state`) carries all three so: the name is taken, so it is
-    shown.
+    that holds no state (`state_files.not_a_state`) carries all three so: the name is taken,
+    so it is shown.
     A reading of a directory: the machine is not touched, so it answers while the machine
     runs."""
     folder = _state_dir()
     states: list[dict[str, Any]] = []
     for path in sorted(folder.glob("*.sta")) if folder.is_dir() else []:
-        why = _not_a_state(path)
+        why = state_files.not_a_state(path)
         if why is not None:
             gone = unavailable(why)
             states.append({"name": path.stem, "path": str(path), "bytes": gone, "frame": gone,
@@ -218,11 +189,9 @@ def state_load(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     and pc or carrying `differs`. `rom_check` is `OK`, or unavailable with no reference image."""
     check_state_name(name)
     path = _state_file(name)
-    why = _not_a_state(path)
+    why = state_files.not_a_state(path)
     if why is not None:
-        raise st.Invalid("unknown_ref",
-            f"no state named {name!r} to load: at {path} {why}, and `state_save` refuses the "
-            "name while it is there")
+        raise state_files.refused_load(name, path, why)
     if not path.exists():
         raise st.Invalid("unknown_ref", f"no state named {name!r} at {path}: `state_list` "
                                         "names the ones held")
@@ -323,7 +292,8 @@ def _stateload(ses: gs.Session, scratch: Path, name: str, path: Path,
                before: dict[str, Any] | None) -> dict[str, Any]:
     """`stateload` sent (and completed, when MAME held it), the ROM checked again, the stop
     surveyed and judged against the save."""
-    mark = files.log_mark(scratch)
+    channel_ends = files.channel_marks(scratch)
+    mark = channel_ends["emulator"]
     said = ses.monitor(f"stateload {name}")
     held = complete_held(ses, scratch, mark, f"stateload {name}")
     across = mtap.mark_across(f"stateload {name}")
@@ -362,12 +332,12 @@ def _stateload(ses: gs.Session, scratch: Path, name: str, path: Path,
             stopped = running.finish_stop(ses, seen, f"stateload {name}")
             where = {k: v for k, v in stopped.items() if k not in ("status", "session")}
             return menvelope.invalid("readback_refused", judged.message, path=str(path),
-                                     saved=shown,
+                                     saved=shown, mark=channel_ends,
                                      **({"differs": judged.differs} if judged.differs else {}),
                                      **where)
     return running.finish_stop(ses, seen, f"stateload {name}", name=name, path=str(path),
                                rom_check=rom_check, verified=verified, saved=shown,
-                               output=said.strip(), **checks,
+                               output=said.strip(), mark=channel_ends, **checks,
                                **({"held": held} if held is not None else {}),
                                **({"taps_across": across} if across else {}))
 

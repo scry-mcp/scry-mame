@@ -59,6 +59,7 @@ from pydantic import Field
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scry_core import (  # noqa: E402
+    log_marks,
     media_tools,
     process_name,
     recording,
@@ -1911,7 +1912,8 @@ def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)
 @tool("Read the log", summary=summaries.log, read_only=True)
 def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
         limit: Annotated[int, vocab.bounds(1, read.LOG_LIMIT_MAX)] = 40,
-        labels: bool = False) -> dict[str, Any]:
+        labels: bool = False,
+        since_mark: Annotated[int, log_marks.SINCE_MARK_BOUND] = 0) -> dict[str, Any]:
     """The newest lines of one `channel` of what MAME writes, matching the regex `pattern` (`.`
     for every line; never empty).
 
@@ -1921,7 +1923,7 @@ def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
     each line tagged `[emulator] ` or `[process] `, with `counts` per source); `guest` names a
     channel an arcade board does not have, and is refused by name.
     `labels=True` adds `labels`, how many returned lines carry each first word (`RE_DAC`,
-    `RE_IRQ`): one glance at who is talking.
+    `RE_IRQ`): one glance at who is talking. {SINCE_MARK} (not over `all`, two files).
 
     PASS A PATTERN THAT NARROWS, always, and treat `.` as a last resort. A driver's own
     `logerror` traffic can run to hundreds of lines per emulated second, so a default-pattern read
@@ -1930,14 +1932,14 @@ def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
 
     Reply: `pattern`, `channel`, `lines` (the newest `limit` matches, 1..{LIST_MAX}, oldest
     first), `lines_total` (every match in the file), `truncated`. `status: INVALID` with `message`
-    when no file of the channel exists yet; a bad `limit`, an unusable regex or an unknown channel
-    is refused. Works on a running machine.
+    when no file of the channel exists yet; a bad `limit`, an unusable regex, an unknown channel
+    or a `since_mark` that names no position of the log is refused. Works on a running machine.
 
     Reference: REFERENCE.md, The log.
     """
-    args.check("log", pattern=pattern, channel=channel, limit=limit)
+    args.check("log", pattern=pattern, channel=channel, limit=limit, since_mark=since_mark)
     ses, scratch = contact()
-    reply = files.log(scratch, pattern, limit, channel, labels)
+    reply = files.log(scratch, pattern, limit, channel, labels, since_mark)
     running.note_throttle_lift(ses, reply.get("lines", []), launch.THROTTLE_MARK)
     return reply
 
@@ -1945,6 +1947,7 @@ def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
 @tool("Wait for a log line", summary=summaries.log_wait, read_only=True, on_cancel="none")
 def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
              seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
+             since_mark: Annotated[int, log_marks.SINCE_MARK_BOUND] = 0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """WHEN a line of `channel` matching the regex `pattern` (`.` for any; never empty) was
     logged: at once if the log
@@ -1952,7 +1955,8 @@ def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS
     machine RUNS, and the proof that a run reached what it was meant to reach.
 
     `channel` as in `log` (`emulator`, `process`, `all`; over `all` the first match in either
-    file wins and the line carries its tag).
+    file wins and the line carries its tag). `since_mark` as in `log`: "already" is then "since
+    the mark", which is how "after the load" is asked.
 
     Reply: `verdict` `TARGET`, `channel`, `line` (the FIRST match; `log` is the tool for the
     newest), `already` (it was in the log before this call), `waited_s` (0.0 when already),
@@ -1963,16 +1967,18 @@ def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS
     end; the refusal names `last_stop`, and a stop that lands DURING the wait is reported the
     same way after one last read of the log), `session_broken` (LATCHED) when the emulator
     went away. A
-    bad `seconds` (outside (0, {WAIT_MAX_S}]), an unusable regex or an unknown channel is refused.
-    Reports its progress while it waits.
+    bad `seconds` (outside (0, {WAIT_MAX_S}]), an unusable regex, an unknown channel or a
+    `since_mark` that names no position of the log is refused. Reports its progress while it waits.
 
     Reference: REFERENCE.md, The log.
     """
-    args.check("log_wait", pattern=pattern, channel=channel, seconds=seconds)
+    args.check("log_wait", pattern=pattern, channel=channel, seconds=seconds,
+               since_mark=since_mark)
     ses, scratch = contact()
     reply = files.log_wait(
         ses, scratch, lambda: STATE.proc is not None and STATE.proc.poll() is None,
-        lambda: running.observe_stop(ses, scratch), pattern, seconds, channel, bridge(ctx))
+        lambda: running.observe_stop(ses, scratch), pattern, seconds, channel, bridge(ctx),
+        since_mark)
     line = reply.get("line")
     if isinstance(line, str) and line:
         running.note_throttle_lift(ses, [line], launch.THROTTLE_MARK)
@@ -2384,24 +2390,24 @@ def state_list() -> dict[str, Any]:
 def state_load(name: str) -> dict[str, Any]:
     """Restore the savestate `name` through the debugger console (`stateload`). It REPLACES
     the machine, so the session is ALTERED from then on. MAME refuses a bad state IN
-    SILENCE from the console, so the file's header is judged BEFORE the console (magic, system name,
-    and the save signature of the states this session wrote), the ROM is checked again
+    SILENCE from the console, so the file's header is judged BEFORE the console (magic, system
+    name, this session's save signatures), the ROM is checked again
     against the reference `start` was given, and the stop is surveyed and compared with
     what `state_save` recorded, the frame and pc and every register of every cpu the stub reads:
     `verified` is true, or the reply is INVALID (`readback_refused`) naming the frame and pc or
     carrying `differs` (`cpu`, `register`, `saved`, `loaded`), the stop it surveyed recorded all
     the same. `verified` is `available: false` with its `why` for a state this session did not
     write, a
-    machine that already read as the save BEFORE the load (equality after it would prove
-    nothing), or a board with no frame counter and no readable register; with no reference image
-    held `rom_check` is unavailable with why. A `.sta` that is no regular file (a link to
+    machine that already read as the save BEFORE the load (equality after would prove nothing),
+    or a board with no frame counter and no readable register; with no reference image held
+    `rom_check` is unavailable with why. A `.sta` that is no regular file (a link to
     nothing, a directory, a FIFO) is `unknown_ref`, never opened. {NEEDS_STOPPED}.
 
     Reply: `name`, `path`, `rom_check`, `verified`, `saved`, `output` (what the debugger console
-    printed for `stateload`, named as `debug` names it), `held` when MAME held the load and one
-    instruction completed it (REFERENCE.md, Saved states), `taps_across` as `reset`'s, then
-    {STOP_FIELDS}; that `errorlog`
-    runs from the last stop, so it includes what MAME logged during the load.
+    printed for `stateload`, named as `debug` names it), {MARK}, `held` when MAME held the load
+    and one instruction completed it (REFERENCE.md, Saved states), `taps_across` as `reset`'s,
+    then {STOP_FIELDS}; that `errorlog` runs from the last stop, so it includes what MAME logged
+    during the load.
 
     Reference: REFERENCE.md, Saved states.
     """

@@ -1,0 +1,24 @@
+{
+ "task": {
+  "id": "M197",
+  "prompt": "A state was just loaded and its reply gave the mark 48213 for the emulator channel. Show the newest 20 lines of the emulator's error.log matching PERF that were written after that mark.",
+  "tool": "log",
+  "args": {
+   "pattern": "PERF",
+   "channel": "emulator",
+   "limit": 20,
+   "since_mark": 48213
+  },
+  "grammar": [
+   "emulator"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M197: {\"tool\": \"log\", \"args\": {\"pattern\": \"PERF\", \"channel\": \"emulator\", \"since_mark\": 48213, \"limit\": 20}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -177,3 +177,49 @@ def test_the_mark_mame_writes_at_the_start_of_error_log_is_not_part_of_its_first
 def test_label_counts_skip_an_empty_line() -> None:
     import mame_files as files
     assert files.label_counts(["", "[process] RE_DAC x", "   "]) == {"RE_DAC": 1}
+
+
+def test_log_since_mark_reads_only_what_was_written_after_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
+    log = scratch / "error.log"
+    log.write_text("PERF 1\nPERF 2\n")
+    mark = log.stat().st_size
+    with open(log, "a") as fh:
+        fh.write("PERF 2\n")           # the replayed timeline writes the same line again
+    out = s.log(pattern="PERF", channel="emulator", since_mark=mark)
+    assert out["status"] == "ok" and out["lines"] == ["PERF 2"] and out["lines_total"] == 1, out
+    assert s.log(pattern="PERF", channel="emulator")["lines_total"] == 3, "0 reads the whole log"
+    assert s.log(pattern="PERF", channel="emulator", since_mark=log.stat().st_size)["lines"] == []
+
+
+def test_a_mark_that_names_no_position_of_the_channel_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
+    (scratch / "error.log").write_text("a\n")
+    (scratch / "stdout.log").write_text("b\n")
+    refused("0 or more", s.log(pattern=".", channel="emulator", since_mark=-1))
+    refused(r"past where the emulator log ends now \(2 bytes\)",
+            s.log(pattern=".", channel="emulator", since_mark=3))
+    refused("`all` reads two", s.log(pattern=".", channel="all", since_mark=1))
+    assert s.log(pattern=".", channel="all", since_mark=0)["lines_total"] == 2
+    refused("`all` reads two", s.log_wait(pattern=".", channel="all", since_mark=1, seconds=1.0))
+    refused("0 or more", s.log_wait(pattern=".", channel="process", since_mark=-1, seconds=1.0))
+
+
+def test_log_wait_since_mark_takes_a_line_before_the_mark_for_history_not_an_answer(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _running(monkeypatch, tmp_path)
+    s.resume()
+    log = tmp_path / "stdout.log"
+    log.write_text("scene 3\n")
+    mark = log.stat().st_size
+    out = s.log_wait(pattern="scene 3", channel="process", seconds=0.3, since_mark=mark)
+    assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
+    with open(log, "a") as fh:
+        fh.write("scene 3\n")
+    out = s.log_wait(pattern="scene 3", channel="process", seconds=1.0, since_mark=mark)
+    assert out["verdict"] == "TARGET" and out["already"] is True and out["lines_before"] == 0, out

@@ -1,0 +1,24 @@
+{
+ "task": {
+  "id": "M198",
+  "prompt": "After a state load whose reply gave the mark 912 for the process channel, wait up to 60 seconds for a line matching LEVEL 2 in the process's own stdout log, counting only what was written after that mark.",
+  "tool": "log_wait",
+  "args": {
+   "pattern": "LEVEL 2",
+   "channel": "process",
+   "seconds": 60,
+   "since_mark": 912
+  },
+  "grammar": [
+   "process"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M198: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"LEVEL 2\", \"channel\": \"process\", \"seconds\": 60, \"since_mark\": 912}}"
+   ],
+   "right": true
+  }
+ ]
+}

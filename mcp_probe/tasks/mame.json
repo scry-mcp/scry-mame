@@ -362,5 +362,9 @@
   {"id": "M194", "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.", "tool": "map_save", "args": {"dest": "/tmp/maps/circus.scry-map.json", "overwrite": true}},
   {"id": "M195", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
    "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "presence": false}},
-  {"id": "M196", "prompt": "Is this session's window being marked as driven right now, or could the marking not be drawn?", "tool": "status"}
+  {"id": "M196", "prompt": "Is this session's window being marked as driven right now, or could the marking not be drawn?", "tool": "status"},
+  {"id": "M197", "prompt": "A state was just loaded and its reply gave the mark 48213 for the emulator channel. Show the newest 20 lines of the emulator's error.log matching PERF that were written after that mark.",
+   "tool": "log", "args": {"pattern": "PERF", "channel": "emulator", "limit": 20, "since_mark": 48213}, "grammar": ["emulator"]},
+  {"id": "M198", "prompt": "After a state load whose reply gave the mark 912 for the process channel, wait up to 60 seconds for a line matching LEVEL 2 in the process's own stdout log, counting only what was written after that mark.",
+   "tool": "log_wait", "args": {"pattern": "LEVEL 2", "channel": "process", "seconds": 60, "since_mark": 912}, "grammar": ["process"]}
 ]}

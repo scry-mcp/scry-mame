@@ -59,19 +59,6 @@ def now() -> str:
     return utc_now().isoformat(timespec="seconds")
 
 
-def age_s(stamp: str | None) -> int | None:
-    """Whole seconds since `stamp` (a `now()` stamp, or any date with an offset), read at the
-    moment of asking; None when the row carries no date, or one that names no instant. A zero
-    would read as "declared just now", which is the one thing an undated row cannot claim."""
-    try:
-        then = datetime.fromisoformat(stamp) if stamp else None
-    except ValueError:
-        return None
-    if then is None or then.utcoffset() is None:
-        return None
-    return int((utc_now() - then).total_seconds() // 1)
-
-
 # How long `close` gives MAME to exit on its own after the console's `quit`, before SIGKILL.
 # A clean exit is what writes `cfg/` and `nvram/`; see `State.kill`. And how long a SIGKILLed
 # process is given to be reaped before `close` reports its `exit_code` unavailable: a different

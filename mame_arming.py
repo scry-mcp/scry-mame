@@ -16,9 +16,9 @@ from collections.abc import Collection
 from pathlib import Path
 from typing import Any
 
+from scry_core import declaration_rows
 from scry_core import reply_contract as contract
 from scry_core import value_format as vf
-from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_declarations as dec
@@ -35,23 +35,16 @@ BY_OPTIONS = ("auto", *dec.BY)
 _LISTED_STOP_LINE = re.compile(r"Stopped at (break|register)point [0-9A-Fa-f]+\b")
 
 
-#: A list row's fields its declaration does not hold.
+#: Why a list row names no cpu.
 NO_DECL_CPU_WHY = "the declaration names no cpu: it acts on the visible one"
-UNDATED_WHY = "the row carries no date with an offset (declared before rows were dated)"
-NO_ORIGIN_WHY = "the row names no session it was declared in"
 
 
 def decl_row(decl: dec.Declaration) -> dict[str, Any]:
-    """A list row's identity. `inherited` is the half a caller cannot work out from `origin`,
-    because no reply names this session's own: a declaration the store brought back at
-    `start`, raw addresses over the same build included, reads otherwise exactly like one
-    declared here. `age_s` is the half that tells an old row from a recent one in a store
-    other sessions share, computed now (`st.age_s`)."""
-    return {"ref": decl.ref, "by": decl.by, "cpu": or_unavailable(decl.cpu, NO_DECL_CPU_WHY),
-            "created_at": or_unavailable(decl.created_at, UNDATED_WHY),
-            "origin": or_unavailable(decl.origin, NO_ORIGIN_WHY),
-            "inherited": decl.origin != STATE.session_origin,
-            "age_s": or_unavailable(st.age_s(decl.created_at), UNDATED_WHY)}
+    """A list row's identity (`scry_core.declaration_rows.row`), with this server's cpu reason
+    and clock."""
+    return declaration_rows.row(ref=decl.ref, by=decl.by, cpu=decl.cpu, cpu_why=NO_DECL_CPU_WHY,
+                                created_at=decl.created_at, origin=decl.origin,
+                                own_origin=STATE.session_origin, now=st.utc_now())
 
 
 def stale_why() -> str:

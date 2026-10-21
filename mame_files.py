@@ -25,7 +25,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, Literal, NamedTuple, TypeVar, overload
 
-from scry_core import judges, prose
+from scry_core import judges, log_marks, prose
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
@@ -289,33 +289,60 @@ def label_counts(lines: list[str]) -> dict[str, int]:
     return counts
 
 
-def check_log(pattern: str, channel: str, limit: int = 40, **_: Any) -> re.Pattern[str]:
+def _check_mark(since_mark: int, channel: str) -> None:
+    """`since_mark`'s half that needs no log: `all` takes none, since one position cannot name a
+    place in two files, and a position is 0 or more."""
+    if since_mark and channel == "all":
+        raise st.Invalid("bad_argument",
+            f"since_mark is a position in one file, and `all` reads two "
+            f"({' and '.join(LOG_FILES.values())}): ask `emulator` or `process`, each with its "
+            f"own number from `mark`")
+    log_marks.check_position(since_mark, channel)
+
+
+def check_log(pattern: str, channel: str, limit: int = 40, since_mark: int = 0,
+              **_: Any) -> re.Pattern[str]:
     """`log`'s machine-independent half, in its own order: how many lines, then the regex, then
-    the channel. None of the three needs an emulator to be wrong. The regex is handed back
-    compiled, so the tool searches with the one it judged."""
+    the channel, then the mark. None of them needs an emulator to be wrong. The regex is handed
+    back compiled, so the tool searches with the one it judged."""
     inputs.count("limit", limit, read.LOG_LIMIT_MAX)
     rx = inputs.regex("pattern", pattern)
     check_channel(channel)
+    _check_mark(since_mark, channel)
     return rx
 
 
-def check_log_wait(pattern: str, channel: str, seconds: float = 30.0,
+def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark: int = 0,
                    **_: Any) -> re.Pattern[str]:
     """`log_wait`'s machine-independent half, in its own order: the bound, then the regex, then the
-    channel. The bound comparison is `inputs.seconds_bound`, which every waiting tool shares; the
-    regex is handed back compiled, as `check_log` hands back its own."""
+    channel, then the mark. The bound comparison is `inputs.seconds_bound`, which every waiting
+    tool shares; the regex is handed back compiled, as `check_log` hands back its own."""
     inputs.seconds_bound(seconds)
     rx = inputs.regex("pattern", pattern)
     check_channel(channel)
+    _check_mark(since_mark, channel)
     return rx
 
 
+def channel_marks(scratch: Path) -> dict[str, int]:
+    """Where each channel's file ends now: `state_load`'s `mark`, one number per channel a mark
+    can name (`all` reads two files, so none is its own)."""
+    return {tag: file_mark(scratch / name) for tag, name in LOG_FILES.items()}
+
+
+def _from_mark(path: Path, since_mark: int, channel: str) -> int:
+    """`since_mark` held to `path` as it stands (`log_marks.check_since_mark`)."""
+    log_marks.check_since_mark(since_mark, file_mark(path), channel)
+    return since_mark
+
+
 def log(scratch: Path, pattern: str, limit: int, channel: str,
-        labels: bool = False) -> dict[str, Any]:
+        labels: bool = False, since_mark: int = 0) -> dict[str, Any]:
     """The body of the `log` tool: the newest `limit` lines of `channel` matching `pattern`,
     each file read whole (the log is the emulator's, and text mode folds a CRLF log), and
-    for `all` the files one after the other with every line tagged."""
-    rx = check_log(pattern, channel, limit)
+    for `all` the files one after the other with every line tagged; with `since_mark`, the
+    whole lines written after it (`lines_since`)."""
+    rx = check_log(pattern, channel, limit, since_mark)
     files = channel_files(scratch, channel)
     present = [(tag, path) for tag, path in files if path.exists()]
     if not present:
@@ -328,9 +355,13 @@ def log(scratch: Path, pattern: str, limit: int, channel: str,
         # Decoded with replacement on purpose: a driver may `logerror` a raw byte out of ROM,
         # and one such byte must not turn the whole log into an exception. `utf-8-sig`, because
         # MAME opens `error.log` with a byte-order mark, which is not the first line's.
-        with open(path, encoding="utf-8-sig", errors="replace") as fh:
-            mine = [tagged(tag, line.rstrip("\n"), channel) for line in fh
-                    if rx.search(line.rstrip("\n"))]
+        if since_mark:
+            after, _ = lines_since(path, _from_mark(path, since_mark, channel))
+            mine = [tagged(tag, line, channel) for line in after if rx.search(line)]
+        else:
+            with open(path, encoding="utf-8-sig", errors="replace") as fh:
+                mine = [tagged(tag, line.rstrip("\n"), channel) for line in fh
+                        if rx.search(line.rstrip("\n"))]
         counts[tag] = len(mine)
         hits.extend(mine)
     returned = hits[-limit:]
@@ -390,14 +421,15 @@ def check_snapshot(dest: str = "", **_: Any) -> Path | None:
 # file order wins the poll.
 def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
              on_stop: Callable[[], None], pattern: str, seconds: float, channel: str,
-             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+             progress: mprogress.Progress = mprogress.no_progress,
+             since_mark: int = 0) -> dict[str, Any]:
     """The body of the `log_wait` tool, on the core's wait (`scry_core.log_wait`). `on_stop`
     records a stop the wait found (the running module's survey, handed in because that module
     imports this one), so the refusal names the stop the machine is IN and the reply carries
     `stopped_on_its_own`."""
-    rx = check_log_wait(pattern, channel, seconds)
+    rx = check_log_wait(pattern, channel, seconds, since_mark)
     files = channel_files(scratch, channel)
-    marks = {tag: 0 for tag, _ in files}
+    marks = {tag: _from_mark(path, since_mark, channel) for tag, path in files}
     recorded = False
     parked = not ses.running
 

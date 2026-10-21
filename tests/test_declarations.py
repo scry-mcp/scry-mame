@@ -17,6 +17,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from scry_core import declaration_rows
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -231,10 +232,11 @@ def test_start_opens_the_store_keyed_by_system_and_symbol_file(
                                            "cpu": {"available": False,
                                                    "why": arming.NO_DECL_CPU_WHY},
                                            "created_at": {"available": False,
-                                                          "why": arming.UNDATED_WHY},
+                                                          "why": declaration_rows.UNDATED_WHY},
                                            "origin": "earlier", "inherited": True,
                                            "age_s": {"available": False,
-                                                     "why": arming.UNDATED_WHY}}], "stale": [],
+                                                     "why": declaration_rows.UNDATED_WHY}}],
+                                                 "stale": [],
                                                  "unresolved": [], "unarmable": [],
                                                  "evaluated": []},
                                        "comments": {"rearmed": [], "stale": [],
