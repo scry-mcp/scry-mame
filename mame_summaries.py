@@ -97,13 +97,15 @@ def focus(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 
 def status(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    if not reply["alive"]:
+    # A LIVE SESSION'S REPLY NAMES ITS SYSTEM, and a `pc` that is unavailable means running:
+    # `alive` and `running` are the session block's, added after this.
+    if "system" not in reply:
         return ("status: no machine" if "exit_code" not in reply
                 else f"status: MAME exited with code {reply['exit_code']}, `close` it")
     last = (reply.get("last_stop") or {}).get("pc")
     if reply.get("broken"):
         return f"status: {reply['system']} alive, BROKEN, last stop at pc {last}"
-    if reply["running"]:
+    if isinstance(reply.get("pc"), dict):
         return f"status: {reply['system']} RUNNING, last stop at pc {last}"
     return f"status: {reply['system']} alive at pc {reply['pc']}"
 
@@ -141,7 +143,7 @@ def resume(args: dict[str, Any], reply: dict[str, Any]) -> str:
     if not args["seconds"]:
         return "resume: running, no wait asked"
     if reply["verdict"] == contract.OTHER_STOP:
-        return f"resume: OTHER_STOP at pc {reply['pc']} ({reply['how']})"
+        return f"resume: OTHER_STOP at pc {reply['pc']} ({reply['cause']})"
     return f"resume: TIMEOUT, still running after {reply['waited_s']} s"
 
 
@@ -531,7 +533,7 @@ def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
         done += f", {reply['verdict']}"
     if "stopped" in reply:
         return (f"perform: {done}, stopped at pc {reply['stopped']['pc']} "
-                f"({reply['stopped']['how']})")
+                f"({reply['stopped']['cause']})")
     if reply.get("still_running"):
         return f"perform: {done}, still running"
     if "until_frame" in reply:

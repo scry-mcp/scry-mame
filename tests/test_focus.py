@@ -148,11 +148,11 @@ def test_without_threads_the_consoles_focus_runs_and_the_reply_surveys_the_stop(
                                                                         "console",
                                                                 True)
     assert out["ignored"] == [":maincpu"]
-    assert out["how"] == (
+    assert out["cause"] == (
         "focus :subcpu: the console ignored :maincpu and ran until :subcpu executed")
     assert {"pc", "frame", "regs", "dasm"} <= set(out), "the stop it reached, surveyed"
     assert "focus :subcpu" in ses.commands and not any(c.startswith("Hc") for c in ses.commands)
-    assert mstate.STATE.last_stop["how"] == out["how"], "recorded as the last stop"
+    assert mstate.STATE.last_stop["cause"] == out["cause"], "recorded as the last stop"
 
 
 def test_without_threads_focusing_the_visible_cpu_runs_nothing_and_surveys_nothing(

@@ -457,7 +457,7 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
         return menvelope.envelope({"verdict": contract.TARGET, "pattern": pattern,
                                    "channel": channel,
                                    **got.fields(), "waited_s": st.spent_s(got.waited_s)})
-    if got.how == "STOPPED":
+    if got.ending == "STOPPED":
         reason = ("the machine is STOPPED at the debugger" if parked else
                   "the machine STOPPED as the bound expired" if got.at_bound else
                   "the machine STOPPED during the wait")
@@ -468,7 +468,7 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
                                  f"{got.waited_s} s of it and none matched: `resume` lets it "
                                  "run, then `log_wait` again",
                                  pattern=pattern, last_stop=STATE.as_of())
-    if got.how == "GONE":
+    if got.ending == "GONE":
         ses.latch("the emulator exited during a wait")
         return menvelope.invalid("session_broken", core_wait.gone_message(pattern, got, seconds),
                                  pattern=pattern)

@@ -118,7 +118,7 @@ def test_run_for_frames_is_refused_before_the_machine_is_released(
     assert getattr(ses, "broken", None) is None, "a refusal of the question latches nothing"
     assert "gvblank" not in ses.commands and not ses.emulating
     after = s.status()
-    assert after["status"] == "ok" and after["alive"] is True and "broken" not in after
+    assert after["status"] == "ok" and after["session"]["alive"] is True and "broken" not in after
 
 
 def test_run_for_milliseconds_proves_rest_by_the_emulated_clock(
@@ -297,7 +297,7 @@ def test_a_clock_that_stops_answering_after_the_release_leaves_the_machine_runni
     assert out["code"] == "not_settled" and out["emulated_before_s"] == 0.0, out
     assert out["frame_after"]["available"] is False, out
     assert "refused `time`" in out["emulated_after_s"]["why"], out
-    assert s.status()["running"] is True
+    assert s.status()["session"]["running"] is True
 
 
 def test_a_moving_clock_is_no_rest_for_a_stop_or_a_step_over(

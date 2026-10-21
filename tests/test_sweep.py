@@ -467,7 +467,7 @@ def test_a_sweep_takes_its_dest_scale_and_sizes(monkeypatch: pytest.MonkeyPatch,
                     sizes=[[16, 16]])
     assert out["image"]["path"] == str(dest) and out["image"]["scale"] == 2
     assert all(" 16x16 " in c["what"] for c in out["candidates"]), out["candidates"]
-    assert out["how"] == f"gfx_sweep: {out['evaluated_by']}"
+    assert out["cause"] == f"gfx_sweep: {out['evaluated_by']}"
     assert out["next"] == ("gfx_locate(layouts=[<ids>]) proves one against the screen; "
                            'gfx_draft(choose={"candidate": <id>, "chosen_by": <who>}) records a '
                            "person's pick")

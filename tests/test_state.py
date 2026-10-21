@@ -47,10 +47,10 @@ def test_the_last_stop_is_dated_in_tenths_of_a_second_since_it(clock: _Clock) ->
     fresh = mstate.State()
     assert fresh.as_of() == {"available": False, "why": "this session has not stopped yet"}
     fresh.last_stop = {"seq": 3, "pc": "0x000004a0", "cpu": ":subcpu", "frame": 9,
-                       "how": "step 1", "when": clock.at, "wall_at": "c"}
+                       "cause": "step 1", "when": clock.at, "wall_at": "c"}
     clock.at += 2.345
     assert fresh.as_of() == {"stop_seq": 3, "pc": "0x000004a0", "cpu": ":subcpu", "frame": 9,
-                             "how": "step 1", "since_s": 2.3, "wall_at": "c"}
+                             "cause": "step 1", "since_s": 2.3, "wall_at": "c"}
 
 
 class _Proc:

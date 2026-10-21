@@ -402,7 +402,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
                                      f"Nothing about {ref} was measured", control_hits=0)
     # THE STOP PACKET CAN LAND LATE: the target's removal is a `request`, which notes a stop
     # that arrives in front of its answer, so the flag is read again after it. A machine that
-    # did stop is the ordinary TIMEOUT, surveyed, and `how` says the answer came late.
+    # did stop is the ordinary TIMEOUT, surveyed, and `cause` says the answer came late.
     if unanswered is not None and ses.running:
         # THE RUN WAS STARTED BY `c`, so the stub WILL send its stop packet when the machine
         # stops and `stop` is the recovery that waits for it: `running` stays as `go` left
@@ -424,18 +424,18 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         late["note"] = (f"the temporary breakpoint at {ref} may still be armed (row "
                         f"{mclear.row_index(row['index'])}), so a later run may stop there; "
                         f"{mclear.pasted_clear('breakpoint', row['index'])} removes it")
-    how = ({contract.TARGET: f"target {ref}", contract.TIMEOUT: at_bound}.get(verdict)
-           or running.name_stop(ses))
+    cause = ({contract.TARGET: f"target {ref}", contract.TIMEOUT: at_bound}.get(verdict)
+             or running.name_stop(ses))
     if verdict == contract.OTHER_STOP and control_hits == 0:
         # THE RUN WAS CUT BEFORE THE CONTROL HAD ITS CHANCE: another stop (a watch, a
         # registerpoint, a foreign breakpoint) ended the run first, so the control's silence
         # over that shortened window says nothing about the control, and calling it cold would
         # send the caller to doubt a good address. The stop itself is surveyed and named as
         # what it was.
-        return running.stop_reply(ses, scratch, how, status="INVALID", code="cut_by_other_stop",
+        return running.stop_reply(ses, scratch, cause, status="INVALID", code="cut_by_other_stop",
                                   control_hits=0, controls=controls, **late, message=(
             f"another stop cut the run before any control could fire, so neither {ref} nor "
-            "the controls were measured over the window asked for; `how` says what stopped "
+            "the controls were measured over the window asked for; `cause` says what stopped "
             "it. Clear what stopped it, or, for a watch, disarm the watches for the pass "
             "(`disarm_watches=True`), and run "
             "again"))
@@ -461,7 +461,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         names = ", ".join(ref for ref, _cpu in owners)
         # ONE NOTE: the target's removal, when unconfirmed, is said beside the control's hint.
         silent = {**late, "note": st.join_notes(CONTROL_HINT, late.get("note"))}
-        return running.stop_reply(ses, scratch, how, status="INVALID", code="control_silent",
+        return running.stop_reply(ses, scratch, cause, status="INVALID", code="control_silent",
                                   control_hits=0, controls=controls, control_dasm=control_dasm,
                                   **silent, message=(
             f"the control ({names}) never fired, so {ref} not firing means nothing. "
@@ -471,8 +471,8 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
     if verdict == contract.TARGET:
         # THE ROW AT THE TARGET IS THE RUN'S OWN, even while a refused removal leaves it
         # listed: the survey would otherwise name it a row typed through `debug`.
-        seen.pop("breakpoint_how", None)
-    return running.finish_stop(ses, seen, how, verdict=verdict, control_hits=control_hits,
+        seen.pop("breakpoint_cause", None)
+    return running.finish_stop(ses, seen, cause, verdict=verdict, control_hits=control_hits,
                                controls=controls, **own, **late)
 
 
@@ -617,7 +617,7 @@ def _landing_left(counted_on: str | None) -> int | None:
     there on `counted_on`: its instruction's breakpoints were skipped, so the first `gvblank`
     of this run executes it unchecked. None for any other stop, or a pc a read since moved."""
     stop = STATE.last_stop or {}
-    if stop.get("how") != FRAMES_END or not cpus.same_cpu(stop.get("cpu"), counted_on):
+    if stop.get("cause") != FRAMES_END or not cpus.same_cpu(stop.get("cpu"), counted_on):
         return None
     return int(stop["pc"], 16)
 
@@ -893,9 +893,10 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
             verdict = contract.TIMEOUT
     times["emulated_after_s"] = timed(after if clocked else ses.emulated_seconds())
     frame_after = counted(None if clocked else int(after))
-    # `how` NAMES WHAT STOPPED IT, never the verdict again: the console's own end of the run,
-    # in words with no number in them, so a count of stops by `how` adds the runs up.
-    how = "the console's `gtime` stop" if verdict == contract.ELAPSED else "interrupt at the bound"
+    # `cause` NAMES WHAT STOPPED IT, never the verdict again: the console's own end of the run,
+    # in words with no number in them, so a count of stops by `cause` adds the runs up.
+    cause = ("the console's `gtime` stop" if verdict == contract.ELAPSED
+             else "interrupt at the bound")
     # THE SURVEY IS READ BEFORE THE VERDICT IS NAMED: a watch or a breakpoint this server
     # armed can cut the run before its time, before a frame has even elapsed, and that is a
     # stop of its own with the writer in it, an `OTHER_STOP`. Judged by the frame counter
@@ -908,7 +909,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
         # INVALID, AND STILL A STOP: the machine is where the run left it, and the survey
         # rides on this reply as it does on `run_to`'s INVALID.
         code = "frames_went_backwards" if after < before else "no_progress"
-        return running.finish_stop(ses, seen, how, status="INVALID", code=code,
+        return running.finish_stop(ses, seen, cause, status="INVALID", code=code,
                                    frame_before=counted(frame_before), frame_after=frame_after,
                                    **times,
                                    message=(
@@ -921,10 +922,11 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                 if after < before else
                 "shorter than one frame, or nothing emulated; this is not a run")))
     if cut:
-        verdict, how = contract.OTHER_STOP, running.attribute(pc, seen["cpu"])
+        verdict, cause = contract.OTHER_STOP, running.attribute(pc, seen["cpu"])
     # THE CYCLES THE RUN TOOK, the exact clock behind an emulated duration, so a duration in
     # milliseconds is checked against the cpu's clock rather than believed.
-    return running.finish_stop(ses, seen, how, verdict=verdict, frame_before=counted(frame_before),
+    return running.finish_stop(ses, seen, cause, verdict=verdict,
+                               frame_before=counted(frame_before),
                                frame_after=frame_after, **times,
                                **_cycles(ses, cycles_before, stale_why, counted_on,
                                          seen["cpu"]), reads=len(readings))

@@ -220,12 +220,12 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
             if begin is None and end is not None:
                 raise st.Invalid("readback_refused",
                     "the script logged an `end` mark and no `begin` mark: the log does not "
-                    "hold the recording's beginning", marks=seen, path=str(path))
+                    "hold the recording's beginning", tagged_lines=seen, path=str(path))
             if begin is None and armed is None:
                 raise st.Invalid("readback_refused",
                     "the script answered and logged no mark, not even the `armed` line it "
                     "writes as it is evaluated: the log does not hold the script's marks",
-                    marks=seen, path=str(path))
+                    tagged_lines=seen, path=str(path))
             if begin is None:
                 assert armed is not None       # refused just above when neither was logged
                 return _not_begun(ran, what, armed, path=path, frames=frames,

@@ -107,7 +107,7 @@ def c16_console() -> None:
     try:
         released = call("resume")
         added = call("regpoint_add", condition="pc!=0")
-        stopped = (call("status").get("last_stop") or {}).get("how")
+        stopped = (call("status").get("last_stop") or {}).get("cause")
     finally:
         ses.monitor = send  # type: ignore[method-assign]
     call("regpoint_clear", all=True)

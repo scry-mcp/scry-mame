@@ -42,7 +42,7 @@ import mame_write as mwrite
 # which tools answer) is not said again here: each repeat is paid against the client's cap.
 NEEDS_STOPPED = "Needs the machine STOPPED (else `not_stopped`)"
 STOP_FIELDS = (
-    "the survey: `how`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, "
+    "the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, "
     "`errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it "
     "(REFERENCE.md, Advancing the machine)"
 )

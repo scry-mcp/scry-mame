@@ -144,7 +144,7 @@ def _o_m68k_dual(t: list[str]) -> None:
     call("close")
     _rebuilt(t)
     bare_start = boot(reference_addr="0")
-    alive = call("status").get("alive")
+    alive = call("status").get("session", {}).get("alive")
     cell(t[11], refused(bare_start, "bad_argument") and "an address is written 0x0" in str(
         bare_start.get("message")) and alive is False, f"{said(bare_start, 80)} / alive {alive}")
     if alive:

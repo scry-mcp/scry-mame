@@ -340,8 +340,8 @@ def rearm(ses: gs.Session, out: dict[str, Any]) -> None:
             out["rearmed"].append(arming.decl_row(placed))
 
 
-def stop_how(ses: gs.Session, since: list[str],
-             pc: str) -> tuple[str, dict[str, Any] | None] | None:
+def stop_cause(ses: gs.Session, since: list[str],
+               pc: str) -> tuple[str, dict[str, Any] | None] | None:
     """How a stop is named when the console's newest `Stopped at registerpoint <n>` in
     `since` names a row somebody holds, and the hit when the row is this server's, or None.
     A registerpoint of this server is named by its ref, with the clause that says a declaration
@@ -369,5 +369,5 @@ def stop_how(ses: gs.Session, since: list[str],
                 f"read to say whose: {e}", None)
     if row is None:
         return None
-    return (mclear.foreign_row_how("registerpoint", index,
-                                   f" (if {row['condition']}), typed through `debug`"), None)
+    return (mclear.foreign_row_cause("registerpoint", index,
+                                     f" (if {row['condition']}), typed through `debug`"), None)

@@ -1260,7 +1260,7 @@ def test_a_char_whose_ink_and_paper_sit_in_two_banks_is_found_through_a_pen_map(
                for m in out["matches"])
     assert all((m["window"][1], m["flip"], m["compared"]) == (24, "none", 64)
                for m in out["matches"])
-    assert "evaluated_by" in out and out["how"] == f"gfx_locate: {out['evaluated_by']}"
+    assert "evaluated_by" in out and out["cause"] == f"gfx_locate: {out['evaluated_by']}"
     assert out["pen_map"] == {"tried": True, "matches": len(HARDHAT_TEXT)}, out["pen_map"]
     assert out["candidates"][0]["windows_mixed_bank"] > 0 and "nearest" not in out
     _left_clean(ses)

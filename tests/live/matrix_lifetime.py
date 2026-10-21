@@ -185,7 +185,7 @@ def _p_quit(t: list[str]) -> None:
     before = isinstance(pid, int) and alive(pid)
     shut = call("close")
     gone = isinstance(pid, int) and gone_within(pid, WITHIN_S)
-    after = call("status").get("alive")
+    after = call("status").get("session", {}).get("alive")
     cell(t[7], before and shut.get("ended_by") == "quit" and shut.get("exit_code") == 0 and gone
          and after is False,
          f"alive before {before}, how {shut.get('ended_by')}, exit {shut.get('exit_code')}, "

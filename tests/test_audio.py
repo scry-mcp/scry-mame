@@ -242,7 +242,7 @@ def test_audio_record_checks_the_wav_and_answers_its_fields_in_order(
     keys = list(out)
     order = ["lines_ahead", "path", "frames", "frame_begin", "recording_after", "ended", "bytes",
              "channels", "sample_rate_hz", "samples", "emulated_s", "sample_min",
-             "sample_max", "frame_end", "how"]
+             "sample_max", "frame_end", "cause"]
     assert [k for k in keys if k in order] == order, keys
     assert keys[-1] == "session" and out["session"]["altered"] is False
     assert out["summary"] == f"audio_record: 28800 samples at 48000 Hz x 1 at {path}"

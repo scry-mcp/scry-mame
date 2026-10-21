@@ -76,7 +76,8 @@ def test_a_latch_hit_takes_before_and_after_from_the_writes_the_console_logged(
     ses.stops_after_polls = 1
     st = s.status()
     hit = mstate.STATE.last_stop["watch_hit"]
-    assert st["stopped_on_its_own"]["how"] == "watch 0x740000: 0x00740000 written by pc 0x00000528"
+    assert (st["stopped_on_its_own"]["cause"]
+            == "watch 0x740000: 0x00740000 written by pc 0x00000528")
     assert hit["values_from"] == "bus" and hit["after"] == 0xFFFF
     assert hit["before"]["available"] is False and "first write" in hit["before"]["why"], hit
     assert hit["writes"] == [{"wrote": "0xffff", "to": "0x00740000", "pc": "0x00000528"}]
@@ -107,7 +108,7 @@ def test_a_latch_stop_with_no_console_line_claims_no_hit_and_says_why(
     ses.stops_after_polls = 1
     s.status()
     assert mstate.STATE.last_stop.get("watch_hit") is None
-    assert "logged no line for it" in mstate.STATE.last_stop["how"]
+    assert "logged no line for it" in mstate.STATE.last_stop["cause"]
 
 
 def test_a_row_this_server_holds_no_record_for_is_foreign_and_its_declaration_gone(

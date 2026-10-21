@@ -49,8 +49,8 @@ def test_a_row_typed_at_a_controls_address_is_foreign_and_ends_run_for(
     reg.current_pc = lambda: 0x4A0 if landed() == 0x400 else 0x100  # type: ignore[method-assign]
     out = s.run_for(frames=5, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == ("breakpoint 2 at 0x000004a0, typed through `debug`: "
-                          "`debug(\"bpclear 0x2\")` removes it"), out["how"]
+    assert out["cause"] == ("breakpoint 2 at 0x000004a0, typed through `debug`: "
+                          "`debug(\"bpclear 0x2\")` removes it"), out["cause"]
     assert s.breakpoint_list()["foreign"] == ["2 @ 0004A0"]
 
 

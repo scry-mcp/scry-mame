@@ -359,7 +359,7 @@ def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     assert out["pc_before"] == "0x00000400" and out["pc"] == "0x00000404"
     assert ses.stepped == 1
     assert out["session"]["altered"] is True and _whole()["altering_writes"] == 1
-    assert out["how"] == "lua: one step"
+    assert out["cause"] == "lua: one step"
     assert out["summary"].startswith("lua: 12 chars back, pc 0x00000404")
     assert "note" not in out, "a script that printed needs no hint"
     # The mark moved past the sentinel: the same script again is read from ITS echo and
@@ -679,7 +679,7 @@ def test_record_checks_the_avi_header_and_runs_two_frames_past_the_recording(
     assert out["summary"].startswith("record: 30 frames,")
     assert list(out)[-1] == "session"
     keys = list(out)
-    assert keys.index("lines_ahead") < keys.index("path") < keys.index("how"), (
+    assert keys.index("lines_ahead") < keys.index("path") < keys.index("cause"), (
         "the wrapper's own fields come before the stop survey, as the docstring lists them")
     assert out["session"]["altered"] is False
 
@@ -958,7 +958,8 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     assert out["status"] == "ok", out
     assert Path(out["path"]) == ses.scratch / "sta" / "m68k-dual" / "live.sta"
     assert out["bytes"] == len(STA_HEAD) and out["frame"] == 100 and out["pc"] == "0x00000400"
-    assert set(out["errorlog"]) == {"lines_total", "truncated", "lines"}, "the survey's shape"
+    assert set(out["errorlog"]) == {"lines_total", "truncated", "lines", "mark"}, (
+        "the survey's shape")
     assert "statesave live" in ses.commands
     assert out["session"]["altered"] is False
     refused("already exists", s.state_save(name="live"))
@@ -970,7 +971,7 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     ses.frame += 3
     loaded = s.state_load(name="live")
     assert loaded["status"] == "ok", loaded
-    assert loaded["rom_check"] == "OK" and loaded["how"] == "stateload live"
+    assert loaded["rom_check"] == "OK" and loaded["cause"] == "stateload live"
     assert loaded["verified"] is True and loaded["saved"] == {"frame": 100, "pc": "0x00000400"}, (
         "one spelling per concept: the pc inside `saved` reads like the pc beside it")
     assert ses.checked == [(0x10, 0x20)], "the ROM check ran again, with start's arguments"
@@ -1113,10 +1114,10 @@ def test_throttle_is_pending_on_a_stopped_machine_and_applied_on_a_running_one(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     out = s.throttle(on=False)
-    assert out["pending"] is True and out["mark"] == "MAME_MCP_THROTTLE#1"
+    assert out["pending"] is True and out["tag"] == "MAME_MCP_THROTTLE#1"
     assert out["summary"] == "throttle off: pending until the console next reads a line"
     assert out["applies"].startswith("when the console next reads a line: a step, "), out
-    assert out["confirmed_by"].startswith("its mark in the error log, read by the next stop's "
+    assert out["confirmed_by"].startswith("its tag in the error log, read by the next stop's "
                                           "survey, by `status` and by `close`"), out
     sent = transport.chunk_line(lua.THROTTLE_LUA % {"on": "false", "mark": "MAME_MCP_THROTTLE#6"},
                                 6)
@@ -1155,7 +1156,7 @@ def test_a_throttle_whose_running_machine_stops_before_a_frame_is_pending_not_ex
     monkeypatch.setattr(ses, "poll_stop", lambda timeout=0.0: True)
     out = s.throttle(on=True, seconds=5.0)
     assert out["status"] == "ok" and out["pending"] is True, out
-    assert [r["mark"] for r in mstate.STATE.throttles_pending] == [out["mark"]]
+    assert [r["tag"] for r in mstate.STATE.throttles_pending] == [out["tag"]]
 
 
 # ------------------------------- a throttle asked while stopped, and what became of it
@@ -1173,7 +1174,7 @@ def test_a_throttle_that_landed_leaves_no_row_because_it_is_not_news(
     and a row for it would be one more thing every caller learns to skip."""
     ses = _channel(monkeypatch, tmp_path)
     out = s.throttle(on=True)
-    assert out["pending"] is True and out["mark"] == "MAME_MCP_THROTTLE#1", out
+    assert out["pending"] is True and out["tag"] == "MAME_MCP_THROTTLE#1", out
     assert mstate.STATE.throttles_pending, "the record is what a later call reads"
     # The console reads the line on the next call's step, and the script logs its mark.
     ses.marks[1] = ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=101"]
@@ -1196,7 +1197,7 @@ def test_status_lists_a_throttle_while_it_waits_and_drops_it_once_its_mark_is_lo
     first = s.status()
     assert first.get("throttles_pending") == [], first
     s.throttle(on=True)
-    assert s.status()["throttles_pending"] == [{"mark": "MAME_MCP_THROTTLE#1", "on": True}]
+    assert s.status()["throttles_pending"] == [{"tag": "MAME_MCP_THROTTLE#1", "on": True}]
     # THE MARK IS LOGGED WITH NO STOP SINCE: `status` reads what is already in the log rather
     # than answering as of the last stop, which would call a landed switch still waiting.
     with open(ses.scratch / "error.log", "a") as log:
@@ -1218,7 +1219,7 @@ def test_a_throttle_whose_mark_never_comes_is_reported_and_keeps_being_reported(
     ses.answers = {1: ses.sentinel(1), 2: b"7\n" + ses.sentinel(2)}   # no marks[1]: no mark
     out = s.lua("print(7)", seconds=1.0)
     rows = out["session"]["throttles_not_applied"]
-    assert [r["mark"] for r in rows] == ["MAME_MCP_THROTTLE#1"], out["session"]
+    assert [r["tag"] for r in rows] == ["MAME_MCP_THROTTLE#1"], out["session"]
     assert rows[0]["asked"] is True and rows[0]["machine_reports"]["available"] is False, rows
     assert "NEVER applied" in rows[0]["why"], rows
     # AND AGAIN on the next reply, which is the whole point of latching.
@@ -1260,13 +1261,13 @@ def test_an_older_pending_switch_is_not_answered_by_a_younger_one(
     fails in the worst direction available: #1's own line is missing precisely BECAUSE it
     never ran, so a younger line that AGREES makes it vanish with no row at all."""
     _channel(monkeypatch, tmp_path)
-    mstate.STATE.throttles_pending = [{"mark": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
-                                      {"mark": "MAME_MCP_THROTTLE#10", "on": True, "seq": 10}]
+    mstate.STATE.throttles_pending = [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
+                                      {"tag": "MAME_MCP_THROTTLE#10", "on": True, "seq": 10}]
     mstate.STATE.lua_answered = 10
     mstate.settle_throttles(["[luaengine] MAME_MCP_THROTTLE#10 throttled=true frame=50"])
     assert mstate.STATE.throttles_pending == [], "both records were judged"
     rows = mstate.STATE.throttles_not_applied
-    assert [r["mark"] for r in rows] == ["MAME_MCP_THROTTLE#1"], (
+    assert [r["tag"] for r in rows] == ["MAME_MCP_THROTTLE#1"], (
         "#10 landed and says nothing; #1 never ran and has to say so")
     assert rows[0]["machine_reports"]["available"] is False, "nothing from #10's line"
 
@@ -1297,7 +1298,7 @@ def test_the_row_stands_on_a_reply_from_a_tool_that_did_not_make_it(
     s.lua("print(7)", seconds=1.0)
     assert mstate.STATE.throttles_not_applied, "the row is earned"
     told = s.status()
-    assert told["session"]["throttles_not_applied"][0]["mark"] == "MAME_MCP_THROTTLE#1", told
+    assert told["session"]["throttles_not_applied"][0]["tag"] == "MAME_MCP_THROTTLE#1", told
     refusal = refused("", s.read_memory(ref="zzz_no_such_symbol", length=2))
     assert refusal["session"]["throttles_not_applied"] == told["session"][
         "throttles_not_applied"], "a refusal carries it too"
@@ -1325,7 +1326,7 @@ def test_close_judges_a_throttle_whose_mark_disagrees_before_the_scratch_goes(
     out = _closed_after_the_mark(monkeypatch, tmp_path,
                                  "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=101")
     rows = out["session"].get("throttles_not_applied")
-    assert rows and [r["mark"] for r in rows] == ["MAME_MCP_THROTTLE#1"], out["session"]
+    assert rows and [r["tag"] for r in rows] == ["MAME_MCP_THROTTLE#1"], out["session"]
     assert rows[0]["asked"] is True and rows[0]["machine_reports"] is False, rows
 
 
@@ -1643,7 +1644,7 @@ def test_lua_steps_once_per_line_still_in_the_pipe_before_its_own(
     assert out["output"] == "m68k-dual\n" and out["evaluated_by"] == "2 steps", out
     assert out["lines_ahead"] == 1 and ses.stepped == 2, out
     keys = list(out)
-    assert keys.index("lines_ahead") < keys.index("output") < keys.index("how"), keys
+    assert keys.index("lines_ahead") < keys.index("output") < keys.index("cause"), keys
     # With the pipe drained, the next call costs the one step it always did.
     ses.answers[3] = b"1\n" + ses.sentinel(3)
     again = s.lua("print(1)", seconds=0.5)
@@ -3048,25 +3049,25 @@ def test_a_running_throttle_on_is_read_back_as_true_and_the_opposite_names_its_m
     threading.Timer(0.1, ses._tick).start()
     out = s.throttle(on=True, seconds=2.0)
     assert out["status"] == "ok" and out["pending"] is False and out["frame"] == 77, out
-    assert out["mark"] == "MAME_MCP_THROTTLE#1" and 0 <= out["waited_s"] < 2.0, out
+    assert out["tag"] == "MAME_MCP_THROTTLE#1" and 0 <= out["waited_s"] < 2.0, out
     ses.answers[2] = ses.sentinel(2)
     ses.marks[2] = ["[luaengine] MAME_MCP_THROTTLE#2 throttled=false frame=78"]
     threading.Timer(0.1, ses._tick).start()
     out = refused("reports throttled=false after asking for true", s.throttle(on=True, seconds=2.0))
-    assert out["code"] == "readback_refused" and out["marks"] == ses.marks[2], out
+    assert out["code"] == "readback_refused" and out["tagged_lines"] == ses.marks[2], out
 
 
-def test_a_throttle_wait_names_its_mark_when_it_expires_and_when_mame_goes(
+def test_a_throttle_wait_names_its_tag_when_it_expires_and_when_mame_goes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _running(monkeypatch, ses)
     out = refused("still pending", s.throttle(on=True, seconds=0.2))
-    assert out["code"] == "wait_expired" and out["mark"] == "MAME_MCP_THROTTLE#1", out
+    assert out["code"] == "wait_expired" and out["tag"] == "MAME_MCP_THROTTLE#1", out
     ses.quit_asked = True                      # the process double now polls as exited, code 0
-    out = refused("while this call waited for its own throttle mark in error.log",
+    out = refused("while this call waited for its own throttle tag in error.log",
                   s.throttle(on=True, seconds=0.2))
-    assert out["code"] == "session_broken" and out["mark"] == "MAME_MCP_THROTTLE#2", out
+    assert out["code"] == "session_broken" and out["tag"] == "MAME_MCP_THROTTLE#2", out
     assert out["exit_code"] == 0, out
 
 
@@ -3080,7 +3081,7 @@ def test_a_throttle_wait_reports_its_progress_to_the_client(
     with pytest.raises(mstate.Invalid):
         lua.throttle(ses, ses.scratch, True, 0.1,  # type: ignore[arg-type]
                      lambda _done, _total, message: said.append(message))
-    assert said and said[0].startswith("throttle: waiting for the mark, 0s"), said
+    assert said and said[0].startswith("throttle: waiting for the tag, 0s"), said
 
 
 def test_the_pipe_is_refused_one_line_past_the_steps_a_call_spends_and_not_at_them(
@@ -3207,7 +3208,7 @@ def test_a_wrappers_rerun_refusal_carries_its_marks_its_fields_and_what_was_rese
         lua.refuse_a_rerun(seen, "MAME_MCP_RECORD#4", answer, 1, path="/tmp/x.avi")
     fields = caught.value.fields
     assert mstate.STATE.console_reruns_seen == 3 + 2, "the repeats ADD to what was seen before"
-    assert fields["marks"] == seen and fields["path"] == "/tmp/x.avi", fields
+    assert fields["tagged_lines"] == seen and fields["path"] == "/tmp/x.avi", fields
     assert fields["resent"] == 1 and "sent again (1 time)" in fields["note"], fields
     assert fields["console_reruns"] == 2, fields
 

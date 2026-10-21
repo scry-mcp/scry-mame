@@ -53,7 +53,7 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
             call("step")
         fired = reader_fault_counts()[0]
         # A LATCHED ROW STAYS LISTED for the rest of the session, so an earlier cell's is there.
-        rows = [r for r in call("watch_list").get("tallies_not_removed") or []
+        rows = [r for r in call("watch_list")["session"].get("tallies_not_removed") or []
                 if r.get("tally_id") == tid(ref)]
         waiting = [r.get("tally_id") for r in call("status").get("tallies_pending_removal") or []]
         echoes = log()[mark:].count(REMOVAL_LINE.encode())

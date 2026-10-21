@@ -3,7 +3,7 @@
 `status: ok`. A refusal is kept for an action that could not finish (`wait_stopped`: a stopped
 machine logs nothing). A wait nobody asked for (`resume` with 0, `settle_seconds=0`) carries no
 verdict, and no boolean restates one (`halted`, a tail's `still_running` once it waited).
-A survey's `how` is prose that never repeats the verdict, and `close` says how it ended in
+A survey's `cause` is prose that never repeats the verdict, and `close` says how it ended in
 `ended_by`.
 """
 

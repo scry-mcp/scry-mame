@@ -245,17 +245,16 @@ they say something; on a clean one they come back only with `detail=True`, and t
 the question usually asked (`close`'s last words on a clean quit, `machine_map`'s `rom_files`),
 the default reply answers that question and carries `omitted`, the names it left out, and
 `how`, the call or argument that brings them; a reply that left nothing out carries neither. The
-session block carries its own pair, and the stop survey spells it `watches_omitted` and
-`watches_how`, its `how` being what stopped the machine.
+session block carries its own pair; a stop's short watch rows use the reply's.
 
 **The console's pipe is emptied before the exit is asked for**, because a chunk MAME's Lua
 state still holds at `quit` can take its collector down on the way out; `console_pending_before`
 and `console_drained` say what was there and what went, and the `note` names what could
 not be drained, so an ugly exit code has its likely cause beside it. The `session` block of the
 reply describes the state as it was BEFORE closing, so its `altered` is the truth about the
-session this call ended; that is why it reads `alive: true` next to `closed: true`, and the
-reply carries `session_describes` to say so in the answer itself. A `status` straight
-afterwards reports `alive: false`, which is the state now.
+session this call ended; that is why it reads `alive: true` next to `closed: true`, which the
+tool's description says once rather than every reply. A `status` straight afterwards reports
+`alive: false`, which is the state now.
 
 **What a live session looks like from outside, and the contract on it.** A project's own
 `make stop` kills by binary path, and this server spawns the SAME binary, so the command line
@@ -429,8 +428,9 @@ tool's work is done, so it says what the machine is doing after the call (`close
 describes the state before it, whole, and says so). **Its alarms ride on every reply**:
 `alive`, `running`, `altered`, `broken` with the reason once a session broke, `console` (lines
 lost, reader deaths, chunks run twice) once any of its counts is not zero,
-`throttles_not_applied`, `read_only_claims`, and a `note` once the session is modified or a `lua`
-call was declared read-only. **What only counts rides on `start`, `status` and `close`**
+`throttles_not_applied`, `tallies_not_removed`, `read_only_claims`, and a `note` once the session
+is modified or a `lua` call was declared read-only. `alive` and `running` are the block's alone:
+no reply repeats them, `status` included. **What only counts rides on `start`, `status` and `close`**
 (`close`'s being the last account of the session it ends): `altering_writes` (how many calls
 wrote to the machine) and `console` while its counts are zero. Every other reply names that half in `omitted` beside `how`, so the short block is never
 read as the whole one, unless naming it would cost more than the half itself (`altering_writes`
@@ -537,14 +537,15 @@ established instead, against the call being answered, because that is the only p
 can be recognised.
 
 **A throttle that never landed says so on every reply until it is dealt with.** A
-`throttle` asked on a STOPPED machine cannot wait for its own mark, because nothing reads its
+`throttle` asked on a STOPPED machine cannot wait for its own tag, because nothing reads its
 line while it would wait (the machine executes nothing and the call sends the debugger nothing
 more); it answers `pending` and records what it sent. The next
-stop's survey reads the log for that mark, and so do `status` and `close`, the last before the
+stop's survey reads the log for that tag, and so do `status` and `close`, the last before the
 scratch the log lives in is deleted. One that arrives adds no row;
-what shows it is `status`, whose `throttles_pending` (`mark`, `on`) lists every switch still
-waiting, is always present, and loses the row when the mark is logged. One the console demonstrably worked past without writing, or a machine reporting
-the OTHER setting, puts a row in `session.throttles_not_applied` (`mark`, `asked`,
+what shows it is `status`, whose `throttles_pending` (`tag`, `on`) lists every switch still
+waiting, is always present, and loses the row when the tag is logged. The tag is a word in the
+log (`MAME_MCP_THROTTLE#n`), never a `mark`, which is only ever a position in a log. One the console demonstrably worked past without writing, or a machine reporting
+the OTHER setting, puts a row in `session.throttles_not_applied` (`tag`, `asked`,
 `machine_reports`, `why`) and the row LATCHES: the declaration it would otherwise hang from is
 already answered, so a caller who does not happen to ask again would never hear of it, and
 every timing they take meanwhile describes a speed nobody chose. Until the console has worked
@@ -555,11 +556,9 @@ may simply not have read the line yet.
 Asking for the switch again fixes the MACHINE; the row is a record that this session measured
 at a speed nobody chose, and a reading taken under it stays taken. It is the same kind of
 accounting `tallies_not_removed` does -- a pending demoted to a stuck record rather than left
-silent -- and the two differ in three ways worth knowing, because a reader who knows one will
-otherwise assume the other: `tallies_not_removed` rides on `watch_list`'s own reply and this
-rides on the `session` block of every reply; that one is computed when `watch_list` is called
-and this one at every STOP; and a tally row DISAPPEARS when the console confirms the removal,
-while a throttle row, once earned, does not. What they SHARE is the waiting: `status` lists a
+silent -- and both ride on the `session` block of every reply while they hold, because the call
+that would naturally report either is one nobody is obliged to make. Both are read at every
+STOP, and again by `watch_list`, `status` and `close`. What they SHARE is the waiting: `status` lists a
 removal the console has not run yet under `tallies_pending_removal` exactly as it lists a
 switch under `throttles_pending`, so on both sides a success is a row leaving a list the
 caller can see, and never a row of its own.
@@ -576,7 +575,7 @@ bound" on `run_to` and `run_for`, and "left running at the bound" on `resume`, `
 `perform` and `drive`. A wait nobody asked for (`resume` with `seconds` 0, `settle_seconds` 0)
 carries none, and no boolean restates a verdict. What could not finish still refuses:
 `wait_stopped` (a stopped machine logs nothing), `not_settled`, a console step `perform` could
-not send with no wait asked (`not_stopped`), and the Lua wrappers' `wait_expired`. A stop's `how`
+not send with no wait asked (`not_stopped`), and the Lua wrappers' `wait_expired`. A stop's `cause`
 is prose naming what stopped it, never the verdict again; how `close` ended is `ended_by`.
 `bad_argument` asks for another value; `needs_call` for another call first (no scan open, no
 manifest loaded, no film armed, a cpu to observe or focus first), which its message names. The
@@ -987,7 +986,7 @@ write has LANDED when the machine stops, the stop's `pc` is the instruction AFTE
 and the console's own line, which `-debuglog` sends to `debug.log` in the scratch, names the
 watchpoint by its index, the value written, the address written and the writer's pc. The
 stub's stop packet for a console row names address 0 (measured), so that line is the
-attribution. So the stop's `how` is `watch <ref>:
+attribution. So the stop's `cause` is `watch <ref>:
 <addr> written by pc <writer>` and its `watch_hit` carries `writer_pc`, `wrote`, `to`,
 `before` (the bytes this server last saw there), `after` (the bytes now), every write the
 console logged since the previous stop (a 68000 writes a long as two words, and the console
@@ -1081,8 +1080,8 @@ A port's count (`space="io"`) is judged the same way over the io space's own wid
 `space="io"`. The write side is then asked of `map`, as a change watch's is, and an unmapped one is
 armed with its `note` (*The control of a watch*); one range carries one tally; it is by symbol or by address, never through a pointer; `disarm_watches` never touches it;
 `watch_clear` SENDS the removal, `status` lists it under `tallies_pending_removal` until the console
-has run it, and what the console did with it comes back under `tallies_not_removed` on `watch_list`
-when it did not happen: `refused` (evaluated, and it raised, the console's own words in its `why`) or
+has run it, and what the console did with it comes back under `session.tallies_not_removed` on
+every reply when it did not happen: `refused` (evaluated, and it raised, the console's own words in its `why`) or
 `lost` (the console done with the line and never having evaluated it, by the install's rule below),
 the tap still in the guest with its record no longer held here. A removal is never resent, because
 the id is the RANGE and a resend could carry away a tap declared since; the row repeats on every
@@ -1332,7 +1331,7 @@ every stored registerpoint is re-resolved and evaluated again: `rearmed`, `unres
 console answers `unknown symbol`, or `unarmable` with why (a console that raised while
 evaluating one is that declaration's `unarmable`, and the pass goes on); none is dropped.
 
-When one fires the server changes nothing: the stop's `how` is ``registerpoint '<ref>'`` (with the
+When one fires the server changes nothing: the stop's `cause` is ``registerpoint '<ref>'`` (with the
 inherited clause when the declaration came from the store), the reply carries `regpoint_hit`
 (`ref`, `condition`, `index`, `cpu`, `pc`, `note`), and the registerpoint stays armed and stored. A
 registerpoint fires at EVERY instruction while its condition holds, so the next advance stops
@@ -1504,7 +1503,7 @@ console-started run sends no stop packet, so the tell is a `gvblank` that moved 
 nothing, or a `Stopped at ...` line in the console's log, looked for after every `gvblank`: the
 counter ticks as a run leaves a vblank stop, so a stop later in that frame lands with it moved. A
 control's row never counts as a stop wherever the machine lands, which is also what keeps
-`stop`'s `how` from naming a control. A breakpoint typed through `debug` ends either run as
+`stop`'s `cause` from naming a control. A breakpoint typed through `debug` ends either run as
 `OTHER_STOP` too, named ``breakpoint <n> at <pc>, typed through `debug`: `debug("bpclear 0x<n>")`
 removes it``: its only trace is the console's own `Stopped at breakpoint <n>` line, read
 off the same `debug.log` a foreign watchpoint is named from; the index is what says whose the row
@@ -1624,25 +1623,26 @@ lands on another cpu (its breakpoint or watch fired meanwhile) ends the steps th
 `note`, and a run cut there reports no `cycles`, since that counter is each cpu's own.
 
 **Every stop comes back as ONE survey**, because the stop is where the round trips are worth
-saving: `how` it stopped, `cpu` (the one it stopped on, whose `pc`, `regs` and listing these
+saving: its `cause`, `cpu` (the one it stopped on, whose `pc`, `regs` and listing these
 are), `pc`, `frame`, `regs`, the `dasm` at the pc (a handful of MAME's own
 lines), `watches` and `watch_hit`, and the `errorlog` lines the driver logged since the
-previous stop (the count whole, the newest few shown). The park at the debugger right after
+previous stop (the count whole, the newest few shown, and where they start). The park at the debugger right after
 `start` is stop 1, and every stop reply carries its number as `stop_seq`, the spelling
 `status`'s `last_stop` and `stopped_on_its_own` use, so a caller counting stops can cross-check
 against the machine with the reply it already holds.
 
-- `how` names what stopped it: a registerpoint as ``registerpoint '<ref>'``, and a row typed
+- `cause` names what stopped it: a registerpoint as ``registerpoint '<ref>'``, and a row typed
   through `debug`, in any family, by its index as the debugger's list spells it
   (hex), with the `bpclear`/`wpclear`/`rpclear` that removes it named at the end, its index
   spelled `0x<hex>` there because the console evaluates that argument as an expression and a
   bare `D0` or `A` names a register on the cpu that has one. A breakpoint
   this server armed names a stop only on its own cpu: two cpus run two programs, so a stop of
   `:subcpu` at an address a `:maincpu` row holds is not that row's.
-- `errorlog` carries `lines_total` (every line since the last stop), the newest of those lines
-  and `truncated`, in `log`'s words. The
-  field is spelled `errorlog`, and a caller reading `reply["log"]` off a survey finds nothing, in
-  silence.
+- `errorlog` carries `lines_total` (every line since the last stop), the newest of those lines,
+  `truncated`, and `mark`, the byte position they start at; a cut block's `how` is the one way
+  to read the rest, `log(pattern=".", channel="emulator", since_mark=<mark>, limit=<n>)`. The
+  field is spelled
+  `errorlog`, and a caller reading `reply["log"]` off a survey finds nothing, in silence.
 - `watches` evaluates every declared watch, when there is any, each row cut to what a stop
   needs: `ref` (with its `cpu`, and `space` for an io tap), `state`, where it is PLACED, as
   `watch_list` places it, and `reading`, what was read (`available: true`, `value`, `raw_hex`; an
@@ -1650,9 +1650,10 @@ against the machine with the reply it already holds.
   write-only register); a pointer watch's `pointer` and `addr` (the place moves with the
   pointer, and after a move the debugger refused it is the armed one); a count's or a capture's
   `total` and `since_last_stop`; and every alarm while it holds (`why`, `moved`,
-  `callback_errors`, `reset`, `superseded`, `installed: false`, `pending: true`,
+  `callback_errors`, `reset`, `superseded`, `installed` when it is not `true` (`false`, or
+  unavailable with why: a tap whose state could not be read is an alarm too), `pending: true`,
   `install_resent`). The declaration, the debugger's row and a tap's tables are `watch_list`'s:
-  `watches_omitted` names the keys the rows left out and `watches_how` says so, because every
+  the reply's `omitted` names the keys the rows left out and its `how` says so, because every
   reply that ends at a stop carries the survey, whatever the call was about.
 - `watch_hit` rides when a change watch stopped it, naming who wrote the byte; `regpoint_hit`
   when a registerpoint of this server did (`ref`, `condition`, `index`, `cpu`, `pc`, and a `note` that
@@ -1699,9 +1700,9 @@ not and serves packets to a running machine, so no query proves rest and "it may
 is the only honest word. `run_to` started its run with the stub's own `c`, so when its
 interrupt at the bound is NOT ANSWERED the reply is `not_settled` as well, with
 `target_disarmed` saying whether the temporary breakpoint's removal was confirmed and no
-`how`, because no stop was read; the session stays RUNNING and `stop` waits for the packet
+`cause`, because no stop was read; the session stays RUNNING and `stop` waits for the packet
 that run still owes. When that packet lands while the target is being removed, the machine
-did stop: the run is the ordinary TIMEOUT with its survey, `how` reads "interrupt at the
+did stop: the run is the ordinary TIMEOUT with its survey, `cause` reads "interrupt at the
 bound, answered late", and `target_disarmed` still says whether the removal was confirmed.
 A removal the stub REFUSES after the run reached its stop is an answer, not a break: the stop
 is still the measurement, so the reply is the ordinary one with `target_disarmed: false` and a
@@ -1814,8 +1815,8 @@ that span can no longer change the answer), compared in Python: it reads through
 MAME's own cheat engine sees only direct RAM, with the debugger's side effects disabled, and it
 neither steps nor writes, so a scan moves nothing and alters nothing. Every filter answers
 `operator`, `value`, `iterations` (filters since `scan_start`), `closed`, `hits`
-(each `addr` and its `value` now) whole up to the list ceiling, else empty with `truncated`
-true, `hits_total` (the survivors, listed or not; `scan_start` answers the same key for the
+(the first `limit`, each `addr` and its `value` now; past `limit` those first ones with
+`truncated` true, never an empty list), `hits_total` (the survivors, listed or not; `scan_start` answers the same key for the
 range it opened), `cpu` and `space`; none left closes the scan (`hits` empty, `hits_total` 0).
 One scan at a time, bound to the cpu it opened on; it outlives runs, writes, `reset` and
 `state_load` (the next filter compares whatever memory holds then) and dies with `close`. A
@@ -2109,7 +2110,7 @@ commands are deliberately not steps.
 Each step's account in `ran` becomes a COMPACT ROW, keeping whole the step that matters: the
 last of a completed list, the one that left the machine running when a console step could not
 follow it, and a failing step under `failed`. A compact row is the step's `step` (its index in
-the list), `op` and `cpu`, and a `reply` of `summary` and `status`; a stop keeps `how`, `pc`,
+the list), `op` and `cpu`, and a `reply` of `summary` and `status`; a stop keeps `cause`, `pc`,
 `frame`, `stop_seq`, its `watch_hit` without the `writes` list, and its `regpoint_hit`; any step
 keeps the `stopped_on_its_own` its contact found. The
 rule is the stop without its lists (`regs`, `dasm`, `errorlog`, `watches`, `writes`), spelled
@@ -2123,8 +2124,8 @@ after, or up to the newest stop a reply carries when that is newer (a session bu
 clears the counter): `stop_seq_first` and `stop_seq_last` (unavailable when none was numbered),
 `surveyed` (the ones
 a reply here carries, a step's own stop, a `stopped_on_its_own` a step's contact found, the
-failing step's and the tail's), `by_how` (a count per `how`, the writer taken off so one watch
-is one key) and `unaccounted`, the stops numbered in that range that no reply here surveyed (a
+failing step's and the tail's), `by_cause` (a count per `cause`, the writer taken off so one
+watch is one key) and `unaccounted`, the stops numbered in that range that no reply here surveyed (a
 single step a refusing reader took, or a stop a console command released the machine to). It
 is reported, never refused. WHY: a series of captures a frame apart is a `run_for` and a
 `snapshot` per capture, each `run_for` carrying a stop survey, and the whole reply crossed

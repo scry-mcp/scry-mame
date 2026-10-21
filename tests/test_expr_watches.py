@@ -338,7 +338,7 @@ def test_run_for_frames_stops_at_a_breakpoint_this_server_armed_between_two_vbla
     out = s.run_for(frames=5, seconds=2.0)
     assert out["status"] == "ok", out
     assert out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == "breakpoint at 0x4a0", out["how"]   # attributed to the row
+    assert out["cause"] == "breakpoint at 0x4a0", out["cause"]   # attributed to the row
     assert out["frame_before"] == 10 and out["frame_after"] == 11, out
     assert reg.commands.count("gvblank") == 2, reg.commands
     assert out["summary"] == "run_for 5 frames: OTHER_STOP, frame 10 to 11", out["summary"]
@@ -368,8 +368,8 @@ def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
     reg.monitor = halt_on_the_foreign_watch  # type: ignore[method-assign]
     out = s.run_for(frames=5, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == ("watch 1 at 0x00700011 this server did not arm, wrote 0003 by pc "
-                          "0x0009bc74: `debug(\"wpclear 0x1\")` removes it"), out["how"]
+    assert out["cause"] == ("watch 1 at 0x00700011 this server did not arm, wrote 0003 by pc "
+                          "0x0009bc74: `debug(\"wpclear 0x1\")` removes it"), out["cause"]
     assert out["frame_before"] == 10 and out["frame_after"] == 11, out
     assert reg.commands.count("gvblank") == 2, reg.commands
 
@@ -379,7 +379,7 @@ def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
 _CAPTURED = Path(__file__).parent / "fixtures" / "console"
 _FRAMES_LOG = (_CAPTURED / "debuglog.foreign-bp.frames.txt").read_text().splitlines(keepends=True)
 _MS_LOG = (_CAPTURED / "debuglog.foreign-bp.ms.txt").read_text()
-_FOREIGN_HOW = ("breakpoint 1 at 0x00000400, typed through `debug`: `debug(\"bpclear 0x1\")` "
+_FOREIGN_CAUSE = ("breakpoint 1 at 0x00000400, typed through `debug`: `debug(\"bpclear 0x1\")` "
                 "removes it")
 
 
@@ -426,7 +426,7 @@ def test_run_for_frames_stops_at_a_breakpoint_typed_through_debug(
                                             ["    1 @ 000400"])
     out = s.run_for(frames=5, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == _FOREIGN_HOW, out["how"]
+    assert out["cause"] == _FOREIGN_CAUSE, out["cause"]
     assert out["frame_before"] == 10 and out["frame_after"] == 11, out
     assert reg.commands.count("gvblank") == 1, reg.commands
 
@@ -452,7 +452,7 @@ def test_run_for_milliseconds_stops_at_a_breakpoint_typed_through_debug(
     reg.monitor = gtime_to_the_handler  # type: ignore[method-assign]
     out = s.run_for(milliseconds=200, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == _FOREIGN_HOW, out["how"]
+    assert out["cause"] == _FOREIGN_CAUSE, out["cause"]
 
 
 def test_a_breakpoint_stop_whose_list_the_console_will_not_answer_still_cuts_the_run(
@@ -470,8 +470,8 @@ def test_a_breakpoint_stop_whose_list_the_console_will_not_answer_still_cuts_the
     reg.monitor = mute_bplist  # type: ignore[method-assign]
     out = s.run_for(frames=5, seconds=2.0)
     assert out["verdict"] == "OTHER_STOP", out
-    assert out["how"].startswith("breakpoint 1 at 0x00000400; the debugger's list could not be "
-                                 "read to say whose"), out["how"]
+    assert out["cause"].startswith("breakpoint 1 at 0x00000400; the debugger's list could not be "
+                                 "read to say whose"), out["cause"]
 
 
 def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_foreign_line(
@@ -485,7 +485,7 @@ def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_foreign_line(
         monkeypatch, tmp_path, _first_stop_through("3D") + "Stopped at breakpoint 2\n",
         ["    1 @ 000400", "    2 @ 0025A4"])
     out = s.run_for(frames=5, seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "breakpoint at 0x400", out["how"]
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == "breakpoint at 0x400", out["cause"]
 
 
 def test_the_newest_breakpoint_line_in_the_window_names_the_stop(tmp_path: Path) -> None:
@@ -514,7 +514,7 @@ def test_a_resume_that_lands_on_a_breakpoint_typed_through_debug_names_it_the_sa
 
     reg.go = go_to_the_handler  # type: ignore[method-assign]
     out = s.resume(seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == _FOREIGN_HOW, out
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == _FOREIGN_CAUSE, out
 
 
 def test_a_breakpoint_line_of_a_row_this_server_armed_is_named_as_its_own(
@@ -529,7 +529,7 @@ def test_a_breakpoint_line_of_a_row_this_server_armed_is_named_as_its_own(
     _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through("3D"),
                                       ["    1 @ 000400"])
     out = s.run_for(frames=5, seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "breakpoint at 0x400", out["how"]
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == "breakpoint at 0x400", out["cause"]
     monkeypatch.setattr(mstate.STATE, "breakpoints", {})
     reg = _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through("3D"), [])
     out = s.run_for(frames=5, seconds=2.0)

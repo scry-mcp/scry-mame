@@ -153,7 +153,7 @@ def test_the_boxes_of_a_frame_sit_where_the_screen_shows_them(monkeypatch: pytes
     assert out["note"].startswith("a plane drawn in pages: `by_plane` and each listed")
     assert "dest_x" not in out["not_proved"] and "pc_before" in out
     assert (out["rows_kept"], out["overflow_rows"]) == (352, 0)
-    assert out["how"] == f"gfx_blits: {out['evaluated_by']}"
+    assert out["cause"] == f"gfx_blits: {out['evaluated_by']}"
     assert out["rows_path"].endswith(".rows") and "None" not in out["rows_path"]
     assert Path(out["image"]["path"]).name.startswith("blits-")
     assert [e["blits"] for e in out["legend"]] == [
@@ -575,7 +575,7 @@ def test_the_source_is_the_rectangle_the_blit_reads(monkeypatch: pytest.MonkeyPa
     assert pic.palette[7] == (7, 7, 7), "the pens read in the same chunk"
     assert out["summary"].startswith("gfx_blit_source blit frame 10 #0 pc 0x00001fd2: pages "
                                      "tile 1 (2, 4) 4x5")
-    assert out["how"] == f"gfx_blit_source: {out['evaluated_by']}"
+    assert out["cause"] == f"gfx_blit_source: {out['evaluated_by']}"
 
 
 def test_a_margin_shows_the_pixels_round_the_rectangle(monkeypatch: pytest.MonkeyPatch,

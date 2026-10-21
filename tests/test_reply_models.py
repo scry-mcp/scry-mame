@@ -28,6 +28,6 @@ def test_every_tool_publishes_its_models_field_names_and_no_constraint() -> None
 
 
 def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None:
-    reply_schema.check("status", {"status": "ok", "alive": False})
+    reply_schema.check("status", {"status": "ok", "pid": 1})
     with pytest.raises(ValueError):
-        reply_schema.check("status", {"status": "ok", "alive": False, "stray": 1})
+        reply_schema.check("status", {"status": "ok", "pid": 1, "stray": 1})

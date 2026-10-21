@@ -461,7 +461,7 @@ def ensure_closed() -> None:
     there took every later section and the verdict with it. Anything but a clear "no machine"
     is closed, which kills after the grace period whatever the stub does."""
     try:
-        alive = s.status().get("alive")
+        alive = s.status().get("session", {}).get("alive")
     except Exception:  # noqa: BLE001 -- a status that cannot answer is a machine to close
         alive = True
     if alive:

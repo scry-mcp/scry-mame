@@ -211,7 +211,6 @@ def read_removal_answers(scratch: Path) -> list[dict[str, Any]]:
     mention once: the row LATCHES and every later call says it again, because the
     declaration it would otherwise hang from is already gone.
     """
-    out: list[dict[str, Any]] = []
     for rem in list(STATE.tally_removals):
         # A LATCHED ROW READS NOTHING. The console's log only grows, so a row that reached
         # an end cannot leave it, and re-reading a tail that grows for the rest of the
@@ -222,12 +221,7 @@ def read_removal_answers(scratch: Path) -> list[dict[str, Any]]:
             # THE TAP WENT, which is what was asked for and therefore not news. The record
             # goes with it, so the common case leaves nothing behind to walk over.
             STATE.tally_removals.remove(rem)
-        elif rem["state"]:
-            # ONE REASON KEY: the branch's sentence, and the console's own words when it raised
-            why = _REMOVAL_WHY[rem["state"]]
-            out.append({"tally_id": rem["tally_id"], "state": rem["state"],
-                        "why": f"{why}. The console said: {rem['error']}" if rem["error"] else why})
-    return out
+    return st.tallies_not_removed()
 
 
 def _read_removal_answer(scratch: Path, rem: dict[str, Any]) -> None:
@@ -247,27 +241,6 @@ def _read_removal_answer(scratch: Path, rem: dict[str, Any]) -> None:
         rem["state"] = "lost"
 
 
-# WHAT EACH END MEANS TO A CALLER, and no more than this branch knows: the removal was not
-# carried out, and whether a tap is installed is what the install's own answer said (the
-# tally's `installed`), never this row's claim. The remedy is the same for both because the
-# cause is: declaring the range again installs over whatever is there, and the install removes
-# it first. It carries the old tap's counts across, which is the part worth warning about.
-_REMOVAL_WHY = {
-    "refused": ("the console evaluated the removal and it RAISED, so the removal was not "
-                "carried out and this server no longer holds the tally's record; whether a "
-                "tap is installed is what the install's own answer said. Declaring the range "
-                "again (`watch_add(mode=\"count\")`, `space=\"io\"` for a port's) installs over "
-                "it and CARRIES ITS "
-                "COUNTS: read the first total as this tally's, not as a fresh one"),
-    "lost": ("the console took the removal line and never evaluated it (its echo is in "
-             "`log`, channel `process`, with a reader death, the console's error or the next "
-             "reader's prompt after it and no sentinel), so the removal was not "
-             "carried out and this server no longer holds the tally's record; whether a tap "
-             "is installed is what the install's own answer said. Declaring the range again "
-             "(`watch_add(mode=\"count\")`, `space=\"io\"` for a port's) installs over it "
-             "and CARRIES ITS COUNTS: read "
-             "the first total as this tally's, not as a fresh one"),
-}
 
 
 def answered(scratch: Path, rec: dict[str, Any]) -> bool:

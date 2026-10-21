@@ -176,7 +176,7 @@ watch_add(ref="Scene", mode="change", length=1)
 -> {"stored": true, "armed": true, "state": "armed", ...}
 resume(seconds=10)
 -> {"summary": "resume: OTHER_STOP at pc 0x000312f4 (watch Scene: 0x000084a2 written by pc 0x000312f0)",
-    "status": "ok", "verdict": "OTHER_STOP", "how": "watch Scene: 0x000084a2 written by pc 0x000312f0",
+    "status": "ok", "verdict": "OTHER_STOP", "cause": "watch Scene: 0x000084a2 written by pc 0x000312f0",
     "watch_hit": {"ref": "Scene", "writer_pc": "0x000312f0", "before": 1, "after": 2,
                   "writes": [{"wrote": "0x02", "to": "0x000084a2", "pc": "0x000312f0"}], ...},
     "pc": "0x000312f4", "frame": 1841, ...}
@@ -195,7 +195,7 @@ regpoint_add(condition="d1==7fff")
     "index": 1, "cpu": ":maincpu", ...}
 resume(seconds=5)
 -> {"summary": "resume: OTHER_STOP at pc 0x000f2234 (registerpoint 'd1==7fff')", "status": "ok",
-    "verdict": "OTHER_STOP", "how": "registerpoint 'd1==7fff'",
+    "verdict": "OTHER_STOP", "cause": "registerpoint 'd1==7fff'",
     "regpoint_hit": {"ref": "d1==7fff", "cpu": ":maincpu", "condition": "d1==7fff", "index": 1,
                      "pc": "0x000f2234", "note": "still armed: ..."},
     "regs": {"D1": "0x00007fff", ...}, ...}

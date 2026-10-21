@@ -37,6 +37,7 @@ import mame_cpus as cpus  # noqa: E402
 import mame_declarations as dec  # noqa: E402
 import mame_envelope as menvelope  # noqa: E402
 import mame_rearm as rearming  # noqa: E402
+import mame_running as running  # noqa: E402
 import mame_space as mspace  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_tally as tally  # noqa: E402
@@ -893,8 +894,9 @@ def _cleared_with_the_console_silent(
 
 
 def _removals(ses: _WatchSession) -> list[dict[str, object]]:
-    reply = watches.watch_list(ses)  # type: ignore[arg-type]
-    return reply.get("tallies_not_removed", [])  # type: ignore[no-any-return]
+    """What the session block says is stuck once `watch_list` has read the removals."""
+    watches.watch_list(ses)  # type: ignore[arg-type]
+    return mstate.tallies_not_removed()
 
 
 def test_a_removal_the_console_ran_leaves_no_row_and_no_record(
@@ -918,7 +920,7 @@ def test_status_lists_a_removal_while_it_waits_and_drops_it_once_the_console_ran
     """THE SAME TREATMENT THE THROTTLE GETS, because it is the same question: `watch_clear`
     answers `removal: pending`, and a removal waiting is a row in `status` that leaves once
     the console ran it. A latched failure is not waiting any more, so it leaves this list and
-    stands in `watch_list`'s `tallies_not_removed`, where its remedy is written."""
+    stands in every reply's session block (`tallies_not_removed`), where its remedy is written."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     assert s.status()["tallies_pending_removal"] == [
         {"tally_id": "2031fc_4", "call": "MAME_MCP_LUA_END#2"}]
@@ -1620,3 +1622,17 @@ def test_a_replacement_before_any_stop_says_why_it_has_no_frame(
     mtap.mark_across("softreset")
     (across,) = mstate.STATE.tallies[("0x20", ":maincpu")]["across"]
     assert across["frame_from"]["available"] is False, across
+
+
+def test_a_removal_the_console_refused_is_latched_by_the_next_stop_and_rides_every_reply(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """THE ALARM RIDES EVERY REPLY, so the stop that follows the answer is what latches it:
+    no `watch_list` asked, and the row stands in the session block of a reply that is not one."""
+    ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
+    _answer(tmp_path, 2, ok=False, output="",
+            error="mcp:5: attempt to index a nil value (field 'tap')")
+    running.survey(ses, tmp_path)  # type: ignore[arg-type]
+    assert [r["state"] for r in mstate.tallies_not_removed()] == ["refused"]
+    block = menvelope.session_block()
+    assert [r["state"] for r in block["tallies_not_removed"]] == ["refused"], block

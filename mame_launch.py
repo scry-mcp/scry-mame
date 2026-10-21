@@ -1275,12 +1275,6 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
                 f"exit ({why}): MAME's Lua collector has torn one of those down on the way out "
                 "(SIGSEGV in `lua_engine::close`), so a non-zero exit code here has that as its "
                 "likely cause")
-        # `alive: true` BESIDE `closed: true` READS AS A CONTRADICTION unless the reply says why:
-        # the block is the state BEFORE the close, deliberately, so that `altered` is the truth
-        # about the session this call ended, and a reply is what a caller actually reads.
-        reply["session_describes"] = ("the state BEFORE this close, so `altered` is the truth "
-                                      "about the session that just ended; `status` now "
-                                      "reports alive: false")
     # THE BLOCK OF THE STATE BEFORE THE CLOSE, kept by `mame_mcp.tool` (`close` is
     # registered with `session_before`), which puts it last.
     reply["session"] = ({**before, "throttles_not_applied": not_applied} if not_applied
@@ -1293,10 +1287,10 @@ def status() -> dict[str, Any]:
     session holds. It asks a broken session nothing and reports the latch instead."""
     if STATE.ses is None or STATE.proc is None:
         why = idle.IDLE.note()
-        return menvelope.envelope({"alive": False, **({"note": why} if why else {})})
+        return menvelope.envelope({**({"note": why} if why else {})})
     code = STATE.proc.poll()
     if code is not None:
-        return menvelope.envelope({"alive": False, "exit_code": code,
+        return menvelope.envelope({"exit_code": code,
                                    "note": "MAME exited under this session: `close` collects the "
                                    "exit code and the last lines of each channel before the "
                                    "scratch is deleted"})
@@ -1312,19 +1306,23 @@ def status() -> dict[str, Any]:
     broken = ses.broken     # read again: the observation may have latched it
     # Read BEFORE `broken` is read for the reply: a `cpulist` that times out latches it.
     tags = list(STATE.cpus) if broken else cpus.cpu_list(ses)
-    pc = None
+    pc: str | dict[str, Any] = unavailable(
+        "the machine is running, so its pc moves on: the last stop's is `last_stop.pc`")
     if not (ses.running or ses.broken):
         try:
             pc = st.hex_addr(ses.current_pc())
         except gs.SessionError as e:
             ses.latch(f"reading the pc failed: {e}")
+    if ses.broken:
+        pc = unavailable("the session is broken, so the pc is not read: the last stop's is "
+                         "`last_stop.pc`")
     broken = ses.broken
     last = STATE.as_of()
     # `broken` AS THE SESSION BLOCK SAYS IT: present when the session broke, absent when not.
-    # `pc` IS THE MACHINE'S, READ NOW, and only then: while it runs or once the session broke,
-    # the last stop's is `last_stop.pc`, under the key that says which pc it is.
+    # `pc` IS THE MACHINE'S, READ NOW, and only then: while it runs or once the session broke
+    # it is unavailable with why, and the last stop's is `last_stop.pc`. `alive` and `running`
+    # are the session block's, which every reply carries.
     return menvelope.envelope({
-        "alive": True,
         **({"broken": broken} if broken else {}),
         "system": STATE.system,
         "pid": STATE.proc.pid,
@@ -1338,8 +1336,7 @@ def status() -> dict[str, Any]:
         # BY CPU TAG: a flat table's names no cpu, and is `fingerprint`.
         "fingerprints": {cpu: f for cpu, f in STATE.fingerprints.items() if cpu is not None},
         **channels(),
-        "running": ses.running and not broken,
-        **({"pc": pc} if pc is not None else {}),
+        "pc": pc,
         "last_stop": last,
         # WHAT THIS SERVER ARMED IN THE DEBUGGER, one shape per family: each `ref` and its `cpu`,
         # under one key so a family's name never collides with a survey's (`watches`).

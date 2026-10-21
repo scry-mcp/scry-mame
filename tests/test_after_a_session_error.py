@@ -230,7 +230,8 @@ def test_status_still_answers_on_a_broken_session_and_carries_the_reason(
     monkeypatch.setattr(ses, "current_pc", current_pc)
     ses.running = False        # whatever the flag says: `broken` alone keeps the channel unasked
     out = s.status()
-    assert out["status"] == "ok" and out["alive"] is True and out["broken"] == NOT_A_STOP, out
+    assert (out["status"] == "ok" and out["session"]["alive"] is True
+            and out["broken"] == NOT_A_STOP), out
     assert not touched, "a channel that cannot be trusted is not asked where the machine is"
 
 
@@ -373,9 +374,9 @@ def test_a_found_stop_is_published_even_when_its_speed_cannot_be_read(
     assert "`time` got no answer" in found["average_speed"]["why"], found
     assert found["pc"] == "0x000004a0", found
     assert mstate.STATE.run_release is None, "the window is closed, not left for the next stop"
-    assert out["broken"] == ses.broken and out["running"] is False, (
+    assert out["broken"] == ses.broken and out["session"]["running"] is False, (
         "the `time` it is owed would be the next request's answer, so the same reply says so")
-    assert "pc" not in out and out["last_stop"]["pc"] == "0x000004a0", out
+    assert out["pc"]["available"] is False and out["last_stop"]["pc"] == "0x000004a0", out
     assert "BROKEN" in out["summary"] and "0x000004a0" in out["summary"], out["summary"]
 
 
@@ -442,15 +443,16 @@ def test_status_reports_a_latch_its_own_observation_made_and_never_refuses_with_
 
     monkeypatch.setattr(read, "frame", frame)
     out = s.status()
-    assert out["status"] == "ok" and out["alive"] is True, out
-    assert out["broken"] == ses.broken and out["running"] is False, out
+    assert out["status"] == "ok" and out["session"]["alive"] is True, out
+    assert out["broken"] == ses.broken and out["session"]["running"] is False, out
     assert str(ses.broken).startswith("`print frame` got no answer"), ses.broken
     _running(monkeypatch, tmp_path)
     fresh = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(running, "observe_stop", _raising(g.SessionError("not a latch")))
     out = s.status()
     assert out["status"] == "ok" and "not a latch" in str(out["broken"]), out
-    assert fresh.broken == out["broken"] and out["running"] is False, "latched and reported"
+    assert fresh.broken == out["broken"] and out["session"]["running"] is False, (
+        "latched and reported")
 
 
 def test_a_refusal_a_tool_raises_after_its_own_request_latched_answers_the_latch(
@@ -499,7 +501,7 @@ def test_the_session_block_of_a_broken_session_never_says_running(
     for out in (s.registers(), s.status()):
         assert out["session"]["running"] is False, out["session"]
         assert out["session"]["broken"] == NOT_A_STOP, out["session"]
-    assert s.status()["running"] is False
+    assert s.status()["session"]["running"] is False
 
 
 def test_a_healthy_session_block_carries_no_broken_field(
@@ -898,7 +900,7 @@ def test_a_stop_that_arrives_late_under_an_unanswered_interrupt_is_the_ordinary_
     ses = _bound_unanswered(monkeypatch, tmp_path, late=True)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
-    assert out["how"] == "interrupt at the bound, answered late", out
+    assert out["cause"] == "interrupt at the bound, answered late", out
     assert out["control_hits"] == 1 and out["pc"] == "0x000025a4", out
     assert out["target_disarmed"] is True, out
     assert ses.running is False and out["session"]["running"] is False
@@ -911,7 +913,7 @@ def test_a_late_stop_under_a_conditional_target_is_the_ordinary_timeout_too(
     ses = _bound_unanswered(monkeypatch, tmp_path, late=True)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05, condition="d0 == 1")
     assert out["verdict"] == "TIMEOUT" and out["condition"], out
-    assert out["how"] == "interrupt at the bound, answered late" and ses.running is False, out
+    assert out["cause"] == "interrupt at the bound, answered late" and ses.running is False, out
 
 
 def test_a_late_stop_over_a_silent_control_is_still_said_to_have_come_late(
@@ -920,7 +922,7 @@ def test_a_late_stop_over_a_silent_control_is_still_said_to_have_come_late(
     _bound_unanswered(monkeypatch, tmp_path, late=True, control_fires=False)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "INVALID" and out["code"] == "control_silent", out
-    assert out["how"] == "interrupt at the bound, answered late", out
+    assert out["cause"] == "interrupt at the bound, answered late", out
     assert out["target_disarmed"] is True, out
 
 
@@ -1352,7 +1354,7 @@ def test_a_reached_target_whose_removal_the_list_does_not_confirm_is_still_the_m
     ses = _target_reached_then(monkeypatch, tmp_path, refusal)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     assert out["status"] == "ok" and out["verdict"] == "TARGET", out
-    assert out["how"] == "target 0x4a0", out["how"]
+    assert out["cause"] == "target 0x4a0", out["cause"]
     assert out["target_disarmed"] is False and "may still be armed" in out["note"], out
     assert f'`debug("bpclear {held[0]:#x}")`' in out["note"], out["note"]
     assert getattr(ses, "broken", None) is None, "a refusal latches nothing"
@@ -1574,7 +1576,7 @@ def test_a_stop_found_on_a_console_that_marks_no_cpu_says_so(
     monkeypatch.setattr(running, "attribute", lambda pc, cpu: "breakpoint")
     monkeypatch.setattr(running, "run_speed", lambda ses: {})
     monkeypatch.setattr(running, "_remember", lambda ses, seen, how: (
-        {"seq": 2, "pc": seen["pc"], "cpu": seen["cpu"], "frame": seen["frame"], "how": how,
+        {"seq": 2, "pc": seen["pc"], "cpu": seen["cpu"], "frame": seen["frame"], "cause": how,
          "packet": "S05"}, how))
     running._found(cast(g.Session, object()), tmp_path, None)
     found = mstate.STATE.found_stop_last

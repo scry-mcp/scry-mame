@@ -207,7 +207,7 @@ def refuse_a_rerun(seen: list[str], tag: str, answer: transport.Answer, resent: 
         "again, so whatever the script does was done twice and the reply would describe "
                      "neither run", **{**transport.console_did(answer, resent),
                                        "console_reruns": len(answer.reruns) + len(repeats)},
-        marks=seen, **fields)
+        tagged_lines=seen, **fields)
 
 
 def one_event(seen: list[str], tag: str, event: str) -> dict[str, str] | None:
@@ -219,12 +219,12 @@ def one_event(seen: list[str], tag: str, event: str) -> dict[str, str] | None:
 
 def with_fields(ran: dict[str, Any], **fields: Any) -> dict[str, Any]:
     """The run's reply with the wrapper's own fields added where the docstrings list them:
-    before the stop survey, which begins at `how`; a run with no survey (a refusal) takes them
+    before the stop survey, which begins at `cause`; a run with no survey (a refusal) takes them
     at the end. The `session` block is `mame_mcp.tool`'s, composed after this call read
     its answer, so it agrees with the console counters that answer moved. A `note` the wrapper
     adds joins the run's own, after it."""
     keys = [k for k in ran if k != "session"]
-    at = keys.index("how") if "how" in keys else len(keys)
+    at = keys.index("cause") if "cause" in keys else len(keys)
     if "note" in fields and "note" in ran:
         fields = {**fields, "note": st.join_notes(ran["note"], fields["note"])}
     out = {k: ran[k] for k in keys[:at] if k not in fields}
@@ -510,7 +510,7 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
             if set_line is None:
                 raise st.Invalid("readback_refused",
                     "the script ran and logged no `set` mark: the field was not proved held",
-                    marks=seen)
+                    tagged_lines=seen)
             mask, defvalue = int(set_line["mask"], 16), int(set_line["defvalue"], 16)
             own = dict(route="ioport", port=port, field=field,
                        value=f"0x{value & 0xFFFFFFFF:08x}", frames=frames,
@@ -540,8 +540,8 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
 def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
              progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `throttle` tool: queued, applied when the console next reads a
-    line. Running, the tool waits for its own mark; stopped, it says the switch is
-    pending and names the mark to wait for. It proves itself by the mark in error.log and
+    line. Running, the tool waits for its own tag; stopped, it says the switch is
+    pending and names the tag to wait for. It proves itself by the tag in error.log and
     never reads stdout, so it carries no `thread_errors`/`console_reruns`: a reader death
     around its line is counted by the next call that does read the console."""
     check_throttle(on, seconds)
@@ -554,15 +554,15 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
         # THE RECORD IS WHAT CLOSES THE LOOP: on a stopped machine the mark is written only
         # when the console next reads the line, which this call cannot wait for. What the
         # record MEANS is `REFERENCE.md`'s, once.
-        STATE.throttles_pending.append({"mark": tag, "on": on, "seq": seq})
+        STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
         return menvelope.envelope({"on": on, "pending": True,
                                    "applies": "when the console next reads a line: "
                                    f"{transport.CONSOLE_READS}",
-                                   "mark": tag,
-                                   "confirmed_by": "its mark in the error log, read by the next "
+                                   "tag": tag,
+                                   "confirmed_by": "its tag in the error log, read by the next "
                                    "stop's survey, by `status` and by `close`; "
                                    "`status` lists it in `throttles_pending` until "
-                                   "then, and if the mark never comes, every reply "
+                                   "then, and if the tag never comes, every reply "
                                    "after that says so in "
                                    "`session.throttles_not_applied`"})
 
@@ -576,12 +576,12 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
             if got.get("throttled") != ("true" if on else "false"):
                 raise st.Invalid("readback_refused",
                     f"the machine reports throttled={got.get('throttled')} after asking "
-                    f"for {str(on).lower()}", marks=seen)
+                    f"for {str(on).lower()}", tagged_lines=seen)
             return menvelope.envelope({"on": on, "pending": False, "frame": int(got["frame"]),
-                                       "waited_s": st.spent_s(clock.seconds()), "mark": tag})
+                                       "waited_s": st.spent_s(clock.seconds()), "tag": tag})
         gone = transport.emulator_gone()
         if gone is not None:
-            raise transport.died_waiting(gone, "its own throttle mark in error.log", mark=tag)
+            raise transport.died_waiting(gone, "its own throttle tag in error.log", tag=tag)
         if running.came_to_rest(ses, scratch, 0.0):
             # A STOP BEFORE THE NEXT FRAME: the line waits in the pipe exactly as it does on a
             # machine that was stopped already, and is recorded the same way.
@@ -591,17 +591,17 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
         except BaseException as e:
             # A CANCELLED WAIT leaves the switch in the pipe exactly as an expired one does.
             if cancel.is_cancellation(e):
-                STATE.throttles_pending.append({"mark": tag, "on": on, "seq": seq})
+                STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
             raise
         if expired:
-            # STILL IN THE PIPE, and applied whenever it is evaluated: recorded, so its mark is
+            # STILL IN THE PIPE, and applied whenever it is evaluated: recorded, so its tag is
             # looked for later and its absence is said, never lost with this refusal.
-            STATE.throttles_pending.append({"mark": tag, "on": on, "seq": seq})
+            STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
             raise st.Invalid("wait_expired",
-                f"no {tag} mark in error.log within {seconds:g} s: the switch is "
+                f"no {tag} in error.log within {seconds:g} s: the switch is "
                 "still pending, and `status` lists it in `throttles_pending`", pending=True,
-                mark=tag)
-        clock.tick("throttle: waiting for the mark, {elapsed:.0f}s of {seconds:g}s",
+                tag=tag)
+        clock.tick("throttle: waiting for the tag, {elapsed:.0f}s of {seconds:g}s",
                    seconds=seconds)
         time.sleep(core_wait.POLL_S)          # a log on disk is read as the log wait reads it
 

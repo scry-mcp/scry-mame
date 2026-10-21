@@ -19,6 +19,7 @@ class MameEnvelope(ReplyEnvelope, total=False):
 
     answers_while_running: list[Any]
     broken: str
+    cause: str
     cpus: list[Any]
     exit_code: int | dict[str, Any]
     last_stop: dict[str, Any]
@@ -59,7 +60,7 @@ class AudioRecordReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    marks: list[Any]
+    tagged_lines: list[Any]
     mode: str
     note: str
     path: str
@@ -121,7 +122,6 @@ class CloseReply(MameEnvelope, total=False):
     ended_by: str
     errorlog_tail: str
     note: str
-    session_describes: str
     state_written: bool | dict[str, Any]
     stdout_tail: str
 
@@ -523,7 +523,7 @@ class InputReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    marks: list[Any]
+    tagged_lines: list[Any]
     mask: str
     mode: str
     name: str
@@ -807,7 +807,7 @@ class RecordReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    marks: list[Any]
+    tagged_lines: list[Any]
     mode: str
     note: str
     path: str
@@ -869,8 +869,6 @@ class ResetReply(MameEnvelope, total=False):
     taps_across: list[Any]
     verified: bool
     watches: list[Any]
-    watches_how: str
-    watches_omitted: list[Any]
 
 
 class ResumeReply(MameEnvelope, total=False):
@@ -888,8 +886,6 @@ class ResumeReply(MameEnvelope, total=False):
     waited_s: float
     watch_hit: dict[str, Any]
     watches: list[Any]
-    watches_how: str
-    watches_omitted: list[Any]
 
 
 class RomCheckReply(MameEnvelope, total=False):
@@ -923,8 +919,6 @@ class RunForReply(MameEnvelope, total=False):
     verdict: str
     watch_hit: dict[str, Any]
     watches: list[Any]
-    watches_how: str
-    watches_omitted: list[Any]
 
 
 class RunToReply(MameEnvelope, total=False):
@@ -956,8 +950,6 @@ class RunToReply(MameEnvelope, total=False):
     verdict: str
     watch_hit: dict[str, Any]
     watches: list[Any]
-    watches_how: str
-    watches_omitted: list[Any]
 
 
 class ScanClearReply(MameEnvelope, total=False):
@@ -1156,7 +1148,6 @@ class StateSaveReply(MameEnvelope, total=False):
 
 
 class StatusReply(MameEnvelope, total=False):
-    alive: bool
     cfg: dict[str, Any]
     console_pending: int
     debugger: dict[str, Any]
@@ -1166,10 +1157,9 @@ class StatusReply(MameEnvelope, total=False):
     frame_symbol: str | dict[str, Any]
     in_debugger: dict[str, Any]
     note: str
-    pc: str
+    pc: str | dict[str, Any]
     pid: int
     presence: bool
-    running: bool
     scratch_dir: str
     state_dir: str
     stdout_path: str
@@ -1196,8 +1186,6 @@ class StepReply(MameEnvelope, total=False):
     stop_seq: int
     watch_hit: dict[str, Any]
     watches: list[Any]
-    watches_how: str
-    watches_omitted: list[Any]
 
 
 class StopReply(MameEnvelope, total=False):
@@ -1232,10 +1220,10 @@ class ThrottleReply(MameEnvelope, total=False):
     applies: str
     confirmed_by: str
     frame: int
-    mark: str
-    marks: list[Any]
     on: bool
     pending: bool
+    tag: str
+    tagged_lines: list[Any]
     waited_s: float
 
 
@@ -1306,7 +1294,6 @@ class WatchClearReply(MameEnvelope, total=False):
 class WatchListReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
     foreign: list[Any]
-    tallies_not_removed: list[Any]
     watches: list[Any]
 
 

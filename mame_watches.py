@@ -1176,7 +1176,7 @@ STOP_KEYS = ("ref", "cpu", "space", "state", "pointer", "reading", "total", "sin
 #: counting says so at the stop.
 _STOP_ALARM_WHEN: dict[str, Callable[[Any], bool]] = {
     "superseded": bool, "install_resent": bool, "across": bool, "pending": bool,
-    "installed": lambda v: v is False}
+    "installed": lambda v: v is not True}
 #: What a stop's short rows say of the rest.
 STOP_HOW = ("`watch_list` answers each watch whole: its declaration, the debugger's row for it, "
             "and a count's or a capture's tables")
@@ -1294,8 +1294,9 @@ def watch_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     # A REMOVAL IS READ HERE, because its declaration is already gone and the
     # per-declaration survey has nothing left to reach it through. It is READ and never
     # resent: `read_removal_answers` says why that asymmetry with the install is the point.
-    if STATE.scratch is not None and (stuck := mtap.read_removal_answers(STATE.scratch)):
-        reply["tallies_not_removed"] = stuck
+    # What it finds stuck rides on every reply's session block (`tallies_not_removed`).
+    if STATE.scratch is not None:
+        mtap.read_removal_answers(STATE.scratch)
     if ses.running:
         reply["last_stop"] = STATE.as_of()
     return menvelope.envelope(reply)
@@ -1499,27 +1500,27 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
     return out
 
 
-# THE WRITER'S PART OF A WATCH STOP'S `how`, in both spellings this module composes (its own
+# THE WRITER'S PART OF A WATCH STOP'S `cause`, in both spellings this module composes (its own
 # watch's `... written by pc P`, and another row's `..., wrote V by pc P: ...`), so a count keys
 # the watch and not each writer, a write with no pc to name (`_NO_WRITER`) included. Read
 # here, beside the two f-strings it undoes.
-_HOW_WRITER = re.compile(
+_CAUSE_WRITER = re.compile(
     rf"(?:, wrote [0-9a-f]+)? by (?:pc 0x[0-9a-f]+|{re.escape(_NO_WRITER)})")
 
 
-def how_key(how: str) -> str:
-    """`how` with the writer taken off: the key a count of stops by watch uses."""
-    return _HOW_WRITER.sub("", how, count=1)
+def cause_key(cause: str) -> str:
+    """`cause` with the writer taken off: the key a count of stops by watch uses."""
+    return _CAUSE_WRITER.sub("", cause, count=1)
 
 
-def _foreign_how(line: re.Match[str]) -> str:
+def _foreign_cause(line: re.Match[str]) -> str:
     """How a stop by a watchpoint this server did not arm is named when the console's line
     for it is there: its index, the address it wrote, the value and the writer's pc."""
     at, pc = st.hex_addr(int(line.group(3), 16)), _writer(line)
     by = f"by pc {pc}" if pc else f"by {_NO_WRITER}"
-    return mclear.foreign_row_how("watch", int(line.group(1), 16),
-                                  f" at {at} this server did not arm, "
-                                  f"wrote {line.group(2).lower()} {by}")
+    return mclear.foreign_row_cause("watch", int(line.group(1), 16),
+                                    f" at {at} this server did not arm, "
+                                    f"wrote {line.group(2).lower()} {by}")
 
 
 #: Why a watch_hit's `before` is not a value: no earlier reading to compare with.
@@ -1544,7 +1545,7 @@ def watch_packet_addr(ses: gs.Session) -> int | None:
 
 def watch_stop(ses: gs.Session, since: list[str]
                ) -> tuple[str, dict[str, Any] | None, dict[dec.Owner, bytes]] | None:
-    """When the last stop was a watchpoint's: `how`, the attribution, and the bytes read
+    """When the last stop was a watchpoint's: `cause`, the attribution, and the bytes read
     for it (so the evaluation that follows reads nothing twice). The attribution is the
     console's own line for the stop, by its watchpoint's INDEX, in `since`
     (`debuglog_since`), with every line of that index and the bytes this server saw before
@@ -1564,7 +1565,7 @@ def watch_stop(ses: gs.Session, since: list[str]
     newest = stops[-1]
     owner = by_index.get(int(newest.group(1), 16))
     if owner is None:
-        return (_foreign_how(newest), None, {})
+        return (_foreign_cause(newest), None, {})
     ref = owner[0]
     armed = STATE.armed_watches[owner]
     decl = next((d for d in arming.store().declarations()
@@ -1601,7 +1602,7 @@ def watch_stop(ses: gs.Session, since: list[str]
     # The row is named by one of these lines, the newest, so there is always at least one.
     hit.update(writer_pc=writes[-1]["pc"], writes=writes)
     by = f"pc {writes[-1]['pc']}" if isinstance(writes[-1]["pc"], str) else _NO_WRITER
-    how = f"watch {ref}: {st.hex_addr(armed['addr'])} written by {by}"
+    cause = f"watch {ref}: {st.hex_addr(armed['addr'])} written by {by}"
     hit["values_from"] = armed["values_from"]
     fresh: dict[dec.Owner, bytes] = {}
     if armed["values_from"] == "bus":
@@ -1632,5 +1633,5 @@ def watch_stop(ses: gs.Session, since: list[str]
     # than declared here -- the one that quietly deflects the first run of a new session.
     if decl.origin is not None and decl.origin != STATE.session_origin:
         hit["rearmed"] = True
-        how += arming.inherited(decl)
-    return how, hit, fresh
+        cause += arming.inherited(decl)
+    return cause, hit, fresh

@@ -217,7 +217,7 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
         return run
     if run.get("verdict") != contract.ELAPSED:
         raise st.Invalid("cut_by_other_stop", f"the run stopped with verdict {run.get('verdict')} "
-                         f"({run.get('how')}) before the last frame was read: no series is "
+                         f"({run.get('cause')}) before the last frame was read: no series is "
                          "written from part of one", frame_after=run.get("frame_after"))
     if done["errors"]:
         raise st.Invalid("unexpected_answer", f"the series notifier raised {done['errors']} "

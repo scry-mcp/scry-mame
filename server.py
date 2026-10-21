@@ -59,6 +59,7 @@ from pydantic import Field
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scry_core import (  # noqa: E402
+    judges,
     log_marks,
     media_tools,
     process_name,
@@ -199,24 +200,25 @@ def status() -> dict[str, Any]:
     """Whether a machine is alive, and which one. Safe on a running machine; a stop it finds
     the machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-    Reply: `alive`; with no machine, a `note` when the server closed the last session after an hour
-    with no call; with `exit_code` and a `note` when MAME died under the session (`close` collects
-    its last words before anything is deleted); when alive also `system`, `pid`, `stub_port`,
+    Reply (`alive` and `running` are the `session` block's): with no machine, a `note` when the
+    server closed the last session after an hour with no call; with `exit_code` and a `note` when
+    MAME died under the session (`close` collects its last words before anything is deleted);
+    when alive `system`, `pid`, `stub_port`,
     `scratch_dir`, `state_dir`, `cfg`, `presence` (`true` drawn, `false` asked off, or why not),
     `debugger` (`attached`, and a `note`: a capture taken at a
     stop here can land a frame away from an autoboot golden), `fingerprint` (the build the
     declarations are judged against, the first cpu's) and `fingerprints` (each cpu's),
-    `errorlog_path`, `stdout_path`, `running`, `pc` (the machine's, read now; absent while it runs
-    or once the session broke: `last_stop.pc`), `last_stop` (`stop_seq`, `pc`, `cpu`, `frame`,
-    `how`, `since_s`, `wall_at`; the park after `start` is stop 1), `in_debugger` (`breakpoints`,
+    `errorlog_path`, `stdout_path`, `pc` (the machine's, read now; unavailable with why while it
+    runs or once the session broke: `last_stop.pc`), `last_stop` (`stop_seq`, `pc`, `cpu`, `frame`,
+    `cause`, `since_s`, `wall_at`; the park after `start` is stop 1), `in_debugger` (`breakpoints`,
     `watches` (the change watches) and `regpoints`: each `ref` this server armed in the debugger,
     and its `cpu`), `threads` (the stub's thread per cpu; empty without the thread patch), `cpus`
     (what each is doing is `cpu_info`'s), `frame_symbol` (the frame counter's name as `start` asked
     it, unavailable on a board with none), and, always present, `console_pending` (Lua lines sent
-    and not yet evaluated, which `close` drains before its `quit`), `throttles_pending` (`mark`,
+    and not yet evaluated, which `close` drains before its `quit`), `throttles_pending` (`tag`,
     `on`) and `tallies_pending_removal` (`tally_id`, `call`), where a switch that landed is its row
     leaving. `broken` (absent on a healthy session) says why it can no longer be trusted: the
-    machine is then asked nothing, `running` reads false, and the way out is `close`, then `start`.
+    machine is then asked nothing, and the way out is `close`, then `start`.
 
     Reference: REFERENCE.md, The session.
     """
@@ -240,8 +242,8 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
     touched), `console_pending_before`, `console_drained` and a `note` (the Lua pipe, emptied
     before the `quit`), and `average_speed` when it ends a run (`percent` with the two deltas, or
     `available: false` with its `why`; absent on a broken session). The `session` block describes
-    the state BEFORE closing, plus any throttle found not applied, which `session_describes` says
-    in the reply: `alive: true` beside `closed: true` is that, not a contradiction.
+    the state BEFORE closing (so `altered` is the truth about the session that ended), plus any
+    throttle found not applied: `alive: true` beside `closed: true` is that, not a contradiction.
 
     Reference: REFERENCE.md, The session.
     """
@@ -360,7 +362,7 @@ def run_to(ref: str, control: str = "",
     Reply: `verdict` (`TARGET`; `TIMEOUT` within `seconds`, the machine STOPPED; `OTHER_STOP`, a
     registerpoint included), `control_hits`, `controls` (each control's `ref`, `cpu`, `hits_in_run`
     over THIS run), and {STOP_FIELDS}. A removal the stub refuses keeps the stop's reply, with
-    `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT, `how`
+    `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT, `cause`
     "answered late". A TARGET is `ok` with no control hit: reaching it proves the cpu ran. An
     INVALID run carries no `verdict`: `control_silent` (a TIMEOUT with no control hit: the survey,
     `control_dasm`, a `note`), `cut_by_other_stop`, `readback_refused` (a row listed bare is
@@ -481,8 +483,8 @@ def resume(seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 0.0,
     waits up to `seconds` for a stop and, if none comes, LEAVES IT RUNNING (unlike `run_to`, which
     interrupts at its bound). {NEEDS_STOPPED}, a second `resume` too.
 
-    Reply: `waited_s`; with a bound, `verdict`: `OTHER_STOP` (back at the debugger, with
-    {STOP_FIELDS} and `average_speed`) or `TIMEOUT` (LEFT RUNNING, a `note`); with 0, none.
+    Reply: with a bound, `waited_s` and `verdict`: `OTHER_STOP` (back at the debugger, with
+    {STOP_FIELDS} and `average_speed`) or `TIMEOUT` (LEFT RUNNING, a `note`); with 0, neither.
     `seconds` is 0 or a bound up to {WAIT_MAX_S}. While it runs the readers of the machine refuse,
     naming `last_stop` and, in `answers_while_running`, every tool that answers. A wait that reads
     something in a stop's place, or a release that could not be sent, is `status: INVALID`
@@ -627,7 +629,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     (`armed`, or `disabled`), `entry` (the debugger's row), `index` and `cpu` (the visible cpu it
     is armed on), with a `note` when the debugger ignores that cpu. A row `rplist` does not list
     after the `rpset` is `readback_refused` with the declaration KEPT (`armed: false`, `state:
-    gone`, a `note`). When it fires, the stop's `how` is ``registerpoint '<ref>'`` with
+    gone`, a `note`). When it fires, the stop's `cause` is ``registerpoint '<ref>'`` with
     `regpoint_hit`, and it fires again one instruction on while the condition holds.
 
     Reference: REFERENCE.md, Declarations.
@@ -1161,7 +1163,9 @@ def scan_start(ref: str, length: int,
 
 @tool("Filter the value scan", summary=summaries.scan_filter, replay="drop")
 def scan_filter(operator: Annotated[str, vocab.enum(mscan.OPERATORS)] = "=",
-                value: inputs.NumberArg | None = None) -> dict[str, Any]:
+                value: inputs.NumberArg | None = None,
+                limit: Annotated[int, vocab.bounds(1, judges.HITS_MAX)] = judges.HITS_DEFAULT
+                ) -> dict[str, Any]:
     """Keep the cells of the open scan whose value satisfies `operator` (`=`, `!` not equal,
     `>`, `>=`, `<`, `<=`, unsigned) against `value` ({NUMBER_ARG}), or, with no
     `value`, against what each
@@ -1169,18 +1173,18 @@ def scan_filter(operator: Annotated[str, vocab.enum(mscan.OPERATORS)] = "=",
     larger).
 
     Reply: `operator`, `value` (`0x` at the cell's width; unavailable without one), `iterations`
-    (filters since `scan_start`, this one included), `closed`, `hits` (each `addr` and its `value`
-    now, address order), `hits_total` (the survivors), `truncated`, `cpu`, `space`: `hits` whole
-    when at most {LIST_MAX} survive, else empty with `truncated` true. None left CLOSES the scan
+    (filters since `scan_start`, this one included), `closed`, `hits` (the first `limit`, each
+    `addr` and its `value` now, address order), `hits_total` (the survivors), `truncated` (more
+    survive than `hits` shows), `cpu`, `space`. None left CLOSES the scan
     (`hits` empty, `hits_total` 0). No scan open is `needs_call`; a value wider than the cell is
     `bad_argument`; a refused filter leaves the scan as it was. {NEEDS_STOPPED}.
 
     Reference: REFERENCE.md, Reading and writing.
     """
     value = inputs.as_read(value)
-    args.check("scan_filter", operator=operator, value=value)
+    args.check("scan_filter", operator=operator, value=value, limit=limit)
     ses, scratch = stopped("a value scan")
-    return mscan.scan_filter(ses, scratch, operator, value)
+    return mscan.scan_filter(ses, scratch, operator, value, limit)
 
 
 @tool("Clear the value scan", summary=summaries.scan_clear, replay="drop")
@@ -2299,23 +2303,23 @@ def throttle(on: bool, seconds: Annotated[float, inputs.WAIT_BOUNDS] = 5.0,
     """Switch real-speed throttling `on` or off at a PLACE: stopped at a breakpoint, ask for it
     and `resume`, and the machine runs at real speed from its first frame. The switch is evaluated
     when the Lua console next reads a line ({CONSOLE_READS}), so on a STOPPED machine the reply
-    says `pending: true` and names the `mark` `log_wait` can wait for on the `emulator` channel. THE
-    MARK'S NUMBER IS THE SESSION'S CONSOLE SEQUENCE, shared with every call that sends the console a
+    says `pending: true` and names the `tag` `log_wait` can wait for on the `emulator` channel. THE
+    TAG'S NUMBER IS THE SESSION'S CONSOLE SEQUENCE, shared with every call that sends the console a
     line, so it counts nothing about throttles; and `log_wait` takes a regex, so close the digits
     (`MAME_MCP_THROTTLE#1(?![0-9])`) or `#1` also matches `#10`. On a RUNNING machine the tool waits
-    up to `seconds` for the mark and reports the frame it applied at; one that
+    up to `seconds` for the tag and reports the frame it applied at; one that
     stops before its next frame leaves the switch pending as a stopped one does, and one whose
     bound runs out is `wait_expired`, recorded all the same. `start`'s `throttle_from_frame` is the
     same switch decided at launch.
 
     A PENDING SWITCH IS COME BACK TO: the next stop's survey, `status` and `close` read the log
-    for its mark. One that arrives leaves `status`'s `throttles_pending`; one the console worked
+    for its tag. One that arrives leaves `status`'s `throttles_pending`; one the console worked
     past without writing puts a row in `session.throttles_not_applied` that REPEATS on every reply
     afterwards, since a caller who never asks again would otherwise measure at a speed nobody
     chose, and so does a machine reporting the OTHER setting (the running path's refusal
     `readback_refused`).
 
-    Reply: `on`, `pending`, `mark`; pending: `applies`, `confirmed_by`; applied: `frame`,
+    Reply: `on`, `pending`, `tag`; pending: `applies`, `confirmed_by`; applied: `frame`,
     `waited_s`.
 
     Reference: REFERENCE.md, Input and the screen.

@@ -19,11 +19,11 @@ from types import SimpleNamespace
 from typing import Any, Literal
 
 import pytest
+from scry_core import judges
 from session_doubles import captured, published
 from test_server import _console, _ConsoleSession, _masked
 
 import gdb_session as gs
-import mame_read as read
 import mame_scan as mscan
 import mame_state as mstate
 import server as s
@@ -246,19 +246,23 @@ def test_word_cells_decode_in_the_cpus_order_and_may_start_odd(board: Any) -> No
         assert out["hits"] == [{"addr": f"{at:#010x}", "value": f"0x{want:04x}"}], (name, out)
 
 
-def test_the_listing_is_whole_up_to_the_ceiling_and_cut_whole_above(board: Any) -> None:
-    ceiling = read.LOG_LIMIT_MAX
-    for moved, listed in [(ceiling, True), (ceiling + 1, False)]:
-        ses = board("v30", bytes(0x1000))
-        s.scan_start(ref="0x0", length=0x1000)
-        for i in range(moved):
-            ses.memory[i] = 1
-        out = s.scan_filter(operator=">")
-        assert (out["hits_total"], out["truncated"], len(out["hits"])) == (
-            moved, not listed, moved if listed else 0), out
-        assert out["hits"] == ([{"addr": f"{i:#010x}", "value": "0x01"} for i in range(moved)]
-                               if listed else [])
-        s.scan_clear()
+def test_the_listing_is_whole_up_to_its_limit_and_the_first_ones_past_it(board: Any) -> None:
+    """At `limit` and one past it, at the default and at the ceiling: past it the FIRST `limit`
+    hits are shown with `truncated`, never an empty list; one past the ceiling is refused."""
+    for limit in (judges.HITS_DEFAULT, judges.HITS_MAX):
+        for moved in (limit, limit + 1):
+            ses = board("v30", bytes(0x1000))
+            s.scan_start(ref="0x0", length=0x1000)
+            for i in range(moved):
+                ses.memory[i] = 1
+            out = s.scan_filter(operator=">", limit=limit)
+            assert (out["hits_total"], out["truncated"], len(out["hits"])) == (
+                moved, moved > limit, limit), out
+            assert out["hits"] == [{"addr": f"{i:#010x}", "value": "0x01"}
+                                   for i in range(limit)]
+            s.scan_clear()
+    refused = s.scan_filter(operator=">", limit=judges.HITS_MAX + 1)
+    assert refused["status"] == "INVALID" and refused["code"] == "bad_argument", refused
 
 
 def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(

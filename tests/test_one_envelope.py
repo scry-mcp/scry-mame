@@ -140,9 +140,9 @@ def test_status_says_running_and_names_which_pc_it_carries(
     so. `broken` follows the session block: present when the session broke, absent when not."""
     _running(monkeypatch, tmp_path)
     stopped = s.status()
-    assert stopped["running"] is False and stopped["pc"] == "0x000f2034", stopped
+    assert stopped["session"]["running"] is False and stopped["pc"] == "0x000f2034", stopped
     assert "broken" not in stopped, stopped
     s.resume(seconds=0)
     moving = s.status()
-    assert moving["running"] is True and "pc" not in moving, moving
+    assert moving["session"]["running"] is True and moving["pc"]["available"] is False, moving
     assert moving["last_stop"]["pc"] == "0x000f2034" and "0x000f2034" in moving["summary"], moving

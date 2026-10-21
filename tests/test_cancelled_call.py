@@ -329,7 +329,7 @@ def test_the_stop_a_cancel_made_is_not_called_a_refusal(
     _cancel_at(monkeypatch, 3)
     with pytest.raises(asyncio.CancelledError):
         s.run_to(ref="0x25a4", control="0x4a0", seconds=30.0)
-    how = s.status()["last_stop"]["how"]
+    how = s.status()["last_stop"]["cause"]
     assert "refused" not in how and "cancel" in how, how
 
 

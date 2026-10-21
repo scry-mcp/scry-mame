@@ -318,7 +318,7 @@ class State:
         return f"{now()}#{os.getpid()}.{self.start_seq}"
 
     def remember_stop(self, ses: gs.Session, pc: int, regs: dict[str, Any], frame: int | None,
-                      how: str, watch_hit: dict[str, Any] | None = None,
+                      cause: str, watch_hit: dict[str, Any] | None = None,
                       cpu: str | None = None) -> dict[str, Any]:
         """Record a stop as the last one and hand the record back: `cpu` is the one it
         happened on, whose `pc` and `regs` these are."""
@@ -328,7 +328,7 @@ class State:
             "cpu": cpu,
             "regs": dict(regs),
             "frame": frame,
-            "how": how,
+            "cause": cause,
             "packet": ses.last_stop_packet,
             "stop_count": ses.stop_count,
             "when": time.monotonic(),
@@ -364,7 +364,7 @@ class State:
         return {"stop_seq": self.last_stop["seq"], "pc": self.last_stop["pc"],
                 "cpu": or_unavailable(self.last_stop.get("cpu"), NO_CPU_READ_WHY),
                 "frame": frame_shown(self.last_stop["frame"]),
-                "how": self.last_stop["how"],
+                "cause": self.last_stop["cause"],
                 "since_s": spent_s(time.monotonic() - float(self.last_stop["when"])),
                 "wall_at": self.last_stop["wall_at"]}
 
@@ -686,7 +686,7 @@ def settle_throttles(lines: list[str]) -> None:
     console may simply not have read the line, and the `pending` the caller was given is true.
     """
     for rec in list(STATE.throttles_pending):
-        seen = mark_line(lines, rec["mark"])
+        seen = mark_line(lines, rec["tag"])
         if seen is not None:
             said = mark_fields(seen).get("throttled")
             # THE MACHINE'S ANSWER IN THE TOOL'S OWN VOCABULARY. `on` is a bool everywhere
@@ -700,17 +700,17 @@ def settle_throttles(lines: list[str]) -> None:
                 # could not wait for it. It cannot be a refusal here, because the call that
                 # finds it asked about something else entirely.
                 STATE.throttles_not_applied.append(
-                    {"mark": rec["mark"], "asked": rec["on"], "machine_reports": reports,
+                    {"tag": rec["tag"], "asked": rec["on"], "machine_reports": reports,
                      "why": "the machine reports a throttle setting that is not the one this "
                             "session asked for. Ask again and read the answer; this row "
                             "records what happened and stands for the rest of the session"})
         elif STATE.lua_answered >= rec["seq"]:
             STATE.throttles_pending.remove(rec)
             STATE.throttles_not_applied.append(
-                {"mark": rec["mark"], "asked": rec["on"],
-                 "machine_reports": unavailable("the mark was never logged, so the machine "
+                {"tag": rec["tag"], "asked": rec["on"],
+                 "machine_reports": unavailable("the tag was never logged, so the machine "
                                                 "reported nothing"),
-                 "why": "the console worked past this line and never logged its mark, so the "
+                 "why": "the console worked past this line and never logged its tag, so the "
                         "switch was NEVER applied: the speed of everything measured since is "
                         "not the one that was asked for. Ask for it again; this row records "
                         "what happened and stands for the rest of the session"})
@@ -824,3 +824,39 @@ def measured_s(seconds: None) -> None: ...
 def measured_s(seconds: float | None) -> float | None:
     """A time that is itself the measurement, as every such `*_s` is spelled."""
     return None if seconds is None else round(seconds, 6)
+
+
+# WHAT EACH END MEANS TO A CALLER, and no more than this branch knows: the removal was not
+# carried out, and whether a tap is installed is what the install's own answer said (the
+# tally's `installed`), never this row's claim. The remedy is the same for both because the
+# cause is: declaring the range again installs over whatever is there, and the install removes
+# it first. It carries the old tap's counts across, which is the part worth warning about.
+_REMOVAL_WHY = {
+    "refused": ("the console evaluated the removal and it RAISED, so the removal was not "
+                "carried out and this server no longer holds the tally's record; whether a "
+                "tap is installed is what the install's own answer said. Declaring the range "
+                "again (`watch_add(mode=\"count\")`, `space=\"io\"` for a port's) installs over "
+                "it and CARRIES ITS "
+                "COUNTS: read the first total as this tally's, not as a fresh one"),
+    "lost": ("the console took the removal line and never evaluated it (its echo is in "
+             "`log`, channel `process`, with a reader death, the console's error or the next "
+             "reader's prompt after it and no sentinel), so the removal was not "
+             "carried out and this server no longer holds the tally's record; whether a tap "
+             "is installed is what the install's own answer said. Declaring the range again "
+             "(`watch_add(mode=\"count\")`, `space=\"io\"` for a port's) installs over it "
+             "and CARRIES ITS COUNTS: read "
+             "the first total as this tally's, not as a fresh one"),
+}
+
+
+def tallies_not_removed() -> list[dict[str, Any]]:
+    """The removals that latched at an end leaving the tap in the guest, as rows, read off the
+    records alone: what every reply's session block carries while one holds."""
+    out: list[dict[str, Any]] = []
+    for rem in STATE.tally_removals:
+        if rem["state"] and rem["state"] != "removed":
+            # ONE REASON KEY: the branch's sentence, and the console's own words when it raised
+            why = _REMOVAL_WHY[rem["state"]]
+            out.append({"tally_id": rem["tally_id"], "state": rem["state"],
+                        "why": f"{why}. The console said: {rem['error']}" if rem["error"] else why})
+    return out

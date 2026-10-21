@@ -89,17 +89,18 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "inipath": "./tmp/demos/starfire/starfire-ini",
   "state_dir": "./tmp/demos/starfire/starfire-states",
   "boot_seconds": 60,
-  "rompath": "./tmp/roms"
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
+  "rompath": "~/Code/mame-test-roms"
 }
 ```
 
 ```json
 {
-  "summary": "start starfire on ./tmp/bin/mame (MAME_BINARY): rom_check OK, 0 symbols, pc 0x00000000, machine: 2 cpus, 1 screen, 13 ROM files, 2 regions, 2 shares",
+  "summary": "start starfire on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x00000000, machine: 2 cpus, 1 screen, 13 ROM files, 2 regions, 2 shares",
   "status": "ok",
   "system": "starfire",
-  "binary": "./tmp/bin/mame",
-  "binary_origin": "MAME_BINARY",
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
+  "binary_origin": "argument",
   "version": "0.289 (unknown)",
   "pid": "<volatile>",
   "stub_port": "<volatile>",
@@ -220,7 +221,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 3.0,
   "cycles": 7500001,
   "reads": "<volatile>",
-  "how": "the console's `gtime` stop",
+  "cause": "the console's `gtime` stop",
   "stop_seq": 2,
   "pc": "0x00002b40",
   "cpu": ":maincpu",
@@ -258,7 +259,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 1091
   },
   "session": {
     "alive": true,
@@ -377,7 +379,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000f9",
         "frame_released": 183,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 3,
         "pc": "0x00000066",
         "cpu": ":maincpu",
@@ -423,7 +425,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#1 release frame=183 port_held=000000f9",
             ""
-          ]
+          ],
+          "mark": 1211
         },
         "session": {
           "alive": true,
@@ -450,7 +453,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 3.592395,
         "cycles": 1250005,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 4,
         "pc": "0x00002b38",
         "cpu": ":maincpu",
@@ -490,7 +493,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "errorlog": {
           "lines_total": 0,
           "truncated": false,
-          "lines": []
+          "lines": [],
+          "mark": 1278
         },
         "session": {
           "alive": true,
@@ -658,7 +662,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000f9",
         "frame_released": 218,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 5,
         "pc": "0x00000066",
         "cpu": ":maincpu",
@@ -704,7 +708,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#2 release frame=218 port_held=000000f9",
             ""
-          ]
+          ],
+          "mark": 1398
         },
         "session": {
           "alive": true,
@@ -731,7 +736,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 4.177438,
         "cycles": 1250003,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 6,
         "pc": "0x00002b38",
         "cpu": ":maincpu",
@@ -771,7 +776,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "errorlog": {
           "lines_total": 0,
           "truncated": false,
-          "lines": []
+          "lines": [],
+          "mark": 1465
         },
         "session": {
           "alive": true,
@@ -915,7 +921,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000f9",
         "frame_released": 253,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 7,
         "pc": "0x00000066",
         "cpu": ":maincpu",
@@ -961,7 +967,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9",
             ""
-          ]
+          ],
+          "mark": 1585
         },
         "session": {
           "alive": true,
@@ -988,7 +995,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 4.762487,
         "cycles": 1250010,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 8,
         "pc": "0x00002b38",
         "cpu": ":maincpu",
@@ -1028,7 +1035,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "errorlog": {
           "lines_total": 0,
           "truncated": false,
-          "lines": []
+          "lines": [],
+          "mark": 1652
         },
         "session": {
           "alive": true,
@@ -1200,7 +1208,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   },
   "frame_release_planned": 288,
   "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
-  "how": "watch 0x8299: 0x00008299 written by pc 0x00001e48",
+  "cause": "watch 0x8299: 0x00008299 written by pc 0x00001e48",
   "stop_seq": 9,
   "pc": "0x00001e49",
   "cpu": ":maincpu",
@@ -1240,7 +1248,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 1772
   },
   "watches": [
     {
@@ -1254,7 +1263,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1262,7 +1271,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x8299",
     "addr": "0x00008299",
@@ -1485,7 +1494,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 5.264457,
   "cycles": 1250009,
   "reads": "<volatile>",
-  "how": "the console's `gtime` stop",
+  "cause": "the console's `gtime` stop",
   "stop_seq": 10,
   "pc": "0x00002b38",
   "cpu": ":maincpu",
@@ -1528,7 +1537,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "lines": [
       "[luaengine] MAME_MCP_INPUT#4 release frame=288 port_held=000000f9",
       ""
-    ]
+    ],
+    "mark": 1772
   },
   "watches": [
     {
@@ -1542,7 +1552,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1550,7 +1560,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
@@ -1656,7 +1666,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 1839
   },
   "session": {
     "alive": true,
@@ -1734,7 +1745,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000f9",
         "frame_released": 318,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 11,
         "pc": "0x00000066",
         "cpu": ":maincpu",
@@ -1780,7 +1791,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#5 release frame=318 port_held=000000f9",
             ""
-          ]
+          ],
+          "mark": 1959
         },
         "session": {
           "alive": true,
@@ -1807,7 +1819,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 5.849,
         "cycles": 1250005,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 12,
         "pc": "0x00002b38",
         "cpu": ":maincpu",
@@ -1847,7 +1859,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "errorlog": {
           "lines_total": 0,
           "truncated": false,
-          "lines": []
+          "lines": [],
+          "mark": 2026
         },
         "session": {
           "alive": true,
@@ -1946,7 +1959,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "pc": "0x00002b38"
   },
   "output": "State load attempted.  Please refer to window message popup for results.",
-  "how": "stateload four_credits",
+  "mark": {
+    "emulator": 2026,
+    "process": 7879
+  },
+  "cause": "stateload four_credits",
   "stop_seq": 13,
   "pc": "0x00002b38",
   "cpu": ":maincpu",
@@ -1986,7 +2003,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 2026
   },
   "session": {
     "alive": true,
@@ -2090,7 +2108,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "resent": 0,
   "call": "MAME_MCP_LUA_END#6",
   "pc_before": "0x00002b38",
-  "how": "screen_view: one step",
+  "cause": "screen_view: one step",
   "stop_seq": 14,
   "pc": "0x00002b38",
   "cpu": ":maincpu",
@@ -2130,7 +2148,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 2026
   },
   "session": {
     "alive": true,
@@ -2177,7 +2196,6 @@ Also attached: image/png.
   },
   "console_pending_before": 0,
   "console_drained": 0,
-  "session_describes": "the state BEFORE this close, so `altered` is the truth about the session that just ended; `status` now reports alive: false",
   "session": {
     "alive": true,
     "running": false,

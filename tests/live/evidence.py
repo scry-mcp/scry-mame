@@ -79,7 +79,7 @@ def console_ran_the_throttle_first(lua: dict[str, object], throttle: dict[str, o
     stopped `throttle` left in the pipe, so `lua` counts none ahead of its own; and the
     throttle's line did run, its end printed before `lua`'s. The count is what tells the two
     stubs apart: the order alone holds on either, since the pipe is read in order."""
-    first, mine = (_SEQ.search(str(r.get(k) or "")) for r, k in ((throttle, "mark"), (lua, "call")))
+    first, mine = (_SEQ.search(str(r.get(k) or "")) for r, k in ((throttle, "tag"), (lua, "call")))
     order = sentinel_order(stdout)
     return (lua.get("lines_ahead") == 0 and first is not None and mine is not None
             and int(first.group(1)) in order and int(mine.group(1)) in order

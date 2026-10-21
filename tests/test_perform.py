@@ -269,7 +269,7 @@ def test_perform_tail_waits_for_the_stop_it_was_heading_for_and_surveys_it(
     s.breakpoint_at(ref="0x4a0")
     out = s.perform(steps=[{"op": "resume"}], settle_seconds=2.0)
     assert out["status"] == "ok" and out["steps_completed"] == 1
-    assert out["stopped"]["pc"] == "0x000004a0" and out["stopped"]["how"].startswith("breakpoint")
+    assert out["stopped"]["pc"] == "0x000004a0" and out["stopped"]["cause"].startswith("breakpoint")
     assert not ses.running
 
 
@@ -398,7 +398,7 @@ def test_perform_dispatches_throttle_on_a_running_machine_without_waiting_for_a_
     monkeypatch.setattr(mlua, "throttle",
                         lambda ses_, scratch, on, seconds, progress: menvelope.envelope(
                             {"on": on, "pending": False, "frame": 1, "waited_s": 0.0,
-                             "mark": "MAME_MCP_THROTTLE#1"}))
+                             "tag": "MAME_MCP_THROTTLE#1"}))
     out = s.perform(steps=[{"op": "resume"}, {"op": "throttle", "on": False}], settle_seconds=0.05)
     assert out["status"] == "ok" and out["steps_completed"] == 2, out
     assert out["ran"][1]["reply"]["pending"] is False and ses.running
@@ -922,9 +922,9 @@ def test_a_summarised_stop_keeps_its_hit_without_its_lists(
     assert out["status"] == "ok" and out["steps_completed"] == 4, out
     row = out["ran"][0]
     assert row["step"] == 0 and row["op"] == "run_for", row
-    assert set(row["reply"]) == {"summary", "status", "how", "pc", "frame", "stop_seq",
+    assert set(row["reply"]) == {"summary", "status", "cause", "pc", "frame", "stop_seq",
                                  "watch_hit"}, row["reply"]
-    assert row["reply"]["how"].startswith(WATCH_KEY + " by pc "), row["reply"]["how"]
+    assert row["reply"]["cause"].startswith(WATCH_KEY + " by pc "), row["reply"]["cause"]
     hit = row["reply"]["watch_hit"]
     assert "writes" not in hit and "lines" not in hit, hit
     assert {"ref", "addr", "cpu", "writer_pc", "writes_total", "truncated", "values_from", "before",
@@ -944,7 +944,7 @@ def test_the_program_counts_the_stops_and_names_what_it_did_not_survey(
     _cut_by_the_watch(monkeypatch, tmp_path)
     out = s.perform(steps=[*_runs(3), {"op": "registers"}, *_runs(2)], summaries=True)
     stops = out["stops"]
-    assert stops["surveyed"] == 5 and stops["by_how"] == {WATCH_KEY: 5}, stops
+    assert stops["surveyed"] == 5 and stops["by_cause"] == {WATCH_KEY: 5}, stops
     assert stops["stop_seq_last"] - stops["stop_seq_first"] == 4 and stops["unaccounted"] == 0
     assert stops["stop_seq_last"] == mstate.STATE.last_stop["seq"]
     runs = _cut_by_the_watch(monkeypatch, tmp_path, outside={2})
@@ -988,7 +988,7 @@ def test_drive_counts_and_files_its_act_by_the_same_rule(
     _cut_by_the_watch(monkeypatch, tmp_path)
     out = s.drive(act=_runs(3), summaries=True)
     act = out["act"]
-    assert act["stops"]["surveyed"] == 3 and act["stops"]["by_how"] == {WATCH_KEY: 3}, act
+    assert act["stops"]["surveyed"] == 3 and act["stops"]["by_cause"] == {WATCH_KEY: 3}, act
     assert act["steps_total"] == 3 and act["truncated"] is False
     assert Path(act["ran_path"]).is_file() and Path(act["replies_path"]).is_file()
     assert "watch_hit" in act["ran"][0]["reply"]
@@ -1018,7 +1018,7 @@ def test_a_stop_found_on_its_own_between_steps_is_counted_and_the_tail_stop_too(
                     summaries=True)
     assert out["status"] == "ok", out
     assert out["stops"]["surveyed"] == 1 and out["stops"]["unaccounted"] == 0, out["stops"]
-    assert out["stops"]["by_how"] == {WATCH_KEY: 1}, out["stops"]
+    assert out["stops"]["by_cause"] == {WATCH_KEY: 1}, out["stops"]
     ses.stops_after_polls = 1
     out = s.perform(steps=[{"op": "registers"}, {"op": "resume"}], settle_seconds=2.0,
                     summaries=True)
@@ -1050,24 +1050,24 @@ def test_a_stop_numbered_after_the_last_surveyed_one_is_unaccounted(
 
 
 def test_one_watch_is_one_key_whoever_wrote_and_whatever_value() -> None:
-    """`by_how` keys a watch's stops by the watch: the writer's pc, and for a row this server
+    """`by_cause` keys a watch's stops by the watch: the writer's pc, and for a row this server
     did not arm the value written, are taken off the text the stop was named with, by the
     module that composes it."""
     import mame_watches as watches
     lines = [watches._STOP_LINE.search(FOREIGN_LINE.format(value=v, pc=pc))
              for v, pc in (("0038", 0x40E), ("0039", 0x25F4))]
-    hows = [watches._foreign_how(m) for m in lines if m is not None]
+    hows = [watches._foreign_cause(m) for m in lines if m is not None]
     assert len(hows) == 2 and hows[0] != hows[1]
-    assert watches.how_key(hows[0]) == watches.how_key(hows[1]), hows
-    assert "0x00040e" not in watches.how_key(hows[0]) and "wpclear" in watches.how_key(hows[0])
+    assert watches.cause_key(hows[0]) == watches.cause_key(hows[1]), hows
+    assert "0x00040e" not in watches.cause_key(hows[0]) and "wpclear" in watches.cause_key(hows[0])
     own = "watch frame_lo: 0x002031fc written by pc 0x0000040e"
-    assert watches.how_key(own) == WATCH_KEY
+    assert watches.cause_key(own) == WATCH_KEY
     # A write by another cpu or device names no pc, and it is still the same watch.
     nobody = f"by {watches._NO_WRITER}"
-    assert watches.how_key(own.replace("by pc 0x0000040e", nobody)) == WATCH_KEY
+    assert watches.cause_key(own.replace("by pc 0x0000040e", nobody)) == WATCH_KEY
     foreign = hows[0].replace("by pc 0x0000040e", nobody)
-    assert foreign != hows[0] and watches.how_key(foreign) == watches.how_key(hows[0]), foreign
-    assert watches.how_key("elapsed") == "elapsed", "a stop that names no writer is left whole"
+    assert foreign != hows[0] and watches.cause_key(foreign) == watches.cause_key(hows[0]), foreign
+    assert watches.cause_key("elapsed") == "elapsed", "a stop that names no writer is left whole"
 
 
 def test_a_batch_whose_files_cannot_be_written_keeps_its_account(
@@ -1116,13 +1116,13 @@ def test_a_batch_refused_at_its_first_step_still_counts_and_files(
 
 
 def test_a_compact_row_keeps_a_registerpoints_hit_and_counts_its_stop_by_its_name() -> None:
-    reply = {"summary": "resume: halted", "status": "ok", "how": "registerpoint 'd1==7fff'",
+    reply = {"summary": "resume: halted", "status": "ok", "cause": "registerpoint 'd1==7fff'",
              "pc": "0x000f2234", "frame": 9, "stop_seq": 7, "regs": {"D1": "0x7fff"},
              "regpoint_hit": {"ref": "d1==7fff", "index": 1, "cpu": ":maincpu"}}
     row = sequence_account.brief({"op": "resume", "reply": reply}, 3, sequence.SHAPE)
     assert row["reply"]["regpoint_hit"] == reply["regpoint_hit"] and "regs" not in row["reply"]
     stops = sequence_account.stops([reply], 7, 7, sequence.SHAPE)
-    assert stops["by_how"] == {"registerpoint 'd1==7fff'": 1} and stops["unaccounted"] == 0
+    assert stops["by_cause"] == {"registerpoint 'd1==7fff'": 1} and stops["unaccounted"] == 0
 
 
 def test_the_stop_count_covers_the_stops_the_rows_carry_when_the_record_is_gone(
@@ -1131,12 +1131,12 @@ def test_the_stop_count_covers_the_stops_the_rows_carry_when_the_record_is_gone(
     0: the count still covers every stop the replies carry, rather than `surveyed: 0` beside
     rows that show three."""
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
-    ran = [{"op": "run_for", "reply": {"summary": "s", "status": "ok", "how": "elapsed",
+    ran = [{"op": "run_for", "reply": {"summary": "s", "status": "ok", "cause": "elapsed",
                                        "pc": "0x00000400", "frame": n, "stop_seq": n}}
            for n in (6, 7, 8)]
     got = sequence.account_of(ran, True, False, tmp_path, since=5)["stops"]
     assert got == {"stop_seq_first": 6, "stop_seq_last": 8, "surveyed": 3,
-                   "by_how": {"elapsed": 3}, "unaccounted": 0}, got
+                   "by_cause": {"elapsed": 3}, "unaccounted": 0}, got
 
 
 @pytest.mark.parametrize("where", ["also", "stopped_on_its_own"])
@@ -1145,7 +1145,7 @@ def test_the_stop_count_reaches_the_newest_stop_wherever_a_reply_carries_it(
     """With the record gone, the range still ends at the newest stop, when only the tail the
     list waited for (`also`) or a stop a contact found (`stopped_on_its_own`) carries it."""
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
-    newest = {"summary": "s", "status": "ok", "how": "elapsed", "pc": "0x00000400",
+    newest = {"summary": "s", "status": "ok", "cause": "elapsed", "pc": "0x00000400",
               "frame": 9, "stop_seq": 9}
     ran = [{"op": "run_for", "reply": {**newest, "frame": 6, "stop_seq": 6}}]
     also = [newest] if where == "also" else None
@@ -1206,7 +1206,7 @@ def test_until_frame_repeats_the_list_until_a_stop_reaches_the_frame(
     assert out["status"] == "ok", out.get("message")
     assert out["until_frame"] == start + 5 and out["frame_reached"] == start + 5, out
     assert out["steps_total"] == 10 and out["steps_completed"] == 10
-    assert out["stops"]["by_how"] == {WATCH_KEY: 5, ELAPSED_BY_FRAMES: 5}, out["stops"]
+    assert out["stops"]["by_cause"] == {WATCH_KEY: 5, ELAPSED_BY_FRAMES: 5}, out["stops"]
     assert out["stops"]["unaccounted"] == 0 and out["stops"]["surveyed"] == 10
     assert out["ran"][-1]["reply"]["frame"] == start + 5
     assert out["summary"].endswith(f"frame {start + 5} of {start + 5}"), out["summary"]
@@ -1254,7 +1254,7 @@ def test_until_frame_refuses_a_window_whose_first_stop_is_already_past_on_a_runn
 
     def stop(**_: Any) -> dict[str, Any]:
         ses.running = False
-        return menvelope.envelope({"how": "interrupted", "stop_seq": 50, "frame": far,
+        return menvelope.envelope({"cause": "interrupted", "stop_seq": 50, "frame": far,
                                    "pc": "0x00000400"})
 
     monkeypatch.setattr(s, "stop", stop)
@@ -1293,7 +1293,7 @@ def test_until_frame_refuses_a_stop_that_carries_no_frame(
     ses = _frames_and_the_watch(monkeypatch, tmp_path)
 
     def no_frame(**_: Any) -> dict[str, Any]:
-        return menvelope.envelope({"how": "elapsed", "stop_seq": 99,
+        return menvelope.envelope({"cause": "elapsed", "stop_seq": 99,
                                    "frame": unavailable("no counter"),
                                    "pc": "0x00000000"})
 

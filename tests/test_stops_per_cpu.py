@@ -149,15 +149,15 @@ def test_a_stop_on_the_sub_cpu_at_a_main_cpu_rows_address_is_not_named_after_tha
     s.resume()
     ses.visible_cpu = ":subcpu"                      # the sub cpu stopped, at 0x4a0 of ITS program
     stop = s.stop()
-    assert (stop["cpu"], stop["pc"], stop["how"]) == (":subcpu", "0x000004a0", "interrupt"), stop
+    assert (stop["cpu"], stop["pc"], stop["cause"]) == (":subcpu", "0x000004a0", "interrupt"), stop
     s.resume()
     ses.visible_cpu, ses.pcs = ":maincpu", [0x4A0]   # the control: the row's own cpu at its pc
     stop = s.stop()
-    assert stop["how"] == "breakpoint at 0x4a0", stop
+    assert stop["cause"] == "breakpoint at 0x4a0", stop
     s.resume()
     ses.visible_cpu, ses.stops_after_polls = ":subcpu", 1   # and a stop found on its own
     found = s.status()["stopped_on_its_own"]
-    assert found["how"] == "stopped at no breakpoint this server armed", found
+    assert found["cause"] == "stopped at no breakpoint this server armed", found
 
 
 def test_a_row_typed_on_the_sub_cpu_at_a_main_cpu_rows_address_names_its_own_stop(
@@ -177,7 +177,7 @@ def test_a_row_typed_on_the_sub_cpu_at_a_main_cpu_rows_address_names_its_own_sto
     ses.stops_after_polls = 1
     found = s.status()["stopped_on_its_own"]
     assert found["cpu"] == ":subcpu", found
-    assert found["how"].startswith("breakpoint 2 at 0x000004a0, typed through `debug`"), found
+    assert found["cause"].startswith("breakpoint 2 at 0x000004a0, typed through `debug`"), found
 
 
 def test_naming_the_machine_where_it_stands_asks_the_cpu_it_stopped_on(

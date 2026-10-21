@@ -221,7 +221,7 @@ def test_the_envelope_refuses_a_malformed_refusal(monkeypatch: pytest.MonkeyPatc
         menvelope.envelope({"code": "bad_argument"})
     with pytest.raises(TypeError, match="status"):
         menvelope.envelope({"status": "maybe"})
-    for word in ("verdict", "why", "reason", "cause"):
+    for word in ("verdict", "why", "reason"):
         with pytest.raises(TypeError, match=word):
             menvelope.envelope({"status": "INVALID", "code": "bad_argument", "message": "x",
                                 word: "x"})

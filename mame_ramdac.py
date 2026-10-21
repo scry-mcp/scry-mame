@@ -127,7 +127,7 @@ def fresh() -> bool:
     `sequence` offset as its video starts, before the first instruction, so a log armed here
     knows it."""
     ses, stop = STATE.ses, STATE.last_stop
-    return (ses is not None and not ses.running and stop.get("how") == "start"
+    return (ses is not None and not ses.running and stop.get("cause") == "start"
             and ses.stop_count == stop.get("stop_count"))
 
 

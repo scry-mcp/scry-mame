@@ -15,6 +15,7 @@ and a list slot each.
 
 from __future__ import annotations
 
+import itertools
 import operator as op
 import sys
 import uuid
@@ -24,7 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
-from scry_core import prose
+from scry_core import judges, prose
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -33,7 +34,6 @@ import mame_cpus as cpus
 import mame_envelope as menvelope
 import mame_files as files
 import mame_inputs as inputs
-import mame_read as read
 import mame_space as mspace
 import mame_state as st
 from mame_state import STATE
@@ -108,12 +108,14 @@ def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: A
                          f"{below:#x} or {below + cell:#x}")
 
 
-def check_scan_filter(operator: str = "=", value: int | None = None, **_: Any) -> None:
+def check_scan_filter(operator: str = "=", value: int | None = None,
+                      limit: int = judges.HITS_DEFAULT, **_: Any) -> None:
     """`scan_filter`'s machine-independent half; the value against the width is the open
     scan's to judge."""
     vocab.one_of("operator", operator, OPERATORS)
     if value is not None:
         inputs.natural("value", value, " is not a whole number from 0: a scan compares unsigned")
+    inputs.natural("limit", limit, f" is outside 1..{judges.HITS_MAX}", 1, judges.HITS_MAX)
 
 
 def _cells_at(ses: gs.Session, scratch: Path, scan: Scan) -> array[int] | dict[str, Any]:
@@ -174,11 +176,11 @@ def scan_start(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
 
 
 def scan_filter(ses: gs.Session, scratch: Path, operator: str,
-                value: int | None) -> dict[str, Any]:
+                value: int | None, limit: int = judges.HITS_DEFAULT) -> dict[str, Any]:
     """The body of the `scan_filter` tool: each survivor against `value`, or with none against
     what it held when the scan opened. The read spans the first survivor to the last; only the
     survivors are compared."""
-    check_scan_filter(operator=operator, value=value)
+    check_scan_filter(operator=operator, value=value, limit=limit)
     scan = STATE.scan
     if scan is None:
         raise st.Invalid("needs_call",
@@ -201,7 +203,8 @@ def scan_filter(ses: gs.Session, scratch: Path, operator: str,
             opening.append(opened)
             values.append(v)
     survivors = len(offsets)
-    hex_cell = f"0x{{:0{2 * scan.cell_bytes}x}}".format
+    def hex_cell(v: int) -> str:
+        return judges.hex_at_width(v, 8 * scan.cell_bytes)
     reply: dict[str, Any] = {"operator": operator,
                              "value": NO_VALUE if value is None else hex_cell(value),
                              "iterations": scan.iterations + 1}
@@ -212,11 +215,11 @@ def scan_filter(ses: gs.Session, scratch: Path, operator: str,
                                            "truncated": False} | where)
     scan.offsets, scan.opening, scan.values = offsets, opening, values
     scan.iterations += 1
-    listed = survivors <= read.LOG_LIMIT_MAX
-    hits = ([{"addr": st.hex_addr(a), "value": hex_cell(v)} for a, v in scan.surviving()]
-            if listed else [])
+    # PAST `limit`, THE FIRST ONES, never an empty list: the rest are counted in `hits_total`.
+    hits = [{"addr": st.hex_addr(a), "value": hex_cell(v)}
+            for a, v in itertools.islice(scan.surviving(), limit)]
     return menvelope.envelope(reply | {"closed": False, "hits": hits, "hits_total": survivors,
-                                       "truncated": not listed} | where)
+                                       "truncated": survivors > limit} | where)
 
 
 def scan_clear() -> dict[str, Any]:

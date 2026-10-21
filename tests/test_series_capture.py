@@ -102,7 +102,7 @@ class _Console:
         if self.running_after:
             ses.running = True
         return {"summary": "x", "status": "ok", "verdict": self.verdict, "frame_before": 100,
-                "frame_after": 100 + frames, "how": "the run", "session": {}}
+                "frame_after": 100 + frames, "cause": "the run", "session": {}}
 
 
 class _Session:

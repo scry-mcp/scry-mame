@@ -73,7 +73,7 @@ check("english keys",
 
 print("\n== status()")
 st = s.status()
-check("alive", st.get("alive") is True)
+check("alive", st.get("session", {}).get("alive") is True)
 
 print("\n== read_memory(): by symbol and by hex address, and they must agree")
 by_symbol = s.read_memory(ref="irq_vblank", length=8)
@@ -320,8 +320,8 @@ check("regpoint_list shows it armed",
       [x.get("state") for x in listed] == ["armed"], str(listed)[:80])
 r = s.resume(seconds=5.0)
 check("the stop it makes is named, with its hit",
-      r.get("verdict") == "OTHER_STOP" and str(r.get("how")).startswith("registerpoint ")
-      and r.get("regpoint_hit", {}).get("ref") == f"pc!={here}", str(r.get("how")))
+      r.get("verdict") == "OTHER_STOP" and str(r.get("cause")).startswith("registerpoint ")
+      and r.get("regpoint_hit", {}).get("ref") == f"pc!={here}", str(r.get("cause")))
 r = s.run_for(frames=2, seconds=10.0)
 check("still armed: a run by frames is cut at once, and that is a stop, never no_progress",
       r.get("verdict") == "OTHER_STOP" and r.get("session", {}).get("running") is False,
@@ -434,7 +434,8 @@ r = s.registers(from_last_stop=True)
 check("the last stop's registers answer, superseded", r.get("superseded") is True
       and "stale" not in r and "regs" in r)
 r = s.status()
-check("status says running", r.get("running") is True and "pc" in (r.get("last_stop") or {}))
+check("status says running", r.get("session", {}).get("running") is True
+      and "pc" in (r.get("last_stop") or {}))
 r = s.snapshot()
 check("snapshot answers while running", r.get("bytes", 0) > 0, str(r.get("bytes")))
 r = s.log_wait(pattern=".", channel="emulator", seconds=5.0)
@@ -444,11 +445,11 @@ check("a breakpoint arms while running", r.get("armed") is True and r.get("while
 time.sleep(0.3)
 r = s.status()
 check("the first contact finds the stop the breakpoint produced",
-      r.get("running") is False and "stopped_on_its_own" in r,
+      r.get("session", {}).get("running") is False and "stopped_on_its_own" in r,
       str(r.get("stopped_on_its_own"))[:80])
 check("and the record moved to it",
-      r.get("last_stop", {}).get("how", "").startswith("breakpoint"),
-      str(r.get("last_stop", {}).get("how")))
+      r.get("last_stop", {}).get("cause", "").startswith("breakpoint"),
+      str(r.get("last_stop", {}).get("cause")))
 gone = s.breakpoint_clear(all=True).get("disarmed", [])
 check("breakpoint_clear reads bplist back", len(gone) == 1 and gone[0].endswith("@ 000400"),
       str(gone))
@@ -474,7 +475,7 @@ check("captures lists the trace, present, as kind trace",
       any(c.get("kind") == "trace" and c.get("path") == t.get("path") and c.get("present")
           for c in r.get("captures", [])))
 r = s.step(count=1)
-check("step carries the survey", "regs" in r and r.get("how") == "step 1")
+check("step carries the survey", "regs" in r and r.get("cause") == "step 1")
 s.resume()
 
 print("\n== the watch family: who wrote this byte, measured on the board's own counters")
@@ -493,9 +494,9 @@ check("a show watch arms nothing and reads now", r.get("armed") is False
       and r.get("state") == "evaluated" and "value" in r.get("reading", {}))
 r = s.resume(seconds=5.0)
 check("the change watch stops the machine and names its writer",
-      r.get("verdict") == "OTHER_STOP" and str(r.get("how", "")).startswith("watch 0x2031fc")
+      r.get("verdict") == "OTHER_STOP" and str(r.get("cause", "")).startswith("watch 0x2031fc")
       and isinstance(r.get("watch_hit"), dict) and r["watch_hit"].get("writer_pc") is not None,
-      f"how={r.get('how')} hit={str(r.get('watch_hit'))[:120]}")
+      f"how={r.get('cause')} hit={str(r.get('watch_hit'))[:120]}")
 hit = r.get("watch_hit", {})
 check("the write landed before the stop: after is before + 1",
       isinstance(hit.get("before"), int) and hit.get("after") == hit["before"] + 1,
@@ -833,7 +834,7 @@ brief_ran = brief.get("ran", [])
 check("summaries=True cuts each earlier stop to its line, its status and where and when it "
       "stopped, without its lists",
       brief.get("status") == "ok" and len(brief_ran) == 3
-      and all(set(step["reply"]) == {"summary", "status", "how", "pc", "frame", "stop_seq"}
+      and all(set(step["reply"]) == {"summary", "status", "cause", "pc", "frame", "stop_seq"}
               for step in brief_ran[:2])
       and "run_for 1 frame:" in str(brief_ran[0]["reply"]["summary"]),
       str([step["reply"].get("summary") for step in brief_ran[:2]]))
@@ -947,7 +948,7 @@ s.debug(command="g")
 time.sleep(0.5)
 r = s.status()
 check("a stop the console's run reached at a breakpoint is found by the first contact",
-      r.get("running") is False and "stopped_on_its_own" in r,
+      r.get("session", {}).get("running") is False and "stopped_on_its_own" in r,
       str(r.get("stopped_on_its_own"))[:90])
 s.breakpoint_clear(all=True)
 check("closed", s.close().get("closed") is True)
@@ -1068,7 +1069,7 @@ check("captures lists the WAV audio_record wrote, with its samples",
 print("\n== throttle(): pending on a stopped machine, applied on a running one")
 r = s.throttle(on=False)
 check("stopped: pending, with this call's own mark to wait for", r.get("pending") is True
-      and str(r.get("mark")).startswith("MAME_MCP_THROTTLE#"), str(r.get("mark")))
+      and str(r.get("tag")).startswith("MAME_MCP_THROTTLE#"), str(r.get("tag")))
 s.resume()
 r = s.log_wait(pattern=f"{r.get('mark')} throttled=false", channel="emulator", seconds=5.0)
 check("the pending switch applied on the first frame of the run", "line" in r,
@@ -1185,8 +1186,8 @@ t2 = s.throttle(on=False)
 check("the per-call console trio rides on `lua` and not on `throttle`",
       all(k in ran for k in PER_CALL) and not any(k in t1 or k in t2 for k in PER_CALL),
       f"throttle keys {sorted(t1)}")
-check("a throttle mark's number is the console's session sequence, not a throttle count",
-      t2.get("mark") != "MAME_MCP_THROTTLE#2", f"{t1.get('mark')} then {t2.get('mark')}")
+check("a throttle tag's number is the console's session sequence, not a throttle count",
+      t2.get("tag") != "MAME_MCP_THROTTLE#2", f"{t1.get('tag')} then {t2.get('tag')}")
 saved = s.state_save(name="contract")
 loaded = s.state_load(name="contract")
 check("state_save and state_load carry no per-call trio",
@@ -1221,8 +1222,8 @@ check("watch_add(cpu=subcpu) arms under :subcpu and reads through the sub cpu's 
 r = s.resume(seconds=10.0)
 check("the sub cpu's row stops the machine there, named as this server's",
       r.get("verdict") == "OTHER_STOP" and r.get("cpu") == ":subcpu"
-      and str(r.get("how")).startswith(("breakpoint at 0x542", "watch 0x2031fc")),
-      f"{r.get('pc')} {r.get('cpu')} {r.get('how')}")
+      and str(r.get("cause")).startswith(("breakpoint at 0x542", "watch 0x2031fc")),
+      f"{r.get('pc')} {r.get('cpu')} {r.get('cause')}")
 sub = {"dasm": s.disassemble(ref="0x0", length=8, cpu="subcpu"),
        "find": s.find(ref="0x0", length=16, data_hex="00000400", cpu="subcpu"),
        "history": s.history(limit=4, cpu="subcpu")}

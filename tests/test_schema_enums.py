@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import judges
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -295,6 +296,7 @@ RANGES: list[tuple[str, str, int, int]] = [
     ("gfx_sweep", "count", 1, msweep.COUNT_MAX),
     ("gfx_blit_source", "margin", 0, mblits.MARGIN_MAX),
     ("palette_log", "limit", 0, mramdac.LIMIT_MAX),
+    ("scan_filter", "limit", 1, judges.HITS_MAX),
     ("gfx_view", "columns", 1, mgfx.COLUMNS_MAX),
     ("start", "stub_port", 0, launch.PORT_MAX),
     ("step", "count", 1, advance.step_max()),

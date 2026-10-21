@@ -128,7 +128,7 @@ def test_a_held_save_is_completed_by_one_step_and_records_the_machine_it_holds(
     # the reply's errorlog is the save's own: MAME's words, from the command on
     assert out["errorlog"]["lines_total"] == len(HELD_LOG.splitlines()), out["errorlog"]
     # the step is a stop, recorded as one
-    assert mstate.STATE.last_stop["how"] == "statesave a", mstate.STATE.last_stop
+    assert mstate.STATE.last_stop["cause"] == "statesave a", mstate.STATE.last_stop
     assert out["stop_seq"] == mstate.STATE.last_stop["seq"], out
 
 
@@ -189,7 +189,7 @@ def test_a_held_load_typed_through_debug_is_completed_and_its_stop_recorded(
     assert out["status"] == "ok", out
     assert ses.stepped == 1 and ses.pc == saved_pc
     assert "stepped" in str(out.get("note")), out
-    assert mstate.STATE.last_stop["how"] == "debug: sl a", mstate.STATE.last_stop
+    assert mstate.STATE.last_stop["cause"] == "debug: sl a", mstate.STATE.last_stop
     # the counter is marked after the load landed, so the next run withholds its cycles
     mark = mstate.STATE.stale_counter
     assert mark is not None and mark.reading == ses.totalcycles(), mark

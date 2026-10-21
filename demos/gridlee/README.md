@@ -90,17 +90,18 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "inipath": "./tmp/demos/gridlee/gridlee-ini",
   "state_dir": "./tmp/demos/gridlee/gridlee-states",
   "boot_seconds": 60,
-  "rompath": "./tmp/roms"
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
+  "rompath": "~/Code/mame-test-roms"
 }
 ```
 
 ```json
 {
-  "summary": "start gridlee on ./tmp/bin/mame (MAME_BINARY): rom_check OK, 0 symbols, pc 0x0000f000, machine: 1 cpu, 1 screen, 13 ROM files, 3 regions, 3 shares",
+  "summary": "start gridlee on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x0000f000, machine: 1 cpu, 1 screen, 13 ROM files, 3 regions, 3 shares",
   "status": "ok",
   "system": "gridlee",
-  "binary": "./tmp/bin/mame",
-  "binary_origin": "MAME_BINARY",
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
+  "binary_origin": "argument",
   "version": "0.289 (unknown)",
   "pid": "<volatile>",
   "stub_port": "<volatile>",
@@ -218,7 +219,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 5.000003,
   "cycles": 6250000,
   "reads": "<volatile>",
-  "how": "the console's `gtime` stop",
+  "cause": "the console's `gtime` stop",
   "stop_seq": 2,
   "pc": "0x0000a631",
   "cpu": ":maincpu",
@@ -254,7 +255,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 195
   },
   "session": {
     "alive": true,
@@ -373,7 +375,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000ce",
         "frame_released": 299,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 3,
         "pc": "0x0000fd80",
         "cpu": ":maincpu",
@@ -414,7 +416,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#1 release frame=299 port_held=000000ce",
             ""
-          ]
+          ],
+          "mark": 315
         },
         "session": {
           "alive": true,
@@ -441,7 +444,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 7.085713,
         "cycles": 2500000,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 4,
         "pc": "0x0000a7d5",
         "cpu": ":maincpu",
@@ -487,7 +490,9 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF",
             "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF",
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"
-          ]
+          ],
+          "mark": 382,
+          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=382, limit=9)` reads them all"
         },
         "session": {
           "alive": true,
@@ -705,7 +710,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000ce",
         "frame_released": 423,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 5,
         "pc": "0x0000fd80",
         "cpu": ":maincpu",
@@ -746,7 +751,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#2 release frame=423 port_held=000000ce",
             ""
-          ]
+          ],
+          "mark": 1061
         },
         "session": {
           "alive": true,
@@ -773,7 +779,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 9.180819,
         "cycles": 2500002,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 6,
         "pc": "0x0000b502",
         "cpu": ":maincpu",
@@ -820,7 +826,9 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF",
             "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF",
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"
-          ]
+          ],
+          "mark": 1128,
+          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=1128, limit=11)` reads them all"
         },
         "session": {
           "alive": true,
@@ -962,7 +970,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "port_held": "0x000000ce",
         "frame_released": 547,
         "active": true,
-        "how": "the `gvblank` stop of the last frame asked",
+        "cause": "the `gvblank` stop of the last frame asked",
         "stop_seq": 7,
         "pc": "0x0000fd80",
         "cpu": ":maincpu",
@@ -1003,7 +1011,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "lines": [
             "[luaengine] MAME_MCP_INPUT#3 release frame=547 port_held=000000ce",
             ""
-          ]
+          ],
+          "mark": 1955
         },
         "session": {
           "alive": true,
@@ -1030,7 +1039,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "emulated_after_s": 11.275922,
         "cycles": 2500001,
         "reads": "<volatile>",
-        "how": "the console's `gtime` stop",
+        "cause": "the console's `gtime` stop",
         "stop_seq": 8,
         "pc": "0x0000a7d5",
         "cpu": ":maincpu",
@@ -1076,7 +1085,9 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF",
             "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF",
             "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"
-          ]
+          ],
+          "mark": 2022,
+          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=2022, limit=9)` reads them all"
         },
         "session": {
           "alive": true,
@@ -1325,7 +1336,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "port_held": "0x000000ce",
   "frame_released": 671,
   "active": true,
-  "how": "the `gvblank` stop of the last frame asked",
+  "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 9,
   "pc": "0x0000fd80",
   "cpu": ":maincpu",
@@ -1368,7 +1379,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF",
       "[luaengine] MAME_MCP_INPUT#4 release frame=671 port_held=000000ce",
       ""
-    ]
+    ],
+    "mark": 2701
   },
   "watches": [
     {
@@ -1392,7 +1404,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1400,7 +1412,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
@@ -1438,7 +1450,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 11.372898,
   "cycles": 2340,
   "reads": "<volatile>",
-  "how": "watch 0x42b: 0x0000042b written by pc 0x0000b583",
+  "cause": "watch 0x42b: 0x0000042b written by pc 0x0000b583",
   "stop_seq": 10,
   "pc": "0x0000b586",
   "cpu": ":maincpu",
@@ -1477,7 +1489,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "truncated": false,
     "lines": [
       "[:] coin counter on"
-    ]
+    ],
+    "mark": 2916
   },
   "watches": [
     {
@@ -1501,7 +1514,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1509,7 +1522,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -1569,7 +1582,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 11.37291,
   "cycles": 14,
   "reads": "<volatile>",
-  "how": "watch 0x42c: 0x0000042c written by pc 0x0000b58c",
+  "cause": "watch 0x42c: 0x0000042c written by pc 0x0000b58c",
   "stop_seq": 11,
   "pc": "0x0000b58f",
   "cpu": ":maincpu",
@@ -1605,7 +1618,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 2936
   },
   "watches": [
     {
@@ -1629,7 +1643,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1637,7 +1651,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -1746,7 +1760,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 11.872913,
   "cycles": 625004,
   "reads": "<volatile>",
-  "how": "the console's `gtime` stop",
+  "cause": "the console's `gtime` stop",
   "stop_seq": 12,
   "pc": "0x0000ae19",
   "cpu": ":maincpu",
@@ -1785,7 +1799,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "[:] coin counter off",
       "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF",
       "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"
-    ]
+    ],
+    "mark": 2936
   },
   "watches": [
     {
@@ -1809,7 +1824,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -1817,7 +1832,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
@@ -1889,7 +1904,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 3179
   },
   "session": {
     "alive": true,
@@ -1956,7 +1972,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   },
   "frame_release_planned": 706,
   "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
-  "how": "watch 0x42b: 0x0000042b written by pc 0x0000d676",
+  "cause": "watch 0x42b: 0x0000042b written by pc 0x0000d676",
   "stop_seq": 13,
   "pc": "0x0000d679",
   "cpu": ":maincpu",
@@ -1995,7 +2011,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 3307
   },
   "watches": [
     {
@@ -2019,7 +2036,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -2027,7 +2044,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -2085,7 +2102,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "frame_after": 703,
   "cycles": 0,
   "polls": 1,
-  "how": "watch 0x42c: 0x0000042c written by pc 0x0000d67f",
+  "cause": "watch 0x42c: 0x0000042c written by pc 0x0000d67f",
   "stop_seq": 14,
   "pc": "0x0000d682",
   "cpu": ":maincpu",
@@ -2124,7 +2141,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 3307
   },
   "watches": [
     {
@@ -2148,7 +2166,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     }
   ],
-  "watches_omitted": [
+  "omitted": [
     "addr",
     "by",
     "entry",
@@ -2156,7 +2174,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "watches_how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -2344,7 +2362,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "emulated_after_s": 19.882072,
   "cycles": 10000004,
   "reads": "<volatile>",
-  "how": "the console's `gtime` stop",
+  "cause": "the console's `gtime` stop",
   "stop_seq": 15,
   "pc": "0x0000a633",
   "cpu": ":maincpu",
@@ -2388,7 +2406,9 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807D = FF & FF",
       "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807E = FF & FF",
       "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807F = FF & FF"
-    ]
+    ],
+    "mark": 3307,
+    "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=3307, limit=130)` reads them all"
   },
   "session": {
     "alive": true,
@@ -2487,7 +2507,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "resent": 0,
   "call": "MAME_MCP_LUA_END#6",
   "pc_before": "0x0000a633",
-  "how": "screen_view: one step",
+  "cause": "screen_view: one step",
   "stop_seq": 16,
   "pc": "0x0000a631",
   "cpu": ":maincpu",
@@ -2523,7 +2543,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 13358
   },
   "session": {
     "alive": true,
@@ -2565,7 +2586,11 @@ Also attached: image/png.
     "pc": "0x0000ae19"
   },
   "output": "State load attempted.  Please refer to window message popup for results.",
-  "how": "stateload four_credits",
+  "mark": {
+    "emulator": 13358,
+    "process": 10401
+  },
+  "cause": "stateload four_credits",
   "stop_seq": 17,
   "pc": "0x0000ae19",
   "cpu": ":maincpu",
@@ -2599,7 +2624,8 @@ Also attached: image/png.
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
-    "lines": []
+    "lines": [],
+    "mark": 13358
   },
   "session": {
     "alive": true,
@@ -2679,7 +2705,6 @@ Also attached: image/png.
   },
   "console_pending_before": 0,
   "console_drained": 0,
-  "session_describes": "the state BEFORE this close, so `altered` is the truth about the session that just ended; `status` now reports alive: false",
   "session": {
     "alive": true,
     "running": false,

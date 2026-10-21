@@ -182,7 +182,7 @@ def _blits_ready(args: dict[str, Any]) -> dict[str, Any]:
     machine: the manifest loaded, the blitter's capture declared, and rows of a finished frame.
     With no stopped machine nothing is prepared: the call is then the state's own refusal."""
     here = s.status()
-    if not here.get("alive") or here.get("running"):
+    if not here.get("session", {}).get("alive") or here.get("session", {}).get("running"):
         return args
     if STATE.manifest is None:
         call("gfx_load", path=MANIFEST)
@@ -196,7 +196,7 @@ def _blits_ready(args: dict[str, Any]) -> dict[str, Any]:
 def _manifest_ready(args: dict[str, Any]) -> dict[str, Any]:
     """`args`, with the manifest loaded first on a live machine, running or stopped, since
     `gfx_load` answers on both. With no session nothing is prepared."""
-    if s.status().get("alive") and STATE.manifest is None:
+    if s.status().get("session", {}).get("alive") and STATE.manifest is None:
         call("gfx_load", path=MANIFEST)
     return args
 
@@ -210,7 +210,7 @@ def _series_ahead() -> dict[str, Any]:
     """A one-frame series two frames ahead of a stopped machine, read off its own screen's
     counter; with no session, or a running one, any frame: the call is the state's refusal."""
     here = s.status()
-    if not here.get("alive") or here.get("running"):
+    if not here.get("session", {}).get("alive") or here.get("session", {}).get("running"):
         return {"at_frames": [1], "seconds": 10.0}
     now = s.screen_signature().get("frame_screen", 0)
     return {"at_frames": [now + 2], "seconds": 10.0}
@@ -233,9 +233,9 @@ def _film_ready(args: dict[str, Any]) -> dict[str, Any]:
     stop, so a running machine is stopped for it and let go again. With no session nothing is
     prepared: the call is then the state's own refusal."""
     here = s.status()
-    if not here.get("alive") or mfilm.held() is not None:
+    if not here.get("session", {}).get("alive") or mfilm.held() is not None:
         return args
-    if here.get("running"):
+    if here.get("session", {}).get("running"):
         call("stop")
         call("gfx_film", **FILM)
         call("resume")
@@ -368,7 +368,8 @@ RUNNING_ANSWERS = {"status", "log", "log_wait", "snapshot", "symbols_find", "thr
 #: The fields a valid call's reply must carry on a STOPPED machine, one predicate per tool,
 #: each from that tool's own `Reply:` paragraph.
 STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
-    "status": lambda r: r.get("alive") is True and r.get("running") is False,
+    "status": lambda r: (r.get("session", {}).get("alive") is True
+                         and r.get("session", {}).get("running") is False),
     "rom_check": lambda r: r.get("rom_check") == "OK",
     "run_to": lambda r: r.get("verdict") == "TARGET",
     "run_for": lambda r: r.get("verdict") == "ELAPSED",
@@ -446,7 +447,7 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "captures": lambda r: isinstance(r.get("captures"), list),
     "state_list": lambda r: isinstance(r.get("states"), list),
     "state_load": load_judged,
-    "throttle": lambda r: r.get("pending") is True and str(r.get("mark", "")).startswith(
+    "throttle": lambda r: r.get("pending") is True and str(r.get("tag", "")).startswith(
         "MAME_MCP_THROTTLE#"),
     "stop": lambda r: r.get("interrupted") is False,
     "resume": lambda r: "verdict" not in r and "halted" not in r,
@@ -463,7 +464,9 @@ def _says_running(r: dict[str, Any]) -> bool:
 
 RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "scan_clear": lambda r: r.get("cleared") in (True, False),
-    "status": lambda r: r.get("running") is True and "pc" in (r.get("last_stop") or {}),
+    "status": lambda r: (r.get("session", {}).get("running") is True
+                         and "pc" in (r.get("last_stop") or {})
+                         and (r.get("pc") or {}).get("available") is False),
     "log": lambda r: isinstance(r.get("lines_total"), int),
     "log_wait": lambda r: "line" in r,
     "snapshot": lambda r: r.get("bytes", 0) > 0,
@@ -514,7 +517,7 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
     elif state in ("none", "closed"):
         if tool == "status":
-            good = ok(r) and r.get("alive") is False
+            good = ok(r) and r.get("session", {}).get("alive") is False
         elif tool == "close":
             good = ok(r) and r.get("closed") is False and r.get("ended_by") == "none"
         elif tool == "start":
@@ -1743,8 +1746,9 @@ SEQ = re.compile(r"#(\d+)")
 
 
 def seq_of(r: dict[str, Any]) -> int | None:
-    """The console sequence number a reply names, in its `mark` (a throttle) or its `call`."""
-    m = SEQ.search(str(r.get("mark") or r.get("call") or ""))
+    """The console sequence number a reply names, in its `call`, or a throttle's `tag` (the
+    `call` first: `read_block`'s `tag` is the region it read)."""
+    m = SEQ.search(str(r.get("call") or r.get("tag") or ""))
     return int(m.group(1)) if m else None
 
 
@@ -1882,7 +1886,7 @@ def c2_watches_across_load() -> None:
     cell(C2[2], listed.get("0x2031fc", {}).get("state") == "armed", str(listed.get("0x2031fc")))
     hit = call("resume", seconds=5.0)
     cell(C2[3], hit.get("verdict") == "OTHER_STOP"
-         and str(hit.get("how", "")).startswith("watch 0x2031fc"), said(hit))
+         and str(hit.get("cause", "")).startswith("watch 0x2031fc"), said(hit))
     if hit.get("verdict") != "OTHER_STOP":
         call("stop")
     cell(C2[4], listed.get("0x20351c", {}).get("state") in WATCH_STATES,
@@ -2091,7 +2095,7 @@ def c5_advancing() -> None:
     cell(C5[4], r.get("verdict") == "TIMEOUT" and r.get("control_hits", 0) > 0,
          f"{said(r)} hits={r.get('control_hits')}")
     st_ = call("status")
-    cell(C5[5], st_.get("running") is False, said(st_))
+    cell(C5[5], st_.get("session", {}).get("running") is False, said(st_))
     call("breakpoint_clear", all=True)
     r = call("run_to", ref="exception_handler", control="vec_chk", seconds=3.0)
     cell(C5[6], refused(r, "control_silent") and "verdict" not in r
@@ -2117,8 +2121,8 @@ def c5_advancing() -> None:
     ran = int(r.get("frame_after", 0)) - int(r.get("frame_before", 0))
     polls = int(r.get("polls", -1))
     cell(C5[10], r.get("verdict") == "OTHER_STOP" and int(str(r.get("pc", "0")), 16) == 0x4A0
-         and "typed through `debug`" in str(r.get("how")) and polls - ran in (0, 1, 2),
-         f"{r.get('verdict')} pc={r.get('pc')} polls={polls} ran={ran} how={r.get('how')}")
+         and "typed through `debug`" in str(r.get("cause")) and polls - ran in (0, 1, 2),
+         f"{r.get('verdict')} pc={r.get('pc')} polls={polls} ran={ran} how={r.get('cause')}")
     call("debug", command="bpclear")
     r = call("run_for", frames=60, seconds=10.0)
     ran = int(r.get("frame_after", 0)) - int(r.get("frame_before", 0))
@@ -2179,7 +2183,7 @@ def c6_running() -> None:
     call("breakpoint_at", ref="irq_vblank")
     time.sleep(0.3)
     r = call("status")
-    cell(C6[5], r.get("running") is False and "stopped_on_its_own" in r, said(r))
+    cell(C6[5], r.get("session", {}).get("running") is False and "stopped_on_its_own" in r, said(r))
     r = call("registers")
     cell(C6[6], ok(r), said(r))
     call("breakpoint_clear", all=True)
@@ -2629,7 +2633,7 @@ def c13_regpoints() -> None:
          == [(cond, "armed", ":maincpu")] and "index" in rows[0], str(rows)[:150])
     r = call("resume", seconds=5.0)
     hit = r.get("regpoint_hit", {})
-    cell(t[2], r.get("verdict") == "OTHER_STOP" and r.get("how") == f"registerpoint '{cond}'"
+    cell(t[2], r.get("verdict") == "OTHER_STOP" and r.get("cause") == f"registerpoint '{cond}'"
          and hit.get("ref") == cond and hit.get("pc") == r.get("pc")
          and r.get("regs", {}).get("D1") == "0x00007fff", said(r))
     r = call("run_for", frames=2, seconds=10.0)
@@ -2656,8 +2660,8 @@ def c13_regpoints() -> None:
     time.sleep(0.5)
     found = call("status")
     cell(t[10], r.get("armed") is True and r.get("while_running") is True
-         and found.get("running") is False
-         and str(found.get("last_stop", {}).get("how")) == "registerpoint 'pc!=0'",
+         and found.get("session", {}).get("running") is False
+         and str(found.get("last_stop", {}).get("cause")) == "registerpoint 'pc!=0'",
          f"{said(r)} / {found.get('last_stop')}")
     call("regpoint_clear", all=True)
     call("regpoint_add", condition=cond)
@@ -2672,8 +2676,8 @@ def c13_regpoints() -> None:
     call("regpoint_clear", all=True)
     call("debug", command="rpset {d1==7fff}")
     r = call("resume", seconds=5.0)
-    cell(t[12], str(r.get("how")).startswith("registerpoint ")
-         and "(if d1==7fff), typed through `debug`: `debug(\"rpclear " in str(r.get("how"))
+    cell(t[12], str(r.get("cause")).startswith("registerpoint ")
+         and "(if d1==7fff), typed through `debug`: `debug(\"rpclear " in str(r.get("cause"))
          and "regpoint_hit" not in r, said(r))
     call("debug", command="rpclear")
     # THE BOARD HAS TWO 68000s, and `d1==7fff` on the sub cpu compares another D1.
@@ -3304,7 +3308,7 @@ def block_e() -> None:
     captured = {w.get("ref") for w in listed}
     survey = [w for w in summary.get("watches", []) if w.get("ref") in captured]
     cell(t[8], bool(survey) and all("first_rows" not in w for w in survey)
-         and summary.get("watches_how") == mwatches.STOP_HOW
+         and summary.get("how") == mwatches.STOP_HOW
          and bool(listed) and all(w.get("first_rows") for w in listed),
          f"{len(survey)} in the survey, {len(listed)} listed")
     screen = call("screen_view", scale=1)
@@ -4086,9 +4090,9 @@ def _k_circus(_cells: list[str]) -> None:
          f"{said(ran)}; (stop_seq, frame) {before} -> {after}")
     released = call("resume", seconds=False)
     now = call("status")
-    if now.get("running"):
+    if now.get("session", {}).get("running"):
         call("stop")
-    cell(t[5], refused(released, "bad_argument") and now.get("running") is False,
+    cell(t[5], refused(released, "bad_argument") and now.get("session", {}).get("running") is False,
          f"{said(released)}; running after it: {now.get('running')}")
     # THE QUEUE IS MADE, not waited for: the reader fault holds the first install for two
     # frames, so the other three wait behind it past the first frame's stop, whose own console

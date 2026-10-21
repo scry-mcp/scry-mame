@@ -34,6 +34,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import log_marks
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -831,7 +832,7 @@ def test_start_checks_the_image_at_its_base_and_reports_the_table(
     finally:
         s.close()
     dead = s.status()
-    assert dead["alive"] is False and dead["session"]["alive"] is False
+    assert dead["session"]["alive"] is False
     assert list(dead)[0] == "summary" and dead["summary"] == "status: no machine"
 
 
@@ -846,7 +847,7 @@ def test_start_on_a_machine_that_does_not_hold_the_rom_is_refused_in_the_envelop
     out = s.start(**_boot_args(tmp_path, image))
     assert out["status"] == "INVALID" and out["code"] == "readback_refused", out
     assert "LIES" in out["message"] and out["start_retries"] == [], out
-    assert list(out)[-1] == "session" and s.status()["alive"] is False
+    assert list(out)[-1] == "session" and s.status()["session"]["alive"] is False
 
 
 def test_start_without_a_symbol_file_reports_none(
@@ -1258,7 +1259,7 @@ def test_a_state_dir_survives_close_and_the_scratch_does_not(
     assert not scratch.exists(), "the scratch is this session's and dies with it"
     assert (state / "cfg").is_dir(), "the state_dir outlives the session"
     dead = s.status()
-    assert dead["alive"] is False and dead["session"]["alive"] is False
+    assert dead["session"]["alive"] is False
     assert list(dead)[0] == "summary" and dead["summary"] == "status: no machine"
     # The second pass finds the first one's state, and a pre-existing state_dir is not an error.
     (state / "cfg" / "m68k.cfg").write_text("<mameconfig/>")
@@ -2993,7 +2994,7 @@ def test_run_for_waits_until_the_frame_counter_stops_moving(
     ses.last_stop_packet = "T05watch:2031fc;thread:1;"
     out = s.run_for(milliseconds=250)
     assert out["verdict"] == "ELAPSED"
-    assert out["how"] == "the console's `gtime` stop" and "watch_hit" not in out, out
+    assert out["cause"] == "the console's `gtime` stop" and "watch_hit" not in out, out
     assert ses.last_stop_packet == "", "the stale packet survived the console-started run"
     assert out["frame_before"] == 10 and out["frame_after"] == 14
     # Before, gtime, then the poll: four moving readings and then the three that agree.
@@ -3545,7 +3546,7 @@ def test_resume_without_a_bound_lets_the_machine_run_and_the_readers_refuse(
         assert refused["status"] == "INVALID", name
         assert "no stop has been read since" in refused["message"], refused
         assert refused["summary"].startswith(f"{name}: INVALID")
-        assert refused["last_stop"]["stop_seq"] == 1 and refused["last_stop"]["how"] == "start"
+        assert refused["last_stop"]["stop_seq"] == 1 and refused["last_stop"]["cause"] == "start"
         assert refused["last_stop"]["pc"] == "0x000f2034"
         assert "status" in refused["answers_while_running"]
         # THE REMEDY ANSWERS: every tool the refusal sends the caller to is one that answers
@@ -3566,7 +3567,8 @@ def test_resume_without_a_bound_lets_the_machine_run_and_the_readers_refuse(
     listed = s.breakpoint_list()
     assert listed["session"]["running"] is True and listed["last_stop"]["stop_seq"] == 1
     st = s.status()
-    assert st["running"] is True and "pc" not in st and st["last_stop"]["pc"] == "0x000f2034"
+    assert (st["session"]["running"] is True and isinstance(st["pc"], dict)
+            and st["last_stop"]["pc"] == "0x000f2034")
     assert st["last_stop"]["stop_seq"] == 1
     assert "RUNNING" in st["summary"]
 
@@ -3583,8 +3585,8 @@ def test_a_stop_the_machine_reached_on_its_own_is_recorded_by_the_first_contact(
     s.resume()
     ses.stops_after_polls = 1                    # the breakpoint fires
     st = s.status()
-    assert st["running"] is False and st["stopped_on_its_own"]["stop_seq"] == 2
-    assert st["stopped_on_its_own"]["how"] == "breakpoint at 0x4a0"
+    assert st["session"]["running"] is False and st["stopped_on_its_own"]["stop_seq"] == 2
+    assert st["stopped_on_its_own"]["cause"] == "breakpoint at 0x4a0"
     assert st["last_stop"]["stop_seq"] == 2 and st["pc"] == "0x000004a0"
     assert "stopped_on_its_own" not in s.status(), "reported once, by the contact that found it"
     regs = s.registers()
@@ -3608,7 +3610,7 @@ def test_a_call_that_steps_and_then_refuses_owns_its_stop(
     after = s.status()
     assert "stopped_on_its_own" not in after, after["stopped_on_its_own"]
     assert after["last_stop"]["stop_seq"] == 2, after["last_stop"]
-    assert after["last_stop"]["how"].startswith("read_block"), after["last_stop"]
+    assert after["last_stop"]["cause"].startswith("read_block"), after["last_stop"]
     assert after["pc"] == after["last_stop"]["pc"], "the record describes where the machine is"
 
 
@@ -3625,7 +3627,7 @@ def test_a_refusal_that_moved_nothing_records_nothing(
     monkeypatch.setattr(running, "survey", must_not_survey)
     refused_ = s.read_block(tag="main cpu")
     assert refused_["code"] == "bad_argument", refused_
-    assert mstate.STATE.last_stop["seq"] == 1 and mstate.STATE.last_stop["how"] == "start"
+    assert mstate.STATE.last_stop["seq"] == 1 and mstate.STATE.last_stop["cause"] == "start"
 
 
 class _GoneProcess:
@@ -3651,7 +3653,8 @@ def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_clos
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     monkeypatch.setattr(mstate.STATE, "proc", _CrashedProcess())
     out = s.status()
-    assert out["status"] == "ok" and out["alive"] is False and out["exit_code"] == -11, out
+    assert (out["status"] == "ok" and out["session"]["alive"] is False
+            and out["exit_code"] == -11), out
     assert "`close` collects the exit code" in out["note"], out
 
 
@@ -3711,11 +3714,11 @@ def test_resume_with_a_bound_waits_for_the_stop_and_returns_the_survey(
     assert "running" not in out, out
     assert out["verdict"] == "OTHER_STOP" and out["session"]["running"] is False
     assert out["waited_s"] < 1.0
-    assert out["how"] == "stopped at no breakpoint this server armed"
+    assert out["cause"] == "stopped at no breakpoint this server armed"
     assert out["pc"] == "0x000004a0" and out["frame"] == 160
     assert out["regs"] == {"D0": "0x00001234", "PC": "0x000f2034"}
     assert out["dasm"] == ["4a0: move.l d0,d1", "4a0+2: rts"]
-    assert out["errorlog"] == {"lines_total": 0, "truncated": False, "lines": []}
+    assert out["errorlog"] == {"lines_total": 0, "truncated": False, "lines": [], "mark": 0}
     assert out["summary"] == ("resume: OTHER_STOP at pc 0x000004a0 (stopped at no breakpoint "
                               "this server armed)")
     # And a bound that expires LEAVES IT RUNNING, unlike run_to.
@@ -3731,7 +3734,7 @@ def test_stop_interrupts_a_running_machine_and_surveys_it(
     ses = _running(monkeypatch, tmp_path)
     s.resume()
     out = s.stop()
-    assert out["interrupted"] is True and out["how"] == "interrupt" and ses.interrupted == 1
+    assert out["interrupted"] is True and out["cause"] == "interrupt" and ses.interrupted == 1
     assert out["pc"] == "0x000004a0"
     assert out["summary"] == "stop: interrupted at pc 0x000004a0, frame 160"
     again = s.stop()
@@ -4439,7 +4442,8 @@ def test_run_to_counts_a_control_off_its_temp_and_ticks_meanwhile(
     ses.go = go  # type: ignore[method-assign]
     out = advance.run_to(ses, tmp_path, "0x4a0", "0x25a4", 2.0,  # type: ignore[arg-type]
                          lambda p, t, m: ticks.append(m))
-    assert out["verdict"] == "TARGET" and out["control_hits"] == 2 and out["how"] == "target 0x4a0"
+    assert (out["verdict"] == "TARGET" and out["control_hits"] == 2
+            and out["cause"] == "target 0x4a0")
     assert out["controls"] == [{"ref": "0x25a4", "cpu": ":maincpu", "hits_in_run": 2}]
     assert gos == [0], "released once: a control never stops the machine"
     assert len(ticks) >= 2 and "run_to 0x4a0" in ticks[-1]
@@ -4462,7 +4466,8 @@ def test_run_to_stops_elsewhere_and_times_out_with_the_right_verdicts(
     ses.go = go  # type: ignore[method-assign]
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=2.0)
     assert out["verdict"] == "OTHER_STOP" and out["control_hits"] == 1
-    assert out["how"] == "stopped at no breakpoint this server armed" and out["pc"] == "0x00001000"
+    assert (out["cause"] == "stopped at no breakpoint this server armed"
+            and out["pc"] == "0x00001000")
     # A timeout: the control counts, the target never, the machine is interrupted at the bound.
     ses.pcs = [0xF2034, 0x25A4]
     ses.stop_count = 0
@@ -4470,7 +4475,7 @@ def test_run_to_stops_elsewhere_and_times_out_with_the_right_verdicts(
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["verdict"] == "TIMEOUT" and out["control_hits"] == 1 and ses.interrupted == 1
-    assert out["how"] == "interrupt at the bound" and not ses.running
+    assert out["cause"] == "interrupt at the bound" and not ses.running
 
 
 def test_run_to_reports_a_session_that_broke_under_the_run_as_invalid(
@@ -4553,7 +4558,7 @@ def test_stop_landing_on_an_armed_breakpoint_is_attributed_to_it(
     s.breakpoint_at(ref="0x4a0")
     s.resume()
     out = s.stop()
-    assert out["interrupted"] is True and out["how"] == "breakpoint at 0x4a0"
+    assert out["interrupted"] is True and out["cause"] == "breakpoint at 0x4a0"
     again = s.stop()
     assert again["summary"] == "stop: was already stopped"
 
@@ -4569,7 +4574,7 @@ def test_the_survey_says_when_the_console_gave_no_listing(
     assert out["frame"] == 13 and out["errorlog"]["lines_total"] == 0
     run = _running(monkeypatch, tmp_path)
     stepped = s.step(count=2)
-    assert stepped["how"] == "step 2" and stepped["pc"] == "0x000025a4" and run.stop_count == 2
+    assert stepped["cause"] == "step 2" and stepped["pc"] == "0x000025a4" and run.stop_count == 2
     assert stepped["dasm"] == ["25a4: move.l d0,d1", "25a4+2: rts"]
 
 
@@ -4669,7 +4674,7 @@ def test_a_run_to_that_comes_back_invalid_still_records_the_stop_it_made(
     ses.pcs = [0xF2034, 0x3000]
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
-    assert out["status"] == "INVALID" and out["how"] == "interrupt at the bound"
+    assert out["status"] == "INVALID" and out["cause"] == "interrupt at the bound"
     assert out["pc"] == "0x00003000" and "regs" in out and "dasm" in out
     seq = mstate.STATE.last_stop["seq"]
     nxt = s.status()
@@ -4680,7 +4685,8 @@ def test_a_run_to_that_comes_back_invalid_still_records_the_stop_it_made(
     ses.stops_after_polls = 1
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     assert out["status"] == "INVALID" and out["control_hits"] == 0
-    assert out["how"] == "stopped at no breakpoint this server armed" and out["pc"] == "0x00001000"
+    assert (out["cause"] == "stopped at no breakpoint this server armed"
+            and out["pc"] == "0x00001000")
     assert "stopped_on_its_own" not in s.status()
 
 
@@ -4760,8 +4766,8 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "console_run": True,
         "console_run_unprovable": True,
         "tally_removals": [{"tally_id": "old", "seq": 1}],
-        "throttles_pending": [{"mark": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1}],
-        "throttles_not_applied": [{"mark": "MAME_MCP_THROTTLE#1"}],
+        "throttles_pending": [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1}],
+        "throttles_not_applied": [{"tag": "MAME_MCP_THROTTLE#1"}],
         "states": {"old": {"frame": 1, "pc": 2}}, "state_signature": 7,
         "scan": mscan.Scan(0x100, 4, 1, ":old", 1, "little", array("I", [0]), array("B", [1]),
                            array("B", [1]), 1),
@@ -5199,10 +5205,10 @@ def test_reset_is_soft_applied_and_read_back_and_a_hard_reset_is_refused(
     # board: left unrecorded, the next call reported it as `stopped_on_its_own` at no
     # breakpoint this server armed). So the reply carries the stop survey, and the next
     # contact finds nothing to attribute to the machine alone.
-    assert out["how"] == "softreset" and out["frame"] == ses.frame and "regs" in out, out
+    assert out["cause"] == "softreset" and out["frame"] == ses.frame and "regs" in out, out
     after = s.status()
     assert "stopped_on_its_own" not in after, after
-    assert after["last_stop"]["how"] == "softreset" and after["last_stop"]["frame"] == ses.frame
+    assert after["last_stop"]["cause"] == "softreset" and after["last_stop"]["frame"] == ses.frame
 
     ses.pcs = [0xF2034, 0x1000]        # the step lands elsewhere: not verified
     assert s.reset()["verified"] is False
@@ -5379,7 +5385,7 @@ def test_a_stop_of_a_run_the_console_started_is_proved_on_the_counter_and_says_s
     assert ses.interrupted and ses.received == [g.STOP_REPLY_DRAIN_S]
     again = s.stop()
     assert again["interrupted"] is False and again["session"]["running"] is False, again
-    assert "note" in again and again["last_stop"]["how"] == "interrupt", again
+    assert "note" in again and again["last_stop"]["cause"] == "interrupt", again
 
 
 def test_the_throttle_lift_resets_the_speed_window_to_the_real_speed_start(
@@ -5610,7 +5616,7 @@ def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
     refused("v30", s.start(**args, cfg=str(cfg)))
     refused("must be an absolute path", s.start(**args, cfg="run/cfg/v30.cfg"))
     refused("no such cfg", s.start(**args, cfg=str(tmp_path / "missing.cfg")))
-    assert s.status()["alive"] is False, "nothing was spawned"
+    assert s.status()["session"]["alive"] is False, "nothing was spawned"
 
 
 def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
@@ -5652,7 +5658,8 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     out = refused("did not read", s.start(**_boot_args(tmp_path, image), cfg=str(cfg)))
     assert "Error parsing XML configuration file m68k.cfg" in out["message"], out["message"]
     assert "`process` channel" in out["message"] and out["stdout_path"].endswith("stdout.log")
-    assert s.status()["alive"] is False, "a session MAME booted on the defaults was left alive"
+    assert s.status()["session"]["alive"] is False, (
+        "a session MAME booted on the defaults was left alive")
     # The reader itself: it reads the captured stdout, and a line in `error.log` is not it.
     scratch = tmp_path / "scratch"
     scratch.mkdir()
@@ -5808,7 +5815,7 @@ def test_run_to_polls_inside_its_bound_and_names_the_stop_it_did_not_ask_for(
     monkeypatch.setattr(ses, "poll_stop", polled)
     monkeypatch.setattr(ses, "go", go)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "breakpoint at 0x1000", out
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == "breakpoint at 0x1000", out
     assert "condition" not in out, "a run with no condition carries none"
     assert bounds and all(isinstance(b, float) and 0.0 <= b <= advance.RUN_POLL_S for b in bounds)
 
@@ -5916,7 +5923,7 @@ def test_the_account_of_a_stop_found_later_has_every_field_and_the_name_of_where
     monkeypatch.setattr(ses, "poll_stop", polled)
     found = s.status()["stopped_on_its_own"]
     assert found == {"stop_seq": 2, "pc": "0x000004a0", "cpu": ":maincpu", "frame": ses.frame,
-                     "how": "breakpoint at 0x4a0", "packet": "T05"}, found
+                     "cause": "breakpoint at 0x4a0", "packet": "T05"}, found
     assert bounds == [0.0], "the first contact looks and never waits"
 
 
@@ -5931,7 +5938,7 @@ def test_a_console_run_found_at_rest_is_named_where_it_is_and_is_no_longer_a_con
     monkeypatch.setattr(mstate.STATE, "console_run", True)
     found = s.status()["stopped_on_its_own"]
     assert found == {"stop_seq": 2, "pc": "0x000004a0", "cpu": ":maincpu", "frame": ses.frame,
-                     "how": "breakpoint at 0x4a0",
+                     "cause": "breakpoint at 0x4a0",
                      "packet": "none: a run the console started"}, found
     assert mstate.STATE.console_run is False and ses.running is False
 
@@ -5972,11 +5979,21 @@ def test_the_survey_says_truncated_only_past_what_it_shows_and_dates_the_watches
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     log = files.log_path(tmp_path, "emulator")
-    log.write_text("".join(f"line {n}\n" for n in range(running.ERRORLOG_SHOWN)))
+    shown = log_marks.STOP_LINES_SHOWN
+    log.write_text("".join(f"line {n}\n" for n in range(shown)))
     monkeypatch.setattr(mstate.STATE, "errorlog_mark", 0)
     seen = running.survey(ses, tmp_path)  # type: ignore[arg-type]
-    assert seen["errorlog"]["lines_total"] == running.ERRORLOG_SHOWN
+    assert seen["errorlog"]["lines_total"] == shown and seen["errorlog"]["mark"] == 0
     assert seen["errorlog"]["truncated"] is False, "exactly what is shown is not truncated"
+    assert "how" not in seen["errorlog"], "a whole block names no way to ask for more"
+    # One past what is shown: cut, from the mark where the previous stop left the log, and the
+    # block names the call that reads the rest from there.
+    since = log.stat().st_size
+    with log.open("a") as fh:
+        fh.write("".join(f"more {n}\n" for n in range(shown + 1)))
+    cut = running.survey(ses, tmp_path)["errorlog"]  # type: ignore[arg-type]
+    assert cut["truncated"] and cut["lines_total"] == shown + 1 and cut["mark"] == since, cut
+    assert cut["lines"][0] == "more 1" and f"since_mark={since}" in cut["how"], cut
     handed: list[tuple[Any, ...]] = []
     monkeypatch.setattr(watches, "evaluate_watches",
                         lambda *a: handed.append(a) or [])  # type: ignore[func-returns-value]
@@ -6049,7 +6066,7 @@ def test_a_run_by_frames_that_elapsed_says_so_with_its_clock_its_polls_and_its_p
     said: list[str] = []
     out = advance.run_for(ses, tmp_path, 0, 5.0,  # type: ignore[arg-type]
                           lambda _p, _t, m: said.append(m), frames=2)
-    assert out["verdict"] == "ELAPSED" and "elapsed" not in out["how"], out
+    assert out["verdict"] == "ELAPSED" and "elapsed" not in out["cause"], out
     assert (out["frame_before"], out["frame_after"], out["polls"]) == (10, 12, 2), out
     assert out["cycles"] == 2 * ses.cycles_per_frame, out
     assert said[0] == "run_for 2 frames: frame 11 of 12, 0s of 5s", said
@@ -6225,7 +6242,7 @@ def test_a_run_by_time_that_made_no_progress_still_says_how_it_ended_and_between
     ses = _by_frames(monkeypatch, tmp_path)
     ses.frame_answers = ["a"] * 5
     out = s.run_for(milliseconds=1)
-    assert out["code"] == "no_progress" and out["how"] == "the console's `gtime` stop", out
+    assert out["code"] == "no_progress" and out["cause"] == "the console's `gtime` stop", out
     assert (out["frame_before"], out["frame_after"]) == (10, 10), out
 
 
@@ -6237,7 +6254,7 @@ def test_a_run_by_time_cut_at_a_breakpoint_this_server_armed_is_named_by_it(
     ses.frame_answers = ["a"] * 5               # cut before a frame elapsed
     out = s.run_for(milliseconds=1)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == running.attribute(0xF2100, ":maincpu") != (
+    assert out["cause"] == running.attribute(0xF2100, ":maincpu") != (
         "stopped at no breakpoint this server armed")
 
 
@@ -6261,7 +6278,7 @@ def test_a_run_by_time_at_its_bound_reports_the_frame_the_machine_came_to_rest_a
     said: list[str] = []
     out = advance.run_for(ses, tmp_path, 60000, 0.05,  # type: ignore[arg-type]
                           lambda _p, _t, m: said.append(m))
-    assert out["verdict"] == "TIMEOUT" and out["how"] == "interrupt at the bound", out
+    assert out["verdict"] == "TIMEOUT" and out["cause"] == "interrupt at the bound", out
     assert out["frame_after"] == ses.frame and out["frame_before"] == 10, out
     assert re.fullmatch(r"run_for 60000 ms: frame \d+, 0s of 0.05s", said[0]), said[0]
     rested = [c for c in ses.commands if c == "print frame"]
@@ -6672,8 +6689,8 @@ def test_settle_throttles_keeps_the_machines_word_verbatim_and_flags_the_other_s
     """A mark whose `throttled=` is neither word is kept VERBATIM in the row, because a value
     nobody anticipated is the one worth reading; and `false` after asking for `on` is the
     other setting, a row, never a switch that landed."""
-    mstate.STATE.throttles_pending = [{"mark": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
-                                      {"mark": "MAME_MCP_THROTTLE#2", "on": True, "seq": 2}]
+    mstate.STATE.throttles_pending = [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
+                                      {"tag": "MAME_MCP_THROTTLE#2", "on": True, "seq": 2}]
     mstate.settle_throttles(["[luaengine] MAME_MCP_THROTTLE#1 throttled=maybe frame=3",
                              "[luaengine] MAME_MCP_THROTTLE#2 throttled=false frame=4"])
     rows = mstate.STATE.throttles_not_applied
@@ -6723,10 +6740,10 @@ def test_wait_exit_polls_the_process_at_the_exit_poll_and_never_for_ever() -> No
     ("log_wait", {"channel": "emulator", "pattern": "x"},
      {"verdict": "TIMEOUT", "waited_s": 2.0, "arrived_during": 3},
      "log_wait emulator /x/: TIMEOUT, no match in 2.0 s, 3 lines arrived"),
-    ("resume", {"seconds": 0}, {"waited_s": 0.0}, "resume: running, no wait asked"),
+    ("resume", {"seconds": 0}, {}, "resume: running, no wait asked"),
     ("resume", {"seconds": 2.0}, {"verdict": "TIMEOUT", "waited_s": 2.0},
      "resume: TIMEOUT, still running after 2.0 s"),
-    ("resume", {"seconds": 2.0}, {"verdict": "OTHER_STOP", "pc": "0x000004a0", "how": "b"},
+    ("resume", {"seconds": 2.0}, {"verdict": "OTHER_STOP", "pc": "0x000004a0", "cause": "b"},
      "resume: OTHER_STOP at pc 0x000004a0 (b)"),
     ("perform", {}, {"steps_completed": 2, "verdict": "TIMEOUT"},
      "perform: 2 steps completed, TIMEOUT"),

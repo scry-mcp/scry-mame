@@ -203,7 +203,7 @@ def test_a_watch_stop_is_named_by_the_consoles_line_under_a_packet_that_names_no
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    how = s.status()["stopped_on_its_own"]["how"]
+    how = s.status()["stopped_on_its_own"]["cause"]
     assert how.startswith("watch 0x2031fc: 0x002031fc written by pc"), how
 
 
@@ -225,7 +225,7 @@ def test_a_watch_on_another_cpu_is_decoded_in_that_cpus_byte_order(
     ses.memory[0x2031FC] = (0x12345678).to_bytes(4, "little")
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    assert s.status()["stopped_on_its_own"]["how"].startswith("watch 0x2031fc")
+    assert s.status()["stopped_on_its_own"]["cause"].startswith("watch 0x2031fc")
     hit = mstate.STATE.last_stop["watch_hit"]
     assert (hit["before"], hit["after"]) == (0, 0x12345678), hit
 
@@ -281,7 +281,7 @@ def test_a_change_watch_of_one_byte_reports_its_hit_on_a_cpu_of_an_unknown_byte_
     ses.memory[0x2031FC] = bytes.fromhex("2a")
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    assert s.status()["stopped_on_its_own"]["how"].startswith("watch 0x2031fc")
+    assert s.status()["stopped_on_its_own"]["cause"].startswith("watch 0x2031fc")
     hit = mstate.STATE.last_stop["watch_hit"]
     assert (hit["before"], hit["after"]) == (0, 0x2A), hit
 
@@ -305,7 +305,7 @@ def test_a_watch_on_a_cpu_of_an_unknown_byte_order_is_unreadable_and_the_stops_g
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    assert s.status()["stopped_on_its_own"]["how"].startswith("watch 0x2031fc")
+    assert s.status()["stopped_on_its_own"]["cause"].startswith("watch 0x2031fc")
     hit = mstate.STATE.last_stop["watch_hit"]
     assert hit["after"]["available"] is False, hit
     assert "(architecture 'mips') was not read" in hit["after"]["why"], hit
@@ -649,7 +649,7 @@ def test_a_typed_ignore_of_the_live_cpu_records_the_stop_it_ran_to(
     out = s.debug(command="focus subcpu")
     assert "that stop is recorded" in out["note"], out
     assert mstate.STATE.last_stop["seq"] == before + 1
-    assert mstate.STATE.last_stop["how"].startswith("debug: the console ignored :maincpu")
+    assert mstate.STATE.last_stop["cause"].startswith("debug: the console ignored :maincpu")
     assert s.status()["last_stop"]["stop_seq"] == before + 1 and not ses.running
 
 

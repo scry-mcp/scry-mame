@@ -226,7 +226,7 @@ def test_breakpoint_clear_keeps_its_record_while_the_list_still_shows_the_row(
     (tmp_path / "debug.log").write_text("F2034\n")
     s.resume()
     ses.stops_after_polls = 1
-    how = str(s.status()["stopped_on_its_own"]["how"])
+    how = str(s.status()["stopped_on_its_own"]["cause"])
     assert how == "breakpoint at 0x4a0", how
     # THE COMMAND THE NOTE NAMES, typed: the list drops the row and the record goes with
     # it, so a row typed there later is a foreign row and named as one.
@@ -237,7 +237,7 @@ def test_breakpoint_clear_keeps_its_record_while_the_list_still_shows_the_row(
     s.resume()
     (tmp_path / "debug.log").open("a").write("Stopped at breakpoint 1F\n4A0\n")
     ses.stops_after_polls = 1
-    how = str(s.status()["stopped_on_its_own"]["how"])
+    how = str(s.status()["stopped_on_its_own"]["cause"])
     assert how == ("breakpoint 1F at 0x000004a0, typed through `debug`: `debug(\"bpclear 0x1f\")` "
                    "removes it"), how
 
@@ -561,7 +561,7 @@ def test_a_watch_stop_with_no_packet_is_attributed_by_the_consoles_hex_index(
     s.watch_add(ref="frame_lo", mode="change", length=4)
     line = STOP_LINE.replace("watchpoint 1 ", "watchpoint 1F ")
     st = _stop_on_a_watch(ses, tmp_path, "T05", line + "25F6\n")
-    assert str(st["stopped_on_its_own"]["how"]).startswith("watch frame_lo: ")  # type: ignore[index]
+    assert str(st["stopped_on_its_own"]["cause"]).startswith("watch frame_lo: ")  # type: ignore[index]
 
 
 def test_a_foreign_watchs_line_is_told_from_an_armed_one_by_its_hex_index(
@@ -575,7 +575,7 @@ def test_a_foreign_watchs_line_is_told_from_an_armed_one_by_its_hex_index(
     lines = (STOP_LINE.replace("watchpoint 1 ", "watchpoint 10 ")
              + STOP_LINE.replace("watchpoint 1 ", "watchpoint 11 "))
     st = _stop_on_a_watch(ses, tmp_path, "T05watch:0;11:0000040e;", lines)
-    how = str(st["stopped_on_its_own"]["how"])  # type: ignore[index]
+    how = str(st["stopped_on_its_own"]["cause"])  # type: ignore[index]
     assert how.startswith("watch 11 at ") and "did not arm" in how, how
     assert how.endswith('`debug("wpclear 0x11")` removes it'), how
 
@@ -589,7 +589,7 @@ def test_a_watch_stop_reads_the_watchpoints_index_as_hex(
     line = STOP_LINE.replace("watchpoint 1 ", "watchpoint 1F ")
     st = _stop_on_a_watch(ses, tmp_path, "T05watch:2031fc;11:0000040e;", line + "25F6\n")
     hit = mstate.STATE.last_stop["watch_hit"]
-    assert st["stopped_on_its_own"]["how"].startswith("watch frame_lo: ")  # type: ignore[index]
+    assert st["stopped_on_its_own"]["cause"].startswith("watch frame_lo: ")  # type: ignore[index]
     assert hit["index"] == 0x1F and hit["lines"] == [line.strip()] and hit["writes_total"] == 1
 
 
@@ -599,7 +599,7 @@ def test_a_stop_one_past_a_watchs_range_is_not_that_watchs(
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     st = _stop_on_a_watch(ses, tmp_path, "T05watch:203200;11:0000040e;", "25F6\n")
-    assert "frame_lo" not in st["stopped_on_its_own"]["how"]  # type: ignore[index]
+    assert "frame_lo" not in st["stopped_on_its_own"]["cause"]  # type: ignore[index]
 
 
 def test_a_watch_stop_with_no_console_line_says_which_is_not_known(
@@ -611,7 +611,7 @@ def test_a_watch_stop_with_no_console_line_says_which_is_not_known(
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     st = _stop_on_a_watch(ses, tmp_path, "T05watch:0;11:0000040e;", "25F6\n")
-    how = str(st["stopped_on_its_own"]["how"])  # type: ignore[index]
+    how = str(st["stopped_on_its_own"]["cause"])  # type: ignore[index]
     assert "logged no line for it" in how and "frame_lo" not in how, how
     assert mstate.STATE.last_stop.get("watch_hit") is None
 
@@ -638,7 +638,7 @@ def test_an_inherited_watchs_stop_keeps_its_name_in_front_of_the_clause(
                                        fingerprint="fp-test"))
     rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     st = _stop_on_a_watch(ses, tmp_path, "T05watch:2031fc;11:0000040e;", STOP_LINE)
-    how = str(st["stopped_on_its_own"]["how"])  # type: ignore[index]
+    how = str(st["stopped_on_its_own"]["cause"])  # type: ignore[index]
     assert how.startswith("watch frame_lo: 0x002031fc written by") and "PERSISTENT" in how
 
 
@@ -651,7 +651,7 @@ def test_a_foreign_breakpoints_stop_reads_its_index_as_hex(
     s.resume()
     (tmp_path / "debug.log").open("a").write("Stopped at breakpoint 1F\n400\n")
     ses.stops_after_polls = 1
-    how = str(s.status()["stopped_on_its_own"]["how"])
+    how = str(s.status()["stopped_on_its_own"]["cause"])
     assert how == ("breakpoint 1F at 0x00000400, typed through `debug`: `debug(\"bpclear 0x1f\")` "
                    "removes it"), how
 
@@ -669,7 +669,7 @@ def test_a_foreign_breakpoints_stop_whose_list_cannot_be_read_spells_its_index_t
         raise gs.SessionError("the console did not answer `bplist`")
 
     monkeypatch.setattr(mlists, "bp_held", unreadable)
-    how = str(s.status()["stopped_on_its_own"]["how"])
+    how = str(s.status()["stopped_on_its_own"]["cause"])
     assert how == ("breakpoint 1F at 0x00000400; the debugger's list could not be read to say "
                    "whose: the console did not answer `bplist`"), how
 
@@ -750,14 +750,14 @@ def test_a_pasted_clear_spells_the_index_with_0x_because_the_console_evaluates_i
     assert mclear.pasted_clear("breakpoint", 0xD0) == '`debug("bpclear 0xd0")`'
     assert mclear.pasted_clear("registerpoint", 0xA) == '`debug("rpclear 0xa")`'
     assert mclear.clear_command("watch", 0xA) == "wpclear 0xa", "what the server sends"
-    how = mclear.foreign_row_how("breakpoint", 0xD0, " at 0x000400")
+    how = mclear.foreign_row_cause("breakpoint", 0xD0, " at 0x000400")
     assert how == 'breakpoint D0 at 0x000400: `debug("bpclear 0xd0")` removes it', how
-    how = mclear.foreign_row_how("registerpoint", 0xA, " (if d1==7fff)")
+    how = mclear.foreign_row_cause("registerpoint", 0xA, " (if d1==7fff)")
     assert how.endswith('`debug("rpclear 0xa")` removes it'), how
     note = mclear.still_held_note("watch", [("A @ 2031FC-2031FF write", 0xA)])
     assert "['A @ 2031FC-2031FF write']" in note, note
     assert '`debug("wpclear 0xa")` removes the row' in note, note
     assert "wpclear A" not in note and "bpclear D0" not in how
-    assert mclear.foreign_row_how("watch", 0xD0, " at 0x2031fc").endswith(
+    assert mclear.foreign_row_cause("watch", 0xD0, " at 0x2031fc").endswith(
         '`debug("wpclear 0xd0")` removes it')
     assert '`debug("bpclear 0xa")`' in mclear.still_held_note("breakpoint", [("A @ 0004A0", 0xA)])

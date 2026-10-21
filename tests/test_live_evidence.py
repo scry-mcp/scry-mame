@@ -139,7 +139,7 @@ def test_c3s_predicate_tells_a_line_a_console_command_ran_from_one_still_ahead()
     `lua`'s, false, since then the throttle's line was not what ran first."""
     ev = _evidence()
     lua = {"call": "MAME_MCP_LUA_END#2", "lines_ahead": 0}
-    throttle = {"mark": "MAME_MCP_THROTTLE#1"}
+    throttle = {"tag": "MAME_MCP_THROTTLE#1"}
     assert ev.console_ran_the_throttle_first(lua, throttle, _THROTTLE_THEN_LUA) is True
     assert ev.console_ran_the_throttle_first({**lua, "lines_ahead": 1}, throttle,
                                              _THROTTLE_THEN_LUA) is False
@@ -156,12 +156,12 @@ def test_c3s_predicate_answers_false_where_a_mark_or_its_end_is_missing() -> Non
     a cell that cannot be read, and the predicate says False rather than raising on it."""
     ev = _evidence()
     lua = {"call": "MAME_MCP_LUA_END#2", "lines_ahead": 0}
-    throttle = {"mark": "MAME_MCP_THROTTLE#1"}
+    throttle = {"tag": "MAME_MCP_THROTTLE#1"}
     assert ev.console_ran_the_throttle_first({"lines_ahead": 0}, throttle,
                                              _THROTTLE_THEN_LUA) is False
     assert ev.console_ran_the_throttle_first({**lua, "call": "MAME_MCP_LUA_END"}, throttle,
                                              _THROTTLE_THEN_LUA) is False
-    assert ev.console_ran_the_throttle_first(lua, {"mark": "MAME_MCP_THROTTLE"},
+    assert ev.console_ran_the_throttle_first(lua, {"tag": "MAME_MCP_THROTTLE"},
                                              _THROTTLE_THEN_LUA) is False
     gone = _THROTTLE_THEN_LUA.replace(b"MAME_MCP_LUA_END#2\t", b"")
     assert 2 not in ev.sentinel_order(gone), "the case is built: lua's end is not in the log"

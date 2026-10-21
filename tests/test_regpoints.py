@@ -90,7 +90,7 @@ def test_an_answer_that_is_no_list_is_refused_and_quoted(answer: str) -> None:
 _STOP_LINE = next(
     ln for ln in captured("debuglog.foreign-rp.resume.txt").splitlines(keepends=True)
     if ln.startswith("Stopped at registerpoint 1"))
-_FOREIGN_HOW = ("registerpoint 1 (if d1==7fff), typed through `debug`: `debug(\"rpclear 0x1\")` "
+_FOREIGN_CAUSE = ("registerpoint 1 (if d1==7fff), typed through `debug`: `debug(\"rpclear 0x1\")` "
                 "removes it")
 
 
@@ -132,7 +132,7 @@ def test_a_resume_stopped_by_a_registerpoint_typed_through_debug_names_it(
 
     reg.go = go_to_the_value  # type: ignore[method-assign]
     out = s.resume(seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == _FOREIGN_HOW, out["how"]
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == _FOREIGN_CAUSE, out["cause"]
     assert "regpoint_hit" not in out, "a row this server did not place is no hit of its own"
 
 
@@ -149,7 +149,7 @@ def test_a_frame_run_cut_by_a_registerpoint_is_another_stop_and_never_no_progres
     _log_on(reg, tmp_path, "gvblank", first_stop)
     out = s.run_for(frames=2, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == _FOREIGN_HOW, out["how"]
+    assert out["cause"] == _FOREIGN_CAUSE, out["cause"]
     assert out["frame_before"] == 10 and out["frame_after"] == 10, out
     assert reg.commands.count("gvblank") == 1, "nothing is sent after the stop"
     assert out["session"]["running"] is False, "a stopped machine handed back as running"
@@ -163,7 +163,7 @@ def test_a_registerpoint_that_lands_with_the_tick_still_ends_a_frame_run(
     reg = _typed(monkeypatch, tmp_path, frame=10, stop_after=1)
     _log_on(reg, tmp_path, "gvblank", captured("debuglog.foreign-rp.resume.txt"))
     out = s.run_for(frames=5, seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == _FOREIGN_HOW, out
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == _FOREIGN_CAUSE, out
     assert out["frame_after"] == 11 and reg.commands.count("gvblank") == 1, out
 
 
@@ -175,7 +175,7 @@ def test_a_run_by_milliseconds_cut_by_a_registerpoint_is_another_stop(
     _log_on(reg, tmp_path, "gtime", captured("debuglog.foreign-rp.ms.txt"))
     out = s.run_for(milliseconds=200, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == _FOREIGN_HOW, out["how"]
+    assert out["cause"] == _FOREIGN_CAUSE, out["cause"]
 
 
 def test_the_index_of_a_registerpoint_stop_is_read_in_hex(
@@ -195,8 +195,8 @@ def test_the_index_of_a_registerpoint_stop_is_read_in_hex(
 
     reg.go = go_to_the_sixteenth  # type: ignore[method-assign]
     out = s.resume(seconds=2.0)
-    assert out["how"] == ("registerpoint 10 (if 1), typed through `debug`: "
-                          "`debug(\"rpclear 0x10\")` removes it"), out["how"]
+    assert out["cause"] == ("registerpoint 10 (if 1), typed through `debug`: "
+                          "`debug(\"rpclear 0x10\")` removes it"), out["cause"]
 
 
 def test_a_registerpoint_stop_whose_list_cannot_be_read_spells_its_index_as_the_console_does(
@@ -218,8 +218,8 @@ def test_a_registerpoint_stop_whose_list_cannot_be_read_spells_its_index_as_the_
     reg.go = go_to_the_sixteenth  # type: ignore[method-assign]
     monkeypatch.setattr(regpoints, "rp_held", unreadable)
     out = s.resume(seconds=2.0)
-    assert out["how"] == ("registerpoint 10; the debugger's list could not be read to say "
-                          "whose: the console did not answer `rplist`"), out["how"]
+    assert out["cause"] == ("registerpoint 10; the debugger's list could not be read to say "
+                          "whose: the console did not answer `rplist`"), out["cause"]
 
 
 def test_a_registerpoint_line_whose_row_is_gone_names_nothing(
@@ -237,7 +237,7 @@ def test_a_registerpoint_line_whose_row_is_gone_names_nothing(
 
     reg.go = go_to_the_value  # type: ignore[method-assign]
     out = s.resume(seconds=2.0)
-    assert out["how"] == "stopped at no breakpoint this server armed", out["how"]
+    assert out["cause"] == "stopped at no breakpoint this server armed", out["cause"]
 
 
 def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_registerpoint_line(
@@ -247,7 +247,7 @@ def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_registerpoint
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "f2034", 0xF2034)))
     _log_on(reg, tmp_path, "gvblank", _STOP_LINE)
     out = s.run_for(frames=2, seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "breakpoint at 0xf2034", out["how"]
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == "breakpoint at 0xf2034", out["cause"]
 
 
 def test_a_registerpoint_stop_whose_list_the_console_will_not_answer_is_still_a_stop(
@@ -265,8 +265,8 @@ def test_a_registerpoint_stop_whose_list_the_console_will_not_answer_is_still_a_
     reg.monitor = mute_rplist  # type: ignore[method-assign]
     out = s.run_for(frames=2, seconds=2.0)
     assert out["verdict"] == "OTHER_STOP", out
-    assert out["how"].startswith("registerpoint 1; the debugger's list could not be read to "
-                                 "say whose"), out["how"]
+    assert out["cause"].startswith("registerpoint 1; the debugger's list could not be read to "
+                                 "say whose"), out["cause"]
 
 
 # ------------------------------------------------------------------ the typed family
@@ -523,11 +523,12 @@ def test_a_regpoint_of_this_server_that_fires_is_named_and_stays_armed(
     (tmp_path / "debug.log").write_text(captured("debuglog.foreign-rp.resume.txt"))
     ses.stops_after_polls = 1
     out = s.resume(seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "registerpoint 'd1==7fff'", out["how"]
+    assert (out["verdict"] == "OTHER_STOP"
+            and out["cause"] == "registerpoint 'd1==7fff'"), out["cause"]
     assert out["regpoint_hit"] == {"ref": "d1==7fff", "condition": "d1==7fff", "index": 1,
                                    "cpu": ":maincpu", "pc": out["pc"], "note": _NOTE}
     assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["armed"]
-    assert s.status()["last_stop"]["how"] == "registerpoint 'd1==7fff'"
+    assert s.status()["last_stop"]["cause"] == "registerpoint 'd1==7fff'"
 
 
 def test_an_inherited_regpoint_that_fires_says_whose_it_is(
@@ -538,7 +539,7 @@ def test_an_inherited_regpoint_that_fires_says_whose_it_is(
     monkeypatch.setattr(mstate.STATE, "session_origin", "s2")
     (tmp_path / "debug.log").write_text(_STOP_LINE)
     ses.stops_after_polls = 1
-    how = s.resume(seconds=2.0)["how"]
+    how = s.resume(seconds=2.0)["cause"]
     assert how.startswith("registerpoint 'd1==7fff' (a PERSISTENT declaration"), how
     assert "`regpoint_list` shows it and `regpoint_clear` removes it" in how, how
 
@@ -553,7 +554,7 @@ def test_a_frame_run_cut_by_a_regpoint_of_this_server_carries_the_hit(
     reg.frozen = True
     _log_on(reg, tmp_path, "gvblank", _STOP_LINE)
     out = s.run_for(frames=2, seconds=2.0)
-    assert out["verdict"] == "OTHER_STOP" and out["how"] == "registerpoint 'd1==7fff'", out
+    assert out["verdict"] == "OTHER_STOP" and out["cause"] == "registerpoint 'd1==7fff'", out
     assert out["regpoint_hit"]["index"] == 1 and out["regpoint_hit"]["note"] == _NOTE
 
 
@@ -913,7 +914,7 @@ def test_the_newest_line_in_the_window_names_the_stop_whichever_family_logged_it
         real_go()
 
     reg.go = go_through_the_breakpoint  # type: ignore[method-assign]
-    assert s.resume(seconds=2.0)["how"] == _FOREIGN_HOW
+    assert s.resume(seconds=2.0)["cause"] == _FOREIGN_CAUSE
 
 
 def test_a_regpoint_is_never_run_tos_target_and_its_stop_is_named_there_too(
@@ -926,7 +927,7 @@ def test_a_regpoint_is_never_run_tos_target_and_its_stop_is_named_there_too(
     (tmp_path / "debug.log").write_text(_STOP_LINE)
     ses.stops_after_polls = 1
     out = s.run_to(ref="0xf9999", control="0x4a0", seconds=2.0)
-    assert out["code"] == "cut_by_other_stop" and out["how"] == "registerpoint 'd1==7fff'", out
+    assert out["code"] == "cut_by_other_stop" and out["cause"] == "registerpoint 'd1==7fff'", out
     assert out["regpoint_hit"]["ref"] == "d1==7fff"
 
 

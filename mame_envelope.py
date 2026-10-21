@@ -91,6 +91,10 @@ def session_block(whole: bool = False) -> dict[str, Any]:
         alarms["broken"] = broken
     if STATE.throttles_not_applied:
         alarms["throttles_not_applied"] = [dict(r) for r in STATE.throttles_not_applied]
+    # A COUNT WATCH'S REMOVAL THE CONSOLE DID NOT CARRY OUT, the same way: its tap still counts in
+    # the guest and its declaration is gone, so no call is obliged to say it again.
+    if stuck := st.tallies_not_removed():
+        alarms["tallies_not_removed"] = stuck
     if STATE.lua_read_only_claims:
         alarms["read_only_claims"] = STATE.lua_read_only_claims
         st.add_note(alarms,

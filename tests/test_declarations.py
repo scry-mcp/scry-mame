@@ -344,7 +344,7 @@ def test_a_stop_at_a_declared_breakpoint_is_attributed_by_its_name(
     ses.pcs = [0xF2034, 0x2031FC]
     s.resume()
     ses.stops_after_polls = 1
-    assert s.status()["stopped_on_its_own"]["how"] == "breakpoint frame_lo at 0x2031fc"
+    assert s.status()["stopped_on_its_own"]["cause"] == "breakpoint frame_lo at 0x2031fc"
 
 
 def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
@@ -622,7 +622,7 @@ def test_a_stop_at_an_inherited_raw_address_breakpoint_names_it_inherited(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A raw address the store brought back over the same build cuts a run like a named one
-    does, and the caller never typed it this session: the stop's `how` keeps the bare-address
+    does, and the caller never typed it this session: the stop's `cause` keeps the bare-address
     name and says it was inherited, as a named breakpoint's does."""
     _same, out = _start_over_an_earlier_store(
         monkeypatch, tmp_path, [{"kind": "breakpoint", "by": "address", "ref": "4a0"}])

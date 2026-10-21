@@ -158,7 +158,7 @@ def state_save(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     if not path.exists():
         raise st.Invalid("readback_refused",
             f"no {path} appeared after `statesave`: the console said {said.strip()!r}",
-            errorlog=running.errorlog_block(complaints))
+            errorlog=running.errorlog_block(complaints, mark))
     head = _header(path)
     _judge_header(path, head)
     # READ AFTER THE SAVE, which is the machine the file holds: a save in the command altered
@@ -170,7 +170,7 @@ def state_save(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     STATE.states[name] = {"frame": frame, "pc": pc, "blocks": blocks}
     fields = {"name": name, "path": str(path), "bytes": path.stat().st_size,
               "frame": st.frame_shown(frame),
-              "pc": st.hex_addr(pc), "errorlog": running.errorlog_block(complaints)}
+              "pc": st.hex_addr(pc), "errorlog": running.errorlog_block(complaints, mark)}
     if held is None:
         return menvelope.envelope(fields)
     # THE STEP IS A STOP, recorded as one: left unrecorded, the next contact would find it and

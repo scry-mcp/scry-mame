@@ -137,7 +137,7 @@ def refuse_conflict(decl: dec.Declaration) -> None:
 
 
 def inherited(decl: dec.Declaration) -> str:
-    """The half of a stop's `how` that says the declaration is not this session's.
+    """The half of a stop's `cause` that says the declaration is not this session's.
 
     DECLARATIONS PERSIST ACROSS SESSIONS, which is the point of the store: a watch declared
     yesterday re-arms itself at the next `start`. So a run can be cut by something the caller

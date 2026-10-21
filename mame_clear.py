@@ -247,7 +247,7 @@ def row_index(index: int) -> str:
     return f"{index:X}"
 
 
-def foreign_row_how(kind: str, index: int, detail: str) -> str:
+def foreign_row_cause(kind: str, index: int, detail: str) -> str:
     """How a stop by a row this server did not place is named, in every family: the
     family's word, the index as `row_index` spells it, what the caller gave as `detail`,
     and the sentence ENDS by naming the console command that removes the row

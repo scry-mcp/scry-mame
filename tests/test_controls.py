@@ -400,7 +400,7 @@ def test_run_to_arms_only_the_target_and_reads_the_control_off_its_temp(
     assert out["control_hits"] == 30
     assert out["controls"] == [{"ref": "0x25a4", "cpu": ":maincpu", "hits_in_run": 30}]
     assert ses.armed == [(0x4A0, False), (0x4A0, True)], "the target alone, armed and removed"
-    assert out["how"] == "target 0x4a0"
+    assert out["cause"] == "target 0x4a0"
 
 
 def test_run_to_with_a_control_argument_declares_it_and_then_runs(
@@ -434,7 +434,7 @@ def _finds_a_stop_on_the_way_in(monkeypatch: pytest.MonkeyPatch) -> None:
         real(ses_, scratch)
         if not seen:
             seen.append(1)
-            mstate.STATE.found_stop_last = {"stop_seq": 9, "pc": "0x00000500", "how": "found"}
+            mstate.STATE.found_stop_last = {"stop_seq": 9, "pc": "0x00000500", "cause": "found"}
 
     monkeypatch.setattr(running, "observe_stop", observe)
 
@@ -471,7 +471,7 @@ def test_a_stop_found_by_a_call_that_escapes_is_not_reported_by_the_next_one(
     with pytest.raises(ValueError, match="bug"):
         s.read_memory(ref="0x400")
     out = s.status()
-    assert out["alive"] is True and "stopped_on_its_own" not in out, out
+    assert out["session"]["alive"] is True and "stopped_on_its_own" not in out, out
 
 
 def test_run_to_with_no_control_declared_is_refused_before_the_machine_moves(
@@ -1272,11 +1272,11 @@ def test_step_over_goes_through_the_console_and_is_confirmed_on_the_pc(
     assert (out["status"] == "ok" and out["mode"] == "over"
             and out["instructions_completed"] == 2), out
     assert ses.last_stop_packet == "", "the packet of the stop before is not this stop's cause"
-    assert ses.commands.count("over") == 2 and out["how"] == "step 2 over"
+    assert ses.commands.count("over") == 2 and out["cause"] == "step 2 over"
     assert out["summary"] == "step 2 over: pc 0x000f2034"
     refused("mode is one of", s.step(mode="out"))
     into = s.step(count=1)
-    assert (into["mode"] == "into" and into["how"] == "step 1"
+    assert (into["mode"] == "into" and into["cause"] == "step 1"
             and into["instructions_completed"] == 1)
 
 
@@ -1332,7 +1332,7 @@ def test_a_g_typed_through_debug_marks_the_machine_running_and_the_stop_is_prove
     s.debug(command="gvblank")
     assert getattr(mstate.STATE, "console_run")  # noqa: B009 -- mypy narrowed it above
     st_ = s.status()
-    assert st_["running"] is False and "stopped_on_its_own" in st_, st_
+    assert st_["session"]["running"] is False and "stopped_on_its_own" in st_, st_
     assert st_["stopped_on_its_own"]["packet"].startswith("none")
 
 
@@ -1375,7 +1375,7 @@ def test_step_over_that_settles_only_after_the_interrupt_is_an_invalid_stop(
     assert out["instructions_completed"] == 0 and out["pc"] == "0x000004a0" and "regs" in out
     assert "would have returned later was not seen" in out["message"]
     assert "step over 1 of 2 was still moving" in out["message"] and out["mode"] == "over", out
-    assert out["how"] == "interrupt after a step over still moving at its bound"
+    assert out["cause"] == "interrupt after a step over still moving at its bound"
 
 
 def test_a_console_run_that_never_rests_is_not_settled_and_the_counter_read_can_fail(
@@ -1649,7 +1649,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
     s.debug(command="g")
     out = s.stop()
     assert out["status"] == "ok" and out["interrupted"] is True, out
-    assert out["how"] == "interrupt", out["how"]
+    assert out["cause"] == "interrupt", out["cause"]
     # The same address as a STOP row is the row's doing.
     monkeypatch.setattr(mstate.STATE, "controls", {})
     assert running.halts(0x400, ":maincpu") is True
@@ -1758,7 +1758,7 @@ def test_a_run_by_milliseconds_that_never_came_to_rest_leaves_the_session_saying
 def test_the_inherited_clause_names_the_familys_tools_and_is_silent_without_an_origin(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The clause a stop's `how` carries for a declaration another session made: none for a
+    """The clause a stop's `cause` carries for a declaration another session made: none for a
     row with no origin recorded (a store from before origins) or for this session's own, and
     the family's own list and clear for an inherited one."""
     _controlled(monkeypatch, tmp_path)

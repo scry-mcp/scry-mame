@@ -151,10 +151,10 @@ def _s_victory_breakpoint(label: str) -> None:
     shown = make_visible(":maincpu")
     armed = call("breakpoint_at", ref=idle, by="address", cpu=SOUNDBD)
     hit = call("resume", seconds=10.0)
-    how = str(hit.get("how", ""))
+    cause = str(hit.get("cause", ""))
     cell(label, shown and ok(armed) and ok(hit) and hit.get("verdict") == "OTHER_STOP"
          and hit.get("cpu") == SOUNDBD and int(str(hit.get("pc")), 16) == int(idle, 16)
-         and how.startswith("breakpoint") and "no breakpoint" not in how,
+         and cause.startswith("breakpoint") and "no breakpoint" not in cause,
          f"armed at {idle}: {said(armed, 60)} / {said(hit, 120)}")
     cleared = call("breakpoint_clear", ref=idle, cpu=SOUNDBD)
     if not ok(cleared):

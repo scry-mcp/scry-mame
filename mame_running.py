@@ -18,6 +18,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core import log_marks, narrowing
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -40,9 +41,6 @@ from mame_state import STATE
 
 # What a stop shows at the program counter: a handful of instructions on either cpu.
 DASM_BYTES = 32
-# How many of the driver's lines since the previous stop ride on the reply; the count is
-# always whole, and `log` reads the rest.
-ERRORLOG_SHOWN = 8
 
 # How often a bounded `resume` asks the socket for the stop.
 RESUME_POLL_S = 0.1
@@ -53,11 +51,10 @@ CONSOLE_HALT_SETTLE_S = 2.0
 STOP_RECOVERS = "`stop` recovers it; if `stop` fails as well, `close` then `start` is the way out"
 
 
-def errorlog_block(lines: list[str]) -> dict[str, Any]:
-    """The lines `error.log` gained, as every reply carrying them spells them: how many, whether
-    the newest `ERRORLOG_SHOWN` cut them, and those."""
-    return {"lines_total": len(lines), "truncated": len(lines) > ERRORLOG_SHOWN,
-            "lines": lines[-ERRORLOG_SHOWN:]}
+def errorlog_block(lines: list[str], mark: int) -> dict[str, Any]:
+    """The lines `error.log` gained from byte `mark`, as every reply carrying them spells them
+    (`log_marks.stop_block`, the emulator channel's)."""
+    return log_marks.stop_block(lines, mark, "emulator", read.LOG_LIMIT_MAX)
 
 
 def session_broke(ses: gs.Session, error: gs.SessionError, when: str, tail: str,
@@ -114,7 +111,7 @@ def settle_logged(scratch: Path) -> None:
 
 def still_pending(scratch: Path) -> dict[str, list[dict[str, Any]]]:
     """What this session asked for and the machine has not yet confirmed: every throttle
-    asked while stopped, by the `mark` its reply named, and every count watch's removal, by
+    asked while stopped, by the `tag` its reply named, and every count watch's removal, by
     the `call` `watch_clear` named. Always both lists, so an empty one says somebody looked.
 
     SUCCESS IS A ROW LEAVING, never a row of its own: a failure latches in a row that repeats
@@ -126,7 +123,7 @@ def still_pending(scratch: Path) -> dict[str, list[dict[str, Any]]]:
     """
     settle_logged(scratch)
     return {
-        "throttles_pending": [{"mark": r["mark"], "on": r["on"]}
+        "throttles_pending": [{"tag": r["tag"], "on": r["on"]}
                               for r in STATE.throttles_pending],
         "tallies_pending_removal": [{"tally_id": r["tally_id"],
                                      "call": st.sentinel_line(r["seq"])}
@@ -197,18 +194,21 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
         dasm = read.dasm_lines(ses, scratch, pc, DASM_BYTES)
     except gs.SessionError as e:
         dasm = unavailable(str(e))
-    since, STATE.errorlog_mark = files.errorlog_since(scratch, STATE.errorlog_mark)
-    # JUDGED OFF THE LINES ALREADY IN HAND. A throttle left pending proves itself by a
-    # mark in this same log, so the one place that reads the log at every stop is the
-    # one place that can answer for it, and it costs no second read.
+    from_mark = STATE.errorlog_mark
+    since, STATE.errorlog_mark = files.errorlog_since(scratch, from_mark)
+    # JUDGED OFF THE LINES ALREADY IN HAND. A throttle left pending proves itself by its
+    # tag in this same log, so the one place that reads the log at every stop is the
+    # one place that can answer for it, and it costs no second read. A tally's removal is
+    # read here too, so the alarm every reply carries latches at the next stop.
     st.settle_throttles(since)
+    mtap.read_removal_answers(scratch)
     seen: dict[str, Any] = {
         "pc": st.hex_addr(pc),
         "cpu": cpu,
         "frame": frame,
         "regs": regs,
         "dasm": dasm,
-        "errorlog": errorlog_block(since),
+        "errorlog": errorlog_block(since, from_mark),
     }
     # A WATCHPOINT'S STOP names its writer: the packet says which address, the console's
     # log says who and what, and `before` is what the previous survey saw. Read BEFORE the
@@ -220,26 +220,24 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     watched = watches.watch_stop(ses, since)
     fresh: dict[dec.Owner, bytes] = {}
     if watched is not None:
-        seen["watch_how"], fresh = watched[0], watched[2]
+        seen["watch_cause"], fresh = watched[0], watched[2]
     elif not halts(pc, cpu):
         # The typed breakpoint's naming is tried first unless the console's NEWEST listed
         # stop is a registerpoint's: the machine stands at the last line, not the first kind.
         foreign = (None if arming.newest_listed_stop(since) == "register"
                    else breakpoints.foreign_breakpoint(ses, since, pc))
         if foreign is not None:
-            seen["breakpoint_how"] = foreign
-        elif (named := regpoints.stop_how(ses, since, seen["pc"])) is not None:
-            seen["regpoint_how"] = named[0]
+            seen["breakpoint_cause"] = foreign
+        elif (named := regpoints.stop_cause(ses, since, seen["pc"])) is not None:
+            seen["regpoint_cause"] = named[0]
             if named[1] is not None:
                 seen["regpoint_hit"] = named[1]
     evaluated = [*watches.evaluate_watches(ses, fresh, expressions, frame),
                  *iotaps.rows(frame, at_stop=True)]
     if evaluated:
-        # WHAT THE SHORT ROWS LEFT OUT is said beside them, under names of their own: a stop's
-        # `how` already says what stopped it.
+        # WHAT THE SHORT ROWS LEFT OUT is said beside them, as every short reply says it.
         seen["watches"], left = watches.at_stop(evaluated)
-        if left:
-            seen["watches_omitted"], seen["watches_how"] = left, watches.STOP_HOW
+        seen.update(narrowing.omission(left, watches.STOP_HOW))
     if watched is not None and watched[1] is not None:
         seen["watch_hit"] = watched[1]
     return seen
@@ -253,8 +251,8 @@ def stop_logged_in(lines: list[str]) -> bool:
     return arming.listed_stop_in(lines) or watches.stop_line_in(lines)
 
 
-#: The survey's keys that name a stop nobody's tool asked for, each popped into `how`.
-_NAMED_STOPS = ("watch_how", "breakpoint_how", "regpoint_how")
+#: The survey's keys that name a stop nobody's tool asked for, each popped into `cause`.
+_NAMED_STOPS = ("watch_cause", "breakpoint_cause", "regpoint_cause")
 
 
 def cut_by_a_stop(seen: dict[str, Any], pc: int) -> bool:
@@ -279,7 +277,7 @@ def halts(pc: int, cpu: str | None) -> bool:
 def attribute(pc: int, cpu: str | None) -> str:
     """How a stop at `pc` on `cpu` is named when no tool asked for it: a breakpoint this server
     armed there, or a stop this server cannot attribute (one typed through `debug`, or an
-    interrupt). A watchpoint's stop is named by the survey itself (`watch_how`), which reads the
+    interrupt). A watchpoint's stop is named by the survey itself (`watch_cause`), which reads the
     packet."""
     if halts(pc, cpu):
         return breakpoints.breakpoint_name(pc, cpu) or f"breakpoint at {pc:#x}"
@@ -335,17 +333,17 @@ def average_speed(ses: gs.Session) -> dict[str, float] | None:
             "emulated_s": st.measured_s(emulated), "wall_s": st.measured_s(wall)}
 
 
-def _remember(ses: gs.Session, seen: dict[str, Any], how: str) -> tuple[dict[str, Any], str]:
-    """The record of a surveyed stop, with `how` replaced by the watch's account when the
+def _remember(ses: gs.Session, seen: dict[str, Any], cause: str) -> tuple[dict[str, Any], str]:
+    """The record of a surveyed stop, with `cause` replaced by the watch's account when the
     stop was a watchpoint's, or by the row's when a breakpoint typed through `debug` or a
     registerpoint made it: the packet and the console's log, not the caller, know that."""
     for key in _NAMED_STOPS:
-        how = seen.pop(key, how)
+        cause = seen.pop(key, cause)
     hit = seen.get("watch_hit")
-    record = STATE.remember_stop(ses, int(seen["pc"], 16), seen["regs"], seen["frame"], how,
+    record = STATE.remember_stop(ses, int(seen["pc"], 16), seen["regs"], seen["frame"], cause,
                                  watch_hit=hit if isinstance(hit, dict) else None,
                                  cpu=seen["cpu"])
-    return record, how
+    return record, cause
 
 
 def run_speed(ses: gs.Session) -> dict[str, Any]:
@@ -362,20 +360,20 @@ def run_speed(ses: gs.Session) -> dict[str, Any]:
     return {"average_speed": speed} if speed is not None else {}
 
 
-def stop_reply(ses: gs.Session, scratch: Path, how: str, **base: Any) -> dict[str, Any]:
+def stop_reply(ses: gs.Session, scratch: Path, cause: str, **base: Any) -> dict[str, Any]:
     """What a stop ALWAYS returns, on top of the tool's own fields in `base`, and the record
     of it as the last stop."""
-    return finish_stop(ses, survey(ses, scratch), how, **base)
+    return finish_stop(ses, survey(ses, scratch), cause, **base)
 
 
-def finish_stop(ses: gs.Session, seen: dict[str, Any], how: str, **base: Any) -> dict[str, Any]:
+def finish_stop(ses: gs.Session, seen: dict[str, Any], cause: str, **base: Any) -> dict[str, Any]:
     """The reply and the record of a stop ALREADY surveyed, for a tool that has to read the
     survey before it can name its verdict (`run_for`: a watch that cut the run is a stop of
     its own, not a run that made no progress). A survey is one read of the machine and the
     log, so it is taken once and handed here. A stop that ENDS A RUN carries the speed the
     host held over it (`average_speed`), read from the window `resume` opened."""
-    record, how = _remember(ses, seen, how)
-    return menvelope.envelope({**base, "how": how, "stop_seq": record["seq"], **seen,
+    record, cause = _remember(ses, seen, cause)
+    return menvelope.envelope({**base, "cause": cause, "stop_seq": record["seq"], **seen,
                                "cpu": or_unavailable(seen["cpu"], st.NO_CPU_READ_WHY),
                                "frame": st.frame_shown(seen["frame"]), **run_speed(ses)})
 
@@ -430,16 +428,16 @@ def _found(ses: gs.Session, scratch: Path, packet: str | None) -> None:
     account for the reply of the contact that found it: `packet` is what to say of the stop
     packet, or None for the one the record holds."""
     seen = survey(ses, scratch)
-    record, _how = _remember(ses, seen, attribute(int(seen["pc"], 16), seen["cpu"]))
+    record, _cause = _remember(ses, seen, attribute(int(seen["pc"], 16), seen["cpu"]))
     STATE.found_stop_last = {"stop_seq": record["seq"], "pc": record["pc"],
                              "cpu": or_unavailable(record["cpu"], st.NO_CPU_READ_WHY),
                              "frame": st.frame_shown(record["frame"]),
-                             "how": record["how"],
+                             "cause": record["cause"],
                              "packet": record["packet"] if packet is None else packet,
                              **run_speed(ses)}
 
 
-def record_own_stop(tool: str, how: str = "the step it took before it refused") -> None:
+def record_own_stop(tool: str, cause: str = "the step it took before it refused") -> None:
     """A STOP THE REFUSING CALL MADE IS ITS OWN. `read_block`, `lua` and `screen_signature`
     buy their evaluation with a real single step, and some of their refusals come after it
     (an answer that names no block, a script that raised, one that never came), as do
@@ -455,16 +453,16 @@ def record_own_stop(tool: str, how: str = "the step it took before it refused") 
             or getattr(ses, "stop_count", None) in (None, STATE.last_stop.get("stop_count"))):
         return
     try:
-        _remember(ses, survey(ses, scratch), f"{tool}: {how}")
+        _remember(ses, survey(ses, scratch), f"{tool}: {cause}")
     except gs.SessionError:
         return
 
 
-def record_stop(ses: gs.Session, scratch: Path, how: str) -> dict[str, Any]:
+def record_stop(ses: gs.Session, scratch: Path, cause: str) -> dict[str, Any]:
     """Survey and record a stop a console command reached with no packet (a `focus` or an
     `ignore` that released the machine), so the next contact describes where it is; the
-    record, with `how` as the survey named it."""
-    return _remember(ses, survey(ses, scratch), how)[0]
+    record, with `cause` as the survey named it."""
+    return _remember(ses, survey(ses, scratch), cause)[0]
 
 
 def record_park(ses: gs.Session, scratch: Path) -> dict[str, Any]:
@@ -484,7 +482,7 @@ def require_stopped(ses: gs.Session, what: str) -> None:
         stop = STATE.as_of()
         stopped = "pc" in stop
         on = f" on {stop['cpu']}" if stopped and isinstance(stop.get("cpu"), str) else ""
-        where = (f"last seen stopped at pc {stop['pc']}{on} ({stop['how']}, {stop['since_s']} s "
+        where = (f"last seen stopped at pc {stop['pc']}{on} ({stop['cause']}, {stop['since_s']} s "
                  f"ago)" if stopped else "no stop recorded yet")
         raise gs.NotStopped(
             f"the machine was released and no stop has been read since, so it is taken as "
@@ -512,7 +510,7 @@ def resume(ses: gs.Session, scratch: Path, seconds: float,
     try:
         ses.go()
         if seconds == 0:
-            return menvelope.envelope({"waited_s": 0.0})     # a wait nobody asked for: no verdict
+            return menvelope.envelope({})     # a wait nobody asked for: no verdict, no time
         while not clock.expired():
             if ses.poll_stop(min(RESUME_POLL_S, clock.left())):
                 break

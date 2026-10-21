@@ -950,7 +950,7 @@ def test_a_sequence_log_armed_where_start_parked_knows_its_offset(
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30")))["status"] == "ok"
     monkeypatch.setattr(mstate.STATE, "ses", ses)
-    monkeypatch.setattr(mstate.STATE, "last_stop", {"how": "start", "stop_count": ses.stop_count})
+    monkeypatch.setattr(mstate.STATE, "last_stop", {"cause": "start", "stop_count": ses.stop_count})
     assert mr.fresh() is True
     out = s.palette_log(palette_port="pal", arm=True)
     assert out["armed_now"] is True and out["synced_at_start"] is True, out
@@ -966,7 +966,8 @@ def test_a_sequence_log_armed_where_start_parked_knows_its_offset(
     assert mr.fresh() is False
     again = s.palette_log(palette_port="pal")
     assert "synced_at_start" not in again
-    monkeypatch.setattr(mstate.STATE, "last_stop", {"how": "run_for", "stop_count": ses.stop_count})
+    monkeypatch.setattr(mstate.STATE, "last_stop",
+                        {"cause": "run_for", "stop_count": ses.stop_count})
     assert mr.fresh() is False, "a stop the park is not"
 
 
@@ -978,7 +979,7 @@ def test_only_a_sequence_log_starts_synced_where_start_parked(
     ses = _channel(monkeypatch, tmp_path)
     assert s.gfx_load(path=str(_packed_manifest(tmp_path, "v30-alt")))["status"] == "ok"
     monkeypatch.setattr(mstate.STATE, "ses", ses)
-    monkeypatch.setattr(mstate.STATE, "last_stop", {"how": "start", "stop_count": ses.stop_count})
+    monkeypatch.setattr(mstate.STATE, "last_stop", {"cause": "start", "stop_count": ses.stop_count})
     out = s.palette_log(palette_port="pal", arm=True)
     assert mr.fresh() is True and out["armed_now"] is True and "synced_at_start" not in out
     assert "sync = false" in ses.stdin.getvalue().decode()

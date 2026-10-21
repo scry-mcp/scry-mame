@@ -63,7 +63,7 @@ def bp_owned_at(addr: int, cpu: str | None,
 
 
 def breakpoint_name(pc: int, cpu: str | None) -> str | None:
-    """The declaration a stop at `pc` is at, for the stop's `how`: by its name when one was
+    """The declaration a stop at `pc` is at, for the stop's `cause`: by its name when one was
     declared by a name there, by the bare address when only by address, each with the
     clause that says a declaration was inherited. Every declaration at the address is
     looked at: an address declared first must not hide a name declared after, and among
@@ -497,5 +497,5 @@ def foreign_breakpoint(ses: gs.Session, since: list[str], pc: int) -> str | None
                 f"list could not be read to say whose: {e}")
     if row is None or index in STATE.breakpoints:
         return None
-    return mclear.foreign_row_how("breakpoint", index,
-                                  f" at {st.hex_addr(pc)}, typed through `debug`")
+    return mclear.foreign_row_cause("breakpoint", index,
+                                    f" at {st.hex_addr(pc)}, typed through `debug`")

@@ -251,7 +251,7 @@ def test_a_conditioned_watch_names_its_condition_when_it_stops(
     out = s.resume(seconds=1.0)
     assert out["watch_hit"]["condition"] == COND, out["watch_hit"]
     assert out["watch_hit"]["writes"] == [{"wrote": "0x00", "to": "0x002031fe", "pc": "0x000025f4"}]
-    assert "condition" in out["watches_omitted"], "the stop names its condition as left out"
+    assert "condition" in out["omitted"], "the stop names its condition as left out"
     assert s.watch_list()["watches"][0]["condition"] == COND
 
 

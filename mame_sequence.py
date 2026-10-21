@@ -622,11 +622,11 @@ def _stop_extra(reply: dict[str, Any], cut: dict[str, Any]) -> None:
 
 #: THIS SERVER'S HALF OF THE ACCOUNT (`scry_core.sequence_account`): a stop's compact row keeps
 #: where and when it stopped, what stopped it and its number, spelled as the full reply spells
-#: them, and is counted by `how` with the writer taken off (one watch is one key, whoever
+#: them, and is counted by `cause` with the writer taken off (one watch is one key, whoever
 #: wrote). The rule is the stop without its lists (`regs`, `dasm`, `errorlog`, `watches`, a
 #: hit's `writes`), which stay in the full reply.
-SHAPE = account.Shape(kept=("how", "pc", "frame", "stop_seq"),
-                      how=lambda stop: watches.how_key(str(stop.get("how"))),
+SHAPE = account.Shape(kept=("cause", "pc", "frame", "stop_seq"),
+                      cause_key=lambda stop: watches.cause_key(str(stop.get("cause"))),
                       extra=_stop_extra)
 
 

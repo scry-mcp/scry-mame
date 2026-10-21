@@ -292,10 +292,10 @@ def test_a_read_watch_arms_nothing_and_is_evaluated_at_every_stop(
         "ref": "frame_lo", "cpu": ":maincpu",
         "state": "evaluated", "reading": {"available": True, "value": 0x38, "raw_hex": "00000038"},
     }]
-    assert stop["watches_omitted"] == ["addr", "by", "fmt", "length", "mode"]
-    assert stop["watches_how"] == watches.STOP_HOW
+    assert stop["omitted"] == ["addr", "by", "fmt", "length", "mode"]
+    assert stop["how"] == watches.STOP_HOW
     listed = s.watch_list()["watches"]
-    assert {k: listed[0][k] for k in stop["watches_omitted"]} == {
+    assert {k: listed[0][k] for k in stop["omitted"]} == {
         "addr": "0x002031fc", "by": "symbol", "fmt": "u32", "length": 4, "mode": "show"}
     assert "watches" not in s.status(), "a survey field, not a status one"
 
@@ -365,8 +365,8 @@ def test_a_watch_stop_is_attributed_from_the_packet_and_the_console_log(
     ses.stops_after_polls = 1
     st = s.status()
     found = st["stopped_on_its_own"]
-    assert found["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e"
-    assert st["last_stop"]["how"] == found["how"]
+    assert found["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e"
+    assert st["last_stop"]["cause"] == found["cause"]
     hit = mstate.STATE.last_stop["watch_hit"]
     assert hit == {
         "ref": "frame_lo", "addr": "0x002031fc", "cpu": ":maincpu", "index": 1,
@@ -381,7 +381,7 @@ def test_a_watch_stop_is_attributed_from_the_packet_and_the_console_log(
     (tmp_path / "debug.log").open("a").write(STOP_LINE.replace("0038", "0039") + "25F6\n")
     ses.memory[0x2031FC] = bytes.fromhex("00000039")
     out = s.resume(seconds=1.0)
-    assert out["how"].startswith("watch frame_lo")
+    assert out["cause"].startswith("watch frame_lo")
     assert out["watch_hit"]["writes"][0]["wrote"] == "0x0039"
     assert out["watch_hit"]["cpu"] == ":maincpu", "a hit names the cpu its watch is on"
     assert out["watch_hit"]["before"] == 0x38 and out["watch_hit"]["after"] == 0x39
@@ -434,7 +434,7 @@ def test_a_run_for_cut_by_a_watch_before_a_frame_is_a_stop_and_not_a_void_run(
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     out = s.run_for(milliseconds=1)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["how"]
+    assert out["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["cause"]
     assert out["watch_hit"]["after"] == 0x38 and out["frame_before"] == out["frame_after"]
     assert "code" not in out and "message" not in out
 
@@ -701,7 +701,7 @@ def test_a_watch_stop_with_no_console_line_says_so_instead_of_inventing_one(
     ses.stops_after_polls = 1
     out = s.stop()          # the first contact finds the stop; `stop` then has nothing to do
     assert out["interrupted"] is False
-    assert out["stopped_on_its_own"]["how"] == (
+    assert out["stopped_on_its_own"]["cause"] == (
         "a watchpoint stopped the machine and the console logged no line for it, so which one "
         "is not known")
     assert "watch_hit" not in mstate.STATE.last_stop
@@ -716,7 +716,7 @@ def test_a_watch_stop_by_a_row_this_server_did_not_arm_is_named_as_foreign(
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
     out = s.stop()
-    assert out["stopped_on_its_own"]["how"] == (
+    assert out["stopped_on_its_own"]["cause"] == (
         "watch 7 at 0x002031fe this server did not arm, wrote 0038 by pc 0x0000040e: "
         "`debug(\"wpclear 0x7\")` removes it")
     assert "watch_hit" not in mstate.STATE.last_stop
@@ -1318,8 +1318,9 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
     ses.next_packet = "T05watch:0;0e:00000000;11:0000040e;"
     ses.stops_after_polls = 1
     stop = s.resume(seconds=1.0)
-    assert stop["status"] == "ok" and stop["how"].startswith("watch frame_lo"), stop["how"]
-    assert "cleared" in stop["how"] and "`debug(\"wpclear 0x1f\")`" in stop["how"], stop["how"]
+    assert stop["status"] == "ok" and stop["cause"].startswith("watch frame_lo"), stop["cause"]
+    assert ("cleared" in stop["cause"]
+            and "`debug(\"wpclear 0x1f\")`" in stop["cause"]), stop["cause"]
     assert stop.get("watch_hit") is None, "nothing renders a hit whose declaration is gone"
     # THE COMMAND THE NOTE NAMES, typed: the list drops the row and the record goes.
     monkeypatch.setattr(ses, "watchpoint", _WatchSession.watchpoint.__get__(ses))
@@ -1403,7 +1404,7 @@ def test_the_console_line_is_matched_to_the_firing_watchs_index(
     hit = mstate.STATE.last_stop["watch_hit"]
     assert [w["to"] for w in hit["writes"]] == ["0x002031fe", "0x002031fc"]
     assert hit["writer_pc"] == "0x00000410" and len(hit["lines"]) == 2
-    assert mstate.STATE.last_stop["how"] == "watch frame_lo: 0x002031fc written by pc 0x00000410"
+    assert mstate.STATE.last_stop["cause"] == "watch frame_lo: 0x002031fc written by pc 0x00000410"
 
 
 def test_a_write_inside_the_range_names_its_watch_and_a_read_watch_with_no_line_is_unknown(
@@ -1417,11 +1418,11 @@ def test_a_write_inside_the_range_names_its_watch_and_a_read_watch_with_no_line_
     (tmp_path / "debug.log").open("a").write(STOP_LINE)       # a write to 0x002031fe
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    assert s.status()["stopped_on_its_own"]["how"].startswith("watch frame_lo: 0x002031fc")
+    assert s.status()["stopped_on_its_own"]["cause"].startswith("watch frame_lo: 0x002031fc")
     s.resume()
     ses.next_packet = "T05rwatch:0;"
     ses.stops_after_polls = 1
-    assert "logged no line for it" in s.status()["stopped_on_its_own"]["how"]
+    assert "logged no line for it" in s.status()["stopped_on_its_own"]["cause"]
 
 
 def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
@@ -1447,7 +1448,7 @@ def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
     ses.go = go  # type: ignore[method-assign]
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     assert out["verdict"] == "OTHER_STOP" and out["control_hits"] == 1
-    assert out["how"].startswith("watch frame_lo") and out["pc"] == "0x000004a0"
+    assert out["cause"].startswith("watch frame_lo") and out["pc"] == "0x000004a0"
 
 
 def test_a_run_cut_by_a_watch_before_the_control_fired_does_not_call_the_control_cold(
@@ -1467,7 +1468,7 @@ def test_a_run_cut_by_a_watch_before_the_control_fired_does_not_call_the_control
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     assert out["status"] == "INVALID" and out["code"] == "cut_by_other_stop", out
-    assert out["how"].startswith("watch frame_lo") and out["control_hits"] == 0
+    assert out["cause"].startswith("watch frame_lo") and out["control_hits"] == 0
     assert "control_dasm" not in out and "disarm_watches" in out["message"]
 
 
@@ -1512,7 +1513,7 @@ def test_a_stop_at_a_watch_reads_the_bytes_once_and_the_log_at_every_stop(
     ses.stops_after_polls = 1
     out = s.stop()
     assert reads.count((0x2031FC, 4)) == 1, "one read serves `after` and the evaluation"
-    assert out["stopped_on_its_own"]["how"].endswith("written by pc 0x0000040e")
+    assert out["stopped_on_its_own"]["cause"].endswith("written by pc 0x0000040e")
 
 
 def test_watch_add_adopting_a_disabled_row_reports_it_disabled_and_so_does_the_rearm(
@@ -1626,7 +1627,7 @@ def test_a_stop_from_a_watch_re_armed_from_a_prior_session_says_it_was_a_leftove
     """A change watch declared in an earlier session persists in the store and is re-armed at
     the next `start`; the first `run_to`/`run_for` of the new session then stops at it, and
     only `start`'s `rearm` block named it. The stop itself now says the watch was a re-armed
-    leftover (`rearmed: true` in `watch_hit`, and the `how` says so), so a caller who did not
+    leftover (`rearmed: true` in `watch_hit`, and the `cause` says so), so a caller who did not
     scroll back to the start reply is not left thinking they armed it this session. A watch
     declared THIS session carries no such flag, which the exact-equality attribution test
     above pins."""
@@ -1695,7 +1696,7 @@ def test_a_frame_run_cut_by_a_watch_between_two_vblanks_is_a_stop_and_sends_noth
     each frame come back ELAPSED, with every write it passed through lost."""
     out, sent, _ = _frame_run(monkeypatch, tmp_path, ticks=False, writes=True)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["how"]
+    assert out["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["cause"]
     assert out["watch_hit"]["after"] == 0x38 and out["frame_before"] == out["frame_after"]
     assert sent == ["gvblank"], sent
 
@@ -1708,7 +1709,7 @@ def test_a_frame_run_cut_by_a_watch_that_lands_with_the_tick_is_a_stop_and_sends
     `gvblank` sent after it would carry the machine past the writer (live section W)."""
     out, sent, surveyed = _frame_run(monkeypatch, tmp_path, ticks=True, writes=True)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
-    assert out["how"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["how"]
+    assert out["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["cause"]
     assert out["frame_after"] == out["frame_before"] + 1, out
     assert sent == ["gvblank"] and surveyed == [1], (sent, surveyed)
 
@@ -1982,7 +1983,7 @@ def test_a_write_by_another_cpu_is_named_without_a_writer_pc() -> None:
         m = watches._STOP_LINE.search(line)
         assert m is not None and watches._writer(m) == pc, line
     found = watches._STOP_LINE.search(bare)
-    assert found is not None and "another cpu or device" in watches._foreign_how(found)
+    assert found is not None and "another cpu or device" in watches._foreign_cause(found)
 
 
 @pytest.mark.parametrize(("space", "read_side", "says"), [
@@ -2025,6 +2026,11 @@ def test_a_stop_keeps_a_taps_count_and_its_alarms_while_they_hold_and_names_the_
             "why": "older"}
     assert "values" in left and "writers" in left and "frame_as_of" in left
     assert "total" not in left and "superseded" in left, "named where it was left out"
+    # A TAP WHOSE STATE COULD NOT BE READ IS AN ALARM, as one not installed is: kept on the row,
+    # never folded into what the stop left out, where a healthy tap's `installed` goes.
+    unread = {"available": False, "why": "the console did not answer"}
+    rows, _ = watches.at_stop([{**tally, "installed": False}, {**tally, "installed": unread}])
+    assert rows[0]["installed"] is False and rows[1]["installed"] == unread, rows
 
 
 def test_a_pass_places_a_row_again_with_only_what_a_stop_shows(
