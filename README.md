@@ -423,7 +423,7 @@ carries no default of its own.
 | `set_register` | a register forced and read back; a 16-bit register answers to its short name too |
 | `reset` | the soft reset, applied and read back against the boot pc; a hard reset is refused |
 | `memdump` | `(ref, length, dest)`: memory to a **file** through the console's own `save`, checked against a protocol read before the path is given |
-| `snapshot` | the screen as it is now to a PNG, complete and hashed (`sha256`), into the scratch or moved to `dest` |
+| `snapshot` | the screen as it is now to a PNG, through the session's `view` (the screen alone unless `start` named a layout view), complete and hashed (`sha256`), into the scratch or moved to `dest` |
 | `log` | one `channel` of what MAME writes (`emulator` is `error.log`, `process` its stdout and stderr, `all` both tagged), filtered by a pattern **in the server** |
 | `log_wait` | WHEN a line of a channel happened: answered at once if it already has, waited for if not (`TARGET`, or `TIMEOUT` at its bound); the one wait that answers while the machine runs |
 | `captures` | every file `record`, `audio_record`, `trace`, `snapshot` and the graphics tools checked and handed back this session, re-read |

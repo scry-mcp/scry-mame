@@ -14,13 +14,14 @@ import shutil
 import subprocess
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, judges, live_host, narrowing, prose
+from scry_core import guardian, judges, live_host, log_marks, narrowing, placement, prose
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -57,13 +58,9 @@ from mame_state import STATE
 # to every repo's kill path.
 SCRATCH_PREFIX = "mame-mcp-"
 
-# The two display NAMES `place-window` knows, spelled as it spells them, and the variable a
-# session exports with its answer to "main or secondary?", read here when `display` is empty
-# so the reply can SAY which display a shared start went to.
-DISPLAYS = ("main", "secondary")
-SHARED_DISPLAY_VAR = "WINDOW_SHARED_DISPLAY"
-# What `start`'s `display` takes: a display, or "" for not given.
-DISPLAY_OPTIONS = ("", *DISPLAYS)
+# The displays a shared start takes (`scry_core.placement`).
+DISPLAYS = placement.DISPLAYS
+DISPLAY_OPTIONS = placement.DISPLAY_OPTIONS
 # THE BACKGROUND LAUNCH (`live_host.BACKGROUND_VAR` says why). The captures do not move with it:
 # MAME draws them from the emulated screen.
 BACKGROUND_VAR = live_host.BACKGROUND_VAR
@@ -83,9 +80,6 @@ START_RETRIES_MAX = 2
 # closes its sockets before it can be waited for, and that closed channel is its death, not a
 # refusal.
 CLOSED_EXIT_WAIT_S = 1.0
-# How long the placement helper is given to answer: it reads the display topology and
-# prints flags, and one that hangs would hold `start`, and the one lock, forever.
-HELPER_TIMEOUT_S = 15.0
 
 #: What this server, and after it the guardian beside every MAME, are called in the host's
 #: process list.
@@ -163,58 +157,21 @@ def reference_rom_file(reference_rom: str) -> Path:
 
 
 def window_flags(shared: bool, display: str = "") -> list[str]:
-    """Window flags: from the shared helper when it is there, from a sensible default when not.
+    """Window flags: the placement helper's (`scry_core.placement`) when it answers, a sensible
+    default when it does not and nobody is watching.
 
-    The helper lives in its author's private environment. This server has to start just the same
-    on a machine that does not have it, and it did not: `subprocess.run` on a missing file raises
-    `FileNotFoundError`, which `check=False` does not catch, so the whole of `start` died for want
-    of an OPTIONAL helper. The default is the right one for the normal case, which is that nobody
-    is watching.
-
-    `display` is handed to the helper as its own `--display`, and only a SHARED session carries
-    one: the helper ignores it otherwise, out loud on stderr, which no caller of this server ever
-    sees, so `start` refuses that combination before it gets here.
-    """
-    # `WINDOW_APP` IS THE ONLY ROUTE TO A HELPER, and there is no default: a path this package
-    # guessed (beside it, under the home) would read differently for every clone and point at
-    # somebody's private configuration. Unset is the missing-helper case the fallback carries.
-    named = os.environ.get("WINDOW_APP", "").strip()
-    helper = Path(named)
-    # `is_file()` AND `os.access`, NOT `exists()`. What arrives here can be a `WINDOW_APP`
-    # pointing at an alias that a checkout did not materialise, or any helper that is present
-    # and cannot be run. `exists()` answers True for a
-    # short text file with no exec bit, and `subprocess.run` then raises PermissionError -- an
-    # OSError, which `check=False` does not suppress -- taking the whole of `start` down. The
-    # absent case was the only one this ever handled.
-    # AND `os.access(X_OK)` IS A NO-OP ON WINDOWS, where it answers True for any existing file, so
-    # the `except` below is the half that carries the case there rather than a belt on a brace.
-    failed = (f"the helper that computes it is not at {helper}. Set WINDOW_APP to it" if named
-              else "WINDOW_APP is not set, so no helper computes it. Set WINDOW_APP to one")
-    if named and helper.is_file() and os.access(helper, os.X_OK):
-        cmd = [str(helper), "mame"] + (["--shared"] if shared else [])
-        if display:
-            cmd += ["--display", display]
-        try:
-            output = subprocess.run(cmd, capture_output=True, text=True, check=False,
-                                    timeout=HELPER_TIMEOUT_S)
-        except OSError as e:
-            output = None
-            failed = f"the helper at {helper} could not be run: {e}"
-        except subprocess.TimeoutExpired:
-            output = None
-            failed = f"the helper at {helper} did not answer within {HELPER_TIMEOUT_S} s"
-        if output is not None and output.returncode == 0 and output.stdout.split():
-            return output.stdout.split()
-        # THE HELPER'S OWN WORDS, when it ran: without its stderr the refusal can only say
-        # the helper was "not at" the path it had just been run from, so a bad display or a
-        # topology failure reads as a missing program.
-        if output is not None:
-            said = output.stderr.strip() or output.stdout.strip() or "nothing"
-            failed = (f"the helper at {helper} answered exit code {output.returncode} and "
-                      f"printed {said!r}")
+    This server has to start just the same on a machine without the helper, which lives in its
+    author's private environment, and the default is right for the normal case, nobody watching.
+    A watched run is refused instead: inventing a size there is how windows end up off-screen."""
+    placed = placement.ask("mame", shared, display)
+    # FOR `mame` THE HELPER ALWAYS PRINTS THE WINDOW'S MODE, so no flags is a helper that could
+    # not compute them, never the one-display answer it is for the other apps.
+    if placed.flags:
+        return placed.flags
+    why = placed.why or "the helper printed no flags"
     if shared:
         raise st.Invalid("host_failed",
-            f"a shared session needs the screen geometry, and {failed}. Fix that, or start "
+            f"a shared session needs the screen geometry, and {why}. Fix that, or start "
             "without `shared`: inventing a size here is how windows end up off-screen."
         )
     return ["-window", "-nomaximize", "-resolution", "320x240"]
@@ -265,6 +222,7 @@ def build_command(
     inipath: str = "",
     boot_lua: str = "",
     state_dir: str = "",
+    view: str = "",
 ) -> list[str]:
     """The whole MAME command line, as a pure function, so it can be tested without launching.
 
@@ -289,6 +247,10 @@ def build_command(
     cmd = [binary, system, "-rompath", rompath, "-skip_gameinfo", "-log", "-debuglog",
            *flags, "-debug", "-debugger", DEBUGGER, "-debugger_port", str(port),
            "-snapshot_directory", str(Path(scratch) / "snap"),
+           # THE VIEW A CAPTURE IS TAKEN THROUGH, chosen at launch because a running MAME cannot
+           # switch it: `native` is the emulated screen alone, at its own size, whatever layout
+           # the set ships; a name is a layout view, matched by prefix as MAME matches it.
+           "-snapview", view or "native",
            "-cfg_directory", str(Path(state) / "cfg"),
            "-nvram_directory", str(Path(state) / "nvram"),
            # The states are the third occupant of the caller's state directory (`state_save`),
@@ -346,27 +308,12 @@ def channels() -> dict[str, str]:
     }
 
 
-def shared_display(shared: bool, display: str) -> str:
-    """Which display a shared start goes to, as the reply will report it: the argument, else
-    the session's exported answer, else the helper's default (the secondary). A quick run
-    has no display to report. An unusable value in the environment is refused naming the
-    variable, never passed on for the helper to reject on a stderr nobody sees."""
-    if not shared:
-        return ""
-    if display:
-        return display
-    exported = os.environ.get(SHARED_DISPLAY_VAR, "")
-    if exported and exported not in DISPLAYS:
-        raise st.Invalid("bad_argument",
-            f"{SHARED_DISPLAY_VAR}={exported!r} in this server's environment is not one of "
-            f"{list(DISPLAYS)}; pass `display` explicitly or fix the variable"
-        )
-    return exported or "secondary"
+shared_display = placement.shared_display
 
 
 def judge_background(background: bool | None, shared: bool, env: dict[str, str] | None) -> bool:
-    """Whether MAME is launched behind: `background` when given, else behind for a quick start
-    and in front for a shared one. `env` carrying the hint is refused: two spellings of one
+    """Whether MAME is launched behind: `background` when given, else behind for a run nobody
+    watches and in front for a shared one. `env` carrying the hint is refused: two spellings of one
     switch let the reply name one while the process obeys the other."""
     if env and BACKGROUND_VAR in env:
         raise st.Invalid("bad_argument",
@@ -450,6 +397,7 @@ class Judged:
     background: bool = False      # `judge_background`'s answer
     presence: bool = False        # the caller's `presence`
     picked: bool = False          # the port is this server's pick, not the caller's `stub_port`
+    view: str = ""                # the caller's `view`: empty is MAME's `native`
 
 
 def collect(judged: Judged) -> machine.Listed:
@@ -614,7 +562,7 @@ PORT_MAX = 65535
 def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
                 symbols: syms.Given = "", inipath: str = "", boot_lua: str = "",
                 state_dir: str = "", cfg: str = "", types: syms.Types = "", display: str = "",
-                **_: Any) -> None:
+                view: str = "", **_: Any) -> None:
     """`start`'s machine-independent half, asked by `judge` first: the shape of every path
     argument (`inputs.absolute`: absolute or `~`-led, no NUL and no lone surrogate)
     in the order `judge` reads them, and `display`'s word, which is wrong on any machine.
@@ -633,6 +581,23 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
     if state_dir:
         inputs.absolute("state_dir", state_dir)
     vocab.one_of("display", display, DISPLAY_OPTIONS)
+    check_view(view)
+
+
+def check_view(view: str) -> None:
+    """`view` is one argument of MAME's command line: no NUL and no lone surrogate, which no
+    command line can carry, and no leading `-`, which MAME would read as an option."""
+    if "\x00" in view:
+        raise st.Invalid("bad_argument", f"view={view!r} holds a NUL, which no command line "
+                         "carries")
+    try:
+        view.encode("utf-8")
+    except UnicodeEncodeError:
+        raise st.Invalid("bad_argument", f"view={view!r} holds a lone surrogate, which no "
+                         "command line carries") from None
+    if view.startswith("-"):
+        raise st.Invalid("bad_argument", f"view={view!r} starts with `-`, which MAME would read "
+                         "as an option of its own: a view's name is its prefix")
 
 
 def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
@@ -640,7 +605,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           boot_lua: str, env: dict[str, str] | None, bases: syms.Bases | None,
           reference_base: str, display: str, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
-          background: bool | None = None, presence: bool = False) -> Judged:
+          background: bool | None = None, presence: bool = False,
+          binary_origin: str = binaries.ARGUMENT, view: str = "") -> Judged:
     """EVERY REFUSAL OF THE CALLER'S INPUT, before the emulator exists: judged after the boot,
     a bad path or symbol surfaces as a bare error from deep inside naming the path but not the
     argument, with the caller unsure whether a machine is now running. The shape of every path
@@ -657,23 +623,22 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     # after the scratch has been made and with nothing in the message naming the argument.
     if plugins_dir(binary) is None:
         looked = "; ".join(str(d / CONSOLE_PLUGIN) for d in plugin_places(binary))
-        raise st.Invalid("bad_argument",
-                         f"no console plugin for {binary} (resolved) in any of: {looked}. The "
-                         "Lua console this server connects to stdin is MAME's `console` plugin, "
-                         "and without it MAME refuses to boot (\"Console plugin not found\"): "
-                         "pass as `binary` the executable of a MAME build or install that ships "
-                         "its plugins")
+        # WHOSE TO FIX FOLLOWS THE RUNG, as the ladder's own refusals do: a build the caller
+        # named is the caller's, one the host's variable or PATH found is the host's.
+        raise st.Invalid("bad_argument" if binary_origin == binaries.ARGUMENT else "host_failed",
+                         f"no console plugin for {binary} (from the {binary_origin} rung) in "
+                         f"any of: {looked}. The Lua console this server connects to stdin is "
+                         "MAME's `console` plugin, and without it MAME refuses to boot "
+                         "(\"Console plugin not found\"): pass as `binary`, or set "
+                         f"{binaries.VARIABLE} to, the executable of a MAME build or install "
+                         "that ships its plugins")
     ref = reference_rom_file(reference_rom)
     # A MISSING ROM DIRECTORY IS THE WORST SHAPED FAILURE IF IT REACHES MAME: it starts without
     # its ROMs, the gdbstub never listens, and the caller waits the whole `boot_seconds` to be told
     # the STUB did not answer.
     if not (roms := inputs.absolute("rompath", rompath)).is_dir():
         inputs.no_such("ROM directory", str(roms))
-    if display and not shared:
-        raise st.Invalid("bad_argument",
-            f"display={display!r} on a quick run: nobody is watching a quick run, so it never "
-            "obeys the display. Pass `shared=True` if somebody is going to watch, or drop it."
-        )
+    placement.check_display(shared, display)
     inputs.natural("throttle_from_frame", throttle_from_frame,
                    " is not a frame number: an integer, never negative, and 0 is off")
     display = shared_display(shared, display)
@@ -752,12 +717,36 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     return Judged(flags, port, display, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
                   throttle_from_frame, asked, cfg_source, listed, background=behind,
-                  presence=presence, picked=picked)
+                  presence=presence, picked=picked, view=view)
 
 
-# How much of MAME's own output rides on a refused `start`: the last lines are where a
-# fatal error lands, and a whole boot log is not.
-STDOUT_TAIL_CHARS = 1500
+#: `start`'s `view`, described once in its schema.
+VIEW_ARGUMENT = ("What `snapshot` and `record` render through, for the whole session: empty, the "
+                 "emulated screen alone, at its own size (MAME's `native`); else a layout view "
+                 "by prefix, MAME's own default when none matches (the reply's `views` lists "
+                 "the set's, and `view` says which was taken).")
+
+
+#: Where a launch's `-version` probe runs beside its boot: one at a time, as launches are.
+_VERSIONS = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mame-version")
+
+
+def view_shown(asked: str, inventory: dict[str, Any]) -> str | dict[str, Any]:
+    """The view this session's captures are taken through: `native` (the emulated screen alone)
+    when none was asked, else the view MAME resolved the name to, read off the machine, which
+    is the truth whether it matched the prefix or fell back to its own choice."""
+    if not asked:
+        return "native"
+    taken = inventory.get(machine.SNAPVIEW, "")
+    return taken or unavailable("MAME did not say which view its snapshots take: the boot "
+                                "harness read no snapshot target")
+
+
+def views_shown(inventory: dict[str, Any]) -> list[str] | dict[str, Any]:
+    """The set's layout views, which `view` takes by name, or why none was listed."""
+    views = inventory.get(machine.VIEWS) or []
+    return views or unavailable("no render target listed a view: a machine run with no "
+                                "video has none, and `view` then takes `native` alone")
 
 
 def _stdout_tail(scratch: Path | None) -> str:
@@ -770,7 +759,7 @@ def _tail(scratch: Path | None, channel: str) -> str:
     log = files.log_path(scratch, channel) if scratch else None
     if log is None or not log.exists():
         return ""
-    return log.read_text(errors="replace")[-STDOUT_TAIL_CHARS:]
+    return log.read_text(errors="replace")[-log_marks.TAIL_CHARS:]
 
 
 def _alive_fields(judged: Judged, keep: bool = True) -> dict[str, Any]:
@@ -882,7 +871,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     harness = boot_harness(STATE.scratch, judged.boot_lua, judged.throttle_from_frame,
                            judged.presence)
     cmd = build_command(judged.binary, judged.system, judged.rompath, judged.port, judged.flags,
-                        str(STATE.scratch), judged.inipath, harness, judged.state_dir)
+                        str(STATE.scratch), judged.inipath, harness, judged.state_dir,
+                        judged.view)
     # stdout and stderr land in one file in the scratch, named in the reply: sent to DEVNULL,
     # a driver's own complaints and the OSD's would be lost with the process.
     STATE.stdout_log = open(files.log_path(STATE.scratch, "process"),  # noqa: SIM115 (kill closes)
@@ -1007,7 +997,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
           display: str, port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
-          background: bool | None = None, *, presence: bool,
+          background: bool | None = None, *, presence: bool, view: str = "",
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, and again for a `failures.LaunchFailed` that
     says so, up to `START_RETRIES_MAX` more times. Each relaunch is a WHOLE fresh launch,
@@ -1028,7 +1018,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                 return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
                                display, port, state_dir, throttle_from_frame, types, cfg,
-                               background, presence, retries, progress)
+                               background, presence, retries, progress, view)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
@@ -1052,7 +1042,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
             display: str, port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
-            retries: list[dict[str, Any]], progress: mprogress.Progress) -> dict[str, Any]:
+            retries: list[dict[str, Any]], progress: mprogress.Progress,
+            view: str = "") -> dict[str, Any]:
     """ONE launch: judge, boot under one guard, re-arm, park, reply."""
     # ONE MACHINE PER SERVER, and ending it is the caller's act: a start over a live session
     # that killed it and booted again in silence would let a second `start` typed by mistake
@@ -1075,7 +1066,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    shared=shared, boot_lua=boot_lua, env=env, bases=bases,
                    reference_base=reference_base, display=display, port=port,
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
-                   cfg=cfg, background=background, presence=presence)
+                   cfg=cfg, background=background, presence=presence,
+                   binary_origin=resolved.origin, view=view)
     # FROM THE SCRATCH ON, EVERYTHING SITS UNDER ONE GUARD. If the ROM check fails, the session
     # is KILLED: an error merely propagated leaves the lying session alive and reachable, and
     # the next call measures on it quite happily. A guarantee that leaves
@@ -1091,8 +1083,14 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     try:
         try:
             # Asked after `judge`, so a refused input spawns nothing, `-version` included, and
-            # inside the guard, so whatever escapes it still collects the `-listxml` query.
-            binary_facts = binaries.facts(resolved)
+            # inside the guard, so whatever escapes it still collects the `-listxml` query. It
+            # runs as the boot will (the launch's environment), and BESIDE the boot, as the
+            # `-listxml` query does: inside the seconds the boot spends waiting for the stub,
+            # under a bound no longer than them, so a build that hangs on it costs nothing.
+            version = _VERSIONS.submit(
+                binaries.facts, resolved,
+                launch_environment(dict(judged.env), judged.background),
+                min(binaries.VERSION_TIMEOUT_S, judged.wait))
             given, harness, _cmd = boot(judged, progress,
                                         last_launch=len(retries) == START_RETRIES_MAX)
         except st.Invalid:
@@ -1116,6 +1114,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         # parent, reachable by nobody: the guarantee that a start owns nothing when it fails
         # is then structural, instead of resting on a cleanup somebody has to remember.
         listed = collect(judged)
+        binary_facts = version.result()
         assert STATE.ses is not None
         STATE.system = system
         STATE.maps.started()
@@ -1140,6 +1139,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         # before the re-arm, which judges each condition against its cpu's register names here.
         # What it could not gather is a note inside the answer, never a reason to fail a start.
         STATE.machine_map = machine.cache(STATE.scratch, listed)
+        STATE.view = view_shown(judged.view, STATE.machine_map)
         # EACH CPU'S BYTE ORDER IS MAME'S, read off that inventory, before the re-arm and the
         # park below decode anything.
         STATE.ses.know_endianness(cpus.program_endianness(STATE.ses, STATE.machine_map,
@@ -1180,6 +1180,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             # What was handed to the driver, so a watched run can say which variant it is.
             "env": given,
             "display": judged.display,
+            "view": STATE.view,
+            "views": views_shown(STATE.machine_map),
             "background": judged.background,
             "flags": judged.flags,
             "throttle_from_frame": throttle_from_frame,

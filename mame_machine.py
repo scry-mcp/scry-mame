@@ -119,6 +119,17 @@ MACHINE_LUA = """local function mame_mcp_inventory()
     add(string.format("SCREEN %%s width=%%d height=%%d refresh=%%.6f", tag, sc.width,
                       sc.height, sc.refresh))
   end
+  -- THE VIEWS, in a pcall of their own: a board with no render target (no video) lists none,
+  -- and that may not cost the inventory above. `SNAPVIEW` is the view MAME's snapshots are
+  -- taken through, as MAME resolved `-snapview` (a prefix it matched, or its own fallback).
+  pcall(function()
+    for _, name in pairs(manager.machine.render.targets[1].view_names) do
+      add("VIEW " .. name)
+    end
+  end)
+  pcall(function()
+    add("SNAPVIEW " .. manager.machine.video.snapshot_target.current_view.name)
+  end)
   add("%(end)s")
   return out
 end
@@ -142,6 +153,10 @@ _ENTRY = re.compile(r"^ENTRY (\S+) (\S+) (\d+) start=([0-9a-f]+) end=([0-9a-f]+)
                     r"region_offset=(\d+)$")
 _BLOCK = re.compile(r"^(REGION|SHARE) (\S+) size=(\d+) bytewidth=(\d+) endianness=(\S+)$")
 _SCREEN = re.compile(r"^SCREEN (\S+) width=(\d+) height=(\d+) refresh=([0-9.]+)$")
+_VIEW = re.compile(r"^(VIEW|SNAPVIEW)(?: (.*))?$")
+#: The inventory's keys beside its sections: the set's layout views, and the one MAME's snapshots
+#: are taken through.
+VIEWS, SNAPVIEW = "views", "snapview"
 
 # The sections the live half owns, named here so an empty gather can present every one of them
 # empty rather than presenting some and omitting others, which reads as "this board has none".
@@ -179,6 +194,8 @@ def parse(text: str) -> dict[str, Any]:
                           "was cut off and what it holds is a fragment")
     found: dict[str, list[dict[str, Any]]] = {name: [] for name in LIVE_SECTIONS}
     registers: dict[str, list[str]] = {}
+    views: list[str] = []
+    snapview = ""
     for line in lines[1:-1]:
         if (m := _CPU.match(line)) is not None:
             spaces = m.group(4).split(",") if m.group(4) else []
@@ -219,6 +236,14 @@ def parse(text: str) -> dict[str, Any]:
             found["screens"].append({"tag": m.group(1), "width": int(m.group(2)),
                                      "height": int(m.group(3)),
                                      "refresh_hz": float(m.group(4))})
+        elif (m := _VIEW.match(line.strip())) is not None:
+            # A VIEW WITH NO NAME IS SKIPPED, never a reason to refuse the whole inventory.
+            if not (name := (m.group(2) or "").strip()):
+                continue
+            if m.group(1) == "VIEW":
+                views.append(name)
+            else:
+                snapview = name
         else:
             raise LookupError(f"the dump carries a line the gather does not write: {line!r}")
     # A MACHINE WITH NO EXECUTING DEVICE IS AN INSTRUMENT THAT EXAMINED NOTHING, not a board
@@ -228,7 +253,7 @@ def parse(text: str) -> dict[str, Any]:
     if not found["cpus"]:
         raise LookupError("the gather found no device that executes, so it recognised no cpu "
                           "on a machine that is running one: nothing here is an inventory")
-    return {**found, cpus.CPU_REGISTERS: registers}
+    return {**found, cpus.CPU_REGISTERS: registers, VIEWS: views, SNAPVIEW: snapview}
 
 
 # THE OTHER SOURCE: MAME's own `-listxml`, run against THIS session's binary and no other,

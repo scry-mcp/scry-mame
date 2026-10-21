@@ -1,0 +1,25 @@
+{
+ "task": {
+  "id": "M200",
+  "prompt": "Start MAME from /opt/wheels/mamed, system wheelfir, ROMs in /opt/wheels/roms, reference image /opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/wheels/mamed",
+   "system": "wheelfir",
+   "rompath": "/opt/wheels/roms",
+   "reference_rom": "/opt/wheels/roms/wheelfir.bin",
+   "view": "Shifter-R"
+  },
+  "grammar": [
+   "Shifter-R"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

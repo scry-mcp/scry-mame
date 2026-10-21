@@ -63,6 +63,19 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
     return contract.check_envelope(out)
 
 
+def with_view(reply: dict[str, Any]) -> dict[str, Any]:
+    """A reply MAME rendered through the snapshot view (`snapshot`, `record`) with that view
+    (`STATE.view`), before the `session` block that closes it: a capture is a measurement of
+    one view, and the reply says which."""
+    if reply.get("status") != "ok":
+        return reply
+    tail = reply.pop("session", None)
+    reply["view"] = STATE.view
+    if tail is not None:
+        reply["session"] = tail
+    return reply
+
+
 def session_block(whole: bool = False) -> dict[str, Any]:
     """The `session` block, READ off the state and writing none of it: `envelope`'s, and the one
     `mame_mcp.tool` composes after a body (`scry_core.boundary.Boundary.finished`). Its alarms

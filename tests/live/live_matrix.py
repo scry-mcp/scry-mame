@@ -2969,7 +2969,9 @@ def counted_changes(said_by: str, first: int, last: int) -> tuple[int, int] | No
 
 
 def _d_circus(t: list[str]) -> None:
-    circus_boot()
+    # THE SET'S OWN COLOUR OVERLAY IS THE VIEW HERE, so the film's frames are the unchecked
+    # case its cells measure: the snapshot is not the bare screen there.
+    circus_boot(view="Color Overlay")
     run_frames(600)
     before = call("status")["session"]["altering_writes"]
     r = call("screen_view", scale=1)

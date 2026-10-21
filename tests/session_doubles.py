@@ -163,7 +163,7 @@ def reading_session(image: bytes, at: int) -> g.Session:
     return ses
 
 
-def fake_mame(tmp_path: Path) -> Path:
+def fake_mame(tmp_path: Path, *, name: str = "fake-mame", version: str = "") -> Path:
     """A MAME that exits at once, with the console plugin beside it the way a source build
     ships it: `judge` refuses a binary without one before anything is spawned.
 
@@ -172,10 +172,13 @@ def fake_mame(tmp_path: Path) -> Path:
     runs this script. Left unreadable-as-a-program it would answer differently depending on
     the host's exec bit, and a double whose behaviour is a property of the filesystem is a
     double that cannot be reasoned about. Exiting 0 with nothing on stdout is a MAME that
-    answered no XML, which is the shape `start` has to survive.
+    answered no XML, which is the shape `start` has to survive. `version`, the shell a
+    `-version` call runs (none: it prints nothing), and `name` serve the ladder's cases.
     """
-    binary = tmp_path / "fake-mame"
-    binary.write_text("#!/bin/sh\nexit 0\n")
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    binary = tmp_path / name
+    answer = f'case "$1" in -version) {version} ;; esac\n' if version else ""
+    binary.write_text(f"#!/bin/sh\n{answer}exit 0\n", encoding="utf-8")
     binary.chmod(0o755)
     console = tmp_path / "plugins" / "console"
     console.mkdir(parents=True, exist_ok=True)

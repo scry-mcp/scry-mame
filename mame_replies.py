@@ -807,7 +807,6 @@ class RecordReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    tagged_lines: list[Any]
     mode: str
     note: str
     path: str
@@ -815,7 +814,9 @@ class RecordReply(MameConsoleAccount, total=False):
     polls: int
     reader_steps: int
     recording_after: bool | dict[str, Any]
+    tagged_lines: list[Any]
     verdict: str
+    view: str | dict[str, Any]
 
 
 class RegistersReply(MameEnvelope, total=False):
@@ -1061,6 +1062,7 @@ class SnapshotReply(MameEnvelope, total=False):
     bytes: int
     path: str
     sha256: str
+    view: str | dict[str, Any]
 
 
 class StartReply(MameEnvelope, total=False):
@@ -1105,6 +1107,8 @@ class StartReply(MameEnvelope, total=False):
     system: str
     throttle_from_frame: int
     version: str | dict[str, Any]
+    view: str | dict[str, Any]
+    views: list[Any] | dict[str, Any]
 
 
 class StateListReply(MameEnvelope, total=False):

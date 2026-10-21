@@ -1956,3 +1956,16 @@ def test_a_session_broken_by_anything_sends_no_further_request() -> None:
                                            ("qRcmd,zz", "qRcmd,zz"), ("p11", "p11")])
 def test_a_packet_is_labelled_by_its_console_words_else_as_sent(packet: str, label: str) -> None:
     assert g._label(packet) == label
+
+
+def test_every_capture_is_taken_through_the_screen_alone_unless_a_view_is_named() -> None:
+    """`-snapview` always reaches the command line: `native` (the emulated screen alone, at its
+    own size) by default, so a capture never depends on which layout a set ships; a named view
+    passes through as given, for MAME to match by prefix."""
+    from mame_launch import build_command
+
+    plain = build_command("/bin/mame", "gridlee", "/roms", 23946, [], "/scratch/mame-mcp-t")
+    named = build_command("/bin/mame", "gridlee", "/roms", 23946, [], "/scratch/mame-mcp-t",
+                          view="Shifter-R")
+    assert plain[plain.index("-snapview") + 1] == "native"
+    assert named[named.index("-snapview") + 1] == "Shifter-R"

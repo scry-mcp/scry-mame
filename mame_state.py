@@ -139,6 +139,9 @@ class State:
         self.first_cpu: str | None = None
         self.system: str = ""
         self.boot_pc: int | None = None          # where `start` parked: `reset` reads back to it
+        # THE VIEW EVERY CAPTURE IS TAKEN THROUGH, fixed at launch (`-snapview`): each capture
+        # reply says it (`with_view`), since a capture is a measurement of that view.
+        self.view: str | dict[str, Any] = "native"
         # THE BREAKPOINTS THIS SERVER ARMED, by the row's INDEX, each held by ONE declaration's
         # `owner` (its ref and cpu, `Declaration.owner`) with the row's `addr` and `cpu`. MAME
         # numbers breakpoints with one counter across every cpu, so the index is the row and the

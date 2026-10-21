@@ -156,16 +156,19 @@ replies are where a session is described.
 **Which MAME runs is resolved for each launch, and said.** The ladder is the `binary` argument
 (an absolute path), else the `MAME_BINARY` variable, else the `mame` the PATH finds, and the
 first rung holding a value is the one taken. A relative value is refused at its argument or
-variable; one naming no executable file is refused naming what all three rungs held (`bad_argument`
+variable (at `binary`, saying that leaving it empty climbs to the other two); one naming no executable file is refused naming what all three rungs held (`bad_argument`
 when it was the `binary` argument, `host_failed` when it was the host's variable or PATH) and why the one taken is not a program (`no such file`, `a directory`, `not executable`),
 and is never passed over for the next, because a caller who named a build and got another would
 be measuring the wrong emulator. The ladder is climbed after the session gate, so a live or
 broken session answers as such whatever executable `binary` or `MAME_BINARY` names, and a
 relaunch after a crash climbs it again. The reply carries `binary` (absolute), `binary_origin`
 (`argument`, `MAME_BINARY` or `PATH`) and `version`: the first non-blank line `-version` prints,
-asked after the inputs are judged so a refused input spawns nothing, or `{"available": false,
-"why": ...}` when it printed nothing, did not return in 5 s or could not run; the start goes on
-either way.
+asked after the inputs are judged so a refused input spawns nothing, with the launch's `env`, as
+the boot will run, and out of `boot_seconds` (5 s at most), its whole process group ended when
+that runs out; or `{"available": false, "why": ...}` when it printed nothing, did not return in
+time or could not run; the start goes on either way. A build without its console plugin is
+refused naming the rung it came from, the caller's to fix when it was `binary`, the host's
+otherwise.
 
 **Every path argument is absolute or starts with `~`, judged at the argument.** One rule, scry-core's,
 serves every path this server takes: `binary`, `rompath`, each element of `inipath`,
@@ -301,12 +304,12 @@ that does not look at it ends a live session in silence:
   caller deciding to commit a cfg wants to know.
 - **`display` is the session's answer to "main or secondary?", carried on every shared
   start.** Left empty, the server reads `WINDOW_SHARED_DISPLAY` if it inherited it, else the
-  secondary, passes that to the helper explicitly and REPORTS it. On a quick run it is
-  refused: nobody is watching, and the helper would ignore it out loud on a stderr no caller
+  secondary, passes that to the helper explicitly and REPORTS it. On a run nobody watches it
+  is refused, and the helper would ignore it out loud on a stderr no caller
   of this server ever sees.
 - **`background` decides whether the launch takes the owner's focus**, through SDL3's
-  `SDL_MAC_BACKGROUND_APP`: `true` launches behind, `false` in front; omitted, a quick start
-  goes behind and a shared one in front. The hint is set or removed in the spawned
+  `SDL_MAC_BACKGROUND_APP`: `true` launches behind, `false` in front; omitted, a run nobody
+  watches goes behind and a shared one in front. The hint is set or removed in the spawned
   environment, never inherited from the server's, and `env` naming it is refused, so the
   reply's `background` is what the process obeyed.
 
@@ -314,7 +317,9 @@ that does not look at it ends a live session in silence:
 `WINDOW_APP`, so no project re-derives them; a helper that is there and fails is reported in
 its own words (exit code and stderr) rather than as absent, and its absence degrades to a
 small window rather than taking `start` down (`subprocess.run` on a missing file RAISES
-rather than returning non-zero). Quick runs (nobody is watching) get a small window and
+rather than returning non-zero). For `mame` the helper always prints the window's mode, so an
+answer with no flags is a helper that could not compute them, and a shared start refuses it
+as it refuses no helper. Runs nobody watches get a small window and
 uncapped speed; shared runs get the display the session answered with at most of its height,
 and real speed. Never `-video none` by hand: on macOS it takes over the display.
 
@@ -2228,6 +2233,19 @@ that step (`diverged`). A `golden_check` over files dropped calls wrote is
 dropped too: the replay would not write them, so it would hold to the session's own.
 
 ## Input and the screen
+
+**Every capture is taken through one view, chosen at `start`, and says which.** `view` empty
+launches with `-snapview native`: the emulated screen alone, at its own size, whatever layout
+the set ships (a bezel, an overlay, a second panel), so a capture is the machine's pixels and
+nothing drawn around them. A name is a layout view, which MAME matches by prefix, ignoring case,
+and when none matches it takes its own default; `start` answers `views` (the set's, read off the
+machine; unavailable when no render target lists one) and `view`, the one MAME actually took,
+read back rather than assumed. It is fixed for the session because a running MAME cannot
+switch the view its snapshots take. `snapshot` and `record`, which MAME renders through that
+view, carry `view` in their reply; the readers of the screen's own pixels (`screen_view`,
+`screen_signature`, `series_capture`, a film's frames) never pass through a view and carry
+none, and a film's per-frame check, which compares a frame with MAME's snapshot, says its frames
+are unchecked under a named view. The media file tools read files.
 
 The typed wrappers over the Lua channel are scripts this server composed, each knowing what
 it does, so none of them marks the session altered for a read, and each proves its effect

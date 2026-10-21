@@ -147,6 +147,7 @@ def start(
     cfg: str = "",
     binary: str = "",
     presence: Annotated[bool, Field(description=scry_presence.ARGUMENT)] = True,
+    view: Annotated[str, Field(description=launch.VIEW_ARGUMENT)] = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -162,8 +163,8 @@ def start(
       its screen, needs it. `throttle_from_frame`: flat out until it.
     - `background`: `true` behind, your focus kept, watched (`shared`) or not; `false` in front;
       omitted, by `shared`.
-    - `boot_lua`, an EXISTING harness file, never Lua text (no tool here writes one;
-      never `manager.machine:exit()`), `env` for it, `inipath`,
+    - `boot_lua`, an EXISTING harness file, never Lua text (never `manager.machine:exit()`),
+      `env` for it, `inipath`,
       `boot_seconds` (the stub's wait), `stub_port` (`0`: a free one).
     - `state_dir` (empty: disposable; else kept), `cfg`.
 
@@ -177,22 +178,23 @@ def start(
     `state_dir`, `cfg`, `debugger`, `errorlog_path`, `stdout_path`, `rom_check`,
     `symbols_total`, `symbols_typed`, `symbols_format`, `symbols_by_class` (first cpu),
     `symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine`, what
-    reached the driver (`env`, `display`, `background`, `flags`, `throttle_from_frame`,
-    `boot_lua_path`), `presence`, `declarations` and `start_retries`.
+    reached the driver (`env`, `display`, `view`, `background`, `flags`, `throttle_from_frame`,
+    `boot_lua_path`), `views`, `presence`, `declarations` and `start_retries`.
 
     Reference: REFERENCE.md, The session.
     """
     try:
         args.check("start", binary=binary, rompath=rompath, reference_rom=reference_rom,
                    symbols=symbols, inipath=inipath, boot_lua=boot_lua, state_dir=state_dir,
-                   cfg=cfg, types=types, display=display)
+                   cfg=cfg, types=types, display=display, view=view)
     except st.Invalid as refused:
         refused.fields["start_retries"] = []    # every `start` reply carries it, refusals too
         raise
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
                         inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
                         display, stub_port, state_dir, throttle_from_frame, types, cfg,
-                        background=background, presence=presence, progress=bridge(ctx))
+                        background=background, presence=presence, view=view,
+                        progress=bridge(ctx))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -1318,9 +1320,11 @@ def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
 
 @tool("Snapshot the screen to a PNG", summary=summaries.snapshot, replay="drop")
 def snapshot(dest: str = "") -> dict[str, Any]:
-    """Save a PNG of the screen as it is NOW, numbered in the scratch, or moved to `dest`.
+    """Save a PNG of the screen as it is NOW, through the session's `view`, numbered in the scratch,
+    or moved to `dest`.
 
-    Reply: `path`, `bytes`, `sha256` (of the file, the hash a golden's `checksums.sha256` compares).
+    Reply: `path`, `bytes`, `sha256` (of the file, the hash a golden's `checksums.sha256` compares),
+    `view` (`start`'s).
     The file must be a complete PNG (signature and IEND trailer) within a short wait, else
     `status: INVALID` with `message`. `dest` must be {DEST_FILE}, and not there yet, judged before
     the console is touched. A SEMANTIC frame is `run_to` the point where the drawer finishes, then
@@ -1330,7 +1334,7 @@ def snapshot(dest: str = "") -> dict[str, Any]:
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("snapshot", dest=dest)
-    return files.snapshot(*contact(), dest)
+    return menvelope.with_view(files.snapshot(*contact(), dest))
 
 
 @tool("Signature of the screen", summary=summaries.screen_signature, on_cancel="none",
@@ -2253,14 +2257,15 @@ def record(frames: int, dest: str = "",
     `lines_ahead`, `drain_steps` and `reader_steps`, the console's own account (`thread_errors`,
     `console_reruns`, `resent`, and a `note` when there is something to say: see
     `lua`); `path`, `frames`, `began`, `frame_begin`, `recording_after`, `ended`, `bytes`,
-    `avi_frames`, `frame_end`; then {STOP_FIELDS}. A script the console ran twice logs its
-    own mark twice, and is `status: INVALID` (`console_rerun`) naming the repeated marks: a
-    recording begun twice on one file.
+    `avi_frames`, `frame_end`, `view` (`start`'s); then {STOP_FIELDS}. A script the console ran
+    twice logs its own mark twice, and is `status: INVALID` (`console_rerun`) naming the
+    repeated marks: a recording begun twice on one file.
 
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("record", frames=frames, dest=dest, seconds=seconds)
-    return mrec.record(*stopped("a recording"), frames, dest, seconds, bridge(ctx))
+    return menvelope.with_view(mrec.record(*stopped("a recording"), frames, dest, seconds,
+                                           bridge(ctx)))
 
 
 @tool("Record the sound to a WAV", summary=summaries.audio_record, on_cancel="stop")

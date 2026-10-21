@@ -636,7 +636,7 @@ def test_a_home_path_reaches_mame_expanded(here: Path, monkeypatch: pytest.Monke
         raise mstate.Invalid("host_failed", "the case ends at the command line")
     monkeypatch.setattr(mlaunch, "build_command", build)
     monkeypatch.setattr(mmachine, "ask_listxml", lambda *_a: (None, "not asked here"))
-    monkeypatch.setattr(mbinary, "facts", lambda r: {"binary": r.path})
+    monkeypatch.setattr(mbinary, "facts", lambda r, *_a: {"binary": r.path})
     out = s.start(**_common(here) | {"rompath": "~/roms", "boot_lua": "~/boot.lua",
                                      "state_dir": "~/run", "inipath": "~/run",
                                      "reference_rom": "~/ref.bin"})

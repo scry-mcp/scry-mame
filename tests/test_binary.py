@@ -14,9 +14,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import binaries as core_binaries
 from scry_core.reply_contract import Invalid
-from session_doubles import refused
+from session_doubles import fake_mame, refused
 from test_server import _running, _stub_boot, _StubProcess
 
 import mame_binary as binaries
@@ -28,16 +27,8 @@ VERSION = "0.0 (a stub build)"
 def build(where: Path, *, version: str = f'echo "{VERSION}"', name: str = "mame") -> Path:
     """An executable at `where/name` answering `-version` with the shell in `version`, and any
     other call (`-listxml`, the boot the stub stands in for) with nothing, with the console
-    plugin beside it the way a source build ships it."""
-    where.mkdir(parents=True, exist_ok=True)
-    path = where / name
-    path.write_text(f'#!/bin/sh\ncase "$1" in -version) {version} ;; esac\nexit 0\n',
-                    encoding="utf-8")
-    path.chmod(0o755)
-    console = where / "plugins" / "console"
-    console.mkdir(parents=True, exist_ok=True)
-    (console / "init.lua").write_text("-- the console plugin's place, not its code\n")
-    return path
+    plugin beside it the way a source build ships it (`session_doubles.fake_mame`)."""
+    return fake_mame(where, name=name, version=version)
 
 
 @pytest.fixture
@@ -151,9 +142,8 @@ def test_a_version_call_that_prints_nothing_is_unavailable(tmp_path: Path) -> No
 
 
 def test_a_version_call_that_hangs_is_unavailable_within_its_bound(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(core_binaries, "VERSION_TIMEOUT_S", 0.2)
-    got = binaries.version(str(build(tmp_path, version="exec sleep 5")))
+        tmp_path: Path) -> None:
+    got = binaries.version(str(build(tmp_path, version="exec sleep 5")), seconds=0.2)
     assert isinstance(got, dict) and got["available"] is False
     assert "did not return in 0.2 s" in got["why"], got
 
@@ -229,3 +219,38 @@ def test_start_with_no_rung_resolving_is_refused_in_the_envelope(
     out = _start(monkeypatch, tmp_path)
     refused("no MAME binary resolves from the PATH rung", out)
     assert out["code"] == "host_failed" and out["start_retries"] == [], out
+
+
+def test_start_asks_the_version_with_the_launch_s_environment(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A build that needs the caller's `env` to load answers `-version` under it, as the boot
+    will run."""
+    mine = build(tmp_path, name="fake-mame", version='echo "built for ${SCRY_HINT:-nobody}"')
+    out = _start(monkeypatch, tmp_path, binary=str(mine), env={"SCRY_HINT": "this launch"})
+    try:
+        assert out["status"] == "ok" and out["version"] == "built for this launch", out
+    finally:
+        s.close()
+
+
+def test_start_bounds_a_hanging_version_call_by_its_own_constant(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(binaries, "VERSION_TIMEOUT_S", 0.3)    # the bound, shortened
+    slow = build(tmp_path / "slow", name="fake-mame", version="exec sleep 5")
+    out = _start(monkeypatch, tmp_path / "slow", binary=str(slow))
+    try:
+        assert out["status"] == "ok" and "did not return in 0.3 s" in str(out["version"]), out
+    finally:
+        s.close()
+
+
+@pytest.mark.parametrize(("view", "said"), [("a\x00b", "NUL"), ("-video", "starts with `-`"),
+                                            ("a\ud800", "surrogate")])
+def test_a_view_no_command_line_can_carry_is_refused_before_anything_starts(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, view: str, said: str) -> None:
+    """`view` becomes one argument of MAME's command line: a NUL or a lone surrogate cannot
+    be passed at all, and a leading `-` would be read as an option of its own."""
+    out = _start(monkeypatch, tmp_path, binary=str(build(tmp_path, name="fake-mame")),
+                 view=view)
+    refused(said, out)
+    assert out["code"] == "bad_argument" and "view" in out["message"], out

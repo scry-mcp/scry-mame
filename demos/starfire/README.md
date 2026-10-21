@@ -142,6 +142,12 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "frame_symbol": "frame",
   "env": {},
   "display": "",
+  "view": "native",
+  "views": [
+    "Screen 0 Standard (4:3)",
+    "Screen 0 Pixel Aspect (8:7)",
+    "Cocktail"
+  ],
   "background": true,
   "flags": "<volatile>",
   "throttle_from_frame": 0,

@@ -367,5 +367,9 @@
    "tool": "log", "args": {"pattern": "PERF", "channel": "emulator", "limit": 20, "since_mark": 48213}, "grammar": ["emulator"]},
   {"id": "M198", "prompt": "After a state load whose reply gave the mark 912 for the process channel, wait up to 60 seconds for a line matching LEVEL 2 in the process's own stdout log, counting only what was written after that mark.",
    "tool": "log_wait", "args": {"pattern": "LEVEL 2", "channel": "process", "seconds": 60, "since_mark": 912}, "grammar": ["process"]},
-  {"id": "M199", "prompt": "Keep only the scanned cells whose value dropped since the search was opened, and show me at most 12 of the survivors.", "tool": "scan_filter", "args": {"operator": "<", "limit": 12}, "grammar": ["<"]}
+  {"id": "M199", "prompt": "Keep only the scanned cells whose value dropped since the search was opened, and show me at most 12 of the survivors.", "tool": "scan_filter", "args": {"operator": "<", "limit": 12}, "grammar": ["<"]},
+  {"id": "M200", "prompt": "Start MAME from /opt/wheels/mamed, system wheelfir, ROMs in /opt/wheels/roms, reference image /opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.", "tool": "start",
+   "args": {"binary": "/opt/wheels/mamed", "system": "wheelfir", "rompath": "/opt/wheels/roms",
+            "reference_rom": "/opt/wheels/roms/wheelfir.bin", "view": "Shifter-R"},
+   "grammar": ["Shifter-R"]}
 ]}

@@ -30,12 +30,15 @@ from live_harness import (
     boot,
     call,
     cell,
+    free_boards_missing,
+    free_boot,
     fresh,
     fresh_state,
     ok,
     run_boards,
     said,
     section,
+    zips_missing,
 )
 from scry_core import png, raster, traffic
 
@@ -57,7 +60,15 @@ Y = [
     "m68k-dual S2 hand: screen_view attaches the screen and its pixels equal the golden's",
     "m68k-dual S2 new: screen_signature equals the golden's signature, and differs 60 frames on",
     "m68k-dual S2 cost: the new way attaches no picture",
+    "gridlee, no view asked: `start` says `native` and lists the layout's views, and a "
+    "snapshot is the screen alone, its pixels screen_view's",
+    "gridlee, a view asked by a prefix in another case: `start` and every capture name the "
+    "view MAME took, the layout's",
+    "gridlee, that view's snapshot differs from the native one exactly inside the layout's box",
 ]
+#: The layout written for the test: one view holding the screen at its own size and one box of
+#: a colour no game paints, at a known place over it (`_layout`).
+VIEW_NAME, BOX = "Scry Test Box", (16, 24, 32, 20)
 
 
 def _cost(since: int) -> dict[str, int]:
@@ -149,7 +160,80 @@ def _y_m68k_dual(t: list[str]) -> None:
     call("close")
 
 
-Y_BOARDS = (Board(_y_m68k_dual, (0, 1, 2, 3, 4, 5), m68k_dual_missing),)
+def _layout(art: Path, width: int, height: int) -> None:
+    """`art/gridlee/default.lay`: the screen at (0, 0) at its own size and `BOX` over it, so
+    the view's snapshot is the native one with exactly that box painted."""
+    x, y, w, h = BOX
+    (art / "gridlee").mkdir(parents=True)
+    (art / "gridlee" / "default.lay").write_text(
+        '<?xml version="1.0"?>\n<mamelayout version="2">\n'
+        '<element name="scrybox"><rect><color red="1.0" green="0.0" blue="1.0"/></rect>'
+        '</element>\n'
+        f'<view name="{VIEW_NAME}">\n'
+        f'<screen index="0"><bounds x="0" y="0" width="{width}" height="{height}"/></screen>\n'
+        f'<element ref="scrybox"><bounds x="{x}" y="{y}" width="{w}" height="{h}"/></element>\n'
+        '</view>\n</mamelayout>\n', encoding="utf-8")
+
+
+def _colours(pic: png.Raster) -> list[tuple[int, ...]]:
+    """Each pixel's colour, row by row, whether the picture is indexed or RGB."""
+    if pic.palette is not None:
+        return [pic.palette[i] for i in pic.pixels]
+    return [tuple(pic.pixels[k:k + 3]) for k in range(0, len(pic.pixels), 3)]
+
+
+def _snap() -> png.Raster | None:
+    shot = call("snapshot")
+    return png.decode(Path(str(shot["path"])).read_bytes()) if ok(shot) else None
+
+
+def _y_gridlee_views(t: list[str]) -> None:
+    art = Path(fresh("-art"))
+    art.mkdir()
+    free_boot("gridlee", ["gridfnla.bin"], "0xa000", ini_extra=f"artpath {art}\n")
+    screens = call("machine_map", sections=["screens"]).get("screens") or [{}]
+    width, height = int(screens[0].get("width", 0)), int(screens[0].get("height", 0))
+    native = _snap()
+    look = call("screen_view", scale=1)
+    pens = png.decode(Path(look["image"]["path"]).read_bytes()) if ok(look) else None
+    call("close")
+    _layout(art, width, height)
+    started = free_boot("gridlee", ["gridfnla.bin"], "0xa000", ini_extra=f"artpath {art}\n")
+    # THE NATIVE SNAPSHOT WITH THE LAYOUT PRESENT: the default must ignore what the set ships.
+    shipped = _snap()
+    cell(t[6], started.get("view") == "native" and VIEW_NAME in (started.get("views") or [])
+         and native is not None and pens is not None and shipped is not None
+         and _colours(native) == _colours(pens) == _colours(shipped)
+         and (native.width, native.height) == (width, height),
+         f"view {started.get('view')}, views {started.get('views')}, native "
+         f"{native and (native.width, native.height)}, with the layout "
+         f"{shipped and (shipped.width, shipped.height)}, screen {width}x{height}")
+    call("close")
+    named = free_boot("gridlee", ["gridfnla.bin"], "0xa000", ini_extra=f"artpath {art}\n",
+                      view=VIEW_NAME[:8].lower())
+    shot = call("snapshot")
+    boxed = png.decode(Path(str(shot["path"])).read_bytes()) if ok(shot) else None
+    cell(t[7], named.get("view") == VIEW_NAME and shot.get("view") == VIEW_NAME,
+         f"start {named.get('view')}, snapshot {shot.get('view')}")
+    x, y, w, h = BOX
+    inside = {(i, j) for j in range(y, y + h) for i in range(x, x + w)}
+    differs: set[tuple[int, int]] = set()
+    if native is not None and boxed is not None and (native.width, native.height) == (
+            boxed.width, boxed.height):
+        a, b = _colours(native), _colours(boxed)
+        differs = {(k % native.width, k // native.width) for k in range(len(a)) if a[k] != b[k]}
+    cell(t[8], bool(differs) and differs == inside,
+         f"{len(differs)} pixels differ, {len(inside)} in the box; sizes "
+         f"{native and (native.width, native.height)} and {boxed and (boxed.width, boxed.height)}")
+    call("close")
+
+
+def _gridlee_missing() -> str:
+    return free_boards_missing() or zips_missing("gridlee")
+
+
+Y_BOARDS = (Board(_y_m68k_dual, (0, 1, 2, 3, 4, 5), m68k_dual_missing),
+            Board(_y_gridlee_views, (6, 7, 8), _gridlee_missing))
 boards_cover("Y_BOARDS", Y, Y_BOARDS)
 
 

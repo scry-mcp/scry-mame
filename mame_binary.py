@@ -14,6 +14,7 @@ ARGUMENT, PATH_RUNG = binaries.ARGUMENT, binaries.PATH_RUNG
 Resolved = binaries.Resolved
 resolve = LADDER.resolve
 why_not, version, facts = binaries.why_not, binaries.version, binaries.facts
+VERSION_TIMEOUT_S = binaries.VERSION_TIMEOUT_S
 
 
 def canary_argv(binary: str, system: str, rompath: str, *extra: str) -> list[str]:

@@ -233,6 +233,14 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
             return finish(Recording(ran, begin, end))
 
 
+def begun_as(path: Path) -> str:
+    """The name `video:begin_recording` is handed for `path`: without its `.avi`. Under
+    `-snapview native` MAME appends the extension to the name it is given whether or not it
+    already ends in one (its native branch builds the file name apart from the other), so a
+    name carrying it is written as `.avi.avi`; without it both branches write `path`."""
+    return str(path.with_suffix("")) if path.suffix.lower() == ".avi" else str(path)
+
+
 def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: float,
            progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `record` tool: an AVI of exactly `frames` frames, begun and ended by
@@ -243,7 +251,8 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
     else:
         path = scratch / "snap" / f"record-{STATE.next_number('recordings')}.avi"
     tag = f"{RECORD_MARK}#{STATE.lua_seq + 1}"
-    script = RECORD_LUA % {"path": transport.lua_string(str(path)), "frames": frames, "mark": tag}
+    script = RECORD_LUA % {"path": transport.lua_string(begun_as(path)), "frames": frames,
+                           "mark": tag}
     ends_after = frames - 1                       # the script's `counted >= frames - 1`
     file_keys = ("avi_frames", "bytes")
 

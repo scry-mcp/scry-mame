@@ -927,3 +927,38 @@ def test_machine_map_hands_back_copies_that_cannot_rewrite_the_cache(
     again = machine.machine_map()
     assert "rewritten" not in again["cpus"][0]["spaces"], "a cpu row is a copy"
     assert again["cpus"][0]["cpu"] == ":maincpu" and "rewritten" not in again["sources"]["cpus"]
+
+
+def test_the_inventory_carries_the_set_s_views_and_the_one_snapshots_take() -> None:
+    """The views a layout gives the set, in MAME's order, and the view its snapshot target
+    resolved `-snapview` to; a dump that names none carries none."""
+    lines = M68K_DUAL.splitlines()
+    end = lines.index(machine.END)
+    dump = "\n".join([*lines[:end], "VIEW Screen 0 Standard (4:3)", "VIEW Shifter-R Overlay",
+                      "SNAPVIEW Shifter-R Overlay", *lines[end:]])
+    got = machine.parse(dump)
+    assert got[machine.VIEWS] == ["Screen 0 Standard (4:3)", "Shifter-R Overlay"]
+    assert got[machine.SNAPVIEW] == "Shifter-R Overlay"
+    plain = machine.parse(M68K_DUAL)
+    assert plain[machine.VIEWS] == [] and plain[machine.SNAPVIEW] == ""
+
+
+def test_start_says_which_view_its_captures_take() -> None:
+    """`native` when none was asked; the view MAME took when one was, read off the machine
+    (its prefix match or its own fallback); unavailable, saying why, when nothing was read."""
+    from mame_launch import view_shown, views_shown
+
+    taken = {machine.VIEWS: ["Shifter-R Overlay"], machine.SNAPVIEW: "Shifter-R Overlay"}
+    assert view_shown("", taken) == "native"
+    assert view_shown("shifter-r", taken) == "Shifter-R Overlay"
+    assert view_shown("Shifter", {})["available"] is False      # type: ignore[index]
+    assert views_shown(taken) == ["Shifter-R Overlay"]
+    assert "no video" in views_shown({})["why"]                 # type: ignore[call-overload]
+
+
+def test_a_view_line_with_no_name_costs_nothing_but_itself() -> None:
+    """A layout may name a view with nothing: its line is skipped, and the inventory stands."""
+    lines = M68K_DUAL.splitlines()
+    end = lines.index(machine.END)
+    got = machine.parse("\n".join([*lines[:end], "VIEW ", "VIEW Shifter", *lines[end:]]))
+    assert got[machine.VIEWS] == ["Shifter"] and got["cpus"], got[machine.VIEWS]

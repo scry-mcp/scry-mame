@@ -34,7 +34,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scry_core import log_marks
+from scry_core import log_marks, placement
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -1130,7 +1130,7 @@ def test_a_display_on_a_quick_run_is_refused(
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
     rom.write_bytes(bytes(64))
-    refused("quick run",
+    refused("nobody watches",
     s.start(
         binary=str(binary), system="none", rompath=str(tmp_path), reference_rom=str(rom),
         display="main",
@@ -2027,6 +2027,10 @@ def test_snapshot_without_a_dest_lands_in_the_scratch_and_counts(
     assert first["sha256"] == hashlib.sha256(_PNG).hexdigest()
     assert first["sha256"] == second["sha256"]
     assert ses.commands == ["snap snapshot-1.png", "snap snapshot-2.png"]
+    # A CAPTURE SAYS WHICH VIEW MADE IT, the one the session was launched with.
+    assert first["view"] == "native" and list(first)[-1] == "session", first
+    monkeypatch.setattr(mstate.STATE, "view", "Shifter-R Overlay")
+    assert s.snapshot()["view"] == "Shifter-R Overlay"
 
 
 def test_snapshot_with_a_dest_moves_the_file_there(
@@ -4744,7 +4748,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "guard": subprocess.Popen(["sleep", "60"]),
         "tables": {":old": g.SymbolTable({"OLD": 0x100}, {}, "yaml", types={"OLD": "u16"})},
         "first_cpu": ":old",
-        "system": "old", "boot_pc": 0x100,
+        "system": "old", "boot_pc": 0x100, "view": "Shifter-R Overlay",
         "armed_watches": {"old": {"addr": 0x100, "length": 4}}, "debuglog_mark": 77,
         "tallies": {"old": {"id": "100_4", "addr": 0x100, "width": 4}},
         "controls": {"old": {"addr": 0x100, "temp": 0, "index": 1, "missed": 0}},
@@ -4971,7 +4975,7 @@ def test_a_window_helper_that_hangs_is_bounded_and_one_that_prints_nothing_is_na
     slow.chmod(0o755)
     monkeypatch.setenv("WINDOW_APP", str(slow))
     with monkeypatch.context() as tight:            # the tiny bound is for the hung helper only
-        tight.setattr(launch, "HELPER_TIMEOUT_S", 0.2)
+        tight.setattr(placement, "HELPER_TIMEOUT_S", 0.2)
         with pytest.raises(mstate.Invalid, match="did not answer within") as e:
             launch.window_flags(shared=True, display="main")
     assert "not at" not in str(e.value)
@@ -5096,7 +5100,7 @@ def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
         state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
         system="sys", rompath=str(tmp_path), port=1, flags=[], inipath="", wait=wait,
         ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
-        presence=presence)
+        presence=presence, view="")
     with pytest.raises(mstate.Invalid) as e:
         launch.boot(judged)  # type: ignore[arg-type]
     assert mstate.STATE.ses is None
@@ -5123,7 +5127,8 @@ def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> N
     from types import SimpleNamespace
     monkeypatch.setattr(launch, "judge", judge)
     import mame_binary
-    monkeypatch.setattr(mame_binary, "resolve", lambda b: SimpleNamespace(path=b))
+    monkeypatch.setattr(mame_binary, "resolve", lambda b: SimpleNamespace(path=b,
+                                                                          origin="argument"))
     monkeypatch.setattr(mstate.STATE, "ses", None)
     for asked in (True, False):
         with pytest.raises(Stop):
@@ -5434,7 +5439,27 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
     for place in (tmp_path / "plugins", tmp_path.parent / "share" / "mame" / "plugins"):
         assert str(place.resolve() / "console" / "init.lua") in out["message"], (
             "every place it looked is named", place)
-    assert "pass as `binary` the executable" in out["message"]
+    assert "pass as `binary`, or set MAME_BINARY to, the executable" in out["message"]
+    assert mstate.STATE.proc is None, "a refused start spawned something"
+
+
+def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_rung(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The same build reached by the PATH rung: nothing the caller passed is wrong, so the
+    refusal is the host's, and it names the rung the build came from and both ways past it."""
+    (tmp_path / "bin").mkdir()
+    binary = tmp_path / "bin" / "mame"
+    binary.write_text("#!/bin/sh\nexit 0\n")
+    binary.chmod(0o755)
+    monkeypatch.setenv("PATH", str(tmp_path / "bin"))
+    monkeypatch.delenv("MAME_BINARY", raising=False)
+    rom = tmp_path / "ref.bin"
+    rom.write_bytes(b"\x00" * 16)
+    out = refused("no console plugin for", s.start(
+        system="none", rompath=str(tmp_path), reference_rom=str(rom), boot_seconds=0.2))
+    assert out["code"] == "host_failed", out
+    assert "the PATH rung" in out["message"] and "MAME_BINARY" in out["message"], out["message"]
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
@@ -6359,7 +6384,7 @@ def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestl
         state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
         system="sys", rompath=str(tmp_path), port=23999, flags=[], inipath="", wait=0.05,
         ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
-        presence=False)
+        presence=False, view="")
     with pytest.raises(mstate.Invalid) as e:
         launch.boot(judged)  # type: ignore[arg-type]
     assert ports and set(ports) == {23999}, ports
@@ -6928,7 +6953,7 @@ def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_includ
 
     pid_file = tmp_path / "pid"
     binary = fake_mame(tmp_path)
-    binary.write_text(f'#!/bin/sh\ncase "$*" in *-listxml*) exit 0;; esac\n'
+    binary.write_text(f'#!/bin/sh\ncase "$*" in *-listxml*|*-version*) exit 0;; esac\n'
                       f'echo $$ > {pid_file}\nexit 0\n')
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
