@@ -198,8 +198,8 @@ def test_a_mark_that_names_no_position_of_the_channel_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
-    (scratch / "error.log").write_text("a\n")
-    (scratch / "stdout.log").write_text("b\n")
+    (scratch / "error.log").write_bytes(b"a\n")       # bytes: a mark is a byte position
+    (scratch / "stdout.log").write_bytes(b"b\n")
     refused("0 or more", s.log(pattern=".", channel="emulator", since_mark=-1))
     refused(r"past where the emulator log ends now \(2 bytes\)",
             s.log(pattern=".", channel="emulator", since_mark=3))

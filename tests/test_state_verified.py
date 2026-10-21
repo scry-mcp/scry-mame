@@ -330,8 +330,8 @@ def test_a_load_answers_where_each_channel_ended_as_it_was_sent(
     _moved(ses, 2)
     scratch = mstate.STATE.scratch
     assert scratch is not None
-    (scratch / "error.log").write_text("before the load\n")
-    (scratch / "stdout.log").write_text("boot\nbefore the load\n")
+    (scratch / "error.log").write_bytes(b"before the load\n")   # bytes: a mark is a byte position
+    (scratch / "stdout.log").write_bytes(b"boot\nbefore the load\n")
     before = {"emulator": len("before the load\n"), "process": len("boot\nbefore the load\n")}
     out = s.state_load(name="a")
     assert out["status"] == "ok", out
