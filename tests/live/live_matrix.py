@@ -211,9 +211,9 @@ def _series_ahead() -> dict[str, Any]:
     counter; with no session, or a running one, any frame: the call is the state's refusal."""
     here = s.status()
     if not here.get("alive") or here.get("running"):
-        return {"frames": [1], "seconds": 10.0}
+        return {"at_frames": [1], "seconds": 10.0}
     now = s.screen_signature().get("frame_screen", 0)
-    return {"frames": [now + 2], "seconds": 10.0}
+    return {"at_frames": [now + 2], "seconds": 10.0}
 
 
 #: The media file tools, probed with a file that is not there: they read files and never the

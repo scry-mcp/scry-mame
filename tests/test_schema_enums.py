@@ -299,7 +299,7 @@ RANGES: list[tuple[str, str, int, int]] = [
     ("start", "stub_port", 0, launch.PORT_MAX),
     ("step", "count", 1, advance.step_max()),
 ]
-WAITS = ("seconds", "settle_seconds")
+WAITS = ("seconds", "settle_seconds", "boot_seconds")
 
 
 def _scalar(prop: dict[str, Any]) -> dict[str, Any]:

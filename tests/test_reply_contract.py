@@ -63,7 +63,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "run_to": {"ref": "0x4a0", "control": "0x4b0"},
     "run_for": {"milliseconds": 16},
     "trace": {"frames": 2},
-    "series_capture": {"frames": [10 ** 6]},
+    "series_capture": {"at_frames": [10 ** 6]},
     # The media file tools: absolute paths of files that are not there, refused for the path.
     "image_diff": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
     "series_diff": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},

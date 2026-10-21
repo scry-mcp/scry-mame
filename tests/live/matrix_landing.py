@@ -48,7 +48,7 @@ def _logged(word: str) -> Any:
 
 
 def _v_m68k_dual_alt(_cells: list[str]) -> None:
-    require_booted("m68k-dual-alt", call("start", **M68K_DUAL_ALT_BOOT, seconds=25.0))
+    require_booted("m68k-dual-alt", call("start", **M68K_DUAL_ALT_BOOT, boot_seconds=25.0))
     controls = [call("breakpoint_at", ref=ref, role="control") for ref in (HANDLER, INSIDE)]
     raw = [call("debug", command=f'bp {ref[2:]},1,{{logerror "{word} %d\\n",frame ; g}}')
            for ref, word in ((HANDLER, AT_HANDLER), (INSIDE, AT_INSIDE))]

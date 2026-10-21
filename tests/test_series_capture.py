@@ -121,7 +121,7 @@ def console(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _Console:
 
 
 def _capture(tmp_path: Path, **kw: Any) -> dict[str, Any]:
-    args: dict[str, Any] = {"frames": None, "first": 101, "last": 105, "step": 2, "crop": None,
+    args: dict[str, Any] = {"at_frames": None, "first": 101, "last": 105, "step": 2, "crop": None,
                             "dest": "", "seconds": 10.0}
     args.update(kw)
     return mseries.series_capture(_Session(), tmp_path, **args)  # type: ignore[arg-type]
@@ -168,7 +168,7 @@ def test_a_frame_this_server_encoded_is_signed_without_decoding_it_back(
 
 def test_a_crop_and_a_dest_shape_the_series(console: _Console, tmp_path: Path) -> None:
     dest = tmp_path / "kept"
-    out = _capture(tmp_path, frames=[101, 105], first=None, last=None, step=1,
+    out = _capture(tmp_path, at_frames=[101, 105], first=None, last=None, step=1,
                    crop=[1, 1, 2, 1], dest=str(dest))
     assert out["kept_after_close"] is True and Path(out["manifest"]).parent == dest
     picture = png.decode((dest / "f000105.png").read_bytes())
@@ -292,7 +292,7 @@ def test_a_frame_read_at_the_wrong_time_or_size_is_refused(
     console.kept = [101]
     console.dump = dump
     with pytest.raises(mstate.Invalid, match=said) as e:
-        _capture(tmp_path, first=None, last=None, step=1, frames=[101])
+        _capture(tmp_path, first=None, last=None, step=1, at_frames=[101])
     assert e.value.code == code
 
 
@@ -368,7 +368,7 @@ def test_a_frame_file_that_is_not_whole_or_carries_an_error_is_refused(
         (folder / f"raw-{f}.txt").write_text(text)
     console.kept, console.dump = [101], broken
     with pytest.raises(mstate.Invalid, match=said):
-        _capture(tmp_path, first=None, last=None, step=1, frames=[101])
+        _capture(tmp_path, first=None, last=None, step=1, at_frames=[101])
 
 
 def test_pens_saved_short_of_the_screens_are_refused(console: _Console, tmp_path: Path) -> None:
@@ -377,7 +377,7 @@ def test_pens_saved_short_of_the_screens_are_refused(console: _Console, tmp_path
         (folder / f"raw-{f}.pens").write_bytes(array("I", PENS_AT_END[:1]).tobytes())
     console.kept, console.dump = [101], short
     with pytest.raises(mstate.Invalid, match="1 pens were saved at frame 101"):
-        _capture(tmp_path, first=None, last=None, step=1, frames=[101])
+        _capture(tmp_path, first=None, last=None, step=1, at_frames=[101])
 
 
 def test_a_run_that_raised_takes_the_notifier_down_and_a_failing_finish_is_not_the_answer(

@@ -81,7 +81,7 @@ def invalid(message: str) -> None:
 # name: the tiers are a battery, and the edge is for the owner watching a session. Here for the
 # direct callers, in `call` for the rest.
 BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_ROMS,
-            reference_rom=REFERENCE_ROM, reference_addr="0x0", seconds=25.0, presence=False)
+            reference_rom=REFERENCE_ROM, reference_addr="0x0", boot_seconds=25.0, presence=False)
 
 # WHETHER THIS RUN'S MACHINES TAKE THE OWNER'S FOCUS, asked per run and never per cell: unset,
 # each `start` keeps its own default; `1` or `0` forces every one of this run behind or in front.
@@ -311,10 +311,11 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
         kw.setdefault("presence", False)    # as `BOOT` says why
     params = inspect.signature(fn).parameters
     for name in WAIT_ARGS:
-        if name in params and not (tool == "start" and name == "seconds"):
+        if name in params:
             value = kw.get(name, params[name].default)
             if isinstance(value, int | float) and value > WAIT_CEILING_S and not b1_exempt:
-                raise Blocked(f"B1: {tool}({name}={value}) may wait past {WAIT_CEILING_S:g} s")
+                raise Blocked(f"{B1_PREFIX}{tool}({name}={value}) may wait past "
+                              f"{WAIT_CEILING_S:g} s")
     t0 = time.monotonic()
     try:
         reply: dict[str, Any] = fn(**kw)
@@ -531,7 +532,7 @@ def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
     return require_booted(system, call(
         "start", binary=binary, system=system, rompath=FREE_ROMS, reference_rom=image,
         reference_addr=addr, reference_base=addr, inipath=no_joystick_ini(ini_extra),
-        seconds=START_WAIT_S, **launch))
+        boot_seconds=START_WAIT_S, **launch))
 
 
 def circus_boot(ini_extra: str = "", **launch: Any) -> dict[str, Any]:
@@ -592,7 +593,7 @@ def pangofun_boot() -> dict[str, Any]:
         "start", binary=FREE_BINARY, system="pangofun", rompath=str(rompath),
         reference_rom=free_image("pangofun", ["bios.bin"], rompath, held),
         reference_addr="0xfffffff0", reference_base="0xffff0000", inipath=no_joystick_ini(),
-        seconds=START_WAIT_S))
+        boot_seconds=START_WAIT_S))
 
 
 # ======================================================== a cpu's PC against MAME's own console

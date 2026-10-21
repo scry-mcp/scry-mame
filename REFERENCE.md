@@ -25,7 +25,7 @@ machine says what that changes.
 kills it.** A failed check that leaves the lying session alive is reachable by the next call,
 so the refusal is also the ending. `rom_check` is the same known-answer read on demand, on
 the STOPPED machine. `start` refuses while a session is live (one machine per server, and
-ending it is the caller's act), and `start`'s `seconds` is only how long the stub is given to
+ending it is the caller's act), and `start`'s `boot_seconds` is only how long the stub is given to
 answer (its debugger's banner included, below), held to the same ceiling as every other wait. A MAME that EXITS during that wait ends
 it at once, and the refusal says it exited and with which code rather than that the stub did
 not answer: the two send a reader to
@@ -72,7 +72,7 @@ process listens on the port and then which holds the far end of the connection
   `stub_port` it is refused `host_failed` naming the port and that pid, since another launch
   there would meet the same process;
 - a MAME that exits before it accepts is a death, as above;
-- a connection nobody accepts within `seconds` (never less than one request's wait) is a stub
+- a connection nobody accepts within `boot_seconds` (never less than one request's wait) is a stub
   that did not answer, `session_broken`;
 - a host whose `lsof` is absent, fails or hangs is `host_failed`, because whose stub it is
   cannot be established there.
@@ -82,22 +82,22 @@ The launched MAME is killed with each refusal.
 **The first connection that goes through is the only one `start` makes.** MAME's stub serves one
 connection per session and closes its listening socket the moment it accepts it, while the
 kernel completes a dial long before the boot reaches the debugger and reads anything. So a
-dial that went through is kept, and its handshake waits for what is left of `seconds`. Before it
+dial that went through is kept, and its handshake waits for what is left of `boot_seconds`. Before it
 asks, the boot waits until MAME's output carries its debugger's banner, `Currently targeting `:
 a stub without the thread patch fills its target description at the debugger's first stop and
 keeps an empty one if asked earlier, and its port accepts long before that stop. Nothing in
 MAME's source orders the banner against the stop, so the rule stands on measurement (asked at
 the stub's `listening`, the description came back empty on some launches; at the banner, on
 none). The wait ends at the banner, at MAME's death, or when one request's time is left of
-`seconds`, and the handshake then asks all the same: a build that never prints the banner costs
-each start its whole `seconds`. Dialling
+`boot_seconds`, and the handshake then asks all the same: a build that never prints the banner costs
+each start its whole `boot_seconds`. Dialling
 again after a slow first answer would leave MAME accepting the abandoned connection and
 refusing every later one, which reads as a stub that never listened. For the same reason a
 connection whose first byte cannot be sent is refused at once, with `dial_attempts` and the
 other fields of a live process's refusal, unless MAME dies within a moment of it, which makes it
 a death: a dying process closes its sockets before it can be reaped, and a connection it cut
 during the handshake is judged the same way. The handshake's two paged answers, the target
-description and the thread list, share one deadline, what is left of `seconds` and never less
+description and the thread list, share one deadline, what is left of `boot_seconds` and never less
 than one request's timeout: a stub that never sends the last page is a `Timeout`, not a wait
 with no end. A handshake failure that is not a stub not ready (below) is refused
 `session_broken` with the fields of a live process's refusal but no `dial_attempts`, saying the
@@ -612,13 +612,15 @@ cpus, its screens, its palettes) has no static list and publishes none.
 
 **One spelling per concept.** `debug` for the console (`monitor` is the gdb protocol's word,
 and it stays in the client), `run_to` for a run to a place, `read_memory` for bytes, `ref`
-for how a place is named, `seconds` for how long a wait may take, `count` for how many
-steps, `length` for how many bytes (a read's, a watch's, a dump's), `limit` for how many rows
+for how a place is named, `seconds` for how long a call's wait may take (`start`'s boot wait is
+`boot_seconds`), `count` for how many and `first` for from where, each of the tool's own items
+(steps, pens, tiles, rows), `length` for how many bytes (a read's, a watch's, a dump's), `limit` for how many rows
 come back (`log`, `history`, `symbols_find`, `drive`), `pattern` for a regex over a
 log, `<list>_total` for how many a list holds, listed or not (a scan's addresses are
 `hits_total` from `scan_start` on), `frame_<event>` for a reading of the frame counter
 (`frame_screen`, `frame_blit`, `frame_as_of`, `frame_baseline`, `frame_from`),
-`frame_<event>_planned` for a frame not reached yet and `frames` only for a count of them, a
+`frame_<event>_planned` for a frame not reached yet and `frames` only for a count of them
+(`series_capture`'s list of frame numbers is `at_frames`), a
 span of frames `frame_begin` to `frame_end` with its end inclusive, `<what>_frames` the first
 and last frame of a set (`judged_frames`, `dropped_frames`),
 `<what>_s` for a reply's seconds, `dest` for the file a call writes (`memdump`, `map_save`,
@@ -700,7 +702,7 @@ unit (`refresh_hz`, `sample_rate_hz`). A wall-clock instant is `<event>_at`: a d
 `created_at`, a stop's `wall_at` in `last_stop`.
 
 **One rule for every wait.** `seconds` is the wall-clock bound of the call, or of the one wait its
-description names, from more than zero to the ceiling the descriptions print; `frames` and
+description names, from more than zero to the ceiling the schema publishes; `frames` and
 `milliseconds` are EMULATED time, never the wall clock's. Zero is a wait of its own kind in two
 places only, each saying so: `resume(seconds=0)` waits for nothing and leaves the machine
 running, and `perform`'s and `drive`'s `settle_seconds=0` never waits for a stop.

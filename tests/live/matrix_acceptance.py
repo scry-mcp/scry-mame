@@ -287,7 +287,7 @@ def v30_boot(board: tuple[str, dict[str, str]],
     kw: dict[str, Any] = {k: str(root / v) if k in PATHS else v for k, v in args.items()}
     if symbols is not None:
         kw.update(symbols=str(root / symbols[0]), bases=symbols[1])
-    return require_booted(label, call("start", seconds=START_WAIT_S, **kw))
+    return require_booted(label, call("start", boot_seconds=START_WAIT_S, **kw))
 
 
 def _h_v30(t: list[str]) -> None:

@@ -89,7 +89,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "reference_base": "0xa000",
   "inipath": "./tmp/demos/gridlee/gridlee-ini",
   "state_dir": "./tmp/demos/gridlee/gridlee-states",
-  "seconds": 60,
+  "boot_seconds": 60,
   "rompath": "./tmp/roms"
 }
 ```

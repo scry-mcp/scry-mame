@@ -93,7 +93,7 @@ def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
         states.mkdir()
         return {"system": system, "reference_rom": reference, "reference_addr": addr,
                 "reference_base": addr, "inipath": ini, "state_dir": states,
-                "seconds": 60}  # the wait for the debugger stub to answer at boot
+                "boot_seconds": 60}  # the wait for the debugger stub to answer at boot
     return args
 
 

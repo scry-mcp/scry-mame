@@ -117,7 +117,7 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, binary: Path,
     rom = tmp_path / "rom.bin"
     rom.write_bytes(IMAGE)
     out: dict[str, Any] = s.start(binary=str(binary), system="m68k", rompath=str(tmp_path),
-                                  reference_rom=str(rom), seconds=wait, **start_kw)
+                                  reference_rom=str(rom), boot_seconds=wait, **start_kw)
     return out
 
 
@@ -512,7 +512,7 @@ def test_a_banner_that_never_comes_leaves_the_handshake_its_request_and_no_more(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """With no banner the handshake still asks, with one request's time left of the bound, so
-    the start ends within its `seconds` as it did before the wait existed."""
+    the start ends within its `boot_seconds` as it did before the wait existed."""
     asked_at: list[float] = []
     began = time.monotonic()
     out = _start(monkeypatch, tmp_path, _double(tmp_path, banner_after=None), wait=3.0,
@@ -774,7 +774,7 @@ def test_a_refusal_before_any_launch_also_carries_start_retries(tmp_path: Path) 
 def test_a_start_the_schema_refuses_also_carries_start_retries() -> None:
     """The schema refuses a wrong TYPE before the tool body runs, in the server's envelope:
     that is a `start` reply too, and the field is promised on every one."""
-    body = mame_mcp.refusal("start", {"seconds": "soon"}, _schema_error())
+    body = mame_mcp.refusal("start", {"boot_seconds": "soon"}, _schema_error())
     assert body["code"] == "bad_argument" and body["start_retries"] == [], body
 
 
@@ -826,7 +826,7 @@ def test_a_connection_the_stub_accepted_is_kept_while_its_handshake_waits(
     rom.write_bytes(IMAGE)
     try:
         out = s.start(binary=str(_double(tmp_path)), system="m68k", rompath=str(tmp_path),
-                      reference_rom=str(rom), seconds=3.0)
+                      reference_rom=str(rom), boot_seconds=3.0)
         assert out["status"] == "ok", out
         assert stub["dials"] == 1, "one connection, the one MAME serves"
     finally:
@@ -844,7 +844,7 @@ def test_a_handshake_that_never_answers_is_refused_without_a_second_dial(
     rom = tmp_path / "rom.bin"
     rom.write_bytes(IMAGE)
     out = s.start(binary=str(_double(tmp_path)), system="m68k", rompath=str(tmp_path),
-                  reference_rom=str(rom), seconds=0.6)
+                  reference_rom=str(rom), boot_seconds=0.6)
     assert out["code"] == "session_broken" and stub["dials"] == 1, out
     assert "accepted the connection" in out["message"], out["message"]
 

@@ -665,7 +665,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
                          "its plugins")
     ref = reference_rom_file(reference_rom)
     # A MISSING ROM DIRECTORY IS THE WORST SHAPED FAILURE IF IT REACHES MAME: it starts without
-    # its ROMs, the gdbstub never listens, and the caller waits the whole `seconds` to be told
+    # its ROMs, the gdbstub never listens, and the caller waits the whole `boot_seconds` to be told
     # the STUB did not answer.
     if not (roms := inputs.absolute("rompath", rompath)).is_dir():
         inputs.no_such("ROM directory", str(roms))
@@ -680,7 +680,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     behind = judge_background(background, shared, env)
     # THE WAIT FOR THE STUB, held like every other wait: zero or less would spawn an emulator
     # only to report that it never answered, and no bound at all would hold the one lock.
-    inputs.seconds_bound(wait)
+    inputs.seconds_bound(wait, "boot_seconds")
     inputs.natural("stub_port", port, f" is not a TCP port (0 picks a free one, else "
                    f"1..{PORT_MAX})", hi=PORT_MAX)
     if port and not port_is_free(port):

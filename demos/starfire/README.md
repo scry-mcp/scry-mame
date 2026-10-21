@@ -88,7 +88,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "reference_base": "0x0",
   "inipath": "./tmp/demos/starfire/starfire-ini",
   "state_dir": "./tmp/demos/starfire/starfire-states",
-  "seconds": 60,
+  "boot_seconds": 60,
   "rompath": "./tmp/roms"
 }
 ```

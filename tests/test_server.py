@@ -521,7 +521,7 @@ def test_a_missing_rom_directory_is_refused_before_the_emulator_is_spawned(
     rom.write_bytes(b"\x00" * 16)
     refused("no such ROM directory",
     s.start(binary=str(binary), system="none", rompath=str(tmp_path / "run" / "mame_roms"),
-            reference_rom=str(rom), seconds=0.2))
+            reference_rom=str(rom), boot_seconds=0.2))
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
@@ -4210,7 +4210,8 @@ def test_when_the_boot_fails_the_query_holds_the_cause_and_it_outranks_the_sympt
         "{ echo \"No matching machines found for '$1'\" >&2; exit 5; }; done\nexit 0\n")
     Path(args["binary"]).chmod(0o755)
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
-    out = refused("does not carry", s.start(**{**args, "system": "notthisone", "seconds": 0.6}))
+    out = refused("does not carry",
+                  s.start(**{**args, "system": "notthisone", "boot_seconds": 0.6}))
     assert "No matching machines found for 'notthisone'" in out["message"]
     assert "gdbstub did not answer" not in out["message"], (
         "the symptom won: the caller is told the stub is silent and not that they named a "
@@ -4258,7 +4259,7 @@ def test_a_start_that_did_not_start_leaves_no_query_running_behind_it(
     would be a test about its own injection.
     """
     args, held = _query_that_outlives_the_boot(monkeypatch, tmp_path)
-    out = s.start(**{**args, "seconds": 0.4})
+    out = s.start(**{**args, "boot_seconds": 0.4})
     assert out["status"] == "INVALID", out
     proc = held[0][0]
     assert proc is not None
@@ -4279,7 +4280,7 @@ def test_a_boot_that_raises_anything_but_a_refusal_reaps_the_query_and_the_error
 
     monkeypatch.setattr(launch, "boot", boom)
     with pytest.raises(RuntimeError, match="boom"):
-        s.start(**{**args, "seconds": 0.4})
+        s.start(**{**args, "boot_seconds": 0.4})
     proc = held[0][0]
     assert proc is not None
     assert proc.poll() is not None, "the query is still running after a boot that raised"
@@ -5422,7 +5423,7 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
     rom.write_bytes(b"\x00" * 16)
     out = refused("no console plugin for", s.start(
         binary=str(binary), system="none", rompath=str(tmp_path),
-        reference_rom=str(rom), seconds=0.2))
+        reference_rom=str(rom), boot_seconds=0.2))
     assert out["code"] == "bad_argument"
     for place in (tmp_path / "plugins", tmp_path.parent / "share" / "mame" / "plugins"):
         assert str(place.resolve() / "console" / "init.lua") in out["message"], (
@@ -6391,7 +6392,7 @@ def test_start_records_for_the_later_tools_everything_it_judged(
     common = dict(binary=str(binary), system="v30", rompath=str(tmp_path), reference_rom=str(rom),
                   reference_addr="0x20010", reference_base="0x20000", symbols=str(sym),
                   bases={"data": "0x400"}, types=str(types))
-    out = s.start(**common, seconds=3.5)
+    out = s.start(**common, boot_seconds=3.5)
     try:
         assert waits == [("v30", 3.5)]
         assert mstate.STATE.system == "v30"
@@ -6407,7 +6408,7 @@ def test_start_records_for_the_later_tools_everything_it_judged(
         s.close()
     # THE BOOT THAT FAILS collects the query with the same bound, before it names the symptom.
     monkeypatch.setattr(ses, "dial", lambda: (_ for _ in ()).throw(OSError("refused")))
-    refused("did not answer", s.start(**common, seconds=0.2))
+    refused("did not answer", s.start(**common, boot_seconds=0.2))
     assert waits[-1] == ("v30", 0.2), waits
 
 
@@ -6427,7 +6428,7 @@ def test_start_hands_its_progress_to_the_kill_its_guard_makes(
         return real(proc, seconds, progress, what)
 
     monkeypatch.setattr(mstate, "wait_exit", recording)
-    refused("did not answer", s.start(**_boot_args(tmp_path, image), seconds=0.2))
+    refused("did not answer", s.start(**_boot_args(tmp_path, image), boot_seconds=0.2))
     assert seen and all(p is mprogress.no_progress for p in seen), seen
 
 
@@ -6923,7 +6924,7 @@ def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_includ
             monkeypatch.delenv(live_host.LEDGER_VAR)
             ledger.unlink()
         reply = s.start(binary=str(binary), system="none", rompath=str(tmp_path),
-                        reference_rom=str(rom), seconds=1.0)
+                        reference_rom=str(rom), boot_seconds=1.0)
         assert reply["status"] == "INVALID", reply
         assert pid_file.is_file(), "the fake MAME never ran"
         if named:

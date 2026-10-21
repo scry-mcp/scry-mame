@@ -61,12 +61,12 @@ CONSOLE_CHARS = transport.SCRIPT_MAX
 CONSOLE_ACCOUNT = ("thread_errors", "console_reruns", "resent")
 
 
-def check_series_capture(frames: list[int] | None = None, first: int | None = None,
+def check_series_capture(at_frames: list[int] | None = None, first: int | None = None,
                          last: int | None = None, step: int = 1, crop: list[int] | None = None,
                          dest: str = "", seconds: float = SECONDS_DEFAULT, **_: Any) -> None:
     """`series_capture`'s machine-independent half: the frames, the crop's shape, the bound and
     a `dest` that is a new directory."""
-    series.frame_list(frames, first, last, step)
+    series.frame_list(at_frames, first, last, step)
     if crop is not None:
         judges.rect("crop", crop)
     inputs.seconds_bound(seconds)
@@ -134,21 +134,21 @@ print(string.format("MCP_SERIES_DONE kept=%d lost=%s errors=%d first_error=%s", 
   table.concat(t.lost or {}, ","), t.errors or 0, (t.first_error or ""):gsub("\\n", " ")))"""
 
 
-def wanted_lua(frames: list[int] | None, first: int | None, last: int | None,
+def wanted_lua(at_frames: list[int] | None, first: int | None, last: int | None,
                step: int) -> str:
     """The Lua that fills `wanted`: a loop for a range, so a thousand frames cost one line, and
     the list itself otherwise."""
-    if frames is None:
+    if at_frames is None:
         return f"for f = {first}, {last}, {step} do wanted[f] = true end"
-    return ("for _, f in ipairs({" + ",".join(map(str, frames)) + "}) do wanted[f] = true end")
+    return ("for _, f in ipairs({" + ",".join(map(str, at_frames)) + "}) do wanted[f] = true end")
 
 
-def arm_script(folder: Path, frames: list[int] | None, first: int | None, last: int | None,
+def arm_script(folder: Path, at_frames: list[int] | None, first: int | None, last: int | None,
                step: int, wanted: list[int]) -> str:
     """The arming chunk, refused before it is sent when the frame list would not fit in one
-    console line, which only a long `frames` list can do."""
+    console line, which only a long `at_frames` list can do."""
     script = ARM_LUA % {"dir": transport.lua_string(str(folder)), "last": wanted[-1],
-                        "wanted": wanted_lua(frames, first, last, step),
+                        "wanted": wanted_lua(at_frames, first, last, step),
                         "capture": mscreen.capture_lua(), "pens": mscreen.FRAME_PENS_LUA}
     if len(script) > CONSOLE_CHARS:
         raise st.Invalid("bad_argument", f"a list of {len(wanted)} frames does not fit in one "
@@ -158,13 +158,13 @@ def arm_script(folder: Path, frames: list[int] | None, first: int | None, last: 
     return script
 
 
-def series_capture(ses: gs.Session, scratch: Path, frames: list[int] | None, first: int | None,
+def series_capture(ses: gs.Session, scratch: Path, at_frames: list[int] | None, first: int | None,
                    last: int | None, step: int, crop: list[int] | None, dest: str,
                    seconds: float, progress: mprogress.Progress = mprogress.no_progress
                    ) -> dict[str, Any]:
     """The body of the `series_capture` tool."""
-    check_series_capture(frames, first, last, step, crop, dest, seconds)
-    wanted = series.frame_list(frames, first, last, step)
+    check_series_capture(at_frames, first, last, step, crop, dest, seconds)
+    wanted = series.frame_list(at_frames, first, last, step)
     now = read.frame(ses)
     if wanted[0] <= now:
         raise st.Invalid("bad_argument", f"frame {wanted[0]} is not ahead of the machine, which "
@@ -172,7 +172,7 @@ def series_capture(ses: gs.Session, scratch: Path, frames: list[int] | None, fir
     folder = fresh.directory(inputs.optional_dest(dest), scratch / "series",
                              lambda n: f"series-{n}", "the series")
     with fresh.taken_back(folder):
-        script = arm_script(folder, frames, first, last, step, wanted)
+        script = arm_script(folder, at_frames, first, last, step, wanted)
         reply = _captured(ses, scratch, folder, bool(dest), wanted, crop, script, seconds,
                           progress)
     if reply.get("status") != "ok":           # the run's own refusal: no series came of it

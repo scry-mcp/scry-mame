@@ -38,14 +38,13 @@ import mame_write as mwrite
 
 # THE SENTENCES THE TOOL DOCSTRINGS SHARE, each filled into the placeholder of its own name
 # (`{NEEDS_STOPPED}`, ...; `DOC_VALUES` below is the whole list).
-NEEDS_STOPPED = (
-    "Needs the machine STOPPED: on a running one the reply is `status: INVALID` "
-    "(`not_stopped`) with `last_stop` and `answers_while_running`"
-)
+# What the instructions already say of every reader on a running machine (`not_stopped`, and
+# which tools answer) is not said again here: each repeat is paid against the client's cap.
+NEEDS_STOPPED = "Needs the machine STOPPED (else `not_stopped`)"
 STOP_FIELDS = (
-    "the survey: `how`, `stop_seq`, `cpu` (the stop's), `pc`, `regs` (or `available: false`, "
-    "`why`), `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or "
-    "`regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine)"
+    "the survey: `how`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, "
+    "`errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it "
+    "(REFERENCE.md, Advancing the machine)"
 )
 CPU_READS = (
     "Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); "

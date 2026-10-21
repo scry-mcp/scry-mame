@@ -131,7 +131,7 @@ def start(
     symbols: str | dict[str, str] = "",
     reference_addr: str = "0x0",
     inipath: str = "",
-    seconds: Annotated[float, inputs.WAIT_BOUNDS] = 8.0,
+    boot_seconds: Annotated[float, inputs.WAIT_BOUNDS] = 8.0,
     shared: bool = False,
     background: bool | None = None,
     boot_lua: str = "",
@@ -163,7 +163,7 @@ def start(
       omitted, by `shared`.
     - `boot_lua`, an EXISTING harness file, never Lua text (no tool here writes one;
       never `manager.machine:exit()`), `env` for it, `inipath`,
-      `seconds` (the stub's wait, (0, {WAIT_MAX_S}]), `stub_port` (`0`: a free one).
+      `boot_seconds` (the stub's wait), `stub_port` (`0`: a free one).
     - `state_dir` (empty: disposable; else kept), `cfg`.
 
     Refused before any spawn: a live session, a missing file, a cpu
@@ -189,8 +189,8 @@ def start(
         refused.fields["start_retries"] = []    # every `start` reply carries it, refusals too
         raise
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
-                        inipath, seconds, shared, boot_lua, env, bases, reference_base, display,
-                        stub_port, state_dir, throttle_from_frame, types, cfg,
+                        inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
+                        display, stub_port, state_dir, throttle_from_frame, types, cfg,
                         background=background, presence=presence, progress=bridge(ctx))
 
 
@@ -351,7 +351,7 @@ def run_to(ref: str, control: str = "",
     (`breakpoint_at(role="control")`: counts, never halts); with none there the run is refused, and
     one named here is DECLARED and stored. `condition`: stop at `ref` only when it holds, in the
     console's grammar, bare numbers hex (`w@DemoLen==0x25`; no `,`, `;`, braces or assignment).
-    `seconds`: the wall-clock bound, (0, {WAIT_MAX_S}]. `disarm_watches=True`: change watches off
+    `seconds`: the wall-clock bound. `disarm_watches=True`: change watches off
     for this pass, re-armed after it (`disarmed_watches`, `not_rearmed`).
 
     Refused before anything is declared: a target or a control this build does not resolve, a
@@ -384,8 +384,8 @@ def run_for(milliseconds: int = 0, frames: int = 0,
     Arguments: `milliseconds` (the console's `gtime`) or `frames` (one `gvblank` per tick, each
     confirmed on the counter; sent through the first cpu, the one MAME's vblank stop lands on,
     with a `note` when it had to be made visible; the first screen's counter on a board of
-    several; `no_channel` on a board with none). `seconds`: the wall-clock bound,
-    (0, {WAIT_MAX_S}]. `disarm_watches` as in `run_to`. {NEEDS_STOPPED}.
+    several; `no_channel` on a board with none). `seconds`: the wall-clock bound.
+    `disarm_watches` as in `run_to`. {NEEDS_STOPPED}.
 
     Reply: `verdict` (`ELAPSED`: it stopped by itself; `TIMEOUT`: still moving at `seconds`, so
     interrupted; `OTHER_STOP`: a watch, stop breakpoint, registerpoint or row typed through `debug`
@@ -417,8 +417,8 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
 
     Arguments: `milliseconds` or `frames` as in `run_for` (at most {TRACE_FRAMES_MAX} frames or
     {TRACE_MS_MAX} ms; with `noloop`, {NOLOOP_FRAMES_MAX} and {NOLOOP_MS_MAX}). `dest`: an absolute
-    path not there yet; empty lands in the scratch. `seconds`: the wall-clock bound,
-    (0, {WAIT_MAX_S}]. `cpu`: the visible one when empty. `noloop=True`: only for exact
+    path not there yet; empty lands in the scratch. `seconds`: the wall-clock bound.
+    `cpu`: the visible one when empty. `noloop=True`: only for exact
     `count`s and `instructions` (every instruction written), never for which addresses ran.
     {NEEDS_STOPPED}.
 
@@ -479,7 +479,7 @@ def resume(seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 0.0,
     """Let the machine RUN. With `seconds` at zero (the default) it comes back at once and the
     machine runs with NO deadline, until a breakpoint fires, `stop`, or `close`; with a bound it
     waits up to `seconds` for a stop and, if none comes, LEAVES IT RUNNING (unlike `run_to`, which
-    interrupts at its bound). {NEEDS_STOPPED}: a second `resume` is refused.
+    interrupts at its bound). {NEEDS_STOPPED}, a second `resume` too.
 
     Reply: `waited_s`; with a bound, `verdict`: `OTHER_STOP` (back at the debugger, with
     {STOP_FIELDS} and `average_speed`) or `TIMEOUT` (LEFT RUNNING, a `note`); with 0, none.
@@ -867,9 +867,8 @@ def watch_list(cpu: str = "") -> dict[str, Any]:
     (`wplist <cpu>`), named in `cpu` (unavailable when none was). `tallies_not_removed` appears when
     a count watch's removal was NOT carried out by the console (`state` `refused`, the console's
     words in its `why`, or `lost`): the tap is still in the guest and this server no longer holds
-    its record. It is NEVER resent (the id is the range, so a resend could take a tap declared
-    since), and each row repeats on every call until the session ends; its `why` says what declaring
-    the range again does.
+    its record. It is NEVER resent, and each row repeats on every call until the session ends;
+    its `why` says what declaring the range again does.
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -1029,8 +1028,7 @@ def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
     ({NUMBER_ARG}) into it, or `ref` (a symbol or `0x` address in the program space) whose
     map entry names the block, the offset then being the address's distance into it; `length`,
     the count asked (left out, a default); `cpu` (`subcpu`) names the cpu whose space `ref` is
-    in, the visible one when empty. `seconds`: the wait for the console's answer,
-    (0, {WAIT_MAX_S}].
+    in, the visible one when empty. `seconds`: the wait for the console's answer.
 
     It goes through MAME's Lua console and costs what `lua` costs, so the read is of the state
     AFTER the instruction at the stop's pc: to read the block as a write there found it, stop one
@@ -1342,7 +1340,7 @@ def screen_signature(crop: list[int] | None = None,
     equals the one `series_capture` writes for a frame over the same crop, and a palette change
     is a new signature.
 
-    `crop` `[x, y, width, height]`, default the whole screen. `seconds`: (0, {WAIT_MAX_S}].
+    `crop` `[x, y, width, height]`, default the whole screen.
 
     One step, the whole screen read in one chunk AFTER the instruction at the stop's pc, nothing
     altered. {NEEDS_STOPPED}.
@@ -1420,7 +1418,7 @@ def map_save(dest: str, overwrite: bool = False) -> dict[str, Any]:
 
 
 @tool("Capture a series of frames", summary=summaries.series_capture, on_cancel="stop")
-def series_capture(frames: list[int] | None = None, first: int | None = None,
+def series_capture(at_frames: list[int] | None = None, first: int | None = None,
                    last: int | None = None, step: int = 1, crop: list[int] | None = None,
                    dest: str = "",
                    seconds: Annotated[float, inputs.WAIT_BOUNDS] = mseries.SECONDS_DEFAULT,
@@ -1429,11 +1427,11 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
     the series `series_diff`, `region_track` and `golden_check` read, with no picture in the
     reply. It runs the machine two frames past the last and stops there.
 
-    The frames, by the frame counter `run_for(frames=...)` counts, all still to come: `frames`
+    The frames, by the frame counter `run_for(frames=...)` counts, all still to come: `at_frames`
     (a list, ascending) or `first`, `last` and `step`, at most {SERIES_MAX}. `crop` `[x, y,
     width, height]`, default the whole screen. `dest`: a new absolute or `~`-led directory, kept
     after `close`; else one in the scratch, gone at `close` (`kept_after_close` says which).
-    `seconds`: the run's wall-clock bound, (0, {WAIT_MAX_S}]. {NEEDS_STOPPED}.
+    `seconds`: the run's wall-clock bound. {NEEDS_STOPPED}.
 
     Each frame is MAME's own rendering of it, read by a frame notifier one frame late as
     `gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`. Its
@@ -1447,9 +1445,9 @@ def series_capture(frames: list[int] | None = None, first: int | None = None,
 
     Reference: REFERENCE.md, Media files.
     """
-    args.check("series_capture", frames=frames, first=first, last=last, step=step, crop=crop,
-               dest=dest, seconds=seconds)
-    return mseries.series_capture(*stopped("a series of frames"), frames, first, last, step,
+    args.check("series_capture", at_frames=at_frames, first=first, last=last, step=step,
+               crop=crop, dest=dest, seconds=seconds)
+    return mseries.series_capture(*stopped("a series of frames"), at_frames, first, last, step,
                                   crop, dest, seconds, bridge(ctx))
 
 
@@ -1482,7 +1480,7 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
     `palette` (the device's tag, as `gfx_view` takes it; empty: the machine's only palette
     device), `first` and `count` (0: to the end, at most {PALETTE_COUNT_MAX}; `truncated` says
     whether that cap cut it), `scale` and `dest`
-    ({PICTURE_ARGS}), `seconds` (the console's wait, (0, {WAIT_MAX_S}]).
+    ({PICTURE_ARGS}), `seconds` (the console's wait).
 
     One step, the pens AFTER the instruction at the stop's pc, nothing altered. {NEEDS_STOPPED}.
 
@@ -1521,7 +1519,6 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
     step, with `agrees`, or unavailable with why; the picture is a crop round the point,
     `point_in_crop` ringed, in a `border`). `crop` `[x, y, width, height]` narrows all but
     `pixel`. `scale`, `dest` (`pixel` too): {PICTURE_ARGS}; {PICTURE_ATTACH}.
-    `seconds`: (0, {WAIT_MAX_S}].
 
     One step, the screen AFTER the instruction at the stop's pc, nothing altered. {NEEDS_STOPPED}.
 
@@ -1566,7 +1563,7 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
     `first`, `count` (0: what the block holds, at most {GFX_TILES_MAX}), `columns`
     (1..{GFX_COLUMNS_MAX}). `palette`: `none` (grey, not real), a device tag or empty for the only
     one, its pens `pen_base` .. `pen_base + 2^planes - 1` read live. `scale`,
-    `dest`: {PICTURE_ARGS}; {PICTURE_ATTACH}. `seconds`: (0, {WAIT_MAX_S}].
+    `dest`: {PICTURE_ARGS}; {PICTURE_ATTACH}.
 
     One step; the state AFTER the stop's instruction; unaltered. {NEEDS_STOPPED}.
 
@@ -1608,7 +1605,7 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
     `pen_map` and no `base`. `transparent` (a pixel value) leaves those tile pixels out, proving
     less; nothing is ranked. At most {LOCATE_WORK_MAX} pixel operations
     and {LOCATE_MATCHES_MAX} matches a call. Source: `tag` with `offset` ({NUMBER_ARG}), or `ref` on
-    `cpu`, as `gfx_view`'s. `seconds`: (0, {WAIT_MAX_S}].
+    `cpu`, as `gfx_view`'s.
 
     One step, altering nothing; kept as `gfx_draft`'s evidence.
     {NEEDS_STOPPED}.
@@ -1657,7 +1654,7 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
     an address in `cpu`'s program space. Bits a pixel or a tile size the request names go in
     `planes` or `sizes`; leave out what it does not name.
     `palette`: `none` (default, grey), a device tag, or empty for the only one, from
-    `pen_base` ({NUMBER_ARG}). `scale`, `dest`: {PICTURE_ARGS}. `seconds`: (0, {WAIT_MAX_S}].
+    `pen_base` ({NUMBER_ARG}). `scale`, `dest`: {PICTURE_ARGS}.
 
     NEXT: a candidate's id is a layout for `gfx_locate` (against the screen) and `gfx_view`;
     `gfx_draft(choose=...)` records a person's pick.
@@ -1759,7 +1756,7 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
     `[x, y, width, height]` LISTS the blits covering it, in the order drawn, and `topmost`, the
     last of the highest plane; `detail=True` lists every blit. A
     listing is a page of {ROWS_SHOWN} from `first`, `next_first` while more remain.
-    `scale`, `dest`: {PICTURE_ARGS}. `seconds`: (0, {WAIT_MAX_S}].
+    `scale`, `dest`: {PICTURE_ARGS}.
 
     A box: the destination walk wrapped at its plane's size, moved by the plane's origin from the
     same row, cut to the screen; a paged plane names each blit's `page`. {NEEDS_STOPPED}.
@@ -1800,7 +1797,7 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
     UNSCALED: no blit's zoom or scale registers are applied (the `note` says so).
     `margin` (0..{BLIT_MARGIN_MAX}): pixels shown round it, dimmed, the rectangle ringed:
     `image` is a view (RGB), `data` the exact indexed PNG; `box` places the rectangle.
-    `scale`, `dest`: {PICTURE_ARGS}. `seconds`: (0, {WAIT_MAX_S}].
+    `scale`, `dest`: {PICTURE_ARGS}.
 
     One step dumps the asset's block and reads its pens; nothing altered. {NEEDS_STOPPED}.
 
@@ -1831,7 +1828,7 @@ def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
 
     `arm=True` ARMS the log (`armed_now`), installed when the console next reads a line; a call
     without it READS it; `clear=True` removes it.
-    `pen`: that pen alone, whole. `limit` (0..{PALETTE_LOG_LIMIT_MAX}): the newest kept rows shown.
+    `pen`: that pen alone, whole. `limit`: the newest kept rows shown.
     Answers while RUNNING, from the files the last stop wrote (`superseded` when older).
 
     A data write lands on no pen (`unsynced_writes`) until the index is known after the arming,
@@ -1881,7 +1878,7 @@ def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)
     first write is the baseline). `frames` (1..{FILM_FRAMES_MAX}, default {FILM_FRAMES}): frames
     judged, then it finishes. `keep` (1..{FILM_KEEP_MAX}, default {FILM_KEEP}): pictures kept.
     `crop` `[x, y, width, height]`. `film_dir`: a new absolute directory, else the scratch.
-    `seconds`: the screen read's wait, (0, {WAIT_MAX_S}]. `space`: `io` for a PORT `trigger` (`0x`
+    `seconds`: the screen read's wait. `space`: `io` for a PORT `trigger` (`0x`
     alone, no `@io`). READ (no `trigger`; answers RUNNING): counts, and a contact sheet of kept
     frames from `first`, as many as fit, each labelled with its frame, hits and first hit (`listed`,
     `next_first`). CLEAR: `clear=True`.
@@ -1969,7 +1966,7 @@ def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS
     end; the refusal names `last_stop`, and a stop that lands DURING the wait is reported the
     same way after one last read of the log), `session_broken` (LATCHED) when the emulator
     went away. A
-    bad `seconds` (outside (0, {WAIT_MAX_S}]), an unusable regex, an unknown channel or a
+    bad `seconds`, an unusable regex, an unknown channel or a
     `since_mark` that names no position of the log is refused. Reports its progress while it waits.
 
     Reference: REFERENCE.md, The log.
@@ -2062,7 +2059,7 @@ def perform(steps: list[dict[str, Any]],
     Arguments: `steps`, a non-empty list, each `{"op": <tool name>, ...its arguments}`, any tool but
     `start`, `close`, `rom_check`, `perform`, `drive` and `perform_export`. While the machine runs
     only running-ok ops go on at once, and before the next console op the sequence WAITS up to
-    `settle_seconds` (0..{WAIT_MAX_S}) for the machine to stop.
+    `settle_seconds` for the machine to stop.
     `summaries=True` keeps every stop of a long list and counts them: each step but the one that
     matters (last, left running, failing) becomes a compact row; `ran` shows the first {ROWS_SHOWN}
     (`truncated`, of `steps_total`), `ran_path` and `replies_path` all, and `stops` counts the
@@ -2165,7 +2162,7 @@ def lua(script: str,
 
     Arguments: `script`, ONE chunk of at most {SCRIPT_MAX} characters (a `local` on line 1 is seen
     on line 2); only what it `print`s comes back, never a `return` value. `seconds`: the wait for
-    its answer, (0, {WAIT_MAX_S}]. `read_only=True` is YOUR word that it only reads: without it the
+    its answer. `read_only=True` is YOUR word that it only reads: without it the
     call marks the session ALTERED, and nothing verifies the claim (`read_only_claims`).
 
     It costs steps: the machine is stepped once per line still ahead in the console's pipe plus
@@ -2204,7 +2201,7 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     `P1 Right`), `value` ({NUMBER_ARG}; a digital field is active for any non-zero
     value; an analog one takes a
     value in its own range), `frames` (one or more), `seconds` (the wall-clock bound of the WHOLE
-    call, (0, {WAIT_MAX_S}]: every run and every wait for the console inside it takes what is
+    call: every run and every wait for the console inside it takes what is
     left, and a run it has no room left for is `wait_expired`). A press is play, not a write: it
     leaves `altered` as it was. A game that detects an
     EDGE needs a release between two presses: call twice. {NEEDS_STOPPED}; every wrapper but
@@ -2238,7 +2235,7 @@ def record(frames: int, dest: str = "",
     not wall time), then hand the machine back stopped. The file is CHECKED before its path
     is given: a finished AVI whose header declares its frames, and zero frames is INVALID.
     `dest` is an absolute path not there yet; empty lands in the scratch, which `close`
-    deletes. `seconds` is the wall-clock bound of the whole call, (0, {WAIT_MAX_S}], as `input`'s
+    deletes. `seconds` is the wall-clock bound of the whole call, as `input`'s
     is. Reports its progress while it waits. `frames` is 2 or more: the frame notifier cannot end a
     recording on the call that begins it, so one frame is refused rather than recorded as two.
     {NEEDS_STOPPED}.
@@ -2275,8 +2272,8 @@ def audio_record(frames: int, dest: str = "",
     header's rate, within one update. A span with no mixer update, a machine with no speaker,
     or a mixer already recording (an ini naming `wavwrite`) is INVALID; silence is reported
     (`sample_min` equals `sample_max`), never refused. `dest` is an absolute path not there
-    yet; empty lands in the scratch, which `close` deletes. `seconds` bounds the whole call,
-    (0, {WAIT_MAX_S}]. `frames` is 2 or more. {NEEDS_STOPPED}.
+    yet; empty lands in the scratch, which `close` deletes. `seconds` bounds the whole call.
+    `frames` is 2 or more. {NEEDS_STOPPED}.
 
     A run cut short leaves the recording OPEN (`ended: false`, `frame_end_planned`), or not begun
     when cut before its first frame (`began: false`, `frame_begin_planned`), with a `note`. Lines
@@ -2306,7 +2303,7 @@ def throttle(on: bool, seconds: Annotated[float, inputs.WAIT_BOUNDS] = 5.0,
     MARK'S NUMBER IS THE SESSION'S CONSOLE SEQUENCE, shared with every call that sends the console a
     line, so it counts nothing about throttles; and `log_wait` takes a regex, so close the digits
     (`MAME_MCP_THROTTLE#1(?![0-9])`) or `#1` also matches `#10`. On a RUNNING machine the tool waits
-    up to `seconds` ((0, {WAIT_MAX_S}]) for the mark and reports the frame it applied at; one that
+    up to `seconds` for the mark and reports the frame it applied at; one that
     stops before its next frame leaves the switch pending as a stopped one does, and one whose
     bound runs out is `wait_expired`, recorded all the same. `start`'s `throttle_from_frame` is the
     same switch decided at launch.

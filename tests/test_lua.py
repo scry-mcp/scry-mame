@@ -1508,7 +1508,7 @@ def test_start_reports_its_progress_while_the_gdbstub_is_slow(
     ses.dial = slow_connect  # type: ignore[method-assign]
     ticks: list[str] = []
     monkeypatch.setattr(s, "bridge", lambda ctx: (lambda p, t, m: ticks.append(m)))
-    out = s.start(**_boot_args(tmp_path, image), seconds=5.0)
+    out = s.start(**_boot_args(tmp_path, image), boot_seconds=5.0)
     try:
         assert out["status"] == "ok", out
         assert ticks and "waiting for the gdbstub on port" in ticks[0], ticks
@@ -1546,7 +1546,7 @@ def test_start_and_close_carry_the_clients_context_to_their_waits(
 
     async def main() -> None:
         out = await anyio.to_thread.run_sync(
-            lambda: s.start(**_boot_args(tmp_path, image), seconds=6.0, ctx=_Ctx()))
+            lambda: s.start(**_boot_args(tmp_path, image), boot_seconds=6.0, ctx=_Ctx()))
         assert out["status"] == "ok", out
         assert any("waiting for the gdbstub" in str(m) for _p, _t, m in got), got
         monkeypatch.setattr(mstate.STATE, "proc", _SlowExit(2.2))
@@ -1581,7 +1581,7 @@ def test_a_start_whose_stub_never_answers_carries_mames_own_last_words(
         k["stdout"].flush()
 
     monkeypatch.setattr(_StubProcess, "__init__", writing_init)
-    out = s.start(**_boot_args(tmp_path, image), seconds=0.5)
+    out = s.start(**_boot_args(tmp_path, image), boot_seconds=0.5)
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert "Console plugin not found" in out["stdout_tail"]
     assert out["session"]["alive"] is False, "the failed start owns nothing"
