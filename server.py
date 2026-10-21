@@ -556,9 +556,10 @@ def breakpoint_at(ref: str,
 @tool("List the breakpoint declarations", summary=summaries.breakpoint_list, read_only=True)
 def breakpoint_list(cpu: str = "") -> dict[str, Any]:
     """Every breakpoint declaration and its state, against the debugger's own `bplist` read back.
-    Reply: `breakpoints`, each with `ref`, `by`, `role`, `created_at`, `origin`, `inherited` (true
-    for a declaration the store brought back at `start`, false for one made this session), `age_s`
-    (whole seconds since `created_at`, unavailable with no date), `condition` and `condition_typed`
+    Reply: `breakpoints`, each with `ref`, `by`, `cpu`, `role`, `created_at`, `origin`, `inherited`
+    (true for a declaration the store brought back at `start`, false for one made this session),
+    `age_s` (whole seconds since `created_at`, unavailable with no date), `condition` and
+    `condition_typed`
     as `breakpoint_at` replies them, `addr`, `hits_since_armed` for an armed control (its count
     since it was armed), `state` (`armed` or `disabled` with its `entry` and `cpu`, `gone` for one
     that owns no row, `stale` for a raw address declared over another build, `aliased` with `why`
@@ -638,7 +639,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
 @tool("List the registerpoint declarations", summary=summaries.regpoint_list, read_only=True)
 def regpoint_list(cpu: str = "") -> dict[str, Any]:
     """Every registerpoint declaration and its state, against the debugger's own `rplist` read
-    back. Reply: `regpoints`, each with `ref`, `by`, `created_at`, `origin`, `inherited`
+    back. Reply: `regpoints`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited`
     (true for a declaration the store brought back at `start`, false for one made this
     session), `age_s` (whole seconds since `created_at`, unavailable with no date), `condition` (as
     the console reads it now), `state` (`armed` or `disabled` with its `entry`, `index` and
@@ -847,9 +848,10 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
 @tool("List the watch declarations", summary=summaries.watch_list, read_only=True)
 def watch_list(cpu: str = "") -> dict[str, Any]:
     """Every watch declaration and its state, and each io tap (`space: "io"`, `stored: false`).
-    Reply: `watches`, each with `ref`, `by`, `created_at`, `origin`, `inherited` (true for one the
-    store brought back at `start`), `age_s` (whole seconds since `created_at`, unavailable with no
-    date), `mode`, `length`, `fmt`, `addr`, `state`, where it is PLACED (a show or expr watch:
+    Reply: `watches`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited` (true if
+    the store brought it back; an io tap has neither), `age_s` (whole seconds since `created_at`,
+    unavailable with no date), `mode`, `length`, `fmt`, `addr`, `state`, where it is PLACED (a
+    show or expr watch:
     `evaluated`, or `unresolved`, `null_pointer`; stopped, a show watch adds `reading`, `available`
     with `value` and `raw_hex`, or unavailable with `why`; a change watch: `armed` or `disabled`
     with its `entry`, `cpu` and `values_from`, `gone`, `stale` for a raw address declared over
@@ -2389,12 +2391,11 @@ def state_list() -> dict[str, Any]:
 @tool("Load a machine state", summary=summaries.state_load)
 def state_load(name: str) -> dict[str, Any]:
     """Restore the savestate `name` through the debugger console (`stateload`). It REPLACES
-    the machine, so the session is ALTERED from then on. MAME refuses a bad state IN
-    SILENCE from the console, so the file's header is judged BEFORE the console (magic, system
-    name, this session's save signatures), the ROM is checked again
-    against the reference `start` was given, and the stop is surveyed and compared with
+    the machine, so the session is ALTERED. MAME refuses a bad state IN SILENCE, so the file's
+    header is judged first (magic, system name, this session's save signatures), the ROM is
+    checked again against `start`'s reference, and the stop is surveyed and compared with
     what `state_save` recorded, the frame and pc and every register of every cpu the stub reads:
-    `verified` is true, or the reply is INVALID (`readback_refused`) naming the frame and pc or
+    `verified` is true, or INVALID (`readback_refused`) naming the frame and pc or
     carrying `differs` (`cpu`, `register`, `saved`, `loaded`), the stop it surveyed recorded all
     the same. `verified` is `available: false` with its `why` for a state this session did not
     write, a
@@ -2406,8 +2407,7 @@ def state_load(name: str) -> dict[str, Any]:
     Reply: `name`, `path`, `rom_check`, `verified`, `saved`, `output` (what the debugger console
     printed for `stateload`, named as `debug` names it), {MARK}, `held` when MAME held the load
     and one instruction completed it (REFERENCE.md, Saved states), `taps_across` as `reset`'s,
-    then {STOP_FIELDS}; that `errorlog` runs from the last stop, so it includes what MAME logged
-    during the load.
+    then {STOP_FIELDS}; that `errorlog` runs from the last stop, the load's own lines included.
 
     Reference: REFERENCE.md, Saved states.
     """
