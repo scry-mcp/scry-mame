@@ -927,17 +927,18 @@ class Case:
     judge: Judge
     exempt: str = ""       # why this call cannot wait, when its own wait is above the ceiling
     then: str = ""         # the call that restores the machine after it
+    before: tuple[str, dict[str, Any]] | None = None   # the call that sets up its state
 
 
 def waits(tool: str, arg: str, base: dict[str, Any], *, at_max: str = "",
-          absent: str | None = None, zero_ok: bool = False) -> list[Case]:
-    """The five edges of one WAIT argument. `at_max` and `absent` are the documented reasons a
-    call cannot wait when they are given; without one the cell is BLOCKED by B1. `absent` is
-    None for a default already inside the ceiling."""
+          absent: str | None = None, zero_ok: bool = False, then: str = "") -> list[Case]:
+    """The five edges of one WAIT argument. `at_max` and `absent` say why the call returns at
+    once in this state; with none, the cell is BLOCKED by B1. `absent` is None for a default
+    already inside the ceiling. `then` is the restoring call run after those two cells."""
     zero = is_ok() if zero_ok else is_refused("bad_argument")
     cases = [
         Case(f"{tool}.{arg} at max {WAIT_MAX:g}", tool, {**base, arg: WAIT_MAX}, is_ok(),
-             exempt=at_max),
+             exempt=at_max, then=then),
         Case(f"{tool}.{arg} one past max", tool, {**base, arg: ONE_PAST_WAIT},
              is_refused("bad_argument"), exempt=PRE_GATE),
         Case(f"{tool}.{arg} far past max", tool, {**base, arg: float(FAR)},
@@ -945,7 +946,8 @@ def waits(tool: str, arg: str, base: dict[str, Any], *, at_max: str = "",
         Case(f"{tool}.{arg} at zero", tool, {**base, arg: 0.0}, zero),
     ]
     if absent is not None:
-        cases.append(Case(f"{tool}.{arg} absent", tool, dict(base), is_ok(), exempt=absent))
+        cases.append(Case(f"{tool}.{arg} absent", tool, dict(base), is_ok(), exempt=absent,
+                          then=then))
     return cases
 
 
@@ -975,7 +977,13 @@ def _lua_of(n: int) -> str:
 
 NAME_MAX = 64  # a state name: letters, digits, `_` and `-`, up to 64
 MAX_NAME = "s" * NAME_MAX
-RUN_ASKED = "the run is asked of a target that runs every frame: not a documented instant"
+# A WAIT IS EXEMPT FROM B1 ONLY WHERE THE CALL RETURNS AT ONCE, so a published maximum is proved
+# without being waited out; `run_case` FAILS the cell if it took longer than the ceiling, so each
+# reason below is checked, never trusted.
+RUNS_EVERY_FRAME = "the run is asked of a target that runs every frame"
+STOPPED_ANSWERS_AT_ONCE = "a stopped machine answers in one step"
+ENDS_IN_FRAMES = "the call asks for one or two frames"
+STOP_AT_ONCE = "a breakpoint on a routine that runs every frame stops the release within a frame"
 AT_A_STOP = "at a stop the log is read once, never waited on (drive's docstring)"
 NO_RUN_STEP = "no step of the list lets the machine run, so nothing waits for a stop"
 STOPPED_THROTTLE = "a stopped machine's throttle is pending and never waits (its docstring)"
@@ -993,7 +1001,8 @@ STOPPED_CASES: list[Case] = [
     Case("disassemble.length absent", "disassemble", {"ref": "0x400"}, is_ok()),
     *counts("read_block", "length", {"tag": "maincpu"}, 1024, hex_len(1024)),
     Case("read_block.length absent", "read_block", {"tag": "maincpu"}, is_ok(hex_len(16))),
-    *waits("read_block", "seconds", {"tag": "maincpu", "length": 8}, absent=None),
+    *waits("read_block", "seconds", {"tag": "maincpu", "length": 8}, at_max=STOPPED_ANSWERS_AT_ONCE,
+           absent=None),
     Case("read_block.seconds absent", "read_block", {"tag": "maincpu", "length": 8}, is_ok()),
     Case("read_block.offset negative", "read_block", {"tag": "maincpu", "offset": -1},
          is_refused("bad_argument")),
@@ -1111,7 +1120,7 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("screen_signature.crop absent", "screen_signature", {},
          is_ok(lambda r: r.get("crop") == [0, 0, r.get("width"), r.get("height")])),
-    *waits("screen_signature", "seconds", {}, absent=None),
+    *waits("screen_signature", "seconds", {}, at_max=STOPPED_ANSWERS_AT_ONCE, absent=None),
     Case("screen_signature.seconds absent", "screen_signature", {"crop": [0, 0, 8, 8]},
          is_ok(lambda r: r.get("crop") == [0, 0, 8, 8])),
     Case("screen_signature.crop off the screen", "screen_signature",
@@ -1126,7 +1135,8 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("lua.script empty", "lua", {"script": ""}, is_refused("bad_argument")),
     Case("lua.script whitespace only", "lua", {"script": "  \n "}, is_refused("bad_argument")),
-    *waits("lua", "seconds", {"script": "print(1)", "read_only": True}, absent=None),
+    *waits("lua", "seconds", {"script": "print(1)", "read_only": True},
+           at_max=STOPPED_ANSWERS_AT_ONCE, absent=None),
     Case("lua.seconds absent", "lua", {"script": "print(1)", "read_only": True}, is_ok()),
     Case("input.frames absent", "input", {"port": ":P1", "field": "Coin 1", "seconds": 10.0},
          is_ok(lambda r: r.get("frames") == 4 and r.get("released") is True)),
@@ -1143,7 +1153,8 @@ STOPPED_CASES: list[Case] = [
     Case("input.value as decimal text", "input",
          {"port": ":P1", "field": "Coin 1", "value": "1", "frames": 1, "seconds": 10.0},
          refused_saying("decimal text is refused")),
-    *waits("input", "seconds", {"port": ":P1", "field": "Coin 1", "frames": 1}, absent="",),
+    *waits("input", "seconds", {"port": ":P1", "field": "Coin 1", "frames": 1},
+           at_max=ENDS_IN_FRAMES, absent=ENDS_IN_FRAMES),
     # The frame notifier cannot end a recording on the call that begins it, so the minimum
     # is two and one is refused rather than recorded as two.
     Case("record.frames at min 2", "record", {"frames": 2, "seconds": 10.0},
@@ -1154,7 +1165,7 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("record.dest relative", "record", {"frames": 2, "dest": "rel.avi", "seconds": 10.0},
          is_refused("bad_argument")),
-    *waits("record", "seconds", {"frames": 2}, absent=""),
+    *waits("record", "seconds", {"frames": 2}, at_max=ENDS_IN_FRAMES, absent=ENDS_IN_FRAMES),
     # The mixer writes whole updates of a fiftieth of an emulated second, so two frames is the
     # shortest span that holds one on a screen under 100 Hz; a bool is not a count.
     Case("audio_record.frames at min 2", "audio_record", {"frames": 2, "seconds": 10.0},
@@ -1167,10 +1178,12 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("audio_record.dest relative", "audio_record",
          {"frames": 2, "dest": "rel.wav", "seconds": 10.0}, is_refused("bad_argument")),
-    *waits("audio_record", "seconds", {"frames": 2}, absent=""),
+    *waits("audio_record", "seconds", {"frames": 2}, at_max=ENDS_IN_FRAMES,
+           absent=ENDS_IN_FRAMES),
     *waits("throttle", "seconds", {"on": False}, at_max=STOPPED_THROTTLE, absent=None),
     Case("throttle.seconds absent", "throttle", {"on": False}, is_ok()),
-    *waits("run_to", "seconds", {"ref": "irq_vblank", "control": "0x4a0"}, absent=""),
+    *waits("run_to", "seconds", {"ref": "irq_vblank", "control": "0x4a0"}, at_max=RUNS_EVERY_FRAME,
+           absent=RUNS_EVERY_FRAME, then="breakpoint_clear"),
     Case("run_to.condition absent", "run_to",
          {"ref": "irq_vblank", "control": "0x4a0", "seconds": 10.0},
          is_ok(lambda r: r.get("verdict") == "TARGET"), then="breakpoint_clear"),
@@ -1182,14 +1195,14 @@ STOPPED_CASES: list[Case] = [
     Case("run_to.ref empty", "run_to", {"ref": "", "seconds": 10.0}, is_refused("bad_argument")),
     Case("run_to.control absent: refused", "run_to", {"ref": "irq_vblank", "seconds": 10.0},
          is_refused()),
-    *waits("run_for", "seconds", {"frames": 1}, absent=""),
+    *waits("run_for", "seconds", {"frames": 1}, at_max=ENDS_IN_FRAMES, absent=ENDS_IN_FRAMES),
     Case("run_for.milliseconds and frames both absent", "run_for", {"seconds": 10.0},
          is_refused("bad_argument")),
     Case("run_for.milliseconds and frames both given", "run_for",
          {"milliseconds": 10, "frames": 1, "seconds": 10.0}, is_refused("bad_argument")),
     Case("run_for.frames negative", "run_for", {"frames": -1, "seconds": 10.0},
          is_refused("bad_argument")),
-    *waits("trace", "seconds", {"frames": 1}, absent=""),
+    *waits("trace", "seconds", {"frames": 1}, at_max=ENDS_IN_FRAMES, absent=ENDS_IN_FRAMES),
     Case("trace.milliseconds and frames both absent", "trace", {"seconds": 10.0},
          is_refused("bad_argument")),
     Case("trace.milliseconds and frames both given", "trace",
@@ -1201,7 +1214,9 @@ STOPPED_CASES: list[Case] = [
     Case("resume.seconds absent", "resume", {},
          is_ok(lambda r: "verdict" not in r and "halted" not in r),
          then="stop"),
-    Case(f"resume.seconds at max {WAIT_MAX:g}", "resume", {"seconds": WAIT_MAX}, is_ok()),
+    Case(f"resume.seconds at max {WAIT_MAX:g}", "resume", {"seconds": WAIT_MAX},
+         is_ok(lambda r: r.get("verdict") == "OTHER_STOP"), exempt=STOP_AT_ONCE,
+         before=("breakpoint_at", {"ref": "irq_vblank"}), then="breakpoint_clear"),
     Case("resume.seconds one past max", "resume", {"seconds": ONE_PAST_WAIT},
          is_refused("bad_argument"), exempt=PRE_GATE),
     Case("resume.seconds far past max", "resume", {"seconds": float(FAR)},
@@ -1386,6 +1401,11 @@ NO_SESSION_CASES: list[Case] = [
 
 
 def run_case(c: Case) -> dict[str, Any]:
+    if c.before is not None and not ok(set_up := call(c.before[0], **c.before[1])):
+        cell(c.label, False, f"its setup {c.before[0]} failed: {said(set_up)}")
+        if c.then:
+            restore(c.then)
+        return set_up
     try:
         r = call(c.tool, b1_exempt=c.exempt, **c.kw)
     except Blocked as e:

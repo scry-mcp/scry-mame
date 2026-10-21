@@ -33,7 +33,7 @@ import hashlib
 import os
 import re
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -75,7 +75,8 @@ Z_CELLS = [
     "comparison can fail",
     "circus: start(presence=False) draws nothing, writes no state and says false",
     "circus: after a driving call that ends stopped and a quiet wait, the state is held and the "
-    "held repaints rose; with the repaint taken away they do not",
+    "held repaints rose; sent by hand, the adapter's repaint draws at least one held frame and "
+    "a repaint taken away draws none",
 ]
 #: Long enough for the session's writer to land a state it had pending.
 QUIET_S = 0.3
@@ -287,28 +288,41 @@ def _z_circus(t: list[str]) -> None:
 
 
 def _z_repaint(label: str) -> None:
-    """THE EDGE GOES DIM ON A STOPPED MAME: the drawer's held count read after a `run_for` that
-    ends stopped and again after a quiet wait, with the session's repaint and then with it taken
-    away. The count is read with `lua`, which draws nothing of its own but is a driving call that
-    ends stopped too, so the rise is the repaint of a driving call's end, and with the repaint
-    gone nothing at all may rise."""
-    def leg() -> tuple[int, str]:
-        call("run_for", frames=10, seconds=10.0)
-        after_run = _frames()
+    """THE EDGE GOES DIM ON A STOPPED MAME, in two halves. The session's: a `run_for` that ends
+    stopped, a quiet wait, and the state file says `held` and the drawer's held count rose. The
+    repaint's own, by hand: the file says `held` only around the adapter's repaint and `off`
+    while the count is read, since a read is `lua`, whose steps repaint a stopped machine.
+
+    WHY THE RED IS NOT TAKEN THROUGH THE SESSION: the writer delivers each state off the call's
+    path, so on a loaded host a driving call's first repaints can still find the previous `held`
+    in the file, and a count read through the session rises with the repaint taken away;
+    `_by_hand` removes that race. That the writer asks for the repaint once `held` lands is
+    scry-core's `test_presence`."""
+    def repaints_drawn(repaint: Callable[[Callable[[], bool]], None]) -> int:
+        """The held repaints `repaint` drew, the file `held` around it alone."""
+        before = _frames()
+        time.sleep(REPAINT_WAIT_S)               # what the read drew late lands on `off`
+        _put(_state_file(), "held")
+        due = time.monotonic() + REPAINT_WAIT_S  # still due until then: a lock never freed ends it
+        repaint(lambda: time.monotonic() < due)
         time.sleep(REPAINT_WAIT_S)
-        # READ BEFORE THE COUNT: `lua` drives, so the file says `acting` while it runs.
-        word = _state_file().read_text().strip() if _state_file().exists() else ""
-        after_wait = _frames()
-        return _rise(after_run, after_wait, "held"), word
-    rose, word = leg()
-    original = mpresence.FileAdapter.repaint
-    mpresence.FileAdapter.repaint = lambda self, still: None  # type: ignore[method-assign]
-    try:
-        rose_without, _ = leg()
-    finally:
-        mpresence.FileAdapter.repaint = original  # type: ignore[method-assign]
-    cell(label, rose >= 1 and word == "held" and rose_without == 0,
-         f"held repaints with the repaint {rose} (state {word!r}), without it {rose_without}")
+        _put(_state_file(), "off")
+        return _rise(before, _frames(), "held")
+    call("run_for", frames=10, seconds=10.0)
+    after_run = _frames()
+    time.sleep(REPAINT_WAIT_S)
+    # READ BEFORE THE COUNT: `lua` drives, so the file says `acting` while it runs.
+    word = _state_file().read_text().strip() if _state_file().exists() else ""
+    rose = _rise(after_run, _frames(), "held")
+    assert STATE.scratch is not None
+    adapter = mpresence.FileAdapter(STATE.scratch)
+    with _by_hand():
+        _put(_state_file(), "off")
+        by_repaint = repaints_drawn(adapter.repaint)
+        by_nothing = repaints_drawn(lambda still: None)
+    cell(label, rose >= 1 and word == "held" and by_repaint >= 1 and by_nothing == 0,
+         f"after the quiet wait {rose} held repaints (state {word!r}); by hand the repaint "
+         f"drew {by_repaint}, no repaint {by_nothing}")
 
 
 def _judge_window(label: str, off: window_capture.Image, acting: window_capture.Image) -> None:

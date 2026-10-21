@@ -204,6 +204,9 @@ def live_tmp(prefix: str) -> Path:
 WAIT_CEILING_S = 10.0
 START_WAIT_S = 30.0
 WAIT_ARGS = ("seconds", "settle_seconds")
+#: Starts the reason of a cell BLOCKED by the matrix's own wait ceiling (rule B1), so the summary
+#: names those apart from what the host could not run.
+B1_PREFIX = "B1: "
 
 
 class Blocked(Exception):
@@ -883,6 +886,9 @@ def run_sections(name: str) -> None:
     print(f"elapsed: {time.monotonic() - t0:.0f} s")
     for label, reason in BLOCKED:
         row("BLOCKED", label, reason)
+    if own := [label for label, reason in BLOCKED if reason.startswith(B1_PREFIX)]:
+        print(f"BLOCKED by this matrix's own wait ceiling, not by the host: {len(own)}: "
+              f"{'; '.join(own)}")
     print(f"cells: PLANNED {len(planned)}  RUN {run}  OK {TALLY['OK']}  FAIL {TALLY['FAIL']}  "
           f"BLOCKED {TALLY['BLOCKED']}")
     if invalid:
