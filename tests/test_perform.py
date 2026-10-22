@@ -1626,11 +1626,11 @@ def test_an_unprovable_console_run_reads_each_logged_line_once_and_status_agrees
     monkeypatch.setattr(mstate.STATE, "debuglog_mark", 0)
     monkeypatch.setattr(mstate.STATE, "unprovable_peek", 0)
     log = tmp_path / "debug.log"
-    log.write_text("D682\n")
+    log.write_bytes(b"D682\n")                    # bytes: a mark counts them, CRLF would not
     assert running.console_run_ended(cast(Any, ses), tmp_path) is False
     assert mstate.STATE.unprovable_peek == len("D682\n")
-    with log.open("a") as fh:
-        fh.write("Stopped at breakpoint 3\n")
+    with log.open("ab") as fh:
+        fh.write(b"Stopped at breakpoint 3\n")
     found: list[str] = []
     monkeypatch.setattr(running, "_found", lambda _s, _d, packet: found.append(packet))
     running.observe_stop(cast(Any, ses), tmp_path)

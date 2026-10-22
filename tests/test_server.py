@@ -18,6 +18,7 @@ import hashlib
 import inspect
 import io
 import json
+import os
 import re
 import subprocess
 import sys
@@ -5447,6 +5448,7 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
+@pytest.mark.skipif(os.name == "nt", reason="the build is a POSIX shell program")
 def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_rung(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:

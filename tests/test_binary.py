@@ -9,6 +9,7 @@ answers `-version` and the console plugin beside it.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +22,10 @@ import server as s
 
 VERSION = "0.0 (a stub build)"
 
+
+
+#: The builds are POSIX shell programs, run for real; Windows runs no shebang.
+POSIX_BUILDS = pytest.mark.skipif(os.name == "nt", reason="the builds are POSIX shell programs")
 
 def build(where: Path, *, version: str = f'echo "{VERSION}"', name: str = "mame") -> Path:
     """An executable at `where/name` answering `-version` with the shell in `version`, and any
@@ -84,6 +89,7 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[s
     return out
 
 
+@POSIX_BUILDS
 @pytest.mark.parametrize("rung", ["argument", "MAME_BINARY", "PATH"])
 def test_start_launches_the_rung_it_resolved_and_says_which(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch, rung: str) -> None:
@@ -119,6 +125,7 @@ def test_start_with_no_rung_resolving_is_refused_in_the_envelope(
     assert out["code"] == "host_failed" and out["start_retries"] == [], out
 
 
+@POSIX_BUILDS
 def test_start_asks_the_version_with_the_launch_s_environment(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """A build that needs the caller's `env` to load answers `-version` under it, as the boot
@@ -131,6 +138,7 @@ def test_start_asks_the_version_with_the_launch_s_environment(
         s.close()
 
 
+@POSIX_BUILDS
 def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(binaries, "VERSION_TIMEOUT_S", 0.3)    # the bound, shortened
@@ -142,6 +150,7 @@ def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         s.close()
 
 
+@POSIX_BUILDS
 def test_start_bounds_the_version_call_by_the_boot_s_budget_when_it_is_shorter(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The probe runs beside the boot, inside its budget: a `boot_seconds` shorter than the
@@ -154,6 +163,7 @@ def test_start_bounds_the_version_call_by_the_boot_s_budget_when_it_is_shorter(
         s.close()
 
 
+@POSIX_BUILDS
 @pytest.mark.parametrize(("view", "said"), [("a\x00b", "NUL"), ("-video", "starts with `-`"),
                                             ("a\ud800", "surrogate")])
 def test_a_view_no_command_line_can_carry_is_refused_before_anything_starts(

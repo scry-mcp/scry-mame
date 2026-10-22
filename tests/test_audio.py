@@ -922,5 +922,5 @@ def test_a_refusal_after_the_run_began_says_why_it_has_no_frames(
 def test_a_recording_is_begun_under_its_name_without_the_extension_mame_appends() -> None:
     """Under `-snapview native` MAME appends `.avi` to the name `begin_recording` is given, so
     the name handed over leaves it off, and the file lands at the path the reply names."""
-    assert mrec.begun_as(Path("/x/snap/record-2.avi")) == "/x/snap/record-2"
-    assert mrec.begun_as(Path("/x/out/take.AVI")) == "/x/out/take"
+    assert mrec.begun_as(Path("/x/snap/record-2.avi")) == str(Path("/x/snap/record-2"))
+    assert mrec.begun_as(Path("/x/out/take.AVI")) == str(Path("/x/out/take"))
