@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -134,7 +135,7 @@ def check_read_block(tag: str = "", ref: str = "", offset: int = 0, length: int 
     inputs.count("length", length, read.READ_MAX,
                    ": a block read answers hex into the reply, so it is bounded like "
                    "`read_memory`; walk a larger block in windows")
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 def check_tag(tag: str, cpu: str = "") -> None:

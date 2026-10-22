@@ -70,6 +70,7 @@ import mame_mcp  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_scan as mscan  # noqa: E402
+import mame_session as msession
 import mame_state as mstate  # noqa: E402
 import mame_stub_owner as owner  # noqa: E402
 import mame_summaries as summaries  # noqa: E402
@@ -211,14 +212,14 @@ def test_altered_counts_both_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     """Protocol writes and console writes go into the SAME counter."""
     monkeypatch.setattr(mstate.STATE, "ses", None)
     monkeypatch.setattr(mstate.STATE, "console_writes", 0)
-    assert menvelope.envelope({})["session"]["altered"] is False
+    assert menvelope.session_block()["altered"] is False
     monkeypatch.setattr(mstate.STATE, "console_writes", 1)
-    envelope = menvelope.envelope({})
-    assert envelope["session"]["altered"] is True
+    block = menvelope.session_block()
+    assert block["altered"] is True
     assert menvelope.session_block(True)["altering_writes"] == 1
-    assert envelope["session"]["omitted"] == ["altering_writes", "console"]
-    assert "MODIFIED" in envelope["session"]["note"]
-    assert list(envelope) == ["status", "session"], "status first, the session block last"
+    assert block["omitted"] == ["altering_writes", "console"]
+    assert "MODIFIED" in block["note"]
+    assert list(menvelope.envelope({})) == ["status"], "the boundary adds the block, once"
 
 
 def test_a_softreset_whose_step_fails_is_counted_as_the_write_it_may_have_been() -> None:
@@ -467,7 +468,8 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
     # placed after a refusal could.
     assert ("`memdump`, `snapshot` answer with a PATH"
             in " ".join(text.split())), "the instructions do not name the file-returning tools"
-    assert "Files, any state: `image_diff`" in " ".join(text.split()), (
+    assert "Files" in mame_mcp.ROSTER.answering_split()[0] and (
+        mame_mcp.ROSTER.running_sentence() in " ".join(text.split())), (
         "a caller with the machine running would stop it before a file tool")
     assert "16 bytes" in text, "a spot check must not read as the whole image"
     assert "STOPPED" in text, (
@@ -1383,7 +1385,7 @@ def test_a_clean_close_names_the_last_words_it_left_out(
     assert closed["ended_by"] == "quit" and closed["exit_code"] == 0, closed
     assert "stdout_tail" not in closed and "errorlog_tail" not in closed, closed
     assert closed["omitted"] == ["stdout_tail", "errorlog_tail"]
-    assert closed["how"] == launch.CLOSE_HOW and "detail=True" in closed["how"]
+    assert closed["how"] == msession.CLOSE_HOW and "detail=True" in closed["how"]
     assert closed["summary"].endswith(", last words left out (see `omitted`)"), closed["summary"]
 
 
@@ -3471,6 +3473,9 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
             return ""
         return ""
 
+    def monitor_owed(self, command: str, timeout: float = 10.0) -> None:
+        self.monitor(command, timeout)
+
 
 class _AliveProcess:
     """A process that is up, and nothing else: what `log_wait`'s liveness check reads."""
@@ -3887,10 +3892,10 @@ def test_the_session_block_says_whether_the_machine_runs(
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
-    assert menvelope.envelope({})["session"]["running"] is False
+    assert menvelope.session_block()["running"] is False
     ses.go()
-    assert menvelope.envelope({})["session"]["running"] is True
-    assert list(menvelope.envelope({})["session"]) == ["alive", "running", "altered", "omitted",
+    assert menvelope.session_block()["running"] is True
+    assert list(menvelope.session_block()) == ["alive", "running", "altered", "omitted",
                                                        "how"]
     assert list(menvelope.session_block(True)) == ["alive", "running", "altered",
                                                    "altering_writes", "console"]
@@ -3989,8 +3994,8 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     assert launch.channels() == {"errorlog_path": str(tmp_path / "renamed-emulator.log"),
                                  "stdout_path": str(tmp_path / "renamed-process.log")}
     assert launch.cfg_parse_error(tmp_path) is not None, "the cfg guard reads the process log"
-    assert "nonsense" in launch._stdout_tail(tmp_path)
-    assert "DRIVER" in launch._tail(tmp_path, "emulator")
+    assert "nonsense" in launch.stdout_tail(tmp_path)
+    assert "DRIVER" in launch.channel_tail(tmp_path, "emulator")
     assert files.errorlog_since(tmp_path, 0)[0] == ["DRIVER: a line"]
     assert [path.name for _tag, path in files.channel_files(tmp_path, "all")] == [
         "renamed-emulator.log", "renamed-process.log"]
@@ -4660,10 +4665,9 @@ def test_the_advance_family_refuses_its_malformed_arguments_and_a_cold_control(
 def test_every_registered_tool_is_named_in_the_instructions() -> None:
     """A tool registered but not named in the `instructions` string is one a session never
     learns exists."""
-    text = s.mcp.instructions or ""
-    registered = {t.name for t in s.mcp._tool_manager.list_tools()}
-    missing = sorted(t for t in registered if f"`{t}`" not in text and f"`{t}(" not in text)
-    assert not missing, f"registered tools the instructions never name: {missing}"
+    registered = [t.name for t in s.mcp._tool_manager.list_tools()]
+    assert mame_mcp.ROSTER.unlisted(registered) == []
+    assert mame_mcp.ROSTER.text() in (s.mcp.instructions or ""), "the roster is not rendered"
 
 
 def test_a_run_to_that_comes_back_invalid_still_records_the_stop_it_made(
@@ -4768,7 +4772,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "lua_seq": 4, "lua_answered": 3,
         "lua_lost": 2, "lua_pending": {1: ("line", 0)}, "lua_ours": {1},
         "console_run": True,
-        "console_run_unprovable": True,
+        "console_run_unprovable": True, "unprovable_peek": 42,
         "tally_removals": [{"tally_id": "old", "seq": 1}],
         "throttles_pending": [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1}],
         "throttles_not_applied": [{"tag": "MAME_MCP_THROTTLE#1"}],
@@ -4933,7 +4937,7 @@ def test_close_reports_a_process_that_had_already_died_and_the_session_as_it_was
     """Two things `close` said wrong. A MAME that crashed between calls came back as
     `closed: false, note: there was no session to close`, the same reply as a server that
     never started anything, with the exit code `poll` already held thrown away; it is
-    `how: died` with that code. And the reply's `session` block was built after the kill,
+    `ended_by: died` with that code. And the reply's `session` block was built after the kill,
     so it read `altered: false` about a session that had been written to; it now describes
     the state as it was BEFORE closing, so its `altered` is the truth about the session
     that ended."""
@@ -6998,11 +7002,11 @@ def test_any_one_console_count_not_zero_is_an_alarm_on_every_reply(
     for field in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
         for name in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
             monkeypatch.setattr(mstate.STATE, name, int(name == field))
-        block = menvelope.envelope({})["session"]
+        block = menvelope.session_block()
         assert sum(block["console"].values()) == 1, (field, block)
         assert "console" not in block.get("omitted", []), field
     for name in ("console_thread_errors", "console_reruns_seen", "console_lines_lost"):
         monkeypatch.setattr(mstate.STATE, name, 0)
-    assert "console" not in menvelope.envelope({})["session"]
+    assert "console" not in menvelope.session_block()
     assert menvelope.session_block(whole=True)["console"] == {
         "thread_errors": 0, "reruns": 0, "lost": 0}

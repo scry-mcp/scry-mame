@@ -64,7 +64,7 @@ def test_without_threads_the_stubs_readers_serve_the_first_cpu_whichever_is_visi
     out = refused(r":subcpu's registers and memory are read through its own thread of the "
                   r"gdbstub's thread patch, and this build's stub serves only :maincpu",
                   call(cpu="subcpu"))
-    assert out["message"].endswith(": omit `cpu`, or name :maincpu") and out["cpus"] == [
+    assert out["message"].endswith(": omit `cpu`, or name :maincpu") and out["cpu_tags"] == [
         ":maincpu"], "the refusal says what the stub can serve"
     assert not [c for c in ses.commands if "@" in c], "no thread but the first was asked"
 
@@ -174,7 +174,7 @@ def test_without_threads_a_first_cpu_the_console_does_not_name_is_said_so(
     monkeypatch.setattr(cpus, "stub_cpu", lambda _ses: None)
     out = refused(r"serves only its first cpu, which `cpulist` does not name",
                   s.registers(cpu="subcpu"))
-    assert out["cpus"] == [] and "name None" not in out["message"], out
+    assert out["cpu_tags"] == [] and "name None" not in out["message"], out
     assert out["message"].endswith(": omit `cpu`"), out["message"]
 
 
@@ -188,7 +188,7 @@ def test_a_visible_cpu_the_stub_names_no_thread_for_is_refused_naming_the_served
     ses.threads = {1: ":maincpu"}
     out = refused(r"the stub names no thread for :subcpu", s.read_memory(ref="0x400", length=4))
     assert out["code"] == "bad_argument" and not [c for c in ses.commands if "@" in c]
-    assert out["cpus"] == [":maincpu"] and "name one of [':maincpu'] as `cpu`" in out["message"]
+    assert out["cpu_tags"] == [":maincpu"] and "name one of [':maincpu'] as `cpu`" in out["message"]
 
 
 def test_on_the_patched_stub_a_dump_with_no_visible_cpu_is_refused_before_save(
@@ -319,7 +319,7 @@ def test_status_names_every_cpu_and_cpu_info_the_visible_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
-    assert s.status()["cpus"] == [":maincpu", ":subcpu"]
+    assert s.status()["cpu_tags"] == [":maincpu", ":subcpu"]
     assert visible_in(s.cpu_info()) == ":maincpu"
     ses.visible_cpu = ":subcpu"
     assert visible_in(s.cpu_info()) == ":subcpu", "read at every call, never remembered"
@@ -351,7 +351,7 @@ def test_status_on_a_broken_session_asks_no_cpu_and_one_that_breaks_under_it_say
     ses.broken = "the stub stopped answering"
     ses.commands.clear()
     out = s.status()
-    assert out["cpus"] == [":maincpu", ":subcpu"], out
+    assert out["cpu_tags"] == [":maincpu", ":subcpu"], out
     assert "cpulist" not in ses.commands
     monkeypatch.setattr(mstate.STATE, "cpus", [])     # read again, once a session
     ses.broken = None
@@ -365,4 +365,4 @@ def test_status_on_a_broken_session_asks_no_cpu_and_one_that_breaks_under_it_say
 
     monkeypatch.setattr(ses, "monitor", times_out)
     out = s.status()
-    assert out["broken"] == "`cpulist` got no answer" and out["cpus"] == [], out
+    assert out["broken"] == "`cpulist` got no answer" and out["cpu_tags"] == [], out

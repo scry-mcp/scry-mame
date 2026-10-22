@@ -30,6 +30,7 @@ from typing import Any
 from scry_core import fresh, judges, png, raster, series
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_advance as advance
@@ -69,7 +70,7 @@ def check_series_capture(at_frames: list[int] | None = None, first: int | None =
     series.frame_list(at_frames, first, last, step)
     if crop is not None:
         judges.rect("crop", crop)
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     if dest:
         inputs.fresh_dest("dest", dest)
 

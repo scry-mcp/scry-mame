@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from scry_core import media_replies
+from scry_core import sequence_account as account
 from scry_core.reply_schema import ReplyEnvelope
 
 
@@ -20,7 +21,9 @@ class MameEnvelope(ReplyEnvelope, total=False):
     answers_while_running: list[Any]
     broken: str
     cause: str
-    cpus: list[Any]
+    #: The machine's cpus by tag: what a refusal of a cpu offers, and `status`'s list. A row
+    #: per cpu is `cpus`, `cpu_info`'s and `machine_map`'s.
+    cpu_tags: list[str]
     exit_code: int | dict[str, Any]
     last_stop: dict[str, Any]
     stopped_on_its_own: dict[str, Any]
@@ -60,7 +63,6 @@ class AudioRecordReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    tagged_lines: list[Any]
     mode: str
     note: str
     path: str
@@ -68,11 +70,15 @@ class AudioRecordReply(MameConsoleAccount, total=False):
     polls: int
     reader_steps: int
     recording_after: bool | dict[str, Any]
+    regpoint_hit: dict[str, Any]
     sample_max: int | dict[str, Any]
     sample_min: int | dict[str, Any]
     sample_rate_hz: int | dict[str, Any]
     samples: int | dict[str, Any]
+    tagged_lines: list[Any]
     verdict: str
+    watch_hit: dict[str, Any]
+    watches: list[Any]
 
 
 class BreakpointAtReply(MameEnvelope, total=False):
@@ -176,6 +182,7 @@ class CommentSaveReply(MameEnvelope, total=False):
 
 class CpuInfoReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
+    cpus: list[Any]
 
 
 class DebugReply(MameEnvelope, total=False):
@@ -225,6 +232,7 @@ class FindReply(MameEnvelope, total=False):
 
 
 class FocusReply(MameEnvelope, total=False):
+    cause: str
     cpu: str
     dasm: list[Any]
     errorlog: dict[str, Any]
@@ -232,12 +240,15 @@ class FocusReply(MameEnvelope, total=False):
     ignored: list[Any]
     machine_ran: bool
     pc: str
+    regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
     unchanged: list[Any]
     unread: list[Any]
     via: str
     was: str | dict[str, Any]
+    watch_hit: dict[str, Any]
+    watches: list[Any]
 
 
 class GfxBlitSourceReply(MameConsoleAccount, total=False):
@@ -523,7 +534,6 @@ class InputReply(MameConsoleAccount, total=False):
     frames: int
     instructions_completed: int
     lines_ahead: int
-    tagged_lines: list[Any]
     mask: str
     mode: str
     name: str
@@ -535,9 +545,11 @@ class InputReply(MameConsoleAccount, total=False):
     port_before: str
     port_held: str | dict[str, Any]
     reader_steps: int
+    regpoint_hit: dict[str, Any]
     released: bool
     route: str
     seen_bytes: int
+    tagged_lines: list[Any]
     value: str
     verdict: str
     watch_hit: dict[str, Any]
@@ -580,8 +592,10 @@ class LuaReply(MameConsoleAccount, total=False):
     pc_before: str
     pending: bool
     reader_steps: int
+    regpoint_hit: dict[str, Any]
     script_chars: int
     seen_bytes: int
+    watch_hit: dict[str, Any]
     watches: list[Any]
 
 
@@ -589,6 +603,7 @@ class MachineMapReply(MameEnvelope, total=False):
     address_map: list[Any]
     counts: dict[str, Any]
     cpu: str | dict[str, Any]
+    cpus: list[Any]
     frame_symbol: str | dict[str, Any]
     note: str
     regions: list[Any]
@@ -725,28 +740,10 @@ class PaletteLogReply(MameEnvelope, total=False):
     writes_total: int
 
 
-class PerformReply(MameEnvelope, total=False):
-    errors: list[Any]
-    failed: dict[str, Any]
-    failed_at: int | dict[str, Any]
-    field: str
+class PerformReply(MameEnvelope, account.SequenceFields, total=False):
     frame_reached: int | dict[str, Any]
-    got: Any
-    held: int
-    note: str
     operations: list[Any]
-    ran: list[Any]
-    ran_path: str | dict[str, Any]
-    recorded: Any
-    replies_path: str | dict[str, Any]
-    steps_completed: int
-    steps_total: int
-    still_running: bool
-    stopped: dict[str, Any]
-    stops: dict[str, Any]
-    truncated: bool
     until_frame: int
-    verdict: str
     visible_cpu: str | dict[str, Any]
     visible_cpu_kept: dict[str, Any]
 
@@ -777,11 +774,14 @@ class ReadBlockReply(MameConsoleAccount, total=False):
     pc_before: str
     pending: bool
     reader_steps: int
+    regpoint_hit: dict[str, Any]
     seen_bytes: int
     size: int
     start: str
     tag: str
     tags: dict[str, Any]
+    watch_hit: dict[str, Any]
+    watches: list[Any]
 
 
 class ReadMemoryReply(MameEnvelope, total=False):
@@ -814,9 +814,12 @@ class RecordReply(MameConsoleAccount, total=False):
     polls: int
     reader_steps: int
     recording_after: bool | dict[str, Any]
+    regpoint_hit: dict[str, Any]
     tagged_lines: list[Any]
     verdict: str
     view: str | dict[str, Any]
+    watch_hit: dict[str, Any]
+    watches: list[Any]
 
 
 class RegistersReply(MameEnvelope, total=False):
@@ -865,10 +868,12 @@ class ResetReply(MameEnvelope, total=False):
     frame_at_reset: int
     kind: str
     pc: str
+    regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
     taps_across: list[Any]
     verified: bool
+    watch_hit: dict[str, Any]
     watches: list[Any]
 
 
@@ -1129,6 +1134,7 @@ class StateLoadReply(MameEnvelope, total=False):
     output: str
     path: str
     pc: str
+    regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     rom_check: str | dict[str, Any]
     saved: dict[str, Any]
@@ -1136,6 +1142,7 @@ class StateLoadReply(MameEnvelope, total=False):
     system: str
     taps_across: list[Any]
     verified: bool | dict[str, Any]
+    watch_hit: dict[str, Any]
     watches: list[Any]
 
 
@@ -1186,6 +1193,7 @@ class StepReply(MameEnvelope, total=False):
     note: str
     others: dict[str, Any]
     pc: str
+    regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
     watch_hit: dict[str, Any]
@@ -1201,8 +1209,10 @@ class StopReply(MameEnvelope, total=False):
     interrupted: bool
     note: str
     pc: str
+    regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
+    watch_hit: dict[str, Any]
     watches: list[Any]
 
 

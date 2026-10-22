@@ -291,7 +291,7 @@ def test_a_perform_step_carries_region_and_refuses_it_untyped(
     types it against the tool's signature, with nothing run; typed, the step writes."""
     ses, regions = _regions(monkeypatch, tmp_path)
     out = s.perform(steps=[{"op": "write", "ref": "0x7b8", "data_hex": "8020", "region": "yes"}])
-    assert out["status"] == "INVALID" and "region is a boolean" in str(out["errors"]), out
+    assert out["status"] == "INVALID" and "region is true or false" in str(out["errors"]), out
     assert not _sent(ses, "saver"), ses.commands
     out = s.perform(steps=[{"op": "write", "ref": "0x7b8", "data_hex": "8020", "region": True}])
     assert out["steps_completed"] == 1 and out["ran"][0]["reply"]["region"] == ":maincpu", out

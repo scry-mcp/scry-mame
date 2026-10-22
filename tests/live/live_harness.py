@@ -51,10 +51,11 @@ from bench_boards import (  # noqa: E402  # isort: skip
     m68k_dual_missing,
 )
 
-# THE THREE OUTCOMES, spelled once for every live script: a run that examined nothing is never
-# folded into either of the other two.
-EXIT_PASSED, EXIT_FAILED, EXIT_INVALID = 0, 1, 3
-
+# THE THREE OUTCOMES, scry-core's for every instrument (`scry_core.verdict`): a run that examined
+# nothing is never folded into either of the other two.
+from scry_core.verdict import EXIT_FAIL as EXIT_FAIL  # noqa: E402
+from scry_core.verdict import EXIT_INVALID as EXIT_INVALID  # noqa: E402
+from scry_core.verdict import EXIT_PASS as EXIT_PASS  # noqa: E402
 
 # THIS RUN ON ITS HOST (`scry_core.live_host`): its scratch, its canary, its ledger, its end.
 SCRATCH_PREFIX = "mame-live-matrix-"
@@ -143,7 +144,7 @@ def finish(name: str) -> None:
         print(f"  FAIL  {label}")
     RUN.leave(kept=bool(failures))
     print(f"==> {name} " + ("FAILED" if failures else "PASSED"))
-    sys.exit(EXIT_FAILED if failures else EXIT_PASSED)
+    sys.exit(EXIT_FAIL if failures else EXIT_PASS)
 
 
 # ============================================================ the run on its host

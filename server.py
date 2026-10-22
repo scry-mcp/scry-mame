@@ -67,6 +67,8 @@ from scry_core import (  # noqa: E402
     reply_schema,  # noqa: E402
 )
 from scry_core import presence as scry_presence  # noqa: E402
+from scry_core import sequence_account as account  # noqa: E402
+from scry_core import steps as core_steps  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core import vocabulary as vocab
 from scry_core.progress import bridge  # noqa: E402
@@ -110,6 +112,7 @@ import mame_scan as mscan  # noqa: E402
 import mame_screen as mscreen  # noqa: E402
 import mame_sequence as sequence  # noqa: E402
 import mame_series as mseries  # noqa: E402
+import mame_session as msession  # noqa: E402
 import mame_space as mspace  # noqa: E402
 import mame_state as st  # noqa: E402
 import mame_summaries as summaries  # noqa: E402
@@ -117,7 +120,7 @@ import mame_sweep as msweep  # noqa: E402
 import mame_trace as mtrace  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import mame_write as mwrite  # noqa: E402
-from mame_mcp import LOCK, RECORDER, tool  # noqa: E402
+from mame_mcp import RECORDER, tool  # noqa: E402
 from mame_mcp import mcp as mcp  # noqa: E402  (the probe and the clients read `server.mcp`)
 from mame_running import contact, stopped  # noqa: E402
 from mame_state import STATE  # noqa: E402
@@ -132,7 +135,7 @@ def start(
     symbols: str | dict[str, str] = "",
     reference_addr: str = "0x0",
     inipath: str = "",
-    boot_seconds: Annotated[float, inputs.WAIT_BOUNDS] = 8.0,
+    boot_seconds: Annotated[float, vocab.WAIT_BOUNDS] = 8.0,
     shared: bool = False,
     background: bool | None = None,
     boot_lua: str = "",
@@ -204,27 +207,26 @@ def status() -> dict[str, Any]:
 
     Reply (`alive` and `running` are the `session` block's): with no machine, a `note` when the
     server closed the last session after an hour with no call; with `exit_code` and a `note` when
-    MAME died under the session (`close` collects its last words before anything is deleted);
-    when alive `system`, `pid`, `stub_port`,
-    `scratch_dir`, `state_dir`, `cfg`, `presence` (`true` drawn, `false` asked off, or why not),
-    `debugger` (`attached`, and a `note`: a capture taken at a
-    stop here can land a frame away from an autoboot golden), `fingerprint` (the build the
-    declarations are judged against, the first cpu's) and `fingerprints` (each cpu's),
-    `errorlog_path`, `stdout_path`, `pc` (the machine's, read now; unavailable with why while it
-    runs or once the session broke: `last_stop.pc`), `last_stop` (`stop_seq`, `pc`, `cpu`, `frame`,
-    `cause`, `since_s`, `wall_at`; the park after `start` is stop 1), `in_debugger` (`breakpoints`,
-    `watches` (the change watches) and `regpoints`: each `ref` this server armed in the debugger,
-    and its `cpu`), `threads` (the stub's thread per cpu; empty without the thread patch), `cpus`
-    (what each is doing is `cpu_info`'s), `frame_symbol` (the frame counter's name as `start` asked
-    it, unavailable on a board with none), and, always present, `console_pending` (Lua lines sent
-    and not yet evaluated, which `close` drains before its `quit`), `throttles_pending` (`tag`,
-    `on`) and `tallies_pending_removal` (`tally_id`, `call`), where a switch that landed is its row
+    MAME died under the session (`close` collects its last words before anything is deleted); when
+    alive `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `cfg`, `presence` (`true` drawn,
+    `false` asked off, or why not), `debugger` (`attached`, and a `note`: a capture taken at a stop
+    here can land a frame away from an autoboot golden), `fingerprint` (the build the declarations
+    are judged against, the first cpu's) and `fingerprints` (each cpu's), `errorlog_path`,
+    `stdout_path`, `pc` (the machine's, read now; unavailable with why while it runs or once the
+    session broke: `last_stop.pc`), `last_stop` (`stop_seq`, `pc`, `cpu`, `frame`, `cause`,
+    `since_s`, `wall_at`; the park after `start` is stop 1), `in_debugger` (`breakpoints`, `watches`
+    (the change watches) and `regpoints`: each `ref` this server armed in the debugger, and its
+    `cpu`), `threads` (the stub's thread per cpu; empty without the thread patch), `cpu_tags` (what
+    each is doing is `cpu_info`'s), `frame_symbol` (the frame counter's name as `start` asked it,
+    unavailable on a board with none), and, always present, `console_pending` (Lua lines sent and
+    not yet evaluated, which `close` drains before its `quit`), `throttles_pending` (`tag`, `on`)
+    and `tallies_pending_removal` (`tally_id`, `call`), where a switch that landed is its row
     leaving. `broken` (absent on a healthy session) says why it can no longer be trusted: the
     machine is then asked nothing, and the way out is `close`, then `start`.
 
     Reference: REFERENCE.md, The session.
     """
-    return launch.status()
+    return msession.status()
 
 
 @tool("Close the MAME session", summary=summaries.close, session_before=True, on_cancel="kill")
@@ -249,7 +251,7 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
 
     Reference: REFERENCE.md, The session.
     """
-    return launch.close(bridge(ctx), detail)
+    return msession.close(bridge(ctx), detail)
 
 
 @tool("Show another cpu", summary=summaries.focus)
@@ -272,7 +274,7 @@ def focus(cpu: str) -> dict[str, Any]:
     `debug("observe <cpu>")`) and, when it ignores the visible cpu, RUNS until `cpu` executes:
     `ignored` lists them, and a run adds the survey of where it stopped.
 
-    Refused: a cpu the machine lacks (`unknown_ref` with `cpus`); on the patched stub, a cpu the
+    Refused: a cpu the machine lacks (`unknown_ref` with `cpu_tags`); on the patched stub, a cpu the
     debugger ignores (`bad_argument`). A visible cpu read back other than `cpu` is
     `readback_refused`; a console run that reached no stop on an observed cpu is `not_settled`.
 
@@ -333,8 +335,8 @@ def rom_check(
     """
     args.check("rom_check", reference_rom=reference_rom, reference_addr=reference_addr,
                reference_base=reference_base)
-    return launch.rom_check(stopped("a known-answer read")[0], reference_rom, reference_addr,
-                            reference_base, cpu)
+    return msession.rom_check(stopped("a known-answer read")[0], reference_rom, reference_addr,
+                              reference_base, cpu)
 
 
 # ----------------------------------------------------------------------------- advance
@@ -345,7 +347,7 @@ def rom_check(
 
 @tool("Run to a place, with a control", summary=summaries.run_to, on_cancel="stop")
 def run_to(ref: str, control: str = "",
-           seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
+           seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
            disarm_watches: bool = False, condition: str = "", cpu: str = "",
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run to `ref` and stop, with the session's CONTROLS counting meanwhile.
@@ -380,7 +382,7 @@ def run_to(ref: str, control: str = "",
 
 @tool("Run for emulated time", summary=summaries.run_for, on_cancel="stop")
 def run_for(milliseconds: int = 0, frames: int = 0,
-            seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
+            seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
             disarm_watches: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run the machine for `milliseconds` of EMULATED time, or for `frames` of the frame COUNTER
     (exactly one of the two), and wait until it has STOPPED.
@@ -413,7 +415,7 @@ def run_for(milliseconds: int = 0, frames: int = 0,
 
 @tool("Trace what a run executes", summary=summaries.trace, on_cancel="stop")
 def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
-          seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0, cpu: str = "",
+          seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0, cpu: str = "",
           noloop: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run as `run_for` does with MAME's own tracer on one cpu, then hand back every address
     that cpu executed, joined to its symbols. It takes no `ref`: the window is frames or
@@ -478,7 +480,7 @@ def step(count: Annotated[int, vocab.bounds(1, advance.step_max())] = 1,
 
 
 @tool("Resume the machine", summary=summaries.resume, on_cancel="none", replay="wall")
-def resume(seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 0.0,
+def resume(seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 0.0,
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Let the machine RUN. With `seconds` at zero (the default) it comes back at once and the
     machine runs with NO deadline, until a breakpoint fires, `stop`, or `close`; with a bound it
@@ -538,9 +540,9 @@ def breakpoint_at(ref: str,
     moves; one ref on two cpus is two declarations.
 
     Refused: a `condition` the console's evaluator refuses or one too long for a packet
-    (`command_chars`, `limit_chars`); a cpu the machine lacks (`unknown_ref` with `cpus`); a second
-    declaration at an address another holds on its cpu; one ref under the other role; a control
-    past the {TEMPS} temps; a row already there it cannot adopt. A refusal stores nothing. A
+    (`command_chars`, `limit_chars`); a cpu the machine lacks (`unknown_ref` with `cpu_tags`); a
+    second declaration at an address another holds on its cpu; one ref under the other role; a
+    control past the {TEMPS} temps; a row already there it cannot adopt. A refusal stores nothing. A
     name absent from THIS build (not bare hex) is stored `unresolved`. Works on a RUNNING machine
     too (`while_running`).
 
@@ -631,8 +633,8 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     (`armed`, or `disabled`), `entry` (the debugger's row), `index` and `cpu` (the visible cpu it
     is armed on), with a `note` when the debugger ignores that cpu. A row `rplist` does not list
     after the `rpset` is `readback_refused` with the declaration KEPT (`armed: false`, `state:
-    gone`, a `note`). When it fires, the stop's `cause` is ``registerpoint '<ref>'`` with
-    `regpoint_hit`, and it fires again one instruction on while the condition holds.
+    gone`, a `note`). When it fires, the stop's `cause` is ``registerpoint '<ref>'`` (with
+    the stop's `regpoint_hit`), and it fires again one instruction on while the condition holds.
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -852,27 +854,27 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
 @tool("List the watch declarations", summary=summaries.watch_list, read_only=True)
 def watch_list(cpu: str = "") -> dict[str, Any]:
     """Every watch declaration and its state, and each io tap (`space: "io"`, `stored: false`).
-    Reply: `watches`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited` (true if
-    the store brought it back; an io tap has neither), `age_s` (whole seconds since `created_at`,
-    unavailable with no date), `mode`, `length`, `fmt`, `addr`, `state`, where it is PLACED (a
-    show or expr watch:
-    `evaluated`, or `unresolved`, `null_pointer`; stopped, a show watch adds `reading`, `available`
-    with `value` and `raw_hex`, or unavailable with `why`; a change watch: `armed` or `disabled`
-    with its `entry`, `cpu` and `values_from`, `gone`, `stale` for a raw address declared over
-    another build, `unresolved` (the ref, or a name in its `condition`); a count watch: `tallied`
-    with its whole value and writer tables (`total`, `since_last_stop`, `frame_as_of`, `superseded`,
-    `across`), `no_dump_yet`, `install_failed` (its `why`), `install_lost` (`install_resent`) or
-    `not_installed`; a capture: `captured` with `rows_kept`, `overflow_rows`, `first_rows` (each
-    with `frame`, `line` and `time_s`) and `rows_path` (every row), or those same states; both:
-    `callback_errors`, `count` and `first`, the times the tap's body raised, which a census beside a
-    non-zero count is short of), and `foreign`: watchpoints the debugger holds that this server
-    never armed. The debugger's own `wplist` is read back, on a running machine too, where the reply
-    adds `last_stop`. `cpu` (`subcpu`; left out, every cpu) narrows both to that cpu's watches
-    (`wplist <cpu>`), named in `cpu` (unavailable when none was). `tallies_not_removed` appears when
-    a count watch's removal was NOT carried out by the console (`state` `refused`, the console's
-    words in its `why`, or `lost`): the tap is still in the guest and this server no longer holds
-    its record. It is NEVER resent, and each row repeats on every call until the session ends;
-    its `why` says what declaring the range again does.
+    Reply: `watches`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited` (true if the
+    store brought it back; an io tap has neither), `age_s` (whole seconds since `created_at`,
+    unavailable with no date), `mode`, `length`, `fmt`, `addr`, `state`, where it is PLACED (a show
+    or expr watch: `evaluated`, or `unresolved`, `null_pointer`; stopped, a show watch adds
+    `reading`, `available` with `value` and `raw_hex`, or unavailable with `why`; a change watch:
+    `armed` or `disabled` with its `entry`, `cpu` and `values_from`, `gone`, `stale` for a raw
+    address declared over another build, `unresolved` (the ref, or a name in its `condition`); a
+    count watch: `tallied` with its whole value and writer tables (`total`, `since_last_stop`,
+    `frame_as_of`, `superseded`, `across`), `no_dump_yet`, `install_failed` (its `why`),
+    `install_lost` (`install_resent`) or `not_installed`; a capture: `captured` with `rows_kept`,
+    `overflow_rows`, `first_rows` (each with `frame`, `line` and `time_s`) and `rows_path` (every
+    row), or those same states; both: `callback_errors`, `count` and `first`, the times the tap's
+    body raised, which a census beside a non-zero count is short of), and `foreign`: watchpoints the
+    debugger holds that this server never armed. The debugger's own `wplist` is read back, on a
+    running machine too, where the reply adds `last_stop`. `cpu` (`subcpu`; left out, every cpu)
+    narrows both to that cpu's watches (`wplist <cpu>`), named in `cpu` (unavailable when none was).
+    The `session` block carries a row (in its `tallies_not_removed`) for a count watch whose removal
+    was NOT carried out by the console (`state` `refused`, the console's words in its `why`, or
+    `lost`): the tap is still in the guest and this server no longer holds its record. It is NEVER
+    resent, and each row repeats on every call until the session ends; its `why` says what declaring
+    the range again does.
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -1020,7 +1022,7 @@ def read_memory(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)]
       replay=("hex", "pc", "frame"))
 def read_block(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
                length: Annotated[int, vocab.bounds(1, read.READ_MAX)] = 16,
-               seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+               seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                cpu: str = "",
                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Read `length` bytes (1..{READ_MAX}) of a memory BLOCK MAME keeps by tag: a SHARE (a block a
@@ -1340,7 +1342,7 @@ def snapshot(dest: str = "") -> dict[str, Any]:
 @tool("Signature of the screen", summary=summaries.screen_signature, on_cancel="none",
       replay=("signature", "pc", "frame"))
 def screen_signature(crop: list[int] | None = None,
-                     seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+                     seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                      ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """One hex string for what is on screen, or on `crop` of it, so "is it the same screen" is
     answered by comparing two strings and no picture crosses the conversation. It is the
@@ -1429,7 +1431,7 @@ def map_save(dest: str, overwrite: bool = False) -> dict[str, Any]:
 def series_capture(at_frames: list[int] | None = None, first: int | None = None,
                    last: int | None = None, step: int = 1, crop: list[int] | None = None,
                    dest: str = "",
-                   seconds: Annotated[float, inputs.WAIT_BOUNDS] = mseries.SECONDS_DEFAULT,
+                   seconds: Annotated[float, vocab.WAIT_BOUNDS] = mseries.SECONDS_DEFAULT,
                    ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """FRAMES OF THE SCREEN KEPT INSIDE MAME at emulation speed, as PNGs and one manifest:
     the series `series_diff`, `region_track` and `golden_check` read, with no picture in the
@@ -1479,7 +1481,7 @@ audio_diff = _MEDIA["audio_diff"]
       replay="drop")
 def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scale: int = 0,
             dest: str = "",
-            seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+            seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
             ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The pens of a palette device as MAME holds them NOW, as a table and a swatch ({ROW_PENS}
     a row, the row's first pen in hex at its left): the route to the colours on a board whose colour
@@ -1512,7 +1514,7 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
 def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
                 pens: inputs.NumberList | None = None, point: list[int] | None = None,
                 crop: list[int] | None = None, scale: int = 0, dest: str = "", attach: bool = True,
-                seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+                seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                 ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen as the PENS it holds: every pixel's palette index recovered exactly by one Lua
     chunk that sets pen i to the colour i, reads the screen and puts every pen back.
@@ -1554,7 +1556,7 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
              columns: Annotated[int, vocab.bounds(1, mgfx.COLUMNS_MAX)] = 16,
              pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "", attach: bool = True,
              cpu: str = "",
-             seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+             seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Bytes as tiles under a format YOU state in MAME's `gfx_layout` terms, not what a driver
     believes. {PICTURE}; the PNG is indexed, its index the pixel value.
@@ -1598,7 +1600,7 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
                offset: inputs.NumberArg = 0, first: int = 0, count: int = 0,
                transparent: inputs.NumberArg | None = None,
                flips: list[Annotated[str, vocab.enum(mlocate.FLIPS)]] | None = None, cpu: str = "",
-               seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+               seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Search a screen `patch` `[x, y, width, height]` for a block's tiles under `layouts`, a
     LIST of 1..{LOCATE_LAYOUTS_MAX} candidates (plural even for one), each `gfx_view`'s `layout`
@@ -1647,7 +1649,7 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
               sizes: list[list[Annotated[int, vocab.enum(msweep.SIDES)]]] | None = None,
               palette: str = "none", pen_base: inputs.NumberArg = 0, scale: int = 0, dest: str = "",
               cpu: str = "",
-              seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+              seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """A block no format is known for, drawn under a FIXED family of candidate layouts as ONE
     sheet, each cell labelled with its id (`S1C3`) and what it is; nothing is ranked. {PICTURE}.
@@ -1751,7 +1753,7 @@ def gfx_load(path: str) -> dict[str, Any]:
 @tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none", replay="drop")
 def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | None = None,
               detail: bool = False, first: int = 0, scale: int = 0, dest: str = "",
-              seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+              seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """WHO PAINTED THIS AREA: every blit of a `frame`, from the capture the loaded manifest's
     `draw_command` describes, as a box over the screen, one colour per writer pc. {PICTURE}; RGB, a
@@ -1791,7 +1793,7 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
 def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | None = None,
                     pc: str = "", margin: Annotated[int, vocab.bounds(0, mblits.MARGIN_MAX)] = 0,
                     scale: int = 0, dest: str = "",
-                    seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+                    seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                     ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The rectangle ONE blit reads, decoded from the manifest command's `asset` under the live
     palette. {PICTURE}; with no `margin` it is indexed, its index the pixel value.
@@ -1873,7 +1875,7 @@ def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)
              changed: bool = False, pc: str = "",
              cpu: str = "", frames: int = mfilm.FRAMES_DEFAULT, keep: int = mfilm.KEEP_DEFAULT,
              crop: list[int] | None = None, film_dir: str = "", first: int = 0, clear: bool = False,
-             seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+             seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
              space: Annotated[str, vocab.enum(mspace.SPACES)] = "program",
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """THE FRAMES IN WHICH A WRITE HAPPENED, kept inside MAME at emulation speed: a tap marks the
@@ -1953,7 +1955,7 @@ def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
 
 @tool("Wait for a log line", summary=summaries.log_wait, read_only=True, on_cancel="none")
 def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
-             seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
+             seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
              since_mark: Annotated[int, log_marks.SINCE_MARK_BOUND] = 0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """WHEN a line of `channel` matching the regex `pattern` (`.` for any; never empty) was
@@ -2000,18 +2002,20 @@ def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
     the lifecycle (`start`, `close`, `rom_check`), the two batch tools themselves, `perform`
     and `drive` (the reason is in `perform`'s docstring), and `perform_export`, which writes
     the session the list belongs to."""
-    # The module's own binding first, so a step dispatches to whatever this module calls the tool
-    # now; the registration's function for a tool registered elsewhere.
-    return {t.name: globals().get(t.name, t.fn) for t in strict.registered(mcp)
-            if t.name not in sequence.NOT_STEPS}
+    return core_steps.step_ops(mcp, globals(), sequence.NOT_STEPS)
+
+
+#: `summaries`' own description, `perform`'s and `drive`'s, as scry-core words it.
+SUMMARIES_ARGUMENT = account.summaries_argument(st.ROWS_SHOWN)
 
 
 @tool("Drive an input and verify it", summary=summaries.drive, on_cancel="none")
 def drive(act: list[dict[str, Any]], expect: str = "",
-          seconds: Annotated[float, inputs.WAIT_BOUNDS] | None = None,
+          seconds: Annotated[float, vocab.WAIT_BOUNDS] | None = None,
           pattern: str = ".", limit: Annotated[int, vocab.bounds(1, read.LOG_LIMIT_MAX)] = 40,
-          settle_seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 30.0,
-          summaries: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+          settle_seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 30.0,
+          summaries: Annotated[bool, Field(description=SUMMARIES_ARGUMENT)] = False,
+          ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """LOOK, ACT, VERIFY in one call: the way a browser is driven, for an arcade board. The
     channel is the EMULATOR log (`error.log`: what the driver and this server's scripts
     `logerror`). The waits inside report their progress.
@@ -2025,8 +2029,7 @@ def drive(act: list[dict[str, Any]], expect: str = "",
     second) and cut to the LAST `limit` (1..{LIST_MAX}, default 40). `settle_seconds` is
     `perform`'s, and
     with an `expect` the act's TAIL does not wait for a stop (the verify is the wait), so a
-    trailing `resume` is answered within `seconds`. `summaries` is `perform`'s too, its count and
-    its files included. `seconds` with no `expect` is refused.
+    trailing `resume` is answered within `seconds`. `seconds` with no `expect` is refused.
 
     Reply: `act` (`ran`, `steps_completed`, `failed`, `failed_at`, `perform`'s tail, and with
     `summaries` its `steps_total`, `truncated`, `ran_path`, `replies_path` and `stops`), `verify`
@@ -2036,7 +2039,7 @@ def drive(act: list[dict[str, Any]], expect: str = "",
     (`lines_written`, `lines_total`, `truncated`, `lines`, `since_mark`, `pattern`). INVALID with
     the same `act`, `verify` and `looked` when a step failed (`step_failed`), when a stopped machine
     lacks the line (`wait_stopped`), and before anything ran, whichever argument or step was
-    refused (`bad_argument`; `unknown_ref`, with `cpus` for a cpu). No screen in the look: a
+    refused (`bad_argument`; `unknown_ref`, with `cpu_tags` for a cpu). No screen in the look: a
     still is `snapshot`, a number for it `screen_signature`.
 
     Reference: REFERENCE.md, Sequences in one call.
@@ -2058,8 +2061,9 @@ def drive(act: list[dict[str, Any]], expect: str = "",
 
 @tool("Run a sequence of steps", summary=summaries.perform, on_cancel="stop")
 def perform(steps: list[dict[str, Any]],
-            settle_seconds: Annotated[float, inputs.WAIT_OR_NONE_BOUNDS] = 30.0,
-            summaries: bool = False, until_frame: int = 0,
+            settle_seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 30.0,
+            summaries: Annotated[bool, Field(description=SUMMARIES_ARGUMENT)] = False,
+            until_frame: int = 0,
             ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run a LIST of the server's own operations in order, in ONE round trip, stopping at the
     first failure with the whole account.
@@ -2068,10 +2072,7 @@ def perform(steps: list[dict[str, Any]],
     `start`, `close`, `rom_check`, `perform`, `drive` and `perform_export`. While the machine runs
     only running-ok ops go on at once, and before the next console op the sequence WAITS up to
     `settle_seconds` for the machine to stop.
-    `summaries=True` keeps every stop of a long list and counts them: each step but the one that
-    matters (last, left running, failing) becomes a compact row; `ran` shows the first {ROWS_SHOWN}
-    (`truncated`, of `steps_total`), `ran_path` and `replies_path` all, and `stops` counts the
-    stops. `until_frame=F` (with summaries and a `run_for` step) repeats the list until a stop reads
+    `until_frame=F` (with `summaries` and a `run_for` step) repeats the list until a stop reads
     frame F, within {UNTIL_STEPS_MAX} steps and {WAIT_MAX_S} s: never a list you size; `no_channel`
     with no frame counter.
 
@@ -2162,7 +2163,7 @@ def debug(command: str) -> dict[str, Any]:
 
 @tool("Evaluate Lua on the machine", summary=summaries.lua, on_cancel="none")
 def lua(script: str,
-        seconds: Annotated[float, inputs.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
+        seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
         read_only: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Evaluate a Lua `script` on MAME's own Lua console (the whole scripting API). THE RAW
     FORM: prefer the typed wrappers (`input`, `record`, `audio_record`, `throttle`, `state_save`,
@@ -2199,7 +2200,7 @@ def lua(script: str,
 
 @tool("Hold an input field", summary=summaries.input, on_cancel="stop")
 def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
-          seconds: Annotated[float, inputs.WAIT_BOUNDS] = 30.0,
+          seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
           ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Press an input by NAME, as MAME names it, hold it for `frames` frames of the frame
     counter and release it, then hand the machine back stopped one frame later. Reports its
@@ -2236,7 +2237,7 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
 
 @tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop")
 def record(frames: int, dest: str = "",
-           seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0,
+           seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0,
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Record exactly `frames` frames of the screen to an AVI, bounded by the frame counter
     (begun and ended by the machine's own frame notifier, so the count is emulated frames and
@@ -2270,7 +2271,7 @@ def record(frames: int, dest: str = "",
 
 @tool("Record the sound to a WAV", summary=summaries.audio_record, on_cancel="stop")
 def audio_record(frames: int, dest: str = "",
-                 seconds: Annotated[float, inputs.WAIT_BOUNDS] = 60.0,
+                 seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0,
                  ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Record the sound of exactly `frames` frames to a WAV: the mixer's own output, the
     speakers' input mix before any effect, begun and ended by the machine's frame notifier as
@@ -2303,7 +2304,7 @@ def audio_record(frames: int, dest: str = "",
 
 
 @tool("Switch the throttle", summary=summaries.throttle, on_cancel="none", replay="drop")
-def throttle(on: bool, seconds: Annotated[float, inputs.WAIT_BOUNDS] = 5.0,
+def throttle(on: bool, seconds: Annotated[float, vocab.WAIT_BOUNDS] = 5.0,
              ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Switch real-speed throttling `on` or off at a PLACE: stopped at a breakpoint, ask for it
     and `resume`, and the machine runs at real speed from its first frame. The switch is evaluated
@@ -2427,7 +2428,7 @@ reply_schema.declare(mcp, mame_replies.MODELS)
 
 def main() -> None:
     process_name.set_title(launch.PROCESS_NAME)
-    idle.IDLE.watch(LOCK, STATE.machine_alive, launch.close)
+    idle.IDLE.watch(st.LOCK, STATE.machine_alive, msession.close)
     try:
         mcp.run()
     finally:

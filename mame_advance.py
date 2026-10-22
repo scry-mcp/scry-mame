@@ -101,7 +101,7 @@ def check_run_to(ref: str = "", seconds: float = 30.0, condition: str = "",
     inputs.check_ref(ref)
     if control.strip():
         inputs.check_ref(control, "control")
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     if condition.strip():
         conditions.check_condition(condition)
 
@@ -122,7 +122,7 @@ def check_run_bound(milliseconds: int, frames: int, seconds: float, what: str) -
         raise st.Invalid("bad_argument",
                          f"{what} takes exactly one of `milliseconds` and `frames`, above zero")
     # THE BOUND ON THE WAIT, the same one every wait in this server has.
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 STEP_MODES = ("into", "over")
@@ -134,7 +134,7 @@ def step_max() -> int:
     and the one lock is never held longer than a bounded call holds it. A longer walk is
     `run_to` or `run_for`. A function, read at the call: `mame_running` reaches this module
     through its own imports, so at import time its constant does not exist yet."""
-    return int(inputs.WAIT_MAX_S // running.CONSOLE_HALT_SETTLE_S)
+    return int(vocab.WAIT_MAX_S // running.CONSOLE_HALT_SETTLE_S)
 
 
 def check_step(count: int = 1, mode: str = "into", **_: Any) -> None:
@@ -543,6 +543,7 @@ def _left_running(ses: gs.Session, unprovable: bool = False) -> None:
     ses.running = True
     STATE.console_run = True
     STATE.console_run_unprovable = unprovable
+    STATE.unprovable_peek = STATE.debuglog_mark
 
 
 def _release_unconfirmed(ses: gs.Session, command: str, error: gs.SessionError,

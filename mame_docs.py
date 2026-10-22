@@ -9,6 +9,7 @@ docstring it registers, and a placeholder nothing fills fails the import.
 from __future__ import annotations
 
 from scry_core import docs, log_marks, picture, recording, screen_map, series
+from scry_core import vocabulary as vocab
 
 import mame_advance as advance
 import mame_blits as mblits
@@ -90,7 +91,7 @@ DOC_VALUES: dict[str, str] = {
     **log_marks.DOC_VALUES,
     "SYMBOLS_MAX": str(read.SYMBOLS_LIMIT_MAX), "HISTORY_MAX": str(read.HISTORY_MAX),
     "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "STEP_MAX": str(advance.step_max()),
-    "WAIT_MAX_S": f"{inputs.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
+    "WAIT_MAX_S": f"{vocab.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX), "STATE_NAME_MAX": str(savestates.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
     "UNTIL_STEPS_MAX": str(sequence.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),

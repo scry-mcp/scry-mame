@@ -323,7 +323,7 @@ def test_a_run_to_whose_interrupt_at_the_bound_is_not_answered_says_so(
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "INVALID" and out["code"] == "not_settled", out
     assert "interrupt at the bound" in out["message"] and "RUNNING" in out["message"], out
-    assert "how" not in out, "no stop was read, so the reply names none"
+    assert "cause" not in out, "no stop was read, so the reply names none"
     assert out["target_disarmed"] is True and out["control_hits"] == 0, out
     assert ses.running is True and mstate.STATE.console_run is False
     assert getattr(ses, "broken", None) is None, "an unanswered interrupt is not a broken channel"
@@ -825,7 +825,7 @@ def test_a_stop_whose_interrupt_is_not_answered_in_time_says_so_and_names_the_wa
     out = s.stop()
     assert out["status"] == "INVALID" and out["code"] == "not_settled", out
     assert "no answer within 5.0 s" in out["message"] and RECOVERY in out["message"], out
-    assert "RUNNING" in out["message"] and "how" not in out, out
+    assert "RUNNING" in out["message"] and "cause" not in out, out
     assert ses.running is True and getattr(ses, "broken", None) is None
 
 

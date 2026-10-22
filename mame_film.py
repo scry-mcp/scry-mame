@@ -197,9 +197,9 @@ def check_gfx_film(trigger: str = "", length: int = 1, value: int | None = None,
     """`gfx_film`'s machine-independent half: which gesture the arguments make (arm with
     `trigger`, clear with `clear`, read with neither), the arguments that gesture takes and no
     other, and their shapes. Answers the `film_dir` an arming names."""
-    inputs.seconds_bound(seconds)
-    inputs.check_bool("clear", clear)
-    inputs.check_bool("changed", changed)
+    vocab.check_wait(seconds)
+    vocab.check_bool("clear", clear)
+    vocab.check_bool("changed", changed)
     arming = {"length": length != 1, "value": value is not None, "changed": changed,
               "pc": bool(pc.strip()),
               "cpu": inputs.cpu_given(cpu), "frames": frames != FRAMES_DEFAULT,

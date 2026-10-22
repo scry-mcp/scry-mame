@@ -21,7 +21,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 
-from scry_core import cancel, guardian, picture, presence, screen_map
+from scry_core import boundary, cancel, guardian, picture, presence, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -94,6 +94,15 @@ def no_machine() -> NoReturn:
     why = idle.IDLE.note()
     raise Invalid("no_session", f"no machine running{'; ' + why if why else ''}; call `start` "
                   "first")
+
+
+# ONE LOCK FOR ONE MACHINE. The server keeps ONE session in a global and the transport can hand
+# over two calls at once. Without it, two overlapping `run_to` calls trample each other's
+# breakpoints and steal each other's stops: the first collects the second's stop and returns a
+# verdict about a PC that is not its own. A debugger that reports the wrong stop is worse than a
+# slow one, so the tools serialize. Its last release wakes the presence's repaint
+# (`scry_core.boundary.ServerLock`).
+LOCK = boundary.ServerLock()
 
 
 class State:
@@ -218,6 +227,9 @@ class State:
         # move (`no_progress`), so two agreeing readings are exactly what it already showed.
         # Only `stop`'s interrupt ends it.
         self.console_run_unprovable: bool = False
+        # ...whose stop the console's log proves instead, read from here on: each look starts
+        # where the last ended, so a long wait reads each line once.
+        self.unprovable_peek: int = 0
         # THE STATES THIS SESSION SAVED, by name: the frame, the pc and the register blocks at
         # the save, which a load is judged against, and the signature MAME wrote into their
         # headers.

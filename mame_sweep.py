@@ -22,6 +22,7 @@ from typing import Any
 
 from scry_core import picture, png, prose
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_evidence as evidence
@@ -109,7 +110,7 @@ def check_gfx_sweep(tag: str = "", ref: str = "", offset: int = 0, count: int = 
                     ) -> tuple[list[tuple[str, dict[str, Any]]], Path | None]:
     """`gfx_sweep`'s machine-independent half: the family whole, bounded, and the picture's
     arguments."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     ps = list(PLANES_DEFAULT) if planes is None else planes
     if (not isinstance(ps, list) or not ps or len(set(ps)) != len(ps)
             or not all(inputs.is_natural(p, 1, ml.PLANES_MAX) for p in ps)):

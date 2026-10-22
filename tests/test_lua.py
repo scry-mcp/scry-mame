@@ -1237,11 +1237,11 @@ def test_a_throttle_still_in_the_pipe_is_pending_and_not_yet_a_finding(
     that is about to land."""
     ses = _channel(monkeypatch, tmp_path)
     s.throttle(on=True)
-    assert "throttles_not_applied" not in menvelope.envelope({})["session"]
+    assert "throttles_not_applied" not in menvelope.session_block()
     # A survey with the line still unread: the console has answered nothing at or past it.
     running.survey(ses, ses.scratch)  # type: ignore[arg-type]
     assert mstate.STATE.throttles_pending, "still waiting, and still honestly pending"
-    assert "throttles_not_applied" not in menvelope.envelope({})["session"]
+    assert "throttles_not_applied" not in menvelope.session_block()
     # AND THE BOUNDARY ITSELF, which is where an off-by-one lives: the console answering the
     # line BEFORE this one leaves it pending; answering THIS one is what makes the mark due.
     mstate.STATE.lua_answered = mstate.STATE.throttles_pending[0]["seq"] - 1
@@ -1249,7 +1249,7 @@ def test_a_throttle_still_in_the_pipe_is_pending_and_not_yet_a_finding(
     assert mstate.STATE.throttles_pending, "the call before it is not past it"
     mstate.STATE.lua_answered = mstate.STATE.throttles_pending[0]["seq"]
     running.survey(ses, ses.scratch)  # type: ignore[arg-type]
-    assert menvelope.envelope({})["session"]["throttles_not_applied"], "at its own number it is due"
+    assert menvelope.session_block()["throttles_not_applied"], "at its own number it is due"
 
 
 def test_an_older_pending_switch_is_not_answered_by_a_younger_one(
@@ -1589,7 +1589,7 @@ def test_a_start_whose_stub_never_answers_carries_mames_own_last_words(
 
 
 def test_the_stdout_tail_of_a_session_with_no_scratch_is_empty() -> None:
-    assert launch._stdout_tail(None) == ""
+    assert launch.stdout_tail(None) == ""
 
 
 def test_a_line_the_run_did_not_evaluate_is_bought_with_one_step_and_the_frames_again(

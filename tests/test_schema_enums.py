@@ -22,6 +22,7 @@ from typing import Any
 
 import pytest
 from scry_core import judges
+from scry_core import vocabulary as vocab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -281,7 +282,6 @@ def test_a_sequence_step_still_judges_a_closed_arguments_type(
 #: of every tool that takes `seconds` or `settle_seconds` is read off the schema itself below.
 import mame_blits as mblits  # noqa: E402
 import mame_gfx as mgfx  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as mread  # noqa: E402
 
@@ -319,7 +319,7 @@ def test_a_ranged_argument_publishes_its_judges_bounds(tool: str, arg: str, lo: 
 
 def test_every_wait_publishes_the_one_wait_bound_and_every_published_range_has_a_row() -> None:
     with pytest.raises(mstate.Invalid):
-        inputs.seconds_bound(0)        # the judge refuses the floor the schema leaves open
+        vocab.check_wait(0)        # the judge refuses the floor the schema leaves open
     published, waits = set(), 0
     for tool, schema in _schemas().items():
         for arg, prop in schema["properties"].items():
@@ -333,7 +333,7 @@ def test_every_wait_publishes_the_one_wait_bound_and_every_published_range_has_a
                 # deadline, a list's never wait); everywhere else the judge refuses it.
                 low = ("minimum" if arg == "settle_seconds" or tool == "resume"
                        else "exclusiveMinimum")
-                assert (scalar.get(low), scalar["maximum"]) == (0, inputs.WAIT_MAX_S), (tool, arg)
+                assert (scalar.get(low), scalar["maximum"]) == (0, vocab.WAIT_MAX_S), (tool, arg)
     rows = {(t, a) for t, a, _, _ in RANGES}
     assert waits >= 20, "the waits were not found: the schema read examined nothing"
     assert {p for p in published if p[1] not in WAITS} == rows

@@ -51,6 +51,7 @@ from typing import Any
 
 from scry_core import progress as mprogress
 from scry_core import prose
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -92,7 +93,7 @@ def check_gfx_locate(layouts: Any = None, patch: list[int] | None = None, tag: s
     """`gfx_locate`'s machine-independent half: the candidates whole, the patch, the source, the
     tiles and the flips; handed back parsed, so the body does not parse them twice. A candidate
     NAMED by the manifest is left out: the body resolves it past the gate (`candidates`)."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     if not isinstance(layouts, list) or not 1 <= len(layouts) <= LAYOUTS_MAX:
         raise st.Invalid("bad_argument", f"layouts is a list of 1..{LAYOUTS_MAX} candidate "
                          "layouts, each as `gfx_view` takes one, with an optional `name`, or the "

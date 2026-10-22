@@ -1711,8 +1711,8 @@ def test_gfx_view_asked_not_to_attach_writes_its_picture_and_says_why(
 
 @pytest.mark.parametrize(("call", "said"), [
     (lambda: s.screen_view(mode="histogram", attach=False), "would do nothing"),
-    (lambda: s.screen_view(attach="no"), "attach is a boolean"),
-    (lambda: s.gfx_view(layout=CIRCUS_CHAR, tag="gfx1", attach=1), "attach is a boolean"),
+    (lambda: s.screen_view(attach="no"), "attach is true or false"),
+    (lambda: s.gfx_view(layout=CIRCUS_CHAR, tag="gfx1", attach=1), "attach is true or false"),
 ], ids=["histogram has no picture", "screen_view", "gfx_view"])
 def test_an_attach_that_is_no_yes_or_no_or_would_do_nothing_is_refused(
         call: Any, said: str) -> None:

@@ -310,7 +310,7 @@ def check_screen_signature(crop: list[int] | None = None, seconds: float = mlua.
     the crop lies on the screen is the machine's to say."""
     if crop is not None:
         judges.rect("crop", crop)
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 def screen_signature(ses: gs.Session, scratch: Path, crop: list[int] | None, seconds: float,
@@ -338,7 +338,7 @@ def check_screen_view(mode: str = "render", pens: list[int] | None = None,
                       attach: bool = True, **_: Any) -> Path | None:
     """`screen_view`'s machine-independent half: the mode, the arguments that mode takes and no
     other (an argument a mode would ignore is refused, never dropped), and their shapes."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     vocab.one_of("mode", mode, tuple(MODES))
     if (pens is not None) != (mode == "isolate"):
         raise st.Invalid("bad_argument", "`pens` goes with mode `isolate`, and `isolate` needs "

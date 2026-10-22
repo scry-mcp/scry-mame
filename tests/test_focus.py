@@ -161,7 +161,7 @@ def test_without_threads_focusing_the_visible_cpu_runs_nothing_and_surveys_nothi
     _running(monkeypatch, tmp_path)
     out = s.focus(cpu="maincpu")
     assert (out["cpu"], out["machine_ran"], out["ignored"]) == (":maincpu", False, [":subcpu"]), out
-    assert "how" not in out
+    assert "cause" not in out, "nothing ran, so no stop is surveyed"
 
 
 def test_a_console_focus_that_reaches_no_observed_cpu_is_not_settled_and_left_running(
@@ -205,7 +205,7 @@ def test_a_cpu_the_machine_lacks_is_unknown_ref_naming_its_cpus(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     out = refused(r"no cpu 'audiocpu' on this machine", s.focus(cpu="audiocpu"))
-    assert out["code"] == "unknown_ref" and out["cpus"] == [":maincpu", ":subcpu"]
+    assert out["code"] == "unknown_ref" and out["cpu_tags"] == [":maincpu", ":subcpu"]
     assert not any(c.startswith("Hc") for c in ses.commands)
 
 
@@ -215,7 +215,7 @@ def test_the_inventory_start_gathered_names_the_cpus_before_the_console_does(
     _patched(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [{"tag": ":maincpu"}]})
     out = refused(r"no cpu 'subcpu'", s.focus(cpu="subcpu"))
-    assert out["cpus"] == [":maincpu"]
+    assert out["cpu_tags"] == [":maincpu"]
 
 
 def test_an_empty_cpu_is_refused_before_the_machine_is_asked_for(

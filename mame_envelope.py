@@ -40,16 +40,14 @@ def console_counts() -> dict[str, int]:
 
 
 def envelope(extra: dict[str, Any]) -> dict[str, Any]:
-    """Every reply: `status`, the tool's own fields, then the `session` block.
+    """Every reply's body: `status`, then the tool's own fields.
 
     `status` is `ok` unless the tool's own fields declared the answer INVALID (`invalid` above, or a
-    raised `Invalid` the server's wrapper turns into one), and the `session` block at the end (which
-    `mame_mcp.tool` composes again after the body, `close`'s aside) carries `alive`, `running`,
-    `altered` and each alarm while it holds, with a `note` beside them once the machine has been
-    written to (`session_block` says which half rides where). The one-line `summary` that opens
-    every reply is added by `mame_mcp.tool`, which knows the tool's name and arguments; this
-    function does not. The contract's guard runs on the result, so a malformed refusal is a
-    programmer's error here and never a reply.
+    raised `Invalid` the server's wrapper turns into one). The `session` block and the one-line
+    `summary` are added once, by the call boundary (`mame_mcp.tool`), after the body: the block
+    from the state the server holds then (`session_block`), so it is composed once per reply.
+    The contract's guard runs on the result, so a malformed refusal is a programmer's error here
+    and never a reply.
     """
     out: dict[str, Any] = {"status": extra.get("status", "ok")}
     out.update(extra)
@@ -59,7 +57,6 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
     # `input` running its frames) would otherwise spend the account on a reply it discards.
     if STATE.found_stop_last and "stopped_on_its_own" not in out:
         out["stopped_on_its_own"] = dict(STATE.found_stop_last)
-    out["session"] = session_block()
     return contract.check_envelope(out)
 
 

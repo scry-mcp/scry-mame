@@ -41,6 +41,7 @@ from typing import Any, cast
 from scry_core import cancel, prose
 from scry_core import progress as mprogress
 from scry_core import sequence_account as account
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -88,7 +89,7 @@ def check_trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds:
     """`trace`'s machine-independent half: `run_for`'s own judgement of the bound, the mode, the
     cap on the asked work, and the two files, handed back as the `Path` it built."""
     advance.check_run_bound(milliseconds, frames, seconds, "trace")
-    inputs.check_bool("noloop", noloop)
+    vocab.check_bool("noloop", noloop)
     fmax, mmax = caps(noloop)
     why = (" is more than one call traces: its file could pass a gibibyte; split the window into "
            "consecutive calls")

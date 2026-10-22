@@ -481,7 +481,7 @@ def test_clear_removes_the_log_and_the_next_arm_arms_again(monkeypatch: pytest.M
     ({"palette_port": "ramdac", "limit": 257}, r"limit=257 is outside 0\.\.256 rows"),
     ({"palette_port": "ramdac", "clear": True, "pen": 3}, r"`clear` removes the log"),
     ({"palette_port": "ramdac", "clear": True, "limit": 3}, r"`clear` removes the log"),
-    ({"palette_port": "ramdac", "clear": 1}, r"clear is a boolean; got 1"),
+    ({"palette_port": "ramdac", "clear": 1}, r"clear is true or false; got 1"),
     ({"palette_port": "ramdac", "limit": True}, r"limit is a count; got True"),
 ])
 def test_arguments_are_judged_before_the_machine(kw: dict[str, Any], said: str) -> None:

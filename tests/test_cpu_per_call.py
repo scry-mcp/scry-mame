@@ -65,7 +65,7 @@ def test_a_cpu_the_machine_lacks_is_unknown_ref_naming_its_cpus_before_anything_
     ses = _running(monkeypatch, tmp_path)
     out = refused(r"no cpu 'audiocpu' on this machine", s.breakpoint_at(ref="0x542",
                                                                         cpu="audiocpu"))
-    assert out["code"] == "unknown_ref" and out["cpus"] == [":maincpu", ":subcpu"]
+    assert out["code"] == "unknown_ref" and out["cpu_tags"] == [":maincpu", ":subcpu"]
     assert not any(c.startswith("bp ") for c in ses.commands)
     assert arming.store().declarations() == [], "nothing stored"
     refused(r"no cpu 'audiocpu'", s.watch_add(ref="0x2031fc", mode="change", length=4,
@@ -449,7 +449,7 @@ def test_a_reader_refuses_a_cpu_the_machine_lacks(
     for out in (s.disassemble(ref="0x0", cpu="audiocpu"), s.history(cpu="audiocpu"),
                 s.find(ref="0x0", length=4, data_hex="00", cpu="audiocpu"),
                 s.memdump(ref="0x0", length=4, dest=str(tmp_path / "a.bin"), cpu="audiocpu")):
-        assert out["code"] == "unknown_ref" and out["cpus"] == [":maincpu", ":subcpu"], out
+        assert out["code"] == "unknown_ref" and out["cpu_tags"] == [":maincpu", ":subcpu"], out
     assert not any(c.split()[0] in ("dasm", "find", "history", "save") for c in ses.commands)
 
 

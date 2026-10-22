@@ -23,6 +23,7 @@ from typing import Any
 
 from scry_core import progress as mprogress
 from scry_core import prose
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_files as files
@@ -109,7 +110,7 @@ def check_audio_record(frames: int, dest: str = "", seconds: float = 60.0,
     """`audio_record`'s machine-independent half: how many frames, the bound on waiting for
     them, and the file they go to, handed back as the `Path` it built."""
     inputs.count("frames", frames, tail=FRAMES_WHY, lo=FRAMES_MIN)
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     return inputs.optional_dest(dest)
 
 

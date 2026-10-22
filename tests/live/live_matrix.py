@@ -892,7 +892,7 @@ def block_a_by_cpu() -> None:
 # are each tool's own docstring's (`1..1024`, `outside (0, 600]`, "at most 128 bytes").
 
 FAR = 10**9
-WAIT_MAX = 600.0  # the documented ceiling of every wait (`inputs.WAIT_MAX_S`)
+WAIT_MAX = 600.0  # the documented ceiling of every wait (`vocab.WAIT_MAX_S`)
 ONE_PAST_WAIT = WAIT_MAX + 0.001
 PRE_GATE = "refused by the argument check, before any wait"
 

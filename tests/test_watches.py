@@ -1429,7 +1429,7 @@ def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A change watch that stops the machine at the target's own address answered TARGET
-    with the control silent and a `how` naming the watch: contradictory. The packet decides."""
+    with the control silent and a `cause` naming the watch: contradictory. The packet decides."""
     import mame_advance as advance
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)

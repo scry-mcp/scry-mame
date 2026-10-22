@@ -361,7 +361,7 @@ gathered once at `start`: its tag, its type and name, its clock, and each addres
 with its data width (`cpus`, `spaces`). What it is doing is `cpu_info`'s, read at every call,
 one row per cpu `cpulist` lists, in its order: `visible` (the cpu a call naming none acts on),
 `ignored`, `suspended` (the debugger's own `suspend`, which stops a cpu without ignoring its
-rows), `pc` and `declarations`; `status` lists the `cpus`, read once a session. `pc` is the
+rows), `pc` and `declarations`; `status` lists the `cpu_tags`, read once a session. `pc` is the
 cpu's program counter register read off its own thread, `reg` and `value`, as `step`'s `others`
 reads it, so no cpu is made visible and nothing runs; a cpu the debugger ignores or suspends
 answers the same way. Its `pc` is unavailable, with why, for a register the stub refuses or
@@ -496,7 +496,7 @@ its name. The stop's record carries the same `cpu` into `last_stop`, `stopped_on
 `registers(from_last_stop=True)`, and `watch_hit` and `regpoint_hit` name their row's. An
 arming reply and each list row carry the `cpu` of the row the
 debugger listed, and a `note` when the debugger ignores that cpu, whose rows then have no
-effect. `status` names the `cpus`; `cpu_info` says what each is doing. A console that lists no cpu
+effect. `status` names the `cpu_tags`; `cpu_info` says what each is doing. A console that lists no cpu
 leaves an annotation unread rather than guessed: `cpu_info`'s readings (unavailable, saying why),
 `focus`'s `was` when `cpulist` marked none before the call, `memdump`'s `cpu` on a build
 without the thread patch (its file is then checked against the first cpu), and `debug`'s `ignored`
@@ -2084,10 +2084,10 @@ one carrying the tool's names as `takes`, the values the tools
 refuse on their own, a wrong type, a missing argument), every refusal listed so a batch is
 fixed once, stopped at the first INVALID with the steps that ran as the account. Each step's
 `cpu` is judged against the machine's cpus before the first step runs too, once the rest of
-the list is sound, so a cpu the machine lacks refuses the whole list (`unknown_ref`, with `cpus`) and never a step after others moved
+the list is sound, so a cpu the machine lacks refuses the whole list (`unknown_ref`, with `cpu_tags`) and never a step after others moved
 the machine. Each step's refs are read by the address rule then as well, wherever the table is
 known before the list runs (the step names its cpu, or no earlier step can move the visible one),
-so bare hex naming no symbol refuses the whole list the same way (`unknown_ref`, without `cpus`).
+so bare hex naming no symbol refuses the whole list the same way (`unknown_ref`, without `cpu_tags`).
 A pointer's base is read by the rule whether `by` is `pointer` or `auto`; a name an earlier step
 declares `by="symbol"` on the same cpu, and a trigger name the capture on the step's block is
 held on, are read as that name; a ref past that point is read when its step runs. Each entry
@@ -2105,7 +2105,16 @@ build without the thread patch, which cannot show a cpu without running). A boar
 reads nothing for it and carries neither. A `resume`
 is followed only by running-ok ops until the next console op, before which the sequence
 waits for the stop, bounded by `settle_seconds`: a wait that ran out ends the list `TIMEOUT`,
-the steps after it unsent. A goldens run is one call: a control declared once,
+the steps after it unsent, and so does a step whose own wait missed (a `log_wait` that timed
+out), since the steps after it were built on what it waited for. A list begun on a running
+machine waits the same way before its first step that needs a stop. A list whose last step
+answered on a running machine and found it stopped (a `stop`, or a reader that found the stop
+on its own) names that stop in `stopped`, as that step surveyed it. A channel that fails while
+the list waits ends it with the account of what ran, the failure as its end: `gone` when MAME
+died, the refusal any tool would answer otherwise. Messages count steps from 1, as the
+progress line does; the indexes a reply carries (`failed_at`, a row's `step`, `errors`' `step`) count from 0.
+
+A goldens run is one call: a control declared once,
 then `run_to` each marker (or `run_for` by `frames`) and `snapshot`. What only its step can
 judge still refuses there, with `failed_at` and `ran` as the honest account: a symbol against
 the table, a file an earlier step writes, and anything that needs the machine. Raw console
@@ -3188,14 +3197,15 @@ module:
   its arguments, what it refuses, what it returns, and the section of this reference that holds
   the why.
 - **`mame_mcp.py`**: the MCP boundary every tool is wrapped in: the server object and its
-  `instructions` (what a session receives at connection), the lock over the one machine, the
-  decorator that registers a tool, and this server's hooks into `scry_core.boundary` (how a
+  `instructions` (what a session receives at connection, its roster rendered from the family
+  table `ROSTER`), the decorator that registers a tool, and this server's hooks into `scry_core.boundary` (how a
   body is called and which errors are answers, how a cancelled call ends, the reply a call the
   schema refused gets); the core closes every reply (`summary` first, `session` last).
 - **`mame_state.py`**: what is held between calls (the process, the session, each cpu's symbols, the
-  breakpoints this server armed, the scratch, the last stop as its survey saw it).
-- **`mame_envelope.py`**: the envelope every reply carries, built from that state: `status`, the
-  tool's fields, the `session` block.
+  breakpoints this server armed, the scratch, the last stop as its survey saw it), and the lock
+  over the one machine (`LOCK`, a `scry_core.boundary.ServerLock`).
+- **`mame_envelope.py`**: a reply's body built from that state (`status`, the tool's fields) and
+  the `session` block the boundary closes it with.
 - **`mame_replies.py`**: each tool's reply model, published by field name as its `outputSchema`
   and held to every reply the suite builds (`scry_core.reply_schema`).
 - **`mame_maps.py`**: the screen maps, over `scry_core.screen_map`.
@@ -3207,7 +3217,9 @@ module:
   one function per rule owned by the module that does the work, read by the surface and by
   the batch executor alike.
 - **`mame_launch.py`**: the command line as a pure function, the window flags, the port
-  probe, `start` and `close`.
+  probe, and `start`.
+- **`mame_session.py`**: the session's own tools beside `start`: `status`, `close` and
+  `rom_check`.
 - **`mame_binary.py`**: which MAME `start` runs, by the ladder *The session* sets out, and the
   build's own version line.
 - **`mame_stub_owner.py`**, **`mame_idle.py`**: whose gdbstub a port serves, proved by the

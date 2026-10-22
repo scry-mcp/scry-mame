@@ -15,14 +15,12 @@ emulator exists.
 from __future__ import annotations
 
 import functools
-import inspect
 import re
 from collections.abc import Callable, Collection, Mapping
 from pathlib import Path
 from typing import Any, NoReturn, overload
 
 from scry_core import judges, picture, prose, steps
-from scry_core import vocabulary as vocab
 from scry_core.reply_contract import Invalid
 
 
@@ -79,10 +77,6 @@ def idle(name: str, goes_with: str, why: str) -> NoReturn:
     raise Invalid("bad_argument", f"`{name}` goes with `{goes_with}`: {why}")
 
 
-def check_bool(name: str, value: object) -> None:
-    """An argument that is a yes or a no, in one sentence for every tool that takes one."""
-    if not isinstance(value, bool):
-        raise Invalid("bad_argument", f"{name} is a boolean; got {value!r}")
 
 
 def _count(value: object) -> bool:
@@ -191,7 +185,7 @@ def pen(name: str, value: object) -> None:
 @functools.cache
 def number_lists(fn: Callable[..., Any]) -> frozenset[str]:
     """The arguments `fn` declares a `NumberList`, optional or not."""
-    return frozenset(name for name, p in inspect.signature(fn, eval_str=True).parameters.items()
+    return frozenset(name for name, p in steps.signature_of(fn, eval_str=True).parameters.items()
                      if p.annotation in (NumberList, NumberList | None))
 
 
@@ -199,7 +193,7 @@ def number_lists(fn: Callable[..., Any]) -> frozenset[str]:
 def number_params(fn: Callable[..., Any]) -> dict[str, bool]:
     """The arguments `fn` declares `NumberArg`, each with whether it is optional (`| None`)."""
     return {name: p.annotation != NumberArg
-            for name, p in inspect.signature(fn, eval_str=True).parameters.items()
+            for name, p in steps.signature_of(fn, eval_str=True).parameters.items()
             if p.annotation in (NumberArg, NumberArg | None)}
 
 
@@ -386,13 +380,8 @@ def count(name: str, value: int, hi: int | None = None, tail: str = "", lo: int 
         raise Invalid("bad_argument", f"{name}={value!r} is below {lo}{tail}")
 
 
-# THE CEILING ON EVERY WAIT a tool takes: the server answers one call at a time, so a wait with
-# no ceiling would hold every other call behind an answer that may never arrive.
-WAIT_MAX_S = 600.0
-#: A wait's schema half, `Annotated[float, WAIT_BOUNDS]`, as `seconds_bound` judges it: above 0
-#: and at most `WAIT_MAX_S`; `WAIT_OR_NONE_BOUNDS` for the two whose 0 means no wait at all.
-WAIT_BOUNDS = vocab.bounds(0, WAIT_MAX_S, open_lo=True)
-WAIT_OR_NONE_BOUNDS = vocab.bounds(0, WAIT_MAX_S)
+# THE CEILING ON EVERY WAIT, its schema halves and its judge are scry-core's (`vocab.WAIT_MAX_S`,
+# `vocab.check_wait`), one name each on both servers.
 
 
 # WHAT A PATH HANDED TO THE CONSOLE, OR WRITTEN AS A `dest`, MAY NOT HOLD. The console's command
@@ -502,17 +491,3 @@ def regex(name: str, pattern: object) -> re.Pattern[str]:
         return re.compile(pattern)
     except re.error as e:
         raise Invalid("bad_argument", f"{name}={pattern!r} does not compile: {e}") from None
-
-
-def seconds_bound(value: object, name: str = "seconds", zero_means: str = "") -> None:
-    """A WAIT, a number (never a bool) held to more than zero and at most `WAIT_MAX_S`: one sentence
-    for every wait this server takes, naming the argument `name`. Every value a JSON client can
-    send that it refuses fails that sentence (a `Fraction` would not, and no client can send
-    one), so it names the type before the range: a bool is an `int` to Python, and
-    `True` sits inside the range. Where zero is a wait of its own kind, `zero_means` says
-    which, and zero is then taken."""
-    if not (isinstance(value, int | float) and not isinstance(value, bool)
-            and (value >= 0 if zero_means else value > 0) and value <= WAIT_MAX_S):
-        floor = f"0 ({zero_means}) or more than zero" if zero_means else "more than zero"
-        raise Invalid("bad_argument", f"{name}={value!r} is not a bound: a number of seconds, "
-                                         f"never a bool, {floor} and at most {WAIT_MAX_S}")

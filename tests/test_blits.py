@@ -374,7 +374,7 @@ def test_an_area_off_the_screen_is_refused_with_its_size(monkeypatch: pytest.Mon
     ({"draw_command": "blit", "frame": -1}, r"frame=-1 is a frame of the counter"),
     ({"draw_command": "blit", "area": [0, 0, 0, 4]}, r"area=\[0, 0, 0, 4\] is \[x, y, width"),
     ({"draw_command": "blit", "scale": 9}, r"scale=9"),
-    ({"draw_command": "blit", "detail": 1}, r"detail is a boolean; got 1"),
+    ({"draw_command": "blit", "detail": 1}, r"detail is true or false; got 1"),
     ({"draw_command": "blit", "detail": True, "first": -1}, r"first=-1 is a blit's place"),
     ({"draw_command": "blit", "detail": True, "first": True}, r"first=True is a blit's place"),
     ({"draw_command": "blit", "first": 3}, r"`first` pages a listing"),

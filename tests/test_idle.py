@@ -8,14 +8,14 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import boundary
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from test_server import _boot_args, _stub_boot  # noqa: E402
 
 import mame_idle as idle  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_mcp  # noqa: E402
+import mame_session as msession  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
@@ -36,7 +36,7 @@ def _never() -> None:
 def test_an_idle_session_is_closed_past_the_bound_and_the_reply_says_why(
     clock: idle.Idle,
 ) -> None:
-    lock = threading.RLock()
+    lock = boundary.ServerLock()
     closed: list[bool] = []
     assert not clock.reap(lock, lambda: True, _never, now=clock.last_call + LATE - 2)
     assert clock.reap(lock, lambda: True, lambda: closed.append(True),
@@ -47,18 +47,18 @@ def test_an_idle_session_is_closed_past_the_bound_and_the_reply_says_why(
         mstate.no_machine()
     assert clock.note() in str(e.value) and "call `start` first" in str(e.value)
     mstate.STATE.ses = None
-    assert launch.status()["note"] == clock.note()
+    assert msession.status()["note"] == clock.note()
 
 
 def test_no_note_before_the_bound_closed_anything(clock: idle.Idle) -> None:
-    assert "note" not in launch.status()
+    assert "note" not in msession.status()
     with pytest.raises(mstate.Invalid) as e:
         mstate.no_machine()
     assert str(e.value).startswith("no machine running; call `start` first")
 
 
 def test_a_call_in_progress_or_a_session_already_gone_is_never_closed(clock: idle.Idle) -> None:
-    lock = threading.RLock()
+    lock = boundary.ServerLock()
     late = clock.last_call + LATE
     assert not clock.reap(lock, lambda: False, _never, now=late)
     held, release = threading.Event(), threading.Event()
@@ -100,7 +100,7 @@ def test_a_call_ending_restarts_the_clock_and_the_wrapper_is_what_ends_one(
 ) -> None:
     clock.last_call -= LATE
     s.status()
-    assert not clock.reap(threading.RLock(), lambda: True, _never)
+    assert not clock.reap(boundary.ServerLock(), lambda: True, _never)
 
 
 def test_main_watches_with_the_tool_lock_the_machine_and_close(
@@ -110,7 +110,7 @@ def test_main_watches_with_the_tool_lock_the_machine_and_close(
     monkeypatch.setattr(clock, "watch", lambda *a: watched.append(a))
     monkeypatch.setattr(s.mcp, "run", lambda *a, **k: None)
     s.main()
-    assert watched == [(mame_mcp.LOCK, mstate.STATE.machine_alive, launch.close)], watched
+    assert watched == [(mstate.LOCK, mstate.STATE.machine_alive, msession.close)], watched
 
 
 def test_the_watch_survives_a_close_that_raises_and_says_so(
@@ -125,7 +125,7 @@ def test_the_watch_survives_a_close_that_raises_and_says_so(
         raise RuntimeError("the drain broke")
 
     clock.last_call -= LATE
-    clock.watch(threading.RLock(), lambda: True, close)
+    clock.watch(boundary.ServerLock(), lambda: True, close)
     deadline = time.monotonic() + 5
     while len(calls) < 2 and time.monotonic() < deadline:
         time.sleep(0.01)
@@ -144,4 +144,4 @@ def test_a_new_start_clears_the_note(
     out = s.start(**_boot_args(tmp_path, image))
     assert out["status"] == "ok", out
     s.close()
-    assert clock.note() == "" and "note" not in launch.status()
+    assert clock.note() == "" and "note" not in msession.status()

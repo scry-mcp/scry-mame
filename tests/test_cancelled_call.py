@@ -66,9 +66,9 @@ def _lock_is_free() -> bool:
     took: list[bool] = []
 
     def take() -> None:
-        took.append(mame_mcp.LOCK.acquire(timeout=1.0))
+        took.append(mstate.LOCK.acquire(timeout=1.0))
         if took[-1]:
-            mame_mcp.LOCK.release()
+            mstate.LOCK.release()
     t = threading.Thread(target=take)
     t.start()
     t.join()

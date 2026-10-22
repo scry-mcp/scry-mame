@@ -31,6 +31,8 @@ from scry_core import media_tools
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
+from scry_core import strict_arguments as strict  # noqa: E402
+
 import mame_advance as advance  # noqa: E402
 import mame_args as args  # noqa: E402
 import mame_audio as maudio  # noqa: E402
@@ -50,6 +52,7 @@ import mame_lua as mlua  # noqa: E402
 import mame_machine as machine  # noqa: E402
 import mame_manifest as manifest  # noqa: E402
 import mame_maps as mmaps  # noqa: E402
+import mame_mcp  # noqa: E402
 import mame_palette as mpalette  # noqa: E402
 import mame_ramdac as mramdac  # noqa: E402
 import mame_read as read  # noqa: E402
@@ -447,18 +450,13 @@ def test_every_tool_that_claims_it_answers_while_running_is_in_the_one_list() ->
     assert not unknown, f"RUNNING_OK_OPS names tools this server does not register: {unknown}"
 
 
-def test_the_instructions_name_every_operation_that_answers_while_running() -> None:
-    """The one list is `RUNNING_OK_OPS`; the instructions enumerate it in prose for a session
-    that reads nothing else, and three names had fallen out of the prose while their own
-    docstrings and the refusal's `answers_while_running` kept them."""
-    text = s.mcp.instructions or ""
-    running = text[text.index("While it runs"):text.index("`memdump`, `snapshot` answer")]
-    files = text[text.index("Files, any state:"):text.index("A SESSION.")]
-    media = set(media_tools.TOOLS)
-    missing = sorted(op for op in sequence.RUNNING_OK_OPS - media if f"`{op}`" not in running)
-    assert not missing, f"the instructions' running paragraph does not name {missing}"
-    # The media file tools answer in ANY state, are named once where the tools are, and say so.
-    assert all(f"`{op}`" in files for op in media), files
+def test_the_instructions_families_are_the_registered_tools_and_the_running_ones_answer() -> None:
+    """The roster's families name every registered tool once and nothing else (a misspelt name
+    would be a tool the session looks for and never finds), and the instructions carry the
+    sentence the table renders of what answers while the machine runs."""
+    registered = [t.name for t in strict.registered(s.mcp)]
+    assert mame_mcp.ROSTER.unlisted(registered) == []
+    assert mame_mcp.ROSTER.running_sentence() in (s.mcp.instructions or "")
 
 
 @pytest.mark.parametrize("addr", ["0xffff1", "0x10000000"])

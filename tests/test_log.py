@@ -17,6 +17,7 @@ import time
 from pathlib import Path
 
 import pytest
+from scry_core import vocabulary as vocab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -24,7 +25,6 @@ from session_doubles import refused  # noqa: E402
 from test_server import _console, _ConsoleSession, _running  # noqa: E402
 
 import mame_files as files  # noqa: E402
-import mame_inputs as inputs
 import mame_read as read  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
@@ -133,9 +133,9 @@ def test_log_wait_takes_the_channel_and_finds_a_process_line_that_arrives(
     assert out["pattern"] == "zzz", out
     refused("channel", s.log_wait(pattern=".", channel="guest", seconds=1.0))
     # THE BOUND'S OWN EDGES: the ceiling is a bound, one past it is not.
-    inputs.seconds_bound(inputs.WAIT_MAX_S)          # the ceiling itself is a bound: no refusal
+    vocab.check_wait(vocab.WAIT_MAX_S)          # the ceiling itself is a bound: no refusal
     refused("not a bound",
-            s.log_wait(pattern=".", channel="process", seconds=inputs.WAIT_MAX_S + 0.5))
+            s.log_wait(pattern=".", channel="process", seconds=vocab.WAIT_MAX_S + 0.5))
     monkeypatch.setattr(read, "LOG_LIMIT_MAX", read.LOG_LIMIT_MAX)
 
 

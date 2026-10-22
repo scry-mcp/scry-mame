@@ -1969,3 +1969,49 @@ def test_every_capture_is_taken_through_the_screen_alone_unless_a_view_is_named(
                           view="Shifter-R")
     assert plain[plain.index("-snapview") + 1] == "native"
     assert named[named.index("-snapview") + 1] == "Shifter-R"
+
+
+def _packet(reply: str) -> bytes:
+    return f"${reply}#{g._checksum(reply)}".encode()
+
+
+def test_an_owed_request_that_ran_out_latches_nothing_and_the_next_one_collects_its_answer(
+) -> None:
+    """A request that may run out without breaking the session (the presence's repaint): its
+    answer, still owed, is read and set aside by the NEXT request before that one is sent, so
+    no reply is ever paired with the wrong request; the session stays whole."""
+    by_p = json.loads((TWO_CPUS / "p.json").read_text())
+    wire = _ByteWire([TimeoutError, _packet("300a"), _packet(by_p["d0"])])
+    ses = _two_cpus_on(wire)
+    d0 = ses.layout(1).regs["D0"].number
+    with pytest.raises(g.Timeout, match="no answer within 0.0 s"):
+        ses.monitor_owed("print 0", timeout=0.0)
+    assert ses.broken is None, ses.broken
+    assert ses.request(f"p{d0:x}") == by_p["d0"]
+
+
+def test_an_owed_answer_is_collected_before_a_step_and_a_stop_ahead_of_it_is_noted() -> None:
+    """Whatever goes out next collects what the owed request was still owed: a `step` sends no
+    `request`, and read straight after an owed timeout it would take the late answer for its
+    stop and break the session. A stop the machine reached before the answer is the machine's."""
+    wire = _ByteWire([TimeoutError, _packet("300a"), _packet("T05thread:01;")])
+    ses = _two_cpus_on(wire)
+    with pytest.raises(g.Timeout):
+        ses.monitor_owed("print 0", timeout=0.0)
+    assert ses.step().startswith("T05"), ses.broken
+    assert ses.broken is None, ses.broken
+    running = _two_cpus_on(_ByteWire([TimeoutError, _packet("T05thread:01;"), _packet("300a")]))
+    with pytest.raises(g.Timeout):
+        running.monitor_owed("print 0", timeout=0.0)
+    running.running = True
+    assert running.poll_stop(0.0) is True and running.broken is None, running.broken
+
+
+def test_an_owed_answer_that_never_comes_latches_the_request_that_waited_for_it() -> None:
+    ses = _two_cpus_on(_ByteWire([TimeoutError]))
+    with pytest.raises(g.Timeout):
+        ses.monitor_owed("print 0", timeout=0.0)
+    assert ses.broken is None
+    with pytest.raises(g.Timeout, match="`print 0` was still owed"):
+        ses.request("g")
+    assert "owed" in str(ses.broken), ses.broken

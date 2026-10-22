@@ -21,6 +21,7 @@ from typing import Any, NoReturn
 
 from scry_core import png, prose
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -110,7 +111,7 @@ def check_palette(palette: str = "", first: int = 0, count: int = 0, scale: int 
                   dest: str = "", seconds: float = mlua.EVAL_WAIT_S, **_: Any) -> Path | None:
     """`palette`'s machine-independent half: the device's name, the range, the bound and the
     picture's own arguments."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     if palette:
         inputs.name_word("palette", palette, "a palette device's tag as MAME names it")
     inputs.pen("first", first)

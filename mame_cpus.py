@@ -122,14 +122,14 @@ def thread_for(ses: gs.Session, cpu: str) -> tuple[str | None, int]:
         if inputs.cpu_given(cpu) and (tag := named(ses, cpu)) != served:
             raise st.Invalid("bad_argument", f"{unthreaded_why(tag, served)}: omit `cpu`"
                              + (f", or name {served}" if served else ""),
-                             cpus=[served] if served else [])
+                             cpu_tags=[served] if served else [])
         return served, 1
     on = acting(ses, cpu)
     thread = thread_of(ses, on)
     if thread is None:
         threaded = sorted(ses.threads.values())
         raise st.Invalid("bad_argument", f"{no_thread_why(ses, on)}: name one of {threaded} as "
-                         "`cpu`", cpus=threaded)
+                         "`cpu`", cpu_tags=threaded)
     return on, thread
 
 
@@ -296,7 +296,7 @@ def match_tag(cpu: str, tags: list[str]) -> str:
     if not wanted:
         raise st.Invalid("unknown_ref",
                          f"no cpu {cpu!r} on this machine; it has "
-                         f"{tags or 'none this gather recognised'}", cpus=tags)
+                         f"{tags or 'none this gather recognised'}", cpu_tags=tags)
     return wanted
 
 

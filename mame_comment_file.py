@@ -48,13 +48,5 @@ def cpu_fault(cpu: str) -> str | None:
 POLICY = core.Policy(ref_fault=ref_fault, cpu_fault=cpu_fault)
 
 
-def parse(text: str, where: str = "the comment file") -> list[Row]:
-    """Every row of a comment file's text, or the refusal naming the first line that breaks the
-    format (`scry_core.comment_file.parse`), held to this server's columns."""
-    return core.parse(text, where, POLICY)
-
-
-def render(rows: list[Row]) -> str:
-    """The file's text for `rows` (`scry_core.comment_file.render`), held to this server's
-    columns."""
-    return core.render(rows, POLICY)
+#: A comment file's rows read, and written, held to this server's columns.
+parse, render = POLICY.parse, POLICY.render

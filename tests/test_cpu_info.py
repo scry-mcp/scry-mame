@@ -85,7 +85,7 @@ def test_a_name_is_judged_against_the_rows_the_call_gives(
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [
         {"tag": MAIN}, {"tag": SUB}, {"tag": ":audiocpu"}]})
     out = refused("no cpu 'audiocpu'", s.cpu_info(cpu="audiocpu"))
-    assert out["code"] == "unknown_ref" and out["cpus"] == [MAIN, SUB], out
+    assert out["code"] == "unknown_ref" and out["cpu_tags"] == [MAIN, SUB], out
     store = mstate.STATE.store
     assert store is not None
     store.add(dec.Declaration("breakpoint", "address", "0x400", cpu=":audiocpu"))
@@ -100,7 +100,7 @@ def test_status_carries_the_cpus_and_no_per_cpu_reading(
     """What each cpu is doing is `cpu_info`'s row; `status` names the cpus there are."""
     _two_cpus(monkeypatch, tmp_path, _THREADS)
     out = s.status()
-    assert out["cpus"] == [MAIN, SUB], out
+    assert out["cpu_tags"] == [MAIN, SUB], out
     gone = {"visible_cpu", "ignored", "suspended", "pc_by_cpu", "declarations_by_cpu"}
     assert not gone & set(out), gone & set(out)
 

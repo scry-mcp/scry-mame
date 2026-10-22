@@ -704,7 +704,7 @@ def test_a_session_that_only_declares_tallies_still_counts_the_reader_deaths(
     assert mstate.STATE.console_lines_lost == 1, "the loss itself is recorded"
     assert mstate.STATE.console_thread_errors == 1, (
         "the death went uncounted: the session would read as healthy over a dead reader")
-    assert menvelope.envelope({})["session"]["console"] == {
+    assert menvelope.session_block()["console"] == {
         "thread_errors": 1, "reruns": 0, "lost": 1}
 
 

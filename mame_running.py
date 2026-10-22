@@ -21,6 +21,7 @@ from typing import Any
 from scry_core import log_marks, narrowing
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -30,7 +31,6 @@ import mame_cpus as cpus
 import mame_declarations as dec
 import mame_envelope as menvelope
 import mame_files as files
-import mame_inputs as inputs
 import mame_iotaps as iotaps
 import mame_read as read
 import mame_regpoints as regpoints
@@ -385,14 +385,8 @@ def observe_stop(ses: gs.Session, scratch: Path) -> None:
     moved past the last record's), it is surveyed once, remembered, and the account rides on
     this contact's reply as `stopped_on_its_own`."""
     if ses.running and STATE.console_run:
-        # No packet will come for a run the console started: the counter that a stop
-        # freezes is the proof, read as `run_for` reads it -- unless the counter is what
-        # never moved, and then nothing here can tell rest from a run: `stop` interrupts it.
-        if STATE.console_run_unprovable or not frame_at_rest(ses):
-            return
-        ses.running = False
-        STATE.console_run = False
-        _found(ses, scratch, "none: a run the console started")
+        if console_run_ended(ses, scratch):
+            _found(ses, scratch, "none: a run the console started")
         return
     if ses.running:
         ses.poll_stop(0.0)
@@ -406,21 +400,35 @@ def observe_stop(ses: gs.Session, scratch: Path) -> None:
 def came_to_rest(ses: gs.Session, scratch: Path, wait: float, record: bool = True) -> bool:
     """Whether a released machine has stopped, asked by the proof its release allows: the
     stub's stop packet, waited for up to `wait`, for a run the stub started; for one the
-    console started, which sends no packet, the frame counter at rest. `record` says who
-    surveys that stop: here, as the first contact after it would (`observe_stop`), or the
-    caller, which is about to survey it itself (`stop_reply`) and must not record it twice.
-    A console run whose counter is the thing that never moved proves nothing here
-    (`console_run_unprovable`)."""
+    console started, which sends no packet, `console_run_ended`. `record` says who surveys
+    that stop: here, as the first contact after it would (`observe_stop`), or the caller, which
+    is about to survey it itself (`stop_reply`) and must not record it twice."""
     if ses.running and STATE.console_run:
-        if record:
-            observe_stop(ses, scratch)
-        elif not STATE.console_run_unprovable and frame_at_rest(ses):
-            ses.running = False
-            STATE.console_run = False
-        if ses.running:
-            time.sleep(wait)
-        return not ses.running
+        if console_run_ended(ses, scratch):
+            if record:
+                _found(ses, scratch, "none: a run the console started")
+            return True
+        time.sleep(wait)
+        return False
     return bool(ses.poll_stop(wait))
+
+
+def console_run_ended(ses: gs.Session, scratch: Path) -> bool:
+    """Whether a run the console started has come to rest, the session told so when it has. No
+    packet will come for it: the frame counter that a stop freezes is the proof, read as
+    `run_for` reads it, unless the counter is what never moved (`console_run_unprovable`);
+    then a stop the console logged proves it, read from where the last look ended and without
+    moving the survey's mark."""
+    if STATE.console_run_unprovable:
+        lines, STATE.unprovable_peek = files.lines_since(
+            scratch / "debug.log", max(STATE.unprovable_peek, STATE.debuglog_mark))
+        if not stop_logged_in(lines):
+            return False
+    elif not frame_at_rest(ses):
+        return False
+    ses.running = False
+    STATE.console_run = STATE.console_run_unprovable = False
+    return True
 
 
 def _found(ses: gs.Session, scratch: Path, packet: str | None) -> None:
@@ -497,7 +505,7 @@ def check_resume(seconds: float = 0.0, **_: Any) -> None:
     the machine is left running. A positive number is a WAIT, and a wait has the ceiling every
     other wait in this server has: without it a single call could hold the server's one lock for
     as long as the caller cared to type."""
-    inputs.seconds_bound(seconds, zero_means="no deadline")
+    vocab.check_wait(seconds, zero_means="no deadline")
 
 
 def resume(ses: gs.Session, scratch: Path, seconds: float,

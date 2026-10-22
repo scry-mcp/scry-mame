@@ -17,6 +17,7 @@ import pytest
 from session_doubles import run_host_lua, use_table  # noqa: E402
 
 import mame_cpus as cpus
+import mame_envelope as menvelope
 import mame_machine as machine
 import mame_read as read
 import mame_state as st
@@ -590,7 +591,7 @@ def test_the_reply_carries_every_section_its_sources_and_the_full_counts(
     # `counts` is the reply's own list of what it carries, so a section added tomorrow enters
     # the denominator the moment it enters the answer.
     assert set(reply["sources"]) == set(reply["counts"])
-    assert reply["session"]["altered"] is False
+    assert menvelope.session_block()["altered"] is False
     assert reply["cpu"]["available"] is False, "no cpu was asked for, so none is named"
 
 
@@ -682,7 +683,7 @@ def test_a_cpu_this_machine_lacks_is_refused_naming_the_ones_it_has(
     with pytest.raises(st.Invalid) as refused:
         machine.machine_map(cpu="audiocpu")
     assert refused.value.code == "unknown_ref"
-    assert refused.value.fields["cpus"] == [":maincpu", ":subcpu"]
+    assert refused.value.fields["cpu_tags"] == [":maincpu", ":subcpu"]
 
 
 def test_a_section_past_the_ceiling_is_cut_and_says_so_with_the_full_count(

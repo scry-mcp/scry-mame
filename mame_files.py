@@ -315,9 +315,9 @@ def check_log(pattern: str, channel: str, limit: int = 40, since_mark: int = 0,
 def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark: int = 0,
                    **_: Any) -> re.Pattern[str]:
     """`log_wait`'s machine-independent half, in its own order: the bound, then the regex, then the
-    channel, then the mark. The bound comparison is `inputs.seconds_bound`, which every waiting
+    channel, then the mark. The bound comparison is `vocab.check_wait`, which every waiting
     tool shares; the regex is handed back compiled, as `check_log` hands back its own."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     rx = inputs.regex("pattern", pattern)
     check_channel(channel)
     _check_mark(since_mark, channel)

@@ -10,12 +10,11 @@ this server's part is `refusal`, the reply a refused call gets under its lock.
 from __future__ import annotations
 
 import inspect
-import threading
 from collections.abc import Callable
 from typing import Any
 
 from pydantic import ValidationError
-from scry_core import boundary, cancel, envelope, media_tools, presence, recording
+from scry_core import boundary, cancel, envelope, media_tools, presence, recording, roster
 from scry_core import strict_arguments as strict
 
 import gdb_session as gs
@@ -68,26 +67,41 @@ _ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOL
                           "registers(from_last_stop=True)",
                           *sorted(sequence.NOT_STEPS - {"start", "rom_check"})]
 
+#: THE TOOLS BY FAMILY, in the order the instructions list them (`scry_core.roster`): the
+#: roster and the "answers while it runs" sentence are both rendered from it, so a family that
+#: answers whole is named once instead of tool by tool. The media file tools answer in any
+#: state, so their family answers whole.
+ROSTER = roster.Roster(families=(
+    ("Session", ("start", "status", "close", "focus", "rom_check")),
+    ("Machine", ("cpu_info", "machine_map", "symbols_find", "log", "log_wait")),
+    ("Advance", ("run_to", "run_for", "step", "resume", "stop", "trace", "series_capture")),
+    ("Declarations", ("breakpoint_at", "breakpoint_list", "breakpoint_clear", "regpoint_add",
+                      "regpoint_list", "regpoint_clear", "watch_add", "watch_list",
+                      "watch_clear")),
+    ("Read", ("read_memory", "read_block", "registers", "disassemble", "find", "history",
+              "memdump", "map_add", "map_find")),
+    ("Graphics", ("palette", "screen_view", "screen_signature", "gfx_view", "gfx_locate",
+                  "gfx_sweep", "gfx_draft", "gfx_blits", "gfx_blit_source")),
+    ("Film", ("gfx_load", "gfx_film", "palette_log")),
+    ("Scan", ("scan_start", "scan_filter", "scan_clear")),
+    ("Write", ("write", "set_register", "reset", "debug")),
+    ("Comments", ("comment_add", "comment_list", "comment_delete", "comment_save",
+                  "comment_load")),
+    ("Lua", ("input", "record", "audio_record", "lua", "throttle")),
+    ("States", ("state_save", "state_load", "state_list")),
+    ("Files", (*media_tools.TOOLS, "map_load", "map_save", "snapshot", "captures")),
+    ("Sequences", ("perform", "drive", "perform_export")),
+), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
+
 mcp = envelope.Envelope(
     "mame",
     instructions=(
         "A live MAME debug session.\n\n"
-        "TOOLS. `start`, `rom_check`, `focus`. "
-        "Advance: `run_to`, `run_for`, `step`, `resume`, `trace`, `series_capture`. Read: "
-        "`read_memory`, `read_block`, `registers`, `disassemble`, `find`, `history`, "
-        "`palette`, `screen_view`, `gfx_view`, `gfx_locate`, "
-        "`gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`, `screen_signature`, "
-        "`map_add`, `map_find`, `scan_start`, `scan_filter`. Write: `write`, `set_register`, "
-        "`reset`, `debug`, "
-        "`comment_add`, `comment_delete`, `comment_load`. Lua: `input`, `record`, "
-        "`audio_record`, `lua`. States: `state_save`, `state_load`. "
-        "Files, any state: `image_diff`, `series_diff`, "
-        "`region_track`, `golden_check`, `audio_measure`, `audio_diff`, `map_load`, "
-        "`map_save`.\n\n"
+        "TOOLS. " + ROSTER.text() + "\n\n"
         "A SESSION. `start` parks it STOPPED. "
         "`run_to`'s target has no stop of its own. "
-        "`resume` lets it RUN. While it runs the readers refuse (`not_stopped`); these "
-        "answer: " + ", ".join(f"`{name}`" for name in _ANSWERS_WHILE_RUNNING) + ". "
+        "`resume` lets it RUN; then the readers refuse (`not_stopped`); "
+        + ROSTER.running_sentence() + " "
         "`rom_check`: 16 bytes vs `reference_rom` at `reference_base`. "
         "`memdump`, `snapshot` answer with a PATH. A cancel ends a call as its bound would; "
         "the next reply says `cancelled`.\n\n"
@@ -98,18 +112,11 @@ mcp = envelope.Envelope(
         "`message`) and `session` (`altered` after a write). A "
         "wrong TYPE is the schema's `bad_argument`. `not_settled`: "
         "`stop`; if `stop` fails as well, `close` then `start`. "
-        "`session_broken` LATCHES until `close`.\n\n"
-        "Reference: REFERENCE.md."
+        "`session_broken` LATCHES until `close`."
     ),
     refusal=refusal,
 )
 
-# ONE LOCK FOR ONE MACHINE. The server keeps ONE session in a global and the transport can hand
-# over two calls at once. Without it, two overlapping `run_to` calls trample each other's
-# breakpoints and steal each other's stops: the first collects the second's stop and returns a
-# verdict about a PC that is not its own. A debugger that reports the wrong stop is worse than a
-# slow one, so the tools serialize. Full stop.
-LOCK = threading.RLock()
 
 
 def probe_check(tool: str, given: dict[str, Any], effective: dict[str, Any]) -> None:
@@ -254,7 +261,7 @@ RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _ma
 # THE HOOKS ARE BOUND HERE, ONCE, AT IMPORT: a test that replaces one patches the name the hook
 # calls through (`STATE`, `running`), never the hook itself, which the boundary already holds.
 BOUNDARY = boundary.Boundary(
-    mcp, LOCK, invoke=_invoke, end=_end_cancelled, after=_after,
+    mcp, st.LOCK, invoke=_invoke, end=_end_cancelled, after=_after,
     refusal_line=summaries.refusal, session_block=menvelope.session_block,
     take_cancelled=STATE.take_cancelled, keep_cancelled=_keep_cancelled, doc=docs.filled,
     give_back=_keep_accounts, recorder=RECORDER,
@@ -268,9 +275,10 @@ def tool(
     replay: recording.ExportAs | None = None,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Registers an MCP tool on this server's boundary (`scry_core.boundary.Boundary.tool`, the
-    contract), serialised over the one machine (see `LOCK`), `summary` its line in
-    `mame_summaries`; `on_cancel` ends at `_end_cancelled`, and which errors become replies is
-    `_invoke`'s. What can be idempotent here is a tool serving a cache built once at `start`.
+    contract), serialised over the one machine (`mame_state.LOCK`, kept beside the session it
+    guards), `summary` its line in `mame_summaries`; `on_cancel` ends at `_end_cancelled`, and which
+    errors become replies is `_invoke`'s. What can be idempotent here is a tool serving a cache
+    built once at `start`.
     """
 
     return BOUNDARY.tool(title, summary=summary, read_only=read_only, idempotent=idempotent,

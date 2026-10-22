@@ -24,8 +24,9 @@ from __future__ import annotations
 import os
 from collections.abc import Callable
 from pathlib import Path
+from typing import Protocol
 
-from scry_core import presence
+from scry_core import boundary, presence
 
 #: The state file's name in the scratch.
 STATE_FILE = "presence.state"
@@ -125,8 +126,6 @@ REREAD_S = 0.05
 #: THE REPAINT: a console command that touches nothing (pc, the cycle count and memory are the
 #: same across it) and repaints a stopped machine once. A `print` of a constant answers at once.
 REPAINT = "print 0"
-#: How long the repaint waits for the server's lock at a time, asking again whether it is still due.
-LOCK_POLL_S = 0.05
 
 #: What the drawer writes, beside the state file, when it raises.
 BROKEN_FILE = "presence.broken"
@@ -150,35 +149,50 @@ def broken(scratch: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace").strip() or "no reason given"
 
 
+#: A session to repaint, asked by the scratch of the session the adapter was made for: None when
+#: that session is gone, broken, running or exited.
+Repaintable = Callable[[Path], "Console | None"]
+
+
+class Console(Protocol):
+    """What the repaint sends through: a console command whose answer nobody reads."""
+
+    def monitor_owed(self, command: str, timeout: float = ...) -> None: ...
+
+
 class FileAdapter:
     """`scry_core.presence.Adapter` over the state file: each state replaces the file whole, so
-    the hook reads one word or the previous one, never half of either."""
+    the hook reads one word or the previous one, never half of either. The repaint's server
+    lock, the session it repaints and the console's queue are handed in, never reached for."""
 
-    def __init__(self, scratch: Path) -> None:
+    def __init__(self, scratch: Path, lock: boundary.ServerLock, session: Repaintable,
+                 pending: Callable[[Path], int]) -> None:
         self._path = scratch / STATE_FILE
+        self._lock, self._session, self._pending = lock, session, pending
 
     def show(self, state: presence.State) -> None:
         part = self._path.with_suffix(".part")
         part.write_text(state + "\n", encoding="ascii")
         os.replace(part, self._path)
 
+    def wake(self) -> None:
+        """A repaint waiting for the lock asks `still()` again now (`ServerLock.wake`)."""
+        self._lock.wake()
+
     def repaint(self, still: Callable[[], bool]) -> None:
-        """`REPAINT` sent through the session's console, under the server's lock: waited for in
-        short turns while `still()` holds, so a driving call that takes the lock first makes it
-        moot at once; sent only to this session's machine, alive, unbroken and stopped (a running
-        one repaints by itself), and never while a Lua line waits in the console's pipe, which a
-        console command would have MAME evaluate there and then."""
-        # IMPORTED HERE: the server's lock, its state and the transport read this module.
-        import mame_mcp
-        import mame_transport as transport
-        from mame_state import STATE
-        while still():
-            if not mame_mcp.LOCK.acquire(timeout=LOCK_POLL_S):
-                continue
-            try:
-                if (still() and (ses := STATE.repaintable(self._path.parent)) is not None
-                        and not transport.pending_lines(self._path.parent)):
-                    ses.monitor(REPAINT)
-                return
-            finally:
-                mame_mcp.LOCK.release()
+        """`REPAINT` sent through the session's console, under the server's lock, taken while
+        `still()` holds and asked again only when a call frees the lock (`ServerLock`), so a long
+        still call costs no wake-ups and a driving call makes it moot; sent only to this
+        session's machine, alive, unbroken and stopped (a running one repaints by itself), and
+        never while a Lua line waits in the console's pipe, which a console command would have
+        MAME evaluate there and then. Its console request runs out as the presence's failure
+        and never breaks the session (`monitor_owed`)."""
+        if not self._lock.acquire_while(still):
+            return
+        try:
+            scratch = self._path.parent
+            if still() and (ses := self._session(scratch)) is not None \
+                    and not self._pending(scratch):
+                ses.monitor_owed(REPAINT)
+        finally:
+            self._lock.release()

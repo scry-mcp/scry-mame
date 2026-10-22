@@ -1,20 +1,18 @@
-"""The binary ladder: the argument, then `MAME_BINARY`, then the PATH's `mame`, and the three
-fields `start` answers with.
+"""The binary ladder as this server climbs it: the rungs it names (`MAME_BINARY`, the PATH's
+`mame`) and what `start` does with the build it lands on. The ladder's own cases, each rung and
+the version probe, are scry-core's (`tests/test_binaries.py`).
 
-The builds are small shell programs of each case's own, run for real, so `shutil.which` and the
-version call are exercised as they run in production. `start` itself runs on the stubbed boot
-the server's own cases use (`test_server._stub_boot`), with a `fake-mame` that answers
-`-version` and the console plugin beside it.
+The builds are small shell programs of each case's own, run for real. `start` itself runs on
+the stubbed boot the server's own cases use (`test_server._stub_boot`), with a `fake-mame` that
+answers `-version` and the console plugin beside it.
 """
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core.reply_contract import Invalid
 from session_doubles import fake_mame, refused
 from test_server import _running, _stub_boot, _StubProcess
 
@@ -31,60 +29,18 @@ def build(where: Path, *, version: str = f'echo "{VERSION}"', name: str = "mame"
     return fake_mame(where, name=name, version=version)
 
 
-@pytest.fixture
-def on_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A `mame` the PATH finds, and nothing else on the PATH."""
-    found = build(tmp_path / "path-bin")
-    monkeypatch.setenv("PATH", str(found.parent))
-    return found
 
 
-def test_the_argument_wins_over_the_variable(tmp_path: Path, on_path: Path,
-                                             monkeypatch: pytest.MonkeyPatch) -> None:
-    mine = build(tmp_path / "arg")
-    monkeypatch.setenv(binaries.VARIABLE, str(build(tmp_path / "var")))
-    assert binaries.resolve(str(mine)) == binaries.Resolved(str(mine), "argument")
 
 
-def test_the_variable_wins_over_the_path(tmp_path: Path, on_path: Path,
-                                         monkeypatch: pytest.MonkeyPatch) -> None:
-    held = build(tmp_path / "var")
-    monkeypatch.setenv(binaries.VARIABLE, str(held))
-    assert binaries.resolve("") == binaries.Resolved(str(held), "MAME_BINARY")
 
 
-def test_the_path_is_the_last_rung(on_path: Path) -> None:
-    assert binaries.resolve("") == binaries.Resolved(str(on_path), "PATH")
 
 
-def test_nothing_resolvable_is_refused_naming_all_three_rungs(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("PATH", str(tmp_path / "empty"))
-    with pytest.raises(Invalid) as refusal:
-        binaries.resolve("")
-    assert refusal.value.code == "host_failed", "the host's PATH, the host's to fix"
-    for rung in ("`binary` held nothing", "MAME_BINARY held nothing", "no `mame`"):
-        assert rung in str(refusal.value), (rung, str(refusal.value))
 
 
-def test_a_wrong_first_rung_is_refused_never_passed_over(
-        tmp_path: Path, on_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """A named build that is not there is refused, though the PATH holds a good one."""
-    gone = str(tmp_path / "nope" / "mame")
-    with pytest.raises(Invalid, match="from the argument rung") as refusal:
-        binaries.resolve(gone)
-    assert f"{gone} (no such file)" in str(refusal.value) and str(on_path) in str(refusal.value)
-    monkeypatch.setenv(binaries.VARIABLE, gone)
-    with pytest.raises(Invalid, match=r"from the MAME_BINARY rung.*\(no such file\)"):
-        binaries.resolve("")
 
 
-def test_a_dangling_link_is_no_such_file_not_a_missing_exec_bit(
-        tmp_path: Path, on_path: Path) -> None:
-    link = tmp_path / "mame"
-    link.symlink_to(tmp_path / "gone")
-    with pytest.raises(Invalid, match=r"\(no such file\)"):
-        binaries.resolve(str(link))
 
 
 def test_a_broken_session_answers_as_such_whatever_the_variable_names(
@@ -98,80 +54,22 @@ def test_a_broken_session_answers_as_such_whatever_the_variable_names(
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
 
 
-def test_a_wrong_argument_does_not_fall_through_to_the_variable(
-        tmp_path: Path, on_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(binaries.VARIABLE, str(build(tmp_path / "var")))
-    with pytest.raises(Invalid, match="from the argument rung"):
-        binaries.resolve(str(tmp_path / "nope" / "mame"))
 
 
-@pytest.mark.parametrize("given", ["mame", "bin/mame", "./mame"])
-def test_a_relative_path_is_refused_in_the_argument_and_in_the_variable(
-        given: str, on_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    with pytest.raises(Invalid) as refusal:
-        binaries.resolve(given)
-    assert refusal.value.code == "bad_argument" and "binary=" in str(refusal.value)
-    monkeypatch.setenv(binaries.VARIABLE, given)
-    with pytest.raises(Invalid) as refusal:
-        binaries.resolve("")
-    assert refusal.value.code == "bad_argument" and "MAME_BINARY=" in str(refusal.value)
 
 
-def test_the_path_answered_is_the_file_which_approved(tmp_path: Path, on_path: Path) -> None:
-    """Through a symlinked directory, `..` names the target's parent; collapsed by spelling it
-    would name a file beside the link, which is not the one checked."""
-    target = tmp_path / "real" / "deep"
-    target.mkdir(parents=True)
-    build(tmp_path / "real")
-    (tmp_path / "link").symlink_to(target)
-    given = str(tmp_path / "link" / ".." / "mame")
-    assert binaries.resolve(given).path == given
 
 
-def test_the_version_is_the_first_line_from_either_stream_whatever_the_exit_code(
-        tmp_path: Path) -> None:
-    assert binaries.version(str(build(tmp_path))) == VERSION
-    on_stderr = build(tmp_path / "err", version='printf "\\n  v 1.2  \\n" >&2; exit 1')
-    assert binaries.version(str(on_stderr)) == "v 1.2"
 
 
-def test_a_version_call_that_prints_nothing_is_unavailable(tmp_path: Path) -> None:
-    got = binaries.version(str(build(tmp_path, version="exit 1")))
-    assert got == {"available": False,
-                   "why": f"`{tmp_path / 'mame'} -version` printed nothing (rc=1)"}
 
 
-def test_a_version_call_that_hangs_is_unavailable_within_its_bound(
-        tmp_path: Path) -> None:
-    got = binaries.version(str(build(tmp_path, version="exec sleep 5")), seconds=0.2)
-    assert isinstance(got, dict) and got["available"] is False
-    assert "did not return in 0.2 s" in got["why"], got
 
 
-def test_a_version_call_that_cannot_run_is_unavailable(tmp_path: Path) -> None:
-    got = binaries.version(str(tmp_path / "gone"))
-    assert isinstance(got, dict) and got["available"] is False and "could not run" in got["why"]
 
 
-def test_a_relative_path_entry_through_a_link_names_the_file_which_found(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    target = tmp_path / "real" / "deep"
-    target.mkdir(parents=True)
-    build(tmp_path / "real" / "bin")
-    (tmp_path / "link").symlink_to(target)
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("PATH", "link/../bin")
-    got = binaries.resolve("")
-    assert Path(got.path).resolve() == (tmp_path / "real" / "bin" / "mame").resolve(), got
 
 
-def test_the_path_rung_answers_an_absolute_path(tmp_path: Path,
-                                                monkeypatch: pytest.MonkeyPatch) -> None:
-    build(tmp_path / "rel")
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("PATH", "rel")
-    got = binaries.resolve("")
-    assert got == binaries.Resolved(os.path.join(str(tmp_path), "rel", "mame"), "PATH")
 
 
 # ------------------------------------------------------------------------- through `start`

@@ -41,6 +41,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import mame_callbacks as callbacks
@@ -446,8 +447,8 @@ def check_palette_log(palette_port: str = "", pen: int | None = None,
     # ZERO ROWS IS AN ANSWER HERE: the log's account (its counts, its pens, its setters) with no
     # row listed, which is what a caller asks for when the rows are in `rows_path`.
     inputs.count("limit", limit, LIMIT_MAX, " rows", lo=0)
-    inputs.check_bool("clear", clear)
-    inputs.check_bool("arm", arm)
+    vocab.check_bool("clear", clear)
+    vocab.check_bool("arm", arm)
     if arm and clear:
         raise st.Invalid("bad_argument", "`arm` installs the log and `clear` removes it: give one "
                          "(`palette_log(palette_port=..., arm=True)` to arm)")

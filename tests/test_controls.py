@@ -1628,7 +1628,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
 ) -> None:
     """A control never halts, so a machine interrupted while its pc happens to sit on the
     control's address (the vblank handler, where every frame passes) was stopped by the
-    interrupt. With the control's row in place `stop` names the control as `how`; with no
+    interrupt. With the control's row in place `stop` names the control as its `cause`; with no
     row at all it says `interrupt`. The one place that decides whether a row halts is
     `halts`."""
     import mame_running as running

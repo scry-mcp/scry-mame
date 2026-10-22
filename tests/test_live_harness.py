@@ -510,7 +510,7 @@ def test_a_run_in_one_process_blocks_what_a_section_left_and_passes_on_no_fail(
         capsys: pytest.CaptureFixture[str]) -> None:
     h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
     _three(h)
-    assert _exit_of(h) == h.EXIT_PASSED
+    assert _exit_of(h) == h.EXIT_PASS
     out = capsys.readouterr().out
     assert "jobs: 1, every section in this process" in out
     assert "PLANNED 5  RUN 3  OK 3  FAIL 0  BLOCKED 2" in out
@@ -524,7 +524,7 @@ def test_a_run_that_is_a_job_declares_every_cell_it_planned(
     h = _sections(monkeypatch, tmp_path, MAME_LIVE_SUMMARY=str(summary))
     _three(h)
     h.section("D", "fails", ["d1"])(lambda: h.cell("d1", False, "it said no"))
-    assert _exit_of(h) == h.EXIT_FAILED
+    assert _exit_of(h) == h.EXIT_FAIL
     got = h.live_pool.read_summary(summary)
     assert got.outcomes == {"a1": "OK", "b1": "OK", "b2": "BLOCKED", "c1": "OK",
                             "c2": "BLOCKED", "d1": "FAIL"}
@@ -579,7 +579,7 @@ def test_a_pooled_run_adopts_each_job_s_cells_and_runs_the_alone_ones_here(
         return lp.PoolResult([a, b], "", {"a1": "OK", "a2": "FAIL", "b1": "BLOCKED"},
                              {"a2": "no", "b1": "no bench"})
     monkeypatch.setattr(lp, "run_pool", run_pool)
-    assert _exit_of(h) == h.EXIT_FAILED
+    assert _exit_of(h) == h.EXIT_FAIL
     out = capsys.readouterr().out
     assert order == ["X", "pool"], "the alone section runs here, the pooled ones as jobs"
     assert "[A] OK 1 FAIL 1 BLOCKED 0" in out and "[B] OK 0 FAIL 0 BLOCKED 1" in out
@@ -614,7 +614,7 @@ def test_one_pooled_letter_is_no_pool_and_runs_here(
         h.cell("a1", True)
     h.section("A", "alone in the pool", ["a1"])(alone)
     monkeypatch.setattr(h.live_pool, "run_pool", lambda *_a, **_k: pytest.fail("pooled"))
-    assert _exit_of(h) == h.EXIT_PASSED
+    assert _exit_of(h) == h.EXIT_PASS
 
 
 def test_a_signal_that_ends_the_run_is_an_exit_its_children_see(
@@ -662,7 +662,7 @@ def test_a_green_run_removes_its_scratch_and_its_jobs(
         _launched(h)
         return lp.PoolResult([], "", {"a1": "OK", "b1": "OK"}, {})
     monkeypatch.setattr(lp, "run_pool", run_pool)
-    assert _ended(h) == h.EXIT_PASSED
+    assert _ended(h) == h.EXIT_PASS
     assert all(Path(x).parent.parent == tmp_path / "scratch" for x in handed) and len(handed) == 2
     assert "scratch removed, the transcript with it" in capsys.readouterr().out
     assert sorted(p.name for p in tmp_path.iterdir()) == ["identity.json"]
@@ -673,7 +673,7 @@ def test_a_red_run_keeps_its_scratch_and_names_it_as_its_last_word_but_the_verdi
         capsys: pytest.CaptureFixture[str]) -> None:
     h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
     h.section("C", "fails here", ["c1"])(lambda: h.cell("c1", False))
-    assert _ended(h) == h.EXIT_FAILED
+    assert _ended(h) == h.EXIT_FAIL
     out = capsys.readouterr().out.rstrip().splitlines()
     assert out[-2:] == [f"kept: {tmp_path / 'scratch'}", "==> TEST FAILED"]
 
@@ -687,7 +687,7 @@ def test_a_pooled_job_leaves_its_scratch_to_the_run_that_adopts_it_and_proves_no
     monkeypatch.setattr(h.live_host.EmulatorLedger, "reap", lambda _s: pytest.fail("reaped"))
     h.section("A", "passes", ["a1"])(lambda: h.cell("a1", True))
     h.scratch()
-    assert _ended(h) == h.EXIT_PASSED
+    assert _ended(h) == h.EXIT_PASS
     out = capsys.readouterr().out
     assert "scratch removed" not in out and "kept:" not in out
     assert (tmp_path / "scratch").is_dir()
@@ -778,7 +778,7 @@ def test_an_emulator_that_outlived_the_run_fails_it_by_name_beside_the_verdict(
         order.append("reap")
         return h.live_host.Leftovers(2, 2, ((41, "U"),))
     monkeypatch.setattr(h.live_host.EmulatorLedger, "reap", reap)
-    assert _ended(h) == h.EXIT_FAILED
+    assert _ended(h) == h.EXIT_FAIL
     out = capsys.readouterr().out
     assert order == ["kill", "reap"]
     assert "FAIL  2 emulator(s) outlived the run" in out and "pid 41 state U" in out

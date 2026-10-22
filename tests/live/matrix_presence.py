@@ -58,6 +58,8 @@ from scry_core import presence as scry_presence
 from scry_core import window_capture
 
 import mame_presence as mpresence  # isort: skip -- found through the path the harness sets
+import mame_state as mstate  # isort: skip
+import mame_transport as transport  # isort: skip
 from mame_state import STATE  # isort: skip
 
 Z_TITLE = "the presence edge, drawn over the window and never in the evidence"
@@ -143,8 +145,9 @@ def _by_hand() -> Iterator[None]:
         yield
     finally:
         assert STATE.scratch is not None
-        STATE.presence = scry_presence.Presence.open(mpresence.FileAdapter(STATE.scratch),
-                                                     mpresence.DRIVING_TOOLS)
+        STATE.presence = scry_presence.Presence.open(mpresence.FileAdapter(
+            STATE.scratch, mstate.LOCK, STATE.repaintable, transport.pending_lines),
+            mpresence.DRIVING_TOOLS)
 
 
 def _repaint() -> None:
@@ -315,7 +318,8 @@ def _z_repaint(label: str) -> None:
     word = _state_file().read_text().strip() if _state_file().exists() else ""
     rose = _rise(after_run, _frames(), "held")
     assert STATE.scratch is not None
-    adapter = mpresence.FileAdapter(STATE.scratch)
+    adapter = mpresence.FileAdapter(STATE.scratch, mstate.LOCK, STATE.repaintable,
+                                    transport.pending_lines)
     with _by_hand():
         _put(_state_file(), "off")
         by_repaint = repaints_drawn(adapter.repaint)

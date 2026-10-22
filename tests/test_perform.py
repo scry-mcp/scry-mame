@@ -13,11 +13,13 @@ heading for, or says it is still running.
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 import tempfile
 import time
 from pathlib import Path
-from typing import Any
+from types import SimpleNamespace
+from typing import Any, cast
 
 import pytest
 
@@ -26,14 +28,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import sequence_account  # noqa: E402
 from scry_core import steps as step_judge  # noqa: E402
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
+import gdb_session as gs  # noqa: E402
 import mame_advance as advance  # noqa: E402
 import mame_envelope as menvelope  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
 import mame_lua as mlua  # noqa: E402
 import mame_mcp  # noqa: E402
 import mame_read as read  # noqa: E402
@@ -123,7 +126,7 @@ def test_summaries_cut_every_step_but_the_last_to_its_summary_line(
     assert out["ran"][0]["reply"]["status"] == "ok"
     assert [r["op"] for r in out["ran"]] == ["breakpoint_at", "breakpoint_list", "registers"]
     assert "regs" in out["ran"][2]["reply"], "the last step keeps its whole reply"
-    refused("boolean", s.perform(steps=steps, summaries="yes"))
+    refused("true or false", s.perform(steps=steps, summaries="yes"))
 
 
 def test_perform_says_on_its_line_how_many_steps_ran_and_where_the_list_ended(
@@ -256,7 +259,7 @@ def test_drive_takes_summaries_by_the_same_rule(
     ran = out["act"]["ran"]
     assert [set(r["reply"]) for r in ran[:2]] == [{"summary", "status"}] * 2, ran
     assert "regs" in ran[2]["reply"]
-    refused("boolean", s.drive(act=[{"op": "status"}], summaries=1))
+    refused("true or false", s.drive(act=[{"op": "status"}], summaries=1))
 
 
 def test_perform_tail_waits_for_the_stop_it_was_heading_for_and_surveys_it(
@@ -417,16 +420,16 @@ def test_a_step_with_a_value_of_the_wrong_type_is_refused_naming_the_argument() 
     out = s.perform(steps=[{"op": "step", "count": 1},
                            {"op": "read_memory", "ref": "0x0", "length": "8"}])
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
-    assert "step 1 ('read_memory') length is an integer; got '8'" in out["message"], out["message"]
+    assert "step 2 ('read_memory') length is an integer; got '8'" in out["message"], out["message"]
     assert "not supported" not in out["message"]
     flag = s.perform(steps=[{"op": "step", "count": True}])
-    assert "step 0 ('step') count is an integer; got True" in flag["message"], flag["message"]
+    assert "step 1 ('step') count is an integer; got True" in flag["message"], flag["message"]
     # AN INTEGRAL FLOAT IS THE COUNT IT EQUALS, in a step as in a direct call: the preflight lets
     # it through to the wrapper, which hands the body the int; a fractional one is still refused.
     whole = s.perform(steps=[{"op": "step", "count": 1.0}])
     assert "is an integer" not in str(whole.get("message")), whole
     half = s.perform(steps=[{"op": "step", "count": 1.5}])
-    assert "step 0 ('step') count is an integer; got 1.5" in half["message"], half["message"]
+    assert "step 1 ('step') count is an integer; got 1.5" in half["message"], half["message"]
 
 
 def test_a_wrong_type_after_an_argument_the_step_left_out_is_still_refused() -> None:
@@ -434,16 +437,16 @@ def test_a_wrong_type_after_an_argument_the_step_left_out_is_still_refused() -> 
     whose annotation is not a plain scalar (`control: str | None`), is passed over and the
     walk goes on to the arguments after it."""
     out = s.perform(steps=[{"op": "run_for", "frames": "2"}])
-    assert "step 0 ('run_for') frames is an integer; got '2'" in out["message"], out
+    assert "step 1 ('run_for') frames is an integer; got '2'" in out["message"], out
     out = s.perform(steps=[{"op": "run_to", "ref": "x", "control": "y", "seconds": "5"}])
-    assert "step 0 ('run_to') seconds is a number; got '5'" in out["message"], out
+    assert "step 1 ('run_to') seconds is a number; got '5'" in out["message"], out
 
 
 def test_a_sequences_wait_takes_its_ceiling_and_refuses_a_boolean_and_one_past_it() -> None:
     """The bound is 0..`WAIT_MAX_S` INCLUSIVE, and `True` is a mistake, not one second."""
-    sequence.validate_settle(inputs.WAIT_MAX_S)
+    sequence.validate_settle(vocab.WAIT_MAX_S)
     sequence.validate_settle(0)
-    for bad in (True, inputs.WAIT_MAX_S + 0.001, -0.001, "5"):
+    for bad in (True, vocab.WAIT_MAX_S + 0.001, -0.001, "5"):
         with pytest.raises(mstate.Invalid, match=r"^settle_seconds=.* is not a bound"):
             sequence.validate_settle(bad)  # type: ignore[arg-type]
 
@@ -455,7 +458,7 @@ def test_drive_refused_before_the_machine_answers_the_documented_shape_whole() -
     nothing, with the pattern it was given."""
     out = s.drive(act=[{"op": "status"}, {"op": "warp_core"}], pattern="COIN")
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
-    assert "step 1 ('warp_core') is not a step" in out["message"], out["message"]
+    assert "step 2 ('warp_core') is not a step" in out["message"], out["message"]
     assert "status" in out["operations"] and "warp_core" not in out["operations"], out
     assert out["act"]["steps_completed"] == 0 and out["act"]["failed_at"] == 1, out["act"]
     assert out["act"]["failed"]["op"] == "warp_core" == out["act"]["errors"][0]["op"], out["act"]
@@ -575,6 +578,11 @@ def test_perform_ending_in_a_stop_that_halted_the_machine_has_no_running_tail(
     assert out["status"] == "ok" and out["steps_completed"] == 2, out
     assert not ses.running and ses.interrupted == 1
     assert "still_running" not in out and "note" not in out, out
+    # THE STOP THE LAST STEP CAME TO REST AT IS THE TAIL'S, named as that step surveyed it and
+    # never surveyed twice: the two numbers are one stop.
+    stopped, stop_reply = out["stopped"], out["ran"][-1]["reply"]
+    assert stopped["stop_seq"] == stop_reply["stop_seq"] and stopped["pc"] == stop_reply["pc"], (
+        out)
 
 
 def test_perform_ending_in_a_status_that_found_a_stop_has_no_running_tail(
@@ -587,6 +595,10 @@ def test_perform_ending_in_a_status_that_found_a_stop_has_no_running_tail(
     assert out["status"] == "ok" and out["steps_completed"] == 2, out
     assert not ses.running
     assert "still_running" not in out and "note" not in out, out
+    # THE STOP `status` FOUND ON ITS OWN IS THE TAIL'S, named as found, never surveyed again
+    # (a second survey would number it twice and lose its cause to the moved log mark).
+    found = out["ran"][-1]["reply"]["stopped_on_its_own"]
+    assert out["stopped"]["stop_seq"] == found["stop_seq"], (out["stopped"], found)
 
 
 def test_perform_ending_in_a_status_over_a_running_machine_keeps_the_running_tail(
@@ -775,13 +787,13 @@ def test_the_polls_of_a_sequence_ask_the_socket_without_blocking_and_only_after_
 
 def test_check_drive_holds_its_two_ceilings_and_refuses_a_boolean_where_a_number_is_due() -> None:
     act = [{"op": "status"}]
-    sequence.check_drive(act, "x", inputs.WAIT_MAX_S, ".", read.LOG_LIMIT_MAX)
+    sequence.check_drive(act, "x", vocab.WAIT_MAX_S, ".", read.LOG_LIMIT_MAX)
     with pytest.raises(mstate.Invalid, match=r"limit=401 is outside 1\.\.400"):
         sequence.check_drive(act, "", None, ".", read.LOG_LIMIT_MAX + 1)
     with pytest.raises(mstate.Invalid, match=r"limit is a count; got True"):
         sequence.check_drive(act, "", None, ".", True)
     with pytest.raises(mstate.Invalid, match="seconds=601.0 is not a bound"):
-        sequence.check_drive(act, "x", inputs.WAIT_MAX_S + 1, ".", 40)
+        sequence.check_drive(act, "x", vocab.WAIT_MAX_S + 1, ".", 40)
     with pytest.raises(mstate.Invalid, match="seconds=True is not a bound"):
         sequence.check_drive(act, "x", True, ".", 40)
 
@@ -799,7 +811,7 @@ def test_a_failing_step_inside_an_act_answers_step_failed_with_the_account_and_t
                        {"op": "breakpoint_at", "ref": "0x4a0", "role": "control"}], pattern="line",
                   limit=5)
     assert out["status"] == "INVALID" and out["code"] == "step_failed", out
-    assert "the act stopped at step 1" in out["message"] and "already declared" in out["message"]
+    assert "the act stopped at step 2" in out["message"] and "already declared" in out["message"]
     assert out["act"]["steps_completed"] == 1 and out["act"]["failed"]["op"] == "breakpoint_at"
     looked = out["looked"]["emulator"]
     assert looked["available"] is True and looked["since_mark"] == log.stat().st_size
@@ -913,7 +925,7 @@ def test_every_stop_reply_carries_the_stop_seq_status_names(
 def test_a_summarised_stop_keeps_its_hit_without_its_lists(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The compact row is the stop without its lists: `how`, `pc`, `frame`, `stop_seq` and the
+    """The compact row is the stop without its lists: `cause`, `pc`, `frame`, `stop_seq` and the
     `watch_hit` without `writes`, beside the step's index, op and cpu. A step that is not a
     stop keeps its summary line and its status, as before."""
     _cut_by_the_watch(monkeypatch, tmp_path)
@@ -938,7 +950,7 @@ def test_the_program_counts_the_stops_and_names_what_it_did_not_survey(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """`stops` is the machine's count, not a model's: the first and last stop numbers, the
-    stops surveyed in the reply, a count per `how` with the writer's pc taken off so one
+    stops surveyed in the reply, a count per `cause` with the writer's pc taken off so one
     watch is one key, and `unaccounted`, the stops numbered between them that no reply here
     surveyed. A stop recorded outside the list is real, so it is counted, not refused."""
     _cut_by_the_watch(monkeypatch, tmp_path)
@@ -1191,7 +1203,7 @@ def _frames_and_the_watch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> An
 
 
 FRAME_STEP = {"op": "run_for", "frames": 1}
-#: How a run by frames that elapsed says it stopped (`run_for`'s `how`).
+#: How a run by frames that elapsed says it stopped (`run_for`'s `cause`).
 ELAPSED_BY_FRAMES = "the `gvblank` stop of the last frame asked"
 
 
@@ -1508,3 +1520,118 @@ def test_a_list_is_judged_once_a_call_its_shape_and_its_machine_halves_alike(
     machines.clear()
     assert s.drive(act=[{"op": "status"}])["status"] == "ok"
     assert (len(shapes), len(machines)) == (1, 1)
+
+
+class _Exiting:
+    """A MAME whose exit shows only once it is waited for: the socket closed first."""
+
+    def poll(self) -> int | None:
+        return None
+
+    def wait(self, timeout: float | None = None) -> int:
+        return -9
+
+
+class _Running:
+    def poll(self) -> int | None:
+        return None
+
+    def wait(self, timeout: float | None = None) -> int:
+        raise subprocess.TimeoutExpired("mame", timeout or 0)
+
+
+@pytest.mark.parametrize("proc", ["dead", "exiting", "alive"])
+def test_a_channel_that_fails_while_the_list_waits_is_gone_or_a_refusal_the_list_ends_with(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, proc: str
+) -> None:
+    """The stub's channel failing during the list's wait for a stop: a MAME that died is the
+    executor's `gone`, one whose exit shows a moment after its socket closed too; one still
+    running with a channel that lost its place latches broken and refuses, which the executor
+    turns into the account of what ran (scry-core's `sequence`)."""
+    ses = _running(monkeypatch, tmp_path)
+
+    def fails(*_a: Any, **_k: Any) -> bool:
+        raise gs.ConnectionFailed("the stub hung up")
+
+    monkeypatch.setattr(running, "came_to_rest", fails)
+    monkeypatch.setattr(mstate.STATE, "proc", {"dead": SimpleNamespace(poll=lambda: -9),
+                                               "exiting": _Exiting(), "alive": _Running()}[proc])
+    if proc != "alive":
+        assert sequence._wait_for_stop(ses, tmp_path, 0.5, mprogress.no_progress) == "gone"
+        return
+    with pytest.raises(mstate.Invalid, match="stub hung up") as e:
+        sequence._wait_for_stop(ses, tmp_path, 0.5, mprogress.no_progress)
+    assert e.value.code == "session_broken" and ses.broken, (e.value, ses.broken)
+
+
+def test_a_refusal_the_stub_answered_while_the_list_waits_latches_nothing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The stub answered, and the answer was no: the channel kept its place, so the wait ends
+    the list with the refusal every tool answers it with, and the session is not broken."""
+    ses = _running(monkeypatch, tmp_path)
+
+    def refused(*_a: Any, **_k: Any) -> bool:
+        raise gs.Refused("E01")
+
+    monkeypatch.setattr(running, "came_to_rest", refused)
+    monkeypatch.setattr(mstate.STATE, "proc", _Running())
+    with pytest.raises(mstate.Invalid) as e:
+        sequence._wait_for_stop(ses, tmp_path, 0.5, mprogress.no_progress)
+    assert e.value.code == "readback_refused" and not ses.broken, (e.value, ses.broken)
+
+
+def test_a_step_whose_own_wait_missed_ends_the_list(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A `log_wait` that timed out: what the rest of the list was built on did not happen, so the
+    steps after it are not sent and the list ends with the verdict, as on DOSBox-X."""
+    _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(s, "log_wait", lambda **_k: menvelope.envelope(
+        {"verdict": "TIMEOUT", "waited_s": 0.1, "pattern": "GO"}))
+    out = s.perform(steps=[{"op": "log_wait", "pattern": "GO", "channel": "emulator",
+                            "seconds": 0.1}, {"op": "status"}], settle_seconds=0.5)
+    assert out["status"] == "ok" and out["steps_completed"] == 1, out
+    assert out["verdict"] == "TIMEOUT" and "step 1 ('log_wait')" in out["note"], out
+
+
+def test_an_unprovable_console_run_is_proved_stopped_by_the_stop_the_console_logged(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A run the console started whose frame counter never moved proves nothing by the counter,
+    but a breakpoint's stop line in the console's log does: the wait ends there instead of
+    sitting out its bound."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+    monkeypatch.setattr(mstate.STATE, "console_run", True)
+    monkeypatch.setattr(mstate.STATE, "console_run_unprovable", True)
+    monkeypatch.setattr(mstate.STATE, "debuglog_mark", 0)
+    (tmp_path / "debug.log").write_text("D682\nStopped at breakpoint 3\n")
+    began = time.monotonic()
+    assert sequence._wait_for_stop(ses, tmp_path, 3.0, mprogress.no_progress,
+                                   record=False) == "stopped"
+    assert time.monotonic() - began < 1.0 and not ses.running
+
+
+def test_an_unprovable_console_run_reads_each_logged_line_once_and_status_agrees(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The log is read from where the last look ended, so a long wait reads each line once; and
+    the first contact (`status`'s `observe_stop`) takes the same proof the wait does, so the two
+    never disagree on whether the machine stopped."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = True
+    monkeypatch.setattr(mstate.STATE, "console_run", True)
+    monkeypatch.setattr(mstate.STATE, "console_run_unprovable", True)
+    monkeypatch.setattr(mstate.STATE, "debuglog_mark", 0)
+    monkeypatch.setattr(mstate.STATE, "unprovable_peek", 0)
+    log = tmp_path / "debug.log"
+    log.write_text("D682\n")
+    assert running.console_run_ended(cast(Any, ses), tmp_path) is False
+    assert mstate.STATE.unprovable_peek == len("D682\n")
+    with log.open("a") as fh:
+        fh.write("Stopped at breakpoint 3\n")
+    found: list[str] = []
+    monkeypatch.setattr(running, "_found", lambda _s, _d, packet: found.append(packet))
+    running.observe_stop(cast(Any, ses), tmp_path)
+    assert not ses.running and found == ["none: a run the console started"], found

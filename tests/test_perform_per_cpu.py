@@ -54,7 +54,7 @@ def test_a_cpu_the_machine_lacks_refuses_the_whole_list_before_any_step_runs(
     ])
     assert out["status"] == "INVALID" and out["code"] == "unknown_ref", out
     assert [e["step"] for e in out["errors"]] == [1, 2], out["errors"]
-    assert out["cpus"] == [MAIN, SUB] and out["steps_completed"] == 0 and out["ran"] == []
+    assert out["cpu_tags"] == [MAIN, SUB] and out["steps_completed"] == 0 and out["ran"] == []
     assert "Nothing was run" in out["message"] and "visible_cpu" not in out
     assert "visible_cpu_kept" not in out, out
     assert ses.armed == [] and not any(c.startswith("bp ") for c in ses.commands), ses.commands
@@ -65,7 +65,7 @@ def test_drive_refuses_a_cpu_the_machine_lacks_in_its_own_shape(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     out = s.drive(act=[{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "focus", "cpu": "audiocpu"}])
-    assert out["code"] == "unknown_ref" and out["cpus"] == [MAIN, SUB], out
+    assert out["code"] == "unknown_ref" and out["cpu_tags"] == [MAIN, SUB], out
     assert out["act"]["failed_at"] == 1 and out["verify"]["checked"] is False
     assert out["looked"]["emulator"]["available"] is False
     assert ses.armed == [], "nothing ran"

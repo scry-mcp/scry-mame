@@ -20,7 +20,7 @@ from pydantic import TypeAdapter, ValidationError
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-import mame_mcp  # noqa: E402
+import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
 
@@ -91,7 +91,7 @@ def _lock_held_elsewhere() -> tuple[threading.Thread, threading.Event, list[floa
     released_at: list[float] = []
 
     def holder() -> None:
-        with mame_mcp.LOCK:
+        with mstate.LOCK:
             held.set()
             let_go.wait(5.0)
             released_at.append(time.monotonic())

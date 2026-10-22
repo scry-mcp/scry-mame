@@ -18,6 +18,7 @@ from __future__ import annotations
 import functools
 import inspect
 import re
+import subprocess
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -29,6 +30,7 @@ from scry_core import reply_contract as contract
 from scry_core import sequence_account as account
 from scry_core import steps as step_judge
 from scry_core import value_format as vf
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -123,7 +125,7 @@ UNTIL_OP = "run_for"
 # that never reaches the frame (every run cut before the frame ends) must end somewhere, in steps
 # and in time, since the whole cycle holds the server's one lock.
 UNTIL_STEPS_MAX = 5000
-UNTIL_SECONDS_MAX = inputs.WAIT_MAX_S
+UNTIL_SECONDS_MAX = vocab.WAIT_MAX_S
 
 
 # ------------------------------------------------------- what a STEP's values are held to
@@ -217,7 +219,7 @@ def check_perform(settle_seconds: float = 30.0, summaries: bool = False, until_f
     `refuse_steps`'s, which needs the server's operation table and is asked by the tool right
     after this; `check_until` judges them for `until_frame`."""
     validate_settle(settle_seconds)
-    validate_summaries(summaries)
+    account.check_summaries(summaries)
     inputs.natural("until_frame", until_frame, " is a frame number, 0 for none")
     if until_frame and not summaries:
         raise st.Invalid("bad_argument",
@@ -247,11 +249,6 @@ def check_until(steps: list[Any], until_frame: int) -> None:
                          f"frame {here}: the frame is absolute, the one the window ends at")
 
 
-def validate_summaries(summaries: object) -> None:
-    """`summaries` is a yes or a no, in the one sentence both batch tools use."""
-    inputs.check_bool("summaries", summaries)
-
-
 def check_drive(act: Any = None, expect: str = "", seconds: float | None = None,
                 pattern: str = ".", limit: int = 40, settle_seconds: float = 30.0,
                 summaries: bool = False,
@@ -268,19 +265,19 @@ def check_drive(act: Any = None, expect: str = "", seconds: float | None = None,
     pattern_rx = inputs.regex("pattern", pattern)
     inputs.count("limit", limit, read.LOG_LIMIT_MAX)
     expect_rx = inputs.regex("expect", expect) if expect else None
-    inputs.seconds_bound(DRIVE_EXPECT_WAIT_S if seconds is None else seconds)
+    vocab.check_wait(DRIVE_EXPECT_WAIT_S if seconds is None else seconds)
     if not expect and seconds is not None:
         raise st.Invalid("bad_argument",
             "`seconds` bounds the wait for `expect`, and there is no `expect`: it would be "
                          "silently ignored")
     validate_settle(settle_seconds)
-    validate_summaries(summaries)
+    account.check_summaries(summaries)
     return pattern_rx, expect_rx
 
 
 def validate_settle(settle_seconds: float) -> None:
     """The bound a sequence waits for the machine to settle at a stop: zero means never wait."""
-    inputs.seconds_bound(settle_seconds, name="settle_seconds", zero_means="never wait")
+    vocab.check_wait(settle_seconds, name="settle_seconds", zero_means="never wait")
 
 
 def _as_wrapped(params: dict[str, inspect.Parameter], args: dict[str, Any]) -> dict[str, Any]:
@@ -313,7 +310,7 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
         if refusal is not None:
             refused.append({"step": i, "op": op, **refusal})
             continue
-        params = inspect.signature(ops[op]).parameters
+        params = step_judge.signature_of(ops[op]).parameters
         check = BY_OP.get(op)
         try:
             # A number reaches the check as the integer the tool itself reads.
@@ -322,7 +319,7 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
                 # EVERY DEFAULT IS THE TOOL'S: what the step leaves out is filled from the
                 # tool's own signature, so the check judges what the tool will be called with
                 # and its own defaults are never the ones a step runs on.
-                judged = inspect.signature(check).parameters
+                judged = step_judge.signature_of(check).parameters
                 check(**{**{n: p.default for n, p in params.items()
                             if n in judged and p.default is not p.empty and n != "ctx"},
                          **args})
@@ -367,16 +364,49 @@ def _something_can_stop_it() -> bool:
 
 def _wait_for_stop(ses: Any, scratch: Path, seconds: float, progress: mprogress.Progress,
                    record: bool = True) -> sequence.Waited:
-    """`stopped` | `running`, asked until the bound by the proof the release allows
+    """`stopped` | `running` | `gone`, asked until the bound by the proof the release allows
     (`running.came_to_rest`): the stub's packet for its own runs, the frame counter for a run
-    the console started, which sends none."""
-    clock = mprogress.Ticker(seconds, progress)
-    while not clock.expired():
-        if running.came_to_rest(ses, scratch, min(STOP_POLL_S, clock.left()), record):
-            return "stopped"
-        clock.tick("waiting for the machine to stop: {elapsed:.0f}s of {seconds:g}s",
-                   seconds=seconds)
-    return "stopped" if running.came_to_rest(ses, scratch, 0.0, record) else "running"
+    the console started, which sends none. A channel that fails while it waits is `gone` when
+    MAME died (a connection that failed gives the process `GONE_GRACE_S` to show its exit,
+    since the socket closes before the exit is seen); else it is answered as any tool's session
+    error is (`running.session_error_reply`: a refusal the stub answered latches nothing, the
+    rest latch broken), and the executor ends the list with it, beside what ran
+    (`scry_core.sequence`)."""
+    try:
+        clock = mprogress.Ticker(seconds, progress)
+        while not clock.expired():
+            if running.came_to_rest(ses, scratch, min(STOP_POLL_S, clock.left()), record):
+                return "stopped"
+            clock.tick("waiting for the machine to stop: {elapsed:.0f}s of {seconds:g}s",
+                       seconds=seconds)
+        return "stopped" if running.came_to_rest(ses, scratch, 0.0, record) else "running"
+    except gs.NotStopped as e:
+        raise st.Invalid("not_stopped", str(e)) from None
+    except gs.SessionError as e:
+        if not _alive_after(e):
+            return "gone"
+        said = running.session_error_reply(e, "the wait for a stop",
+                                           tail="The list waited for a stop")
+        code: contract.Code = said["code"]
+        raise st.Invalid(code, said["message"]) from None
+
+
+#: How long a connection that failed waits for MAME's exit to show before it is called broken.
+GONE_GRACE_S = 0.5
+
+
+def _alive_after(error: gs.SessionError) -> bool:
+    """Whether MAME still runs once a channel failed: at once, or, for a connection that
+    failed, after `GONE_GRACE_S` for its exit to be seen."""
+    if not STATE.machine_alive() or not isinstance(error, gs.ConnectionFailed):
+        return STATE.machine_alive()
+    proc = STATE.proc
+    assert proc is not None                     # alive above
+    try:
+        proc.wait(GONE_GRACE_S)
+    except subprocess.TimeoutExpired:
+        return True
+    return False
 
 
 #: `drive`'s look when the act was refused before anything ran.
@@ -392,9 +422,9 @@ def _account(ran: dict[str, Any]) -> dict[str, Any]:
     """The run's account as `drive` reports it, under its own key: everything `run_steps` said minus
     the envelope's own fields. One projection, used by `drive` and by the refusal that precedes it,
     because a tool answering two shapes for one kind of failure is a tool a caller cannot parse."""
-    account = {k: v for k, v in ran.items() if k not in ("status", "session")}
-    account.setdefault("failed", sequence.none_failed())
-    return account
+    told = {k: v for k, v in ran.items() if k not in ("status", "session")}
+    told.setdefault("failed", sequence.none_failed())
+    return told
 
 
 def refuse_act(act: list[Any], ops: Ops, pattern: str,
@@ -412,7 +442,7 @@ def refuse_act(act: list[Any], ops: Ops, pattern: str,
         return drive_refused(e.code, str(e), pattern)
     if refusal is None:
         return None
-    named = {key: refusal.pop(key) for key in ("operations", "cpus") if key in refusal}
+    named = {key: refusal.pop(key) for key in ("operations", "cpu_tags") if key in refusal}
     return drive_refused(refusal.get("code", "bad_argument"), str(refusal.get("message")), pattern,
                          _account(refusal), **named)
 
@@ -478,10 +508,10 @@ def refuse_cpus(ses: Any, steps: list[Any]) -> dict[str, Any] | None:
             cpus.named(ses, cpu)
         except st.Invalid as e:
             refused.append({"step": i, "op": step["op"], "code": e.code, "message": str(e)})
-            tags = e.fields.get("cpus", tags)
+            tags = e.fields.get("cpu_tags", tags)
     if not refused:
         return None
-    return _list_refused("unknown_ref", refused, cpus=tags)
+    return _list_refused("unknown_ref", refused, cpu_tags=tags)
 
 
 #: EACH OPERATION'S REF-LIKE ARGUMENTS, read by the address rule (`inputs.classify`) before the
@@ -597,7 +627,7 @@ def _list_refused(code: contract.Code, refused: list[dict[str, Any]],
     `failed`, and the fields that name the vocabulary it was judged against."""
     return menvelope.invalid(code, f"{prose.counted(len(refused), 'step')} refused before anything "
                                    "ran: "
-                             + "; ".join(f"step {e['step']} ({e['op']!r}) {e['message']}"
+                             + "; ".join(f"step {e['step'] + 1} ({e['op']!r}) {e['message']}"
                                          for e in refused) + ". Nothing was run",
                              ran=[], steps_completed=0, failed_at=refused[0]["step"],
                              failed=refused[0],
@@ -644,6 +674,10 @@ def account_of(ran: list[dict[str, Any]], summaries: bool, keep_last: bool, scra
                            rows_shown=st.ROWS_SHOWN)
 
 
+#: A reply's own fields that are not the stop's: what `rested` leaves out of a step's reply.
+_ENVELOPE = frozenset({"summary", "status", "session", "stopped_on_its_own", "applied_on_stop"})
+
+
 class _Mame(sequence.SequenceMachine):
     """This server's half of a list (`scry_core.sequence`): its stops proved by the stub's packet
     or the frame counter, the visible cpu a `focus` or a `debug` line asked for, and the account
@@ -684,6 +718,25 @@ class _Mame(sequence.SequenceMachine):
     def entry(self, op: str, reply: dict[str, Any]) -> dict[str, Any]:
         return _entry(op, reply)
 
+    def missed(self, op: str, reply: dict[str, Any]) -> bool:
+        """A step's own wait for what it was to see ran out (a `log_wait` TIMEOUT): the steps
+        after it were built on it, so the list ends there."""
+        return op == "log_wait" and reply.get("verdict") == contract.TIMEOUT
+
+    def rested(self, ran: list[dict[str, Any]]) -> dict[str, Any] | None:
+        """THE STOP CAME DURING THE LAST STEP (a `stop`, or a breakpoint that fired while a
+        declaration went in): it is the stop the run was heading for. One the step surveyed
+        itself (`stop`'s own reply, or the stop its contact found on its own) is named as that
+        reply carried it, never surveyed twice: a second survey numbers it again and reads the
+        log past its cause; any other is surveyed now."""
+        last = ran[-1]["reply"] if ran else {}
+        if isinstance(last.get("stop_seq"), int):
+            return {k: v for k, v in last.items() if k not in _ENVELOPE}
+        found = last.get("stopped_on_its_own")
+        if isinstance(found, dict) and isinstance(found.get("stop_seq"), int):
+            return dict(found)              # the step's contact found it and surveyed it
+        return self.tail_stop()
+
     def noted(self, op: str, reply: dict[str, Any]) -> None:
         shown = reply.get("cpu") if op == "focus" else (
             reply.get("visible_cpu") if op == "debug" else None)
@@ -715,13 +768,14 @@ class _Window(sequence.Cycle):
     def expired(self) -> bool:
         return self.clock.expired()
 
-    def after(self, reply: dict[str, Any], steps_completed: int) -> sequence.Stop | bool:
+    def after(self, reply: dict[str, Any], steps_completed: int,
+              step: str) -> sequence.Stop | bool:
         if not account.stops_in(reply):
             return False
         frame = _frame_of(reply)
         if frame is None:
             return sequence.Stop("unexpected_answer",
-                                 f"step {steps_completed - 1} stopped with no frame read, so "
+                                 f"{step} stopped with no frame read, so "
                                  f"nothing says whether frame {self.until} was reached: the "
                                  "list ends here")
         if self.blind and self.reached is None and frame >= self.until:
@@ -866,13 +920,8 @@ DRIVE_POLL_S = 0.1
 
 
 def _look(scratch: Path, mark: int, rx: re.Pattern[str], limit: int) -> dict[str, Any]:
-    """The LOOK after an act: the emulator log's lines since the mark matching `rx`, cut
-    to the last `limit`, with the counts that say what was cut, in `log`'s own words."""
-    since, _end = files.errorlog_since(scratch, mark)
-    kept = [ln for ln in since if rx.search(ln)]
-    return {"emulator": {"available": True, "since_mark": mark, "lines_written": len(since),
-                         "lines_total": len(kept), "truncated": len(kept) > limit,
-                         "lines": kept[-limit:], "pattern": rx.pattern}}
+    """The LOOK after an act: the emulator log's lines since the mark (`account.looked`)."""
+    return account.looked("emulator", files.errorlog_since(scratch, mark)[0], mark, rx, limit)
 
 
 def _verify(ses: Any, scratch: Path, pat: re.Pattern[str], wait_s: float, mark: int,
@@ -934,12 +983,14 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     ran = run_steps(ses, scratch, act, settle_seconds, ops, progress, name="drive",
                     tail_wait=not expect, summaries=summaries, shape_judged=True,
                     machine_judged=True)
-    account = _account(ran)
+    told = _account(ran)
     if ran.get("status") != "ok":
-        return menvelope.invalid("step_failed",
-                                 f"the act stopped at step {ran.get('failed_at')}: "
+        # THE CODE IS THE STEP'S: a wait that found the session broken stays `session_broken`.
+        act_code: contract.Code = ran.get("code", "step_failed")
+        return menvelope.invalid(act_code,
+                                 f"the act stopped {sequence.where_stopped(ran.get('failed_at'))}: "
                                  f"{ran.get('message')}",
-                                 act=account, looked=_look(scratch, mark, pattern_rx, limit))
+                                 act=told, looked=_look(scratch, mark, pattern_rx, limit))
     checked: dict[str, Any] = {"checked": False,
                                 "why": "no `expect` given; the act's own steps carried "
                                        "whatever verification they asked for"}
@@ -962,7 +1013,7 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
                                      f"the act ran but the machine did not do what was expected: "
                                      f"{checked['why']}; `resume` lets it run, then `drive` "
                                      "again",
-                                     act=account, verify=checked,
+                                     act=told, verify=checked,
                                      looked=_look(scratch, mark, pattern_rx, limit))
-    return menvelope.envelope({"act": account, "verify": checked,
+    return menvelope.envelope({"act": told, "verify": checked,
                                "looked": _look(scratch, mark, pattern_rx, limit)})

@@ -45,6 +45,7 @@ from scry_core import cancel, prose
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
@@ -124,19 +125,19 @@ def check_input(port: str, field: str, frames: int = 4, seconds: float = 30.0,
     if not port or not field:
         raise st.Invalid("bad_argument", "port and field are both needed, as MAME names them "
                                          "(`:P1`, `Coin 1`)")
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 def check_throttle(on: bool = True, seconds: float = 5.0, **_: Any) -> None:
     """`throttle`'s machine-independent half: the bound on waiting for its mark. Unjudged, a zero
     reads as a measurement that expired rather than as the malformed argument it is."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 def check_lua(script: str, seconds: float = EVAL_WAIT_S, **_: Any) -> None:
     """The `lua` TOOL's machine-independent half: the script, and the bound on waiting for it."""
     transport.check_script(script)
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
 
 
 def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,

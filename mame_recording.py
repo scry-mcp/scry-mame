@@ -20,6 +20,7 @@ from typing import Any, NamedTuple
 from scry_core import avi
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -103,7 +104,7 @@ def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -
     an unbounded one held it for as long as the caller cared to type."""
     inputs.count("frames", frames, tail=": the frame notifier cannot end a recording on the "
                  "call that begins it, so one frame asked for would be two recorded", lo=2)
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     return inputs.optional_dest(dest)
 
 

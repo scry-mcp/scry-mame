@@ -29,6 +29,7 @@ from typing import Any
 
 from scry_core import picture, png, prose
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -339,13 +340,13 @@ def check_gfx_blits(draw_command: str = "", frame: int | None = None, area: list
                     seconds: float = mlua.EVAL_WAIT_S, **_: Any) -> Path | None:
     """`gfx_blits`'s machine-independent half: the shapes of its arguments, and a `first` that
     pages nothing refused rather than dropped."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     _check_command(draw_command)
     _check_frame(frame)
     if area is not None and not inputs.is_rectangle(area):
         raise st.Invalid("bad_argument", f"area={area!r} is [x, y, width, height] on the visible "
                          "screen, the width and height above zero")
-    inputs.check_bool("detail", detail)
+    vocab.check_bool("detail", detail)
     inputs.natural("first", first, " is a blit's place in the listing")
     if first and not detail and area is None:
         raise st.Invalid("bad_argument", f"first={first}: `first` pages a listing, and only "
@@ -485,7 +486,7 @@ def check_gfx_blit_source(draw_command: str = "", frame: int | None = None,
                           pc: str = "", margin: int = 0, scale: int = 0, dest: str = "",
                           seconds: float = mlua.EVAL_WAIT_S, **_: Any) -> Path | None:
     """`gfx_blit_source`'s machine-independent half."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     _check_command(draw_command)
     _check_frame(frame)
     if (index is None) == (not pc):

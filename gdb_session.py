@@ -574,6 +574,9 @@ class Session:
     # None. The server's gate refuses everything but `close` and `status` while it is set,
     # and only a new session clears it.
     broken: str | None = None
+    # A request sent `owed` that ran out: its answer comes first on the wire, read and dropped
+    # by the next request (`_collect_owed`).
+    _owed: str | None = None
 
     def drain_stop_reply(self) -> None:
         """Read and drop a stop packet the stub may have sent unasked, so it is never read as
@@ -647,6 +650,9 @@ class Session:
             raise SessionError(f"this session broke and is asked nothing more: {self.broken}")
 
     def _send(self, cmd: str) -> None:
+        # WHAT AN `owed` REQUEST WAS STILL OWED is read before anything goes out, whichever
+        # call sends: the stub answers in order, so it is the next thing on the wire.
+        self._collect_owed()
         self._transmit(f"${cmd}#{_checksum(cmd)}".encode())
 
     def _transmit(self, data: bytes) -> None:
@@ -697,6 +703,14 @@ class Session:
             self._buf += chunk
 
     def request(self, cmd: str, timeout: float | None = None) -> str:
+        """`cmd` sent and its answer read within `timeout`; one that runs out latches the
+        session, its answer still owed (`_ask`)."""
+        return self._ask(cmd, timeout)
+
+    def _ask(self, cmd: str, timeout: float | None, owed: bool = False) -> str:
+        """`request`'s body. One sent `owed` (the presence's repaint, whose failure is its own)
+        that runs out is set aside instead of latching, and the next request reads and drops
+        that answer before it sends, latching only if it never comes."""
         # A BROKEN SESSION SENDS NOTHING MORE. Its callers catch `SessionError` in many places
         # and carry on, and the next request is the one that would read what the broken one
         # was still owed; refusing it here covers every caller, the ones not written yet too.
@@ -714,6 +728,9 @@ class Session:
                 self._note_stop(r)
                 r = self._receive(timeout)
         except Timeout as e:
+            if owed:
+                self._owed = cmd
+                raise
             # LATCHED HERE, where every request passes, and never resynced (a `p11` would be
             # read back as `p0`). A stop wait reads `_receive` directly and is not this.
             waited = timeout if timeout is not None else self.timeout
@@ -986,7 +1003,7 @@ class Session:
         `timeout`. On a stopped machine it answers True without touching the socket; on a
         running one it waits at most `timeout` for the stub's own stop packet and answers
         False when none came, which is the machine still running and not a failure."""
-        if not self.running:
+        if not self.running or not self._running_after_owed():
             return True
         try:
             packet = self._receive(timeout)
@@ -1018,6 +1035,7 @@ class Session:
         goes out and nothing is waited for; the caller proves the stop by reading the
         frame counter, as `run_for` does. It passes no `request`, so it asks the latch itself."""
         self._refuse_broken()
+        self._collect_owed()
         self._transmit(b"\x03")
 
     def interrupt(self, timeout: float = 5.0) -> str:
@@ -1037,7 +1055,7 @@ class Session:
         """
         if not self._sock:
             raise SessionError("the session is not connected")
-        if not self.running:
+        if not self.running or not self._running_after_owed():
             return self.last_stop_packet
         self._transmit(b"\x03")
         return self._expect_stop(self._receive(timeout))
@@ -1061,6 +1079,30 @@ class Session:
                                  max(0, (payload - len("qRcmd,")) // 2))
         return packet
 
+    def _running_after_owed(self) -> bool:
+        """Whether the machine still runs once an owed answer was collected: a stop that
+        arrived ahead of it was noted on the way."""
+        self._collect_owed()
+        return self.running
+
+    def _collect_owed(self) -> None:
+        """The answer an `owed` request ran out on, read and dropped before anything else is
+        sent: the stub answers in order, so it comes first. Never coming, it latches."""
+        if self._owed is None:
+            return
+        owed, self._owed = self._owed, None
+        try:
+            # A STOP CAN COME FIRST on a running machine, as in `_ask`: it is the machine's,
+            # noted, and the answer read after it.
+            r = self._receive(self.timeout)
+            while self.running and _is_stop_reply(r):
+                self._note_stop(r)
+                r = self._receive(self.timeout)
+        except Timeout as e:
+            self.latch(f"`{_label(owed)}` was still owed an answer that never came, so no reply "
+                       "on this connection can be paired with its request any more")
+            raise Timeout(self.broken) from e
+
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         """Run any MAME debugger command through the session and return its text.
 
@@ -1077,6 +1119,12 @@ class Session:
             return bytes.fromhex(r).decode(errors="replace")
         except ValueError:
             return r
+
+    def monitor_owed(self, command: str, timeout: float = 10.0) -> None:
+        """`monitor` for a command whose answer nobody reads (the presence's repaint): one that
+        runs out is its caller's failure and latches nothing, its answer collected by the next
+        request (`request`'s `owed`)."""
+        self._ask(self.console_packet(command), timeout, owed=True)
 
     def emulated_seconds(self) -> float | None:
         """The machine's total elapsed EMULATED time in seconds, off the debugger console's

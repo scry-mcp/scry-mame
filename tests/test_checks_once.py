@@ -1,7 +1,7 @@
 """Each argument check written once, in the input module every tool imports: the natural-number
 guard (`mame_inputs.natural`, its predicate `is_natural`) and the rectangle (`is_rectangle`), the
-counts held to a range (`mame_inputs.count`), the bound on a wait
-(`mame_inputs.seconds_bound`, zero taken where it means something), the regular-expression judge
+counts held to a range (`mame_inputs.count`), the bound on a wait (scry-core's
+`vocabulary.check_wait`, zero taken where it means something), the regular-expression judge
 (`mame_inputs.regex`, whose compiled pattern the log checks and `drive`'s hand back) and the rules
 a console expression keeps (`mame_conditions.expression_fault`). A bool is an `int` to Python, so
 each judge asks the type before the range, and each refusal keeps its caller's sentence."""
@@ -14,6 +14,7 @@ from typing import Any
 
 import pytest
 from scry_core import steps
+from scry_core import vocabulary as vocab
 from session_doubles import refused
 
 import mame_advance as advance
@@ -61,7 +62,7 @@ def test_natural_refuses_in_the_callers_own_words() -> None:
 def test_the_bound_on_a_wait_refuses_a_bool_a_string_and_a_value_outside_it(
         seconds: Any) -> None:
     with pytest.raises(mstate.Invalid, match=r"^seconds=.* is not a bound: .*more than zero"):
-        inputs.seconds_bound(seconds)
+        vocab.check_wait(seconds)
 
 
 def test_drive_bounds_its_wait_in_the_one_sentence() -> None:
@@ -147,21 +148,21 @@ def test_a_count_or_a_wait_refuses_a_bool_and_a_string_naming_itself(
 def test_resume_takes_zero_as_no_deadline_and_false_as_a_mistake() -> None:
     running.check_resume(seconds=0)
     running.check_resume(seconds=0.0)
-    running.check_resume(seconds=inputs.WAIT_MAX_S)
+    running.check_resume(seconds=vocab.WAIT_MAX_S)
     with pytest.raises(mstate.Invalid, match=r"^seconds=False is not a bound: .*0 \(no deadline\)"):
         running.check_resume(seconds=False)
 
 
 def test_the_bound_on_a_wait_can_take_zero_and_then_says_what_zero_means() -> None:
-    inputs.seconds_bound(0, name="settle_seconds", zero_means="never wait")
-    inputs.seconds_bound(inputs.WAIT_MAX_S, name="settle_seconds", zero_means="never wait")
-    for bad in (-0.001, inputs.WAIT_MAX_S + 0.001, True, False, "0", None):
+    vocab.check_wait(0, name="settle_seconds", zero_means="never wait")
+    vocab.check_wait(vocab.WAIT_MAX_S, name="settle_seconds", zero_means="never wait")
+    for bad in (-0.001, vocab.WAIT_MAX_S + 0.001, True, False, "0", None):
         with pytest.raises(mstate.Invalid,
                            match=r"^settle_seconds=.* is not a bound: .*0 \(never wait\) or "
                                                  r"more than zero and at most 600"):
-            inputs.seconds_bound(bad, name="settle_seconds", zero_means="never wait")
+            vocab.check_wait(bad, name="settle_seconds", zero_means="never wait")
     with pytest.raises(mstate.Invalid, match=r"^seconds=0 is not a bound: .*more than zero and"):
-        inputs.seconds_bound(0)
+        vocab.check_wait(0)
 
 
 @pytest.mark.parametrize(("value", "zero_means", "floor"), [
@@ -173,7 +174,7 @@ def test_the_bound_on_a_wait_can_take_zero_and_then_says_what_zero_means() -> No
     (float("nan"), "no deadline", "0 (no deadline) or more than zero"),
     (-1, "no deadline", "0 (no deadline) or more than zero"),
     (0, "", "more than zero"),
-    (inputs.WAIT_MAX_S + 0.5, "", "more than zero"),
+    (vocab.WAIT_MAX_S + 0.5, "", "more than zero"),
     (float("inf"), "no deadline", "0 (no deadline) or more than zero"),
 ])
 def test_the_bound_on_a_wait_says_what_every_value_it_refuses_is_not(
@@ -182,9 +183,11 @@ def test_the_bound_on_a_wait_says_what_every_value_it_refuses_is_not(
     inside every range and `False` inside one that takes zero, so the sentence names the type
     before the range."""
     with pytest.raises(mstate.Invalid) as err:
-        inputs.seconds_bound(value, zero_means=zero_means)
+        vocab.check_wait(value, zero_means=zero_means)
     assert str(err.value) == (f"seconds={value!r} is not a bound: a number of seconds, never a "
-                              f"bool, {floor} and at most {inputs.WAIT_MAX_S}")
+                              f"bool, {floor} and at most {vocab.WAIT_MAX_S:g}, because with no "
+                              "ceiling the call would hold the server's lock waiting for "
+                              "something that may never arrive")
 
 
 def test_the_log_checks_and_drive_hand_back_the_patterns_they_compiled() -> None:

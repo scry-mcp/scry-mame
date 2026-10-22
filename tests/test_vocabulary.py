@@ -91,7 +91,7 @@ def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
 
     monkeypatch.setattr(mstate.STATE, "ses", None)
     monkeypatch.setattr(mstate.STATE, "lua_read_only_claims", claims)
-    assert said in menvelope.envelope({})["session"]["note"]
+    assert said in menvelope.session_block()["note"]
 
 
 @pytest.mark.parametrize(("frames", "t", "said"), [

@@ -204,8 +204,8 @@ s.breakpoint_clear(all=True)
 print("\n== two cpus: every reply names its cpu, and a row is known by its index")
 st = s.status()
 check("status lists both cpus and cpu_info marks :maincpu visible, read off the console",
-      st.get("cpus") == [":maincpu", ":subcpu"] and visible_of(s.cpu_info()) == ":maincpu",
-      f"{st.get('cpus')} visible {visible_of(s.cpu_info())} threads {st.get('threads')}")
+      st.get("cpu_tags") == [":maincpu", ":subcpu"] and visible_of(s.cpu_info()) == ":maincpu",
+      f"{st.get('cpu_tags')} visible {visible_of(s.cpu_info())} threads {st.get('threads')}")
 check("the stub's readers name the cpu they serve",
       s.registers().get("cpu") == ":maincpu" and s.read_memory(ref="0x400", length=2).get("cpu")
       == ":maincpu")
@@ -1273,7 +1273,7 @@ check("focus back to the main cpu goes through the stub and proves nothing ran",
 check("cpu_info reads the same visible cpu", visible_of(s.cpu_info()) == ":maincpu")
 r = s.focus(cpu="nosuchcpu")
 check("a cpu the machine lacks is unknown_ref naming its cpus",
-      r.get("code") == "unknown_ref" and r.get("cpus") == [":maincpu", ":subcpu"], str(r))
+      r.get("code") == "unknown_ref" and r.get("cpu_tags") == [":maincpu", ":subcpu"], str(r))
 s.focus(cpu="subcpu")
 dump = live_tmp("mame-live-") / "sub-vectors.bin"
 r = s.memdump(ref="0x0", length=16, dest=str(dump))

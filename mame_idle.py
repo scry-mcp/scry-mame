@@ -12,6 +12,8 @@ import threading
 import time
 from collections.abc import Callable
 
+from scry_core import boundary
+
 #: A SESSION NO TOOL TOUCHED FOR AN HOUR IS ABANDONED. Longer than any pause a working session
 #: makes between calls (a question waiting on its owner, a measurement read and thought over),
 #: and short enough that a forgotten machine costs an hour of a core, not a night.
@@ -44,7 +46,7 @@ class Idle:
     def _idle_s(self, now: float | None) -> float:
         return (time.monotonic() if now is None else now) - self.last_call
 
-    def reap(self, lock: threading.RLock, alive: Callable[[], bool],
+    def reap(self, lock: boundary.ServerLock, alive: Callable[[], bool],
              close: Callable[[], object], now: float | None = None) -> bool:
         """Close the session if it has been idle past the bound and no call holds `lock`;
         answer whether it did."""
@@ -65,7 +67,7 @@ class Idle:
         finally:
             lock.release()
 
-    def watch(self, lock: threading.RLock, alive: Callable[[], bool],
+    def watch(self, lock: boundary.ServerLock, alive: Callable[[], bool],
               close: Callable[[], object]) -> None:
         """Apply the bound for the life of the server, on a thread of its own. A close that
         raises is said on stderr, the server's log, and the bound keeps watching: a thread that

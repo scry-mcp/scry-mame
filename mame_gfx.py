@@ -18,6 +18,7 @@ from typing import Any
 
 from scry_core import png, prose
 from scry_core import progress as mprogress
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_block as block
@@ -255,7 +256,7 @@ def check_gfx_view(layout: Any = None, palette: str = "none", tag: str = "", ref
     """`gfx_view`'s machine-independent half: the layout whole, the source, the tiles, the
     palette's name and base, and the picture's own arguments; handed back parsed and built. A
     layout NAMED by the manifest comes back None: the body resolves it past the gate."""
-    inputs.seconds_bound(seconds)
+    vocab.check_wait(seconds)
     lay = manifest.layout_arg(layout, resolve=False)
     check_source(tag, ref, offset, count, [lay] if lay else [], cpu)
     check_first(first)
