@@ -62,6 +62,7 @@ from scry_core import (  # noqa: E402
     judges,
     log_marks,
     media_tools,
+    placement,  # noqa: E402
     process_name,
     recording,
     reply_schema,  # noqa: E402
@@ -142,7 +143,7 @@ def start(
     env: dict[str, str] | None = None,
     bases: dict[str, str] | dict[str, dict[str, str]] | None = None,
     reference_base: str = "0x0",
-    display: Annotated[str, vocab.enum(launch.DISPLAY_OPTIONS)] = "",
+    display: Annotated[str, vocab.enum(placement.DISPLAY_OPTIONS)] = "",
     stub_port: Annotated[int, vocab.bounds(0, launch.PORT_MAX)] = 0,
     state_dir: str = "",
     throttle_from_frame: int = 0,

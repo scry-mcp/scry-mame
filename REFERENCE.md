@@ -164,7 +164,7 @@ broken session answers as such whatever executable `binary` or `MAME_BINARY` nam
 relaunch after a crash climbs it again. The reply carries `binary` (absolute), `binary_origin`
 (`argument`, `MAME_BINARY` or `PATH`) and `version`: the first non-blank line `-version` prints,
 asked after the inputs are judged so a refused input spawns nothing, with the launch's `env`, as
-the boot will run, and out of `boot_seconds` (5 s at most), its whole process group ended when
+the boot will run, and out of `boot_seconds` (the version probe's own bound at most), its whole process group ended when
 that runs out; or `{"available": false, "why": ...}` when it printed nothing, did not return in
 time or could not run; the start goes on either way. A build without its console plugin is
 refused naming the rung it came from, the caller's to fix when it was `binary`, the host's

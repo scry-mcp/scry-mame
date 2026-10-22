@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import judges
+from scry_core import judges, placement
 from scry_core import vocabulary as vocab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -68,7 +68,7 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("gfx_film", "length", lambda: mfilm.LENGTHS),
     ("log", "channel", lambda: mfiles.LOG_CHANNELS),
     ("log_wait", "channel", lambda: mfiles.LOG_CHANNELS),
-    ("start", "display", lambda: launch.DISPLAY_OPTIONS),
+    ("start", "display", lambda: placement.DISPLAY_OPTIONS),
 ]
 
 #: Every list argument whose ITEMS are held to a fixed vocabulary or range: how deep the items

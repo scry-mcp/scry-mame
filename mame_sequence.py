@@ -422,9 +422,7 @@ def _account(ran: dict[str, Any]) -> dict[str, Any]:
     """The run's account as `drive` reports it, under its own key: everything `run_steps` said minus
     the envelope's own fields. One projection, used by `drive` and by the refusal that precedes it,
     because a tool answering two shapes for one kind of failure is a tool a caller cannot parse."""
-    told = {k: v for k, v in ran.items() if k not in ("status", "session")}
-    told.setdefault("failed", sequence.none_failed())
-    return told
+    return sequence.act_told(ran)
 
 
 def refuse_act(act: list[Any], ops: Ops, pattern: str,
@@ -625,10 +623,7 @@ def _list_refused(code: contract.Code, refused: list[dict[str, Any]],
                   **named: Any) -> dict[str, Any]:
     """A whole list refused before anything ran: every refused step in `errors`, the first in
     `failed`, and the fields that name the vocabulary it was judged against."""
-    return menvelope.invalid(code, f"{prose.counted(len(refused), 'step')} refused before anything "
-                                   "ran: "
-                             + "; ".join(f"step {e['step'] + 1} ({e['op']!r}) {e['message']}"
-                                         for e in refused) + ". Nothing was run",
+    return menvelope.invalid(code, sequence.refused_text(refused),
                              ran=[], steps_completed=0, failed_at=refused[0]["step"],
                              failed=refused[0],
                              errors=refused, **named)
@@ -986,20 +981,14 @@ def drive(ses: Any, scratch: Path, ops: Ops, act: list[dict[str, Any]], expect: 
     told = _account(ran)
     if ran.get("status") != "ok":
         # THE CODE IS THE STEP'S: a wait that found the session broken stays `session_broken`.
-        act_code: contract.Code = ran.get("code", "step_failed")
-        return menvelope.invalid(act_code,
-                                 f"the act stopped {sequence.where_stopped(ran.get('failed_at'))}: "
-                                 f"{ran.get('message')}",
-                                 act=told, looked=_look(scratch, mark, pattern_rx, limit))
-    checked: dict[str, Any] = {"checked": False,
-                                "why": "no `expect` given; the act's own steps carried "
-                                       "whatever verification they asked for"}
+        act_code, said = sequence.act_stopped(ran)
+        return menvelope.invalid(act_code, said, act=told,
+                                 looked=_look(scratch, mark, pattern_rx, limit))
+    checked: dict[str, Any] = dict(sequence.NO_EXPECT)
     if ran.get("verdict") == contract.TIMEOUT:
         # AN ACT THAT RAN OUT ITS WAIT DID NOT DO WHAT IT WAS ASKED, so nothing it did is
         # checked: the verdict is the act's, and the verify says why there is none.
-        checked = {"checked": False, **unavailable(
-            "the act ran out its wait before it ended (`act.verdict` TIMEOUT), so there is no "
-            "effect of the whole act to verify")}
+        checked = sequence.act_ran_out()
     elif expect_rx is not None:
         checked = _verify(ses, scratch, expect_rx, wait_s, mark, progress)
         # THE STOP THE WAIT MET IS THIS REPLY'S: the verify consumes the stub's packet to

@@ -2015,3 +2015,15 @@ def test_an_owed_answer_that_never_comes_latches_the_request_that_waited_for_it(
     with pytest.raises(g.Timeout, match="`print 0` was still owed"):
         ses.request("g")
     assert "owed" in str(ses.broken), ses.broken
+
+
+def test_a_second_owed_request_while_one_is_owed_is_not_sent_and_latches_nothing() -> None:
+    """Two repaints in a row with the console silent: the second is not sent, the session stays
+    whole, and the next ordinary request collects the first answer."""
+    ses = _two_cpus_on(_ByteWire([TimeoutError, TimeoutError]))
+    ses.timeout = 0.05
+    with pytest.raises(g.Timeout):
+        ses.monitor_owed("print 0", timeout=0.0)
+    with pytest.raises(g.Timeout, match="still owed its answer"):
+        ses.monitor_owed("print 0", timeout=0.0)
+    assert ses.broken is None, ses.broken

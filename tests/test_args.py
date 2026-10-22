@@ -457,6 +457,12 @@ def test_the_instructions_families_are_the_registered_tools_and_the_running_ones
     registered = [t.name for t in strict.registered(s.mcp)]
     assert mame_mcp.ROSTER.unlisted(registered) == []
     assert mame_mcp.ROSTER.running_sentence() in (s.mcp.instructions or "")
+    # WHAT THE SENTENCE PROMISES ANSWERS: the operations the running gate lets through and the
+    # file tools, which answer in any state; nothing else.
+    named = mame_mcp.ROSTER.answering_named() - {"registers(from_last_stop=True)"}
+    answering = (sequence.RUNNING_OK_OPS | (sequence.NOT_STEPS - {"start", "rom_check"}))
+    assert set(media_tools.TOOLS) <= sequence.RUNNING_OK_OPS, "a file tool the gate refuses"
+    assert named == answering, sorted(named ^ answering)
 
 
 @pytest.mark.parametrize("addr", ["0xffff1", "0x10000000"])

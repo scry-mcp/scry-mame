@@ -1986,7 +1986,7 @@ def test_drive_marks_the_emulator_log_acts_verifies_and_looks_from_the_mark(
                   expect=r"release frame=\d+", pattern="MAME_MCP_INPUT", limit=10)
     assert out["status"] == "ok", out
     assert out["act"]["steps_completed"] == 1, out["act"]
-    assert out["act"]["failed"]["available"] is False, out["act"]
+    assert "failed" not in out["act"] and out["act"]["failed_at"]["available"] is False, out["act"]
     assert out["verify"]["seen"] is True and "release frame=" in out["verify"]["line"], out
     looked = out["looked"]["emulator"]
     assert looked["available"] is True and looked["since_mark"] > 0, looked

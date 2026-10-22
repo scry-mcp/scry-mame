@@ -263,6 +263,13 @@ def test_the_listing_is_whole_up_to_its_limit_and_the_first_ones_past_it(board: 
             s.scan_clear()
     refused = s.scan_filter(operator=">", limit=judges.HITS_MAX + 1)
     assert refused["status"] == "INVALID" and refused["code"] == "bad_argument", refused
+    s.scan_clear()
+    ses = board("v30", bytes(0x1000))
+    s.scan_start(ref="0x0", length=0x1000)
+    for i in range(judges.HITS_DEFAULT + 1):
+        ses.memory[i] = 1
+    asked = s.scan_filter(operator=">")                      # no `limit`: the default's
+    assert (asked["truncated"], len(asked["hits"])) == (True, judges.HITS_DEFAULT), asked
 
 
 def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(

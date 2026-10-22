@@ -7,7 +7,6 @@ from __future__ import annotations
 import asyncio
 import sys
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -67,29 +66,13 @@ REPLY_WORDS: dict[str, tuple[str, ...]] = {
 
 def test_every_field_a_reply_sentence_names_is_in_its_model() -> None:
     tools = asyncio.run(s.mcp.list_tools())
-    names = {t.name for t in tools}
-    wrong: dict[str, Any] = {}
-    for t in tools:
-        doc, model = t.description or "", replies.MODELS[t.name]
-        allowed = set(REPLY_WORDS.get(t.name, ()))
-        if not reply_schema.reply_sentence_names(doc) and reply_schema.own_fields(model):
-            wrong[t.name] = "its description names no field of its reply"
-        elif miss := reply_schema.unmodelled(
-                doc, model, names | set(t.input_schema.get("properties", {})) | allowed):
-            wrong[t.name] = miss
-        elif unused := sorted(allowed - set(reply_schema.reply_sentence_names(doc))):
-            wrong[t.name] = f"allowed and no longer quoted: {unused}"
+    wrong = reply_schema.sentence_faults(tools, replies.MODELS, REPLY_WORDS)
     assert not wrong, wrong
 
 
 def test_every_tool_that_answers_with_a_stop_s_survey_names_its_fields() -> None:
     """The survey's fields reach a description through `STOP_FIELDS`, after a colon the
     sentence check reads as a list's: each is held to the model of every tool that quotes it."""
-    fields = reply_schema.reply_sentence_names("Reply: " + docs.STOP_FIELDS.split(":", 1)[1])
-    assert len(fields) > 5, fields
-    quoting = [t for t in asyncio.run(s.mcp.list_tools())
-               if docs.STOP_FIELDS in (t.description or "")]
-    assert len(quoting) > 5, [t.name for t in quoting]
-    held = {t.name: set(reply_schema.own_fields(replies.MODELS[t.name])) for t in quoting}
-    lacks = {name: sorted(set(fields) - got) for name, got in held.items() if set(fields) - got}
+    tools = asyncio.run(s.mcp.list_tools())
+    lacks = reply_schema.stop_fields_lacking(tools, replies.MODELS, docs.STOP_FIELDS)
     assert not lacks, lacks

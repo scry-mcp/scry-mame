@@ -63,9 +63,8 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
 # stop before a step that needs one) and `close`. The list is the server's because it names
 # tools.
 # The media file tools answer in any state too, and the instructions say so once, beside them.
-_ANSWERS_WHILE_RUNNING = [*sorted(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS)),
-                          "registers(from_last_stop=True)",
-                          *sorted(sequence.NOT_STEPS - {"start", "rom_check"})]
+_ANSWERS_WHILE_RUNNING = roster.answers_while_running(
+    sequence.RUNNING_OK_OPS - set(media_tools.TOOLS), sequence.NOT_STEPS, {"start", "rom_check"})
 
 #: THE TOOLS BY FAMILY, in the order the instructions list them (`scry_core.roster`): the
 #: roster and the "answers while it runs" sentence are both rendered from it, so a family that
@@ -80,7 +79,7 @@ ROSTER = roster.Roster(families=(
                       "watch_clear")),
     ("Read", ("read_memory", "read_block", "registers", "disassemble", "find", "history",
               "memdump", "map_add", "map_find")),
-    ("Graphics", ("palette", "screen_view", "screen_signature", "gfx_view", "gfx_locate",
+    ("Screen", ("palette", "screen_view", "screen_signature", "gfx_view", "gfx_locate",
                   "gfx_sweep", "gfx_draft", "gfx_blits", "gfx_blit_source")),
     ("Film", ("gfx_load", "gfx_film", "palette_log")),
     ("Scan", ("scan_start", "scan_filter", "scan_clear")),
@@ -90,7 +89,7 @@ ROSTER = roster.Roster(families=(
     ("Lua", ("input", "record", "audio_record", "lua", "throttle")),
     ("States", ("state_save", "state_load", "state_list")),
     ("Files", (*media_tools.TOOLS, "map_load", "map_save", "snapshot", "captures")),
-    ("Sequences", ("perform", "drive", "perform_export")),
+    ("Lists", ("perform", "drive", "perform_export")),
 ), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
 
 mcp = envelope.Envelope(
@@ -100,10 +99,10 @@ mcp = envelope.Envelope(
         "TOOLS. " + ROSTER.text() + "\n\n"
         "A SESSION. `start` parks it STOPPED. "
         "`run_to`'s target has no stop of its own. "
-        "`resume` lets it RUN; then the readers refuse (`not_stopped`); "
+        "`resume` RUNs it; readers then refuse (`not_stopped`); "
         + ROSTER.running_sentence() + " "
-        "`rom_check`: 16 bytes vs `reference_rom` at `reference_base`. "
-        "`memdump`, `snapshot` answer with a PATH. A cancel ends a call as its bound would; "
+        "`rom_check`: 16 bytes at `reference_addr` vs `reference_rom` at `reference_base`. "
+        "`memdump`, `snapshot` answer with a PATH. A cancelled call ends as at its bound; "
         "the next reply says `cancelled`.\n\n"
         "CPUS: no `cpu` acts on the VISIBLE one, lists or clears all.\n\n"
         "ADDRESSES are `0x`, a condition as typed; any other ref is a symbol, bare hex "

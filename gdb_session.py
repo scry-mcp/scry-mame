@@ -715,6 +715,12 @@ class Session:
         # and carry on, and the next request is the one that would read what the broken one
         # was still owed; refusing it here covers every caller, the ones not written yet too.
         self._refuse_broken()
+        if owed and self._owed is not None:
+            # AN OWED REQUEST WHILE ANOTHER IS STILL OWED is not sent: collecting the first here
+            # could latch the session over the presence's own repaint, which never breaks it.
+            # The next ordinary request collects it, as it would have.
+            raise Timeout(f"`{_label(self._owed)}` is still owed its answer, so "
+                          f"`{_label(cmd)}` was not sent")
         self._send(cmd)
         try:
             r = self._receive(timeout)

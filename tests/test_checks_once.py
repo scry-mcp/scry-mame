@@ -306,7 +306,7 @@ def _annotation(tool: str, arg: str) -> str:
     ("list[Annotated[int, vocab.bounds(1, ml.PLANES_MAX)]] | None", "list[int] | None"),
     ("list[list[Annotated[int, vocab.enum(msweep.SIDES)]]] | None",
      "list[list[int]] | None"),
-    ("Annotated[str, vocab.enum((\"\", *launch.DISPLAYS))]", "str"),
+    ("Annotated[str, vocab.enum((\"\", *placement.DISPLAYS))]", "str"),
 ])
 def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
         annotation: str, bare: str) -> None:

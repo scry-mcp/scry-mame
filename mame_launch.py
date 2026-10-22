@@ -58,9 +58,6 @@ from mame_state import STATE
 # to every repo's kill path.
 SCRATCH_PREFIX = "mame-mcp-"
 
-# The displays a shared start takes (`scry_core.placement`).
-DISPLAYS = placement.DISPLAYS
-DISPLAY_OPTIONS = placement.DISPLAY_OPTIONS
 # THE BACKGROUND LAUNCH (`live_host.BACKGROUND_VAR` says why). The captures do not move with it:
 # MAME draws them from the emulated screen.
 BACKGROUND_VAR = live_host.BACKGROUND_VAR
@@ -307,8 +304,6 @@ def channels() -> dict[str, str]:
         "stdout_path": str(files.log_path(STATE.scratch, "process")),
     }
 
-
-shared_display = placement.shared_display
 
 
 def judge_background(background: bool | None, shared: bool, env: dict[str, str] | None) -> bool:
@@ -580,7 +575,7 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
         inputs.absolute(name, path)
     if state_dir:
         inputs.absolute("state_dir", state_dir)
-    vocab.one_of("display", display, DISPLAY_OPTIONS)
+    vocab.one_of("display", display, placement.DISPLAY_OPTIONS)
     check_view(view)
 
 
@@ -641,7 +636,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     placement.check_display(shared, display)
     inputs.natural("throttle_from_frame", throttle_from_frame,
                    " is not a frame number: an integer, never negative, and 0 is off")
-    display = shared_display(shared, display)
+    display = placement.shared_display(shared, display)
     behind = judge_background(background, shared, env)
     # THE WAIT FOR THE STUB, held like every other wait: zero or less would spawn an emulator
     # only to report that it never answered, and no bound at all would hold the one lock.

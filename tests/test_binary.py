@@ -142,6 +142,18 @@ def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         s.close()
 
 
+def test_start_bounds_the_version_call_by_the_boot_s_budget_when_it_is_shorter(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The probe runs beside the boot, inside its budget: a `boot_seconds` shorter than the
+    probe's own bound is the bound."""
+    slow = build(tmp_path / "slow", name="fake-mame", version="exec sleep 5")
+    out = _start(monkeypatch, tmp_path / "slow", binary=str(slow), boot_seconds=0.4)
+    try:
+        assert out["status"] == "ok" and "did not return in 0.4 s" in str(out["version"]), out
+    finally:
+        s.close()
+
+
 @pytest.mark.parametrize(("view", "said"), [("a\x00b", "NUL"), ("-video", "starts with `-`"),
                                             ("a\ud800", "surrogate")])
 def test_a_view_no_command_line_can_carry_is_refused_before_anything_starts(
