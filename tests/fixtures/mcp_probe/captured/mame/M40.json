@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "M40: {\"tool\":\"log\",\"args\":{\"pattern\":\"SND_VOL\",\"channel\":\"emulator\",\"limit\":60,\"labels\":true}}"
    ],
    "right": true
   },

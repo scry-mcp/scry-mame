@@ -28,13 +28,13 @@
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "M12: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"0x3E12\",\"role\":\"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"by\": \"address\", \"role\": \"control\"}}"
+    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   }

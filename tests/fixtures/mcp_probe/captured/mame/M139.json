@@ -13,7 +13,7 @@
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+    "M139: {\"tool\":\"scan_clear\",\"args\":{}}"
    ],
    "right": true
   },

@@ -67,19 +67,19 @@
  "runs": [
   {
    "lines": [
-    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"palette\": \"none\", \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+    "M95: {\"tool\":\"gfx_view\",\"args\":{\"layout\":{\"width\":16,\"height\":16,\"planes\":4,\"planeoffset\":\"{ 0, 1, 2, 3 }\",\"xoffset\":\"{ STEP16(0,4) }\",\"yoffset\":\"{ STEP16(0,64) }\",\"charincrement\":\"16*64\"},\"tag\":\"gfx2\",\"offset\":2048,\"first\":10,\"count\":20,\"columns\":8,\"scale\":4,\"dest\":\"/tmp/mcp-probe-tiles.png\",\"seconds\":9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M95: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx2\", \"offset\": 2048, \"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"palette\": \"none\", \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
+    "M95: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}, \"tag\": \"gfx2\", \"offset\": 2048, \"first\": 10, \"count\": 20, \"columns\": 8, \"scale\": 4, \"dest\": \"/tmp/mcp-probe-tiles.png\", \"seconds\": 9}}"
    ],
    "right": true
   }

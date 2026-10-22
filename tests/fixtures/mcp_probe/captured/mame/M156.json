@@ -8,21 +8,21 @@
  "runs": [
   {
    "lines": [
-    "M156: CANNOT boot_lua requires a file path; the task provides inline code without a file reference"
+    "M156: CANNOT boot_lua takes the path of an existing harness file and never Lua text, so the line print(\"fury up\") cannot be passed here."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT boot_lua requires a file path; inline script not supported"
+    "M156: CANNOT start's boot_lua takes an existing harness file, never Lua text, so print(\"fury up\") cannot be passed as the harness."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_lua\": \"/tmp/fury_boot.lua\"}}"
+    "M156: CANNOT The boot harness is an existing file named by path; `start` does not accept Lua text, so the inline script `print(\"fury up\")` cannot be used."
    ],
-   "right": false
+   "right": true
   }
  ]
 }

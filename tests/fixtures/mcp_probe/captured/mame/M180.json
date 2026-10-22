@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M180: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/boot.wav\", \"window\": [0.5, 2], \"channel\": 0}}"
+    "M180: {\"tool\":\"audio_measure\",\"args\":{\"path\":\"/tmp/rec/boot.wav\",\"window\":[0.5,2],\"channel\":0}}"
    ],
    "right": true
   },

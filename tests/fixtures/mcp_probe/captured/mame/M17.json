@@ -13,7 +13,7 @@
   },
   {
    "lines": [
-    "M17: {\"tool\": \"regpoint_list\", \"args\": {}}"
+    "M17: {\"tool\":\"regpoint_list\",\"args\":{}}"
    ],
    "right": true
   },

@@ -26,7 +26,7 @@
   },
   {
    "lines": [
-    "M176: {\"tool\": \"region_track\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "M176: {\"tool\":\"region_track\",\"args\":{\"manifest\":\"/tmp/run1/manifest.json\",\"crop\":[0,200,320,24],\"measure\":\"changed_pixels\"}}"
    ],
    "right": true
   },

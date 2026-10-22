@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M77: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"VoiceCount\", \"cpu\": \"audiocpu\"}}"
+    "M77: {\"tool\":\"watch_clear\",\"args\":{\"ref\":\"VoiceCount\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M112: CANNOT palette_log history before arming is not available"
+    "M112: CANNOT The palette write log only records writes made after it is armed, and no tool can replay what an instruction did at an earlier frame."
    ],
    "right": true
   },
   {
    "lines": [
-    "M112: CANNOT palette_log only logs future writes; no tool records historical writes before session began"
+    "M112: CANNOT palette_log only records writes from when it was armed, and nothing in this session armed it before frame 200, so that write cannot be recovered."
    ],
    "right": true
   },
   {
    "lines": [
-    "M112: CANNOT palette_log only records writes after arming; frame 200 before session start is inaccessible."
+    "M112: CANNOT palette_log only records writes made after it is armed; it cannot reveal a write from before this session armed it."
    ],
    "right": true
   }

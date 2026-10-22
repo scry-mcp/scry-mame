@@ -15,13 +15,13 @@
  "runs": [
   {
    "lines": [
-    "M18: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d2==0x77ab\"}}"
+    "M18: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d2==77ab\"}}"
+    "M18: {\"tool\":\"regpoint_clear\",\"args\":{\"ref\":\"d2==77ab\"}}"
    ],
    "right": true
   },

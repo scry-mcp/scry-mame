@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_load\", \"args\": {\"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\":\"map_load\",\"args\":{\"path\":\"/tmp/maps/circus.scry-map.json\"}}"
    ],
    "right": true
   },

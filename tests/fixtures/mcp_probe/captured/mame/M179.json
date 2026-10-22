@@ -23,9 +23,9 @@
   },
   {
    "lines": [
-    "M179: CANNOT image_diff requires the two pictures to be the same size; the crop must lie inside both, and it can compare them over the shared rectangle only if the crop is given: {\"tool\": \"image_diff\", \"args\": {\"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "M179: {\"tool\":\"image_diff\",\"args\":{\"a\":\"/tmp/a/before.png\",\"b\":\"/tmp/b/after.png\",\"crop\":[0,0,200,150]}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [

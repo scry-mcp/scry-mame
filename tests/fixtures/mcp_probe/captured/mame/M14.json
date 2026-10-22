@@ -13,7 +13,7 @@
   },
   {
    "lines": [
-    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+    "M14: {\"tool\":\"breakpoint_list\",\"args\":{}}"
    ],
    "right": true
   },

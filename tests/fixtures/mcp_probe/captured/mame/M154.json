@@ -17,7 +17,7 @@
   },
   {
    "lines": [
-    "M154: {\"tool\": \"trace\", \"args\": {\"frames\": 6, \"noloop\": true}}"
+    "M154: {\"tool\":\"trace\",\"args\":{\"frames\":6,\"noloop\":true}}"
    ],
    "right": true
   },

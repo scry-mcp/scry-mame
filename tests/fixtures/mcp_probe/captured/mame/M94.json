@@ -28,13 +28,13 @@
  "runs": [
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6.0}}"
+    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "M94: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"isolate\",\"pens\":[49,50],\"scale\":3,\"dest\":\"/tmp/mcp-probe-iso.png\",\"seconds\":6}}"
    ],
    "right": true
   },

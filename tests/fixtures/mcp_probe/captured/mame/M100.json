@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M100: CANNOT no tool renders a tilemap as the driver's tilemap system composes it"
+    "M100: CANNOT No tool here exposes the driver's own tilemap composition; the server reads graphics, screens and blits, not tilemaps."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT no tool reads tilemap data as the driver composes it with hardware scrolling"
+    "M100: CANNOT The server has no tool that composes or shows a driver's tilemap; it only reads the screen, memory and graphics data."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tilemap tool exists; the server cannot show the driver's tilemap system output."
+    "M100: CANNOT The server has no tool that renders a driver's tilemap system with its scroll and priorities; its tools read graphics and the screen only."
    ],
    "right": true
   }

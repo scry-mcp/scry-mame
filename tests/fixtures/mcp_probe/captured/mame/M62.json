@@ -28,7 +28,7 @@
   },
   {
    "lines": [
-    "M62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "M62: {\"tool\":\"memdump\",\"args\":{\"ref\":\"0x8000\",\"length\":256,\"dest\":\"/tmp/mcp-probe-sound.bin\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },

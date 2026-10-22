@@ -24,13 +24,13 @@
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"12 34 AB\"}}"
+    "M34: {\"tool\":\"write\",\"args\":{\"ref\":\"LivesLeft\",\"data_hex\":\"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234ab\"}}"
+    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   }

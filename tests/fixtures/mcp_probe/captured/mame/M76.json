@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M76: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "M76: {\"tool\":\"breakpoint_clear\",\"args\":{\"ref\":\"SoundNmi\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

@@ -33,13 +33,13 @@
  "runs": [
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\", \"cpu\": \"audiocpu\"}}"
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "M82: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700011\",\"mode\":\"change\",\"length\":1,\"condition\":\"wpdata==0x25\"}}"
    ],
    "right": true
   },

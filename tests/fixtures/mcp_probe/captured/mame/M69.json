@@ -28,9 +28,9 @@
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "M69: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"0x3FF0\",\"length\":12,\"cpu\":\"soundcpu\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [

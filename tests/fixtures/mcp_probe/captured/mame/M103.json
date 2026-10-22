@@ -14,6 +14,18 @@
     "M103: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"tiledraw\", \"seconds\": 12}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M103: {\"tool\":\"gfx_blits\",\"args\":{\"draw_command\":\"tiledraw\",\"seconds\":12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M103: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"tiledraw\", \"detail\": true, \"seconds\": 12}}"
+   ],
+   "right": false
   }
  ]
 }

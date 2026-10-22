@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M79: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"VoiceTable\", \"cpu\": \"audiocpu\"}}"
+    "M79: {\"tool\":\"symbols_find\",\"args\":{\"name\":\"VoiceTable\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

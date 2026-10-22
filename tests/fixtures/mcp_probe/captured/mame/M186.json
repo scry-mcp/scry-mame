@@ -38,7 +38,7 @@
   },
   {
    "lines": [
-    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame\": 160}}]}}"
+    "M186: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_for\",\"frames\":60,\"recorded\":{\"pc\":\"0x00001a2c\",\"frame\":160}}]}}"
    ],
    "right": true
   },

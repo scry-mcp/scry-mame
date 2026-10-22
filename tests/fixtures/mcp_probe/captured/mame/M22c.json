@@ -22,6 +22,18 @@
     "M22c: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\":\"watch_clear\",\"args\":{\"ref\":\"0x6\",\"space\":\"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
   }
  ]
 }

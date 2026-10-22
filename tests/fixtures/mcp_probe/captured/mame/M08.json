@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "M08: {\"tool\":\"run_for\",\"args\":{\"frames\":37}}"
    ],
    "right": true
   },

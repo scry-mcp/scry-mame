@@ -53,19 +53,19 @@
  "runs": [
   {
    "lines": [
-    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"length\": 10, \"trigger\": \"0x70001E\", \"cpu\": \"audiocpu\"}}"
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x70001E\", \"mode\": \"count\", \"length\": 2}}"
+    "M84: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700010\",\"mode\":\"capture\",\"fmt\":\"u16[5]\",\"trigger\":\"0x70001E\",\"trigger_type\":\"w\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"length\": 10, \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\"}}"
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
    ],
    "right": true
   }

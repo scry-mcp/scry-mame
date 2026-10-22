@@ -27,7 +27,7 @@
   },
   {
    "lines": [
-    "M145: {\"tool\": \"comment_delete\", \"args\": {\"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+    "M145: {\"tool\":\"comment_delete\",\"args\":{\"ref\":\"0x1F2C0\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

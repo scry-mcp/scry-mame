@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M124: {\"tool\": \"gfx_draft\", \"args\": {\"dest\": \"/tmp/newboard-gfx-draft.yaml\"}}"
+    "M124: {\"tool\":\"gfx_draft\",\"args\":{\"dest\":\"/tmp/newboard-gfx-draft.yaml\"}}"
    ],
    "right": true
   },

@@ -13,6 +13,18 @@
     "M22: {\"tool\": \"watch_clear\", \"args\": {\"all\": true}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\":\"watch_clear\",\"args\":{\"all\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"watch_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
   }
  ]
 }

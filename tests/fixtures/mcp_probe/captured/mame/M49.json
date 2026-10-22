@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_save\", \"args\": {\"name\": \"bossfight\"}}"
+    "M49: {\"tool\":\"state_save\",\"args\":{\"name\":\"bossfight\"}}"
    ],
    "right": true
   },

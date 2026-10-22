@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M155: CANNOT trace has maximum duration of 5027 frames; cannot run until symbol is reached without separate run_to call"
+    "M155: CANNOT The trace runs only over a fixed frame or millisecond window, and run_to reaches a place untraced, so no trace covers every location up to irq_vblank."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT the trace tool cannot stop at a specific routine; it only runs for a specified duration or frame count."
+    "M155: CANNOT trace takes no stop address and runs only for a fixed frame or millisecond window, so it cannot record until irq_vblank is reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace does not support running until a symbol is reached; it only traces for a fixed duration."
+    "M155: CANNOT A trace needs a fixed window of frames or milliseconds, and reaching a place with run_to runs untraced, so an open-ended trace until irq_vblank is not possible."
    ],
    "right": true
   }

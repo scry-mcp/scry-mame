@@ -19,13 +19,13 @@
  "runs": [
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"seconds\": 45, \"disarm_watches\": true}}"
+    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "M06: {\"tool\":\"run_to\",\"args\":{\"ref\":\"LevelEnd\",\"control\":\"FrameTick\",\"condition\":\"w@LivesLeft==3\",\"disarm_watches\":true,\"seconds\":45}}"
    ],
    "right": true
   },

@@ -35,19 +35,19 @@
  "runs": [
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"first\": 0, \"count\": 4}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"pen_base\": \"0x30\"}}"
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx2\", \"offset\": \"0x800\", \"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\", \"count\": 4}}"
+    "M161: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"chars8\",\"tag\":\"gfx2\",\"offset\":\"0x800\",\"count\":4,\"palette\":\"ppu_pal\",\"pen_base\":\"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   }

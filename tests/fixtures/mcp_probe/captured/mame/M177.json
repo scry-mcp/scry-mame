@@ -17,7 +17,7 @@
   },
   {
    "lines": [
-    "M177: {\"tool\": \"golden_check\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "M177: {\"tool\":\"golden_check\",\"args\":{\"manifest\":\"/tmp/run1/manifest.json\",\"checksums\":\"/tmp/goldens.sha256\"}}"
    ],
    "right": true
   },

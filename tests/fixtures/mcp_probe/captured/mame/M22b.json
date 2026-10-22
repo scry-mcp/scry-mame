@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"ScoreTbl\"}}"
+    "M22b: {\"tool\":\"watch_clear\",\"args\":{\"ref\":\"ScoreTbl\"}}"
    ],
    "right": true
   },

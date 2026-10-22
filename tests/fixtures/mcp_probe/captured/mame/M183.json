@@ -13,6 +13,18 @@
     "M183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M183: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"/tmp/bench/circus.json\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+   ],
+   "right": true
   }
  ]
 }

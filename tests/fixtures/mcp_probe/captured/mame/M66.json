@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M66: {\"tool\": \"regpoint_list\", \"args\": {\"cpu\": \"gfxcpu\"}}"
+    "M66: {\"tool\":\"regpoint_list\",\"args\":{\"cpu\":\"gfxcpu\"}}"
    ],
    "right": true
   },

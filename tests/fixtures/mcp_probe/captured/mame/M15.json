@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+    "M15: {\"tool\":\"breakpoint_clear\",\"args\":{\"ref\":\"FrameTick\"}}"
    ],
    "right": true
   },

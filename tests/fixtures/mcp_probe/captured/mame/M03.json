@@ -13,7 +13,7 @@
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "M03: {\"tool\":\"status\",\"args\":{}}"
    ],
    "right": true
   },

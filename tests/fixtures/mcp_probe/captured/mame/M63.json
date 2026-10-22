@@ -21,15 +21,15 @@
  "runs": [
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"cpu\": \"soundcpu\"}}"
+    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"cpu\": \"soundcpu\"}}"
+    "M63: {\"tool\":\"read_block\",\"args\":{\"ref\":\"0x7000\",\"length\":8,\"cpu\":\"soundcpu\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [

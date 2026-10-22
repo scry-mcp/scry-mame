@@ -23,7 +23,7 @@
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_add\", \"args\": {\"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "M142: {\"tool\":\"comment_add\",\"args\":{\"ref\":\"PaddleHit\",\"text\":\"ball hits the paddle here\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M65: {\"tool\": \"watch_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M65: {\"tool\":\"watch_list\",\"args\":{\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },

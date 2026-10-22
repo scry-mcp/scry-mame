@@ -28,7 +28,7 @@
   },
   {
    "lines": [
-    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+    "M160: {\"tool\":\"read_block\",\"args\":{\"tag\":\"vram\",\"offset\":\"0x1c0\",\"length\":16}}"
    ],
    "right": true
   },

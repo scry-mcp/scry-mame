@@ -19,7 +19,7 @@
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan_filter\", \"args\": {\"operator\": \">\"}}"
+    "M138: {\"tool\":\"scan_filter\",\"args\":{\"operator\":\">\"}}"
    ],
    "right": true
   },

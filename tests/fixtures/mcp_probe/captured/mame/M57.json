@@ -27,19 +27,19 @@
  "runs": [
   {
    "lines": [
-    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"cpu\": \"soundcpu\", \"role\": \"control\"}}"
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"role\": \"control\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"cpu\": \"soundcpu\", \"role\": \"control\"}}"
+    "M57: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"0x201060\",\"role\":\"control\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"by\": \"address\", \"role\": \"control\", \"cpu\": \"soundcpu\"}}"
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"role\": \"control\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   }

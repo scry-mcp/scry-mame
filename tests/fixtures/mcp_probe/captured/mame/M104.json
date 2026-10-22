@@ -17,6 +17,18 @@
     "M104: {\"tool\": \"gfx_blit_source\", \"args\": {\"draw_command\": \"tiledraw\", \"frame\": 88, \"index\": 3, \"margin\": 2, \"scale\": 3}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M104: {\"tool\":\"gfx_blit_source\",\"args\":{\"draw_command\":\"tiledraw\",\"frame\":88,\"index\":3,\"margin\":2,\"scale\":3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M104: {\"tool\": \"gfx_blit_source\", \"args\": {\"draw_command\": \"tiledraw\", \"frame\": 88, \"index\": 3, \"margin\": 2, \"scale\": 3}}"
+   ],
+   "right": true
   }
  ]
 }

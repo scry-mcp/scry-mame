@@ -24,7 +24,7 @@
   },
   {
    "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+    "M13: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"PlayerX\",\"by\":\"symbol\",\"condition\":\"w@PlayerX!=0\"}}"
    ],
    "right": true
   },

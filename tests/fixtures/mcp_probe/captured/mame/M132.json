@@ -13,7 +13,7 @@
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "M132: {\"tool\":\"cpu_info\",\"args\":{}}"
    ],
    "right": true
   },

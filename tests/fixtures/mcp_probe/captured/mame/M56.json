@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M56: {\"tool\": \"focus\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "M56: {\"tool\":\"focus\",\"args\":{\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

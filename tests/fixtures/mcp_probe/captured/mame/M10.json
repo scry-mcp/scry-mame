@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M10: {\"tool\": \"resume\", \"args\": {\"seconds\": 7.5}}"
+    "M10: {\"tool\":\"resume\",\"args\":{\"seconds\":7.5}}"
    ],
    "right": true
   },

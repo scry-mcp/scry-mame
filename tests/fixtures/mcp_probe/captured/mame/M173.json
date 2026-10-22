@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M173: {\"tool\": \"image_diff\", \"args\": {\"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "M173: {\"tool\":\"image_diff\",\"args\":{\"a\":\"/tmp/a/f000010.png\",\"b\":\"/tmp/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
    ],
    "right": true
   },

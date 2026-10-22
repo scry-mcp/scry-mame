@@ -18,7 +18,7 @@
   },
   {
    "lines": [
-    "M190: {\"tool\": \"golden_check\", \"args\": {\"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+    "M190: {\"tool\":\"golden_check\",\"args\":{\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\",\"limit\":5}}"
    ],
    "right": true
   },

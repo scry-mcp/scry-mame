@@ -57,19 +57,19 @@
  "runs": [
   {
    "lines": [
-    "M99: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [0, 8, 8, 8], \"ref\": \"0x9000\", \"cpu\": \"subcpu\"}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M99: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [0, 8, 8, 8], \"ref\": \"0x9000\", \"cpu\": \"subcpu\", \"first\": 16, \"count\": 64}}"
+    "M99: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [0, 8, 8, 8], \"ref\": \"0x9000\", \"first\": 16, \"count\": 64, \"cpu\": \"subcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M99: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [0, 8, 8, 8], \"ref\": \"0x9000\", \"cpu\": \"subcpu\", \"first\": 16, \"count\": 64}}"
+    "M99: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[{\"width\":8,\"height\":8,\"planes\":1,\"planeoffset\":[0],\"xoffset\":\"{ STEP8(0,1) }\",\"yoffset\":\"{ STEP8(0,8) }\",\"charincrement\":\"8*8\"}],\"patch\":[0,8,8,8],\"ref\":\"0x9000\",\"cpu\":\"subcpu\",\"first\":16,\"count\":64}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M99: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [0, 8, 8, 8], \"ref\": \"0x9000\", \"first\": 16, \"count\": 64, \"cpu\": \"subcpu\"}}"
    ],
    "right": true
   }

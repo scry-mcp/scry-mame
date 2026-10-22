@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses expression refs (by \"expr\"), so a breakpoint on the value of PlayerX+2 must be declared as a register point instead."
+    "M55: CANNOT breakpoint_at takes only a symbol or a linear 0x address and refuses expressions; an expression place has no declaration here, so an expression-based halt is only possible through regpoint_add."
    ],
    "right": true
   },
   {
    "lines": [
-    "M55: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX+2\", \"by\": \"expr\"}}"
+    "M55: CANNOT breakpoint_at refuses by \"expr\" (a halt on an expression is regpoint_add's job), and regpoint_add takes no address-of-expression ref."
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses an expression as a place, so a console expression cannot be declared as a breakpoint ref."
+    "M55: CANNOT Breakpoints take only places (`auto`, `symbol` or `address`), and an expression is refused there; a halt on an expression belongs to `regpoint_add`."
    ],
    "right": true
   }

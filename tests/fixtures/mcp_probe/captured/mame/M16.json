@@ -21,19 +21,19 @@
  "runs": [
   {
    "lines": [
+    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M16: {\"tool\":\"regpoint_add\",\"args\":{\"condition\":\"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M16: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==77ab\"}}"
    ],
    "right": true
   }

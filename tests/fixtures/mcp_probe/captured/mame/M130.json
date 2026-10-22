@@ -31,7 +31,7 @@
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
+    "M130: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x1c\",\"mode\":\"count\",\"length\":2,\"space\":\"io\"}}"
    ],
    "right": true
   },

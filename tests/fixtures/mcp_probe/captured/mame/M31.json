@@ -23,13 +23,13 @@
  "runs": [
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "M31: {\"tool\":\"find\",\"args\":{\"data_hex\":\"4E71\",\"ref\":\"0x2600\",\"length\":1536}}"
    ],
    "right": true
   },

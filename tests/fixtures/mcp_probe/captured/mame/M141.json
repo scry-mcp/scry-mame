@@ -18,7 +18,7 @@
   },
   {
    "lines": [
-    "M141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "M141: {\"tool\":\"audio_record\",\"args\":{\"frames\":120,\"dest\":\"/tmp/mcp-probe-sound.wav\",\"seconds\":30}}"
    ],
    "right": true
   },

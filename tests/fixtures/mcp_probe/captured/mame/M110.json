@@ -17,7 +17,7 @@
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "M110: {\"tool\":\"palette_log\",\"args\":{\"palette_port\":\"vgadac\",\"clear\":true}}"
    ],
    "right": true
   },

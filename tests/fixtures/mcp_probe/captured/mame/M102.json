@@ -22,6 +22,18 @@
     "M102: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"spritedraw\", \"frame\": 1204, \"area\": [100, 40, 16, 16], \"scale\": 2, \"dest\": \"/tmp/mcp-probe-boxes.png\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M102: {\"tool\":\"gfx_blits\",\"args\":{\"draw_command\":\"spritedraw\",\"frame\":1204,\"area\":[100,40,16,16],\"scale\":2,\"dest\":\"/tmp/mcp-probe-boxes.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M102: {\"tool\": \"gfx_blits\", \"args\": {\"draw_command\": \"spritedraw\", \"frame\": 1204, \"area\": [100, 40, 16, 16], \"scale\": 2, \"dest\": \"/tmp/mcp-probe-boxes.png\"}}"
+   ],
+   "right": true
   }
  ]
 }

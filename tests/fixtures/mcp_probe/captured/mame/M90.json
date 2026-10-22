@@ -30,7 +30,7 @@
   },
   {
    "lines": [
-    "M90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "M90: {\"tool\":\"palette\",\"args\":{\"palette\":\"ppu_pal\",\"first\":32,\"count\":12,\"scale\":2,\"dest\":\"/tmp/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },

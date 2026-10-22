@@ -31,13 +31,13 @@
   },
   {
    "lines": [
-    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00 FF\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+    "M81: {\"tool\":\"write\",\"args\":{\"ref\":\"VoiceTable\",\"data_hex\":\"00FF\",\"cpu\":\"audiocpu\",\"region\":true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00ff\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
    ],
    "right": true
   }

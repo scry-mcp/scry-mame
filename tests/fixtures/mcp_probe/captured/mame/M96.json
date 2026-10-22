@@ -56,19 +56,19 @@
  "runs": [
   {
    "lines": [
-    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"first\": 0, \"count\": 4, \"pen_base\": 96}}"
+    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": 96}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"count\": 4, \"pen_base\": 96}}"
+    "M96: {\"tool\":\"gfx_view\",\"args\":{\"layout\":{\"width\":8,\"height\":8,\"planes\":1,\"planeoffset\":[0],\"xoffset\":\"{ STEP8(0,1) }\",\"yoffset\":\"{ STEP8(0,8) }\",\"charincrement\":\"8*8\"},\"ref\":\"SpriteBuf\",\"cpu\":\"subcpu\",\"count\":4,\"palette\":\"ppu_pal\",\"pen_base\":96}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M96: {\"tool\": \"gfx_view\", \"args\": {\"ref\": \"SpriteBuf\", \"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"palette\": \"ppu_pal\", \"pen_base\": 96, \"count\": 4, \"cpu\": \"subcpu\"}}"
+    "M96: {\"tool\": \"gfx_view\", \"args\": {\"layout\": {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, \"ref\": \"SpriteBuf\", \"cpu\": \"subcpu\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": 96}}"
    ],
    "right": true
   }

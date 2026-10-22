@@ -29,7 +29,7 @@
   },
   {
    "lines": [
-    "M175: {\"tool\": \"region_track\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+    "M175: {\"tool\":\"region_track\",\"args\":{\"manifest\":\"/tmp/run1/manifest.json\",\"crop\":[100,20,24,8],\"measure\":\"match\",\"ref\":\"/tmp/ref/digit.png\",\"threshold\":0.95,\"limit\":10}}"
    ],
    "right": true
   },

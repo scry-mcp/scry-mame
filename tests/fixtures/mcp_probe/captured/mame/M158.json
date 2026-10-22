@@ -24,7 +24,7 @@
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan_filter\", \"args\": {\"value\": \"0xbeef\"}}"
+    "M158: {\"tool\":\"scan_filter\",\"args\":{\"operator\":\"=\",\"value\":\"0xbeef\"}}"
    ],
    "right": true
   },

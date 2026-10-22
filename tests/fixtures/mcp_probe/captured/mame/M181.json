@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+    "M181: {\"tool\":\"audio_measure\",\"args\":{\"path\":\"/tmp/rec/title.wav\"}}"
    ],
    "right": true
   },

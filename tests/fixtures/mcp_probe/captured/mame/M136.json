@@ -25,6 +25,18 @@
     "M136: {\"tool\": \"scan_start\", \"args\": {\"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\":\"scan_start\",\"args\":{\"ref\":\"0x200000\",\"length\":65536,\"cell_bytes\":2,\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan_start\", \"args\": {\"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
   }
  ]
 }

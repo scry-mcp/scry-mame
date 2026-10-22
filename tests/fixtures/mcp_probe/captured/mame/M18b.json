@@ -13,6 +13,18 @@
     "M18b: {\"tool\": \"regpoint_clear\", \"args\": {\"all\": true}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M18b: {\"tool\":\"regpoint_clear\",\"args\":{\"all\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18b: {\"tool\": \"regpoint_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
   }
  ]
 }

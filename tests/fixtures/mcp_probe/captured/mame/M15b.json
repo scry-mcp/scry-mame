@@ -13,6 +13,18 @@
     "M15b: {\"tool\": \"breakpoint_clear\", \"args\": {\"all\": true}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M15b: {\"tool\":\"breakpoint_clear\",\"args\":{\"all\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15b: {\"tool\": \"breakpoint_clear\", \"args\": {\"all\": true}}"
+   ],
+   "right": true
   }
  ]
 }

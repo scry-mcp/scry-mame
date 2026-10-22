@@ -17,9 +17,9 @@
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\"}}"
+    "M28: {\"tool\":\"read_block\",\"args\":{\"ref\":\"LatchOut\",\"length\":20}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [

@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_diff\", \"args\": {\"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "M182: {\"tool\":\"audio_diff\",\"args\":{\"a\":\"/tmp/rec/new.wav\",\"b\":\"/tmp/rec/ref.wav\",\"window\":[0,3],\"align\":false}}"
    ],
    "right": true
   },

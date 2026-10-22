@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M64: {\"tool\": \"breakpoint_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M64: {\"tool\":\"breakpoint_list\",\"args\":{\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },

@@ -17,7 +17,7 @@
   },
   {
    "lines": [
-    "M178: {\"tool\": \"golden_check\", \"args\": {\"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\"}}"
+    "M178: {\"tool\":\"golden_check\",\"args\":{\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\"}}"
    ],
    "right": true
   },

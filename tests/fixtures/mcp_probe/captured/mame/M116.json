@@ -27,6 +27,18 @@
     "M116: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"SOUND_LATCH\", \"cpu\": \"subcpu\", \"crop\": [16, 24, 48, 40], \"film_dir\": \"/tmp/mcp-probe-film\", \"seconds\": 9}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M116: {\"tool\":\"gfx_film\",\"args\":{\"trigger\":\"SOUND_LATCH\",\"cpu\":\"subcpu\",\"crop\":[16,24,48,40],\"film_dir\":\"/tmp/mcp-probe-film\",\"seconds\":9}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M116: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"SOUND_LATCH\", \"cpu\": \"subcpu\", \"crop\": [16, 24, 48, 40], \"film_dir\": \"/tmp/mcp-probe-film\", \"seconds\": 9}}"
+   ],
+   "right": true
   }
  ]
 }

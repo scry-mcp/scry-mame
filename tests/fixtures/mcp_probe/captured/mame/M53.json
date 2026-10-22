@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M53: CANNOT a hard reset kills the gdbstub connection; close then start is required"
+    "M53: CANNOT There is no hard reset here: it re-creates the machine and kills the gdbstub connection, so the only path is close followed by start, which does not keep this session."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT hard reset requires close then start in separate calls"
+    "M53: CANNOT There is no hard reset here: it re-creates the machine and kills the gdbstub connection, so the same session and process cannot be kept (only close followed by start)."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT Hard reset re-creates the machine, killing the gdbstub connection; the instructions note there is no hard reset that preserves the session."
+    "M53: CANNOT There is no hard reset here: `reset` is soft only, and a hard reset would re-create the machine and drop the gdbstub connection, which ends this session."
    ],
    "right": true
   }

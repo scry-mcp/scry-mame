@@ -24,7 +24,7 @@
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 4}}"
+    "M114: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"pixel\",\"point\":[46,160],\"scale\":4}}"
    ],
    "right": true
   },

@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M153: {\"tool\": \"trace\", \"args\": {\"frames\": 8, \"cpu\": \"subcpu\"}}"
+    "M153: {\"tool\":\"trace\",\"args\":{\"frames\":8,\"cpu\":\"subcpu\"}}"
    ],
    "right": true
   },

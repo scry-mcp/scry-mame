@@ -63,7 +63,7 @@
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "M164: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"set_register\",\"name\":\"D0\",\"value\":\"0x7f\"},{\"op\":\"step\",\"count\":1}]}}"
    ],
    "right": true
   },

@@ -24,7 +24,19 @@
  "runs": [
   {
    "lines": [
-    "M02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"inipath\": \"/opt/fury/ini\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "M02: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M02: {\"tool\":\"start\",\"args\":{\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\",\"binary\":\"/opt/fury/mamed\",\"boot_seconds\":12.5,\"stub_port\":5731,\"inipath\":\"/opt/fury/ini\",\"boot_lua\":\"/opt/fury/boot.lua\",\"env\":{\"FURY_MODE\":\"attract\"},\"state_dir\":\"/opt/fury/states\",\"cfg\":\"/opt/fury/cfg/spacefury.cfg\",\"throttle_from_frame\":1800,\"types\":\"/opt/fury/fury.types\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M02: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
    ],
    "right": true
   }

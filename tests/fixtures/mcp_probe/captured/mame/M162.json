@@ -36,7 +36,7 @@
   },
   {
    "lines": [
-    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+    "M162: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[\"chars8\"],\"patch\":[16,24,8,8],\"tag\":\"gfx1\",\"offset\":\"0x400\"}}"
    ],
    "right": true
   },

@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M68: {\"tool\":\"registers\",\"args\":{\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },

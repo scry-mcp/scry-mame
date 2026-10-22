@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M147: {\"tool\": \"comment_load\", \"args\": {\"path\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "M147: {\"tool\":\"comment_load\",\"args\":{\"path\":\"/tmp/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },

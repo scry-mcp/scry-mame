@@ -21,19 +21,19 @@
  "runs": [
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"page8\", \"palette\": \"none\", \"first\": 0, \"count\": 4}}"
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"palette\": \"none\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 4}}"
+    "M106: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"page8\",\"tag\":\"gfx1\",\"first\":0,\"count\":4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"page8\", \"palette\": \"none\", \"first\": 0, \"count\": 4}}"
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   }

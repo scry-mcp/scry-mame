@@ -21,13 +21,13 @@
  "runs": [
   {
    "lines": [
-    "M78: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d3==0x40\", \"cpu\": \"audiocpu\"}}"
+    "M78: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M78: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+    "M78: {\"tool\":\"regpoint_clear\",\"args\":{\"ref\":\"d3==40\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },

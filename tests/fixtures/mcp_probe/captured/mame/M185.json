@@ -13,6 +13,18 @@
     "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M185: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"~/bench/session.json\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+   ],
+   "right": true
   }
  ]
 }

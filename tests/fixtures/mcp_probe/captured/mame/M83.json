@@ -41,13 +41,13 @@
   },
   {
    "lines": [
-    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"cpu\": \"audiocpu\", \"condition\": \"wpdata==0x00\"}}"
+    "M83: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"VoiceCount\",\"mode\":\"change\",\"condition\":\"wpdata==0x0\",\"cpu\":\"audiocpu\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   }

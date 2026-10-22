@@ -19,6 +19,18 @@
     "M198: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"LEVEL 2\", \"channel\": \"process\", \"seconds\": 60, \"since_mark\": 912}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M198: {\"tool\":\"log_wait\",\"args\":{\"pattern\":\"LEVEL 2\",\"channel\":\"process\",\"seconds\":60,\"since_mark\":912}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M198: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"LEVEL 2\", \"channel\": \"process\", \"seconds\": 60, \"since_mark\": 912}}"
+   ],
+   "right": true
   }
  ]
 }

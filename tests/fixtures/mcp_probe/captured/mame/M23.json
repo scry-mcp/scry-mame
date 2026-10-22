@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "M23: {\"tool\":\"symbols_find\",\"args\":{\"linear\":\"0x5C3E\"}}"
    ],
    "right": true
   },

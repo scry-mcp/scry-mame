@@ -16,7 +16,7 @@
   },
   {
    "lines": [
-    "M52: {\"tool\": \"state_load\", \"args\": {\"name\": \"bossfight\"}}"
+    "M52: {\"tool\":\"state_load\",\"args\":{\"name\":\"bossfight\"}}"
    ],
    "right": true
   },

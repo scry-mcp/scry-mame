@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M148: {\"tool\": \"comment_clear\", \"args\": {}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M148: CANNOT comment_delete requires non-empty ref and has no bulk delete; cannot remove all notes in one call"
+    "M148: CANNOT Comments are removed one place at a time, and there is no delete-all for them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_delete requires a ref and does not support deleting all comments at once."
+    "M148: CANNOT comment_delete removes one place per call and there is no delete-all for comments."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M148: CANNOT Comments are deleted one place at a time, and there is no delete-all for comments."
    ],
    "right": true
   }

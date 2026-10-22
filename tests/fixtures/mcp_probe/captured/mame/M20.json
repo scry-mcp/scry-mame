@@ -36,7 +36,19 @@
  "runs": [
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M20: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"SpriteBuf\",\"mode\":\"show\",\"fmt\":\"u8[12]\",\"by\":\"symbol\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   }

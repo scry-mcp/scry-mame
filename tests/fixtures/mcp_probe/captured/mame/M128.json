@@ -24,19 +24,19 @@
  "runs": [
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2, \"palette\": \"none\"}}"
+    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"palette\": \"none\", \"scale\": 2}}"
+    "M128: {\"tool\":\"gfx_sweep\",\"args\":{\"ref\":\"TileBank\",\"cpu\":\"subcpu\",\"planes\":[1],\"count\":40,\"scale\":2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   }

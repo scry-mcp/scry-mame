@@ -22,7 +22,7 @@
   },
   {
    "lines": [
-    "M61: {\"tool\": \"history\", \"args\": {\"limit\": 50, \"cpu\": \"soundcpu\"}}"
+    "M61: {\"tool\":\"history\",\"args\":{\"limit\":50,\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   },

@@ -27,13 +27,13 @@
   },
   {
    "lines": [
-    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
+    "M05: {\"tool\":\"rom_check\",\"args\":{\"reference_rom\":\"{root}/LICENSE\",\"reference_addr\":\"0x1A0\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
+    "M05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
    ],
    "right": true
   }

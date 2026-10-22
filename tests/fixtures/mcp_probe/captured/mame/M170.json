@@ -21,7 +21,7 @@
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "M170: {\"tool\":\"machine_map\",\"args\":{\"sections\":[\"rom_files\"]}}"
    ],
    "right": true
   },

@@ -12,13 +12,13 @@
  "runs": [
   {
    "lines": [
-    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20.0, \"disarm_watches\": true}}"
+    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20, \"disarm_watches\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M07: {\"tool\": \"run_for\", \"args\": {\"milliseconds\": 250, \"seconds\": 20, \"disarm_watches\": true}}"
+    "M07: {\"tool\":\"run_for\",\"args\":{\"milliseconds\":250,\"seconds\":20,\"disarm_watches\":true}}"
    ],
    "right": true
   },

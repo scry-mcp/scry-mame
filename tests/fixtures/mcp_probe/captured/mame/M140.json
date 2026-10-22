@@ -8,19 +8,19 @@
  "runs": [
   {
    "lines": [
-    "M140: CANNOT scan_start only searches program space; io ports cannot be scanned this way"
+    "M140: CANNOT Value scans run only over program space, and io ports are never scanned."
    ],
    "right": true
   },
   {
    "lines": [
-    "M140: CANNOT scan_start does not support io space; only program space may be scanned"
+    "M140: CANNOT scan_start scans only program space, and io ports are never scanned."
    ],
    "right": true
   },
   {
    "lines": [
-    "M140: CANNOT The scan_start tool only searches program space, not io ports."
+    "M140: CANNOT Value scans cover only one cpu's program space; io ports are never scanned."
    ],
    "right": true
   }

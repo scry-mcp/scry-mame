@@ -25,7 +25,7 @@
   },
   {
    "lines": [
-    "M46: {\"tool\": \"input\", \"args\": {\"port\": \":IN2\", \"field\": \"P1 Button 3\", \"value\": 2, \"frames\": 9, \"seconds\": 25}}"
+    "M46: {\"tool\":\"input\",\"args\":{\"port\":\":IN2\",\"field\":\"P1 Button 3\",\"value\":2,\"frames\":9,\"seconds\":25}}"
    ],
    "right": true
   },
