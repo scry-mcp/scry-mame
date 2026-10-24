@@ -65,6 +65,9 @@ finding about it is a finding about the tool's code.
   the project ships, not a leak, and a front door without it is the finding:
 
   `Developed by Optimiza ([Marcos Hernández](https://www.linkedin.com/in/optimiza/)), in collaboration with [MS-DOS Club](https://msdos.club) and its [podcast](https://www.ivoox.com/podcast-ms-dos-club_sq_f11160693_1.html).`
+- The `claude` command, named where it is the program a reader runs (an install command, the
+  probe that executes it), is the name of a program and not a mention of the assistant; no other
+  use of the name is exempt.
 - Nothing else is exempt: a dated measurement, a paragraph about deleted machinery, a note on the
   project's own history, a home-directory path or an assistant's name in a tracked file outside
   `.claude/` is a finding.
