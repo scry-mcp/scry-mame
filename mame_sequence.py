@@ -295,16 +295,9 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
     Returns the refusals, each `step`, `op`, `code`, `message`."""
     refused: list[dict[str, Any]] = []
     for i, step in enumerate(steps):
-        op = str(step.get("op")) if isinstance(step, dict) and "op" in step else None
+        op = sequence.step_op(step)
         if op is None or op not in ops:
-            # THE VOCABULARY IS NAMED ONCE, in the reply's own `operations` field, never inside
-            # the message: a message is repeated in `errors`, in the joined refusal and in the
-            # summary, and a list of every operation in each copy buries the one step that failed.
-            refused.append({"step": i,
-                            "op": or_unavailable(op, "the step names no `op`"),
-                            "code": "bad_argument",
-                            "message": f"is not a step ({step!r}): see `operations` for the "
-                                       "server's own operation names"})
+            refused.append(sequence.not_a_step(i, step, "the step names no `op`"))
             continue
         refusal, args = step_judge.judge(ops[op], step, prepare=_as_wrapped)
         if refusal is not None:
@@ -481,9 +474,7 @@ def refuse_steps(steps: list[Any], ops: Ops) -> dict[str, Any] | None:
     refused = preflight(steps, ops)
     if not refused:
         return None
-    unknown_op = any(not isinstance(e["op"], str) or e["op"] not in ops for e in refused)
-    return _list_refused("bad_argument", refused,
-                         **({"operations": sorted(ops)} if unknown_op else {}))
+    return _list_refused("bad_argument", refused, **sequence.vocabulary_named(refused, ops))
 
 
 def refuse_machine(ses: Any, steps: list[Any]) -> dict[str, Any] | None:
