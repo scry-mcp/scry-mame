@@ -1252,7 +1252,8 @@ fire word is a program address.
 **The rest of what `watch_add` takes.** A show watch is at most `SHOW_WATCH_MAX` bytes, and a
 change or count watch at most `read_memory`'s ceiling: a region is `memdump`'s job. With no
 `fmt` and a `length` alone the widest unsigned scalar the length divides is chosen (`1` is `u8`, `2` is `u16`, `4`
-and `8` are `u32`), so a narrow watch needs none; name one to read as signed or as a float, and
+and `8` are `u32`), so a narrow watch needs none; name one to read as signed or as a float (a NaN
+or an infinite float is the text `nan`, `inf` or `-inf`, which JSON has no number for), and
 a named `fmt` the width is not a multiple of is refused. One ref carries one declaration, so
 another width, format, mode, condition, trigger or trigger type under the same ref is refused
 until it is cleared, and a change
