@@ -364,6 +364,12 @@ def test_a_frame_whose_picture_is_not_mames_rendering_of_it_is_refused(
     (why,) = out["refused_frames"]
     assert why["k"] == 2 and why["code"] == "readback_refused"
     assert "on 1 pixel:" in why["why"], why
+    # IT SAYS WHEN THE PICTURE WAS READ, and names first the cause a live run pointed to: a
+    # driver that draws into the bitmap again before the next notifier.
+    assert why["why"].startswith(
+        "frame 901's picture, read at frame 902, differs from MAME's rendering of frame 901 on "
+        "1 pixel:"), why
+    assert "the driver drew into it again before it was read" in why["why"], why
     assert not (folder / "frame-2.png").exists(), "a refused frame has no picture"
     assert not list(folder.glob("frame-2.*")), "its raw files are gone all the same"
 

@@ -14,7 +14,8 @@ start of vblank, hands it to the render texture and turns the screen's double bu
 reads the buffer the next frame is drawn into, which still holds the frame before. So the notifier
 at the end of frame N judges frame N's mark, saves the pens (the palette the display shows N with)
 and, when N met the condition, reads N's bitmap at the NEXT notifier, after the next turn: read that
-way the frame is MAME's own rendering of it, where the read at N's own notifier is the frame before
+way the frame is MAME's own rendering of it (for a driver that draws its bitmap once a frame, as
+the check below makes sure), where the read at N's own notifier is the frame before
 on every frame whose picture changed. That lateness is the notifier's, and it is no evidence about
 a read at a debugger stop, whose instant `REFERENCE.md` gives as measured (*Which instant a
 decode shows*). UNDER
@@ -31,10 +32,14 @@ EVERY KEPT FRAME PROVES ITSELF. The indices come from the indexed screen's own c
 (`mame_screen.CAPTURE_LUA`, verbatim), with its checks. Besides, at frame N's notifier the film
 keeps `video:snapshot_pixels()`, MAME's rendering of the frame the display showed, and the kept
 indices mapped through the pens saved then must equal it pixel for pixel, or the frame is
-refused with its reason. A debugger redraw between the two notifiers or a driver that says it
-drew nothing each break the lag's law, and the check is what catches them. It runs
-where the snapshot target renders the bare screen, which arming measures; elsewhere every frame
-says it is unchecked, and `mame_mismatch` measures how the snapshot differs.
+refused with its reason. A debugger redraw between the two notifiers, a driver that says it
+drew nothing, and a driver that draws into the bitmap again before the read each break the lag's
+law, and the check is what catches them. On circus the picture read at the next notifier is, on
+some frames and on every frame skipping at level 6, no frame's rendering (nearest to the next
+drawn frame's, and not equal to it), so a film of it on the bare screen refuses those frames
+rather than keep a picture of no single frame. The check runs where the snapshot target renders
+the bare screen, which arming measures; elsewhere every frame says it is unchecked, and
+`mame_mismatch` measures how the snapshot differs.
 
 ITS LIFE is the session's, like the palette log's: it is not a stored declaration and a `start`
 does not re-arm it, because a film spends a budget of frames and pictures from the frame it is
@@ -607,16 +612,18 @@ def convert(film: Film, base: Path) -> Cell:
                              f"{prose.agrees(len(pens), 'was', 'were')} saved "
                              f"at frame {meta.frame} and the screen has {len(cap.pens)}")
         if film.checked:
-            _against_snapshot(cap, pens, base.with_suffix(".snap").read_bytes(), meta.frame)
+            _against_snapshot(cap, pens, base.with_suffix(".snap").read_bytes(), meta.frame,
+                              meta.read_at)
         return _cell(film, meta, cap, pens, base)
     finally:
         for suffix in (".bin", ".pens", ".snap", ".txt"):
             base.with_suffix(suffix).unlink(missing_ok=True)
 
 
-def _against_snapshot(cap: mscreen.Capture, pens: list[int], snap: bytes, frame: int) -> None:
-    """The kept picture, in the colours of the frame's own pens, against MAME's rendering of that
-    frame, pixel for pixel."""
+def _against_snapshot(cap: mscreen.Capture, pens: list[int], snap: bytes, frame: int,
+                      read_at: int) -> None:
+    """The kept picture, read at frame `read_at`, in the colours of the frame's own pens, against
+    MAME's rendering of that frame, pixel for pixel."""
     if len(snap) != 4 * cap.width * cap.height:
         raise st.Invalid("readback_refused", f"frame {frame} has no snapshot of the screen's size "
                          f"({prose.counted(len(snap), 'byte')}) to be checked against")
@@ -627,10 +634,12 @@ def _against_snapshot(cap: mscreen.Capture, pens: list[int], snap: bytes, frame:
         shown = [lut[i] for i in cap.indices]
     apart = len(mmismatch.differing(shown, mmismatch.colours(snap)))
     if apart:
-        raise st.Invalid("readback_refused", f"frame {frame}'s picture differs from MAME's "
-                         f"rendering of that frame on {prose.counted(apart, 'pixel')}: it is not "
-                         "the bitmap the display showed (a debugger redraw between the two "
-                         "notifiers, or a driver that drew nothing)")
+        raise st.Invalid("readback_refused", f"frame {frame}'s picture, read at frame {read_at}, "
+                         f"differs from MAME's rendering of frame {frame} on "
+                         f"{prose.counted(apart, 'pixel')}: the bitmap read then is not the one "
+                         "the display showed for that frame (one of: the driver drew into it "
+                         "again before it was read, a debugger redraw came between the two "
+                         "notifiers, or the driver drew nothing)")
 
 
 def _cell(film: Film, meta: FrameMeta, cap: mscreen.Capture, pens: list[int],

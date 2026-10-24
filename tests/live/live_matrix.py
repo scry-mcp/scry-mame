@@ -2932,6 +2932,10 @@ D_CELLS = [
     "hardhat: the text videoram names in row 3, ink and paper in two banks, is found through a "
     "pen map, each letter at its place and no bank claimed",
     "hardhat: the same patch a pixel lower matches nothing, even through a pen map",
+    "circus, on the bare screen: a film checks each frame against MAME's rendering of it, keeps "
+    "those that match, and refuses a picture that is not, saying the frame it was read at",
+    "circus, on the bare screen at frameskip 6: each drawn frame taken is refused for its "
+    "picture, each skipped one is lost, and none is kept",
 ]
 
 # THE INDEPENDENT COUNTER of the changed film's known answer: its own write tap and its own frame
@@ -3038,6 +3042,35 @@ def _d_circus(t: list[str]) -> None:
     film = call("gfx_film")
     cell(t[18], ok(film) and film.get("kept") == 4 and film.get("refused") == 0
          and film.get("lost") == {"skipped": 4}, said(film))
+    call("close")
+
+
+def _d_circus_bare(t: list[str]) -> None:
+    # THE BARE SCREEN, where the film's check runs: on circus the picture read at the next
+    # notifier is no frame's rendering on some frames, and on every one skipping at level 6, so
+    # the check refuses those pictures
+    circus_boot()
+    run_frames(600)
+    armed = call("gfx_film", trigger="0x2000", keep=8, frames=12)
+    run_frames(16)
+    film = call("gfx_film")
+    whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
+    cell(t[23], ok(film) and (armed.get("film") or {}).get("checked") is True
+         and film.get("kept", 0) > 0 and film.get("refused", 0) > 0
+         and film.get("kept", 0) + film.get("refused", 0) == 8 and film.get("lost") == {}
+         and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
+         said(film))
+    call("gfx_film", clear=True)
+    call("lua", script="manager.machine.video.frameskip = 6")
+    armed = call("gfx_film", trigger="0x3000", keep=4, frames=8)
+    run_frames(14)
+    film = call("gfx_film")
+    whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
+    cell(t[24], ok(film) and (armed.get("film") or {}).get("checked") is True
+         and film.get("kept") == 0 and film.get("refused") == 4
+         and film.get("lost") == {"skipped": 4}
+         and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
+         said(film))
     call("close")
 
 
@@ -3203,7 +3236,7 @@ def _d_hardhat(t: list[str]) -> None:
 D_BOARDS = tuple(Board(run, owned, free_boards_missing) for run, owned in (
     (_d_circus, (0, 1, 2, 10, 17, 18, 19, 20)), (_d_gridlee, (3, 4, 5)), (_d_witchgme, (6, 7)),
     (_d_starfire, (8, 11)), (_d_topgunnr, (9,)), (_d_discovery, (12, 13, 14, 15, 16)),
-    (_d_hardhat, (21, 22))))
+    (_d_hardhat, (21, 22)), (_d_circus_bare, (23, 24))))
 boards_cover("D_BOARDS", D_CELLS, D_BOARDS)
 
 
