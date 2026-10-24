@@ -40,6 +40,7 @@ def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None
 #: quotes fails too.
 REPLY_WORDS: dict[str, tuple[str, ...]] = {
     "close": ("quit",),
+    "step": ("over",),
     "snapshot": ("INVALID",),
     "screen_view": ("isolate", "pixel"),
     "audio_compare": ("peak_dbfs", "rms_dbfs", "silent", "silence_spans", "onset_s",

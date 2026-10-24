@@ -329,7 +329,8 @@ visible first; `others` gives every other cpu's program counter before and after
 another cpu ends the steps (`note`). Needs the machine STOPPED (else `not_stopped`).
 
 Reply: `mode`, `instructions_completed`, `others` (on a build with a thread per cpu), and
-the stop survey of `run_to`. INVALID: `not_settled`, `session_broken`.
+the stop survey of `run_to`. A refused `over` may have run: the machine is marked RUNNING,
+and `stop` recovers it. INVALID: `not_settled`, `session_broken`.
 
 Reference: REFERENCE.md, Advancing the machine.
 

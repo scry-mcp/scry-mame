@@ -196,7 +196,8 @@ writes), `capture` (rows at `trigger`), `expr` (one debugger expression). `ref`:
 `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
 128 for show or capture, 1024 otherwise. `condition`: change only.
 `trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
-`fmt`. `space`: `io` port.
+`fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
+stored).
 
 Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
 declared another way; an unknown pointer base or `cpu`.
@@ -339,7 +340,7 @@ The block is read where its values live: the memory share of the one address-map
 
 **The dump files are the range's**: a removed tap's can still be on disk when the range is declared again, so an install that finds no tap of its range deletes them before counting.
 
-`count` tallies every write by value and writer pc and never stops; `capture` keeps one row per access to `trigger`; `expr` takes one debugger expression with no `,`, `;`, assignment, length or `fmt`. `fmt` is a scalar (`u8` .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`); `auto` is a typed symbol's type, else the widest unsigned scalar `length` divides. `length` is required unless `fmt` is sized or the symbol typed. `condition` (change only) takes `breakpoint_at`'s grammar on the row's cpu, `wpdata` being the value written. `trigger_type` `r` captures reads of `ref` itself (no length, fmt or block). `space="io"` is session-only. A ref is a symbol, a `0x` address or a place through a pointer (`[base]+0x28`, `base->field`), re-resolved each stop; a capture's `ref` is what each row holds. A watch on a running machine is taken and fires; only a pointer place needs a stop. `already_stored` is a no-op re-declaration; `pointer` and `reading` appear when the ref goes through a pointer or the machine is stopped; `addr` once the ref resolves; `fmt` and `length` echo the place. Reply fields beyond these (`tally_id`, `installed`, `pending`, `values_from`, `trigger_addr` and the rest) are each mode's own and are described on the page.
+`count` tallies every write by value and writer pc and never stops; `capture` keeps one row per access to `trigger`; `expr` takes one debugger expression with no `,`, `;`, assignment, length or `fmt`. `fmt` is a scalar (`u8` .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`); `auto` is a typed symbol's type, else the widest unsigned scalar `length` divides. `length` is required unless `fmt` is sized or the symbol typed. `condition` (change only) takes `breakpoint_at`'s grammar on the row's cpu, `wpdata` being the value written. `trigger_type` `r` captures reads of `ref` itself (no length, fmt or block). `space="io"` is session-only. A ref is a symbol, a `0x` address or a place through a pointer (`[base]+0x28`, `base->field`), re-resolved each stop; a capture's `ref` is what each row holds. A watch on a running machine is taken and fires; only a pointer place needs a stop. `already_stored` is a no-op re-declaration; `pointer` and `reading` appear when the ref goes through a pointer or the machine is stopped; `addr` once the ref resolves; `fmt` and `length` echo the place. Reply fields beyond these (`tally_id`, `installed`, `pending`, `values_from`, `trigger_addr` and the rest) are each mode's own.
 
 <!-- scry-reference:begin declaration_list -->
 ## `declaration_list`

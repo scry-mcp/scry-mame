@@ -562,3 +562,8 @@ def test_a_start_refused_for_the_shape_of_a_path_leaves_out_its_empty_start_retr
     out = s.start(binary="mame", system="m68k", rompath="/r", reference_rom="/r/rom.bin")
     assert out["code"] == "bad_argument" and out["message"].startswith("binary="), out
     assert "start_retries" not in out, out
+
+
+def test_the_instructions_tell_an_empty_diagnostic_from_a_field_not_sent() -> None:
+    text = " ".join((s.mcp.instructions or "").split())
+    assert "`omitted` names what was not sent" in text, text

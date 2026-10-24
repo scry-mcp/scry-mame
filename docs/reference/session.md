@@ -227,7 +227,7 @@ Example, from a live run:
 
 **What is launched again and what is not.** A death BY A SIGNAL before the gdbstub answers (MAME can die inside its own Lua console thread at boot, which the server can only react to), a live stub that answers without being ready, and a port another process took first are launched again, a bounded number of times. An EXIT CODE (missing ROMs, an unknown system, a bad flag) or an assertion's abort would answer the same again, so it is refused at once, as is a stub with no description of the board's FIRST cpu (`no_channel`: the build cannot serve that board). A death after `start` returned is not relaunched, because its state is gone.
 
-**`start_retries` is the evidence of the attempts, and it is always in the reply**, because the scratch holding MAME's words is deleted with each attempt. `[]` means the first launch answered, never a missing field.
+**`start_retries` is the evidence of the attempts**, because the scratch holding MAME's words is deleted with each attempt; left out, the first launch answered.
 
 **The machine runs under the debugger, and `start` and `status` say so in `debugger`.** A capture at one of this session's stops and an autoboot golden at the same frame count can land a frame apart in a scene that changes every frame; the `note` lets that be read as the method and not as a regression.
 

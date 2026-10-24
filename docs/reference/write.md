@@ -9,8 +9,8 @@
 write(ref, data_hex, cpu="", region=false)
 ```
 
-Write bytes to memory at `ref` of `cpu` and read them back through it. Modifies the
-machine; needs it stopped.
+Write bytes to memory at `ref` of `cpu` and read them back through it; needs the machine
+stopped.
 
 `data_hex` is 1..1024 bytes. `region=True` patches ROM in the memory region backing
 the address (refused where none does, or past its end); without it a ROM write goes
@@ -317,7 +317,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end debug -->
 
-**What counts as a write.** Beyond the description's list, each word is classified off MAME's own command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` (a file of console commands) and an ACTION, found by the parameter each command takes it in: the third of a `bp` or `ep`, the second of an `rp`, the fifth of a `wp`, the fourth of a `trace`/`traceover`.
+**What counts as a write.** Beyond the words named above, each word is classified off MAME's own command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` (a file of console commands) and an ACTION, found by the parameter each command takes it in: the third of a `bp` or `ep`, the second of an `rp`, the fifth of a `wp`, the fourth of a `trace`/`traceover`.
 
 - `//` and `/*` are the comment pane's `comadd` and `commit`; a comment's text is never evaluated, and a `comadd` typed here is neither stored nor listed.
 - A comparison is never an assignment (`print {d1==7fff}` is a read), and an assignment is looked for outside quoted strings only.

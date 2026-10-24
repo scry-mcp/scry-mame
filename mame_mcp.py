@@ -106,9 +106,9 @@ mcp = envelope.Envelope(
         "ADDRESSES are `0x`, a condition as typed; any other ref is a symbol, bare hex "
         "naming none refused. Breakpoints are PLACES, never expressions.\n\n"
         "EVERY REPLY carries `summary`, `status` (`ok`, or `INVALID` with `code` and "
-        "`message`) and `session` (`altered` after a write); a field left out of a reply is "
-        "empty. A wrong TYPE is the schema's `bad_argument`. `not_settled`: "
-        "`stop`; if `stop` fails as well, `close` then `start`. "
+        "`message`) and `session` (`altered` after a write); a diagnostic left out is empty, "
+        "and `omitted` names what was not sent. A wrong TYPE is the schema's `bad_argument`. "
+        "`not_settled`: `stop`; if `stop` fails as well, `close` then `start`. "
         "`session_broken` LATCHES until `close`."
     ),
     refusal=refusal,

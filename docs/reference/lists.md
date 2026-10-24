@@ -16,6 +16,7 @@ Run this server's operations in order, stopping at the first failure.
 list until a stop reads frame F, within 5000 steps and 600 s;
 `no_channel` if no frame counter. A step's `recorded`, `{field: value}` of its own reply,
 must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
+`settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
 Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
 `verdict` (`TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`.
@@ -342,7 +343,7 @@ perform_export(dest, overwrite=false)
 Write the session's calls since `start` to `dest` as a `perform` document.
 
 Kept: moving calls and checks (`read_memory`, `read_block`, `registers`,
-`screen_signature`, `image_compare(method="golden")`), each held to its `recorded`
+`screen_signature`, `map_find`, `image_compare(method="golden")`), each held to its `recorded`
 reply. Other calls drop; the first no replay can place, or past 5000, cuts the
 rest.
 

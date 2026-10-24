@@ -356,7 +356,8 @@ def step(count: Annotated[int, vocab.bounds(1, advance.step_max())] = 1,
     another cpu ends the steps (`note`). {NEEDS_STOPPED}.
 
     Reply: `mode`, `instructions_completed`, `others` (on a build with a thread per cpu), and
-    the stop survey of `run_to`. INVALID: `not_settled`, `session_broken`.
+    the stop survey of `run_to`. A refused `over` may have run: the machine is marked RUNNING,
+    and `stop` recovers it. INVALID: `not_settled`, `session_broken`.
 
     Reference: REFERENCE.md, Advancing the machine.
     """
@@ -512,7 +513,8 @@ def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref:
 
     `delete`: the comment at `ref`. Reply: `deleted`, `declarations`, `cpu`, `note`.
 
-    `save`: every comment to `dest`, an absolute or `~`-led path. Reply: `path`,
+    `save`: every comment to `dest`, an absolute or `~`-led path, replacing a comment file
+    there (rows only it held in `dropped_comments`); any other file is refused. Reply: `path`,
     `comments_total`, `dropped_comments`, `dropped_total`, `truncated`, `note`.
 
     `load`: the comment file at `path`, all or nothing, the file winning. Reply: `path`,
@@ -551,7 +553,8 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
     `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
     {WATCH_SHOW_MAX} for show or capture, {READ_MAX} otherwise. `condition`: change only.
     `trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
-    `fmt`. `space`: `io` port.
+    `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
+    stored).
 
     Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
     declared another way; an unknown pointer base or `cpu`.
@@ -773,8 +776,8 @@ def history(limit: Annotated[int, vocab.bounds(1, read.HISTORY_MAX)] = 32,
 
 @tool("Write memory", summary=summaries.write)
 def write(ref: str, data_hex: str, cpu: str = "", region: bool = False) -> dict[str, Any]:
-    """Write bytes to memory at `ref` of `cpu` and read them back through it. Modifies the
-    machine; needs it stopped.
+    """Write bytes to memory at `ref` of `cpu` and read them back through it; needs the machine
+    stopped.
 
     `data_hex` is 1..{READ_MAX} bytes. `region=True` patches ROM in the memory region backing
     the address (refused where none does, or past its end); without it a ROM write goes
@@ -1374,6 +1377,7 @@ def perform(steps: list[dict[str, Any]],
     list until a stop reads frame F, within {UNTIL_STEPS_MAX} steps and {WAIT_MAX_S} s;
     `no_channel` if no frame counter. A step's `recorded`, `{field: value}` of its own reply,
     must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
+    `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
     Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
     `verdict` (`TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`.
@@ -1399,7 +1403,7 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     """Write the session's calls since `start` to `dest` as a `perform` document.
 
     Kept: moving calls and checks (`read_memory`, `read_block`, `registers`,
-    `screen_signature`, `image_compare(method="golden")`), each held to its `recorded`
+    `screen_signature`, `map_find`, `image_compare(method="golden")`), each held to its `recorded`
     reply. Other calls drop; the first no replay can place, or past {RECORD_MAX}, cuts the
     rest.
 
@@ -1587,11 +1591,6 @@ def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
     """
     args.check("state_write", **_given(locals()))
     return methods.dispatch(folds.STATE_METHODS, locals())
-
-
-REFERENCE = reference.Registry(server=mcp, models=mame_replies.MODELS, roster=ROSTER,
-                               envelope=mame_replies.MameEnvelope,
-                               root=Path(__file__).resolve().parent)
 
 
 strict.strict_arguments(mcp)

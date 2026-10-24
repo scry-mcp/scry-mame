@@ -106,7 +106,8 @@ Reply: `comment`, `replaced_comments`, `declarations`, `cpu`, `note`.
 
 `delete`: the comment at `ref`. Reply: `deleted`, `declarations`, `cpu`, `note`.
 
-`save`: every comment to `dest`, an absolute or `~`-led path. Reply: `path`,
+`save`: every comment to `dest`, an absolute or `~`-led path, replacing a comment file
+there (rows only it held in `dropped_comments`); any other file is refused. Reply: `path`,
 `comments_total`, `dropped_comments`, `dropped_total`, `truncated`, `note`.
 
 `load`: the comment file at `path`, all or nothing, the file winning. Reply: `path`,
