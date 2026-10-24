@@ -70,7 +70,7 @@ def test_a_port_and_the_same_number_in_ram_are_two_taps(monkeypatch: pytest.Monk
     assert port["status"] == ram["status"] == "ok", (port, ram)
     assert port["tally_id"] != ram["tally_id"] and port["space"] == "io" and "space" not in ram
     assert len(mstate.STATE.tallies) == 2
-    cleared = s.watch_clear(ref="0x6")
+    cleared = s.declaration_clear("watch", ref="0x6")
     assert [t["tally_id"] for t in cleared["tallies_removed"]] == [ram["tally_id"]], (
         "a program ref clears the RAM tap and leaves the port's")
     assert [o for o, _ in mstate.STATE.tallies.items()] == [("0x6@io", ":maincpu")]
@@ -89,12 +89,12 @@ def test_an_io_tap_is_listed_surveyed_and_cleared_by_any_spelling_of_its_ref(
 ) -> None:
     _io_board(monkeypatch, tmp_path)
     ref = s.watch_add(ref="0x6", mode="count", length=2, space="io")["ref"]
-    rows = [w for w in s.watch_list()["watches"] if w["ref"] == ref]
+    rows = [w for w in s.declaration_list("watch")["watches"] if w["ref"] == ref]
     assert len(rows) == 1 and rows[0]["space"] == "io" and rows[0]["stored"] is False, rows
-    assert [w for w in s.watch_list(cpu="maincpu")["watches"] if w["ref"] == ref]
+    assert [w for w in s.declaration_list("watch", cpu="maincpu")["watches"] if w["ref"] == ref]
     surveyed = [w for w in s.step()["watches"] if w["ref"] == ref]
     assert len(surveyed) == 1 and surveyed[0]["space"] == "io", "a stop's survey names it"
-    cleared = s.watch_clear(ref="0x06", space="io")
+    cleared = s.declaration_clear("watch", ref="0x06", space="io")
     assert cleared["status"] == "ok" and len(cleared["tallies_removed"]) == 1, cleared
     assert "1 tap removed" in cleared["summary"], cleared["summary"]
     assert not mstate.STATE.tallies
@@ -104,7 +104,8 @@ def test_clearing_every_watch_takes_the_io_taps_too(monkeypatch: pytest.MonkeyPa
                                                      tmp_path: Path) -> None:
     _io_board(monkeypatch, tmp_path)
     s.watch_add(ref="0x6", mode="count", length=2, space="io")
-    assert s.watch_clear(all=True)["tallies_removed"], "the port's tap went with the rest"
+    assert s.declaration_clear("watch",
+                               all=True)["tallies_removed"], "the port's tap went with the rest"
     assert not mstate.STATE.tallies
 
 
@@ -113,10 +114,11 @@ def test_an_io_ref_nothing_holds_is_refused_naming_the_ones_held(
 ) -> None:
     _io_board(monkeypatch, tmp_path)
     s.watch_add(ref="0x6", mode="count", length=2, space="io")
-    out = refused("0x6", s.watch_clear(ref="0x8", space="io"))
+    out = refused("0x6", s.declaration_clear("watch", ref="0x8", space="io"))
     assert out["code"] == "unknown_ref" and len(mstate.STATE.tallies) == 1, out
     text = " ".join(out["message"].split())
-    named = {f for f in ("breakpoint", "watch", "regpoint") if f"`{f}_list`" in text}
+    named = {f for f in ("breakpoint", "watch", "regpoint")
+             if f'`declaration_list(kind="{f}")`' in text}
     assert named == {"watch"} and text.endswith(f"Matching: {dec.REF_MATCH['watch']}."), text
 
 
@@ -131,12 +133,15 @@ def test_the_watch_rule_states_the_io_spellings_a_clear_matches(
     use_table(monkeypatch, table={"PALBUF": 0x2031FC}, types={"PALBUF": "u16[2]"})
     s.watch_add(ref="0x6", mode="count", length=2, space="io")
     s.watch_add(ref="PalBuf", mode="capture", trigger="0x6", space="io")
-    assert s.watch_clear(ref="0x06", space="io")["status"] == "ok", "a port in any spelling"
-    assert s.watch_clear(ref="palbuf", space="io")["status"] == "ok", "the block in another case"
+    assert s.declaration_clear("watch", ref="0x06",
+                               space="io")["status"] == "ok", "a port in any spelling"
+    assert s.declaration_clear("watch", ref="palbuf",
+                               space="io")["status"] == "ok", "the block in another case"
     assert not mstate.STATE.tallies
     s.watch_add(ref="0x6", mode="count", length=2, space="io")
     assert refused("'06' matches no io tap in the io space, so nothing was cleared. The io taps "
-                   "held in the io space: '0x6'", s.watch_clear(ref="06", space="io"))["code"] == (
+                   "held in the io space: '0x6'", s.declaration_clear("watch", ref="06",
+                                                                      space="io"))["code"] == (
         "unknown_ref"), (
         "with no `0x` the ref is a symbol, as the clause says")
 
@@ -282,7 +287,7 @@ def test_a_capture_triggered_by_a_port_reads_its_block_in_program_space(
     assert any(c.startswith("mapi 0x6") for c in ses.commands)
     (owner, rec), = mstate.STATE.tallies.items()
     assert rec["space"] == "io" and owner[0] == "0x2031fc@io"
-    listed = [w for w in s.watch_list()["watches"]
+    listed = [w for w in s.declaration_list("watch")["watches"]
               if (w["ref"], w.get("space")) == ("0x2031fc", "io")]
     assert listed and listed[0]["mode"] == "capture", listed
     assert listed[0]["trigger_addr"] == "0x00000006" and "trigger" not in listed[0], listed
@@ -298,7 +303,8 @@ def test_a_captured_block_under_two_spellings_is_one_capture(
     assert first["length"] == 4 and first["fmt"] == "u16[2]", "the table types the block"
     assert s.watch_add(ref="PALBUF", mode="capture", trigger="0x6", space="io")["status"] == "ok"
     refused(re.escape("that tap is already declared under 'PALBUF': one tap is one "
-                      "declaration, so `watch_clear(ref='PALBUF', cpu=\":maincpu\", "
+                      "declaration, so `declaration_clear(kind=\"watch\", ref='PALBUF', "
+                      "cpu=\":maincpu\", "
                       "space=\"io\")` frees it, or use that ref"),
             s.watch_add(ref="0x2031fc", mode="capture", length=4, trigger="0x6", space="io"))
     assert len(mstate.STATE.tallies) == 1
@@ -384,7 +390,8 @@ def test_an_io_tap_lists_its_stamp_and_age_from_the_declarations_clock(
     monkeypatch.setattr(mstate, "utc_now", lambda: then)
     assert s.watch_add(ref="0x6", mode="count", length=2, space="io")["status"] == "ok"
     monkeypatch.setattr(mstate, "utc_now", lambda: then + timedelta(seconds=90))
-    (row,) = [w for w in s.watch_list()["watches"] if w["ref"] == "0x6" and w.get("space") == "io"]
+    (row,) = [w for w in s.declaration_list("watch")["watches"]
+              if w["ref"] == "0x6" and w.get("space") == "io"]
     assert (row["created_at"], row["age_s"]) == ("2026-10-04T12:00:00+00:00", 90), row
 
 
@@ -437,5 +444,5 @@ def test_an_io_tap_on_no_named_cpu_lists_its_cpu_as_unavailable(
     s.watch_add(ref="0x6", mode="count", length=2, space="io")
     ((_owner, rec),) = mstate.STATE.tallies.items()
     monkeypatch.setattr(mstate.STATE, "tallies", {("0x6@io", None): rec})
-    (row,) = [w for w in s.watch_list()["watches"] if w.get("space") == "io"]
+    (row,) = [w for w in s.declaration_list("watch")["watches"] if w.get("space") == "io"]
     assert row["cpu"]["available"] is False, row

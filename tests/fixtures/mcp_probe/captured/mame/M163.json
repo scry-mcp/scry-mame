@@ -39,7 +39,79 @@
   },
   {
    "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": 8192, \"palette\": \"ppu_pal\", \"pen_base\": 80}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M163: {\"tool\":\"gfx_sweep\",\"args\":{\"tag\":\"gfx3\",\"offset\":\"0x2000\",\"palette\":\"ppu_pal\",\"pen_base\":\"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M163: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"offset\": \"0x2000\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x50\"}}"
    ],
    "right": true
   },

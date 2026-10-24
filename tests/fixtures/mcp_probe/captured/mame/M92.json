@@ -25,7 +25,79 @@
   },
   {
    "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M92: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"histogram\",\"crop\":[16,32,72,48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },

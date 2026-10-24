@@ -2,8 +2,9 @@
  "task": {
   "id": "M136",
   "prompt": "This board has no map. Open a value search over the 65536 bytes from hex 200000 of the cpu tagged audiocpu, in 16-bit cells.",
-  "tool": "scan_start",
+  "tool": "scan",
   "args": {
+   "method": "start",
    "ref": {
     "any_of": [
      "0x200000"
@@ -17,24 +18,99 @@
      ":audiocpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "start"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M136: {\"tool\": \"scan_start\", \"args\": {\"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M136: {\"tool\":\"scan_start\",\"args\":{\"ref\":\"0x200000\",\"length\":65536,\"cell_bytes\":2,\"cpu\":\"audiocpu\"}}"
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M136: {\"tool\": \"scan_start\", \"args\": {\"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\":\"scan\",\"args\":{\"method\":\"start\",\"ref\":\"0x200000\",\"length\":65536,\"cell_bytes\":2,\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   }

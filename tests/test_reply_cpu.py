@@ -282,7 +282,7 @@ def test_a_stop_on_the_sub_cpu_surveys_the_sub_cpus_registers_through_its_thread
     assert stop["cpu"] == ":maincpu" and "g@2" not in ses.commands, (ses.commands, stop)
     s.resume()
     ses.visible_cpu, ses.stops_after_polls = ":subcpu", 1
-    found = s.breakpoint_list()["stopped_on_its_own"]
+    found = s.declaration_list("breakpoint")["stopped_on_its_own"]
     assert found["cpu"] == ":subcpu", found
 
 
@@ -331,13 +331,13 @@ def test_the_arming_replies_and_their_lists_carry_the_rows_cpu(
     ses = _watching(monkeypatch, tmp_path)
     assert s.breakpoint_at(ref="0x4a0")["cpu"] == ":maincpu"
     assert s.breakpoint_at(ref="0x25a4", role="control")["cpu"] == ":maincpu"
-    assert {b["cpu"] for b in s.breakpoint_list()["breakpoints"]} == {":maincpu"}
+    assert {b["cpu"] for b in s.declaration_list("breakpoint")["breakpoints"]} == {":maincpu"}
     assert s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32")["cpu"] == ":maincpu"
-    (w,) = s.watch_list()["watches"]
+    (w,) = s.declaration_list("watch")["watches"]
     assert w["cpu"] == ":maincpu"
     ses.wp_devices = {2: ":subcpu"}  # type: ignore[attr-defined]
     wplist_add(ses, 0x8000, 2)
-    assert s.watch_list()["foreign"] == ["2 @ 008000-008001 write"]
+    assert s.declaration_list("watch")["foreign"] == {"watches": ["2 @ 008000-008001 write"]}
 
 
 def test_status_on_a_broken_session_asks_no_cpu_and_one_that_breaks_under_it_says_so(

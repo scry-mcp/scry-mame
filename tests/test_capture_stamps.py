@@ -286,7 +286,7 @@ def test_a_read_capture_listed_before_its_tap_says_it_is_one(
                                        watch_mode="capture", trigger="0x2031fe",
                                        trigger_type="r", cpu=":maincpu",
                                        fingerprint=mstate.STATE.fingerprint(":maincpu")))
-    (listed,) = s.watch_list()["watches"]
+    (listed,) = s.declaration_list("watch")["watches"]
     assert listed["state"] == "not_installed" and listed["trigger_type"] == "r", listed
 
 
@@ -301,7 +301,7 @@ def test_watch_list_shows_a_read_captures_rows_with_no_block(
     head.write_text(f"MCP_CAPTURE {cid} seq=2 frame=240 total=1 rows=1 overflow_rows=0 "
                     "data_width=16 endianness=big cpu=:maincpu\nend\n")
     rows.write_text("r 1 12 109 2.000000000000000007 40e 1234 ffff \n")
-    (listed,) = s.watch_list()["watches"]
+    (listed,) = s.declaration_list("watch")["watches"]
     assert listed["trigger_type"] == "r", listed
     assert listed["first_rows"] == [{"n": 1, "frame": 12, "line": 109,
                                      "time_s": 2.000000000000000007, "pc": "0x0000040e",

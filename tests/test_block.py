@@ -41,8 +41,8 @@ def test_a_share_is_read_by_its_tag_through_one_step_and_alters_nothing(
     assert out["evaluated_by"] == "one step" and ses.stepped == 1
     assert out["session"]["altered"] is False and "read_only_claims" not in out["session"]
     assert out["call"] == "MAME_MCP_LUA_END#1" and out["pc"] == "0x00000404"
-    assert out["lines_ahead"] == 0 and isinstance(out["reader_steps"], int), out
-    assert out["resent"] == 0, "the console's own mishaps are always looked at"
+    assert out["lines_ahead"] == 0 and isinstance(out.get("reader_steps", 0), int), out
+    assert out.get("resent", 0) == 0, "the console's own mishaps are always looked at"
     assert mstate.STATE.last_stop["cause"] == "read_block: one step", "the stop is recorded"
     assert out["summary"] == "read_block share :blitram: 4 bytes at offset 0x4 of 0x20: 00120034"
     # The chunk travels inside `load("...")`, so the script's own quotes arrive escaped.

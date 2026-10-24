@@ -190,41 +190,36 @@ def _is_armed(row: dict[str, Any]) -> bool:
                                             and row.get("installed") is True)
 
 
-def _listed(tool: str, key: str) -> Summary:
-    """Every family's `_list`: how many are declared and how many of them are armed."""
-    def line(args: dict[str, Any], reply: dict[str, Any]) -> str:
-        armed = sum(1 for row in reply[key] if _is_armed(row))
-        return f"{tool}: {len(reply[key])} declared, {armed} armed"
-    return line
+def _armed(rows: list[dict[str, Any]]) -> int:
+    return sum(1 for row in rows if _is_armed(row))
 
 
-def _cleared(tool: str) -> Summary:
-    """Every family's `_clear`: what the store dropped and what the debugger let go, and
-    the taps whose removal was sent, which an io tap is all of."""
-    def line(args: dict[str, Any], reply: dict[str, Any]) -> str:
-        taps = len(reply.get("tallies_removed", []))
-        removed = f", {prose.counted(taps, 'tap')} removed" if taps else ""
-        return (f"{tool} {args['ref'] or 'all'}: {reply['declarations_cleared']} cleared, "
-                f"{len(reply['disarmed'])} disarmed{removed}")
-    return line
+#: Each kind's reply field, in the order a list of every kind names them.
+DECLARATION_ROWS = {"breakpoint": "breakpoints", "regpoint": "regpoints", "watch": "watches"}
 
 
-breakpoint_list = _listed("breakpoint_list", "breakpoints")
-regpoint_list = _listed("regpoint_list", "regpoints")
+def declaration_list(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    """How many of each kind are declared and armed, and the taps whose callbacks raised: their
+    census is not the whole one, and a summary read alone must not pass for a clean list."""
+    said = []
+    kind_of = {key: kind for kind, key in DECLARATION_ROWS.items()}
+    for key in DECLARATION_ROWS.values():
+        if key in reply:
+            rows = reply[key]
+            raised = sum(1 for row in rows if (row.get("callback_errors") or {}).get("count"))
+            said.append(f"{prose.counted(len(rows), kind_of[key], key)} ({_armed(rows)} armed"
+                        + (f", {raised} with callback errors" if raised else "") + ")")
+    kind = f" {args['kind']}" if args.get("kind") else ""
+    return f"declaration_list{kind}: " + ", ".join(said)
 
 
-def watch_list(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    """The family's line, and the taps whose callbacks raised: their census is not the whole
-    one, and a summary read alone must not pass for a clean list."""
-    raised = sum(1 for row in reply["watches"]
-                 if (row.get("callback_errors") or {}).get("count"))
-    return (_listed("watch_list", "watches")(args, reply)
-            + (f", {raised} with callback errors" if raised else ""))
-
-
-breakpoint_clear = _cleared("breakpoint_clear")
-regpoint_clear = _cleared("regpoint_clear")
-watch_clear = _cleared("watch_clear")
+def declaration_clear(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    """What the store dropped and what the debugger let go, and the taps whose removal was
+    sent, which an io tap is all of."""
+    taps = len(reply.get("tallies_removed", []))
+    removed = f", {prose.counted(taps, 'tap')} removed" if taps else ""
+    return (f"declaration_clear {args['kind']} {args['ref'] or 'all'}: "
+            f"{reply['declarations_cleared']} cleared, {len(reply['disarmed'])} disarmed{removed}")
 
 
 # --------------------------------------------------------------------------------- comments
@@ -234,9 +229,9 @@ def _where(row: dict[str, Any]) -> str:
     return f"{row['cpu'] if isinstance(row['cpu'], str) else '-'} {row.get('addr', 'unresolved')}"
 
 
-def comment_add(args: dict[str, Any], reply: dict[str, Any]) -> str:
+def add_comment(args: dict[str, Any], reply: dict[str, Any]) -> str:
     kept = "persistent" if reply["declarations"]["persistent"] else "dies at close"
-    return f"comment_add {reply['comment']['ref']}: {_where(reply['comment'])}, stored, {kept}"
+    return f"{reply['comment']['ref']} at {_where(reply['comment'])}, stored, {kept}"
 
 
 def _filtered_on(reply: dict[str, Any]) -> str:
@@ -251,16 +246,16 @@ def comment_list(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"comment_list: {prose.counted(reply['comments_total'], 'comment')}{on}"
 
 
-def comment_delete(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return f"comment_delete {args['ref']}: {_where(reply['deleted'])} deleted"
+def delete_comment(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return f"{args['ref']} at {_where(reply['deleted'])} deleted"
 
 
-def comment_save(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return f"comment_save: {prose.counted(reply['comments_total'], 'comment')} to {reply['path']}"
+def save_comments(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return f"{prose.counted(reply['comments_total'], 'comment')} to {reply['path']}"
 
 
-def comment_load(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return (f"comment_load: {reply['parsed']} read, {reply['added']} added, "
+def load_comments(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return (f"{reply['parsed']} read, {reply['added']} added, "
             f"{reply['replaced_total']} replaced")
 
 
@@ -346,21 +341,20 @@ def find(args: dict[str, Any], reply: dict[str, Any]) -> str:
             f"{prose.counted(reply['hits_total'], 'hit')}")
 
 
-def scan_start(args: dict[str, Any], reply: dict[str, Any]) -> str:
+def start_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
     cells = f"{reply['cell_bytes']}-byte candidate"
-    return (f"scan_start {args['ref']}: {prose.counted(reply['hits_total'], cells)} on "
-            f"{reply['cpu']}")
+    return f"{args['ref']}, {prose.counted(reply['hits_total'], cells)} on {reply['cpu']}"
 
 
-def scan_filter(args: dict[str, Any], reply: dict[str, Any]) -> str:
+def filter_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
     value = f" {reply['value']}" if isinstance(reply["value"], str) else ""
     closed = ", scan closed" if reply["closed"] else ""
-    return (f"scan_filter {reply['operator']}{value}: "
+    return (f"{reply['operator']}{value}, "
             f"{prose.counted(reply['hits_total'], 'survivor')}{closed}")
 
 
-def scan_clear(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return "scan_clear: cleared" if reply["cleared"] else "scan_clear: nothing was open"
+def clear_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return "cleared" if reply["cleared"] else "nothing was open"
 
 
 def history(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -490,11 +484,8 @@ def screen_signature(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"screen_signature {w}x{h} at [{x}, {y}]: {reply['signature']}"
 
 
-# The screen maps' four lines are scry-core's, alike on both servers.
-map_load = screen_map.load_line
-map_add = screen_map.add_line
+# The screen maps' lines are scry-core's, alike on both servers.
 map_find = screen_map.find_line
-map_save = screen_map.save_line
 
 
 def log(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -629,8 +620,8 @@ def throttle(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"throttle {_on_off(reply['on'])}: applied at frame {reply['frame']}"
 
 
-def state_save(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return (f"state_save {reply['name']}: "
+def save_state(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return (f"{reply['name']}, "
             f"{prose.counted(reply['bytes'], 'byte')}{_frame_clause(' at frame ', reply['frame'])}")
 
 
@@ -641,8 +632,8 @@ def _datum(value: Any) -> str:
         value)
 
 
-def state_load(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return (f"state_load {reply['name']}: rom_check {_datum(reply['rom_check'])}, verified "
+def load_state(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    return (f"{reply['name']}, rom_check {_datum(reply['rom_check'])}, verified "
             f"{_datum(reply['verified'])}{_frame_clause(', frame ', reply['frame'])}, pc "
             f"{reply['pc']}")
 

@@ -156,7 +156,7 @@ def _s_victory_breakpoint(label: str) -> None:
          and hit.get("cpu") == SOUNDBD and int(str(hit.get("pc")), 16) == int(idle, 16)
          and cause.startswith("breakpoint") and "no breakpoint" not in cause,
          f"armed at {idle}: {said(armed, 60)} / {said(hit, 120)}")
-    cleared = call("breakpoint_clear", ref=idle, cpu=SOUNDBD)
+    cleared = call("declaration_clear", kind="breakpoint", ref=idle, cpu=SOUNDBD)
     if not ok(cleared):
         cell(label, False, f"the breakpoint did not clear: {said(cleared)}")
 

@@ -2,8 +2,9 @@
  "task": {
   "id": "M173",
   "prompt": "Compare /tmp/a/f000010.png with /tmp/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
-  "tool": "image_diff",
+  "tool": "image_compare",
   "args": {
+   "method": "image",
    "a": "/tmp/a/f000010.png",
    "b": "/tmp/a/f000011.png",
    "shift": [
@@ -11,24 +12,99 @@
     0
    ],
    "tolerance": 3
-  }
+  },
+  "grammar": [
+   "image"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M173: {\"tool\": \"image_diff\", \"args\": {\"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M173: {\"tool\":\"image_diff\",\"args\":{\"a\":\"/tmp/a/f000010.png\",\"b\":\"/tmp/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M173: {\"tool\": \"image_diff\", \"args\": {\"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"/tmp/a/f000010.png\",\"b\":\"/tmp/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [-2, 0], \"tolerance\": 3}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   }

@@ -112,7 +112,8 @@ def settle_logged(scratch: Path) -> None:
 def still_pending(scratch: Path) -> dict[str, list[dict[str, Any]]]:
     """What this session asked for and the machine has not yet confirmed: every throttle
     asked while stopped, by the `tag` its reply named, and every count watch's removal, by
-    the `call` `watch_clear` named. Always both lists, so an empty one says somebody looked.
+    the `call` `declaration_clear(kind="watch")` named. Always both lists, so an empty one says
+    somebody looked.
 
     SUCCESS IS A ROW LEAVING, never a row of its own: a failure latches in a row that repeats
     (`throttles_not_applied`, `tallies_not_removed`), and what was still missing was the
@@ -449,7 +450,8 @@ def record_own_stop(tool: str, cause: str = "the step it took before it refused"
     """A STOP THE REFUSING CALL MADE IS ITS OWN. `read_block`, `lua` and `screen_signature`
     buy their evaluation with a real single step, and some of their refusals come after it
     (an answer that names no block, a script that raised, one that never came), as do
-    `state_load`'s after the console loaded the state. Left unrecorded, that stop is found by
+    `state_write(method="load")`'s after the console loaded the state. Left unrecorded, that stop is
+    found by
     the next contact and reported as the machine's own, at no breakpoint this server armed:
     a stop this server made, misattributed. So the refusal records it, under the tool's name,
     before its envelope is built. It never raises: a session that broke under the call is the

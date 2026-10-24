@@ -111,20 +111,21 @@ def test_summaries_cut_every_step_but_the_last_to_its_summary_line(
     crossed what the client shows. With `summaries`, each earlier step keeps its `summary`
     and `status`; the last step of a completed list keeps its whole reply."""
     _running(monkeypatch, tmp_path)
-    steps = [{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "breakpoint_list"},
+    steps = [{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "declaration_list",
+                                                       "kind": "breakpoint"},
              {"op": "registers"}]
     full = s.perform(steps=steps)
     assert full["status"] == "ok" and full["steps_completed"] == 3
     assert all("summary" in r["reply"] and len(r["reply"]) > 2 for r in full["ran"]), (
         "the control: without the flag every step carries its whole reply")
-    s.breakpoint_clear(all=True)
+    s.declaration_clear("breakpoint", all=True)
     out = s.perform(steps=steps, summaries=True)
     assert out["status"] == "ok" and out["steps_completed"] == 3, out
     assert out["failed_at"]["available"] is False, out
     assert [set(r["reply"]) for r in out["ran"][:2]] == [{"summary", "status"}] * 2, out["ran"]
     assert out["ran"][0]["reply"]["summary"].startswith("breakpoint_at 0x4a0: armed")
     assert out["ran"][0]["reply"]["status"] == "ok"
-    assert [r["op"] for r in out["ran"]] == ["breakpoint_at", "breakpoint_list", "registers"]
+    assert [r["op"] for r in out["ran"]] == ["breakpoint_at", "declaration_list", "registers"]
     assert "regs" in out["ran"][2]["reply"], "the last step keeps its whole reply"
     refused("true or false", s.perform(steps=steps, summaries="yes"))
 
@@ -183,7 +184,7 @@ def test_a_failure_in_the_middle_keeps_its_own_reply_whole_and_briefs_the_rest(
     _running(monkeypatch, tmp_path)
     out = s.perform(steps=[
         {"op": "breakpoint_at", "ref": "0x4a0"},
-        {"op": "breakpoint_list"},
+        {"op": "declaration_list", "kind": "breakpoint"},
         {"op": "breakpoint_at", "ref": "0x4a0", "role": "control"},   # refused: already declared
         {"op": "registers"},                                           # never runs
     ], summaries=True)
@@ -253,7 +254,8 @@ def test_drive_takes_summaries_by_the_same_rule(
     """The act runs with `perform`'s rules, `summaries` among them: the same word, the same
     cut, so a long act does not need a second spelling."""
     _running(monkeypatch, tmp_path)
-    out = s.drive(act=[{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "breakpoint_list"},
+    out = s.drive(act=[{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "declaration_list",
+                                                                 "kind": "breakpoint"},
                        {"op": "registers"}], summaries=True)
     assert out["status"] == "ok", out
     ran = out["act"]["ran"]
@@ -672,7 +674,7 @@ def test_a_stop_breakpoint_or_a_change_watch_alone_makes_the_tail_wait(
     out = s.perform(steps=[{"op": "resume"}, {"op": "status"}], settle_seconds=0.05)
     assert out["verdict"] == "TIMEOUT" and "did not stop" in out["note"], out
     ses.running = False
-    s.breakpoint_clear(all=True)
+    s.declaration_clear("breakpoint", all=True)
     monkeypatch.setattr(mstate.STATE, "armed_watches",
                         {("x", ":maincpu"): {"addr": 0x4A0, "length": 2}})
     out = s.perform(steps=[{"op": "resume"}, {"op": "status"}], settle_seconds=0.05)

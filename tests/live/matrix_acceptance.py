@@ -93,7 +93,7 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "is armed saying so and tallies the cpu's own out there",
     f"v30-alt: the latch log's pens {', '.join(map(str, V30_ALT_PENS))} are the palette's, none "
     "unsynced",
-    "v30-alt: the first run after a state_load has no cycles, and says why",
+    "v30-alt: the first run after a state_write load has no cycles, and says why",
     "v30-alt: an io count of two bytes at the odd port 0x9 is refused for splitting the io bus's "
     "16-bit word, naming the counts in the io space",
     "pangofun: the i486's own out of a dword at port 0xe2 reaches an io tap as two 32-bit bus "
@@ -143,7 +143,7 @@ def _palette_log_matches(port: str, pens: tuple[int, ...]) -> tuple[bool, str]:
         pairs.append((pen, logged.get("color"), live))
     whole_log = call("palette_log", palette_port=port, limit=0)
     # two colours at least: pens all one colour agree however the log placed its writes
-    agree = (ok(whole_log) and whole_log.get("unsynced_writes") == 0
+    agree = (ok(whole_log) and "unsynced_writes" not in whole_log
              and all(log is not None and log == live for _, log, live in pairs)
              and len({live for _, _, live in pairs}) > 1)
     return agree, f"unsynced {whole_log.get('unsynced_writes')}; {pairs}"
@@ -192,28 +192,28 @@ def _h_circus(t: list[str]) -> None:
     cell(t[9], ok(r) and bool(byte) and reading.get("available") is True
          and reading.get("raw_hex") == byte and reading.get("value") == int(byte, 16),
          f"read_memory {byte}; reading {reading}")
-    call("watch_clear", ref="0xa")
+    call("declaration_clear", kind="watch", ref="0xa")
 
     call("watch_add", ref="0xb", mode="change", length=1)
     r = call("watch_add", ref="0x9", mode="change", length=4)
-    listed = [w.get("ref") for w in call("watch_list").get("watches", [])]
+    listed = [w.get("ref") for w in call("declaration_list", kind="watch").get("watches", [])]
     cell(t[6], refused(r, "ambiguous_ref") and listed == ["0xb"], f"listed {listed}: {said(r)}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
     for ref in CONTROLS:
         call("breakpoint_at", ref=ref, role="control")
     r = call("breakpoint_at", ref=ONE_CONTROL_TOO_MANY, role="control")
-    rows = call("breakpoint_list").get("breakpoints", [])
+    rows = call("declaration_list", kind="breakpoint").get("breakpoints", [])
     cell(t[5], refused(r, "bad_argument") and "temp" in str(r.get("message"))
          and sorted(b.get("ref") for b in rows) == sorted(CONTROLS)
          and all(b.get("state") == "armed" for b in rows),
          f"{[(b.get('ref'), b.get('state')) for b in rows]}: {said(r)}")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
 
     # 0x80 is a `brk` the game never reaches, 0x12f7 its main loop's every frame
     r = call("run_to", ref="0x12f7", control="0x80", seconds=WAIT_CEILING_S)
     cell(t[8], ok(r) and r.get("verdict") == "TARGET" and r.get("control_hits") == 0, said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
 
     # a frame's stop first, so the millisecond after it cannot reach the next vblank
     call("run_for", frames=1, seconds=WAIT_CEILING_S)
@@ -316,7 +316,7 @@ def _h_v30(t: list[str]) -> None:
          and m.get("window") == [52, 104]
          and (draft.get("formats") or {}).get("tiles_24x24x8") == "proved",
          f"{short} {said(reached, 40)} / {said(r, 60)} / {said(draft, 60)}")
-    call("breakpoint_clear", ref="Next_Frame")
+    call("declaration_clear", kind="breakpoint", ref="Next_Frame")
     call("close")
 
 
@@ -344,7 +344,7 @@ def _h_v30_alt(t: list[str]) -> None:
     cell(t[16], refused(r, "bad_argument") and "split" in str(r.get("message")), said(r))
     tap = call("watch_add", ref="0x8", mode="count", space="io", length=2)
     if ok(tap) and tap.get("ref"):
-        call("watch_clear", ref=tap["ref"], space="io")
+        call("declaration_clear", kind="watch", ref=tap["ref"], space="io")
     odd = call("watch_add", ref="0x9", mode="count", space="io", length=2)
     cell(t[20], refused(odd, "bad_argument") and "split a 16-bit bus word" in str(
         odd.get("message")) and 'space="io"' in str(odd.get("message")), said(odd, 160))
@@ -354,9 +354,9 @@ def _h_v30_alt(t: list[str]) -> None:
     agree, detail = _palette_log_matches("pal", V30_ALT_PENS)
     cell(t[18], agree and not short, f"{short} {detail}")
     name = fresh_state()
-    call("state_save", name=name)
+    call("state_write", method="save", name=name)
     call("run_for", frames=3, seconds=WAIT_CEILING_S)
-    call("state_load", name=name)
+    call("state_write", method="load", name=name)
     r = call("run_for", frames=1, seconds=WAIT_CEILING_S)
     cell(t[19], ok(r) and "cycles" in r and bool(unavailable_why(r["cycles"])),
          said(r))
@@ -407,8 +407,10 @@ def _bus_log_of_out_dword(port: int) -> str:
 
 
 def _io_count_values(ref: str) -> list[object]:
-    """The values the io count at `ref` tallied, as `watch_list` gives them; [] when none is."""
-    watch: dict[str, Any] = next((w for w in call("watch_list").get("watches") or []
+    """The values the io count at `ref` tallied, as `declaration_list(kind="watch")` gives them; []
+    when none is."""
+    watch: dict[str, Any] = next((w for w in call("declaration_list",
+                                                  kind="watch").get("watches") or []
                                   if (w.get("ref"), w.get("space")) == (ref, "io")), {})
     return [v.get("value") for v in watch.get("values") or []]
 

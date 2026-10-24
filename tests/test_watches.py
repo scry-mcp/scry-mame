@@ -251,7 +251,7 @@ def test_a_change_watch_on_an_address_whose_write_side_is_unmapped_is_refused(
     assert out["status"] == "INVALID" and "unmapped" in out["message"]
     assert "ROM copy" in out["message"] or "never fire" in out["message"]
     assert ses.watchpoints == [], "refused before the stub was touched"
-    assert s.watch_list()["watches"] == []
+    assert s.declaration_list("watch")["watches"] == []
 
 
 def test_a_map_answer_of_an_unknown_shape_is_invalid_not_armed(
@@ -286,7 +286,8 @@ def test_a_read_watch_arms_nothing_and_is_evaluated_at_every_stop(
     assert ses.watchpoints == []
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     stop = s.step()
-    # A STOP SHOWS WHAT THE WATCH READS NOW; its declaration and placement are `watch_list`'s,
+    # A STOP SHOWS WHAT THE WATCH READS NOW; its declaration and placement are
+    # `declaration_list(kind="watch")`'s,
     # and the stop says so.
     assert stop["watches"] == [{
         "ref": "frame_lo", "cpu": ":maincpu",
@@ -294,7 +295,7 @@ def test_a_read_watch_arms_nothing_and_is_evaluated_at_every_stop(
     }]
     assert stop["omitted"] == ["addr", "by", "fmt", "length", "mode"]
     assert stop["how"] == watches.STOP_HOW
-    listed = s.watch_list()["watches"]
+    listed = s.declaration_list("watch")["watches"]
     assert {k: listed[0][k] for k in stop["omitted"]} == {
         "addr": "0x002031fc", "by": "symbol", "fmt": "u32", "length": 4, "mode": "show"}
     assert "watches" not in s.status(), "a survey field, not a status one"
@@ -318,13 +319,13 @@ def test_one_read_watch_speaks_one_vocabulary_in_all_three_tools(
         return {k: w.get(k) for k in reading}
 
     added = s.watch_add(ref="frame_lo", mode="show", length=4)
-    listed = s.watch_list()["watches"]
+    listed = s.declaration_list("watch")["watches"]
     surveyed = s.step()["watches"]
     assert [fields(added), *map(fields, listed)] == [reading] * 2
     assert [{k: w.get(k) for k in ("state", "reading")} for w in surveyed] == [
         {k: reading[k] for k in ("state", "reading")}], "a stop reads the same, placed or not"
     ses.go()
-    running = s.watch_list()["watches"]
+    running = s.declaration_list("watch")["watches"]
     assert [(w["state"], "reading" in w) for w in running] == [
         ("evaluated", False)], "a running machine answers no read, and says so"
 
@@ -771,19 +772,19 @@ def test_watch_list_names_every_declaration_and_its_state(
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.watch_add(ref="scene_id", mode="show", length=2, fmt="u16")
-    listed = s.watch_list()
+    listed = s.declaration_list("watch")
     assert [(w["ref"], w["mode"], w["state"]) for w in listed["watches"]] == [
         ("frame_lo", "change", "armed"), ("scene_id", "show", "unresolved")]
     assert listed["watches"][0]["entry"] == "1 @ 2031FC-2031FF write"
     assert listed["watches"][0]["origin"] == "s1" and listed["watches"][0]["created_at"]
-    assert listed["foreign"] == []
-    assert listed["summary"] == "watch_list: 2 declared, 1 armed"
+    assert "foreign" not in listed
+    assert listed["summary"] == "declaration_list watch: 2 watches (1 armed)"
     # A row the debugger holds that no declaration placed is foreign, never claimed.
     ses.wplist_rows.append("    7 @ 300000-300003 write")
-    assert s.watch_list()["foreign"] == ["7 @ 300000-300003 write"]
+    assert s.declaration_list("watch")["foreign"] == {"watches": ["7 @ 300000-300003 write"]}
     # And while running the list answers from what the server holds, dated.
     s.resume()
-    listed = s.watch_list()
+    listed = s.declaration_list("watch")
     assert listed["session"]["running"] is True and listed["last_stop"]["stop_seq"] == 1
     assert [w["state"] for w in listed["watches"]] == ["armed", "unresolved"]
 
@@ -794,18 +795,21 @@ def test_watch_clear_disarms_what_this_server_armed_and_refuses_an_unknown_ref(
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.watch_add(ref="scene_id", mode="show", length=2, fmt="u16")
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert out["declarations_cleared"] == 1 and out["disarmed"] == ["1 @ 2031FC-2031FF write"]
     assert ses.watchpoints[-1] == (0x2031FC, 4, True) and ses.wplist_rows == []
-    assert out["summary"] == "watch_clear frame_lo: 1 cleared, 1 disarmed"
-    refused = s.watch_clear(ref="frame_lo")
+    assert out["summary"] == "declaration_clear watch frame_lo: 1 cleared, 1 disarmed"
+    refused = s.declaration_clear("watch", ref="frame_lo")
     assert refused["status"] == "INVALID" and "'scene_id'" in refused["message"]
     assert " ".join(refused["message"].split()).endswith(
-        f"`watch_list` shows as `ref`. Matching: {dec.REF_MATCH['watch']}."), (
+        "`declaration_list(kind=\"watch\")` shows as `ref`. Matching: "
+        f"{dec.REF_MATCH['watch']}."), (
         "the refusal names its own family's list and rule")
-    assert refused["summary"].startswith("watch_clear: INVALID")
-    assert s.watch_clear(all=True)["declarations_cleared"] == 1, "no ref clears everything"
-    assert s.watch_clear(all=True)["declarations_cleared"] == 0, "and an empty store's zero is ok"
+    assert refused["summary"].startswith("declaration_clear: INVALID")
+    assert s.declaration_clear("watch",
+                               all=True)["declarations_cleared"] == 1, "no ref clears everything"
+    cleared = s.declaration_clear("watch", all=True)
+    assert cleared["declarations_cleared"] == 0, "and an empty store's zero is ok"
 
 
 def test_a_watch_arms_and_clears_while_running_and_says_so(
@@ -818,7 +822,7 @@ def test_a_watch_arms_and_clears_while_running_and_says_so(
     assert out["armed"] is True and out["while_running"] is True and ses.running
     assert out["index"] == 1, "the debugger's list is read back even while running"
     assert "value" not in out, "no bytes are read off a running machine"
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert out["while_running"] is True and ses.running
 
 
@@ -835,7 +839,7 @@ def test_watch_add_refuses_a_bad_mode_width_or_format_before_the_stub(
     ):
         refused(why,
         s.watch_add(ref="frame_lo", **kwargs))
-    assert ses.watchpoints == [] and s.watch_list()["watches"] == []
+    assert ses.watchpoints == [] and s.declaration_list("watch")["watches"] == []
 
 
 def test_the_watch_tools_refuse_with_no_machine_unless_the_argument_says_otherwise() -> None:
@@ -851,7 +855,7 @@ def test_the_watch_tools_refuse_with_no_machine_unless_the_argument_says_otherwi
     assert "poll" in bad_vocabulary["message"], bad_vocabulary["message"]
     needs_a_machine: list[Callable[[], dict[str, Any]]] = [
         lambda: s.watch_add(ref="x", mode="show", length=2),
-        lambda: s.watch_list(), lambda: s.watch_clear(ref="x")]
+        lambda: s.declaration_list("watch"), lambda: s.declaration_clear("watch", ref="x")]
     for call in needs_a_machine:
         refused("no machine running", call())
 
@@ -1041,7 +1045,7 @@ def test_watch_list_and_the_survey_name_the_odd_states(
                               watch_mode="show", origin="s1"))
     placed = [("frame_lo", "gone"), ("0x203200", "stale"), ("copy_in_rom", "evaluated"),
               ("scene_id", "unresolved")]
-    listed = s.watch_list()["watches"]
+    listed = s.declaration_list("watch")["watches"]
     assert [(w["ref"], w["state"]) for w in listed] == placed
     assert "another build" in listed[1]["why"]
     assert listed[2]["reading"]["available"] is True and "value" not in listed[2]
@@ -1204,7 +1208,7 @@ def test_a_rearm_never_stacks_a_row_the_debugger_already_holds_and_a_clear_reads
     assert read["armed"] is False and "value" not in read
     monkeypatch.setattr(ses, "watchpoint", lambda addr, length, remove=False, cpu=None,
                         index=None: None)
-    gone = s.watch_clear(ref="frame_lo")
+    gone = s.declaration_clear("watch", ref="frame_lo")
     assert gone["declarations_cleared"] == 1 and gone["disarmed"] == [], (
         "the row is still listed, so nothing is claimed disarmed")
 
@@ -1220,7 +1224,7 @@ def test_a_watch_redeclared_under_one_ref_with_another_shape_is_refused(
     both declarations while one row stayed armed with nothing to explain it."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
-    refused("already declared.*width 4.*watch_clear",
+    refused("already declared.*width 4.*declaration_clear",
     s.watch_add(ref="frame_lo", mode="change", length=8))
     refused("already declared",
     s.watch_add(ref="frame_lo", mode="change", length=4, fmt="i32"))
@@ -1282,7 +1286,7 @@ def test_watch_clear_keeps_its_record_when_the_stub_refuses_the_removal(
         raise gs.Refused("the stub refused `z2`: E01")
 
     monkeypatch.setattr(ses, "watchpoint", refuse)
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert out["status"] == "INVALID" and out["code"] == "readback_refused", out
     assert ("frame_lo", ":maincpu") in mstate.STATE.armed_watches, "still armed, still recorded"
     assert [d.ref for d in arming.store().declarations()] == ["frame_lo"]
@@ -1292,7 +1296,8 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The stub TOOK the removal and the debugger's `wplist` still lists the row: the record
-    goes only once the list no longer shows it, as `breakpoint_clear` does, so `disarmed`
+    goes only once the list no longer shows it, as `declaration_clear(kind="breakpoint")` does, so
+    `disarmed`
     stays the machine's answer and the next hit there is not read as foreign. The reply's
     `note` names the row still held; the declaration goes as it does today."""
     ses = _watching(monkeypatch, tmp_path)
@@ -1304,12 +1309,12 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
         ses.watchpoints.append((addr, length, remove))          # the row stays in `wplist`
 
     monkeypatch.setattr(ses, "watchpoint", taken_but_listed)
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert ses.watchpoints[-1] == (0x2031FC, 4, True), "the removal went out"
     assert out["declarations_cleared"] == 1 and out["disarmed"] == []
     assert "1F @ 2031FC-2031FF write" in out["note"] and "still" in out["note"], out
     assert out["note"].endswith('`debug("wpclear 0x1f")` removes the row'), out["note"]
-    assert out["summary"] == "watch_clear frame_lo: 1 cleared, 0 disarmed"
+    assert out["summary"] == "declaration_clear watch frame_lo: 1 cleared, 0 disarmed"
     refused("already armed under 'frame_lo'",
             s.watch_add(ref="0x2031fc", mode="change", length=4))   # the record is still held
     # AND THE ROW CAN STILL FIRE: the stop is named by the ref whose record is held, says the
@@ -1350,7 +1355,7 @@ def test_a_change_watch_the_list_does_not_show_after_the_z2_is_refused_with_noth
     assert (out["stored"], out["armed"], out["state"]) == (False, False, "gone"), out
     assert "nothing is stored" in out["note"] and "watch_add" in out["note"], out["note"]
     assert "`debug(\"wplist\")`" in out["note"], out["note"]
-    assert arming.store().declarations() == [] and s.watch_list()["watches"] == []
+    assert arming.store().declarations() == [] and s.declaration_list("watch")["watches"] == []
     ses.running = True
     out = s.watch_add(ref="frame_lo", mode="change", length=4)
     assert out["code"] == "readback_refused" and out["stored"] is False, out
@@ -1377,9 +1382,10 @@ def test_a_disabled_row_is_listed_disabled_and_never_counts_as_armed(
     s.breakpoint_at(ref="0x4a0")
     ses.wplist_rows[0] = "D" + ses.wplist_rows[0][1:]
     ses.bplist_rows[0] = "D" + ses.bplist_rows[0][1:]
-    assert s.watch_list()["watches"][0]["state"] == "disabled"
-    assert s.breakpoint_list()["breakpoints"][0]["state"] == "disabled"
-    assert s.watch_list()["foreign"] == [] and s.breakpoint_list()["foreign"] == []
+    assert s.declaration_list("watch")["watches"][0]["state"] == "disabled"
+    assert s.declaration_list("breakpoint")["breakpoints"][0]["state"] == "disabled"
+    assert "foreign" not in s.declaration_list("watch")
+    assert "foreign" not in s.declaration_list("breakpoint")
 
 
 def test_the_console_line_is_matched_to_the_firing_watchs_index(
@@ -1888,7 +1894,8 @@ def test_a_survey_evaluates_every_declaration_after_an_unresolved_or_a_bus_watch
     assert [(r["ref"], r["state"]) for r in rows] == [
         ("scene_id", "unresolved"), ("0x740000", "armed"), ("frame_lo", "evaluated")], rows
     assert rows[1]["reading"]["state"] == "bus", rows[1]
-    assert s.watch_list()["watches"][1]["addr"] == "0x00740000", "where it is, the list says"
+    listed = s.declaration_list("watch")["watches"]
+    assert listed[1]["addr"] == "0x00740000", "where it is, the list says"
 
 
 def test_a_survey_that_cannot_read_wplist_places_by_its_record_and_says_gone_without_one(
@@ -1950,12 +1957,12 @@ def test_a_pass_re_arms_each_watch_by_its_own_range_and_refreshes_its_row(
 
     monkeypatch.setattr(ses, "watchpoint", lose_the_first)
     assert watches.rearm_after_pass(ses, refs) == [("0x203200", ":maincpu")]  # type: ignore[arg-type]
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["frame_lo"]["state"] == "gone", listed["frame_lo"]
     assert listed["0x203200"]["state"] == "armed", listed["0x203200"]
     assert listed["0x203200"]["entry"] == "4 @ 203200-203201 write", "the row numbered afresh"
     # The record took the new row too: a clear reports the row as the debugger numbers it NOW.
-    assert s.watch_clear(ref="0x203200")["disarmed"] == ["4 @ 203200-203201 write"]
+    assert s.declaration_clear("watch", ref="0x203200")["disarmed"] == ["4 @ 203200-203201 write"]
 
 
 def test_the_console_log_is_read_from_the_first_arm_on(

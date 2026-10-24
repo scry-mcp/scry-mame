@@ -2,8 +2,9 @@
  "task": {
   "id": "M175",
   "prompt": "In the series /tmp/run1/manifest.json, when does the rectangle at x 100, y 20, 24 by 8 match the picture /tmp/ref/digit.png in 95% or more of its pixels? List at most 10 changes.",
-  "tool": "region_track",
+  "tool": "image_compare",
   "args": {
+   "method": "region",
    "manifest": "/tmp/run1/manifest.json",
    "crop": [
     100,
@@ -17,25 +18,98 @@
    "limit": 10
   },
   "grammar": [
-   "match"
+   "match",
+   "region"
   ]
  },
  "runs": [
   {
    "lines": [
-    "M175: {\"tool\": \"region_track\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M175: {\"tool\":\"region_track\",\"args\":{\"manifest\":\"/tmp/run1/manifest.json\",\"crop\":[100,20,24,8],\"measure\":\"match\",\"ref\":\"/tmp/ref/digit.png\",\"threshold\":0.95,\"limit\":10}}"
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M175: {\"tool\": \"region_track\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\":\"image_compare\",\"args\":{\"method\":\"region\",\"manifest\":\"/tmp/run1/manifest.json\",\"crop\":[100,20,24,8],\"measure\":\"match\",\"ref\":\"/tmp/ref/digit.png\",\"threshold\":0.95,\"limit\":10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"measure\": \"match\", \"crop\": [100, 20, 24, 8], \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
    ],
    "right": true
   }

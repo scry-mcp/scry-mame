@@ -17,6 +17,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from session_doubles import documented  # noqa: E402
+
 import server as s  # noqa: E402
 
 
@@ -29,16 +31,6 @@ def test_the_instructions_say_a_left_out_cpu_lists_every_cpu() -> None:
     text = " ".join((s.mcp.instructions or "").split())
     assert "no `cpu` is the VISIBLE one" not in text
     assert "no `cpu` acts on the VISIBLE one" in text and "lists or clears all" in text, text
-
-
-@pytest.mark.parametrize("tool", ["breakpoint_list", "watch_list", "regpoint_list"])
-def test_a_list_says_a_left_out_cpu_is_every_cpu(tool: str) -> None:
-    assert "left out, every cpu" in _texts()[tool]
-
-
-@pytest.mark.parametrize("tool", ["breakpoint_clear", "watch_clear", "regpoint_clear"])
-def test_a_clear_says_it_reaches_every_cpu_without_one(tool: str) -> None:
-    assert "on every cpu or" in _texts()[tool]
 
 
 @pytest.mark.parametrize("tool", ["run_to", "breakpoint_at", "regpoint_add"])
@@ -61,7 +53,7 @@ def test_start_says_which_paths_are_directories() -> None:
 
 
 def test_gfx_locate_names_its_source_arguments() -> None:
-    text = _texts()["gfx_locate"]
+    text = documented("gfx_locate")
     assert all(f"`{a}`" in text for a in ("tag", "ref", "offset", "cpu")), text
 
 

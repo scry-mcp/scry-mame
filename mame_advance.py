@@ -326,7 +326,8 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
                          f"the target {ref} already has breakpoint "
                          f"{mclear.row_index(taken['index'])} at "
                          f"{a_target:#x}{what}: a stop there could not be told from the "
-                         "target's. Clear it (`breakpoint_clear`) and run again")
+                         "target's. Clear it (`declaration_clear(kind=\"breakpoint\")`) and run "
+                         "again")
     before = breakpoints.control_counts(ses)
     # THE TARGET IS ARMED ON ITS CPU, named, like every row (`mame_breakpoints.bp_command`), and
     # removed by its index.

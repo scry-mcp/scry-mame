@@ -9,27 +9,16 @@
 cpu_info(cpu="")
 ```
 
-WHAT THE DEBUGGER SEES OF EACH CPU at the call, one row per cpu: whether it is visible,
-ignored or suspended, its program counter, and how many breakpoints, watches and
-registerpoints are declared on it, moving nothing: the listings are the console's own and
-each pc register is read off the stub, so no cpu is made visible and nothing runs. Answers
-on a RUNNING machine too. What a cpu IS (its type, clock, spaces) is `machine_map`'s.
+What the debugger sees of each cpu now: visibility, ignored or suspended, program counter,
+and the breakpoints, watches and registerpoints declared on it. Moves nothing; answers on a
+running machine.
 
-Arguments: `cpu`, a tag in either spelling (`subcpu` or `:subcpu`), narrows the rows to that
-cpu's, and only its pc is read; empty is every cpu.
+Arguments: `cpu`, a tag in either spelling (`subcpu` or `:subcpu`), narrows the rows.
 
-Refused: a tag no row names (`unknown_ref` naming the ones that do); no machine
-(`no_session`); a session that broke, a read that latched it included (`session_broken`).
+Refused: a tag no row names (`unknown_ref`); no machine (`no_session`); a broken session
+(`session_broken`).
 
-Reply: `cpus`, one row per cpu `cpulist` lists, in its order, then one per other cpu a
-declaration names: `cpu`, `visible` (the cpu a call naming none acts on; a stop moves it),
-`ignored` (its breakpoints and watches have no effect), `suspended` (held by the debugger's
-own `suspend`), `pc` (its program counter register, `reg` and `value`, or unavailable with
-why, as while it runs), `declarations` (this server's `breakpoints`, `watches`, an io tap
-among them, and `regpoints` on it, counted in any state; an expr watch names no cpu).
-`visible`, `ignored` and `suspended` are unavailable when the console did not answer, and
-all four for a cpu `cpulist` does not list; `declarations` is always counted. `cpu` (unavailable
-unless named).
+Reply: `cpus` (each `cpu`, `visible`, `ignored`, `suspended`, `pc`, `declarations`), `cpu`.
 
 Reference: REFERENCE.md, The session.
 
@@ -94,6 +83,8 @@ Example, from a live run:
 
 Two things no reply carries, because neither the console nor Lua shows them without moving the machine: a cpu the BOARD holds in reset or on its halt line, and, without the thread patch, the registers of any cpu but the first.
 
+A cpu's type and clock are `machine_map`'s, not this tool's. `visible` is the cpu a call naming none acts on, and a stop moves it; `ignored` means its breakpoints and watches have no effect; `suspended` is the debugger's own `suspend`. Rows follow `cpulist`'s order, then any other cpu a declaration names; for a cpu `cpulist` does not list, the first three are unavailable. `declarations` counts this server's breakpoints, watches (an io tap among them) and regpoints in any state, and an expr watch names no cpu. Naming `cpu` reads only that cpu's pc. The listings are the console's own and each pc is read off the stub, which is why no cpu is made visible and nothing runs; `unknown_ref` names the tags that do have rows.
+
 <!-- scry-reference:begin machine_map -->
 ## `machine_map`
 
@@ -103,33 +94,18 @@ Two things no reply carries, because neither the console nor Lua shows them with
 machine_map(cpu="", sections=null)
 ```
 
-WHAT THE MACHINE IS, rather than what is on it: its cpus and their spaces, every address map
-entry and the share or region it names, the blocks by tag and size, its screens, and its ROM
-files with their crc. Cached at `start()`: free, the same every time, and answered on a
-RUNNING machine too.
+What the machine is: its cpus and spaces, address map, regions, shares, screens and ROM
+files. Cached at `start()`, free; answered on a running machine.
 
-Arguments: `cpu`, a tag in either spelling (`maincpu` or `:maincpu`), narrows `cpus`, `spaces`,
-`address_map` and `symbol_coverage` to one; the blocks, screens and ROM files stay whole.
-`sections` names the sections to answer; left out, all but `rom_files` (then in `omitted`).
+Arguments: `cpu`, a tag in either spelling, narrows `cpus`, `spaces`, `address_map` and
+`symbol_coverage`. `sections` picks sections; left out, all but `rom_files`.
 
-Refused: an empty or unknown `sections` (`bad_argument`); a tag this machine lacks
-(`unknown_ref` naming the ones it has); no machine (`no_session`); a broken session
-(`session_broken`).
+Refused: an empty or unknown `sections` (`bad_argument`); an unknown tag (`unknown_ref`); no
+machine (`no_session`); a broken session (`session_broken`).
 
-Reply: `cpus` (`cpu`, `type` (MAME's shortname, `m68000`), `name`, `clock_hz`, `spaces`),
-`spaces` (`cpu`, `space`, `data_width_bits`, `endianness`, `entries`, and the space's last
-address `address_mask` where a source backs it), `address_map` (`cpu`, `space`, `index`,
-`start`, `end`, `share` or `region`+`region_offset` by the full tag `regions` and `shares`
-carry, and the ENTRY's own `mirror` and `address_mask` when not zero), `regions` and `shares`
-(`tag`, `size`, `bytewidth`, `endianness`), `screens` (`tag`, `width`, `height`, `refresh_hz`,
-`rotation`, `type`), `rom_files` (`name`, `size`, `crc`, `sha1`, `dump_status`, `region`,
-`offset`), `symbol_coverage` (one row per class of each cpu's table: `cpu`, `span`, `symbols`,
-`base`; an empty list when no table has classes), `counts` (each section's full count),
-`truncated` (a boolean: each list section is cut to 400 rows), `sources` (which source
-backs each section; a field none backs is ABSENT), `omitted`/`how`, `note` (a disagreement
-between sources, the live value kept; banked ranges; and that this is the machine as `start`
-read it), and `frame_symbol` (the frame counter's name; unavailable, saying what that changes,
-on a board with none).
+Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
+`symbol_coverage`, `counts`, `truncated` (lists are cut to 400 rows), `sources`,
+`note`, `frame_symbol`. A field no source backs is absent.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -374,6 +350,8 @@ Example, from a live run:
 
 **`symbol_coverage` names its source** (`symbols`) because a section whose provenance is missing cannot be told from an oversight, and `cpu=` leaves the ROM files whole because narrowing them would say the other cpu's ROMs do not exist.
 
+Row fields. `cpus`: `cpu`, `type` (MAME's shortname, `m68000`), `name`, `clock_hz`, `spaces`. `spaces`: `cpu`, `space`, `data_width_bits`, `endianness`, `entries`, and `address_mask` where a source backs it. `address_map`: `cpu`, `space`, `index`, `start`, `end`, `share` or `region`+`region_offset` by the full tag `regions` and `shares` carry, and the entry's own `mirror` and `address_mask` when not zero. `regions`/`shares`: `tag`, `size`, `bytewidth`, `endianness`. `screens`: `tag`, `width`, `height`, `refresh_hz`, `rotation`, `type`. `rom_files`: `name`, `size`, `crc`, `sha1`, `dump_status`, `region`, `offset`. `symbol_coverage`: one row per class of each cpu's table (`cpu`, `span`, `symbols`, `base`), an empty list when no table has classes. `counts` is each section's full count; `omitted` and `how` name the sections left out. `note` records a disagreement between sources (the live value kept), banked ranges, and that this is the machine as `start` read it. `frame_symbol` is the frame counter's name, unavailable on a board with none. `cpu=` leaves blocks, screens and ROM files whole, because narrowing them would say the other cpu's ROMs do not exist. A refused tag's `unknown_ref` names the ones the machine has.
+
 <!-- scry-reference:begin symbols_find -->
 ## `symbols_find`
 
@@ -383,31 +361,15 @@ Example, from a live run:
 symbols_find(name="", linear="", limit=10, cpu="")
 ```
 
-Look a symbol up in a cpu's table, the one `start` loaded for it: `cpu`'s (`subcpu`),
-else the visible cpu's, named in the reply as `cpu`. One question per call: `name` (exact
-match, else prefix matches ordered by address, up to `limit` (1..50: each symbol
-answered costs the console one `map`), `truncated` saying whether it bit; matched WITHOUT regard
-to case, so `vec_irq1` finds `VEC_IRQ1`), or `linear` (a `0x` address as the debugger shows it:
-what am I inside? The nearest symbol AT OR BELOW and the distance above it, since the table
-carries no sizes).
+Look a symbol up in the table `start` loaded for `cpu`, else the visible cpu. One question
+per call: `name` (exact, else prefix matches by address, case-insensitive, up to `limit`
+1..50), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
+linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
-`linear` IS THE ADDRESS AT RUN TIME, after `bases`: the one `read_memory`, `disassemble`
-and a stop's `pc` show. It is NOT the `linear` column a linker map prints, which is the
-address BEFORE the bases `start` applied; that column passed here answers a plausible
-symbol with an absurd delta.
+Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`).
 
-Reply: by name, `query`, `symbols_total` (how many matched) and `symbols` (`name`, `addr`,
-`memory`);
-by address, `linear`, `name`, `addr`, `delta`, `memory`. `memory` is what the address IS
-to the machine, from the console's `map`: `ram` (written and read through memory, a
-change watch fires there), `rom` (nothing writes it: the ROM copy of a datum, or code),
-`latch` (written through a handler, read nowhere: `read_memory` answers zeros there,
-and when the map entry keeps a share, `read_block(ref=...)` reads it), `handlers` (read
-and written through
-handlers, a paired region: readable, not plain memory), `unmapped`; `unknown` on a RUNNING
-machine, where the console cannot be asked (the `note` says so), or where `map` names no
-side. `status: INVALID` with no symbol table (`no_channel`), or for an address below every
-symbol (`unknown_ref`). Answers on a running machine: the table is not a value read off it.
+Reply: by name, `query`, `symbols_total`, `symbols` (`name`, `addr`, `memory`), `truncated`;
+by address, `linear`, `name`, `addr`, `delta`, `memory`; and `cpu`, `note`.
 
 Reference: REFERENCE.md, Names for addresses.
 
@@ -461,6 +423,8 @@ Example, from a live run:
 
 `memory` is answered so that a change watch on the ROM copy of a datum is known to be pointless before it is tried.
 
+`memory` values: `ram`, `rom`, `latch`, `handlers`, `unmapped`, or `unknown`. Each symbol answered costs the console one `map`, hence the `limit` cap. `linear` is the address after `bases`, since a linker map's column is before them and passed here answers a plausible symbol with an absurd delta; the delta is a distance above the symbol because the table carries no sizes. `memory` is what the address is to the machine, from the console's `map`: `ram` is written and read through memory, so a change watch fires there; `rom` is never written (the ROM copy of a datum, or code); `latch` is written through a handler and read nowhere, so `read_memory` answers zeros and, when the map entry keeps a share, `read_block(ref=...)` reads it; `handlers` is read and written through handlers, a paired region: readable, not plain memory; `unknown` is answered on a running machine (the `note` says so) or where `map` names no side. The table is not a value read off the machine, which is why it answers while running.
+
 <!-- scry-reference:begin log -->
 ## `log`
 
@@ -470,26 +434,16 @@ Example, from a live run:
 log(pattern, channel, limit=40, labels=false, since_mark=0)
 ```
 
-The newest lines of one `channel` of what MAME writes, matching the regex `pattern` (`.`
-for every line; never empty).
+The newest lines of one `channel` of what MAME writes matching the regex `pattern` (`.` for
+all; never empty). Works while running.
 
-`channel` is `emulator` (`error.log`: what the core and the drivers say through
-`logerror`), `process` (`stdout.log`: the process's own stdout and stderr, where
-`osd_printf_error` and `-verbose` go, a driver's own counters among them) or `all` (both,
-each line tagged `[emulator] ` or `[process] `, with `counts` per source); `guest` names a
-channel an arcade board does not have, and is refused by name.
-`labels=True` adds `labels`, how many returned lines carry each first word (`RE_DAC`,
-`RE_IRQ`): one glance at who is talking. `since_mark`, a byte position in the channel's log (the `mark` a `state_load` or a stop's log block gives for it): only what was written after it is read; 0, the default, reads the whole log (not over `all`, two files).
+`channel`: `emulator`, `process` or `all` (lines tagged `[emulator] `, `[process] `);
+`guest` is refused. `labels=True` adds `labels`, lines counted by first word.
+`since_mark` reads only what follows that log byte position.
 
-PASS A PATTERN THAT NARROWS, always, and treat `.` as a last resort. A driver's own
-`logerror` traffic can run to hundreds of lines per emulated second, so a default-pattern read
-is mostly somebody else's noise
-with the line you want buried in it. The same goes for `drive`'s `pattern`.
-
-Reply: `pattern`, `channel`, `lines` (the newest `limit` matches, 1..400, oldest
-first), `lines_total` (every match in the file), `truncated`. `status: INVALID` with `message`
-when no file of the channel exists yet; a bad `limit`, an unusable regex, an unknown channel
-or a `since_mark` that names no position of the log is refused. Works on a running machine.
+Reply: `pattern`, `channel`, `lines` (the newest `limit`, 1..400, oldest first),
+`lines_total`, `truncated`, `counts`, `labels`. A bad `limit`, regex or `since_mark` is
+refused.
 
 Reference: REFERENCE.md, The log.
 
@@ -538,6 +492,8 @@ Example, from a live run:
 
 The `emulator` channel is `error.log`, which every launch writes.
 
+Pass a pattern that narrows: `.` is a last resort. `since_mark` is a byte position in the channel's log (the `mark` a state load or a stop's log block gives): only what was written after it is read; 0, the default, reads the whole log, and it is not accepted over `all`, two files. `emulator` is `error.log` (core and driver `logerror`), `process` is `stdout.log` (stdout and stderr). A driver's own `logerror` traffic can run to hundreds of lines per emulated second, so a default-pattern read is mostly somebody else's noise with the wanted line buried in it; the same goes for `drive`'s `pattern`. `process` is where `osd_printf_error`, `-verbose` and a driver's own counters go, and `labels` gives one glance at who is talking (`RE_DAC`, `RE_IRQ`). `guest` is a channel an arcade board does not have.
+
 <!-- scry-reference:begin log_wait -->
 ## `log_wait`
 
@@ -547,26 +503,14 @@ The `emulator` channel is `error.log`, which every launch writes.
 log_wait(pattern, channel, seconds=30.0, since_mark=0)
 ```
 
-WHEN a line of `channel` matching the regex `pattern` (`.` for any; never empty) was
-logged: at once if the log
-already holds it, else wait up to `seconds` for it. The one wait that answers while the
-machine RUNS, and the proof that a run reached what it was meant to reach.
+Wait up to `seconds` for a line of `channel` matching the regex `pattern` (never empty);
+at once if the log holds it. Answers while running. `channel`, `since_mark` as in `log`.
 
-`channel` as in `log` (`emulator`, `process`, `all`; over `all` the first match in either
-file wins and the line carries its tag). `since_mark` as in `log`: "already" is then "since
-the mark", which is how "after the load" is asked.
+Refused: `wait_stopped` when stopped and the log lacks the line; `session_broken`; a bad
+`seconds`, regex or `since_mark`.
 
-Reply: `verdict` `TARGET`, `channel`, `line` (the FIRST match; `log` is the tool for the
-newest), `already` (it was in the log before this call), `waited_s` (0.0 when already),
-`lines_before`, `lines_total`, `arrived_during`, `lines_examined`; when the bound ran out,
-`verdict` `TIMEOUT` with `arrived_during`, `lines_examined`, `waited_s` and a `note` (the
-machine still runs). `status: INVALID`: `wait_stopped` when the machine is STOPPED and the
-log does not already hold the line (a stopped machine logs nothing, so the wait could not
-end; the refusal names `last_stop`, and a stop that lands DURING the wait is reported the
-same way after one last read of the log), `session_broken` (LATCHED) when the emulator
-went away. A
-bad `seconds`, an unusable regex, an unknown channel or a
-`since_mark` that names no position of the log is refused. Reports its progress while it waits.
+Reply: `verdict` `TARGET`, `line` (the first match), `already`, `waited_s`, `lines_before`,
+`lines_total`, `arrived_during`, `lines_examined`; on timeout `verdict` `TIMEOUT`, `note`.
 
 Reference: REFERENCE.md, The log.
 
@@ -618,3 +562,5 @@ Example, from a live run:
 }
 ```
 <!-- scry-reference:end log_wait -->
+
+It is the proof that a run reached what it was meant to reach; `log` is the tool for the newest match. With `since_mark`, "already" means since the mark, which is how "after the load" is asked. A stopped machine logs nothing, so the wait could not end; a stop landing during the wait is reported the same way after one last read of the log. On a timeout the machine still runs. It reports progress while it waits.

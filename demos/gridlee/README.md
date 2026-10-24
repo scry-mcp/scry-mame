@@ -63,10 +63,10 @@ Give this to an MCP client with this server connected:
 |---|---|
 | Session | `start` (checked against the ROM), `close` |
 | Measure | `run_for` by emulated milliseconds and by frames, with its frame and cycle survey |
-| Memory | `scan_start` and `scan_filter`; `watch_add` (through `perform`) and `watch_clear`; `read_memory` |
+| Memory | `scan(method="start")` and `scan(method="filter")`; `watch_add` (through `perform`) and `declaration_clear(kind="watch")`; `read_memory` |
 | Debug | each watch's stop naming its writer, `disassemble` (the coin routine), the START's trail in `history`, `registers` |
 | Control | `input` (the coin slot and the START button; the watches stop the START while it is still held) |
-| Automate | `perform` (coin, run, filter in one call; both watches in one), `state_save`, `state_load` (verified) |
+| Automate | `perform` (coin, run, filter in one call; both watches in one), `state_write(method="save")`, `state_write(method="load")` (verified) |
 | Screen | `screen_view` |
 
 ## The transcript
@@ -118,7 +118,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "stdout_path": "<volatile>",
   "rom_check": "OK",
   "symbols_total": 0,
-  "symbols_typed": 0,
   "symbols_format": "none",
   "symbols_by_class": {},
   "symbols_by_cpu": {},
@@ -137,8 +136,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "pc": "0x0000f000",
   "frame": 0,
   "frame_symbol": "frame",
-  "env": {},
-  "display": "",
   "view": "native",
   "views": [
     "Screen 0 Standard (4:3)",
@@ -147,7 +144,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   ],
   "background": true,
   "flags": "<volatile>",
-  "throttle_from_frame": 0,
   "boot_lua_path": "<volatile>",
   "presence": true,
   "machine": {
@@ -185,7 +181,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "unarmable": []
     }
   },
-  "start_retries": [],
   "session": {
     "alive": true,
     "running": false,
@@ -278,12 +273,13 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**3. `scan_start`**: OK scan: 2048 candidate bytes in 0x0+0x800
+**3. `scan`**: OK scan: 2048 candidate bytes in 0x0+0x800
 
 <details><summary>call and reply</summary>
 
 ```json
 {
+  "method": "start",
   "ref": "0x0",
   "length": 2048
 }
@@ -291,7 +287,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 ```json
 {
-  "summary": "scan_start 0x0: 2048 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
   "status": "ok",
   "addr": "0x00000000",
   "length": 2048,
@@ -334,7 +330,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "seconds": 300
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
+      "method": "filter",
       "operator": "=",
       "value": 1
     }
@@ -360,11 +357,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "cycles": 105600,
         "polls": 6,
         "lines_ahead": 0,
-        "drain_steps": 0,
-        "reader_steps": 0,
         "thread_errors": 0,
         "console_reruns": 0,
-        "resent": 0,
         "route": "ioport",
         "port": ":IN1",
         "field": "Coin 1",
@@ -512,10 +506,10 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "scan_filter = 0x01: 22 survivors",
+        "summary": "scan filter: = 0x01, 22 survivors",
         "status": "ok",
         "operator": "=",
         "value": "0x01",
@@ -669,7 +663,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "seconds": 300
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
+      "method": "filter",
       "operator": "=",
       "value": 2
     }
@@ -695,11 +690,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "cycles": 105602,
         "polls": 6,
         "lines_ahead": 0,
-        "drain_steps": 0,
-        "reader_steps": 0,
         "thread_errors": 0,
         "console_reruns": 0,
-        "resent": 0,
         "route": "ioport",
         "port": ":IN1",
         "field": "Coin 1",
@@ -848,10 +840,10 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "scan_filter = 0x02: 3 survivors",
+        "summary": "scan filter: = 0x02, 3 survivors",
         "status": "ok",
         "operator": "=",
         "value": "0x02",
@@ -929,7 +921,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "seconds": 300
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
+      "method": "filter",
       "operator": "=",
       "value": 3
     }
@@ -955,11 +948,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
         "cycles": 105601,
         "polls": 6,
         "lines_ahead": 0,
-        "drain_steps": 0,
-        "reader_steps": 0,
         "thread_errors": 0,
         "console_reruns": 0,
-        "resent": 0,
         "route": "ioport",
         "port": ":IN1",
         "field": "Coin 1",
@@ -1107,10 +1097,10 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       }
     },
     {
-      "op": "scan_filter",
+      "op": "scan",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "scan_filter = 0x03: 3 survivors",
+        "summary": "scan filter: = 0x03, 3 survivors",
         "status": "ok",
         "operator": "=",
         "value": "0x03",
@@ -1321,11 +1311,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "cycles": 105601,
   "polls": 6,
   "lines_ahead": 0,
-  "drain_steps": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "route": "ioport",
   "port": ":IN1",
   "field": "Coin 1",
@@ -1417,7 +1404,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
@@ -1527,7 +1514,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -1656,7 +1643,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -1837,7 +1824,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "session": {
     "alive": true,
     "running": false,
@@ -1887,19 +1874,20 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**14. `state_save`**: OK save: state four_credits saved at frame 702
+**14. `state_write`**: OK save: state four_credits saved at frame 702
 
 <details><summary>call and reply</summary>
 
 ```json
 {
+  "method": "save",
   "name": "four_credits"
 }
 ```
 
 ```json
 {
-  "summary": "state_save four_credits: 10850 bytes at frame 702",
+  "summary": "state_write save: four_credits, 10850 bytes at frame 702",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",
@@ -1950,11 +1938,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "cycles": 5189,
   "polls": 2,
   "lines_ahead": 0,
-  "drain_steps": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "route": "ioport",
   "port": ":IN1",
   "field": "1 Player Start",
@@ -2049,7 +2034,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -2179,7 +2164,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
     "length",
     "mode"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -2310,19 +2295,20 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 </details>
 
-**19. `watch_clear`**: OK unwatch: both watches cleared
+**19. `declaration_clear`**: OK unwatch: both watches cleared
 
 <details><summary>call and reply</summary>
 
 ```json
 {
+  "kind": "watch",
   "all": true
 }
 ```
 
 ```json
 {
-  "summary": "watch_clear all: 2 cleared, 2 disarmed",
+  "summary": "declaration_clear watch all: 2 cleared, 2 disarmed",
   "status": "ok",
   "declarations_cleared": 2,
   "disarmed": [
@@ -2506,10 +2492,8 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#6",
   "pc_before": "0x0000a633",
   "cause": "screen_view: one step",
@@ -2568,19 +2552,20 @@ Also attached: image/png.
 
 </details>
 
-**23. `state_load`**: OK load: state four_credits loaded and verified, frame 702
+**23. `state_write`**: OK load: state four_credits loaded and verified, frame 702
 
 <details><summary>call and reply</summary>
 
 ```json
 {
+  "method": "load",
   "name": "four_credits"
 }
 ```
 
 ```json
 {
-  "summary": "state_load four_credits: rom_check OK, verified True, frame 702, pc 0x0000ae19",
+  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 702, pc 0x0000ae19",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",

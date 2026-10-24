@@ -1,6 +1,7 @@
 """THE WATCH FAMILY: `watch_add` arms a WRITE watchpoint (a change watch), sends a write tap
 (a count or a capture watch, `mame_tally` and `mame_capture`) or holds a show watch
-that arms nothing; `watch_list` reads `wplist` back, `watch_clear` removes and reads back,
+that arms nothing; `declaration_list(kind="watch")` reads `wplist` back,
+`declaration_clear(kind="watch")` removes and reads back,
 `evaluate_watches` renders every watch's bytes at a stop, and `watch_stop` says WHO WROTE THIS
 BYTE when a stop is a watchpoint's. What every family shares is `mame_arming`'s, `mame_lists`',
 `mame_conditions`' and `mame_clear`'s; where an address's sides go is `mame_map`'s.
@@ -163,7 +164,8 @@ def check_fmt_width(width: int, fmt: str) -> int | None:
 @functools.cache
 def capture_block_chars_max() -> int:
     """THE WIDEST A CAPTURE'S DECODED BLOCK MAY PRINT: the widest an array or a string makes over
-    the largest block a capture holds, the listing `watch_list`'s budget test measures. A struct's
+    the largest block a capture holds, the listing `declaration_list(kind="watch")`'s budget test
+    measures. A struct's
     field names are the caller's, so a struct is held to what the arrays already make. Computed on
     first use, since `mame_capture` is still importing this module when it is defined."""
     return max([capture.block_chars_max(vf.parse(f"{elem}[{SHOW_WATCH_MAX // size}]"), 0)
@@ -209,7 +211,7 @@ def check_watch_width(width: int, mode: str, fmt: str = "") -> None:
     with its format known, the ceiling on its decoded row. Asked before the gate when the width is
     known from the arguments alone, and by the body once the table has filled in an `auto`
     format. A capture reads its block at every trigger into a row, so it is bounded like a show
-    watch, and `watch_list` shows `ROWS_SHOWN` of those rows decoded."""
+    watch, and `declaration_list(kind="watch")` shows `ROWS_SHOWN` of those rows decoded."""
     limit = SHOW_WATCH_MAX if mode in ("show", "capture") else read.READ_MAX
     if width > limit:
         raise st.Invalid("bad_argument",
@@ -218,7 +220,8 @@ def check_watch_width(width: int, mode: str, fmt: str = "") -> None:
         raise st.Invalid("bad_argument",
             f"fmt={shown_fmt(fmt)!r}: its widest row decodes to "
             f"{chars} characters of JSON, past the {capture_block_chars_max()} the widest "
-            "array a capture holds makes, which is what keeps `watch_list`'s rows inside a "
+            "array a capture holds makes, which is what keeps `declaration_list(kind=\"watch\")`'s "
+            "rows inside a "
             "reply: shorter field names, or fewer fields (the block's bytes are `raw_hex` in "
             "every row anyway)")
 
@@ -554,17 +557,17 @@ def overlap_holder(owner: dec.Owner, addr: int, width: int) -> str | None:
 
 
 def watch_aliased(owner: dec.Owner, addr: int, width: int,
-                  clear_tool: mclear.ClearTool | None = "watch_clear") -> arming.Refusal | None:
+                  clear_kind: mclear.ClearKind | None = "watch") -> arming.Refusal | None:
     """The refusal when another declaration already arms a range sharing a byte with this one:
     two watchpoints on one byte make "who wrote this byte" ambiguous, and clearing one
     declaration would disarm the other's byte in silence. `start`'s re-arm passes no
-    `clear_tool`: its report names no call to make."""
+    `clear_kind`: its report names no call to make."""
     other = overlap_holder(owner, addr, width)
     if other is None:
         return None
     return ("ambiguous_ref", f"{addr:#x} for {prose.counted(width, 'byte')} shares a byte with a "
             f"range already armed under {other!r}: "
-            f"{mclear.one_declaration('watched range', other, clear_tool, owner[1])}")
+            f"{mclear.one_declaration('watched range', other, clear_kind, owner[1])}")
 
 
 def record_watch(owner: dec.Owner, row: dict[str, Any], maps_to: str,
@@ -838,7 +841,8 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     if (trig and capture.trigger_addr(trig, STATE.table(on).table) is None
             and arming.store().index_of(decl) is not None):
         # THE CAPTURE HELD ON A NAME A REBUILD DROPPED, declared again, is that declaration:
-        # adopted and listed as `watch_list` lists it, where a new one on that name is refused
+        # adopted and listed as `declaration_list(kind="watch")` lists it, where a new one on that
+        # name is refused
         # at its tap, which has nowhere to sit.
         arming.store().add(decl)
         return menvelope.envelope({**reply, "stored": True, "already_stored": True, "armed": False,
@@ -1010,7 +1014,7 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
     if other is not None:
         return ("ambiguous_ref", f"{addr:#x} for {prose.counted(width, 'byte')} on the trigger "
                 f"{trigger:#x} is already captured under {other!r}: "
-                f"{mclear.one_declaration('capture', other, 'watch_clear', owner[1])}"), {}
+                f"{mclear.one_declaration('capture', other, 'watch', owner[1])}"), {}
     if reads:
         # A READ is tapped where the read side maps, and reads no block (`check_read_capture`).
         if trigger_read is None:
@@ -1051,7 +1055,7 @@ def _tally_write_side(ses: gs.Session, owner: dec.Owner, addr: int, width: int
     if other is not None:
         return (("ambiguous_ref", f"{addr:#x} for {prose.counted(width, 'byte')} already has a "
                  f"tally declared under {other!r}: "
-                 f"{mclear.one_declaration('tally', other, 'watch_clear', owner[1])}"),
+                 f"{mclear.one_declaration('tally', other, 'watch', owner[1])}"),
                 maps_to, read_maps_to)
     return None, maps_to, read_maps_to
 
@@ -1112,7 +1116,8 @@ def _expr_reading(value: int | gs.SessionError) -> dict[str, Any]:
 
 def resolved_state(decl: dec.Declaration, res: dec.Resolved, null: bool = False) -> str | None:
     """The state word a watch row takes from its declaration and its resolution alone, the one
-    `watch_list`, the stop survey and `start`'s re-arm all ask: `evaluated` for an expression, or
+    `declaration_list(kind="watch")`, the stop survey and `start`'s re-arm all ask: `evaluated` for
+    an expression, or
     a show watch that resolves; `null_pointer` where a chase read a null pointer; `unresolved`
     where the ref names nothing this build has. None where the state is what arming says (a
     change watch's placement, a tap's account, a stale build). A pointer not yet chased is no
@@ -1128,7 +1133,8 @@ def resolved_state(decl: dec.Declaration, res: dec.Resolved, null: bool = False)
 def _change_placement(decl: dec.Declaration, held: list[dict[str, Any]],
                       addr: int) -> dict[str, Any]:
     """Where a change watch is PLACED, read against the debugger's own list, in the one
-    shape `watch_list` and the stop survey both give: its row's state with the `entry`,
+    shape `declaration_list(kind="watch")` and the stop survey both give: its row's state with the
+    `entry`,
     else `stale` over another build with the reason, else `gone`."""
     assert decl.width is not None
     armed = STATE.armed_watches.get(decl.owner)
@@ -1167,7 +1173,8 @@ def _placement(rows: list[dict[str, Any]] | gs.SessionError, decl: dec.Declarati
 #: WHAT A WATCH IS AT A STOP: which watch (`ref`, and its `cpu` and `space` where it has them),
 #: what it reads now (`reading`, where a pointer points, or a tap's `total` and
 #: `since_last_stop`), where it stands (`state`), and every alarm while it holds. Its
-#: declaration, the debugger's row and a tap's tables are `watch_list`'s: every reply that ends at
+#: declaration, the debugger's row and a tap's tables are `declaration_list(kind="watch")`'s: every
+#: reply that ends at
 #: a stop carries the survey, whatever the call was about.
 STOP_KEYS = ("ref", "cpu", "space", "state", "pointer", "reading", "total", "since_last_stop",
              "reset", "why", "moved", "callback_errors")
@@ -1178,7 +1185,8 @@ _STOP_ALARM_WHEN: dict[str, Callable[[Any], bool]] = {
     "superseded": bool, "install_resent": bool, "across": bool, "pending": bool,
     "installed": lambda v: v is not True}
 #: What a stop's short rows say of the rest.
-STOP_HOW = ("`watch_list` answers each watch whole: its declaration, the debugger's row for it, "
+STOP_HOW = ("`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the "
+            "debugger's row for it, "
             "and a count's or a capture's tables")
 
 
@@ -1277,8 +1285,9 @@ def _rows(ses: gs.Session, decls: list[dec.Declaration],
     return out
 
 
-def watch_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `watch_list` tool: every declaration, or with `cpu` the watches placed
+def list_watches(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
+    """The body of the `declaration_list(kind="watch")` tool: every declaration, or with `cpu` the
+    watches placed
     on it (a change watch's row under it in `wplist <cpu>`, a count watch's tap on it)."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     held = mlists.wp_held(ses, only)
@@ -1308,9 +1317,10 @@ _SEG_OFF = re.compile(r"(?:0[xX])?[0-9a-fA-F]+:(?:0[xX])?[0-9a-fA-F]+")
 _ONE_TOKEN = re.compile(r"[\w.$#]+")
 
 
-def check_watch_clear(ref: str = "", all: bool = False, space: str = mspace.PROGRAM,
+def check_clear_watches(ref: str = "", all: bool = False, space: str = mspace.PROGRAM,
                       **_: Any) -> None:
-    """`watch_clear`'s machine-independent half: one `ref` or `all=True`, a port named by `space`
+    """`declaration_clear(kind="watch")`'s machine-independent half: one `ref` or `all=True`, a port
+    named by `space`
     and never by a suffix, and a `ref` judged by the shape `watch_add` judged it by: a pointer's
     base, else a segmented address refused, else one token that starts like an address and is
     not one refused. An expression watch's text is matched as declared."""
@@ -1319,14 +1329,16 @@ def check_watch_clear(ref: str = "", all: bool = False, space: str = mspace.PROG
     if all:
         if space != mspace.PROGRAM:
             raise st.Invalid("bad_argument", f'space="{space}" names where a `ref` is, and '
-                             "`all` clears every watch in every space: `watch_clear(all=True)` "
+                             "`all` clears every watch in every space: "
+                             "`declaration_clear(kind=\"watch\", all=True)` "
                              "with no `space`")
         return
     text = ref.strip()
     tail = mspace.suffix(mspace.IO)
     if text.lower().endswith(tail):
         raise st.Invalid("bad_argument", f"ref={ref!r} carries its space in its text: a port is "
-                         f'its `ref` with `space="io"` (`watch_clear(ref="{text[:-len(tail)]}", '
+                         'its `ref` with `space="io"` (`declaration_clear(kind="watch", '
+                         f'ref="{text[:-len(tail)]}", '
                          'space="io")`)')
     if (pr := vf.parse_pointer(text)) is not None:
         inputs.zero_x(pr.base, "base")
@@ -1337,10 +1349,11 @@ def check_watch_clear(ref: str = "", all: bool = False, space: str = mspace.PROG
         inputs.zero_x(text)
 
 
-def watch_clear(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) -> dict[str, Any]:
-    """The body of the `watch_clear` tool: `ref`'s declarations (every one with no ref), on
+def clear_watches(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) -> dict[str, Any]:
+    """The body of the `declaration_clear(kind="watch")` tool: `ref`'s declarations (every one with
+    no ref), on
     every cpu or on `cpu` alone."""
-    check_watch_clear(ref=ref, all=all_)
+    check_clear_watches(ref=ref, all=all_)
     ref = "" if all_ else ref
     running = arming.running_on_arrival(ses)
     reached = mclear.clearing(ses, "watch", ref, cpu)
@@ -1442,7 +1455,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
                 target, info = chase(ses, res)
             except gs.SessionError as e:
                 # WHERE IT POINTS could not be read, so it is placed where it was armed, as
-                # `watch_list` places it; a show watch has no such place.
+                # `declaration_list(kind="watch")` places it; a show watch has no such place.
                 armed = STATE.armed_watches.get(decl.owner)
                 item.update(place(decl, int(armed["addr"]))
                             if armed is not None else {"state": "unresolved"},
@@ -1571,7 +1584,8 @@ def watch_stop(ses: gs.Session, since: list[str]
     decl = next((d for d in arming.store().declarations()
                  if d.kind == "watch" and d.owner == owner), None)
     if decl is None:
-        # THE ROW OUTLIVED ITS DECLARATION: `watch_clear` sent the removal, the debugger kept
+        # THE ROW OUTLIVED ITS DECLARATION: `declaration_clear(kind="watch")` sent the removal, the
+        # debugger kept
         # the row, and the record stayed so this stop could be named. Nothing renders it (a
         # declaration carried the width and the format), and the reply says what removes it.
         return (f"watch {ref}: {st.hex_addr(armed['addr'])} written, cleared while the "

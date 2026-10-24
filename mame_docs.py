@@ -8,13 +8,12 @@ docstring it registers, and a placeholder nothing fills fails the import.
 
 from __future__ import annotations
 
-from scry_core import docs, log_marks, picture, recording, screen_map, series
+from scry_core import docs, judges, log_marks, picture, recording, screen_map, series
 from scry_core import vocabulary as vocab
 
 import mame_advance as advance
 import mame_blits as mblits
 import mame_comment_file as mcomment_file
-import mame_declarations as dec
 import mame_draft as mdraft
 import mame_film as mfilm
 import mame_gfx as mgfx
@@ -22,8 +21,6 @@ import mame_inputs as inputs
 import mame_layout as ml
 import mame_lexer as lexer
 import mame_locate as mlocate
-import mame_lua as mlua
-import mame_palette as mpalette
 import mame_ramdac as mramdac
 import mame_read as read
 import mame_savestates as savestates
@@ -42,50 +39,29 @@ import mame_write as mwrite
 # What the instructions already say of every reader on a running machine (`not_stopped`, and
 # which tools answer) is not said again here: each repeat is paid against the client's cap.
 NEEDS_STOPPED = "Needs the machine STOPPED (else `not_stopped`)"
-STOP_FIELDS = (
-    "the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, "
-    "`errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it "
-    "(REFERENCE.md, Advancing the machine)"
-)
-CPU_READS = (
-    "Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); "
-    "a build without it serves its first cpu alone, whatever is visible, and refuses another "
-    "(`bad_argument`)"
-)
 NUMBER_ARG = "an integer or a `0x` string"
 DEST_FILE = f"absolute or `~`-led, in a directory that exists, with {inputs.PATH_CHARS}"
-SPACE_BOUND = (
-    "A range whose last byte lies past that cpu's program space (the address mask `start` "
-    "read) is `bad_argument` naming the mask; with no mask known the range is the console's"
-)
 
 # EVERY NUMBER A DOCSTRING STATES IS READ OFF THE CONSTANT THAT ENFORCES IT, filled at
 # registration: a ceiling typed into prose drifts from the one the code refuses at, and a
 # ceiling nobody typed is a limit the caller meets only by hitting it.
 DOC_VALUES: dict[str, str] = {
-    "NEEDS_STOPPED": NEEDS_STOPPED, "STOP_FIELDS": STOP_FIELDS, "CPU_READS": CPU_READS,
-    "SPACE_BOUND": SPACE_BOUND, "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
-    "BREAKPOINT_MATCH": dec.REF_MATCH["breakpoint"], "WATCH_MATCH": dec.REF_MATCH["watch"],
-    "REGPOINT_MATCH": dec.REF_MATCH["regpoint"],
+    "NEEDS_STOPPED": NEEDS_STOPPED,
+    "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
     # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
-    "PALETTE_COUNT_MAX": str(mpalette.COUNT_MAX),
-    "DROPPED_SHOWN": str(recording.DROPPED_SHOWN), "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
-    "ROW_PENS": str(mpalette.ROW_PENS), "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
+    "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
+    "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(mscreen.PENS_MAX),
     "GFX_PLANES_MAX": str(ml.PLANES_MAX), "GFX_TILES_MAX": str(mgfx.VIEW_TILES_MAX),
     "GFX_COLUMNS_MAX": str(mgfx.COLUMNS_MAX), "LOCATE_LAYOUTS_MAX": str(mlocate.LAYOUTS_MAX),
-    "LOCATE_TILES_MAX": str(mlocate.SEARCH_TILES_MAX), "LOCATE_WORK_MAX": str(mlocate.WORK_MAX),
+    "LOCATE_TILES_MAX": str(mlocate.SEARCH_TILES_MAX),
     "LOCATE_MATCHES_SHOWN": str(mlocate.MATCHES_SHOWN),
-    "LOCATE_MATCHES_MAX": str(mlocate.MATCHES_MAX),
     "SWEEP_MAX": str(msweep.SWEEP_MAX), "SWEEP_COUNT_MAX": str(msweep.COUNT_MAX),
-    "SWEEP_COUNT": str(msweep.COUNT_DEFAULT), "SWEEP_SIDE_MAX": str(max(msweep.SIDES)),
+    "SWEEP_SIDE_MAX": str(max(msweep.SIDES)),
     "DRAFT_NOT_PROVED_SHOWN": str(mdraft.NOT_PROVED_SHOWN),
-    "CONSOLE_READS": transport.CONSOLE_READS,
-    "PALETTE_LOG_LIMIT_MAX": str(mramdac.LIMIT_MAX),
     "PALETTE_LOG_SETTERS_MAX": str(mramdac.SETTERS_LISTED_MAX),
     "PALETTE_LOG_ROWS_MAX": str(mramdac.ROWS_MAX), "FILM_FRAMES_MAX": str(mfilm.FRAMES_MAX),
-    "FILM_FRAMES": str(mfilm.FRAMES_DEFAULT), "FILM_KEEP": str(mfilm.KEEP_DEFAULT),
     "FILM_KEEP_MAX": str(mfilm.KEEP_MAX), "BLIT_MARGIN_MAX": str(mblits.MARGIN_MAX),
     "READ_MAX": str(read.READ_MAX), "LIST_MAX": str(read.LOG_LIMIT_MAX),
     **log_marks.DOC_VALUES,
@@ -95,8 +71,9 @@ DOC_VALUES: dict[str, str] = {
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX), "STATE_NAME_MAX": str(savestates.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
     "UNTIL_STEPS_MAX": str(sequence.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),
-    "EVAL_WAIT_S": f"{mlua.EVAL_WAIT_S:g}", "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
+    "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
     "TEMPS": str(lexer.TEMPS), "SCAN_BYTES_MAX": f"{mscan.SCAN_BYTES_MAX:#x}",
+    "HITS_DEFAULT": str(judges.HITS_DEFAULT),
     "COMMENT_TEXT_MAX": str(mcomment_file.TEXT_MAX_BYTES),
     "TRACE_FRAMES_MAX": str(mtrace.FRAMES_MAX), "TRACE_MS_MAX": str(mtrace.MILLISECONDS_MAX),
     "NOLOOP_FRAMES_MAX": str(mtrace.NOLOOP_FRAMES_MAX),

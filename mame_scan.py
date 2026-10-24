@@ -1,4 +1,4 @@
-"""The value scan: `scan_start`, `scan_filter`, `scan_clear`.
+"""The value scan: `scan(method="start")`, `scan(method="filter")`, `scan(method="clear")`.
 
 THE RANGE IS READ WITH THE CONSOLE'S `save` AND COMPARED IN PYTHON, not with MAME's own cheat
 engine: `save` reads through handlers (a work RAM behind a bank or a handler, which the engine's
@@ -7,7 +7,8 @@ file whose bytes never cross the socket, and it neither steps nor writes the mac
 is what the tests compare against, never the mechanism.
 
 ONE READ RULE: every read saves from the first survivor to the last, which right after
-`scan_start` is the whole range; a cell outside that span can no longer change the answer. The
+`scan(method="start")` is the whole range; a cell outside that span can no longer change the answer.
+The
 survivors are `array` columns, the two values in the cell's own width and the offset in the
 narrowest that spans the ceiling, so a scan holds a few bytes per cell rather than a Python int
 and a list slot each.
@@ -86,13 +87,16 @@ class Scan:
                 for i, v in zip(self.offsets, self.values, strict=True)]
 
 
-#: `scan_filter`'s `value` when none was given: each cell is held against its own opening value.
-NO_VALUE_WHY = "no `value` was given, so each cell was compared with its value at `scan_start`"
+#: `scan(method="filter")`'s `value` when none was given: each cell is held against its own opening
+#: value.
+NO_VALUE_WHY = ("no `value` was given, so each cell was compared with its value at "
+                "`scan(method=\"start\")`")
 NO_VALUE = unavailable(NO_VALUE_WHY)
 
 
-def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: Any) -> None:
-    """`scan_start`'s machine-independent half: the cell's size, and a length of whole cells."""
+def check_start_scan(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: Any) -> None:
+    """`scan(method="start")`'s machine-independent half: the cell's size, and a length of whole
+    cells."""
     inputs.check_ref(ref)
     vocab.one_of("cell_bytes", cell_bytes, CELL_BYTES)
     cell = cell_bytes
@@ -108,9 +112,9 @@ def check_scan_start(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: A
                          f"{below:#x} or {below + cell:#x}")
 
 
-def check_scan_filter(operator: str = "=", value: int | None = None,
+def check_filter_scan(operator: str = "=", value: int | None = None,
                       limit: int = judges.HITS_DEFAULT, **_: Any) -> None:
-    """`scan_filter`'s machine-independent half; the value against the width is the open
+    """`scan(method="filter")`'s machine-independent half; the value against the width is the open
     scan's to judge."""
     vocab.one_of("operator", operator, OPERATORS)
     if value is not None:
@@ -141,16 +145,17 @@ def _cells_at(ses: gs.Session, scratch: Path, scan: Scan) -> array[int] | dict[s
     return cells
 
 
-def scan_start(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes: int,
+def start_scan(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes: int,
                cpu: str) -> dict[str, Any]:
-    """The body of the `scan_start` tool."""
-    check_scan_start(ref=ref, length=length, cell_bytes=cell_bytes)
+    """The body of the `scan(method="start")` tool."""
+    check_start_scan(ref=ref, length=length, cell_bytes=cell_bytes)
     if (held := STATE.scan) is not None:
         raise st.Invalid("needs_call",
                          f"one scan at a time and one is open ({st.hex_addr(held.addr)} on "
                          f"{held.cpu}, {prose.counted(len(held.offsets), 'survivor')} after "
-                         f"{prose.counted(held.iterations, 'filter')}): `scan_clear` it first, or "
-                         "keep filtering it with `scan_filter`",
+                         f"{prose.counted(held.iterations, 'filter')}): "
+                         "`scan(method=\"clear\")` it first, or "
+                         "keep filtering it with `scan(method=\"filter\")`",
                          addr=st.hex_addr(held.addr), cpu=held.cpu, hits_total=len(held.offsets))
     on, thread, _ = files.save_target(ses, cpu)
     if on is None:
@@ -175,16 +180,18 @@ def scan_start(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
                                "space": mspace.PROGRAM})
 
 
-def scan_filter(ses: gs.Session, scratch: Path, operator: str,
+def filter_scan(ses: gs.Session, scratch: Path, operator: str,
                 value: int | None, limit: int = judges.HITS_DEFAULT) -> dict[str, Any]:
-    """The body of the `scan_filter` tool: each survivor against `value`, or with none against
+    """The body of the `scan(method="filter")` tool: each survivor against `value`, or with none
+    against
     what it held when the scan opened. The read spans the first survivor to the last; only the
     survivors are compared."""
-    check_scan_filter(operator=operator, value=value, limit=limit)
+    check_filter_scan(operator=operator, value=value, limit=limit)
     scan = STATE.scan
     if scan is None:
         raise st.Invalid("needs_call",
-                         "no scan is open, so there is nothing to filter: `scan_start` one")
+                         "no scan is open, so there is nothing to filter: `scan(method=\"start\")` "
+                         "one")
     top = (1 << (8 * scan.cell_bytes)) - 1
     if value is not None and value > top:
         raise st.Invalid("bad_argument",
@@ -222,8 +229,8 @@ def scan_filter(ses: gs.Session, scratch: Path, operator: str,
                                        "truncated": survivors > limit} | where)
 
 
-def scan_clear() -> dict[str, Any]:
-    """The body of the `scan_clear` tool."""
+def clear_scan() -> dict[str, Any]:
+    """The body of the `scan(method="clear")` tool."""
     if STATE.scan is None:
         return menvelope.envelope({"cleared": False, "note": "no scan was open"})
     STATE.scan = None

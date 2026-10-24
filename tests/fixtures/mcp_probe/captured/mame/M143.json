@@ -2,8 +2,9 @@
  "task": {
   "id": "M143",
   "prompt": "Note at hex 1F2C0: 'bounce, then slow down'.",
-  "tool": "comment_add",
+  "tool": "comment_write",
   "args": {
+   "method": "add",
    "ref": {
     "any_of": [
      "0x1F2C0",
@@ -11,24 +12,99 @@
     ]
    },
    "text": "bounce, then slow down"
-  }
+  },
+  "grammar": [
+   "add"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M143: {\"tool\": \"comment_add\", \"args\": {\"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M143: {\"tool\":\"comment_add\",\"args\":{\"ref\":\"0x1F2C0\",\"text\":\"bounce, then slow down\"}}"
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M143: {\"tool\": \"comment_add\", \"args\": {\"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\":\"comment_write\",\"args\":{\"method\":\"add\",\"ref\":\"0x1F2C0\",\"text\":\"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
    ],
    "right": true
   }

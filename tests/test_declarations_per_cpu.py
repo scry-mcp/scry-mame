@@ -106,14 +106,19 @@ def test_a_clear_naming_a_cpu_takes_that_cpus_declaration_alone(
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x542")
     s.breakpoint_at(ref="0x542", cpu="subcpu")
-    out = s.breakpoint_clear(ref="0x542", cpu="subcpu")
+    out = s.declaration_clear("breakpoint", ref="0x542", cpu="subcpu")
     assert out["declarations_cleared"] == 1 and len(out["disarmed"]) == 1, out
-    assert [(b["ref"], b["cpu"]) for b in s.breakpoint_list()["breakpoints"]] == [("0x542", MAIN)]
+    assert [(b["ref"],
+             b["cpu"]) for b in s.declaration_list("breakpoint")["breakpoints"]] == [("0x542",
+                                                                                      MAIN)]
     assert len(ses.bplist_rows) == 1
     s.regpoint_add(condition="d1==7fff")
-    refused("matches no regpoint declaration", s.regpoint_clear(ref="d1==7fff", cpu="subcpu"))
-    assert s.regpoint_clear(ref="d1==7fff", cpu="maincpu")["declarations_cleared"] == 1
-    assert s.breakpoint_clear(all=True)["declarations_cleared"] == 1, "no cpu: every cpu's"
+    refused("matches no regpoint declaration", s.declaration_clear("regpoint", ref="d1==7fff",
+                                                                   cpu="subcpu"))
+    assert s.declaration_clear("regpoint", ref="d1==7fff",
+                               cpu="maincpu")["declarations_cleared"] == 1
+    assert s.declaration_clear("breakpoint",
+                               all=True)["declarations_cleared"] == 1, "no cpu: every cpu's"
 
 
 def test_run_to_is_refused_only_by_a_control_on_its_own_cpu_and_declares_its_control_there(
@@ -237,7 +242,8 @@ def test_a_raw_address_is_judged_against_its_own_cpus_build(
     store.add(_bp("0x4a0", MAIN, fingerprint="fp-main", origin="earlier"))
     store.add(_bp("0x542", SUB, fingerprint="fp-sub-old", origin="earlier"))
     store.add(_bp("0x544", SUB, fingerprint="fp-sub-new", origin="earlier"))
-    listed = {(b["ref"], b["cpu"]): b["state"] for b in s.breakpoint_list()["breakpoints"]}
+    listed = {(b["ref"],
+               b["cpu"]): b["state"] for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed == {("0x4a0", MAIN): "gone", ("0x542", SUB): "stale", ("0x544", SUB): "gone"}, \
         listed
 
@@ -286,7 +292,7 @@ def test_a_clear_with_no_cpu_takes_the_ref_on_every_cpu_in_any_spelling(
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x400")
     s.breakpoint_at(ref="0X0400", cpu="subcpu")
-    out = s.breakpoint_clear(ref="0x00400")
+    out = s.declaration_clear("breakpoint", ref="0x00400")
     assert out["declarations_cleared"] == 2 and len(out["disarmed"]) == 2, out
     assert arming.store().declarations() == [] and ses.bplist_rows == []
 

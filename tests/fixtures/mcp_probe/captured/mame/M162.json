@@ -36,7 +36,79 @@
   },
   {
    "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": 1024}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"patch\": [16, 24, 8, 8], \"layouts\": [\"chars8\"], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M162: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[\"chars8\"],\"patch\":[16,24,8,8],\"tag\":\"gfx1\",\"offset\":\"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M162: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"chars8\"], \"patch\": [16, 24, 8, 8], \"tag\": \"gfx1\", \"offset\": \"0x400\"}}"
    ],
    "right": true
   },

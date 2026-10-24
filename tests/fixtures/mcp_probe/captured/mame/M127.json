@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M127: CANNOT gfx_draft writes only a new draft or replaces an earlier draft, and it refuses any file that is not a draft, so it cannot overwrite the confirmed manifest."
+    "M127: CANNOT gfx_draft writes only a draft and refuses to replace anything other than an earlier draft, so it cannot overwrite the confirmed manifest."
    ],
    "right": true
   },
   {
    "lines": [
-    "M127: CANNOT gfx_draft refuses to replace anything that is not an earlier draft, so the confirmed manifest cannot be overwritten with it, and no other tool writes files like that."
+    "M127: CANNOT gfx_draft replaces only an earlier draft and refuses any other file, so it cannot overwrite the confirmed manifest."
    ],
    "right": true
   },
   {
    "lines": [
-    "M127: CANNOT gfx_draft only writes a new draft and refuses to replace a file that is not a draft, and no other tool writes a confirmed manifest."
+    "M127: CANNOT gfx_draft only writes a new draft or replaces an earlier draft, and no tool overwrites a confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft only replaces an earlier draft and refuses any other file, and no tool overwrites the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft replaces only an earlier draft and refuses anything else, so it cannot overwrite the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to overwrite anything except an earlier draft, and no tool copies a draft over the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft only replaces an earlier draft and refuses to overwrite a confirmed manifest such as /home/dev/m68k-dual/hardware/gfx.yaml."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft only replaces an earlier draft and refuses to overwrite any other file, so it cannot replace the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft only writes a new draft and refuses to replace anything but an earlier draft, so it cannot overwrite the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft replaces only an earlier draft, and no tool overwrites a confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft writes only a new draft or replaces an earlier draft, and refuses any other existing file, so it cannot overwrite the confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft replaces only an earlier draft and refuses to overwrite a confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to replace anything other than an earlier draft, and no tool overwrites a confirmed manifest."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft only replaces an earlier draft, and it refuses to overwrite a file that is not a draft, so the confirmed manifest cannot be replaced."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M127: CANNOT gfx_draft refuses to replace anything that is not an earlier draft, so it cannot overwrite the confirmed manifest."
    ],
    "right": true
   }

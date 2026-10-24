@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import judges, placement
+from scry_core import judges, media_tools, placement
 from scry_core import vocabulary as vocab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -34,6 +34,7 @@ import mame_breakpoints as breakpoints  # noqa: E402
 import mame_declarations as dec  # noqa: E402
 import mame_files as mfiles  # noqa: E402
 import mame_film as mfilm  # noqa: E402
+import mame_folds as folds  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
@@ -59,16 +60,25 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("watch_add", "mode", lambda: dec.WATCH_MODES),
     ("watch_add", "by", lambda: watches.WATCH_BY),
     ("watch_add", "space", lambda: mspace.SPACES),
-    ("watch_clear", "space", lambda: mspace.SPACES),
+    ("declaration_clear", "space", lambda: mspace.SPACES),
+    ("declaration_clear", "kind", lambda: folds.KINDS),
+    ("declaration_list", "kind", lambda: ("", *folds.KINDS)),
     ("watch_add", "trigger_type", lambda: dec.TRIGGER_TYPES),
-    ("scan_start", "cell_bytes", lambda: mscan.CELL_BYTES),
-    ("scan_filter", "operator", lambda: mscan.OPERATORS),
+    ("scan", "cell_bytes", lambda: mscan.CELL_BYTES),
+    ("scan", "operator", lambda: mscan.OPERATORS),
     ("screen_view", "mode", lambda: mscreen.MODES),
     ("gfx_film", "space", lambda: mspace.SPACES),
     ("gfx_film", "length", lambda: mfilm.LENGTHS),
     ("log", "channel", lambda: mfiles.LOG_CHANNELS),
     ("log_wait", "channel", lambda: mfiles.LOG_CHANNELS),
     ("start", "display", lambda: placement.DISPLAY_OPTIONS),
+    # A fold's `method`, judged by `scry_core.methods` against the fold's own table.
+    ("comment_write", "method", lambda: tuple(folds.COMMENT)),
+    ("map_write", "method", lambda: tuple(folds.MAP)),
+    ("scan", "method", lambda: tuple(folds.SCAN)),
+    ("state_write", "method", lambda: tuple(folds.STATE_METHODS)),
+    ("image_compare", "method", lambda: tuple(media_tools.IMAGE_METHODS)),
+    ("audio_compare", "method", lambda: tuple(media_tools.AUDIO_METHODS)),
 ]
 
 #: Every list argument whose ITEMS are held to a fixed vocabulary or range: how deep the items
@@ -110,7 +120,7 @@ def _enums(schema: Any) -> bool:
 def test_a_closed_argument_publishes_its_judges_words_as_its_enum(
     tool: str, arg: str, judged: Callable[[], Words],
 ) -> None:
-    prop = _schemas()[tool]["properties"][arg]
+    prop = _scalar(_schemas()[tool]["properties"][arg])
     assert prop.get("enum") == list(judged()), prop
     assert prop.get("type") == _json_type(judged()), "the type stays the scalar one_of judges"
 
@@ -160,7 +170,7 @@ def test_every_closed_vocabulary_the_server_judges_is_published(tmp_path: Path) 
     assert _judged(planted) == [(1, "x", ("a", "b"))], "the control did not fire"
     sources = sorted(PACKAGE.glob("mame_*.py"))
     found = {(name, words) for src in sources for _, name, words in _judged(src)}
-    published = {(arg, judged()) for _tool, arg, judged in CLOSED}
+    published = {(arg, judged()) for _tool, arg, judged in CLOSED if arg != "method"}
     assert found == published, f"judged and not published: {found - published}; " \
                                f"published and judged by nothing: {published - found}"
     # EVERY CALL OF THE JUDGE IS ONE THE SCAN READ: a keyword or an aliased form would be a
@@ -186,14 +196,18 @@ def test_breakpoint_at_accepts_exactly_the_words_its_enum_publishes(by: str) -> 
 
 #: What a call needs besides the argument under test to reach that argument's judge.
 NEEDS: dict[str, dict[str, Any]] = {
-    "watch_add": {"ref": "0x400", "mode": "show"}, "scan_start": {"ref": "0x400", "length": 16},
-    "watch_clear": {"ref": "0x400"},
+    "watch_add": {"ref": "0x400", "mode": "show"},
+    "scan": {"method": "start", "ref": "0x400", "length": 16},
+    "declaration_clear": {"kind": "watch", "ref": "0x400"}, "state_write": {"name": "a"},
     "breakpoint_at": {"ref": "0x400"}, "gfx_film": {"trigger": "0x400"},
     "log": {"pattern": "."}, "log_wait": {"pattern": "."},
     "start": {"binary": "/nowhere/mame", "system": "x", "rompath": "/nowhere",
               "reference_rom": "/nowhere/x.bin"},
     "gfx_locate": {"layouts": ["8x8"], "patch": [0, 0, 8, 8], "tag": "gfx"},
     "gfx_sweep": {"tag": "gfx"}}
+
+#: What one argument needs beside it where its tool's other arguments differ: a fold's method.
+NEEDS_BY_ARG: dict[tuple[str, str], dict[str, Any]] = {("scan", "operator"): {"method": "filter"}}
 
 #: A word outside each closed vocabulary: its scalar's type, in no vocabulary here.
 OUTSIDE: dict[str, Any] = {"string": "zz", "integer": 3}
@@ -211,7 +225,8 @@ def test_a_word_outside_the_enum_is_still_the_servers_refusal_through_the_protoc
     """The enum is advice to the client; a client that sends another word through the protocol
     still gets `one_of`'s own sentence, whole, never a schema error of the SDK's."""
     outside = OUTSIDE[_json_type(judged())]
-    reply = test_envelope_seam._call(tool, {**NEEDS.get(tool, {}), arg: outside})[1]
+    needs = NEEDS_BY_ARG.get((tool, arg), NEEDS.get(tool, {}))
+    reply = test_envelope_seam._call(tool, {**needs, arg: outside})[1]
     words = judged()
     assert reply.get("code") == "bad_argument", reply
     tail = TAILS.get((tool, arg), "")
@@ -274,7 +289,8 @@ def test_a_sequence_step_still_judges_a_closed_arguments_type(
     still its scalar there, whatever the schema annotation around it."""
     integer = _json_type(judged()) == "integer"
     wrong, said = ("5", "an integer") if integer else (5, "a string")
-    out = s.perform(steps=[{"op": tool, **NEEDS.get(tool, {}), arg: wrong}])
+    needs = NEEDS_BY_ARG.get((tool, arg), NEEDS.get(tool, {}))
+    out = s.perform(steps=[{"op": tool, **needs, arg: wrong}])
     assert f"{arg} is {said}; got {wrong!r}" in out.get("message", ""), out
 
 
@@ -296,7 +312,7 @@ RANGES: list[tuple[str, str, int, int]] = [
     ("gfx_sweep", "count", 1, msweep.COUNT_MAX),
     ("gfx_blit_source", "margin", 0, mblits.MARGIN_MAX),
     ("palette_log", "limit", 0, mramdac.LIMIT_MAX),
-    ("scan_filter", "limit", 1, judges.HITS_MAX),
+    ("scan", "limit", 1, judges.HITS_MAX),
     ("gfx_view", "columns", 1, mgfx.COLUMNS_MAX),
     ("start", "stub_port", 0, launch.PORT_MAX),
     ("step", "count", 1, advance.step_max()),

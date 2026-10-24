@@ -2,8 +2,9 @@
  "task": {
   "id": "M137",
   "prompt": "Keep only the scanned cells that now hold the value 305.",
-  "tool": "scan_filter",
+  "tool": "scan",
   "args": {
+   "method": "filter",
    "value": {
     "any_of": [
      305,
@@ -13,24 +14,99 @@
   },
   "allow": [
    "operator"
+  ],
+  "grammar": [
+   "filter"
   ]
  },
  "runs": [
   {
    "lines": [
-    "M137: {\"tool\": \"scan_filter\", \"args\": {\"operator\": \"=\", \"value\": 305}}"
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M137: {\"tool\":\"scan_filter\",\"args\":{\"operator\":\"=\",\"value\":305}}"
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M137: {\"tool\": \"scan_filter\", \"args\": {\"value\": 305}}"
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"value\":305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
    ],
    "right": true
   }

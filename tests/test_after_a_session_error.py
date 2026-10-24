@@ -18,7 +18,7 @@ from scry_core import media_tools
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import progress as mprogress  # noqa: E402
-from session_doubles import captured, published, refused  # noqa: E402
+from session_doubles import captured, documented, refused  # noqa: E402
 from test_gdb_session import _wired  # noqa: E402
 from test_reply_contract import _ARGS, _tools  # noqa: E402
 from test_server import _install, _RegisterSession, _running  # noqa: E402
@@ -261,8 +261,9 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
 # The media file tools read files and never the machine, so a broken session leaves them as it
 # leaves `status`: answering; and so does `perform_export`, which writes what the session did,
 # a broken one's included.
-#: A map's file tools read and write map files only, as the media file tools read theirs.
-MAP_FILE_TOOLS = {"map_load", "map_save"}
+#: A map's file methods read and write map files only, as the media file tools read theirs; its
+#: `add` reads the screen, and is walked below.
+MAP_FILE_TOOLS = {"map_write"}
 _STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS, *MAP_FILE_TOOLS}
 
 
@@ -296,15 +297,17 @@ def test_a_media_file_tool_answers_on_a_broken_session(
     assert "is not a file" in out["message"], (name, out)
 
 
-@pytest.mark.parametrize(("name", "code"), [("map_load", "bad_argument"),
-                                            ("map_save", "needs_call")])
-def test_a_map_file_tool_answers_on_a_broken_session(
-    name: str, code: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+@pytest.mark.parametrize(("method", "args", "code"), [
+    ("load", {"path": "/nonexistent/x.scry-map.json"}, "bad_argument"),
+    ("save", _ARGS["map_write"], "needs_call"),
+    ("add", {"screen": "s", "match": [[0, 0, 1, 1]]}, "session_broken")])
+def test_a_map_file_method_answers_on_a_broken_session_and_add_does_not(
+    method: str, args: dict[str, Any], code: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     ses.broken = NOT_A_STOP
-    out = getattr(s, name)(**_ARGS[name])
-    assert out["status"] == "INVALID" and out["code"] == code, (name, out)
+    out = s.map_write(**{**args, "method": method})
+    assert out["status"] == "INVALID" and out["code"] == code, (method, out)
 
 
 # ------------------------------------------------ the interrupt at the bound not answered
@@ -1017,20 +1020,6 @@ _PACKAGE = Path(__file__).resolve().parent.parent
 WAY_OUT = "if `stop` fails as well, `close` then `start`"
 
 
-@pytest.mark.parametrize("tool", ["run_to", "run_for", "step", "stop"])
-def test_every_description_that_names_stop_as_the_recovery_names_the_way_out_past_it(
-    tool: str,
-) -> None:
-    text = published(tool)
-    assert "not_settled" in text and WAY_OUT in text, text
-
-
-@pytest.mark.parametrize("tool", ["resume", "step", "stop", "run_to"])
-def test_every_tool_that_latches_says_so_in_its_description(tool: str) -> None:
-    text = published(tool)
-    assert "session_broken" in text and "LATCHES" in text, text
-
-
 @pytest.mark.parametrize("tool", ["resume", "stop"])
 def test_a_stop_read_and_then_a_survey_that_breaks_leaves_the_session_broken(
     tool: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
@@ -1120,12 +1109,12 @@ def _expired_ticker() -> Any:
 
 
 def test_the_descriptions_say_what_each_changed_reply_carries() -> None:
-    assert "answered late" in published("run_to")
-    assert "`mode` and `instructions_completed`" in published("step")
-    assert "An `into` that reads anything else in a stop's place" in published("step")
-    assert ("so does an `over` whose connection failed, or that the console did not answer IN "
-            "TIME") in published("step")
-    assert "`available: false`" in published("close")
+    assert "answered late" in documented("run_to")
+    assert "`mode` and `instructions_completed`" in documented("step")
+    assert "An `into` that reads anything else in a stop's place" in documented("step")
+    assert ("a failed connection, or an `over` the console did not answer in time is "
+            "`session_broken` and LATCHES") in documented("step")
+    assert "`available: false`" in documented("close")
 
 
 def test_the_instructions_and_the_reference_say_any_tool_latches() -> None:

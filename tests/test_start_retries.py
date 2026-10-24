@@ -136,8 +136,8 @@ def test_a_signal_death_before_the_stub_is_relaunched_and_the_death_is_in_the_re
     try:
         assert out["status"] == "ok", out
         assert _launches(tmp_path) == deaths + 1
-        assert [d["exit_code"] for d in out["start_retries"]] == [-11] * deaths, out
-        for n, death in enumerate(out["start_retries"], 1):
+        assert [d["exit_code"] for d in out.get("start_retries", [])] == [-11] * deaths, out
+        for n, death in enumerate(out.get("start_retries", []), 1):
             assert death["kind"] == "died", death
             assert isinstance(death["after_s"], float) and death["after_s"] >= 0, death
             assert f"launch {n}" in death["stdout_tail"], death
@@ -145,7 +145,7 @@ def test_a_signal_death_before_the_stub_is_relaunched_and_the_death_is_in_the_re
         assert out["summary"].endswith(f"after {said}"), out["summary"]
         assert list(out)[-1] == "session", "`session` stays the last key"
         again = s.start(binary="/x/mame", system="m68k", rompath="/x", reference_rom="/x/rom")
-        assert again["code"] == "session_live" and again["start_retries"] == [], again
+        assert again["code"] == "session_live" and again.get("start_retries", []) == [], again
     finally:
         s.close()
 
@@ -158,9 +158,11 @@ def test_a_signal_death_every_time_is_refused_after_the_cap_with_every_death_in_
     out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=99))
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert _launches(tmp_path) == 1 + launch.START_RETRIES_MAX == 3
-    assert [d["exit_code"] for d in out["start_retries"]] == [-11, -11], out["start_retries"]
-    assert ["launch 1" in out["start_retries"][0]["stdout_tail"],
-            "launch 2" in out["start_retries"][1]["stdout_tail"]] == [True, True]
+    assert [d["exit_code"] for d in out.get("start_retries", [])] == [-11,
+                                                                      -11], out.get("start_retries",
+                                                                                    [])
+    assert ["launch 1" in out.get("start_retries", [])[0]["stdout_tail"],
+            "launch 2" in out.get("start_retries", [])[1]["stdout_tail"]] == [True, True]
     assert out["exit_code"] == -11 and "launch 3" in out["stdout_tail"], out
     assert out["session"]["alive"] is False, "the failed start owns nothing"
 
@@ -179,7 +181,7 @@ def test_a_first_cpu_the_stub_cannot_serve_is_refused_at_once_naming_it(
     cpu and quoting MAME's own line."""
     out = _start(monkeypatch, tmp_path, _double(tmp_path, fatal=NOT_SERVED))
     assert out["status"] == "INVALID" and out["code"] == "no_channel", out
-    assert _launches(tmp_path) == 1 and out["start_retries"] == [], out
+    assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
     assert f"`Fatal error: {NOT_SERVED}`" in out["message"], out["message"]
     assert "the first cpu, mc6809e," in out["message"], out["message"]
     assert "patches/0004-gdbstub-one-thread-per-cpu.patch" in out["message"], "the way out"
@@ -231,7 +233,7 @@ def test_a_handshake_cut_by_the_unserved_cpus_death_is_refused_at_once(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, fatal=NOT_SERVED), dial=dial,
                  handshake=handshake, request_s=1.0)
     assert time.monotonic() - began < 5.0, "a death ends the wait for the banner at once"
-    assert out["code"] == "no_channel" and out["start_retries"] == [], out
+    assert out["code"] == "no_channel" and out.get("start_retries", []) == [], out
     assert _launches(tmp_path) == 1, out
 
 
@@ -248,8 +250,8 @@ def test_a_port_taken_before_mame_bound_it_is_relaunched_on_a_fresh_one(
     try:
         assert out["status"] == "ok", out
         assert _launches(tmp_path) == lost + 1
-        assert [d["exit_code"] for d in out["start_retries"]] == [3] * lost, out
-        for n, retry in enumerate(out["start_retries"]):
+        assert [d["exit_code"] for d in out.get("start_retries", [])] == [3] * lost, out
+        for n, retry in enumerate(out.get("start_retries", [])):
             assert f"failed to start listening on address localhost port {41001 + n}" in \
                 retry["stdout_tail"], retry
     finally:
@@ -265,7 +267,7 @@ def test_a_port_lost_on_every_launch_is_refused_after_the_cap(
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert out["exit_code"] == 3, out
     assert _launches(tmp_path) == launch.START_RETRIES_MAX + 1
-    assert len(out["start_retries"]) == launch.START_RETRIES_MAX, out
+    assert len(out.get("start_retries", [])) == launch.START_RETRIES_MAX, out
     assert "failed to start listening" in out["stdout_tail"], out
 
 
@@ -277,7 +279,7 @@ def test_a_port_the_caller_named_is_never_relaunched_on_another(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, lost=1), stub_port=launch.free_port())
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert _launches(tmp_path) == 1
-    assert out["start_retries"] == [], out
+    assert out.get("start_retries", []) == [], out
 
 
 @pytest.mark.parametrize("code", [2, 0, 3])
@@ -291,7 +293,7 @@ def test_an_exit_code_before_the_stub_is_never_relaunched(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, exit_code=str(code)))
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
     assert _launches(tmp_path) == 1
-    assert out["start_retries"] == [], out
+    assert out.get("start_retries", []) == [], out
     assert out["exit_code"] == code, out
 
 
@@ -302,7 +304,7 @@ def test_a_stub_that_never_answers_from_a_live_process_is_not_relaunched(
     relaunch would pay the whole wait again for nothing."""
     out = _start(monkeypatch, tmp_path, _double(tmp_path, hang=True), wait=0.5)
     assert out["code"] == "session_broken" and "did not answer" in out["message"], out
-    assert _launches(tmp_path) == 1 and out["start_retries"] == [], out
+    assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
 
 
 def test_a_start_that_failed_is_killed_without_the_grace_close_gives(
@@ -395,7 +397,7 @@ def test_a_dial_that_failed_on_a_live_process_is_refused_at_once_with_its_attemp
     began = time.monotonic()
     out = _start(monkeypatch, tmp_path, _double(tmp_path, hang=True), wait=5.0, dial=dial)
     assert out["code"] == "session_broken" and time.monotonic() - began < 3.0, out
-    assert _launches(tmp_path) == 1 and out["start_retries"] == [], out
+    assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
     assert [a["error"] for a in out["dial_attempts"]] == [
         "DialFailed: the connection was made and its first byte failed: reset"], out
     assert Path(out["stdout_kept"]).exists() and out["alive"] is True, out
@@ -421,7 +423,7 @@ def test_a_dial_that_failed_because_mame_died_is_a_death(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=1, late=0.3), dial=dial)
     try:
         assert out["status"] == "ok", out
-        assert [d["kind"] for d in out["start_retries"]] == ["died"], out
+        assert [d["kind"] for d in out.get("start_retries", [])] == ["died"], out
     finally:
         s.close()
 
@@ -451,7 +453,7 @@ def test_a_handshake_cut_because_mame_died_is_a_death(
                  handshake=handshake)
     try:
         assert out["status"] == "ok", out
-        assert [d["kind"] for d in out["start_retries"]] == ["died"], out
+        assert [d["kind"] for d in out.get("start_retries", [])] == ["died"], out
     finally:
         s.close()
 
@@ -502,7 +504,7 @@ def test_the_handshake_waits_for_the_debuggers_banner_before_asking_the_descript
     out = _start(monkeypatch, tmp_path, _double(tmp_path, banner_after=2), handshake=handshake,
                  request_s=1.0)
     try:
-        assert out["status"] == "ok" and out["start_retries"] == [], out
+        assert out["status"] == "ok" and out.get("start_retries", []) == [], out
         assert asked_early == [] and _launches(tmp_path) == 1, out
     finally:
         s.close()
@@ -551,7 +553,7 @@ def test_a_live_stub_not_ready_is_relaunched_and_says_where_it_was_not(
     try:
         assert out["status"] == "ok", out
         assert _launches(tmp_path) == 2
-        (entry,) = out["start_retries"]
+        (entry,) = out.get("start_retries", [])
         assert {k: entry[k] for k in ("kind", "error", "phase", "reply")} == {
             "kind": "stub_not_ready", "error": type(error).__name__, "phase": error.phase,
             "reply": error.reply}, entry
@@ -611,7 +613,7 @@ def test_the_phase_the_real_handshake_marks_is_the_one_the_entry_carries(
     out = _start(monkeypatch, tmp_path, _double(tmp_path), handshake=handshake)
     try:
         assert out["status"] == "ok", out
-        (entry,) = out["start_retries"]
+        (entry,) = out.get("start_retries", [])
         assert (entry["error"], entry["phase"], entry["reply"]) == ("NoRegisters", "target.xml",
                                                                     doc), entry
     finally:
@@ -628,7 +630,7 @@ def test_a_stub_never_ready_is_refused_after_the_cap_with_every_attempt(
                  handshake=_not_ready(tmp_path, _NOT_READY[0], 99))
     assert out["code"] == "session_broken" and out["phase"] == "target.xml", out
     assert _launches(tmp_path) == 1 + launch.START_RETRIES_MAX, out
-    assert [d["kind"] for d in out["start_retries"]] == ["stub_not_ready"] * 2, out
+    assert [d["kind"] for d in out.get("start_retries", [])] == ["stub_not_ready"] * 2, out
     assert out["error"] == "NoRegisters" and out["reply"] == "<target/>", out
     assert out["alive"] is True and out["exit_code"]["available"] is False, out
     assert isinstance(out["pid"], int) and isinstance(out["stub_port"], int), out
@@ -668,7 +670,7 @@ def test_an_assertions_abort_before_the_stub_is_never_relaunched(
     it."""
     out = _start(monkeypatch, tmp_path, _double(tmp_path, abort=printed))
     assert out["code"] == "session_broken" and out["exit_code"] == ABORTED, out
-    assert _launches(tmp_path) == 1 and out["start_retries"] == [], out
+    assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
     assert ("note" in out) is noted, out
     if noted:
         assert "joystickprovider none" in out["note"] and "`inipath`" in out["note"], out
@@ -682,7 +684,7 @@ def test_an_abort_that_is_no_assertion_is_relaunched_like_any_signal(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, abort="libc++abi: terminating"))
     assert out["code"] == "session_broken" and out["exit_code"] == ABORTED, out
     assert _launches(tmp_path) == 1 + launch.START_RETRIES_MAX and "note" not in out, out
-    assert [d["exit_code"] for d in out["start_retries"]] == [ABORTED] * 2, out
+    assert [d["exit_code"] for d in out.get("start_retries", [])] == [ABORTED] * 2, out
 
 
 def test_a_stub_that_never_answers_from_a_live_process_keeps_what_mame_printed(
@@ -746,7 +748,7 @@ def test_a_signal_death_during_the_last_poll_of_the_wait_is_still_a_death(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=1, late=1.2), wait=1.5)
     try:
         assert out["status"] == "ok", out
-        assert [d["exit_code"] for d in out["start_retries"]] == [-11], out
+        assert [d["exit_code"] for d in out.get("start_retries", [])] == [-11], out
     finally:
         s.close()
 
@@ -758,7 +760,7 @@ def test_a_first_launch_that_answers_says_start_retries_empty(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=0))
     try:
         assert out["status"] == "ok", out
-        assert out["start_retries"] == [] and _launches(tmp_path) == 1, out
+        assert out.get("start_retries", []) == [] and _launches(tmp_path) == 1, out
         assert "relaunch" not in out["summary"], out["summary"]
     finally:
         s.close()
@@ -768,14 +770,14 @@ def test_a_refusal_before_any_launch_also_carries_start_retries(tmp_path: Path) 
     """A `start` judged wrong before anything is spawned still answers the field, empty."""
     out = s.start(binary=str(tmp_path / "absent"), system="m68k", rompath=str(tmp_path),
                   reference_rom=str(tmp_path / "absent.bin"))
-    assert out["status"] == "INVALID" and out["start_retries"] == [], out
+    assert out["status"] == "INVALID" and out.get("start_retries", []) == [], out
 
 
 def test_a_start_the_schema_refuses_also_carries_start_retries() -> None:
     """The schema refuses a wrong TYPE before the tool body runs, in the server's envelope:
     that is a `start` reply too, and the field is promised on every one."""
     body = mame_mcp.refusal("start", {"boot_seconds": "soon"}, _schema_error())
-    assert body["code"] == "bad_argument" and body["start_retries"] == [], body
+    assert body["code"] == "bad_argument" and body.get("start_retries", []) == [], body
 
 
 def _schema_error() -> ValidationError:
@@ -868,7 +870,7 @@ def test_a_stub_proved_to_be_another_process_on_its_own_pick_is_relaunched_on_an
     try:
         assert out["status"] == "ok", out
         assert calls[0] >= 2, "the second launch was dialled"
-        [served] = out["start_retries"]
+        [served] = out.get("start_retries", [])
         assert served["kind"] == "port_served", served
         assert "port 4242 is served by pid 777" in served["error"], served
     finally:
@@ -888,7 +890,7 @@ def test_a_stub_proved_to_be_another_process_on_the_callers_port_is_refused_at_o
     assert out["status"] == "INVALID" and out["code"] == "host_failed", out
     assert "port 4242 is served by pid 777" in out["message"], out
     assert "your `stub_port` is another process's" in out["message"], out
-    assert out["start_retries"] == [], "refused at once, never relaunched"
+    assert out.get("start_retries", []) == [], "refused at once, never relaunched"
     assert mstate.STATE.proc is None, "the launched MAME was killed with the refused start"
 
 
@@ -944,7 +946,7 @@ def test_a_host_that_cannot_prove_the_stub_is_refused_without_a_port_to_try(
     out = _start(monkeypatch, tmp_path, _double(tmp_path, hang=True), wait=5.0, dial=dial)
     assert out["status"] == "INVALID" and out["code"] == "host_failed", out
     assert "`lsof` is not on this host's PATH" in out["message"]
-    assert "stub_port" not in out["message"] and out["start_retries"] == []
+    assert "stub_port" not in out["message"] and out.get("start_retries", []) == []
 
 
 def test_a_connection_nobody_accepted_is_a_stub_that_did_not_answer(

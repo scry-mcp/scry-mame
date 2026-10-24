@@ -27,20 +27,22 @@ def test_a_ref_that_is_neither_a_symbol_nor_an_address_names_the_call_that_settl
         "address, so nothing was read: `symbols_find(name=...)` says whether the table has one")
 
 
-@pytest.mark.parametrize(("tool", "cpu", "tail"), [
-    ("watch_clear", ":maincpu",
-     ', so `watch_clear(ref=\'x\', cpu=":maincpu")` frees it, or use that ref'),
-    ("breakpoint_clear", None, ", so `breakpoint_clear(ref='x')` frees it, or use that ref"),
-    ("regpoint_clear", ":subcpu",
-     ', so `regpoint_clear(ref=\'x\', cpu=":subcpu")` frees it, or use that ref'),
+@pytest.mark.parametrize(("kind", "cpu", "tail"), [
+    ("watch", ":maincpu",
+     ', so `declaration_clear(kind="watch", ref=\'x\', cpu=":maincpu")` frees it, or use that ref'),
+    ("breakpoint", None,
+     ", so `declaration_clear(kind=\"breakpoint\", ref='x')` frees it, or use that ref"),
+    ("regpoint", ":subcpu",
+     ', so `declaration_clear(kind="regpoint", ref=\'x\', cpu=":subcpu")` frees it, '
+     'or use that ref'),
     (None, ":maincpu", ""),
 ])
 def test_a_second_declaration_of_one_place_names_the_clear_on_its_cpu(
-    tool: mclear.ClearTool | None, cpu: str | None, tail: str,
+    kind: mclear.ClearKind | None, cpu: str | None, tail: str,
 ) -> None:
     """The clear reaches the holder on its own cpu alone; a report no call answers ends at the
     rule."""
-    assert mclear.one_declaration("tally", "x", tool, cpu) == "one tally is one declaration" + tail
+    assert mclear.one_declaration("tally", "x", kind, cpu) == "one tally is one declaration" + tail
 
 
 def test_a_block_the_machine_lacks_lists_what_it_has() -> None:

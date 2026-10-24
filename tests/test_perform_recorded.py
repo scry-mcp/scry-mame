@@ -81,8 +81,8 @@ def test_the_lists_a_replay_reads_are_this_servers_own_tools() -> None:
     import mame_mcp
 
     served = {t.name for t in s.mcp._tool_manager.list_tools()}
-    assert set(mame_mcp.RECORDER.lists) <= served
-    assert set(mame_mcp.RECORDER.lists.values()) == {"breakpoints", "watches", "regpoints"}
+    assert set(mame_mcp.RECORDER.lists.values()) <= served
+    assert set(mame_mcp.RECORDER.lists) == {"breakpoints", "watches", "regpoints"}
 
 
 def test_the_declarations_the_recorder_reads_are_the_refs_the_list_tools_answer(
@@ -99,8 +99,8 @@ def test_the_declarations_the_recorder_reads_are_the_refs_the_list_tools_answer(
     assert s.watch_add(ref="frame_lo", mode="change", length=4)["status"] == "ok"
     assert s.regpoint_add(condition="pc == 0x10")["status"] == "ok"
     declared = mame_mcp.RECORDER._stored()
-    for tool, key in mame_mcp.RECORDER.lists.items():
+    for key, tool in mame_mcp.RECORDER.lists.items():
         listed = getattr(s, tool)()
         assert listed["status"] == "ok", (tool, listed.get("message"))
-        assert sorted(r["ref"] for r in listed[key]) == sorted(declared[tool]), tool
+        assert sorted(r["ref"] for r in listed[key]) == sorted(declared[key]), key
     assert sum(len(refs) for refs in declared.values()) == 3

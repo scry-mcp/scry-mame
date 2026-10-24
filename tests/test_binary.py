@@ -122,7 +122,7 @@ def test_start_with_no_rung_resolving_is_refused_in_the_envelope(
     monkeypatch.setenv("PATH", str(tmp_path / "empty"))
     out = _start(monkeypatch, tmp_path)
     refused("no MAME binary resolves from the PATH rung", out)
-    assert out["code"] == "host_failed" and out["start_retries"] == [], out
+    assert out["code"] == "host_failed" and out.get("start_retries", []) == [], out
 
 
 @POSIX_BUILDS

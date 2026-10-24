@@ -222,7 +222,7 @@ def _declare_all() -> list[dict[str, Any]]:
             call("breakpoint_at", ref="0x4a0", role="control"),
             call("watch_add", ref="main_ram", mode="change", length=4),
             call("regpoint_add", condition="d1==0x7fff"),
-            call("comment_add", ref="exception_handler", text="this session's own")]
+            call("comment_write", method="add", ref="exception_handler", text="this session's own")]
 
 
 def _stored_rows(path: Path) -> list[tuple[str, str]]:
@@ -242,13 +242,14 @@ def _p_own_store(t: list[str]) -> None:
     decl = r.get("declarations", {})
     declared = _declare_all()
     rows = _stored_rows(own)
-    listed = [*call("breakpoint_list").get("breakpoints", []),
-              *call("watch_list").get("watches", []),
-              *call("regpoint_list").get("regpoints", []),
+    listed = [*call("declaration_list", kind="breakpoint").get("breakpoints", []),
+              *call("declaration_list", kind="watch").get("watches", []),
+              *call("declaration_list", kind="regpoint").get("regpoints", []),
               *call("comment_list").get("comments", [])]
-    cleared = [call("breakpoint_clear", all=True), call("watch_clear", all=True),
-               call("regpoint_clear", all=True),
-               call("comment_delete", ref="exception_handler")]
+    cleared = [call("declaration_clear", kind="breakpoint", all=True), call("declaration_clear",
+                                                                            kind="watch", all=True),
+               call("declaration_clear", kind="regpoint", all=True),
+               call("comment_write", method="delete", ref="exception_handler")]
     after_clear = _stored_rows(own)
     call("close")
     landed = all(ok(x) for x in declared) and all(ok(x) for x in cleared)
@@ -271,9 +272,9 @@ def _p_age(t: list[str]) -> None:
     if not ok(r):
         raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     call("breakpoint_at", ref="exception_handler")
-    first = call("breakpoint_list").get("breakpoints", [{}])[0].get("age_s")
+    first = call("declaration_list", kind="breakpoint").get("breakpoints", [{}])[0].get("age_s")
     time.sleep(AGE_GAP_S)
-    second = call("breakpoint_list").get("breakpoints", [{}])[0].get("age_s")
+    second = call("declaration_list", kind="breakpoint").get("breakpoints", [{}])[0].get("age_s")
     call("close")
     cell(t[6], isinstance(first, int) and isinstance(second, int) and 0 <= first < 60
          and int(AGE_GAP_S) <= second - first <= int(AGE_GAP_S) + AGE_SLACK_S,

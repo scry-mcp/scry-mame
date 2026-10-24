@@ -2,29 +2,105 @@
  "task": {
   "id": "M190",
   "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256, listing at most 5 names in each list.",
-  "tool": "golden_check",
+  "tool": "image_compare",
   "args": {
+   "method": "golden",
    "dir": "/tmp/shots",
    "checksums": "/tmp/shots.sha256",
    "limit": 5
-  }
+  },
+  "grammar": [
+   "golden"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M190: {\"tool\": \"golden_check\", \"args\": {\"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M190: {\"tool\":\"golden_check\",\"args\":{\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\",\"limit\":5}}"
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M190: {\"tool\": \"golden_check\", \"args\": {\"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\",\"limit\":5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
    ],
    "right": true
   }

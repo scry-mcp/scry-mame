@@ -334,16 +334,19 @@ def test_the_counts_are_this_servers_declarations_on_each_cpu(
     assert counts == {MAIN: {"breakpoints": 1, "watches": 1, "regpoints": 1},
                       SUB: {"breakpoints": 1, "watches": 1, "regpoints": 0}}, counts
     for tag in (MAIN, SUB):
-        mine = [r for r in s.watch_list(cpu=tag)["watches"] if r.get("mode") != "expr"]
-        assert counts[tag]["breakpoints"] == len(s.breakpoint_list(cpu=tag)["breakpoints"])
+        mine = [r for r in s.declaration_list("watch",
+                                              cpu=tag)["watches"] if r.get("mode") != "expr"]
+        assert counts[tag]["breakpoints"] == len(s.declaration_list("breakpoint",
+                                                                    cpu=tag)["breakpoints"])
         assert counts[tag]["watches"] == len(mine), (tag, mine)
-    assert counts[MAIN]["regpoints"] == len(s.regpoint_list()["regpoints"])
+    assert counts[MAIN]["regpoints"] == len(s.declaration_list("regpoint")["regpoints"])
 
 
 def test_the_counts_are_records_in_any_state_and_never_a_foreign_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row the console lost is still counted while `breakpoint_list` reads it `gone`, a
+    """A row the console lost is still counted while `declaration_list(kind="breakpoint")` reads it
+    `gone`, a
     control is counted as the list lists it, and a row typed at the console is the list's
     `foreign`, never this server's."""
     _two_cpus(monkeypatch, tmp_path, _THREADS)
@@ -353,7 +356,7 @@ def test_the_counts_are_records_in_any_state_and_never_a_foreign_row(
     s.debug(command="bp 700")
     assert _rows(s.cpu_info())[MAIN]["declarations"] == {
         "breakpoints": 2, "watches": 0, "regpoints": 0}
-    listed = s.breakpoint_list(cpu="maincpu")
+    listed = s.declaration_list("breakpoint", cpu="maincpu")
     assert sorted(b["state"] for b in listed["breakpoints"]) == ["armed", "gone"], listed
     assert len(listed["breakpoints"]) == 2 and listed["foreign"], listed
 

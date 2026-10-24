@@ -2,32 +2,108 @@
  "task": {
   "id": "M64",
   "prompt": "List only the breakpoint declarations whose rows sit on the cpu tagged soundcpu.",
-  "tool": "breakpoint_list",
+  "tool": "declaration_list",
   "args": {
+   "kind": "breakpoint",
    "cpu": {
     "any_of": [
      "soundcpu",
      ":soundcpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "breakpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M64: {\"tool\": \"breakpoint_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\":\"breakpoint_list\",\"args\":{\"cpu\":\"soundcpu\"}}"
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"breakpoint_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"breakpoint\",\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   }

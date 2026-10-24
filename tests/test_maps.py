@@ -41,7 +41,7 @@ def test_a_screen_mapped_from_the_one_in_front_is_found_again_off_one_capture(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    added = _ok(s.map_add(screen="board", match=[STRIP], controls=[PLACE]))
+    added = _ok(s.map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
     assert (added["kind"], added["size"], added["controls"]) == ("pixel", [256, 240], 1)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     assert added["match"][0]["signature"] == _ok(s.screen_signature(crop=STRIP))["signature"]
@@ -62,7 +62,7 @@ def test_another_board_matches_nothing_and_says_what_it_tried(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    _ok(s.map_add(screen="board", match=[STRIP]))
+    _ok(s.map_write("add", screen="board", match=[STRIP]))
     _serve(ses, "screen-circus", screen="circus-screen")
     found = _ok(s.map_find())
     assert found["matched"] is False and "screen" not in found
@@ -74,25 +74,26 @@ def test_saved_screens_become_the_file_layer_and_load_back(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    _ok(s.map_add(screen="board", match=[STRIP], controls=[PLACE]))
+    _ok(s.map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
     path = tmp_path / "gridlee.scry-map.json"
-    saved = _ok(s.map_save(dest=str(path)))
+    saved = _ok(s.map_write("save", dest=str(path)))
     assert saved["promoted"] == ["board"] and json.loads(path.read_text())["application"] == (
         "gridlee")
-    refused("there", s.map_save(dest=str(path)))
+    refused("there", s.map_write("save", dest=str(path)))
     mstate.STATE.maps = screen_map.Maps()
-    loaded = _ok(s.map_load(path=str(path)))
+    loaded = _ok(s.map_write("load", path=str(path)))
     assert (loaded["application"], loaded["screens"], loaded["controls"]) == ("gridlee", 1, 1)
 
 
 @pytest.mark.parametrize(("call", "code"), [
-    (lambda p: s.map_save(dest=str(p / "x.scry-map.json")), "needs_call"),
-    (lambda p: s.map_load(path=str(p / "no.scry-map.json")), "bad_argument"),
-    (lambda p: s.map_load(path="relative.scry-map.json"), "bad_argument"),
-    (lambda p: s.map_save(dest=str(p / "x.json")), "bad_argument"),
-    (lambda p: s.map_save(dest=str(p / "x.scry-map.json"), overwrite="yes"), "bad_argument"),
-    (lambda p: s.map_add(screen="", match=[STRIP]), "bad_argument"),
-    (lambda p: s.map_add(screen="s", match=[]), "bad_argument"),
+    (lambda p: s.map_write("save", dest=str(p / "x.scry-map.json")), "needs_call"),
+    (lambda p: s.map_write("load", path=str(p / "no.scry-map.json")), "bad_argument"),
+    (lambda p: s.map_write("load", path="relative.scry-map.json"), "bad_argument"),
+    (lambda p: s.map_write("save", dest=str(p / "x.json")), "bad_argument"),
+    (lambda p: s.map_write("save", dest=str(p / "x.scry-map.json"), overwrite="yes"),
+     "bad_argument"),
+    (lambda p: s.map_write("add", screen="", match=[STRIP]), "bad_argument"),
+    (lambda p: s.map_write("add", screen="s", match=[]), "bad_argument"),
 ], ids=["save with nothing mapped", "a file that is not there", "a relative path",
         "a name without the map suffix", "an overwrite that is no yes or no",
         "an empty screen name", "no region"])
@@ -105,7 +106,7 @@ def test_what_the_map_tools_refuse_before_the_machine(tmp_path: Path, call: Any,
 def test_a_misshapen_control_is_refused_before_the_capture(monkeypatch: pytest.MonkeyPatch,
                                                            tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    got = s.map_add(screen="board", match=[STRIP], controls=[{"name": "score"}])
+    got = s.map_write("add", screen="board", match=[STRIP], controls=[{"name": "score"}])
     assert got["code"] == "bad_argument" and "has no `rect`" in got["message"], got
     assert "mcp_capture(" not in ses.stdin.getvalue().decode(), "no capture for a refusal"
 
@@ -114,7 +115,7 @@ def test_find_with_nothing_mapped_asks_for_a_map(monkeypatch: pytest.MonkeyPatch
                                                  tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
     got = s.map_find()
-    assert got["code"] == "needs_call" and "map_load" in got["message"], got
+    assert got["code"] == "needs_call" and "`map_write` a map (`load`)" in got["message"], got
     assert "mcp_capture(" not in ses.stdin.getvalue().decode(), "no capture for nothing mapped"
 
 
@@ -138,12 +139,15 @@ def test_a_start_empties_the_session_layer_and_keeps_the_file(
 
 
 def test_an_export_keeps_the_map_and_holds_an_identification_to_what_it_matched() -> None:
-    """A capture here steps the machine, so `map_add` and `map_find` move it and an export keeps
-    them whatever they were declared; what the declaration decides is that `map_load` is a step
+    """A capture here steps the machine, so `map_write(method="add")` and `map_find` move it and an
+    export keeps
+    them whatever they were declared; what the declaration decides is that
+    `map_write(method="load")` is a step
     too (or the replayed find would know no map), `map_find` a check of what it matched and
-    where, and `map_save` dropped (a replay would find its file there)."""
+    where, and `map_write(method="save")` dropped (a replay would find its file there)."""
     import mame_mcp
-    kinds = {n: mame_mcp.RECORDER.kind(n).export_as
-             for n in ("map_load", "map_add", "map_find", "map_save")}
-    assert kinds == {"map_load": "step", "map_add": "step",
-                     "map_find": ("matched", "screen", "pc", "frame"), "map_save": "drop"}
+    kinds = {m: mame_mcp.RECORDER.kind("map_write", {"method": m}).export_as
+             for m in ("load", "add", "save")}
+    assert kinds == {"load": "step", "add": "step", "save": "drop"}
+    found = mame_mcp.RECORDER.kind("map_find", {}).export_as
+    assert found == ("matched", "screen", "pc", "frame")

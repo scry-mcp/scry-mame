@@ -17,7 +17,79 @@
   },
   {
    "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M26: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"PlayerX\",\"length\":6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },

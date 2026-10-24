@@ -207,10 +207,10 @@ def test_a_capture_surveys_its_rows_as_the_periodic_wrote_them(
     assert item["since_last_stop"] == 230 and item["rows_max"] == capture.ROWS_MAX
     assert item["rows_path"] == str(capture.paths(tmp_path, COUNTER_ID)[1])
     # A STOP NAMES THE CAPTURE AND COUNTS IT, and lists none of its rows: every reply carries a
-    # survey, whatever the call was about, and the rows are `watch_list`'s
+    # survey, whatever the call was about, and the rows are `declaration_list(kind="watch")`'s
     assert "first_rows" not in item, item
     assert _survey(ses, 240)["since_last_stop"] == 0, "the same dump is no new row"
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert listed["state"] == "captured" and listed["rows_kept"] == 230
     first = listed["first_rows"]
     assert isinstance(first, list) and len(first) == 24, (
@@ -223,7 +223,8 @@ def test_a_capture_surveys_its_rows_as_the_periodic_wrote_them(
 
 def _listed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, fill: str,
             n: int = 300) -> dict[str, Any]:
-    """`watch_list` over a capture of the block `fmt` sizes (the widest a capture holds for an
+    """`declaration_list(kind="watch")` over a capture of the block `fmt` sizes (the widest a
+    capture holds for an
     array), `n` rows of the block `fill` repeated, past what a reply shows."""
     _capturing(monkeypatch, tmp_path)
     width = vf.parse(fmt).width_for(0)
@@ -239,7 +240,7 @@ def _listed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, fill: str
     # whose seconds print every digit a double holds
     rows.write_text("".join(f"r {i + 1} {12 + i} 1023 3600.123456789012345678 40e ffff ffff "
                             f"{block}\n" for i in range(n)))
-    listed: dict[str, Any] = s.watch_list()
+    listed: dict[str, Any] = s.declaration_list("watch")
     return listed
 
 
@@ -248,7 +249,8 @@ def test_watch_list_shows_the_widest_capture_inside_the_reply_budget(
 ) -> None:
     """The widest block a capture accepts, decoded to the widest JSON its bytes can make (its
     floats printed at full precision are wider than its signed bytes), over a pass
-    with rows past what a reply shows: `watch_list` carries the first `ROWS_SHOWN` of them
+    with rows past what a reply shows: `declaration_list(kind="watch")` carries the first
+    `ROWS_SHOWN` of them
     inside the budget a reply is built to, and `rows_path` the rest. The control lifts the cap
     and sees the same list cross it, which is what the client spilled."""
     out = _listed(monkeypatch, tmp_path, "f32[32]", "ff7fffff")
@@ -258,7 +260,7 @@ def test_watch_list_shows_the_widest_capture_inside_the_reply_budget(
     assert len(json.dumps(item["first_rows"][0]["block"])) == watches.capture_block_chars_max()
     assert len(json.dumps(out)) < mstate.REPLY_BUDGET_CHARS, len(json.dumps(out))
     monkeypatch.setattr(mstate, "ROWS_SHOWN", 300)
-    assert len(json.dumps(s.watch_list())) > mstate.REPLY_BUDGET_CHARS, "the control"
+    assert len(json.dumps(s.declaration_list("watch"))) > mstate.REPLY_BUDGET_CHARS, "the control"
 
 
 # the bytes that decode to each scalar's widest JSON: a sign and the most digits
@@ -308,7 +310,7 @@ def test_a_struct_at_the_bound_lists_inside_the_budget_and_one_past_it_is_refuse
     assert len(json.dumps(out["watches"][0]["first_rows"][0]["block"])) == (
         watches.capture_block_chars_max())
     assert len(json.dumps(out)) < mstate.REPLY_BUDGET_CHARS, len(json.dumps(out))
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     sent = _sent().count(b"install_write_tap")
     over = s.watch_add(ref="0x2031fc", mode="capture",
                        fmt=_struct(watches.capture_block_chars_max() + 1), trigger="0x2031fe")
@@ -329,7 +331,7 @@ def test_rows_past_the_cap_are_counted_and_said(
     _placed(tmp_path, COUNTER_ID, "counter-capped")
     item = _survey(ses, 240)
     assert (item["rows_kept"], item["overflow_rows"], item["total"]) == (3, 227, 230), item
-    rows = s.watch_list()["watches"][0]["first_rows"]
+    rows = s.declaration_list("watch")["watches"][0]["first_rows"]
     assert isinstance(rows, list) and [r["n"] for r in rows] == [1, 2, 3]
 
 
@@ -385,7 +387,8 @@ def test_one_block_on_one_trigger_is_one_capture_and_another_trigger_is_another(
     s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fe")
     use_table(monkeypatch, table={"FRAME_LO": 0x2031FC})
     refused(re.escape("already captured under '0x2031fc': one capture is one declaration, so "
-                      "`watch_clear(ref='0x2031fc', cpu=\":maincpu\")` frees it, or use that ref"),
+                      "`declaration_clear(kind=\"watch\", ref='0x2031fc', cpu=\":maincpu\")` frees "
+                      "it, or use that ref"),
             s.watch_add(ref="frame_lo", mode="capture", fmt="u16[2]", trigger="0x2031fe"))
     refused(re.escape("on the trigger '0x2031fe'"),
             s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fc"))
@@ -399,7 +402,7 @@ def test_a_cleared_capture_sends_its_removal_to_its_own_registry_and_drops_both_
     _capturing(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fe")
     _placed(tmp_path, COUNTER_ID, "counter")
-    out = s.watch_clear(ref="0x2031fc")
+    out = s.declaration_clear("watch", ref="0x2031fc")
     assert out["tallies_removed"][0]["tally_id"] == COUNTER_ID, out
     assert b"local T = _G.MCP_CAPTURE" in _sent().splitlines()[-1]
     assert not any(p.exists() for p in capture.paths(tmp_path, COUNTER_ID))
@@ -447,7 +450,7 @@ def test_a_stored_capture_comes_back_at_start_and_one_on_a_lost_trigger_is_unres
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["rearmed"]) == ["frame_lo"] and refs(out["unresolved"]) == ["frame_lo"], out
     assert _sent().count(b"install_write_tap") == 1
-    listed = [w for w in s.watch_list()["watches"] if w["cpu"] == ":subcpu"]
+    listed = [w for w in s.declaration_list("watch")["watches"] if w["cpu"] == ":subcpu"]
     assert listed[0]["state"] == "unresolved" and "gone_sym" in listed[0]["why"], listed
 
 
@@ -567,7 +570,7 @@ def test_a_stale_capture_is_listed_stale_and_not_as_an_install_that_never_came(
                                        cpu=":maincpu", fingerprint="another build"))
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["stale"]) == ["0x2031fc"], out
-    (listed,) = s.watch_list()["watches"]
+    (listed,) = s.declaration_list("watch")["watches"]
     assert listed["state"] == "stale" and "another build" in listed["why"], listed
 
 
@@ -583,7 +586,7 @@ def test_an_install_answer_is_its_own_taps_line_among_others_sent_with_it(
     other = ("MCP_TALLY installed tally_id=2031fe_1_subcpu first=2031fe last=2031fe "
              "data_width=16 endianness=big cpu=:subcpu")
     _answer(tmp_path, 1, output=other + "\n" + INSTALLED)
-    item = s.watch_list()["watches"][0]
+    item = s.declaration_list("watch")["watches"][0]
     assert (item["installed"], item["cpu"]) == (True, ":maincpu"), item
 
 
@@ -618,7 +621,7 @@ def test_a_capture_whose_tap_raised_says_so_and_is_never_an_empty_census(
     item = _survey(ses, 904)
     assert item["callback_errors"] == {"count": 4, "first": "mcp:3: planted fault"}, item
     assert (item["state"], item["rows_kept"], item["total"]) == ("captured", 2, 2)
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert listed["callback_errors"]["count"] == 4
     clean = capture.parse_capture_header((FIXTURES / "counter.txt").read_text())
     assert clean is not None and clean["errors"] == 0, "a guarded tap that never raised"
@@ -708,7 +711,8 @@ def test_a_stored_capture_whose_format_is_past_the_bound_is_unarmable_at_start(
 def test_watch_list_cuts_an_unarmable_captures_format_as_its_refusal_does_and_the_store_keeps_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A format past the bound is long by construction, and `watch_list` lists the row once a
+    """A format past the bound is long by construction, and `declaration_list(kind="watch")` lists
+    the row once a
     row: it shows the format cut by the rule its refusal uses (`watches.shown_fmt`), and the
     store, which is the record, keeps it whole."""
     ses = _capturing(monkeypatch, tmp_path)
@@ -719,7 +723,7 @@ def test_watch_list_cuts_an_unarmable_captures_format_as_its_refusal_does_and_th
                                        watch_mode="capture", trigger="0x2031fe",
                                        fingerprint="fp-test", cpu=":maincpu"))
     rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
-    (row,) = [r for r in watches.watch_list(ses)["watches"]  # type: ignore[arg-type]
+    (row,) = [r for r in watches.list_watches(ses)["watches"]  # type: ignore[arg-type]
               if r["ref"] == "0x2031fc"]
     assert row["state"] == "not_installed", row
     assert row["fmt"] == wide[:60] + "...", row
@@ -748,7 +752,7 @@ def test_a_long_format_inside_the_bound_and_a_long_one_on_a_count_row_are_listed
                                        fingerprint="fp-test", cpu=":maincpu"))
     arming.store().add(dec.Declaration("watch", "address", "0x203200", width=8, fmt=long_fits,
                                        watch_mode="show", fingerprint="fp-test", cpu=":maincpu"))
-    rows = {r["ref"]: r for r in watches.watch_list(ses)["watches"]}  # type: ignore[arg-type]
+    rows = {r["ref"]: r for r in watches.list_watches(ses)["watches"]}  # type: ignore[arg-type]
     assert rows["0x2031fc"]["fmt"] == long_fits and rows["0x203200"]["fmt"] == long_fits, rows
 
 

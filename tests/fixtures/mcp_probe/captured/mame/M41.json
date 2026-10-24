@@ -21,7 +21,79 @@
   },
   {
    "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M41: {\"tool\":\"log_wait\",\"args\":{\"pattern\":\"STAGE [0-9]+ CLEAR\",\"channel\":\"process\",\"seconds\":90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M41: {\"tool\": \"log_wait\", \"args\": {\"pattern\": \"STAGE [0-9]+ CLEAR\", \"channel\": \"process\", \"seconds\": 90}}"
    ],
    "right": true
   },

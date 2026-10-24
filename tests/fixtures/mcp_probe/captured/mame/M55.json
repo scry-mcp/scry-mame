@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M55: CANNOT breakpoint_at takes only a symbol or a linear 0x address and refuses expressions; an expression place has no declaration here, so an expression-based halt is only possible through regpoint_add."
+    "M55: CANNOT breakpoint_at takes a place (a symbol or 0x address) and never an expression, so PlayerX+2 cannot be declared as a breakpoint."
    ],
    "right": true
   },
   {
    "lines": [
-    "M55: CANNOT breakpoint_at refuses by \"expr\" (a halt on an expression is regpoint_add's job), and regpoint_add takes no address-of-expression ref."
+    "M55: CANNOT breakpoint_at takes only a symbol or a 0x address, never an expression, so there is no way to force an expression ref."
    ],
    "right": true
   },
   {
    "lines": [
-    "M55: CANNOT Breakpoints take only places (`auto`, `symbol` or `address`), and an expression is refused there; a halt on an expression belongs to `regpoint_add`."
+    "M55: CANNOT breakpoint_at takes its ref as a symbol or a 0x address only, never an expression, so PlayerX+2 cannot be evaluated into a place."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes its ref only as a symbol or a 0x address, never as a console expression, so PlayerX+2 cannot be declared."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes its ref only as a symbol or a 0x address, and has no option to read it as an expression."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes only a symbol or a linear 0x address, never a console expression, so PlayerX+2 cannot be declared."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes a symbol or a 0x address and never an expression, so PlayerX+2 cannot be declared."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes its ref only as a symbol, an address or a place, never as a console expression, so PlayerX+2 cannot be evaluated into one."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes its ref only as a symbol or a 0x address (by: auto, symbol, address), never as an expression, and PlayerX+2 is an expression."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes only a symbol or a 0x address, never an expression, and no mode reads its ref as an expression."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes only a symbol or a 0x address and never an expression, so an expression such as PlayerX+2 cannot be declared."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes a symbol or a 0x address as a place, never an expression, and has no option to read its ref as an expression."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes a symbol or a 0x address only and never an expression, so PlayerX+2 cannot be declared."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at takes its ref only as a symbol or a 0x address, never as an expression, so PlayerX+2 cannot be declared this way."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M55: CANNOT breakpoint_at accepts only a symbol or a 0x address and never evaluates an expression, so PlayerX+2 cannot be declared."
    ],
    "right": true
   }

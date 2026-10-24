@@ -44,7 +44,7 @@ def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
     regs = s.registers()
     read = s.read_memory(ref="0x4a0", length=1)
     s.status()
-    s.comment_add(ref="0x4a0", text="the loop")
+    s.comment_write("add", ref="0x4a0", text="the loop")
     out = s.perform_export(dest=str(tmp_path / "s.json"))
     assert out["status"] == "ok" and out["cut"]["available"] is False, out
     doc = json.loads((tmp_path / "s.json").read_text())
@@ -52,7 +52,7 @@ def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
     assert [st["op"] for st in doc["steps"]] == ["write", "registers", "read_memory"]
     assert doc["steps"][1]["recorded"] == {"regs": regs["regs"]}
     assert doc["steps"][2]["recorded"] == {"hex": read["hex"]}
-    assert out["checks"] == 2 and [d["op"] for d in out["dropped"]] == ["status", "comment_add"]
+    assert out["checks"] == 2 and [d["op"] for d in out["dropped"]] == ["status", "comment_write"]
     assert out["summary"].startswith("perform_export: 3 steps, 2 checks, 2 dropped to ")
 
 
@@ -77,21 +77,21 @@ def test_the_export_and_the_lifecycle_are_never_recorded_and_never_a_step() -> N
 DECLARED = {
     "read_memory": ("hex",), "read_block": ("hex", "pc", "frame"), "registers": ("regs",),
     "screen_signature": ("signature", "pc", "frame"),
-    "golden_check": ("matched", "differing_total", "missing_total", "extra_total", "differing",
-                     "missing", "extra"),
+    "image_compare": {"image": "drop", "series": "drop", "region": "drop",
+                      "golden": ("matched", "differing_total", "missing_total", "extra_total",
+                                 "differing", "missing", "extra")},
+    "map_write": {"add": "step", "load": "step", "save": "drop"},
     "resume": "wall", "stop": "wall",
-    **dict.fromkeys(("throttle", "snapshot", "memdump", "comment_add", "comment_delete",
-                     "comment_save", "comment_load", "palette", "screen_view", "gfx_view",
-                     "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits",
-                     "gfx_blit_source", "gfx_film", "palette_log", "scan_start", "scan_filter",
-                     "scan_clear", "image_diff", "series_diff", "region_track", "audio_measure",
-                     "audio_diff", "map_save"), "drop"),
+    **dict.fromkeys(("throttle", "snapshot", "memdump", "comment_write", "palette",
+                     "screen_view", "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft",
+                     "gfx_load", "gfx_blits", "gfx_blit_source", "gfx_film", "palette_log",
+                     "scan", "audio_compare"), "drop"),
     # A replay knows the map an identification was made against, and holds the find to it.
     "map_find": ("matched", "screen", "pc", "frame"),
     # The readers dropped by default, named so a reader that turns into a step is seen.
-    **dict.fromkeys(("breakpoint_list", "captures", "comment_list", "cpu_info", "disassemble",
-                     "find", "history", "log", "log_wait", "machine_map", "regpoint_list",
-                     "rom_check", "state_list", "status", "symbols_find", "watch_list"), "drop"),
+    **dict.fromkeys(("declaration_list", "captures", "comment_list", "cpu_info", "disassemble",
+                     "find", "history", "log", "log_wait", "machine_map", "rom_check",
+                     "state_list", "status", "symbols_find"), "drop"),
 }
 
 
@@ -99,7 +99,9 @@ def test_each_tool_is_exported_as_it_is_declared_and_the_rest_as_steps_or_droppe
     declared = mame_mcp.RECORDER.declared
     for tool, kind in declared.items():
         want = DECLARED.get(tool, "step")
-        assert kind.export_as == want, (tool, kind.export_as, want)
+        got = ({m: d.export_as for m, d in kind.items()} if isinstance(kind, dict)
+               else kind.export_as)
+        assert got == want, (tool, got, want)
     assert set(DECLARED) <= set(declared), sorted(set(DECLARED) - set(declared))
 
 

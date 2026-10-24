@@ -25,13 +25,85 @@
  "runs": [
   {
    "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M81: {\"tool\":\"write\",\"args\":{\"ref\":\"VoiceTable\",\"data_hex\":\"00FF\",\"cpu\":\"audiocpu\",\"region\":true}}"
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\":\"write\",\"args\":{\"ref\":\"VoiceTable\",\"data_hex\":\"00FF\",\"region\":true,\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"region\": true, \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M81: {\"tool\": \"write\", \"args\": {\"ref\": \"VoiceTable\", \"data_hex\": \"00FF\", \"cpu\": \"audiocpu\", \"region\": true}}"
    ],
    "right": true
   },

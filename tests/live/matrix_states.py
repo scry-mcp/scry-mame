@@ -94,7 +94,7 @@ def _not_states(t: str) -> None:
         loads: dict[str, tuple[Any, bool, float]] = {}
         for name, what in made.items():
             release = _release_after(folder / f"{name}.sta") if name == "qfifo" else None
-            r = call("state_load", name=name)
+            r = call("state_write", method="load", name=name)
             loads[name] = (r.get("code"), what in str(r.get("message")), last_wall())
             if release is not None:
                 release.join()
@@ -122,13 +122,13 @@ def _q_circus(t: list[str]) -> None:
     _not_states(t[0])
     call("run_for", frames=10, seconds=10.0)
     first = fresh_state()
-    call("state_save", name=first)
+    call("state_write", method="save", name=first)
     call("run_for", frames=7, seconds=10.0)
-    loaded = call("state_load", name=first)
+    loaded = call("state_write", method="load", name=first)
     cell(t[1], ok(loaded) and loaded.get("verified") is True, said(loaded, 160))
     again = fresh_state()
-    call("state_save", name=again)
-    at_once = call("state_load", name=again)
+    call("state_write", method="save", name=again)
+    at_once = call("state_write", method="load", name=again)
     cell(t[2], ok(at_once)
          and "before the load" in str(unavailable_why(at_once.get("verified"))),
          said(at_once, 200))
@@ -173,9 +173,9 @@ def _q_topgunnr(t: list[str]) -> None:
     free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000")
     call("run_for", milliseconds=200, seconds=10.0)
     first = fresh_state()
-    call("state_save", name=first)
+    call("state_write", method="save", name=first)
     call("run_for", milliseconds=137, seconds=10.0)
-    loaded = call("state_load", name=first)
+    loaded = call("state_write", method="load", name=first)
     if ok(loaded) and "before the load" in str(unavailable_why(loaded.get("verified"))):
         blocked(t[4], f"the block came back to the saved one before the load: {said(loaded)}")
     else:
@@ -184,10 +184,10 @@ def _q_topgunnr(t: list[str]) -> None:
     # the second machine against the first's record.
     names = [fresh_state(), fresh_state()]
     call("run_for", milliseconds=137, seconds=10.0)
-    call("state_save", name=names[0])
+    call("state_write", method="save", name=names[0])
     for _ in range(5):
         call("run_for", milliseconds=50, seconds=10.0)
-        call("state_save", name=names[1])
+        call("state_write", method="save", name=names[1])
         if STATE.states[names[1]]["blocks"] != STATE.states[names[0]]["blocks"]:
             break
         Path(str(call("state_list").get("state_dir")), f"{names[1]}.sta").unlink()
@@ -198,7 +198,7 @@ def _q_topgunnr(t: list[str]) -> None:
         return
     folder = Path(str(call("state_list").get("state_dir")))
     shutil.copyfile(folder / f"{names[1]}.sta", folder / f"{names[0]}.sta")
-    swapped = call("state_load", name=names[0])
+    swapped = call("state_write", method="load", name=names[0])
     differs = swapped.get("differs") or {}
     cell(t[5], refused(swapped, "readback_refused") and differs.get("cpu") == ":maincpu"
          and differs.get("saved") != differs.get("loaded")
@@ -213,10 +213,10 @@ def _q_victory_held(t: list[str]) -> None:
     free_boot("victory", ["vic3.j2"], "0x0")
     call("run_for", frames=10, seconds=10.0)
     name = fresh_state()
-    saved = call("state_save", name=name)
+    saved = call("state_write", method="save", name=name)
     call("run_for", frames=5, seconds=10.0)
     wrote = call("write", ref="0xf800", data_hex="01")
-    loaded = call("state_load", name=name)
+    loaded = call("state_write", method="load", name=name)
     after = call("run_for", frames=1, seconds=10.0)
     cell(t[7], ok(saved) and "held" not in saved and ok(wrote) and ok(loaded)
          and "held" in loaded and loaded.get("verified") is True

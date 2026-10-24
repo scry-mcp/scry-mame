@@ -2,27 +2,103 @@
  "task": {
   "id": "M15",
   "prompt": "Clear the breakpoint declared as FrameTick.",
-  "tool": "breakpoint_clear",
+  "tool": "declaration_clear",
   "args": {
+   "kind": "breakpoint",
    "ref": "FrameTick"
-  }
+  },
+  "grammar": [
+   "breakpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\":\"breakpoint_clear\",\"args\":{\"ref\":\"FrameTick\"}}"
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"breakpoint_clear\", \"args\": {\"ref\": \"FrameTick\"}}"
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"ref\":\"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   }

@@ -873,7 +873,8 @@ def test_a_command_naming_no_cpu_is_refused_when_two_cpus_capture_its_block(
         mblits.find_capture(cmd)
     assert err.value.code == "bad_argument", err.value
     assert err.value.fields["captured_on"] == ["maincpu", "subcpu"], err.value.fields
-    assert 'watch_clear(ref="0x700000", cpu=":subcpu")' in str(err.value), str(err.value)
+    said = 'declaration_clear(kind="watch", ref="0x700000", cpu=":subcpu")'
+    assert said in str(err.value), str(err.value)
     named = _variant(tmp_path, ("{address: 0x700000, words: 16, word_bytes: 2, status",
                                 "{address: 0x700000, words: 16, word_bytes: 2, cpu: maincpu, "
                                 "status"))
@@ -896,7 +897,8 @@ def test_a_capture_that_never_installed_says_so_rather_than_no_rows_yet(
     with pytest.raises(mstate.Invalid) as err:
         mblits.read_rows(ses.scratch, mm.command("blit"), None, 903)
     assert "no rows yet" not in str(err.value) and said in str(err.value), str(err.value)
-    assert 'watch_clear(ref="0x700000", cpu=":maincpu") and declare it again' in str(err.value)
+    assert ('declaration_clear(kind="watch", ref="0x700000", cpu=":maincpu") and declare it '
+            'again') in str(err.value)
     assert err.value.fields == {"tally_id": mstate.STATE.tallies[OWNER]["tally_id"],
                                 "state": state}, err.value.fields
 

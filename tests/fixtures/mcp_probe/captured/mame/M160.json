@@ -28,6 +28,36 @@
   },
   {
    "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": 448, \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M160: {\"tool\":\"read_block\",\"args\":{\"tag\":\"vram\",\"offset\":\"0x1c0\",\"length\":16}}"
    ],
    "right": true
@@ -35,6 +65,48 @@
   {
    "lines": [
     "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\", \"length\": 16}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M160: {\"tool\": \"read_block\", \"args\": {\"tag\": \"vram\", \"offset\": \"0x1c0\"}}"
    ],
    "right": true
   }

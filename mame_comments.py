@@ -11,7 +11,7 @@ only where the code acts on it.
 
 The pane itself, how a comment is fed to it and read back and how a place is handed over, is
 `mame_comment_pane`'s. The file a project versions is `mame_comment_file`'s, read by
-`comment_load` and written by `comment_save`, never implicitly.
+`comment_write(method="load")` and written by `comment_write(method="save")`, never implicitly.
 """
 
 from __future__ import annotations
@@ -89,25 +89,27 @@ def check_text(text: str) -> None:
         raise st.Invalid("bad_argument", f"the text {fault}; nothing is stored")
 
 
-def check_comment_add(ref: str = "", text: str = "", **_: Any) -> None:
-    """`comment_add`'s machine-independent half: the ref's shape and the text's rule."""
+def check_add_comment(ref: str = "", text: str = "", **_: Any) -> None:
+    """`comment_write(method="add")`'s machine-independent half: the ref's shape and the text's
+    rule."""
     check_comment_ref(ref)
     check_text(text)
 
 
-def check_comment_delete(ref: str = "", **_: Any) -> None:
-    """`comment_delete`'s machine-independent half: the ref's shape."""
+def check_delete_comment(ref: str = "", **_: Any) -> None:
+    """`comment_write(method="delete")`'s machine-independent half: the ref's shape."""
     check_comment_ref(ref)
 
 
-def check_comment_save(dest: str = "", **_: Any) -> Path:
-    """`comment_save`'s machine-independent half, a file this server may write, handed back so
+def check_save_comments(dest: str = "", **_: Any) -> Path:
+    """`comment_write(method="save")`'s machine-independent half, a file this server may write,
+    handed back so
     the body does not build it twice."""
     return inputs.writable_path("dest", dest)
 
 
-def check_comment_load(path: str = "", **_: Any) -> None:
-    """`comment_load`'s machine-independent half: an absolute path."""
+def check_load_comments(path: str = "", **_: Any) -> None:
+    """`comment_write(method="load")`'s machine-independent half: an absolute path."""
     inputs.absolute("path", path)
 
 
@@ -220,10 +222,11 @@ def _persistence_note() -> str | None:
     return None if arming.store().persistent else dec.SESSION_LIVED_WHY
 
 
-def comment_add(ses: gs.Session, scratch: Path, ref: str, text: str,
+def add_comment(ses: gs.Session, scratch: Path, ref: str, text: str,
                 cpu: str = "") -> dict[str, Any]:
-    """The body of the `comment_add` tool: `text` on `ref` of `cpu`, one comment per place."""
-    check_comment_add(ref, text)
+    """The body of the `comment_write(method="add")` tool: `text` on `ref` of `cpu`, one comment per
+    place."""
+    check_add_comment(ref, text)
     on = cpus.acting(ses, cpu)
     typed = ref.strip()
     if (why := expression_fault(typed, STATE.table(on).table)) is not None:
@@ -260,7 +263,7 @@ def comment_add(ses: gs.Session, scratch: Path, ref: str, text: str,
     except gs.NotStopped:
         raise
     except gs.SessionError as e:
-        return _broke_after_store(e, "comment_add", failed)
+        return _broke_after_store(e, "comment_write", failed)
     item = row(decl)
     note = _notes(item.get("why") if _not_shown(item) else None, put_back,
                   _persistence_note())
@@ -314,11 +317,12 @@ def _target(ref: str, on: str) -> dec.Declaration | None:
     return _reached([d for d in held if pane.place(d) == place], by, ref)
 
 
-def comment_delete(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> dict[str, Any]:
-    """The body of the `comment_delete` tool: the comment `ref` names on `cpu`. The store's
+def delete_comment(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> dict[str, Any]:
+    """The body of the `comment_write(method="delete")` tool: the comment `ref` names on `cpu`. The
+    store's
     removal is the fact; the pane is cleared after, or given to another comment the store keeps
     at the same place."""
-    check_comment_delete(ref)
+    check_delete_comment(ref)
     on = cpus.acting(ses, cpu)
     target = _target(ref.strip(), on)
     if target is None:
@@ -341,7 +345,7 @@ def comment_delete(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> d
     except gs.NotStopped:
         raise
     except gs.SessionError as e:
-        return _broke_after_store(e, "comment_delete", failed)
+        return _broke_after_store(e, "comment_write", failed)
     note = _notes(*notes, _persistence_note())
     if failed:
         return _host_failed(failed, note, deleted=gone, cpu=on)
@@ -351,7 +355,8 @@ def comment_delete(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> d
 
 def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
     """What `dest` holds now, when it is a comment file this server can read, None when nothing
-    is there; anything else is refused, since `comment_save` replaces only a file of its own
+    is there; anything else is refused, since `comment_write(method="save")` replaces only a file of
+    its own
     format and names the rows it drops."""
     if path.is_symlink():
         raise st.Invalid("bad_argument",
@@ -364,24 +369,28 @@ def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
     if not path.is_file():
         # Judged before any open: reading a FIFO would wait for a writer, and hold the server.
         raise st.Invalid("bad_argument", f"dest={dest!r} is not a regular file (a FIFO, a device "
-                                         "or a socket): `comment_save` replaces only a comment "
+                                         "or a socket): `comment_write(method=\"save\")` replaces "
+                                         "only a comment "
                                          "file")
     try:
         text = path.read_bytes().decode("utf-8")
     except UnicodeDecodeError as e:
         raise st.Invalid("bad_argument", f"dest={dest!r} exists and is not UTF-8 text ({e}): "
-                                         "`comment_save` replaces only a comment file") from None
+                                         "`comment_write(method=\"save\")` replaces only a comment "
+                                         "file") from None
     except OSError as e:
         raise files.unreadable("file at dest", dest, e) from None
     if text.replace("\r\n", "\n").split("\n")[0] != cf.HEADER:
         raise st.Invalid("bad_argument",
                          f"dest={dest!r} exists and is not a comment file (its first line is "
-                         f"not {cf.HEADER!r}): `comment_save` replaces only a file of its own "
+                         f"not {cf.HEADER!r}): `comment_write(method=\"save\")` replaces only a "
+                         "file of its own "
                          "format, and leaves this one as it is")
     try:
         return cf.parse(text, dest)
     except cf.CommentFileError as e:
-        raise st.Invalid("bad_argument", f"{e}: `comment_save` replaces a comment file it can "
+        raise st.Invalid("bad_argument", f"{e}: `comment_write(method=\"save\")` replaces a "
+                                         "comment file it can "
                                          "read, so the rows it drops can be named") from None
 
 
@@ -401,11 +410,12 @@ def _row_key(r: cf.Row) -> tuple[str, str]:
 NO_ROW_CPU_WHY = "the row named no cpu"
 
 
-def comment_save(dest: str) -> dict[str, Any]:
-    """The body of the `comment_save` tool: every comment of the store, every cpu, written to
+def save_comments(dest: str) -> dict[str, Any]:
+    """The body of the `comment_write(method="save")` tool: every comment of the store, every cpu,
+    written to
     `dest` as the comment file. A file already there is replaced only when it is one, and the
     rows it held that the store does not are named; the declaration store's own file never."""
-    path = check_comment_save(dest)
+    path = check_save_comments(dest)
     # The store's file is refused as itself, before it is read as a comment file.
     #
     # THE PROJECT'S TOO, whichever store this session holds: a session with its own `state_dir`
@@ -470,13 +480,14 @@ def _loaded(r: cf.Row, ses: gs.Session, where: str) -> dec.Declaration:
                            cpu=on, text=r.text)
 
 
-def comment_load(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
-    """The body of the `comment_load` tool: the file read into the store, all or nothing. Where
+def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
+    """The body of the `comment_write(method="load")` tool: the file read into the store, all or
+    nothing. Where
     the store comments a place the file comments too, the file wins and the row it replaced
     comes back whole; a place already holding the file's text is kept, brought to this build
     when it was stale and fed again when the pane does not show it; rows only the store holds
     stay."""
-    check_comment_load(path)
+    check_load_comments(path)
     read = inputs.input_file("path", path, "comment file")
     try:
         # BYTES, decoded here: a text read would turn a lone CR into a line break before the
@@ -496,7 +507,8 @@ def comment_load(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
         where = f"{path}:{r.line}"
         d = _loaded(r, ses, where)
         # ONE ROW PER COMMENT, in any spelling of its ref; two comments a rebuild put at one place
-        # both come in, as the store keeps them through the rebuild, so what `comment_save` writes
+        # both come in, as the store keeps them through the rebuild, so what
+        # `comment_write(method="save")` writes
         # of such a store this reads back.
         key = (d.cpu, d.by, d.ref.upper() if d.by == "symbol" else d.ref)
         if key in lines:
@@ -547,7 +559,7 @@ def comment_load(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
     except gs.NotStopped:
         raise
     except gs.SessionError as e:
-        return _broke_after_store(e, "comment_load", failed)
+        return _broke_after_store(e, "comment_write", failed)
     unfed = sum(1 for d in loaded if not pane.is_shown(d))
     note = _notes(f"{unfed} of the comments loaded are not shown in MAME's pane: "
                   "`comment_list` says why for each" if unfed else None, put_back,

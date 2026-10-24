@@ -201,7 +201,8 @@ def set_register(ses: gs.Session, name: str, value: int, cpu: str = "") -> dict[
 # the process launch and nothing of the emulated time to the screen that matters, where it
 # works against you. Save states avoid re-emulating where a driver declares
 # MACHINE_SUPPORTS_SAVE, and whether it restores everything it should is a promise its own
-# save_item coverage keeps or breaks, which `state_load` measures with the ROM check and the
+# save_item coverage keeps or breaks, which `state_write(method="load")` measures with the ROM check
+# and the
 # frame, pc and registers the save recorded.
 def reset(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     """The body of the `reset` tool: the soft reset applied and read back against the pc
@@ -331,7 +332,8 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
         notes.append("the console released the machine: the readers refuse until it stops "
                      "(a breakpoint, `stop`), and the stop is proved on the frame counter")
     # A SAVE OR A LOAD MAME HELD, however the line reached it (`do`, `source`, an alias), is
-    # completed as `state_save` and `state_load` complete theirs, before the counter is read
+    # completed as `state_write(method="save")` and `state_write(method="load")` complete theirs,
+    # before the counter is read
     # below, and the step that completed it is recorded as a stop. MAME's words that it held
     # one come from nothing else (`HELD_BY_TIMERS`). A refusal still marks the counter: the
     # load may land in the next run.
@@ -346,7 +348,8 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
             record = running.record_stop(ses, scratch, f"debug: {command}")
             notes.append(f"{held} (stop {record['seq']}, `status`'s `last_stop`)")
     # A LOAD, A REWIND OR A RESET THE LINE RAN leaves `totalcycles` stale for the next run, as
-    # `state_load` does, unless the line also ran the machine, which made it current, or the
+    # `state_write(method="load")` does, unless the line also ran the machine, which made it
+    # current, or the
     # console refused the rewind, which replaced nothing.
     if not releases and not console.refused_rewind(ran_cmds, output):
         _mark_counter(ses, ran_cmds)
@@ -418,7 +421,8 @@ def _controls_assigned(commands: list[str]) -> list[str]:
                           if console.evaluated_later(one)))
     notes = []
     if named(now):
-        notes.append(f"this line assigns the counter of {named(now)}: `breakpoint_list`'s "
+        notes.append(f"this line assigns the counter of {named(now)}: "
+                     "`declaration_list(kind=\"breakpoint\")`'s "
                      "`hits_since_armed` now counts on from the value written (-1 makes the "
                      "control halt at its next hit), and a run's `control_hits`, taken across "
                      "the run, does not see it")

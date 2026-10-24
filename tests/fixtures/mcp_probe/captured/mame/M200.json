@@ -17,19 +17,91 @@
  "runs": [
   {
    "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"binary\": \"/opt/wheels/mamed\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"binary\": \"/opt/wheels/mamed\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"binary\": \"/opt/wheels/mamed\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\":\"start\",\"args\":{\"binary\":\"/opt/wheels/mamed\",\"system\":\"wheelfir\",\"rompath\":\"/opt/wheels/roms\",\"reference_rom\":\"/opt/wheels/roms/wheelfir.bin\",\"view\":\"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"binary\": \"/opt/wheels/mamed\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M200: {\"tool\":\"start\",\"args\":{\"system\":\"wheelfir\",\"rompath\":\"/opt/wheels/roms\",\"reference_rom\":\"/opt/wheels/roms/wheelfir.bin\",\"binary\":\"/opt/wheels/mamed\",\"view\":\"Shifter-R\"}}"
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"binary\": \"/opt/wheels/mamed\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"binary\": \"/opt/wheels/mamed\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"binary\": \"/opt/wheels/mamed\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/wheels/mamed\", \"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"view\": \"Shifter-R\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M200: {\"tool\": \"start\", \"args\": {\"system\": \"wheelfir\", \"rompath\": \"/opt/wheels/roms\", \"reference_rom\": \"/opt/wheels/roms/wheelfir.bin\", \"binary\": \"/opt/wheels/mamed\", \"view\": \"Shifter-R\"}}"
    ],
    "right": true
   }

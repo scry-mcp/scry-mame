@@ -9,31 +9,16 @@
 perform(steps, settle_seconds=30.0, summaries=false, until_frame=0)
 ```
 
-Run a LIST of the server's own operations in order, in ONE round trip, stopping at the
-first failure with the whole account.
+Run this server's operations in order, stopping at the first failure.
 
-Arguments: `steps`, a non-empty list, each `{"op": <tool name>, ...its arguments}`, any tool but
-`start`, `close`, `rom_check`, `perform`, `drive` and `perform_export`. While the machine runs
-only running-ok ops go on at once, and before the next console op the sequence WAITS up to
-`settle_seconds` for the machine to stop.
-`until_frame=F` (with `summaries` and a `run_for` step) repeats the list until a stop reads
-frame F, within 5000 steps and 600 s: never a list you size; `no_channel`
-with no frame counter.
+`steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
+`drive`, `perform_export`. `until_frame=F` (with `summaries`, `run_for`) repeats the
+list until a stop reads frame F, within 5000 steps and 600 s;
+`no_channel` if no frame counter. A step's `recorded`, `{field: value}` of its own reply,
+must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
 
-A step's `recorded`, `{field: value}`, is what its reply must hold (a replay,
-`perform_export`): else INVALID `diverged` there, with `field`, `recorded` and `got`.
-
-Refused before the first step runs: the WHOLE list is checked (ops, argument names, types,
-the values the tools refuse alone, each step's `cpu`, a bare hex ref whose table is known),
-INVALID with `errors` listing EVERY refused step, nothing run. Anything else, at its step.
-
-Reply: `ran` (each step's `op`, the `cpu` its reply names, and `reply`), `steps_completed`,
-`held` (the steps held to their `recorded` answer), `failed_at` (unavailable on success); on a
-step's refusal INVALID (`step_failed`) with `failed` (`op`, `reply`); once it waited, `verdict`:
-`TARGET` (a list ending running adds `stopped`, the survey) or `TIMEOUT` (the steps after the
-wait unsent, a `note`); with no wait, `not_stopped` before a console step, or `still_running`;
-`until_frame` and `frame_reached`. With several cpus, `visible_cpu` and `visible_cpu_kept`: the
-list puts back the cpu it found, or its last `focus`'s.
+Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
+`verdict` (`TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`.
 
 Reference: REFERENCE.md, Sequences in one call.
 
@@ -44,7 +29,7 @@ Reference: REFERENCE.md, Sequences in one call.
 | `summaries` | boolean | `false` |
 | `until_frame` | integer | `0` |
 
-- `summaries`: True keeps a long list readable (an argument of the call, never of a step): each step but the one the list ended on becomes a compact row (a failed one stays whole under `failed`); `ran` shows the first 24 (`truncated`, of `steps_total`), `ran_path` and `replies_path` hold all, and `stops` counts the stops.
+- `summaries`: True (of the call, never of a step) makes each step but the last a compact row; `ran` shows the first 24 (`truncated`), `ran_path` and `replies_path` hold all; `stops` counts the stops.
 
 | reply field | type |
 |---|---|
@@ -176,6 +161,8 @@ Example, from a live run:
 
 **`until_frame=F` is a window of frames whose length the program finds.** Every stop a watch makes inside the window takes a step without moving the frame, so the steps a window needs are its frames plus its stops, and the stops are the thing being measured; a list sized by guessing ends short with a smaller count that looks clean. The window is the frames before F: the call ends right after the first step whose stop reads F, even mid-list. It needs a `run_for` step, because `run_for` carries on past a watch's stop where `run_to` and `step` end at the first. A frame already reached is refused, and a stop with no frame ends the list INVALID `unexpected_answer`, since nothing says whether the window is over.
 
+Before a console op the list waits up to `settle_seconds` for the machine to stop, and only running-ok ops go on while it runs. `visible_cpu` and `visible_cpu_kept` report the cpu the list put back. A list that alternates cpus restores the cpu visible before its first step, or the one the last `focus` read back, through the stub's `Hc`, which runs nothing; the restore holds while the machine is stopped, and a release makes the cpu it last stopped on visible again. A wait that ran out ends the list `TIMEOUT`, and so does a step whose own wait missed (a `log_wait` that timed out), because later steps were built on what it waited for. `until_frame` needs a `run_for` step because `run_for` carries on past a watch's stop where `run_to` and `step` end at the first; a frame already reached is refused, and a stop with no frame ends the list INVALID `unexpected_answer`, since nothing says whether the window is over. Its window is the frames before F plus the stops a watch makes inside it, which only the program finds, so a list sized by guessing ends short with a smaller count that looks clean; the call ends right after the first step whose stop reads F, even mid-list. `stops` and `ran_path` exist because a count assembled from a table cut to fit the reply comes out wrong and clean. `summaries` is an argument of the call, never of a step. A step is any tool, with `op` plus its own arguments; the whole list is checked before the first step for ops, argument names, types, the values the tools refuse alone, each step's `cpu` and a bare hex ref whose table is known, and what only a step can judge refuses at that step. `recorded` is the field-to-value pairs a replay holds a reply to, and `perform_export` writes them. A step's reply row carries the `cpu` it names.
+
 <!-- scry-reference:begin drive -->
 ## `drive`
 
@@ -185,31 +172,18 @@ Example, from a live run:
 drive(act, expect="", seconds=null, pattern=".", limit=40, settle_seconds=30.0, summaries=false)
 ```
 
-LOOK, ACT, VERIFY in one call: the way a browser is driven, for an arcade board. The
-channel is the EMULATOR log (`error.log`: what the driver and this server's scripts
-`logerror`). The waits inside report their progress.
+Marks the emulator log, runs `act` (steps as in `perform`), then checks the log since
+the mark.
 
-The log is MARKED first; `act` (a list of steps in `perform`'s vocabulary, typically
-`input`, `run_for`, `run_to`) runs with `perform`'s rules; with `expect` (a regex; empty
-for none) the call then looks for a matching line since the mark, waiting up to `seconds`
-(default 5, at most 600) only while the machine RUNS (at a stop the log
-is read once); and `looked.emulator` is what landed since the mark, matching `pattern` (a
-regex, as `log` takes it; NARROW it, since a chatty driver logs hundreds of lines per emulated
-second) and cut to the LAST `limit` (1..400, default 40). `settle_seconds` is
-`perform`'s, and
-with an `expect` the act's TAIL does not wait for a stop (the verify is the wait), so a
-trailing `resume` is answered within `seconds`. `seconds` with no `expect` is refused.
+`expect` (regex) waits up to `seconds` (default 5, at most 600)
+for a matching line, only while the machine runs; `seconds` without `expect` is refused.
+`looked.emulator` is the last `limit` (1..400) lines matching `pattern`. A failed
+step is INVALID `step_failed`; a stopped machine lacking the line, `wait_stopped`; a bad
+`act` step or argument, `bad_argument` before anything ran. With no `expect`, `verify`
+is `checked: false`.
 
-Reply: `act` (`ran`, `steps_completed`, `failed`, `failed_at`, `perform`'s tail, and with
-`summaries` its `steps_total`, `truncated`, `ran_path`, `replies_path` and `stops`), `verify`
-(`checked`: whether a check ran at all; `seen`, and `verdict` `TARGET` or `TIMEOUT`; `line`,
-`lines_before`, `lines_total`, `waited_s`; `checked: false` with `why` when no `expect` was
-given; `available: false` when `act.verdict` is `TIMEOUT`), and `looked.emulator`
-(`lines_written`, `lines_total`, `truncated`, `lines`, `since_mark`, `pattern`). INVALID with
-the same `act`, `verify` and `looked` when a step failed (`step_failed`), when a stopped machine
-lacks the line (`wait_stopped`), and before anything ran, whichever argument or step was
-refused (`bad_argument`; `unknown_ref`, with `cpu_tags` for a cpu). No screen in the look: a
-still is `snapshot`, a number for it `screen_signature`.
+Reply: `act`, `verify` (`checked`, `seen`, `verdict` `TARGET` or `TIMEOUT`, `line`,
+`waited_s`), `looked` (`emulator`).
 
 Reference: REFERENCE.md, Sequences in one call.
 
@@ -223,7 +197,7 @@ Reference: REFERENCE.md, Sequences in one call.
 | `settle_seconds` | number (>= 0, <= 600.0) | `30.0` |
 | `summaries` | boolean | `false` |
 
-- `summaries`: True keeps a long list readable (an argument of the call, never of a step): each step but the one the list ended on becomes a compact row (a failed one stays whole under `failed`); `ran` shows the first 24 (`truncated`, of `steps_total`), `ran_path` and `replies_path` hold all, and `stops` counts the stops.
+- `summaries`: True (of the call, never of a step) makes each step but the last a compact row; `ran` shows the first 24 (`truncated`), `ran_path` and `replies_path` hold all; `stops` counts the stops.
 
 | reply field | type |
 |---|---|
@@ -354,6 +328,8 @@ Example, from a live run:
 
 The channel is the emulator log because an arcade board has no guest port.
 
+An arcade board has no guest port, so the channel is the emulator log (`error.log`: what the driver and this server's scripts `logerror`). The log is marked before `act` runs, so only lines since the mark count. A chatty driver logs hundreds of lines per emulated second, hence the narrow `pattern`. With an `expect`, the act's tail does not wait for a stop because the verify is the wait, so a trailing `resume` is answered within `seconds`. `settle_seconds` and `summaries` are `perform`'s, with the same meaning. `act.verdict` `TIMEOUT` makes `verify` report `available: false`; with no `expect`, `verify` is `checked: false` with a `why`. `looked.emulator` also carries `lines_written`, `since_mark` and `pattern`. A still of the screen is `snapshot`, a number for it `screen_signature`; the look holds no screen. Refusals before anything ran also include `unknown_ref` with `cpu_tags` for a cpu. Reply `act` has `perform`'s tail, and with `summaries` its `steps_total`, `truncated`, `ran_path`, `replies_path` and `stops`.
+
 <!-- scry-reference:begin perform_export -->
 ## `perform_export`
 
@@ -363,18 +339,15 @@ The channel is the emulator log because an arcade board has no guest port.
 perform_export(dest, overwrite=false)
 ```
 
-Write what this session did since its `start` to `dest` as `perform`'s own document, so an investigation becomes a bench: `uv run python -m scry_core.replay <dest>`, from this server's repository, plays it with no model and exits 0 when every step held. Answers in any state, a closed session's included.
+Write the session's calls since `start` to `dest` as a `perform` document.
 
-Kept: what moved the machine, as steps (a reader that steps the guest included), and the
-reads that are checks (`read_memory`, `read_block`, `registers`, `screen_signature`,
-`golden_check`), each holding to what its reply said (`recorded`).
-Dropped, each named with why: a refused call, any other read, a call that changes nothing in
-the emulated machine. Cut, named: the first call no replay can place (a `resume`, whose run
-stops inside a frame where no replay reaches, a wall-clock bound that ended a run, no reply, a
-refusal after the machine moved, a machine found elsewhere than the call before left it, a
-step that wrote a file the session named, past 5000 calls kept).
+Kept: moving calls and checks (`read_memory`, `read_block`, `registers`,
+`screen_signature`, `image_compare(method="golden")`), each held to its `recorded`
+reply. Other calls drop; the first no replay can place, or past 5000, cuts the
+rest.
 
-`dest` absolute or `~`-led, ending `.json`; refused if it is there unless `overwrite`. Reply: `path` (the file written), `steps`, `checks`, `dropped` (the last 40, each `call`, `op`, `why`) and `dropped_total`, `cut` (`call`, `op`, `why`, or unavailable) and `replay`, the runner's command line. `no_recording` before a `start` succeeded, after one was cancelled, or when no recorded call is a step a replay could take.
+`dest` (`.json`) is refused if present unless `overwrite`. Reply: `path`, `steps`,
+`checks`, `dropped`, `dropped_total`, `cut`, `replay`; `no_recording` if empty.
 
 Reference: REFERENCE.md, From an investigation to a bench.
 
@@ -397,15 +370,15 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f12.json"
+  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f12.json",
+  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json",
   "steps": 43,
   "checks": 7,
   "dropped": [
@@ -446,13 +419,15 @@ Example, from a live run:
     "available": false,
     "why": "the recording kept every call a replay takes"
   },
-  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->
 
-Whatever ends a run, the clock or a breakpoint, stops the cpu at a place inside its frame that no replayed advance reaches, and every stop after it inherits the shift: that is why a `resume` ends the document. A `debug` line is a step whose printed answer is never held to; one that moved the machine holds to its stop like any advance. A `golden_check` over files dropped calls wrote is dropped too.
+Whatever ends a run, the clock or a breakpoint, stops the cpu at a place inside its frame that no replayed advance reaches, and every stop after it inherits the shift: that is why a `resume` ends the document. A `debug` line is a step whose printed answer is never held to; one that moved the machine holds to its stop like any advance. A `image_compare(method="golden")` over files dropped calls wrote is dropped too.
 
 **Shaping a session for a bench.** Advance by `run_for`, `run_to` and `step`, which stop where the machine does on every run, and leave `resume` for the end. Leave `dest` empty. A Lua reader's step count follows the wall clock, so on a rare run its step lands elsewhere and the replay says so there.
 
 **The document** carries the `start`'s arguments as given, host paths included (`--binary` and `--rompath` replace them). `needs.states` lists the saved states it loads and does not save, checked against `state_list` before anything plays; `needs.declarations` the breakpoints, watches and registerpoints held as the recorded `start` began, which the replay's lists are held to.
+
+A `resume` ends the document because whatever ends a run, the clock or a breakpoint, stops the cpu inside a frame at a place no replayed advance reaches, and every later stop inherits the shift. Cut calls are the first one no replay can place: a `resume`, a wall-clock bound that ended a run, a call with no reply, a refusal after the machine moved, a machine found elsewhere than the call before left it, a step that wrote a file the session named. A reader that steps the guest is kept as a step. Dropped: a refused call, any other read, a call that changes nothing in the emulated machine; an `image_compare(method="golden")` over files dropped calls wrote is dropped too. The replay is `uv run python -m scry_core.replay <dest>`, from this server's repository, and exits 0 when every step held; the reply's `replay` is that command line. `dropped` shows the last 40 rows. `cut` is unavailable when nothing was cut. `no_recording` also covers a `start` that was cancelled.

@@ -106,9 +106,9 @@ def test_a_clear_by_name_never_reaches_the_address_its_hex_spells(
     use_table(monkeypatch, table={"ADC": 0x780000})
     s.breakpoint_at(ref="0xadc")
     s.breakpoint_at(ref="adc")
-    assert s.breakpoint_clear(ref="adc")["status"] == "ok"
+    assert s.declaration_clear("breakpoint", ref="adc")["status"] == "ok"
     assert _rows("breakpoint") == [("address", "0xadc")]
-    assert s.breakpoint_clear(ref="0xADC")["status"] == "ok"
+    assert s.declaration_clear("breakpoint", ref="0xADC")["status"] == "ok"
     assert _rows("breakpoint") == []
 
 
@@ -121,7 +121,7 @@ def test_one_symbol_in_two_cases_is_one_declaration_and_either_case_clears_it(
     again = s.breakpoint_at(ref="IRQ")
     assert again["status"] == "ok" and again["already_stored"] is True, again
     assert _rows("breakpoint") == [("symbol", "irq")]
-    assert s.breakpoint_clear(ref="IRQ")["status"] == "ok"
+    assert s.declaration_clear("breakpoint", ref="IRQ")["status"] == "ok"
     assert _rows("breakpoint") == []
 
 
@@ -131,7 +131,7 @@ def test_a_declaration_by_bare_hex_naming_no_symbol_is_refused_and_nothing_is_st
     _controlled(monkeypatch, tmp_path)
     _suggests(s.breakpoint_at(ref="4a0"), "0x4a0")
     _suggests(s.watch_add(ref="2031fc", mode="change", length=2), "0x2031fc")
-    _suggests(s.breakpoint_clear(ref="4a0"), "0x4a0")
+    _suggests(s.declaration_clear("breakpoint", ref="4a0"), "0x4a0")
     assert _rows("breakpoint") == [] and _rows("watch") == []
 
 
@@ -144,7 +144,7 @@ def test_a_held_row_named_in_bare_hex_stays_reachable_by_its_stored_name(
     store = mstate.STATE.store
     assert store is not None
     store.add(dec.Declaration("breakpoint", "symbol", "fade", cpu=":maincpu"))
-    assert s.breakpoint_clear(ref="FADE")["status"] == "ok"
+    assert s.declaration_clear("breakpoint", ref="FADE")["status"] == "ok"
     assert _rows("breakpoint") == []
 
 
@@ -186,12 +186,14 @@ def test_a_comment_delete_by_name_never_reaches_the_raw_comment_its_hex_spells(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _pane(monkeypatch, tmp_path)
-    assert s.comment_add(ref="0xfade", text="raw", cpu="maincpu")["comment"]["by"] == "address"
-    assert s.comment_add(ref="fade", text="sym", cpu="maincpu")["comment"]["by"] == "symbol"
-    out = s.comment_delete(ref="fade", cpu="maincpu")
+    assert s.comment_write("add", ref="0xfade", text="raw",
+                           cpu="maincpu")["comment"]["by"] == "address"
+    assert s.comment_write("add", ref="fade", text="sym",
+                           cpu="maincpu")["comment"]["by"] == "symbol"
+    out = s.comment_write("delete", ref="fade", cpu="maincpu")
     assert out["deleted"]["ref"] == "fade", out
     assert _states() == {"0xfade": ("armed", "raw")}
-    assert s.comment_add(ref="fade", text="sym2", cpu="maincpu")["replaced_comments"] == []
+    assert s.comment_write("add", ref="fade", text="sym2", cpu="maincpu")["replaced_comments"] == []
 
 
 def _stale_raw_and_unshowable_symbol(monkeypatch: pytest.MonkeyPatch,
@@ -199,8 +201,8 @@ def _stale_raw_and_unshowable_symbol(monkeypatch: pytest.MonkeyPatch,
     """A raw comment of another build and a symbol comment the pane cannot show, at one place;
     the comments' re-arm that found them."""
     pane = _pane(monkeypatch, tmp_path)
-    s.comment_add(ref="0x900", text="old raw", cpu="maincpu")
-    s.comment_add(ref="irq_vblank", text='a "q"', cpu="maincpu")
+    s.comment_write("add", ref="0x900", text="old raw", cpu="maincpu")
+    s.comment_write("add", ref="irq_vblank", text='a "q"', cpu="maincpu")
     use_table(monkeypatch, MAIN, table={"IRQ_VBLANK": 0x900, "FADE": 0x904})
     monkeypatch.setitem(mstate.STATE.fingerprints, MAIN, "fp-main-rebuilt")
     pane.held.clear()
@@ -214,7 +216,7 @@ def test_a_delete_by_name_in_another_case_reaches_the_symbol_row_and_not_the_sta
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _stale_raw_and_unshowable_symbol(monkeypatch, tmp_path)
-    out = s.comment_delete(ref="IRQ_VBLANK", cpu="maincpu")
+    out = s.comment_write("delete", ref="IRQ_VBLANK", cpu="maincpu")
     assert out["deleted"]["ref"] == "irq_vblank", out
     assert _states() == {"0x900": ("stale", "old raw")}
 
@@ -223,7 +225,7 @@ def test_an_add_by_name_in_another_case_replaces_the_symbol_row_and_leaves_the_s
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _stale_raw_and_unshowable_symbol(monkeypatch, tmp_path)
-    out = s.comment_add(ref="IRQ_VBLANK", text="new", cpu="maincpu")
+    out = s.comment_write("add", ref="IRQ_VBLANK", text="new", cpu="maincpu")
     assert [r["ref"] for r in out["replaced_comments"]] == ["irq_vblank"], out
     assert _states()["0x900"] == ("stale", "old raw")
 
@@ -232,11 +234,11 @@ def test_a_name_never_deletes_a_stale_raw_comment_it_only_shares_a_place_with(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _stale_raw_and_unshowable_symbol(monkeypatch, tmp_path)
-    s.comment_delete(ref="irq_vblank", cpu="maincpu")
-    out = s.comment_delete(ref="IRQ_VBLANK", cpu="maincpu")
+    s.comment_write("delete", ref="irq_vblank", cpu="maincpu")
+    out = s.comment_write("delete", ref="IRQ_VBLANK", cpu="maincpu")
     assert out["status"] == "INVALID" and out["code"] == "unknown_ref", out
     assert _states() == {"0x900": ("stale", "old raw")}
-    adopted = s.comment_add(ref="0x900", text="adopted", cpu="maincpu")
+    adopted = s.comment_write("add", ref="0x900", text="adopted", cpu="maincpu")
     assert [r["ref"] for r in adopted["replaced_comments"]] == ["0x900"], adopted
 
 
@@ -244,8 +246,8 @@ def test_a_comment_by_bare_hex_naming_no_symbol_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _pane(monkeypatch, tmp_path)
-    _suggests(s.comment_add(ref="cafe", text="x", cpu="maincpu"), "0xcafe")
-    _suggests(s.comment_delete(ref="cafe", cpu="maincpu"), "0xcafe")
+    _suggests(s.comment_write("add", ref="cafe", text="x", cpu="maincpu"), "0xcafe")
+    _suggests(s.comment_write("delete", ref="cafe", cpu="maincpu"), "0xcafe")
 
 
 # ------------------------------------------------------------------ the refusal passes whole
@@ -293,9 +295,9 @@ def test_a_row_declared_by_address_in_bare_hex_is_never_read_back_as_a_name(
     refused("an address is written 0x4a0", s.breakpoint_at(ref="4a0", by="address"))
     assert s.breakpoint_at(ref="0x4a0", by="address")["status"] == "ok"
     _suggests(s.breakpoint_at(ref="4a0"), "0x4a0")
-    _suggests(s.breakpoint_clear(ref="4a0"), "0x4a0")
+    _suggests(s.declaration_clear("breakpoint", ref="4a0"), "0x4a0")
     assert _rows("breakpoint") == [("address", "0x4a0")]
-    assert s.breakpoint_clear(ref="0x4a0")["declarations_cleared"] == 1
+    assert s.declaration_clear("breakpoint", ref="0x4a0")["declarations_cleared"] == 1
 
 
 def test_a_pointer_base_in_bare_hex_naming_no_symbol_is_refused_in_a_call(
@@ -320,7 +322,7 @@ def test_a_regpoint_clear_reads_its_ref_as_an_expression_and_never_as_an_address
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _running(monkeypatch, tmp_path)
-    out = s.regpoint_clear(ref="d0")
+    out = s.declaration_clear("regpoint", ref="d0")
     assert out["code"] == "unknown_ref" and "an address is written" not in out["message"], out
 
 
@@ -328,7 +330,7 @@ def test_a_clear_naming_no_cpu_says_it_read_every_cpus_table(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _controlled(monkeypatch, tmp_path)
-    out = s.breakpoint_clear(ref="4a0")
+    out = s.declaration_clear("breakpoint", ref="4a0")
     _suggests(out, "0x4a0")
     assert "the machine's table" in out["message"], out
 
@@ -394,7 +396,7 @@ def test_a_clear_naming_no_cpu_reads_a_name_of_any_cpus_table(
     assert store is not None
     store.add(dec.Declaration("breakpoint", "address", "0xbeef", cpu=":maincpu"))
     store.add(dec.Declaration("breakpoint", "symbol", "beef", cpu=":subcpu"))
-    out = s.breakpoint_clear(ref="beef")
+    out = s.declaration_clear("breakpoint", ref="beef")
     assert out["declarations_cleared"] == 1, out
     assert _rows("breakpoint") == [("address", "0xbeef")]
 
@@ -439,7 +441,7 @@ def test_text_that_starts_like_an_address_and_is_not_one_is_refused_before_the_m
     ref: str,
 ) -> None:
     for reply in (s.read_memory(ref=ref, length=2), s.breakpoint_at(ref=ref),
-                  s.comment_add(ref=ref, text="x")):
+                  s.comment_write("add", ref=ref, text="x")):
         refused("starts like an address and is not one", reply)
         assert reply["code"] == "bad_argument", reply
 
@@ -531,7 +533,7 @@ def test_an_expression_watch_named_like_hex_is_cleared_by_its_ref(
     ses = _running(monkeypatch, tmp_path)
     ses.exprs = {name: 1}
     assert s.watch_add(ref=name, mode="expr")["status"] == "ok"
-    out = s.watch_clear(ref=name)
+    out = s.declaration_clear("watch", ref=name)
     assert out.get("declarations_cleared") == 1, out
     assert _rows("watch") == []
 
@@ -542,7 +544,7 @@ def test_a_bare_hex_name_held_by_no_expression_is_still_refused_by_a_clear(
     ses = _running(monkeypatch, tmp_path)
     ses.exprs = {"d0": 1}
     assert s.watch_add(ref="d0", mode="expr")["status"] == "ok"
-    _suggests(s.watch_clear(ref="d1"), "0xd1")
+    _suggests(s.declaration_clear("watch", ref="d1"), "0xd1")
     assert _rows("watch") == [("expr", "d0")]
 
 
@@ -568,7 +570,7 @@ def test_a_pointer_through_a_symbol_in_two_cases_is_one_watch(
     again = s.watch_add(ref="[IRQ_PTR]+0x8", mode="show", length=2)
     assert again.get("already_stored") is True, again
     assert _rows("watch") == [("pointer", "[irq_ptr]+0x8")]
-    assert s.watch_clear(ref="[Irq_Ptr]+0x8").get("declarations_cleared") == 1
+    assert s.declaration_clear("watch", ref="[Irq_Ptr]+0x8").get("declarations_cleared") == 1
     assert _rows("watch") == []
 
 
@@ -738,7 +740,7 @@ def test_a_clear_naming_a_cpu_says_where_the_declaration_it_names_is_held(
     ses = _running(monkeypatch, tmp_path)
     ses.exprs = {"d0": 1}
     assert s.watch_add(ref="d0", mode="expr")["status"] == "ok"
-    out = s.watch_clear(ref="d0", cpu="maincpu")
+    out = s.declaration_clear("watch", ref="d0", cpu="maincpu")
     assert out.get("code") == "unknown_ref", out
     assert "an address is written" not in out["message"], out
     assert out["message"].startswith(
@@ -746,7 +748,7 @@ def test_a_clear_naming_a_cpu_says_where_the_declaration_it_names_is_held(
         "declarations held on :maincpu: none at all."), out
     assert "'d0' names 1 watch declaration held on no cpu" in out["message"], out
     assert _rows("watch") == [("expr", "d0")]
-    assert s.watch_clear(ref="d0").get("declarations_cleared") == 1
+    assert s.declaration_clear("watch", ref="d0").get("declarations_cleared") == 1
     assert _rows("watch") == []
 
 
@@ -755,7 +757,7 @@ def test_a_clear_naming_a_cpu_says_another_cpu_holds_a_hex_shaped_name(
 ) -> None:
     _running(monkeypatch, tmp_path)
     assert s.breakpoint_at(ref="beef", by="symbol", cpu="subcpu")["status"] == "ok"
-    out = s.breakpoint_clear(ref="beef", cpu="maincpu")
+    out = s.declaration_clear("breakpoint", ref="beef", cpu="maincpu")
     assert out.get("code") == "unknown_ref", out
     assert "an address is written" not in out["message"], out
     assert ("'beef' names 1 breakpoint declaration held on :subcpu: the same clear with no "
@@ -769,7 +771,7 @@ def test_an_expression_watch_names_no_declaration_of_another_kind(
     ses = _running(monkeypatch, tmp_path)
     ses.exprs = {"d0": 1}
     assert s.watch_add(ref="d0", mode="expr")["status"] == "ok"
-    _suggests(s.breakpoint_clear(ref="d0"), "0xd0")
+    _suggests(s.declaration_clear("breakpoint", ref="d0"), "0xd0")
 
 
 def test_perform_reads_a_name_a_step_on_an_unknown_cpu_declares_by_name_on_any_later_cpu(
@@ -828,7 +830,7 @@ def test_an_io_capture_block_by_a_hex_shaped_name_is_cleared_by_that_name(
     use_table(monkeypatch, table={"ADC": 0x2031FC})
     out = s.watch_add(ref="adc", mode="capture", length=4, trigger="0x6", space="io")
     assert out["status"] == "ok" and out["ref"] == "ADC" and out["space"] == "io", out
-    cleared = s.watch_clear(ref="adc", space="io")
+    cleared = s.declaration_clear("watch", ref="adc", space="io")
     assert [t["tally_id"] for t in cleared.get("tallies_removed", [])] == [out["tally_id"]], cleared
 
 
@@ -838,7 +840,7 @@ def test_a_clear_by_whitespace_alone_is_refused_and_clears_nothing(
     _controlled(monkeypatch, tmp_path)
     for ref in ("0x4a0", "0x4b0"):
         assert s.breakpoint_at(ref=ref)["status"] == "ok"
-    out = s.breakpoint_clear(ref="   ")
+    out = s.declaration_clear("breakpoint", ref="   ")
     assert out["code"] == "bad_argument" and "all=True" in out["message"], out
     assert len(_rows("breakpoint")) == 2
 
@@ -879,11 +881,12 @@ def test_a_capture_on_a_symbol_block_held_on_a_name_the_build_lost_is_declared_a
 
 
 def _state_in_three_views(ses: Any, ref: str) -> tuple[Any, Any, Any]:
-    """`ref`'s state as `watch_list` lists it, as a stop's survey carries it, and the word
+    """`ref`'s state as `declaration_list(kind="watch")` lists it, as a stop's survey carries it,
+    and the word
     `start`'s re-arm files it under."""
     import mame_rearm as rearming
     import mame_watches as watches
-    listed = next(w for w in s.watch_list()["watches"] if w["ref"] == ref)
+    listed = next(w for w in s.declaration_list("watch")["watches"] if w["ref"] == ref)
     surveyed = next(w for w in watches.evaluate_watches(ses) if w["ref"] == ref)
     account = rearming.rearm_breakpoints_and_watches(ses)
     filed = [word for word, rows in account.items() if isinstance(rows, list)
@@ -957,6 +960,6 @@ def test_a_clear_that_reaches_nothing_quotes_its_ref_one_way(
 ) -> None:
     _controlled(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"BEEF": 0x2600})
-    out = s.watch_clear(ref=" beef ")
+    out = s.declaration_clear("watch", ref=" beef ")
     assert refused("matches no watch", out)["message"].startswith("'beef' matches no"), out
     assert "' beef '" not in out["message"], out["message"]

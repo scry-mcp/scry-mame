@@ -1,4 +1,5 @@
-"""`cycles` right after `state_load` (`mame_cycles.cycles_why`): the counter a load leaves
+"""`cycles` right after `state_write(method="load")` (`mame_cycles.cycles_why`): the counter a load
+leaves
 behind is the capture's (`fixtures/console/totalcycles-after-load.txt`), and a run whose
 baseline still reads it reports `cycles` unavailable, with why; the next one reports a number.
 """
@@ -71,7 +72,7 @@ def test_the_double_answers_as_the_capture_does(
         frame, cycles = ses.monitor(asked).split()
         return int(frame, 16), int(cycles, 16)
 
-    assert s.state_save(name="c1")["status"] == "ok"
+    assert s.state_write("save", name="c1")["status"] == "ok"
     assert reading() == saved
     for _ in range(5):
         ses.monitor("gvblank")
@@ -95,9 +96,9 @@ def test_a_run_right_after_a_load_reports_no_cycles_and_the_next_one_does(
     """Save, run 5, load, run 2: the baseline is the count of frame 15 and the end is the
     count of frame 12, a negative span. The next run is a number."""
     _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     out = _run(2)
     assert out["cycles"]["available"] is False, out
     assert out["cycles"]["why"] == cycles.cycles_why(cycles.STATE_LOAD), out
@@ -112,12 +113,12 @@ def test_a_forward_load_is_withheld_too_never_a_silent_positive(
     """A state NEWER than where the machine stands leaves a count too small behind it, so
     the run would read longer than it was and still look plausible."""
     _board(monkeypatch, tmp_path)
-    s.state_save(name="old")
+    s.state_write("save", name="old")
     _run(5)
-    s.state_save(name="new")
-    assert s.state_load(name="old")["status"] == "ok"
+    s.state_write("save", name="new")
+    assert s.state_write("load", name="old")["status"] == "ok"
     _run(2)                                  # at frame 12, the counter up to date again
-    assert s.state_load(name="new")["status"] == "ok"   # frame 15, the counter frame 12's
+    assert s.state_write("load", name="new")["status"] == "ok"   # frame 15, the counter frame 12's
     out = _run(2)
     assert out["cycles"]["available"] is False and out["cycles"]["why"], out
 
@@ -128,9 +129,9 @@ def test_a_load_whose_aligning_tick_re_reads_the_baseline_reports_the_run(
     """From a stop inside a frame the first `gvblank` only reaches that frame's vblank and the
     baseline is read again there, after the cpu executed: the count is the loaded machine's."""
     ses = _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     real = ses.monitor
     aligned: list[str] = []
 
@@ -155,9 +156,9 @@ def test_a_run_by_milliseconds_right_after_a_load_reports_no_cycles(
 ) -> None:
     ses = _board(monkeypatch, tmp_path)
     ses.stop_after = 3
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     out = s.run_for(milliseconds=50, seconds=2.0)
     assert out["status"] == "ok" and out["cycles"]["available"] is False, out
     assert out["cycles"]["why"], out
@@ -174,14 +175,14 @@ def test_a_load_the_rom_check_refused_still_withholds_the_next_runs_cycles(
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
     monkeypatch.setattr(mstate.STATE, "reference", (rom, 0x10, 0x20))
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
 
     def mismatch(*_: object, **__: object) -> None:
         raise g.Mismatch("the ROM differs")
 
     ses.self_check = mismatch  # type: ignore[method-assign]
-    assert s.state_load(name="c1")["code"] == "readback_refused"
+    assert s.state_write("load", name="c1")["code"] == "readback_refused"
     out = _run(2)
     assert out["cycles"]["available"] is False and out["cycles"]["why"], out
 
@@ -192,9 +193,9 @@ def test_a_stop_recorded_without_running_does_not_make_the_counter_current(
     """A stop can be recorded while nothing executes (a console command's survey, a refusal
     that records its own stop): the counter is still the one from before the load."""
     ses = _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     running.record_stop(ses, ses.scratch, "a survey with no execution")  # type: ignore[arg-type]
     out = _run(2)
     assert out["cycles"]["available"] is False and out["cycles"]["why"], out
@@ -206,9 +207,9 @@ def test_a_long_run_after_an_older_load_is_withheld_though_its_number_would_look
     """Loading back five frames and running ten would have read as five frames' worth: a
     positive number, short by the distance between the two states."""
     _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     out = _run(10)
     assert out["cycles"]["available"] is False and out["cycles"]["why"], out
 
@@ -217,9 +218,9 @@ def test_a_step_between_the_load_and_the_run_makes_the_counter_current(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
-    assert s.state_load(name="c1")["status"] == "ok"
+    assert s.state_write("load", name="c1")["status"] == "ok"
     ses.step()
     out = _run(2)
     assert out["cycles"] == 2 * PER_FRAME and isinstance(out["cycles"], int), out
@@ -234,7 +235,7 @@ def test_a_load_that_broke_the_session_asks_the_console_nothing_more(
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
     monkeypatch.setattr(mstate.STATE, "reference", (rom, 0x10, 0x20))
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
 
     def latching(*_: object, **__: object) -> None:
         ses.broken = "the stub stopped answering"
@@ -242,7 +243,7 @@ def test_a_load_that_broke_the_session_asks_the_console_nothing_more(
 
     ses.self_check = latching  # type: ignore[method-assign]
     ses.commands.clear()
-    s.state_load(name="c1")
+    s.state_write("load", name="c1")
     sent = ses.commands
     assert sent[sent.index("stateload c1"):] == ["stateload c1"], sent
     assert mstate.STATE.stale_counter == cycles.StaleCounter(None, None, cycles.STATE_LOAD)
@@ -259,7 +260,7 @@ def test_a_typed_load_or_rewind_withholds_the_next_runs_cycles(
     what it read before, and the next run's span crosses two machines (negative, or plausible
     and wrong). The tool's own load marks it; a typed one marks it the same way."""
     _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
     assert s.debug(command=line)["status"] == "ok"
     out = _run(2)
@@ -304,7 +305,7 @@ def test_a_line_that_replaces_nothing_or_runs_after_it_sets_no_mark(
     """A read marks nothing, and a line that runs the machine after its load leaves a counter
     the run made current."""
     _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
     assert s.debug(command=line)["status"] == "ok"
     assert mstate.STATE.stale_counter is None
@@ -314,9 +315,9 @@ def test_a_typed_load_sent_and_not_answered_still_marks_the_counter(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """Sent is enough: the machine may be the state's from the send on, as the tool's own load
-    takes it (`state_load` marks in a `finally`)."""
+    takes it (`state_write(method="load")` marks in a `finally`)."""
     ses = _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
     real = ses.monitor
 
@@ -336,7 +337,7 @@ def test_the_last_command_of_a_line_that_left_the_counter_stale_names_the_why(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _board(monkeypatch, tmp_path)
-    s.state_save(name="c1")
+    s.state_write("save", name="c1")
     _run(5)
     assert s.debug(command="stateload c1;softreset")["status"] == "ok"
     assert "`softreset`" in _run(2)["cycles"]["why"]

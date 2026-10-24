@@ -43,7 +43,7 @@ def unwatched(reply: Reply, run: Run) -> str:
 
 def coin_and_filter(credits: int) -> list[dict[str, Any]]:
     return [{"op": "input", **COIN}, {"op": "run_for", "milliseconds": SETTLE_MS, "seconds": RUN_S},
-            {"op": "scan_filter", "operator": "=", "value": credits}]
+            {"op": "scan", "method": "filter", "operator": "=", "value": credits}]
 
 
 def filtered(credits: int) -> Any:
@@ -110,7 +110,8 @@ STEPS = [
          volatile=free_set.START_VOLATILE,
          shown=("rom_check", "pc")),
     Step("attract", "run_for", {"milliseconds": 3000, "seconds": RUN_S}, attract),
-    Step("scan", "scan_start", {"ref": RAM, "length": RAM_BYTES}, free_set.scanned(RAM, RAM_BYTES),
+    Step("scan", "scan", {"method": "start", "ref": RAM, "length": RAM_BYTES},
+         free_set.scanned(RAM, RAM_BYTES),
          shown=("summary", "hits_total")),
     Step("coin 1", "perform", {"steps": coin_and_filter(1), "settle_seconds": RUN_S}, filtered(1)),
     Step("coin 2", "perform", {"steps": coin_and_filter(2), "settle_seconds": RUN_S}, filtered(2)),
@@ -126,16 +127,16 @@ STEPS = [
     Step("history", "history", {"limit": 12}, trail),
     Step("registers", "registers", {}, regs),
     Step("release", "run_for", {"milliseconds": SETTLE_MS, "seconds": RUN_S}, released),
-    Step("unwatch", "watch_clear", {"ref": CREDITS}, unwatched),
+    Step("unwatch", "declaration_clear", {"kind": "watch", "ref": CREDITS}, unwatched),
     Step("credits", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4)),
-    Step("save", "state_save", {"name": "four_credits"}, free_set.saved,
+    Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved,
          shown=("summary", "frame")),
     Step("coin 5", "perform", {"steps": [{"op": "input", **COIN},
                                          {"op": "run_for", "milliseconds": SETTLE_MS,
                                           "seconds": RUN_S}],
                                "settle_seconds": RUN_S}, fifth),
     Step("five", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(5)),
-    Step("load", "state_load", {"name": "four_credits"}, free_set.loaded,
+    Step("load", "state_write", {"method": "load", "name": "four_credits"}, free_set.loaded,
          shown=("summary", "verified")),
     Step("back to four", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4),
          shown=("summary", "hex")),

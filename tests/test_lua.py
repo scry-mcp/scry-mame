@@ -29,7 +29,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import progress as mprogress  # noqa: E402
-from session_doubles import blank_session, refused  # noqa: E402
+from session_doubles import blank_session, documented, refused  # noqa: E402
 from test_server import _install, _RegisterSession  # noqa: E402
 
 import gdb_session as g  # noqa: E402
@@ -634,8 +634,8 @@ def test_input_under_a_run_that_did_not_settle_is_the_runs_refusal_as_a_recordin
                 "mask", "note", "pending"):
         assert key not in out, key
     assert out["frame_before"] == 100 and out["frame_after"] == 103, out
-    assert out["lines_ahead"] == 0 and out["drain_steps"] == 0, out
-    assert ("resent" in out) and ((answered == "none") or "thread_errors" in out), out
+    assert out["lines_ahead"] == 0 and out.get("drain_steps", 0) == 0, out
+    assert (answered == "none") or "thread_errors" in out, out
 
 
 def test_input_with_no_set_mark_is_not_vouched_for_and_a_run_that_never_ticks_is_pending(
@@ -851,7 +851,8 @@ def test_record_predicts_the_end_frame_its_script_ends_on(
     assert int(ends.group(1)) - int(ends.group(2)) == seen["ends_after"] == 4, seen
 
 
-TRIO = {"thread_errors", "console_reruns", "resent"}
+#: The console's account a refusal carries; `resent` joins it when a line was resent.
+TRIO = {"thread_errors", "console_reruns"}
 
 
 @pytest.mark.parametrize(("vblank", "begins"), [("false", 60), ("true", 61)])
@@ -929,14 +930,14 @@ def test_captures_says_a_recording_its_call_left_unfinished_is_not_listed() -> N
     which files it holds, the ones a call checked and handed back, and none claims every file
     the tools wrote."""
     here = Path(__file__).resolve().parent.parent
-    texts = {"server": s.captures.__doc__ or "", "mame_recording": mrec.captures.__doc__ or "",
+    texts = {"server": documented("captures"), "mame_recording": mrec.captures.__doc__ or "",
              "REFERENCE": (here / "REFERENCE.md").read_text()}
     for name, text in texts.items():
         flat = " ".join(text.split()).lower()
         assert "wrote this session" not in flat and "graphics tools wrote" not in flat, name
         assert "handed back this session" in flat, name
-    assert "a recording its call answered still open or not begun is not listed" in " ".join(
-        texts["server"].split()), texts["server"]
+    assert "a recording its call answered still open or not begun is not listed" in texts[
+        "server"]
 
 
 def test_state_save_checks_the_header_and_state_load_judges_it_before_the_console(
@@ -950,10 +951,10 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     rom.write_bytes(bytes(64))
     monkeypatch.setattr(mstate.STATE, "reference", (rom, 0x10, 0x20))
     # The captured header names m68k-dual: as m68k the save is refused on the name.
-    out = s.state_save(name="live")
+    out = s.state_write("save", name="live")
     assert out["status"] == "INVALID" and "state of `m68k-dual`" in out["message"], out
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    out = s.state_save(name="live")
+    out = s.state_write("save", name="live")
     assert out["status"] == "ok", out
     assert Path(out["path"]) == ses.scratch / "sta" / "m68k-dual" / "live.sta"
     assert out["bytes"] == len(STA_HEAD) and out["frame"] == 100 and out["pc"] == "0x00000400"
@@ -961,14 +962,14 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
         "the survey's shape")
     assert "statesave live" in ses.commands
     assert out["session"]["altered"] is False
-    refused("already exists", s.state_save(name="live"))
-    refused("letters, digits", s.state_save(name="a b"))
+    refused("already exists", s.state_write("save", name="live"))
+    refused("letters, digits", s.state_write("save", name="a b"))
     # THE MACHINE MOVES before the load, so the comparison after it can prove one: the double
     # gives the saved frame back at `stateload`.
     ses.stale_after_load = True
     ses.saved_frames["live"] = ses.frame
     ses.frame += 3
-    loaded = s.state_load(name="live")
+    loaded = s.state_write("load", name="live")
     assert loaded["status"] == "ok", loaded
     assert loaded["rom_check"] == "OK" and loaded["cause"] == "stateload live"
     assert loaded["verified"] is True and loaded["saved"] == {"frame": 100, "pc": "0x00000400"}, (
@@ -983,11 +984,11 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     assert "taps_across" not in loaded, "no tap, nothing named"
     # A LIVE TAP counted across the load: the reply names it, as `reset`'s does.
     monkeypatch.setitem(mstate.STATE.tallies, ("frame_lo", ":maincpu"), {})
-    loaded = s.state_load(name="live")
+    loaded = s.state_write("load", name="live")
     assert loaded["taps_across"] == [{"ref": "frame_lo", "cpu": ":maincpu"}], loaded
     assert mstate.STATE.tallies[("frame_lo", ":maincpu")]["across"][0]["event"] == (
         "stateload live")
-    out = refused("no state named", s.state_load(name="nope"))
+    out = refused("no state named", s.state_write("load", name="nope"))
     assert out["code"] == "unknown_ref" and "`state_list` names the ones held" in out["message"]
 
 
@@ -1011,9 +1012,9 @@ def test_what_mame_logs_during_stateload_is_in_the_stop_surveys_errorlog(
     what the load logged is in the survey's `errorlog` and needs no field of its own."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    assert s.state_save(name="live")["status"] == "ok"
+    assert s.state_write("save", name="live")["status"] == "ok"
     _logging_stateload(monkeypatch, ses, "stateload says: something about the state")
-    loaded = s.state_load(name="live")
+    loaded = s.state_write("load", name="live")
     assert loaded["status"] == "ok", loaded
     assert loaded["errorlog"]["lines_total"] >= 1
     assert "stateload says: something about the state" in loaded["errorlog"]["lines"]
@@ -1026,7 +1027,7 @@ def test_state_load_hands_the_stop_no_field_the_survey_also_writes(
     every reply: one of the two meanings never reaches the caller."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    assert s.state_save(name="live")["status"] == "ok"
+    assert s.state_write("save", name="live")["status"] == "ok"
     _logging_stateload(monkeypatch, ses, "stateload says: something about the state")
     finish = running.finish_stop
     clashes: list[set[str]] = []
@@ -1036,7 +1037,7 @@ def test_state_load_hands_the_stop_no_field_the_survey_also_writes(
         return finish(ses_, seen, how, **base)
 
     monkeypatch.setattr(running, "finish_stop", spy)
-    assert s.state_load(name="live")["status"] == "ok"
+    assert s.state_write("load", name="live")["status"] == "ok"
     assert clashes == [set()], clashes
 
 
@@ -1046,14 +1047,14 @@ def test_state_list_names_every_state_in_the_folder_with_what_this_session_knows
     """Writing and loading states with no way to list them leaves the caller remembering the
     names. Every `.sta` in the session's folder, with its size, and the frame and pc when
     THIS session wrote it (a state from an earlier session
-    is listed with `not checked` there, as `state_load` reports it)."""
+    is listed with `not checked` there, as `state_write(method="load")` reports it)."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     empty = s.state_list()
     assert empty["status"] == "ok" and empty["states"] == [], empty
     assert Path(empty["state_dir"]) == ses.scratch / "sta" / "m68k-dual"
     assert empty["summary"] == f"state_list: 0 states in {empty['state_dir']}"
-    assert s.state_save(name="live")["status"] == "ok"
+    assert s.state_write("save", name="live")["status"] == "ok"
     (ses.scratch / "sta" / "m68k-dual" / "earlier.sta").write_bytes(STA_HEAD)
     out = s.state_list()
     assert [x["name"] for x in out["states"]] == ["earlier", "live"]
@@ -1074,7 +1075,7 @@ def test_state_load_refuses_a_state_mame_would_refuse_in_silence(
     a load MAME did not take is caught by the frame and pc not being the save's."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    assert s.state_save(name="good")["status"] == "ok"
+    assert s.state_write("save", name="good")["status"] == "ok"
     folder = ses.scratch / "sta" / "m68k-dual"
     corrupt = bytearray(STA_HEAD)
     corrupt[0:8] = b"NOTASAVE"
@@ -1085,14 +1086,15 @@ def test_state_load_refuses_a_state_mame_would_refuse_in_silence(
     other = bytearray(STA_HEAD)
     other[0x1C:0x20] = b"\x01\x02\x03\x04"
     (folder / "other.sta").write_bytes(other)
-    assert refused("savestate magic", s.state_load(name="corrupt"))["code"] == "readback_refused"
-    assert refused("state of `pacman`", s.state_load(name="foreign"))["system"] == "pacman"
-    out = refused("as this session saves it", s.state_load(name="other"))
+    assert refused("savestate magic", s.state_write("load",
+                                                    name="corrupt"))["code"] == "readback_refused"
+    assert refused("state of `pacman`", s.state_write("load", name="foreign"))["system"] == "pacman"
+    out = refused("as this session saves it", s.state_write("load", name="other"))
     assert out["code"] == "readback_refused"
     assert not [c for c in ses.commands if c.startswith("stateload")], "judged before the console"
     # A well-formed state MAME silently did not load: the machine did not go back.
     ses.frame = 160
-    out = refused("MAME did not load it", s.state_load(name="good"))
+    out = refused("MAME did not load it", s.state_write("load", name="good"))
     assert out["code"] == "readback_refused" and out["saved"] == {"frame": 100, "pc": "0x00000400"}
     # ...and the stop it surveyed is remembered, carried by the refusal itself.
     assert out["frame"] == 160 and out["stop_seq"] == mstate.STATE.last_stop["seq"], out
@@ -1104,7 +1106,7 @@ def test_state_save_with_no_file_is_not_vouched_for(
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mfiles, "FILE_WAIT_S", 0.05)
     ses.write_states = False
-    out = refused("lost.sta appeared", s.state_save(name="lost"))
+    out = refused("lost.sta appeared", s.state_write("save", name="lost"))
     assert out["code"] == "readback_refused"
 
 
@@ -1194,15 +1196,15 @@ def test_status_lists_a_throttle_while_it_waits_and_drops_it_once_its_mark_is_lo
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     first = s.status()
-    assert first.get("throttles_pending") == [], first
+    assert "throttles_pending" not in first, first
     s.throttle(on=True)
-    assert s.status()["throttles_pending"] == [{"tag": "MAME_MCP_THROTTLE#1", "on": True}]
+    assert s.status().get("throttles_pending", []) == [{"tag": "MAME_MCP_THROTTLE#1", "on": True}]
     # THE MARK IS LOGGED WITH NO STOP SINCE: `status` reads what is already in the log rather
     # than answering as of the last stop, which would call a landed switch still waiting.
     with open(ses.scratch / "error.log", "a") as log:
         log.write("[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=101\n")
     out = s.status()
-    assert out["throttles_pending"] == [], out
+    assert out.get("throttles_pending", []) == [], out
     assert "throttles_not_applied" not in out["session"], out["session"]
     assert mstate.STATE.throttles_pending == [], "the record goes with the answer"
 
@@ -1400,11 +1402,11 @@ def test_the_error_paths_nobody_reaches_by_accident(
     folder = ses.scratch / "sta" / "m68k-dual"
     folder.mkdir(parents=True)
     (folder / "theirs.sta").write_bytes(STA_HEAD)
-    out = s.state_load(name="theirs")
+    out = s.state_write("load", name="theirs")
     assert out["status"] == "ok" and out["verified"]["available"] is False
     assert "did not write" in out["verified"]["why"]
     assert out["summary"].startswith(
-        "state_load theirs: rom_check unavailable, verified unavailable")
+        "state_write load: theirs, rom_check unavailable, verified unavailable")
     # A load after which the ROM check fails: refused, never a traceback.
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
@@ -1415,7 +1417,8 @@ def test_the_error_paths_nobody_reaches_by_accident(
         raise g.Mismatch("the reference bytes differ")
 
     monkeypatch.setattr(ses, "self_check", lying)
-    assert refused("ROM check failed", s.state_load(name="theirs"))["code"] == "readback_refused"
+    assert refused("ROM check failed", s.state_write("load",
+                                                     name="theirs"))["code"] == "readback_refused"
     # A frame the console cannot answer at the save: recorded as None, not a crash.
     monkeypatch.setattr(mstate.STATE, "reference", None)
     def no_frame(command: str, timeout: float = 10.0) -> str:
@@ -1423,7 +1426,7 @@ def test_the_error_paths_nobody_reaches_by_accident(
         return "x"
 
     monkeypatch.setattr(ses, "monitor", no_frame)
-    assert s.state_save(name="noframe")["frame"] == {"available": False,
+    assert s.state_write("save", name="noframe")["frame"] == {"available": False,
                                                      "why": mstate.FRAME_UNREAD_WHY}
     # A CHANNEL that fails during the re-check is not a mismatch: it latches, as it would
     # under any other tool, instead of reading as a refusal the next call could ignore.
@@ -1434,7 +1437,7 @@ def test_the_error_paths_nobody_reaches_by_accident(
 
     monkeypatch.setattr(ses, "self_check", silent)
     monkeypatch.setattr(mstate.STATE, "ses", ses)      # the latch lands on the live session
-    out = refused("no answer to the read", s.state_load(name="theirs"))
+    out = refused("no answer to the read", s.state_write("load", name="theirs"))
     assert out["code"] == "session_broken" and getattr(ses, "broken", None), out
 
 
@@ -1667,7 +1670,7 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
     ses.answers = {1: b"2140790385\n" + ses.sentinel(1)}
     out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["status"] == "ok" and out["output"] == "2140790385\n", out
-    assert out["evaluated_by"] == "2 steps" and out["reader_steps"] == 1, out
+    assert out["evaluated_by"] == "2 steps" and out.get("reader_steps", 0) == 1, out
     assert out["lines_ahead"] == 0 and ses.stepped == 2 and out["session"]["altered"] is False
     # THE SETTLE: the first sleep of the call is the reader's settle, after the write and
     # before the first step (the double's step count says the steps came after).
@@ -1678,7 +1681,7 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
     monkeypatch.setattr(transport, "READER_STEPS_MAX", 1)
     ses.reader_late = 20
     out = refused("reader", s.lua("print(1)", seconds=0.4, read_only=True))
-    assert out["reader_steps"] == 1 and out["pending"] is True, out
+    assert out.get("reader_steps", 0) == 1 and out["pending"] is True, out
     assert ses.stepped == 2 + 1 + 1, ses.stepped
     # The double's fidelity: a late reader is a step that consumed nothing.
     ses.reader_late, ses.queue, ses.stdin = 1, [], _TimedPipe()
@@ -1710,7 +1713,7 @@ def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply
     out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["status"] == "ok" and out["output"] == "22\n", out
     assert out["thread_errors"] == 1 and out["console_reruns"] == 1, out
-    assert out["reader_steps"] == 1 and "AGAIN" in out["note"], out
+    assert out.get("reader_steps", 0) == 1 and "AGAIN" in out["note"], out
     # The raw form says the same, where it matters most: its script may have written.
     ses.reader_dies = 1
     out = s.lua("print(7)", seconds=1.0)
@@ -1722,7 +1725,7 @@ def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply
     ses.reader_dies = 1
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["status"] == "ok" and out["console_reruns"] == 1, out
-    assert out["thread_errors"] == 1 and out["resent"] == 0, out
+    assert out["thread_errors"] == 1 and out.get("resent", 0) == 0, out
     # A run cut short keeps BOTH notes: the tool's own and the console's.
     ses.answers[5] = ses.sentinel(5)
     ses.marks[5] = [_marks_of("MAME_MCP_INPUT#3 set")[0].replace("#3", "#5")]
@@ -1773,16 +1776,17 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
     ses.reader_eats = 1
     out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["status"] == "ok" and out["output"] == "22\n", out
-    assert out["resent"] == 1 and out["call"] == "MAME_MCP_LUA_END#2", out
+    assert out.get("resent", 0) == 1 and out["call"] == "MAME_MCP_LUA_END#2", out
     assert out["thread_errors"] == 1 and out["console_reruns"] == 0, out
-    assert out["evaluated_by"] == "2 steps" and out["reader_steps"] == 0 and ses.stepped == 2
+    assert out["evaluated_by"] == "2 steps" and out.get("reader_steps", 0) == 0 and ses.stepped == 2
     # The next call costs one step: the eaten line is not counted as still ahead.
     ses.answers[3] = sig % 33 + ses.sentinel(3)
     out = s.lua("print(1)", seconds=1.0, read_only=True)
     assert out["evaluated_by"] == "one step" and out["lines_ahead"] == 0, out
     ses.reader_eats = 2
     out = refused("NEVER evaluated", s.lua("print(1)", seconds=1.0, read_only=True))
-    assert out["code"] == "reader_died" and out["pending"] is False and out["resent"] == 1, out
+    assert out["code"] == "reader_died" and out["pending"] is False, out
+    assert out.get("resent", 0) == 1, out
     assert out["thread_errors"] == 2 and out["console_reruns"] == 0, out
     # And the two lines it died holding are not phantom debt for the call after.
     ses.answers[6] = sig % 66 + ses.sentinel(6)
@@ -1792,7 +1796,7 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
     ses.answers[8] = b"9\n" + ses.sentinel(8)
     ses.reader_eats = 1
     out = s.lua("print(9)", seconds=1.0)
-    assert out["status"] == "ok" and out["resent"] == 1 and out["output"] == "9\n", out
+    assert out["status"] == "ok" and out.get("resent", 0) == 1 and out["output"] == "9\n", out
     # A wrapper's line eaten on its run is sent again and the run bought again: the
     # resent chunk is the same text, so its marks carry the FIRST number (the tag is in
     # the script) while the double keys them by the resent sentinel's number.
@@ -1800,10 +1804,11 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
     ses.answers[10] = ses.sentinel(10)
     ses.reader_eats = 1
     out = s.input(port=":P1", field="Coin 1", frames=4)
-    assert out["status"] == "ok" and out["resent"] == 1 and out["released"] is True, out
+    assert out["status"] == "ok" and out.get("resent", 0) == 1 and out["released"] is True, out
     ses.reader_eats = 2
     out = refused("NEVER evaluated", s.input(port=":P1", field="Coin 1", frames=4))
-    assert out["code"] == "reader_died" and out["resent"] == 1 and out["drain_steps"] == 0, out
+    assert out["code"] == "reader_died" and out.get("resent", 0) == 1, out
+    assert out.get("drain_steps", 0) == 0, out
 
 
 def test_a_resend_the_bound_has_no_room_for_is_refused_not_taken(
@@ -1954,7 +1959,7 @@ def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note
     ses.console_refuses = 1
     out = s.lua("print(7)")
     assert out["status"] == "ok" and out["output"].strip() == "7", out
-    assert out["resent"] == 1 and out["session"]["console"]["lost"] == 1, out
+    assert out.get("resent", 0) == 1 and out["session"]["console"]["lost"] == 1, out
     assert out["thread_errors"] == 0 and out["console_reruns"] == 0, out
     note = out.get("note", "")
     assert "never evaluated" in note and "sent again (1 time)" in note, out
@@ -1963,7 +1968,7 @@ def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note
     # is the loss speaking and not a sentence every reply carries.
     ses.answers[3] = b"8\n" + ses.sentinel(3)
     clean = s.lua("print(8)")
-    assert clean["resent"] == 0 and "note" not in clean, clean
+    assert clean.get("resent", 0) == 0 and "note" not in clean, clean
 
 # ------------------------------------------------------------------------------ drive
 
@@ -2169,7 +2174,6 @@ def test_a_queued_wrapper_drains_the_pipe_first_and_says_how_deep_it_was(
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["status"] == "ok", out
     assert out["lines_ahead"] == 1, out
-    assert "reader_steps" in out, out
     assert 1 not in mstate.STATE.lua_pending and _whole()["console"]["lost"] == 0, (
         "settled by its sentinel: it ran, and nothing is lost")
     # The input's own frames were its own: the field was released, not left held.
@@ -2190,7 +2194,7 @@ def test_a_wrapper_whose_reader_died_before_the_echo_says_so_and_counts_nothing_
     assert out["code"] == "reader_died", out
     assert "may still run on a later reader" in out["message"], out
     assert "lost" not in out["message"], out
-    assert out["pending"] is True and out["resent"] == 0 and out["lines_ahead"] == 0, out
+    assert out["pending"] is True and out.get("resent", 0) == 0 and out["lines_ahead"] == 0, out
     assert out["thread_errors"] == 1, out
     assert _whole()["console"]["lost"] == 0 and mstate.STATE.lua_lost == 0, out
     assert transport.pending_lines(tmp_path) == 1, "the line is still ahead in the pipe"
@@ -2208,13 +2212,13 @@ def test_a_pending_line_a_later_reader_dies_holding_is_counted_lost_and_costs_no
     ses.reader_dead = True
     first = s.input(port=":P1", field="Coin 1", frames=4)
     assert first["code"] == "reader_died" and first["pending"] is True, first
-    assert first["drain_steps"] == 0, first
+    assert first.get("drain_steps", 0) == 0, first
     ses.reader_dead, ses.reader_eats = False, 1
     ses.answers = {2: _captured(3, as_seq=2)}
     ses.marks = {2: [m.replace("#3", "#2") for m in _marks_of("MAME_MCP_INPUT#3")]}
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["status"] == "ok" and out["released"] is True, out
-    assert (out["lines_ahead"], out["drain_steps"]) == (1, 1), out
+    assert (out["lines_ahead"], out.get("drain_steps", 0)) == (1, 1), out
     assert out["session"]["console"]["lost"] == 1 and mstate.STATE.lua_lost == 1, out
     transport.count_unread(ses.scratch)
     assert mstate.STATE.console_lines_lost == 1, "counted once, whoever reads the log again"
@@ -2246,7 +2250,7 @@ def test_a_throttle_line_a_drain_step_hands_to_a_dying_reader_stops_the_drain(
     assert s.throttle(on=True)["pending"] is True
     ses.reader_eats = 1
     out = s.input(port=":P1", field="Coin 1", frames=4)
-    assert out["status"] == "ok" and (out["lines_ahead"], out["drain_steps"]) == (1, 1), out
+    assert out["status"] == "ok" and (out["lines_ahead"], out.get("drain_steps", 0)) == (1, 1), out
     assert out["session"]["console"]["lost"] == 1, out
 
 
@@ -2262,7 +2266,7 @@ def test_a_wrapper_refusal_after_its_drain_still_says_the_steps(
     out = refused("boom", s.input(port=":P1", field="Coin 1", frames=4) if tool == "input"
                   else s.record(frames=2))
     assert out["code"] == "unexpected_answer", ("this server's own script raised", out)
-    assert (out["lines_ahead"], out["drain_steps"]) == (1, 1), out
+    assert (out["lines_ahead"], out.get("drain_steps", 0)) == (1, 1), out
 
 
 def test_settling_the_pending_lines_survives_a_loss_that_settles_another_on_the_way(
@@ -2303,9 +2307,9 @@ def test_a_wrapper_says_the_steps_its_drain_spent_on_a_line_ahead(
     assert s.throttle(on=True)["pending"] is True
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["status"] == "ok", out
-    assert (out["lines_ahead"], out["drain_steps"]) == (1, 1), out
+    assert (out["lines_ahead"], out.get("drain_steps", 0)) == (1, 1), out
     keys = list(out)
-    assert keys.index("lines_ahead") < keys.index("drain_steps") < keys.index("reader_steps")
+    assert keys.index("lines_ahead") < keys.index("drain_steps")
 
 
 def test_status_counts_the_lines_the_console_has_not_evaluated_and_close_drains_them(
@@ -2363,7 +2367,7 @@ def test_the_pending_reply_says_the_line_was_sent_twice_when_it_was(
     ses.reader_eats = 1
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["pending"] is True, out
-    assert out["resent"] == 1, out
+    assert out.get("resent", 0) == 1, out
     assert "sent 2 times" in out["note"] and "about the second" in out["note"], out
 
 
@@ -2521,7 +2525,7 @@ def test_a_reader_death_is_held_against_the_session_and_still_there_two_replies_
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.reader_eats = 1
     out = s.lua("print(7)", seconds=1.0)
-    assert out["status"] == "ok" and out["resent"] == 1, out
+    assert out["status"] == "ok" and out.get("resent", 0) == 1, out
     assert out["session"]["console"] == {"thread_errors": 1, "reruns": 0, "lost": 1}, out
     ses.answers[3] = b"8\n" + ses.sentinel(3)
     later = s.lua("print(8)", seconds=1.0)
@@ -2914,7 +2918,7 @@ def test_a_resent_line_the_reader_is_late_for_is_stepped_for_like_any_other(
     pc = ses.pc
     out = s.lua("print(7)", seconds=2.0)
     assert out["status"] == "ok" and out["output"] == "7\n", out
-    assert out["resent"] == 1 and out["reader_steps"] == 2, out
+    assert out.get("resent", 0) == 1 and out.get("reader_steps", 0) == 2, out
     assert out["evaluated_by"] == "4 steps" and ses.stepped == 4, out
     assert out["pc_before"] == f"{pc:#010x}", out
 
@@ -2930,7 +2934,7 @@ def test_a_refusal_counts_its_steps_and_names_where_the_machine_stood(
     ses.reader_late = 20
     pc = ses.pc
     out = refused("reader", s.lua("print(1)", seconds=0.4))
-    assert out["code"] == "wait_expired" and out["reader_steps"] == 1, out
+    assert out["code"] == "wait_expired" and out.get("reader_steps", 0) == 1, out
     assert out["evaluated_by"] == "2 steps" and out["pc_before"] == f"{pc:#010x}", out
     assert out["lines_ahead"] == 0 and out["call"] == "MAME_MCP_LUA_END#1", out
     # A line taken and lost twice, on a channel of its own: the resend's step is in the count.
@@ -2938,7 +2942,7 @@ def test_a_refusal_counts_its_steps_and_names_where_the_machine_stood(
     ses = _channel(monkeypatch, tmp_path / "lost")
     ses.reader_eats = 2
     out = refused("twice", s.lua("print(1)", seconds=1.0))
-    assert out["code"] == "reader_died" and out["resent"] == 1, out
+    assert out["code"] == "reader_died" and out.get("resent", 0) == 1, out
     assert out["evaluated_by"] == "2 steps", out
 
 
@@ -2951,7 +2955,8 @@ def test_a_wrapper_whose_line_died_twice_says_twice_and_counts_both_deaths(
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.reader_eats = 2
     out = refused("twice", s.input(port=":P1", field="Coin 1", frames=4))
-    assert out["code"] == "reader_died" and out["pending"] is False and out["resent"] == 1, out
+    assert out["code"] == "reader_died" and out["pending"] is False, out
+    assert out.get("resent", 0) == 1, out
     assert out["thread_errors"] == 2 and out["console_reruns"] == 0, out
     assert out["session"]["console"]["lost"] == 2, out
 
@@ -3207,7 +3212,7 @@ def test_a_wrappers_rerun_refusal_carries_its_marks_its_fields_and_what_was_rese
     fields = caught.value.fields
     assert mstate.STATE.console_reruns_seen == 3 + 2, "the repeats ADD to what was seen before"
     assert fields["tagged_lines"] == seen and fields["path"] == "/tmp/x.avi", fields
-    assert fields["resent"] == 1 and "sent again (1 time)" in fields["note"], fields
+    assert fields.get("resent", 0) == 1 and "sent again (1 time)" in fields["note"], fields
     assert fields["console_reruns"] == 2, fields
 
 

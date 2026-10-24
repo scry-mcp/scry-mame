@@ -2,24 +2,102 @@
  "task": {
   "id": "M139",
   "prompt": "Drop the open value scan.",
-  "tool": "scan_clear"
+  "tool": "scan",
+  "args": {
+   "method": "clear"
+  },
+  "grammar": [
+   "clear"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\":\"scan_clear\",\"args\":{}}"
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan_clear\", \"args\": {}}"
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\":\"scan\",\"args\":{\"method\":\"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   }

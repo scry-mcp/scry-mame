@@ -82,7 +82,8 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
         res = arming.resolve_decl(decl)
         if decl.kind == "watch" and decl.watch_mode in ("show", "expr"):
             # ONE WORD PER ROW in every view (`watches.resolved_state`): a show watch whose ref
-            # this build cannot place is `unresolved` here as in `watch_list` and the survey.
+            # this build cannot place is `unresolved` here as in `declaration_list(kind="watch")`
+            # and the survey.
             word = watches.resolved_state(decl, res)
             out["unresolved" if word == "unresolved" else "evaluated"].append(name)
             continue

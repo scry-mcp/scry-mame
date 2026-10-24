@@ -53,7 +53,8 @@ def _v_m68k_dual_alt(_cells: list[str]) -> None:
     raw = [call("debug", command=f'bp {ref[2:]},1,{{logerror "{word} %d\\n",frame ; g}}')
            for ref, word in ((HANDLER, AT_HANDLER), (INSIDE, AT_INSIDE))]
     run = run_frames(RUN_FRAMES)
-    rows = {b.get("ref"): b for b in call("breakpoint_list").get("breakpoints") or []}
+    rows = {b.get("ref"): b for b in call("declaration_list",
+                                          kind="breakpoint").get("breakpoints") or []}
     first, inside = (rows.get(ref, {}).get("hits_since_armed") for ref in (HANDLER, INSIDE))
     logged_first, logged_inside = _logged(AT_HANDLER), _logged(AT_INSIDE)
     counts = (first, inside, logged_first, logged_inside)

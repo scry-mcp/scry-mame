@@ -81,7 +81,7 @@ def test_each_steps_account_names_the_cpu_its_reply_names_and_a_brief_keeps_it(
     out = s.perform(steps=steps)
     assert [r.get("cpu") for r in out["ran"]] == [SUB, MAIN, None], out["ran"]
     assert "cpu" not in out["ran"][2], "a reply that names no cpu adds none"
-    s.breakpoint_clear(all=True)
+    s.declaration_clear("breakpoint", all=True)
     out = s.perform(steps=steps, summaries=True)
     assert [r.get("cpu") for r in out["ran"]] == [SUB, MAIN, None], out["ran"]
     assert set(out["ran"][0]["reply"]) == {"summary", "status"}

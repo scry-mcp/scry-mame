@@ -8,7 +8,8 @@ stays in the program space, where a block lives: only its trigger moves.
 
 WHERE IT LIVES. An io tap is never in the declaration store (`NOT_STORED` says why): it is a
 record among the session's taps (`STATE.tallies`) under a ref that carries its space, and the
-server routes `watch_add`, `watch_list` and `watch_clear` here for it, since this module builds
+server routes `watch_add`, `declaration_list(kind="watch")` and `declaration_clear(kind="watch")`
+here for it, since this module builds
 on `mame_watches` and so cannot be imported by it.
 """
 
@@ -88,7 +89,8 @@ def _held_elsewhere(owner: dec.Owner, tally_id: str, mode: str, addr: int, width
     if held is not None and held["tally_id"] != tally_id:
         port = mspace.shown(owner[0])["ref"]
         return ("ambiguous_ref", f"{port} in the io space already holds the tap "
-                f"{held['tally_id']}: clear it (`watch_clear(ref=\"{port}\", space=\"io\")`) "
+                f"{held['tally_id']}: clear it (`declaration_clear(kind=\"watch\", ref=\"{port}\", "
+                "space=\"io\")`) "
                 "before declaring another under it")
     other = next((mspace.shown(o[0])["ref"] for o, rec in STATE.tallies.items()
                   if o != owner and rec["tally_id"] == tally_id), None)
@@ -98,7 +100,7 @@ def _held_elsewhere(owner: dec.Owner, tally_id: str, mode: str, addr: int, width
         other = None if other is None else mspace.shown(other)["ref"]
     if other is not None:
         return ("ambiguous_ref", f"that tap is already declared under {other!r}: "
-                f"{mclear.one_declaration('tap', other, 'watch_clear', owner[1], mspace.IO)}")
+                f"{mclear.one_declaration('tap', other, 'watch', owner[1], mspace.IO)}")
     return None
 
 
@@ -188,7 +190,8 @@ def taps_by_cpu() -> dict[str, int]:
 
 
 def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[str, Any]]:
-    """Each io tap as `watch_list` (`at_stop` False) or a stop's survey (True) shows a watch, cut
+    """Each io tap as `declaration_list(kind="watch")` (`at_stop` False) or a stop's survey (True)
+    shows a watch, cut
     where theirs are: a count's tables at the bucket ceiling in a list, a capture's first rows,
     and at a stop no rows at all."""
     out: list[dict[str, Any]] = []
@@ -221,7 +224,7 @@ def held_key(ref: str) -> str:
 
 def clear(ref: str, cpu: str | None = None) -> list[dict[str, Any]]:
     """Send the removal of the io taps under `ref` (every one when empty), on `cpu` or every
-    cpu, and answer what went, as `watch_clear` reports a tap's removal."""
+    cpu, and answer what went, as `declaration_clear(kind="watch")` reports a tap's removal."""
     gone: list[dict[str, Any]] = []
     if STATE.scratch is None:
         return gone
@@ -233,8 +236,9 @@ def clear(ref: str, cpu: str | None = None) -> list[dict[str, Any]]:
     return gone
 
 
-def watch_clear(ses: gs.Session, ref: str, cpu: str | None) -> dict[str, Any]:
-    """The body of `watch_clear` for an io ref: its tap's removal, in `watch_clear`'s own reply
+def clear_taps(ses: gs.Session, ref: str, cpu: str | None) -> dict[str, Any]:
+    """The body of `declaration_clear(kind="watch")` for an io ref: its tap's removal, in
+    `declaration_clear(kind="watch")`'s own reply
     shape, with nothing in the store to drop."""
     running = arming.running_on_arrival(ses)
     gone = clear(ref, cpu)
@@ -243,7 +247,8 @@ def watch_clear(ses: gs.Session, ref: str, cpu: str | None) -> dict[str, Any]:
                                       [repr(mspace.shown(o[0])["ref"]) for o, _ in taps()],
                                       "cleared")
         return menvelope.invalid("unknown_ref",
-                                 f"{held} `watch_list` shows each one's `ref` and `space`. "
+                                 f"{held} `declaration_list(kind=\"watch\")` shows each one's "
+                                 "`ref` and `space`. "
                                  f"Matching: {dec.REF_MATCH['watch']}.")
     return menvelope.envelope({"declarations_cleared": 0, "disarmed": [],
                                "while_running": running, "tallies_removed": gone})

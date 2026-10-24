@@ -22,7 +22,7 @@ import test_envelope_seam  # noqa: E402
 
 import server as s  # noqa: E402
 
-CLEARS = ("breakpoint_clear", "regpoint_clear", "watch_clear")
+KINDS = ("breakpoint", "regpoint", "watch")
 
 
 def _schema(tool: str) -> dict[str, Any]:
@@ -34,75 +34,81 @@ def _call(tool: str, args: dict[str, Any]) -> dict[str, Any]:
     return test_envelope_seam._call(tool, args)[1]
 
 
+def _clear(kind: str, **args: Any) -> dict[str, Any]:
+    return _call("declaration_clear", {"kind": kind, **args})
+
+
 # ------------------------------------------------------------------ clearing everything (D3)
 
-@pytest.mark.parametrize("tool", CLEARS)
+@pytest.mark.parametrize("kind", KINDS)
 @pytest.mark.parametrize("ref", ["", "   "])
-def test_an_empty_ref_is_refused_naming_all(tool: str, ref: str) -> None:
-    reply = _call(tool, {"ref": ref})
+def test_an_empty_ref_is_refused_naming_all(kind: str, ref: str) -> None:
+    reply = _clear(kind, ref=ref)
     assert reply["code"] == "bad_argument", reply
     assert "all=True" in reply["message"], reply
 
 
-@pytest.mark.parametrize("tool", CLEARS)
-def test_no_ref_at_all_is_refused_naming_all(tool: str) -> None:
-    reply = _call(tool, {})
+@pytest.mark.parametrize("kind", KINDS)
+def test_no_ref_at_all_is_refused_naming_all(kind: str) -> None:
+    reply = _clear(kind)
     assert reply["code"] == "bad_argument" and "all=True" in reply["message"], reply
 
 
-@pytest.mark.parametrize("tool", CLEARS)
-def test_all_beside_a_ref_is_refused(tool: str) -> None:
-    ref = "d0==1" if tool == "regpoint_clear" else "0x4a0"
-    reply = _call(tool, {"ref": ref, "all": True})
+@pytest.mark.parametrize("kind", KINDS)
+def test_all_beside_a_ref_is_refused(kind: str) -> None:
+    ref = "d0==1" if kind == "regpoint" else "0x4a0"
+    reply = _clear(kind, ref=ref, all=True)
     assert reply["code"] == "bad_argument", reply
     assert "`all`" in reply["message"] and "`ref`" in reply["message"], reply
 
 
-@pytest.mark.parametrize("tool", CLEARS)
-def test_all_alone_passes_the_judge_and_reaches_the_session_gate(tool: str) -> None:
-    assert _call(tool, {"all": True})["code"] == "no_session"
+@pytest.mark.parametrize("kind", KINDS)
+def test_all_alone_passes_the_judge_and_reaches_the_session_gate(kind: str) -> None:
+    assert _clear(kind, all=True)["code"] == "no_session"
 
 
-@pytest.mark.parametrize("tool", CLEARS)
-def test_the_clear_tools_publish_all_as_a_boolean(tool: str) -> None:
-    props = _schema(tool)["properties"]
+def test_the_clear_tool_publishes_all_as_a_boolean() -> None:
+    props = _schema("declaration_clear")["properties"]
     assert props["all"]["type"] == "boolean" and props["all"].get("default") is False, props
 
 
 # --------------------------------------------------------- a clear's ref, the one judge (I4)
 
-@pytest.mark.parametrize("tool", ["breakpoint_clear", "watch_clear"])
+@pytest.mark.parametrize("kind", ["breakpoint", "watch"])
 @pytest.mark.parametrize("ref", ["1000:0010", "0xZZ", "0x"])
-def test_a_clears_ref_meets_the_judge_every_other_ref_meets(tool: str, ref: str) -> None:
-    reply = _call(tool, {"ref": ref})
+def test_a_clears_ref_meets_the_judge_every_other_ref_meets(kind: str, ref: str) -> None:
+    reply = _clear(kind, ref=ref)
     assert reply["code"] == "bad_argument", reply
 
 
 # ------------------------------------------------------------------- a port's spelling (I5)
 
 def test_watch_clear_publishes_space() -> None:
-    props = _schema("watch_clear")["properties"]
+    props = _schema("declaration_clear")["properties"]
     assert props["space"]["enum"] == ["program", "io"], props
 
 
 def test_a_suffixed_port_is_refused_naming_space() -> None:
-    reply = _call("watch_clear", {"ref": "0x6@io"})
+    reply = _call("declaration_clear", {"kind": "watch", "ref": "0x6@io"})
     assert reply["code"] == "bad_argument" and 'space="io"' in reply["message"], reply
 
 
 def test_space_beside_all_is_refused() -> None:
-    reply = _call("watch_clear", {"all": True, "space": "io"})
+    reply = _call("declaration_clear", {"kind": "watch", "all": True, "space": "io"})
     assert reply["code"] == "bad_argument" and "`space`" in reply["message"], reply
 
 
 # ------------------------------------------------------------------ renamed arguments (I6-I13)
 
 def test_scan_start_takes_cell_bytes_and_not_width() -> None:
-    props = _schema("scan_start")["properties"]
-    assert "width" not in props and props["cell_bytes"]["enum"] == [1, 2, 4], props
-    assert _call("scan_start", {"ref": "0x400", "length": 16, "cell_bytes": 3})["code"] == (
+    props = _schema("scan")["properties"]
+    cell = next(a for a in props["cell_bytes"]["anyOf"] if "enum" in a)
+    assert "width" not in props and cell["enum"] == [1, 2, 4], props
+    assert _call("scan", {"method": "start", "ref": "0x400", "length": 16,
+                          "cell_bytes": 3})["code"] == (
         "bad_argument")
-    assert _call("scan_start", {"ref": "0x400", "length": 16, "cell_bytes": 2})["code"] == (
+    assert _call("scan", {"method": "start", "ref": "0x400", "length": 16,
+                          "cell_bytes": 2})["code"] == (
         "no_session")
 
 
@@ -198,7 +204,7 @@ def test_an_empty_palette_over_several_devices_is_ambiguous_and_over_none_is_no_
 def test_watch_clear_judges_a_ref_as_watch_add_does(ref: str) -> None:
     """A pointer offset that reads two ways, and a segmented address in either spelling, are
     refused before anything is matched, as `watch_add` refuses them."""
-    assert _call("watch_clear", {"ref": ref})["code"] == "bad_argument", ref
+    assert _call("declaration_clear", {"kind": "watch", "ref": ref})["code"] == "bad_argument", ref
 
 
 @pytest.mark.parametrize("extra", [{"pen": 5}, {"limit": 4}])

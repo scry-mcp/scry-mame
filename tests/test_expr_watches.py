@@ -149,15 +149,15 @@ def test_expr_watches_are_listed_cleared_and_come_back_evaluated(
     ses = _watching(monkeypatch, tmp_path)        # the double that answers `wplist`
     ses.exprs = {"beamy": 0xF8}
     s.watch_add(ref="beamy", mode="expr")
-    (row,) = s.watch_list()["watches"]
+    (row,) = s.declaration_list("watch")["watches"]
     assert row["mode"] == "expr" and row["by"] == "expr" and row["state"] == "evaluated"
     assert "addr" not in row and row["length"]["available"] is False, row
     assert row["fmt"]["available"] is False and row["cpu"]["available"] is False, row
     (evaluated,) = rearming.rearm_breakpoints_and_watches(ses)["evaluated"]  # type: ignore[arg-type]
     assert evaluated["ref"] == "beamy" and evaluated["cpu"]["available"] is False, evaluated
-    out = s.watch_clear(ref="beamy")
+    out = s.declaration_clear("watch", ref="beamy")
     assert out["declarations_cleared"] == 1 and out["disarmed"] == []
-    assert s.watch_list()["watches"] == []
+    assert s.declaration_list("watch")["watches"] == []
 
 
 # ------------------------------------------------------------------ run_for's clock

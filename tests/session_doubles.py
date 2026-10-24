@@ -40,6 +40,16 @@ def published(tool: str) -> str:
     return " ".join((found[0].description or "").split())
 
 
+def documented(tool: str) -> str:
+    """What a reader finds for `tool` past its description: its family's page and REFERENCE.md,
+    their wrapped lines joined."""
+    import mame_mcp
+    root = Path(__file__).resolve().parent.parent
+    family = next(f for f, tools in mame_mcp.ROSTER.families if tool in tools)
+    pages = (root / "docs" / "reference" / f"{family.lower()}.md", root / "REFERENCE.md")
+    return " ".join(" ".join(p.read_text(encoding="utf-8").split()) for p in pages)
+
+
 def bp_records(*rows: tuple[int, str, int]) -> dict[int, dict[str, Any]]:
     """`STATE.breakpoints` as the server keeps it, one `(index, ref, addr)` per row, each held
     by a declaration on the main cpu the doubles list, and listed under it."""

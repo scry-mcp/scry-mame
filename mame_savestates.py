@@ -73,7 +73,8 @@ ALREADY_AS_SAVED = ("the machine already read as the save before the load (the f
 def state_list() -> dict[str, Any]:
     """The body of the `state_list` tool: every `.sta` in this session's folder, with its
     size, and the frame and pc when THIS session wrote it; a state an earlier session
-    wrote carries each as `unavailable` saying so, as `state_load` says of it, and a `.sta`
+    wrote carries each as `unavailable` saying so, as `state_write(method="load")` says of it, and a
+    `.sta`
     that holds no state (`state_files.not_a_state`) carries all three so: the name is taken,
     so it is shown.
     A reading of a directory: the machine is not touched, so it answers while the machine
@@ -104,7 +105,8 @@ def state_list() -> dict[str, Any]:
 
 
 def check_state_name(name: str, **_: Any) -> None:
-    """`state_save`/`state_load`'s machine-independent half: the name becomes a file name the
+    """`state_write(method="save")`/`state_write(method="load")`'s machine-independent half: the
+    name becomes a file name the
     console takes as one parameter."""
     if not STATE_NAME.fullmatch(name):
         raise st.Invalid("bad_argument",
@@ -138,8 +140,9 @@ def _judge_header(path: Path, head: bytes) -> None:
             path=str(path))
 
 
-def state_save(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
-    """The body of the `state_save` tool: the console's `statesave`, then the file checked
+def save_state(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
+    """The body of the `state_write(method="save")` tool: the console's `statesave`, then the file
+    checked
     for MAME's own header. A save that runs in the command alters nothing; one MAME held is
     completed by one instruction (`complete_held`), and the reply's `held` and `stop_seq` say
     so. What the console prints is a promise, and the file is the measurement. The frame, the
@@ -179,12 +182,14 @@ def state_save(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     return menvelope.envelope({**fields, "held": held, "stop_seq": record["seq"]})
 
 
-def state_load(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
-    """The body of the `state_load` tool: the console's `stateload`, which REPLACES the
+def load_state(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
+    """The body of the `state_write(method="load")` tool: the console's `stateload`, which REPLACES
+    the
     machine (altered from then on), then the stop surveyed and the ROM checked again
     against the reference `start` was given. MAME refuses a bad state IN SILENCE from the
     console, so the header is judged BEFORE the console, and the load is judged
-    against what `state_save` recorded (`_judged`): `verified`, or unavailable with why
+    against what `state_write(method="save")` recorded (`_judged`): `verified`, or unavailable with
+    why
     (`NOT_WRITTEN_HERE`, `ALREADY_AS_SAVED`, `NOTHING_TO_JUDGE`), or a refusal naming the frame
     and pc or carrying `differs`. `rom_check` is `OK`, or unavailable with no reference image."""
     check_state_name(name)

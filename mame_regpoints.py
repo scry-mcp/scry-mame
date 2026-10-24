@@ -38,7 +38,8 @@ _RP_STOP_LINE = re.compile(r"Stopped at registerpoint ([0-9A-Fa-f]+)\b")
 _RPSET_TAKEN = re.compile(r"^Registerpoint ([0-9A-Fa-f]+) set$")
 # What `print {<condition>}` answers for a condition the debugger evaluates: one number.
 STILL_ARMED = ("still armed: a registerpoint fires at every instruction while its condition "
-               "holds, so the next advance stops here again; `regpoint_clear` removes it")
+               "holds, so the next advance stops here again; "
+               "`declaration_clear(kind=\"regpoint\")` removes it")
 
 
 def parse_rplist(text: str) -> list[dict[str, Any]]:
@@ -78,9 +79,9 @@ def _owner(row: dict[str, Any], but: dec.Owner) -> str | None:
 
 
 def _shared_why(condition: str, owner: str, cpu: str | None, holds: str = "already arms",
-                clear_tool: mclear.ClearTool | None = "regpoint_clear") -> str:
+                clear_kind: mclear.ClearKind | None = "regpoint") -> str:
     return (f"`{condition}` is what the registerpoint {owner!r} {holds}: "
-            f"{mclear.one_declaration('registerpoint row', owner, clear_tool, cpu)}")
+            f"{mclear.one_declaration('registerpoint row', owner, clear_kind, cpu)}")
 
 
 def forget_gone(ses: gs.Session) -> list[dec.Owner]:
@@ -135,8 +136,8 @@ def _listed(held: list[dict[str, Any]], index: int, condition: str) -> dict[str,
 
 def _not_listed(condition: str) -> str:
     return (mlists.not_listed(f"`{rp_command(condition)}`", "rplist")
-            + "; `regpoint_list` shows the declaration kept and "
-            "`regpoint_clear(ref=...)` removes it")
+            + "; `declaration_list(kind=\"regpoint\")` shows the declaration kept and "
+            "`declaration_clear(kind=\"regpoint\", ref=...)` removes it")
 
 
 def check_regpoint_add(condition: str, **_: Any) -> None:
@@ -193,7 +194,7 @@ def regpoint_add(ses: gs.Session, condition: str, cpu: str = "") -> dict[str, An
         row = _listed(rp_held(ses), taken, cond)
     if row is None:
         return menvelope.invalid("readback_refused", _not_listed(cond), ref=ref,
-                                 **mclear.kept_fields("regpoint_clear", ref))
+                                 **mclear.kept_fields("regpoint", ref))
     _record(decl.owner, row)
     return menvelope.envelope({**dec.owner_fields(decl.owner), "by": "expr", "condition": cond,
                                "stored": True, "already_stored": not is_new,
@@ -207,9 +208,11 @@ def _declared() -> list[dec.Declaration]:
     return [d for d in arming.store().declarations() if d.kind == "regpoint"]
 
 
-def regpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `regpoint_list` tool: every declaration, or with `cpu` those listed under
-    it, as `breakpoint_list` narrows: only `regpoint_add` needs the visible cpu."""
+def list_regpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
+    """The body of the `declaration_list(kind="regpoint")` tool: every declaration, or with `cpu`
+    those listed under
+    it, as `declaration_list(kind="breakpoint")` narrows: only `regpoint_add` needs the visible
+    cpu."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     held = [r for r in rp_held(ses) if only is None or r["cpu"] == only]
     out: list[dict[str, Any]] = []
@@ -242,17 +245,19 @@ def regpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     return menvelope.envelope(reply)
 
 
-def check_regpoint_clear(ref: str = "", all: bool = False, **_: Any) -> None:
-    """`regpoint_clear`'s machine-independent half: one `ref` (a condition, as declared) or
+def check_clear_regpoints(ref: str = "", all: bool = False, **_: Any) -> None:
+    """`declaration_clear(kind="regpoint")`'s machine-independent half: one `ref` (a condition, as
+    declared) or
     `all=True`."""
     mclear.check_clear(ref, all, "regpoint")
 
 
-def regpoint_clear(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False
+def clear_regpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False
                    ) -> dict[str, Any]:
-    """The body of the `regpoint_clear` tool: `ref`'s declarations (every one with no ref), on
+    """The body of the `declaration_clear(kind="regpoint")` tool: `ref`'s declarations (every one
+    with no ref), on
     every cpu or on `cpu` alone."""
-    check_regpoint_clear(ref=ref, all=all_)
+    check_clear_regpoints(ref=ref, all=all_)
     ref = "" if all_ else ref
     running = arming.running_on_arrival(ses)
     reached = mclear.clearing(ses, "regpoint", ref, cpu)
@@ -321,7 +326,7 @@ def rearm(ses: gs.Session, out: dict[str, Any]) -> None:
         elif (row := _adoptable(visible, held, cond)) is not None:
             if (owner := _owner(row, decl.owner)) is not None:
                 out["unarmable"].append({**name, "why": _shared_why(cond, owner, visible,
-                                                                    clear_tool=None)})
+                                                                    clear_kind=None)})
                 continue
             _record(decl.owner, row)
             out["rearmed"].append({**name, **mlists.adopted_state("rp", row)})

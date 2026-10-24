@@ -34,7 +34,79 @@
   },
   {
    "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"patch\": [64, 40, 16, 16], \"layouts\": [\"s2c3\", \"s2c7\"], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M123: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[\"s2c3\",\"s2c7\"],\"patch\":[64,40,16,16],\"tag\":\"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },

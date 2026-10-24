@@ -119,7 +119,8 @@ class State:
         # reply that closes, whatever tool that is, and is then forgotten (`take_cancelled`).
         # Not in `_reset` either: the next call may be the `close` or `start` that kills.
         self.cancelled: cancel.Cancelled | None = None
-        # THE SCREEN MAPS outlive a session too: the file layer a `map_load` read stays, and a
+        # THE SCREEN MAPS outlive a session too: the file layer a `map_write(method="load")` read
+        # stays, and a
         # `start` empties the session layer and forgets the last identification.
         self.maps = screen_map.Maps()
         self._reset()
@@ -239,7 +240,7 @@ class State:
         # baseline consumes it (`mame_cycles`). None: nothing waiting.
         self.stale_counter: mame_cycles.StaleCounter | None = None
         # THE REFERENCE `start` was checked against (image, address, base), kept so a
-        # `state_load` can run the same check on the machine the state replaced.
+        # `state_write(method="load")` can run the same check on the machine the state replaced.
         self.reference: tuple[Path, int, int] | None = None
         # THE LAST STOP, as its one survey saw it: the program counter, the registers, the
         # frame, how it came to stop and when. Filled by every stop reply and by the first

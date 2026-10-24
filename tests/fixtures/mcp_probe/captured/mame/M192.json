@@ -2,8 +2,9 @@
  "task": {
   "id": "M192",
   "prompt": "The machine is stopped on the attract screen. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, with a place named credits at x 160, y 240, 80 by 12.",
-  "tool": "map_add",
+  "tool": "map_write",
   "args": {
+   "method": "add",
    "screen": "attract",
    "match": [
     [
@@ -24,24 +25,99 @@
      ]
     }
    ]
-  }
+  },
+  "grammar": [
+   "add"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M192: {\"tool\": \"map_add\", \"args\": {\"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M192: {\"tool\":\"map_add\",\"args\":{\"screen\":\"attract\",\"match\":[[0,0,248,12]],\"controls\":[{\"name\":\"credits\",\"rect\":[160,240,80,12]}]}}"
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M192: {\"tool\": \"map_add\", \"args\": {\"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\":\"map_write\",\"args\":{\"method\":\"add\",\"screen\":\"attract\",\"match\":[[0,0,248,12]],\"controls\":[{\"name\":\"credits\",\"rect\":[160,240,80,12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M192: {\"tool\": \"map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
    ],
    "right": true
   }

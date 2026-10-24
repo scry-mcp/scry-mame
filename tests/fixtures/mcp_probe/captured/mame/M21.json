@@ -2,24 +2,102 @@
  "task": {
   "id": "M21",
   "prompt": "List every watch declaration and its state.",
-  "tool": "watch_list"
+  "tool": "declaration_list",
+  "args": {
+   "kind": "watch"
+  },
+  "grammar": [
+   "watch"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M21: {\"tool\": \"watch_list\", \"args\": {}}"
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M21: {\"tool\":\"watch_list\",\"args\":{}}"
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M21: {\"tool\": \"watch_list\", \"args\": {}}"
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
    ],
    "right": true
   }

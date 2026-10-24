@@ -83,7 +83,7 @@ def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
     key, whatever the file is called) and placed at `addr`, where the cpu sees it; an ini
     directory that turns the joystick provider off, since a debug build can abort at boot with
     a controller connected; and a state directory under the run's own, emptied first, since
-    `state_save` never overwrites and a path there reads the same on every run."""
+    `state_write(method="save")` never overwrites and a path there reads the same on every run."""
     def args(run: Run) -> dict[str, Any]:
         with zipfile.ZipFile(Path(run.options["rompath"]) / f"{system}.zip") as z:
             members = [i for i in z.infolist() if crc == i.CRC]

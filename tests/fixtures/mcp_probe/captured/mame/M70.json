@@ -35,7 +35,79 @@
   },
   {
    "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M70: {\"tool\":\"write\",\"args\":{\"ref\":\"0x3FF0\",\"data_hex\":\"7F00\",\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

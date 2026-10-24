@@ -84,14 +84,14 @@ def _o_m68k_dual(t: list[str]) -> None:
     r = boot()
     if not ok(r):
         raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
-    listed = call("breakpoint_list").get("breakpoints") or []
+    listed = call("declaration_list", kind="breakpoint").get("breakpoints") or []
     rows = [(b.get("ref"), b.get("by"), b.get("state")) for b in listed]
     bplist = str(call("debug", command="bplist").get("output", ""))
     built = (r.get("declarations") or {}).get("fingerprint")
     cell(t[6], built == seeded and rows == [("0x4a0", "address", "armed")]
          and re.search(r"\b0*4A0\b", bplist.upper()) is not None,
          f"{said(r, 50)} / {rows} / {bplist.strip()[:60]}")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     found = call("symbols_find", name="adc", cpu="maincpu")
     adc = str((found.get("symbols") or [{}])[0].get("addr", ""))
     by_name, by_hex = call("read_memory", ref="adc", length=4), call("read_memory", ref="0xadc",
@@ -100,13 +100,13 @@ def _o_m68k_dual(t: list[str]) -> None:
          and int(_addr(by_name), 16) == int(adc, 16) and _addr(by_hex) == "0x00000adc"
          and by_name.get("hex") == _dumped("adc") and by_hex.get("hex") == _dumped("0xadc"),
          f"adc at {adc}: {said(by_name, 60)} / {said(by_hex, 60)}")
-    call("comment_add", ref="0xadc", text="matrix raw", cpu="maincpu")
-    call("comment_add", ref="adc", text="matrix name", cpu="maincpu")
-    gone = call("comment_delete", ref="adc", cpu="maincpu")
+    call("comment_write", method="add", ref="0xadc", text="matrix raw", cpu="maincpu")
+    call("comment_write", method="add", ref="adc", text="matrix name", cpu="maincpu")
+    gone = call("comment_write", method="delete", ref="adc", cpu="maincpu")
     left = [c.get("ref") for c in call("comment_list").get("comments") or []]
     cell(t[2], ok(gone) and (gone.get("deleted") or {}).get("ref") == "adc"
          and left == ["0xadc"], f"{said(gone)} / left {left}")
-    call("comment_delete", ref="0xadc", cpu="maincpu")
+    call("comment_write", method="delete", ref="0xadc", cpu="maincpu")
     before = call("status").get("session", {}).get("altering_writes")
     ram = call("read_memory", ref="0x200000", length=2)
     r = call("perform", steps=[{"op": "read_memory", "ref": "0x200000", "length": 2},
@@ -120,20 +120,20 @@ def _o_m68k_dual(t: list[str]) -> None:
          and "0x4a0" in said_r and before == after,
          f"writes {before} -> {after}: {said(r)}")
     first, again = call("breakpoint_at", ref="irq_vblank"), call("breakpoint_at", ref="IRQ_VBLANK")
-    held = call("breakpoint_list").get("breakpoints") or []
-    cleared = call("breakpoint_clear", ref="Irq_Vblank")
+    held = call("declaration_list", kind="breakpoint").get("breakpoints") or []
+    cleared = call("declaration_clear", kind="breakpoint", ref="Irq_Vblank")
     cell(t[5], ok(first) and again.get("already_stored") is True and len(held) == 1
          and cleared.get("declarations_cleared") == 1
-         and call("breakpoint_list").get("breakpoints") == [],
+         and call("declaration_list", kind="breakpoint").get("breakpoints") == [],
          f"{said(again)} / held {len(held)} / {said(cleared)}")
     upper, padded = call("read_memory", ref="0X4A0", length=2), call("read_memory",
                                                                     ref=" 0x400 ", length=2)
     cell(t[7], ok(upper) and _addr(upper) == "0x000004a0" and ok(padded)
          and _addr(padded) == "0x00000400", f"{said(upper, 60)} / {said(padded, 60)}")
-    before = call("breakpoint_list").get("breakpoints")
+    before = call("declaration_list", kind="breakpoint").get("breakpoints")
     bare = call("breakpoint_at", ref="4a0", by="address")
     contra = call("breakpoint_at", ref="0x4a0", by="symbol")
-    after = call("breakpoint_list").get("breakpoints")
+    after = call("declaration_list", kind="breakpoint").get("breakpoints")
     cell(t[8], refused(bare, "bad_argument") and "an address is written 0x4a0" in str(
         bare.get("message")) and refused(contra, "bad_argument") and "by symbol names a symbol"
          in str(contra.get("message")) and before == after == [],
@@ -159,7 +159,7 @@ def _o_v30_alt(t: list[str]) -> None:
          and "an address is written 0x8" in str(bare.get("message")),
          f"{said(tap, 50)} / {said(bare, 60)}")
     if ok(tap) and tap.get("ref"):
-        call("watch_clear", ref=tap["ref"], space="io")
+        call("declaration_clear", kind="watch", ref=tap["ref"], space="io")
     call("close")
 
 
@@ -188,8 +188,9 @@ def _rebuilt(t: list[str]) -> None:
         raise RuntimeError(f"m68k-dual did not boot on the copy: {said(r)}")
     raw = str((call("symbols_find", name="page_bit_compose_a").get("symbols") or [{}])[0]
               .get("addr", ""))
-    call("comment_add", ref=f"{int(raw, 16):#x}", text="matrix old raw", cpu="maincpu")
-    call("comment_add", ref="irq_vblank", text='matrix "q"', cpu="maincpu")
+    call("comment_write", method="add", ref=f"{int(raw, 16):#x}", text="matrix old raw",
+         cpu="maincpu")
+    call("comment_write", method="add", ref="irq_vblank", text='matrix "q"', cpu="maincpu")
     call("close")
     text = copy.read_text()
     moved = text.replace("addr: 0x00000400\n    name: irq_vblank",
@@ -197,11 +198,11 @@ def _rebuilt(t: list[str]) -> None:
                          f"  - addr: {int(raw, 16):#010x}\n    name: irq_vblank", 1)
     copy.write_text(moved)
     r = boot(symbols=str(copy))
-    gone = call("comment_delete", ref="IRQ_VBLANK", cpu="maincpu")
+    gone = call("comment_write", method="delete", ref="IRQ_VBLANK", cpu="maincpu")
     rows = [(c.get("ref"), c.get("state")) for c in call("comment_list").get("comments") or []]
     cell(t[3], moved != text and ok(r) and (gone.get("deleted") or {}).get("ref") == "irq_vblank"
          and rows == [(f"{int(raw, 16):#x}", "stale")], f"{said(gone)} / rows {rows}")
-    call("comment_delete", ref=f"{int(raw, 16):#x}", cpu="maincpu")
+    call("comment_write", method="delete", ref=f"{int(raw, 16):#x}", cpu="maincpu")
     call("close")
 
 

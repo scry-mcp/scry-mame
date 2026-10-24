@@ -7,10 +7,11 @@ reply grows is named here in the same change. The file tools' models are the cor
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated, Any
 
 from scry_core import media_replies
 from scry_core import sequence_account as account
+from scry_core.reply_contract import OmitEmpty
 from scry_core.reply_schema import ReplyEnvelope
 
 
@@ -40,19 +41,13 @@ class MameConsoleAccount(MameEnvelope, total=False):
     frame: int
     pc: str
     regs: dict[str, Any]
-    resent: int
+    resent: Annotated[int, OmitEmpty]
     stop_seq: int
     thread_errors: int
 
 
-
-class AudioRecordReply(MameConsoleAccount, total=False):
-    began: bool
-    bytes: int | dict[str, Any]
-    channels: int | dict[str, Any]
-    cycles: int
-    drain_steps: int
-    emulated_s: float | dict[str, Any]
+#: What `record` and `audio_record` share: the frame window a recording ran over.
+class MameRecordingRun(MameConsoleAccount, total=False):
     ended: bool
     frame_after: int
     frame_before: int
@@ -68,9 +63,18 @@ class AudioRecordReply(MameConsoleAccount, total=False):
     path: str
     pending: bool
     polls: int
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     recording_after: bool | dict[str, Any]
     regpoint_hit: dict[str, Any]
+
+
+class AudioRecordReply(MameRecordingRun, total=False):
+    began: bool
+    bytes: int | dict[str, Any]
+    channels: int | dict[str, Any]
+    cycles: int
+    drain_steps: Annotated[int, OmitEmpty]
+    emulated_s: float | dict[str, Any]
     sample_max: int | dict[str, Any]
     sample_min: int | dict[str, Any]
     sample_rate_hz: int | dict[str, Any]
@@ -102,19 +106,6 @@ class BreakpointAtReply(MameEnvelope, total=False):
     while_running: bool
 
 
-class BreakpointClearReply(MameEnvelope, total=False):
-    declarations_cleared: int
-    disarmed: list[Any]
-    note: str
-    while_running: bool
-
-
-class BreakpointListReply(MameEnvelope, total=False):
-    breakpoints: list[Any]
-    cpu: str | dict[str, Any]
-    foreign: list[Any]
-
-
 class CapturesReply(MameEnvelope, total=False):
     captures: list[Any]
 
@@ -132,51 +123,11 @@ class CloseReply(MameEnvelope, total=False):
     stdout_tail: str
 
 
-class CommentAddReply(MameEnvelope, total=False):
-    comment: dict[str, Any]
-    cpu: str
-    declarations: dict[str, Any]
-    held_in_memory: bool
-    note: str
-    replaced_comments: list[Any]
-
-
-class CommentDeleteReply(MameEnvelope, total=False):
-    cpu: str
-    declarations: dict[str, Any]
-    deleted: dict[str, Any]
-    held_in_memory: bool
-    note: str
-
-
 class CommentListReply(MameEnvelope, total=False):
     comments: list[Any]
     comments_total: int
     cpu: str | dict[str, Any]
     declarations: dict[str, Any]
-    truncated: bool
-
-
-class CommentLoadReply(MameEnvelope, total=False):
-    added: int
-    comments_total: int
-    declarations: dict[str, Any]
-    held_in_memory: bool
-    note: str
-    parsed: int
-    path: str
-    replaced_comments: list[Any]
-    replaced_total: int
-    truncated: bool
-    unchanged: int
-
-
-class CommentSaveReply(MameEnvelope, total=False):
-    comments_total: int
-    dropped_comments: list[Any]
-    dropped_total: int
-    note: str
-    path: str
     truncated: bool
 
 
@@ -278,7 +229,7 @@ class GfxBlitSourceReply(MameConsoleAccount, total=False):
     palettes: list[Any]
     pc_before: str
     pen_base: int
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     reads_source: bool
     rect: dict[str, Any]
     source_tile: int
@@ -318,7 +269,7 @@ class GfxBlitsReply(MameConsoleAccount, total=False):
     note: str
     overflow_rows: int
     pc_before: str
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     rows_cut: bool
     rows_kept: int
     rows_path: str
@@ -365,7 +316,7 @@ class GfxFilmReply(MameConsoleAccount, total=False):
     image: dict[str, Any]
     install_call: str
     install_lines_ahead: int
-    install_resent: int
+    install_resent: Annotated[int, OmitEmpty]
     installed: bool
     judged: int
     judged_frames: list[Any] | dict[str, Any]
@@ -381,7 +332,7 @@ class GfxFilmReply(MameConsoleAccount, total=False):
     pc_before: str
     pending: bool
     pending_picture: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     refused: int
     refused_frames: list[Any]
     removal: str
@@ -438,7 +389,7 @@ class GfxLocateReply(MameConsoleAccount, total=False):
     pc_before: str
     pen_map: dict[str, Any]
     pending: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     screen: str
     screen_type: str
     screens: list[Any]
@@ -473,7 +424,7 @@ class GfxSweepReply(MameConsoleAccount, total=False):
     pc_before: str
     pen_base: int
     pending: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     real_colors: bool
     seen_bytes: int
     size: int
@@ -504,7 +455,7 @@ class GfxViewReply(MameConsoleAccount, total=False):
     pc_before: str
     pen_base: int
     pending: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     real_colors: bool
     seen_bytes: int
     size: int
@@ -524,7 +475,7 @@ class InputReply(MameConsoleAccount, total=False):
     active: bool | dict[str, Any]
     cycles: int
     defvalue: str
-    drain_steps: int
+    drain_steps: Annotated[int, OmitEmpty]
     field: str
     frame_after: int
     frame_before: int
@@ -544,7 +495,7 @@ class InputReply(MameConsoleAccount, total=False):
     port: str
     port_before: str
     port_held: str | dict[str, Any]
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
     released: bool
     route: str
@@ -591,7 +542,7 @@ class LuaReply(MameConsoleAccount, total=False):
     output_path: str
     pc_before: str
     pending: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
     script_chars: int
     seen_bytes: int
@@ -616,21 +567,6 @@ class MachineMapReply(MameEnvelope, total=False):
     truncated: bool
 
 
-class MapAddReply(MameConsoleAccount, total=False):
-    call: str
-    controls: int
-    evaluated_by: str
-    kind: str
-    lines_ahead: int
-    match: list[Any]
-    pc_before: str
-    reader_steps: int
-    replaced: bool
-    screen: str
-    shadows_file: bool
-    size: list[Any]
-
-
 class MapFindReply(MameConsoleAccount, total=False):
     call: str
     controls: list[Any]
@@ -640,26 +576,11 @@ class MapFindReply(MameConsoleAccount, total=False):
     lines_ahead: int
     matched: bool
     pc_before: str
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     screen: str
     screens_mapped: int
     screens_tried: int
     size: list[Any]
-
-
-class MapLoadReply(MameEnvelope, total=False):
-    application: str
-    controls: int
-    path: str
-    screens: int
-
-
-class MapSaveReply(MameEnvelope, total=False):
-    application: str
-    controls: int
-    path: str
-    promoted: list[Any]
-    screens: int
 
 
 class MemdumpReply(MameEnvelope, total=False):
@@ -685,7 +606,7 @@ class PaletteReply(MameConsoleAccount, total=False):
     palette: str
     palettes: list[Any]
     pc_before: str
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     shadows: bool
     truncated: bool
 
@@ -704,7 +625,7 @@ class PaletteLogReply(MameEnvelope, total=False):
     frame_as_of: int
     index_port: str
     index_writes: int
-    install_resent: int
+    install_resent: Annotated[int, OmitEmpty]
     installed: bool
     lines_ahead: int
     not_proved: list[Any]
@@ -735,7 +656,7 @@ class PaletteLogReply(MameEnvelope, total=False):
     superseded: bool
     synced_at_start: bool
     tally_id: str
-    unsynced_writes: int
+    unsynced_writes: Annotated[int, OmitEmpty]
     why: str
     writes_total: int
 
@@ -773,7 +694,7 @@ class ReadBlockReply(MameConsoleAccount, total=False):
     offset: int
     pc_before: str
     pending: bool
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
     seen_bytes: int
     size: int
@@ -791,30 +712,12 @@ class ReadMemoryReply(MameEnvelope, total=False):
     length: int
 
 
-class RecordReply(MameConsoleAccount, total=False):
+class RecordReply(MameRecordingRun, total=False):
     avi_frames: int | dict[str, Any]
     began: bool
     bytes: int | dict[str, Any]
     cycles: int | dict[str, Any]
-    drain_steps: int
-    ended: bool
-    frame_after: int
-    frame_before: int
-    frame_begin: int | dict[str, Any]
-    frame_begin_planned: int
-    frame_end: int
-    frame_end_planned: int
-    frames: int
-    instructions_completed: int
-    lines_ahead: int
-    mode: str
-    note: str
-    path: str
-    pending: bool
-    polls: int
-    reader_steps: int
-    recording_after: bool | dict[str, Any]
-    regpoint_hit: dict[str, Any]
+    drain_steps: Annotated[int, OmitEmpty]
     tagged_lines: list[Any]
     verdict: str
     view: str | dict[str, Any]
@@ -844,19 +747,6 @@ class RegpointAddReply(MameEnvelope, total=False):
     state: str
     stored: bool
     while_running: bool
-
-
-class RegpointClearReply(MameEnvelope, total=False):
-    declarations_cleared: int
-    disarmed: list[Any]
-    note: str
-    while_running: bool
-
-
-class RegpointListReply(MameEnvelope, total=False):
-    cpu: str | dict[str, Any]
-    foreign: list[Any]
-    regpoints: list[Any]
 
 
 class ResetReply(MameEnvelope, total=False):
@@ -958,32 +848,6 @@ class RunToReply(MameEnvelope, total=False):
     watches: list[Any]
 
 
-class ScanClearReply(MameEnvelope, total=False):
-    cleared: bool
-    note: str
-
-
-class ScanFilterReply(MameEnvelope, total=False):
-    closed: bool
-    cpu: str
-    hits: list[Any]
-    hits_total: int
-    iterations: int
-    operator: str
-    space: str
-    truncated: bool
-    value: str | dict[str, Any]
-
-
-class ScanStartReply(MameEnvelope, total=False):
-    addr: str
-    cell_bytes: int
-    cpu: str
-    hits_total: int
-    length: int
-    space: str
-
-
 class ScreenSignatureReply(MameConsoleAccount, total=False):
     call: str
     crop: list[Any]
@@ -993,7 +857,7 @@ class ScreenSignatureReply(MameConsoleAccount, total=False):
     kind: str
     lines_ahead: int
     pc_before: str
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     screen: str
     signature: str
     width: int
@@ -1022,7 +886,7 @@ class ScreenViewReply(MameConsoleAccount, total=False):
     pens_used: int
     pixels: int
     point_in_crop: list[Any]
-    reader_steps: int
+    reader_steps: Annotated[int, OmitEmpty]
     rows_cut: bool
     same_color_write: dict[str, Any]
     screen: str
@@ -1081,8 +945,8 @@ class StartReply(MameEnvelope, total=False):
     debugger: dict[str, Any]
     declarations: dict[str, Any]
     dial_attempts: list[Any]
-    display: str
-    env: dict[str, Any]
+    display: Annotated[str, OmitEmpty]
+    env: Annotated[dict[str, Any], OmitEmpty]
     error: str
     errorlog_path: str
     flags: list[Any]
@@ -1098,7 +962,7 @@ class StartReply(MameEnvelope, total=False):
     reply: str
     rom_check: str
     scratch_dir: str
-    start_retries: list[Any]
+    start_retries: Annotated[list[Any], OmitEmpty]
     state_dir: str
     stdout_kept: str
     stdout_path: str
@@ -1108,9 +972,9 @@ class StartReply(MameEnvelope, total=False):
     symbols_by_cpu: dict[str, Any]
     symbols_format: str
     symbols_total: int
-    symbols_typed: int
+    symbols_typed: Annotated[int, OmitEmpty]
     system: str
-    throttle_from_frame: int
+    throttle_from_frame: Annotated[int, OmitEmpty]
     version: str | dict[str, Any]
     view: str | dict[str, Any]
     views: list[Any] | dict[str, Any]
@@ -1119,43 +983,6 @@ class StartReply(MameEnvelope, total=False):
 class StateListReply(MameEnvelope, total=False):
     state_dir: str
     states: list[Any]
-
-
-class StateLoadReply(MameEnvelope, total=False):
-    cpu: str
-    dasm: list[Any] | dict[str, Any]
-    differs: dict[str, Any]
-    errorlog: dict[str, Any]
-    frame: int | dict[str, Any]
-    held: str
-    mark: dict[str, Any]
-    name: str
-    note: str
-    output: str
-    path: str
-    pc: str
-    regpoint_hit: dict[str, Any]
-    regs: dict[str, Any]
-    rom_check: str | dict[str, Any]
-    saved: dict[str, Any]
-    stop_seq: int
-    system: str
-    taps_across: list[Any]
-    verified: bool | dict[str, Any]
-    watch_hit: dict[str, Any]
-    watches: list[Any]
-
-
-class StateSaveReply(MameEnvelope, total=False):
-    bytes: int
-    errorlog: dict[str, Any]
-    frame: int | dict[str, Any]
-    held: str
-    name: str
-    path: str
-    pc: str
-    stop_seq: int
-    system: str
 
 
 class StatusReply(MameEnvelope, total=False):
@@ -1178,7 +1005,7 @@ class StatusReply(MameEnvelope, total=False):
     system: str
     tallies_pending_removal: list[Any]
     threads: dict[str, Any]
-    throttles_pending: list[Any]
+    throttles_pending: Annotated[list[Any], OmitEmpty]
 
 
 class StepReply(MameEnvelope, total=False):
@@ -1297,20 +1124,6 @@ class WatchAddReply(MameEnvelope, total=False):
     write_maps_to: str
 
 
-class WatchClearReply(MameEnvelope, total=False):
-    declarations_cleared: int
-    disarmed: list[Any]
-    note: str
-    tallies_removed: list[Any]
-    while_running: bool
-
-
-class WatchListReply(MameEnvelope, total=False):
-    cpu: str | dict[str, Any]
-    foreign: list[Any]
-    watches: list[Any]
-
-
 class WriteReply(MameEnvelope, total=False):
     addr: str
     bytes_written: int
@@ -1324,19 +1137,116 @@ class WriteReply(MameEnvelope, total=False):
     verified: bool
 
 
+class CommentWriteReply(MameEnvelope, total=False):
+    added: int
+    comment: dict[str, Any]
+    comments_total: int
+    cpu: str
+    declarations: dict[str, Any]
+    deleted: dict[str, Any]
+    dropped_comments: list[Any]
+    dropped_total: int
+    held_in_memory: bool
+    note: str
+    parsed: int
+    path: str
+    replaced_comments: list[Any]
+    replaced_total: int
+    truncated: bool
+    unchanged: int
+
+
+class DeclarationClearReply(MameEnvelope, total=False):
+    declarations_cleared: int
+    disarmed: list[Any]
+    note: str
+    tallies_removed: list[Any]
+    while_running: bool
+
+
+class DeclarationListReply(MameEnvelope, total=False):
+    breakpoints: list[Any]
+    cpu: str | dict[str, Any]
+    foreign: Annotated[dict[str, Any], OmitEmpty]
+    regpoints: list[Any]
+    watches: list[Any]
+
+
+class MapWriteReply(MameConsoleAccount, total=False):
+    application: str
+    call: str
+    controls: int
+    evaluated_by: str
+    kind: str
+    lines_ahead: int
+    match: list[Any]
+    path: str
+    pc_before: str
+    promoted: list[Any]
+    reader_steps: Annotated[int, OmitEmpty]
+    replaced: bool
+    screen: str
+    screens: int
+    shadows_file: bool
+    size: list[Any]
+
+
+class ScanReply(MameEnvelope, total=False):
+    addr: str
+    cell_bytes: int
+    cleared: bool
+    closed: bool
+    cpu: str
+    hits: list[Any]
+    hits_total: int
+    iterations: int
+    length: int
+    note: str
+    operator: str
+    space: str
+    truncated: bool
+    value: str | dict[str, Any]
+
+
+class StateWriteReply(MameEnvelope, total=False):
+    bytes: int
+    cpu: str
+    dasm: list[Any] | dict[str, Any]
+    differs: dict[str, Any]
+    errorlog: dict[str, Any]
+    frame: int | dict[str, Any]
+    held: str
+    mark: dict[str, Any]
+    name: str
+    note: str
+    output: str
+    path: str
+    pc: str
+    regpoint_hit: dict[str, Any]
+    regs: dict[str, Any]
+    rom_check: str | dict[str, Any]
+    saved: dict[str, Any]
+    stop_seq: int
+    system: str
+    taps_across: list[Any]
+    verified: bool | dict[str, Any]
+    watch_hit: dict[str, Any]
+    watches: list[Any]
+
+
 #: Each tool's reply model, by the tool's name.
 MODELS: dict[str, type] = {
+    "comment_write": CommentWriteReply,
+    "declaration_clear": DeclarationClearReply,
+    "declaration_list": DeclarationListReply,
+    "map_write": MapWriteReply,
+    "scan": ScanReply,
+    "state_write": StateWriteReply,
     "audio_record": AudioRecordReply,
     "breakpoint_at": BreakpointAtReply,
-    "breakpoint_clear": BreakpointClearReply,
-    "breakpoint_list": BreakpointListReply,
     "captures": CapturesReply,
     "close": CloseReply,
-    "comment_add": CommentAddReply,
-    "comment_delete": CommentDeleteReply,
     "comment_list": CommentListReply,
-    "comment_load": CommentLoadReply,
-    "comment_save": CommentSaveReply,
     "cpu_info": CpuInfoReply,
     "debug": DebugReply,
     "disassemble": DisassembleReply,
@@ -1357,10 +1267,7 @@ MODELS: dict[str, type] = {
     "log_wait": LogWaitReply,
     "lua": LuaReply,
     "machine_map": MachineMapReply,
-    "map_add": MapAddReply,
     "map_find": MapFindReply,
-    "map_load": MapLoadReply,
-    "map_save": MapSaveReply,
     "memdump": MemdumpReply,
     "palette": PaletteReply,
     "palette_log": PaletteLogReply,
@@ -1371,16 +1278,11 @@ MODELS: dict[str, type] = {
     "record": RecordReply,
     "registers": RegistersReply,
     "regpoint_add": RegpointAddReply,
-    "regpoint_clear": RegpointClearReply,
-    "regpoint_list": RegpointListReply,
     "reset": ResetReply,
     "resume": ResumeReply,
     "rom_check": RomCheckReply,
     "run_for": RunForReply,
     "run_to": RunToReply,
-    "scan_clear": ScanClearReply,
-    "scan_filter": ScanFilterReply,
-    "scan_start": ScanStartReply,
     "screen_signature": ScreenSignatureReply,
     "screen_view": ScreenViewReply,
     "series_capture": SeriesCaptureReply,
@@ -1388,8 +1290,6 @@ MODELS: dict[str, type] = {
     "snapshot": SnapshotReply,
     "start": StartReply,
     "state_list": StateListReply,
-    "state_load": StateLoadReply,
-    "state_save": StateSaveReply,
     "status": StatusReply,
     "step": StepReply,
     "stop": StopReply,
@@ -1397,10 +1297,6 @@ MODELS: dict[str, type] = {
     "throttle": ThrottleReply,
     "trace": TraceReply,
     "watch_add": WatchAddReply,
-    "watch_clear": WatchClearReply,
-    "watch_list": WatchListReply,
     "write": WriteReply,
-    **{name: media_replies.MODELS[name]
-       for name in ("audio_diff", "audio_measure", "golden_check",
-                    "image_diff", "region_track", "series_diff")},
+    **{name: media_replies.MODELS[name] for name in ("audio_compare", "image_compare")},
 }

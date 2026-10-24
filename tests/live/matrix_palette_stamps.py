@@ -97,7 +97,7 @@ def _u_m68k_dual(t: list[str]) -> None:
     cell(t[0], ok(armed) and ok(bp) and brackets(seen),
          f"writer {writer} over lines {sorted(x for x in lines[best] if x)[:8]}; "
          f"(beamy before, beamy after, row line) at each stop: {seen}")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("run_for", frames=2, seconds=10.0)
     times = [r.time_attoseconds for r in sorted(_rows(), key=lambda r: r.n)
              if r.time_attoseconds is not None]
@@ -124,7 +124,7 @@ def _u_m68k_dual(t: list[str]) -> None:
     cell(t[2], ok(ahead_log) and bool(one_line) and all(r != b for b, r in one_line),
          f"(beamy before, beamy after, ahead row line) at each stop: {ahead_seen}; "
          f"{said(ahead_log, 60)}")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("palette_log", palette_port=RAMDAC, clear=True)
     call("close")
 

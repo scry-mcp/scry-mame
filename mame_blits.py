@@ -113,11 +113,13 @@ def _pc_fields(pc: int, cpu: str | None) -> dict[str, Any]:
 
 
 def _clear_call(owner: tuple[str, str | None]) -> str:
-    """The `watch_clear` call that removes the capture under `owner`, as a refusal quotes it: an
+    """The `declaration_clear(kind="watch")` call that removes the capture under `owner`, as a
+    refusal quotes it: an
     owner with no cpu was declared on the first cpu, and a call naming none would clear the ref
     on every cpu."""
     cpu = owner[1] or STATE.first_cpu
-    return f'watch_clear(ref="{owner[0]}"' + (f', cpu="{cpu}"' if cpu else "") + ")"
+    on = f', cpu="{cpu}"' if cpu else ""
+    return f'declaration_clear(kind="watch", ref="{owner[0]}"{on})'
 
 
 def find_capture(cmd: mm.Command) -> tuple[Any, dict[str, Any]]:

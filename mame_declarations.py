@@ -176,7 +176,7 @@ class Declaration:
         if self.kind not in KINDS:
             raise DeclarationError(f"kind is one of {KINDS}; got {self.kind!r}: the kind is the "
                                    "tool's, `breakpoint_at`, `watch_add`, `regpoint_add` or "
-                                   "`comment_add`")
+                                   "`comment_write(method=\"add\")`")
         if self.by not in BY:
             raise DeclarationError(f"`by` is one of {BY}; got {self.by!r}: `breakpoint_at(by=...)` "
                                    "and `watch_add(by=...)` take it")
@@ -186,12 +186,13 @@ class Declaration:
         if (self.kind == "comment") != bool(self.text):
             raise DeclarationError(
                 "a comment, and only a comment, carries a text; got "
-                f"text={self.text!r} on a {self.kind}: `comment_add(ref=..., text=...)`")
+                f"text={self.text!r} on a {self.kind}: `comment_write(method=\"add\", ref=..., "
+                "text=...)`")
         if self.kind == "comment" and self.by not in ("symbol", "address"):
             raise DeclarationError(
                 f"a comment is at a symbol or at an address; got by={self.by!r}: a place "
                 "reached through a pointer or an expression moves at run time, and "
-                "`comment_add(ref=...)` takes a symbol or a `0x` address")
+                "`comment_write(method=\"add\", ref=...)` takes a symbol or a `0x` address")
         if (why := inputs.by_spelling(self.by, self.ref)) is not None:
             raise DeclarationError(why)
         if self.by == "expr" and self.kind not in ("watch", "regpoint"):
@@ -224,15 +225,18 @@ class Declaration:
                     raise DeclarationError(
                         "a comment carries no role, condition or trigger; got "
                         f"role={self.role!r} condition={self.condition!r} "
-                        f"trigger={self.trigger!r}: `comment_add(ref=..., text=...)` alone")
+                        f"trigger={self.trigger!r}: `comment_write(method=\"add\", ref=..., "
+                        "text=...)` alone")
                 # THE FILE'S RULES, held where a comment is held: a store edited by hand cannot
                 # carry a comment the comment file could not write.
                 if (fault := cf.ref_fault(self.ref)) is not None:
                     raise DeclarationError(f"a comment's ref {self.ref!r} {fault}: "
-                                           "`comment_add(ref=...)` takes a symbol or an address")
+                                           "`comment_write(method=\"add\", ref=...)` takes a "
+                                           "symbol or an address")
                 if (fault := cf.text_fault(self.text)) is not None:
                     raise DeclarationError(f"a comment's text {fault}: "
-                                           "`comment_add(text=...)` takes one line")
+                                           "`comment_write(method=\"add\", text=...)` takes one "
+                                           "line")
                 return
             if self.kind == "regpoint":
                 if self.role != "stop" or self.condition:
@@ -353,7 +357,8 @@ class Declaration:
                 raise DeclarationError(f"a stored declaration lacks `{key}`: {d!r}; `start` "
                                        f"refuses it {UNTIL_FIXED}")
         # A COMMENT'S STAMP IS THE FILE'S, held where the store is read, as `__post_init__`
-        # holds its ref and text: a store edited by hand cannot carry a stamp `comment_save`
+        # holds its ref and text: a store edited by hand cannot carry a stamp
+        # `comment_write(method="save")`
         # could not write.
         if d["kind"] == "comment" and (
                 fault := cf.stamp_fault(opt["created_at"] or "")) is not None:
@@ -749,7 +754,8 @@ class DeclarationStore:
                         else "with no condition")
                 raise DeclarationError(
                     f"{decl.ref!r} is already declared as a {other.role} breakpoint {held}; "
-                    f"`breakpoint_clear(ref={decl.ref!r})` before declaring it another way")
+                    f"`declaration_clear(kind=\"breakpoint\", ref={decl.ref!r})` before declaring "
+                    "it another way")
             return
         for d in self._items:
             if d.kind != "watch" or d.cpu != decl.cpu or not self.matches(d, decl.by, decl.ref):
@@ -758,7 +764,8 @@ class DeclarationStore:
                 raise DeclarationError(
                     f"{decl.ref!r} already has a {d.watch_mode!r} watch, and one ref may "
                     f"not be both {d.watch_mode} AND {decl.watch_mode}: one ref carries one "
-                    f"declaration; `watch_clear(ref={d.ref!r})` before declaring the other")
+                    f"declaration; `declaration_clear(kind=\"watch\", ref={d.ref!r})` before "
+                    "declaring the other")
             held = (f" under the condition {d.condition!r}" if d.condition
                     else " with no condition" if d.watch_mode == "change"
                     else f" on the trigger {d.trigger!r} "
@@ -766,7 +773,8 @@ class DeclarationStore:
                     if d.trigger else "")
             raise DeclarationError(
                 f"{decl.ref!r} is already declared as a {d.watch_mode} watch of width "
-                f"{d.width} rendered as {d.fmt}{held}; `watch_clear(ref={d.ref!r})` before "
+                f"{d.width} rendered as {d.fmt}{held}; `declaration_clear(kind=\"watch\", "
+                f"ref={d.ref!r})` before "
                 "declaring it another way")
 
     def apply(self, adds: Collection[Declaration] = (),

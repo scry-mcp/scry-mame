@@ -275,7 +275,7 @@ def test_a_state_whose_file_is_a_dangling_link_already_exists(
     the state would go is something there, and the save is refused before `statesave`."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     (sta / "linked.sta").symlink_to(tmp_path / "nowhere.sta")
-    out = refused("already exists", s.state_save(name="linked"))
+    out = refused("already exists", s.state_write("save", name="linked"))
     assert out["code"] == "bad_argument" and "statesave linked" not in ses.commands, out
 
 
@@ -298,7 +298,8 @@ def _dangling_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[An
 
 def test_state_list_lists_a_dangling_link_with_null_bytes_and_says_why(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The name `state_save` refuses as already there is shown, never hidden and never a
+    """The name `state_write(method="save")` refuses as already there is shown, never hidden and
+    never a
     traceback: `bytes`, `frame` and `pc` null, and the `why` naming where the link points."""
     _, link, target = _dangling_state(monkeypatch, tmp_path)
     out = s.state_list()
@@ -312,12 +313,13 @@ def test_state_list_lists_a_dangling_link_with_null_bytes_and_says_why(
 def test_state_load_refuses_a_dangling_link_by_name(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Not the bare "no state named ... at": the refusal names the link and where it points, and
-    that `state_save` refuses the name while it is there; nothing reaches the console."""
+    that `state_write(method="save")` refuses the name while it is there; nothing reaches the
+    console."""
     ses, link, target = _dangling_state(monkeypatch, tmp_path)
-    out = refused("no file is reached through it", s.state_load(name="x"))
+    out = refused("no file is reached through it", s.state_write("load", name="x"))
     assert out["code"] == "unknown_ref", out
     assert str(link) in out["message"] and str(target) in out["message"], out
-    assert "state_save" in out["message"], out
+    assert "state_write(method=\"save\")" in out["message"], out
     assert not any(c.startswith("stateload") for c in ses.commands), ses.commands
 
 
@@ -389,9 +391,9 @@ def test_a_link_into_a_directory_nobody_may_search_is_answered_like_a_dangling_o
         (row,) = s.state_list()["states"]
         assert row["bytes"]["available"] is False, row
         assert "no file is reached" in row["bytes"]["why"], row
-        assert refused("no file is reached through it", s.state_load(name="y"))["code"] \
+        assert refused("no file is reached through it", s.state_write("load", name="y"))["code"] \
             == "unknown_ref"
-        assert refused("already exists", s.state_save(name="y"))["code"] == "bad_argument"
+        assert refused("already exists", s.state_write("save", name="y"))["code"] == "bad_argument"
         assert not any(c.startswith(("stateload", "statesave")) for c in ses.commands)
     finally:
         locked.chmod(0o700)
@@ -466,12 +468,12 @@ def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceba
     path resolves to, so a link to a directory is refused as the directory is."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     path, what = _not_a_file(sta, tmp_path, kind, short_tmp)
-    out = refused("not a state", s.state_load(name="d"))
+    out = refused("not a state", s.state_write("load", name="d"))
     assert out["code"] == "unknown_ref", out
     assert str(path) in out["message"] and what in out["message"], out
-    assert "state_save" in out["message"], out
+    assert "state_write(method=\"save\")" in out["message"], out
     assert not any(c.startswith("stateload") for c in ses.commands), ses.commands
-    assert refused("already exists", s.state_save(name="d"))["code"] == "bad_argument"
+    assert refused("already exists", s.state_write("save", name="d"))["code"] == "bad_argument"
 
 
 # ---- gfx_draft's dest, judged like every other dest ------------------------------------------
@@ -619,7 +621,7 @@ def test_a_sta_gone_between_the_listing_and_its_stat_is_left_out_never_a_traceba
     out = s.state_list()
     assert out["status"] == "ok", out
     assert [r["name"] for r in out["states"]] == ["kept"], out
-    assert refused("no state named", s.state_load(name="gone"))["code"] == "unknown_ref"
+    assert refused("no state named", s.state_write("load", name="gone"))["code"] == "unknown_ref"
 
 
 def test_a_home_path_reaches_mame_expanded(here: Path, monkeypatch: pytest.MonkeyPatch) -> None:

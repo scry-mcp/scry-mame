@@ -25,7 +25,6 @@ from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
     bp_records,
     captured,
-    published,
     refs,
     refused,
     rplist_answer,
@@ -271,7 +270,8 @@ def test_a_registerpoint_stop_whose_list_the_console_will_not_answer_is_still_a_
 
 # ------------------------------------------------------------------ the typed family
 #
-# `regpoint_add` / `regpoint_list` / `regpoint_clear`: a registerpoint declared, listed,
+# `regpoint_add` / `declaration_list(kind="regpoint")` / `declaration_clear(kind="regpoint")`: a
+# registerpoint declared, listed,
 # persisted and re-armed the way a breakpoint is. What differs is what has no meaning without
 # an address (`addr`, `role`, `aliased`, `stale`) and the one check MAME does not make for
 # itself: it ARMS a condition its own evaluator refuses, so the condition is evaluated once
@@ -319,7 +319,7 @@ def test_a_symbol_is_stored_by_name_and_sent_by_address(
     out = s.regpoint_add(condition="d0==DemoLen")
     assert out["ref"] == "d0==DemoLen" and out["condition"] == "d0==0x2031fc", out
     assert _sent(ses) == ["print {d0==0x2031fc}", "rplist", "rpset {d0==0x2031fc}", "rplist"]
-    listed = s.regpoint_list()["regpoints"]
+    listed = s.declaration_list("regpoint")["regpoints"]
     assert [(r["ref"], r["condition"]) for r in listed] == [("d0==DemoLen", "d0==0x2031fc")]
 
 
@@ -343,7 +343,7 @@ def test_an_action_an_assignment_or_nothing_is_refused_before_the_console_hears_
     ses = _running(monkeypatch, tmp_path)
     out = refused(clause, s.regpoint_add(condition=condition))
     assert out["code"] == "bad_argument" and _sent(ses) == []
-    assert s.regpoint_list()["regpoints"] == []
+    assert s.declaration_list("regpoint")["regpoints"] == []
 
 
 def test_the_same_refusal_needs_no_machine() -> None:
@@ -364,7 +364,7 @@ def test_a_condition_the_debugger_cannot_evaluate_is_refused_in_its_own_words(
     out = refused("the debugger did not evaluate", s.regpoint_add(condition=condition))
     assert out["code"] == "bad_argument" and words in out["message"], out["message"]
     assert _sent(ses) == [f"print {{{condition}}}"], "nothing was armed"
-    assert s.regpoint_list()["regpoints"] == [], "and nothing was stored"
+    assert s.declaration_list("regpoint")["regpoints"] == [], "and nothing was stored"
 
 
 def test_a_condition_too_long_for_one_packet_is_refused_before_anything_is_stored(
@@ -376,7 +376,7 @@ def test_a_condition_too_long_for_one_packet_is_refused_before_anything_is_store
     out = s.regpoint_add(condition=long)
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
     assert "limit_chars" in out and _sent(ses) == []
-    assert s.regpoint_list()["regpoints"] == []
+    assert s.declaration_list("regpoint")["regpoints"] == []
     assert s.regpoint_add(condition="d1==1")["status"] == "ok", "the control: a short one fits"
 
 
@@ -395,7 +395,7 @@ def test_a_debugger_with_no_registerpoints_is_no_channel_and_holds_nothing(
     ses.monitor = older_console  # type: ignore[method-assign]
     out = refused("offers no registerpoints", s.regpoint_add(condition="d1==7fff"))
     assert out["code"] == "no_channel" and "unknown command" in out["message"], out
-    assert s.regpoint_list()["regpoints"] == []
+    assert s.declaration_list("regpoint")["regpoints"] == []
 
 
 def test_a_row_the_list_does_not_show_after_rpset_is_readback_refused_and_the_declaration_kept(
@@ -414,9 +414,10 @@ def test_a_row_the_list_does_not_show_after_rpset_is_readback_refused_and_the_de
     out = refused("does not list it: nothing is armed", s.regpoint_add(condition="d1==7fff"))
     assert out["code"] == "readback_refused" and out["ref"] == "d1==7fff"
     assert (out["stored"], out["armed"], out["state"]) == (True, False, "gone"), out
-    assert "re-arms at the next `start`" in out["note"] and "regpoint_clear(ref='d1==7fff')" in (
-        out["note"]), "the refusal says the declaration was KEPT, and what removes it"
-    assert [(r["ref"], r["state"]) for r in s.regpoint_list()["regpoints"]] == [
+    assert "re-arms at the next `start`" in out["note"] and (
+        "declaration_clear(kind=\"regpoint\", ref='d1==7fff')" in out["note"]), (
+        "the refusal says the declaration was KEPT, and what removes it")
+    assert [(r["ref"], r["state"]) for r in s.declaration_list("regpoint")["regpoints"]] == [
         ("d1==7fff", "gone")]
     assert s.status()["in_debugger"]["regpoints"] == []
 
@@ -443,9 +444,9 @@ def test_regpoint_add_on_a_running_machine_says_so(
     ses.go()
     out = s.regpoint_add(condition="d1==7fff")
     assert out["status"] == "ok" and out["while_running"] is True and out["armed"] is True
-    listed = s.regpoint_list()
+    listed = s.declaration_list("regpoint")
     assert listed["session"]["running"] is True and "last_stop" in listed
-    assert s.regpoint_clear(ref="d1==7fff")["while_running"] is True
+    assert s.declaration_clear("regpoint", ref="d1==7fff")["while_running"] is True
 
 
 def test_regpoint_list_places_every_declaration_and_names_the_rows_it_did_not_place(
@@ -457,17 +458,17 @@ def test_regpoint_list_places_every_declaration_and_names_the_rows_it_did_not_pl
     s.regpoint_add(condition="d1==7fff")
     s.regpoint_add(condition="d1==2")
     ses.rplist_rows[2] = (3, "d1==2", False)            # `rpdisable 3` through `debug`
-    out = s.regpoint_list()
-    assert out["summary"] == "regpoint_list: 2 declared, 1 armed"
+    out = s.declaration_list("regpoint")
+    assert out["summary"] == "declaration_list regpoint: 2 regpoints (1 armed)"
     rows = {r["ref"]: r for r in out["regpoints"]}
     assert set(rows["d1==7fff"]) == {"ref", "by", "created_at", "origin", "inherited", "age_s",
                                      "condition", "state", "entry", "index", "cpu"}
     assert rows["d1==7fff"]["state"] == "armed" and rows["d1==7fff"]["inherited"] is False
     assert rows["d1==2"]["state"] == "disabled" and rows["d1==2"]["entry"] == "D 3 if d1==2"
-    assert out["foreign"] == ["1 if d0==1"]
+    assert out["foreign"] == {"regpoints": ["1 if d0==1"]}
     assert "running" not in out
     ses.rplist_rows = [r for r in ses.rplist_rows if r[0] != 2]      # `rpclear 2` by hand
-    gone = {r["ref"]: r for r in s.regpoint_list()["regpoints"]}["d1==7fff"]
+    gone = {r["ref"]: r for r in s.declaration_list("regpoint")["regpoints"]}["d1==7fff"]
     assert gone["state"] == "gone" and "entry" not in gone and "index" not in gone
 
 
@@ -479,19 +480,20 @@ def test_regpoint_clear_sends_the_index_as_listed_and_reports_what_the_list_lost
     ses.rp_next_index = 10
     s.regpoint_add(condition="d1==7fff")
     s.regpoint_add(condition="d1==2")
-    out = s.regpoint_clear(ref="d1==7fff")
+    out = s.declaration_clear("regpoint", ref="d1==7fff")
     assert "rpclear 0xa" in ses.commands, "the tenth row is `A`: the index goes out prefixed"
     assert out["declarations_cleared"] == 1 and out["disarmed"] == ["A if d1==7fff"]
     assert out["while_running"] is False
-    assert out["summary"] == "regpoint_clear d1==7fff: 1 cleared, 1 disarmed"
-    missing = refused("matches no regpoint declaration", s.regpoint_clear(ref="d1==7fff"))
+    assert out["summary"] == "declaration_clear regpoint d1==7fff: 1 cleared, 1 disarmed"
+    missing = refused("matches no regpoint declaration", s.declaration_clear("regpoint",
+                                                                             ref="d1==7fff"))
     assert missing["code"] == "unknown_ref" and "'d1==2'" in missing["message"]
     assert "`regpoint_add` reply" in missing["message"]
-    everything = s.regpoint_clear(all=True)
+    everything = s.declaration_clear("regpoint", all=True)
     assert everything["declarations_cleared"] == 1 and everything["disarmed"] == ["B if d1==2"]
     assert ses.rplist_rows == [(9, "d0==1", True)], "a foreign row is never deleted"
     assert s.status()["in_debugger"]["regpoints"] == []
-    assert s.regpoint_clear(all=True)["declarations_cleared"] == 0
+    assert s.declaration_clear("regpoint", all=True)["declarations_cleared"] == 0
 
 
 def test_a_clear_whose_row_stays_listed_does_not_claim_it_disarmed(
@@ -508,7 +510,7 @@ def test_a_clear_whose_row_stays_listed_does_not_claim_it_disarmed(
         return real(command, timeout)
 
     ses.monitor = deaf  # type: ignore[method-assign]
-    out = s.regpoint_clear(ref="d1==7fff")
+    out = s.declaration_clear("regpoint", ref="d1==7fff")
     assert out["disarmed"] == [] and out["declarations_cleared"] == 1, out
     # SAID, as a breakpoint's and a watch's clear say it: the row is still held, and the
     # command that removes it is named.
@@ -527,7 +529,7 @@ def test_a_regpoint_of_this_server_that_fires_is_named_and_stays_armed(
             and out["cause"] == "registerpoint 'd1==7fff'"), out["cause"]
     assert out["regpoint_hit"] == {"ref": "d1==7fff", "condition": "d1==7fff", "index": 1,
                                    "cpu": ":maincpu", "pc": out["pc"], "note": _NOTE}
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["armed"]
+    assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["armed"]
     assert s.status()["last_stop"]["cause"] == "registerpoint 'd1==7fff'"
 
 
@@ -541,7 +543,8 @@ def test_an_inherited_regpoint_that_fires_says_whose_it_is(
     ses.stops_after_polls = 1
     how = s.resume(seconds=2.0)["cause"]
     assert how.startswith("registerpoint 'd1==7fff' (a PERSISTENT declaration"), how
-    assert "`regpoint_list` shows it and `regpoint_clear` removes it" in how, how
+    assert ("`declaration_list(kind=\"regpoint\")` shows it and "
+            "`declaration_clear(kind=\"regpoint\")` removes it") in how, how
 
 
 def test_a_frame_run_cut_by_a_regpoint_of_this_server_carries_the_hit(
@@ -587,7 +590,7 @@ def test_a_stored_regpoint_is_re_armed_at_start_and_read_back(
     assert [c for c in _sent(ses) if c.startswith("rpset")] == [
         "rpset {d1==7fff}", "rpset {d0==0x2031fc}"], "re-resolved against THIS start's table"
     assert ses.commands.count("rplist") == 2, "the list is read once before and once after"
-    rows = s.regpoint_list()["regpoints"]
+    rows = s.declaration_list("regpoint")["regpoints"]
     assert [(r["state"], r["inherited"]) for r in rows] == [("armed", True)] * 2
 
 
@@ -622,7 +625,7 @@ def test_a_row_already_listed_is_adopted_by_the_re_arm(
     first = out["rearmed"][0]
     assert isinstance(first, dict) and "state" not in first, "an enabled row adds nothing"
     assert not any(c.startswith("rpset") for c in ses.commands)
-    assert s.regpoint_list()["regpoints"][0]["index"] == 5
+    assert s.declaration_list("regpoint")["regpoints"][0]["index"] == 5
 
 
 def test_a_row_listed_disabled_is_adopted_by_the_re_arm_saying_so(
@@ -650,7 +653,7 @@ def test_a_symbol_this_build_lacks_is_unresolved_and_kept(
     out = _rearm(ses)
     assert refs(out["unresolved"]) == ["d0==DemoLen"] and refs(out["rearmed"]) == [], out
     assert not any(c.startswith("rpset") for c in ses.commands)
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["unresolved"]
+    assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["unresolved"]
 
 
 def test_a_console_error_while_a_re_arm_evaluates_a_regpoint_is_that_declarations_alone(
@@ -687,13 +690,14 @@ def test_the_two_families_unresolved_conditions_are_one_set_that_clears_by_famil
                      "w@DemoLen==0x25": captured("print.braces.unknown-symbol.txt")}
     out = _rearm(ses)
     assert refs(out["unresolved"]) == ["irq_vblank", "d0==DemoLen"], out
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["unresolved"]
-    assert [r["state"] for r in s.breakpoint_list()["breakpoints"]] == ["unresolved"]
-    assert s.regpoint_clear(ref="d0==DemoLen")["declarations_cleared"] == 1
-    assert [r["state"] for r in s.breakpoint_list()["breakpoints"]] == ["unresolved"], (
+    assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["unresolved"]
+    assert [r["state"] for r in s.declaration_list("breakpoint")["breakpoints"]] == ["unresolved"]
+    assert s.declaration_clear("regpoint", ref="d0==DemoLen")["declarations_cleared"] == 1
+    listed = s.declaration_list("breakpoint")["breakpoints"]
+    assert [r["state"] for r in listed] == ["unresolved"], (
         "the regpoint's clear did not drain the breakpoint's")
-    assert s.breakpoint_clear(ref="irq_vblank")["declarations_cleared"] == 1
-    assert s.breakpoint_list()["breakpoints"] == []
+    assert s.declaration_clear("breakpoint", ref="irq_vblank")["declarations_cleared"] == 1
+    assert s.declaration_list("breakpoint")["breakpoints"] == []
 
 
 def test_what_cannot_be_armed_at_start_says_why_and_stays_stored(
@@ -718,7 +722,7 @@ def test_what_cannot_be_armed_at_start_says_why_and_stays_stored(
     assert "stack underflow" in why["d1=="]
     assert "packet size carries at most" in why[long]
     assert "does not list it" in why["d1==3"]
-    assert len(s.regpoint_list()["regpoints"]) == 3, "nothing is dropped"
+    assert len(s.declaration_list("regpoint")["regpoints"]) == 3, "nothing is dropped"
 
 
 def test_a_store_with_no_regpoint_asks_the_console_nothing(
@@ -741,8 +745,9 @@ def test_two_conditions_that_read_the_same_are_one_row_and_the_second_is_refused
     out = refused("already arms", s.regpoint_add(condition="d0==Lives_Alias"))
     assert out["code"] == "ambiguous_ref" and out["message"].endswith(
         "'d0==Lives' already arms: one registerpoint row is one declaration, so "
-        "`regpoint_clear(ref='d0==Lives', cpu=\":maincpu\")` frees it, or use that ref"), out
-    assert len(ses.rplist_rows) == 1 and len(s.regpoint_list()["regpoints"]) == 1
+        "`declaration_clear(kind=\"regpoint\", ref='d0==Lives', cpu=\":maincpu\")` frees it, or "
+        "use that ref"), out
+    assert len(ses.rplist_rows) == 1 and len(s.declaration_list("regpoint")["regpoints"]) == 1
     fresh = _stored(monkeypatch, tmp_path, "d0==Lives", "d0==Lives_Alias")
     use_table(monkeypatch, table={"LIVES": 0x2031FC, "LIVES_ALIAS": 0x2031FC})
     account = _rearm(fresh)
@@ -792,7 +797,7 @@ def test_a_console_with_no_registerpoints_makes_a_stored_one_unarmable_and_the_s
     account = _rearm(ses)
     assert refs(account["rearmed"]) == [], account
     assert "offers no registerpoints" in str(account["unarmable"][0]["why"])
-    assert len(s.regpoint_list()["regpoints"]) == 1, "kept"
+    assert len(s.declaration_list("regpoint")["regpoints"]) == 1, "kept"
 
 
 # ------------------------------------------------------------------ a board with two cpus
@@ -819,10 +824,10 @@ def test_the_same_condition_under_another_cpu_is_not_this_ones_row(
     out = s.regpoint_add(condition="d1==7fff")
     assert out["cpu"] == ":maincpu" and out["index"] == 2, out
     assert "rpset {d1==7fff}" in _sent(ses)
-    listed = s.regpoint_list()
-    assert listed["regpoints"][0]["cpu"] == ":maincpu" and listed["foreign"] == [
-        "1 if d1==7fff"]
-    assert s.regpoint_clear(all=True)["disarmed"] == ["2 if d1==7fff"]
+    listed = s.declaration_list("regpoint")
+    assert listed["regpoints"][0]["cpu"] == ":maincpu" and listed["foreign"] == {
+        "regpoints": ["1 if d1==7fff"]}
+    assert s.declaration_clear("regpoint", all=True)["disarmed"] == ["2 if d1==7fff"]
     assert ses.rplist_rows == [(1, "d1==7fff", True)], "the sub cpu's row is never deleted"
 
 
@@ -875,7 +880,7 @@ def test_a_symbol_that_came_to_collide_with_a_register_is_listed_unresolved_with
     _running(monkeypatch, tmp_path)
     s.regpoint_add(condition="d0==1")
     use_table(monkeypatch, table={"D0": 0x1000})
-    row = s.regpoint_list()["regpoints"][0]
+    row = s.declaration_list("regpoint")["regpoints"][0]
     assert row["state"] == "unresolved" and "both a symbol" in row["why"], row
 
 
@@ -887,16 +892,17 @@ def test_an_unresolved_regpoint_stops_being_one_once_cleared_or_armed(
     _rearm(ses)
     ses.rp_errors = {}
     assert s.regpoint_add(condition="d0==DemoLen")["already_stored"] is True
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["armed"]
+    assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["armed"]
     ses.rplist_rows.clear()
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["gone"], "not unresolved"
+    listed = s.declaration_list("regpoint")["regpoints"]
+    assert [r["state"] for r in listed] == ["gone"], "not unresolved"
     again = _stored(monkeypatch, tmp_path, "d0==DemoLen")
     again.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt")}
     _rearm(again)
-    s.regpoint_clear(all=True)
+    s.declaration_clear("regpoint", all=True)
     again.rp_errors = {}
     arming.store().add(dec.Declaration("regpoint", "expr", "d0==DemoLen", origin="s0"))
-    assert [r["state"] for r in s.regpoint_list()["regpoints"]] == ["gone"]
+    assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["gone"]
 
 
 def test_the_newest_line_in_the_window_names_the_stop_whichever_family_logged_it(
@@ -960,7 +966,7 @@ def test_an_rpclear_typed_through_debug_drops_the_record_of_the_row_it_removed(
     assert ("d1==7fff", ":maincpu") not in mstate.STATE.regpoints, mstate.STATE.regpoints
     assert ("d2==1", ":maincpu") in mstate.STATE.regpoints, \
         "a row the list still shows keeps its record"
-    assert {r["ref"]: r["state"] for r in s.regpoint_list()["regpoints"]} == {
+    assert {r["ref"]: r["state"] for r in s.declaration_list("regpoint")["regpoints"]} == {
         "d1==7fff": "gone", "d2==1": "armed"}
     s.debug(command=f"rpclear {kept['index']:x}")
     assert not ses.running
@@ -979,10 +985,11 @@ def test_perform_judges_a_regpoint_step_before_the_first_step_runs(
                            {"op": "regpoint_add", "condition": "d1=5"}])
     assert out["status"] == "INVALID" and _sent(ses) == [], out
     out = s.perform(steps=[{"op": "regpoint_add", "condition": "d1==7fff"},
-                           {"op": "regpoint_list"}, {"op": "regpoint_clear", "ref": "d1==7fff"}])
+                           {"op": "declaration_list", "kind": "regpoint"},
+                           {"op": "declaration_clear", "kind": "regpoint", "ref": "d1==7fff"}])
     assert out["status"] == "ok" and [r["op"] for r in out["ran"]] == [
-        "regpoint_add", "regpoint_list", "regpoint_clear"], out
-    assert {"regpoint_add", "regpoint_list", "regpoint_clear"} <= sequence.RUNNING_OK_OPS
+        "regpoint_add", "declaration_list", "declaration_clear"], out
+    assert {"regpoint_add", "declaration_list", "declaration_clear"} <= sequence.RUNNING_OK_OPS
 
 
 @pytest.mark.parametrize("command, writes", [
@@ -1010,7 +1017,7 @@ def test_a_registerpoint_is_cleared_by_its_condition_in_either_spelling_of_a_num
     s.regpoint_add(condition=declared)
     again = s.regpoint_add(condition=named)
     assert again.get("already_stored") is True, again
-    out = s.regpoint_clear(ref=named)
+    out = s.declaration_clear("regpoint", ref=named)
     assert out["declarations_cleared"] == 1, out
 
 
@@ -1080,27 +1087,27 @@ def test_a_clears_refusal_states_the_rule_it_was_matched_under(
     spelling then clears."""
     _running(monkeypatch, tmp_path)
     s.regpoint_add(condition="d1==0x7ff1")
-    missing = refused("matches no regpoint declaration", s.regpoint_clear(ref="d1==7ff2"))
+    missing = refused("matches no regpoint declaration", s.declaration_clear("regpoint",
+                                                                             ref="d1==7ff2"))
     text = " ".join(missing["message"].split())
-    assert f"Matching: {dec.REF_MATCH['regpoint']}." in text and "`regpoint_list`" in text, text
-    assert s.regpoint_clear(ref="d1==7ff1")["declarations_cleared"] == 1, "the rule it states"
+    assert f"Matching: {dec.REF_MATCH['regpoint']}." in text, text
+    assert "`declaration_list(kind=\"regpoint\")`" in text, text
+    assert s.declaration_clear("regpoint",
+                               ref="d1==7ff1")["declarations_cleared"] == 1, "the rule it states"
 
 
 @pytest.mark.parametrize("family", ["breakpoint", "watch", "regpoint"])
 def test_a_clears_refusal_names_its_own_familys_list_and_no_other(family: str) -> None:
     """The list that shows a family's refs is the one its refusal names: a regpoint's refusal
-    naming `breakpoint_list` sends the agent to a list that cannot hold what it typed."""
+    naming `declaration_list(kind="breakpoint")` sends the agent to a list that cannot hold what it
+    typed."""
     out = mclear.refuse_unmatched_clear("d1==1", family, mclear.Clearing([], [], [], None))
     text = " ".join(out["message"].split())
-    named = {f for f in ("breakpoint", "watch", "regpoint") if f"`{f}_list`" in text}
+    named = {f for f in ("breakpoint", "watch", "regpoint")
+             if f'`declaration_list(kind="{f}")`' in text}
     assert named == {family}, text
     assert text.endswith(f"Matching: {dec.REF_MATCH[family]}."), text
 
-
-@pytest.mark.parametrize(("tool", "family"), [
-    ("breakpoint_clear", "breakpoint"), ("watch_clear", "watch"), ("regpoint_clear", "regpoint")])
-def test_every_clears_description_states_its_familys_rule(tool: str, family: str) -> None:
-    assert f"Matching: {dec.REF_MATCH[family]}." in published(tool)
 
 
 

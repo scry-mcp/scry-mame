@@ -21,8 +21,8 @@ import mame_cpus as cpus
 import mame_read as read
 from mame_state import STATE
 
-#: The command name `state_load` the tool sends is marked under: it is not typed.
-STATE_LOAD = "state_load"
+#: The command name `state_write(method="load")` the tool sends is marked under: it is not typed.
+STATE_LOAD = "state_write(method=load)"
 
 
 class StaleCounter(NamedTuple):
@@ -40,7 +40,8 @@ def cycles_why(command: str) -> str:
         return (f"a `{command}` typed through `debug` is applied by the next run, which "
                 "restarts `totalcycles` inside it, so that run's span crosses the reset; the "
                 "run after it reports cycles")
-    done = "`state_load`" if command == STATE_LOAD else f"`{command}` typed through `debug`"
+    done = (f"`{command}`" if command == STATE_LOAD
+            else f"`{command}` typed through `debug`")
     return (f"MAME's debugger refreshes `totalcycles` only when the cpu executes, so right after "
             f"{done} replaced the machine it still holds the count from before; the next run "
             "reports cycles")

@@ -36,7 +36,79 @@
   },
   {
    "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M58: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x3FF0\",\"mode\":\"change\",\"length\":2,\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M58: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x3FF0\", \"mode\": \"change\", \"length\": 2, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

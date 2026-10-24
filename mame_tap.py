@@ -332,7 +332,8 @@ def mark_across(event: str) -> list[dict[str, str | None]]:
 def read_tap(scratch: Path, owner: dec.Owner, frame: int | None, at_stop: bool,
              parse: Callable[[str], dict[str, Any] | None], state: str
              ) -> tuple[dict[str, Any], dict[str, Any] | None]:
-    """What a stop survey (`at_stop`) or `watch_list` says about the tap under `owner` before
+    """What a stop survey (`at_stop`) or `declaration_list(kind="watch")` says about the tap under
+    `owner` before
     its kind's own tables, and the dump they are read from (None when there is nothing further
     to say): `installed` and `pending` (installed; not yet answered, `installed` false with
     `pending` true; refused, false with the console's words in its `why`), and once there
@@ -358,7 +359,8 @@ def read_tap(scratch: Path, owner: dec.Owner, frame: int | None, at_stop: bool,
                          "its echo is in `log` (channel `process`) with no sentinel after it, "
                          "and a dead reader, the console's own `error:` line or the next "
                          "reader's prompt behind it. The tap was never "
-                         "installed, so it recorded NOTHING; `watch_clear` it and declare it "
+                         "installed, so it recorded NOTHING; "
+                         "`declaration_clear(kind=\"watch\")` it and declare it "
                          "again"))
         return item, None
     # A PENDING INSTALL READS NO DUMP: `tally_id` is the range, so until the install answered,

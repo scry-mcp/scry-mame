@@ -325,7 +325,8 @@ def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark
 
 
 def channel_marks(scratch: Path) -> dict[str, int]:
-    """Where each channel's file ends now: `state_load`'s `mark`, one number per channel a mark
+    """Where each channel's file ends now: `state_write(method="load")`'s `mark`, one number per
+    channel a mark
     can name (`all` reads two files, so none is its own)."""
     return {tag: file_mark(scratch / name) for tag, name in LOG_FILES.items()}
 

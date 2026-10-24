@@ -82,7 +82,7 @@ def test_a_change_watch_arms_its_condition_once_the_console_evaluated_it(
     (held,) = arming.store().declarations()
     assert held.condition == COND and held.watch_mode == "change"
     assert mstate.STATE.armed_watches[OWNER]["condition"] == COND
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert listed["condition"] == COND and listed["state"] == "armed", listed
 
 
@@ -132,7 +132,7 @@ def test_the_same_ref_under_another_condition_is_already_declared(
     out = refused(re.escape("under the condition '(wpdata&3)!=0'"),
                   s.watch_add(ref="frame_lo", mode="change", length=4, condition="wpdata==1"))
     assert out["code"] == "ambiguous_ref" and len(ses.wplist_rows) == 1
-    s.watch_clear(ref="frame_lo")
+    s.declaration_clear("watch", ref="frame_lo")
     s.watch_add(ref="frame_lo", mode="change", length=4)
     refused("with no condition",
             s.watch_add(ref="frame_lo", mode="change", length=4, condition=COND))
@@ -171,16 +171,18 @@ def test_a_row_typed_under_another_condition_is_never_adopted(
     assert out["message"] == (
         "the debugger already holds a row at 0x2031fc for 4 bytes with no condition (1 @ "
         "2031FC-2031FF write), and this declaration's is '(wpdata&3)!=0': "
-        "`debug(\"wpclear 0x1\")` removes it, or `watch_clear` when a declaration of this server "
-        "owns it (`watch_list` says)")
+        "`debug(\"wpclear 0x1\")` removes it, or `declaration_clear(kind=\"watch\")` when a "
+        "declaration of this server "
+        "owns it (`declaration_list(kind=\"watch\")` says)")
     ses.wplist_rows[0] = f"    1 @ 2031FC-2031FF write if {COND}"
     out = refused("under another condition",
                   s.watch_add(ref="frame_lo", mode="change", length=4))
     assert out["message"] == (
         f"the debugger already holds a row at 0x2031fc for 4 bytes under another condition (1 @ "
         f"2031FC-2031FF write if {COND}), and this declaration has none: "
-        "`debug(\"wpclear 0x1\")` removes it, or `watch_clear` when a declaration of this server "
-        "owns it (`watch_list` says)")
+        "`debug(\"wpclear 0x1\")` removes it, or `declaration_clear(kind=\"watch\")` when a "
+        "declaration of this server "
+        "owns it (`declaration_list(kind=\"watch\")` says)")
 
 
 def test_a_stored_condition_is_re_armed_at_start_and_one_naming_a_lost_symbol_is_unresolved(
@@ -198,11 +200,11 @@ def test_a_stored_condition_is_re_armed_at_start_and_one_naming_a_lost_symbol_is
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["rearmed"]) == ["frame_lo"] and refs(out["unresolved"]) == ["0x203200"], out
     assert ARM in ses.commands and not any(c.startswith("wp 0x203200") for c in ses.commands)
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["frame_lo"]["entry"].endswith(f" if {COND}")
     assert listed["0x203200"]["state"] == "unresolved", listed["0x203200"]
     assert "condition" in listed["0x203200"]["why"]
-    s.watch_clear(ref="0x203200")
+    s.declaration_clear("watch", ref="0x203200")
     assert ("watch", ("0x203200", ":maincpu")) not in mstate.STATE.conditions_unresolved
 
 
@@ -220,8 +222,9 @@ def test_a_stored_row_under_another_condition_is_unarmable_at_start(
     assert why["why"] == (
         "the debugger already holds a row at 0x2031fc for 4 bytes with no condition (1 @ "
         "2031FC-2031FF write), and this declaration's is '(wpdata&3)!=0': "
-        "`debug(\"wpclear 0x1\")` removes it, or `watch_clear` when a declaration of this server "
-        "owns it (`watch_list` says)")
+        "`debug(\"wpclear 0x1\")` removes it, or `declaration_clear(kind=\"watch\")` when a "
+        "declaration of this server "
+        "owns it (`declaration_list(kind=\"watch\")` says)")
     assert ses.watchpoints == []
 
 
@@ -252,7 +255,7 @@ def test_a_conditioned_watch_names_its_condition_when_it_stops(
     assert out["watch_hit"]["condition"] == COND, out["watch_hit"]
     assert out["watch_hit"]["writes"] == [{"wrote": "0x00", "to": "0x002031fe", "pc": "0x000025f4"}]
     assert "condition" in out["omitted"], "the stop names its condition as left out"
-    assert s.watch_list()["watches"][0]["condition"] == COND
+    assert s.declaration_list("watch")["watches"][0]["condition"] == COND
 
 
 def test_a_pointer_watch_that_moves_takes_its_condition_along(

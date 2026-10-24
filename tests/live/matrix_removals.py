@@ -32,8 +32,8 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
 
     def item(r: dict[str, Any], ref: str) -> dict[str, Any]:
         """`ref`'s tap whole, after the call `r` answered: a stop's row is its count alone, and
-        whether it is installed or pending is `watch_list`'s."""
-        listed = call("watch_list").get("watches") or []
+        whether it is installed or pending is `declaration_list(kind="watch")`'s."""
+        listed = call("declaration_list", kind="watch").get("watches") or []
         return next((w for w in listed if w.get("tally_id") == tid(ref)), {})
 
     def log() -> bytes:
@@ -48,12 +48,13 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
         before = tallied(ref)
         planted = reader_fault(REMOVAL_LINE, kills=1, loud=loud)
         mark = len(log())
-        cleared = call("watch_clear", ref=ref)
+        cleared = call("declaration_clear", kind="watch", ref=ref)
         for _ in range(3):
             call("step")
         fired = reader_fault_counts()[0]
         # A LATCHED ROW STAYS LISTED for the rest of the session, so an earlier cell's is there.
-        rows = [r for r in call("watch_list")["session"].get("tallies_not_removed") or []
+        rows = [r for r in call("declaration_list",
+                                kind="watch")["session"].get("tallies_not_removed") or []
                 if r.get("tally_id") == tid(ref)]
         waiting = [r.get("tally_id") for r in call("status").get("tallies_pending_removal") or []]
         echoes = log()[mark:].count(REMOVAL_LINE.encode())
@@ -69,7 +70,7 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
     ref = refs[2]
     old = tallied(ref)
     planted = reader_fault(REMOVAL_LINE, lag=3)
-    call("watch_clear", ref=ref)
+    call("declaration_clear", kind="watch", ref=ref)
     call("run_for", frames=1, seconds=5.0)
     again = call("watch_add", ref=ref, mode="count", length=length)
     pending = item(call("run_for", frames=1, seconds=5.0), ref)
@@ -89,7 +90,7 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
          f"old {old.get('state')} total {total}; held {held} frames; while pending "
          f"{pending.get('installed'), pending.get('state'), pending.get('total')}; installed "
          f"{after.get('installed'), after.get('state'), after.get('total')}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
 
 K_CAPTURE_LEFTOVER = ("a capture declared again after its removal ran reads no row the removed "
@@ -114,7 +115,7 @@ def k_capture_leftover(t: str, ref: str, trigger: str) -> None:
         if len(rows()) >= 3:
             break
     planted = reader_fault(REMOVAL_LINE, lag=3)
-    call("watch_clear", ref=ref)
+    call("declaration_clear", kind="watch", ref=ref)
     for _ in range(5):                               # held, rewritten, then run
         call("run_for", frames=1, seconds=10.0)
     left = rows()
@@ -127,7 +128,7 @@ def k_capture_leftover(t: str, ref: str, trigger: str) -> None:
          and numbers == [str(n) for n in range(1, len(numbers) + 1)],
          f"rows the removed capture left {[ln.split()[1] for ln in left]}; the new capture's "
          f"row numbers {numbers}")
-    call("watch_clear", ref=ref)
+    call("declaration_clear", kind="watch", ref=ref)
 
 
 K_REDECLARE_LIVE = ("a range declared again over its live tap lists that tap's dump while the "
@@ -143,8 +144,9 @@ def k_redeclare_live(t: str, ref: str, length: int) -> None:
     the display after a console command takes a queued line at its next command (REFERENCE.md,
     *The console*), so without the hold the window this reads in would not exist."""
     def item(r: dict[str, Any]) -> dict[str, Any]:
-        """`ref`'s tap whole, after the call `r` answered (`watch_list`'s, as above)."""
-        listed = call("watch_list").get("watches") or []
+        """`ref`'s tap whole, after the call `r` answered (`declaration_list(kind="watch")`'s, as
+        above)."""
+        listed = call("declaration_list", kind="watch").get("watches") or []
         return next((w for w in listed if w.get("ref") == ref), {})
 
     first = call("watch_add", ref=ref, mode="count", length=length)
@@ -152,11 +154,11 @@ def k_redeclare_live(t: str, ref: str, length: int) -> None:
     tallied = item(call("run_for", frames=3, seconds=10.0))
     planted = reader_fault(f"tally-{first.get('tally_id')}.txt", lag=1)
     again = call("watch_add", ref=ref, mode="count", length=length)
-    listed = item(call("watch_list"))
+    listed = item(call("declaration_list", kind="watch"))
     after = item(call("run_for", frames=2, seconds=10.0))
     if not (ok(first) and ok(planted) and "planted" in str(planted.get("output"))):
         blocked(t, f"the reader fault was not planted, so no install was held: {said(planted)}")
-        call("watch_clear", ref=ref)
+        call("declaration_clear", kind="watch", ref=ref)
         return
     cell(t, tallied.get("state") == "tallied" and ok(again)
          and again.get("pending") is True and again.get("installed") is False
@@ -167,4 +169,4 @@ def k_redeclare_live(t: str, ref: str, length: int) -> None:
          f"tallied {tallied.get('state')} {tallied.get('total')}; listed while pending "
          f"{listed.get('installed')} {listed.get('state')} {listed.get('total')}; after two "
          f"frames {after.get('installed')}")
-    call("watch_clear", ref=ref)
+    call("declaration_clear", kind="watch", ref=ref)

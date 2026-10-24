@@ -28,13 +28,85 @@
  "runs": [
   {
    "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\":\"gfx_film\",\"args\":{\"trigger\":\"0x7f0010\",\"length\":2,\"value\":\"0x1234\",\"pc\":\"0x2a40\",\"frames\":300,\"keep\":8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"keep\": 8, \"frames\": 300}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M115: {\"tool\":\"gfx_film\",\"args\":{\"trigger\":\"0x7f0010\",\"length\":2,\"value\":\"0x1234\",\"pc\":\"0x2a40\",\"keep\":8,\"frames\":300}}"
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"keep\": 8, \"frames\": 300}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"keep\": 8, \"frames\": 300}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M115: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x7f0010\", \"length\": 2, \"value\": \"0x1234\", \"pc\": \"0x2a40\", \"frames\": 300, \"keep\": 8}}"
    ],
    "right": true
   },

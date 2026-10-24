@@ -23,6 +23,7 @@ from test_gfx_layout import CIRCUS_CHARLAYOUT  # noqa: E402
 import mame_block as block  # noqa: E402
 import mame_envelope as menvelope  # noqa: E402
 import mame_film as mfilm  # noqa: E402
+import mame_folds as folds  # noqa: E402
 import mame_gfx as mgfx  # noqa: E402
 import mame_inputs as inputs  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
@@ -81,7 +82,7 @@ _SWEEP = {"tag": "gfx1", "palette": "palette"}
 #: counting the session and the scratch). An argument added to the rule joins this table.
 TABLE: dict[tuple[str, str], tuple[dict[str, Any], Any, str, int]] = {
     ("set_register", "value"): ({"name": "d0"}, mwrite, "set_register", 2),
-    ("scan_filter", "value"): ({}, mscan, "scan_filter", 3),
+    ("scan", "value"): ({"method": "filter"}, mscan, "filter_scan", 3),
     ("gfx_film", "value"): ({"trigger": "0x400"}, mfilm, "gfx_film", 4),
     ("input", "value"): ({"port": ":P1", "field": "Coin 1"}, mlua, "input_field", 4),
     ("read_block", "offset"): ({"tag": "blitram"}, block, "read_block", 4),
@@ -153,7 +154,7 @@ def test_the_ranges_stay_each_tools_own_whichever_spelling_carried_the_number(
 @pytest.mark.parametrize("tool,args", [
     ("gfx_film", {"trigger": "0x400", "value": "0xff"}),
     ("gfx_film", {"trigger": "0x400", "length": 4, "value": "0xffffffff"}),
-    ("scan_filter", {"value": "0x0"}),
+    ("scan", {"method": "filter", "value": "0x0"}),
 ])
 def test_the_largest_value_a_range_holds_passes_in_hex(tool: str, args: dict[str, Any]) -> None:
     assert _call(tool, args).get("code") == "no_session"
@@ -161,7 +162,7 @@ def test_the_largest_value_a_range_holds_passes_in_hex(tool: str, args: dict[str
 
 def test_a_negative_integer_is_still_each_tools_to_refuse() -> None:
     assert "negative" in _call("set_register", {"name": "d0", "value": -1})["message"]
-    assert "unsigned" in _call("scan_filter", {"value": -1})["message"]
+    assert "unsigned" in _call("scan", {"method": "filter", "value": -1})["message"]
 
 
 # --------------------------------------------------------------------------- in a batch
@@ -190,7 +191,7 @@ def test_a_steps_range_is_judged_on_the_integer_its_0x_spells() -> None:
 def test_perform_and_drive_refuse_decimal_text_before_any_step_runs() -> None:
     out = s.perform(steps=[{"op": "set_register", "name": "d0", "value": "4660"}])
     assert out["status"] == "INVALID" and "value='4660'" in json.dumps(out), out
-    out = s.drive(act=[{"op": "scan_filter", "value": "4660"}])
+    out = s.drive(act=[{"op": "scan", "method": "filter", "value": "4660"}])
     assert out["status"] == "INVALID" and "value='4660'" in json.dumps(out), out
 
 
@@ -209,8 +210,9 @@ def test_every_body_receives_the_integer_whichever_spelling_the_caller_used(
         seen.append(a[at])
         return menvelope.invalid("no_session", "the body was reached")
     monkeypatch.setattr(module, name, body)
-    monkeypatch.setattr(s, "stopped", lambda _why: (object(), tmp_path))
-    monkeypatch.setattr(s, "contact", lambda: (object(), tmp_path))
+    for gated in (s, folds):
+        monkeypatch.setattr(gated, "stopped", lambda _why: (object(), tmp_path))
+        monkeypatch.setattr(gated, "contact", lambda: (object(), tmp_path))
     for spelled in ("0x12", 0x12):
         reply = getattr(s, tool)(**others, **{arg: spelled})
         assert reply["message"] == "the body was reached", reply
@@ -270,7 +272,7 @@ def test_every_step_spelling_the_judge_refuses_is_refused_before_any_step_runs(
 ) -> None:
     """A step after a harmless one, carrying what no tool takes: the list is refused whole with
     the argument named, never run up to it. `None` is the absence only of an optional number."""
-    optional = (tool, arg) in {("scan_filter", "value"), ("gfx_film", "value"),
+    optional = (tool, arg) in {("scan", "value"), ("gfx_film", "value"),
                                ("palette_log", "pen"), ("gfx_locate", "transparent")}
     assert inputs.number_params(s._step_ops()[tool])[arg] is optional
     bad = sequence.refuse_steps([{"op": "status"}, {"op": tool, **others, arg: given}],

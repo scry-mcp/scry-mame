@@ -21,7 +21,7 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
   a place known to be hot and refuses to run with none, so "the target never ran" is a verdict
   with evidence. Break on a value, on a byte that CHANGES (and be told who wrote it), or on a
   register reaching a value wherever that happens.
-- **Find a variable no map names.** `scan_start` and `scan_filter` narrow every cell of a range
+- **Find a variable no map names.** `scan(method="start")` and `scan(method="filter")` narrow every cell of a range
   to the ones that moved the way the variable did, without moving the machine.
 - **Advance by emulated time.** `run_for` by milliseconds of MAME's clock or by frames of its
   counter, waiting until the machine has really stopped; `trace` hands back every address the
@@ -90,15 +90,15 @@ start(system="starfire", reference_rom="/path/to/scry-mame/tmp/demos/starfire/st
 ```
 
 ```
-scan_start(ref="0x8000", length=1024)
+scan(method="start", ref="0x8000", length=1024)
 -> {
-  "summary": "scan_start 0x8000: 1024 1-byte candidates on :maincpu",
+  "summary": "scan start: 0x8000, 1024 1-byte candidates on :maincpu",
   "hits_total": 1024
 }
 ```
 
 ```
-perform(steps=[{"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 500, "seconds": 300}, {"op": "scan_filter", "operator": "=", "value": 3}], settle_seconds=300)
+perform(steps=[{"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 500, "seconds": 300}, {"op": "scan", "method": "filter", "operator": "=", "value": 3}], settle_seconds=300)
 -> {
   "summary": "perform: 3 steps completed"
 }
@@ -163,17 +163,17 @@ disassemble(ref="0x1e40", length=16)
 ```
 
 ```
-state_save(name="four_credits")
+state_write(method="save", name="four_credits")
 -> {
-  "summary": "state_save four_credits: 16868 bytes at frame 314",
+  "summary": "state_write save: four_credits, 16868 bytes at frame 314",
   "frame": 314
 }
 ```
 
 ```
-state_load(name="four_credits")
+state_write(method="load", name="four_credits")
 -> {
-  "summary": "state_load four_credits: rom_check OK, verified True, frame 314, pc 0x00002b38",
+  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
   "verified": true
 }
 ```
@@ -200,7 +200,7 @@ start(system="gridlee", reference_rom="/path/to/scry-mame/tmp/demos/gridlee/grid
 ```
 
 ```
-perform(steps=[{"op": "input", "port": ":IN1", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 2000, "seconds": 300}, {"op": "scan_filter", "operator": "=", "value": 3}], settle_seconds=300)
+perform(steps=[{"op": "input", "port": ":IN1", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 2000, "seconds": 300}, {"op": "scan", "method": "filter", "operator": "=", "value": 3}], settle_seconds=300)
 -> {
   "summary": "perform: 3 steps completed"
 }

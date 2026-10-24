@@ -2,27 +2,103 @@
  "task": {
   "id": "M181",
   "prompt": "Measure the whole recording /tmp/rec/title.wav, every channel.",
-  "tool": "audio_measure",
+  "tool": "audio_compare",
   "args": {
+   "method": "measure",
    "path": "/tmp/rec/title.wav"
-  }
+  },
+  "grammar": [
+   "measure"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M181: {\"tool\":\"audio_measure\",\"args\":{\"path\":\"/tmp/rec/title.wav\"}}"
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M181: {\"tool\": \"audio_measure\", \"args\": {\"path\": \"/tmp/rec/title.wav\"}}"
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\":\"audio_compare\",\"args\":{\"method\":\"measure\",\"path\":\"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
    ],
    "right": true
   }

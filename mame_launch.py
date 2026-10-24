@@ -250,9 +250,11 @@ def build_command(
            "-snapview", view or "native",
            "-cfg_directory", str(Path(state) / "cfg"),
            "-nvram_directory", str(Path(state) / "nvram"),
-           # The states are the third occupant of the caller's state directory (`state_save`),
+           # The states are the third occupant of the caller's state directory
+           # (`state_write(method="save")`),
            # in the subfolder MAME names by default (`%g`, the system), PINNED: an ini given
-           # through `inipath` may rename it, and `state_save` looks for the file it wrote here.
+           # through `inipath` may rename it, and `state_write(method="save")` looks for the file it
+           # wrote here.
            "-state_directory", str(Path(state) / "sta"), "-statename", "%g",
            # MAME writes the comments it holds into this directory whenever a debugger session
            # exits. PINNED in the scratch, so the file dies with the session: the store is the
@@ -716,10 +718,9 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
 
 
 #: `start`'s `view`, described once in its schema.
-VIEW_ARGUMENT = ("What `snapshot` and `record` render through, for the whole session: empty, the "
-                 "emulated screen alone, at its own size (MAME's `native`); else a layout view "
-                 "by prefix, MAME's own default when none matches (the reply's `views` lists "
-                 "the set's, and `view` says which was taken).")
+VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
+                 "own size; else a layout view by prefix (`views` lists them, `view` says which "
+                 "was taken).")
 
 
 #: Where a launch's `-version` probe runs beside its boot: one at a time, as launches are.
@@ -997,8 +998,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
     """The body of the `start` tool: one launch, and again for a `failures.LaunchFailed` that
     says so, up to `START_RETRIES_MAX` more times. Each relaunch is a WHOLE fresh launch,
     as if the caller had called `start` again: nothing of a failed attempt is reused but its
-    evidence, which every reply carries as `start_retries`, refusals included, so an empty
-    list is an answer and never a missing field."""
+    evidence, which a reply carries as `start_retries`, refusals included."""
     # `~` EXPANDED ONCE, HERE, where every path is handed on as text (MAME's command line, a
     # `;`-split list, a mapping's values), so no later reader meets it unexpanded.
     binary, rompath, reference_rom, boot_lua, cfg, state_dir = (
@@ -1026,8 +1026,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
         raise
     except gs.SessionError as e:
         # THE BOOT'S CHANNEL FAILED after the stub answered: `_launch` has already killed the
-        # machine, so there is no session left to latch, and the reply says so in the shape
-        # every `start` reply has, `start_retries` included.
+        # machine, so there is no session left to latch.
         raise st.Invalid("session_broken", f"the boot's channel failed: {e}. The session is "
                          "closed; `start` again", start_retries=retries) from e
 

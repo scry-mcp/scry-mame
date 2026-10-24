@@ -33,7 +33,79 @@
   },
   {
    "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M71: {\"tool\":\"set_register\",\"args\":{\"name\":\"A2\",\"value\":512,\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

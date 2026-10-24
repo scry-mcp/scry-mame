@@ -110,7 +110,7 @@ def c16_console() -> None:
         stopped = (call("status").get("last_stop") or {}).get("cause")
     finally:
         ses.monitor = send  # type: ignore[method-assign]
-    call("regpoint_clear", all=True)
+    call("declaration_clear", kind="regpoint", all=True)
     cell(t[6], ok(released) and ok(added) and added.get("while_running") is True
          and (added.get("session") or {}).get("running") is False
          and stopped == "registerpoint 'pc!=0'",

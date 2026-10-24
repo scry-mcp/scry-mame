@@ -2,32 +2,108 @@
  "task": {
   "id": "M18",
   "prompt": "Clear the registerpoint declared as d2==77ab.",
-  "tool": "regpoint_clear",
+  "tool": "declaration_clear",
   "args": {
+   "kind": "regpoint",
    "ref": {
     "any_of": [
      "d2==77ab",
      "d2==0x77ab"
     ]
    }
-  }
+  },
+  "grammar": [
+   "regpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M18: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d2==77ab\"}}"
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\":\"regpoint_clear\",\"args\":{\"ref\":\"d2==77ab\"}}"
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d2==77ab\"}}"
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"ref\":\"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,8 @@
 """THE BREAKPOINT FAMILY: `breakpoint_at` stores and arms a stop breakpoint or a counting
-control (never a second row on one the debugger already lists), `breakpoint_list` reads the
-debugger's own `bplist` back, `breakpoint_clear` removes what this server armed and reads the
+control (never a second row on one the debugger already lists),
+`declaration_list(kind="breakpoint")` reads the
+debugger's own `bplist` back, `declaration_clear(kind="breakpoint")` removes what this server armed
+and reads the
 list back, and `breakpoint_name` names a stop by the declaration it is at. What every family
 shares is `mame_arming`'s (the store), `mame_lists`' (the debugger's lists read back, a row's
 adoption), `mame_conditions`' (a condition as the console reads it) and `mame_clear`'s."""
@@ -85,18 +87,18 @@ def breakpoint_name(pc: int, cpu: str | None) -> str | None:
 
 
 def bp_aliased(owner: dec.Owner, addr: int, among: list[dec.Declaration],
-               pass_note: str = "", clear_tool: mclear.ClearTool | None = "breakpoint_clear"
+               pass_note: str = "", clear_kind: mclear.ClearKind | None = "breakpoint"
                ) -> str | None:
     """The refusal when ANOTHER breakpoint declaration on the same cpu already resolves to
     `addr`: one row is one declaration, or clearing either would remove the row and leave the
     other declared over a row the debugger no longer has. The watch family's `watch_aliased`, for
-    breakpoints. `start`'s re-arm passes no `clear_tool`: its report names no call to make."""
+    breakpoints. `start`'s re-arm passes no `clear_kind`: its report names no call to make."""
     other = next((d.ref for d in among if d.kind == "breakpoint" and d.cpu == owner[1]
                   and d.owner != owner and arming.resolve_decl(d).addr == addr), None)
     if other is None:
         return None
     return (f"{addr:#x} is already declared under {other!r}{pass_note}: "
-            f"{mclear.one_declaration('breakpoint row', other, clear_tool, owner[1])}")
+            f"{mclear.one_declaration('breakpoint row', other, clear_kind, owner[1])}")
 
 
 def bp_command(addr: int, condition: str, cpu: str | None = None) -> str:
@@ -175,8 +177,10 @@ def _temp_for(owner: dec.Owner) -> int:
     if free is None:
         raise st.Invalid("bad_argument",
                          f"the debugger has ten temp variables (temp0..temp{lexer.TEMPS - 1}) and "
-                         "every one is held by a control (`breakpoint_list` names them): "
-                         "`breakpoint_clear(ref=...)` frees one before declaring "
+                         "every one is held by a control (`declaration_list(kind=\"breakpoint\")` "
+                         "names them): "
+                         "`declaration_clear(kind=\"breakpoint\", ref=...)` frees one before "
+                         "declaring "
                          "another")
     return free
 
@@ -350,10 +354,12 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
         if row is None:
             return menvelope.invalid("readback_refused",
                                      f"the console took a `bp` at {addr:#x} and its `bplist` does "
-                                     "not list it: nothing is armed; `breakpoint_list` shows the "
-                                     "declaration kept and `breakpoint_clear(ref=...)` removes it",
+                                     "not list it: nothing is armed; "
+                                     "`declaration_list(kind=\"breakpoint\")` shows the "
+                                     "declaration kept and `declaration_clear(kind=\"breakpoint\", "
+                                     "ref=...)` removes it",
                                      ref=ref, addr=st.hex_addr(addr),
-                                     **mclear.kept_fields("breakpoint_clear", ref))
+                                     **mclear.kept_fields("breakpoint", ref))
         return menvelope.envelope(st.add_note(
             {**reply, "addr": st.hex_addr(addr), "armed": row["enabled"],
              "state": mlists.row_state(row), "entry": row["entry"], "cpu": row["cpu"],
@@ -363,10 +369,11 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
     if not mlists.listed_as_sent(row, cond):
         unlisted = mlists.not_listed(f"`{bp_command(addr, cond, on)}`", "bplist", bool(cond))
         return menvelope.invalid("readback_refused",
-                                 f"{unlisted}; `breakpoint_list` shows the declaration kept and "
-                                 "`breakpoint_clear(ref=...)` removes it",
+                                 f"{unlisted}; `declaration_list(kind=\"breakpoint\")` shows the "
+                                 "declaration kept and "
+                                 "`declaration_clear(kind=\"breakpoint\", ref=...)` removes it",
                                  ref=ref, addr=st.hex_addr(addr),
-                                 **mclear.kept_fields("breakpoint_clear", ref))
+                                 **mclear.kept_fields("breakpoint", ref))
     assert row is not None
     own_row(row, decl.owner)
     return menvelope.envelope(st.add_note(
@@ -375,8 +382,9 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
         cpus.ignored_note(ses, row["cpu"])))
 
 
-def breakpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `breakpoint_list` tool: every declaration, or with `cpu` the ones whose
+def list_breakpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
+    """The body of the `declaration_list(kind="breakpoint")` tool: every declaration, or with `cpu`
+    the ones whose
     row the debugger lists under it, read off `bplist <cpu>`."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     held = mlists.bp_held(ses, only)
@@ -428,19 +436,21 @@ def breakpoint_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     return menvelope.envelope(reply)
 
 
-def check_breakpoint_clear(ref: str = "", all: bool = False, **_: Any) -> None:
-    """`breakpoint_clear`'s machine-independent half: one `ref` or `all=True`, and a `ref` judged
+def check_clear_breakpoints(ref: str = "", all: bool = False, **_: Any) -> None:
+    """`declaration_clear(kind="breakpoint")`'s machine-independent half: one `ref` or `all=True`,
+    and a `ref` judged
     as every breakpoint's is."""
     mclear.check_clear(ref, all, "breakpoint")
     if ref.strip():
         inputs.check_ref(ref)
 
 
-def breakpoint_clear(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False
+def clear_breakpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False
                      ) -> dict[str, Any]:
-    """The body of the `breakpoint_clear` tool: `ref`'s declarations (every one with no ref),
+    """The body of the `declaration_clear(kind="breakpoint")` tool: `ref`'s declarations (every one
+    with no ref),
     on every cpu or on `cpu` alone."""
-    check_breakpoint_clear(ref=ref, all=all_)
+    check_clear_breakpoints(ref=ref, all=all_)
     ref = "" if all_ else ref
     running = arming.running_on_arrival(ses)
     reached = mclear.clearing(ses, "breakpoint", ref, cpu)

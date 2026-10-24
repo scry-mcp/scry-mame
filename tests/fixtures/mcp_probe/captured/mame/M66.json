@@ -2,32 +2,108 @@
  "task": {
   "id": "M66",
   "prompt": "List the registerpoint declarations on the cpu tagged gfxcpu, which is the one the debugger shows.",
-  "tool": "regpoint_list",
+  "tool": "declaration_list",
   "args": {
+   "kind": "regpoint",
    "cpu": {
     "any_of": [
      "gfxcpu",
      ":gfxcpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "regpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M66: {\"tool\": \"regpoint_list\", \"args\": {\"cpu\": \"gfxcpu\"}}"
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\":\"regpoint_list\",\"args\":{\"cpu\":\"gfxcpu\"}}"
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"regpoint_list\", \"args\": {\"cpu\": \"gfxcpu\"}}"
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"regpoint\",\"cpu\":\"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   }

@@ -2,28 +2,104 @@
  "task": {
   "id": "M177",
   "prompt": "Check the frames of the series /tmp/run1/manifest.json against the goldens listed in /tmp/goldens.sha256.",
-  "tool": "golden_check",
+  "tool": "image_compare",
   "args": {
+   "method": "golden",
    "manifest": "/tmp/run1/manifest.json",
    "checksums": "/tmp/goldens.sha256"
-  }
+  },
+  "grammar": [
+   "golden"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M177: {\"tool\": \"golden_check\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M177: {\"tool\":\"golden_check\",\"args\":{\"manifest\":\"/tmp/run1/manifest.json\",\"checksums\":\"/tmp/goldens.sha256\"}}"
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M177: {\"tool\": \"golden_check\", \"args\": {\"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"manifest\":\"/tmp/run1/manifest.json\",\"checksums\":\"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
    ],
    "right": true
   }

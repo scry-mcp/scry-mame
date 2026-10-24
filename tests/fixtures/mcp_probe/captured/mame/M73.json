@@ -19,13 +19,85 @@
  "runs": [
   {
    "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M73: {\"tool\":\"step\",\"args\":{\"count\":1,\"mode\":\"into\",\"cpu\":\"soundcpu\"}}"
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\":\"step\",\"args\":{\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M73: {\"tool\": \"step\", \"args\": {\"count\": 1, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

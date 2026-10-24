@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M126: CANNOT The sweep draws its candidates in a fixed family and ranks nothing, and no tool here scores candidates."
+    "M126: CANNOT The sweep draws every candidate side by side and ranks none, and no tool scores or ranks candidates."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep ranks nothing: it draws the candidates as one sheet, and no tool ranks them."
+    "M126: CANNOT gfx_sweep draws its candidates unranked and no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates on one sheet and ranks nothing, so the server cannot order them by likelihood."
+    "M126: CANNOT Sweeps are not ranked by any tool; gfx_sweep states that nothing is ranked, so the likeliest format cannot be produced."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT gfx_sweep draws its candidates unranked and no tool ranks them, so the likelihood order of sweep 1 cannot be produced."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT a sweep ranks nothing, so there is no tool that orders sweep 1's candidates by likelihood."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT gfx_sweep draws the candidates as one sheet for a person to judge and ranks nothing, so no tool can rank them."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT a sweep ranks nothing, and no tool in this server ranks its candidates."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT The sweep is drawn for a person to judge and nothing is ranked, so no tool can order its candidates by likelihood."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT A sweep draws its candidates as one unranked sheet and nothing here ranks them."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT No tool ranks sweep candidates by how likely each is to be the real format."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool ranks them by likelihood."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT No tool ranks sweep candidates; gfx_sweep draws them unranked and gfx_draft writes only what the session has proved."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT gfx_sweep draws the candidates as one sheet and never ranks them."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT The sweep draws candidates without ranking them, and no tool in this server ranks sweep candidates by likelihood."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M126: CANNOT The sweep draws candidates without ranking them, and no tool ranks sweep candidates by likelihood."
    ],
    "right": true
   }

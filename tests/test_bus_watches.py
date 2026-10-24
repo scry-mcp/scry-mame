@@ -53,12 +53,12 @@ def test_a_change_watch_on_a_latch_takes_its_values_from_the_bus_and_reads_no_me
     ram = s.watch_add(ref="frame_lo", mode="change", length=4)
     assert ram["values_from"] == "memory" and ram["read_maps_to"] == "memory@200000"
     assert ram["reading"]["available"] is True
-    rows = {w["ref"]: w for w in s.watch_list()["watches"]}
+    rows = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert rows["0x740000"]["values_from"] == "bus" and rows["frame_lo"]["values_from"] == "memory"
     assert s.status()["in_debugger"]["watches"] == [
         {"ref": "0x740000", "cpu": ":maincpu"}, {"ref": "frame_lo", "cpu": ":maincpu"}], (
         "status names each armed")
-    assert s.watch_clear(ref="0x740000")["status"] == "ok"
+    assert s.declaration_clear("watch", ref="0x740000")["status"] == "ok"
     assert s.status()["in_debugger"]["watches"] == [{"ref": "frame_lo", "cpu": ":maincpu"}], (
         "a cleared watch leaves the list")
 
@@ -120,7 +120,7 @@ def test_a_row_this_server_holds_no_record_for_is_foreign_and_its_declaration_go
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     mstate.STATE.armed_watches.clear()                # the row stays listed, the record is gone
-    listed = s.watch_list()
+    listed = s.declaration_list("watch")
     (row,) = listed["watches"]
     assert row["state"] == "gone" and "values_from" not in row
-    assert listed["foreign"] == ["1 @ 2031FC-2031FF write"] and ses.wplist_rows
+    assert listed["foreign"] == {"watches": ["1 @ 2031FC-2031FF write"]} and ses.wplist_rows

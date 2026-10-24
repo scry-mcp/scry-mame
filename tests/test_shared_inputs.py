@@ -46,9 +46,9 @@ def test_regpoint_list_narrows_to_any_cpu_as_breakpoint_list_does(
 ) -> None:
     """Only `regpoint_add` needs the visible cpu (`rpset` names none); a list narrows to any."""
     _running(monkeypatch, tmp_path)
-    out = s.regpoint_list(cpu="subcpu")
+    out = s.declaration_list("regpoint", cpu="subcpu")
     assert out["status"] == "ok" and out["cpu"] == ":subcpu", out
-    assert s.breakpoint_list(cpu="subcpu")["cpu"] == ":subcpu"
+    assert s.declaration_list("breakpoint", cpu="subcpu")["cpu"] == ":subcpu"
 
 
 @pytest.mark.parametrize("tool, args", [
@@ -73,9 +73,9 @@ def test_a_cpu_beside_a_block_named_by_tag_is_refused_as_doing_nothing(
     ("input", {"port": ":P1", "field": "Coin 1", "frames": 1.5},
      r"frames is a count; got 1\.5"),
     ("screen_view", {"mode": "zoom"}, r"mode is one of \(.*\); got 'zoom'"),
-    ("scan_start", {"ref": "0x0", "length": 4, "cell_bytes": 3},
+    ("scan", {"method": "start", "ref": "0x0", "length": 4, "cell_bytes": 3},
      r"cell_bytes is one of \(1, 2, 4\); got 3"),
-    ("scan_filter", {"operator": "~"}, r"operator is one of \(.*\); got '~'"),
+    ("scan", {"method": "filter", "operator": "~"}, r"operator is one of \(.*\); got '~'"),
     ("palette_log", {"palette_port": "a b"}, r"palette_port='a b': .*one word with no whitespace"),
     ("gfx_blits", {"draw_command": ""}, r"draw_command='': .*one word with no whitespace"),
     ("read_block", {"tag": "a b"}, r"tag='a b': .*one word with no whitespace"),

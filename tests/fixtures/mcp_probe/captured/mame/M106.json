@@ -21,13 +21,85 @@
  "runs": [
   {
    "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"page8\",\"tag\":\"gfx1\",\"first\":0,\"count\":4}}"
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\":\"gfx_view\",\"args\":{\"tag\":\"gfx1\",\"layout\":\"page8\",\"count\":4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 4, \"palette\": \"none\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"pen_base\": 0}}"
    ],
    "right": true
   },

@@ -17,7 +17,79 @@
   },
   {
    "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M184: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"/tmp/bench/circus.json\",\"overwrite\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },

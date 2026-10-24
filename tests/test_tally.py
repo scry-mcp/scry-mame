@@ -319,7 +319,8 @@ def test_watch_add_count_arms_the_rom_copy_and_refuses_a_second_tally_and_a_poin
     sent = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert sent["write_maps_to"] == "memory@200000" == sent["read_maps_to"], sent
     out = refused(re.escape("already has a tally declared under 'frame_lo': one tally is one "
-                            "declaration, so `watch_clear(ref='frame_lo', cpu=\":maincpu\")` frees "
+                            "declaration, so `declaration_clear(kind=\"watch\", ref='frame_lo', "
+                            "cpu=\":maincpu\")` frees "
                             "it, or use that ref"),
                   s.watch_add(ref="0x2031fc", mode="count", length=4))
     assert out["code"] == "ambiguous_ref"
@@ -561,14 +562,15 @@ def test_a_dump_that_lands_during_the_wait_is_read_current(
 def test_a_list_between_two_stops_looks_and_consumes_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`watch_list` is a look: it shows the whole tables and no `since_last_stop`, and it
+    """`declaration_list(kind="watch")` is a look: it shows the whole tables and no
+    `since_last_stop`, and it
     leaves the baseline where the last STOP put it, so the next stop still reports the
     writes since the previous one."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert listed["state"] == "tallied" and len(listed["values"]) == 52
     assert "since_last_stop" not in listed
     item = _survey(ses, 61)
@@ -662,7 +664,7 @@ def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     _console_prints(tmp_path, first + b"\n" + transport.THREAD_ERROR + b" attempt to index\n")
     item = _survey(ses, 61)
     assert (item["installed"], item["pending"]) == (False, True), item
-    assert item["install_resent"] == 1, item
+    assert item.get("install_resent", 0) == 1, item
     assert "resent" not in item, "a tap's resend is `install_resent`"
     assert item["call"] == "MAME_MCP_LUA_END#2", "the resend is a new call"
     assert _sent().count(b"install_write_tap(") == 2, "the same install went out again"
@@ -670,14 +672,16 @@ def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     _answer(tmp_path, 2)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 61)
-    assert item["installed"] is True and item["install_resent"] == 1 and item["state"] == "tallied"
+    assert item["installed"] is True and item.get("install_resent",
+                                                  0) == 1 and item["state"] == "tallied"
     # THE SECOND DEATH: a fresh declaration whose resend dies too is lost, and says so.
-    s.watch_clear(ref="frame_lo")
+    s.declaration_clear("watch", ref="frame_lo")
     s.watch_add(ref="0x203200", mode="count", length=2)
     line = _sent().splitlines()[-1]
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" again\n")
     item = _survey(ses, 62)
-    assert (item["installed"], item["pending"]) == (False, True) and item["install_resent"] == 1
+    assert (item["installed"], item["pending"]) == (False, True) and item.get("install_resent",
+                                                                              0) == 1
     line = _sent().splitlines()[-1]
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" and again\n")
     item = _survey(ses, 63)
@@ -750,9 +754,9 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     item = _survey(ses, 904)
     assert item["callback_errors"] == {"count": 678, "first": RAISED_FIRST}, item
     assert (item["state"], item["total"], item["values"]) == ("tallied", 978, [])
-    listed = s.watch_list()
+    listed = s.declaration_list("watch")
     assert listed["watches"][0]["callback_errors"]["count"] == 678
-    assert listed["summary"].endswith(", 1 with callback errors"), listed["summary"]
+    assert listed["summary"].endswith(", 1 with callback errors)"), listed["summary"]
     # A CLEAN TAP SAYS SO TOO: none raised, said as a count of zero and no message
     clean = RAISED.replace("errors=678", "errors=0").replace(f"e {RAISED_FIRST}\n", "")
     assert clean.count("errors=0") == 1 and "\ne " not in clean
@@ -760,7 +764,7 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     item = _survey(ses, 904)
     none_raised = {"available": False, "why": mcallbacks.NONE_RAISED_WHY}
     assert item["callback_errors"] == {"count": 0, "first": none_raised}, item
-    assert "callback errors" not in s.watch_list()["summary"]
+    assert "callback errors" not in s.declaration_list("watch")["summary"]
 
 
 def test_the_errors_and_the_first_message_are_read_from_their_own_lines() -> None:
@@ -797,7 +801,7 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
     s.watch_add(ref="frame_lo", mode="count", length=4)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     (tmp_path / "tally-2031fc_4.txt.tmp").write_text("half")
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert out["status"] == "ok" and out["declarations_cleared"] == 1
     assert out["tallies_removed"] == [{"tally_id": "2031fc_4", "removal": "pending",
                                        "lines_ahead": 1, "call": "MAME_MCP_LUA_END#2"}]
@@ -808,7 +812,7 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
     assert watches.evaluate_watches(ses, frame=61) == []  # type: ignore[arg-type]
     # A clear of everything with no tally names none.
     s.watch_add(ref="0x203200", mode="show", length=2)
-    assert "tallies_removed" not in s.watch_clear(all=True)
+    assert "tallies_removed" not in s.declaration_clear("watch", all=True)
 
 
 def test_the_install_and_the_removal_each_settle_the_reader_after_their_line(
@@ -867,7 +871,7 @@ def test_a_count_declaration_with_no_record_this_session_says_so_at_a_stop(
                                        watch_mode="count"))
     item = _survey(ses, 1)
     assert item["state"] == "not_installed" and "rearm" in str(item["why"])
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert listed["state"] == "not_installed"
 
 
@@ -888,14 +892,15 @@ def _cleared_with_the_console_silent(
     _answer(tmp_path, 1)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     assert _survey(ses, 61)["installed"] is True
-    out = s.watch_clear(ref="frame_lo")
+    out = s.declaration_clear("watch", ref="frame_lo")
     assert out["tallies_removed"][0]["removal"] == "pending"
     return ses, _sent().splitlines()[-1]
 
 
 def _removals(ses: _WatchSession) -> list[dict[str, object]]:
-    """What the session block says is stuck once `watch_list` has read the removals."""
-    watches.watch_list(ses)  # type: ignore[arg-type]
+    """What the session block says is stuck once `declaration_list(kind="watch")` has read the
+    removals."""
+    watches.list_watches(ses)  # type: ignore[arg-type]
     return mstate.tallies_not_removed()
 
 
@@ -917,7 +922,8 @@ def test_a_removal_the_console_ran_leaves_no_row_and_no_record(
 def test_status_lists_a_removal_while_it_waits_and_drops_it_once_the_console_ran_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE SAME TREATMENT THE THROTTLE GETS, because it is the same question: `watch_clear`
+    """THE SAME TREATMENT THE THROTTLE GETS, because it is the same question:
+    `declaration_clear(kind="watch")`
     answers `removal: pending`, and a removal waiting is a row in `status` that leaves once
     the console ran it. A latched failure is not waiting any more, so it leaves this list and
     stands in every reply's session block (`tallies_not_removed`), where its remedy is written."""
@@ -1105,7 +1111,7 @@ def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" died\n")
     assert _declared_again_over(tmp_path, ses)["since_last_stop"] == 18
-    s.watch_clear(ref="frame_lo")
+    s.declaration_clear("watch", ref="frame_lo")
     _console_prints(tmp_path,
                     _sent().splitlines()[-1] + b"\n" + transport.THREAD_ERROR + b" died\n")
     assert [r["state"] for r in _removals(ses)] == ["lost", "lost"]
@@ -1115,7 +1121,7 @@ def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never
         _LATER.replace("seq=63 frame=70 total=120", "seq=64 frame=80 total=125"))
     assert _survey(ses, 80)["since_last_stop"] == 5, "from the second row's 120, not the first's"
     lost = mstate.STATE.tally_removals[-1]
-    s.watch_clear(ref="frame_lo")
+    s.declaration_clear("watch", ref="frame_lo")
     _answer(tmp_path, 6, output="MCP_TALLY removed tally_id=2031fc_4")
     mstate.STATE.tally_removals.append(dict(lost, tally_id="203200_2", last_total=7))
     s.watch_add(ref="frame_lo", mode="count", length=4)
@@ -1170,14 +1176,14 @@ def test_an_install_whose_reader_lags_is_neither_resent_nor_lost_whatever_the_fr
     for frame in range(101, 111):
         item = _survey(ses, frame)
         assert (item["installed"], item["pending"]) == (False, True), (frame, item)
-        assert item["install_resent"] == 0, (frame, item)
+        assert item.get("install_resent", 0) == 0, (frame, item)
     assert _sent().count(b"install_write_tap(") == 1, "nothing was resent"
     assert mstate.STATE.console_lines_lost == 0, "a line still waiting for the hook is not lost"
     # The hook gets to it: the answer is read, and the tap was never doubled.
     _console_prints(tmp_path, INSTALLED.encode() + b"\nMAME_MCP_LUA_END#1\ttrue\tnil\n" + PROMPT)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 111)
-    assert item["installed"] is True and item["install_resent"] == 0, item
+    assert item["installed"] is True and item.get("install_resent", 0) == 0, item
 
 
 def test_an_install_the_console_has_not_taken_waits_whatever_the_frames(
@@ -1190,7 +1196,7 @@ def test_an_install_the_console_has_not_taken_waits_whatever_the_frames(
     for frame in (100, 101, 150):
         item = _survey(ses, frame)
         assert (item["installed"], item["pending"]) == (False, True), (frame, item)
-        assert item["install_resent"] == 0, (frame, item)
+        assert item.get("install_resent", 0) == 0, (frame, item)
         assert item["call"] == "MAME_MCP_LUA_END#1"
     assert _sent().count(b"install_write_tap(") == 1
     assert mstate.STATE.console_lines_lost == 0
@@ -1207,7 +1213,7 @@ def test_an_install_the_console_passed_over_is_resent_with_no_frame_run_then_sai
     _taken(tmp_path, 1, PROMPT)
     item = _survey(ses, 100)
     assert (item["installed"], item["pending"]) == (False, True), item
-    assert item["install_resent"] == 1, item
+    assert item.get("install_resent", 0) == 1, item
     assert item["call"] == "MAME_MCP_LUA_END#2", "the resend is a new call"
     assert _sent().count(b"install_write_tap(") == 2
     assert mstate.STATE.console_lines_lost == 1, "a line taken and never evaluated is lost"
@@ -1235,7 +1241,7 @@ def test_the_prompt_before_an_echo_is_the_reader_that_took_the_line_not_one_past
     _taken(tmp_path, 1)
     item = _survey(ses, 100)
     assert (item["installed"], item["pending"]) == (False, True), item
-    assert item["install_resent"] == 0, item
+    assert item.get("install_resent", 0) == 0, item
 
 
 def test_installs_sent_back_to_back_wait_their_turn_whatever_the_frames(
@@ -1255,7 +1261,7 @@ def test_installs_sent_back_to_back_wait_their_turn_whatever_the_frames(
     _taken(tmp_path, 4)
     for frame in range(101, 111):
         items = watches.evaluate_watches(ses, frame=frame)         # type: ignore[arg-type]
-        assert [i["install_resent"] for i in items] == [0, 0, 0, 0], (frame, items)
+        assert [i.get("install_resent", 0) for i in items] == [0, 0, 0, 0], (frame, items)
     assert (items[3]["installed"], items[3]["pending"]) == (False, True)
     assert items[3]["call"] == "MAME_MCP_LUA_END#4"
     assert _sent().count(b"install_write_tap(") == 4
@@ -1265,13 +1271,13 @@ def test_installs_sent_back_to_back_wait_their_turn_whatever_the_frames(
 def test_a_list_resends_an_install_the_console_passed_over(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`watch_list` has no stop of its own and reads the same evidence."""
+    """`declaration_list(kind="watch")` has no stop of its own and reads the same evidence."""
     _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _taken(tmp_path, 1, PROMPT)
-    listed = s.watch_list()["watches"][0]
+    listed = s.declaration_list("watch")["watches"][0]
     assert (listed["installed"], listed["pending"]) == (False, True), listed
-    assert listed["install_resent"] == 1, listed
+    assert listed.get("install_resent", 0) == 1, listed
     assert listed["call"] == "MAME_MCP_LUA_END#2"
 
 
@@ -1306,7 +1312,7 @@ def test_the_late_original_after_a_resend_is_passed_over_and_the_resend_is_read(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _taken(tmp_path, 1, transport.THREAD_ERROR + b" died\n")
-    assert _survey(ses, 100)["install_resent"] == 1
+    assert _survey(ses, 100).get("install_resent", 0) == 1
     _console_prints(tmp_path, b"MAME_MCP_LUA_END#1\ttrue\tnil\n")   # call #1's sentinel, late
     item = _survey(ses, 100)
     assert (item["installed"], item["pending"]) == (False, True), item
@@ -1314,7 +1320,7 @@ def test_the_late_original_after_a_resend_is_passed_over_and_the_resend_is_read(
     _answer(tmp_path, 2)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 100)
-    assert item["installed"] is True and item["install_resent"] == 1, item
+    assert item["installed"] is True and item.get("install_resent", 0) == 1, item
 
 
 # --------------------------------------------- the two readers of an answer, held at their edges
@@ -1403,7 +1409,7 @@ def test_the_install_sent_again_is_the_same_install_writing_to_the_same_dump(
     monkeypatch.setattr(mstate.STATE, "lua_seq", 5)
     rec = _record(5)
     mtap._read_install_answer(scratch, rec)              # taken, and passed over
-    assert rec["resent"] == 1 and rec["seq"] == 6 and rec["lost"] is False, rec
+    assert rec.get("resent", 0) == 1 and rec["seq"] == 6 and rec["lost"] is False, rec
     expected = transport.chunk_line(tally.install_script("2031fc_4", 0x2031FC, 4,
                                                          Path("/scratch/t.txt")), 6)
     assert mstate.STATE.proc.stdin.getvalue() == expected.encode() + b"\n"  # type: ignore[union-attr]
@@ -1436,7 +1442,7 @@ def test_the_resend_is_read_from_before_its_own_line_reached_the_log(
     monkeypatch.setattr(mstate.STATE, "lua_seq", 5)
     rec = _record(5)
     mtap._read_install_answer(scratch, rec)
-    assert rec["resent"] == 1 and rec["lost"] is False, rec
+    assert rec.get("resent", 0) == 1 and rec["lost"] is False, rec
     mtap._read_install_answer(scratch, rec)
     assert rec["lost"] is True, "the resend's own echo and prompt were read"
 
@@ -1466,7 +1472,7 @@ def test_an_install_sent_again_keeps_the_cpu_it_was_bound_to(
     monkeypatch.setattr(mstate.STATE, "lua_seq", 5)
     rec = _record(5, bound=":subcpu")
     mtap._read_install_answer(scratch, rec)
-    assert rec["resent"] == 1
+    assert rec.get("resent", 0) == 1
     sent = mstate.STATE.proc.stdin.getvalue().decode()  # type: ignore[union-attr]
     assert 'devices[\\":subcpu\\"]' in sent, sent[-300:]
 
@@ -1520,7 +1526,7 @@ def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pend
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    s.watch_clear(ref="frame_lo")
+    s.declaration_clear("watch", ref="frame_lo")
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     item = _survey(ses, 61)
@@ -1608,7 +1614,7 @@ def test_the_install_note_and_throttle_say_when_the_console_reads_in_one_spellin
     out = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert f"({transport.CONSOLE_READS})" in out["note"], out["note"]
     described = {t.name: t.description or "" for t in asyncio.run(s.mcp.list_tools())}
-    assert transport.CONSOLE_READS in described["throttle"], described["throttle"]
+    assert "applies when the console next reads a line" in described["throttle"]
     assert "REFERENCE" not in out["note"], "a reply's note names nothing the client cannot read"
 
 
@@ -1628,7 +1634,8 @@ def test_a_removal_the_console_refused_is_latched_by_the_next_stop_and_rides_eve
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """THE ALARM RIDES EVERY REPLY, so the stop that follows the answer is what latches it:
-    no `watch_list` asked, and the row stands in the session block of a reply that is not one."""
+    no `declaration_list(kind="watch")` asked, and the row stands in the session block of a reply
+    that is not one."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _answer(tmp_path, 2, ok=False, output="",
             error="mcp:5: attempt to index a nil value (field 'tap')")

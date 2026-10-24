@@ -29,7 +29,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from session_doubles import published, refused, use_table  # noqa: E402
+from session_doubles import documented, published, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 from test_gfx import _serve  # noqa: E402
 from test_lua import _channel, _ChannelSession  # noqa: E402
@@ -262,7 +262,7 @@ def test_palette_logs_description_says_the_install_waits_for_the_consoles_read()
     after a debugger command that command reads it with nothing executed: the description
     names the read, never an execution."""
     text = published("palette_log")
-    assert "installed when the console next reads a line" in text, text
+    assert "installed when the console next reads a line" in documented("palette_log")
     assert "execut" not in text, text
 
 
@@ -278,7 +278,7 @@ def test_a_read_never_arms_an_arm_call_does_and_a_later_one_reads(
     assert "mcp_ramdac_d_" in sent and LOG_ID in sent, "the install went down the pipe"
     out = s.palette_log(palette_port="ramdac")
     assert out["status"] == "ok" and out["armed_now"] is False, out
-    assert (out["writes_total"], out["index_writes"], out["unsynced_writes"], out["desyncs"],
+    assert (out["writes_total"], out["index_writes"], out.get("unsynced_writes", 0), out["desyncs"],
             out["rows_kept"], out["overflow_rows"], out["rows_cut"]) == (
         1330, 1, 562, 0, 1331, 0, False)
     assert out["pens_written"] == ["0x0-0xff"] and out["sees_reset_and_load"] is True

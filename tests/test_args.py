@@ -27,7 +27,7 @@ from collections.abc import Callable
 from typing import Any
 
 import pytest
-from scry_core import media_tools
+from scry_core import media_tools, roster
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -45,6 +45,7 @@ import mame_draft as mdraft  # noqa: E402
 import mame_files as files  # noqa: E402
 import mame_film as mfilm  # noqa: E402
 import mame_focus as mfocus  # noqa: E402
+import mame_folds as folds  # noqa: E402
 import mame_gfx as mgfx  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
@@ -82,6 +83,9 @@ def _registered() -> set[str]:
 #: core body asks its own judge, which scry-core's suite holds, so no `args.check` call site
 #: exists here for them to be bound to.
 MEDIA = set(media_tools.TOOLS)
+#: The tools that fold one resource's operations (`mame_folds`), each method's table by tool.
+FOLDS: dict[str, Any] = {"comment_write": folds.COMMENT, "map_write": folds.MAP,
+                         "scan": folds.SCAN, "state_write": folds.STATE_METHODS}
 
 
 def _call_sites() -> dict[str, set[str]]:
@@ -101,7 +105,10 @@ def _call_sites() -> dict[str, set[str]]:
                 tool = str(node.args[0].value)
                 assert tool == fn.name, f"{fn.name} asks for {tool!r}'s check, not its own"
                 assert tool not in out, f"{tool} asks for its check twice"
-                out[tool] = {kw.arg for kw in node.keywords if kw.arg}
+                # A FOLD PASSES ITS WHOLE CALL (`**_given(locals())`), every argument it has.
+                out[tool] = ({p for p in inspect.signature(getattr(s, tool)).parameters
+                              if p != "ctx"} if any(kw.arg is None for kw in node.keywords)
+                             else {kw.arg for kw in node.keywords if kw.arg})
     return out
 
 
@@ -142,6 +149,10 @@ def test_each_call_site_passes_what_its_check_takes(tool: str) -> None:
     sig = inspect.signature(args.BY_TOOL[tool])
     named = {p.name for p in sig.parameters.values()
              if p.kind in (p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)}
+    if tool in FOLDS:
+        # A fold's judge takes the whole call and hands each method what it takes
+        # (`scry_core.methods`), refusing the rest.
+        named = passed
     required = {p.name for p in sig.parameters.values()
                 if p.default is p.empty and p.kind is p.POSITIONAL_OR_KEYWORD}
     assert not passed - named, (
@@ -182,14 +193,13 @@ OWNERS = {
 }
 
 OWNERS.update({
-    "breakpoint_clear": breakpoints.check_breakpoint_clear, "debug": mwrite.check_debug,
+    "declaration_list": folds.check_list_declarations,
+    "declaration_clear": folds.check_clear_declarations, "debug": mwrite.check_debug,
     "machine_map": machine.check_machine_map,
-    "watch_clear": watches.check_watch_clear, "regpoint_clear": regpoints.check_regpoint_clear,
     "resume": running.check_resume, "throttle": mlua.check_throttle,
     "record": mrec.check_record, "input": mlua.check_input,
     "audio_record": maudio.check_audio_record,
     "screen_signature": mscreen.check_screen_signature, "lua": mlua.check_lua,
-    "state_save": savestates.check_state_name, "state_load": savestates.check_state_name,
     "rom_check": launch.check_rom_check, "start": launch.check_start,
     "focus": mfocus.check_focus,
     "palette": mpalette.check_palette, "screen_view": mscreen.check_screen_view,
@@ -198,14 +208,28 @@ OWNERS.update({
     "gfx_blit_source": mblits.check_gfx_blit_source,
     "palette_log": mramdac.check_palette_log, "gfx_film": mfilm.check_gfx_film,
     "gfx_sweep": msweep.check_gfx_sweep, "gfx_draft": mdraft.check_gfx_draft,
-    "scan_start": mscan.check_scan_start, "scan_filter": mscan.check_scan_filter,
-    "comment_add": comments.check_comment_add, "comment_delete": comments.check_comment_delete,
-    "comment_save": comments.check_comment_save, "comment_load": comments.check_comment_load,
     "trace": mtrace.check_trace, "series_capture": mseries.check_series_capture,
-    "map_load": mmaps.check_map_load, "map_save": mmaps.check_map_save,
-    "map_add": mmaps.check_map_add,
+    **{name: folds.CHECKS[name] for name in FOLDS},
     **{name: spec.check for name, spec in media_tools.TOOLS.items()},
 })
+
+#: Each method of a fold routed to the function its own module judges it with.
+METHOD_OWNERS: dict[tuple[str, str], Callable[..., Any]] = {
+    ("comment_write", "add"): comments.check_add_comment,
+    ("comment_write", "delete"): comments.check_delete_comment,
+    ("comment_write", "save"): comments.check_save_comments,
+    ("comment_write", "load"): comments.check_load_comments,
+    ("map_write", "add"): mmaps.check_add_map, ("map_write", "load"): mmaps.check_load_map,
+    ("map_write", "save"): mmaps.check_save_map,
+    ("scan", "start"): mscan.check_start_scan, ("scan", "filter"): mscan.check_filter_scan,
+    ("state_write", "save"): savestates.check_state_name,
+    ("state_write", "load"): savestates.check_state_name,
+}
+
+
+@pytest.mark.parametrize(("tool", "method"), sorted(METHOD_OWNERS))
+def test_each_method_is_routed_to_its_modules_own_function(tool: str, method: str) -> None:
+    assert FOLDS[tool][method].check is METHOD_OWNERS[(tool, method)]
 
 
 def test_owners_names_every_entry_of_the_table() -> None:
@@ -262,26 +286,39 @@ def test_every_module_body_asks_its_own_check() -> None:
         "record": mrec.record, "input": mlua.input_field,
         "audio_record": maudio.audio_record,
         "screen_signature": mscreen.screen_signature, "lua": mlua.lua,
-        "state_save": savestates.state_save, "state_load": savestates.state_load,
         "focus": mfocus.focus,
         "palette": mpalette.palette, "screen_view": mscreen.screen_view,
         "gfx_view": mgfx.gfx_view, "gfx_locate": mlocate.gfx_locate,
         "gfx_load": manifest.gfx_load, "gfx_blits": mblits.gfx_blits,
         "gfx_blit_source": mblits.gfx_blit_source, "palette_log": mramdac.palette_log,
         "gfx_film": mfilm.gfx_film, "gfx_sweep": msweep.gfx_sweep, "gfx_draft": mdraft.gfx_draft,
-        "scan_start": mscan.scan_start, "scan_filter": mscan.scan_filter,
-        "comment_add": comments.comment_add, "comment_delete": comments.comment_delete,
-        "comment_save": comments.comment_save, "comment_load": comments.comment_load,
-        "trace": mtrace.trace, "map_load": mmaps.map_load, "map_save": mmaps.map_save,
-        "map_add": mmaps.map_add,
-        "breakpoint_clear": breakpoints.breakpoint_clear, "watch_clear": watches.watch_clear,
-        "regpoint_clear": regpoints.regpoint_clear, "debug": mwrite.debug,
+        "trace": mtrace.trace,
+        "declaration_list": folds.list_declarations,
+        "declaration_clear": folds.clear_declarations, "debug": mwrite.debug,
         "machine_map": machine.machine_map, "series_capture": mseries.series_capture,
-        **{name: spec.body for name, spec in media_tools.TOOLS.items()},
     }
-    assert set(bodies) == set(sequence.BY_OP), sorted(set(bodies) ^ set(sequence.BY_OP))
-    for op, body in bodies.items():
-        check = sequence.BY_OP[op]
+    #: A fold's methods are run by their own modules' bodies, each asking its own judge.
+    method_bodies: dict[tuple[str, str], Callable[..., Any]] = {
+        ("comment_write", "add"): comments.add_comment,
+        ("comment_write", "delete"): comments.delete_comment,
+        ("comment_write", "save"): comments.save_comments,
+        ("comment_write", "load"): comments.load_comments,
+        ("map_write", "add"): mmaps.add_map, ("map_write", "load"): mmaps.load_map,
+        ("map_write", "save"): mmaps.save_map,
+        ("scan", "start"): mscan.start_scan, ("scan", "filter"): mscan.filter_scan,
+        ("state_write", "save"): savestates.save_state,
+        ("state_write", "load"): savestates.load_state,
+    }
+    # The media file tools' bodies are scry-core's, which its own suite holds to their judges.
+    folded = set(FOLDS) | MEDIA
+    assert set(bodies) | folded == set(sequence.BY_OP), sorted(
+        (set(bodies) | folded) ^ set(sequence.BY_OP))
+    assert set(method_bodies) == set(METHOD_OWNERS)
+    checked: list[tuple[str, Callable[..., Any], Callable[..., Any]]] = [
+        (op, body, sequence.BY_OP[op]) for op, body in bodies.items()]
+    checked += [(f"{t} {m}", body, METHOD_OWNERS[(t, m)])
+                for (t, m), body in method_bodies.items()]
+    for op, body, check in checked:
         src = inspect.getsource(body)
         wanted = f"{check.__name__}("
         assert wanted in src, f"{op}'s body never asks {check.__name__}"
@@ -298,7 +335,7 @@ def test_a_tool_the_machine_judges_passes_through_without_a_verdict() -> None:
     """The other half of `check`: a tool named in `MACHINE_JUDGES` is asked nothing and answers
     nothing. Without this case that branch is never taken by any test."""
     args.check("registers")
-    args.check("breakpoint_list")
+    args.check("declaration_list", kind="breakpoint")
 
 
 def test_a_region_search_is_not_refused_for_the_length_it_is_not_given() -> None:
@@ -437,10 +474,6 @@ def test_every_tool_that_claims_it_answers_while_running_is_in_the_one_list() ->
     claimed = {name for name, doc in docs.items()
                if _CLAIMS_RUNNING.search(doc) and mdocs.NEEDS_STOPPED not in doc} - lifecycle
     assert claimed, "no tool claims it at all, so this examined nothing and is not a verdict"
-    conditional = {name for name, doc in docs.items()
-                   if _CLAIMS_RUNNING.search(doc) and mdocs.NEEDS_STOPPED in doc}
-    assert conditional, ("no tool makes the CONDITIONAL claim any more, so the distinction "
-                         "above is untested and this case has stopped watching half of itself")
     missing = sorted(claimed - sequence.RUNNING_OK_OPS)
     assert not missing, (
         f"these tools tell a caller they answer on a running machine and are not in "
@@ -460,7 +493,9 @@ def test_the_instructions_families_are_the_registered_tools_and_the_running_ones
     # WHAT THE SENTENCE PROMISES ANSWERS: the operations the running gate lets through and the
     # file tools, which answer in any state; nothing else.
     named = mame_mcp.ROSTER.answering_named() - {"registers(from_last_stop=True)"}
-    answering = (sequence.RUNNING_OK_OPS | (sequence.NOT_STEPS - {"start", "rom_check"}))
+    # A FOLD THAT ANSWERS BY SOME METHODS is named with them, never bare.
+    answering = (roster.by_method(sequence.RUNNING_OK_OPS, sequence.RUNNING_METHODS)
+                 | (sequence.NOT_STEPS - {"start", "rom_check"}))
     assert set(media_tools.TOOLS) <= sequence.RUNNING_OK_OPS, "a file tool the gate refuses"
     assert named == answering, sorted(named ^ answering)
 
@@ -521,10 +556,9 @@ def test_starts_path_shapes_are_judged_in_the_order_judge_reads_them() -> None:
         launch.check_start(binary="/b/mame", rompath="roms", reference_rom="rom.bin")
 
 
-def test_a_start_refused_for_the_shape_of_a_path_still_carries_start_retries() -> None:
-    """Every `start` reply carries `start_retries`, refusals included, so an empty list is an
-    answer and never a missing field: the refusal of a path's shape, before anything else is
-    judged, keeps that contract."""
+def test_a_start_refused_for_the_shape_of_a_path_leaves_out_its_empty_start_retries() -> None:
+    """`start_retries` is a diagnostic, left out of a reply while empty: the refusal of a path's
+    shape, before anything was launched, has none."""
     out = s.start(binary="mame", system="m68k", rompath="/r", reference_rom="/r/rom.bin")
     assert out["code"] == "bad_argument" and out["message"].startswith("binary="), out
-    assert out["start_retries"] == [], out
+    assert "start_retries" not in out, out

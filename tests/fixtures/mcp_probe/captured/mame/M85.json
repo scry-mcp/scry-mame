@@ -74,13 +74,85 @@
   },
   {
    "lines": [
-    "M85: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"VoiceTable\",\"mode\":\"capture\",\"fmt\":\"u8[8]\",\"trigger\":\"VoiceTrigger\",\"trigger_type\":\"w\",\"cpu\":\"audiocpu\"}}"
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"fmt\": \"u8[8]\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"fmt\": \"u8[8]\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"trigger_type\": \"w\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"trigger_type\": \"w\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"VoiceTable\",\"mode\":\"capture\",\"fmt\":\"u8[8]\",\"trigger\":\"VoiceTrigger\",\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"fmt\": \"u8[8]\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"trigger_type\": \"w\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"trigger\": \"VoiceTrigger\", \"trigger_type\": \"w\", \"fmt\": \"u8[8]\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"trigger_type\": \"w\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M85: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceTable\", \"mode\": \"capture\", \"fmt\": \"u8[8]\", \"trigger\": \"VoiceTrigger\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   }

@@ -49,11 +49,12 @@ M_CELLS = [f"M{n} {text}" for n, text in enumerate([
     "disassemble on each cpu ends the commented line with its own text",
     "a second comment at one place by its hex address replaces the text and keeps the ref",
     "comment_list narrows to a cpu, and lists both without one",
-    "comment_save writes the file byte for byte, sorted by cpu then ref, stamps from the store",
-    "comment_save again after a delete replaces its own file and names the row it drops",
+    "comment_write save writes the file byte for byte, sorted by cpu then ref, stamps from the "
+    "store",
+    "comment_write save again after a delete replaces its own file and names the row it drops",
     "deleting every comment empties the list and the pane",
-    "comment_load reads the file back with its own stamps",
-    "comment_load lets the file win, returns the replaced row and counts the unchanged one",
+    "comment_write load reads the file back with its own stamps",
+    "comment_write load lets the file win, returns the replaced row and counts the unchanged one",
     "a new start over the same symbols feeds both comments again",
     "an ini naming comment_directory cannot move MAME's comment file out of the scratch",
     "a show watch and a comment on one ref are both held, in either order",
@@ -61,8 +62,8 @@ M_CELLS = [f"M{n} {text}" for n, text in enumerate([
     "a text holding a quote is stored, not shown, and said",
     "a ref that names no place is refused; a name this build lacks is kept unresolved",
     "a delete with nothing at the place names the comments held",
-    "comment_save refuses a relative dest, a file of another format and a link",
-    "comment_load refuses a bad file whole, naming its line, and leaves the store",
+    "comment_write save refuses a relative dest, a file of another format and a link",
+    "comment_write load refuses a bad file whole, naming its line, and leaves the store",
     "on a running machine the list and the save answer, the other three are not_stopped",
 ])]
 
@@ -106,14 +107,14 @@ def _m_m68k_dual(t: list[str]) -> None:
     irq = str((found.get("symbols") or [{}])[0].get("addr", ""))
     if not irq:
         raise RuntimeError(f"irq_vblank is not in the table: {said(found)}")
-    r = call("comment_add", ref="irq_vblank", text="matrix main", cpu="maincpu")
+    r = call("comment_write", method="add", ref="irq_vblank", text="matrix main", cpu="maincpu")
     c = r.get("comment", {})
     cell(t[1], ok(r) and c.get("addr") == irq and c.get("by") == "symbol"
          and r.get("declarations", {}).get("persistent") is True
          and r.get("replaced_comments") == []
          and c.get("state") == "armed", said(r))
     before = _visible()
-    r = call("comment_add", ref="0x400", text="matrix sub", cpu="subcpu")
+    r = call("comment_write", method="add", ref="0x400", text="matrix sub", cpu="subcpu")
     c = r.get("comment", {})
     cell(t[2], ok(r) and c.get("cpu") == SUB and c.get("ref") == "0x400"
          and c.get("state") == "armed" and before == _visible() == MAIN,
@@ -121,7 +122,8 @@ def _m_m68k_dual(t: list[str]) -> None:
     main_line, sub_line = _line(irq, "maincpu"), _line("0x400", "subcpu")
     cell(t[3], main_line.endswith(" // matrix main") and sub_line.endswith(" // matrix sub"),
          f"{main_line!r} / {sub_line!r}")
-    r = call("comment_add", ref=f"{int(irq, 16):#x}", text="matrix main 2", cpu="maincpu")
+    r = call("comment_write", method="add", ref=f"{int(irq, 16):#x}", text="matrix main 2",
+             cpu="maincpu")
     c = r.get("comment", {})
     total = call("comment_list").get("comments_total")
     line = _line(irq, "maincpu")
@@ -133,9 +135,9 @@ def _m_m68k_dual(t: list[str]) -> None:
          and sub.get("cpu") == SUB and both.get("comments_total") == 2,
          f"{said(sub)} / {said(both)}")
     # ADDED AFTER irq_vblank, so the store's order is not the file's: the writer sorts.
-    call("comment_add", ref="0x500", text="matrix five hundred", cpu="maincpu")
+    call("comment_write", method="add", ref="0x500", text="matrix five hundred", cpu="maincpu")
     dest = fresh(".tsv")
-    r = call("comment_save", dest=dest)
+    r = call("comment_write", method="save", dest=dest)
     want = (HEADER + f"0x500\t{MAIN}\t{_stamp('0x500', MAIN)}\tmatrix five hundred\n"
             f"irq_vblank\t{MAIN}\t{_stamp('irq_vblank', MAIN)}\tmatrix main 2\n"
             f"0x400\t{SUB}\t{_stamp('0x400', SUB)}\tmatrix sub\n")
@@ -143,23 +145,24 @@ def _m_m68k_dual(t: list[str]) -> None:
     got = Path(dest).read_bytes() if Path(dest).is_file() else None
     cell(t[6], ok(r) and r.get("comments_total") == 3 and got == want.encode(),
          f"{said(r)} / {got!r}")
-    call("comment_delete", ref="0x500", cpu="maincpu")
-    r = call("comment_save", dest=dest)
+    call("comment_write", method="delete", ref="0x500", cpu="maincpu")
+    r = call("comment_write", method="save", dest=dest)
     cell(t[7], ok(r) and r.get("dropped_comments") == [{"ref": "0x500", "cpu": MAIN}]
          and Path(dest).read_text().count("\n") == 3, said(r))
     for ref, cpu in (("irq_vblank", "maincpu"), ("0x400", "subcpu")):
-        call("comment_delete", ref=ref, cpu=cpu)
+        call("comment_write", method="delete", ref=ref, cpu=cpu)
     empty, line, sub_line = call("comment_list"), _line(irq, "maincpu"), _line("0x400", "subcpu")
     cell(t[8], empty.get("comments") == [] and " // " not in line and " // " not in sub_line,
          f"{said(empty)} / {line!r} / {sub_line!r}")
-    r = call("comment_load", path=dest)
+    r = call("comment_write", method="load", path=dest)
     stamps = {(d["ref"], d["cpu"]): d["created_at"] for d in _store_rows()}
     in_file = {(row.split("\t")[0], row.split("\t")[1]): row.split("\t")[2]
                for row in Path(dest).read_text().splitlines()[1:]}
     cell(t[9], ok(r) and r.get("parsed") == 2 and r.get("added") == 2
          and stamps == in_file, f"{said(r)} / {stamps} vs {in_file}")
-    call("comment_add", ref="irq_vblank", text="changed in the store", cpu="maincpu")
-    r = call("comment_load", path=dest)
+    call("comment_write", method="add", ref="irq_vblank", text="changed in the store",
+         cpu="maincpu")
+    r = call("comment_write", method="load", path=dest)
     texts = {x["ref"]: x["text"] for x in call("comment_list").get("comments", [])}
     cell(t[10], ok(r) and [x.get("text") for x in r.get("replaced_comments", [])]
          == ["changed in the store"] and r.get("unchanged") == 1
@@ -180,48 +183,48 @@ def _edges(t: list[str], irq: str) -> None:
     """Cells M13-M20 on the machine M11 started, ending with every comment deleted."""
     # M13 both orders: a watch then a comment, and a comment then a watch, on one ref each
     w1 = call("watch_add", ref="0x203200", mode="show", length=2, fmt="u16")
-    c1 = call("comment_add", ref="0x203200", text="after a watch", cpu="maincpu")
-    c2 = call("comment_add", ref="0x203300", text="before a watch", cpu="maincpu")
+    c1 = call("comment_write", method="add", ref="0x203200", text="after a watch", cpu="maincpu")
+    c2 = call("comment_write", method="add", ref="0x203300", text="before a watch", cpu="maincpu")
     w2 = call("watch_add", ref="0x203300", mode="show", length=2, fmt="u16")
     watched = sorted(str(w.get("ref")).lower().removeprefix("0x")
-                     for w in call("watch_list").get("watches", []))
+                     for w in call("declaration_list", kind="watch").get("watches", []))
     noted = sorted(x.get("ref") for x in call("comment_list").get("comments", [])
                    if x.get("ref") in ("0x203200", "0x203300"))
     cell(t[13], all(ok(x) for x in (w1, c1, c2, w2)) and watched == ["203200", "203300"]
          and noted == ["0x203200", "0x203300"],
          f"watches {watched} / comments {noted} / " + " / ".join(said(x) for x in (w1, c2)))
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     for ref in ("0x203200", "0x203300"):
-        call("comment_delete", ref=ref, cpu="maincpu")
+        call("comment_write", method="delete", ref=ref, cpu="maincpu")
     # M14 the text's rule, and its bound
-    bad = [call("comment_add", ref="0xfade0", text=x, cpu="maincpu")
+    bad = [call("comment_write", method="add", ref="0xfade0", text=x, cpu="maincpu")
            for x in ("", "a\tb", " edge", "y" * (TEXT_MAX_BYTES + 1))]
-    at = call("comment_add", ref="0x600", text="y" * TEXT_MAX_BYTES, cpu="maincpu")
+    at = call("comment_write", method="add", ref="0x600", text="y" * TEXT_MAX_BYTES, cpu="maincpu")
     shown = _line("0x600", "maincpu").endswith(" // " + "y" * TEXT_MAX_BYTES)
     cell(t[14], all(refused(x, "bad_argument") for x in bad) and ok(at)
          and at.get("comment", {}).get("state") == "armed" and shown,
          f"{[x.get('code') for x in bad]} / {said(at)} / shown {shown}")
-    call("comment_delete", ref="0x600", cpu="maincpu")
+    call("comment_write", method="delete", ref="0x600", cpu="maincpu")
     # M15 a quote
-    r = call("comment_add", ref="0x604", text='say "hi"', cpu="maincpu")
+    r = call("comment_write", method="add", ref="0x604", text='say "hi"', cpu="maincpu")
     line = _line("0x604", "maincpu")
     cell(t[15], ok(r) and r.get("comment", {}).get("state") == "unarmable" and "note" in r
          and " // " not in line, f"{said(r)} / {line!r}")
-    call("comment_delete", ref="0x604", cpu="maincpu")
+    call("comment_write", method="delete", ref="0x604", cpu="maincpu")
     # M16 refs
-    seg = call("comment_add", ref="1234:5678", text="t", cpu="maincpu")
-    past = call("comment_add", ref="0x1000000", text="t", cpu="maincpu")
-    blank = call("comment_add", ref="a b", text="t", cpu="maincpu")
-    hashed = call("comment_add", ref="#x", text="t", cpu="maincpu")
-    loose = call("comment_add", ref="zzz_nowhere", text="later", cpu="maincpu")
+    seg = call("comment_write", method="add", ref="1234:5678", text="t", cpu="maincpu")
+    past = call("comment_write", method="add", ref="0x1000000", text="t", cpu="maincpu")
+    blank = call("comment_write", method="add", ref="a b", text="t", cpu="maincpu")
+    hashed = call("comment_write", method="add", ref="#x", text="t", cpu="maincpu")
+    loose = call("comment_write", method="add", ref="zzz_nowhere", text="later", cpu="maincpu")
     cell(t[16], refused(seg, "bad_argument") and refused(blank, "bad_argument")
          and refused(hashed, "bad_argument") and refused(past, "bad_argument")
          and "mask" in str(past.get("message"))
          and loose.get("comment", {}).get("state") == "unresolved",
          f"{said(past)} / {said(loose)}")
-    call("comment_delete", ref="zzz_nowhere", cpu="maincpu")
+    call("comment_write", method="delete", ref="zzz_nowhere", cpu="maincpu")
     # M17 nothing there
-    r = call("comment_delete", ref="0x1234", cpu="maincpu")
+    r = call("comment_write", method="delete", ref="0x1234", cpu="maincpu")
     cell(t[17], refused(r, "unknown_ref") and "'irq_vblank'" in str(r.get("message")), said(r))
     # M18 save's refusals
     other = Path(fresh(".tsv"))
@@ -229,9 +232,9 @@ def _edges(t: list[str], irq: str) -> None:
     sha = _sha(str(other))
     link = Path(fresh(".tsv"))
     link.symlink_to(SCRATCH / "nowhere.tsv")
-    rel = call("comment_save", dest="relative.tsv")
-    foreign = call("comment_save", dest=str(other))
-    linked = call("comment_save", dest=str(link))
+    rel = call("comment_write", method="save", dest="relative.tsv")
+    foreign = call("comment_write", method="save", dest=str(other))
+    linked = call("comment_write", method="save", dest=str(link))
     cell(t[18], refused(rel, "bad_argument") and refused(foreign, "bad_argument")
          and _sha(str(other)) == sha and refused(linked, "bad_argument"),
          f"{said(rel)} / {said(foreign)} / {said(linked)}")
@@ -249,20 +252,20 @@ def _edges(t: list[str], irq: str) -> None:
     for name, body in faults.items():
         path = Path(fresh(".tsv"))
         path.write_text(body)
-        replies[name] = (call("comment_load", path=str(path)), str(path))
+        replies[name] = (call("comment_write", method="load", path=str(path)), str(path))
     after = sorted((d["ref"], d["cpu"], d["text"]) for d in _store_rows())
     cell(t[19], all(refused(r, "bad_argument") and str(r.get("message", "")).startswith(p + ":")
                     for r, p in replies.values()) and before == after,
          " / ".join(f"{n}: {said(r)}" for n, (r, _p) in replies.items()))
     # M20 a running machine
     call("resume")
-    lst, sav = call("comment_list"), call("comment_save", dest=fresh(".tsv"))
-    add = call("comment_add", ref="0x608", text="t", cpu="maincpu")
-    dele = call("comment_delete", ref="irq_vblank", cpu="maincpu")
-    load = call("comment_load", path=fresh(".tsv"))
+    lst, sav = call("comment_list"), call("comment_write", method="save", dest=fresh(".tsv"))
+    add = call("comment_write", method="add", ref="0x608", text="t", cpu="maincpu")
+    dele = call("comment_write", method="delete", ref="irq_vblank", cpu="maincpu")
+    load = call("comment_write", method="load", path=fresh(".tsv"))
     stopped = call("stop")
     for ref, cpu in (("irq_vblank", "maincpu"), ("0x400", "subcpu")):
-        call("comment_delete", ref=ref, cpu=cpu)
+        call("comment_write", method="delete", ref=ref, cpu=cpu)
     left = call("comment_list").get("comments")
     # AND THE SECTION LEAVES NOTHING: every comment it made is deleted, read back empty.
     cell(t[20], ok(lst) and "running" not in lst
@@ -284,12 +287,12 @@ def _pinned(t: list[str]) -> None:
     if not ok(r):
         cell(t[12], False, f"m68k-dual did not boot with the ini: {said(r)}")
         return
-    call("comment_add", ref="irq_vblank", text="pinned", cpu="maincpu")
+    call("comment_write", method="add", ref="irq_vblank", text="pinned", cpu="maincpu")
     saved = call("debug", command="comsave")
     stored = Path(str(r.get("scratch_dir"))) / "comments" / f"{M68K_DUAL_SYSTEM}.cmt"
     in_scratch = stored.is_file()
     in_ini_dir = sorted(target.iterdir())
-    call("comment_delete", ref="irq_vblank", cpu="maincpu")
+    call("comment_write", method="delete", ref="irq_vblank", cpu="maincpu")
     left = call("comment_list").get("comments")
     cell(t[12], "successfully" in str(saved.get("output")) and not in_ini_dir and in_scratch
          and left == [], f"{said(saved)} / ini dir {in_ini_dir} / scratch {in_scratch} / "

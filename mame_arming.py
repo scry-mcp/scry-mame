@@ -143,7 +143,7 @@ def inherited(decl: dec.Declaration) -> str:
     yesterday re-arms itself at the next `start`. So a run can be cut by something the caller
     never declared and cannot see in anything they typed, and `OTHER_STOP` then reads as a
     condition somebody wrote badly rather than as an inheritance. Saying whose it is turns a
-    puzzle into a `watch_clear`.
+    puzzle into a `declaration_clear(kind="watch")`.
 
     IT SAYS THE FACT ONCE. `watch_stop` already appended a terse "(re-armed from a prior
     session)" of its own, so calling this beside it stated the same thing twice in one
@@ -152,9 +152,11 @@ def inherited(decl: dec.Declaration) -> str:
         return ""
     if decl.origin == STATE.session_origin:
         return ""
-    tools = ("`regpoint_list` shows it and `regpoint_clear` removes it"
+    tools = ("`declaration_list(kind=\"regpoint\")` shows it and "
+             "`declaration_clear(kind=\"regpoint\")` removes it"
              if decl.kind == "regpoint" else
-             "`watch_list`/`breakpoint_list` shows it and `watch_clear`/`breakpoint_clear` "
+             "`declaration_list(kind=\"watch\")`/`declaration_list(kind=\"breakpoint\")` shows it "
+             "and `declaration_clear(kind=\"watch\")`/`declaration_clear(kind=\"breakpoint\")` "
              "removes it")
     return (" (a PERSISTENT declaration, re-armed from a prior session at `start`, not "
             f"declared by anything this session did: {tools})")

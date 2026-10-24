@@ -38,7 +38,7 @@ def test_a_sized_format_needs_no_width_and_decodes_to_its_shape(
     out = s.watch_add(ref="0x203200", mode="show", fmt="{name:char[4],x:i16,y:i16,flags:u8}")
     assert out["length"] == 9
     assert out["reading"]["value"] == {"name": "RE", "x": -2, "y": 16, "flags": 0x81}
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["0x203200"]["fmt"].startswith("{name:char[4]")
     assert listed["0x203200"]["length"] == 9
     refused("does not agree", s.watch_add(ref="0x2031f0", mode="show", fmt="u16[4]", length=6))
@@ -56,7 +56,7 @@ def test_a_stop_renders_every_shape_and_a_change_watch_takes_the_sized_width(
     out = s.step()
     (w,) = out["watches"]
     assert w["reading"]["value"] == [1, 2, 3, 4]
-    assert s.watch_list()["watches"][0]["length"] == 8
+    assert s.declaration_list("watch")["watches"][0]["length"] == 8
 
 
 def test_a_symbol_typed_in_the_yaml_reads_as_its_type_with_no_format_named(
@@ -109,7 +109,7 @@ def test_a_types_file_types_symbols_at_start_and_is_refused_when_it_lies(
     types.write_text("# the shapes\nhero: {x:i16,y:i16,hp:u8}\n\nscore: u16\n")
     out = s.start(**_boot_args(tmp_path, image), symbols=str(sym), types=str(types))
     try:
-        assert out["symbols_typed"] == 2
+        assert out.get("symbols_typed", 0) == 2
         assert mstate.STATE.table().types == {"HERO": "{x:i16,y:i16,hp:u8}", "SCORE": "u16"}, \
             "the types file wins over the YAML's own type"
     finally:

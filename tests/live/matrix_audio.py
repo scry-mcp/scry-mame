@@ -116,10 +116,10 @@ L_CELLS = [f"L{n} {text}" for n, text in enumerate([
     "circus: under an ini naming wavwrite the refused recording leaves the session's file "
     "recording past its last frame, logs no end mark, and the file is whole when closed; the "
     "refusal names the frames its run advanced",
-    "v30 S3: audio_measure hears the pinned tone (an onset, not silent) and calls the AY pinned "
-    "at volume 0 silent",
-    "v30 S3: audio_diff finds two recordings of one pinned tone the same, and the halved tone "
-    "different",
+    "v30 S3: audio_compare measure hears the pinned tone (an onset, not silent) and calls the AY "
+    "pinned at volume 0 silent",
+    "v30 S3: audio_compare diff finds two recordings of one pinned tone the same, and the halved "
+    "tone different",
     "v30 S3 cost: the question is answered in numbers, with no picture and no sound sent",
 ])]
 
@@ -326,9 +326,10 @@ def _l_v30(t: list[str]) -> None:
     # their range, and nothing about when the window sounded or whether two recordings match.
     # The four new-way replies are kept here: the harness hands `PENDING` to the transcript at
     # every cell, so a slice of it taken across a cell is empty.
-    heard = call("audio_measure", path=str(wav_a))
+    heard = call("audio_compare", method="measure", path=str(wav_a))
     muted_path, muted_r = _ay_recording(AY_PERIOD_A, volume=0)
-    muted = call("audio_measure", path=str(muted_path)) if ok(muted_r) else muted_r
+    muted = call("audio_compare", method="measure",
+                 path=str(muted_path)) if ok(muted_r) else muted_r
     m = (heard.get("measures") or [{}])[0]
     q = (muted.get("measures") or [{}])[0]
     # The AY at volume 0 rests at a steady level away from zero: silent, with no onset and no
@@ -341,8 +342,9 @@ def _l_v30(t: list[str]) -> None:
          f"{q.get('silent')}, onset {q.get('onset_s')}, clipped {q.get('clipped')}, peak "
          f"{q.get('peak_dbfs')} dBFS")
     again, again_r = _ay_recording(AY_PERIOD_A)
-    same = call("audio_diff", a=str(again), b=str(wav_a)) if ok(again_r) else again_r
-    other = call("audio_diff", a=str(wav_b), b=str(wav_a))
+    same = call("audio_compare", method="diff", a=str(again),
+                b=str(wav_a)) if ok(again_r) else again_r
+    other = call("audio_compare", method="diff", a=str(wav_b), b=str(wav_a))
     cell(t[13], ok(same) and same.get("class") in ("exact", "inaudible")
          and ok(other) and other.get("class") == "different",
          f"same tone {same.get('class')} {same.get('snr_db')} dB; halved {other.get('class')} "

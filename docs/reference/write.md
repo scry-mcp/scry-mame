@@ -9,26 +9,16 @@
 write(ref, data_hex, cpu="", region=false)
 ```
 
-Write bytes to memory at `ref` of `cpu` (`subcpu`; the visible one when empty) and READ THEM
-BACK through the same cpu. Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`). A range whose last byte lies past that cpu's program space (the address mask `start` read) is `bad_argument` naming the mask; with no mask known the range is the console's. MODIFIES the machine: every later
-reply says so.
-`data_hex` holds 1..1024 bytes, `read_memory`'s ceiling: a larger image is loaded from a
-file (`debug("load ...")`).
+Write bytes to memory at `ref` of `cpu` and read them back through it. Modifies the
+machine; needs it stopped.
 
-`region=True` patches ROM live: the bytes go into the memory REGION that backs the address on
-that cpu's map (the console's `saver` and `loadr`, in the region's own byte order, a partial
-word widened to whole words), then are read back through the cpu. Refused where no region
-backs the address or its offset cannot be placed, and past the entry's or the region's end.
-Never taken on its own: without it a ROM write goes nowhere and says why.
+`data_hex` is 1..1024 bytes. `region=True` patches ROM in the memory region backing
+the address (refused where none does, or past its end); without it a ROM write goes
+nowhere and says why. A range past the program space is `bad_argument`.
 
-Reply: `addr`, `bytes_written` (sent), `readback`, `verified` (readback equals what was sent),
-`cpu`, and with `region` the `region`, `region_offset` and any `captures_reading_it`.
-`verified: false` is not always a failure: a hardware register that answers something else is
-doing its job; for RAM the write went nowhere; on ROM the reply adds `target: "rom"`, a `note`,
-and the `region` backing it when the address map can say which. A watched range that cannot be
-re-read afterwards carries the fields above so the landed write is not lost; a read BACK that
-fails carries `addr` and `bytes_written` only. Either is `readback_refused` when the stub
-refused, else `session_broken`. Needs the machine STOPPED (else `not_stopped`).
+Reply: `addr`, `bytes_written`, `readback`, `verified`, `cpu`; with `region` also
+`region`, `region_offset`, `captures_reading_it`; on ROM `target`, `note`. A failed
+re-read is `readback_refused` or `session_broken`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -78,6 +68,16 @@ Example, from a live run:
 
 A failed re-read of the watches the write touched, or of the readback, is `readback_refused` when the stub ANSWERED (the channel kept its place) and `session_broken` otherwise.
 
+**Why a ROM write needs `region`.** Without it the write would silently go nowhere, so the flag makes patching ROM a deliberate act.
+
+**Why `verified: false` is not always a failure.** A hardware register may answer something else, which is the register doing its job; for RAM it means the write went nowhere.
+
+**Why `captures_reading_it` exists.** A capture reading the block a region write changed would show the table change with nothing saying why, so the reply names each capture reached.
+
+**Why a cpu argument needs the thread patch.** Each cpu is served by its own gdbstub thread; a build without the patch serves its first cpu only and refuses another with `bad_argument`.
+
+**Why a range is bounded by the program space.** A last byte past the cpu's address mask (the one `start` read) is refused naming the mask; with no mask known the range is the console's.
+
 <!-- scry-reference:begin set_register -->
 ## `set_register`
 
@@ -87,17 +87,13 @@ A failed re-read of the watches the write touched, or of the readback, is `readb
 set_register(name, value, cpu="")
 ```
 
-Force the register `name` of `cpu` (`subcpu`; the visible one when empty) to `value`
-(an integer or a `0x` string) and READ IT BACK. Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`). MODIFIES the machine.
-Refuses a name this cpu does not have, naming the ones it has (a 16-bit register also answers
-to its short name: `AX` for the `EAX` a V30 is served under; the reply
-carries the stub's name), and a value wider than the
-register, naming its width.
+Force register `name` of `cpu` to `value` and read it back. Modifies the machine; needs it
+stopped.
 
-Reply: `register`, `value` (what was sent), `readback` (the register read again; both hex at its
-width), `verified` (readback equals what was sent; false is not always a failure: a register
-that masks or answers something else is doing its job), `cpu` (the one forced). A cpu the stub
-does not describe, or whose byte order is not established, is `no_channel`. Needs the machine STOPPED (else `not_stopped`).
+Refuses an unknown name (listing the cpu's) and a value wider than the register.
+
+Reply: `register`, `value`, `readback`, `verified`, `cpu`. A cpu the stub does not
+describe is `no_channel`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -137,6 +133,12 @@ Example, from a live run:
 ```
 <!-- scry-reference:end set_register -->
 
+**Why `verified: false` is not always a failure.** A register that masks or answers something else is doing its job.
+
+**Why a short name works.** A V30 is served under `EAX`, so `AX` is accepted and the reply carries the stub's name.
+
+**Why `cpu` follows the thread patch.** Each cpu is served by its own gdbstub thread; a build without the patch serves its first cpu only and refuses another with `bad_argument`.
+
 <!-- scry-reference:begin reset -->
 ## `reset`
 
@@ -146,21 +148,13 @@ Example, from a live run:
 reset()
 ```
 
-SOFT reset of the machine, applied, without relaunching the process. MODIFIES the machine.
+Soft reset, applied, without relaunching. Modifies the machine; needs it stopped. A hard
+reset is `close` then `start`.
 
-Reply: `kind` (`softreset`), `pc` read back after the reset, `boot_pc` (where `start` parked),
-`verified` (the two agree), `frame_at_reset`, `taps_across` (every count or capture watch
-whose totals now span the reset, which each survey then says in `across`), and
-the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine): the step that applies
-the reset is a stop of its own, surveyed and recorded like `step`'s, so the next call
-finds nothing to attribute to the machine alone. The console's reset is a timer that
-fires when the machine next runs, so this steps once to apply it. THE FRAME COUNTER
-DOES NOT RESTART, so a frame number after a
-reset is NOT a cold boot's: subtract `frame_at_reset`, the counter read once the reset
-was applied, before comparing a later stop's `frame` with one taken from a cold boot.
-There is no hard reset: it re-creates the machine and the gdbstub connection dies with it,
-which is `close` followed by `start`, and it would save only the process launch, none of
-the emulated time to the screen that matters. Needs the machine STOPPED (else `not_stopped`).
+Reply: `kind`, `pc`, `boot_pc`, `verified` (the two agree), `frame_at_reset`,
+`taps_across`, and the stop's survey (`cause`, `stop_seq`, `cpu`, `regs`, `frame`, `dasm`,
+`errorlog`, `watches`, `watch_hit`, `regpoint_hit`). The frame counter does not restart:
+subtract `frame_at_reset` before comparing with a cold boot.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -253,7 +247,11 @@ Example, from a live run:
 ```
 <!-- scry-reference:end reset -->
 
-**A count or capture watch counts on across a reset or a `stateload`**, because its tables are the host's and survive the machine being replaced; nothing is zeroed behind the caller's back, and `watch_clear` then declaring it again is a fresh count.
+**A count or capture watch counts on across a reset or a `stateload`**, because its tables are the host's and survive the machine being replaced; nothing is zeroed behind the caller's back, and `declaration_clear(kind="watch")` then declaring it again is a fresh count.
+
+**Why the reset is a stop of its own.** The console's reset is a timer that fires when the machine next runs, so the call steps once to apply it; that step is surveyed and recorded like `step`'s, leaving nothing to attribute to the machine alone afterwards.
+
+**Why there is no hard reset.** It re-creates the machine and the gdbstub connection dies with it, which is `close` then `start`; it would save only the process launch, none of the emulated time to the screen that matters.
 
 <!-- scry-reference:begin debug -->
 ## `debug`
@@ -264,29 +262,17 @@ Example, from a live run:
 debug(command)
 ```
 
-Run ANY MAME debugger command, `command` (its only argument), and return its text.
-The read-only recipes have typed tools: prefer them, above all for a command whose answer can
-run past the console's text buffer (`find` or `dump` over a wide range), which takes MAME down.
+Run any MAME debugger command, `command`. Prefer the typed readers: a wide `find` takes
+MAME down. Needs the machine stopped.
 
-Reply: `command`, `mutates`, `output`, `clipped`, and a `note` when there is
-something to say; above 4000 characters the text goes to a file (`output_chars`,
-`output_path`, a bounded preview). Every `;` command of a line is judged, each word resolved as
-the console resolves it (the command or the one it prefixes). One that changes the machine
-(`fill`, `load`, `stateload`/`sl`, a reset, `rewind`, `mount`, `do`, any run or console step, an
-assignment such as `d0=1234`) counts as a write and `altered` says so, on the cautious side; a
-comparison, quoted text or a debugger temp alone (`temp9=0`) does not; `source` and an ACTION
-count, by the parameter each command takes it in, braced or bare (a `bp`, `wp`, `rp`, `ep` or
-`trace` line); a bare `suspend`, `resume`, `ignore` or `observe` only lists; a `hardreset` is
-refused unsent (`close` then `start`). A run the console owns (the `g` family, `step N`, `over`,
-`next`) marks the session RUNNING: no stop packet comes for it, so the readers refuse until the
-frame counter proves the stop, and `stop` brings it back. A `focus`, `ignore` or `observe`
-naming a cpu adds `visible_cpu` and `ignored`, read back. A command too long for one packet is
-`bad_argument` (`command_chars`, `limit_chars`), never sent. The console's own error answer
-(`Error in expression`, `unknown command`, `Unable to find device` and its other printed
-refusals) is INVALID (`bad_argument`) quoting its line, with `output` whole, `refused` (by
-`index`, with its `error`) and `not_run` (what a parse error left unexecuted); a `perform` stops
-there.
-Needs the machine STOPPED (else `not_stopped`).
+A line that changes the machine (`fill`, `load`, `stateload`, a reset, a run or step, an
+assignment) is a write. `hardreset` is refused unsent. The `g` family, `step N`, `over`
+and `next` mark the session RUNNING until `stop`. A too long packet, or the console's own
+error answer, is `bad_argument`.
+
+Reply: `command`, `mutates`, `output`, `clipped`, `note`; past 4000 characters the
+text goes to a file (`output_chars`, `output_path`); `visible_cpu`, `ignored`; on refusal
+`command_chars`, `limit_chars`, `refused`, `refused_total`, `not_run`.
 
 Reference: REFERENCE.md, The console.
 
@@ -335,7 +321,7 @@ Example, from a live run:
 
 - `//` and `/*` are the comment pane's `comadd` and `commit`; a comment's text is never evaluated, and a `comadd` typed here is neither stored nor listed.
 - A comparison is never an assignment (`print {d1==7fff}` is a read), and an assignment is looked for outside quoted strings only.
-- An assignment to a debugger temp is not a write, while `temp0=w@100=1` still is, because the chain reaches memory. A line that assigns a control's temp names the control in `note`: it moves `breakpoint_list`'s cumulative `hits_since_armed` and not a run's `control_hits`, and -1 makes the control halt at its next hit.
+- An assignment to a debugger temp is not a write, while `temp0=w@100=1` still is, because the chain reaches memory. A line that assigns a control's temp names the control in `note`: it moves `declaration_list(kind="breakpoint")`'s cumulative `hits_since_armed` and not a run's `control_hits`, and -1 makes the control halt at its next hit.
 - A line of several commands is split at a `;` outside brackets and quotes, and each is judged alone.
 
 **Packet size.** A command whose packet would pass the size the stub advertised is refused before it is sent, because the stub drops such a packet unanswered and the wait would blame the wrong thing. It covers every console command, so a long `condition`, `find` pattern or `memdump` path is refused the same way.
@@ -343,3 +329,9 @@ Example, from a live run:
 **The console has no exit code, so its own error answers are read.** An `ok` over a refused line would let a `perform` go on to the next step. So the shapes the console was captured printing make the reply INVALID `bad_argument`, matched anchored at a line's start (a shape not captured is not matched): `Error in expression`, `Invalid breakpoint number`, `Invalid registerpoint number`, `Invalid watchpoint type`, `Error opening file`, and the parse errors `unknown command`, `ambiguous command`, `unbalanced parentheses`, `unbalanced quotes`, `not enough parameters for command`, `too many parameters for command`, `error in assignment expression`.
 
 The two families differ in what ran. A parse error stops the line there, so the commands after it never ran and are left out of its writes, release and cpu setters (a `g` behind a refused command leaves the machine stopped). An error printed while a command ran leaves the rest running, and the command stays counted as a write, because the console evaluates parameters in order and `print d0=5,zzz` writes D0 before it refuses `zzz`. An error the answer cannot pin on one command names the whole line. A bare comparison typed as a command (`print d1==1234`) is an assignment expression to the console's parser and is refused; braced it answers.
+
+**What counts as a write.** Each word is classified off MAME's command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` and an action, found by the parameter each command takes it in. A bare `suspend`, `resume`, `ignore` or `observe` only lists.
+
+**Why the console's errors are read.** It has no exit code, and an `ok` over a refused line would let a `perform` go on to the next step. A parse error leaves the commands after it unexecuted (`not_run`); an error printed while a command ran leaves the rest running and the command counted as a write.
+
+**Why an oversized packet is refused.** The stub drops such a packet unanswered and the wait would blame the wrong thing.

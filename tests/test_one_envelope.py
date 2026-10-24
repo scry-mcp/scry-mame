@@ -80,8 +80,8 @@ def test_a_schema_refusal_is_closed_by_the_same_composer(
 
 
 @pytest.mark.parametrize("call", [
-    pytest.param(lambda: s.breakpoint_list(), id="breakpoint_list"),
-    pytest.param(lambda: s.regpoint_list(), id="regpoint_list"),
+    pytest.param(lambda: s.declaration_list("breakpoint"), id="declaration_list breakpoint"),
+    pytest.param(lambda: s.declaration_list("regpoint"), id="declaration_list regpoint"),
     pytest.param(lambda: s.comment_list(), id="comment_list"),
     pytest.param(lambda: s.cpu_info(), id="cpu_info"),
 ])
@@ -100,7 +100,7 @@ def test_watch_list_on_a_running_machine_says_running_in_the_session_block_alone
 ) -> None:
     _watching(monkeypatch, tmp_path)
     s.resume()
-    out = s.watch_list()
+    out = s.declaration_list("watch")
     assert out["status"] == "ok", out
     assert "running" not in out and out["session"]["running"] is True, out
 

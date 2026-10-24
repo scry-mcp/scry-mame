@@ -13,35 +13,18 @@ start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath=
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
-Arguments (every path absolute; `rompath`, `inipath`, `state_dir` directories, the rest files):
-- `system`, `rompath`; `binary` (omitted: `MAME_BINARY`, else the PATH's `mame`).
-- `reference_rom`, `reference_addr` (`0x`), `reference_base` (`0x`, the image's first byte).
-- `symbols`: a YAML or the linker's five-column map, the first cpu's. `bases`
-  maps each non-CODE class of a map to a `0x` base or to `rom`. `types`: a file of `name:
-  format` lines. Several cpus: `symbols` `{cpu: path}`, `bases` `{cpu: {class: base}}`,
-  `types` `{cpu: file}`.
-- `shared=True`: somebody WATCHES (big window, real speed); `display` (`main` | `secondary`),
-  its screen, needs it. `throttle_from_frame`: flat out until it.
-- `background`: `true` behind, your focus kept, watched (`shared`) or not; `false` in front;
-  omitted, by `shared`.
-- `boot_lua`, an EXISTING harness file, never Lua text (never `manager.machine:exit()`),
-  `env` for it, `inipath`,
-  `boot_seconds` (the stub's wait), `stub_port` (`0`: a free one).
-- `state_dir` (empty: disposable; else kept), `cfg`.
+Paths are absolute: `rompath`, `inipath`, `state_dir` directories, the rest files. The
+check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first byte).
+`symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
+`shared=True`: somebody watches (big window, real speed), on `display`. `background`:
+behind, the caller's focus kept, watched or not. `throttle_from_frame`: flat out until it.
+`boot_lua`: a harness file, not Lua text.
 
-Refused before any spawn: a live session, a missing file, a cpu
-the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
-a `stub_port` in use,
-a `reference_addr` OUTSIDE the image. An unknown `system`: refused after spawn. A stranger
-on your
-`stub_port`: `host_failed`. 16 bytes that do not match: `readback_refused`, closed.
+Refused before any spawn: a live session, an unknown cpu, a class with no base, `bases`
+beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
+image. A mismatch: `readback_refused`, closed.
 
-Reply: `system`, `binary`, `binary_origin`, `version`, `pid`, `stub_port`, `scratch_dir`,
-`state_dir`, `cfg`, `debugger`, `errorlog_path`, `stdout_path`, `rom_check`,
-`symbols_total`, `symbols_typed`, `symbols_format`, `symbols_by_class` (first cpu),
-`symbols_by_cpu`, `registers`, `pc`, `frame`, `frame_symbol`, `machine`, what
-reached the driver (`env`, `display`, `view`, `background`, `flags`, `throttle_from_frame`,
-`boot_lua_path`), `views`, `presence`, `declarations` and `start_retries`.
+Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`.
 
 Reference: REFERENCE.md, The session.
 
@@ -70,8 +53,8 @@ Reference: REFERENCE.md, The session.
 | `presence` | boolean | `true` |
 | `view` | string | `""` |
 
-- `presence`: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture, recording or screen reader of this server carries it; a recording of the window made from outside does.
-- `view`: What `snapshot` and `record` render through, for the whole session: empty, the emulated screen alone, at its own size (MAME's `native`); else a layout view by prefix, MAME's own default when none matches (the reply's `views` lists the set's, and `view` says which was taken).
+- `presence`: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
+- `view`: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
 
 | reply field | type |
 |---|---|
@@ -123,13 +106,13 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "/path/to/mame-builds/stock-9c28def3/mamed",
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
   "system": "circus",
-  "rompath": "/path/to/roms",
-  "reference_rom": "$TMPDIR/mame-live-matrix-4d06f0dea223/f2-image/circus.ref",
+  "rompath": "~/Code/mame-test-roms",
+  "reference_rom": "$TMPDIR/mame-live-matrix-1674617bb625/f2-image/circus.ref",
   "reference_addr": "0x1000",
   "reference_base": "0x1000",
-  "inipath": "$TMPDIR/mame-live-matrix-4d06f0dea223/ini-no-joystick",
+  "inipath": "$TMPDIR/mame-live-matrix-1674617bb625/ini-no-joystick",
   "boot_seconds": 30.0,
   "background": false,
   "presence": false
@@ -138,15 +121,15 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "start circus on /path/to/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
+  "summary": "start circus on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
   "status": "ok",
   "system": "circus",
-  "binary": "/path/to/mame-builds/stock-9c28def3/mamed",
+  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
   "binary_origin": "argument",
   "version": "0.289 (unknown)",
-  "pid": 32476,
-  "stub_port": 62785,
-  "scratch_dir": "$TMPDIR/mame-mcp-qy6dfwnf",
+  "pid": 65221,
+  "stub_port": 52818,
+  "scratch_dir": "$TMPDIR/mame-mcp-7_754fwq",
   "state_dir": "",
   "cfg": {
     "available": false,
@@ -156,11 +139,10 @@ Example, from a live run:
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-qy6dfwnf/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-qy6dfwnf/stdout.log",
+  "errorlog_path": "$TMPDIR/mame-mcp-7_754fwq/error.log",
+  "stdout_path": "$TMPDIR/mame-mcp-7_754fwq/stdout.log",
   "rom_check": "OK",
   "symbols_total": 0,
-  "symbols_typed": 0,
   "symbols_format": "none",
   "symbols_by_class": {},
   "symbols_by_cpu": {},
@@ -175,8 +157,6 @@ Example, from a live run:
   "pc": "0x00001000",
   "frame": 0,
   "frame_symbol": "frame",
-  "env": {},
-  "display": "",
   "view": "native",
   "views": [
     "Color Overlay",
@@ -194,8 +174,7 @@ Example, from a live run:
     "-screen0",
     "... 1 more"
   ],
-  "throttle_from_frame": 0,
-  "boot_lua_path": "$TMPDIR/mame-mcp-qy6dfwnf/boot.lua",
+  "boot_lua_path": "$TMPDIR/mame-mcp-7_754fwq/boot.lua",
   "presence": false,
   "machine": {
     "cpus": 1,
@@ -231,8 +210,7 @@ Example, from a live run:
       "unresolved": [],
       "unarmable": []
     }
-  },
-  "start_retries": []
+  }
 }
 ```
 <!-- scry-reference:end start -->
@@ -273,6 +251,18 @@ Example, from a live run:
 
 **A system the binary does not carry refuses `start`, in MAME's own words.** The `-listxml` question is put before the boot and collected after it, in the seconds the boot already spends waiting for the gdbstub, so it costs nothing; the refusal therefore arrives after the spawn, and the guard kills the emulator and deletes the scratch. A `-listxml` that fails for any OTHER reason leaves the start working with the sections only it backs empty and the reason in the `note`: a debug session must not be blocked on an inventory. `machine` in the reply is counts alone, the rows are in `machine_map`.
 
+**`background` is a placement choice, not a mode.** `true` starts the window behind and keeps the caller's focus, `false` in front; left out it follows `shared`, because a watched session is the one somebody looks at.
+
+**`boot_seconds` bounds the stub's wait, and `stub_port` `0` takes a free port.** A fixed port is refused when busy rather than swapped, so the caller's other client never talks to nothing.
+
+**`env` is for `boot_lua` only, and `boot_lua` is never Lua text.** A harness that calls `manager.machine:exit()` would end the machine under the session.
+
+**`state_dir` empty is disposable.** The scratch goes with the session; a named directory is kept.
+
+**The reply also carries what reached the driver** (`binary_origin`, `env`, `display`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
+
+**Also refused**: a stranger on your `stub_port` is `host_failed`; an unknown `system` is refused after the spawn. `symbols` is a YAML or the linker's five-column map; `bases` maps each non-CODE class of a map to a `0x` base or to `rom`; `types` is a file of `name: format` lines; with several cpus `symbols` is `{cpu: path}`, `bases` `{cpu: {class: base}}`, `types` `{cpu: file}`. `shared=True` means somebody watches (big window, real speed), and `display` (`main` or `secondary`) needs it.
+
 <!-- scry-reference:begin status -->
 ## `status`
 
@@ -282,27 +272,15 @@ Example, from a live run:
 status()
 ```
 
-Whether a machine is alive, and which one. Safe on a running machine; a stop it finds
-the machine reached on its own is recorded and reported in `stopped_on_its_own`.
+Whether a machine is alive, and which one. Safe on a running machine; a stop it finds the
+machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-Reply (`alive` and `running` are the `session` block's): with no machine, a `note` when the
-server closed the last session after an hour with no call; with `exit_code` and a `note` when
-MAME died under the session (`close` collects its last words before anything is deleted); when
-alive `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `cfg`, `presence` (`true` drawn,
-`false` asked off, or why not), `debugger` (`attached`, and a `note`: a capture taken at a stop
-here can land a frame away from an autoboot golden), `fingerprint` (the build the declarations
-are judged against, the first cpu's) and `fingerprints` (each cpu's), `errorlog_path`,
-`stdout_path`, `pc` (the machine's, read now; unavailable with why while it runs or once the
-session broke: `last_stop.pc`), `last_stop` (`stop_seq`, `pc`, `cpu`, `frame`, `cause`,
-`since_s`, `wall_at`; the park after `start` is stop 1), `in_debugger` (`breakpoints`, `watches`
-(the change watches) and `regpoints`: each `ref` this server armed in the debugger, and its
-`cpu`), `threads` (the stub's thread per cpu; empty without the thread patch), `cpu_tags` (what
-each is doing is `cpu_info`'s), `frame_symbol` (the frame counter's name as `start` asked it,
-unavailable on a board with none), and, always present, `console_pending` (Lua lines sent and
-not yet evaluated, which `close` drains before its `quit`), `throttles_pending` (`tag`, `on`)
-and `tallies_pending_removal` (`tally_id`, `call`), where a switch that landed is its row
-leaving. `broken` (absent on a healthy session) says why it can no longer be trusted: the
-machine is then asked nothing, and the way out is `close`, then `start`.
+Reply: with no machine, a `note`; alive, `system`, `pid`, `stub_port`, `scratch_dir`,
+`state_dir`, `presence`, `debugger`, `fingerprint` (`fingerprints` per cpu),
+`errorlog_path`, `pc`, `in_debugger` (`breakpoints`, `watches`, `regpoints`: each `ref`,
+`cpu`), `console_pending`, `throttles_pending`, `tallies_pending_removal`. Also
+`last_stop` (`stop_seq`, `pc`, `cpu`, `cause`) and `broken` when the session can no longer
+be trusted: `close`, then `start`.
 
 Reference: REFERENCE.md, The session.
 
@@ -345,6 +323,18 @@ Example, from a live run:
 ```
 <!-- scry-reference:end status -->
 
+**`status` is the one reader that answers on a running machine and on a broken session**, so it is where a caller learns why nothing else answers.
+
+**`debugger` carries a `note`** that a capture taken at a stop here can land a frame away from an autoboot golden (the machine runs under the debugger); `start`'s own text says why.
+
+**`fingerprint` is the build the declarations are judged against**: a declaration made against another build is not trusted. `threads` is empty without the stub's thread patch, and `cpu_tags` only names the cpus; what each is doing is `cpu_info`'s.
+
+**`console_pending` and `tallies_pending_removal` are always present, `throttles_pending` when it holds a row**: Lua lines sent and not yet evaluated (`close` drains them before its `quit`), switches asked and not yet landed (`tag`, `on`), and tallies waiting to be removed (`tally_id`, `call`), where a switch that landed is its row leaving.
+
+**`presence`** is `true` drawn, `false` asked off, or the reason it is not drawn. **`pc`** is read now; while the machine runs or once the session broke it is unavailable with why, and `last_stop.pc` is the answer.
+
+**Also in the reply**: `cfg`, `stdout_path`, `threads` and `frame_symbol` (the frame counter's name as `start` asked it), `last_stop`'s `frame`, `since_s` and `wall_at`, and `exit_code` with a `note` when MAME died under the session.
+
 <!-- scry-reference:begin close -->
 ## `close`
 
@@ -354,23 +344,13 @@ Example, from a live run:
 close(detail=false)
 ```
 
-End the session: MAME is asked to `quit` through its console and killed only if it has not
-gone within the grace period. The scratch (snapshots included) is deleted; a `state_dir` stays.
-Works on a RUNNING machine too. Refuses nothing: with no session it answers `closed: false`.
+End the session: MAME is asked to `quit` and killed only if it has not gone within the
+grace period. The scratch is deleted; a `state_dir` stays. Works on a running machine;
+with no session it answers `closed: false`.
 
-Reply: `closed`, `stdout_tail` and `errorlog_tail` (the last words of each channel, read before
-the scratch goes) when the end was not a clean `quit` with exit code 0, or with `detail=True`,
-else `omitted` names them with `how`; `ended_by` (`quit`: a clean exit that wrote its cfg;
-`exited`: it exited and wrote none; `killed`: SIGKILL after the grace period; `died`: it had
-already exited; `none`: no session), `state_written`, `exit_code` (unavailable with its `why`
-when SIGKILLed and still not reaped: an emulator may still be on the machine), `cfg`
-(`installed_path`, `changed`: did MAME rewrite the copy, `available: false` with its `why` when
-a file could not be read back; unavailable when no cfg was given; the repo's file is never
-touched), `console_pending_before`, `console_drained` and a `note` (the Lua pipe, emptied
-before the `quit`), and `average_speed` when it ends a run (`percent` with the two deltas, or
-`available: false` with its `why`; absent on a broken session). The `session` block describes
-the state BEFORE closing (so `altered` is the truth about the session that ended), plus any
-throttle found not applied: `alive: true` beside `closed: true` is that, not a contradiction.
+Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
+`cfg` (`installed_path`, `changed`), `average_speed`, `note`; `stdout_tail` and
+`errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
 
 Reference: REFERENCE.md, The session.
 
@@ -415,9 +395,9 @@ Example, from a live run:
     "why": "no cfg was given, so MAME runs on its defaults"
   },
   "average_speed": {
-    "percent": 2076.74,
-    "emulated_s": 83.121073,
-    "wall_s": 4.002478
+    "percent": 2032.13,
+    "emulated_s": 81.337645,
+    "wall_s": 4.002575
   },
   "console_pending_before": 0,
   "console_drained": 0
@@ -431,6 +411,14 @@ Example, from a live run:
 
 **The console's pipe is emptied before the exit is asked for**, because a chunk MAME's Lua state still holds at `quit` can take its collector down on the way out; the `note` names what could not be drained, so an ugly exit code has its likely cause beside it.
 
+**The five `ended_by` values** are `quit` (a clean exit that wrote its cfg), `exited` (it exited and wrote none), `killed` (SIGKILL after the grace period), `died` (it had already exited) and `none` (no session): `closed: true` would say the same about all of them.
+
+**`cfg`** carries `available: false` with its `why` when a file could not be read back, and is unavailable when no cfg was given; the repo's file is never touched. **`average_speed`** is `percent` with the two deltas, or `available: false` with its `why`, and absent on a broken session.
+
+**The `session` block describes the state before closing**, so `altered` is the truth about the session that ended; a throttle found not applied rides there too, which is why `alive: true` can sit beside `closed: true`.
+
+**Also in the reply**: `console_pending_before`, `console_drained`, `exit_code` (unavailable with its `why` when SIGKILLed and still not reaped), and `omitted` naming the tails with `how` when they are left out.
+
 <!-- scry-reference:begin focus -->
 ## `focus`
 
@@ -440,30 +428,18 @@ Example, from a live run:
 focus(cpu)
 ```
 
-Make `cpu` (`subcpu` or `:subcpu`) the debugger's VISIBLE cpu, and read it back off the
-console's `cpulist`. Needs the machine STOPPED (else `not_stopped`).
+Make `cpu` (`subcpu` or `:subcpu`) the debugger's visible cpu, read back off the console's
+`cpulist`. Needs the machine STOPPED (else `not_stopped`).
 
-THE MODEL, every tool's: no `cpu` is the visible cpu, which a stop moves to the cpu that
-stopped and a release back to it (`cpu_info`'s `visible`); `cpu` names another, and the
-visible one stays (`step` alone shows the cpu it steps). A reply that touches a cpu names
-it (`cpu`). A declaration keeps its cpu, its `ref` resolving in that cpu's symbols. `rpset`
-names no cpu: a registerpoint is the visible cpu's. Another cpu's registers and memory need
-the thread patch.
+With the stub's thread patch nothing runs. Without it the console's `focus` ignores every
+other cpu and may run until `cpu` executes.
 
-On a build whose gdbstub serves a thread per cpu (`status`'s `threads`) it is the stub's `Hc`,
-which ignores no cpu and releases nothing, and the reply PROVES nothing ran: `machine_ran:
-false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before
-and after (`unread`: one whose block the stub refuses). Without that patch it is the console's
-own `focus`, which IGNORES every other cpu (a breakpoint or watch on one has no effect until
-`debug("observe <cpu>")`) and, when it ignores the visible cpu, RUNS until `cpu` executes:
-`ignored` lists them, and a run adds the survey of where it stopped.
+Refused: a cpu the machine lacks (`unknown_ref`); on the patched stub, a cpu the debugger
+ignores (`bad_argument`). A visible cpu read back other than `cpu`: `readback_refused`; a
+console run reaching no stop: `not_settled`.
 
-Refused: a cpu the machine lacks (`unknown_ref` with `cpu_tags`); on the patched stub, a cpu the
-debugger ignores (`bad_argument`). A visible cpu read back other than `cpu` is
-`readback_refused`; a console run that reached no stop on an observed cpu is `not_settled`.
-
-Reply: `cpu` (read back), `was`, `via` (`stub` or `console`), `machine_ran`, and `frame`,
-`unchanged`, `unread` (stub) or `ignored` and on a run the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine) (console).
+Reply: `cpu`, `was`, `via` (`stub` or `console`), `machine_ran`; `frame`, `unchanged`,
+`unread` (stub); `ignored` and, on a run, its survey (console).
 
 Reference: REFERENCE.md, The session.
 
@@ -515,6 +491,10 @@ Example, from a live run:
 ```
 <!-- scry-reference:end focus -->
 
+**The cpu model is every tool's, and `focus` is its only direct handle.** No `cpu` acts on the visible cpu, which a stop moves to the cpu that stopped and a release back to it (`cpu_info`'s `visible`); `cpu` names another and the visible one stays (`step` alone shows the cpu it steps). A reply that touches a cpu names it. A declaration keeps its cpu, its `ref` resolving in that cpu's symbols. `rpset` names no cpu: a registerpoint is the visible cpu's. Another cpu's registers and memory need the thread patch.
+
+**On the patched stub the reply proves nothing ran**: `machine_ran: false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before and after (`unread`: one whose block the stub refuses). It is the stub's `Hc`, which ignores no cpu and releases nothing.
+
 <!-- scry-reference:begin rom_check -->
 ## `rom_check`
 
@@ -524,15 +504,12 @@ Example, from a live run:
 rom_check(reference_rom, reference_addr="0x0", reference_base="0x0", cpu="")
 ```
 
-Re-validate the session: the 16 bytes at `reference_addr` of `cpu` (`subcpu`; the visible
-one when empty) against the reference image `reference_rom` (placed at `reference_base`), a
-repeated read for determinism, and the cost of a query. Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`).
+Re-validate the session: 16 bytes at `reference_addr` of `cpu` (empty: the visible one)
+against `reference_rom` at `reference_base`. Needs the machine STOPPED (else `not_stopped`).
 
-Reply: `rom_check` (`OK`), `deterministic`, `query_s`, `cpu` (the one read). The three
-arguments come again on every call (`state_load` checks against the image `start` held; this
-is the check a caller points where it likes), with `cpu` naming the image's cpu once a stop
-has made another one visible; a mismatch is `readback_refused`, naming the cpu read and both
-sides. It is about the live machine, never about the build. Needs the machine STOPPED (else `not_stopped`).
+A mismatch is `readback_refused`.
+
+Reply: `rom_check` (`OK`), `deterministic`, `query_s`, `cpu`.
 
 Reference: REFERENCE.md, The session.
 
@@ -554,19 +531,23 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
   "reference_addr": "0x0"
 }
 ```
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.286 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.244 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001286,
+  "query_s": 0.001244,
   "cpu": ":maincpu"
 }
 ```
 <!-- scry-reference:end rom_check -->
+
+**The three arguments come again on every call** because this is the check a caller points where it likes; `state_write(method="load")` checks against the image `start` held. `cpu` names the image's cpu once a stop has made another one visible.
+
+**Each cpu is served by its own thread of the gdbstub's thread patch** (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`). The check is about the live machine, never about the build; the repeated read is for determinism and `query_s` is the cost of a query.

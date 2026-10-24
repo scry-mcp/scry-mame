@@ -52,7 +52,7 @@ def folded(lines: list[str]) -> list[str]:
 def coin_and_filter(coins: int) -> dict[str, Any]:
     return {"steps": [{"op": "input", **COIN},
                       {"op": "run_for", "milliseconds": COIN_MS, "seconds": RUN_S},
-                      {"op": "scan_filter", "operator": "=", "value": coins}],
+                      {"op": "scan", "method": "filter", "operator": "=", "value": coins}],
             "settle_seconds": RUN_S}
 
 
@@ -151,7 +151,7 @@ STEPS = [
          shown=("rom_check", "pc")),
     Step("attract", "run_for", {"milliseconds": 5000, "seconds": RUN_S},
          lambda reply, run: f"attract mode {free_set.ran(reply, run)}"),
-    Step("scan", "scan_start", {"ref": RAM, "length": RAM_BYTES},
+    Step("scan", "scan", {"method": "start", "ref": RAM, "length": RAM_BYTES},
          free_set.scanned(RAM, RAM_BYTES)),
     Step("coin 1", "perform", coin_and_filter(1), filtered(1)),
     Step("coin 2", "perform", coin_and_filter(2), filtered(2)),
@@ -172,7 +172,7 @@ STEPS = [
     Step("settle", "run_for", SETTLE, settled),
     Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04),
          shown=("summary", "hex")),
-    Step("save", "state_save", {"name": "four_credits"}, free_set.saved),
+    Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved),
     Step("press start", "input", START,
          wrote(CREDITS_BIN, START_BIN_PC, START_BIN_STOP, 3, "START stopped on the binary"),
          shown=("summary", "cause")),
@@ -181,13 +181,13 @@ STEPS = [
     Step("trail", "history", {"limit": TRAIL}, taken,
          shown=("summary", "lines")),
     Step("registers", "registers", {}, regs),
-    Step("unwatch", "watch_clear", {"all": True}, cleared),
+    Step("unwatch", "declaration_clear", {"kind": "watch", "all": True}, cleared),
     Step("play", "run_for", {"milliseconds": 8000, "seconds": RUN_S},
          lambda reply, run: f"the game plays on: {free_set.ran(reply, run)}"),
     Step("after start", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(3, 0x03)),
     Step("screen", "screen_view", lambda run: {"mode": "render", "dest": run.dir / "screen.png",
                                                "scale": 2}, free_set.pictured("the game in play")),
-    Step("load", "state_load", {"name": "four_credits"}, free_set.loaded),
+    Step("load", "state_write", {"method": "load", "name": "four_credits"}, free_set.loaded),
     Step("back", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
     Step("close", "close", {}, free_set.closed),
 ]

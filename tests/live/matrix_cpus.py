@@ -128,7 +128,7 @@ def _r_alienar(cells: list[str]) -> None:
              reference_rom=free_image("alienar", ["aarom01"], folder), reference_addr="0x0",
              inipath=no_joystick_ini(), boot_seconds=START_WAIT_S)
     message = str(r.get("message"))
-    cell(cells[ALIENAR], refused(r, "no_channel") and r.get("start_retries") == []
+    cell(cells[ALIENAR], refused(r, "no_channel") and "start_retries" not in r
          and "`Fatal error: gdbstub: cpuname mc6809e not found in gdb stub descriptions`"
          in message, said(r, 300))
 

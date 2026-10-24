@@ -11,33 +11,19 @@ Breakpoints, registerpoints and watches are declarations: what the caller meant,
 breakpoint_at(ref, by="auto", role="stop", condition="", cpu="")
 ```
 
-Declare an execution breakpoint at `ref`, a PLACE in the code, and arm it on a cpu, as a
-`stop` or a `control` (never halts: MAME counts its hits in one of its 10 `temp`
-variables, read by `run_to`). STORED and re-armed at the next `start`; armed until
-`breakpoint_clear` or `close`.
+Declare an execution breakpoint at `ref`, a place in the code, as a `stop` or a `control`
+(never halts; hits counted in a `temp`, 10 at most, read by `run_to`). Stored,
+re-armed at `start`.
 
-Arguments: `ref`, a symbol or a LINEAR `0x` address (`0x4a0`; a `seg:off` is refused). `by`:
-`auto`, `symbol` or `address` only: an expression is never a place here (`expr` and `pointer`
-are refused; a halt when one holds is `regpoint_add`'s). `role`: `stop` or `control`.
-`condition` (a `stop` only): halt only when it holds, in the console's
-grammar, bare numbers hex (`w@DemoLen==0x25`; no `,`, `;`, braces or assignment), kept as
-typed and evaluated once before arming, on the row's cpu (a build without the thread patch
-refuses one on another cpu). `cpu` (`subcpu`): its cpu, else the visible one, which never
-moves; one ref on two cpus is two declarations.
+`ref`: a symbol or linear `0x` address, never an expression. `condition` (a `stop` only):
+console grammar, bare numbers hex, no `,`, `;`, braces or assignment. `cpu`: else the
+visible one.
 
-Refused: a `condition` the console's evaluator refuses or one too long for a packet
-(`command_chars`, `limit_chars`); a cpu the machine lacks (`unknown_ref` with `cpu_tags`); a
-second declaration at an address another holds on its cpu; one ref under the other role; a
-control past the 10 temps; a row already there it cannot adopt. A refusal stores nothing. A
-name absent from THIS build (not bare hex) is stored `unresolved`. Works on a RUNNING machine
-too (`while_running`).
+Refused: a `seg:off`; a `condition` the console refuses or too long (`command_chars`); an
+unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
+role; a control past the 10 temps.
 
-Reply: `ref` (the string that clears it), `by`, `role`, `stored`, `already_stored`, `condition`
-(as the console reads it) and `condition_typed` when that differs, `armed`, `state` (`armed`,
-`disabled`, `unresolved` with a `note`), `while_running`, a control's `temp`, and once it
-resolves `addr`, `entry` (the debugger's row), its `cpu`, and a `note` when that cpu is
-ignored. A row `bplist` does not list after the arm is `readback_refused` with the
-declaration KEPT (`armed: false`, `state: gone`).
+Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp`, `addr`, `entry`.
 
 Reference: REFERENCE.md, Declarations.
 
@@ -105,137 +91,7 @@ MAME's debugger skips the breakpoints of the instruction a stop lands on when th
 
 **It is evaluated once (`print {<condition>}`) before arming**, because the console arms a condition its evaluator refuses and that row never fires. `print` reads the visible cpu's symbols, so the row's cpu is shown through the stub and the visible one put back, which runs nothing. When the stub refuses the put-back the call refuses before storing and `visible_cpu` names the cpu left visible; `start`'s re-arm has no caller to answer, arms by cpu name and says so in its `rearm` `note`. At `start` a condition the console cannot evaluate is `unresolved` for a name this build lacks and `unarmable` otherwise, kept either way.
 
-<!-- scry-reference:begin breakpoint_list -->
-## `breakpoint_list`
-
-*List the breakpoint declarations*
-
-```text
-breakpoint_list(cpu="")
-```
-
-Every breakpoint declaration and its state, against the debugger's own `bplist` read back.
-Reply: `breakpoints`, each with `ref`, `by`, `cpu`, `role`, `created_at`, `origin`, `inherited`
-(true for a declaration the store brought back at `start`, false for one made this session),
-`age_s` (whole seconds since `created_at`, unavailable with no date), `condition` and
-`condition_typed`
-as `breakpoint_at` replies them, `addr`, `hits_since_armed` for an armed control (its count
-since it was armed), `state` (`armed` or `disabled` with its `entry` and `cpu`, `gone` for one
-that owns no row, `stale` for a raw address declared over another build, `aliased` with `why`
-for a declaration from before the one-row rule whose address another declaration owns,
-`unresolved` for a symbol this build lacks, in the ref or in the CONDITION: the latter keeps its
-`addr`, since the ref resolved, as the registerpoint family lists its own), and `foreign`:
-breakpoints the debugger holds that no declaration placed (one typed through `debug`, or a
-`run_to`'s while it runs). Answers on a running machine too, with `last_stop`. `cpu` (`subcpu`;
-left out, every cpu) narrows both to that cpu's rows (`bplist <cpu>`); the reply's `cpu` names
-it, unavailable when none was.
-
-Reference: REFERENCE.md, Declarations.
-
-| argument | type | default |
-|---|---|---|
-| `cpu` | string | `""` |
-
-| reply field | type |
-|---|---|
-| `breakpoints` | array |
-| `cpu` | string or object |
-| `foreign` | array |
-
-Example, from a live run:
-
-```json
-{}
-```
-
-```json
-{
-  "summary": "breakpoint_list: 1 declared, 1 armed",
-  "status": "ok",
-  "breakpoints": [
-    {
-      "ref": "exception_handler",
-      "by": "symbol",
-      "cpu": ":maincpu",
-      "created_at": "2026-10-24T16:07:07+00:00",
-      "origin": "2026-10-24T16:07:07+00:00#32680.1",
-      "inherited": false,
-      "age_s": 0,
-      "role": "stop",
-      "addr": "0x000025a4",
-      "state": "armed",
-      "entry": "1 @ 0025A4"
-    }
-  ],
-  "foreign": [],
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
-}
-```
-<!-- scry-reference:end breakpoint_list -->
-
-<!-- scry-reference:begin breakpoint_clear -->
-## `breakpoint_clear`
-
-*Clear breakpoint declarations*
-
-```text
-breakpoint_clear(ref="", cpu="", all=false)
-```
-
-Clear breakpoint declarations: those named by the `ref` their `breakpoint_at` reply
-carried, or every one with `all=True` and no `ref`, on every cpu or, with `cpu`, on that one
-alone,
-disarming what this server armed for each and reading the debugger's list back. A foreign
-breakpoint is never deleted. Works on a running machine too. `all=True` takes every
-breakpoint declaration of the store `start` named (`declarations.path`): without a
-`state_dir`, other sessions' rows too, listed `inherited` with their `age_s`. An empty `ref`
-is refused.
-
-Reply: `declarations_cleared`, `disarmed` (the debugger's rows that went), `while_running`.
-A row the debugger still lists after its removal was sent keeps its record, as a
-watch's does, so `disarmed` does not name it and `note` says which row is still held
-and names the `bpclear` that removes it; a stop there is then named by its address.
-Matching: a `0x` address in any spelling (`0x00ff` is `0xff`), and a symbol in any case. A `ref` that matches no breakpoint declaration is
-`status: INVALID`, naming the refs held; `all=True` on an empty store is `ok` with 0.
-
-Reference: REFERENCE.md, Declarations.
-
-| argument | type | default |
-|---|---|---|
-| `ref` | string | `""` |
-| `cpu` | string | `""` |
-| `all` | boolean | `false` |
-
-| reply field | type |
-|---|---|
-| `declarations_cleared` | integer |
-| `disarmed` | array |
-| `note` | string |
-| `while_running` | boolean |
-
-Example, from a live run:
-
-```json
-{
-  "all": true
-}
-```
-
-```json
-{
-  "summary": "breakpoint_clear all: 1 cleared, 1 disarmed",
-  "status": "ok",
-  "declarations_cleared": 1,
-  "disarmed": [
-    "1 @ 0025A4"
-  ],
-  "while_running": false
-}
-```
-<!-- scry-reference:end breakpoint_clear -->
+A control counts its hits through a conditioned console breakpoint that never halts, so it costs a run nothing. A `seg:off` is refused because addresses are linear on MAME's cpus. The condition is evaluated once before arming because the console arms a condition its evaluator refuses and that row never fires (`limit_chars` names the packet limit a too-long one hits). A name absent from this build is stored `unresolved` rather than refused; a row `bplist` does not list after the arm is `readback_refused` with the declaration kept (`armed: false`, `state: gone`); `note` is set when a cpu is ignored; `condition` and `condition_typed` carry the condition as the console reads it and as typed; `cpu` is the cpu it armed on.
 
 <!-- scry-reference:begin regpoint_add -->
 ## `regpoint_add`
@@ -246,30 +102,18 @@ Example, from a live run:
 regpoint_add(condition, cpu="")
 ```
 
-Declare a REGISTERPOINT and arm it: the machine stops when `condition` comes true,
-WHEREVER in the program that happens (MAME's own `rpset`, evaluated after every
-instruction). It is for "who puts this value in this register", which needs no address.
-STORED like a breakpoint, with the condition as typed, and re-armed at the next `start`.
+Declare a registerpoint: the machine stops when `condition` comes true, wherever in the
+program ("who puts this value in this register"). Stored, re-armed at `start`.
 
-Arguments: `condition`, in the console's grammar that `breakpoint_at` and `run_to` take (bare
-numbers hex: `d1==0x7fff`, `a0==GameState && d0!=0`), a symbol replaced by its address; it
-compares, never assigns, and carries no action. `cpu`: MAME's `rpset` takes none and arms on the
-visible cpu, so another is refused naming `focus`.
+`condition`: console grammar, bare numbers hex (`d1==0x7fff`); compares, never assigns.
+`cpu`: only the visible one; another is refused naming `focus`.
 
-Refused, storing and arming nothing: a condition the console's evaluator refuses, a register
-this cpu lacks included (`bad_argument` in the console's words); one too long for a packet
-(`command_chars`, `limit_chars`); one reading the same as another registerpoint's once its
-symbols are addresses (`ambiguous_ref` naming it); a debugger with no registerpoints
-(`no_channel`). The same condition again is adopted, never a second row. Works on a RUNNING
-machine too: the console takes it and it fires (`while_running`). It marks nothing altered.
+Refused: a condition the console refuses (`bad_argument`) or too long (`command_chars`,
+`limit_chars`); one equal to another registerpoint's (`ambiguous_ref`); a debugger with no
+registerpoints (`no_channel`).
 
-Reply: `ref` (the condition as typed, the string that clears it), `by` (`expr`), `condition`
-(as the console read it), `stored`, `already_stored`, `while_running`, `armed`, `state`
-(`armed`, or `disabled`), `entry` (the debugger's row), `index` and `cpu` (the visible cpu it
-is armed on), with a `note` when the debugger ignores that cpu. A row `rplist` does not list
-after the `rpset` is `readback_refused` with the declaration KEPT (`armed: false`, `state:
-gone`, a `note`). When it fires, the stop's `cause` is ``registerpoint '<ref>'`` (with
-the stop's `regpoint_hit`), and it fires again one instruction on while the condition holds.
+Reply: `ref` (the condition as typed), `stored`, `already_stored`, `armed`, `state`,
+`while_running`, `entry`, `cpu`, `note`.
 
 Reference: REFERENCE.md, Declarations.
 
@@ -332,131 +176,7 @@ At `start` each one is re-evaluated: `unresolved` when the console answers `unkn
 
 `run_to` and `run_for` answer `OTHER_STOP` for it, since a registerpoint is never a target. `rpset {<condition>}` typed through `debug` does not alter the session; an action after it counts as a write.
 
-<!-- scry-reference:begin regpoint_list -->
-## `regpoint_list`
-
-*List the registerpoint declarations*
-
-```text
-regpoint_list(cpu="")
-```
-
-Every registerpoint declaration and its state, against the debugger's own `rplist` read
-back. Reply: `regpoints`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited`
-(true for a declaration the store brought back at `start`, false for one made this
-session), `age_s` (whole seconds since `created_at`, unavailable with no date), `condition` (as
-the console reads it now), `state` (`armed` or `disabled` with its `entry`, `index` and
-`cpu`; `gone` for one the debugger no longer lists; `unresolved` for one whose symbol this
-start's build lacks, or with `why` when a symbol now collides with a name the console
-knows), and `foreign`: registerpoints the debugger holds that no declaration placed (one
-typed through `debug`). It has no `addr`, `role`, `stale` or `aliased`: those belong to an
-address, and a registerpoint has none. Answers on a running machine too, with
-`last_stop`. `cpu` (left out, every cpu) narrows both to its rows and is named in `cpu`, as
-`breakpoint_list`'s does.
-
-Reference: REFERENCE.md, Declarations.
-
-| argument | type | default |
-|---|---|---|
-| `cpu` | string | `""` |
-
-| reply field | type |
-|---|---|
-| `cpu` | string or object |
-| `foreign` | array |
-| `regpoints` | array |
-
-Example, from a live run:
-
-```json
-{}
-```
-
-```json
-{
-  "summary": "regpoint_list: 1 declared, 1 armed",
-  "status": "ok",
-  "regpoints": [
-    {
-      "ref": "pc==0xfffffffe",
-      "by": "expr",
-      "cpu": ":maincpu",
-      "created_at": "2026-10-24T16:07:07+00:00",
-      "origin": "2026-10-24T16:07:07+00:00#32680.1",
-      "inherited": false,
-      "age_s": 0,
-      "condition": "pc==0xfffffffe",
-      "state": "armed",
-      "entry": "1 if pc==0xfffffffe",
-      "index": 1
-    }
-  ],
-  "foreign": [],
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
-}
-```
-<!-- scry-reference:end regpoint_list -->
-
-<!-- scry-reference:begin regpoint_clear -->
-## `regpoint_clear`
-
-*Clear registerpoint declarations*
-
-```text
-regpoint_clear(ref="", cpu="", all=false)
-```
-
-Clear registerpoint declarations: those named by the `ref` their `regpoint_add` reply
-carried, or every one with `all=True` and no `ref`, on every cpu or on `cpu` alone,
-disarming what this server armed or adopted for it and reading the debugger's list back. A
-foreign registerpoint is never deleted. Works on a running machine too. `all=True` takes every
-registerpoint declaration of the store `start` named, as `breakpoint_clear`'s; an empty
-`ref` is refused.
-
-Reply: `declarations_cleared`, `disarmed` (the debugger's rows that went), `while_running`.
-A row the debugger still lists after its removal was sent keeps its record, as a
-breakpoint's does, so `disarmed` does not name it and `note` names the `rpclear` that
-removes it. Matching: an expression as typed but for its numbers, each read as the console reads it: bare, `0x` and `$` numbers are hex, `#` decimal, `0o` octal and `0b` binary (`d1==7fff`, `d1==0x7fff`, `d1==$7fff` and `d1==#32767` match). A `ref` that matches no registerpoint declaration
-is `status: INVALID`, naming the refs held; `all=True` on an empty store is `ok` with 0.
-
-Reference: REFERENCE.md, Declarations.
-
-| argument | type | default |
-|---|---|---|
-| `ref` | string | `""` |
-| `cpu` | string | `""` |
-| `all` | boolean | `false` |
-
-| reply field | type |
-|---|---|
-| `declarations_cleared` | integer |
-| `disarmed` | array |
-| `note` | string |
-| `while_running` | boolean |
-
-Example, from a live run:
-
-```json
-{
-  "all": true
-}
-```
-
-```json
-{
-  "summary": "regpoint_clear all: 1 cleared, 1 disarmed",
-  "status": "ok",
-  "declarations_cleared": 1,
-  "disarmed": [
-    "1 if pc==0xfffffffe"
-  ],
-  "while_running": false
-}
-```
-<!-- scry-reference:end regpoint_clear -->
+A registerpoint is evaluated after every instruction, so it fires again one instruction on while the condition holds; the stop's `cause` is ``registerpoint '<ref>'`` with `regpoint_hit`. A row `rplist` does not list after the `rpset` is `readback_refused` with the declaration kept (`armed: false`, `state: gone`, a `note`). `condition` in the reply is the condition as the console read it, and `index` the debugger's row number. It works on a running machine and marks nothing altered.
 
 <!-- scry-reference:begin watch_add -->
 ## `watch_add`
@@ -467,38 +187,22 @@ Example, from a live run:
 watch_add(ref, mode, length=0, fmt="auto", by="auto", cpu="", condition="", trigger="", space="program", trigger_type="w")
 ```
 
-Declare a WATCH at `ref`, in its cpu's byte order. STORED, re-armed at the next `start`.
+Declare a watch at `ref`. Stored, re-armed at `start`.
 
-Arguments:
-- `mode`: `show` (read at each stop, arms nothing), `change` (a WRITE watchpoint: a write
-  stops the machine, and `watch_hit` says WHO WROTE THIS BYTE), `count` (tallies
-  every write by value and writer pc, never stopping), `capture` (one
-  row per access to `trigger`, never stops) or `expr`
-  (`ref` is ONE reading debugger expression, `beamy`: no `,`, `;`, assignment, length or
-  fmt).
-- `ref`: a symbol, a `0x` address, or a place through a POINTER (`[base]+0x28`,
-  `base->field`), re-resolved each stop; a capture's `ref` is what each row HOLDS.
-- `fmt`: a scalar (`u8` .. `f64`), an array (`u16[8]`), a string
-  (`char[16]`) or a struct (`{x:i16,y:i16}`). `auto`: a typed symbol's type, else the WIDEST
-  unsigned scalar `length` divides.
-- `length`: TOTAL bytes, REQUIRED unless `fmt` is sized or the symbol is typed; at most
-  128 for a show or capture watch, 1024 otherwise.
-- `by`: `auto` unless forced.
-- `cpu`: its cpu, else the visible one.
-- `condition` (change only): stop only on a write it holds for (`breakpoint_at`'s grammar
-  on the row's cpu; `wpdata` is the value written).
-- `trigger`, `trigger_type` (capture only): the symbol or `0x` address whose WRITES (`w`)
-  or READS (`r`: of `ref` itself; no length, fmt or block) make rows.
-- `space`: `io` when `ref` (count) or `trigger` (capture) is a `0x` PORT; session-only.
+`mode`: `show` (read at each stop), `change` (a write stops the machine), `count` (tallies
+writes), `capture` (rows at `trigger`), `expr` (one debugger expression). `ref`: a symbol,
+`0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
+.. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
+`length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
+128 for show or capture, 1024 otherwise. `condition`: change only.
+`trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
+`fmt`. `space`: `io` port.
 
-Refused: a change watch on an unmapped write; a count range splitting a bus word;
-a ref declared again another way; a range another declaration arms; what the console
-cannot evaluate; an unknown pointer base or `cpu`.
-Works on a RUNNING machine, not through a POINTER (`not_stopped`).
+Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
+declared another way; an unknown pointer base or `cpu`.
 
-Reply: `ref`, `by`, `mode`, `stored`, `already_stored`, `armed`, `state`, `while_running`; at a
-place `length`, `fmt`, `addr` once resolved, `pointer` through one, `reading` when stopped; and
-each mode's own fields (REFERENCE.md, Declarations; rows: `watch_list`).
+Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading`, and each
+mode's own fields.
 
 Reference: REFERENCE.md, Declarations.
 
@@ -625,120 +329,108 @@ The block is read where its values live: the memory share of the one address-map
 
 **Through a pointer**, because the field a C program writes lives in a heap struct reached through a global pointer. The pointer is read at its declared width (`ptr16{...}`, `ptr32{...}`) or else the stack pointer's, the one register as wide as a pointer on every cpu. On a board relocated by `bases`, a pointer read through a symbol of a relocated class is an offset in that class's segment, placed under its base as `disassemble` places a direct operand; a type names the class when it carries one (`ptr16@CODE`), which a routine's address kept in DATA needs. It is re-resolved at every stop: a change watch moves with it (`moved`), a null pointer is `null_pointer`, never a watch at zero.
 
-<!-- scry-reference:begin watch_list -->
-## `watch_list`
 
-*List the watch declarations*
+
+`since_last_stop` is set at a STOP only: a `declaration_list(kind="watch")` between two stops consumes nothing, and a total that fell is a `reset`. `values` and `writers` are cumulative since the install; a write that found its table full is counted in `overflow_values` or `overflow_pcs` and never named. A stop's survey row of a capture lists no rows, which would drown every reply.
+
+
+
+**A count or capture removal is SENT** and applied when the console next reads a line. It is never resent, because the id is the RANGE and a resend could carry away a tap declared since; a removal the console did not carry out repeats on every reply under `session.tallies_not_removed`. Declaring the range again installs over the old tap and CARRIES ITS COUNTS; over a removal that ran, it counts from nothing.
+
+**The dump files are the range's**: a removed tap's can still be on disk when the range is declared again, so an install that finds no tap of its range deletes them before counting.
+
+`count` tallies every write by value and writer pc and never stops; `capture` keeps one row per access to `trigger`; `expr` takes one debugger expression with no `,`, `;`, assignment, length or `fmt`. `fmt` is a scalar (`u8` .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`); `auto` is a typed symbol's type, else the widest unsigned scalar `length` divides. `length` is required unless `fmt` is sized or the symbol typed. `condition` (change only) takes `breakpoint_at`'s grammar on the row's cpu, `wpdata` being the value written. `trigger_type` `r` captures reads of `ref` itself (no length, fmt or block). `space="io"` is session-only. A ref is a symbol, a `0x` address or a place through a pointer (`[base]+0x28`, `base->field`), re-resolved each stop; a capture's `ref` is what each row holds. A watch on a running machine is taken and fires; only a pointer place needs a stop. `already_stored` is a no-op re-declaration; `pointer` and `reading` appear when the ref goes through a pointer or the machine is stopped; `addr` once the ref resolves; `fmt` and `length` echo the place. Reply fields beyond these (`tally_id`, `installed`, `pending`, `values_from`, `trigger_addr` and the rest) are each mode's own and are described on the page.
+
+<!-- scry-reference:begin declaration_list -->
+## `declaration_list`
+
+*List the declarations*
 
 ```text
-watch_list(cpu="")
+declaration_list(kind="", cpu="")
 ```
 
-Every watch declaration and its state, and each io tap (`space: "io"`, `stored: false`).
-Reply: `watches`, each with `ref`, `by`, `cpu`, `created_at`, `origin`, `inherited` (true if the
-store brought it back; an io tap has neither), `age_s` (whole seconds since `created_at`,
-unavailable with no date), `mode`, `length`, `fmt`, `addr`, `state`, where it is PLACED (a show
-or expr watch: `evaluated`, or `unresolved`, `null_pointer`; stopped, a show watch adds
-`reading`, `available` with `value` and `raw_hex`, or unavailable with `why`; a change watch:
-`armed` or `disabled` with its `entry`, `cpu` and `values_from`, `gone`, `stale` for a raw
-address declared over another build, `unresolved` (the ref, or a name in its `condition`); a
-count watch: `tallied` with its whole value and writer tables (`total`, `since_last_stop`,
-`frame_as_of`, `superseded`, `across`), `no_dump_yet`, `install_failed` (its `why`),
-`install_lost` (`install_resent`) or `not_installed`; a capture: `captured` with `rows_kept`,
-`overflow_rows`, `first_rows` (each with `frame`, `line` and `time_s`) and `rows_path` (every
-row), or those same states; both: `callback_errors`, `count` and `first`, the times the tap's
-body raised, which a census beside a non-zero count is short of), and `foreign`: watchpoints the
-debugger holds that this server never armed. The debugger's own `wplist` is read back, on a
-running machine too, where the reply adds `last_stop`. `cpu` (`subcpu`; left out, every cpu)
-narrows both to that cpu's watches (`wplist <cpu>`), named in `cpu` (unavailable when none was).
-The `session` block carries a row (in its `tallies_not_removed`) for a count watch whose removal
-was NOT carried out by the console (`state` `refused`, the console's words in its `why`, or
-`lost`): the tap is still in the guest and this server no longer holds its record. It is NEVER
-resent, and each row repeats on every call until the session ends; its `why` says what declaring
-the range again does.
+List the declarations of `kind` (empty: every kind) with their state, against the
+debugger's own list read back. `cpu` narrows the rows to it. Answers on a running machine.
+
+Reply: `breakpoints`, `regpoints`, `watches` (each kind asked; each row `ref`, `by`,
+`cpu`, `created_at`, `origin`, `inherited`, `age_s`, `state`, plus its kind's fields),
+`foreign` (debugger rows no declaration placed), `cpu`.
 
 Reference: REFERENCE.md, Declarations.
 
 | argument | type | default |
 |---|---|---|
+| `kind` | one of `""`, `"breakpoint"`, `"regpoint"`, `"watch"` | `""` |
 | `cpu` | string | `""` |
 
 | reply field | type |
 |---|---|
+| `breakpoints` | array |
 | `cpu` | string or object |
-| `foreign` | array |
+| `foreign` | object |
+| `regpoints` | array |
 | `watches` | array |
 
 Example, from a live run:
 
 ```json
-{}
+{
+  "kind": "breakpoint"
+}
 ```
 
 ```json
 {
-  "summary": "watch_list: 1 declared, 0 armed",
+  "summary": "declaration_list breakpoint: 1 breakpoint (1 armed)",
   "status": "ok",
-  "watches": [
+  "breakpoints": [
     {
-      "ref": "0x203200",
-      "by": "address",
+      "ref": "exception_handler",
+      "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-24T16:07:07+00:00",
-      "origin": "2026-10-24T16:07:07+00:00#32680.1",
+      "created_at": "2026-10-24T22:09:55+00:00",
+      "origin": "2026-10-24T22:09:54+00:00#65429.1",
       "inherited": false,
       "age_s": 0,
-      "mode": "show",
-      "length": 2,
-      "fmt": "u16",
-      "addr": "0x00203200",
-      "state": "evaluated",
-      "reading": {
-        "available": true,
-        "value": 0,
-        "raw_hex": "0000"
-      }
+      "role": "stop",
+      "addr": "0x000025a4",
+      "state": "armed",
+      "entry": "1 @ 0025A4"
     }
   ],
-  "foreign": [],
   "cpu": {
     "available": false,
     "why": "no cpu was named, so the rows are every cpu's"
   }
 }
 ```
-<!-- scry-reference:end watch_list -->
+<!-- scry-reference:end declaration_list -->
 
-`since_last_stop` is set at a STOP only: a `watch_list` between two stops consumes nothing, and a total that fell is a `reset`. `values` and `writers` are cumulative since the install; a write that found its table full is counted in `overflow_values` or `overflow_pcs` and never named. A stop's survey row of a capture lists no rows, which would drown every reply.
+<!-- scry-reference:begin declaration_clear -->
+## `declaration_clear`
 
-<!-- scry-reference:begin watch_clear -->
-## `watch_clear`
-
-*Clear watch declarations*
+*Clear declarations*
 
 ```text
-watch_clear(ref="", cpu="", all=false, space="program")
+declaration_clear(kind, ref="", cpu="", all=false, space="program")
 ```
 
-Clear watch declarations: those named by the `ref` their `watch_add` reply carried, with
-its `space` (`io` for an io tap's), or every one with `all=True` and no `ref` or `space`, on
-every cpu or on `cpu` alone. Disarms from the debugger what THIS server armed (a show watch
-armed nothing) and reads the list back; a foreign watchpoint is never deleted. Works on a
-running machine too. `all=True` takes every watch declaration of the store `start` named, as
-`breakpoint_clear`'s, and every io tap; an empty `ref` is refused.
+Clear the declarations of `kind` that `ref` names (as its declaring reply gave it), or
+every one with `all=True` and no `ref`, on `cpu` or every cpu. Disarms what this server
+armed; a foreign row is never deleted. `space="io"` clears a watch's io tap. Works on a
+running machine.
 
-Reply: `declarations_cleared`, `disarmed` (the debugger's rows that went), `while_running`,
-and `tallies_removed` when a count or capture watch went (its removal is SENT to the console
-and applied when the console next reads a line; the record and its files go at once). A row the
-debugger still lists after its removal was sent keeps its record, as a breakpoint's does,
-so `disarmed` does not name it and `note` says which row is still held.
-Matching: a `0x` address in any spelling (`0x00ff` is `0xff`), a symbol in any case, a pointer's base as either of those, an expression as typed but for its numbers, each read as the console reads it: bare, `0x` and `$` numbers are hex, `#` decimal, `0o` octal and `0b` binary (`d1==7fff`, `d1==0x7fff`, `d1==$7fff` and `d1==#32767` match), and with `space="io"`, an io tap's port as an address or its block as a symbol, in those spellings. A `ref` that matches no watch declaration is `status: INVALID`,
-naming the refs held; `all=True` on an empty store is `ok` with 0.
+Refused: an empty `ref` without `all`; a `ref` matching none (`unknown_ref`, naming the
+refs held); `space` for a kind other than `watch`.
+
+Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed`, `note`.
 
 Reference: REFERENCE.md, Declarations.
 
 | argument | type | default |
 |---|---|---|
+| `kind` | one of `"breakpoint"`, `"regpoint"`, `"watch"` | required |
 | `ref` | string | `""` |
 | `cpu` | string | `""` |
 | `all` | boolean | `false` |
@@ -756,21 +448,20 @@ Example, from a live run:
 
 ```json
 {
+  "kind": "breakpoint",
   "all": true
 }
 ```
 
 ```json
 {
-  "summary": "watch_clear all: 1 cleared, 0 disarmed",
+  "summary": "declaration_clear breakpoint all: 1 cleared, 1 disarmed",
   "status": "ok",
   "declarations_cleared": 1,
-  "disarmed": [],
+  "disarmed": [
+    "1 @ 0025A4"
+  ],
   "while_running": false
 }
 ```
-<!-- scry-reference:end watch_clear -->
-
-**A count or capture removal is SENT** and applied when the console next reads a line. It is never resent, because the id is the RANGE and a resend could carry away a tap declared since; a removal the console did not carry out repeats on every reply under `session.tallies_not_removed`. Declaring the range again installs over the old tap and CARRIES ITS COUNTS; over a removal that ran, it counts from nothing.
-
-**The dump files are the range's**: a removed tap's can still be on disk when the range is declared again, so an install that finds no tap of its range deletes them before counting.
+<!-- scry-reference:end declaration_clear -->

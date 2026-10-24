@@ -2,7 +2,7 @@
 
 These tools answer the question a colour snapshot cannot, WHICH PEN: the wrong pixel is pen N, pen N is used here and nowhere else, these bytes under this format are the tile the screen shows. They show bytes under a format the caller states, never what a driver's `GFXDECODE` believes, which is what is wanted when the driver is the thing being fixed. Tilemaps and MAME's own `gfx_element`s are out of reach on purpose: stock Lua binds neither, and a binding is a fork.
 
-**The picture.** Past the inline ceiling the API resamples, and a resampled picture of pixel art is a plausible wrong one (pens blend, one-pixel lines vanish), so such a picture is written and not attached and `not_inlined` says why. A picture inside a `perform` step is never attached (`nested`): only a reply's own crosses. Enlargement is an integer factor, nearest neighbour, so each pixel is a square of one pen.
+**The picture.** Every picture tool attaches its PNG after the JSON when it is within the inline ceiling and names it in `image` either way; `scale` 0 is the largest integer enlargement that fits, and `dest` is a new path, else the session's scratch. Past the inline ceiling the API resamples, and a resampled picture of pixel art is a plausible wrong one (pens blend, one-pixel lines vanish), so such a picture is written and not attached and `not_inlined` says why. A picture inside a `perform` step is never attached (`nested`): only a reply's own crosses. Enlargement is an integer factor, nearest neighbour, so each pixel is a square of one pen.
 
 An indexed PNG keeps each pixel's index, so the file is the data and a golden can compare pens: the screen is indexed when its palette has at most 256 entries, a tile sheet always. A picture that is a VIEW of the data (dimmed, outlined) is RGB, since an indexed file cannot dim a pen without a second palette entry a 256-pen board does not have; the reply names the data file beside it.
 
@@ -23,9 +23,9 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
 
 Everything is in the screen's pixels. A screen is known by the signatures of regions that stay still on it, never by the whole screen, whose signature a sprite or a counter changes from one stop to the next.
 
-**Two layers.** `map_load` fills the FILE layer, which a `start` keeps. `map_add` fills the SESSION layer, which a `start` empties, since its screens were read off another run. `map_find` tries the session first, then the file; `map_save` writes the two as one file, the session winning, and that file becomes the file layer.
+**Two layers.** `map_write(method="load")` fills the FILE layer, which a `start` keeps. `map_write(method="add")` fills the SESSION layer, which a `start` empties, since its screens were read off another run. `map_find` tries the session first, then the file; `map_write(method="save")` writes the two as one file, the session winning, and that file becomes the file layer.
 
-**In an export**, `map_load` and `map_add` are steps, so a replay knows the map an identification was made against; `map_find` is a check holding to what it matched (`matched`, `screen`) and where (`pc`, `frame`); `map_save` is dropped, since a replay would find its file there.
+**In an export**, `map_write(method="load")` and `map_write(method="add")` are steps, so a replay knows the map an identification was made against; `map_find` is a check holding to what it matched (`matched`, `screen`) and where (`pc`, `frame`); `map_write(method="save")` is dropped, since a replay would find its file there.
 
 <!-- scry-reference:begin palette -->
 ## `palette`
@@ -36,22 +36,14 @@ Everything is in the screen's pixels. A screen is known by the signatures of reg
 palette(palette="", first=0, count=0, scale=0, dest="", seconds=5.0)
 ```
 
-The pens of a palette device as MAME holds them NOW, as a table and a swatch (16
-a row, the row's first pen in hex at its left): the route to the colours on a board whose colour
-RAM is a write-only RAMDAC. The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`).
+The pens of a palette device as the machine holds them now, as a table and a swatch: the
+route to the colours of a write-only RAMDAC.
 
-`palette` (the device's tag, as `gfx_view` takes it; empty: the machine's only palette
-device), `first` and `count` (0: to the end, at most 256; `truncated` says
-whether that cap cut it), `scale` and `dest`
-(`scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`), `seconds` (the console's wait).
+`palette` is the device tag (empty: the only one).
 
-One step, the pens AFTER the instruction at the stop's pc, nothing altered. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors` (`#rrggbb`), `alpha` (when
-a pen is not opaque), `indirect_entries`, `indirect`, `shadows`, `highlights`, `image`, the
-console's account, then the stop's survey. `unknown_ref` (a device it lacks), `ambiguous_ref`
-(several, none named), `no_channel` (none), `bad_argument` (past the last pen, naming
-`entries`).
+Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha`,
+`indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such device,
+several, none. `bad_argument`: past the last pen.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -122,7 +114,7 @@ Example, from a live run:
     "... 250 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/gfx/palette-1.png",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -133,10 +125,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#6",
   "pc_before": "0x000025e8",
   "cause": "palette: one step",
@@ -182,6 +172,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end palette -->
 
+`count` 0 runs to the end. The pens are read after the instruction at the stop's pc; nothing is altered. `count` has a ceiling, and `truncated` says whether it cut the read.
+
 <!-- scry-reference:begin screen_view -->
 ## `screen_view`
 
@@ -191,29 +183,17 @@ Example, from a live run:
 screen_view(mode="render", pens=null, point=null, crop=null, scale=0, dest="", attach=true, seconds=5.0)
 ```
 
-The screen as the PENS it holds: every pixel's palette index recovered exactly by one Lua
-chunk that sets pen i to the colour i, reads the screen and puts every pen back.
-The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`); up to 256 pens the PNG is indexed and its index IS the pen.
+The screen as the pens it holds: each pixel's palette index, recovered exactly.
 
-`mode`: `render` (the picture; a direct-colour screen shows its colours), `isolate` (to SEE
-where the `pens` you name are, 1..64, all in `isolate_color` over the rest in
-grey; `pixels`, `bbox`),
-`histogram` (to COUNT: which pens are used, pixels each as `[pen, pixels]`, and which are
-not, `unused`, as `0xa-0xf` runs; no picture), `pixel`
-(`point` `[x, y]`: `pen`, `color`, and `set_by`, the pen's newest `palette_log` write, same
-step, with `agrees`, or unavailable with why; the picture is a crop round the point,
-`point_in_crop` ringed, in a `border`). `crop` `[x, y, width, height]` narrows all but
-`pixel`. `scale`, `dest` (`pixel` too): `scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`; `attach` false writes the file, unattached.
-
-One step, the screen AFTER the instruction at the stop's pc, nothing altered. Needs the machine STOPPED (else `not_stopped`).
+`mode`: `render`, `isolate` (`pens`, 1..64, in `isolate_color` over grey),
+`histogram` (pens used, no picture), `pixel` (`point` `[x, y]`). `crop` `[x, y, width,
+height]` narrows all but `pixel`.
 
 Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
-`screen_indexed` (false: direct colour), `crop`, the
-mode's fields, `image`, the console's account, the survey. `no_channel`: no pens to read (an
-index mode in direct colour, a vector or LCD screen, shadows or highlights, over 2^24 pens);
-`no_channel` or `ambiguous_ref`: no screen or several;
-`readback_refused`: a pen not back (a write) or a failed check;
-`bad_argument`: `point` or `crop` off the screen.
+`screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`; `histogram`, `unused`;
+`pixel`: `pen`, `color`, `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
+screen. `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back.
+`bad_argument`: off the screen.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -314,10 +294,8 @@ Example, from a live run:
   ],
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#7",
   "pc_before": "0x000025ee",
   "cause": "screen_view: one step",
@@ -371,6 +349,8 @@ Four checks make the reply INVALID rather than a picture: an index past the pale
 
 `pixel`: `agrees` says whether the colour `set_by`'s write left is the pen's colour now. When it is not, something other than a port write changed the pen since (a driver copying pens itself, a Lua `set_pen_color`, a state load), and the reply names `same_color_write`, the newest kept row that left that colour, instead of guessing.
 
+Up to 256 pens the PNG is indexed and its index is the pen. The pixel mode's picture is a crop round the point, ringed in a `border`.
+
 <!-- scry-reference:begin screen_signature -->
 ## `screen_signature`
 
@@ -380,23 +360,13 @@ Four checks make the reply INVALID rather than a picture: an index past the pale
 screen_signature(crop=null, seconds=5.0)
 ```
 
-One hex string for what is on screen, or on `crop` of it, so "is it the same screen" is
-answered by comparing two strings and no picture crosses the conversation. It is the
-signature every Scry tool computes (`scry-sig/1`: the crop's colours, pixel by pixel), so it
-equals the one `series_capture` writes for a frame over the same crop, and a palette change
-is a new signature.
+One hex string for the screen, or its `crop` `[x, y, width, height]`: "same screen?" is two
+strings compared; `series_capture` writes it too.
 
-`crop` `[x, y, width, height]`, default the whole screen.
+Reply: `signature`, `width`, `height`. `bad_argument`: `crop` off the screen. `no_channel`,
+`ambiguous_ref`: no or several screens, or a vector one.
 
-One step, the whole screen read in one chunk AFTER the instruction at the stop's pc, nothing
-altered. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `signature` (16 hex characters), `kind` (`pixel`), `width` and `height` (the
-screen's), `crop` (the rectangle hashed), `screen`, `frame_screen`, the console's account,
-the survey. `bad_argument`: `crop` off the screen; `no_channel` or `ambiguous_ref`: no
-screen or several, or a vector screen.
-
-Reference: REFERENCE.md, Media files.
+Reference: REFERENCE.md, Input and the screen.
 
 | argument | type | default |
 |---|---|---|
@@ -452,10 +422,8 @@ Example, from a live run:
   "frame_screen": 0,
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#3",
   "pc_before": "0x000f2040",
   "cause": "screen_signature: one step",
@@ -502,6 +470,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end screen_signature -->
 
+The signature is `scry-sig/1`: 16 hex characters of the crop's colours pixel by pixel, so a palette change is a new signature.
+
 <!-- scry-reference:begin gfx_view -->
 ## `gfx_view`
 
@@ -511,29 +481,19 @@ Example, from a live run:
 gfx_view(layout, palette="none", tag="", ref="", offset=0, first=0, count=0, columns=16, pen_base=0, scale=0, dest="", attach=true, cpu="", seconds=5.0)
 ```
 
-Bytes as tiles under a format YOU state in MAME's `gfx_layout` terms, not what a driver
-believes. The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`); the PNG is indexed, its index the pixel value.
+Bytes as tiles in a format you state, as MAME's `gfx_layout`.
 
-`layout`: a format's NAME in the loaded manifest, or `width`, `height`, `planes`
-(1..8), `planeoffset`, `xoffset`, `yoffset`, `charincrement` in BITS, and an
-optional `name`; a value is an integer or a string with `RGN_FRAC(n,d)`, `+`, `-`, `*`, hex;
-a list is a JSON list or a braced string where `STEPn(a,b)` expands. A driver's layout
-transcribes as it is (`total` is `first` and `count`). Plane 0 is the top bit.
+`layout`: a manifest format's name, or `width`, `height`, `planes` (1..8),
+`planeoffset`, `xoffset`, `yoffset`, `charincrement` in bits; values may use
+`RGN_FRAC(n,d)`, `+ - *`, hex, `STEPn(a,b)`.
 
-Source: `tag` (a region or share, read whole in its own byte order; `RGN_FRAC` is of all of
-it) with `offset` (bytes), or `ref` (tile 0 in `cpu`'s program space; `count` required);
-`offset` and `pen_base`: an integer or a `0x` string.
-`first`, `count` (0: what the block holds, at most 1024), `columns`
-(1..64). `palette`: `none` (grey, not real), a device tag or empty for the only
-one, its pens `pen_base` .. `pen_base + 2^planes - 1` read live. `scale`,
-`dest`: `scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`; `attach` false writes the file, unattached.
+Source: `tag` with `offset` (an integer or a `0x` string), or `ref` (tile 0; `count` required). `count` 0:
+the block, at most 1024; `columns` 1..64. `palette`: `none` or a
+tag.
 
-One step; the state AFTER the stop's instruction; unaltered. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `layout`, the source, `first`, `count`, `tiles_available`, `columns`, `palette`,
-`pen_base`, `real_colors`, `note`, `image`, the console's account, the survey. `bad_argument`: a
-layout that is not one, tiles past the block, too few pens (`entries`), past 1048576
-pixels or a 67108864-byte block; `unknown_ref`: a tag, palette or name it lacks.
+Reply: `layout`, `tiles_available`, `palette`, `real_colors`, `image`. `bad_argument`: not a
+layout, tiles past the block, too few pens, over 1048576 pixels or 67108864
+bytes. `unknown_ref`: missing tag, palette or name.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -664,7 +624,7 @@ Example, from a live run:
   "real_colors": false,
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/gfx/gfx-1.png",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -675,10 +635,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#8",
   "pc_before": "0x000025f4",
   "cause": "gfx_view: one step",
@@ -729,6 +687,8 @@ A region is read whole and put in the block's own byte order, as MAME's `xormask
 
 Fewer pens than the depth needs is refused, never padded. A list of colours is not a palette it takes: recolour the indexed PNG by replacing its PLTE, since its index is the pixel value.
 
+Plane 0 is the top bit. A driver's layout transcribes as it is (`total` is `first` and `count`). The PNG is indexed, its index the pixel value.
+
 <!-- scry-reference:begin gfx_locate -->
 ## `gfx_locate`
 
@@ -738,33 +698,18 @@ Fewer pens than the depth needs is refused, never padded. A list of colours is n
 gfx_locate(layouts, patch, tag="", ref="", offset=0, first=0, count=0, transparent=null, flips=null, cpu="", seconds=5.0)
 ```
 
-Search a screen `patch` `[x, y, width, height]` for a block's tiles under `layouts`, a
-LIST of 1..8 candidates (plural even for one), each `gfx_view`'s `layout`
-or a `gfx_sweep` candidate's id (`s1c3`): a match proves the format and the tile's place,
-against the screen.
+Search a screen `patch` `[x, y, width, height]` for a block's tiles under `layouts`, a list
+of 1..8 (plural even for one), each a `gfx_view` layout or a `gfx_sweep`
+id (`s1c3`).
 
-Every tile-sized window is tried against tiles `first`.. (`count`, 1..65536; 0:
-all, capped) under `flips` (of `none`, `x`, `y`, `xy`: `["none"]` for a board that never flips a
-tile; all four when absent). A pixel is `base + value`, `base` aligned to `2^planes`, one per
-window: exact or nothing, proving the bank; one-pen windows are counted, not tried. When nothing
-matches so, a PEN MAP is tried (one value per pen, two-bank windows too): its matches carry
-`pen_map` and no `base`. `transparent` (a pixel value) leaves those tile pixels out, proving
-less; nothing is ranked. At most 16777216 pixel operations
-and 65536 matches a call. Source: `tag` with `offset` (an integer or a `0x` string), or `ref` on
-`cpu`, as `gfx_view`'s.
+Tiles `first`.. (`count` 1..65536, 0 all) are tried under `flips` (absent: all
+four). `transparent` leaves a pixel value out. Source as `gfx_view` (`offset`:
+an integer or a `0x` string).
 
-One step, altering nothing; kept as `gfx_draft`'s evidence.
-Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `patch`, `screen`, `frame_screen`, `palette`, the source, `transparent`, `flips`,
-`candidates` (counts per layout), `matched`, `matches_total`, `matches` (first
-32: `layout`, `window`, `tile`, `flip`, `base`, `bit`, `byte`, `compared`,
-`ambiguous`, `shape`, `pen_map`), `ambiguous`, `ambiguous_windows`, `pen_map` (unavailable, or
-`tried` with `matches` or `why`); unmatched, `nearest` (`disagree` of `of`, `pixels` `[x, y,
-pen, value]`, `is_a_match: false`, `complete`) or a `note` on why none; `evidence`; the
-console's account, survey. Refusals: `gfx_view`'s and `screen_view`'s capture's, `no_channel`
-for a screen with no pens, `bad_argument`: a patch off the screen or holding no whole tile, or
-past a bound.
+Reply: `candidates`, `matched`, `matches_total`, `matches` (first 32:
+`layout`, `window`, `tile`, `flip`, `base`, `shape`), `ambiguous`, `pen_map`, `nearest`,
+`evidence`. `bad_argument`: a patch off the screen or without a whole tile, past a bound;
+else `gfx_view`'s.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -950,10 +895,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#9",
   "pc_before": "0x000025f6",
   "cause": "gfx_locate: one step",
@@ -1007,6 +950,8 @@ It is the known-answer case that validates the decoder. A window of one pen matc
 
 `nearest` is the smallest SHARE of disagreeing pixels, since a count across layouts of different sizes would rank the small tile first by construction. The matches one call holds are bounded because a pattern repeated across the patch and the block matches without end and tells nothing apart.
 
+A match proves the format and the tile's place. A pixel is `base + value`, exact or nothing; failing that a pen map is tried. A match is kept as `gfx_draft`'s evidence. A call is bounded in pixel operations and in matches kept.
+
 <!-- scry-reference:begin gfx_sweep -->
 ## `gfx_sweep`
 
@@ -1016,31 +961,17 @@ It is the known-answer case that validates the decoder. A window of one pen matc
 gfx_sweep(tag="", ref="", offset=0, count=32, planes=null, sizes=null, palette="none", pen_base=0, scale=0, dest="", cpu="", seconds=5.0)
 ```
 
-A block no format is known for, drawn under a FIXED family of candidate layouts as ONE
-sheet, each cell labelled with its id (`S1C3`) and what it is; nothing is ranked. The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`).
+A block of unknown format drawn under a fixed family of candidate layouts as one sheet, each
+cell labelled (`S1C3`); nothing is ranked.
 
-The family: `planes` (depths, default [1, 2, 4]) x `sizes` ([width, height], each side a
-whole number of 8-pixel cells up to 32; default [[8, 8]]) x pixel order
-(`rows`; for tiles of several 8x8 cells, `cells across` or `cells down`) x, past one
-plane, `packed`, `planar` or `split` (planes a block fraction apart, `tag` only). At most
-16 candidates, else narrow. `count`: tiles a cell shows (1..64,
-default 32). Source: `tag`, a region or share (`offset` bytes into it,
-an integer or a `0x` string), or `ref`,
-an address in `cpu`'s program space. Bits a pixel or a tile size the request names go in
-`planes` or `sizes`; leave out what it does not name.
-`palette`: `none` (default, grey), a device tag, or empty for the only one, from
-`pen_base` (an integer or a `0x` string). `scale`, `dest`: `scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`.
+The family: `planes` x `sizes` ([width, height], sides 8..32) x pixel order x
+`packed`, `planar` or `split` (`tag` only); at most 16 candidates. `count`: tiles a
+cell shows (1..64). Source: `tag` with `offset` (an integer or a `0x` string), or `ref`.
+`palette` as `gfx_view`.
 
-NEXT: a candidate's id is a layout for `gfx_locate` (against the screen) and `gfx_view`;
-`gfx_draft(choose=...)` records a person's pick.
-
-One step; unaltered. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: the source, `sweep` (its number), `count`, `palette`, `real_colors`,
-`cell_scale`, `candidates` (`id`, `what`,
-`tiles_available`, `shown`), `next`, `note`, `image`, the
-console's account, the survey. `bad_argument`: past the candidates a sheet holds, a
-block with no whole tile, a sheet past the ceiling; `unknown_ref`: a tag or palette it lacks.
+Reply: `sweep`, `count`, `cell_scale`, `candidates` (`id`, `what`, `tiles_available`,
+`shown`), `next`, `image`. `bad_argument`: too many candidates, no whole tile, a sheet past
+the ceiling. `unknown_ref`: a tag or palette it lacks.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1138,7 +1069,7 @@ Example, from a live run:
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/gfx/sweep-1.png",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1149,10 +1080,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#10",
   "pc_before": "0x000025f4",
   "cause": "gfx_sweep: one step",
@@ -1197,6 +1126,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end gfx_sweep -->
 
+Name in `planes` or `sizes` only what the request states. A candidate's id is a layout for `gfx_locate` and `gfx_view`; `gfx_draft(choose=...)` records a person's pick.
+
 <!-- scry-reference:begin gfx_draft -->
 ## `gfx_draft`
 
@@ -1206,29 +1137,16 @@ Example, from a live run:
 gfx_draft(dest="", choose=null)
 ```
 
-Write a `gfx.yaml` DRAFT from what THIS session proved, and a JSON report beside it
-holding every figure. A format is `proved` on a source by a `gfx_locate` match whose window
-varies along both axes, its rarest pen covering the tile's longer side (or, at 3+ planes,
-its layout's one match in a search of every tile), where no other source matched on that
-frame; two layouts of ONE tile size that both matched there are rivals, and one is proved
-only where an answer that tried both saw it match a window the other missed (else both are
-ambiguous, none written), while layouts of different sizes are each proved on their own;
-`human` when chosen from a sweep's sheet; an asset per source and bank; a command per
-capture watch whose words agree with the located object's x and y on every paired event (one
-window per answer, one row per frame, at one lag for the group, a coordinate stored reversed
-as `sign: -1`). Refused with no evidence.
+Write a `gfx.yaml` draft from what this session proved, and a JSON report beside it with
+every figure. Refused with no evidence.
 
-`dest`: an absolute `.yaml` in a directory that exists, free of the characters every `dest`
-refuses (the scratch's when empty); an earlier draft there is replaced, anything else there
-(its first line not the DRAFT marker, a link) refused; the report is
-`dest` with `.report.json`, regenerated byte for byte from the same evidence. `choose`:
-`{"candidate": "s1c3", "chosen_by": "<who>"}` records a person's pick first, once however often
-it is made, and not when the draft fails. The draft is loaded
-back before the reply; `gfx_load` takes it and says `draft: true`. Needs the machine STOPPED (else `not_stopped`).
+`dest`: an absolute `.yaml` in an existing directory (empty: the scratch); an earlier draft
+there is replaced, anything else is refused. `choose` `{"candidate": "s1c3", "chosen_by":
+"&lt;who>"}` records a person's pick first.
 
-Reply: `manifest` and `report` (`path`, `sha256`), `formats` (name to status),
-`asset_names`, `command_fields` (each command's proved fields), `evidence` (counts),
-`not_proved` (why, first 8), `chose`, `confirm`.
+Reply: `manifest` and `report` (each `path`, `sha256`), `formats` (name to status),
+`asset_names`, `command_fields`, `evidence`, `not_proved` (first 8),
+`chose`, `confirm`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1256,21 +1174,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f9.yaml"
+  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft $TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f9.yaml",
+    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
   },
   "report": {
-    "path": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f9.report.json",
-    "sha256": "992649f5904f8c11853ce245387bc92ccb8bf4ebec8f37d6fe75433c5aed5f34"
+    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.report.json",
+    "sha256": "9be4fe9b5e1bcf6deb8a4b619f69116c120c3f06531912b7d9689155b23da34b"
   },
   "formats": {},
   "asset_names": [],
@@ -1295,6 +1213,8 @@ Example, from a live run:
 
 **The draft.** A `dest` that exists without the DRAFT marker is refused, so a confirmed manifest is never overwritten. The draft is read back by the loader, so a discovered command can be tried with `gfx_blits` before anybody confirms it. Every figure is in the report; the draft's `source` strings name its key.
 
+A format is proved by a `gfx_locate` match whose window varies along both axes, with its rarest pen covering the tile's longer side, where no other source matched on that frame. Two layouts of one tile size that both matched are rivals, and both stay ambiguous unless an answer that tried both saw one match a window the other missed. A source is `human` when chosen from a sweep's sheet. An asset is written per source and bank. A command comes from a capture watch whose words agree with the located object's x and y on every paired event, at one lag for the group, a reversed coordinate as `sign: -1`. The report is regenerated byte for byte from the same evidence, and `choose` is recorded once however often it is made, and not when the draft fails. The draft is loaded back before the reply; `gfx_load` takes it and says `draft: true`.
+
 <!-- scry-reference:begin gfx_blits -->
 ## `gfx_blits`
 
@@ -1304,29 +1224,17 @@ Example, from a live run:
 gfx_blits(draw_command, frame=null, area=null, detail=false, first=0, scale=0, dest="", seconds=5.0)
 ```
 
-WHO PAINTED THIS AREA: every blit of a `frame`, from the capture the loaded manifest's
-`draw_command` describes, as a box over the screen, one colour per writer pc. The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`); RGB, a
-picture ABOUT the data (`screen_view` is the data).
+Who painted this area: every blit of a `frame` from the manifest's `draw_command` capture,
+as a box over the screen, one colour per writer pc.
 
-Rows: the capture watch on the command's block triggered by its fire word (none: refused, naming
-the `watch_add`); a blit is a row writing the fire value. `frame`: default the
-newest with blits BEFORE this stop's (the stop's own is still drawn).
-By default a SUMMARY: counts, `legend` by writer, `by_plane`, the picture. `area`
-`[x, y, width, height]` LISTS the blits covering it, in the order drawn, and `topmost`, the
-last of the highest plane; `detail=True` lists every blit. A
-listing is a page of 24 from `first`, `next_first` while more remain.
-`scale`, `dest`: `scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`.
+A missing capture is refused, naming the `watch_add`. `frame` defaults to the newest with
+blits. A summary by default; `area` `[x, y, width, height]` lists the blits covering it in
+drawn order; `detail` lists all, 24 a page from `first`.
 
-A box: the destination walk wrapped at its plane's size, moved by the plane's origin from the
-same row, cut to the screen; a paged plane names each blit's `page`. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `draw_command`, `frame_blit`, `frame_complete`, `rows_cut`, `screen`, `frame_screen`,
-`rows_path`, `rows_kept`, `overflow_rows`, `frames_with_blits`, `callback_errors`,
-`blits_in_frame`, `colors_repeat`, `legend`, `by_plane`, `area`, `covering`, `topmost`,
-`listed` (`first`, `count`, `of`), `next_first`, `blits`, `not_proved`, `note`, `image`, the
-console's account, the survey. `bad_argument`: no manifest, capture or rows; a frame
-with no blit or past the rows kept; a bad `first`;
-`unknown_ref`: a command it lacks.
+Reply: `frame_blit`, `rows_cut`, `blits_in_frame`, `legend`, `by_plane`, `covering`,
+`topmost`, `listed`, `next_first`, `blits`, `not_proved`, `image`. `bad_argument`: no
+manifest, capture or rows; a frame without blits or past the rows kept. `unknown_ref`: no
+such command.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1410,7 +1318,7 @@ Example, from a live run:
   "frame_screen": 8,
   "width": 336,
   "height": 252,
-  "rows_path": "$TMPDIR/mame-mcp-vr90lqz3/capture-700000_32_t70001e.rows",
+  "rows_path": "$TMPDIR/mame-mcp-f5qd8ts7/capture-700000_32_t70001e.rows",
   "rows_kept": 7,
   "overflow_rows": 0,
   "callback_errors": {
@@ -1454,7 +1362,7 @@ Example, from a live run:
     "... 1 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/gfx/blits-1.png",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -1465,10 +1373,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#12",
   "pc_before": "0x000027ac",
   "cause": "gfx_blits: one step",
@@ -1534,7 +1440,7 @@ Example, from a live run:
     "installed",
     "... 12 more"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```
 <!-- scry-reference:end gfx_blits -->
@@ -1547,6 +1453,8 @@ The summary is the default because every blit of a frame with every field comes 
 
 **Covering is not painting.** With an `area`, `topmost` is the last of the highest plane over every covering blit. What painted a pixel also needs the source pixels, their transparency and the scale, and the reply says so. Which page of a paged plane the screen shows is not in the rows. `not_proved` names every field and plane the answer leaned on whose status is not `proved`.
 
+The picture is RGB and about the data; `screen_view` is the data. A box is the destination walk wrapped at its plane's size, moved by the plane's origin from the same row and cut to the screen; a paged plane names each blit's `page`.
+
 <!-- scry-reference:begin gfx_blit_source -->
 ## `gfx_blit_source`
 
@@ -1556,29 +1464,18 @@ The summary is the default because every blit of a frame with every field comes 
 gfx_blit_source(draw_command, frame=null, index=null, pc="", margin=0, scale=0, dest="", seconds=5.0)
 ```
 
-The rectangle ONE blit reads, decoded from the manifest command's `asset` under the live
-palette. The PNG is attached after the JSON when within the inline ceiling (1568 px a side, 1568 tiles of 28 px); `image` names it either way (`path`, `bytes`, `sha256`, `width`, `height`, `scale`, `indexed`, `border`, `inline`, `not_inlined`); with no `margin` it is indexed, its index the pixel value.
+The rectangle one blit reads, decoded from the manifest command's `asset` under the live
+palette. Always unscaled: no zoom or scale register is applied, so it never shows the blit as
+it lands on screen.
 
-The blit: `frame` (as `gfx_blits`'s) and `index` (its place, as `gfx_blits` lists it) or
-`pc` (the writer, a symbol or `0x`; refused, with the indexes, when it fired more than
-once).
-The rectangle: the source origin (with each field's declared `add`) in tile `source_tile` of
-the asset's format, the destination walk's size, in the tile's own orientation; it wraps
-inside the tile when the asset says `wrap`, else past the edge is refused. Always
-UNSCALED: no blit's zoom or scale registers are applied (the `note` says so).
-`margin` (0..16): pixels shown round it, dimmed, the rectangle ringed:
-`image` is a view (RGB), `data` the exact indexed PNG; `box` places the rectangle.
-`scale`, `dest`: `scale` 0, the largest integer enlargement up to 8 that fits; `dest` a new path, else the scratch, gone at `close`.
+The blit: `frame` (as `gfx_blits`) and `index`, or `pc` (the writer; refused when it fired
+more than once). `margin` (0..16) dims pixels round the rectangle: `image` is
+that view, `data` the exact indexed PNG.
 
-One step dumps the asset's block and reads its pens; nothing altered. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `draw_command`, `frame_blit`, `index`, `n`, `blit_pc`, `blit_symbol`, `asset`, `tag`,
-`format`, `palette`, `pen_base`, `rect` (`tile`, `x`, `y`, `width`, `height`, `dir_x`, `dir_y`),
-`margin`, `box`, `wrap`, `destination`, `not_proved`, `reads_source`, `image`, `data`,
-`callback_errors`, a `note`, the console's account, the survey.
-`bad_argument`: `gfx_blits`'s, no `asset` or source roles, a tile past the block, a
-rectangle past the tile or past 1048576 pixels, a pc that fired none or several;
-`unknown_ref`: a pc naming no symbol.
+Reply: `frame_blit`, `index`, `blit_pc`, `asset`, `format`, `palette`, `rect` (`tile`, `x`,
+`y`, `width`, `height`), `margin`, `box`, `wrap`, `not_proved`, `reads_source`, `image`,
+`data`. `bad_argument`: `gfx_blits`'s, no `asset`, a tile or rectangle past its bounds, a pc
+that fired none or several. `unknown_ref`: an unknown symbol.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1709,7 +1606,7 @@ Example, from a live run:
   ],
   "reads_source": true,
   "image": {
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/gfx/source-1.png",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,
@@ -1720,10 +1617,8 @@ Example, from a live run:
   },
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#13",
   "pc_before": "0x000027ac",
   "cause": "gfx_blit_source: one step",
@@ -1789,9 +1684,11 @@ Example, from a live run:
     "installed",
     "... 12 more"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```
 <!-- scry-reference:end gfx_blit_source -->
 
 It is UNSCALED on purpose: a scaled blit reads another extent, and that law is the project's. A blit whose `reads_source` says it read nothing still shows where its registers point. The layout's offsets are windowed onto the rectangle, which is exact for every layout MAME's language states. A `margin` is dimmed because drawn like the rectangle its pixels would read as part of the blit, an offset that does not exist.
+
+No blit zoom or scale register is applied. The origin carries each field's declared `add`; the rectangle wraps inside the tile when the asset says `wrap`, else past the edge is refused. A pc may be a symbol or `0x`; the refusal lists the indexes.

@@ -56,8 +56,9 @@ T_CELLS = [
 
 
 def _rows(ref: str) -> list[mcapture.Row]:
-    """The rows of the capture held under `ref`, from the file `watch_list` names."""
-    listed = call("watch_list").get("watches", [])
+    """The rows of the capture held under `ref`, from the file `declaration_list(kind="watch")`
+    names."""
+    listed = call("declaration_list", kind="watch").get("watches", [])
     path = next((w.get("rows_path") for w in listed if w.get("ref") == ref), None)
     return list(mcapture.rows(Path(str(path)))) if path else []
 
@@ -118,13 +119,13 @@ def _t_1942(t: list[str]) -> None:
     # instant, so the bracket is taken on a breakpoint at the writer instead.
     call("watch_add", ref=LATCH_W, mode="change", length=1)
     hit = call("run_for", frames=2, seconds=10.0)
-    call("watch_clear", ref=LATCH_W)
+    call("declaration_clear", kind="watch", ref=LATCH_W)
     writer = str((hit.get("watch_hit") or {}).get("writer_pc", ""))
     armed = call("breakpoint_at", ref=writer, by="address") if writer else {}
     seen = lines_at_stops(_capture_line("0xe000"), writer)
     cell(t[0], ok(writes) and ok(armed) and brackets(seen),
          f"writer {writer}; (beamy before, beamy after, row line) at {STOPS} stops: {seen}")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     ran = call("run_for", frames=120, seconds=10.0)
     w_rows, r_rows = _rows("0xe000"), _rows(LATCH_R)
     values = {r.data & 0xFF for r in w_rows}
@@ -144,7 +145,7 @@ def _t_1942(t: list[str]) -> None:
         cell(t[1], judged > 0 and not wrong,
              f"{judged} reads judged against {len(stamped)} writes of {len(values)} values; "
              f"wrong {wrong[:3]}")
-    call("watch_clear", ref="0xe000")
+    call("declaration_clear", kind="watch", ref="0xe000")
     # THE CONTROL: the derivation one line ahead, installed under another ref, at the same kind of
     # stop, must disagree with `beamy` every time.
     exact = mcapture.BEAM_LINE_LUA

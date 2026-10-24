@@ -2,32 +2,108 @@
  "task": {
   "id": "M65",
   "prompt": "List only the watch declarations placed on the cpu tagged soundcpu.",
-  "tool": "watch_list",
+  "tool": "declaration_list",
   "args": {
+   "kind": "watch",
    "cpu": {
     "any_of": [
      "soundcpu",
      ":soundcpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "watch"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M65: {\"tool\": \"watch_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\":\"watch_list\",\"args\":{\"cpu\":\"soundcpu\"}}"
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"watch_list\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"watch\",\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   }

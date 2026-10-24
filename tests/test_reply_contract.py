@@ -63,28 +63,19 @@ _ARGS: dict[str, dict[str, Any]] = {
     "trace": {"frames": 2},
     "series_capture": {"at_frames": [10 ** 6]},
     # The media file tools: absolute paths of files that are not there, refused for the path.
-    "image_diff": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
-    "series_diff": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
-    "region_track": {"manifest": "/nonexistent/m.json"},
-    "golden_check": {"manifest": "/nonexistent/m.json", "checksums": "/nonexistent/g.sha256"},
-    "audio_measure": {"path": "/nonexistent/s.wav"},
-    "audio_diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
+    "image_compare": {"method": "image", "a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
+    "audio_compare": {"method": "diff", "a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
     "breakpoint_at": {"ref": "0x4a0"},
     "watch_add": {"ref": "0x4a0", "mode": "show", "length": 2},
     "regpoint_add": {"condition": "d1==7fff"},
-    "breakpoint_clear": {"all": True}, "watch_clear": {"all": True},
-    "regpoint_clear": {"all": True},
-    "comment_add": {"ref": "0x4a0", "text": "a note"},
-    "comment_delete": {"ref": "0x4a0"},
-    # paths judged before the gate, so each is one the server accepts: nothing is read or written
-    "comment_save": {"dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.tsv")},
-    "comment_load": {"path": str(Path(tempfile.gettempdir()) / "mame-reply-contract.tsv")},
+    "declaration_clear": {"kind": "watch", "all": True},
+    "comment_write": {"method": "add", "ref": "0x4a0", "text": "a note"},
     "symbols_find": {"name": "x"},
     "read_memory": {"ref": "0x4a0"},
     "read_block": {"tag": "blitram"},
     "disassemble": {"ref": "0x4a0"},
     "find": {"ref": "0x4a0", "length": 16, "data_hex": "00"},
-    "scan_start": {"ref": "0x4a0", "length": 16},
+    "scan": {"method": "start", "ref": "0x4a0", "length": 16},
     "write": {"ref": "0x4a0", "data_hex": "00"},
     "set_register": {"name": "D0", "value": 1},
     # THE `dest` HAS TO BE VALID: a path the server can judge without a machine is judged without
@@ -103,8 +94,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "record": {"frames": 2},
     "audio_record": {"frames": 2},
     "throttle": {"on": True},
-    "state_save": {"name": "a"},
-    "state_load": {"name": "a"},
+    "state_write": {"method": "load", "name": "a"},
     "focus": {"cpu": "subcpu"},
     "gfx_view": {"layout": {"width": 8, "height": 8, "planes": 1, "planeoffset": [0],
                             "xoffset": "{ STEP8(0,1) }", "yoffset": "{ STEP8(0,8) }",
@@ -121,10 +111,9 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_film": {},
     "gfx_sweep": {"tag": "gfx1"},
     "gfx_draft": {},
-    "map_load": {"path": "/nonexistent/x.scry-map.json"},
     # An absolute path on every host, so what refuses is the empty map, not the spelling.
-    "map_save": {"dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
-    "map_add": {"screen": "s", "match": [[0, 0, 1, 1]]},
+    "map_write": {"method": "save",
+                  "dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
 }
 
 
@@ -151,9 +140,8 @@ def test_every_tool_answers_the_contract_with_no_machine(
         return
     # `start` refuses its argument; a media tool and the export need no machine and refuse the
     # path they were given.
-    # A map's file tools need no machine either: a load refuses the missing file, a save the
-    # empty map.
-    expected = {"map_load": "bad_argument", "map_save": "needs_call"}.get(name)
+    # A map's file methods need no machine either: a save refuses the empty map.
+    expected = {"map_write": "needs_call"}.get(name)
     contract.check_refusal(name, reply, expected or ("bad_argument" if name in (
         "start", "perform_export") or name in media_tools.TOOLS else "no_session"))
 
@@ -182,9 +170,9 @@ class _Alive:
 
 
 _READERS = ["registers", "read_memory", "read_block", "disassemble", "find", "history", "memdump",
-            "debug", "comment_add", "comment_delete", "comment_load",
+            "debug", "comment_write",
             "step", "run_to", "run_for", "write", "set_register", "reset", "rom_check",
-            "resume", "scan_start", "scan_filter", "trace", "series_capture",
+            "resume", "scan", "trace", "series_capture",
             "screen_signature"]
 
 
@@ -321,7 +309,8 @@ def test_every_refusal_of_the_three_families_names_the_call_that_resolves_it(
 ) -> None:
     """A refusal that ends without naming what resolves it leaves the agent retrying the
     same call. The literal message of every refusal in the four modules of the declarations
-    tier names a tool of the server, backticked (`breakpoint_clear(ref=...)`, `start`,
+    tier names a tool of the server, backticked (`declaration_clear(kind="breakpoint", ref=...)`,
+    `start`,
     `debug("bpclear 0x3")`); the store's `DeclarationError`s are refusals too, since a caller
     reads them as `bad_argument`. The scan is checked against a planted file first, so an empty
     finding is a finding and not a scan that read nothing; a message built by a helper is
@@ -330,7 +319,7 @@ def test_every_refusal_of_the_three_families_names_the_call_that_resolves_it(
     names = re.compile(r"`(" + "|".join(tools) + r")(?:\(|`)")
     planted = tmp_path / "planted.py"
     planted.write_text('st.Invalid("bad_argument", "nothing here")\n'
-                       'st.invalid("bad_argument", f"x {y}: `breakpoint_clear(ref=...)` does")\n'
+                       'st.invalid("bad_argument", f"x {y}: `declaration_clear(ref=...)` does")\n'
                        'st.Invalid("bad_argument", "a " "joined `start`")\n'
                        'st.Invalid("bad_argument", helper(x))\n'
                        'raise DeclarationError(f"a watch needs {x}: `watch_add(mode=...)`")\n'

@@ -2,7 +2,8 @@
 
 THE PAIR IS THE POINT. A new tool has no "before" of its own, so each scenario is answered the
 way a session answers it with the tools it had (`run_for` and `screen_view` per frame, a picture
-looked at) and the new way (`series_capture` and `region_track`, `screen_signature`), from the
+looked at) and the new way (`series_capture` and `image_compare(method="region")`,
+`screen_signature`), from the
 same machine state, and both must reach the same answer. What each way cost (calls, the text
 units of its replies, the visual tokens of the pictures they attached) is in the cell's detail,
 which is where the scenario table is read from.
@@ -55,7 +56,8 @@ S2_CONTROL_FRAMES = 60
 Y_TITLE = "the media layer: each scenario the hand way and the new way, over one answer"
 Y = [
     "m68k-dual S1 hand: run_for and screen_view per frame find which frames changed in the crop",
-    "m68k-dual S1 new: series_capture and region_track find the same frames, with no picture",
+    "m68k-dual S1 new: series_capture and image_compare region find the same frames, with no "
+    "picture",
     "m68k-dual S1 cost: the new way takes fewer calls and attaches no picture",
     "m68k-dual S2 hand: screen_view attaches the screen and its pixels equal the golden's",
     "m68k-dual S2 new: screen_signature equals the golden's signature, and differs 60 frames on",
@@ -95,7 +97,7 @@ def _y_m68k_dual(t: list[str]) -> None:
     boot()
     call("run_for", frames=S1_FROM, seconds=WAIT_CEILING_S)
     state = fresh_state()
-    saved = call("state_save", name=state)
+    saved = call("state_write", method="save", name=state)
     # S1, the hand way.
     start = len(PENDING)
     pictures: list[bytes] = []
@@ -110,14 +112,15 @@ def _y_m68k_dual(t: list[str]) -> None:
     cell(t[0], ok(saved) and len(pictures) == S1_FRAMES and bool(hand),
          f"changes at offsets {hand}; cost {hand_cost}")
     # S1, the new way, from the same state.
-    loaded = call("state_load", name=state)
+    loaded = call("state_write", method="load", name=state)
     start = len(PENDING)
     # The hand way's first picture was the frame after the saved one; the series' first is the
     # frame after the loaded one, whatever the counter reads after a load.
     first = call("screen_signature").get("frame_screen", 0) + 1
     series = call("series_capture", first=first, last=first + S1_FRAMES - 1, crop=S1_CROP,
                   seconds=WAIT_CEILING_S)
-    track = (call("region_track", manifest=series["manifest"], measure="changed_pixels")
+    track = (call("image_compare", method="region", manifest=series["manifest"],
+                  measure="changed_pixels")
              if ok(series) else series)
     new = [f - first for f, _ in track.get("transitions", [])] if ok(track) else []
     new_cost = _cost(start)

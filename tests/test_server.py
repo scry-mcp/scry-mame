@@ -48,7 +48,9 @@ from session_doubles import (  # noqa: E402
     bplist_add,
     captured,
     debugger_lists,
+    documented,
     fake_mame,  # noqa: E402
+    published,
     reading_session,
     refused,
     use_table,  # noqa: E402
@@ -464,7 +466,8 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
     # The tools that answer with a PATH, and only those: a caller told everything comes back in
     # the reply would read a file-returning tool as a broken one, and one told `log` returns a
     # path looks for a field its reply, which carries `lines`, does not have.
-    # `series_capture` and `region_track` answer with a path too, and their own descriptions say
+    # `series_capture` and `image_compare(method="region")` answer with a path too, and their own
+    # descriptions say
     # so: the room went to saying the file tools answer in any state, which no description
     # placed after a refusal could.
     assert ("`memdump`, `snapshot` answer with a PATH"
@@ -490,25 +493,21 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
     """
     registered = sorted(t.name for t in s.mcp._tool_manager.list_tools())
     assert registered == sorted([
-        "breakpoint_at", "breakpoint_clear", "breakpoint_list", "close", "debug", "disassemble",
+        "breakpoint_at", "declaration_clear", "declaration_list", "close", "debug", "disassemble",
         "focus", "cpu_info", "input", "log", "log_wait", "lua", "find", "history", "machine_map",
         "memdump",
         "perform", "perform_export", "palette", "screen_view", "gfx_view", "gfx_locate",
         "gfx_load", "gfx_blits",
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
         "screen_signature", "drive", "series_capture",
-        "image_diff", "series_diff", "region_track", "golden_check", "audio_measure",
-        "audio_diff", "map_load", "map_add", "map_find", "map_save",
+        "image_compare", "audio_compare", "map_find", "map_write",
         "read_memory", "read_block", "record", "audio_record", "registers", "regpoint_add",
-        "regpoint_clear",
-        "regpoint_list", "reset", "resume", "run_for", "trace", "comment_add", "comment_list",
-        "comment_delete", "comment_save", "comment_load",
+        "reset", "resume", "run_for", "trace", "comment_list", "comment_write",
         "run_to",
-        "captures", "rom_check", "set_register", "snapshot", "start", "state_list", "state_load",
-        "state_save",
+        "captures", "rom_check", "set_register", "snapshot", "start", "state_list", "state_write",
         "status",
-        "step", "stop", "symbols_find", "throttle", "watch_add", "watch_clear", "watch_list",
-        "write", "scan_start", "scan_filter", "scan_clear",
+        "step", "stop", "symbols_find", "throttle", "watch_add",
+        "write", "scan",
     ]), f"the registered surface changed: {registered}"
 
 
@@ -849,7 +848,7 @@ def test_start_on_a_machine_that_does_not_hold_the_rom_is_refused_in_the_envelop
     _stub_boot(monkeypatch, tmp_path, bytes(64), at=0)       # the machine serves zeros
     out = s.start(**_boot_args(tmp_path, image))
     assert out["status"] == "INVALID" and out["code"] == "readback_refused", out
-    assert "LIES" in out["message"] and out["start_retries"] == [], out
+    assert "LIES" in out["message"] and out.get("start_retries", []) == [], out
     assert list(out)[-1] == "session" and s.status()["session"]["alive"] is False
 
 
@@ -2563,24 +2562,26 @@ def test_every_reply_opens_with_a_summary_and_closes_with_the_session(
     out = s.breakpoint_at("0xf2034")
     assert list(out)[0] == "summary" and list(out)[-1] == "session", list(out)
     assert out["summary"] == "breakpoint_at 0xf2034: armed at 0x000f2034", out["summary"]
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert [b["addr"] for b in listed["breakpoints"]] == ["0x000f2034"]
-    assert listed["summary"] == "breakpoint_list: 1 declared, 1 armed"
-    refused = s.breakpoint_clear("0x4a0")
+    assert listed["summary"] == "declaration_list breakpoint: 1 breakpoint (1 armed)"
+    refused = s.declaration_clear("breakpoint", ref="0x4a0")
     assert refused["status"] == "INVALID" and refused["summary"].startswith(
-        "breakpoint_clear: INVALID (unknown_ref), '0x4a0' matches no breakpoint declaration")
+        "declaration_clear: INVALID (unknown_ref), '0x4a0' matches no breakpoint declaration")
     assert " ".join(refused["message"].split()).endswith(
-        f"`breakpoint_list` shows as `ref`. Matching: {dec.REF_MATCH['breakpoint']}."), (
+        "`declaration_list(kind=\"breakpoint\")` shows as `ref`. Matching: "
+        f"{dec.REF_MATCH['breakpoint']}."), (
         "the refusal names its own family's list and rule")
     s.breakpoint_at("0x4a0")
-    one = s.breakpoint_clear("0x4a0")
+    one = s.declaration_clear("breakpoint", ref="0x4a0")
     assert one["disarmed"] == ["2 @ 0004A0"]
-    assert one["summary"] == "breakpoint_clear 0x4a0: 1 cleared, 1 disarmed"
-    assert [b["addr"] for b in s.breakpoint_list()["breakpoints"]] == ["0x000f2034"], (
+    assert one["summary"] == "declaration_clear breakpoint 0x4a0: 1 cleared, 1 disarmed"
+    assert [b["addr"] for b in s.declaration_list("breakpoint")["breakpoints"]] == ["0x000f2034"], (
         "only the named one went")
-    cleared = s.breakpoint_clear(all=True)
-    assert cleared["disarmed"] == ["1 @ 0F2034"] and s.breakpoint_list()["breakpoints"] == []
-    assert cleared["summary"] == "breakpoint_clear all: 1 cleared, 1 disarmed"
+    cleared = s.declaration_clear("breakpoint", all=True)
+    assert cleared["disarmed"] == ["1 @ 0F2034"]
+    assert s.declaration_list("breakpoint")["breakpoints"] == []
+    assert cleared["summary"] == "declaration_clear breakpoint all: 1 cleared, 1 disarmed"
     # an INVALID reply's summary says so and quotes the why, on the same first line
     ses.frame_answers = ["10"] * 5
     flat = s.run_for(milliseconds=1)
@@ -2657,12 +2658,9 @@ def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
     read_only = {n for n, t in tools.items()
                  if t.annotations is not None and t.annotations.read_only_hint}
     assert read_only == {"status", "read_memory", "disassemble", "find", "history", "log",
-                         "log_wait", "registers", "breakpoint_list", "rom_check",
-                         "watch_list", "regpoint_list", "symbols_find",
-                         "state_list", "captures", "machine_map",
-                         "cpu_info", "comment_list",
-                         "image_diff", "series_diff", "golden_check", "audio_measure",
-                         "audio_diff"}, read_only
+                         "log_wait", "registers", "declaration_list", "rom_check",
+                         "symbols_find", "state_list", "captures", "machine_map",
+                         "cpu_info", "comment_list", "audio_compare"}, read_only
     # IDEMPOTENT IS A STRONGER CLAIM than read-only and almost nothing here can make it: a
     # reader of a machine that moves answers differently on the second call. Held as an exact
     # set so a tool that grows a cache, or loses one, cannot drift into or out of it quietly.
@@ -3115,8 +3113,8 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "resume-ceiling": lambda: s.resume(seconds=1e9),
     "rom_check-addr": lambda: s.rom_check(reference_rom="/nope", reference_addr="zz"),
     "rom_check-file": lambda: s.rom_check(reference_rom=str(_FRESH / "rom.bin")),
-    "state_save-name": lambda: s.state_save(name="../x"),
-    "state_load-name": lambda: s.state_load(name="../x"),
+    "state_write save-name": lambda: s.state_write("save", name="../x"),
+    "state_write load-name": lambda: s.state_write("load", name="../x"),
     "perform-a-snapshot-step's-dest": lambda: s.perform(
         steps=[{"op": "status"}, {"op": "snapshot", "dest": "relative.png"}]),
     "perform-a-lua-step's-script": lambda: s.perform(
@@ -3544,7 +3542,7 @@ def test_resume_without_a_bound_lets_the_machine_run_and_the_readers_refuse(
     older = s.registers(from_last_stop=True)
     assert older["superseded"] is True and older["regs"] == {"D0": "0x00001234", "PC": "0x000f2034"}
     assert older["last_stop"]["stop_seq"] == 1 and "from the last stop" in older["summary"]
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert listed["session"]["running"] is True and listed["last_stop"]["stop_seq"] == 1
     st = s.status()
     assert (st["session"]["running"] is True and isinstance(st["pc"], dict)
@@ -3752,7 +3750,7 @@ def test_breakpoints_arm_and_clear_while_running_and_say_so(
     armed = s.breakpoint_at(ref="0x25a4")
     assert armed["while_running"] is True and ses.armed == [(0x25A4, False)]
     assert armed["summary"] == "breakpoint_at 0x25a4: armed at 0x000025a4 while running"
-    cleared = s.breakpoint_clear(ref="0x25a4")
+    cleared = s.declaration_clear("breakpoint", ref="0x25a4")
     assert cleared["while_running"] is True and "bpclear 0x1" in ses.commands
     assert ses.running
 
@@ -4077,11 +4075,11 @@ def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
     monkeypatch.setenv("WINDOW_SHARED_DISPLAY", "main")
     out = s.start(**_boot_args(tmp_path, image), shared=True, env={"M68K_DUAL_SWITCH": "on"})
     try:
-        assert out["display"] == "main" and out["env"] == {"M68K_DUAL_SWITCH": "on"}
+        assert out.get("display", "") == "main" and out.get("env", {}) == {"M68K_DUAL_SWITCH": "on"}
         assert log.read_text().split() == ["mame", "--shared", "--display", "main"], (
             "the exported answer reaches the helper explicitly, so the reply and the helper agree")
-        assert out["flags"] == ["-window", "-nomaximize"] and out["throttle_from_frame"] == 0
-        assert _StubProcess.last_kwargs["env"]["M68K_DUAL_SWITCH"] == "on"
+        assert out["flags"] == ["-window", "-nomaximize"] and out.get("throttle_from_frame", 0) == 0
+        assert _StubProcess.last_kwargs.get("env", {})["M68K_DUAL_SWITCH"] == "on"
         assert Path(out["boot_lua_path"]).parent == mstate.STATE.scratch, (
             "the server writes the one boot script on every start, for the inventory")
         assert isinstance(out["frame"], int) or out["frame"]["available"] is False
@@ -4090,12 +4088,12 @@ def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
     monkeypatch.delenv("WINDOW_SHARED_DISPLAY")
     out = s.start(**_boot_args(tmp_path, image), shared=True)
     try:
-        assert out["display"] == "secondary", "the helper's default, said out loud"
+        assert out.get("display", "") == "secondary", "the helper's default, said out loud"
     finally:
         s.close()
     out = s.start(**_boot_args(tmp_path, image))
     try:
-        assert out["display"] == "" and out["env"] == {}, "a quick run has no display to report"
+        assert "display" not in out and "env" not in out, "a quick run has no display to report"
     finally:
         s.close()
     monkeypatch.setenv("WINDOW_SHARED_DISPLAY", "tv")
@@ -4129,7 +4127,7 @@ def test_start_launches_behind_by_who_watches_unless_background_says_otherwise(
     try:
         assert out["status"] == "ok", out
         assert out["background"] is behind, "the reply says which way it was launched"
-        spawned = _StubProcess.last_kwargs["env"]
+        spawned = _StubProcess.last_kwargs.get("env", {})
         assert spawned.get("SDL_MAC_BACKGROUND_APP") == ("1" if behind else None), (
             "the name SDL3 reads, spelled out: a typo in the constant would pass with it")
     finally:
@@ -4354,9 +4352,9 @@ def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
         text = harness.read_text()
         assert launch.THROTTLE_MARK in text and "video.throttled = true" in text
         assert text.rstrip().endswith(f'dofile("{mine.resolve()}")')
-        assert out["env"] == {launch.THROTTLE_FRAME_VAR: "2790"}
-        assert _StubProcess.last_kwargs["env"][launch.THROTTLE_FRAME_VAR] == "2790"
-        assert out["throttle_from_frame"] == 2790
+        assert out.get("env", {}) == {launch.THROTTLE_FRAME_VAR: "2790"}
+        assert _StubProcess.last_kwargs.get("env", {})[launch.THROTTLE_FRAME_VAR] == "2790"
+        assert out.get("throttle_from_frame", 0) == 2790
         assert argv[argv.index("-autoboot_delay") + 1] == "0"
     finally:
         s.close()
@@ -4891,7 +4889,7 @@ def test_run_to_over_a_declared_breakpoint_leaves_the_declaration_armed(
     out = s.run_to(ref="0x25a4", control="0x600", seconds=1.0)
     assert out["verdict"] == "TARGET" and out["control_hits"] == 1
     assert [r for r in ses.bplist_rows if r.endswith("@ 0004A0")], "the declaration's row stays"
-    listed = {b["ref"]: b for b in s.breakpoint_list()["breakpoints"]}
+    listed = {b["ref"]: b for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed["0x4a0"]["state"] == "armed" and listed["0x4a0"]["role"] == "stop"
     assert listed["0x600"]["role"] == "control" and listed["0x600"]["hits_since_armed"] == 1
 
@@ -5746,10 +5744,10 @@ def test_a_docstring_placeholder_is_filled_from_its_constant_or_fails_the_import
 def test_the_docstrings_name_what_the_replies_carry_and_what_by_accepts() -> None:
     """`start` answers `symbols_typed` beside `symbols`, and `by` on a breakpoint takes
     five words: a docstring that names three teaches a caller two of them do not exist."""
-    assert "`symbols_typed`" in (s.start.__doc__ or "")
-    doc = s.breakpoint_at.__doc__ or ""
-    for word in ("auto", "symbol", "address", "expr", "pointer"):
-        assert f"`{word}`" in doc, f"`by` accepts `{word}` and the docstring does not say so"
+    assert "`symbols_typed`" in documented("start")
+    (tool,) = [t for t in asyncio.run(s.mcp.list_tools()) if t.name == "breakpoint_at"]
+    assert tool.input_schema["properties"]["by"]["enum"] == ["auto", "symbol", "address"]
+    assert "never an expression" in published("breakpoint_at")
 
 
 # --------------------------------------- what moves the machine, held at the fields it answers
@@ -5777,7 +5775,7 @@ def test_run_to_refuses_a_target_a_breakpoint_already_holds_in_the_words_of_that
     out = refused(r"already has breakpoint 1 at 0x4a0: a stop there", s.run_to(
         ref="0x4a0", control="0x25a4", seconds=1.0))
     assert "(condition" not in out["message"], out["message"]
-    s.breakpoint_clear(all=True)
+    s.declaration_clear("breakpoint", all=True)
     s.breakpoint_at(ref="0x4a0", condition="d0 == 1")
     out = refused(r"at 0x4a0 \(condition \S.*\): a stop there", s.run_to(
         ref="0x4a0", control="0x25a4", seconds=1.0))
@@ -6385,7 +6383,8 @@ def test_start_records_for_the_later_tools_everything_it_judged(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """What `start` writes into STATE for the tools that come after it, held field by field:
-    `system` (`status`), `reference` (`state_load`'s ROM check), `boot_pc` (`reset`'s
+    `system` (`status`), `reference` (`state_write(method="load")`'s ROM check), `boot_pc`
+    (`reset`'s
     readback), the table's spans, bases, classes and segment bases (`find`, `disassemble`,
     the pointer watches), which a `types` file must not strip when it rebuilds the table, a
     `bases` key in any case, and the `wait` handed to the `-listxml` collection, which bounds
@@ -6418,7 +6417,7 @@ def test_start_records_for_the_later_tools_everything_it_judged(
         assert mstate.STATE.reference == (rom, 0x20010, 0x20000)
         assert mstate.STATE.boot_pc == 0x20000
         assert out["symbols_by_class"] == {"CODE": 1, "DATA": 1}
-        assert out["symbols_format"] == "tsv" and out["symbols_typed"] == 1
+        assert out["symbols_format"] == "tsv" and out.get("symbols_typed", 0) == 1
         assert mstate.STATE.resolve("demo_count") == 0x400 + 0xA007
         table = mstate.STATE.table()
         assert table.class_span and table.bases and table.classes
@@ -6731,8 +6730,8 @@ def test_wait_exit_polls_the_process_at_the_exit_poll_and_never_for_ever() -> No
      "debug 'poke', mutates, 9000 chars to a file"),
     ("rom_check", {}, {"rom_check": "OK", "query_s": 0.0011, "cpu": ":maincpu"},
      "rom_check :maincpu: OK, 1.1 ms per query"),
-    ("state_save", {}, {"name": "s1", "bytes": 100, "frame": 7},
-     "state_save s1: 100 bytes at frame 7"),
+    ("state_write", {"method": "save"}, {"name": "s1", "bytes": 100, "frame": 7},
+     "state_write save: s1, 100 bytes at frame 7"),
     ("log_wait", {"channel": "emulator", "pattern": "x"},
      {"verdict": "TARGET", "already": False, "waited_s": 1.5},
      "log_wait emulator /x/: matched after 1.5 s"),
@@ -6761,21 +6760,21 @@ def test_wait_exit_polls_the_process_at_the_exit_poll_and_never_for_ever() -> No
      "breakpoint_at 0x4a0: armed at 0x4a0 while running"),
     ("breakpoint_at", {"ref": "0x4a0"}, {"armed": True, "while_running": False, "addr": "0x4a0"},
      "breakpoint_at 0x4a0: armed at 0x4a0"),
-    ("regpoint_list", {},
+    ("declaration_list", {"kind": "regpoint"},
      {"regpoints": [{"state": "armed"}, {"state": "armed"}, {"state": "gone"}]},
-     "regpoint_list: 3 declared, 2 armed"),
+     "declaration_list regpoint: 3 regpoints (2 armed)"),
     ("regpoint_add", {}, {"ref": "d1==1", "armed": True, "while_running": True, "index": 1},
      "regpoint_add d1==1: armed, index 1 while running"),
     ("regpoint_add", {}, {"ref": "d1==1", "armed": True, "while_running": False, "index": 1},
      "regpoint_add d1==1: armed, index 1"),
-    ("watch_list", {},
+    ("declaration_list", {"kind": "watch"},
      {"watches": [{"state": "armed"}, {"state": "armed"}, {"state": "evaluated"}]},
-     "watch_list: 3 declared, 2 armed"),
-    ("watch_list", {},
+     "declaration_list watch: 3 watches (2 armed)"),
+    ("declaration_list", {"kind": "watch"},
      {"watches": [{"state": "tallied"}, {"state": "captured"}, {"state": "evaluated"},
                   {"state": "no_dump_yet", "installed": True},
                   {"state": "no_dump_yet", "installed": False, "pending": True}]},
-     "watch_list: 5 declared, 3 armed"),
+     "declaration_list watch: 5 watches (3 armed)"),
     ("step", {"count": 5}, {"instructions_completed": 2, "mode": "into", "pc": "0x000004a0"},
      "step 2 into: pc 0x000004a0"),
     ("watch_add", {"ref": "x"}, {"mode": "expr", "state": "evaluated", "reading": {"hex": "0x1"}},
@@ -6916,9 +6915,9 @@ def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> 
     from scry_core import png
     pic = tmp_path / "a.png"
     pic.write_bytes(png.encode(png.Raster(2, 2, bytes(12))))
-    r = s.image_diff(a=str(pic), b=str(pic))
+    r = s.image_compare("image", a=str(pic), b=str(pic))
     assert r["status"] == "ok" and "session" in r, r
-    assert r["summary"].startswith("image_diff: no pixel differs"), r["summary"]
+    assert r["summary"].startswith("image_compare image: no pixel differs"), r["summary"]
 
 
 def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_included(

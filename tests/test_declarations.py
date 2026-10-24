@@ -295,12 +295,12 @@ def test_breakpoint_at_stores_a_declaration_by_name_and_lists_it_against_bplist(
     unresolved = s.breakpoint_at(ref="scene_id")
     assert unresolved["armed"] is False and unresolved["state"] == "unresolved"
     assert unresolved["stored"] is True
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert [(b["ref"], b["by"], b["state"]) for b in listed["breakpoints"]] == [
         ("frame_lo", "symbol", "armed"), ("0x4a0", "address", "armed"),
         ("scene_id", "symbol", "unresolved")]
-    assert listed["breakpoints"][0]["entry"] == "1 @ 2031FC" and listed["foreign"] == []
-    assert listed["summary"] == "breakpoint_list: 3 declared, 2 armed"
+    assert listed["breakpoints"][0]["entry"] == "1 @ 2031FC" and "foreign" not in listed
+    assert listed["summary"] == "declaration_list breakpoint: 3 breakpoints (2 armed)"
     st = s.status()
     assert st["in_debugger"]["breakpoints"] == [{"ref": "0x4a0", "cpu": ":maincpu"},
                                                 {"ref": "frame_lo", "cpu": ":maincpu"}], (
@@ -308,7 +308,7 @@ def test_breakpoint_at_stores_a_declaration_by_name_and_lists_it_against_bplist(
     assert st["in_debugger"]["watches"] == [] and st["in_debugger"]["regpoints"] == []
     assert not {"breakpoints_armed", "regpoints", "armed"} & set(st), "one key for the families"
     ses.bplist_rows.append("    9 @ 0025A4")
-    assert s.breakpoint_list()["foreign"] == ["9 @ 0025A4"]
+    assert s.declaration_list("breakpoint")["foreign"] == {"breakpoints": ["9 @ 0025A4"]}
 
 
 def test_breakpoint_clear_by_ref_disarms_and_drops_the_declaration(
@@ -317,22 +317,23 @@ def test_breakpoint_clear_by_ref_disarms_and_drops_the_declaration(
     ses = _watching(monkeypatch, tmp_path)
     s.breakpoint_at(ref="frame_lo")
     s.breakpoint_at(ref="0x4a0")
-    out = s.breakpoint_clear(ref="frame_lo")
+    out = s.declaration_clear("breakpoint", ref="frame_lo")
     assert out["disarmed"] == ["1 @ 2031FC"] and out["declarations_cleared"] == 1
-    assert out["summary"] == "breakpoint_clear frame_lo: 1 cleared, 1 disarmed"
+    assert out["summary"] == "declaration_clear breakpoint frame_lo: 1 cleared, 1 disarmed"
     assert "bpclear 0x1" in ses.commands and ses.bplist_rows == ["    2 @ 0004A0"]
-    refused = s.breakpoint_clear(ref="nothing")
+    refused = s.declaration_clear("breakpoint", ref="nothing")
     assert refused["status"] == "INVALID" and "'0x4a0'" in refused["message"]
-    assert s.breakpoint_clear(all=True)["disarmed"] == ["2 @ 0004A0"]
-    assert s.breakpoint_list()["breakpoints"] == [] and mstate.STATE.breakpoints == {}
-    assert s.breakpoint_clear(all=True)["disarmed"] == [], "an empty store's nothing is ok"
+    assert s.declaration_clear("breakpoint", all=True)["disarmed"] == ["2 @ 0004A0"]
+    assert s.declaration_list("breakpoint")["breakpoints"] == [] and mstate.STATE.breakpoints == {}
+    assert s.declaration_clear("breakpoint",
+                               all=True)["disarmed"] == [], "an empty store's nothing is ok"
     # `disarmed` is the list's answer: a row the console kept is not claimed gone.
     s.breakpoint_at(ref="0x4a0")
     real = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda command, timeout=10.0: (
         captured("bpclear.cleared.txt").replace(" 1 ", " 3 ") if command.startswith("bpclear ")
         else real(command, timeout)))
-    kept = s.breakpoint_clear(all=True)
+    kept = s.declaration_clear("breakpoint", all=True)
     assert kept["declarations_cleared"] == 1 and kept["disarmed"] == []
 
 
@@ -359,13 +360,13 @@ def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
     s.breakpoint_at(ref="0x4a0")
     ses.bplist_rows.clear()                                    # the debugger lost the row
     store.add(dec.Declaration("breakpoint", "address", "0x25a4", origin="another"))
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert [(b["ref"], b["state"]) for b in listed["breakpoints"]] == [
         ("0x4a0", "gone"), ("0x25a4", "stale")]
     assert "another build" in listed["breakpoints"][1]["why"]
-    cleared = s.breakpoint_clear(all=True)
+    cleared = s.declaration_clear("breakpoint", all=True)
     assert cleared["disarmed"] == [] and cleared["declarations_cleared"] == 2
-    assert cleared["summary"] == "breakpoint_clear all: 2 cleared, 0 disarmed"
+    assert cleared["summary"] == "declaration_clear breakpoint all: 2 cleared, 0 disarmed"
     assert [d.kind for d in store.declarations()] == ["watch"], "the watch stays"
     s.breakpoint_at(ref="0x4a0")
     assert breakpoints.breakpoint_name(0x4A0, ":maincpu") == "breakpoint at 0x4a0", (
@@ -376,7 +377,8 @@ def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
     # a stop by the name it holds there, whatever was declared first.
     add_symbol(monkeypatch, "VBLANK_CTL", 0x4A0)
     refused(re.escape("already declared under '0x4a0': one breakpoint row is one declaration, so "
-                      "`breakpoint_clear(ref='0x4a0', cpu=\":maincpu\")` frees it, or use that "
+                      "`declaration_clear(kind=\"breakpoint\", ref='0x4a0', cpu=\":maincpu\")` "
+                      "frees it, or use that "
                       "ref"), s.breakpoint_at(ref="vblank_ctl"))
     store.add(dec.Declaration("breakpoint", "symbol", "vblank_ctl", origin="s1", cpu=":maincpu"))
     assert breakpoints.breakpoint_name(0x4A0, ":maincpu") == "breakpoint vblank_ctl at 0x4a0"
@@ -506,12 +508,12 @@ def test_start_re_resolves_and_re_arms_the_store_and_reports_what_it_could_not(
         assert out["declarations"]["held"] == 7, "nothing was dropped"
         assert out["summary"].endswith(
             "pc 0x00000000, 2 declarations re-armed: irq_vblank, frame_lo"), out["summary"]
-        listed = s.breakpoint_list()
+        listed = s.declaration_list("breakpoint")
         assert [(b["ref"], b["state"]) for b in listed["breakpoints"]] == [
             ("irq_vblank", "armed"), ("0x25a4", "stale"), ("scene_id", "unresolved")]
         # The show watch is placed `evaluated` and READ by the listing on a stopped machine,
         # and this stub holds no memory there: the stub's refusal, never a zero.
-        rows = s.watch_list()["watches"]
+        rows = s.declaration_list("watch")["watches"]
         assert [w["state"] for w in rows] == ["armed", "stale", "gone", "evaluated"]
         assert rows[3]["reading"]["available"] is False
         # THE ONE HAS NOT BEEN DROPPED: it re-resolves next start, or the caller clears it.
@@ -563,7 +565,8 @@ def test_the_store_file_holds_a_condition_as_typed_and_adopts_a_row_written_befo
         assert again["condition_typed"] == "w@frame_lo==0x25"
         assert _stored_conditions(out) == {"irq_vblank": "w@frame_lo==0x25",
                                            "0x4a0": "w@frame_lo==1"}
-        refused("breakpoint_clear", s.breakpoint_at(ref="irq_vblank", condition="w@frame_lo==0x26"))
+        refused("declaration_clear",
+                s.breakpoint_at(ref="irq_vblank", condition="w@frame_lo==0x26"))
         assert _stored_conditions(out)["irq_vblank"] == "w@frame_lo==0x25", "and nothing moved"
     finally:
         s.close()
@@ -610,9 +613,10 @@ def test_a_raw_address_over_the_same_build_is_rearmed_and_every_row_says_it_was_
         rearm = out["declarations"]["rearm"]
         assert refs(rearm["rearmed"]) == ["0x4a0", "0x203200"] and refs(rearm["stale"]) == [], rearm
         assert s.breakpoint_at(ref="frame_lo")["status"] == "ok"
-        assert [(b["ref"], b["inherited"]) for b in s.breakpoint_list()["breakpoints"]] == [
+        assert [(b["ref"],
+                 b["inherited"]) for b in s.declaration_list("breakpoint")["breakpoints"]] == [
             ("0x4a0", True), ("frame_lo", False)]
-        assert [(w["ref"], w["inherited"]) for w in s.watch_list()["watches"]] == [
+        assert [(w["ref"], w["inherited"]) for w in s.declaration_list("watch")["watches"]] == [
             ("0x203200", True)]
     finally:
         s.close()
@@ -714,9 +718,9 @@ def test_a_breakpoint_the_debugger_did_not_list_owns_no_row_that_appears_there_l
     monkeypatch.setattr(ses, "breakpoint", lambda addr, remove=False: None)
     refused("bplist", s.breakpoint_at(ref="frame_lo"))
     ses.bplist_rows.append("    9 @ 2031FC")
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert [(b["ref"], b["state"]) for b in listed["breakpoints"]] == [("frame_lo", "gone")]
-    assert listed["foreign"] == ["9 @ 2031FC"]
+    assert listed["foreign"] == {"breakpoints": ["9 @ 2031FC"]}
     assert breakpoints.breakpoint_name(0x2031FC, ":maincpu") is None
 
 
@@ -736,7 +740,7 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     assert again["already_stored"] is True and again["ref"] == "0x4a0", again
     assert [d.ref for d in arming.store().declarations()] == ["0x4a0"]
     assert len(ses.bplist_rows) == 1
-    cleared = s.breakpoint_clear(ref="0x04a0")
+    cleared = s.declaration_clear("breakpoint", ref="0x04a0")
     assert cleared["disarmed"] and ses.bplist_rows == []
     # A store from before the rule: its bare spelling of the address is read as `0x` and `add`
     # adopts the same declaration again; a name over the same address, the pair an older version
@@ -760,16 +764,16 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     # calling the second declaration `armed` on that alone is the trap: the clear then sends
     # a second `z0` for the shared row, which the stub refuses, and the first declaration is
     # left sitting over a row the debugger no longer has.
-    listed = {b["ref"]: b for b in s.breakpoint_list()["breakpoints"]}
+    listed = {b["ref"]: b for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed["0x4a0"]["state"] == "armed" and listed["irq"]["state"] == "aliased"
     assert "'0x4a0'" in listed["irq"]["why"]
     # A clear reaches the declarations of its own kind: the address takes the ONE armed row,
     # and the name, which owned none, goes with nothing to disarm.
-    cleared = s.breakpoint_clear(ref="0x4a0")
+    cleared = s.declaration_clear("breakpoint", ref="0x4a0")
     assert cleared["declarations_cleared"] == 1 and cleared["disarmed"] == ["2 @ 0004A0"]
-    cleared = s.breakpoint_clear(ref="IRQ")
+    cleared = s.declaration_clear("breakpoint", ref="IRQ")
     assert cleared["declarations_cleared"] == 1 and cleared["disarmed"] == []
-    assert ses.bplist_rows == [] and s.breakpoint_list()["breakpoints"] == []
+    assert ses.bplist_rows == [] and s.declaration_list("breakpoint")["breakpoints"] == []
 
 
 def test_an_address_ref_has_one_spelling_and_a_clear_takes_any_of_them(
@@ -784,12 +788,12 @@ def test_an_address_ref_has_one_spelling_and_a_clear_takes_any_of_them(
     assert out["status"] == "ok" and out["ref"] == "0x4A0", out
     assert s.breakpoint_at(ref="0x4a0")["already_stored"] is True, "one address, adopted"
     assert s.breakpoint_at(ref="0x0004a0")["already_stored"] is True
-    cleared = s.breakpoint_clear(ref="0x4a0")
+    cleared = s.declaration_clear("breakpoint", ref="0x4a0")
     assert cleared["declarations_cleared"] == 1 and cleared["disarmed"] == ["1 @ 0004A0"], cleared
     assert ses.bplist_rows == []
     s.watch_add(ref="0x2031FC", mode="show", length=2)
-    assert s.watch_clear(ref="0x2031fc")["declarations_cleared"] == 1
-    assert s.watch_clear(ref="0x2031fc")["status"] == "INVALID"
+    assert s.declaration_clear("watch", ref="0x2031fc")["declarations_cleared"] == 1
+    assert s.declaration_clear("watch", ref="0x2031fc")["status"] == "INVALID"
 
 
 def test_a_clear_reads_the_callers_ref_the_way_the_declaration_was_made(
@@ -804,11 +808,11 @@ def test_a_clear_reads_the_callers_ref_the_way_the_declaration_was_made(
     add_symbol(monkeypatch, "4A0", 0x2031FC)
     named = s.breakpoint_at(ref="4a0")
     assert (named["by"], named["addr"]) == ("symbol", "0x002031fc"), named
-    out = s.breakpoint_clear(ref="0x4a0")
+    out = s.declaration_clear("breakpoint", ref="0x4a0")
     assert out["status"] == "ok" and out["declarations_cleared"] == 1, out
-    left = [(b["by"], b["ref"]) for b in s.breakpoint_list()["breakpoints"]]
+    left = [(b["by"], b["ref"]) for b in s.declaration_list("breakpoint")["breakpoints"]]
     assert left == [("symbol", "4a0")], left
-    assert s.breakpoint_clear(ref="4A0")["declarations_cleared"] == 1
+    assert s.declaration_clear("breakpoint", ref="4A0")["declarations_cleared"] == 1
 
 
 def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
@@ -824,7 +828,7 @@ def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
     assert first["status"] == "ok", first
     again = s.watch_add(ref="[0X203300]+4", mode="show", length=2)
     assert again["already_stored"] is True and again["ref"] == "[0x203300]+0x4", again
-    assert s.watch_clear(ref="[ 0x203300 ] + 0x4")["declarations_cleared"] == 1
+    assert s.declaration_clear("watch", ref="[ 0x203300 ] + 0x4")["declarations_cleared"] == 1
     assert dec.canonical_ref("[FRAME_LO]-0x4", "pointer") == "[FRAME_LO]-0x4"
     assert dec.canonical_ref("frame_lo->x", "pointer") == "frame_lo->x"
     # A base with no `0x` is a NAME, however hex it looks (`BEEF`): the
@@ -874,7 +878,7 @@ def test_start_re_arms_a_stored_regpoint_and_says_so_in_its_account(
         _same, out = _start_over_an_earlier_store(
             monkeypatch, tmp_path, [{"kind": "regpoint", "by": "expr", "ref": "d1==7fff"}])
         assert refs(out["declarations"]["rearm"]["rearmed"]) == ["d1==7fff"], out["declarations"]
-        rows = s.regpoint_list()["regpoints"]
+        rows = s.declaration_list("regpoint")["regpoints"]
         assert [(r["state"], r["inherited"]) for r in rows] == [("armed", True)]
     finally:
         s.close()

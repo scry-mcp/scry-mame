@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M187: CANNOT perform_export writes every recorded call since start and has no option to keep only the last ten."
+    "M187: CANNOT perform_export has no option to select a subset of calls, so it cannot export only the last ten."
    ],
    "right": true
   },
   {
    "lines": [
-    "M187: CANNOT perform_export writes the whole session since start and has no option to limit it to the last calls."
+    "M187: CANNOT perform_export writes the whole session since start and has no option to export only the last calls."
    ],
    "right": true
   },
   {
    "lines": [
-    "M187: CANNOT perform_export writes the whole session since its start; it has no option to export only the last calls."
+    "M187: CANNOT perform_export writes the whole session since start and has no option to export only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes every call since start and has no option to export only the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export only exports the whole session since start and has no option to take just the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export always writes the whole session since start and has no option to export only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export has no option to take only the last ten calls, so it exports the whole session."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export only writes all calls since start and has no option to export just the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes every call since start and cannot be limited to the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes every call since start and has no option to export only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes the whole session since start and has no option to limit it to the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes the whole session since start and has no option to select only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes the whole session since start and has no option to export only the last calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes every call since start and has no option to limit it to the last ten calls."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M187: CANNOT perform_export writes every call since start and offers no option to export only the last ten calls."
    ],
    "right": true
   }

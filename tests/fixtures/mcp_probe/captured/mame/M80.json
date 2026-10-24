@@ -30,7 +30,79 @@
   },
   {
    "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M80: {\"tool\":\"write\",\"args\":{\"ref\":\"0x1C06\",\"data_hex\":\"4E71\",\"region\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M80: {\"tool\": \"write\", \"args\": {\"ref\": \"0x1C06\", \"data_hex\": \"4E71\", \"region\": true}}"
    ],
    "right": true
   },

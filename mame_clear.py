@@ -58,26 +58,29 @@ def another_condition(kind: Literal["breakpoint", "watch"], addr: int, row: dict
     # ONE LITERAL PER FAMILY, as `refuse_unmatched_clear` writes it: the refusal scan reads a
     # backticked tool name only where it stands in the literal.
     if kind == "breakpoint":
-        return st.Invalid("ambiguous_ref", f"{lead}`breakpoint_clear` when a declaration of this "
-                                           "server owns it (`breakpoint_list` says)")
-    return st.Invalid("ambiguous_ref", f"{lead}`watch_clear` when a declaration of this server "
-                                       "owns it (`watch_list` says)")
+        return st.Invalid("ambiguous_ref", f"{lead}`declaration_clear(kind=\"breakpoint\")` when a "
+                                           "declaration of this server owns it "
+                                           "(`declaration_list(kind=\"breakpoint\")` says)")
+    return st.Invalid("ambiguous_ref", f"{lead}`declaration_clear(kind=\"watch\")` when a "
+                                       "declaration of this server "
+                                       "owns it (`declaration_list(kind=\"watch\")` says)")
 
 
-ClearTool = Literal["breakpoint_clear", "watch_clear", "regpoint_clear"]
+ClearKind = Literal["breakpoint", "watch", "regpoint"]
 
 
-def one_declaration(thing: str, other: str, clear_tool: ClearTool | None, cpu: str | None,
+def one_declaration(thing: str, other: str, clear_kind: ClearKind | None, cpu: str | None,
                     space: str = "") -> str:
     """The one sentence for a second declaration of what `other` already holds on `cpu` (in
     `space`, named only outside the program's): a place is held by one declaration, so a caller
-    frees it, on that cpu alone, or uses the one there. With no `clear_tool` the sentence ends at
+    frees it, on that cpu alone, or uses the one there. With no `clear_kind` the sentence ends at
     the rule, for a report (`start`'s re-arm) that no call answers."""
     rule = f"one {thing} is one declaration"
-    if clear_tool is None:
+    if clear_kind is None:
         return rule
     on = (f', cpu="{cpu}"' if cpu else "") + (f', space="{space}"' if space else "")
-    return f"{rule}, so `{clear_tool}(ref={other!r}{on})` frees it, or use that ref"
+    return (f"{rule}, so `declaration_clear(kind=\"{clear_kind}\", ref={other!r}{on})` frees "
+            "it, or use that ref")
 
 
 def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "regpoint"]
@@ -88,27 +91,33 @@ def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "re
         both = f"`all` clears every declaration of this kind and takes no `ref`; got ref={ref!r}"
         # ONE LITERAL PER FAMILY, as `refuse_unmatched_clear` writes it.
         if family == "breakpoint":
-            raise st.Invalid("bad_argument", f"{both}: `breakpoint_clear(all=True)` alone")
+            raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"breakpoint\", "
+                                             "all=True)` alone")
         if family == "watch":
-            raise st.Invalid("bad_argument", f"{both}: `watch_clear(all=True)` alone")
-        raise st.Invalid("bad_argument", f"{both}: `regpoint_clear(all=True)` alone")
+            raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"watch\", "
+                                             "all=True)` alone")
+        raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"regpoint\", "
+                                         "all=True)` alone")
     if not all_ and not ref.strip():
         empty = (f"ref={ref!r} names nothing, and an empty ref never means every declaration: "
                  "the `ref` its declaring reply carried, or all=True to clear every one")
         if family == "breakpoint":
-            raise st.Invalid("bad_argument", f"{empty} (`breakpoint_clear(all=True)`)")
+            raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"breakpoint\", "
+                                             "all=True)`)")
         if family == "watch":
-            raise st.Invalid("bad_argument", f"{empty} (`watch_clear(all=True)`)")
-        raise st.Invalid("bad_argument", f"{empty} (`regpoint_clear(all=True)`)")
+            raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"watch\", "
+                                             "all=True)`)")
+        raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"regpoint\", "
+                                         "all=True)`)")
 
 
-def kept_fields(clear_tool: str, ref: str) -> dict[str, Any]:
+def kept_fields(clear_kind: ClearKind, ref: str) -> dict[str, Any]:
     """What a `readback_refused` reply says about the declaration it leaves behind: it was
     stored before the arm, so it is kept and re-arms at the next `start`, and the reply
     names the call that removes it."""
     return {"stored": True, "armed": False, "state": "gone",
             "note": f"the declaration is kept and re-arms at the next `start`; "
-                    f"{clear_tool}(ref={ref!r}) removes it"}
+                    f'declaration_clear(kind="{clear_kind}", ref={ref!r}) removes it'}
 
 
 class Clearing(NamedTuple):
@@ -175,10 +184,13 @@ def refuse_unmatched_clear(ref: str, family: str, c: Clearing) -> dict[str, Any]
     # refusal's literal, and an interpolated `{family}_list` would name no tool there.
     if family == "breakpoint":
         return menvelope.invalid("unknown_ref",
-                                 f"{lead}`breakpoint_list` shows as `ref`. {matching}")
+                                 f"{lead}`declaration_list(kind=\"breakpoint\")` shows as `ref`. "
+                                 f"{matching}")
     if family == "watch":
-        return menvelope.invalid("unknown_ref", f"{lead}`watch_list` shows as `ref`. {matching}")
-    return menvelope.invalid("unknown_ref", f"{lead}`regpoint_list` shows as `ref`. {matching}")
+        return menvelope.invalid("unknown_ref", f"{lead}`declaration_list(kind=\"watch\")` "
+                                                f"shows as `ref`. {matching}")
+    return menvelope.invalid("unknown_ref", f"{lead}`declaration_list(kind=\"regpoint\")` shows as "
+                                            f"`ref`. {matching}")
 
 
 #: A row a clear is taking down: whose declaration it is, its entry as the list printed it, and

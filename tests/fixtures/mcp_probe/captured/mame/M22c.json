@@ -2,8 +2,9 @@
  "task": {
   "id": "M22c",
   "prompt": "Clear the count watch on the io port at hex 6.",
-  "tool": "watch_clear",
+  "tool": "declaration_clear",
   "args": {
+   "kind": "watch",
    "ref": {
     "any_of": [
      "0x6",
@@ -13,25 +14,98 @@
    "space": "io"
   },
   "grammar": [
-   "io"
+   "io",
+   "watch"
   ]
  },
  "runs": [
   {
    "lines": [
-    "M22c: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"0x6\", \"space\": \"io\"}}"
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\":\"watch_clear\",\"args\":{\"ref\":\"0x6\",\"space\":\"io\"}}"
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"watch_clear\", \"args\": {\"ref\": \"0x6\", \"space\": \"io\"}}"
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"ref\":\"0x6\",\"space\":\"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   }

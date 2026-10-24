@@ -22,7 +22,8 @@ installs again.
 IDEMPOTENT BY ID, because the console's reader dies now and then and the console then runs
 an earlier chunk AGAIN (`console_reruns`): the probe's tap was installed twice and every
 write counted twice. An install removes the tap already held under its id and CARRIES ITS
-COUNTS into the new one, so a rerun neither doubles nor zeroes a census. A `watch_clear`
+COUNTS into the new one, so a rerun neither doubles nor zeroes a census. A
+`declaration_clear(kind="watch")`
 removes the tap, so a clear followed by a new declaration starts from zero. How a tap is sent,
 proved, removed and read is every tap's (`mame_tap`).
 
@@ -259,7 +260,8 @@ def _writer_rows(dump: dict[str, Any], shown: int) -> list[dict[str, Any]]:
 
 def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str,
              frame: int | None, shown: int, at_stop: bool) -> dict[str, Any]:
-    """What a stop survey or `watch_list` says about the tally under `owner` (`mtap.read_tap`), and
+    """What a stop survey or `declaration_list(kind="watch")` says about the tally under `owner`
+    (`mtap.read_tap`), and
     once it has a dump, its value and writer tables."""
     item, dump = mtap.read_tap(scratch, owner, frame, at_stop, parse_dump, "tallied")
     if dump is None:

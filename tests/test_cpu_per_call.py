@@ -41,7 +41,7 @@ def test_a_breakpoint_named_on_the_sub_cpu_lands_there_and_moves_no_visible_cpu(
     assert out["status"] == "ok" and out["cpu"] == ":subcpu", out
     assert "bp 0x542::subcpu" in ses.commands
     assert "note" not in out, "the declaration keeps its cpu: the next `start` re-arms it there"
-    listed = s.breakpoint_list()["breakpoints"]
+    listed = s.declaration_list("breakpoint")["breakpoints"]
     assert [(b["ref"], b["cpu"], b["state"]) for b in listed] == [("0x542", ":subcpu", "armed")]
     assert visible_in(s.cpu_info()) == ":maincpu"
     assert not any(c.startswith(("Hc", "focus")) for c in ses.commands), "nothing moved it"
@@ -87,7 +87,7 @@ def test_the_same_ref_declared_after_a_stop_elsewhere_is_a_second_declaration_th
     same = s.breakpoint_at(ref="0x542", cpu="maincpu")
     assert same["cpu"] == ":maincpu" and same["already_stored"], same
     assert len(ses.bplist_rows) == 2, "no third row"
-    listed = s.breakpoint_list()["breakpoints"]
+    listed = s.declaration_list("breakpoint")["breakpoints"]
     assert [(b["ref"], b["cpu"]) for b in listed] == [("0x542", ":maincpu"), ("0x542", ":subcpu")]
 
 
@@ -121,8 +121,8 @@ def test_a_change_watch_named_on_the_sub_cpu_arms_maps_and_reads_through_that_cp
     assert out["status"] == "ok" and out["cpu"] == ":subcpu", out
     assert "map 0x2031fc::subcpu" in ses.commands and "wp 0x2031fc::subcpu,0x4,w" in ses.commands
     assert "m@2" in ses.commands, "the reading came through the sub cpu's thread"
-    assert [w["cpu"] for w in s.watch_list()["watches"]] == [":subcpu"]
-    assert s.watch_clear(ref="0x2031fc")["disarmed"] == ["1 @ 2031FC-2031FF write"]
+    assert [w["cpu"] for w in s.declaration_list("watch")["watches"]] == [":subcpu"]
+    assert s.declaration_clear("watch", ref="0x2031fc")["disarmed"] == ["1 @ 2031FC-2031FF write"]
     assert "wpclear 0x1" in ses.commands and ses.wplist_rows == []
 
 
@@ -175,7 +175,8 @@ def test_a_read_watch_named_on_another_cpu_is_that_cpus_and_read_through_its_thr
     out = s.watch_add(ref="0x2031fc", mode="show", length=4, cpu="subcpu")
     assert out["status"] == "ok" and out["cpu"] == ":subcpu", out
     assert "m@2" in ses.commands, "read through the sub cpu's thread"
-    assert [(w["ref"], w["cpu"]) for w in s.watch_list()["watches"]] == [("0x2031fc", ":subcpu")]
+    assert [(w["ref"], w["cpu"]) for w in s.declaration_list("watch")["watches"]] == [("0x2031fc",
+                                                                                       ":subcpu")]
     main = s.watch_add(ref="0x2031fc", mode="show", length=4, cpu="maincpu")
     assert main["status"] == "ok" and not main["already_stored"], main
 
@@ -247,7 +248,7 @@ def test_a_watch_of_one_byte_scalars_reads_on_a_cpu_of_an_unknown_byte_order(
     out = s.watch_add(ref="0x2031fc", mode="show", length=length, fmt=fmt, cpu="subcpu")
     assert out["reading"] == {"available": True, "value": value,
                               "raw_hex": "12345678"[:2 * length]}, out
-    (row,) = s.watch_list()["watches"]
+    (row,) = s.declaration_list("watch")["watches"]
     assert row["reading"]["available"] is True, row
     wide = s.watch_add(ref="0x203200", mode="show", length=2, fmt="u16", cpu="subcpu")
     assert wide["reading"]["available"] is False, wide
@@ -299,7 +300,7 @@ def test_a_watch_on_a_cpu_of_an_unknown_byte_order_is_unreadable_and_the_stops_g
     out = s.watch_add(ref="0x2031fc", mode="change", length=4, fmt="u32", cpu="subcpu")
     assert out["status"] == "ok" and out["reading"]["available"] is False, out
     assert "(architecture 'mips') was not read" in out["reading"]["why"], out["reading"]
-    (row,) = s.watch_list()["watches"]
+    (row,) = s.declaration_list("watch")["watches"]
     assert row["cpu"] == ":subcpu", row
     s.resume()
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
@@ -324,9 +325,10 @@ def test_the_same_watch_ref_on_another_cpu_is_a_second_declaration_with_its_own_
     again = s.watch_add(ref="0x2031fc", mode="change", length=4)
     assert again["cpu"] == ":maincpu" and again["already_stored"], again
     assert len(ses.wplist_rows) == 2, "its own row, adopted"
-    cleared = s.watch_clear(ref="0x2031fc", cpu="subcpu")
+    cleared = s.declaration_clear("watch", ref="0x2031fc", cpu="subcpu")
     assert cleared["declarations_cleared"] == 1 and len(ses.wplist_rows) == 1, cleared
-    assert [(w["ref"], w["cpu"]) for w in s.watch_list()["watches"]] == [("0x2031fc", ":maincpu")]
+    assert [(w["ref"], w["cpu"]) for w in s.declaration_list("watch")["watches"]] == [("0x2031fc",
+                                                                                       ":maincpu")]
 
 
 # ---------------------------------------------------------- the readers MAME addresses by cpu
@@ -477,21 +479,22 @@ def test_the_lists_narrow_to_a_cpu_through_the_consoles_own_filter(
     ses = _watching(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x542", cpu="subcpu")
     s.breakpoint_at(ref="0x4a0")
-    sub = s.breakpoint_list(cpu="subcpu")
+    sub = s.declaration_list("breakpoint", cpu="subcpu")
     assert sub["cpu"] == ":subcpu" and [b["ref"] for b in sub["breakpoints"]] == ["0x542"], sub
-    assert "bplist :subcpu" in ses.commands and sub["foreign"] == []
-    main = s.breakpoint_list(cpu="maincpu")
+    assert "bplist :subcpu" in ses.commands and "foreign" not in sub
+    main = s.declaration_list("breakpoint", cpu="maincpu")
     assert [b["ref"] for b in main["breakpoints"]] == ["0x4a0"], main
-    listed = s.breakpoint_list()
+    listed = s.declaration_list("breakpoint")
     assert len(listed["breakpoints"]) == 2 and listed["cpu"]["available"] is False, listed
     s.watch_add(ref="0x2031fc", mode="change", length=4, cpu="subcpu")
     s.watch_add(ref="0x203200", mode="change", length=2)
     s.watch_add(ref="0x203300", mode="show", length=2)
-    watched = s.watch_list(cpu="subcpu")
+    watched = s.declaration_list("watch", cpu="subcpu")
     assert watched["cpu"] == ":subcpu" and [w["ref"] for w in watched["watches"]] == ["0x2031fc"]
-    assert "wplist :subcpu" in ses.commands and watched["foreign"] == []
-    assert [w["ref"] for w in s.watch_list(cpu="maincpu")["watches"]] == ["0x203200", "0x203300"]
-    assert len(s.watch_list()["watches"]) == 3
+    assert "wplist :subcpu" in ses.commands and "foreign" not in watched
+    assert [w["ref"] for w in s.declaration_list("watch", cpu="maincpu")["watches"]] == ["0x203200",
+                                                                                         "0x203300"]
+    assert len(s.declaration_list("watch")["watches"]) == 3
 
 
 def test_a_registerpoint_names_only_the_visible_cpu(
@@ -504,9 +507,9 @@ def test_a_registerpoint_names_only_the_visible_cpu(
                   s.regpoint_add(condition="d1==7fff", cpu="subcpu"))
     assert out["code"] == "needs_call" and not any(c.startswith("rpset") for c in ses.commands)
     assert s.regpoint_add(condition="d1==7fff", cpu="maincpu")["cpu"] == ":maincpu"
-    listed = s.regpoint_list(cpu=":maincpu")
+    listed = s.declaration_list("regpoint", cpu=":maincpu")
     assert listed["cpu"] == ":maincpu" and len(listed["regpoints"]) == 1
-    other = s.regpoint_list(cpu="subcpu")
+    other = s.declaration_list("regpoint", cpu="subcpu")
     assert other["cpu"] == ":subcpu" and other["regpoints"] == [], "narrowed, as breakpoints are"
 
 
@@ -556,7 +559,8 @@ def test_the_debuggers_temps_are_one_pool_across_cpus(
     assert (sub["temp"], sub["cpu"]) == ("temp1", ":subcpu"), sub
     assert "bp 0x542::subcpu,(++temp1)==0" in ses.commands
     ses.temps = {0: 50, 1: 15625}
-    counts = {b["ref"]: b["hits_since_armed"] for b in s.breakpoint_list()["breakpoints"]}
+    listed = s.declaration_list("breakpoint")["breakpoints"]
+    counts = {b["ref"]: b["hits_since_armed"] for b in listed}
     assert counts == {"0x4a0": 50, "0x542": 15625}
     assert "print temp0,temp1" in ses.commands
 

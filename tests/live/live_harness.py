@@ -294,6 +294,15 @@ def blocked(label: str, reason: str) -> None:
     _record(label, "BLOCKED")
 
 
+def folded(name: str, kw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    """A probe name, `<tool>` or a fold's `<tool> <value>`, as the tool and its arguments: the
+    value is the fold's `kind` for the declarations, its `method` otherwise."""
+    tool, _, value = name.partition(" ")
+    if not value:
+        return tool, kw
+    return tool, {"kind" if tool.startswith("declaration_") else "method": value, **kw}
+
+
 def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
     """Call a tool the way the client would, and keep the WHOLE reply for the transcript.
 
@@ -301,8 +310,10 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
     by name instead of the run dying. A wait above the ceiling is not made at all (`Blocked`),
     unless `b1_exempt` says why this call cannot wait: a value refused before any wait, or a
     line the contract answers at once. Nor is a call handed a file of the bench whose board is
-    off its pins (`args_missing`).
+    off its pins (`args_missing`). A fold is named with its selector, `<tool> <value>`
+    (`comment_write add`, `declaration_list watch`).
     """
+    tool, kw = folded(tool, kw)
     fn = getattr(s, tool)
     if why := args_missing(kw):
         raise Blocked(why)

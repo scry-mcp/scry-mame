@@ -213,11 +213,11 @@ def test_a_state_load_on_a_board_with_no_counter_is_not_verified_by_a_block_that
     ses.frameless = True
     monkeypatch.setattr(mstate.STATE, "frame_symbol", None, raising=False)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    saved = s.state_save(name="live")
+    saved = s.state_write("save", name="live")
     assert saved["status"] == "ok" and saved["frame"]["available"] is False, saved
     assert saved["frame"]["why"] == mstate.NO_COUNTER_WHY, saved
     assert "frame None" not in saved["summary"], saved["summary"]
-    loaded = s.state_load(name="live")
+    loaded = s.state_write("load", name="live")
     assert loaded["status"] == "ok", loaded
     assert loaded["verified"]["available"] is False, loaded
     assert loaded["verified"]["why"] == savestates.ALREADY_AS_SAVED, loaded
@@ -352,7 +352,7 @@ def test_state_list_says_why_a_state_written_here_has_no_frame(
     ses.frameless = True
     monkeypatch.setattr(mstate.STATE, "frame_symbol", None, raising=False)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
-    assert s.state_save(name="live")["status"] == "ok"
+    assert s.state_write("save", name="live")["status"] == "ok"
     (row,) = s.state_list()["states"]
     assert row["frame"]["available"] is False and row["pc"] is not None, row
     assert "no frame counter" in row["frame"]["why"], row

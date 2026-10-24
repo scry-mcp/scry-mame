@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M112: CANNOT The palette write log only records writes made after it is armed, and no tool can replay what an instruction did at an earlier frame."
+    "M112: CANNOT palette_log only records writes made after it is armed, and no tool can replay past palette writes to recover the instruction that set pen 12 at frame 200."
    ],
    "right": true
   },
   {
    "lines": [
-    "M112: CANNOT palette_log only records writes from when it was armed, and nothing in this session armed it before frame 200, so that write cannot be recovered."
+    "M112: CANNOT palette_log only records writes made after it was armed, so the write at frame 200 before arming cannot be recovered."
    ],
    "right": true
   },
   {
    "lines": [
-    "M112: CANNOT palette_log only records writes made after it is armed; it cannot reveal a write from before this session armed it."
+    "M112: CANNOT palette_log records only writes made after it is armed, so the write that set pen 12 at frame 200 is not recoverable."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT The palette write log only records writes made after it was armed, and no tool reads back the instruction that set a pen before that."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT the palette write log only records writes made after it is armed, and frame 200 precedes any arming in this session."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes made after it is armed, so nothing can show which instruction set pen 12 at frame 200."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes made after it is armed, so nothing in this session can show the write at frame 200."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT The palette write log records only writes made after it was armed, and no tool reads back the instructions that wrote earlier frames."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT The palette write log only records writes after it is armed, and nothing here reads back past palette writes from before arming."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT The palette write log only records writes made after it is armed, and no tool reads back earlier writes."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes made after it is armed, and no earlier history of pen writes is kept, so the write at frame 200 cannot be recovered."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes made after it is armed, and no tool reads back the writes that happened before frame 200."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log only records writes made after it is armed, and no tool replays the instruction history from frame 200."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT The palette write log only records writes made after it is armed, so it cannot reach back to the writes that happened at frame 200 before any log was armed."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M112: CANNOT palette_log records only writes made after it is armed, so the instruction that set pen 12 at frame 200 before any arming cannot be recovered."
    ],
    "right": true
   }

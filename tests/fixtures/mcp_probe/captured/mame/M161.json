@@ -41,7 +41,79 @@
   },
   {
    "lines": [
-    "M161: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"chars8\",\"tag\":\"gfx2\",\"offset\":\"0x800\",\"count\":4,\"palette\":\"ppu_pal\",\"pen_base\":\"0x30\"}}"
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": 2048, \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": 48}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\":\"gfx_view\",\"args\":{\"tag\":\"gfx2\",\"offset\":\"0x800\",\"layout\":\"chars8\",\"count\":4,\"palette\":\"ppu_pal\",\"pen_base\":\"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\", \"count\": 4}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },

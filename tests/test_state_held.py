@@ -85,7 +85,7 @@ def _held(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, held: int = 0) -> _He
 
 def _saved_and_moved(ses: _HeldSession) -> int:
     """A state `a` saved in the command, then the machine moved: the pc it was saved at."""
-    assert s.state_save(name="a")["status"] == "ok"
+    assert s.state_write("save", name="a")["status"] == "ok"
     saved_pc = ses.pc
     _moved(ses)
     ses.pc += 8
@@ -101,7 +101,7 @@ def test_a_save_mame_runs_in_the_command_takes_no_step(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _held(monkeypatch, tmp_path)
-    out = s.state_save(name="a")
+    out = s.state_write("save", name="a")
     assert out["status"] == "ok" and "held" not in out and "stop_seq" not in out, out
     assert ses.stepped == 0
 
@@ -114,7 +114,7 @@ def test_a_held_save_is_completed_by_one_step_and_records_the_machine_it_holds(
     # a line logged since the last stop and before the save, which is not the save's
     with open(mfiles.log_path(ses.scratch, "emulator"), "a") as fh:
         fh.write("[:maincpu] logged before the save\n")
-    out = s.state_save(name="a")
+    out = s.state_write("save", name="a")
     assert out["status"] == "ok", out
     # the reply of a save that ran in the command, with what the hold adds and no survey
     assert set(out) == {"name", "path", "bytes", "frame", "pc", "errorlog", "held", "stop_seq",
@@ -137,9 +137,9 @@ def test_a_held_save_loads_back_verified(
 ) -> None:
     """The record of a held save is the machine its file holds, so its load is proved by it."""
     ses = _held(monkeypatch, tmp_path, held=1)
-    assert s.state_save(name="a")["status"] == "ok"
+    assert s.state_write("save", name="a")["status"] == "ok"
     _moved(ses)
-    out = s.state_load(name="a")
+    out = s.state_write("load", name="a")
     assert out["status"] == "ok" and out["verified"] is True, out
 
 
@@ -149,7 +149,7 @@ def test_a_held_load_is_completed_by_one_step_and_verified(
     ses = _held(monkeypatch, tmp_path)
     saved_pc = _saved_and_moved(ses)
     ses.held = 1
-    out = s.state_load(name="a")
+    out = s.state_write("load", name="a")
     assert out["status"] == "ok" and out["verified"] is True, out
     assert ses.stepped == 1 and ses.pc == saved_pc and "held" in out, out
     assert out["output"] == ATTEMPTED["stateload"].strip(), out
@@ -161,7 +161,7 @@ def test_a_load_still_held_after_the_step_is_refused_and_steps_once(
     ses = _held(monkeypatch, tmp_path)
     _saved_and_moved(ses)
     ses.held, ses.stays = 1, True
-    out = s.state_load(name="a")
+    out = s.state_write("load", name="a")
     assert out["status"] == "INVALID" and out["code"] == "not_settled", out
     assert "next run" in out["message"], out
     assert ses.stepped == 1
@@ -173,7 +173,7 @@ def test_a_step_with_no_stop_is_not_settled_and_leaves_the_session_usable(
     """As the `step` tool answers it: `stop` recovers, nothing latches."""
     ses = _held(monkeypatch, tmp_path, held=1)
     ses.times_out = True
-    out = s.state_save(name="a")
+    out = s.state_write("save", name="a")
     assert out["status"] == "INVALID" and out["code"] == "not_settled", out
     assert "`stop` recovers it" in out["message"], out
     assert not ses.broken

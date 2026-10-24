@@ -355,7 +355,7 @@ def test_the_reply_names_its_crop_and_the_consoles_account(console: _Console,
                                                           tmp_path: Path) -> None:
     out = _capture(tmp_path)
     assert out["crop"] == [0, 0, W, H] and out["thread_errors"] == 0
-    assert out["resent"] == 0 and out["console_reruns"] == 0
+    assert out.get("resent", 0) == 0 and out["console_reruns"] == 0
 
 
 @pytest.mark.parametrize("text, said", [

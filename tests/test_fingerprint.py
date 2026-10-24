@@ -107,9 +107,10 @@ def test_a_raw_address_re_arms_over_the_same_fingerprint_and_is_stale_over_anoth
                               fingerprint="fp0"))
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["rearmed"]) == ["0x4a0", "0x203200"] and refs(out["stale"]) == ["0x25a4"]
-    listed = {b["ref"]: b["state"] for b in s.breakpoint_list()["breakpoints"]}
+    listed = {b["ref"]: b["state"] for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed == {"0x4a0": "armed", "0x25a4": "stale"}
-    why = next(b["why"] for b in s.breakpoint_list()["breakpoints"] if b["ref"] == "0x25a4")
+    why = next(b["why"] for b in s.declaration_list("breakpoint")["breakpoints"]
+               if b["ref"] == "0x25a4")
     assert "another build" in why
     # Declaring the stale one again adopts it under this fingerprint.
     assert s.breakpoint_at(ref="0x25a4")["status"] == "ok"

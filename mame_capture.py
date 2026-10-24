@@ -423,9 +423,11 @@ def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int, trigger
 
 def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str, frame: int | None,
              shown: int, at_stop: bool) -> dict[str, Any]:
-    """What a stop survey or `watch_list` says about the capture under `owner` (`mtap.read_tap`,
+    """What a stop survey or `declaration_list(kind="watch")` says about the capture under `owner`
+    (`mtap.read_tap`,
     whose `total` is every trigger access), and once it has a header: `rows_kept`, `overflow_rows`,
-    `rows_path`, and in `watch_list` the first `shown` rows. A STOP LISTS NONE: every reply
+    `rows_path`, and in `declaration_list(kind="watch")` the first `shown` rows. A STOP LISTS NONE:
+    every reply
     carries a survey whatever the call was about, and a block of rows in each one is noise."""
     item, head = mtap.read_tap(scratch, owner, frame, at_stop, parse_capture_header, "captured")
     rec = STATE.tallies[owner]

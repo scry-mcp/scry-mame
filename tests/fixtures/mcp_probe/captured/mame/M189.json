@@ -28,7 +28,79 @@
   },
   {
    "lines": [
-    "M189: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"tiles8\",\"tag\":\"gfx1\",\"first\":0,\"count\":16,\"dest\":\"/tmp/mcp-probe-gfx.png\",\"attach\":false}}"
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\":\"gfx_view\",\"args\":{\"tag\":\"gfx1\",\"layout\":\"tiles8\",\"count\":16,\"dest\":\"/tmp/mcp-probe-gfx.png\",\"attach\":false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },

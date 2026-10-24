@@ -2,31 +2,105 @@
  "task": {
   "id": "M199",
   "prompt": "Keep only the scanned cells whose value dropped since the search was opened, and show me at most 12 of the survivors.",
-  "tool": "scan_filter",
+  "tool": "scan",
   "args": {
+   "method": "filter",
    "operator": "<",
    "limit": 12
   },
   "grammar": [
-   "<"
+   "<",
+   "filter"
   ]
  },
  "runs": [
   {
    "lines": [
-    "M199: {\"tool\": \"scan_filter\", \"args\": {\"operator\": \"<\", \"limit\": 12}}"
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M199: {\"tool\":\"scan_filter\",\"args\":{\"operator\":\"<\",\"limit\":12}}"
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M199: {\"tool\": \"scan_filter\", \"args\": {\"operator\": \"<\", \"limit\": 12}}"
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"operator\":\"<\",\"limit\":12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
    ],
    "right": true
   }

@@ -43,19 +43,91 @@
  "runs": [
   {
    "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"binary\": \"/opt/twin/mamed\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"binary\": \"/opt/twin/mamed\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"binary\": \"/opt/twin/mamed\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\":\"start\",\"args\":{\"binary\":\"/opt/twin/mamed\",\"system\":\"twinfire\",\"rompath\":\"/opt/twin/roms\",\"reference_rom\":\"/opt/twin/roms/main.bin\",\"symbols\":{\"maincpu\":\"/opt/twin/main.yaml\",\"audiocpu\":\"/opt/twin/audio.yaml\"},\"types\":{\"audiocpu\":\"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"binary\": \"/opt/twin/mamed\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M75: {\"tool\":\"start\",\"args\":{\"system\":\"twinfire\",\"rompath\":\"/opt/twin/roms\",\"reference_rom\":\"/opt/twin/roms/main.bin\",\"binary\":\"/opt/twin/mamed\",\"symbols\":{\"maincpu\":\"/opt/twin/main.yaml\",\"audiocpu\":\"/opt/twin/audio.yaml\"},\"types\":{\"audiocpu\":\"/opt/twin/audio.types\"}}}"
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"binary\": \"/opt/twin/mamed\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"binary\": \"/opt/twin/mamed\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"binary\": \"/opt/twin/mamed\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/twin/mamed\", \"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M75: {\"tool\": \"start\", \"args\": {\"system\": \"twinfire\", \"rompath\": \"/opt/twin/roms\", \"reference_rom\": \"/opt/twin/roms/main.bin\", \"binary\": \"/opt/twin/mamed\", \"symbols\": {\"maincpu\": \"/opt/twin/main.yaml\", \"audiocpu\": \"/opt/twin/audio.yaml\"}, \"types\": {\"audiocpu\": \"/opt/twin/audio.types\"}}}"
    ],
    "right": true
   }

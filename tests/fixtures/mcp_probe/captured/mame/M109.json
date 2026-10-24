@@ -23,7 +23,79 @@
   },
   {
    "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M109: {\"tool\":\"palette_log\",\"args\":{\"palette_port\":\"vgadac\",\"pen\":73,\"limit\":5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },

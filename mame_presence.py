@@ -39,19 +39,16 @@ STATE_FILE = "presence.state"
 #: tool has to be put on one side: the suite holds them against the registry.
 DRIVING_TOOLS = frozenset({
     "run_to", "run_for", "trace", "step", "resume", "stop", "series_capture", "input", "record",
-    "audio_record", "reset", "state_load", "throttle", "drive", "perform", "lua", "debug",
+    "audio_record", "reset", "state_write", "throttle", "drive", "perform", "lua", "debug",
     "focus", "write", "set_register"})
 STILL_TOOLS = frozenset({
-    "audio_diff", "audio_measure", "breakpoint_at", "breakpoint_clear", "breakpoint_list",
-    "captures", "close", "comment_add", "comment_delete", "comment_list", "comment_load",
-    "comment_save", "cpu_info", "disassemble", "find", "gfx_blit_source", "gfx_blits",
-    "gfx_draft", "gfx_film", "gfx_load", "gfx_locate", "gfx_sweep", "gfx_view", "golden_check",
-    "history", "image_diff", "log", "log_wait", "machine_map", "map_add", "map_find", "map_load",
-    "map_save", "memdump", "palette", "palette_log", "perform_export", "read_block",
-    "read_memory", "region_track", "registers", "regpoint_add", "regpoint_clear",
-    "regpoint_list", "rom_check", "scan_clear", "scan_filter", "scan_start", "screen_signature",
-    "screen_view", "series_diff", "snapshot", "start", "state_list",
-    "state_save", "status", "symbols_find", "watch_add", "watch_clear", "watch_list"})
+    "audio_compare", "breakpoint_at", "captures", "close", "comment_list", "comment_write",
+    "cpu_info", "declaration_clear", "declaration_list", "disassemble", "find",
+    "gfx_blit_source", "gfx_blits", "gfx_draft", "gfx_film", "gfx_load", "gfx_locate",
+    "gfx_sweep", "gfx_view", "history", "image_compare", "log", "log_wait", "machine_map",
+    "map_find", "map_write", "memdump", "palette", "palette_log", "perform_export", "read_block",
+    "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
+    "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add"})
 
 # THE DRAWER, one chunk of the boot harness inside its own `pcall` like the others. Its file holds
 # `held`, `acting`, or nothing at all (no session state yet), which draws nothing. Each band of the

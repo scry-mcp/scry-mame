@@ -88,7 +88,7 @@ def test_a_pointer_watch_is_resolved_when_armed_and_the_reply_says_through_what(
     assert out["status"] == "ok", out
     assert out["fmt"] == "i16" and out["length"] == 2 and out["addr"] == f"{HEAP + 4:#010x}"
     assert out["pointer"]["field"] == "sync_delta"
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["_g_engine->sync_delta"]["addr"] == f"{HEAP + 4:#010x}"
     assert listed["_g_engine->sync_delta"]["by"] == "pointer"
 
@@ -112,7 +112,7 @@ def test_a_pointer_watch_is_re_resolved_at_every_stop_and_a_change_watch_follows
     again = s.step()
     (w,) = again["watches"]
     assert "moved" not in w and w["addr"] == f"{HEAP2 + 4:#010x}"
-    cleared = s.watch_clear(ref="_g_engine->sync_delta")
+    cleared = s.declaration_clear("watch", ref="_g_engine->sync_delta")
     assert cleared["disarmed"] and ses.watchpoints[-1] == (HEAP2 + 4, 2, True)
 
 
@@ -144,7 +144,7 @@ def test_a_null_or_unmapped_pointer_is_a_state_at_the_stop_never_a_watch_at_zero
     assert w["state"] == "evaluated" and w["reading"]["value"] == -7
     # A CHANGE watch declared over a null pointer arms nothing, and the stop that finds the
     # pointer set arms it, saying it came from null.
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     ses.memory[ENGINE] = bytes(4)
     out = s.watch_add(ref="_g_engine->sync_delta", mode="change")
     assert out["state"] == "null_pointer" and not ses.wplist_rows
@@ -164,17 +164,18 @@ def test_a_pointer_watch_needs_the_machine_stopped_to_place_itself(
     ses.go()
     out = s.watch_add(ref="_g_engine->sync_delta", mode="show")
     assert out["status"] == "INVALID" and out["code"] == "not_stopped", out
-    # `watch_list` on the running machine answers where the watch was ARMED, not a chase.
+    # `declaration_list(kind="watch")` on the running machine answers where the watch was ARMED, not
+    # a chase.
     ses.interrupt()
     s.watch_add(ref="_g_engine->sync_delta", mode="change")
     ses.go()
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["_g_engine->sync_delta"]["addr"] == f"{HEAP + 4:#010x}"
     ses.interrupt()
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     s.watch_add(ref="_g_engine->sync_delta", mode="show")
     ses.go()
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["_g_engine->sync_delta"]["state"] == "unresolved"
 
 
@@ -198,7 +199,7 @@ def test_a_move_the_debugger_refuses_keeps_the_old_row_and_says_why(
     armed = mstate.STATE.armed_watches[("_g_engine->sync_delta", ":maincpu")]
     assert armed["last"] == ses.memory[HEAP + 4]
     # From null to an unwritable place: nothing armed, and `moved` says why.
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     ses.memory[ENGINE] = bytes(4)
     s.watch_add(ref="_g_engine->sync_delta", mode="change")
     ses.memory[ENGINE] = HEAP2.to_bytes(4, "big")
@@ -328,13 +329,13 @@ def test_a_pointer_typed_with_a_class_is_relocated_by_that_class_not_the_base_sy
     assert out["pointer"]["relocated"]["class_from"] == "type"
     # The base symbol's class still decides when the type names none.
     use_table(monkeypatch, types={"ROUTINE_ANIM": "ptr16"})
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["addr"] == f"{0x400 + 0x1923:#010x}", out
     assert out["pointer"]["relocated"]["class_from"] == "base", out["pointer"]
     # A class this table does not carry is refused naming the ones it does.
     use_table(monkeypatch, types={"ROUTINE_ANIM": "ptr16@TEXT"})
-    s.watch_clear(all=True)
+    s.declaration_clear("watch", all=True)
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["status"] == "INVALID" and "TEXT" in out["message"], out
     assert "CODE" in out["message"] and "DATA" in out["message"], out["message"]
@@ -373,7 +374,8 @@ def test_a_null_pointer_row_carries_its_pointer_block_and_the_list_and_survey_go
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A watch through a null pointer is a STATE with the pointer block beside it (where the
-    pointer was read, how wide, the zero it held), in `watch_list` as at a stop, and the
+    pointer was read, how wide, the zero it held), in `declaration_list(kind="watch")` as at a stop,
+    and the
     declarations after it are still listed and evaluated."""
     ses = _pointing(monkeypatch, tmp_path)
     ses.memory[ENGINE] = bytes(4)
@@ -384,7 +386,7 @@ def test_a_null_pointer_row_carries_its_pointer_block_and_the_list_and_survey_go
     s.watch_add(ref="frame_lo", mode="show", length=2)
     block = {"at": f"{ENGINE:#010x}", "length": 4, "value": f"{0:#010x}", "offset": 4,
              "field": "sync_delta"}
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert listed["_g_engine->sync_delta"]["state"] == "null_pointer"
     assert listed["_g_engine->sync_delta"]["pointer"] == block
     assert listed["frame_lo"]["state"] == "evaluated", "listed past the null pointer"
@@ -404,7 +406,7 @@ def test_a_change_watch_armed_from_null_is_recorded_under_its_ref_and_clears_by_
     ses.memory[ENGINE] = HEAP.to_bytes(4, "big")
     (w,) = s.step()["watches"]
     assert w["moved"] == {"from": "null", "to": f"{HEAP + 4:#010x}"}, w
-    out = s.watch_clear(ref="_g_engine->sync_delta")
+    out = s.declaration_clear("watch", ref="_g_engine->sync_delta")
     assert out["disarmed"] == [f"1 @ {HEAP + 4:06X}-{HEAP + 5:06X} write"], out
     assert ses.watchpoints[-1] == (HEAP + 4, 2, True) and ses.wplist_rows == []
 

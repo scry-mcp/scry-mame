@@ -177,7 +177,7 @@ def _stills() -> dict[str, str]:
 
 def _record(tool: str, name: str) -> str:
     """`tool` once from the saved state `name`."""
-    call("state_load", name=name)
+    call("state_write", method="load", name=name)
     if tool == "record":
         return _written("record", ".avi", frames=LEG_FRAMES, seconds=10.0)
     at = _frame()
@@ -206,7 +206,7 @@ def _z_recordings(t: list[str]) -> None:
     free_boot("1942", ["srb-03.m3"], "0x0", presence=True)
     first = _frames()
     call("run_for", frames=RUN_FRAMES, seconds=10.0)
-    call("state_save", name="z")
+    call("state_write", method="save", name="z")
     runs = {tool: _legs(tool, "z") for tool in ("record", "series_capture")}
     drawn = _rise(first, _frames(), "acting")
     owed = RUN_FRAMES + 2 * (LEG_FRAMES + LEG_FRAMES // 5)
@@ -266,11 +266,12 @@ def _z_circus(t: list[str]) -> None:
     _z_repaint(t[8])
     # THE RED OF EVERYTHING FRAME-DONE CANNOT REACH: the same comparisons across a machine one
     # run apart.
-    call("state_save", name="z")        # at a frame's end, as every save of this section
+    call("state_write", method="save",
+         name="z")        # at a frame's end, as every save of this section
     moved_before = {**_stills(), "record": _record("record", "z"),
                     "series_capture": _record("series_capture", "z")}
     call("run_for", frames=MOVE_FRAMES, seconds=10.0)
-    call("state_save", name="z2")       # at a frame's end too, as `z` was
+    call("state_write", method="save", name="z2")       # at a frame's end too, as `z` was
     moved_after = {**_stills(), "record": _record("record", "z2"),
                    "series_capture": _record("series_capture", "z2")}
     keys = ("screen_view", "screen_signature", "record", "series_capture")

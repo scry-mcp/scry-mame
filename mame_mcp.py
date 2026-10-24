@@ -42,9 +42,7 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
     nothing on this path already holds the lock.
     """
     def build() -> dict[str, Any]:
-        # `start` promises `start_retries` on every reply, and this one launched nothing.
-        launched: dict[str, Any] = {"start_retries": []} if name == "start" else {}
-        reply = menvelope.invalid("bad_argument", strict.schema_refusal(cause), **launched)
+        reply = menvelope.invalid("bad_argument", strict.schema_refusal(cause))
         STATE.end_call()
         return reply
 
@@ -63,8 +61,10 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
 # stop before a step that needs one) and `close`. The list is the server's because it names
 # tools.
 # The media file tools answer in any state too, and the instructions say so once, beside them.
+# A fold answers by some of its methods only, and is named with them.
 _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
-    sequence.RUNNING_OK_OPS - set(media_tools.TOOLS), sequence.NOT_STEPS, {"start", "rom_check"})
+    roster.by_method(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS), sequence.RUNNING_METHODS),
+    sequence.NOT_STEPS, {"start", "rom_check"})
 
 #: THE TOOLS BY FAMILY, in the order the instructions list them (`scry_core.roster`): the
 #: roster and the "answers while it runs" sentence are both rendered from it, so a family that
@@ -74,21 +74,19 @@ ROSTER = roster.Roster(families=(
     ("Session", ("start", "status", "close", "focus", "rom_check")),
     ("Machine", ("cpu_info", "machine_map", "symbols_find", "log", "log_wait")),
     ("Advance", ("run_to", "run_for", "step", "resume", "stop", "trace", "series_capture")),
-    ("Declarations", ("breakpoint_at", "breakpoint_list", "breakpoint_clear", "regpoint_add",
-                      "regpoint_list", "regpoint_clear", "watch_add", "watch_list",
-                      "watch_clear")),
+    ("Declarations", ("breakpoint_at", "regpoint_add", "watch_add", "declaration_list",
+                      "declaration_clear")),
     ("Read", ("read_memory", "read_block", "registers", "disassemble", "find", "history",
-              "memdump", "map_add", "map_find")),
+              "memdump", "map_find", "map_write")),
     ("Screen", ("palette", "screen_view", "screen_signature", "gfx_view", "gfx_locate",
                   "gfx_sweep", "gfx_draft", "gfx_blits", "gfx_blit_source")),
     ("Film", ("gfx_load", "gfx_film", "palette_log")),
-    ("Scan", ("scan_start", "scan_filter", "scan_clear")),
+    ("Scan", ("scan",)),
     ("Write", ("write", "set_register", "reset", "debug")),
-    ("Comments", ("comment_add", "comment_list", "comment_delete", "comment_save",
-                  "comment_load")),
+    ("Comments", ("comment_list", "comment_write")),
     ("Lua", ("input", "record", "audio_record", "lua", "throttle")),
-    ("States", ("state_save", "state_load", "state_list")),
-    ("Files", (*media_tools.TOOLS, "map_load", "map_save", "snapshot", "captures")),
+    ("States", ("state_list", "state_write")),
+    ("Files", (*media_tools.TOOLS, "snapshot", "captures")),
     ("Lists", ("perform", "drive", "perform_export")),
 ), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
 
@@ -108,8 +106,8 @@ mcp = envelope.Envelope(
         "ADDRESSES are `0x`, a condition as typed; any other ref is a symbol, bare hex "
         "naming none refused. Breakpoints are PLACES, never expressions.\n\n"
         "EVERY REPLY carries `summary`, `status` (`ok`, or `INVALID` with `code` and "
-        "`message`) and `session` (`altered` after a write). A "
-        "wrong TYPE is the schema's `bad_argument`. `not_settled`: "
+        "`message`) and `session` (`altered` after a write); a field left out of a reply is "
+        "empty. A wrong TYPE is the schema's `bad_argument`. `not_settled`: "
         "`stop`; if `stop` fails as well, `close` then `start`. "
         "`session_broken` LATCHES until `close`."
     ),
@@ -243,9 +241,9 @@ def _machine() -> recording.Machine:
 #: The session's recording: what `perform_export` writes (REFERENCE.md, From an investigation to
 #: a bench). `rom_check` answers about the files, never the machine, and is no step of a list.
 # `live` is what `start` refuses over (`mame_launch`): a start refused there touched nothing.
-#: Each kind of declaration a `start` re-arms, by the tool that lists it (`<kind>_list`) and the
-#: field its rows are under.
-_LISTS = {kind: (f"{kind}_list", key) for kind, key in dec.COUNT_KEYS.items()}
+#: Each kind of declaration a `start` re-arms, by the tool that lists it and the field its rows
+#: are under.
+_LISTS = {kind: ("declaration_list", key) for kind, key in dec.COUNT_KEYS.items()}
 
 
 RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _machine,
@@ -255,7 +253,7 @@ RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _ma
                               stop_fields=("pc", "frame"),
                               outside=sequence.NOT_STEPS - sequence.SEQUENCES - {"start"},
                               sequences=sequence.SEQUENCES, start_tool="start",
-                              states=("state_save", "state_load", "name"))
+                              states=recording.States("state_write", "save", "load", "name"))
 
 # THE HOOKS ARE BOUND HERE, ONCE, AT IMPORT: a test that replaces one patches the name the hook
 # calls through (`STATE`, `running`), never the hook itself, which the boundary already holds.
@@ -271,7 +269,7 @@ BOUNDARY = boundary.Boundary(
 def tool(
     title: str, *, summary: summaries.Summary, read_only: bool = False, idempotent: bool = False,
     session_before: bool = False, on_cancel: cancel.OnCancel | None = None,
-    replay: recording.ExportAs | None = None,
+    replay: recording.Replay | None = None,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Registers an MCP tool on this server's boundary (`scry_core.boundary.Boundary.tool`, the
     contract), serialised over the one machine (`mame_state.LOCK`, kept beside the session it

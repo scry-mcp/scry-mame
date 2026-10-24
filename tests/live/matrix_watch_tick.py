@@ -78,10 +78,11 @@ def _w_gridlee(t: list[str]) -> None:
     r = call("run_for", frames=1, seconds=10.0)
     cell(t[1], _stopped(r, CREDITS_BCD, 0xD67F, 0xD682), said(r))
     call("close")
-    # A SECOND COLD RUN rather than a saved state: a START taken after `state_load` lands inside
+    # A SECOND COLD RUN rather than a saved state: a START taken after `state_write(method="load")`
+    # lands inside
     # the aligning tick, where the counter does not move, so it would not exercise the line.
     credits = _four_credits()
-    call("watch_clear", ref=CREDITS_BIN)
+    call("declaration_clear", kind="watch", ref=CREDITS_BIN)
     r = call("input", **START)
     trail = call("history", limit=16)
     lines = trail.get("lines") or []

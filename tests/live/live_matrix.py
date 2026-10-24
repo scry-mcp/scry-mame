@@ -71,6 +71,7 @@ from live_harness import (
     cell,
     circus_boot,
     ensure_closed,
+    folded,
     free_boards_missing,
     free_boot,
     fresh,
@@ -219,12 +220,13 @@ def _series_ahead() -> dict[str, Any]:
 #: The media file tools, probed with a file that is not there: they read files and never the
 #: machine, so in EVERY state the answer is the missing file's own refusal.
 MEDIA_ABSENT: dict[str, dict[str, Any]] = {
-    "image_diff": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
-    "series_diff": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
-    "region_track": {"manifest": "/nonexistent/m.json"},
-    "golden_check": {"manifest": "/nonexistent/m.json", "checksums": "/nonexistent/g.sha256"},
-    "audio_measure": {"path": "/nonexistent/s.wav"},
-    "audio_diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
+    "image_compare image": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
+    "image_compare series": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
+    "image_compare region": {"manifest": "/nonexistent/m.json"},
+    "image_compare golden": {"manifest": "/nonexistent/m.json",
+                             "checksums": "/nonexistent/g.sha256"},
+    "audio_compare measure": {"path": "/nonexistent/s.wav"},
+    "audio_compare diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
 }
 
 
@@ -244,7 +246,8 @@ def _film_ready(args: dict[str, Any]) -> dict[str, Any]:
     return args
 
 
-#: The comment files `comment_save` wrote in this section, so `comment_load` reads the last one.
+#: The comment files `comment_write(method="save")` wrote in this section, so
+#: `comment_write(method="load")` reads the last one.
 _comment_files: list[str] = []
 
 
@@ -282,23 +285,23 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "resume": dict,
     "stop": dict,
     "breakpoint_at": lambda: {"ref": "exception_handler"},
-    "breakpoint_list": dict,
-    "breakpoint_clear": lambda: {"all": True},
+    "declaration_list breakpoint": dict,
+    "declaration_clear breakpoint": lambda: {"all": True},
     "watch_add": lambda: {"ref": "0x203200", "mode": "show", "length": 2},
-    "watch_list": dict,
-    "watch_clear": lambda: {"all": True},
+    "declaration_list watch": dict,
+    "declaration_clear watch": lambda: {"all": True},
     # A condition that never comes true: the probe is of the tool, and one that fired would
     # stop the machine under the RUNNING state's other probes.
     "regpoint_add": lambda: {"condition": "pc==0xfffffffe"},
-    "regpoint_list": dict,
-    "regpoint_clear": lambda: {"all": True},
+    "declaration_list regpoint": dict,
+    "declaration_clear regpoint": lambda: {"all": True},
     # in this order on a stopped machine: the save writes what the load reads back, and the
     # delete takes what the add placed
-    "comment_add": lambda: {"ref": "irq_vblank", "text": "matrix A", "cpu": "maincpu"},
+    "comment_write add": lambda: {"ref": "irq_vblank", "text": "matrix A", "cpu": "maincpu"},
     "comment_list": dict,
-    "comment_save": lambda: {"dest": _comment_dest()},
-    "comment_load": lambda: {"path": _comment_source()},
-    "comment_delete": lambda: {"ref": "irq_vblank", "cpu": "maincpu"},
+    "comment_write save": lambda: {"dest": _comment_dest()},
+    "comment_write load": lambda: {"path": _comment_source()},
+    "comment_write delete": lambda: {"ref": "irq_vblank", "cpu": "maincpu"},
     "symbols_find": lambda: {"name": "irq_vblank"},
     "machine_map": dict,
     "cpu_info": dict,
@@ -309,9 +312,9 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "find": lambda: {"ref": "0x0", "length": 1024, "data_hex": "00"},
     "history": lambda: {"limit": 4},
     # opened, then closed at once by a `!` on the same stop, then cleared: the state is kept
-    "scan_start": lambda: {"ref": "0x200000", "length": 0x100},
-    "scan_filter": lambda: {"operator": "!"},
-    "scan_clear": dict,
+    "scan start": lambda: {"ref": "0x200000", "length": 0x100},
+    "scan filter": lambda: {"operator": "!"},
+    "scan clear": dict,
     "focus": lambda: {"cpu": "maincpu"},
     "write": lambda: {"ref": "0x200000", "data_hex": "00"},
     "set_register": lambda: {"name": "D0", "value": 0},
@@ -319,10 +322,10 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin")},
     "snapshot": dict,
     "screen_signature": dict,
-    "map_load": lambda: {"path": "/nonexistent/m.scry-map.json"},
-    "map_add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
+    "map_write load": lambda: {"path": "/nonexistent/m.scry-map.json"},
+    "map_write add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
     "map_find": dict,
-    "map_save": lambda: {"dest": fresh(".scry-map.json"), "overwrite": True},
+    "map_write save": lambda: {"dest": fresh(".scry-map.json"), "overwrite": True},
     "series_capture": _series_ahead,
     **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
@@ -350,20 +353,21 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "record": lambda: {"frames": 2, "seconds": 10.0},
     "audio_record": lambda: {"frames": 2, "seconds": 10.0},
     "throttle": lambda: {"on": False, "seconds": 5.0},
-    "state_save": lambda: {"name": _save_name()},
+    "state_write save": lambda: {"name": _save_name()},
     "captures": dict,
     "state_list": dict,
-    "state_load": lambda: {"name": _state_to_load()},
+    "state_write load": lambda: {"name": _state_to_load()},
 }
 
 #: What answers on a RUNNING machine, from the server's `instructions` and each tool's own
 #: docstring; everything else but the lifecycle refuses `not_stopped`.
 RUNNING_ANSWERS = {"status", "log", "log_wait", "snapshot", "symbols_find", "throttle",
-                   "breakpoint_at", "breakpoint_list", "breakpoint_clear", "watch_add",
-                   "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
-                   "regpoint_clear", "comment_list", "comment_save", "state_list", "captures",
-                   "machine_map", "cpu_info", "gfx_load", "palette_log", "gfx_film", "scan_clear",
-                   "perform_export", "stop", "close"}
+                   "breakpoint_at", "declaration_list breakpoint", "declaration_clear breakpoint",
+                   "watch_add", "declaration_list watch", "declaration_clear watch", "regpoint_add",
+                   "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
+                   "comment_write save", "state_list", "captures", "machine_map", "cpu_info",
+                   "gfx_load", "palette_log", "gfx_film", "scan clear", "perform_export", "stop",
+                   "close"}
 
 #: The fields a valid call's reply must carry on a STOPPED machine, one predicate per tool,
 #: each from that tool's own `Reply:` paragraph.
@@ -377,21 +381,22 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
                         and (r.get("trace") or {}).get("addresses", 0) > 0),
     "step": lambda r: r.get("instructions_completed") == 1 and "regs" in r,
     "breakpoint_at": lambda r: r.get("armed") is True,
-    "breakpoint_list": lambda r: isinstance(r.get("breakpoints"), list),
-    "breakpoint_clear": lambda r: "declarations_cleared" in r,
+    "declaration_list breakpoint": lambda r: isinstance(r.get("breakpoints"), list),
+    "declaration_clear breakpoint": lambda r: "declarations_cleared" in r,
     "watch_add": lambda r: r.get("state") == "evaluated"
     and r.get("reading", {}).get("available") is True and "value" in r["reading"],
-    "watch_list": lambda r: isinstance(r.get("watches"), list),
-    "watch_clear": lambda r: "declarations_cleared" in r,
+    "declaration_list watch": lambda r: isinstance(r.get("watches"), list),
+    "declaration_clear watch": lambda r: "declarations_cleared" in r,
     "regpoint_add": lambda r: r.get("armed") is True and r.get("cpu") == ":maincpu",
-    "regpoint_list": lambda r: isinstance(r.get("regpoints"), list),
-    "regpoint_clear": lambda r: "declarations_cleared" in r,
-    "comment_add": lambda r: (r.get("comment") or {}).get("state") == "armed"
+    "declaration_list regpoint": lambda r: isinstance(r.get("regpoints"), list),
+    "declaration_clear regpoint": lambda r: "declarations_cleared" in r,
+    "comment_write add": lambda r: (r.get("comment") or {}).get("state") == "armed"
     and r.get("cpu") == ":maincpu",
     "comment_list": lambda r: r.get("comments_total") == 1 and len(r.get("comments", [])) == 1,
-    "comment_save": lambda r: r.get("comments_total") == 1 and Path(str(r.get("path"))).is_file(),
-    "comment_load": lambda r: r.get("parsed") == 1 and r.get("unchanged") == 1,
-    "comment_delete": lambda r: (r.get("deleted") or {}).get("ref") == "irq_vblank",
+    "comment_write save": lambda r: r.get("comments_total") == 1
+    and Path(str(r.get("path"))).is_file(),
+    "comment_write load": lambda r: r.get("parsed") == 1 and r.get("unchanged") == 1,
+    "comment_write delete": lambda r: (r.get("deleted") or {}).get("ref") == "irq_vblank",
     "symbols_find": lambda r: r.get("symbols_total") == 1,
     "machine_map": lambda r: bool(r.get("cpus")),
     # m68k-dual's two cpus, the main one visible, each pc read.
@@ -413,7 +418,8 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "snapshot": lambda r: r.get("bytes", 0) > 0,
     "screen_signature": lambda r: isinstance(r.get("signature"), str)
     and len(r["signature"]) == 16,
-    "map_add": lambda r: r.get("kind") == "pixel" and len(str(r["match"][0]["signature"])) == 16,
+    "map_write add": lambda r: r.get("kind") == "pixel"
+    and len(str(r["match"][0]["signature"])) == 16,
     "map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
     "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
@@ -443,18 +449,18 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "record": lambda r: r.get("avi_frames") == 2,
     "audio_record": lambda r: (r.get("samples") or 0) > 0
     and r.get("frame_end", 0) - r.get("frame_begin", 0) + 1 == 2,
-    "state_save": lambda r: Path(str(r.get("path"))).is_file(),
+    "state_write save": lambda r: Path(str(r.get("path"))).is_file(),
     "captures": lambda r: isinstance(r.get("captures"), list),
     "state_list": lambda r: isinstance(r.get("states"), list),
-    "state_load": load_judged,
+    "state_write load": load_judged,
     "throttle": lambda r: r.get("pending") is True and str(r.get("tag", "")).startswith(
         "MAME_MCP_THROTTLE#"),
     "stop": lambda r: r.get("interrupted") is False,
     "resume": lambda r: "verdict" not in r and "halted" not in r,
     "close": lambda r: r.get("closed") is True,
-    "scan_start": lambda r: r.get("hits_total") == 0x100 and r.get("space") == "program",
-    "scan_filter": lambda r: r.get("closed") is True and r.get("hits_total") == 0,
-    "scan_clear": lambda r: r.get("cleared") in (True, False),
+    "scan start": lambda r: r.get("hits_total") == 0x100 and r.get("space") == "program",
+    "scan filter": lambda r: r.get("closed") is True and r.get("hits_total") == 0,
+    "scan clear": lambda r: r.get("cleared") in (True, False),
 }
 
 def _says_running(r: dict[str, Any]) -> bool:
@@ -463,7 +469,7 @@ def _says_running(r: dict[str, Any]) -> bool:
 
 
 RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
-    "scan_clear": lambda r: r.get("cleared") in (True, False),
+    "scan clear": lambda r: r.get("cleared") in (True, False),
     "status": lambda r: (r.get("session", {}).get("running") is True
                          and "pc" in (r.get("last_stop") or {})
                          and (r.get("pc") or {}).get("available") is False),
@@ -474,16 +480,16 @@ RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     and all(x.get("memory") == "unknown" for x in r.get("symbols", [])),
     "throttle": lambda r: r.get("pending") is False and isinstance(r.get("frame"), int),
     "breakpoint_at": lambda r: r.get("armed") is True and r.get("while_running") is True,
-    "breakpoint_list": lambda r: _says_running(r) and "last_stop" in r,
-    "breakpoint_clear": lambda r: r.get("while_running") is True,
+    "declaration_list breakpoint": lambda r: _says_running(r) and "last_stop" in r,
+    "declaration_clear breakpoint": lambda r: r.get("while_running") is True,
     "watch_add": lambda r: r.get("state") == "evaluated" and "reading" not in r,
-    "watch_list": lambda r: _says_running(r) and "last_stop" in r,
-    "watch_clear": lambda r: r.get("while_running") is True,
+    "declaration_list watch": lambda r: _says_running(r) and "last_stop" in r,
+    "declaration_clear watch": lambda r: r.get("while_running") is True,
     "regpoint_add": lambda r: r.get("armed") is True and r.get("while_running") is True,
-    "regpoint_list": lambda r: _says_running(r) and "last_stop" in r,
-    "regpoint_clear": lambda r: r.get("while_running") is True,
+    "declaration_list regpoint": lambda r: _says_running(r) and "last_stop" in r,
+    "declaration_clear regpoint": lambda r: r.get("while_running") is True,
     "comment_list": lambda r: _says_running(r) and "last_stop" in r,
-    "comment_save": lambda r: isinstance(r.get("comments_total"), int)
+    "comment_write save": lambda r: isinstance(r.get("comments_total"), int)
     and Path(str(r.get("path"))).is_file(),
     "state_list": lambda r: isinstance(r.get("states"), list),
     "captures": lambda r: isinstance(r.get("captures"), list),
@@ -507,11 +513,11 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     if tool in MEDIA_ABSENT:
         good = refused(r, "bad_argument") and "is not a file" in str(r.get("message"))
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
-    elif tool in ("map_load", "map_save"):
+    elif tool in ("map_write load", "map_write save"):
         # A map's files, in any state: a load of a file that is not there refused by name; a
         # save `needs_call` before anything is mapped, then the maps the server holds, written.
         good = (refused(r, "bad_argument") and "no map file" in str(r.get("message"))
-                if tool == "map_load" else
+                if tool == "map_write load" else
                 refused(r, "needs_call") if state == "none" else
                 ok(r) and Path(str(r.get("path"))).is_file())
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
@@ -568,10 +574,10 @@ def _a(state: str, tool: str) -> str:
 
 
 #: The call that puts the machine back in the state under test after a cell that moved it out.
-RESTORE = {("stopped", "resume"): "stop", ("stopped", "run_to"): "breakpoint_clear",
-           ("stopped", "gfx_blit_source"): "watch_clear", ("running", "stop"): "resume"}
+RESTORE = {("stopped", "resume"): "stop", ("stopped", "run_to"): "declaration_clear breakpoint",
+           ("stopped", "gfx_blit_source"): "declaration_clear watch", ("running", "stop"): "resume"}
 #: The clears a restore names take every declaration, which a clear only does when asked.
-CLEARS = ("breakpoint_clear", "watch_clear", "regpoint_clear")
+CLEARS = ("declaration_clear breakpoint", "declaration_clear watch", "declaration_clear regpoint")
 
 
 def restore(tool: str) -> dict[str, Any]:
@@ -596,26 +602,30 @@ def run_state(state: str, tools: list[str]) -> None:
 # machine where it found it first, then the calls that move it, the transitions last.
 STOPPED_ORDER = [
     "status", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory", "read_block",
-    "registers", "disassemble", "find", "history", "scan_start", "scan_filter", "scan_clear",
-    "focus", "log", "snapshot", "captures", "state_list", "breakpoint_at", "breakpoint_list",
-    "breakpoint_clear", "watch_add", "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
-    "regpoint_clear", "comment_add", "comment_list", "comment_save", "comment_load",
-    "comment_delete", "debug", "lua", "screen_signature", "map_add", "map_find", "map_save",
-    "map_load", "image_diff", "series_diff",
-    "region_track", "golden_check", "audio_measure", "audio_diff", "palette", "screen_view",
-    "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
+    "registers", "disassemble", "find", "history", "scan start", "scan filter", "scan clear",
+    "focus", "log", "snapshot", "captures", "state_list", "breakpoint_at",
+    "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
+    "declaration_list watch", "declaration_clear watch", "regpoint_add",
+    "declaration_list regpoint", "declaration_clear regpoint", "comment_write add", "comment_list",
+    "comment_write save", "comment_write load", "comment_write delete", "debug", "lua",
+    "screen_signature", "map_write add", "map_find", "map_write save", "map_write load",
+    "image_compare image", "image_compare series", "image_compare region", "image_compare golden",
+    "audio_compare measure", "audio_compare diff", "palette", "screen_view", "gfx_view",
+    "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
     "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "series_capture",
-    "trace", "step", "input", "record", "audio_record", "memdump", "state_save", "state_load",
-    "reset", "throttle", "perform", "drive", "perform_export", "log_wait", "stop", "start",
-    "resume", "close"
+    "trace", "step", "input", "record", "audio_record", "memdump", "state_write save",
+    "state_write load", "reset", "throttle", "perform", "drive", "perform_export", "log_wait",
+    "stop", "start", "resume", "close"
 ]
 RUNNING_ORDER = (
     [t for t in STOPPED_ORDER if t not in RUNNING_ANSWERS and t not in ("start", "resume")]
     + ["status", "log", "log_wait", "snapshot", "symbols_find", "throttle", "breakpoint_at",
-       "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list", "watch_clear",
-       "regpoint_add", "regpoint_list", "regpoint_clear", "comment_list", "comment_save",
+       "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
+       "declaration_list watch", "declaration_clear watch",
+       "regpoint_add", "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
+       "comment_write save",
        "state_list", "captures", "machine_map", "cpu_info", "gfx_load", "palette_log",
-       "gfx_film", "scan_clear", "perform_export", "resume",
+       "gfx_film", "scan clear", "perform_export", "resume",
        "start",
        "stop", "close"])
 # NO SESSION, and AFTER `close`: every tool but the two that end the state go first, then
@@ -632,9 +642,12 @@ SURFACE = "the matrix probes exactly the tools the server registers"
                       for t in order])
 def block_a() -> None:
     registered = sorted(t.name for t in s.mcp._tool_manager.list_tools())
-    missing = sorted(set(registered) - set(PROBES))
-    extra = sorted(set(PROBES) - set(registered))
-    cell(SURFACE, not missing and not extra and sorted(STOPPED_ORDER) == registered,
+    # A fold is probed by each of its methods, so the tools the probes reach are compared.
+    probed = {folded(p, {})[0] for p in PROBES}
+    missing = sorted(set(registered) - probed)
+    extra = sorted(probed - set(registered))
+    cell(SURFACE, not missing and not extra and set(PROBES) == set(STOPPED_ORDER)
+         and len(STOPPED_ORDER) == len(set(STOPPED_ORDER)),
          f"{len(registered)} tools; unprobed {missing}, unknown {extra}")
     # Every state but the first needs m68k-dual booted, and a probe that cannot boot it would
     # leave the next states judging a machine that is not there.
@@ -683,21 +696,21 @@ def _by_cpu(tag: str) -> dict[str, Callable[[], dict[str, Any]]]:
         "find": lambda: {"ref": "0x0", "length": 1024, "data_hex": "00", "cpu": tag},
         "history": lambda: {"limit": 4, "cpu": tag},
         "breakpoint_at": lambda: {"ref": "exception_handler" if main else "0x8", "cpu": tag},
-        "breakpoint_list": lambda: {"cpu": tag},
-        "breakpoint_clear": lambda: {"all": True, "cpu": tag},
+        "declaration_list breakpoint": lambda: {"cpu": tag},
+        "declaration_clear breakpoint": lambda: {"all": True, "cpu": tag},
         "watch_add": lambda: {"ref": "0x0", "mode": "show", "length": 2, "cpu": tag},
-        "watch_list": lambda: {"cpu": tag},
-        "watch_clear": lambda: {"all": True, "cpu": tag},
+        "declaration_list watch": lambda: {"cpu": tag},
+        "declaration_clear watch": lambda: {"all": True, "cpu": tag},
         "regpoint_add": lambda: {"condition": "pc==0xfffffffe", "cpu": tag},
-        "regpoint_list": lambda: {"cpu": tag},
-        "regpoint_clear": lambda: {"all": True, "cpu": tag},
-        "comment_add": lambda: {"ref": "0x400", "text": f"by cpu {tag}", "cpu": tag},
+        "declaration_list regpoint": lambda: {"cpu": tag},
+        "declaration_clear regpoint": lambda: {"all": True, "cpu": tag},
+        "comment_write add": lambda: {"ref": "0x400", "text": f"by cpu {tag}", "cpu": tag},
         "comment_list": lambda: {"cpu": tag},
-        "comment_delete": lambda: {"ref": "0x400", "cpu": tag},
+        "comment_write delete": lambda: {"ref": "0x400", "cpu": tag},
         "write": lambda: {"ref": "0x200000", "data_hex": "00", "cpu": tag},
         "set_register": lambda: {"name": "D0", "value": 0, "cpu": tag},
         "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin"), "cpu": tag},
-        "scan_start": lambda: {"ref": "0x200000", "length": 0x100, "cpu": tag},
+        "scan start": lambda: {"ref": "0x200000", "length": 0x100, "cpu": tag},
         "perform": lambda: {"steps": [{"op": "registers", "cpu": tag}], "settle_seconds": 2.0},
         "drive": lambda: {"act": [{"op": "registers", "cpu": tag}], "settle_seconds": 2.0},
         "run_to": lambda: ({"ref": "irq_vblank", "control": "0x4a0", "seconds": 10.0, "cpu": tag}
@@ -740,31 +753,33 @@ def _by_cpu_says(tag: str) -> dict[str, Judge]:
         "find": lambda r: isinstance(r.get("hits_total"), int) and names(r),
         "history": lambda r: bool(r.get("lines")) and names(r),
         "breakpoint_at": lambda r: r.get("armed") is True and names(r),
-        "breakpoint_list": lambda r: [(b.get("ref"), b.get("cpu"))
+        "declaration_list breakpoint": lambda r: [(b.get("ref"), b.get("cpu"))
                                       for b in r.get("breakpoints", [])]
         == [("exception_handler" if tag == MAIN else "0x8", tag)],
-        "breakpoint_clear": lambda r: r.get("declarations_cleared") == 1,
+        "declaration_clear breakpoint": lambda r: r.get("declarations_cleared") == 1,
         "watch_add": lambda r: r.get("state") == "evaluated" and names(r)
         and r.get("reading", {}).get("available") is True,
-        "watch_list": lambda r: [(w.get("ref"), w.get("cpu")) for w in r.get("watches", [])]
+        "declaration_list watch": lambda r: [(w.get("ref"), w.get("cpu")) for w in r.get("watches",
+                                                                                         [])]
         == [("0x0", tag)],
-        "watch_clear": lambda r: r.get("declarations_cleared") == 1,
+        "declaration_clear watch": lambda r: r.get("declarations_cleared") == 1,
         # `rpset` names no cpu: the visible one arms it, and another is refused naming `focus`;
-        # the list narrows to any cpu, as `breakpoint_list` does.
+        # the list narrows to any cpu, as `declaration_list(kind="breakpoint")` does.
         "regpoint_add": (lambda r: r.get("armed") is True and names(r)) if tag == MAIN
         else _refused_for_focus,
-        "regpoint_list": lambda r: isinstance(r.get("regpoints"), list) and names(r),
-        "regpoint_clear": lambda r: "declarations_cleared" in r,
+        "declaration_list regpoint": lambda r: isinstance(r.get("regpoints"), list) and names(r),
+        "declaration_clear regpoint": lambda r: "declarations_cleared" in r,
         # `comadd` names no cpu: the comment is fed with its cpu made visible and the visible one
         # put back, which the loop's own check on the visible cpu holds
-        "comment_add": lambda r: (r.get("comment") or {}).get("state") == "armed" and names(r),
+        "comment_write add": lambda r: (r.get("comment") or {}).get("state") == "armed"
+        and names(r),
         "comment_list": lambda r: [c.get("cpu") for c in r.get("comments", [])] == [tag]
         and names(r),
-        "comment_delete": lambda r: (r.get("deleted") or {}).get("cpu") == tag and names(r),
+        "comment_write delete": lambda r: (r.get("deleted") or {}).get("cpu") == tag and names(r),
         "write": lambda r: r.get("verified") is True and names(r),
         "set_register": lambda r: r.get("verified") is True and names(r),
         "memdump": lambda r: r.get("bytes") == 16 and names(r),
-        "scan_start": lambda r: r.get("hits_total") == 0x100 and names(r),
+        "scan start": lambda r: r.get("hits_total") == 0x100 and names(r),
         "perform": lambda r: r.get("steps_completed") == 1 and r["ran"][0].get("cpu") == tag
         and r.get("visible_cpu") == MAIN and r.get("visible_cpu_kept", {}).get("after") == MAIN,
         "drive": lambda r: r.get("act", {}).get("steps_completed") == 1
@@ -798,9 +813,11 @@ BY_CPU_RUNNING: dict[str, Judge] = {
     "cpu_info": lambda r: len(r.get("cpus", [])) == 1
     and r["cpus"][0]["pc"].get("available") is False,
     "symbols_find": lambda r: r.get("symbols_total") == 1,
-    **{t: RUNNING_SAYS[t] for t in ("breakpoint_at", "breakpoint_list", "breakpoint_clear",
-                                    "watch_add", "watch_list", "watch_clear",
-                                    "regpoint_list", "regpoint_clear")},
+    **{t: RUNNING_SAYS[t] for t in ("breakpoint_at", "declaration_list breakpoint",
+                                    "declaration_clear breakpoint",
+                                    "watch_add", "declaration_list watch",
+                                    "declaration_clear watch",
+                                    "declaration_list regpoint", "declaration_clear regpoint")},
     # the store's rows, read with no machine: the stopped half deleted what it added
     "comment_list": lambda r: _says_running(r) and r.get("comments") == [],
 }
@@ -811,10 +828,12 @@ BY_CPU_VISIBLE_ONLY: dict[str, Judge] = {"regpoint_add": RUNNING_SAYS["regpoint_
 MOVES_VISIBLE = ("step", "focus")
 BY_CPU_ORDER = [
     "machine_map", "cpu_info", "symbols_find", "rom_check", "read_memory", "read_block",
-    "registers", "disassemble", "find", "history", "breakpoint_at", "breakpoint_list",
-    "breakpoint_clear", "watch_add", "watch_list", "watch_clear", "regpoint_add", "regpoint_list",
-    "regpoint_clear", "comment_add", "comment_list", "comment_delete", "write", "set_register",
-    "memdump", "scan_start", "gfx_view", "gfx_locate",
+    "registers", "disassemble", "find", "history", "breakpoint_at", "declaration_list breakpoint",
+    "declaration_clear breakpoint", "watch_add", "declaration_list watch",
+                "declaration_clear watch", "regpoint_add", "declaration_list regpoint",
+    "declaration_clear regpoint", "comment_write add", "comment_list", "comment_write delete",
+                "write", "set_register",
+    "memdump", "scan start", "gfx_view", "gfx_locate",
     # `step` stays the last stop before `focus`: RELEASE_RESETS needs the sub's own stop, and a
     # trace by frames stops on the first cpu
     "gfx_sweep", "gfx_film", "perform", "drive", "run_to", "trace", "step", "focus",
@@ -837,7 +856,7 @@ def _on(tag: str, state: str, tool: str) -> str:
 def block_a_by_cpu() -> None:
     taking = sorted(t.name for t in s.mcp._tool_manager.list_tools()
                     if "cpu" in inspect.signature(getattr(s, t.name)).parameters)
-    probed = sorted(t for t in BY_CPU_ORDER if t not in ("perform", "drive"))
+    probed = sorted({folded(t, {})[0] for t in BY_CPU_ORDER if t not in ("perform", "drive")})
     cell(BY_CPU_SURFACE, taking == probed, f"take cpu {taking}; probed {probed}")
     for tag in (MAIN, SUB):
         ensure_closed()
@@ -854,9 +873,10 @@ def block_a_by_cpu() -> None:
             cell(_on(tag, "stopped", tool), good and kept and session_is(r, True, False),
                  said(r) if kept else f"the visible cpu moved: {said(r)}")
             if tool == "run_to":
-                call("breakpoint_clear", all=True)     # the control it declared
-            if tool == "scan_start":
-                call("scan_clear")                     # one scan at a time: the next cpu's
+                call("declaration_clear", kind="breakpoint", all=True)     # the control it declared
+            if tool == "scan start":
+                call("scan",
+                     method="clear")                     # one scan at a time: the next cpu's
         if tag == SUB:
             # The last stop was the sub's (`step`): `focus` shows the main cpu while stopped,
             # and the release makes the sub visible again, which a registerpoint then arms on.
@@ -865,7 +885,7 @@ def block_a_by_cpu() -> None:
             r = call("regpoint_add", condition="pc==0xfffffffe")
             cell(RELEASE_RESETS, ok(r) and r.get("cpu") == SUB, said(r))
             call("stop")
-            call("regpoint_clear", all=True)
+            call("declaration_clear", kind="regpoint", all=True)
         # The last stop on the main cpu, so it stays visible while the machine runs.
         call("run_for", frames=1, seconds=10.0)
         call("resume")
@@ -1075,14 +1095,15 @@ STOPPED_CASES: list[Case] = [
     Case("drive.act empty (contract silent)", "drive", {"act": [], "settle_seconds": 2.0}, silent),
     Case("watch_add.length show at max 128", "watch_add",
          {"ref": "0x200000", "mode": "show", "length": 128},
-         is_ok(lambda r: r.get("length") == 128), then="watch_clear"),
+         is_ok(lambda r: r.get("length") == 128), then="declaration_clear watch"),
     Case("watch_add.length show one past max", "watch_add",
          {"ref": "0x200000", "mode": "show", "length": 129}, is_refused("bad_argument")),
     Case("watch_add.length show far past max", "watch_add",
          {"ref": "0x200000", "mode": "show", "length": FAR}, is_refused("bad_argument")),
     Case("watch_add.length change at max 1024", "watch_add",
          {"ref": "0x200000", "mode": "change", "length": 1024},
-         is_ok(lambda r: r.get("armed") is True and r.get("length") == 1024), then="watch_clear"),
+         is_ok(lambda r: r.get("armed") is True and r.get("length") == 1024),
+         then="declaration_clear watch"),
     Case("watch_add.length change one past max", "watch_add",
          {"ref": "0x200000", "mode": "change", "length": 1025}, is_refused("bad_argument")),
     Case("watch_add.length change far past max", "watch_add",
@@ -1091,12 +1112,12 @@ STOPPED_CASES: list[Case] = [
                                                     "length": -1},
          is_refused("bad_argument")),
     Case("watch_add.length absent on an untyped address (contract silent)", "watch_add",
-         {"ref": "0x200000", "mode": "show"}, silent, then="watch_clear"),
+         {"ref": "0x200000", "mode": "show"}, silent, then="declaration_clear watch"),
     Case("watch_add.fmt names a pointer class", "watch_add",
          {"ref": "0x200000", "mode": "show", "fmt": "ptr16@CODE"}, is_refused("bad_argument")),
     Case("watch_add.fmt a sized array needs no length", "watch_add",
          {"ref": "0x200000", "mode": "show", "fmt": "u16[4]"},
-         is_ok(lambda r: r.get("length") == 8), then="watch_clear"),
+         is_ok(lambda r: r.get("length") == 8), then="declaration_clear watch"),
     Case("watch_add.mode outside the vocabulary", "watch_add", {"ref": "0x200000", "mode": "poke"},
          is_refused("bad_argument")),
     Case("watch_add.by outside the vocabulary", "watch_add",
@@ -1106,7 +1127,7 @@ STOPPED_CASES: list[Case] = [
     Case("watch_add.length capture at max 128", "watch_add",
          {"ref": "0x200000", "mode": "capture", "length": 128, "trigger": "0x200000"},
          is_ok(lambda r: r.get("length") == 128 and r.get("state") == "pending"),
-         then="watch_clear"),
+         then="declaration_clear watch"),
     Case("watch_add.length capture one past max", "watch_add",
          {"ref": "0x200000", "mode": "capture", "length": 129, "trigger": "0x200000"},
          is_refused("bad_argument")),
@@ -1186,10 +1207,10 @@ STOPPED_CASES: list[Case] = [
     *waits("throttle", "seconds", {"on": False}, at_max=STOPPED_THROTTLE, absent=None),
     Case("throttle.seconds absent", "throttle", {"on": False}, is_ok()),
     *waits("run_to", "seconds", {"ref": "irq_vblank", "control": "0x4a0"}, at_max=RUNS_EVERY_FRAME,
-           absent=RUNS_EVERY_FRAME, then="breakpoint_clear"),
+           absent=RUNS_EVERY_FRAME, then="declaration_clear breakpoint"),
     Case("run_to.condition absent", "run_to",
          {"ref": "irq_vblank", "control": "0x4a0", "seconds": 10.0},
-         is_ok(lambda r: r.get("verdict") == "TARGET"), then="breakpoint_clear"),
+         is_ok(lambda r: r.get("verdict") == "TARGET"), then="declaration_clear breakpoint"),
     Case("run_to.condition with a comma", "run_to",
          {"ref": "irq_vblank", "condition": "d0==1,d1==2", "seconds": 10.0},
          is_refused("bad_argument")),
@@ -1219,7 +1240,7 @@ STOPPED_CASES: list[Case] = [
          then="stop"),
     Case(f"resume.seconds at max {WAIT_MAX:g}", "resume", {"seconds": WAIT_MAX},
          is_ok(lambda r: r.get("verdict") == "OTHER_STOP"), exempt=STOP_AT_ONCE,
-         before=("breakpoint_at", {"ref": "irq_vblank"}), then="breakpoint_clear"),
+         before=("breakpoint_at", {"ref": "irq_vblank"}), then="declaration_clear breakpoint"),
     Case("resume.seconds one past max", "resume", {"seconds": ONE_PAST_WAIT},
          is_refused("bad_argument"), exempt=PRE_GATE),
     Case("resume.seconds far past max", "resume", {"seconds": float(FAR)},
@@ -1229,21 +1250,30 @@ STOPPED_CASES: list[Case] = [
     Case("step.count zero", "step", {"count": 0}, is_refused("bad_argument")),
     Case("step.mode outside the vocabulary", "step", {"mode": "sideways"},
          is_refused("bad_argument")),
-    Case(f"state_save.name at max {NAME_MAX}", "state_save", {"name": MAX_NAME}, is_ok()),
-    Case("state_save.name one past max", "state_save", {"name": MAX_NAME + "s"},
+    Case(f"state_write save.name at max {NAME_MAX}", "state_write", {"method": "save",
+                                                                     "name": MAX_NAME},
+         is_ok()),
+    Case("state_write save.name one past max", "state_write", {"method": "save",
+                                                               "name": MAX_NAME + "s"},
          is_refused("bad_argument")),
-    Case("state_save.name far past max", "state_save", {"name": "s" * 10_000},
+    Case("state_write save.name far past max", "state_write", {"method": "save",
+                                                               "name": "s" * 10_000},
          is_refused("bad_argument")),
-    Case("state_save.name empty", "state_save", {"name": ""}, is_refused("bad_argument")),
-    Case("state_save.name with a space", "state_save", {"name": "a b"},
+    Case("state_write save.name empty", "state_write", {"method": "save", "name": ""},
          is_refused("bad_argument")),
-    Case(f"state_load.name at max {NAME_MAX}", "state_load", {"name": MAX_NAME},
+    Case("state_write save.name with a space", "state_write", {"method": "save", "name": "a b"},
+         is_refused("bad_argument")),
+    Case(f"state_write load.name at max {NAME_MAX}", "state_write", {"method": "load",
+                                                                     "name": MAX_NAME},
          is_ok(load_judged)),
-    Case("state_load.name one past max", "state_load", {"name": MAX_NAME + "s"},
+    Case("state_write load.name one past max", "state_write", {"method": "load",
+                                                               "name": MAX_NAME + "s"},
          is_refused("bad_argument")),
-    Case("state_load.name far past max", "state_load", {"name": "s" * 10_000},
+    Case("state_write load.name far past max", "state_write", {"method": "load",
+                                                               "name": "s" * 10_000},
          is_refused("bad_argument")),
-    Case("state_load.name empty", "state_load", {"name": ""}, is_refused("bad_argument")),
+    Case("state_write load.name empty", "state_write", {"method": "load", "name": ""},
+         is_refused("bad_argument")),
     Case("set_register.value at max of a 32-bit D0", "set_register",
          {"name": "D0", "value": 0xFFFFFFFF}, is_ok(lambda r: r.get("verified") is True)),
     Case("set_register.value one past max", "set_register",
@@ -1261,15 +1291,19 @@ STOPPED_CASES: list[Case] = [
          refused_saying("decimal text is refused")),
     Case("set_register.value 0x with no digits", "set_register", {"name": "D0", "value": "0x"},
          refused_saying("starts like hex")),
-    Case("regpoint_clear.ref names a condition's number in the other spelling", "perform",
+    Case("declaration_clear regpoint.ref names a condition's number in the other spelling",
+         "perform",
          {"steps": [{"op": "regpoint_add", "condition": "d0==0x7ff1"},
-                    {"op": "regpoint_clear", "ref": "d0==7ff1"}], "settle_seconds": 2.0},
+                    {"op": "declaration_clear", "kind": "regpoint", "ref": "d0==7ff1"}],
+          "settle_seconds": 2.0},
          is_ok(lambda r: r.get("steps_completed") == 2 and (r.get("ran") or [{}, {}])[1].get(
              "reply", {}).get("declarations_cleared") == 1)),
     # The console reads `$` as hex and `#` as decimal: 0x7ff2 is 32754.
-    Case("regpoint_clear.ref names a `$` condition's number in its `#` spelling", "perform",
+    Case("declaration_clear regpoint.ref names a `$` condition's number in its `#` spelling",
+         "perform",
          {"steps": [{"op": "regpoint_add", "condition": "d0==$7ff2"},
-                    {"op": "regpoint_clear", "ref": "d0==#32754"}], "settle_seconds": 2.0},
+                    {"op": "declaration_clear", "kind": "regpoint", "ref": "d0==#32754"}],
+          "settle_seconds": 2.0},
          is_ok(lambda r: r.get("steps_completed") == 2 and (r.get("ran") or [{}, {}])[1].get(
              "reply", {}).get("declarations_cleared") == 1)),
     # The fold above is the server's; these two are the console's own reading of the prefixes.
@@ -1277,11 +1311,12 @@ STOPPED_CASES: list[Case] = [
            is_ok(prints(v)))
       for n, v in (("#32754", "7FF2"), ("$7ff2", "7FF2"), ("0b101", "5"), ("0o17", "F"))],
     # A ref no cell declares, so the refusal holds in any order of the list.
-    Case("regpoint_clear.ref never declared states the rule it is matched under",
-         "regpoint_clear", {"ref": "d0==7ff3"},
+    Case("declaration_clear regpoint.ref never declared states the rule it is matched under",
+         "declaration_clear", {"kind": "regpoint", "ref": "d0==7ff3"},
          lambda r: refused(r, "unknown_ref") and all(words in " ".join(str(
              r.get("message")).split()) for words in (
-                 "`regpoint_list`", f"Matching: {dec.REF_MATCH['regpoint']}."))),
+                 "`declaration_list(kind=\"regpoint\")`",
+                                                      f"Matching: {dec.REF_MATCH['regpoint']}."))),
     Case("perform.steps a set_register step written 0x", "perform",
          {"steps": [{"op": "set_register", "name": "D0", "value": "0x0"}], "settle_seconds": 2.0},
          is_ok(lambda r: r.get("steps_completed") == 1)),
@@ -1346,16 +1381,25 @@ STOPPED_CASES: list[Case] = [
          {"ref": "0x400", "role": "control", "condition": "d0==1"}, is_refused("bad_argument")),
     Case("breakpoint_at.ref segmented", "breakpoint_at", {"ref": "F000:9627"},
          is_refused("bad_argument")),
-    Case("breakpoint_clear.ref no declaration holds", "breakpoint_clear", {"ref": "nosuch"},
+    Case("declaration_clear breakpoint.ref no declaration holds", "declaration_clear",
+         {"kind": "breakpoint",
+                                                                            "ref": "nosuch"},
          is_refused()),
-    Case("breakpoint_clear.ref absent", "breakpoint_clear", {}, is_refused("bad_argument")),
-    Case("breakpoint_clear.all", "breakpoint_clear", {"all": True}, is_ok()),
-    Case("watch_clear.ref no declaration holds", "watch_clear", {"ref": "nosuch"},
+    Case("declaration_clear breakpoint.ref absent", "declaration_clear", {"kind": "breakpoint"},
+         is_refused("bad_argument")),
+    Case("declaration_clear breakpoint.all", "declaration_clear", {"kind": "breakpoint",
+                                                                   "all": True}, is_ok()),
+    Case("declaration_clear watch.ref no declaration holds", "declaration_clear", {"kind": "watch",
+                                                                       "ref": "nosuch"},
          is_refused()),
-    Case("watch_clear.ref absent", "watch_clear", {}, is_refused("bad_argument")),
-    Case("watch_clear.all", "watch_clear", {"all": True}, is_ok()),
-    Case("regpoint_clear.ref absent", "regpoint_clear", {}, is_refused("bad_argument")),
-    Case("regpoint_clear.all", "regpoint_clear", {"all": True}, is_ok()),
+    Case("declaration_clear watch.ref absent", "declaration_clear", {"kind": "watch"},
+         is_refused("bad_argument")),
+    Case("declaration_clear watch.all", "declaration_clear", {"kind": "watch", "all": True},
+         is_ok()),
+    Case("declaration_clear regpoint.ref absent", "declaration_clear", {"kind": "regpoint"},
+         is_refused("bad_argument")),
+    Case("declaration_clear regpoint.all", "declaration_clear", {"kind": "regpoint", "all": True},
+         is_ok()),
     Case("machine_map.cpu absent", "machine_map", {}, is_ok(lambda r: len(r["cpus"]) == 2)),
     Case("machine_map.cpu bare tag", "machine_map", {"cpu": "maincpu"},
          is_ok(lambda r: [c["cpu"] for c in r["cpus"]] == [":maincpu"])),
@@ -1479,8 +1523,8 @@ BP_CONDITION_EDGES = [
     "nothing",
     "run_to.condition one past the stub's packet limit leaves the watch armed and declares no "
     "control",
-    "breakpoint_list reads the at-limit row whole",
-    "watch_list reads a foreign conditioned watchpoint row",
+    "declaration_list breakpoint reads the at-limit row whole",
+    "declaration_list watch reads a foreign conditioned watchpoint row",
 ]
 
 
@@ -1505,20 +1549,20 @@ def _bp_condition_edges() -> None:
             blocked(label, "the stub advertised no packet size, so there is no limit to probe")
         return
     limit = (payload - len("qRcmd,")) // 2
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     at_limit = _condition(0x400, limit)
     r = call("breakpoint_at", ref="0x400", condition=at_limit)
     cell(BP_CONDITION_EDGES[0], ok(r) and r.get("armed") is True, f"{limit} chars: {said(r)}")
-    listed = by_ref(call("breakpoint_list").get("breakpoints")).get("0x400", {})
+    listed = by_ref(call("declaration_list", kind="breakpoint").get("breakpoints")).get("0x400", {})
     cell(BP_CONDITION_EDGES[4], listed.get("state") == "armed"
          and listed.get("condition") == at_limit
          and str(listed.get("entry", "")).endswith(f" if {conditions.console_condition(at_limit)}"),
          f"state {listed.get('state')}, entry of {len(str(listed.get('entry', '')))} chars")
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     for label, n in ((BP_CONDITION_EDGES[1], limit + 1), (BP_CONDITION_EDGES[2], 4 * limit)):
-        before = call("breakpoint_list").get("breakpoints")
+        before = call("declaration_list", kind="breakpoint").get("breakpoints")
         r = call("breakpoint_at", ref="0x400", condition=_condition(0x400, n))
-        after = call("breakpoint_list").get("breakpoints")
+        after = call("declaration_list", kind="breakpoint").get("breakpoints")
         cell(label, refused(r, "bad_argument") and r.get("command_chars") == n
              and r.get("limit_chars") == limit and isinstance(before, list) and after == before,
              f"{n} chars: {said(r)}; declarations {len(before or [])} -> {len(after or [])}")
@@ -1527,20 +1571,20 @@ def _bp_condition_edges() -> None:
     target = STATE.resolve("irq_vblank")
     r = call("run_to", ref="irq_vblank", control="0x4a0", disarm_watches=True, seconds=5.0,
              condition=_condition(target, limit + 1, evaluated=False))
-    w = by_ref(call("watch_list").get("watches")).get("0x2031fc", {})
+    w = by_ref(call("declaration_list", kind="watch").get("watches")).get("0x2031fc", {})
     cell(BP_CONDITION_EDGES[3], refused(r, "bad_argument")
          and r.get("command_chars") == limit + 1 and w.get("state") == "armed"
          and STATE.controls == controls,
          f"{said(r)}; watch {w.get('state')}; controls {sorted(controls)} -> "
          f"{sorted(STATE.controls)}")
-    call("watch_clear", all=True)
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     # A watchpoint row carries its condition the way a breakpoint row does, and one long
     # enough to wrap is still read as ONE foreign row.
     cond = "d0==0x" + "0" * 400 + "1"
     call("debug", command=f"wpset 0x2031fc,0x4,w,{cond}")
-    r = call("watch_list")
-    foreign = r.get("foreign") or []
+    r = call("declaration_list", kind="watch")
+    foreign = r.get("foreign", {}).get("watches", [])
     cell(BP_CONDITION_EDGES[5], ok(r) and len(foreign) == 1
          and str(foreign[0]).endswith(f"write if {cond}"),
          f"{len(foreign)} foreign: {[str(f)[:40] for f in foreign]}")
@@ -1552,7 +1596,7 @@ def _bp_condition_edges() -> None:
          + BP_CONDITION_EDGES)
 def block_b_stopped() -> None:
     boot()
-    # In list order: `state_load.name at max` loads what `state_save.name at max` wrote.
+    # In list order: `state_write load.name at max` loads what `state_write save.name at max` wrote.
     run_cases_stopped(STOPPED_CASES)
     _debug_edges()
     _bp_condition_edges()
@@ -1560,7 +1604,7 @@ def block_b_stopped() -> None:
         call("breakpoint_at", ref=f"{0x400 + 2 * i:#x}", role="control")
     for c in _tenth_control():
         run_case(c)
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
 
 
 @section("B", "start's arguments at their edges, with no session",
@@ -1801,10 +1845,10 @@ def c1_declarations() -> None:
     cell(C1[4], {("0x203200", ":maincpu"), ("beamy", None)} <= set(evaluated), str(evaluated))
     cell(C1[5], not any(rearm.get(k) for k in ("stale", "unresolved", "unarmable")), str(rearm))
     cell(C1[6], decl.get("held") == 6, f"held={decl.get('held')}")
-    bps = call("breakpoint_list").get("breakpoints", [])
+    bps = call("declaration_list", kind="breakpoint").get("breakpoints", [])
     cell(C1[7], len(bps) == 2 and all(b.get("inherited") is True for b in bps),
          str([(b.get("ref"), b.get("inherited")) for b in bps]))
-    ws = call("watch_list").get("watches", [])
+    ws = call("declaration_list", kind="watch").get("watches", [])
     cell(C1[8], len(ws) == 4 and all(w.get("inherited") is True for w in ws),
          str([(w.get("ref"), w.get("inherited")) for w in ws]))
     row4a0 = by_ref(bps).get("0x4a0", {})
@@ -1817,10 +1861,10 @@ def c1_declarations() -> None:
     cell(C1[10], tally.get("state") == "tallied" and tally.get("total", 0) > 0,
          f"{r.get('verdict')} {tally}"[:160])
     call("breakpoint_at", ref="vec_trapv")
-    bps = by_ref(call("breakpoint_list").get("breakpoints"))
+    bps = by_ref(call("declaration_list", kind="breakpoint").get("breakpoints"))
     cell(C1[11], bps.get("vec_trapv", {}).get("inherited") is False,
          str(bps.get("vec_trapv")))
-    call("breakpoint_clear", ref="vec_trapv")
+    call("declaration_clear", kind="breakpoint", ref="vec_trapv")
     typed = "d0==irq_vblank"
     r = call("breakpoint_at", ref="vec_trapv", condition=typed)
     (rows,) = json.loads(Path(str(decl.get("path"))).read_text()).values()
@@ -1828,7 +1872,7 @@ def c1_declarations() -> None:
     cell(C1[12], kept == typed and r.get("condition_typed") == typed
          and r.get("condition") == f"d0=={STATE.resolve('irq_vblank'):#x}",
          f"stored {kept!r}, replied {r.get('condition')!r} / {r.get('condition_typed')!r}")
-    call("breakpoint_clear", ref="vec_trapv")
+    call("declaration_clear", kind="breakpoint", ref="vec_trapv")
     call("close")
     # ANOTHER BUILD: the same file under the same key, one symbol more, so another fingerprint.
     table.write_text(table.read_text() + "  - addr: 0x00000500\n    name: c1_extra\n")
@@ -1840,31 +1884,31 @@ def c1_declarations() -> None:
     cell(C1[14], {("exception_handler", ":maincpu"), ("main_ram", ":maincpu")}
          <= set(rearm_pairs(rearm, "rearmed")),
          str(rearm))
-    row4a0 = by_ref(call("breakpoint_list").get("breakpoints")).get("0x4a0", {})
+    row4a0 = by_ref(call("declaration_list", kind="breakpoint").get("breakpoints")).get("0x4a0", {})
     cell(C1[15], row4a0.get("state") == "stale", str(row4a0))
     r = call("breakpoint_at", ref="0x4a0", role="control")
-    row4a0 = by_ref(call("breakpoint_list").get("breakpoints")).get("0x4a0", {})
+    row4a0 = by_ref(call("declaration_list", kind="breakpoint").get("breakpoints")).get("0x4a0", {})
     cell(C1[16], ok(r) and r.get("armed") is True and row4a0.get("state") == "armed",
          f"{said(r)} / {row4a0.get('state')}")
 
 
 C2_WATCHES = ("0x203200", "0x2031fc", "0x20351c", "beamy", "[main_ram]")
 C2 = [
-    "state_load's survey carries every declared watch",
-    "a show watch after state_load reads the restored bytes",
-    "the change watch is listed armed after state_load",
-    "the change watch still fires after state_load",
-    "the count watch after state_load is in a documented state (contract silent)",
-    "the expr watch evaluates after state_load",
-    "the pointer watch re-resolves after state_load",
-    "watch_list after state_load lists all five in a documented state",
+    "state_write load's survey carries every declared watch",
+    "a show watch after state_write load reads the restored bytes",
+    "the change watch is listed armed after state_write load",
+    "the change watch still fires after state_write load",
+    "the count watch after state_write load is in a documented state (contract silent)",
+    "the expr watch evaluates after state_write load",
+    "the pointer watch re-resolves after state_write load",
+    "declaration_list watch after state_write load lists all five in a documented state",
 ]
 WATCH_STATES = {"evaluated", "armed", "disabled", "gone", "stale", "unresolved", "tallied",
                 "no_dump_yet", "install_failed", "not_installed", "null_pointer", "pending",
                 "install_lost"}
 
 
-@section("C", "2. watches across state_load", C2)
+@section("C", "2. watches across state_write load", C2)
 def c2_watches_across_load() -> None:
     boot()
     call("watch_add", ref="0x203200", mode="show", length=2)
@@ -1873,16 +1917,18 @@ def c2_watches_across_load() -> None:
     call("watch_add", ref="beamy", mode="expr")
     call("watch_add", ref="[main_ram]", mode="show", length=4)
     call("run_for", frames=2, seconds=10.0, disarm_watches=True)
-    before = by_ref(call("watch_list").get("watches")).get("0x203200", {}).get("reading", {}).get(
+    before = by_ref(call("declaration_list", kind="watch").get("watches")).get("0x203200",
+                                                                               {}).get("reading",
+                                                                                       {}).get(
         "value")
-    call("state_save", name="c2")
+    call("state_write", method="save", name="c2")
     call("run_for", frames=10, seconds=10.0, disarm_watches=True)
-    r = call("state_load", name="c2")
+    r = call("state_write", method="load", name="c2")
     seen = by_ref(r.get("watches"))
     cell(C2[0], set(C2_WATCHES) <= set(seen), f"{said(r)}; {sorted(seen)}")
     after = seen.get("0x203200", {}).get("reading", {}).get("value")
     cell(C2[1], after == before, f"saved {before}, after load {after}")
-    listed = by_ref(call("watch_list").get("watches"))
+    listed = by_ref(call("declaration_list", kind="watch").get("watches"))
     cell(C2[2], listed.get("0x2031fc", {}).get("state") == "armed", str(listed.get("0x2031fc")))
     hit = call("resume", seconds=5.0)
     cell(C2[3], hit.get("verdict") == "OTHER_STOP"
@@ -1903,7 +1949,7 @@ def c2_watches_across_load() -> None:
 
 C3_TRIO = ("thread_errors", "console_reruns", "resent")
 C3_CARRY = ("lua", "input", "record", "audio_record", "screen_signature", "read_block")
-C3_BARE = ("throttle", "state_save", "state_load")
+C3_BARE = ("throttle", "state_write save", "state_write load")
 C3 = [
     "the console sequence numbers of the calls strictly increase",
     "a console command evaluated the stopped throttle's line before lua's own",
@@ -1939,9 +1985,9 @@ def c3_console_sequence() -> None:
         "audio_record": call("audio_record", frames=2, seconds=10.0),
         "screen_signature": call("screen_signature"),
         "read_block": call("read_block", tag="maincpu", length=4),
-        "state_save": call("state_save", name="c3"),
+        "state_write save": call("state_write", method="save", name="c3"),
     }
-    replies["state_load"] = call("state_load", name="c3")
+    replies["state_write load"] = call("state_write", method="load", name="c3")
     numbered = [(t, n) for t, r in replies.items() if (n := seq_of(r)) is not None]
     nums = [n for _, n in numbered]
     cell(C3[0], len(nums) >= 4 and all(a < b for a, b in zip(nums, nums[1:], strict=False)),
@@ -1952,7 +1998,7 @@ def c3_console_sequence() -> None:
                                                log.read_bytes() if log.is_file() else b""),
          f"lines_ahead={replies['lua'].get('lines_ahead')}, ends in order: "
          f"{sentinel_order(log.read_bytes()) if log.is_file() else 'no log'}")
-    cell(C3[3], st_.get("throttles_pending") == [], str(st_.get("throttles_pending")))
+    cell(C3[3], "throttles_pending" not in st_, str(st_.get("throttles_pending")))
     cell(C3[4], "throttles_not_applied" not in st_.get("session", {}),
          str(st_.get("session", {}).get("throttles_not_applied")))
     # THE MECHANISM ITSELF, with nothing but one debugger command between the line and the read,
@@ -1977,7 +2023,9 @@ def c3_console_sequence() -> None:
         cell(C3[5], not off, f"{console}; the log, where it differs: {off}")
     for t in C3_CARRY:
         r = replies[t]
-        cell(f"the per-call trio rides on {t}", all(k in r for k in C3_TRIO),
+        # `resent` is left out at zero (omit-empty); the two counts always ride.
+        cell(f"the per-call trio rides on {t}", all(k in r for k in C3_TRIO[:2])
+             and r.get("resent", 1) != 0,
              str({k: r.get(k) for k in C3_TRIO}))
     for t in C3_BARE:
         r = replies[t]
@@ -1986,7 +2034,8 @@ def c3_console_sequence() -> None:
 
 
 #: (door, the calls that open it, whether it must mark the session). From each tool's own
-#: docstring: `write`, `set_register`, `reset` and `state_load` MODIFY; `debug` counts a mutating
+#: docstring: `write`, `set_register`, `reset` and `state_write(method="load")` MODIFY; `debug`
+#: counts a mutating
 #: command and a bare assignment and not its bookkeeping; raw `lua` alters unless declared
 #: read-only; reads, saves and advances do not.
 C4_DOORS: list[tuple[str, list[tuple[str, dict[str, Any]]], bool | None]] = [
@@ -2010,11 +2059,11 @@ C4_DOORS: list[tuple[str, list[tuple[str, dict[str, Any]]], bool | None]] = [
     ("lua declared read_only", [("lua", {"script": "print(1)", "read_only": True})], False),
     ("read_block", [("read_block", {"tag": "maincpu", "length": 4})], False),
     ("screen_signature", [("screen_signature", {})], False),
-    ("state_save", [("state_save", {"name": "c4"})], False),
+    ("state_write save", [("state_write", {"method": "save", "name": "c4"})], False),
     ("run_for", [("run_for", {"frames": 1, "seconds": 10.0})], False),
     ("step", [("step", {})], False),
     ("reset", [("reset", {})], True),
-    ("state_load", [("state_load", {"name": "c4"})], True),
+    ("state_write load", [("state_write", {"method": "load", "name": "c4"})], True),
     ("input (contract silent)", [("input", {"port": ":P1", "field": "Coin 1", "frames": 1,
                                             "seconds": 10.0})], None),
 ]
@@ -2078,7 +2127,7 @@ def c5_advancing() -> None:
     boot()
     r = call("run_to", ref="irq_vblank", control="0x4a0", seconds=10.0)
     cell(C5[0], r.get("verdict") == "TARGET" and "0x4a0" in str(r.get("controls")), said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("breakpoint_at", ref="irq_vblank", role="control")
     r = call("run_to", ref="0x4a0", seconds=10.0)
     cell(C5[1], r.get("verdict") == "TARGET", said(r))
@@ -2096,16 +2145,16 @@ def c5_advancing() -> None:
          f"{said(r)} hits={r.get('control_hits')}")
     st_ = call("status")
     cell(C5[5], st_.get("session", {}).get("running") is False, said(st_))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     r = call("run_to", ref="exception_handler", control="vec_chk", seconds=3.0)
     cell(C5[6], refused(r, "control_silent") and "verdict" not in r
          and bool(r.get("control_dasm")) and all("dasm" in row for row in r["control_dasm"])
          and "note" in r, said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("breakpoint_at", ref="irq_vblank")
     r = call("run_to", ref="irq_vblank", control="0x4a0", seconds=5.0)
     cell(C5[7], refused(r), said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("debug", command="bpset 0x400")
     r = call("run_for", frames=5, seconds=10.0)
     cell(C5[8], r.get("verdict") == "OTHER_STOP", said(r))
@@ -2144,7 +2193,7 @@ def c5_advancing() -> None:
     r = call("run_to", ref="0x4a0", seconds=5.0, disarm_watches=True)
     cell(C5[15], r.get("verdict") == "TARGET" and "0x2031fc" in str(r.get("disarmed_watches")),
          f"{said(r)} disarmed={r.get('disarmed_watches')}")
-    w = by_ref(call("watch_list").get("watches")).get("0x2031fc", {})
+    w = by_ref(call("declaration_list", kind="watch").get("watches")).get("0x2031fc", {})
     cell(C5[16], w.get("state") == "armed", str(w)[:120])
 
 
@@ -2152,7 +2201,7 @@ def c5_advancing() -> None:
 RUNNING_READERS = ("registers", "read_memory", "disassemble", "find", "history", "memdump",
                    "debug", "step", "run_to", "run_for", "write", "set_register", "reset",
                    "rom_check", "lua", "read_block", "input", "record", "audio_record",
-                   "state_save", "state_load", "trace")
+                   "state_write save", "state_write load", "trace")
 C6 = [
     "every reader the instructions name refuses not_stopped while it runs",
     "log answers while it runs",
@@ -2186,7 +2235,7 @@ def c6_running() -> None:
     cell(C6[5], r.get("session", {}).get("running") is False and "stopped_on_its_own" in r, said(r))
     r = call("registers")
     cell(C6[6], ok(r), said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("resume")
     r = call("stop")
     cell(C6[7], r.get("interrupted") is True and "regs" in r, said(r))
@@ -2217,7 +2266,7 @@ def _c7_judge(mode: str, w: dict[str, Any], stop: dict[str, Any]) -> bool:
                 and "value" in reading and "raw_hex" in reading)
     if mode == "count":
         # A STOP'S ROW OF A TAP is its count as of this stop: `superseded` rides only when the
-        # dump on disk is older than the stop (its frame is `watch_list`'s).
+        # dump on disk is older than the stop (its frame is `declaration_list(kind="watch")`'s).
         return (w.get("state") == "tallied" and isinstance(w.get("total"), int)
                 and "superseded" not in w)
     if mode == "expr":
@@ -2244,8 +2293,8 @@ def c7_watch_modes() -> None:
             w = seen.get(C7_REF[mode], {})
             cell(f"a {mode} watch under {adv}", _c7_judge(mode, w, stop),
                  f"{said(stop, 50)}: {str(w)[:110]}")
-    call("watch_clear", all=True)
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     call("breakpoint_at", ref="irq_vblank", role="control")
     call("watch_add", ref="0x2031fc", mode="change", length=4)
     r = call("run_for", frames=2, seconds=10.0)
@@ -2260,8 +2309,8 @@ def c7_watch_modes() -> None:
     reading = w.get("reading", {})
     cell(C7[-1], w.get("state") == "armed" and "value" in reading and "raw_hex" in reading
          or "watch_hit" in r, f"{said(r, 50)}: {w}"[:150])
-    call("watch_clear", all=True)
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     # the blitter's strobe, written many times a frame: every write after the plant raises
     tap = call("watch_add", ref=BLIT_TRIGGER, mode="count", length=2)
     call("run_for", frames=2, seconds=10.0)
@@ -2269,18 +2318,18 @@ def c7_watch_modes() -> None:
         f'setmetatable(t.values, {{__index = function() error("{FAULT}") end}})\n'
         "for k in pairs(t.values) do t.values[k] = nil end"), "t.total"))
     call("run_for", frames=10, seconds=10.0)
-    w = by_ref(call("watch_list").get("watches")).get(BLIT_TRIGGER, {})
+    w = by_ref(call("declaration_list", kind="watch").get("watches")).get(BLIT_TRIGGER, {})
     count, first = raised(w)
     total = int(w.get("total", -1))
     cell(C7_RAISED, at >= 0 and total > at and count == total - at and FAULT in first,
          f"total {at} -> {total}, errors {count}, first {first[:70]!r}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     tap = call("watch_add", ref=BLIT_TRIGGER, mode="count", length=2)
     call("run_for", frames=2, seconds=10.0)
     scratch = Path(str(call("status").get("scratch_dir")))
     dumper_fault_cell(C7_DUMPER, "MCP_TALLY", str(tap.get("tally_id")), BLIT_TRIGGER,
                       scratch / f"tally-{tap.get('tally_id')}.txt")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
 
 C8 = [
@@ -2350,10 +2399,10 @@ def c9_reset() -> None:
     r = call("reset")
     cell(C9[0], ok(r) and r.get("kind") == "softreset" and r.get("verified") is True
          and "regs" in r, said(r))
-    bps = by_ref(call("breakpoint_list").get("breakpoints"))
+    bps = by_ref(call("declaration_list", kind="breakpoint").get("breakpoints"))
     cell(C9[1], [bps.get(k, {}).get("state") for k in ("vec_trapv", "irq_vblank")]
          == ["armed", "armed"], str({k: b.get("state") for k, b in bps.items()}))
-    w = by_ref(call("watch_list").get("watches")).get("0x2031fc", {})
+    w = by_ref(call("declaration_list", kind="watch").get("watches")).get("0x2031fc", {})
     cell(C9[2], w.get("state") == "armed", str(w)[:120])
     rw = by_ref(r.get("watches")).get("0x203200", {})
     cell(C9[3], rw.get("state") == "evaluated" and rw.get("reading", {}).get("available") is True,
@@ -2413,27 +2462,37 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "history", "limit": 2}, {"op": "focus", "cpu": "maincpu"},
         {"op": "log", "pattern": ".", "channel": "emulator", "limit": 2},
         {"op": "snapshot"}, {"op": "captures"}, {"op": "state_list"},
-        {"op": "breakpoint_at", "ref": "exception_handler"}, {"op": "breakpoint_list"},
-        {"op": "breakpoint_clear", "all": True}, {"op": "watch_add", "ref": "0x203200",
+        {"op": "breakpoint_at", "ref": "exception_handler"}, {"op": "declaration_list",
+                                                              "kind": "breakpoint"},
+        {"op": "declaration_clear", "kind": "breakpoint", "all": True}, {"op": "watch_add",
+                                                                         "ref": "0x203200",
                                                   "mode": "show",
                                      "length": 2},
-        {"op": "watch_list"}, {"op": "watch_clear", "all": True},
-        {"op": "regpoint_add", "condition": "pc==0xfffffffe"}, {"op": "regpoint_list"},
-        {"op": "regpoint_clear", "all": True},
-        {"op": "comment_add", "ref": "irq_vblank", "text": "batch"}, {"op": "comment_list"},
-        {"op": "comment_save", "dest": tsv}, {"op": "comment_load", "path": tsv},
-        {"op": "comment_delete", "ref": "irq_vblank"},
+        {"op": "declaration_list", "kind": "watch"}, {"op": "declaration_clear", "kind": "watch",
+                                                      "all": True},
+        {"op": "regpoint_add", "condition": "pc==0xfffffffe"}, {"op": "declaration_list",
+                                                                "kind": "regpoint"},
+        {"op": "declaration_clear", "kind": "regpoint", "all": True},
+        {"op": "comment_write", "method": "add", "ref": "irq_vblank", "text": "batch"},
+            {"op": "comment_list"},
+        {"op": "comment_write", "method": "save", "dest": tsv}, {"op": "comment_write",
+                                                                 "method": "load", "path": tsv},
+        {"op": "comment_write", "method": "delete", "ref": "irq_vblank"},
         {"op": "debug", "command": "print pc"},
         {"op": "lua", "script": "print(1)", "read_only": True}, {"op": "screen_signature"},
-        {"op": "map_add", "screen": "batch", "match": [[0, 0, 8, 8]]}, {"op": "map_find"},
-        {"op": "map_save", "dest": screen_map}, {"op": "map_load", "path": screen_map},
+        {"op": "map_write", "method": "add", "screen": "batch", "match": [[0, 0, 8, 8]]},
+            {"op": "map_find"},
+        {"op": "map_write", "method": "save", "dest": screen_map}, {"op": "map_write",
+                                                                    "method": "load",
+                                                                    "path": screen_map},
         {"op": "palette", "count": 4}, {"op": "screen_view", "mode": "histogram"},
-        {"op": "image_diff", "a": media["png"], "b": media["png"]},
-        {"op": "series_diff", "a": media["manifest"], "b": media["manifest"]},
-        {"op": "region_track", "manifest": media["manifest"]},
-        {"op": "golden_check", "manifest": media["manifest"], "checksums": media["sums"]},
-        {"op": "audio_measure", "path": media["wav"]},
-        {"op": "audio_diff", "a": media["wav"], "b": media["wav"]},
+        {"op": "image_compare", "method": "image", "a": media["png"], "b": media["png"]},
+        {"op": "image_compare", "method": "series", "a": media["manifest"], "b": media["manifest"]},
+        {"op": "image_compare", "method": "region", "manifest": media["manifest"]},
+        {"op": "image_compare", "method": "golden", "manifest": media["manifest"],
+         "checksums": media["sums"]},
+        {"op": "audio_compare", "method": "measure", "path": media["wav"]},
+        {"op": "audio_compare", "method": "diff", "a": media["wav"], "b": media["wav"]},
         {"op": "gfx_view", "layout": BYTES_8X8, "palette": "none", "tag": "maincpu", "count": 4},
         {"op": "gfx_locate", "layouts": [BYTES_8X8], "patch": [0, 0, 8, 8], "tag": "maincpu",
          "count": 4},
@@ -2450,21 +2509,25 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "palette_log", "palette_port": "ramdac", "clear": True},
         {"op": "gfx_film", **FILM}, {"op": "run_for", "frames": 6, "seconds": 10.0},
         {"op": "gfx_film"}, {"op": "gfx_film", "clear": True},
-        {"op": "watch_clear", "all": True},
+        {"op": "declaration_clear", "kind": "watch", "all": True},
         {"op": "write", "ref": "0x200000", "data_hex": "00"},
         {"op": "set_register", "name": "D1", "value": 0},
         {"op": "run_to", "ref": "irq_vblank", "control": "0x4a0", "seconds": 10.0},
-        {"op": "breakpoint_clear", "all": True}, {"op": "run_for", "frames": 1, "seconds": 10.0},
+        {"op": "declaration_clear", "kind": "breakpoint", "all": True}, {"op": "run_for",
+                                                                         "frames": 1,
+                                                                         "seconds": 10.0},
         {"op": "trace", "frames": 1, "seconds": 10.0},
         {"op": "step"}, {"op": "input", "port": ":P1", "field": "Coin 1", "frames": 1,
                          "seconds": 10.0},
         {"op": "record", "frames": 2, "seconds": 10.0},
         {"op": "audio_record", "frames": 2, "seconds": 10.0},
         {"op": "memdump", "ref": "0x0", "length": 16, "dest": fresh(".bin")},
-        {"op": "scan_start", "ref": "0x200000", "length": 0x100}, {"op": "scan_filter",
+        {"op": "scan", "method": "start", "ref": "0x200000", "length": 0x100}, {"op": "scan",
+                                                                                "method": "filter",
                                                                   "operator": "!"},
-        {"op": "scan_clear"},
-        {"op": "state_save", "name": state}, {"op": "state_load", "name": state},
+        {"op": "scan", "method": "clear"},
+        {"op": "state_write", "method": "save", "name": state}, {"op": "state_write",
+                                                                 "method": "load", "name": state},
         {"op": "reset"}, {"op": "throttle", "on": False},
         {"op": "resume"}, {"op": "log_wait", "pattern": ".", "channel": "emulator",
                            "seconds": 5.0},
@@ -2591,10 +2654,10 @@ def c12_symbols() -> None:
     cell(t[6], ok(r) and r.get("name") == "IRQ_VBLANK" and r.get("delta") == 0xE, said(r))
     r = call("breakpoint_at", ref="irq_vblank")
     cell(t[7], ok(r) and r.get("addr") == "0x00000400", said(r))
-    call("breakpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
     r = call("watch_add", ref="main_ram", mode="show", length=4)
     cell(t[8], ok(r) and r.get("addr") == "0x00200000", said(r))
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     r = call("run_to", ref="irq_vblank", control="0x4a0", seconds=10.0)
     cell(t[9], r.get("verdict") == "TARGET" and r.get("pc") == "0x00000400", said(r))
     cell(t[10], call("machine_map").get("symbol_coverage") == [], said(PENDING[-1]["reply"]))
@@ -2602,11 +2665,11 @@ def c12_symbols() -> None:
 
 C13 = [
     "regpoint_add arms d1==7fff on a fresh start, read back off rplist",
-    "regpoint_list shows it armed, with its index and cpu",
+    "declaration_list regpoint shows it armed, with its index and cpu",
     "a resume is cut by it: regpoint_hit, and D1 holds the value",
     "still armed, a run by frames is OTHER_STOP with the hit, never no_progress",
     "and the session is not handed back running",
-    "regpoint_clear disarms it, read back",
+    "declaration_clear regpoint disarms it, read back",
     "the same run by frames then ELAPSES",
     "a malformed condition (d1==) is bad_argument in the console's words, and stores nothing",
     "a register this cpu lacks (eax==5) is bad_argument: unknown symbol",
@@ -2628,7 +2691,7 @@ def c13_regpoints() -> None:
     cell(t[0], ok(r) and r.get("armed") is True and r.get("index") == 1
          and r.get("entry") == f"1 if {cond}" and r.get("cpu") == ":maincpu"
          and r.get("session", {}).get("altered") is False, said(r))
-    rows = call("regpoint_list").get("regpoints", [])
+    rows = call("declaration_list", kind="regpoint").get("regpoints", [])
     cell(t[1], [(x.get("ref"), x.get("state"), x.get("cpu")) for x in rows]
          == [(cond, "armed", ":maincpu")] and "index" in rows[0], str(rows)[:150])
     r = call("resume", seconds=5.0)
@@ -2640,14 +2703,14 @@ def c13_regpoints() -> None:
     cell(t[3], r.get("verdict") == "OTHER_STOP" and r.get("regpoint_hit", {}).get("ref") == cond,
          said(r))
     cell(t[4], session_is(r, alive=True, running=False), str(r.get("session")))
-    r = call("regpoint_clear", ref=cond)
+    r = call("declaration_clear", kind="regpoint", ref=cond)
     cell(t[5], r.get("declarations_cleared") == 1 and len(r.get("disarmed", [])) == 1
-         and call("regpoint_list").get("regpoints") == [], said(r))
+         and call("declaration_list", kind="regpoint").get("regpoints") == [], said(r))
     r = call("run_for", frames=2, seconds=10.0)
     cell(t[6], r.get("verdict") == "ELAPSED", said(r))
     r = call("regpoint_add", condition="d1==")
     cell(t[7], refused(r, "bad_argument") and "stack underflow" in str(r.get("message"))
-         and call("regpoint_list").get("regpoints") == []
+         and call("declaration_list", kind="regpoint").get("regpoints") == []
          and call("debug", command="rplist").get("output", "").startswith("No registerpoints"),
          said(r))
     r = call("regpoint_add", condition="eax==5")
@@ -2663,17 +2726,17 @@ def c13_regpoints() -> None:
          and found.get("session", {}).get("running") is False
          and str(found.get("last_stop", {}).get("cause")) == "registerpoint 'pc!=0'",
          f"{said(r)} / {found.get('last_stop')}")
-    call("regpoint_clear", all=True)
+    call("declaration_clear", kind="regpoint", all=True)
     call("regpoint_add", condition=cond)
     call("close")
     r = boot()
     rearm = r.get("declarations", {}).get("rearm", {})
-    rows = call("regpoint_list").get("regpoints", [])
+    rows = call("declaration_list", kind="regpoint").get("regpoints", [])
     cell(t[11], rearm_pairs(rearm, "rearmed") == [(cond, ":maincpu")]
          and rearm.get("unarmable") == []
          and [(x.get("state"), x.get("inherited")) for x in rows] == [("armed", True)],
          f"{rearm} / {str(rows)[:100]}")
-    call("regpoint_clear", all=True)
+    call("declaration_clear", kind="regpoint", all=True)
     call("debug", command="rpset {d1==7fff}")
     r = call("resume", seconds=5.0)
     cell(t[12], str(r.get("cause")).startswith("registerpoint ")
@@ -2689,10 +2752,11 @@ def c13_regpoints() -> None:
     cell(t[13], typed.startswith("Registerpoint ") and r.get("armed") is True
          and r.get("cpu") == ":maincpu" and rows.count(f"if {cond}") == 2
          and "Device ':subcpu' registerpoints:" in rows, f"{said(r)} / {rows!r}")
-    listed = call("regpoint_list")
-    call("regpoint_clear", all=True)
+    listed = call("declaration_list", kind="regpoint")
+    call("declaration_clear", kind="regpoint", all=True)
     after = call("debug", command="rplist").get("output", "")
-    cell(t[14], len(listed.get("foreign", [])) == 1 and "Device ':subcpu'" in after
+    cell(t[14], len(listed.get("foreign", {}).get("regpoints", [])) == 1
+         and "Device ':subcpu'" in after
          and "Device ':maincpu'" not in after, f"{listed.get('foreign')} / {after!r}")
     call("debug", command="rpclear")
 
@@ -2811,15 +2875,15 @@ def c15_condition_and_capture() -> None:
     cell(t[1], bool(wrote) and named and all(v & 3 == 0 for v in wrote),
          f"{[f'{v:x}' for v in wrote]}")
     call("run_for", frames=2, seconds=10.0, disarm_watches=True)
-    w = by_ref(call("watch_list").get("watches")).get(COUNTER_LOW, {})
+    w = by_ref(call("declaration_list", kind="watch").get("watches")).get(COUNTER_LOW, {})
     cell(t[2], w.get("state") == "armed" and str(w.get("entry")).endswith(f" if {cond}"),
          str(w)[:160])
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     cap = call("watch_add", ref=COUNTER, mode="capture", fmt="u16[2]", trigger=COUNTER_LOW,
                cpu=MAIN)
     call("watch_add", ref=COUNTER_LOW, mode="count", length=1, cpu=MAIN)
     call("run_for", frames=30, seconds=10.0)
-    seen = by_ref(call("watch_list").get("watches"))
+    seen = by_ref(call("declaration_list", kind="watch").get("watches"))
     c, k = seen.get(COUNTER, {}), seen.get(COUNTER_LOW, {})
     cell(t[3], ok(cap) and c.get("state") == "captured" and int(c.get("rows_kept", 0)) > 0
          and c.get("rows_kept", 0) + c.get("overflow_rows", 0) == k.get("total"),
@@ -2827,21 +2891,22 @@ def c15_condition_and_capture() -> None:
     rows = c.get("first_rows") or []
     cell(t[4], bool(rows) and all(r["block"][1] == int(r["data"], 16) - 1 for r in rows),
          str(rows[:2])[:160])
-    gone = call("watch_clear", ref=COUNTER)
+    gone = call("declaration_clear", kind="watch", ref=COUNTER)
     cell(t[5], ok(gone) and bool(gone.get("tallies_removed"))
          and not Path(str(c.get("rows_path"))).exists(), said(gone))
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     # the control is a count watch on the trigger, read in the planting chunk itself
     cap = call("watch_add", ref=COUNTER, mode="capture", fmt="u16[2]", trigger=COUNTER_LOW,
                cpu=MAIN)
     ctl = call("watch_add", ref=COUNTER_LOW, mode="count", length=1, cpu=MAIN)
     call("run_for", frames=4, seconds=10.0)
-    kept = int(by_ref(call("watch_list").get("watches")).get(COUNTER, {}).get("rows_kept", -1))
+    watched = by_ref(call("declaration_list", kind="watch").get("watches"))
+    kept = int(watched.get(COUNTER, {}).get("rows_kept", -1))
     at = planted_at(plant_fault("MCP_CAPTURE", str(cap.get("tally_id")), (
         f't.pending = setmetatable({{}}, {{__newindex = function() error("{FAULT}") end}})'),
         f'_G.MCP_TALLY.items["{ctl.get("tally_id")}"].total'))
     call("run_for", frames=30, seconds=10.0)
-    seen = by_ref(call("watch_list").get("watches"))
+    seen = by_ref(call("declaration_list", kind="watch").get("watches"))
     c, k = seen.get(COUNTER, {}), seen.get(COUNTER_LOW, {})
     count, first = raised(c)
     grew = int(k.get("total", -1)) - at
@@ -2849,14 +2914,14 @@ def c15_condition_and_capture() -> None:
          and kept > 0 and c.get("rows_kept") == kept,
          f"trigger writes since the plant {grew}, errors {count}, rows kept {kept} -> "
          f"{c.get('rows_kept')}, first {first[:60]!r}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     cap = call("watch_add", ref=COUNTER, mode="capture", fmt="u16[2]", trigger=COUNTER_LOW,
                cpu=MAIN)
     call("run_for", frames=2, seconds=10.0)
     scratch = Path(str(call("status").get("scratch_dir")))
     dumper_fault_cell(t[7], "MCP_CAPTURE", str(cap.get("tally_id")), COUNTER,
                       scratch / f"capture-{cap.get('tally_id')}.txt")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     # the bound is the server's own, computed from the formats it already holds
     bound = mwatches.capture_block_chars_max()
     fields = [f"f{i:02d}" for i in range(16)]
@@ -2865,28 +2930,29 @@ def c15_condition_and_capture() -> None:
     at_bound = "{" + ",".join(f"{f}:i8" for f in fields) + "}"
     past = at_bound.replace(fields[0], fields[0] + "x", 1)
     over = call("watch_add", ref=COUNTER, mode="capture", fmt=past, trigger=COUNTER_LOW)
-    listed = [w for w in call("watch_list").get("watches") or [] if w.get("ref") == COUNTER]
+    listed = [w for w in call("declaration_list",
+                              kind="watch").get("watches") or [] if w.get("ref") == COUNTER]
     taken = call("watch_add", ref=COUNTER, mode="capture", fmt=at_bound, trigger=COUNTER_LOW)
     cell(t[8], refused(over, "bad_argument") and "widest row" in str(over.get("message"))
          and listed == [] and ok(taken),
          f"{said(over, 80)} / listed {len(listed)} / {said(taken, 50)}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     t = [_c15(SUB, w) for w in C15_SUB]
     r = call("watch_add", ref="0x200000", mode="change", length=2, condition="wpdata!=0", cpu=SUB)
     cell(t[0], ok(r) and r.get("armed") is True and r.get("cpu") == SUB
          and str(r.get("entry")).endswith(" if wpdata!=0"), said(r))
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     cap = call("watch_add", ref="0x200000", mode="capture", fmt="u16[2]", trigger="0x200002",
                cpu=SUB)
     call("watch_add", ref="0x200002", mode="count", length=1, cpu=SUB)
     call("run_for", frames=10, seconds=10.0)
-    seen = by_ref(call("watch_list").get("watches"))
+    seen = by_ref(call("declaration_list", kind="watch").get("watches"))
     c, k = seen.get("0x200000", {}), seen.get("0x200002", {})
     cell(t[1], ok(cap) and (cap.get("source") or {}).get("kind") == "space"
          and c.get("installed") is True and c.get("cpu") == SUB
          and c.get("rows_kept", -1) + c.get("overflow_rows", -1) == k.get("total"),
          f"{said(cap, 60)} / {c.get('rows_kept')} vs {k.get('total')}")
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
 
 # ================================================ Block D: the graphics tools on free boards
@@ -3257,7 +3323,7 @@ E_CELLS = [
     "gfx_blit_source is byte-identical to what the project's renderer samples for that rectangle",
     "the control: the renderer's rectangle a row over is not",
     "gfx_blits by default is a summary, no blit listed, its text under the reply budget",
-    "no stop's survey lists the capture's rows; watch_list does",
+    "no stop's survey lists the capture's rows; declaration_list watch does",
     "isolate draws the pen asked for in the contrast colour and every other pen grey, indexed",
     "pixel answers a crop round the point, the point's own pixel its colour and ringed white",
     "a margin is a view: dimmed round the rectangle, which is ringed; `data` holds the exact "
@@ -3339,7 +3405,8 @@ def block_e() -> None:
     text = len(json.dumps(summary, indent=2))
     cell(t[7], ok(summary) and "blits" not in summary and text < REPLY_BUDGET_CHARS,
          f"{summary.get('blits_in_frame')} blits, {text} characters of text")
-    listed = [w for w in call("watch_list").get("watches", []) if w.get("mode") == "capture"]
+    listed = [w for w in call("declaration_list", kind="watch").get("watches", [])
+              if w.get("mode") == "capture"]
     captured = {w.get("ref") for w in listed}
     survey = [w for w in summary.get("watches", []) if w.get("ref") in captured]
     cell(t[8], bool(survey) and all("first_rows" not in w for w in survey)
@@ -3406,7 +3473,7 @@ def block_e() -> None:
                  f"{where}: {len(mine)} bytes")
             cell(t[6], len(over) == len(mine) and over != mine, f"{len(over)} bytes")
     _e_views(t, pens, first, frame)
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     after = call("status")
     cell(t[-1],
          after["session"]["altering_writes"] == before and after["session"]["altered"] is False,
@@ -3551,9 +3618,9 @@ def block_f() -> None:
          said(after))
     written = call("status")["session"]["altering_writes"]
     name = fresh_state()
-    call("state_save", name=name)
+    call("state_write", method="save", name=name)
     call("run_for", milliseconds=3, seconds=10.0)
-    call("state_load", name=name)
+    call("state_write", method="load", name=name)
     call("run_for", frames=1, seconds=10.0)
     loaded = call("palette_log", palette_port=RAMDAC, limit=1)
     rows = list(mramdac.rows(Path(str(loaded.get("rows_path")))))
@@ -3616,7 +3683,8 @@ def block_g() -> None:
     cell(t[1], film.get("kept") == 3 and film.get("refused") == 0
          and (film.get("image") or {}).get("inline") is True, said(film))
     listing = json.loads(Path(str(film.get("listing_path"))).read_text())
-    rows_path = next((w.get("rows_path") for w in call("watch_list").get("watches", [])
+    rows_path = next((w.get("rows_path") for w in call("declaration_list",
+                                                       kind="watch").get("watches", [])
                       if w.get("ref") == BLITTER), "")
     rows = {(row.pc, row.data, row.frame) for row in mcapture.rows(Path(str(rows_path)))}
     hits = [(int(h["pc"], 16), int(h["value"], 16), h["counter"])
@@ -3684,7 +3752,7 @@ def block_g() -> None:
     call("run_for", frames=6, seconds=10.0)
     film = call("gfx_film")
     count, first = raised(film)
-    grew = int(by_ref(call("watch_list").get("watches")).get(BLIT_TRIGGER, {})
+    grew = int(by_ref(call("declaration_list", kind="watch").get("watches")).get(BLIT_TRIGGER, {})
                .get("total", -1)) - at
     cell(t[10], at >= 0 and grew > 0 and count == grew and FAULT in first
          and 0 <= first_met < met and film.get("met") == met
@@ -3692,7 +3760,7 @@ def block_g() -> None:
          f"strobe writes since the plant {grew}, errors {count}, met {first_met} unplanted -> "
          f"{met}, then {film.get('met')} planted, first {first[:60]!r}")
     call("gfx_film", clear=True)
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
 
 # ================================================= Section I: what `cpu_info` says of each cpu
@@ -3826,21 +3894,23 @@ def block_i_cpu_info() -> None:
     call("watch_add", ref="0x200000", mode="change", length=2, cpu=SUB)
     call("regpoint_add", condition="pc==0xfffffffe")
     counts = {tag: row["declarations"] for tag, row in _rows(call("cpu_info")).items()}
-    rows_listed = {tag: (len(call("breakpoint_list", cpu=tag).get("breakpoints", [])),
-                         len(call("watch_list", cpu=tag).get("watches", [])))
+    rows_listed = {tag: (len(call("declaration_list", kind="breakpoint", cpu=tag).get("breakpoints",
+                                                                                      [])),
+                         len(call("declaration_list", kind="watch", cpu=tag).get("watches", [])))
                    for tag in (MAIN, SUB)}
-    regpoints = len(call("regpoint_list").get("regpoints", []))
+    regpoints = len(call("declaration_list", kind="regpoint").get("regpoints", []))
     cell(t[9], all((counts.get(tag, {}).get("breakpoints"), counts.get(tag, {}).get("watches"))
                    == rows_listed[tag] for tag in (MAIN, SUB))
          and counts.get(MAIN, {}).get("regpoints") == regpoints and rows_listed[SUB] == (1, 1),
          f"{counts} vs rows {rows_listed}, regpoints {regpoints}")
     call("debug", command="bpclear")
     kept = {tag: row["declarations"] for tag, row in _rows(call("cpu_info")).items()}
-    states = [b.get("state") for b in call("breakpoint_list").get("breakpoints", [])]
+    states = [b.get("state") for b in call("declaration_list", kind="breakpoint").get("breakpoints",
+                                                                                      [])]
     cell(t[10], kept == counts and states == ["gone", "gone"], f"{kept}, states {states}")
-    call("breakpoint_clear", all=True)
-    call("watch_clear", all=True)
-    call("regpoint_clear", all=True)
+    call("declaration_clear", kind="breakpoint", all=True)
+    call("declaration_clear", kind="watch", all=True)
+    call("declaration_clear", kind="regpoint", all=True)
     first = _readings()
     between = call("cpu_info")
     second = _readings()
@@ -3864,7 +3934,7 @@ J_CELLS = [
     "m68k-dual: a :maincpu scan narrows the credits and matches the console's cheat engine at "
     "every filter",
     "m68k-dual: a :subcpu scan names its cpu and an `=` after a `>` round closes it",
-    "m68k-dual: a second scan_start, a filter with none open, a scan on a running machine are "
+    "m68k-dual: a second scan start, a filter with none open, a scan on a running machine are "
     "refused",
     "m68k-dual: the scan calls move neither pc, stop_seq nor the emulated time, and alter nothing",
     "circus: the clown's latch narrows the RAM to the console's own survivors at every filter",
@@ -3931,20 +4001,20 @@ def _j_m68k_dual(t: list[str]) -> None:
     boot(symbols={MAIN: SYMBOLS, SUB: SUB_SYMBOLS})
     run_frames(600)
     before = _where()
-    opened = call("scan_start", ref="0x200000", length=0x10000, cpu="maincpu")
-    shut = call("scan_filter", operator="!")
+    opened = call("scan", method="start", ref="0x200000", length=0x10000, cpu="maincpu")
+    shut = call("scan", method="filter", operator="!")
     after = _where()
     unaltered = not any((x.get("session") or {}).get("altered") for x in (opened, shut))
     cell(t[3], ok(opened) and shut.get("closed") is True and None not in before
          and before == after and unaltered, f"{before} -> {after}; {said(shut)}")
-    call("scan_start", ref="0x200000", length=0x10000, cpu="maincpu")
+    call("scan", method="start", ref="0x200000", length=0x10000, cpu="maincpu")
     inited = _engine_init("ub,0x200000,0x10000", MAIN)
     taps = _tap_addrs()
     held, rounds = [True] * len(taps), []
     for k in (1, 2):                        # the credits after the k-th coin hold k
         call("input", port=":P1", field="Coin 1", seconds=10.0)
         call("run_for", frames=30, seconds=10.0)
-        r = call("scan_filter", operator="=", value=k)
+        r = call("scan", method="filter", operator="=", value=k)
         held = [h and n == k for h, n in zip(held, _taps(taps), strict=True)]
         engine = _engine(f"equal,0x{k:x}")
         rounds.append((r.get("hits_total"), engine, sum(held), r.get("cpu"), r.get("space"),
@@ -3955,25 +4025,25 @@ def _j_m68k_dual(t: list[str]) -> None:
          and any(same for *_, same in rounds)
          and 0 < int(rounds[1][0] or 0) < int(rounds[0][0] or 0),
          f"(tool, engine, taps held, cpu, space, sets) {rounds}")
-    call("scan_clear")
-    sub = call("scan_start", ref="0x200000", length=0x10000, cpu="subcpu")
+    call("scan", method="clear")
+    sub = call("scan", method="start", ref="0x200000", length=0x10000, cpu="subcpu")
     inited = _engine_init("ub,0x200000,0x10000", SUB)
     call("run_for", frames=7, seconds=10.0)
-    grew, engine = call("scan_filter", operator=">"), _engine("increase")
+    grew, engine = call("scan", method="filter", operator=">"), _engine("increase")
     same = _same(grew, engine)
     if grew.get("closed"):
         end, engine_end = grew, engine          # the `>` round itself closed it: that is the end
     else:
-        end, engine_end = call("scan_filter", operator="="), _engine("equal")
+        end, engine_end = call("scan", method="filter", operator="="), _engine("equal")
     cell(t[1], inited and sub.get("cpu") == SUB and grew.get("cpu") == SUB and same is True
          and grew.get("hits_total") == engine and end.get("closed") is True and engine_end == 0,
          f"`>` {grew.get('hits_total')} vs engine {engine}; end {said(end)} engine {engine_end}")
-    call("scan_start", ref="0x200000", length=0x100, cpu="maincpu")
-    second = call("scan_start", ref="0x200000", length=0x100, cpu="maincpu")
-    call("scan_clear")
-    none = call("scan_filter", operator="=")
+    call("scan", method="start", ref="0x200000", length=0x100, cpu="maincpu")
+    second = call("scan", method="start", ref="0x200000", length=0x100, cpu="maincpu")
+    call("scan", method="clear")
+    none = call("scan", method="filter", operator="=")
     call("resume")
-    running = call("scan_start", ref="0x200000", length=0x100, cpu="maincpu")
+    running = call("scan", method="start", ref="0x200000", length=0x100, cpu="maincpu")
     call("stop")
     cell(t[2], refused(second, "needs_call") and refused(none, "needs_call")
          and refused(running, "not_stopped"), f"{said(second, 40)}; {said(none, 40)}; "
@@ -4005,13 +4075,13 @@ def _j_circus(t: list[str]) -> None:
             opening = now
             break
         previous = now
-    call("scan_start", ref="0x0", length=0x200)
+    call("scan", method="start", ref="0x0", length=0x200)
     inited = _engine_init("ub,0x0,0x200", MAIN)
     kinds, rounds, wrote = {"!": 0, "=": 0}, [], opening
     for _ in range(60):
         wrote = _wrote() or wrote
         op = "!" if wrote != opening else "="
-        r = call("scan_filter", operator=op)
+        r = call("scan", method="filter", operator=op)
         engine = _engine("notequal" if op == "!" else "equal")
         rounds.append((op, r.get("hits_total"), engine, _same(r, engine)))
         kinds[op] += 1
@@ -4050,8 +4120,8 @@ def block_j_scan() -> None:
 K_OWN = [
     "circus: state_list lists the saved state with its bytes",
     "circus: state_list lists a link to nothing with bytes unavailable and its why",
-    "circus: state_load refuses a link to nothing as unknown_ref naming it",
-    "circus: state_save refuses the link's name as already there",
+    "circus: state_write load refuses a link to nothing as unknown_ref naming it",
+    "circus: state_write save refuses the link's name as already there",
     "circus: run_for refuses frames=True and the frame does not move",
     "circus: resume refuses seconds=False and the machine stays stopped",
     "circus: four count watches queued while stopped: none resent across four frames, all "
@@ -4092,7 +4162,7 @@ def _stop_and_frame(status: dict[str, Any]) -> tuple[Any, Any]:
 def _k_circus(_cells: list[str]) -> None:
     t = K_OWN
     circus_boot()
-    saved = call("state_save", name="kept")
+    saved = call("state_write", method="save", name="kept")
     listed = call("state_list")
     mine = _states_by_name(listed).get("kept", {})
     # THE CONTROL, taken before any link exists: it is OK on a server that never heard of one,
@@ -4109,10 +4179,10 @@ def _k_circus(_cells: list[str]) -> None:
         cell(t[1], ok(listed) and "why" not in row
              and all(g.get("available") is False and str(target) in str(g.get("why"))
                      for g in gone), said(listed) if not row else str(row))
-        load = call("state_load", name="dangle")
+        load = call("state_write", method="load", name="dangle")
         cell(t[2], refused(load, "unknown_ref") and str(link) in str(load.get("message"))
              and str(target) in str(load.get("message")), said(load, 160))
-        again = call("state_save", name="dangle")
+        again = call("state_write", method="save", name="dangle")
         cell(t[3], refused(again, "bad_argument") and "already exists" in str(again.get("message")),
              said(again))
     finally:
@@ -4157,7 +4227,7 @@ def _k_circus(_cells: list[str]) -> None:
         cell(t[6], all(ok(a) for a in adds) and ok(ran) and ok(later)
              and [w.get("install_resent", 0) for w in rows] == [0, 0, 0, 0]
              and settled == [(True, 0)] * 4 and lost == 0, detail)
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
     refs = ("0x20", "0x36", "0x1f", "0x1b")
     _k_resend(on_board("circus", K_RESEND), refs, 1)
     k_removals(on_board("circus", K_REMOVALS), refs[1:], 1)
@@ -4238,7 +4308,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
         call("run_for", frames=1, seconds=5.0)
     control = add(refs[0])
     ctl = seen(call("step"), refs[0])
-    call("watch_clear", ref=refs[0])
+    call("declaration_clear", kind="watch", ref=refs[0])
     planted = fault(refs[1], kills=1)
     mark = len(log())
     added = add(refs[1])
@@ -4257,7 +4327,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
     cell_if_planted(t[1], planted, once[0][2] == 1 and once[0][0] is False
           and mine(first, refs[1]).get("pending") is True
           and once[1] == (True, "tallied", 1), f"step by step {once}")
-    call("watch_clear", ref=refs[1])
+    call("declaration_clear", kind="watch", ref=refs[1])
 
     lost_before = lost()
     planted = fault(refs[2], kills=2)
@@ -4268,7 +4338,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
           and twice[1:] == [(False, "install_lost", 1)] * 2
           and isinstance(lost_before, int) and lost() == lost_before + 2,
           f"fired {fired}; steps {twice}; lost {lost_before} -> {lost()}")
-    call("watch_clear", ref=refs[2])
+    call("declaration_clear", kind="watch", ref=refs[2])
 
     before = _stop_and_frame(call("status"))[1]
     planted = fault(refs[3], kills=1, loud=False)
@@ -4288,7 +4358,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
           and before == after and quiet[-1] == (True, "tallied", 1)
           and all(q[1] != "install_lost" for q in quiet),
           f"fired {fired}; prompt-only {silent}; frame {before} -> {after}; steps {quiet}")
-    call("watch_clear", ref=refs[3])
+    call("declaration_clear", kind="watch", ref=refs[3])
 
     lost_before = lost()
     planted = fault(refs[0], lag=3)
@@ -4305,7 +4375,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
               and all(lg[2] == 0 and lg[1] != "install_lost" for lg in lagging)
               and lagging[-1] == (True, "tallied", 0) and isinstance(lost_before, int)
               and lost() == lost_before, detail)
-    call("watch_clear", all=True)
+    call("declaration_clear", kind="watch", all=True)
 
 
 def k_owned(labels: list[str]) -> tuple[int, ...]:

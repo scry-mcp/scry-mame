@@ -45,10 +45,10 @@ def _stops_after(monkeypatch: pytest.MonkeyPatch, ses: Any, module: Any, name: s
 
 @pytest.mark.parametrize(("module", "name", "call"), [
     (regpoints, "rp_held", lambda: s.regpoint_add(condition="d1==7fff")),
-    (regpoints, "rp_held", lambda: s.regpoint_clear(ref="d1==7fff")),
-    (mlists, "bp_held", lambda: s.breakpoint_clear(ref="0x4a0")),
-    (mtap, "send_remove", lambda: s.watch_clear(ref="0x6", space="io")),
-    (mclear, "clearing", lambda: s.watch_clear(ref="0x4a8")),
+    (regpoints, "rp_held", lambda: s.declaration_clear("regpoint", ref="d1==7fff")),
+    (mlists, "bp_held", lambda: s.declaration_clear("breakpoint", ref="0x4a0")),
+    (mtap, "send_remove", lambda: s.declaration_clear("watch", ref="0x6", space="io")),
+    (mclear, "clearing", lambda: s.declaration_clear("watch", ref="0x4a8")),
     (arming, "resolve_decl", lambda: s.watch_add(ref="0x4ac", mode="show", length=2)),
     (arming, "resolve_decl", lambda: s.breakpoint_at(ref="0x4a4")),
     (mread, "print_values", lambda: s.watch_add(ref="curpc", mode="expr")),

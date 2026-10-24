@@ -4,20 +4,42 @@
   "prompt": "In one call, run 60 frames and have the call stop as diverged unless that run's stop is at pc 0x00001a2c on frame 160.",
   "tool": "perform",
   "args": {
-   "steps": [
+   "any_of": [
     {
-     "op": "run_for",
-     "frames": 60,
-     "recorded": {
-      "pc": {
-       "any_of": [
-        "0x00001a2c",
-        "0x1a2c",
-        "0x00001A2C"
-       ]
-      },
-      "frame": 160
-     }
+     "steps": [
+      {
+       "op": "run_for",
+       "frames": 60,
+       "recorded": {
+        "pc": {
+         "any_of": [
+          "0x00001a2c",
+          "0x1a2c",
+          "0x00001A2C"
+         ]
+        },
+        "frame": 160
+       }
+      }
+     ]
+    },
+    {
+     "steps": [
+      {
+       "op": "run_for",
+       "frames": 60,
+       "recorded": {
+        "pc": {
+         "any_of": [
+          "0x00001a2c",
+          "0x1a2c",
+          "0x00001A2C"
+         ]
+        },
+        "frame_after": 160
+       }
+      }
+     ]
     }
    ]
   },
@@ -32,19 +54,91 @@
  "runs": [
   {
    "lines": [
-    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame\": 160}}]}}"
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M186: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_for\",\"frames\":60,\"recorded\":{\"pc\":\"0x00001a2c\",\"frame\":160}}]}}"
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame\": 160}}]}}"
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"frame_after\": 160, \"pc\": \"0x00001a2c\"}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_for\",\"frames\":60,\"recorded\":{\"pc\":\"0x00001a2c\",\"frame_after\":160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"frame_after\": 160, \"pc\": \"0x00001a2c\"}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"pc\": \"0x00001a2c\", \"frame_after\": 160}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"frame_after\": 160, \"pc\": \"0x00001a2c\"}}]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M186: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 60, \"recorded\": {\"frame_after\": 160, \"pc\": \"0x00001a2c\"}}]}}"
    ],
    "right": true
   }

@@ -16,7 +16,79 @@
   },
   {
    "lines": [
-    "M91: {\"tool\":\"palette\",\"args\":{\"first\":0,\"seconds\":7}}"
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\":\"palette\",\"args\":{\"seconds\":7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M91: {\"tool\": \"palette\", \"args\": {\"seconds\": 7}}"
    ],
    "right": true
   },

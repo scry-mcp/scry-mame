@@ -190,7 +190,7 @@ def rom_check(ses: gs.Session, reference_rom: str, reference_addr: str, referenc
     except gs.Mismatch as e:
         # THE IMAGE IS ONE CPU'S: a mismatch names the cpu that was read, so an image checked
         # against the wrong cpu reads as that and not as a session that lies. A verdict about
-        # the machine, answered like `state_load`'s own ROM check.
+        # the machine, answered like `state_write(method="load")`'s own ROM check.
         raise st.Invalid("readback_refused", f"read on {on}: {e}", cpu=on) from e
     return menvelope.envelope({
         "rom_check": "OK",

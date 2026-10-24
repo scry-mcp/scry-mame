@@ -38,7 +38,8 @@ def test_every_list_tool_names_its_cpu_unavailable_when_none_was_named(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _watching(monkeypatch, tmp_path)
-    for reply in (s.breakpoint_list(), s.watch_list(), s.regpoint_list()):
+    for reply in (s.declaration_list("breakpoint"), s.declaration_list("watch"),
+                  s.declaration_list("regpoint")):
         assert reply["cpu"] == {"available": False, "why": mstate.NO_CPU_NAMED_WHY}, reply
 
 

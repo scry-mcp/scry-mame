@@ -59,13 +59,85 @@
   },
   {
    "lines": [
-    "M84: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700010\",\"mode\":\"capture\",\"fmt\":\"u16[5]\",\"trigger\":\"0x70001E\",\"trigger_type\":\"w\"}}"
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"trigger\": \"0x70001E\", \"fmt\": \"u16[5]\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"trigger\": \"0x70001E\", \"fmt\": \"u16[5]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700010\",\"mode\":\"capture\",\"fmt\":\"u16[5]\",\"trigger\":\"0x70001E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"trigger\": \"0x70001E\", \"fmt\": \"u16[5]\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\", \"fmt\": \"u16[5]\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\", \"trigger_type\": \"w\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M84: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700010\", \"mode\": \"capture\", \"fmt\": \"u16[5]\", \"trigger\": \"0x70001E\"}}"
    ],
    "right": true
   }

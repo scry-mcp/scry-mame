@@ -53,13 +53,13 @@ def test_a_state_dir_session_never_opens_the_project_store(
         assert out["declarations"]["rearm"]["rearmed"] == [], "nothing inherited from the project"
         bp = s.breakpoint_at(ref="irq_vblank")
         assert bp["status"] == "ok" and bp["already_stored"] is False, bp
-        listed = s.breakpoint_list()["breakpoints"]
+        listed = s.declaration_list("breakpoint")["breakpoints"]
         assert [(r["ref"], r["inherited"]) for r in listed] == [("irq_vblank", False)]
         stored = json.loads((own / "declarations.json").read_text())
         assert [(r["ref"], r["origin"]) for r in stored[key]] == [
             ("irq_vblank", mstate.STATE.session_origin)], stored
         assert _sha(project) == before, "the project store was written"
-        cleared = s.breakpoint_clear(all=True)
+        cleared = s.declaration_clear("breakpoint", all=True)
         assert cleared["status"] == "ok", cleared
         assert json.loads((own / "declarations.json").read_text())[key] == []
     finally:
@@ -82,7 +82,7 @@ def test_without_a_state_dir_the_project_store_is_the_one_used(
         assert out["declarations"]["path"] == str(project)
         assert [r["ref"] for r in out["declarations"]["rearm"]["rearmed"]] == ["irq_vblank"]
         monkeypatch.setattr(mstate, "utc_now", lambda: datetime(2026, 1, 2, tzinfo=UTC))
-        (row,) = s.breakpoint_list()["breakpoints"]
+        (row,) = s.declaration_list("breakpoint")["breakpoints"]
         assert (row["inherited"], row["age_s"]) == (True, 86400), row
     finally:
         s.close()
@@ -161,7 +161,7 @@ def test_a_state_dir_named_again_brings_back_what_an_earlier_pass_declared_there
     out = s.start(**_boot_args(tmp_path, image), symbols=str(sym), state_dir=own)
     try:
         assert out["declarations"]["held"] == 1, out["declarations"]
-        (row,) = s.breakpoint_list()["breakpoints"]
+        (row,) = s.declaration_list("breakpoint")["breakpoints"]
         assert (row["ref"], row["inherited"]) == ("irq_vblank", True)
     finally:
         s.close()

@@ -2,8 +2,9 @@
  "task": {
   "id": "M145",
   "prompt": "Remove the note at 1F2C0 on the cpu tagged audiocpu.",
-  "tool": "comment_delete",
+  "tool": "comment_write",
   "args": {
+   "method": "delete",
    "ref": {
     "any_of": [
      "0x1F2C0",
@@ -16,24 +17,99 @@
      ":audiocpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "delete"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M145: {\"tool\": \"comment_delete\", \"args\": {\"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M145: {\"tool\":\"comment_delete\",\"args\":{\"ref\":\"0x1F2C0\",\"cpu\":\"audiocpu\"}}"
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M145: {\"tool\": \"comment_delete\", \"args\": {\"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\":\"comment_write\",\"args\":{\"method\":\"delete\",\"ref\":\"0x1F2C0\",\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   }

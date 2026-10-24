@@ -8,19 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M120: CANNOT The film only keeps frames from the moment it is armed, and nothing here can show past frames the blitter drew during boot."
+    "M120: CANNOT No film was armed before the boot, and gfx_film only judges writes from the moment it is armed, so frames from the boot cannot be recovered."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT A film only keeps frames judged after it is armed, and nothing was armed during the boot."
+    "M120: CANNOT no film or blit capture was armed during boot, so no frames were kept and the blits cannot be replayed."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT A film only keeps frames from the moment it is armed, so frames from the boot before anything was armed in this session cannot be shown."
+    "M120: CANNOT gfx_film only keeps frames from the point it is armed, so the blitter frames during boot cannot be recovered."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT No film was armed during the boot, and a film only keeps frames judged after it is armed, so the boot frames cannot be recovered."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT no film or blit capture was armed before boot, so frames from that period cannot be retrieved now."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT No film was armed during the boot, and gfx_film only judges writes from the moment it is armed, so earlier frames cannot be shown."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT a film records only from the moment it is armed, so frames from the boot before anything was armed cannot be shown."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT No tool can show frames from before the film was armed; the film only judges writes from its arming onward."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT A film or watch only keeps what is armed from now on, and nothing here captures frames from the boot before anything was armed."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT Film keeps frames only from the time it is armed, so the boot frames cannot be recovered."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT The film only watches frames from the moment it is armed, and no record of earlier blitter activity is kept to show the frames from boot."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT No tool shows frames from before a film or capture was armed, and the boot frames were not kept."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT Film only judges frames after it is armed, and nothing kept the boot's frames, so the blitter frames from before arming cannot be shown."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT A film keeps only frames from the moment it is armed, and nothing was armed during the boot, so those frames were never kept."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M120: CANNOT Film keeps only frames judged after it is armed, so the blitter frames fired during boot before arming cannot be recovered."
    ],
    "right": true
   }

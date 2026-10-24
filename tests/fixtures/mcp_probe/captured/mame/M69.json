@@ -28,7 +28,79 @@
   },
   {
    "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M69: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"0x3FF0\",\"length\":12,\"cpu\":\"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

@@ -2,27 +2,103 @@
  "task": {
   "id": "M22",
   "prompt": "Clear every watch declaration.",
-  "tool": "watch_clear",
+  "tool": "declaration_clear",
   "args": {
+   "kind": "watch",
    "all": true
-  }
+  },
+  "grammar": [
+   "watch"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M22: {\"tool\": \"watch_clear\", \"args\": {\"all\": true}}"
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\":\"watch_clear\",\"args\":{\"all\":true}}"
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"watch_clear\", \"args\": {\"all\": true}}"
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"all\":true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   }

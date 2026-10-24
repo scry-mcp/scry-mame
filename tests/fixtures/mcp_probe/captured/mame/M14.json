@@ -2,24 +2,102 @@
  "task": {
   "id": "M14",
   "prompt": "List every breakpoint declaration and its state.",
-  "tool": "breakpoint_list"
+  "tool": "declaration_list",
+  "args": {
+   "kind": "breakpoint"
+  },
+  "grammar": [
+   "breakpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M14: {\"tool\":\"breakpoint_list\",\"args\":{}}"
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M14: {\"tool\": \"breakpoint_list\", \"args\": {}}"
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
    ],
    "right": true
   }

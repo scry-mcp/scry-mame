@@ -1,5 +1,6 @@
 """What a pass run with `disarm_watches=True` reports about the watches it took off
-(`watches.place_after_pass`): each one re-armed is placed as `watch_list` places it, and a
+(`watches.place_after_pass`): each one re-armed is placed as `declaration_list(kind="watch")` places
+it, and a
 pointer watch the survey already followed to a new place is armed there once.
 """
 
@@ -66,10 +67,10 @@ def test_a_pass_reports_a_watch_it_re_armed_as_armed_with_its_new_row(
     assert out["verdict"] == "TARGET", out
     armed = mstate.STATE.armed_watches[("frame_lo", ":maincpu")]
     row = _row(out, "frame_lo")
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert row["state"] == "armed" and listed["frame_lo"]["entry"] == armed["entry"], row
     assert listed["frame_lo"]["entry"].startswith("2 @ "), "the row the debugger numbered afresh"
-    listed = _row(s.watch_list(), "frame_lo")
+    listed = _row(s.declaration_list("watch"), "frame_lo")
     assert listed["state"] == row["state"], "the stop and the list agree on where it stands"
     assert "not_rearmed" not in out
 
@@ -82,7 +83,7 @@ def test_a_run_without_the_flag_reports_the_row_it_never_took_off(
     _to_target(monkeypatch, ses)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     row = _row(out, "frame_lo")
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert row["state"] == "armed" and listed["frame_lo"]["entry"].startswith("1 @ "), row
     assert "disarmed_watches" not in out
 
@@ -116,9 +117,9 @@ def test_a_pointer_watch_that_moved_during_the_pass_is_armed_once_at_its_new_pla
     at_new = [r for r in ses.wplist_rows if f"{HEAP2 + 4:06X}" in r]
     assert len(at_new) == 1 and len(ses.wplist_rows) == 1, ses.wplist_rows
     row = _row(out, POINTER)
-    listed = {w["ref"]: w for w in s.watch_list()["watches"]}
+    listed = {w["ref"]: w for w in s.declaration_list("watch")["watches"]}
     assert row["state"] == "armed" and listed[POINTER]["addr"] == f"{HEAP2 + 4:#010x}", row
-    assert s.watch_list()["foreign"] == [], "a row nothing owns"
+    assert "foreign" not in s.declaration_list("watch"), "a row nothing owns"
     assert "not_rearmed" not in out
 
 
@@ -149,7 +150,7 @@ def test_a_pointer_watch_gone_null_keeps_its_null_pointer_row_after_the_pass(
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0, disarm_watches=True)
     row = _row(out, POINTER)
     assert row["state"] == "null_pointer" and row["why"], row
-    assert _row(s.watch_list(), POINTER)["state"] == "null_pointer"
+    assert _row(s.declaration_list("watch"), POINTER)["state"] == "null_pointer"
 
 
 def test_a_list_that_breaks_the_session_after_the_re_arm_is_in_the_reply_s_session_block(

@@ -29,39 +29,39 @@ import mame_state as st
 from mame_state import STATE
 
 
-def check_map_load(path: object = "", **_: Any) -> None:
+def check_load_map(path: object = "", **_: Any) -> None:
     screen_map.check_path("path", path)
 
 
-def check_map_save(dest: object = "", overwrite: object = False, **_: Any) -> None:
+def check_save_map(dest: object = "", overwrite: object = False, **_: Any) -> None:
     screen_map.check_save(dest, overwrite)
 
 
-def check_map_add(screen: object = "", match: object = None, controls: object = None,
+def check_add_map(screen: object = "", match: object = None, controls: object = None,
                   **_: Any) -> None:
     screen_map.check_add(screen, match, controls)
 
 
-def map_load(path: str) -> dict[str, Any]:
-    """The body of `map_load`: the file layer, in any state."""
-    check_map_load(path)
+def load_map(path: str) -> dict[str, Any]:
+    """The body of `map_write(method="load")`: the file layer, in any state."""
+    check_load_map(path)
     return menvelope.envelope(STATE.maps.load(path))
 
 
-def map_save(dest: str, overwrite: bool) -> dict[str, Any]:
-    """The body of `map_save`: the two layers as one file, in any state."""
-    check_map_save(dest, overwrite)
+def save_map(dest: str, overwrite: bool) -> dict[str, Any]:
+    """The body of `map_write(method="save")`: the two layers as one file, in any state."""
+    check_save_map(dest, overwrite)
     return menvelope.envelope(STATE.maps.save(dest, overwrite))
 
 
-def map_add(ses: gs.Session, scratch: Path, screen: str, match: list[list[int]],
+def add_map(ses: gs.Session, scratch: Path, screen: str, match: list[list[int]],
             controls: list[dict[str, Any]] | None,
             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of `map_add`: the screen in front, signed off one capture."""
-    check_map_add(screen, match, controls)
+    """The body of `map_write(method="add")`: the screen in front, signed off one capture."""
+    check_add_map(screen, match, controls)
     common: dict[str, Any] = {}
     fields = STATE.maps.add(screen, match, controls, _reader(ses, scratch, common, progress))
-    return running.stop_reply(ses, scratch, f"map_add: {common['evaluated_by']}",
+    return running.stop_reply(ses, scratch, f"map_write add: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
 

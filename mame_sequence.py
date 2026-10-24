@@ -40,28 +40,25 @@ import mame_audio as maudio
 import mame_blits as mblits
 import mame_block as block
 import mame_breakpoints as breakpoints
-import mame_comments as comments
 import mame_cpus as cpus
 import mame_draft as mdraft
 import mame_envelope as menvelope
 import mame_files as files
 import mame_film as mfilm
 import mame_focus as mfocus
+import mame_folds as folds
 import mame_gfx as mgfx
 import mame_inputs as inputs
 import mame_locate as mlocate
 import mame_lua as mlua
 import mame_machine as machine
 import mame_manifest as manifest
-import mame_maps as mmaps
 import mame_palette as mpalette
 import mame_ramdac as mramdac
 import mame_read as read
 import mame_recording as mrec
 import mame_regpoints as regpoints
 import mame_running as running
-import mame_savestates as savestates
-import mame_scan as mscan
 import mame_screen as mscreen
 import mame_series as mseries
 import mame_state as st
@@ -88,16 +85,26 @@ NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export"}
 # (a tool that answered while running was refused by the sequence for want of its name).
 RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot", "state_list",
                   "captures",
-                  "breakpoint_at",
-                  "breakpoint_list", "breakpoint_clear", "watch_add", "watch_list",
-                  "watch_clear", "regpoint_add", "regpoint_list", "regpoint_clear",
-                  "comment_list", "comment_save", "symbols_find", "throttle", "machine_map",
-                  "gfx_load", "palette_log", "gfx_film", "scan_clear", "map_load", "map_save",
+                  "breakpoint_at", "declaration_list", "declaration_clear", "watch_add",
+                  "regpoint_add", "comment_list", "comment_write", "symbols_find", "throttle",
+                  "machine_map", "gfx_load", "palette_log", "gfx_film", "scan", "map_write",
                   # the media file tools read files, never the machine
                   *media_tools.TOOLS}
-# The one op among them with a gesture that needs a stop: a film's arming reads the screen.
+#: The methods of a fold among them that answer on a running machine; its others need a stop.
+RUNNING_METHODS: dict[str, tuple[str, ...]] = {
+    "comment_write": ("save",), "scan": ("clear",), "map_write": ("load", "save")}
+
+
+def _needs_stop(op: str) -> Callable[[dict[str, Any]], bool]:
+    """A fold's methods outside `RUNNING_METHODS` need a stop."""
+    return lambda a: a.get("method") not in RUNNING_METHODS[op]
+
+
+# The gestures among them that need a stop: a film's arming reads the screen, and a fold's
+# other methods.
 _STOPPED_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
-    "gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")), bool(a.get("clear")))}
+    "gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")), bool(a.get("clear"))),
+    **{op: _needs_stop(op) for op in RUNNING_METHODS}}
 
 
 #: The one gesture of a stopped reader that answers on a running machine: the registers as the
@@ -149,10 +156,6 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "breakpoint_at": breakpoints.check_breakpoint_at,
     "watch_add": watches.check_watch_add,
     "regpoint_add": regpoints.check_regpoint_add,
-    "comment_add": comments.check_comment_add,
-    "comment_delete": comments.check_comment_delete,
-    "comment_save": comments.check_comment_save,
-    "comment_load": comments.check_comment_load,
     "read_memory": read.check_read_memory,
     "registers": read.check_registers,
     "read_block": block.check_read_block,
@@ -168,13 +171,8 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "audio_record": maudio.check_audio_record,
     "input": mlua.check_input,
     "screen_signature": mscreen.check_screen_signature,
-    "map_load": mmaps.check_map_load,
-    "map_save": mmaps.check_map_save,
-    "map_add": mmaps.check_map_add,
     "series_capture": mseries.check_series_capture,
     "lua": mlua.check_lua,
-    "state_save": savestates.check_state_name,
-    "state_load": savestates.check_state_name,
     "focus": mfocus.check_focus,
     "palette": mpalette.check_palette,
     "screen_view": mscreen.check_screen_view,
@@ -187,11 +185,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "gfx_blit_source": mblits.check_gfx_blit_source,
     "palette_log": mramdac.check_palette_log,
     "gfx_film": mfilm.check_gfx_film,
-    "scan_start": mscan.check_scan_start,
-    "scan_filter": mscan.check_scan_filter,
-    "breakpoint_clear": breakpoints.check_breakpoint_clear,
-    "watch_clear": watches.check_watch_clear,
-    "regpoint_clear": regpoints.check_regpoint_clear,
+    **folds.CHECKS,
     "debug": mwrite.check_debug,
     "machine_map": machine.check_machine_map,
     # The media file tools' judges are scry-core's, beside their bodies.
@@ -202,9 +196,9 @@ BY_OP: dict[str, Callable[..., Any]] = {
 #: an omission. Every argument these take is one the machine decides: a row the debugger lists, a
 #: capture it wrote, a state on its disk -- or they take none.
 MACHINE_JUDGES = frozenset({
-    "breakpoint_list", "watch_list", "regpoint_list", "comment_list",
+    "comment_list",
     "state_list", "captures", "stop", "status", "reset", "cpu_info",
-    "scan_clear", "map_find",
+    "map_find",
 })
 
 # -------------------------------------------------------------------------- the sequence
@@ -509,21 +503,23 @@ def refuse_cpus(ses: Any, steps: list[Any]) -> dict[str, Any] | None:
 #: which an earlier step may have declared.
 REF_ARGS: dict[str, tuple[str, ...]] = {
     "run_to": ("ref", "control"), "breakpoint_at": ("ref",), "watch_add": ("ref", "trigger"),
-    "comment_add": ("ref",), "read_memory": ("ref",), "read_block": ("ref",),
-    "disassemble": ("ref",), "find": ("ref",), "scan_start": ("ref",), "write": ("ref",),
+    "comment_write": ("ref",), "read_memory": ("ref",), "read_block": ("ref",),
+    "disassemble": ("ref",), "find": ("ref",), "scan": ("ref",), "write": ("ref",),
     "memdump": ("ref",), "gfx_view": ("ref",), "gfx_locate": ("ref",), "gfx_sweep": ("ref",),
     "gfx_film": ("trigger", "pc"),
 }
+#: The one method of a fold whose ref `REF_ARGS` reads.
+_REF_METHOD = {"comment_write": "add", "scan": "start"}
 #: The operations after which the visible cpu is no longer the one the list began on: a focus, a
 #: stop (which makes the stopping cpu visible), and any call that runs or may run the machine.
 #: Past the first of them a step naming no cpu is read against a table nobody can know before
 #: the list runs, so it is judged when it runs.
 MOVES_VISIBLE = frozenset({
     "focus", "step", "run_to", "run_for", "resume", "trace", "debug", "stop", "log_wait",
-    "reset", "state_load", "lua", "input", "record", "audio_record", "screen_signature",
+    "reset", "state_write", "lua", "input", "record", "audio_record", "screen_signature",
     "gfx_film", "series_capture"})
 #: The declaring operations, whose rows stored by name stay reachable by that name.
-_DECLARES = {"breakpoint_at": "breakpoint", "watch_add": "watch", "comment_add": "comment"}
+_DECLARES = {"breakpoint_at": "breakpoint", "watch_add": "watch", "comment_write": "comment"}
 
 
 def _ref_args(step: dict[str, Any]) -> list[tuple[str, str, bool]]:
@@ -532,7 +528,9 @@ def _ref_args(step: dict[str, Any]) -> list[tuple[str, str, bool]]:
     pointer or `auto` found it; never a port (the io space's own rule), an expression, or a
     `ref` that `by` already says (address, symbol, or a pointer the text is not)."""
     op, io = step["op"], step.get("space", "program") != "program"
-    out = []
+    out: list[tuple[str, str, bool]] = []
+    if op in _REF_METHOD and step.get("method") != _REF_METHOD[op]:
+        return out
     for arg in REF_ARGS.get(op, ()):
         text = step.get(arg)
         if not isinstance(text, str) or not text.strip():

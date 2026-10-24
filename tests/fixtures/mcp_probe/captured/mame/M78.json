@@ -2,8 +2,9 @@
  "task": {
   "id": "M78",
   "prompt": "Remove the registerpoint declaration d3==40 from the cpu tagged audiocpu only.",
-  "tool": "regpoint_clear",
+  "tool": "declaration_clear",
   "args": {
+   "kind": "regpoint",
    "ref": {
     "any_of": [
      "d3==40",
@@ -16,24 +17,99 @@
      ":audiocpu"
     ]
    }
-  }
+  },
+  "grammar": [
+   "regpoint"
+  ]
  },
  "runs": [
   {
    "lines": [
-    "M78: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M78: {\"tool\":\"regpoint_clear\",\"args\":{\"ref\":\"d3==40\",\"cpu\":\"audiocpu\"}}"
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M78: {\"tool\": \"regpoint_clear\", \"args\": {\"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"ref\":\"d3==40\",\"cpu\":\"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   }

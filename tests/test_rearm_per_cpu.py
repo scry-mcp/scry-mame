@@ -50,7 +50,8 @@ def test_each_declaration_is_re_armed_on_its_own_cpu_and_the_visible_cpu_stays(
         assert command in ses.commands, (command, ses.commands)
     assert visible_in(s.cpu_info()) == MAIN
     assert not any(c.startswith(("Hc", "focus")) for c in ses.commands), "nothing moved it"
-    listed = {(b["ref"], b["cpu"]): b["state"] for b in s.breakpoint_list()["breakpoints"]}
+    listed = {(b["ref"],
+               b["cpu"]): b["state"] for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed == {("0x542", SUB): "armed", ("0x4a0", MAIN): "armed", ("0x25a4", SUB): "armed"}
 
 
@@ -77,7 +78,7 @@ def test_a_row_listed_under_the_other_cpu_is_not_adopted_by_the_re_arm(
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert ref_cpu(out["rearmed"]) == [("0x542", SUB)], out
     assert "bp 0x542::subcpu" in ses.commands, "its own row armed, the main cpu's left foreign"
-    assert s.breakpoint_list()["foreign"] == [f"{index} @ 000542"]
+    assert s.declaration_list("breakpoint")["foreign"] == {"breakpoints": [f"{index} @ 000542"]}
 
 
 def test_a_registerpoint_re_arms_only_when_its_cpu_is_the_visible_one(
@@ -108,7 +109,7 @@ def test_a_pass_re_arms_one_range_on_two_cpus_as_two_rows(
     main, sub = (mstate.STATE.armed_watches[("0x2031fc", c)] for c in (MAIN, SUB))
     assert main["index"] != sub["index"], (main, sub)
     assert (main["cpu"], sub["cpu"]) == (MAIN, SUB)
-    assert s.watch_list()["foreign"] == []
+    assert "foreign" not in s.declaration_list("watch")
 
 
 def test_a_control_re_armed_after_a_stop_row_at_its_address_on_the_other_cpu_takes_its_own(
@@ -203,7 +204,7 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
         assert sorted((e["ref"], e["cpu"]) for e in rearm["rearmed"]) == [
             ("main_only", MAIN), ("sub_data", SUB), ("sub_plain", SUB)], rearm
         listed = {(b["ref"], b["cpu"]): (b["state"], b["condition"])
-                  for b in s.breakpoint_list()["breakpoints"]}
+                  for b in s.declaration_list("breakpoint")["breakpoints"]}
         assert listed[("main_only", MAIN)] == ("armed", "0x2000==1"), listed
         assert listed[("sub_plain", SUB)] == ("armed", "D0==1"), listed
         # Each served cpu's byte order is the inventory's word for its program space, given to

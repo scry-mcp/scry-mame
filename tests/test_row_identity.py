@@ -51,7 +51,7 @@ def test_a_row_typed_at_a_controls_address_is_foreign_and_ends_run_for(
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
     assert out["cause"] == ("breakpoint 2 at 0x000004a0, typed through `debug`: "
                           "`debug(\"bpclear 0x2\")` removes it"), out["cause"]
-    assert s.breakpoint_list()["foreign"] == ["2 @ 0004A0"]
+    assert s.declaration_list("breakpoint")["foreign"] == {"breakpoints": ["2 @ 0004A0"]}
 
 
 def _sub_row_at_400(ses: _RunningSession) -> None:
@@ -70,7 +70,7 @@ def test_a_row_under_the_other_cpu_is_not_adopted_by_a_declaration(
     _sub_row_at_400(ses)
     out = s.breakpoint_at(ref="0x400")
     assert out["entry"] == "2 @ 000400", out
-    assert s.breakpoint_list()["foreign"] == ["1 @ 000400"]
+    assert s.declaration_list("breakpoint")["foreign"] == {"breakpoints": ["1 @ 000400"]}
     assert [r["owner"] for r in mstate.STATE.breakpoints.values()] == [("0x400", ":maincpu")]
     assert list(mstate.STATE.breakpoints) == [2]
 
@@ -98,7 +98,7 @@ def test_breakpoint_clear_removes_its_own_row_by_index(
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     s.breakpoint_at(ref="0x400")
-    out = s.breakpoint_clear(ref="0x400")
+    out = s.declaration_clear("breakpoint", ref="0x400")
     assert out["disarmed"] == ["2 @ 000400"], out
     assert "bpclear 0x2" in ses.commands
     assert ses.bplist_rows == ["    1 @ 000400"], "the sub cpu's row is left where it was"
@@ -109,11 +109,11 @@ def test_a_typed_watch_row_on_an_armed_range_is_foreign(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A watchpoint typed through `debug` over the very range a watch of this server armed is
-    a second row, known by its index, and `watch_list` names it foreign."""
+    a second row, known by its index, and `declaration_list(kind="watch")` names it foreign."""
     ses = _watching(monkeypatch, tmp_path)
     assert s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32")["status"] == "ok"
     wplist_add(ses, 0x2031FC, 4)                             # `wp 2031fc,4,w`, typed
-    assert s.watch_list()["foreign"] == ["2 @ 2031FC-2031FF write"]
+    assert s.declaration_list("watch")["foreign"] == {"watches": ["2 @ 2031FC-2031FF write"]}
 
 
 @pytest.mark.parametrize(("answer", "visible"), [
@@ -168,7 +168,7 @@ def test_a_watch_declared_again_on_its_cpu_after_a_stop_on_the_other_keeps_its_r
     ses.visible_cpu = ":subcpu"
     again = s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32", cpu="maincpu")
     assert again["index"] == 1 and len(ses.wplist_rows) == 1, (again, ses.wplist_rows)
-    assert s.watch_list()["foreign"] == []
+    assert "foreign" not in s.declaration_list("watch")
 
 
 def test_a_watch_re_armed_after_a_pass_takes_only_a_row_under_its_own_cpu(

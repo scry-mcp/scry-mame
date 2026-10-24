@@ -74,7 +74,79 @@
   },
   {
    "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"patch\": [40, 50, 16, 16], \"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M98: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[{\"width\":16,\"height\":16,\"planes\":4,\"planeoffset\":\"{ 0, 1, 2, 3 }\",\"xoffset\":\"{ STEP16(0,4) }\",\"yoffset\":\"{ STEP16(0,64) }\",\"charincrement\":\"16*64\"}],\"patch\":[40,50,16,16],\"tag\":\"spritebuf\",\"offset\":256,\"count\":512,\"transparent\":0,\"seconds\":20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0}}"
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M98: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}], \"patch\": [40, 50, 16, 16], \"tag\": \"spritebuf\", \"offset\": 256, \"count\": 512, \"transparent\": 0, \"seconds\": 20}}"
    ],
    "right": true
   },

@@ -13,26 +13,14 @@ The picture, which instant a decode shows and the source are on [Screen](screen.
 gfx_load(path)
 ```
 
-Load a project's `gfx.yaml` (an ABSOLUTE `path`): named `formats` in `gfx_view`'s layout
-terms, `assets` (a region or share read under a format through a palette), draw `commands`
-(the block a capture reads, the write that fires it, the bits each coordinate lives in), and
-`palette_ports` (the ports `palette_log` follows; `ramdacs`, the old name, is read as it).
-Every entry carries `status` (`proved`, `declared`, `human`) and `source`. Held for the
-session; a load replaces the previous one. Answers on a RUNNING machine: it reads nothing
-from it.
+Load a project's `gfx.yaml` (an ABSOLUTE `path`): `formats`, `assets`, draw `commands`,
+`palette_ports`. A load replaces the previous one; answers while running.
 
-Judged WHOLE before anything is kept: the first unknown key, missing key, wrong type or
-dangling name is `bad_argument` naming its path (a misspelt `maks` is
-`commands.blit.fields.dest_x.parts[1].maks`),
-YAML outside the subset read here names its line, and a manifest that does not list this
-session's `system` is refused. A refusal keeps the manifest loaded before (`still_loaded`).
+Judged whole: an unknown or missing key, wrong type or dangling name is `bad_argument`
+naming its path; a manifest not listing the session's `system` is refused (`still_loaded`).
 
-Reply: `loaded`, `replaced_path` (the manifest it replaced, unavailable on a first load),
-`path`, `sha256`, `draft` (its first line is `gfx_draft`'s DRAFT marker, deleted to confirm it),
-`systems`, `formats` (name to status), `assets` (`format`, `tag`, `palette`), `commands`
-(`block`, `length`, `trigger_addr`, `fires_with`, `asset`, `roles`, `flags`, `planes`),
-`palette_ports` (`palette`, `protocol`, the ports, `pen_range`), `status_counts`; `note` on the
-old name.
+Reply: `loaded`, `replaced_path`, `path`, `draft`, `formats`, `assets`, `commands`,
+`palette_ports`, `status_counts`, `note`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -61,20 +49,20 @@ Example, from a live run:
 
 ```json
 {
-  "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml"
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_load $MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
+  "summary": "gfx_load ~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
   "status": "ok",
   "loaded": true,
   "replaced_path": {
     "available": false,
     "why": "no manifest was loaded in this session before this one"
   },
-  "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml",
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
   "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
   "draft": false,
   "systems": [
@@ -163,6 +151,8 @@ The reader refuses what another YAML reader could type differently (`no`, `012`,
 
 `palette_ports`: `palette`, `index_port`, `data_port` (in the `space` of `cpu`: `program` or `io`), `order` of `r`, `g`, `b`, `component_bits` (1 to 8), `auto_increment`, `pen_base`, `pen_count` (a power of two up to 1024, 256 by default, at most 256 for a byte index); two on one palette may not set the same pens. `protocol`: `ramdac` (default); `latch` (needs `index_flag_mask`, `index_port` optional); `sequence` (needs `index_port`); the packed two may set `components_bit_reversed`.
 
+`ramdacs`, the former name of `palette_ports`, is still read as it, and `note` says so. `draft` is set when the first line is `gfx_draft`'s DRAFT marker; deleting it confirms the draft. Every entry carries a `status` (`proved`, `declared`, `human`) and a `source`. The reply also carries `sha256` and `systems`. A misspelt key is reported by its full path (`commands.blit.fields.dest_x.parts[1].maks`), and YAML outside the subset names its line. A manifest is judged whole so a half-loaded one never answers a later capture; a refusal keeps the previous load.
+
 <!-- scry-reference:begin gfx_film -->
 ## `gfx_film`
 
@@ -172,34 +162,18 @@ The reader refuses what another YAML reader could type differently (`no`, `012`,
 gfx_film(trigger="", length=1, value=null, changed=false, pc="", cpu="", frames=600, keep=12, crop=null, film_dir="", first=0, clear=false, seconds=5.0, space="program")
 ```
 
-THE FRAMES IN WHICH A WRITE HAPPENED, kept inside MAME at emulation speed: a tap marks the
-frame, a notifier judges it and keeps its indexed screen.
-One film per session, gone at `close`; its files stay.
+The frames in which a write happened; one film per session.
 
-ARM (STOPPED; reads the screen once, one step): `trigger` (symbol or `0x` on `cpu`), a write
-landing all its `length` bytes (1, 2 or 4) from the instruction at `pc` if given, carrying
-`value` if given (an integer or a `0x` string), or with `changed=True` a value unlike the one before it (the
-first write is the baseline). `frames` (1..216000, default 600): frames
-judged, then it finishes. `keep` (1..64, default 12): pictures kept.
-`crop` `[x, y, width, height]`. `film_dir`: a new absolute directory, else the scratch.
-`seconds`: the screen read's wait. `space`: `io` for a PORT `trigger` (`0x`
-alone, no `@io`). READ (no `trigger`; answers RUNNING): counts, and a contact sheet of kept
-frames from `first`, as many as fit, each labelled with its frame, hits and first hit (`listed`,
-`next_first`). CLEAR: `clear=True`.
+Arm (STOPPED): `trigger` (symbol or `0x` on `cpu`; `space` `io` for a port) is a write of
+`length` bytes, from `pc`, carrying `value` (an integer or a `0x` string), or with `changed=True` a value
+unlike the one before. Judges `frames` (max 216000), keeps `keep` pictures (max
+64) cropped to `crop`, into a new absolute `film_dir`.
 
-A picture is read at the next frame that draws, checked against MAME's rendering (`checked`,
-else `why` and `mismatch`).
+Read (no `trigger`; works while running): a contact sheet from `first`. `clear=True` clears.
 
-Reply (arm): `film`, `armed_now`, `installed`, `pending`, `tally_id`, `trigger_maps_to`, the
-console's account, the survey. Reply (clear): `cleared`, `files_kept`.
-Reply (read): `film`, `installed`, `pending`, `state` (`judging`, `finished`; before its
-first dump, the tap's own, with `why`), `frame_as_of`, `superseded`, `judged`, `judged_frames`,
-`met`, `kept`, `refused` (`refused_frames`), `dropped_total` (`dropped_frames`), `lost` (by
-`reset`, `load`, `skipped`), `callback_errors` (`count`, `first`), `pending_picture`, `cost`,
-`listing_path`, `cells` (`k`, `frame`, `hit_counters`, `hits_in_frame`, `pc`, `symbol`, `value`,
-`path`), `image`, `animation`, `nothing_kept`; with `changed`, `frame_baseline`,
-`baseline_value`. `bad_argument`: a film already armed, none to read, `crop` off the screen, a
-trigger across a bus word.
+Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept`,
+`cells` (each `frame`, `pc`, `path`), `next_first`, `image`. `bad_argument`: film armed
+already, none to read.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -318,7 +292,7 @@ Example, from a live run:
       "available": false,
       "why": "no `crop`: the whole screen"
     },
-    "film_dir": "$TMPDIR/mame-mcp-vr90lqz3/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-f5qd8ts7/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"
@@ -332,10 +306,8 @@ Example, from a live run:
   "note": "the film judges from the first whole frame after the install, which runs when the console next reads a line; read it with `gfx_film()`",
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#16",
   "pc_before": "0x000027ac",
   "cause": "gfx_film: one step",
@@ -403,33 +375,17 @@ A breakpoint cannot follow a write that happens many times a frame, which is wha
 palette_log(palette_port, pen=null, limit=16, clear=false, arm=false)
 ```
 
-WHO SET THIS PEN'S COLOUR, on a board whose colour RAM is write-only: every write to the
-ports of the loaded manifest's `palette_port`, placed on its pen by the device's own law
-(`protocol`: `ramdac`, `latch` or `sequence`).
+Who set this pen's colour, on a board whose colour RAM is write-only: every write to the
+ports of the loaded manifest's `palette_port`, placed on its pen by the device's law.
 
-`arm=True` ARMS the log (`armed_now`), installed when the console next reads a line; a call
-without it READS it; `clear=True` removes it.
-`pen`: that pen alone, whole. `limit`: the newest kept rows shown.
-Answers while RUNNING, from the files the last stop wrote (`superseded` when older).
+`arm=True` arms the log; without it a call reads it; `clear=True` removes it. `pen` shows
+that pen alone, `limit` the newest rows. Answers while running. Rows are capped at
+100000, the rest counted.
 
-A data write lands on no pen (`unsynced_writes`) until the index is known after the arming,
-a reset or a state load. `written_by`: `guest` or `debugger`. The newest write of each pen is
-always kept; the ordered rows, the first 100000, the rest counted.
-
-Reply: `palette_port`, `palette`, `cpu`, `space`, `protocol`, `index_port`, `data_port`,
-`order`, `component_bits`, `pen_range`, `armed_now`, `synced_at_start`, `installed`, `pending`,
-`tally_id`, the console's account, `state`, `frame_as_of`, `superseded`, `across`,
-`writes_total`, `index_writes`, `unsynced_writes`, `partial_writes` (packed), `desyncs`,
-`callback_errors` (`count`, `first`), `sees_reset_and_load`, `rows_kept`, `overflow_rows`,
-`rows_max`, `rows_path`, `pens_written` (`0x10-0x1f` runs); without `pen`, `setters` (each
-writer of a pen's newest write: `pc`, `symbol`, `written_by`, `pens_set` and `which`; the first
-32), `setters_total`, `setters_path` (all); with `pen`, `pen_state`
-(`color`, `complete`, `components`, `word` (packed), `writes_total`, `last` with `n`, `frame`,
-`pc`, `symbol`, `written_by`); `rows` (each with its write's `line` and `time_s`: an `index`, a
-data write with `pen`, `component` and `value` or `word` and `mask`, and the `color` it left, or
-a `desync` with its `why`), `rows_cut`, `note`, `not_proved`; `cleared` on a clear.
-`needs_call`: no manifest, no entry, or no log armed; `bad_argument`: a pen it does not set, io
-on a cpu with none; `unknown_ref`: a port.
+Reply: `palette_port`, `protocol`, `armed_now`, `installed`, `state`, `writes_total`,
+`unsynced_writes`, `desyncs`, `rows_path`. Without `pen`: `setters` (each `pc`, `symbol`,
+`written_by`; the first 32). With `pen`: `pen_state`, `rows`.
+`needs_call`: no manifest, entry or armed log; `bad_argument`: a pen it does not set.
 
 Reference: REFERENCE.md, Input and the screen.
 

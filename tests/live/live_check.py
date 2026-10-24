@@ -186,21 +186,21 @@ dump = live_tmp("mame-live-") / "vectors.bin"
 r = s.memdump(ref="0x0", length=256, dest=str(dump))
 check("memdump writes and checks the file", r.get("bytes") == 256 and dump.is_file(),
       str(r.get("summary"))[:60])
-r = s.scan_start(ref="0x200000", length=0x100)
-shut = s.scan_filter(operator="!")
-check("scan_start takes the work RAM's cells and a `!` at the same stop closes the scan",
+r = s.scan("start", ref="0x200000", length=0x100)
+shut = s.scan("filter", operator="!")
+check("scan start takes the work RAM's cells and a `!` at the same stop closes the scan",
       r.get("hits_total") == 0x100 and shut.get("closed") is True
       and shut.get("hits_total") == 0
       and shut.get("session", {}).get("altered") is False, str(shut.get("summary"))[:60])
-check("scan_clear says nothing was open once a filter closed it",
-      s.scan_clear().get("cleared") is False)
+check("scan clear says nothing was open once a filter closed it",
+      s.scan("clear").get("cleared") is False)
 r = s.breakpoint_at(ref="irq_vblank")
-listed = s.breakpoint_list()
-check("breakpoint_list shows the declaration armed, against MAME's own bplist",
+listed = s.declaration_list("breakpoint")
+check("declaration_list breakpoint shows the declaration armed, against MAME's own bplist",
       [(b.get("ref"), b.get("state"), b.get("addr")) for b in listed.get("breakpoints", [])]
-      == [("irq_vblank", "armed", "0x00000400")] and listed.get("foreign") == [],
+      == [("irq_vblank", "armed", "0x00000400")] and "foreign" not in listed,
       str(listed.get("breakpoints")))
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 
 print("\n== two cpus: every reply names its cpu, and a row is known by its index")
 st = s.status()
@@ -215,21 +215,25 @@ sub_rows = [row for row in mlists.parse_bplist(s.debug(command="bplist")["output
             if row["cpu"] == ":subcpu"]
 check("a row typed under the sub cpu lists under it and is foreign",
       [row["addr"] for row in sub_rows] == [0x542]
-      and s.breakpoint_list().get("foreign") == [sub_rows[0]["entry"]] if sub_rows else False,
+      and s.declaration_list("breakpoint").get("foreign") == {"breakpoints": [sub_rows[0]["entry"]]}
+      if sub_rows else False,
       str(sub_rows))
 r = s.breakpoint_at(ref="0x542")
-listed = s.breakpoint_list()
+listed = s.declaration_list("breakpoint")
 check("a declaration at the same address on the main cpu arms its own row, not the sub cpu's",
       r.get("cpu") == ":maincpu" and bool(sub_rows) and r.get("entry") != sub_rows[0]["entry"]
       and [b.get("cpu") for b in listed.get("breakpoints", [])] == [":maincpu"]
-      and listed.get("foreign") == [sub_rows[0]["entry"]], f"{r.get('entry')} {listed}")
-r = s.breakpoint_clear(ref="0x542")
+      and listed.get("foreign") == {"breakpoints": [sub_rows[0]["entry"]]},
+      f"{r.get('entry')} {listed}")
+r = s.declaration_clear("breakpoint", ref="0x542")
 check("its clear removes its own row by index and leaves the sub cpu's",
-      s.breakpoint_list().get("foreign") == [sub_rows[0]["entry"]] if sub_rows else False,
+      s.declaration_list("breakpoint").get("foreign") == {"breakpoints": [sub_rows[0]["entry"]]}
+      if sub_rows else False,
       str(r.get("disarmed")))
 if sub_rows:
     s.debug(command=mclear.clear_command("breakpoint", sub_rows[0]["index"]))
-check("and the typed row goes with its own bpclear", s.breakpoint_list().get("foreign") == [])
+check("and the typed row goes with its own bpclear",
+      "foreign" not in s.declaration_list("breakpoint"))
 
 print("\n== run_to(): no control declared is a refusal, before the machine moves")
 r = s.run_to(ref="irq_vblank", seconds=5.0)
@@ -252,12 +256,12 @@ check("the run's controls are listed with their cpu and hits", r.get("controls")
     {"ref": "0x4a0", "cpu": ":maincpu",
      "hits_in_run": r.get("control_hits")}], str(r.get("controls")))
 print(f"        verdict={r.get('verdict')}  pc={r.get('pc')}  control_hits={r.get('control_hits')}")
-listed = {b["ref"]: b for b in s.breakpoint_list().get("breakpoints", [])}
+listed = {b["ref"]: b for b in s.declaration_list("breakpoint").get("breakpoints", [])}
 check("the control is a declaration MAME lists as a counting condition",
       listed.get("0x4a0", {}).get("role") == "control"
       and "(++temp0)==0" in listed.get("0x4a0", {}).get("entry", ""),
       str(listed.get("0x4a0")))
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 
 print("\n== run_to(condition=...): stop at the vblank only when a RAM word reads a value")
 # The vblank handler increments the word at 0x203200 every frame: the condition names the
@@ -276,17 +280,18 @@ check("a condition that never holds is a TIMEOUT with the control counting",
       r.get("verdict") == "TIMEOUT" and r.get("control_hits", 0) > 0,
       f"{r.get('verdict')} hits={r.get('control_hits')}")
 check("the target row was removed after the run",
-      not any("@ 000400" in e for e in s.breakpoint_list().get("foreign", [])))
+      not any("@ 000400" in e for e in
+              s.declaration_list("breakpoint").get("foreign", {}).get("breakpoints", [])))
 # Two conditioned stops cleared in ONE call: the console renumbers nothing under the clear,
 # or the second `bpclear` would hit the wrong row; the list read back is the proof.
-held = s.breakpoint_list()["breakpoints"]
+held = s.declaration_list("breakpoint")["breakpoints"]
 s.breakpoint_at(ref="0x4a4", condition="w@0x203200==0x1000")
 s.breakpoint_at(ref="0x4a8", condition="w@0x203200==0x2000")
-r = s.breakpoint_clear(all=True)
+r = s.declaration_clear("breakpoint", all=True)
 check("console-armed rows clear in one call, the indices holding under the clear",
       r.get("declarations_cleared") == len(held) + 2
       and sum("w@0x203200" in e for e in r.get("disarmed", [])) == 2
-      and s.breakpoint_list().get("foreign") == [], str(r.get("disarmed")))
+      and "foreign" not in s.declaration_list("breakpoint"), str(r.get("disarmed")))
 
 print("\n== run_to(): a target that does NOT run, with a HOT control")
 # The control has to be hot ON THIS SCREEN, not just somewhere in the game: the vblank
@@ -306,7 +311,7 @@ check(
 frames = 12 * 60
 check("the count is the vblank's, about one a frame at flat-out speed, never a stop each",
       r.get("control_hits", 0) > 0, f"{r.get('control_hits')} hits over up to {frames} frames")
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 
 print("\n== a registerpoint: a stop when a register reaches a value, wherever that happens")
 # `pc!=<here>` comes true at the very next instruction and stays true, which is the property
@@ -316,8 +321,8 @@ r = s.regpoint_add(condition=f"pc!={here}")
 check("regpoint_add arms it and reads rplist back",
       r.get("armed") is True and r.get("cpu") == ":maincpu" and "index" in r,
       str(r.get("summary")))
-listed = s.regpoint_list().get("regpoints", [])
-check("regpoint_list shows it armed",
+listed = s.declaration_list("regpoint").get("regpoints", [])
+check("declaration_list regpoint shows it armed",
       [x.get("state") for x in listed] == ["armed"], str(listed)[:80])
 r = s.resume(seconds=5.0)
 check("the stop it makes is named, with its hit",
@@ -327,8 +332,8 @@ r = s.run_for(frames=2, seconds=10.0)
 check("still armed: a run by frames is cut at once, and that is a stop, never no_progress",
       r.get("verdict") == "OTHER_STOP" and r.get("session", {}).get("running") is False,
       str(r.get("summary")))
-r = s.regpoint_clear(ref=f"pc!={here}")
-check("regpoint_clear reads rplist back", len(r.get("disarmed", [])) == 1, str(r))
+r = s.declaration_clear("regpoint", ref=f"pc!={here}")
+check("declaration_clear regpoint reads rplist back", len(r.get("disarmed", [])) == 1, str(r))
 r = s.run_for(frames=2, seconds=10.0)
 check("and the same run then elapses", r.get("verdict") == "ELAPSED", str(r.get("summary")))
 r = s.regpoint_add(condition="d1==")
@@ -337,8 +342,8 @@ check("a condition MAME would arm and never evaluate is refused in the console's
       str(r.get("message"))[:80])
 
 print("\n== comments: a declaration per place, fed to MAME's pane, kept in a file")
-r = s.comment_add(ref="irq_vblank", text="live check", cpu="maincpu")
-check("comment_add stores it by symbol and the pane takes it",
+r = s.comment_write("add", ref="irq_vblank", text="live check", cpu="maincpu")
+check("comment_write add stores it by symbol and the pane takes it",
       r.get("comment", {}).get("state") == "armed" and r.get("comment", {}).get("by") == "symbol",
       str(r.get("summary")))
 line = (s.disassemble(ref="irq_vblank", length=2).get("lines") or [""])[0]
@@ -347,17 +352,17 @@ listed = s.comment_list()
 check("comment_list shows it", [c.get("ref") for c in listed.get("comments", [])]
       == ["irq_vblank"], str(listed.get("summary")))
 tsv = str(live_tmp("mame-live-check-comments-") / "c.comments.tsv")
-r = s.comment_save(dest=tsv)
-check("comment_save writes one row under the header",
+r = s.comment_write("save", dest=tsv)
+check("comment_write save writes one row under the header",
       r.get("comments_total") == 1 and Path(tsv).read_text().count("\n") == 2,
       str(r.get("summary")))
-r = s.comment_delete(ref="0x400", cpu="maincpu")
-check("comment_delete by address removes the comment made by symbol",
+r = s.comment_write("delete", ref="0x400", cpu="maincpu")
+check("comment_write delete by address removes the comment made by symbol",
       r.get("deleted", {}).get("ref") == "irq_vblank", str(r.get("summary")))
-r = s.comment_load(path=tsv)
-check("comment_load brings it back from the file its `path` names",
+r = s.comment_write("load", path=tsv)
+check("comment_write load brings it back from the file its `path` names",
       r.get("added") == 1 and r.get("path") == str(tsv), str(r.get("summary")))
-s.comment_delete(ref="irq_vblank", cpu="maincpu")
+s.comment_write("delete", ref="irq_vblank", cpu="maincpu")
 check("and none is left", s.comment_list().get("comments") == [])
 
 print("\n== the INVALID path: a COLD control must NOT let a zero pass as an answer")
@@ -372,7 +377,7 @@ check(
     f"status={r.get('status')} verdict={r.get('verdict')}",
 )
 check("and names the cause in one word", r.get("code") == "control_silent", str(r.get("code")))
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 check(
     "and says so in English", "never fired" in str(r.get("message", "")),
     str(r.get("message", ""))[:60],
@@ -451,9 +456,9 @@ check("the first contact finds the stop the breakpoint produced",
 check("and the record moved to it",
       r.get("last_stop", {}).get("cause", "").startswith("breakpoint"),
       str(r.get("last_stop", {}).get("cause")))
-gone = s.breakpoint_clear(all=True).get("disarmed", [])
-check("breakpoint_clear reads bplist back", len(gone) == 1 and gone[0].endswith("@ 000400"),
-      str(gone))
+gone = s.declaration_clear("breakpoint", all=True).get("disarmed", [])
+check("declaration_clear breakpoint reads bplist back",
+      len(gone) == 1 and gone[0].endswith("@ 000400"), str(gone))
 r = s.resume(seconds=1.0)
 check("a bound that expires leaves it running",
       r.get("verdict") == "TIMEOUT" and r["session"]["running"])
@@ -510,14 +515,15 @@ check("a long write is two console lines, and the writer is the last",
 check("the survey carries every watch evaluated",
       [w.get("ref") for w in r.get("watches", [])] == ["0x2031fc", "0x203200"],
       str(r.get("watches"))[:100])
-listed = s.watch_list()
-check("watch_list shows both, one armed", [w["state"] for w in listed.get("watches", [])]
-      == ["armed", "evaluated"] and listed.get("foreign") == [], str(listed.get("summary")))
-r = s.watch_clear(all=True)
-check("watch_clear disarms what it armed and reads the list back",
+listed = s.declaration_list("watch")
+check("declaration_list watch shows both, one armed", [w["state"] for w in listed.get("watches",
+                                                                                      [])]
+      == ["armed", "evaluated"] and "foreign" not in listed, str(listed.get("summary")))
+r = s.declaration_clear("watch", all=True)
+check("declaration_clear watch disarms what it armed and reads the list back",
       r.get("declarations_cleared") == 2 and len(r.get("disarmed", [])) == 1, str(r.get("summary")))
-check("and the debugger holds nothing", s.watch_list().get("watches") == []
-      and s.watch_list().get("foreign") == [])
+check("and the debugger holds nothing", s.declaration_list("watch").get("watches") == []
+      and "foreign" not in s.declaration_list("watch"))
 
 print("\n== a write-only register: the values come off the bus, never off memory")
 # The sound latch at 0x740000 is written through the driver's handler and reads back through
@@ -538,7 +544,7 @@ check("the latch hit's after is the value the console logged as written",
 check("and the survey carries the last value written instead of a memory read",
       w.get("state") == "armed" and w.get("reading", {}).get("state") == "bus"
       and w.get("reading", {}).get("last_wrote") == hit.get("after"), str(w)[:100])
-s.watch_clear(all=True)
+s.declaration_clear("watch", all=True)
 
 print("\n== typed watches: the shape of a value, and the build's fingerprint")
 raw = s.read_memory(ref="0x2031fc", length=8).get("hex", "")
@@ -551,7 +557,7 @@ r = s.watch_add(ref="0x203200", mode="show", fmt="{lo:u16,hi:u16,tag:char[4]}")
 value = r.get("reading", {}).get("value")
 check("a struct format decodes to its fields", isinstance(value, dict)
       and set(value) == {"lo", "hi", "tag"} and r.get("length") == 8, str(value))
-s.watch_clear(all=True)
+s.declaration_clear("watch", all=True)
 fp = s.status().get("fingerprint")
 check("status carries the build's fingerprint, sixteen hex digits",
       isinstance(fp, str) and len(fp) == 16 and all(c in "0123456789abcdef" for c in fp), str(fp))
@@ -568,7 +574,7 @@ check("a one-byte tally on the 16-bit bus is accepted (the tap is bus-aligned, f
 r = s.run_for(frames=60)
 at_stop = {w.get("ref"): w for w in r.get("watches", [])}
 # THE TABLES ARE THE LIST'S: a stop's row of a tap is its count as of the stop.
-items = {w.get("ref"): w for w in s.watch_list().get("watches", [])}
+items = {w.get("ref"): w for w in s.declaration_list("watch").get("watches", [])}
 t = items.get("0x2031fc", {})
 check("after sixty frames the tally is installed and read as of THIS stop",
       t.get("installed") is True and t.get("state") == "tallied"
@@ -590,8 +596,8 @@ check("a count on the ROM copy is armed, its note saying the writes go nowhere",
       r.get("status") == "ok" and r.get("write_maps_to") == "unmapped"
       and "nothing in the machine handles a write at 0x400" in str(r.get("note")),
       str(r.get("note"))[-120:])
-s.watch_clear(ref="0x400")
-r = s.watch_clear(ref="0x2031fc")
+s.declaration_clear("watch", ref="0x400")
+r = s.declaration_clear("watch", ref="0x2031fc")
 check("clearing a tally sends its removal and drops the record",
       r.get("tallies_removed", [{}])[0].get("removal") == "pending", str(r.get("summary")))
 r = s.run_for(frames=1)
@@ -600,7 +606,7 @@ check("the next stop no longer carries it, and the other tally went on counting"
       "0x2031fc" not in at_next
       and b.get("total", 0) < at_next.get("0x20351c", {}).get("total", 0),
       str([(ref, w.get("total")) for ref, w in at_next.items()]))
-s.watch_clear(all=True)
+s.declaration_clear("watch", all=True)
 
 print("\n== screen signature and the snapshot's hash ")
 r = s.snapshot()
@@ -639,37 +645,37 @@ check("series_capture writes 30 frames and a manifest, no picture in the reply",
       and Path(str(ser.get("manifest"))).is_file() and ser.get("kept_after_close") is True,
       said(ser))
 manifest = str(ser.get("manifest"))
-track = s.region_track(manifest=manifest)
+track = s.image_compare("region", manifest=manifest)
 # THE CONTROL AGREES WITH THE SERIES: a series of more than one signature has transitions, and
 # one of a single signature is the control's refusal, never a clean zero.
 moving = ser.get("distinct", 0) > 1
-check("region_track agrees with the series' own count of signatures",
+check("image_compare region agrees with the series' own count of signatures",
       (track.get("status") == "ok" and track.get("transitions_total", 0) >= 1) if moving
       else track.get("code") == "control_silent", said(track))
 frames_png = sorted(series_dir.glob("f*.png"))
-same = s.image_diff(a=str(frames_png[0]), b=str(frames_png[0]))
-check("image_diff of a frame with itself finds nothing", same.get("differing_pixels") == 0
+same = s.image_compare("image", a=str(frames_png[0]), b=str(frames_png[0]))
+check("image_compare image of a frame with itself finds nothing", same.get("differing_pixels") == 0
       and (same.get("bbox") or {}).get("available") is False, said(same))
-pair = s.series_diff(a=manifest, b=manifest)
-check("series_diff of a series with itself is all identical, or the control's refusal",
+pair = s.image_compare("series", a=manifest, b=manifest)
+check("image_compare series of a series with itself is all identical, or the control's refusal",
       (pair.get("identical") == 30) if moving else pair.get("code") == "control_silent",
       said(pair))
 sums = series_dir / "goldens.sha256"
 sums.write_text("".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
                         for p in frames_png))
-gold = s.golden_check(manifest=manifest, checksums=str(sums))
-check("golden_check matches the series against its own goldens",
+gold = s.image_compare("golden", manifest=manifest, checksums=str(sums))
+check("image_compare golden matches the series against its own goldens",
       gold.get("matched") == 30 and gold.get("differing") == [], said(gold))
 
 print("\n== media: a recording measured and compared with itself")
 rec = s.audio_record(frames=30, seconds=30.0)
-measured = s.audio_measure(path=str(rec.get("path")))
-check("audio_measure answers a channel's measures for audio_record's file",
+measured = s.audio_compare("measure", path=str(rec.get("path")))
+check("audio_compare measure answers a channel's measures for audio_record's file",
       measured.get("status") == "ok" and len(measured.get("measures") or []) == rec.get("channels"),
       said(measured))
-twin = s.audio_diff(a=str(rec.get("path")), b=str(rec.get("path")))
+twin = s.audio_compare("diff", a=str(rec.get("path")), b=str(rec.get("path")))
 silent = all(m.get("silent") for m in measured.get("measures") or [])
-check("audio_diff of a recording with itself is exact, or the control's refusal in silence",
+check("audio_compare diff of a recording with itself is exact, or the control's refusal in silence",
       (twin.get("class") == "exact") if not silent else twin.get("code") == "control_silent",
       said(twin))
 
@@ -722,7 +728,7 @@ check("gfx_blit_source decodes the rectangle that blit reads, the destination's 
       src.get("status") == "ok"
       and src.get("rect", {}).get("width") == src.get("destination", {}).get("width"),
       str(src.get("summary")))
-s.watch_clear(ref="0x700000")
+s.declaration_clear("watch", ref="0x700000")
 check("and none of the three altered the session",
       s.status()["session"]["altered"] == altered_before)
 
@@ -845,7 +851,7 @@ bad = s.perform(steps=[{"op": "run_to", "ref": "0x4a0"}, {"op": "warp_core"}])
 check("a batch with a bad step is refused whole, nothing run",
       bad.get("status") == "INVALID" and bad.get("steps_completed") == 0 and bad.get("ran") == [],
       str(bad.get("message"))[:80])
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 
 print("\n== expr watches: the debugger's own variables at every stop, in one print")
 r = s.watch_add(ref="beamy", mode="expr")
@@ -869,7 +875,7 @@ check("run_for reports the cycles the run took, a positive count",
       isinstance(r.get("cycles"), int) and r["cycles"] > 0, f"cycles={r.get('cycles')}")
 frames = r.get("frame_after", 0) - r.get("frame_before", 0)
 check("about 100 ms of frames at 60 Hz (5 to 7)", 5 <= frames <= 7, f"{frames} frames")
-s.watch_clear(all=True)
+s.declaration_clear("watch", all=True)
 # Declared BY NAME and left in the store: the next start below must bring them back.
 s.breakpoint_at(ref="irq_vblank")
 s.watch_add(ref="main_ram", mode="change", length=4)
@@ -895,13 +901,14 @@ check("each re-armed row says it is inherited, whose and how old",
                          and type(e.get("age_s")) is int and e.get("created_at")
                          and e.get("by") for e in back), str(rearm))
 check("and the debugger's own lists hold them",
-      [b.get("state") for b in s.breakpoint_list().get("breakpoints", [])] == ["armed"]
-      and [w.get("state") for w in s.watch_list().get("watches", [])] == ["armed", "evaluated"]
+      [b.get("state") for b in s.declaration_list("breakpoint").get("breakpoints", [])] == ["armed"]
+      and [w.get("state") for w in s.declaration_list("watch").get("watches", [])] == ["armed",
+                                                                                       "evaluated"]
       and [len(v) for v in s.status().get("in_debugger", {}).values()] == [1, 1, 0])
 check("the store reports itself", r.get("declarations", {}).get("persistent") is True
       and r["declarations"].get("held") == 3, str(r.get("declarations"))[:120])
-s.breakpoint_clear(all=True)
-s.watch_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
+s.declaration_clear("watch", all=True)
 check("start reports what it handed over", r.get("throttle_from_frame") == 300
       and r.get("env", {}).get("MAME_MCP_THROTTLE_FRAME") == "300" and r.get("display") == ""
       and "-nothrottle" in r.get("flags", []), str(r.get("flags")))
@@ -951,7 +958,7 @@ r = s.status()
 check("a stop the console's run reached at a breakpoint is found by the first contact",
       r.get("session", {}).get("running") is False and "stopped_on_its_own" in r,
       str(r.get("stopped_on_its_own"))[:90])
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 check("closed", s.close().get("closed") is True)
 
 print("\n== the Lua channel: MAME's own console through stdin, measured on m68k-dual")
@@ -991,14 +998,15 @@ r = s.input(port=":P1", field="No Such Field", frames=2)
 check("a field that does not exist is refused in the console's words", r.get("status") == "INVALID"
       and "no field" in str(r.get("message")), str(r.get("message"))[:80])
 
-print("\n== state_save()/state_load(): the console's own savestate, checked by file and frame")
-r = s.state_save(name="live")
+print("\n== state_write(method=\"save\")/state_write(method=\"load\"): the console's own "
+      "savestate, checked by file and frame")
+r = s.state_write("save", name="live")
 saved_frame = r.get("frame")
-check("state_save writes a .sta with MAME's magic", r.get("status") == "ok"
+check("state_write save writes a .sta with MAME's magic", r.get("status") == "ok"
       and Path(str(r.get("path"))).is_file(), str(r.get("summary") or r.get("message"))[:90])
 s.run_for(frames=120)
-r = s.state_load(name="live")
-check("state_load restores the frame it was saved at, ROM re-checked, verified",
+r = s.state_write("load", name="live")
+check("state_write load restores the frame it was saved at, ROM re-checked, verified",
       r.get("rom_check") == "OK" and r.get("frame") == saved_frame and r.get("verified") is True,
       f"saved at {saved_frame}, after load {r.get('frame')}: {str(r.get('message'))[:60]}")
 r = s.state_list()
@@ -1006,7 +1014,7 @@ check("state_list names the state this session wrote, with its frame",
       r.get("status") == "ok" and any(x.get("name") == "live" and x.get("frame") == saved_frame
                                       for x in r.get("states", [])),
       str(r.get("summary") or r.get("message"))[:90])
-r = s.state_load(name="nope")
+r = s.state_write("load", name="nope")
 check("a state that does not exist is refused before the console", r.get("code") == "unknown_ref")
 # MAME refuses a bad state in SILENCE from the console (nothing in any log), so
 # the header is judged before the console: a corrupt magic and another system's name.
@@ -1018,10 +1026,10 @@ corrupt[0:8] = b"NOTASAVE"
 foreign = bytearray((good / "live.sta").read_bytes())
 foreign[0x0A:0x1C] = b"pacman".ljust(0x12, b"\0")
 (good / "foreign.sta").write_bytes(foreign)
-r = s.state_load(name="corrupt")
+r = s.state_write("load", name="corrupt")
 check("a corrupt header is refused before the console", r.get("code") == "readback_refused"
       and "magic" in str(r.get("message")), str(r.get("message"))[:70])
-r = s.state_load(name="foreign")
+r = s.state_write("load", name="foreign")
 check("another system's state is refused before the console", r.get("system") == "pacman",
       str(r.get("message"))[:70])
 
@@ -1174,11 +1182,11 @@ check("polls: one frame from the park aligns first (2), from a vblank it does no
 s.breakpoint_at(ref="0x4a0")
 added = s.watch_add(ref="0x203200", mode="show", length=2, fmt="u16")
 in_list: dict[str, Any] = next(
-    (w for w in s.watch_list().get("watches", []) if w.get("ref") == "0x203200"), {})
+    (w for w in s.declaration_list("watch").get("watches", []) if w.get("ref") == "0x203200"), {})
 surveyed: dict[str, Any] = next(
     (w for w in s.step().get("watches", []) if w.get("ref") == "0x203200"), {})
 shapes = [{k: w.get(k) for k in ("state", "reading")} for w in (added, in_list, surveyed)]
-check("one show watch, one shape in watch_add, watch_list and the stop survey",
+check("one show watch, one shape in watch_add, declaration_list watch and the stop survey",
       shapes[0] == shapes[1] == shapes[2] and shapes[0]["state"] == "evaluated"
       and (shapes[0]["reading"] or {}).get("raw_hex") is not None, str(shapes))
 t1 = s.throttle(on=True)
@@ -1189,11 +1197,11 @@ check("the per-call console trio rides on `lua` and not on `throttle`",
       f"throttle keys {sorted(t1)}")
 check("a throttle tag's number is the console's session sequence, not a throttle count",
       t2.get("tag") != "MAME_MCP_THROTTLE#2", f"{t1.get('tag')} then {t2.get('tag')}")
-saved = s.state_save(name="contract")
-loaded = s.state_load(name="contract")
-check("state_save and state_load carry no per-call trio",
+saved = s.state_write("save", name="contract")
+loaded = s.state_write("load", name="contract")
+check("state_write save and state_write load carry no per-call trio",
       not any(k in saved or k in loaded for k in PER_CALL), f"load keys {sorted(loaded)}")
-check("state_load's console text is `output`, and `console` is only the session's counters",
+check("state_write load's console text is `output`, and `console` is only the session's counters",
       isinstance(loaded.get("output"), str) and "console" not in loaded
       and isinstance(s.status()["session"].get("console"), dict), repr(loaded.get("output")))
 s.close()
@@ -1204,14 +1212,14 @@ check("a raw address over the SAME build is rearmed on its cpu, never stale",
       str(rearm))
 s.breakpoint_at(ref="irq_vblank")
 inherited = [(b.get("ref"), b.get("inherited"))
-             for b in s.breakpoint_list().get("breakpoints", [])]
+             for b in s.declaration_list("breakpoint").get("breakpoints", [])]
 check("every list row says whether the store brought it back",
       inherited == [("0x4a0", True), ("irq_vblank", False)], str(inherited))
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 
 print("\n== cpu per call: rows armed on the sub cpu, the visible cpu left where it was")
 r = s.breakpoint_at(ref="0x542", cpu="subcpu")
-listed = s.breakpoint_list()
+listed = s.declaration_list("breakpoint")
 check("breakpoint_at(cpu=subcpu) arms under :subcpu and leaves the visible cpu where it was",
       r.get("cpu") == ":subcpu" and visible_of(s.cpu_info()) == ":maincpu"
       and [(b.get("ref"), b.get("cpu")) for b in listed.get("breakpoints", [])]
@@ -1236,12 +1244,14 @@ check("each reader reads the cpu it names, and the other cpu answers otherwise (
       and sub["dasm"].get("lines") != main["dasm"].get("lines"),
       f"{sub['find'].get('hits')} vs {main['find'].get('hits')}")
 check("the lists narrow to one cpu",
-      [b.get("ref") for b in s.breakpoint_list(cpu="subcpu").get("breakpoints", [])] == ["0x542"]
-      and s.breakpoint_list(cpu="maincpu").get("breakpoints") == [])
-s.breakpoint_clear(all=True)
-s.watch_clear(all=True)
+      [b.get("ref") for b in s.declaration_list("breakpoint", cpu="subcpu").get("breakpoints",
+                                                                                [])] == ["0x542"]
+      and s.declaration_list("breakpoint", cpu="maincpu").get("breakpoints") == [])
+s.declaration_clear("breakpoint", all=True)
+s.declaration_clear("watch", all=True)
 check("both clears leave the debugger's lists empty",
-      s.breakpoint_list().get("foreign") == [] and s.watch_list().get("foreign") == [])
+      "foreign" not in s.declaration_list("breakpoint")
+      and "foreign" not in s.declaration_list("watch"))
 s.focus(cpu="maincpu")
 
 # LAST, because a stop on the sub cpu leaves it the visible one for everything after it.
@@ -1360,7 +1370,7 @@ landed = s.run_to(ref="0x12f7", seconds=30.0)  # the main loop, every frame
 read = s.read_memory(ref="0x0", length=8)
 if coin is not None:
     s.input(port=coin[0], field=coin[1], frames=4, seconds=30.0)
-s.breakpoint_clear(all=True)
+s.declaration_clear("breakpoint", all=True)
 s.run_for(frames=30, seconds=30.0)
 regs = s.registers()
 s.resume()                                    # the release: the document ends here
@@ -1409,8 +1419,8 @@ r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).res
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
             boot_seconds=30.0, presence=False)
 check("circus starts for its map", r.get("status") == "ok", str(r.get("summary")))
-loaded = s.map_load(path=str(CIRCUS_MAP))
-check("map_load reads circus's map: one screen, one place",
+loaded = s.map_write("load", path=str(CIRCUS_MAP))
+check("map_write load reads circus's map: one screen, one place",
       (loaded.get("application"), loaded.get("screens"), loaded.get("controls"))
       == ("circus", 1, 1), str(loaded.get("summary")))
 s.run_for(frames=200, seconds=30.0)
@@ -1421,12 +1431,13 @@ check("map_find names the attract screen off one capture, from the file layer",
       str(found.get("summary")))
 # A second region of another crop, so the find signs two crops off its one capture, and a session
 # screen that matches beside the file's: the session layer is tried first.
-added = s.map_add(screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
+added = s.map_write("add", screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
 first = s.map_find()
 check("with both layers matching, the session's screen is the one named",
       (first.get("screen"), first.get("layer")) == ("header", "session"), str(first.get("summary")))
-saved = s.map_save(dest=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
-check("map_add maps the screen in front; map_save writes both layers, the session's promoted",
+saved = s.map_write("save", dest=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
+check("map_write add maps the screen in front; map_write save writes both layers, the session's "
+      "promoted",
       added.get("status") == "ok" and saved.get("screens") == 2
       and saved.get("promoted") == ["header"], f"{added.get('summary')} / {saved.get('summary')}")
 # THE CONTROL FIRST: a frame with nothing written still matches, so the negative below is the

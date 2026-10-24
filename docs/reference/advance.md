@@ -29,28 +29,16 @@ What a running or a broken session does to every tool is in [REFERENCE.md, Advan
 run_to(ref, control="", seconds=30.0, disarm_watches=false, condition="", cpu="")
 ```
 
-Run to `ref` and stop, with the session's CONTROLS counting meanwhile.
+Run to `ref` and stop, with a control counting meanwhile.
 
-Arguments: `ref`, the target, armed on `cpu` (the visible one when empty) and reached only by
-that cpu. `control`: a ref declared as a control on the target's cpu
-(`breakpoint_at(role="control")`: counts, never halts); with none there the run is refused, and
-one named here is DECLARED and stored. `condition`: stop at `ref` only when it holds, in the
-console's grammar, bare numbers hex (`w@DemoLen==0x25`; no `,`, `;`, braces or assignment).
-`seconds`: the wall-clock bound. `disarm_watches=True`: change watches off
-for this pass, re-armed after it (`disarmed_watches`, `not_rearmed`).
+`ref` is armed on `cpu` (the visible one when empty). `control`: a ref declared as a control
+on that cpu (`breakpoint_at(role="control")`); a new one is declared. `condition`: stop only
+when it holds, bare numbers hex (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an
+unresolved ref, no control on the cpu, an over-long `condition`.
 
-Refused before anything is declared: a target or a control this build does not resolve, a
-`condition` too long for a packet (`command_chars`, `limit_chars`). Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `verdict` (`TARGET`; `TIMEOUT` within `seconds`, the machine STOPPED; `OTHER_STOP`, a
-registerpoint included), `control_hits`, `controls` (each control's `ref`, `cpu`, `hits_in_run`
-over THIS run), and the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine). A removal the stub refuses keeps the stop's reply, with
-`target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT, `cause`
-"answered late". A TARGET is `ok` with no control hit: reaching it proves the cpu ran. An
-INVALID run carries no `verdict`: `control_silent` (a TIMEOUT with no control hit: the survey,
-`control_dasm`, a `note`), `cut_by_other_stop`, `readback_refused` (a row listed bare is
-removed first), `not_settled` (may be RUNNING: `stop`, and if `stop` fails as well, `close`
-then `start`) or `session_broken`, which LATCHES until `close`.
+Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each
+`ref`, `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`). INVALID has no
+`verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -179,7 +167,9 @@ Example, from a live run:
 
 **A `ref` that is the target carries no stop of its own**, because one row per address means a stop there could not be told from the target's.
 
-**Unanswered interrupt at the bound.** `run_to` starts with the stub's own `c`, so an interrupt at the bound that is NOT ANSWERED is `not_settled` with no `cause` (no stop was read) and `target_disarmed` saying whether the temporary breakpoint's removal was confirmed; the session stays RUNNING and `stop` waits for the packet the run still owes. A removal the stub REFUSES after the stop is an answer, not a break: the stop is still the measurement, and the `note` names the `debug("bpclear 0x<row>")` that removes the row (`breakpoint_clear` clears declarations, and the target was never one).
+**Unanswered interrupt at the bound.** `run_to` starts with the stub's own `c`, so an interrupt at the bound that is NOT ANSWERED is `not_settled` with no `cause` (no stop was read) and `target_disarmed` saying whether the temporary breakpoint's removal was confirmed; the session stays RUNNING and `stop` waits for the packet the run still owes. A removal the stub REFUSES after the stop is an answer, not a break: the stop is still the measurement, and the `note` names the `debug("bpclear 0x<row>")` that removes the row (`declaration_clear(kind="breakpoint")` clears declarations, and the target was never one).
+
+Why it is not a plain run: a control is required because a silent breakpoint has several causes that all look like "never called", and a TIMEOUT with silent controls is INVALID for the same reason. Both rows are read back from `bplist` before the machine moves. A stop at the target's address is `TARGET` only when it is the target cpu's; a control on another cpu is `unknown_ref`, naming the `breakpoint_at(..., cpu=)` that would fix it. `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
 
 <!-- scry-reference:begin run_for -->
 ## `run_for`
@@ -190,27 +180,14 @@ Example, from a live run:
 run_for(milliseconds=0, frames=0, seconds=30.0, disarm_watches=false)
 ```
 
-Run the machine for `milliseconds` of EMULATED time, or for `frames` of the frame COUNTER
-(exactly one of the two), and wait until it has STOPPED.
+Run for `milliseconds` of emulated time or `frames` of the frame counter (exactly one) and
+wait until STOPPED. Needs the machine STOPPED (else `not_stopped`).
 
-Arguments: `milliseconds` (the console's `gtime`) or `frames` (one `gvblank` per tick, each
-confirmed on the counter; sent through the first cpu, the one MAME's vblank stop lands on,
-with a `note` when it had to be made visible; the first screen's counter on a board of
-several; `no_channel` on a board with none). `seconds`: the wall-clock bound.
-`disarm_watches` as in `run_to`. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `verdict` (`ELAPSED`: it stopped by itself; `TIMEOUT`: still moving at `seconds`, so
-interrupted; `OTHER_STOP`: a watch, stop breakpoint, registerpoint or row typed through `debug`
-cut it, named by the survey; a CONTROL never cuts), `frame_before`, `frame_after`,
-`emulated_before_s`, `emulated_after_s`, `cycles` (the visible cpu's `totalcycles` over what was
-asked), each unavailable with why (no counter; `cycles` also across two cpus, after a load,
-rewind or typed reset), `polls` (by frames, the `gvblank`s sent, N+1 after a mid-frame stop) or
-`reads` (by milliseconds, its readings), and the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine). An INVALID run carries no
-`verdict`: `no_progress` (by `milliseconds`, a counter or clock that did not move, as under one
-frame: the survey, the machine STOPPED; by `frames`: no survey, the machine RUNNING until
-`stop`), `frames_went_backwards`, `not_settled` (a counter or clock still moving at the bound;
-may be RUNNING: `stop`, and if `stop` fails as well, `close` then `start`) or `session_broken`,
-which LATCHES. Reports its progress while it waits; advancing alters nothing.
+Reply: `verdict` (`ELAPSED`, `TIMEOUT`, `OTHER_STOP`; a control never cuts), `frame_before`,
+`frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles` (each unavailable with
+why), `polls` (by frames) or `reads` (by milliseconds), and the stop survey of `run_to`.
+INVALID has no `verdict`: `no_progress`, `frames_went_backwards`, `not_settled`,
+`session_broken`; `no_channel` on a board with no counter.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -328,12 +305,14 @@ Example, from a live run:
     "installed",
     "... 12 more"
   ],
-  "how": "`watch_list` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```
 <!-- scry-reference:end run_for -->
 
 `cycles` spans WHAT WAS ASKED FOR, never the aligning `gvblank` a run from a mid-frame stop spends reaching the vblank it is inside; that tick moves no counter, and `polls` is the tell that it fired. `cycles` is unavailable on the first run after a load, rewind or typed reset: MAME's debugger refreshes `totalcycles` only when the cpu executes, so the span would be off by the distance between the two states.
+
+`frames` goes through the first cpu because MAME's vblank stop lands there, with a `note` when it had to be made visible; the first screen's counter serves a board of several. `no_progress` by frames leaves the machine RUNNING until `stop` and carries no survey; by milliseconds it carries one. `cycles` is also unavailable across two cpus. `polls` is N+1 after a mid-frame stop. `not_settled` (a counter or clock still moving at the bound) may leave it RUNNING: `stop`, and if that fails, `close` then `start`; `session_broken` LATCHES. It reports progress while it waits. `disarm_watches` is as in `run_to`; `no_channel` is a board with no counter.
 
 <!-- scry-reference:begin step -->
 ## `step`
@@ -344,28 +323,13 @@ Example, from a live run:
 step(count=1, mode="into", cpu="")
 ```
 
-Execute `count` (1..300) instructions of `cpu` (`subcpu`; the visible one when empty)
-and stop, the ceiling keeping the longest walk of `over`s inside the bound every wait takes (a
-longer one is `run_to` or `run_for`):
-`into` (the gdbstub's single step, one instruction) or `over` (the console's `over`: a call is
-run to its return as one step). A named cpu is made visible first (the stub's `Hc`, needing
-the thread patch); MAME runs every other cpu meanwhile, and `others` gives each one's program
-counter register before and after. A stop on another cpu ends the steps there (`note`).
-An `over` still moving at its bound is interrupted and answers INVALID (`not_settled`)
-with the count; whether the call would have returned later is not seen. An `over` the
-console REFUSED is `not_settled` too: it may have been taken, so the session is marked
-RUNNING and `stop` recovers it; if `stop` fails as well, `close` then `start` is the way
-out. An `into` whose stop does not arrive in time is `not_settled` as well, with `mode`
-and `instructions_completed`: the stub still owes the stop packet of
-that step, and `stop` waits for it. An `into` that reads anything else in a stop's place,
-or whose connection failed, is `session_broken` with both, and it
-LATCHES as `run_to`'s does; so does an `over` whose connection failed, or that the console
-did not answer IN TIME: that answer is still owed and would be read as the next
-request's, so `close` then `start` is the way out.
-Needs the machine STOPPED (else `not_stopped`).
+Execute `count` (1..300) instructions of `cpu` (the visible one when empty): `into`
+is one instruction, `over` runs a call to its return as one step. A named cpu is made
+visible first; `others` gives every other cpu's program counter before and after. A stop on
+another cpu ends the steps (`note`). Needs the machine STOPPED (else `not_stopped`).
 
-Reply: `mode`, `instructions_completed` (those that landed), `others` on a build with a thread
-per cpu, then the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine).
+Reply: `mode`, `instructions_completed`, `others` (on a build with a thread per cpu), and
+the stop survey of `run_to`. INVALID: `not_settled`, `session_broken`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -461,6 +425,8 @@ Example, from a live run:
 
 Each step is confirmed on the program counter, because the console answers while the machine still runs to the return of an `over`. A run cut by a stop on another cpu reports no `cycles`, since that counter is each cpu's own.
 
+The ceiling keeps the longest walk of `over`s inside the bound every wait takes. A named cpu is made visible by the stub's `Hc`, which needs the thread patch. An `over` still moving at its bound is interrupted and whether the call would have returned is not seen; a refused `over` may have been taken, so the session is marked RUNNING and `stop` recovers it (if `stop` fails, `close` then `start`). An `into` whose stop is late still owes its packet, which `stop` waits for, and `not_settled` carries `mode` and `instructions_completed`. An `into` that reads anything else in a stop's place, a failed connection, or an `over` the console did not answer in time is `session_broken` and LATCHES, because that answer would be read as the next request's.
+
 <!-- scry-reference:begin resume -->
 ## `resume`
 
@@ -470,19 +436,11 @@ Each step is confirmed on the program counter, because the console answers while
 resume(seconds=0.0)
 ```
 
-Let the machine RUN. With `seconds` at zero (the default) it comes back at once and the
-machine runs with NO deadline, until a breakpoint fires, `stop`, or `close`; with a bound it
-waits up to `seconds` for a stop and, if none comes, LEAVES IT RUNNING (unlike `run_to`, which
-interrupts at its bound). Needs the machine STOPPED (else `not_stopped`), a second `resume` too.
+Let the machine run. `seconds` 0 (the default) returns at once with no deadline; a bound up
+to 600 waits for a stop and, if none comes, leaves it running. Needs the machine STOPPED (else `not_stopped`).
 
-Reply: with a bound, `waited_s` and `verdict`: `OTHER_STOP` (back at the debugger, with
-the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine) and `average_speed`) or `TIMEOUT` (LEFT RUNNING, a `note`); with 0, neither.
-`seconds` is 0 or a bound up to 600. While it runs the readers of the machine refuse,
-naming `last_stop` and, in `answers_while_running`, every tool that answers. A wait that reads
-something in a stop's place, or a release that could not be sent, is `status: INVALID`
-(`session_broken`) and never a running session, and so is a stop that was read and could not be
-surveyed: it LATCHES as `run_to`'s does, and the way out is `close`, then `start`. Reports its
-progress while it waits.
+Reply: with a bound, `waited_s` and `verdict` (`OTHER_STOP` with the stop survey and
+`average_speed`; `TIMEOUT`, left running, with a `note`). INVALID: `session_broken`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -521,6 +479,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end resume -->
 
+While it runs, readers refuse naming `last_stop`, and `answers_while_running` lists every tool that answers. A wait that reads something in a stop's place, a release that could not be sent, or a stop that could not be surveyed is `session_broken` and LATCHES; the way out is `close`, then `start`. It reports progress while it waits.
+
 <!-- scry-reference:begin stop -->
 ## `stop`
 
@@ -530,16 +490,11 @@ Example, from a live run:
 stop()
 ```
 
-Stop a RUNNING machine where it is (the stub's interrupt) and survey the stop.
+Stop a running machine where it is and survey the stop.
 
-Reply: `interrupted` (`true` with the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine) and `average_speed`; `false` when it was already
-stopped, with `last_stop` and a `note`). An interrupt not answered in time, or a run the
-console started whose frame counter still moves, is `status: INVALID` (`not_settled`): the
-machine stays marked RUNNING, asking again is allowed and nothing counts the attempts, and
-if `stop` fails as well, `close` then `start` is the way out. An interrupt answered by
-something that is not a stop, a connection that failed, or a stop that was read and could
-not be surveyed, is `session_broken`, and it LATCHES as `run_to`'s does. A run by frames
-bailed out as `no_progress` is brought back here: the interrupt is its proof of rest.
+Reply: `interrupted` (`true` with the stop survey and `average_speed`; `false` when already
+stopped, with a `note`). INVALID: `not_settled` (the machine stays marked RUNNING; ask
+again), `session_broken`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -580,11 +535,13 @@ Example, from a live run:
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-24T16:07:10+00:00"
+    "wall_at": "2026-10-24T22:09:58+00:00"
   }
 }
 ```
 <!-- scry-reference:end stop -->
+
+If `stop` fails as well, `close` then `start`; nothing counts the attempts. `not_settled` also covers a console-started run whose frame counter still moves. An interrupt answered by something that is not a stop, a failed connection, or a stop that could not be surveyed is `session_broken` and LATCHES as under `run_to`. A run by frames bailed out as `no_progress` is brought back here: the interrupt is its proof of rest.
 
 <!-- scry-reference:begin trace -->
 ## `trace`
@@ -595,26 +552,14 @@ Example, from a live run:
 trace(milliseconds=0, frames=0, dest="", seconds=60.0, cpu="", noloop=false)
 ```
 
-Run as `run_for` does with MAME's own tracer on one cpu, then hand back every address
-that cpu executed, joined to its symbols. It takes no `ref`: the window is frames or
-milliseconds, and no trace runs until a place is reached (`run_to` goes there, untraced).
+Run as `run_for` does with MAME's tracer on one cpu, then return the addresses it executed,
+joined to symbols. Window: `milliseconds` or `frames` (at most 5026 frames or
+98143 ms; `noloop`, 1648 and 32920). `dest`: an absolute
+new path. `noloop=True`: exact `count`s, not which addresses ran. Needs a stopped machine.
 
-Arguments: `milliseconds` or `frames` as in `run_for` (at most 5026 frames or
-98143 ms; with `noloop`, 1648 and 32920). `dest`: an absolute
-path not there yet; empty lands in the scratch. `seconds`: the wall-clock bound.
-`cpu`: the visible one when empty. `noloop=True`: only for exact
-`count`s and `instructions` (every instruction written), never for which addresses ran.
-Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `run_for`'s, plus `trace`: `cpu`, `path` (the tracer's file), `bytes`, `set_path` (one
-row per executed address, ascending: `addr`, `symbol` when placed, `count` under `noloop`),
-`instructions`, `addresses`, `unplaced`, `symbols` (per routine: `symbol`, `addr`, `addresses`,
-`first`, `last`, `instructions` under `noloop`; first 64), `symbols_total`,
-`truncated`, `noloop`, `note`. Refused before anything is armed: an existing `dest` or
-`<dest>.set.jsonl`, a cpu with no disassembler (`no_channel`). A trace with no instruction line
-is `readback_refused`; a tracer that could not be closed is `readback_refused` with
-`trace.closed: false` (unavailable when the session broke); an INVALID run carries `trace`
-(`path`, `bytes`, `closed`) and no set file.
+Reply: `run_for`'s, plus `trace` (`path`, `set_path`, `instructions`, `addresses`,
+`unplaced`, `symbols` (first 64)). Refused: `dest` existing,
+`no_channel`, `readback_refused`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -712,9 +657,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-vr90lqz3/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-vr90lqz3/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,
@@ -782,6 +727,8 @@ Example, from a live run:
 
 **The caps** bound how much one window can produce; a longer window is consecutive calls.
 
+`set_path` is a JSON line per executed address, ascending (`addr`, `symbol` when placed, `count` under `noloop`); `symbols` rows carry `symbol`, `addr`, `addresses`, `first`, `last` and `instructions` under `noloop`. An empty `dest` lands in the scratch. Refusals before anything is armed: an existing `dest` or `<dest>.set.jsonl`, a cpu with no disassembler (`no_channel`). `readback_refused`: a trace with no instruction line, or a tracer that could not be closed (`trace.closed: false`, unavailable when the session broke). An INVALID run carries `trace` (`path`, `bytes`, `closed`) and no set file.
+
 <!-- scry-reference:begin series_capture -->
 ## `series_capture`
 
@@ -791,25 +738,15 @@ Example, from a live run:
 series_capture(at_frames=null, first=null, last=null, step=1, crop=null, dest="", seconds=60.0)
 ```
 
-FRAMES OF THE SCREEN KEPT INSIDE MAME at emulation speed, as PNGs and one manifest:
-the series `series_diff`, `region_track` and `golden_check` read, with no picture in the
-reply. It runs the machine two frames past the last and stops there.
+Screen frames kept inside MAME as PNGs and a manifest, for `image_compare`. Stops two frames
+past the last.
 
-The frames, by the frame counter `run_for(frames=...)` counts, all still to come: `at_frames`
-(a list, ascending) or `first`, `last` and `step`, at most 1000. `crop` `[x, y,
-width, height]`, default the whole screen. `dest`: a new absolute or `~`-led directory, kept
-after `close`; else one in the scratch, gone at `close` (`kept_after_close` says which).
-`seconds`: the run's wall-clock bound. Needs the machine STOPPED (else `not_stopped`).
+Frames by `run_for`'s counter, all ahead: `at_frames` or `first`, `last`, `step`, at most
+1000. `crop` is `[x, y, width, height]`. `dest`: a new absolute or `~`-led
+directory, kept after `close`. Needs a stopped machine.
 
-Each frame is MAME's own rendering of it, read by a frame notifier one frame late as
-`gfx_film` reads its frames; a wanted frame frameskip did not draw is listed in `lost`. Its
-PNG is RGB where `gfx_film`'s may be indexed: compare the two with `image_diff`.
-
-Reply: `manifest` (its path), `count`, `first`, `last`, `crop`, `distinct` (signatures over
-it), `frames_asked`, `lost` ([first, last] runs), `kept_after_close`, `frame_source`
-(`frame_number`), then the run's own fields and the survey as `run_for` reports them.
-`bad_argument`: a frame not ahead of the machine, a crop off the screen, a `dest` already
-there; `cut_by_other_stop`: a stop cut the run before the last frame.
+Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
+`run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
 
 Reference: REFERENCE.md, Media files.
 
@@ -864,7 +801,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-vr90lqz3/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-f5qd8ts7/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
@@ -909,7 +846,7 @@ Example, from a live run:
     "lines": [],
     "mark": 66062
   },
-  "manifest": "$TMPDIR/mame-mcp-vr90lqz3/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-f5qd8ts7/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,
@@ -925,10 +862,11 @@ Example, from a live run:
   "kept_after_close": false,
   "frame_source": "frame_number",
   "thread_errors": 0,
-  "console_reruns": 0,
-  "resent": 0
+  "console_reruns": 0
 }
 ```
 <!-- scry-reference:end series_capture -->
 
-**On an indexed screen a series frame is an RGB PNG and a film frame an indexed one**, on purpose: the film's index is the pen, which a colour PNG would lose, and a series is for comparing what the screen showed. So the same frame from the two never has the same bytes and a golden of one never matches the other by `golden_check`; `image_diff` reads the colours a picture shows, so it compares them.
+**On an indexed screen a series frame is an RGB PNG and a film frame an indexed one**, on purpose: the film's index is the pen, which a colour PNG would lose, and a series is for comparing what the screen showed. So the same frame from the two never has the same bytes and a golden of one never matches the other by `image_compare(method="golden")`; `image_compare(method="image")` reads the colours a picture shows, so it compares them.
+
+Each frame is MAME's own rendering, read by a frame notifier one frame late as `gfx_film` reads its frames. Its PNG is RGB where `gfx_film`'s may be indexed; compare the two with `image_compare(method="image")`. A reply carries `verdict`, the run's counters and the survey as `run_for` reports them.

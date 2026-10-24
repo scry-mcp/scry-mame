@@ -64,7 +64,7 @@ def test_the_same_name_in_both_tables_arms_on_the_cpu_the_call_names(
     assert (main["addr"], main["cpu"]) == ("0x00000400", MAIN), main
     assert (sub["addr"], sub["cpu"]) == ("0x00000542", SUB), sub
     assert "bp 0x400::maincpu" in ses.commands and "bp 0x542::subcpu" in ses.commands
-    listed = {(b["cpu"], b["addr"]) for b in s.breakpoint_list()["breakpoints"]}
+    listed = {(b["cpu"], b["addr"]) for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed == {(MAIN, "0x00000400"), (SUB, "0x00000542")}
 
 

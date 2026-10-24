@@ -9,15 +9,11 @@
 read_memory(ref, length=16, cpu="")
 ```
 
-Read `length` bytes of memory at `ref` (a symbol name or a `0x` address), `length` in
-1..1024, of `cpu` (`subcpu`; the visible one when empty). Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`). A range whose last byte lies past that cpu's program space (the address mask `start` read) is `bad_argument` naming the mask; with no mask known the range is the console's.
+Read `length` bytes (1..1024) at `ref` (a symbol or `0x` address) of `cpu` (`subcpu`;
+the visible one when empty). A range past the cpu's program space is `bad_argument`.
 
-Reply: `addr`, `length`, `hex`, `cpu` (the one read). Above the ceiling the answer
-is `memdump`, which writes to a file: a read comes back as hex text, two characters per byte,
-and a frame of VRAM through it is a haystack in the conversation rather than data. A range whose
-read side is unmapped (a write-only block, `latch` to `symbols_find`) answers ZEROS here with no
-error: the values live in the share behind its handler, and `read_block(ref=...)` reads them.
-Needs the machine STOPPED (else `not_stopped`).
+Reply: `addr`, `length`, `hex`, `cpu`. Above the ceiling use `memdump`. A write-only range
+(`latch`) answers zeros with no error: use `read_block`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -55,6 +51,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end read_memory -->
 
+Reads come back as hex text, two characters per byte; a frame of VRAM through them is a haystack in the conversation rather than data, which is why the ceiling exists and `memdump` writes a file. A write-only range answers zeros because its values live in the share behind the write handler, not on the read side. Each cpu is served by its own thread of the gdbstub's thread patch; a build without it serves only its first cpu and refuses another with `bad_argument`. With no address mask known the range bound is the console's.
+
 <!-- scry-reference:begin read_block -->
 ## `read_block`
 
@@ -64,28 +62,16 @@ Example, from a live run:
 read_block(tag="", ref="", offset=0, length=16, seconds=5.0, cpu="")
 ```
 
-Read `length` bytes (1..1024) of a memory BLOCK MAME keeps by tag: a SHARE (a block a
-map entry writes through a handler and reads nowhere, so `read_memory` there answers zeros with
-no error and `symbols_find` calls it `latch`) or a REGION (a ROM no cpu's space maps,
-`gfx1` say). It alters nothing.
+Read `length` bytes (1..1024) of a block MAME keeps by tag: a share (what
+`symbols_find` calls `latch`) or a region (a ROM no cpu maps).
 
-Arguments, one block per call: `tag` (as MAME names it, `blitram` or `:blitram`) with `offset`
-(an integer or a `0x` string) into it, or `ref` (a symbol or `0x` address in the program space) whose
-map entry names the block, the offset then being the address's distance into it; `length`,
-the count asked (left out, a default); `cpu` (`subcpu`) names the cpu whose space `ref` is
-in, the visible one when empty. `seconds`: the wait for the console's answer.
+`tag` (`blitram` or `:blitram`) with `offset`, or `ref` whose map entry names the block;
+`cpu` names `ref`'s space; `seconds` bounds the console's answer.
 
-It goes through MAME's Lua console and costs what `lua` costs, so the read is of the state
-AFTER the instruction at the stop's pc: to read the block as a write there found it, stop one
-instruction earlier. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `kind` (`share` | `region`), `tag` (the full one), `size`, `bytewidth`, `endianness`,
-`offset`, `length`, `hex`; with `ref` also `addr`, `addr_cpu` and `start` (the entry's first
-address); the console's account as `lua` reports it; then the survey: `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, `watch_hit` or `regpoint_hit` if one stopped it (REFERENCE.md, Advancing the machine).
-INVALID `unknown_ref` when the tag matches none (with `tags`, every block the machine HAS),
-when `ref` is inside no map entry (with `addr`), or when its entry names no block (with
-`map_entry`); `bad_argument` for `offset` beside `ref`, `cpu` beside `tag`, a tag with
-whitespace, and past the block's end, where MAME answers zeros in silence.
+Reply: `kind`, `tag`, `size`, `bytewidth`, `endianness`, `offset`, `length`, `hex`; with
+`ref` also `addr`, `addr_cpu`, `start`; then the stop survey. `unknown_ref`: no such tag
+(`tags` lists them) or `ref` in no entry naming a block. `bad_argument`: `offset` with
+`ref`, `cpu` with `tag`, past the block's end.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -158,10 +144,8 @@ Example, from a live run:
   "hex": "46fc270048e7f000",
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#1",
   "pc_before": "0x000f2034",
   "cause": "read_block: one step",
@@ -208,6 +192,8 @@ Example, from a live run:
 
 By `tag`, the spelling tried second is the full one (`:blitram`), because MAME names a share bare and a region either way.
 
+A share is a block a map entry writes through a handler and reads nowhere, so `read_memory` there answers zeros; a region is a ROM no cpu's space maps, `gfx1` say. The call alters nothing. It goes through MAME's Lua console and costs what `lua` costs, so the read is of the state after the instruction at the stop's pc; to see the block as a write there found it, stop one instruction earlier. Past the block's end MAME answers zeros in silence, which is why the call refuses. A `tag` is tried bare first, then in its full spelling (`:blitram`), because MAME names a share bare and a region either way. A tag with whitespace is `bad_argument`. Offset is an integer or a `0x` string; with `ref` it is the address's distance into the block.
+
 <!-- scry-reference:begin registers -->
 ## `registers`
 
@@ -217,19 +203,12 @@ By `tag`, the spelling tried second is the full one (`:blitram`), because MAME n
 registers(from_last_stop=false, cpu="")
 ```
 
-Every register of `cpu` (`subcpu`; the visible one when empty), by the name MAME's gdbstub
-gives it, each printed at its own declared width. Each cpu is served by its own thread of the gdbstub's thread patch (`status`'s `threads`); a build without it serves its first cpu alone, whatever is visible, and refuses another (`bad_argument`). Needs the machine STOPPED (else `not_stopped`).
-`from_last_stop=True` hands back the registers AS THEY WERE at the last stop, marked
-`superseded: true` with `last_stop` and the `cpu` it stopped on, never as the current value, and
-answers on a running machine; refused before any stop, and beside `cpu`: those are the stop
-survey's.
+Every register of `cpu` (`subcpu`; the visible one when empty), by the gdbstub's name.
+`from_last_stop=True` returns the registers as of the last stop, answers on a running
+machine, and is refused before any stop and beside `cpu`.
 
-Reply: `regs` (name to hex string), `register_bits` (name to the declared width in bits, so a
-16-bit V30 register named `EAX` says 16 rather than leaving it to a digit count) and `cpu` (the
-one read). The names come from the target description: a 68000 board answers
-D0..D7/A0..A5/FP/SP/PS/PC, an x86 or V30 board EAX..GS with EIP. The m68k aliases `A6`, `A7`,
-`SR`, `USP` are accepted by `set_register` but not listed here. A cpu the stub does not describe
-(no register map), or whose byte order is not established, is `no_channel`.
+Reply: `regs` (name to hex string), `register_bits` (name to declared width), `cpu`,
+`superseded`. A cpu with no register map or an unknown byte order is `no_channel`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -302,6 +281,8 @@ Example, from a live run:
 
 A fixed eight digits would make a 16-bit register look 32-bit and its own ceiling look like a broken tool.
 
+Each register prints at its declared width, so a 16-bit V30 register named `EAX` says 16 rather than leaving it to a digit count. Names come from the target description: a 68000 board answers D0..D7/A0..A5/FP/SP/PS/PC, an x86 or V30 board EAX..GS with EIP; the m68k aliases A6, A7, SR, USP are accepted by `set_register` but not listed. A stop's registers are marked `superseded` so they are never read as the current value. Each cpu is served by its own thread of the gdbstub's thread patch; a build without it serves only its first cpu and refuses another with `bad_argument`.
+
 <!-- scry-reference:begin disassemble -->
 ## `disassemble`
 
@@ -311,25 +292,14 @@ A fixed eight digits would make a 16-bit register look 32-bit and its own ceilin
 disassemble(ref, length=16, cpu="")
 ```
 
-Disassemble `length` BYTES (1..1024) from `ref` of `cpu` (`subcpu`; the visible one
-when empty), as MAME's own `dasm` prints them.
+Disassemble `length` bytes (1..1024) from `ref` of `cpu` (`subcpu`; the visible one
+when empty), as MAME's `dasm`; the last instruction is completed.
 
-Reply: `addr`, `length`, `cpu` (the one decoded), `lines` (MAME's text verbatim, one line per
-decoded item; a word MAME could not decode is marked by MAME, `dc.w ...; ILLEGAL`; the listing
-completes the instruction that straddles the end, so it may run a little past `length`), and on
-a board whose table was relocated by `bases`, `resolved`: every DIRECT memory operand (`word ptr
-[0C014h]`) with `line` (its index in `lines`), `operand`, `offset`, and per relocated `class`
-the `linear` address under that base with the nearest `symbol` at or below it and `delta`. THE
-OPERAND AS PRINTED IS THE MAP'S OFFSET, NOT AN ADDRESS: `read_memory` and `watch_add` take
-`linear`. Register-relative operands (`ds1:[bw-31BBh]`, `[ix]`) are not resolved: their address
-is the register's at run time. `flow`, one class per line of `lines` (`call`, `branch`,
-`return`, `sequential`, or `unknown` for a word the table does not list), and `flow_source`,
-where the class came from: `mnemonic_table:<type>` (read off the mnemonic by a table for the
-cpu's MAME type, since MAME's console drops its own step flags), or `none` with a `note`
-saying why no line was classified (no table for the type, or the listing without opcode bytes
-did not come out). A line MAME holds a comment for ends ` // <text>` (`comment_add`).
-`status: INVALID` with `message` when the console wrote no listing, or an empty one.
-Needs the machine STOPPED (else `not_stopped`).
+Reply: `addr`, `length`, `cpu`, `lines`, `flow` (per line: `call`, `branch`, `return`,
+`sequential`, `unknown`), `flow_source`, `note`, and on a relocated board `resolved` (per
+direct memory operand: `line`, `operand`, `offset`, `linear`, `symbol`, `delta`). The
+printed operand is the map's offset: `read_memory` and `watch_add` take `linear`.
+Register-relative operands are not resolved.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -381,6 +351,8 @@ Example, from a live run:
 
 `flow` is read off the mnemonic by a table per cpu type, because MAME computes the same distinction and no channel hands it on.
 
+`flow` is read off the mnemonic by a table per cpu type, because MAME's console drops its own step flags; `flow_source` is `mnemonic_table:<type>`, or `none` with a `note` when no table exists or the opcode-less listing did not come out. A word MAME cannot decode is marked by MAME (`dc.w ...; ILLEGAL`). A line MAME holds a comment for ends ` // <text>`. A register-relative operand's address is the register's at run time, so it cannot be resolved. A console that wrote no listing, or an empty one, is `status: INVALID` with `message`.
+
 <!-- scry-reference:begin find -->
 ## `find`
 
@@ -390,26 +362,16 @@ Example, from a live run:
 find(data_hex, ref="", length=0, symbol_class="", cpu="")
 ```
 
-Every address in `length` bytes from `ref` holding the bytes `data_hex` (whole hex bytes,
-two digits each, 1..126 of them: the console takes each byte as a parameter of
-its own), in the program space of `cpu` (`subcpu`; the visible one when empty).
+Every address in `length` bytes from `ref` holding `data_hex` (whole hex bytes,
+1..126), in the program space of `cpu` (`subcpu`; the visible one when empty).
 
-`symbol_class` searches within a SYMBOL CLASS instead of a hand-counted `ref`+`length`: a class
-name the symbol file carries (`DATA`, `CODE`, ...), whose loaded symbols give the range, so a
-one-byte pattern in DATA skips the CODE where its opcode also lives. The span is that class's
-symbols' [min, max] address; a match PAST the last symbol's own start is not covered, because
-a linker map carries no sizes, so pass `ref`+`length` for an exact range. `symbol_class` with
-`ref` or `length` is refused, and a class the table does not carry is refused naming it.
+`symbol_class` (`DATA`, `CODE`...) replaces `ref`+`length` with that class's symbol range,
+which misses a match past the last symbol's start. Both, neither, or an unknown class is
+refused. A range past the program space is `bad_argument`.
 
-Reply: `addr`, `length`, `span` (WHAT WAS EXAMINED, so a zero says over which bytes: `from`,
-`length`, `source` (`class symbols`, with a `note` on the uncovered tail; or `ref+length`)),
-`hits` (hex addresses in address order, at most 400: when truncated, the HIGHEST
-addresses are kept; a hit is where the pattern STARTS, so one running past the window's end is
-counted), `hits_total` (every hit), `truncated`, `cpu` (the one searched), and `symbol_class`
-when one was given. A console answer other than `Found at <addr>` lines or `Not found` is
-`status: INVALID` with `message`, never a count read off half of it. With neither `symbol_class`
-nor `ref`+`length` the call is refused naming both: there is
-no whole-address-space sweep. A range whose last byte lies past that cpu's program space (the address mask `start` read) is `bad_argument` naming the mask; with no mask known the range is the console's. Needs the machine STOPPED (else `not_stopped`).
+Reply: `addr`, `length`, `span` (`from`, `length`, `source`), `hits` (at most 400,
+highest kept), `hits_total`, `truncated`, `cpu`, `symbol_class`. An unreadable console
+answer is `status: INVALID`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -471,6 +433,8 @@ Example, from a live run:
 
 `span` says over which bytes a zero was found. There is no whole-address-space sweep, because the space's extent is not something the symbol table says.
 
+The console takes each byte as a parameter of its own, which bounds the pattern. `span` says over which bytes a zero was found. A hit is where the pattern starts, so one running past the window's end is counted. A linker map carries no sizes, so a class's span ends at its last symbol's start; a note on `span` says so. There is no whole-address-space sweep because the extent of the space is not something the symbol table says.
+
 <!-- scry-reference:begin history -->
 ## `history`
 
@@ -480,14 +444,11 @@ Example, from a live run:
 history(limit=32, cpu="")
 ```
 
-The last `limit` (1..256, MAME's own depth) instructions `cpu` (`subcpu`; the
-visible one when empty) executed before the stop, as MAME's `history` lists them, oldest first.
+The last `limit` (1..256) instructions `cpu` retired before the stop, oldest
+first.
 
-Reply: `asked` (the argument), `lines` (MAME's text verbatim, `<addr>: <instruction>`: fewer
-than asked when fewer have retired, one at the boot, none with a `note` for a cpu that has
-retired none), `cpu` (the one whose trail it is). A cpu MAME cannot disassemble is
-`no_channel`; a reply whose lines are not of that shape is `status: INVALID` with `message`,
-never a trail. Needs the machine STOPPED (else `not_stopped`).
+Reply: `asked`, `lines` (`<addr>: <instruction>`), `cpu`, `note`. No disassembler:
+`no_channel`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -525,6 +486,8 @@ Example, from a live run:
 ```
 <!-- scry-reference:end history -->
 
+A cpu that has retired none answers no lines with a `note`; a reply whose lines are not of the `<addr>: <instruction>` shape is `status: INVALID`, never a trail.
+
 <!-- scry-reference:begin memdump -->
 ## `memdump`
 
@@ -534,20 +497,12 @@ Example, from a live run:
 memdump(ref, length, dest, cpu="")
 ```
 
-Write `length` bytes of memory from `ref` of `cpu` (`subcpu`; the visible one when empty) to
-the file `dest`, and CHECK the file.
+Write `length` bytes from `ref` of `cpu` (`subcpu`) to the new file `dest` (absolute or `~`-led, in a directory that exists, with no comma, semicolon, quote, whitespace, bracket or control character).
 
-Reply: `addr`, `length`, `path`, `bytes`, `cpu` (the one dumped). The dump is written by MAME's
-own console `save`, so the bytes never cross the socket; the file must then be exactly `length`
-bytes and its first bytes must equal a protocol read of the same range (the known-answer
-control), else the reply is `status: INVALID` with `message`; a control read that breaks the
-channel is `session_broken` naming the `path` the file was left at. `dest` must be absolute or `~`-led, in a directory that exists, with no comma, semicolon, quote, whitespace, bracket or control character,
-and not there yet. A range whose last byte lies past that cpu's program space (the address mask `start` read) is `bad_argument` naming the mask; with no mask known the range is the console's. A range that wraps would hang the console's
-`save`, and one past the space never reaches it. The control reads the same cpu, through its own
-thread of the gdbstub's thread patch; a build without it reads only its first cpu, and another
-is refused. Each refusal happens before `save`, so a refused call never leaves a file behind. A
-control read the stub refuses is `readback_refused`; one that breaks the channel is
-`session_broken`, which LATCHES. Needs the machine STOPPED (else `not_stopped`).
+Reply: `addr`, `length`, `path`, `bytes`, `cpu`. A file not `length` bytes, or whose first
+bytes differ from a protocol read, is `status: INVALID`; a refused control read is
+`readback_refused`, a broken channel `session_broken`. A range past the program space is
+`bad_argument`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -572,166 +527,24 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "$TMPDIR/mame-live-matrix-4d06f0dea223/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }
 ```
 <!-- scry-reference:end memdump -->
 
-<!-- scry-reference:begin map_add -->
-## `map_add`
-
-*Map the screen in front of you*
-
-```text
-map_add(screen, match, controls=null)
-```
-
-Map the screen the machine shows NOW as `screen` in the SESSION layer: one capture signs
-each `match` crop (`[x, y, width, height]`, 1..16, regions that stay still on that screen,
-never a moving sprite or a counter), and `controls` (`[{"name", "rect"}]`, a `rect` shaped as
-a crop) name its controls, in the screen's pixels. A screen of the same name in the file is
-shadowed (`shadows_file`). A board takes its inputs by port and field (`input`): a control is
-a place to read, not one to click. Needs the machine STOPPED (else `not_stopped`); a `start` empties the session layer.
-
-Reply: `screen`, `kind`, `size`, `match` (each crop with its `signature`), `controls`,
-`replaced`, `shadows_file`, the console's account, the survey. Refused: a misshapen name, crop
-or control, a rectangle off the screen (`bad_argument`).
-
-Reference: REFERENCE.md, Screen maps.
-
-| argument | type | default |
-|---|---|---|
-| `screen` | string | required |
-| `match` | array of array of integer | required |
-| `controls` | array of object or null | `null` |
-
-| reply field | type |
-|---|---|
-| `console_reruns` | integer |
-| `cpu` | string |
-| `dasm` | array or object |
-| `errorlog` | object |
-| `frame` | integer |
-| `pc` | string |
-| `regs` | object |
-| `resent` | integer |
-| `stop_seq` | integer |
-| `thread_errors` | integer |
-| `call` | string |
-| `controls` | integer |
-| `evaluated_by` | string |
-| `kind` | string |
-| `lines_ahead` | integer |
-| `match` | array |
-| `pc_before` | string |
-| `reader_steps` | integer |
-| `replaced` | boolean |
-| `screen` | string |
-| `shadows_file` | boolean |
-| `size` | array |
-
-Example, from a live run:
-
-```json
-{
-  "screen": "probe",
-  "match": [
-    [
-      0,
-      0,
-      8,
-      8
-    ]
-  ]
-}
-```
-
-```json
-{
-  "summary": "map_add: probe (pixel 336x252), 1 region, 0 controls",
-  "status": "ok",
-  "screen": "probe",
-  "kind": "pixel",
-  "size": [
-    336,
-    252
-  ],
-  "match": [
-    {
-      "crop": [
-        0,
-        0,
-        8,
-        8
-      ],
-      "signature": "d275923c4035816a"
-    }
-  ],
-  "controls": 0,
-  "replaced": false,
-  "shadows_file": false,
-  "evaluated_by": "one step",
-  "lines_ahead": 0,
-  "reader_steps": 0,
-  "thread_errors": 0,
-  "console_reruns": 0,
-  "resent": 0,
-  "call": "MAME_MCP_LUA_END#4",
-  "pc_before": "0x000025dc",
-  "cause": "map_add: one step",
-  "stop_seq": 5,
-  "pc": "0x000025e0",
-  "cpu": ":maincpu",
-  "frame": 0,
-  "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2704",
-    "PC": "0x000025e0"
-  },
-  "dasm": [
-    "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
-}
-```
-<!-- scry-reference:end map_add -->
+The dump is written by MAME's own console `save`, so the bytes never cross the socket; the first-bytes comparison is the known-answer control. A range that wraps would hang `save`, which is why every refusal comes before it and leaves no file. The control reads the same cpu through its own thread of the gdbstub's thread patch; a build without it reads only its first cpu and another is refused.
 
 <!-- scry-reference:begin map_find -->
 ## `map_find`
@@ -742,14 +555,9 @@ Example, from a live run:
 map_find()
 ```
 
-WHICH MAPPED SCREEN the machine shows, from ONE capture and no picture: the session layer
-first, then the file's; a screen matches when its size is the screen's and every region's
-signature is. Needs the machine STOPPED (else `not_stopped`).
-
-Reply: `matched`; matched, `screen`, `layer` (`session` or `file`), `kind`, `size`,
-`controls` (each `name`, `rect`, `centre`); not matched, `kind`, `size`, `screens_mapped`,
-`screens_tried` (of that size); the console's account, the survey. Refused: no screen mapped
-(`needs_call`).
+Which mapped screen the machine shows. Reply: `matched`; matched, `screen`, `layer`, `kind`,
+`size`, `controls` (`name`, `rect`, `centre`); else `screens_mapped`, `screens_tried`. None
+mapped: `needs_call`.
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -802,10 +610,8 @@ Example, from a live run:
   "controls": [],
   "evaluated_by": "one step",
   "lines_ahead": 0,
-  "reader_steps": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "resent": 0,
   "call": "MAME_MCP_LUA_END#5",
   "pc_before": "0x000025e0",
   "cause": "map_find: one step",
@@ -852,3 +658,162 @@ Example, from a live run:
 <!-- scry-reference:end map_find -->
 
 It captures the screen once for all the mapped screens, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen.
+
+It captures the screen once for all the mapped screens, session layer first and then the file's, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen. A screen matches when its size and every region's signature are the screen's.
+
+<!-- scry-reference:begin map_write -->
+## `map_write`
+
+*Write the screen map*
+
+```text
+map_write(method, screen="", match=null, controls=null, path="", dest="", overwrite=null)
+```
+
+The screen map: an application's screens, each known by the signatures of its stable
+regions, and their controls, in a session layer and a file layer.
+
+`add`: the screen shown now as `screen` in the session layer, one capture signing each
+`match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
+places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `match`,
+`controls`, `replaced`, `shadows_file`.
+
+`load`: `path` (`<application>.scry-map.json`, absolute or `~`-led) as the file layer. Reply:
+`path`, `application`, `screens`, `controls`.
+
+`save`: both layers as one map to `dest`, refused there without `overwrite`, made the file
+layer. Reply: `path`, `application`, `screens`, `controls`, `promoted`.
+
+Refused: an argument the method does not take; a misshapen name, crop, control or file
+(`bad_argument`); nothing mapped to save (`needs_call`).
+
+Reference: REFERENCE.md, Screen maps.
+
+| argument | type | default |
+|---|---|---|
+| `method` | one of `"add"`, `"load"`, `"save"` | required |
+| `screen` | string | `""` |
+| `match` | array of array of integer or null | `null` |
+| `controls` | array of object or null | `null` |
+| `path` | string | `""` |
+| `dest` | string | `""` |
+| `overwrite` | boolean or null | `null` |
+
+| reply field | type |
+|---|---|
+| `console_reruns` | integer |
+| `cpu` | string |
+| `dasm` | array or object |
+| `errorlog` | object |
+| `frame` | integer |
+| `pc` | string |
+| `regs` | object |
+| `resent` | integer |
+| `stop_seq` | integer |
+| `thread_errors` | integer |
+| `application` | string |
+| `call` | string |
+| `controls` | integer |
+| `evaluated_by` | string |
+| `kind` | string |
+| `lines_ahead` | integer |
+| `match` | array |
+| `path` | string |
+| `pc_before` | string |
+| `promoted` | array |
+| `reader_steps` | integer |
+| `replaced` | boolean |
+| `screen` | string |
+| `screens` | integer |
+| `shadows_file` | boolean |
+| `size` | array |
+
+Example, from a live run:
+
+```json
+{
+  "method": "add",
+  "screen": "probe",
+  "match": [
+    [
+      0,
+      0,
+      8,
+      8
+    ]
+  ]
+}
+```
+
+```json
+{
+  "summary": "map_write add: probe (pixel 336x252), 1 region, 0 controls",
+  "status": "ok",
+  "screen": "probe",
+  "kind": "pixel",
+  "size": [
+    336,
+    252
+  ],
+  "match": [
+    {
+      "crop": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "signature": "d275923c4035816a"
+    }
+  ],
+  "controls": 0,
+  "replaced": false,
+  "shadows_file": false,
+  "evaluated_by": "one step",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "call": "MAME_MCP_LUA_END#4",
+  "pc_before": "0x000025dc",
+  "cause": "map_write add: one step",
+  "stop_seq": 5,
+  "pc": "0x000025e0",
+  "cpu": ":maincpu",
+  "frame": 0,
+  "regs": {
+    "D0": "0x00000000",
+    "D1": "0x00000000",
+    "D2": "0x00000000",
+    "D3": "0x00000000",
+    "D4": "0x00000000",
+    "D5": "0x00000000",
+    "D6": "0x00000000",
+    "D7": "0x00000000",
+    "A0": "0x00000000",
+    "A1": "0x00000000",
+    "A2": "0x00000000",
+    "A3": "0x00000000",
+    "A4": "0x00000000",
+    "A5": "0x00000000",
+    "FP": "0x00000000",
+    "SP": "0x00200fc4",
+    "PS": "0x2704",
+    "PC": "0x000025e0"
+  },
+  "dasm": [
+    "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
+    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
+    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
+    "0025F4: 4218                clr.b   (A0)+",
+    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
+    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
+  ],
+  "errorlog": {
+    "lines_total": 0,
+    "truncated": false,
+    "lines": [],
+    "mark": 14
+  }
+}
+```
+<!-- scry-reference:end map_write -->
