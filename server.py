@@ -176,7 +176,8 @@ def start(
     Refused before any spawn: a live session, a missing file, a cpu
     the machine lacks, a class with no base, `bases` beside a YAML file, a bad `types` line,
     a `stub_port` in use,
-    a `reference_addr` OUTSIDE the image; a `system` the binary lacks. A stranger on your
+    a `reference_addr` OUTSIDE the image. An unknown `system`: refused after spawn. A stranger
+    on your
     `stub_port`: `host_failed`. 16 bytes that do not match: `readback_refused`, closed.
 
     Reply: `system`, `binary`, `binary_origin`, `version`, `pid`, `stub_port`, `scratch_dir`,

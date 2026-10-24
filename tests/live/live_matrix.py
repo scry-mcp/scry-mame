@@ -3414,7 +3414,7 @@ def block_e() -> None:
 
 
 def _e_views(t: list[str], pens: Any, first: dict[str, Any] | None, frame: Any) -> None:
-    """The three views the owner's review reshaped, read back from the files they wrote."""
+    """The three views, read back from the files they wrote."""
     pen = pens.at(46, 160)
     iso = call("screen_view", mode="isolate", pens=[pen], scale=1)
     pic = _png(str(iso.get("image", {}).get("path")))
