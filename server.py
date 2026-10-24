@@ -65,6 +65,7 @@ from scry_core import (  # noqa: E402
     placement,  # noqa: E402
     process_name,
     recording,
+    reference,
     reply_schema,  # noqa: E402
 )
 from scry_core import presence as scry_presence  # noqa: E402
@@ -121,7 +122,7 @@ import mame_sweep as msweep  # noqa: E402
 import mame_trace as mtrace  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import mame_write as mwrite  # noqa: E402
-from mame_mcp import RECORDER, tool  # noqa: E402
+from mame_mcp import RECORDER, ROSTER, tool  # noqa: E402
 from mame_mcp import mcp as mcp  # noqa: E402  (the probe and the clients read `server.mcp`)
 from mame_running import contact, stopped  # noqa: E402
 from mame_state import STATE  # noqa: E402
@@ -2425,6 +2426,12 @@ def state_load(name: str) -> dict[str, Any]:
 
 strict.strict_arguments(mcp)
 reply_schema.declare(mcp, mame_replies.MODELS)
+
+#: What the reference pages are generated from (`python -m scry_core.reference server:REFERENCE`)
+#: and held to (`tests/test_reference_pages.py`).
+REFERENCE = reference.Registry(server=mcp, models=mame_replies.MODELS, roster=ROSTER,
+                               envelope=mame_replies.MameEnvelope,
+                               root=Path(__file__).resolve().parent)
 
 
 def main() -> None:
