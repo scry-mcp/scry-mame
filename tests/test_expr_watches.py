@@ -237,8 +237,8 @@ def test_run_for_frames_advances_the_frame_counter_by_exactly_that_many(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A golden is a marker plus N FRAMES, and N milliseconds is not N frames: MAME's
-    `gvblank` runs to the next vblank, one per frame counter tick (measured: from the
-    vblank line each `gvblank` moved `frame` by one and `totalcycles` by one frame's worth),
+    `gvblank` runs to the next vblank, one per frame counter tick (from the
+    vblank line each `gvblank` moves `frame` by one and `totalcycles` by one frame's worth),
     so `frames=N` is N of them, each confirmed on the counter, until it has moved by N."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
@@ -651,8 +651,8 @@ def test_the_aligning_vblank_is_outside_the_cycles_a_frame_run_reports(
 ) -> None:
     """`cycles` is the clock behind the frames ASKED FOR. From a mid-frame stop the first
     `gvblank` reaches that frame's vblank without moving the counter, so its cycles sat
-    inside a span whose frame count was still exactly N: measured on a board, the first
-    `run_for(frames=1)` of a session reported 638944 where a later one reported 319490.
+    inside a span whose frame count was still exactly N, so the first
+    `run_for(frames=1)` of a session reports about twice the cycles of a later one.
 
     `polls` is NOT touched: it reports the `gvblank`s sent, honestly, and it is the only
     tell a caller has that the alignment fired at all."""

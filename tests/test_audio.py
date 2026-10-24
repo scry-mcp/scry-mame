@@ -269,7 +269,7 @@ def test_audio_record_writes_where_it_is_told_and_counts_its_default_with_record
 def test_a_silent_recording_is_answered_and_said_never_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, level: int
 ) -> None:
-    """A DAC at rest holds a level, zero or not: either is silence, reported as measured."""
+    """A DAC at rest holds a level, zero or not: either is silence, reported as such."""
     ses = _channel(monkeypatch, tmp_path)
     held = bytearray(AY)
     held[mfiles.WAV_HEADER_BYTES:] = struct.pack("<h", level) * (

@@ -489,8 +489,8 @@ def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "progr
 def with_stamps(rows: str, salt: int = 0) -> str:
     """Capture rows of six fields, a row without its line and time, completed with both: the
     line as the no-screen sentinel and a time that differs per row and per `salt`. The fixtures
-    that need this hold a live run their builds no longer repeat, and the readers they feed
-    take neither field; two salts giving one answer is what shows it."""
+    that need this hold captures of a live run whose build is not repeated, and the readers
+    they feed take neither field; two salts giving one answer is what shows it."""
     out = []
     for i, line in enumerate(rows.splitlines(keepends=True)):
         head, n, frame, rest = line.split(" ", 3)

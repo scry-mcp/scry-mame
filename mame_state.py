@@ -520,11 +520,11 @@ class State:
         """End the session: ask MAME to QUIT through its own console, and only then kill.
         `grace=False` asks nothing and kills at once (`killed`), for a start that failed.
 
-        MAME writes `cfg/` and `nvram/` when it EXITS, and it ignores SIGTERM (measured, and
-        written in the MAME reference), so a session ended with SIGKILL left a `state_dir`
+        MAME writes `cfg/` and `nvram/` when it EXITS, and it ignores SIGTERM (see the MAME
+        reference), so a session ended with SIGKILL leaves a `state_dir`
         empty forever: the persistent shape kept nothing. `Session.quit` is the clean exit,
         through the connection this server already holds, and its docstring carries the
-        measured detail of why it is two steps. A machine that does not exit within the grace
+        detail of why it is two steps. A machine that does not exit within the grace
         period is killed as before: a stuck emulator is not allowed to hold `close` hostage.
 
         THE ENDING IS THE ANSWER, because the endings are not the same ending: `ended_by` is

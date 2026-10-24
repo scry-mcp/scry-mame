@@ -2,14 +2,14 @@
 
 A control's whole job is to make a zero mean something: a target that never fires reads
 exactly like a breakpoint that cannot fire, unless something known to be hot proves the
-mechanism works. The first version of `run_to` armed its control through the stub and
-released the machine at every hit, one round trip per firing. MAME's own debugger has the
+mechanism works. Arming the control through the stub would
+release the machine at every hit, one round trip per firing. MAME's own debugger has the
 sanctioned shape: a breakpoint whose CONDITION is an expression that counts and never comes
 true, `bp <addr>,(++temp0)==0`, so the machine is never halted and the count is read with
-`print temp0`. MEASURED on a real board: thirty frames, thirty hits, no stop reported to the
-stub, and a stub `run_to` running beside it.
+`print temp0`. On a real board it counts every hit, reports no stop to the
+stub, and a stub `run_to` runs beside it.
 
-The doubles answer the console shapes CAPTURED from that measurement (`control_console` in
+The doubles answer the console shapes CAPTURED from a real board (`control_console` in
 the shared doubles): the `bplist` row of a conditioned breakpoint (`    2 @ 000404 if
 (++temp1)==0`) and the space-separated answer of a multi-expression `print`.
 """
@@ -1602,9 +1602,9 @@ def test_a_settle_proof_whose_console_answers_nothing_is_not_a_rest(
 def test_run_to_refuses_a_target_that_already_carries_a_breakpoint(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Measured on a V30 board: a declared stop at the target's address, under its own
-    condition, halted the run while the run's own condition never held, and the reply said
-    TARGET; then the removal took the declaration's row and left the run's. A stop at an
+    """On a V30 board a declared stop at the target's address, under its own
+    condition, halts the run while the run's own condition never holds, and the reply says
+    TARGET; then the removal takes the declaration's row and leaves the run's. A stop at an
     address two entries share cannot be attributed, so the run is refused before it starts."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", condition="w@0x2031fc==0x0")

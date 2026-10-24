@@ -142,7 +142,7 @@ def write(ses: gs.Session, scratch: Path, addr: int, data: bytes, cpu: str | Non
     answered for it) through `saver` then `loadr`, and answer the region and the offset.
 
     THE SPAN IS WIDENED TO WHOLE REGION WORDS when the region is kept in the other byte order:
-    one region byte at an odd offset lands on the EVEN byte of its cpu word (measured), so a
+    one region byte at an odd offset lands on the EVEN byte of its cpu word, so a
     write that starts or ends inside a word is a read-modify-write of the words it touches, the
     rest of each word written back as `saver` found it. Everything is judged BEFORE `saver`,
     and `saver` goes before `loadr`, so a region the console will not answer for costs no

@@ -1,4 +1,4 @@
-"""How MAME's snapshot differs from the screen (`mame_mismatch`), measured on m68k-dual's arming
+"""How MAME's snapshot differs from the screen (`mame_mismatch`), judged on m68k-dual's arming
 capture (`fixtures/film/arm-m68k-dual.*`, whose snapshot IS its bare screen) with controlled
 edits of the snapshot's words, so every case starts from a known equality and changes one
 thing. A screen in direct colour, which has no pens, is a small one of its own.

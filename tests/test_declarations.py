@@ -1,7 +1,7 @@
 """The persistent declarations store, keyed by system and symbol file, and the breakpoints
 declared by NAME through it.
 
-Every case was written RED before the code. What they guard: a declaration outliving the
+What they guard: a declaration outliving the
 session that made it and re-resolving against the next build; two guests never inheriting
 each other's; a corrupt file refused by name and never discarded; and a breakpoint that
 is an INTENT the debugger's own list is read back against.
@@ -598,7 +598,7 @@ def test_a_raw_address_over_the_same_build_is_rearmed_and_every_row_says_it_was_
     """THE PATH A LIVE SESSION HIT, which no case ran: a raw address stored by an earlier
     session WITH the fingerprint of this very build. It is `rearmed`, never `stale` (stale
     is a DIFFERENT build, not a raw address), and from then on nothing in a list row told it
-    from one declared this session. Every row now says `inherited`, true for what the store
+    from one declared this session. Every row says `inherited`, true for what the store
     brought back and false for a declaration made here."""
     same, out = _start_over_an_earlier_store(monkeypatch, tmp_path, [
         {"kind": "breakpoint", "by": "address", "ref": "4a0"},
@@ -667,8 +667,8 @@ def test_rearm_reads_each_list_once_and_reports_a_row_the_debugger_did_not_list(
 ) -> None:
     ses = _watching(monkeypatch, tmp_path)
     store = arming.store()
-    # THREE ADDRESSES, one per name: `len(name)` here once gave all three the same one,
-    # which the alias rule now refuses, so the case had been passing on a coincidence.
+    # THREE ADDRESSES, one per name: `len(name)` would give all three the same one,
+    # which the alias rule refuses.
     for i, name in enumerate(("irq_a", "irq_b", "irq_c")):
         add_symbol(monkeypatch, name.upper(), 0x1000 + i * 0x10)
         store.add(dec.Declaration("breakpoint", "symbol", name, origin="s1"))
@@ -724,12 +724,12 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A name and the address it holds are two declarations over ONE `Z0`: clearing either
-    sent the `z0` and left the other declared over a row the debugger no longer had, in
+    must not send the `z0` and leave the other declared over a row the debugger no longer has, in
     silence. The watch family refuses a range another declaration already arms; the
-    breakpoints refuse the same way now, and the re-arm of a store that predates the rule
+    breakpoints refuse the same way, and the re-arm of a store that predates the rule
     files the second `unarmable` naming the first instead of stacking a second row. Two
     SPELLINGS of one address (`0x4a0`, `0X04A0`) are one declaration, adopted, never two
-    (measured by a fresh client against a store an earlier session had written)."""
+    (a fresh client adopts a store an earlier session had written)."""
     ses = _watching(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0")
     again = s.breakpoint_at(ref="0X04A0")

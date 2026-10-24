@@ -27,7 +27,7 @@ import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
 # The console's own stop lines for the latch, in the shape captured on a RAM watch; the pcs
-# and values are the ones the board's own account measured on this register.
+# and values are the ones the board's own account gives for this register.
 LATCH_HIT_1 = "Stopped at watchpoint 1 writing FFFF to 740000 (PC=00000528)\n"
 LATCH_HIT_2 = "Stopped at watchpoint 1 writing A0A0 to 740000 (PC=00203176)\n"
 

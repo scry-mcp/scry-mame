@@ -188,7 +188,7 @@ def test_a_cpu_with_no_io_space_is_refused_naming_the_ones_that_have_one(
 def test_a_count_on_an_unmapped_port_is_armed_and_says_the_write_goes_nowhere(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Measured: a write tap on a port nothing handles still sees the cpu's `out` there, so the
+    """A write tap on a port nothing handles still sees the cpu's `out` there, so the
     count arms, reports the fact as `write_maps_to`, and says what it means."""
     _io_board(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x20", mode="count", length=2, space="io")

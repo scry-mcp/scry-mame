@@ -200,7 +200,7 @@ def _device(rows: list[mr.Row], auto: bool) -> list[tuple[int, int | None, int |
 
 
 def test_known_answer_the_taps_pens_are_the_devices_own() -> None:
-    """MEASURED rows, judged by the device's law written again in Python: every data write the
+    """Captured rows, judged by the device's law written again in Python: every data write the
     tap placed is on the pen and component the device would put it on, and the unsynced ones are
     exactly those before the first index write. The same law without the auto-increment
     disagrees, which is the control that this comparison can fail."""

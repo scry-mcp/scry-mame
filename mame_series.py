@@ -4,7 +4,7 @@ the reply.
 
 WHICH FRAME A PICTURE IS, and in which colours. The notifier at the end of frame N reads the
 counter N, but `screen:pixels()` there reads the buffer the next frame is drawn into, which still
-holds frame N - 1 (`mame_film` says why, measured). So a wanted frame is marked at its own
+holds frame N - 1 (`mame_film` says why). So a wanted frame is marked at its own
 notifier, its pens saved there (the palette the display shows N with), and its bitmap read at the
 next notifier that drew, as the film reads its frames: indices then, mapped through the pens saved
 at N, so a palette that moves during N + 1 does not repaint N. What the series calls frame N is

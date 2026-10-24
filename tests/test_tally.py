@@ -4,7 +4,7 @@ stop, read back by the survey.
 
 The dump here is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`): sixty-one frames of
 m68k-dual's vblank handler writing its frame counter, two words per long, from one pc. The
-bus events the lane decoding is checked against are the ones measured on the same board:
+bus events the lane decoding is checked against are the ones captured on the same board:
 a `move.l` arriving as two `mask=ffff` words and a `move.b #$d8` arriving as `data=d8d8
 mask=ff00`, the byte on both lanes and the mask naming the one that lands. The dumps with
 two writers and an overflow are written by hand in the captured SHAPE, because the capture
@@ -120,7 +120,7 @@ def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_du
 
 
 def test_the_tap_is_bus_aligned_filters_by_landing_and_pays_no_string_per_write() -> None:
-    """MEASURED: a one-byte tap on the 16-bit 68000 bus is refused by MAME (`end address
+    """A one-byte tap on the 16-bit 68000 bus is refused by MAME (`end address
     has low bits unset, did you mean 20351d`). The tap covers the bus words the range
     touches, and the callback drops a write none of whose lanes land inside it, so the
     neighbour byte of the same word never counts for this one; an aligned range skips the
@@ -187,7 +187,7 @@ def test_the_two_overflow_counts_are_read_from_their_own_fields() -> None:
 def test_the_lanes_a_bus_write_lands_are_decoded_by_mask_and_byte_order(
     event: tuple[int, int, int, int, str], landed: list[tuple[int, int]]
 ) -> None:
-    """The measured shapes: a word write lands both bytes, a byte write on the 16-bit
+    """The captured shapes: a word write lands both bytes, a byte write on the 16-bit
     big-endian bus lands the HIGH lane at the even address, and the mask says which."""
     assert tally.lanes(*event) == landed
 
@@ -305,7 +305,7 @@ def test_a_send_the_console_pipe_refuses_stores_no_declaration(
 def test_watch_add_count_arms_the_rom_copy_and_refuses_a_second_tally_and_a_pointer(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`map` is asked first, and an unmapped write side is a fact the reply carries: measured,
+    """`map` is asked first, and an unmapped write side is a fact the reply carries:
     a tap there still sees the cpu's writes, so the count arms and its note says where they go
     and, on a ROM copy, where the live datum is. One range is one tally, so a second ref on it
     is refused naming the first. A pointer is refused because the tap sits on one range for
@@ -632,7 +632,7 @@ def test_the_install_answer_is_matched_by_its_own_call_number_past_a_rerun(
 def test_an_install_the_console_refused_is_reported_in_its_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on the board: MAME's own refusal of a mis-aligned tap. The sentinel carries
+    """MAME's own refusal of a mis-aligned tap. The sentinel carries
     `false` and the error, and the survey says `install_failed` with it, never `pending`
     for ever and never a zero."""
     ses = _tallying(monkeypatch, tmp_path)
@@ -649,7 +649,7 @@ def test_an_install_the_console_refused_is_reported_in_its_own_words(
 def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on a cold session: the first declaration's chunk can echo with no
+    """On a cold session the first declaration's chunk can echo with no
     `installed` line and no sentinel. A line its reader died holding is resent once, and a
     second death is `install_lost` with `installed: false`, never a `pending` that reads as a
     zero."""

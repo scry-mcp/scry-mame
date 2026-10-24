@@ -1,7 +1,7 @@
 """The guard the callbacks of every census this server keeps (the count watch, the capture, the
 palette log, the film) run their bodies under, and how a dump carries what it caught.
 
-WHY IT EXISTS. MAME drops an error raised inside a write tap without a trace (measured: not on
+WHY IT EXISTS. MAME drops an error raised inside a write tap without a trace (not on
 stdout, not in `error.log`, and the tap goes on firing and raising at every write), so a body with
 a bug read as a tap that saw nothing, a zero indistinguishable from a register nobody writes. An
 error in a notifier or a periodic hook lands on stdout as a `[LUA ERROR]` line per call, which no

@@ -38,7 +38,7 @@ import server as s  # noqa: E402
 def test_a_row_typed_at_a_controls_address_is_foreign_and_ends_run_for(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control at 0x4a0, then `bpset 4a0` typed through `debug` (measured live). The
+    """A control at 0x4a0, then `bpset 4a0` typed through `debug`. The
     typed row stops the machine, and the address being the control's no longer makes its stop
     the control's: `run_for` ends OTHER_STOP naming row 2 instead of resuming through it."""
     chunk = _first_stop_through("3D").replace("breakpoint 1", "breakpoint 2")

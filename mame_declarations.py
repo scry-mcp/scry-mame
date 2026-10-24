@@ -66,7 +66,7 @@ BY = ("symbol", "address", "expr", "pointer")
 ROLES = ("stop", "control")
 # A watch has TWO halves: SHOW evaluates the bytes at every stop and arms nothing;
 # BREAK-ON-CHANGE arms a write watchpoint in the debugger. One ref may not be both (see
-# `DeclarationStore.add`), and that is kept here although MAME arms no trap byte, measured:
+# `DeclarationStore.add`), and that is kept here although MAME arms no trap byte:
 # the rule is the store's, and a store rule that holds on one server only is one nobody can
 # rely on. COUNT is the third thing a datum can be asked: a write tap (`mame_tally`) that
 # counts every write over a pass by value and by writer and never stops for one, the

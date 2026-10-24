@@ -319,7 +319,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
     if taken is not None:
         # A STOP AT AN ADDRESS TWO ENTRIES SHARE CANNOT BE ATTRIBUTED: the packet names the
         # address, not the entry, so a declared breakpoint there would be read as the target
-        # (measured: a declaration's condition held, the run's did not, and the reply said
+        # (the declaration's condition can hold while the run's does not, and the reply then says
         # TARGET); and the list holds both, so the removal would take the wrong one.
         what = f" (condition {taken['condition']})" if taken.get("condition") else ""
         raise st.Invalid("bad_argument",
@@ -366,8 +366,8 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         broken = e
     finally:
         # A TIMEOUT leaves the machine RUNNING, and a running target will not serve memory reads:
-        # Measured live, the next `read` came back as something that was not hex at all. The
-        # session looked alive and answered garbage. So it is stopped before returning, and the
+        # The next `read` comes back as something that is not hex at all. The
+        # session looks alive and answers garbage. So it is stopped before returning, and the
         # breakpoint is only removed once it is, because removing it on a running target is
         # the same gamble. On a broken session the removal is attempted and its failure is
         # not the news.
@@ -504,8 +504,8 @@ def run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
 
 
 # THE SESSION SAYS SO WHEN A BAIL-OUT LETS GO OF THE MACHINE, and `require_stopped` reading
-# `ses.running` is the ONLY thing that keeps a reader off a moving machine (measured there: the
-# next read after a timed-out run came back as something that was not hex).
+# `ses.running` is the ONLY thing that keeps a reader off a moving machine (the
+# next read after a timed-out run comes back as something that is not hex).
 #
 # WHICH WAY TO FAIL IS DECIDED BY THE ASYMMETRY, and this is the reason, written where it bites:
 # saying "it may be RUNNING" about a machine that is in fact stopped costs the caller one loud
@@ -568,8 +568,8 @@ def _release_unconfirmed(ses: gs.Session, command: str, error: gs.SessionError,
 #
 # A GOLDEN IS A MARKER PLUS N FRAMES, and N milliseconds is not N frames: the frame period is
 # not a whole number of milliseconds and a stop lands where the frame COUNTER says, which is
-# how a repository's oracle counts. MAME's own `gvblank` runs to the next vblank. MEASURED on a
-# board: from the vblank line each `gvblank` moved `frame` by exactly one and `totalcycles` by
+# how a repository's oracle counts. MAME's own `gvblank` runs to the next vblank. From the vblank
+# line each `gvblank` moves `frame` by exactly one and `totalcycles` by
 # one frame's worth, and the console answers `print` while the run is still landing, so each
 # step is confirmed on the counter (two agreeing reads) before the next `gvblank` goes out. The
 # run is counted on the FRAME COUNTER, not on the number of `gvblank`s sent: from a stop in

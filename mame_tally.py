@@ -8,7 +8,7 @@ held pass counts nothing and reads exactly like an address nobody writes. Every 
 the blitter boards went through a Lua write tap written by hand in each session; this is
 that tap, composed by the server, keyed by a declaration, read back at every stop.
 
-THE MECHANISM, measured on a 68000 board. `space:install_write_tap` calls its function once
+THE MECHANISM, on a 68000 board. `space:install_write_tap` calls its function once
 per BUS write with the access offset, the data and the lane mask: a `move.l` arrives as two
 word events, a `move.b` as a word carrying the byte on both lanes with the mask naming the
 one that lands. `cpu.state["CURPC"]` inside the callback is the writing instruction's own
@@ -87,7 +87,7 @@ def install_script(tally_id: str, addr: int, width: int, path: Path,
     """The Lua that installs the tally `tally_id` over `width` bytes at `addr`, dumping to
     `path`. One chunk, so `local`s hold across its lines, on `cpu` (`mtap.bound_cpu`). THE TAP
     IS INSTALLED OVER THE BUS WORDS the range touches and the callback keeps only the writes that
-    LAND inside it: MAME refuses a tap whose ends are not bus-aligned (measured: a one-byte tap
+    LAND inside it: MAME refuses a tap whose ends are not bus-aligned (a one-byte tap
     on the 16-bit 68000 bus answers "end address has low bits unset"), and a word write next to
     the range would otherwise count for it. The value key packs the masked data and the
     mask into one integer under the offset, so a write costs no string. WITH NO TAP OF THE

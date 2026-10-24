@@ -3,13 +3,13 @@
 WHY IT EXISTS. `read_memory` reads the cpu's program space, which is what the running board
 sees, and a write-only block is INVISIBLE there: a range mapped `.w(handler).share("x")` has
 no read side, so the space answers zero for every byte and nothing says the values live
-elsewhere (measured on a 68000 board: zeros off the whole of the blitter's register block,
-while the share held the words). A ROM outside the cpu's space (`gfx1` on the same board)
+elsewhere (on a 68000 board: zeros off the whole of the blitter's register block,
+while the share holds the words). A ROM outside the cpu's space (`gfx1` on the same board)
 is not in the space at all. MAME keeps both kinds as blocks under
 `manager.machine.memory`, `shares` and `regions`, keyed by their full tag, and reads them
 through its Lua console, which is the channel this module composes a script on.
 
-WHAT WAS MEASURED, and shapes the script. `shares` is keyed by the FULL tag (`:blitram`; the
+WHAT THE CONSOLE DOES, and shapes the script. `shares` is keyed by the FULL tag (`:blitram`; the
 bare `blitram` is nil), `regions` the same (`:maincpu`); an address map entry names its
 share BARE (`blitram`) and its region bare or full as the driver declared it, and a caller's
 `tag` comes in either spelling, so a lookup tries both. A

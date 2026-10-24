@@ -343,7 +343,7 @@ def test_a_change_watch_on_an_ignored_cpu_says_so_too(
 def test_a_typed_focus_that_ignores_a_cpu_mame_is_not_live_on_runs_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Measured live: after a stop on the sub cpu and an `Hc` back to the main one, a typed
+    """After a stop on the sub cpu and an `Hc` back to the main one, a typed
     `focus subcpu` ignores the main cpu, which is visible but not live, so nothing runs and the
     visible cpu stays an ignored one. The stub's `?` names the cpu MAME is live on."""
     ses = _patched(monkeypatch, tmp_path)

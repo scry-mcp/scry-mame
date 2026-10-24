@@ -267,9 +267,9 @@ def eaten(raw: bytes, line: str) -> bool:
     already looked for one). A line taken and not evaluated runs ONCE when it is sent again,
     which is what makes a single resend safe for a script that writes.
 
-    TWO SHAPES, BOTH MEASURED ON THE SAME BOARD, and they are one fact to a caller:
+    TWO SHAPES, BOTH SEEN ON THE SAME BOARD, and they are one fact to a caller:
 
-    - THE READER DIED holding it, printing `[LUA ERROR] in thread:` (measured: the first line
+    - THE READER DIED holding it, printing `[LUA ERROR] in thread:` (the first line
       of a session, echoed, then "return value must be string", and never run). Only one
       reader exists at a time, so a death after the echo is that reader's.
     - THE CONSOLE REPORTED THE LINE'S OWN top-level failure and carried on, printing its
@@ -367,9 +367,9 @@ PIPE_STEPS_MAX = 8
 
 # THE CONSOLE'S READER IS A THREAD (`plugins/console/init.lua` starts the linenoise read in
 # an `emu.thread`), and the periodic hook, run ONCE at a stop, returns without evaluating
-# while that thread is still taking the line. Measured on m68k-dual: a signature sent right
-# after another had its step land before the reader held the line, and one more step
-# evaluated it at once. So an answer is given this window after a step, then another step
+# while that thread is still taking the line. On m68k-dual a signature sent right
+# after another has its step land before the reader holds the line, and one more step
+# evaluates it at once. So an answer is given this window after a step, then another step
 # is spent, up to a cap that keeps a console that never answers a refusal rather than an
 # endless walk.
 READER_WAIT_S = 0.5
@@ -380,11 +380,11 @@ READER_STEPS_MAX = 3
 # "FIXME: this is unsafe as the thread function modifies members of the object"): the
 # reader clears `busy` BEFORE it has finished unwinding, and the hook that finds it idle
 # loads the next read into the SAME Lua state while it still runs there. A step sent the
-# instant the line is written lands its stop inside that window: measured on m68k-dual, the
-# reader died at start ("[LUA ERROR] in thread: attempt to index a nil value" in `require`,
+# instant the line is written lands its stop inside that window: on m68k-dual the
+# reader dies at start ("[LUA ERROR] in thread: attempt to index a nil value" in `require`,
 # `setcompletion` read as a table, "return value must be string"), and after each death the
-# hook, whose `result` a failed thread never clears, RAN THE PREVIOUS CHUNK AGAIN (the same
-# sentinel printed twice) before a new reader took the line. So every `send` waits this long
+# hook, whose `result` a failed thread never clears, RUNS THE PREVIOUS CHUNK AGAIN (the same
+# sentinel prints twice) before a new reader took the line. So every `send` waits this long
 # after the write, before its caller can move the machine, which is what lets the reader
 # finish (measured: the late-reader steps stopped being needed); what still happens is
 # counted and said in the reply (`thread_errors`, `console_reruns`, its `note`), never

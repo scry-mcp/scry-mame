@@ -434,7 +434,7 @@ def _imported(module: str, tmp_path: Path, **env: str) -> subprocess.CompletedPr
 
 
 def test_importing_the_harness_makes_no_directory(tmp_path: Path) -> None:
-    """Every file that imports the harness (this suite among them) used to leave a scratch
+    """Every file that imports the harness (this suite among them) leaves no scratch
     directory behind; the run makes its scratch when it first writes there, and an import
     writes nothing."""
     done = _imported("live_harness", tmp_path)

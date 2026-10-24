@@ -409,10 +409,10 @@ def test_startup_leaves_no_state_in_the_servers_directory() -> None:
 def test_a_timeout_leaves_the_machine_stopped() -> None:
     """`run_to` must not hand back a session whose machine is still RUNNING.
 
-    Measured live, and no unit test could see it because none of them touches the
-    wire: after `resume` timed out, the machine kept running, and the very next memory read came
-    back as something that was not hex at all, because the stub will not serve `m` to a target
-    that is not stopped. The session looked alive and answered garbage, which is the worst state
+    No unit test could see it because none of them touches the
+    wire: after `resume` times out, the machine keeps running, and the very next memory read comes
+    back as something that is not hex at all, because the stub will not serve `m` to a target
+    that is not stopped. The session looks alive and answers garbage, which is the worst state
     a debug session can be in: it does not fail, it lies.
 
     Here the contract is pinned structurally, since the behaviour itself needs a live machine:
@@ -785,7 +785,7 @@ def _stub_boot(
     # is `Popen` underneath, and a test that points `WINDOW_APP` at a recording double needs
     # that one to really run; `start` asks the SAME binary `-listxml` before it boots, and
     # that one has to really run too, or the double answers for a question it was not built
-    # for (measured: it has no context manager, which is what `subprocess.run` needs).
+    # for (it has no context manager, which is what `subprocess.run` needs).
     def popen(*a: Any, **k: Any) -> Any:
         argv = a[0] if a else k["args"]
         if str(argv[0]).endswith("fake-mame") and "-debugger" in argv:
@@ -885,7 +885,7 @@ def test_start_and_status_say_the_machine_runs_under_the_debugger(
         argv = launch.build_command("mame", "m68k", "/r", 1, [], str(tmp_path))
         assert argv[argv.index("-debugger") + 1] == debugger["attached"] == "gdbstub"
         assert "-debug" in argv and "frame" in debugger["note"], debugger["note"]
-        # MEASURED, not assumed: an autoboot capture is byte-identical with and without `-debug
+        # An autoboot capture is byte-identical with and without `-debug
         # -debugger gdbstub`, and one frame either side is not, so the note may not blame the
         # debugger for the frame; what differs is where in the frame each method takes it.
         assert "timing" not in debugger["note"] and "autoboot" in debugger["note"]
@@ -987,7 +987,7 @@ def test_a_write_that_lands_reports_verified(monkeypatch: pytest.MonkeyPatch,
 def test_a_write_that_goes_nowhere_says_so(monkeypatch: pytest.MonkeyPatch,
                                            tmp_path: Path) -> None:
     """THE REGRESSION THIS EXISTS FOR: answering `written: 4` and nothing else reports a count
-    of what was SENT. MEASURED against a real 68000 board: a write to ROM comes back with that
+    of what was SENT. On a real 68000 board a write to ROM comes back with that
     same `written: 4` while the memory still holds its old bytes."""
     fake = _FakeSession(bytes.fromhex("7ffff3ff"), writable=False)
     _install(monkeypatch, fake, tmp_path)
@@ -1472,8 +1472,8 @@ def test_the_instructions_warn_that_the_target_of_run_to_carries_no_stop_of_its_
 
 def test_close_asks_mame_to_quit_before_it_kills() -> None:
     """MAME writes `cfg/` and `nvram/` on a CLEAN exit and ignores SIGTERM, so a session ended
-    with SIGKILL left a persistent `state_dir` empty forever: measured live, a `close` followed
-    by a second `start` on the same `state_dir` found nothing to share. The console's `quit`
+    with SIGKILL leaves a persistent `state_dir` empty forever: a `close` followed
+    by a second `start` on the same `state_dir` finds nothing to share. The console's `quit`
     is the clean exit, through the connection the server already holds."""
     ses = _RecordingSession(quit_raises=True)   # the connection drops as the process goes
     proc = _ExitingProcess(ses.events, exits=True)
@@ -1799,7 +1799,7 @@ def test_memdump_checks_the_file_against_a_read_of_the_cpu_save_read(
 def test_memdump_writes_the_bytes_and_checks_them_against_a_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console's `save` takes HEX for the address and the length (measured: `1000` wrote
+    """The console's `save` takes HEX for the address and the length (`1000` writes
     4096 bytes), and the file it writes is checked twice: its size, and its first bytes against
     a protocol `read` of the same range, the known-answer control inside the tool."""
     # NOT periodic: a repeating image lets a control read at the wrong address stay green.
@@ -2039,8 +2039,8 @@ def test_snapshot_without_a_dest_lands_in_the_scratch_and_counts(
 def test_snapshot_with_a_dest_moves_the_file_there(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """MEASURED: MAME writes `snap <abs path>` RELATIVE to its snapshot directory, so an
-    absolute path produced `snap/Users/.../shot.png`. The tool therefore snaps into the
+    """MAME writes `snap <abs path>` RELATIVE to its snapshot directory, so an
+    absolute path produces `snap/Users/.../shot.png`. The tool therefore snaps into the
     scratch under a name it controls and MOVES the file to `dest`. `dest` must be absolute and
     must not exist, judged before the console is touched."""
     ses = _ConsoleSession()
@@ -2212,8 +2212,8 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
 ) -> None:
     """A DIRECT memory operand on a segmented board prints as the raw offset inside its
     class (`word ptr [0C014h]`), which is the map's `offset` column and NOT the linear
-    address `read_memory` and `watch_add` take (`0x400 + offset` with DS=0x40). Measured
-    on v30-alt: a caller read and watched the wrong byte for a while, and it answered a
+    address `read_memory` and `watch_add` take (`0x400 + offset` with DS=0x40). On
+    v30-alt a caller reads and watches the wrong byte, and gets a
     plausible zero with no error. So the listing carries `resolved`: each direct operand's
     linear address under every class base `start` was given, with the symbol it lands in.
     Register-relative (`ds1:[bw-31BBh]`, `[ix]`), an immediate (`0CA35h`) and a call target
@@ -2834,7 +2834,7 @@ class _RegisterSession(_OwnRegisterFile, SessionFields):
             return ""
         if command == "gvblank":
             self.executed()
-            # One frame per `gvblank` (measured), unless the double is frozen.
+            # One frame per `gvblank`, unless the double is frozen.
             if not self.frozen:
                 self.frame += 1
             return ""
@@ -2957,10 +2957,10 @@ def test_registers_states_each_width_explicitly_beside_the_values(
 def test_run_for_waits_until_the_frame_counter_stops_moving(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on the stub: the console answers `print frame` while the machine still runs, so
-    reading it once after `gtime` reported a mid-run count under ELAPSED and handed back a
+    """The console answers `print frame` while the machine still runs, so
+    reading it once after `gtime` would report a mid-run count under ELAPSED and hand back a
     running machine. The tool polls until three readings agree; the milliseconds travel in hex
-    like every other console number (measured: a bare `gtime 100` ran 0x100 ms)."""
+    like every other console number (a bare `gtime 100` runs 0x100 ms)."""
     ses = _RegisterSession(bits=32, frame=10, stop_after=4)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -3247,7 +3247,7 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         self.values = {"D0": 0x1234, "PC": 0xF2034}
         self.commands: list[str] = []
         self.armed: list[tuple[int, bool]] = []
-        self.bplist_rows: list[str] = []      # what the console's `bplist` lists, as measured
+        self.bplist_rows: list[str] = []      # what the console's `bplist` lists on a real board
         self.bp_next_index = 1                # MAME's breakpoint counter, never reused
         self.bp_devices: dict[int, str] | None = None   # a row's cpu, by index
         self.rplist_rows: list[tuple[int, str, bool]] = []   # what `rplist` lists
@@ -3745,7 +3745,7 @@ def test_the_stop_survey_shows_the_log_since_the_previous_stop_capped(
 def test_breakpoints_arm_and_clear_while_running_and_say_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on the stub: a `Z0` sent to a running machine is taken and FIRES, so nothing
+    """A `Z0` sent to a running machine is taken and FIRES, so nothing
     is queued; the reply says it was armed while running."""
     ses = _running(monkeypatch, tmp_path)
     s.resume()
@@ -3992,12 +3992,12 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
 def test_a_renamed_log_channel_reaches_the_call_that_creates_the_file(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE WRITER, which the reader gate above cannot reach and did not.
+    """THE WRITER, which the reader gate above cannot reach.
 
     Every consumer in that test READS a log. The one call that OPENS the file MAME's stdout is
     captured into lives inside `boot`, behind a launch, so a gate that never launches cannot
-    see it: measured by reverting that one line to the literal, at which point the whole mame
-    suite stayed green at 831 passed. A writer spelling one name while every reader spells
+    see it: reverting that one line to the literal leaves the whole mame
+    suite green. A writer spelling one name while every reader spells
     another produces an empty log and a session that looks quiet."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
@@ -4164,7 +4164,7 @@ def test_a_system_this_build_does_not_carry_refuses_the_start_before_any_emulato
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    # The measured shape of the real refusal: exit code 5, the sentence on stderr.
+    # The shape of the real refusal: exit code 5, the sentence on stderr.
     Path(args["binary"]).write_text(
         "#!/bin/sh\necho \"No matching machines found for '$1'\" >&2\nexit 5\n")
     Path(args["binary"]).chmod(0o755)
@@ -4497,7 +4497,7 @@ def test_a_stop_found_by_a_call_that_then_refused_is_not_carried_to_the_next_rep
     ses = _running(monkeypatch, tmp_path)
     s.resume()
     ses.stops_after_polls = 1                        # a breakpoint fired meanwhile
-    # THE REFUSAL HAS TO BE ONE THAT MAKES CONTACT, which `data_hex="zz"` no longer is: a malformed
+    # THE REFUSAL HAS TO BE ONE THAT MAKES CONTACT, which `data_hex="zz"` is not: a malformed
     # hex string is judged before the machine is asked for. An unresolvable `ref` is the refusal
     # that still reaches the machine, because resolving it is what needs the table.
     out = s.write(ref="no_such_symbol", data_hex="00")
@@ -5151,7 +5151,7 @@ def test_boot_names_a_process_that_died_without_waiting_out_the_bound(
 
 def test_reset_is_soft_applied_and_read_back_and_a_hard_reset_is_refused(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """MEASURED on a real board: the console's `softreset` is a timer that fires when the
+    """The console's `softreset` is a timer that fires when the
     machine next runs, so the pc read right after it is the old one and one `step` lands on
     the boot pc; `hardreset` re-creates the machine and the stub connection dies with it,
     taking the session. So `reset` schedules the soft one, steps once, and reads the pc back
@@ -5181,8 +5181,8 @@ def test_reset_is_soft_applied_and_read_back_and_a_hard_reset_is_refused(
         "the frame is read AFTER the reset is applied")
     assert out["summary"] == (f"reset: softreset applied at frame {ses.frame}, pc 0x000f2034 "
                               "verified True")
-    # THE RESET IS A STOP OF ITS OWN, surveyed and recorded like `step`'s (measured on a V30
-    # board: left unrecorded, the next call reported it as `stopped_on_its_own` at no
+    # THE RESET IS A STOP OF ITS OWN, surveyed and recorded like `step`'s (left unrecorded,
+    # the next call on a V30 board reports it as `stopped_on_its_own` at no
     # breakpoint this server armed). So the reply carries the stop survey, and the next
     # contact finds nothing to attribute to the machine alone.
     assert out["cause"] == "softreset" and out["frame"] == ses.frame and "regs" in out, out
@@ -5237,7 +5237,7 @@ def test_find_can_search_within_a_symbol_class_region(
 def test_resume_then_close_reports_the_speed_the_host_held_over_the_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME's own `Average speed` line is suppressed on a debugger-driven exit (measured), so
+    """MAME's own `Average speed` line is suppressed on a debugger-driven exit, so
     the speed is COMPUTED from the debugger's own emulated clock (`time`) and the wall clock:
     over the run a `resume` opened, emulated seconds / wall seconds. A watched run ended by
     `close` carries it on the close reply; a run that stops first carries
@@ -6530,7 +6530,7 @@ def test_close_counts_the_deaths_and_reruns_no_lua_call_read(
 def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`how: quit` used to mean "exited within the grace period after quit was asked for",
+    """`how: quit` must not mean only "exited within the grace period after quit was asked for",
     which a crash on the way out also satisfies. MAME rewrites `<state>/cfg/<system>.cfg`
     as it exits cleanly, so that file, newer than it was before the quit, is the proof:
     with it the ending is `quit`, without it `exited`, and `state_written` carries the
@@ -6923,7 +6923,7 @@ def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> 
 def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_included(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The run's proof that no emulator outlived it reads this ledger: a start whose MAME
-    never answered is exactly the one that used to stay behind unrecorded. The fake writes its
+    never answered is exactly the one that would stay behind unrecorded. The fake writes its
     own pid, which is the one the ledger has to hold; outside a live run nothing is written."""
     from scry_core import live_host
 

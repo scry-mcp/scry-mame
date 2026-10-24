@@ -89,10 +89,10 @@ def test_a_description_is_not_mistaken_for_a_name(tmp_path: Path) -> None:
 # ------------------------------------------------- the linker's own map, read directly
 
 # The shape v30tool writes: one row per symbol, five TAB-separated fields, under a header
-# that names the tool. More than one repository wrote the same converter to turn this into
-# the YAML above; the reader now takes it as it is. The two header lines are CAPTURED from a
-# real map, backslash-t literal included: that header carries no real tab, which is why it
-# is a comment to this reader and never a row.
+# that names the tool. A converter to turn this into
+# the YAML above is not needed; the reader takes it as it is. The two header lines are
+# CAPTURED from a real map, backslash-t literal included: that header carries no real tab, which is
+# why it is a comment to this reader and never a row.
 V30_MAP = (
     "# v30tool symbol map\n"
     "# columns: name\\tlinear_hex\\tseg_name\\toffset_hex\\tclass\n"
@@ -117,7 +117,7 @@ def test_a_tsv_map_loads_every_row_by_class(tmp_path: Path) -> None:
     assert t.table["DRAW_IBLOCK"] == 0xED27E
     # DATA is copied to RAM at boot and addressed off DS, so the runtime address is the caller's
     # base plus the map's offset. The linear address in the map is the ROM copy of the INITIAL
-    # value, which reads plausibly and is the measured wrong answer.
+    # value, which reads plausibly and is the wrong answer.
     assert t.table["DEMO_COUNT"] == 0x400 + 0xA007
     assert t.by_class == {"CODE": 2, "DATA": 1}
 
@@ -211,7 +211,7 @@ def test_a_rom_resident_class_is_declared_and_keeps_the_maps_linear_address(tmp_
 
 def test_a_class_with_no_base_refuses_and_names_the_row(tmp_path: Path) -> None:
     """Loading a class nobody located would read the linker's image address as a runtime
-    one, which is exactly the defect the DATA case measured. The refusal names the class,
+    one, which is exactly the DATA-case defect. The refusal names the class,
     the first row carrying it, and the parameter that would fix it."""
     m = tmp_path / "game.map"
     m.write_text(
@@ -280,10 +280,9 @@ def test_a_malformed_row_in_a_map_is_refused_with_its_line(tmp_path: Path) -> No
 
 def test_self_check_slices_the_reference_image_from_its_base() -> None:
     """THE REGRESSION THIS EXISTS FOR. A V30 ROM is mapped at 0x20000 and the linker emits the
-    ROM alone, so `rom[addr]` indexes the file at a CPU offset it does not have: it lands on
+    ROM alone, so `rom[addr]` would index the file at a CPU offset it does not have: it lands on
     somebody else's bytes, or past the end on a short slice, the compare fails either way, and
-    the check said LIES about a session that was fine. Every V30 repo padded 128 KB of zeros
-    onto its image to get round it."""
+    the check says LIES about a session that is fine, so no padding of the image is needed."""
     image = bytes(range(64))
     ses = reading_session(image, 0x20000)
     ses.self_check(image, 0x20010, n=16, base=0x20000, thread=1)
@@ -376,9 +375,9 @@ def test_the_boot_harness_reaches_the_mame_command_line() -> None:
     """The missing flag, and why it is tested here instead of by looking at the process.
 
     Without a boot harness a live session only reaches what the machine does BY ITSELF:
-    everything living behind a menu, a coin or a game is out. Measured: a harness was
-    routed in through `-inipath` with its own `mame.ini`, it never arrived, and finding that out
-    cost two boots and reading game memory to deduce the harness had not run.
+    everything living behind a menu, a coin or a game is out. A harness routed
+    in through `-inipath` with its own `mame.ini` never arrives, and nothing says so: the
+    only tell is reading game memory to deduce the harness had not run.
     """
     from mame_launch import build_command
 
@@ -475,8 +474,8 @@ def test_the_program_counter_is_found_on_a_68000() -> None:
 
 
 def test_the_program_counter_is_found_on_an_x86() -> None:
-    """THE REGRESSION THIS EXISTS FOR: the server asked for "PC" by name and a V30 board
-    refused, because GDB's i386 feature mandates `eip`. A working machine reported as a
+    """THE REGRESSION THIS EXISTS FOR: asking for "PC" by name makes a V30 board
+    refuse, because GDB's i386 feature mandates `eip`. A working machine would be reported as a
     broken one."""
     assert _session_with(I386).layout(1).pc_name == "EIP"
 
@@ -520,9 +519,9 @@ def test_an_unresolvable_program_counter_is_refused_not_guessed() -> None:
 
 
 def test_an_x86_target_decodes_little_endian() -> None:
-    """THE REGRESSION THIS EXISTS FOR: a fixed big-endian decode returned 0x568b for a V30
-    program counter that MAME's own console reported as 8B56. Every register this server read
-    on an x86 board was byte-swapped, and nothing failed while it happened."""
+    """THE REGRESSION THIS EXISTS FOR: a fixed big-endian decode returns 0x568b for a V30
+    program counter that MAME's own console reports as 8B56. Every register read
+    on an x86 board would be byte-swapped, and nothing would fail."""
     assert _session_with(I386, "little").layout(1).byte_order == "little"
 
 
@@ -565,7 +564,7 @@ def test_an_architecture_with_no_row_is_decoded_in_mames_order() -> None:
     ("m6502", "little"), ("z80", "little"), ("m6809", "big"), ("arm", "little"),
     ("powerpc:common", "big"), ("score7", "little"), ("nios2", "little")])
 def test_the_architectures_measured_have_their_order(arch: str, order: str) -> None:
-    """Each measured row: MAME saying its order decodes, MAME saying the other refuses."""
+    """Each recorded row: MAME saying its order decodes, MAME saying the other refuses."""
     assert g.Layout({}, 0, arch, [], mame_order=order).byte_order == order
     other = "big" if order == "little" else "little"
     with pytest.raises(g.UnknownByteOrder):
@@ -593,8 +592,8 @@ def test_mames_word_reaches_a_layout_read_before_it_and_one_read_after() -> None
 
 
 def test_quit_schedules_through_the_console_and_then_lets_the_machine_run() -> None:
-    """THE REGRESSION THIS EXISTS FOR: `quit` alone was sent, and the process stayed. Measured
-    live, the console answered at once and MAME was still there two seconds later, because a
+    """THE REGRESSION THIS EXISTS FOR: `quit` alone leaves the process up: the console
+    answers at once and MAME stays, because a
     machine stopped in the debugger never processes a scheduled exit. The `c` that follows is
     what ends it, and nothing waits for a reply that will never come."""
     sent: list[str] = []
@@ -688,10 +687,10 @@ def test_every_wait_for_a_stop_refuses_the_shapes_the_stub_never_sends(
 
 
 def test_a_stop_packet_landing_in_front_of_an_answer_is_read_as_the_stop() -> None:
-    """MEASURED: the stub dispatches packets while the machine RUNS, and sends its own stop
+    """The stub dispatches packets while the machine RUNS, and sends its own stop
     reply when a breakpoint fires, so the answer to a `Z0` sent to a running machine can
-    arrive BEHIND the stop the machine just reached. The old client handed that stop packet
-    back as the answer (the "not hex" read the timeout path was written against)."""
+    arrive BEHIND the stop the machine just reached. A client that does not look hands that stop
+    packet back as the answer (the "not hex" read the timeout path was written against)."""
     ses, wire = _wired(["T050e:00000000;0f:00200fea;11:000004a0;", "OK"])
     ses.go()
     before = (ses.running, ses.stop_count)
@@ -709,14 +708,14 @@ def test_a_stop_packet_landing_in_front_of_an_answer_is_read_as_the_stop() -> No
 STUB_UNSUPPORTED = ""
 # And the one that LOOKS like it and is not: a `qRcmd` whose console command prints nothing
 # (`temp0 = 0`, `softreset`, `quit`) answers `0A`, one newline, hex-encoded. Captured the
-# same way, so the console path is measured untouched and not assumed.
+# same way, so the console path is checked untouched and not assumed.
 STUB_SILENT_CONSOLE = "0A"
 
 
 def test_an_empty_reply_is_the_stubs_unsupported_and_never_a_success() -> None:
-    """`request` refused only `E` followed by two digits, so the empty packet came back as
-    a good answer: `write`, `set_register` and `breakpoint` reported the operation done
-    on a stub that had done nothing. The readbacks the tools make now catch the first two
+    """`request` must refuse more than `E` followed by two digits: an empty packet read as
+    a good answer makes `write`, `set_register` and `breakpoint` report the operation done
+    on a stub that did nothing. The readbacks the tools make catch the first two
     downstream; the client itself is what has to say no, since `breakpoint` is read back
     through the console and a control that never armed silences the very verdict that
     exists to catch a mute breakpoint."""
@@ -759,7 +758,7 @@ def test_something_other_than_a_stop_while_running_is_a_distrusted_session() -> 
 
 
 def test_interrupt_sends_nothing_to_a_stopped_machine() -> None:
-    """MEASURED: a 0x03 to a machine already stopped in the debugger is answered with
+    """A 0x03 to a machine already stopped in the debugger is answered with
     NOTHING, so waiting for its reply timed out for no reason."""
     ses, wire = _wired([])
     ses.last_stop_packet = "T05"
@@ -780,7 +779,7 @@ def test_halt_sends_the_interrupt_and_waits_for_nothing() -> None:
 
 
 def test_a_watch_stop_arrives_as_its_own_packet_and_is_noted_as_any_stop() -> None:
-    """A watchpoint's stop arrives as `T05watch:<addr>;` (measured), read and noted like any
+    """A watchpoint's stop arrives as `T05watch:<addr>;`, read and noted like any
     other stop; which row it was is the console's line to say (`mame_watches.watch_stop`)."""
     ses, _wire = _wired(["T05watch:2031fc;0e:00000000;11:000025f6;"])
     ses.go()
@@ -826,8 +825,8 @@ def test_a_timeout_is_its_own_exception_type_and_poll_stop_reads_the_type_not_th
 def test_a_release_that_reads_something_other_than_a_stop_raises_as_poll_stop_does(
     release: str, packet: str,
 ) -> None:
-    """Handed back in silence, the packet left `running` True over a channel whose two ends
-    no longer agree where a packet starts, and no caller looked at what came back."""
+    """Handed back in silence, the packet would leave `running` True over a channel whose two ends
+    no longer agree where a packet starts, and no caller would look at what came back."""
     ses, _wire = _wired([packet])
     if release == "interrupt":
         ses.go()

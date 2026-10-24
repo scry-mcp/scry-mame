@@ -96,7 +96,7 @@ def parse_wplist(text: str) -> list[dict[str, Any]]:
 
 
 def parse_bplist(text: str) -> list[dict[str, Any]]:
-    """The debugger's breakpoints as `bplist` lists them (`    1 @ 000400` per row, measured),
+    """The debugger's breakpoints as `bplist` lists them (`    1 @ 000400` per row),
     or a refusal (`list_rows`)."""
     return [{"index": int(m.group(2), 16), "addr": int(m.group(3), 16), "cpu": under["cpu"],
              "enabled": m.group(1) != "D",
@@ -114,7 +114,7 @@ def bp_held(ses: gs.Session, cpu: str | None = None) -> list[dict[str, Any]]:
 
 def wp_held(ses: gs.Session, cpu: str | None = None) -> list[dict[str, Any]]:
     """The debugger's own list, read back, or `cpu`'s alone (`wplist <cpu>`). Read on a
-    RUNNING machine too: the stub answers the console while it runs (measured), and a list of
+    RUNNING machine too: the stub answers the console while it runs, and a list of
     armed rows is not a value off a moving machine, so the refusal the readers make does not
     apply to it."""
     return parse_wplist(ses.monitor(f"wplist {cpu}" if cpu else "wplist"))

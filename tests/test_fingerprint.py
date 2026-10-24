@@ -1,9 +1,9 @@
 """Stale is decided by a FINGERPRINT of what runs, not by which session declared.
 
 A raw address re-resolves against nothing, so re-arming it blind on a board whose ROM or
-symbol file has changed lands it on whatever the new build put there. The first rule
-called a raw address stale whenever ANOTHER session had declared it, which threw away every
-declaration of a board that had not changed at all. The rule now is the owner's: the
+symbol file has changed lands it on whatever the new build put there. Calling a raw address
+stale whenever ANOTHER session declared it would throw away every
+declaration of a board that has not changed at all. The rule is the owner's: the
 fingerprint of the ROM image and the symbol file (and the system's name) stamps every
 declaration, a session over the same fingerprint re-arms everything it finds, and one over
 a different fingerprint leaves the raw addresses stale (a name re-resolves as always).

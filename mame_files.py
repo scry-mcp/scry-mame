@@ -483,8 +483,8 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
 
 # WHY, for the reader of this code (the client gets the docstring above the code):
 #
-# MEASURED: the console's `snap` treats even an absolute path as RELATIVE to the snapshot
-# directory (an absolute one produced `snap/Users/.../shot.png`), which is why the tool snaps under
+# The console's `snap` treats even an absolute path as RELATIVE to the snapshot
+# directory (an absolute one produces `snap/Users/.../shot.png`), which is why the tool snaps under
 # a name it controls and MOVES the file to `dest`. And "Saved screen" is what the console says, not
 # what is on disk: a zero-byte or half-written PNG is what a full disk leaves, hence the trailer
 # check.

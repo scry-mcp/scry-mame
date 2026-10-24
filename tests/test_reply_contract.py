@@ -3,12 +3,10 @@
 WHY A CONTRACT TEST AND NOT A GREP. One verdict spelled several ways (`verdict: INVALID` with
 `why`, and sometimes `cause` beside it) leaves every reader of a refusal -- the summary line,
 the stdio client, the agents, the live checks -- reading the spelling it happens to know. The
-contract is now a CLASS (`scry_core.reply_contract.Invalid`) that refuses a code outside the
+contract is a CLASS (`scry_core.reply_contract.Invalid`) that refuses a code outside the
 table and a reserved field, and an envelope that refuses a malformed refusal; this suite walks
 every tool through the two gates every tool crosses (no machine, a running machine) and fixes
 the envelope those gates produce.
-
-Every case here was written to go RED against the server before the contract existed.
 """
 
 from __future__ import annotations

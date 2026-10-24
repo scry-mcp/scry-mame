@@ -239,7 +239,7 @@ check("refused without a control", r.get("status") == "INVALID" and "no control"
 print("\n== run_to(): a target that DOES run")
 # vblank fires constantly, so the target wins the race and the control never needs to speak.
 # That is correct: the control only has to have counted when the target did NOT. The control
-# is the address inside the vblank handler this repository's own rule measured hot, declared
+# is the address inside the vblank handler that this repository's own rule holds hot, declared
 # here through `run_to` itself, which keeps it: MAME counts it in a temp and never stops on it.
 r = s.run_to(ref="irq_vblank", control="0x4a0", seconds=30.0)
 check(
@@ -502,7 +502,7 @@ hit = r.get("watch_hit", {})
 check("the write landed before the stop: after is before + 1",
       isinstance(hit.get("before"), int) and hit.get("after") == hit["before"] + 1,
       f"before={hit.get('before')} after={hit.get('after')}")
-# A 68000 writes a long as two words and the console prints one line per write (measured):
+# A 68000 writes a long as two words and the console prints one line per write:
 # both lines are this watch's, and the writer is the last one's pc.
 check("a long write is two console lines, and the writer is the last",
       len(hit.get("writes", [])) == 2 and hit.get("writer_pc") == hit["writes"][-1].get("pc")
@@ -1008,7 +1008,7 @@ check("state_list names the state this session wrote, with its frame",
       str(r.get("summary") or r.get("message"))[:90])
 r = s.state_load(name="nope")
 check("a state that does not exist is refused before the console", r.get("code") == "unknown_ref")
-# MAME refuses a bad state in SILENCE from the console (measured: nothing in any log), so
+# MAME refuses a bad state in SILENCE from the console (nothing in any log), so
 # the header is judged before the console: a corrupt magic and another system's name.
 good = (Path(str(s.status().get("state_dir") or s.status().get("scratch_dir"))) / "sta"
         / M68K_DUAL_SYSTEM)

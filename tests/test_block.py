@@ -1,7 +1,7 @@
 """`read_block`: a memory SHARE or REGION read by MAME's tag, or by the address whose map
 entry names it, through the Lua console, altering nothing.
 
-The console double answers what the real one was measured printing (a 68000 board: the
+The console double answers what the real one prints (a 68000 board: the
 blitter's write-only block as a share of 32 bytes, keyed `:blitram`; a ROM region keyed
 `:maincpu`), and each refusal the script can print is exercised by its own line, because
 the parser has one branch per prefix and a branch no test reaches is one that can rot.
@@ -150,7 +150,7 @@ def test_the_script_is_one_chunk_with_the_shapes_the_parser_knows() -> None:
     filled = block.BLOCK_LUA % {"tag": '"x"', "addr": "nil", "offset": 0, "length": 1,
                                 "space": "manager.machine.debugger.visible_cpu"}
     assert "%(" not in filled and "%%" not in filled, "a placeholder or a doubled per cent leaked"
-    # Both spellings of a tag are tried, in the order measured: as given, then with the colon.
+    # Both spellings of a tag are tried, in order: as given, then with the colon.
     assert 'ipairs({name, ":" .. name})' in filled
     # A region entry's own offset counts; a share's does not (a share has none).
     assert "hit.region_offset or 0" in filled

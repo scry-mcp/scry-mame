@@ -10,7 +10,7 @@ where it was.
 NO EXTERNAL GDB IS NEEDED. The remote protocol is plain text over TCP, and everything here
 is stdlib. This matters: no host in the fleet has a gdb that speaks m68k.
 
-WHAT MAME'S STUB ACTUALLY ANSWERS, measured rather than assumed, on the fleet's build:
+WHAT MAME'S STUB ACTUALLY ANSWERS, on the fleet's build:
     qSupported, ?, qXfer:features:read:target.xml, m/M, p/P, Z0/z0, Z1, c, s   -> yes
     qAttached, vCont?                                                          -> no
 The register numbers come from the target description XML. They are NOT guessable: reading
@@ -132,7 +132,7 @@ class NotStopped(SessionError):
     """The machine was released, no stop has been read since, and what was asked needs it
     stopped. Raised by the server's gate, never by the client: the stub itself answers most
     packets while the machine runs
-    (measured: `m`, `qRcmd` and `Z0` all come back), so the client cannot know which asks
+    (`m`, `qRcmd` and `Z0` all come back), so the client cannot know which asks
     are honest on a moving machine, and the policy sits where the tools are."""
 
 
@@ -282,9 +282,9 @@ class Register:
 # A register arrives from the stub in the TARGET's byte order, and MAME's gdbstub does the
 # swap itself: `if (!is_be) ... swapendian_int16/32/64`, `is_be` being the endianness of the
 # cpu's PROGRAM address space. Decode it the wrong way round and nothing fails -- you get a
-# plausible-looking number that is simply wrong. MEASURED on a V30 board: the stub sent `568b`,
-# this client's fixed big-endian decode said 0x568b, and MAME's own console said the program
-# counter was 8B56.
+# plausible-looking number that is simply wrong. On a V30 board the stub sends `568b`,
+# a fixed big-endian decode reads 0x568b, and MAME's own console says the program
+# counter is 8B56.
 #
 # GDB'S DESCRIPTION FORMAT CARRIES NO BYTE ORDER: architecture, osabi, compatible and feature,
 # and nothing else. But the order the stub encodes in is a value MAME exposes to Lua, the
@@ -445,7 +445,7 @@ class Layout:
         the V30 the stub serves it as the linear address, 32 bits wide, and a near pointer
         is not. A `data_ptr` register: GDB sizes one by the architecture's pointer width
         whatever bitsize the description declares, so the stub cannot serve a 16-bit
-        `data_ptr` without every register after it reading two bytes off, measured, and
+        `data_ptr` without every register after it reading two bytes off, and
         the V30 map declares none. A typed pointer (`ptr16`/`ptr32` in `types`) overrides
         it; a description with no stack pointer falls back to the program counter."""
         for name in ("SP", "ESP", "RSP"):
@@ -502,7 +502,7 @@ class Layout:
 
     @property
     def byte_order(self) -> Literal["little", "big"]:
-        """`little` or `big` for THIS target: MAME's, checked against a measured row where the
+        """`little` or `big` for THIS target: MAME's, checked against a recorded row where the
         architecture has one, or a refusal. See `_BYTE_ORDER` above."""
         arch = self.arch or "(none declared)"
         if self.mame_order not in ("little", "big"):
@@ -1047,16 +1047,16 @@ class Session:
     def interrupt(self, timeout: float = 5.0) -> str:
         """Stop a RUNNING machine, so the session is left usable.
 
-        Measured live: after `resume` times out, the machine keeps running, and the very next
+        After `resume` times out, the machine keeps running, and the very next
         memory read comes back as something that is not hex, because the stop reply the stub
         then sends lands in front of the read's answer. The session looked alive and answered
-        garbage, which is the worst state a debug session can be in (`request` now reads
+        garbage, which is the worst state a debug session can be in (`request` reads
         that packet as what it is, and this is what stops the machine).
 
         The remote protocol's interrupt is a bare 0x03 outside a packet, and the stop reply comes
         back on its own. If it does not arrive the session is genuinely wedged, and saying so is
         better than returning to a caller who will read rubbish. ON A STOPPED MACHINE NOTHING IS
-        SENT: measured, the stub answers a 0x03 there with nothing at all, so a wait for its
+        SENT: the stub answers a 0x03 there with nothing at all, so a wait for its
         reply would time out for no reason.
         """
         if not self._sock:
@@ -1135,7 +1135,7 @@ class Session:
     def emulated_seconds(self) -> float | None:
         """The machine's total elapsed EMULATED time in seconds, off the debugger console's
         own `time` command, or None when the console answered something else. It answers while
-        the machine runs as well as stopped (measured), so a watched run's speed can be read at
+        the machine runs as well as stopped, so a watched run's speed can be read at
         `close`. The console prints a plain decimal (`1.000003437`); anything else is not a
         time and is not guessed at."""
         text = self.monitor("time")
@@ -1145,13 +1145,13 @@ class Session:
     def quit(self) -> None:
         """Ask MAME to EXIT cleanly, which is what writes its `cfg/` and `nvram/`.
 
-        TWO STEPS, AND THE SECOND IS THE ONE THAT WAS MISSING. The debugger's `quit` only
-        SCHEDULES the exit: MEASURED live, the console answered it at once and the process was
-        still there two seconds later, because a machine stopped in the debugger never reaches
-        the point where a scheduled exit is processed. Letting it run is what does: a bare `c`
-        after the `quit` ended the process within tens of milliseconds, with the state files
-        written. No stop reply is waited for, because none comes: the stub closes the
-        connection as the process goes, and the caller reads the process, not the socket.
+        TWO STEPS, AND THE SECOND IS THE ONE THAT MATTERS. The debugger's `quit` only
+        SCHEDULES the exit: the console answers it at once and the process stays up, because
+        a machine stopped in the debugger never reaches the point where a scheduled exit is
+        processed. Letting it run is what does: a bare `c` after the `quit` ends the process
+        promptly, with the state files written. No stop reply is waited for, because none comes:
+        the stub closes the connection as the process goes, and the caller reads the process,
+        not the socket.
         """
         self.monitor("quit")
         self._send("c")
@@ -1159,7 +1159,7 @@ class Session:
     def reset(self) -> int:
         """A SOFT reset, applied, and the pc it left the machine at.
 
-        MEASURED on a board: the console's `softreset` is a timer that fires when the machine
+        The console's `softreset` is a timer that fires when the machine
         next runs, so the pc read right after the command is the old one, and one `step`
         lands on the boot pc; the frame counter does not restart. A HARD reset is not
         offered here: it re-creates the machine and the stub connection dies with it, so it
@@ -1301,13 +1301,13 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
     RAM at boot and addressed off a segment register, so the runtime address is a base the
     RUNNING board decides (`DS = 0x40`, so `0x400`) plus the row's offset; the map's linear
     address for it is the ROM copy of its INITIAL value, which reads plausibly and is wrong:
-    MEASURED, a `read` of a scene id off the map's address returned the initial zero while the
-    RAM copy held the live scene. So `bases` maps a class name to that base, an explicit entry
+    a `read` of a scene id off the map's address returns the initial zero while the
+    RAM copy holds the live scene. So `bases` maps a class name to that base, an explicit entry
     wins even for CODE, and a class with no entry and no default REFUSES, naming the class, the
-    first row that carries it and this parameter. Loading it at the image address would be the
-    measured defect, made silent. A base of `None` DECLARES a resident class: one the locator
-    placed and that runs where the map says, like CODE (a tile sheet in ROM). A repository had
-    to hand `linear - offset` back as that class's "base" to say so; the declaration is the
+    first row that carries it and this parameter. Loading it at the image address would make that
+    defect silent. A base of `None` DECLARES a resident class: one the locator
+    placed and that runs where the map says, like CODE (a tile sheet in ROM). Without it a
+    repository must hand `linear - offset` back as that class's "base"; the declaration is the
     honest spelling of the same fact.
 
     A PARAMETER THAT SILENTLY DOES NOTHING IS A DEFECT, so the mirror cases refuse too: a base

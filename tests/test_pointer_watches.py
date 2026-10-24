@@ -247,7 +247,7 @@ def test_a_pointer_watch_comes_back_at_the_next_start(
 def test_a_pointer_read_off_a_relocated_class_is_relocated_by_that_class_base(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on a V30 board: `[dmaptr]` resolves to the assembler's raw offset (0xC031)
+    """On a V30 board `[dmaptr]` resolves to the assembler's raw offset (0xC031)
     while the struct lives at 0xC431, the offset under the DATA base the board runs with. The
     base symbol's own address is relocated; the value read THROUGH it is not. A near pointer
     holds an offset in its class's segment,
@@ -295,7 +295,7 @@ def test_a_bare_deref_of_a_typed_pointer_reads_as_the_struct_it_points_at(
 def test_a_pointer_typed_with_a_class_is_relocated_by_that_class_not_the_base_symbols(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED on a V30 board: `Routine_Anim`, a DATA word at 0x8436, holds 0x1923, a NEAR
+    """On a V30 board `Routine_Anim`, a DATA word at 0x8436, holds 0x1923, a NEAR
     pointer to CODE (`PUSH_START_ANIM+56` at
     0x30000+0x1923); relocated by the base symbol's class it lands at 0x400+0x1923, which is
     nothing. A type naming the target's class (`ptr16@CODE`) places it under THAT class's
@@ -338,8 +338,8 @@ def test_a_pointer_typed_with_a_class_is_relocated_by_that_class_not_the_base_sy
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["status"] == "INVALID" and "TEXT" in out["message"], out
     assert "CODE" in out["message"] and "DATA" in out["message"], out["message"]
-    # ...and while the pointer is still NULL, as it is at boot (measured live: the first
-    # version judged the class after the null return, so the bad type was accepted).
+    # ...and while the pointer is still NULL, as it is at boot (the class is judged before the
+    # null return, or the bad type is accepted).
     ses.memory[0x8436] = b"\x00\x00"
     out = s.watch_add(ref="[Routine_Anim]", mode="show", length=2)
     assert out["status"] == "INVALID" and "TEXT" in out["message"], out

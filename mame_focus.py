@@ -47,8 +47,8 @@ NO_VISIBLE_AFTER_WHY = "`cpulist` marked no cpu visible after the call"
 def settled_visible(ses: gs.Session, ignored: list[str]) -> str | None:
     """The visible cpu once MAME has stopped again after the console ignored the cpu it was live
     on, or None when it has not within `SETTLE_S`. The debugger answers the console WHILE that
-    run goes on (measured: `cpulist` read right after a typed `focus subcpu` still marked
-    `:maincpu`, which it now ignored), and it never stops on a cpu it ignores, so a live cpu
+    run goes on (`cpulist` read right after a typed `focus subcpu` still marks
+    `:maincpu`, which it now ignores), and it never stops on a cpu it ignores, so a live cpu
     among `ignored` is a machine still running to the next one. The live cpu is the patched
     stub's `?`, which names the last stop's until the next one; without threads the visible
     cpu is the one that stopped, since no `Hc` can have moved it."""

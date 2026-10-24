@@ -7,12 +7,12 @@ BYTE when a stop is a watchpoint's. What every family shares is `mame_arming`'s,
 
 THE CONTROL OF A WATCH, decided the way `run_to`'s was: by naming what silences one. Three
 things do, and each has its answer here. (1) The ROM copy of a datum whose live copy is in
-RAM: measured, the debugger ACCEPTS a watchpoint on a ROM address, lists it, and it can never
+RAM: the debugger ACCEPTS a watchpoint on a ROM address, lists it, and it can never
 fire, so before arming a change watch, the console's `map` is asked on the watch's cpu and a
 write side that is `unmapped` is refused as INVALID naming the line; a count or capture tap
 sees the cpu's writes there whatever handles them, so it arms and its `note` says so. (2) The
 wrong cpu: the row names its cpu, and `map` is asked of the same one. (3) A watch set while
-running: measured to be taken and to FIRE, like a breakpoint, so it is armed at once and the
+running: the debugger takes it and it FIRES, like a breakpoint, so it is armed at once and the
 reply says `while_running`. And the debugger's list is read back after every arm, so `armed:
 true` is the machine's answer; a row it lists DISABLED (`wpdisable` typed through `debug`) is
 `disabled` and never counts as armed.
@@ -22,7 +22,7 @@ this byte" ambiguous, and clearing either would disarm the other's byte in silen
 watch sharing a byte with a range another declaration already arms is refused naming it, and a
 ref declared again with another shape (width, format, mode) is refused until it is cleared.
 
-WHO WROTE THIS BYTE, measured on a 68000 board: the write has LANDED when the machine stops,
+WHO WROTE THIS BYTE, on a 68000 board: the write has LANDED when the machine stops,
 the stop's pc is the instruction AFTER the writer, and the console's own line, which
 `-debuglog` sends to `debug.log` in the scratch, names the watchpoint by its index, the value
 written, the address written and the writer's pc: `Stopped at watchpoint 1 writing 0038 to
@@ -488,7 +488,7 @@ def _class_base(klass: str, table: gs.SymbolTable) -> int:
     carried = sorted(set(table.classes.values()))
     if klass in carried:
         # The map carries the class and its rows do not share one `linear - offset`: a
-        # tile sheet laid out as many blocks, on a measured board. No single base is honest.
+        # tile sheet laid out as many blocks, on a real board. No single base is honest.
         #
         # AND THE REMEDY DEPENDS ON WHICH OF TWO THINGS IS TRUE, so `bases` is not suggested
         # for both. A class ALREADY in `bases` cannot be fixed by any
@@ -1394,7 +1394,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
                      expressions: dict[str, int] | gs.SessionError | None = None,
                      frame: int | None = None) -> list[dict[str, Any]]:
     """Every watch declaration EVALUATED at this stop: its bytes, rendered, or why it has
-    none. A change watch is read too: MAME arms no trap byte (measured), so its bytes are
+    none. A change watch is read too: MAME arms no trap byte, so its bytes are
     the program's. What is read is also what `before` means at the next hit. `fresh` holds
     bytes a caller read a moment ago at this same stop (the hit's `after`), so one read
     serves both; `expressions` holds the expr watches' values when the caller already printed

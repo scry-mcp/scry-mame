@@ -149,12 +149,12 @@ class _ChannelSession(_RegisterSession):
                 with open(self.scratch / "stdout.log", "ab") as fh:
                     fh.write(b"[LUA ERROR] in thread: attempt to index a nil value\n" + PROMPT)
             return
-        # ONE LINE PER TICK, the measured property of the real console (m68k-dual, MAME
+        # ONE LINE PER TICK, the property of the real console (m68k-dual, MAME
         # 0.288): a throttle line sent while stopped and a `lua` line after it were answered
         # by two successive steps, one each. A double answering every pending line per tick
         # could not have shown the defect this models. A line with no answer prepared stays
         # at the head of the queue, as one the machine has not ticked for.
-        # THE READER DIED STARTING UP (measured on m68k-dual): the console prints MAME's own
+        # THE READER DIED STARTING UP (on m68k-dual): the console prints MAME's own
         # words, RUNS THE PREVIOUS CHUNK AGAIN from the result the dead thread never
         # cleared (its answer, with no echo: nothing read it), and takes nothing from
         # the pipe; the next tick starts a reader that does.
@@ -167,8 +167,8 @@ class _ChannelSession(_RegisterSession):
         fresh = self.stdin.getvalue()[self.consumed:]
         self.consumed = len(self.stdin.getvalue())
         self.queue.extend(line for line in fresh.split(b"\n") if line)
-        # THE READER DIED HOLDING THE LINE (measured on m68k-dual): it echoed the line, its return
-        # was lost ("return value must be string"), and the chunk never ran.
+        # THE READER DIED HOLDING THE LINE (on m68k-dual): it echoes the line, its return
+        # is lost ("return value must be string"), and the chunk never ran.
         if self.reader_eats > 0 and self.queue:
             self.reader_eats -= 1
             line = self.queue.pop(0)
@@ -210,7 +210,7 @@ class _ChannelSession(_RegisterSession):
         self.executed()
         self.advanced.append(time.monotonic())
         self.pc += 4
-        # THE READER IS A THREAD (measured on m68k-dual): `reader_late` stops pass with the hook
+        # THE READER IS A THREAD (on m68k-dual): `reader_late` stops pass with the hook
         # finding it still busy taking the line, so nothing is evaluated at that stop.
         if self.reader_late > 0:
             self.reader_late -= 1
@@ -221,8 +221,8 @@ class _ChannelSession(_RegisterSession):
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         if command == "gvblank":
             self.advanced.append(time.monotonic())
-            # `sluggish` frames pass without the console reading its pipe (measured: a run
-            # that evaluated nothing, the line still pending); a step always reads it.
+            # `sluggish` frames pass without the console reading its pipe (a run
+            # that evaluates nothing, the line still pending); a step always reads it.
             if self.sluggish > 0:
                 self.sluggish -= 1
             else:
@@ -235,7 +235,7 @@ class _ChannelSession(_RegisterSession):
             (folder / f"{command[10:]}.sta").write_bytes(STA_HEAD)
             return "State save attempted.  Please refer to window message popup for results.\n"
         if command.startswith("stateload "):
-            # MAME's own answer, whatever happened: the refusal is SILENT (measured).
+            # MAME's own answer, whatever happened: the refusal is SILENT.
             return "State load attempted.  Please refer to window message popup for results.\n"
         return super().monitor(command, timeout)
 
@@ -346,7 +346,7 @@ def test_a_script_becomes_one_chunk_under_pcall_with_its_sentinel() -> None:
 def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The measured shape: stopped, the line sits in the pipe until the console's hook runs;
+    """The shape: stopped, the line sits in the pipe until the console's hook runs;
     one step buys the evaluation; the answer is what sits between the echo and the
     sentinel; and the raw form marks the session ALTERED always, its pc moved by the step."""
     script = 'print(string.format("PROBE %02x %02x", 0x20, 0x34))'
@@ -1069,7 +1069,7 @@ def test_state_list_names_every_state_in_the_folder_with_what_this_session_knows
 def test_state_load_refuses_a_state_mame_would_refuse_in_silence(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Measured: a corrupt header and a foreign system's state both load as `ok` through
+    """A corrupt header and a foreign system's state both load as `ok` through
     the console with nothing in any log. So the header is judged BEFORE the console, and
     a load MAME did not take is caught by the frame and pc not being the save's."""
     ses = _channel(monkeypatch, tmp_path)
@@ -1562,8 +1562,7 @@ def test_a_start_whose_stub_never_answers_carries_mames_own_last_words(
 ) -> None:
     """`start` kills the session and deletes the scratch when the gdbstub never listens, so
     the refusal is the only place MAME's last lines survive: a plugin it could not find, a
-    fatal error. Measured need: a repository's session saw four `session_broken` refusals
-    with no way to tell why."""
+    fatal error. Without them a `session_broken` refusal gives no way to tell why."""
     from test_server import _boot_args, _stub_boot, _StubProcess
 
     image = bytes(range(256)) * 64
@@ -1594,8 +1593,8 @@ def test_the_stdout_tail_of_a_session_with_no_scratch_is_empty() -> None:
 def test_a_line_the_run_did_not_evaluate_is_bought_with_one_step_and_the_frames_again(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Measured on m68k-dual: five recordings in a row, all exact on one run, and on another
-    the last two came back PENDING with the chunk still in the pipe after the whole run.
+    """On m68k-dual five recordings in a row can all be exact on one run, and on another
+    the last two come back PENDING with the chunk still in the pipe after the whole run.
     One step evaluates it on the way into the debugger; the frames are then bought again so
     the notifier finishes, and the reply is the finished recording, not a pending note."""
     ses = _channel(monkeypatch, tmp_path)
@@ -1630,7 +1629,7 @@ def test_lua_steps_once_per_line_still_in_the_pipe_before_its_own(
 ) -> None:
     """A `throttle` asked on a stopped machine leaves its line in the pipe, and the console
     reads ONE line each time its hook runs: where nothing reads it first, `lua`'s single step
-    buys the THROTTLE's evaluation and its own answer never comes, measured as `wait_expired`
+    buys the THROTTLE's evaluation and its own answer never comes, seen as `wait_expired`
     with the session altered. So `lua` counts the lines ahead of its own and steps once for
     each."""
     ses = _channel(monkeypatch, tmp_path)
@@ -1656,8 +1655,8 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
 ) -> None:
     """The console's reader is a THREAD (`plugins/console/init.lua`, `emu.thread`), and the
     periodic hook, run once at a stop, returns without evaluating while that thread is still
-    taking the line. Measured on m68k-dual: a signature sent right after another expired with
-    the line in the pipe, and ONE more step landed its answer at once. So a step whose answer
+    taking the line. On m68k-dual a signature sent right after another expires with
+    the line in the pipe, and ONE more step lands its answer at once. So a step whose answer
     does not come within the reader's window is followed by another, said in the reply, up
     to a cap that keeps a reader that never hands the line over a refusal."""
     ses = _channel(monkeypatch, tmp_path)
@@ -1695,8 +1694,8 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
 def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """MAME's console thread is unsafe by its own admission (`luaengine.cpp`): measured on
-    m68k-dual, the reader died at start and the hook ran the PREVIOUS chunk again, its
+    """MAME's console thread is unsafe by its own admission (`luaengine.cpp`): on
+    m68k-dual the reader dies at start and the hook runs the PREVIOUS chunk again, its
     sentinel printed twice, before a new reader took the line. A chunk that wrote has then
     written twice, so every reply counts the deaths and names the chunks run again, and
     a reply with nothing to say carries the zeros rather than nothing."""
@@ -1764,8 +1763,8 @@ def test_a_line_legitimately_ahead_is_not_a_rerun_and_a_rerun_after_it_is(
 def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Measured on m68k-dual: the first line of a session was echoed, the reader died with
-    "return value must be string", and no sentinel for it ever came: the script was never
+    """On m68k-dual the first line of a session is echoed, the reader dies with
+    "return value must be string", and no sentinel for it ever comes: the script is never
     evaluated. Sending it again runs it once, which is what the caller asked for; twice is a
     refusal that says the script never ran, not one that calls it pending."""
     ses = _channel(monkeypatch, tmp_path)
@@ -1961,7 +1960,7 @@ def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note
     assert "never evaluated" in note and "sent again (1 time)" in note, out
     assert "died" not in note and "AGAIN" not in note, out
     # THE CONTROL: the same call with nothing lost carries no note at all, so the note above
-    # is the loss speaking and not a sentence every reply now carries.
+    # is the loss speaking and not a sentence every reply carries.
     ses.answers[3] = b"8\n" + ses.sentinel(3)
     clean = s.lua("print(8)")
     assert clean["resent"] == 0 and "note" not in clean, clean
@@ -2088,7 +2087,7 @@ def test_a_missing_stdout_log_is_a_pending_line_with_nothing_seen(
 def test_a_queued_wrapper_lets_the_reader_take_the_line_before_it_advances(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE WINDOW THAT KILLS THE READER, measured on a wrapper that runs frames rather than
+    """THE WINDOW THAT KILLS THE READER, on a wrapper that runs frames rather than
     steps: the machine is advanced no sooner than `READER_SETTLE_S` after the line reached the
     pipe, because a frame run inside that window loses the reader like a step does."""
     ses = _channel(monkeypatch, tmp_path)
@@ -2156,10 +2155,10 @@ def test_a_queued_wrapper_drains_the_pipe_first_and_says_how_deep_it_was(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A `throttle` asked while stopped leaves its line in the pipe. `lua` counts those and
-    steps once for each before its own; the wrappers did not, so their FRAMES were spent
-    draining somebody else's line and the input lost its own release frame (measured live on
-    v30: `released: false`, the field left held). And the reply carried no `lines_ahead`,
-    so no caller could see the pipe filling before tripping over it."""
+    steps once for each before its own; the wrappers must too, or their FRAMES are spent
+    draining somebody else's line and the input loses its own release frame (on
+    v30: `released: false`, the field left held). And the reply carries `lines_ahead`,
+    so a caller sees the pipe filling before tripping over it."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: ses.sentinel(1), 2: _captured(3, as_seq=2)}
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"],
@@ -2605,7 +2604,7 @@ def test_a_second_look_at_one_window_does_not_count_its_deaths_twice(
     assert out["session"]["console"]["lost"] == 1, out
 
 
-# ---------------------------------------- the FIRST shape of a lost line, measured on the board
+# ---------------------------------------- the FIRST shape of a lost line, as seen on the board
 
 
 def test_a_reader_that_died_after_the_echo_is_a_line_that_was_never_evaluated() -> None:
@@ -2629,18 +2628,18 @@ def test_a_reader_death_that_precedes_the_echo_belongs_to_an_earlier_line() -> N
     assert transport.eaten((line + "\n").encode() + stale[:47], line) is True
 
 
-# ------------------------------------- the SECOND shape of a lost line, measured on the board
+# ------------------------------------- the SECOND shape of a lost line, as seen on the board
 #
-# A LINE CAN BE TAKEN AND NEVER ANSWERED IN TWO WAYS, and `install_lost` was written for one
-# of them: the console's reader dies, printing `[LUA ERROR] in thread:`. Measured on m68k-dual
+# A LINE CAN BE TAKEN AND NEVER ANSWERED IN TWO WAYS, and `install_lost` covers one
+# of them: the console's reader dies, printing `[LUA ERROR] in thread:`. On m68k-dual
 # (MAME 0.288), a line that raises at its TOP LEVEL does something else entirely -- the
 # console catches it, prints its own `error:` line, hands back the prompt and carries on
 # reading. The reader is alive; the line was taken, never evaluated, and no sentinel will
 # ever come.
 #
 # For the caller that is the SAME fact: the script did not run, and sending it again runs it
-# once. It was not the same fact to the detector, which read no death and therefore waited for
-# an answer that could not arrive -- a tally left `installed: false, pending: true` for ever,
+# once. It is not the same fact to a detector that reads only deaths: it waits for
+# an answer that cannot arrive -- a tally left `installed: false, pending: true` for ever,
 # which is the state `install_lost` exists to replace.
 
 

@@ -1,4 +1,4 @@
-"""How MAME's snapshot at a stop differs from the screen a film reads, measured, with the one
+"""How MAME's snapshot at a stop differs from the screen a film reads, with the one
 cause each rule leaves standing named as a candidate and none asserted.
 
 WHY A FILM ASKS. A kept frame is checked against `video:snapshot_pixels()`, MAME's rendering of

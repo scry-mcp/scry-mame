@@ -17,7 +17,7 @@ and, when N met the condition, reads N's bitmap at the NEXT notifier, after the 
 way the frame is MAME's own rendering of it (for a driver that draws its bitmap once a frame, as
 the check below makes sure), where the read at N's own notifier is the frame before
 on every frame whose picture changed. That lateness is the notifier's, and it is no evidence about
-a read at a debugger stop, whose instant `REFERENCE.md` gives as measured (*Which instant a
+a read at a debugger stop, whose instant `REFERENCE.md` gives (*Which instant a
 decode shows*). UNDER
 FRAMESKIP the buffer turns only on a frame that drew (`screen_device::video_output_update`), and the
 notifiers run before `update_frameskip`, so `skip_this_frame` at a notifier is that frame's own: a

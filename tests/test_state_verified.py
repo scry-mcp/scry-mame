@@ -144,7 +144,7 @@ def test_a_board_with_no_counter_refuses_a_load_whose_block_differs(
 def test_a_machine_that_already_read_as_the_save_proves_no_load(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, frameless: bool,
 ) -> None:
-    """The measured loop: before the load every block (and the frame, where there is one)
+    """The loop: before the load every block (and the frame, where there is one)
     already equals the save, so a load MAME ignored would read the same: null, and why."""
     ses = _board(monkeypatch, tmp_path, threads={}, frameless=frameless)
     s.state_save(name="a")

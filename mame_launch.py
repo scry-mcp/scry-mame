@@ -200,7 +200,7 @@ DEBUGGER = "gdbstub"
 def debugger_report() -> dict[str, str]:
     """What `start` and `status` say about the debugger the machine runs under, with the note
     beside the fact so a frame's difference from a golden is not read as a regression. The note
-    blames the method and not `-debug`: measured, an autoboot capture comes out byte-identical
+    blames the method and not `-debug`: an autoboot capture comes out byte-identical
     with and without the debugger attached, while one frame either side does not."""
     return {"attached": DEBUGGER,
             "note": "MAME runs with -debug under this stub. A capture taken at one of this "
@@ -240,7 +240,7 @@ def build_command(
     # the channel every repo's tracer reads went NOWHERE from a live session. `-debuglog` sends
     # the debugger CONSOLE's own output to `debug.log` beside it, which is the one place a
     # watchpoint stop names the value written and the writer's pc (the stub's packet carries
-    # only the address); measured, and read by the stop survey.
+    # only the address), and read by the stop survey.
     cmd = [binary, system, "-rompath", rompath, "-skip_gameinfo", "-log", "-debuglog",
            *flags, "-debug", "-debugger", DEBUGGER, "-debugger_port", str(port),
            "-snapshot_directory", str(Path(scratch) / "snap"),
@@ -439,8 +439,8 @@ def plugins_dir(binary: str) -> Path | None:
 
 
 # THE LINE MAME PRINTS when it refuses a cfg and loads its defaults: the one proof, after the
-# boot, that the file installed was not the file read. Measured in the MAME reference: a
-# comment holding `--` produces it, and MAME overwrites the file on exit. WHERE it lands is
+# boot, that the file installed was not the file read. A comment
+# holding `--` produces it, and MAME overwrites the file on exit. WHERE it lands is
 # read off MAME's source: `config.cpp` prints it with `osd_printf_warning`, and the OSD
 # sends that channel to stderr (`osdobj_common.cpp`), never to `error.log`, which only
 # `logerror` reaches. So the reader below opens the captured stdout+stderr, `stdout.log`.

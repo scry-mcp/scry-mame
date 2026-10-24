@@ -425,7 +425,7 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     # THE SPAN EXAMINED RIDES ON THE REPLY, with where it came from. A class's span is its
     # symbols' [min, max] and NOT the segment (a linker map carries no sizes), so zero hits
     # over it mean "not among the class's symbols" and a caller reading `symbol_class` alone took
-    # it for "not in the segment" (measured on a V30 board: the span ended at the last DATA
+    # it for "not in the segment" (on a V30 board the span ends at the last DATA
     # symbol, well short of the segment's end). Saying the span is what makes a zero honest.
     span_reply: dict[str, Any]
     if symbol_class:

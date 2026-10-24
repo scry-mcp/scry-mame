@@ -7,7 +7,7 @@ dump and row lines written here and `mame_ramdac`'s parsers of them change toget
 
 WHO WROTE, and why it takes two signals. A write the debugger makes (`mame_ramdac.DEBUGGER_NOTE`
 says who that is) reaches the tap with `execution_state` at `stop` and `CURPC` where the machine
-stands, which is no writer. But `stop` alone is not enough, measured: an asynchronous stop (a
+stands, which is no writer. But `stop` alone is not enough: an asynchronous stop (a
 frame's end) is requested before the cpu reaches the instruction it parks at, so the game's last
 instruction before it writes at `stop` too. What tells them apart is the machine's time, which does
 not move while the machine is parked: a `stop` write is held undecided with its time, and when the

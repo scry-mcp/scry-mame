@@ -1,6 +1,6 @@
 """The RUNNING guest: what a stop is, and what the server does at the first contact after one.
 
-A machine let go with `resume` answers the stub's packets while it runs (measured: `m`,
+A machine let go with `resume` answers the stub's packets while it runs (`m`,
 `qRcmd` and `Z0` all come back), but a value read off a moving machine is a sample of no
 state, so the readers refuse and name the LAST STOP instead (`require_stopped`). This
 module is about the moments around that: a stop the machine reached on its own is
@@ -484,8 +484,8 @@ def record_park(ses: gs.Session, scratch: Path) -> dict[str, Any]:
 def require_stopped(ses: gs.Session, what: str) -> None:
     """Refuse `what` on a RUNNING machine, naming the last stop. A value read off a moving
     machine is a sample of no state, and the stop packet the stub sends on its own can land
-    in front of the read's answer: measured, the next read after a timed-out run came back
-    as something that was not hex."""
+    in front of the read's answer: the next read after a timed-out run comes back
+    as something that is not hex."""
     if ses.running:
         stop = STATE.as_of()
         stopped = "pc" in stop
@@ -574,8 +574,8 @@ def _survey_read_stop(ses: gs.Session, scratch: Path, name: Callable[[int, str |
 
 def _interrupt_or_row(pc: int, cpu: str | None) -> str:
     """A `stop`'s cause, by where it is and not by who asked: the packet the interrupt reads
-    can be a BREAKPOINT's that fired in the same instant (measured: a `stop` right after
-    arming one at the vblank handler came back at the handler's address)."""
+    can be a BREAKPOINT's that fired in the same instant (a `stop` right after
+    arming one at the vblank handler comes back at the handler's address)."""
     return attribute(pc, cpu) if halts(pc, cpu) else "interrupt"
 
 

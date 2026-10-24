@@ -70,7 +70,7 @@ def write_side(ses: gs.Session, addr: int, cpu: str | None = None,
 
 def unmapped_note(addr: int, space: str, read_maps_to: str | None) -> str:
     """The ONE sentence a tap on an unmapped write side says: a write tap sees every write the
-    cpu makes whether or not anything handles it (measured, program and io), so the guest's
+    cpu makes whether or not anything handles it (program and io), so the guest's
     write goes nowhere and the tap still sees it; on an address that reads as memory, the ROM
     copy of a datum, where the datum lives instead."""
     if space == mspace.IO:
@@ -97,7 +97,7 @@ def with_unmapped_note(note: str, maps_to: str, addr: int, space: str,
 def change_watch_side(ses: gs.Session, addr: int, cpu: str | None = None
                       ) -> tuple[arming.Refusal | None, str, str | None]:
     """`write_side` for a CHANGE watch, which refuses an unmapped write side: it is the
-    debugger's watchpoint, and measured, the stub accepts and lists one there that never fires."""
+    debugger's watchpoint, and the stub accepts and lists one there that never fires."""
     refused, write, read_ = write_side(ses, addr, cpu)
     if refused is None and write == "unmapped":
         return (("bad_argument", f"the write side of {addr:#x} is unmapped: a change "

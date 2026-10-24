@@ -33,8 +33,8 @@ from mame_state import STATE
 # A savestate as MAME writes it (`save.cpp`): the magic, the format version at byte 8, the
 # system's name at 0x0a (NUL padded up to 0x1c), the signature of the machine's save
 # registrations at 0x1c. MAME checks the same three on load and REFUSES IN SILENCE from
-# the debugger console: measured, a corrupt header and a foreign system's state both
-# left nothing in error.log or on stdout, so the check is made HERE, before the console.
+# the debugger console: a corrupt header and a foreign system's state both
+# leave nothing in error.log or on stdout, so the check is made HERE, before the console.
 STATE_MAGIC = b"MAMESAVE"
 STATE_HEADER = 32
 STATE_NAME_AT, STATE_NAME_END, STATE_SIGNATURE_AT = 0x0A, 0x1C, 0x1C
@@ -183,7 +183,7 @@ def state_load(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     """The body of the `state_load` tool: the console's `stateload`, which REPLACES the
     machine (altered from then on), then the stop surveyed and the ROM checked again
     against the reference `start` was given. MAME refuses a bad state IN SILENCE from the
-    console (measured), so the header is judged BEFORE the console, and the load is judged
+    console, so the header is judged BEFORE the console, and the load is judged
     against what `state_save` recorded (`_judged`): `verified`, or unavailable with why
     (`NOT_WRITTEN_HERE`, `ALREADY_AS_SAVED`, `NOTHING_TO_JUDGE`), or a refusal naming the frame
     and pc or carrying `differs`. `rom_check` is `OK`, or unavailable with no reference image."""

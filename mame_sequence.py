@@ -82,7 +82,7 @@ SEQUENCES = frozenset({"perform", "drive"})
 NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export"}
 
 # Ops that may run on a RUNNING machine: they read a file or the log, arm through a stub
-# that takes it while running (measured), or ask the session. Everything else needs a
+# that takes it while running, or ask the session. Everything else needs a
 # stopped machine, so a sequence WAITS for the next stop before dispatching one. THE ONE
 # LIST: the server's refusal names the same tools from here, because a second copy drifted
 # (a tool that answered while running was refused by the sequence for want of its name).

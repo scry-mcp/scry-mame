@@ -855,7 +855,7 @@ def test_an_arming_refused_at_the_install_leaves_its_dest_unmade(
 def test_a_trigger_nothing_handles_is_armed_and_the_note_says_the_write_goes_nowhere(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Measured: a write tap on an address whose write side is unmapped still sees the cpu's
+    """A write tap on an address whose write side is unmapped still sees the cpu's
     writes there, so the film arms on it; on a ROM copy the note points at the live datum."""
     ses = _session(monkeypatch, tmp_path)
     _serve_arm(ses, "m68k-dual")

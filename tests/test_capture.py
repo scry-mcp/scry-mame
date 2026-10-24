@@ -123,7 +123,7 @@ def test_a_captured_header_and_its_rows_parse_whole_and_a_cut_one_reads_as_none(
 
 
 def test_known_answer_every_row_holds_the_trigger_word_from_before_its_write() -> None:
-    """MEASURED. The trigger is the low word of the long the capture holds, and a tap runs
+    """The trigger is the low word of the long the capture holds, and a tap runs
     before the write lands: so in every row the block's second word is the counter's value
     before this write, one less than the row's `data`, and the first word, which the vblank
     handler never raises in the pass, is zero. Every row is the one writer's, and there is one
@@ -139,7 +139,7 @@ def test_known_answer_every_row_holds_the_trigger_word_from_before_its_write() -
 
 
 def test_known_answer_the_vblank_handlers_write_lands_on_the_line_the_driver_raises_it() -> None:
-    """MEASURED. The frame counter's write is IRQ_VBLANK's, and m68k-dual's driver raises that
+    """The frame counter's write is IRQ_VBLANK's, and m68k-dual's driver raises that
     interrupt at scanline `NUM_SCANLINES`, 256, past its 252 visible lines: every row from the
     second on is stamped line 256. The first is the handler's first run after the boot, at line
     137. The times only grow, and two rows sit one frame apart to within the line both land on:
@@ -261,7 +261,7 @@ def test_watch_list_shows_the_widest_capture_inside_the_reply_budget(
     assert len(json.dumps(s.watch_list())) > mstate.REPLY_BUDGET_CHARS, "the control"
 
 
-# the bytes that decode to each scalar's widest JSON, measured: a sign and the most digits
+# the bytes that decode to each scalar's widest JSON: a sign and the most digits
 WIDEST_FILL = {"u8": "ff", "i8": "80", "u16": "ffff", "i16": "8000", "u32": "ffffffff",
                "i32": "80000000", "f32": "ff7fffff", "f64": "ffefffffffffffff", "char": "80"}
 
@@ -352,7 +352,7 @@ def test_a_trigger_this_build_lacks_is_refused_and_one_nothing_handles_is_armed_
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A name the build lacks sends nothing. A trigger whose write side is unmapped is armed:
-    measured, the tap there still sees the cpu's writes, and the note says where they go."""
+    the tap there still sees the cpu's writes, and the note says where they go."""
     ses = _capturing(monkeypatch, tmp_path)
     out = refused(re.escape(inputs.not_a_ref("the trigger", "gone_sym", ":maincpu")),
                   s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="gone_sym"))

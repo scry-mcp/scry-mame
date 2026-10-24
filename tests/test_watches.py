@@ -177,8 +177,8 @@ def test_a_watch_declaration_needs_a_mode_a_format_and_a_coherent_width() -> Non
 
 
 def test_one_address_may_not_be_both_read_and_change() -> None:
-    """THE HARD-WON RULE CARRIED ACROSS, NOT REDISCOVERED. MAME arms no trap byte (measured:
-    the bytes read the same before and after `Z2`), so the mechanical reason is absent here;
+    """THE HARD-WON RULE CARRIED ACROSS, NOT REDISCOVERED. MAME arms no trap byte (the
+    bytes read the same before and after `Z2`), so the mechanical reason is absent here;
     the exclusivity is kept anyway, because a store rule that holds on one server and not the
     other is a rule nobody can rely on."""
     store = dec.DeclarationStore("k", path=None)
@@ -242,7 +242,7 @@ def test_a_change_watch_arms_reads_the_list_back_and_says_where_it_maps(
 def test_a_change_watch_on_an_address_whose_write_side_is_unmapped_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE CONTROL. Measured: the stub accepts a `Z2` on a ROM address, lists it, and it can
+    """THE CONTROL. The stub accepts a `Z2` on a ROM address, lists it, and it can
     never fire, which is exactly the silence `run_to`'s control exists to expose. The
     console's `map` says the write side is `unmapped`, so the watch is refused BEFORE it is
     armed, naming the line; nothing is stored, nothing is listed."""
@@ -349,7 +349,7 @@ def test_values_render_in_the_targets_byte_order_and_in_every_format(
 def test_a_watch_stop_is_attributed_from_the_packet_and_the_console_log(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """WHO WROTE THIS BYTE. Measured on a 68000 board: the stub's stop packet is
+    """WHO WROTE THIS BYTE. On a 68000 board the stub's stop packet is
     `T05watch:<addr>;...`, the write has LANDED when the machine stops, the stop's pc is the
     instruction AFTER the writer, and the console's own line (`-debuglog`, in the scratch)
     names the watchpoint, the value written, the address and the writer's pc. The reply
@@ -443,10 +443,10 @@ def test_a_write_by_this_server_moves_the_watchs_baseline(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """`before` is what the previous survey saw, and a `write` by this server IS a survey of
-    those bytes: after forcing a watched value, the next watch stop reported `before` as the
-    value at arm time, several writes earlier, and not the one the writer actually read.
-    Measured on a V30 board: arm at 18, write 4660, the game's `inc` writes 4661, and the
-    reply said before 18. Every armed watch the write overlaps is re-read."""
+    those bytes: after forcing a watched value, the next watch stop must not report `before` as the
+    value at arm time, several writes earlier, rather than the one the writer actually read.
+    On a V30 board: arm at 18, write 4660, the game's `inc` writes 4661, and the
+    reply must say before 4660, not 18. Every armed watch the write overlaps is re-read."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000012")
     s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -739,10 +739,10 @@ def test_the_watchpoint_stop_line_the_doubles_author_is_the_shape_the_console_pr
 def test_a_foreign_watch_stop_with_no_packet_is_named_by_its_console_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED: a `wpset` typed through `debug` cut a `gvblank` about 53 times over 1500
-    frames and `run_for` reported ELAPSED with `polls: 1553`: a run the console starts
-    sends no stop packet, the survey read no log with no watch of its own armed, and each
-    hit was taken for a landing. And the packet of such a stop, when there is one, names
+    """A `wpset` typed through `debug` cuts a `gvblank` many times over a run
+    and `run_for` must not report ELAPSED with a poll count that large: a run the console starts
+    sends no stop packet, the survey reads no log with no watch of its own armed, and each
+    hit would be taken for a landing. And the packet of such a stop, when there is one, names
     address 0x0, so the line is the better name either way: index, address written, value
     and writer pc. The control: a stop with neither a packet nor a line is not a watch's."""
     ses = _watching(monkeypatch, tmp_path)
@@ -811,7 +811,7 @@ def test_watch_clear_disarms_what_this_server_armed_and_refuses_an_unknown_ref(
 def test_a_watch_arms_and_clears_while_running_and_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MEASURED: a `Z2` sent to a running machine is taken and fires, like `Z0`."""
+    """A `Z2` sent to a running machine is taken and fires, like `Z0`."""
     ses = _watching(monkeypatch, tmp_path)
     s.resume()
     out = s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1387,7 +1387,7 @@ def test_the_console_line_is_matched_to_the_firing_watchs_index(
 ) -> None:
     """With two change watches, another watch's line inside the same window was attributed
     to the firing one; and `writer_pc` is the LAST of the firing watch's own lines, the
-    long counter's two words being the measured case."""
+    long counter's two words being the case in point."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)

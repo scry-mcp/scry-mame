@@ -835,9 +835,9 @@ def test_a_stop_the_verify_wait_meets_rides_on_drives_own_reply(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The verify learns the machine stopped by consuming the stub's packet, and the survey
-    of that stop used to ride on the NEXT call's reply, of whatever tool: a breakpoint that
-    cut the run under `drive`'s nose was reported to nobody by `drive` itself. The reply
-    that missed its line now carries the stop as `stopped_on_its_own`."""
+    of that stop must not ride on the NEXT call's reply, of whatever tool: a breakpoint that
+    cut the run under `drive`'s nose would be reported to nobody by `drive` itself. The reply
+    that missed its line carries the stop as `stopped_on_its_own`."""
     ses = _running(monkeypatch, tmp_path)
     (tmp_path / "error.log").write_text("boot\n")
     monkeypatch.setattr(sequence, "DRIVE_POLL_S", 0.0)

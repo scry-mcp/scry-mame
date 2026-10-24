@@ -444,7 +444,7 @@ def test_the_device_machines_beside_the_set_are_not_read_as_part_of_it() -> None
 
 
 def _stub_mame(tmp_path: Path, name: str, body: str) -> str:
-    """A stand-in for the MAME binary whose ANSWER is what was measured off the real one: the
+    """A stand-in for the MAME binary whose ANSWER is what the real one gives: the
     exit code and the stream it says it on. The shape is captured, not imagined."""
     path = tmp_path / name
     path.write_text(f"#!/bin/sh\n{body}\n", encoding="utf-8")
@@ -463,7 +463,7 @@ def _listxml(binary: str, system: str, seconds: float = 20.0
 def test_a_system_this_build_does_not_carry_refuses_the_start_in_mames_own_words(
     tmp_path: Path,
 ) -> None:
-    """MEASURED off the real binary: exit code 5, and the sentence on STDERR, not stdout. It is
+    """The real binary gives exit code 5, and the sentence on STDERR, not stdout. It is
     the one `-listxml` failure that is the caller's mistake, so it refuses rather than noting."""
     binary = _stub_mame(tmp_path, "mame",
                         "echo \"No matching machines found for '$1'\" >&2\nexit 5")

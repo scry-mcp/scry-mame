@@ -1,6 +1,6 @@
 """The console plumbing written once: the session's latch and drain, the wait for rest, the wait for
 a file, the scratch numberers, and where a lane sits in a bus word. Each is the one copy every
-caller now goes through, so each is pinned here directly rather than only through its callers.
+caller goes through, so each is pinned here directly rather than only through its callers.
 """
 
 from __future__ import annotations

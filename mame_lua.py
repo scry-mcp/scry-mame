@@ -10,7 +10,7 @@ console: it reads a line from stdin, loads it as a chunk, runs it and prints the
 again, and it works with no terminal attached (linenoise falls back to a plain line read and
 ECHOES the line).
 
-WHAT WAS MEASURED, and shapes everything here. The console evaluates a line from its
+WHAT THE CONSOLE DOES, and shapes everything here. The console evaluates a line from its
 PERIODIC hook, so a line sent while the machine is STOPPED sits in the pipe until the hook
 next runs: what runs it is stated once, in REFERENCE.md under *The console* ("The console
 evaluates when its periodic hook runs"); this module points there, and the texts a client
@@ -241,7 +241,7 @@ def drain_ahead(ses: gs.Session, scratch: Path) -> tuple[int, int]:
     THE PIPE IS DRAINED FIRST, the raw form's rule. A `throttle` asked while stopped leaves
     its line there, and the console reads one line each time its hook runs: a wrapper that
     just ran its own frames spent them on somebody else's line and came back with its notifier never
-    released (measured live on v30: `input` behind a backlog answered `released: false`,
+    released (on v30, `input` behind a backlog answers `released: false`,
     the field still held). So the lines ahead are stepped off first, and the frames the
     wrapper asks for are then its own."""
     ahead = transport.refuse_if_too_deep(scratch)
@@ -358,7 +358,7 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
                                      thread_errors=raw.count(transport.THREAD_ERROR),
                                      console_reruns=len(transport.reruns_in(raw, seq)))
     if answer is None:
-        # THE RUN DID NOT ALWAYS EVALUATE THE LINE (measured: the same five recordings came
+        # THE RUN DID NOT ALWAYS EVALUATE THE LINE (the same five recordings can come
         # back complete on one run and two of them pending on another, with the chunk still
         # in the pipe). A single step does, on the way into the debugger; then the frames
         # are bought again so the script's notifier can do its work.

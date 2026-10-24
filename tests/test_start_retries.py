@@ -816,7 +816,7 @@ def test_a_connection_the_stub_accepted_is_kept_while_its_handshake_waits(
     """A dial the kernel completes is the ONE connection MAME will serve, even while the boot
     has not reached the debugger to read it. Dropping it when the handshake is slower than one
     request and dialling again leaves MAME accepting the dead one and closing its listener, and
-    every later dial is refused until the wait runs out (measured in the live matrix: `listening
+    every later dial is refused until the wait runs out (in the live matrix: `listening
     on port N` in MAME's output, `Connection refused` for the whole wait). So the handshake gets
     what is left of the wait, on the connection already made."""
     ses = _stub_boot(monkeypatch, tmp_path, IMAGE, 0)

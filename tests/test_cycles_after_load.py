@@ -255,7 +255,7 @@ def test_a_load_that_broke_the_session_asks_the_console_nothing_more(
 def test_a_typed_load_or_rewind_withholds_the_next_runs_cycles(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str,
 ) -> None:
-    """Measured on circus: after `stateload` or `rewind` typed through `debug` the counter reads
+    """On circus, after `stateload` or `rewind` typed through `debug` the counter reads
     what it read before, and the next run's span crosses two machines (negative, or plausible
     and wrong). The tool's own load marks it; a typed one marks it the same way."""
     _board(monkeypatch, tmp_path)
