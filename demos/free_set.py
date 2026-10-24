@@ -33,7 +33,15 @@ VOLATILE = {
                    "temporary paths",
     "reads": "how often a timed run polled the emulated clock, paced by wall time",
     "flags": "the window's placement, which the host's own helper decides",
+    "binary": "where the host installed MAME",
+    "binary_origin": "how the host's MAME was found",
 }
+
+#: The arguments whose values are the host's own: where it keeps its ROM sets.
+HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
+
+#: What only the start step hides: its summary names the host's MAME binary.
+START_VOLATILE = {"summary": "names where the host installed MAME"}
 
 
 def expect(holds: bool, why: str) -> None:
@@ -149,7 +157,7 @@ def demo(system: str, demo_file: str, steps: Sequence[Step]) -> Demo:
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
     return Demo(name=system, root=root, server=[sys.executable, str(root / "server.py")],
-                readme=here / "README.md", steps=steps,
+                readme=here / "README.md", front=root / "README.md", steps=steps,
                 capture=lambda run: run.dir / "screen.png",
                 offers=frozenset({"rompath", "shared"}), precheck=precheck(system),
-                volatile=VOLATILE)
+                volatile=VOLATILE, host_args=HOST_ARGS)

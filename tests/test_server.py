@@ -2671,45 +2671,15 @@ def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
     assert idempotent == {"machine_map"}, idempotent
 
 
-def test_the_front_door_table_names_exactly_the_tools_the_server_registers() -> None:
-    """The README's tool table is the one copy of the roster a stranger reads, and it is
-    kept by hand: a tool added to the server and left out of it, or a row kept after a
-    tool was retired, is silent either way. The table is read as the set of backticked
-    names in its first column and compared with the MCP layer's own registry, so the gate
-    goes red when a name is missing AND when one is extra; a name listed twice is a row
-    the reader meets twice and is refused too."""
+def test_the_front_door_sends_the_reader_to_the_generated_index_and_keeps_no_table() -> None:
+    """The roster a stranger reads is REFERENCE.md's index, generated from the registry and held
+    to it by the reference pages' drift test; a table typed into the front door is a second copy
+    that falls behind the day a tool is added, so the front door links the index and holds none."""
     readme = (Path(__file__).parents[1] / "README.md").read_text()
-    head = "| tool | what it does |"
-    assert head in readme, "the front door has no tool table headed by tool/what it does"
-    rows = readme.split(head, 1)[1].split("\n\n", 1)[0].splitlines()[1:]
-    listed: list[str] = []
-    for row in rows:
-        cells = row.split("|")
-        assert len(cells) >= 3, f"not a table row: {row!r}"
-        listed += re.findall(r"`([a-z_]+)`", cells[1])
-    assert listed, "the table names no tool at all, so this is not a verdict"
-    twice = sorted({name for name in listed if listed.count(name) > 1})
-    assert not twice, f"named in more than one row: {twice}"
-    registered = {t.name for t in s.mcp._tool_manager.list_tools()}
-    assert set(listed) == registered, (
-        f"missing from the table: {sorted(registered - set(listed))}; "
-        f"in the table but not registered: {sorted(set(listed) - registered)}"
-    )
-
-
-def test_the_front_door_shows_close_answering_the_speed_as_the_object_it_returns() -> None:
-    """The one reply a stranger copies a field's shape from: `average_speed` is an object
-    with a `percent` in it, and an example showing a bare number teaches a parse that
-    finds nothing. Only the line after `close()` in that example is read, never the
-    README's examples as a whole."""
-    readme = (Path(__file__).parents[1] / "README.md").read_text()
-    section = "### Fly to a late scene, then measure at real speed"
-    assert section in readme, "the front door lost the example this case reads"
-    lines = readme.split(section, 1)[1].split("\n## ", 1)[0].splitlines()
-    assert "close()" in lines, "the example no longer calls `close()` on a line of its own"
-    reply = lines[lines.index("close()") + 1]
-    assert '"average_speed": {' in reply and '"percent"' in reply, reply
-    assert '"average_speed": 99' not in reply, reply
+    assert "## The tools" in readme, "the front door lost its tools section"
+    tools = readme.split("## The tools", 1)[1].split("\n## ", 1)[0]
+    assert "](REFERENCE.md)" in tools, "the tools section does not link the index"
+    assert "| tool |" not in readme, "a hand-kept tool table is back in the front door"
 
 
 # ------------------------------------------- one register width, and a run that ends by itself

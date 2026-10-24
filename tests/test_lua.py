@@ -930,7 +930,6 @@ def test_captures_says_a_recording_its_call_left_unfinished_is_not_listed() -> N
     the tools wrote."""
     here = Path(__file__).resolve().parent.parent
     texts = {"server": s.captures.__doc__ or "", "mame_recording": mrec.captures.__doc__ or "",
-             "README": (here / "README.md").read_text(),
              "REFERENCE": (here / "REFERENCE.md").read_text()}
     for name, text in texts.items():
         flat = " ".join(text.split()).lower()

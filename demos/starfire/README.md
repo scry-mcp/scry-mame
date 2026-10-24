@@ -28,15 +28,15 @@ uv run python demos/starfire/demo.py --rompath ~/roms
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
 - `--shared` is for a run somebody watches: the server asks the placement helper named by
-  `WINDOW_APP` for a window sized to be seen (REFERENCE.md, *Window placement*) and refuses to
+  `WINDOW_APP` for a window sized to be seen (the [`start` page](../../docs/reference/session.md#start), *`display` and window placement*) and refuses to
   start without one. Left out, MAME runs in a small window behind your work.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below and `screen.png` from a run where every step
   passed.
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step
-failed, 2 a usage error, 3 nothing was demonstrated (a missing ROM, a server that did not
-start). Star Fire's sound is emulated from its circuit diagram, which is expensive: under the
+failed, 2 a usage error, 3 nothing was demonstrated (a missing ROM, a relative path, a server
+that did not start). Star Fire's sound is emulated from its circuit diagram, which is expensive: under the
 debugger the emulation cannot keep up with real time, so a run takes far longer than the game
 seconds it plays, and a watched one moves slowly.
 
@@ -89,18 +89,17 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "inipath": "./tmp/demos/starfire/starfire-ini",
   "state_dir": "./tmp/demos/starfire/starfire-states",
   "boot_seconds": 60,
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
-  "rompath": "~/Code/mame-test-roms"
+  "rompath": "<host>"
 }
 ```
 
 ```json
 {
-  "summary": "start starfire on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x00000000, machine: 2 cpus, 1 screen, 13 ROM files, 2 regions, 2 shares",
+  "summary": "<volatile>",
   "status": "ok",
   "system": "starfire",
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
-  "binary_origin": "argument",
+  "binary": "<volatile>",
+  "binary_origin": "<volatile>",
   "version": "0.289 (unknown)",
   "pid": "<volatile>",
   "stub_port": "<volatile>",

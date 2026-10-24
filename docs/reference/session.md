@@ -17,16 +17,16 @@ Arguments (every path absolute; `rompath`, `inipath`, `state_dir` directories, t
 - `system`, `rompath`; `binary` (omitted: `MAME_BINARY`, else the PATH's `mame`).
 - `reference_rom`, `reference_addr` (`0x`), `reference_base` (`0x`, the image's first byte).
 - `symbols`: a YAML or the linker's five-column map, the first cpu's. `bases`
-maps each non-CODE class of a map to a `0x` base or to `rom`. `types`: a file of `name:
-format` lines. Several cpus: `symbols` `{cpu: path}`, `bases` `{cpu: {class: base}}`,
-`types` `{cpu: file}`.
+  maps each non-CODE class of a map to a `0x` base or to `rom`. `types`: a file of `name:
+  format` lines. Several cpus: `symbols` `{cpu: path}`, `bases` `{cpu: {class: base}}`,
+  `types` `{cpu: file}`.
 - `shared=True`: somebody WATCHES (big window, real speed); `display` (`main` | `secondary`),
-its screen, needs it. `throttle_from_frame`: flat out until it.
+  its screen, needs it. `throttle_from_frame`: flat out until it.
 - `background`: `true` behind, your focus kept, watched (`shared`) or not; `false` in front;
-omitted, by `shared`.
+  omitted, by `shared`.
 - `boot_lua`, an EXISTING harness file, never Lua text (never `manager.machine:exit()`),
-`env` for it, `inipath`,
-`boot_seconds` (the stub's wait), `stub_port` (`0`: a free one).
+  `env` for it, `inipath`,
+  `boot_seconds` (the stub's wait), `stub_port` (`0`: a free one).
 - `state_dir` (empty: disposable; else kept), `cfg`.
 
 Refused before any spawn: a live session, a missing file, a cpu

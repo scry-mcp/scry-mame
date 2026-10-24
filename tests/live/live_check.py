@@ -33,7 +33,8 @@ from live_harness import (
     said,
     visible_of,
 )
-from scry_core.demo import readme_drift
+from scry_core.demo import load
+from scry_core.demo import stale as demo_stale
 
 from gfx_layouts import BYTES_8X8  # isort: skip -- beside the harness
 
@@ -1331,16 +1332,12 @@ for name in DEMOS:
           f"rc {code}: {verdict}" + (f" {err.strip()[-300:]}" if code else ""))
     run_dir = ROOT / "tmp" / "demos" / name
     try:
-        drift = (readme_drift(demo_dir / "README.md", run_dir / "transcript.normalised.md")
-                 if code == 0 else "the run failed, so there is nothing to compare")
+        stale_files = demo_stale(load(demo_dir / "demo.py"), run_dir) if code == 0 else [
+            "the run failed, so there is nothing to compare"]
     except Exception as e:  # a README the block cannot be read from is this check's FAIL
-        drift = f"{type(e).__name__}: {e}"
-    check(f"the {name} demo's README block is what this run answered", drift == "", drift)
-    committed = demo_dir / "screen.png"
-    same_picture = code == 0 and committed.is_file() and committed.read_bytes() == (
-        run_dir / "screen.png").read_bytes()
-    check(f"the {name} demo's screen.png is this run's capture", same_picture,
-          "" if same_picture else "the committed picture is not the run's")
+        stale_files = [f"{type(e).__name__}: {e}"]
+    check(f"the {name} demo's README, its picture and the front door's flow are this run's",
+          stale_files == [], "; ".join(stale_files))
 
 print("\n== from an investigation to a bench: a circus session exported and replayed, twice, "
       "and once edited")

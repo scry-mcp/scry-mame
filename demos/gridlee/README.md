@@ -30,7 +30,7 @@ uv run python demos/gridlee/demo.py --rompath ~/roms
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
 - `--shared` is for a run somebody watches: the server asks the placement helper named by
-  `WINDOW_APP` for a window sized to be seen (REFERENCE.md, *Window placement*) and refuses to
+  `WINDOW_APP` for a window sized to be seen (the [`start` page](../../docs/reference/session.md#start), *`display` and window placement*) and refuses to
   start without one. Left out, MAME runs in a small window behind your work.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below and `screen.png` from a run where every step
@@ -90,18 +90,17 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "inipath": "./tmp/demos/gridlee/gridlee-ini",
   "state_dir": "./tmp/demos/gridlee/gridlee-states",
   "boot_seconds": 60,
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
-  "rompath": "~/Code/mame-test-roms"
+  "rompath": "<host>"
 }
 ```
 
 ```json
 {
-  "summary": "start gridlee on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x0000f000, machine: 1 cpu, 1 screen, 13 ROM files, 3 regions, 3 shares",
+  "summary": "<volatile>",
   "status": "ok",
   "system": "gridlee",
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
-  "binary_origin": "argument",
+  "binary": "<volatile>",
+  "binary_origin": "<volatile>",
   "version": "0.289 (unknown)",
   "pid": "<volatile>",
   "stub_port": "<volatile>",
@@ -2594,7 +2593,7 @@ Also attached: image/png.
   "output": "State load attempted.  Please refer to window message popup for results.",
   "mark": {
     "emulator": 13358,
-    "process": 10401
+    "process": 10400
   },
   "cause": "stateload four_credits",
   "stop_seq": 17,

@@ -471,24 +471,24 @@ Declare a WATCH at `ref`, in its cpu's byte order. STORED, re-armed at the next 
 
 Arguments:
 - `mode`: `show` (read at each stop, arms nothing), `change` (a WRITE watchpoint: a write
-stops the machine, and `watch_hit` says WHO WROTE THIS BYTE), `count` (tallies
-every write by value and writer pc, never stopping), `capture` (one
-row per access to `trigger`, never stops) or `expr`
-(`ref` is ONE reading debugger expression, `beamy`: no `,`, `;`, assignment, length or
-fmt).
+  stops the machine, and `watch_hit` says WHO WROTE THIS BYTE), `count` (tallies
+  every write by value and writer pc, never stopping), `capture` (one
+  row per access to `trigger`, never stops) or `expr`
+  (`ref` is ONE reading debugger expression, `beamy`: no `,`, `;`, assignment, length or
+  fmt).
 - `ref`: a symbol, a `0x` address, or a place through a POINTER (`[base]+0x28`,
-`base->field`), re-resolved each stop; a capture's `ref` is what each row HOLDS.
+  `base->field`), re-resolved each stop; a capture's `ref` is what each row HOLDS.
 - `fmt`: a scalar (`u8` .. `f64`), an array (`u16[8]`), a string
-(`char[16]`) or a struct (`{x:i16,y:i16}`). `auto`: a typed symbol's type, else the WIDEST
-unsigned scalar `length` divides.
+  (`char[16]`) or a struct (`{x:i16,y:i16}`). `auto`: a typed symbol's type, else the WIDEST
+  unsigned scalar `length` divides.
 - `length`: TOTAL bytes, REQUIRED unless `fmt` is sized or the symbol is typed; at most
-128 for a show or capture watch, 1024 otherwise.
+  128 for a show or capture watch, 1024 otherwise.
 - `by`: `auto` unless forced.
 - `cpu`: its cpu, else the visible one.
 - `condition` (change only): stop only on a write it holds for (`breakpoint_at`'s grammar
-on the row's cpu; `wpdata` is the value written).
+  on the row's cpu; `wpdata` is the value written).
 - `trigger`, `trigger_type` (capture only): the symbol or `0x` address whose WRITES (`w`)
-or READS (`r`: of `ref` itself; no length, fmt or block) make rows.
+  or READS (`r`: of `ref` itself; no length, fmt or block) make rows.
 - `space`: `io` when `ref` (count) or `trigger` (capture) is a `0x` PORT; session-only.
 
 Refused: a change watch on an unmapped write; a count range splitting a bus word;
