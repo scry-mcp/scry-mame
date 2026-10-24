@@ -15,6 +15,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from scry_core import judges
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -189,8 +190,8 @@ def set_register(ses: gs.Session, name: str, value: int, cpu: str = "") -> dict[
             f"{register} is {bits} bits on this cpu and {value:#x} does not fit it")
     ses.set_reg(name, value, thread=thread)
     back = ses.reg(name, thread=thread)
-    return menvelope.envelope({"register": register, "value": read.hex_at_width(value, bits),
-                               "readback": read.hex_at_width(back, bits),
+    return menvelope.envelope({"register": register, "value": judges.hex_at_width(value, bits),
+                               "readback": judges.hex_at_width(back, bits),
                                "verified": back == value,
                                "cpu": or_unavailable(on, st.NO_CPU_READ_WHY)})
 

@@ -52,6 +52,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from scry_core import judges
 from scry_core import value_format as vf
 from scry_core.reply_contract import unavailable
 
@@ -392,8 +393,8 @@ def row_fields(row: Row, fmt: str, width: int,
         "frame": unavailable(NO_SCREEN_WHY) if row.frame == callbacks.NO_FRAME else row.frame,
         "line": unavailable(NO_SCREEN_WHY) if row.line == callbacks.NO_FRAME else row.line,
         "time_s": row.time_attoseconds / ATTOSECONDS_PER_SECOND, "pc": st.hex_addr(row.pc),
-        "data": read.hex_at_width(row.data, data_width),
-        "mask": read.hex_at_width(row.mask, data_width)}
+        "data": judges.hex_at_width(row.data, data_width),
+        "mask": judges.hex_at_width(row.mask, data_width)}
     if fmt:
         out["raw_hex"] = row.block.hex()
     read.add_symbol(out, row.pc, cpu)

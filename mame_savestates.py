@@ -16,7 +16,7 @@ import struct
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from scry_core import state_files
+from scry_core import judges, state_files
 from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
@@ -242,7 +242,7 @@ def _shown(ses: gs.Session, cpu: str, reg: str, text: str | None) -> str | dict[
         value = int.from_bytes(bytes.fromhex(text), lay.byte_order)
     except gs.UnknownByteOrder:
         return text
-    return read.hex_at_width(value, lay.register_bits.get(reg, len(text) * 4))
+    return judges.hex_at_width(value, lay.register_bits.get(reg, len(text) * 4))
 
 
 class Judgement(NamedTuple):

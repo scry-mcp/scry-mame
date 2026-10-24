@@ -58,7 +58,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from scry_core import fresh, png, prose
+from scry_core import fresh, judges, png, prose
 from scry_core import progress as mprogress
 from scry_core import raster as core_raster
 from scry_core import vocabulary as vocab
@@ -137,7 +137,7 @@ class Film:
     def shown(self, value: int) -> str:
         """A value at the trigger's width, as every reply of the film spells one: the written
         value, a hit's and the baseline."""
-        return read.hex_at_width(value, 8 * self.length)
+        return judges.hex_at_width(value, 8 * self.length)
 
     def fields(self) -> dict[str, Any]:
         out: dict[str, Any] = {

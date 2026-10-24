@@ -14,7 +14,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import prose
+from scry_core import judges, prose
 from scry_core.reply_contract import or_unavailable, unavailable
 
 import gdb_session as gs
@@ -176,14 +176,6 @@ def rest_reading(ses: gs.Session) -> int | float:
     return seconds
 
 
-def hex_at_width(value: int, bits: int) -> str:
-    """A value as hex at its declared width, written `0x` as a value argument takes it back
-    (`inputs.number_arg`): a width that is not a multiple of four rounds UP to the next whole
-    digit, because a value cannot be shown in a fraction of one. The one formatter every reply
-    that prints a register, or the value a write landed, goes through."""
-    return f"{value:#0{2 + (bits + 3) // 4}x}"
-
-
 def fmt_regs(ses: gs.Session, thread: int) -> dict[str, str]:
     """Every register of `thread`'s cpu, printed at ITS OWN declared width. The one formatter
     both readers use.
@@ -195,7 +187,8 @@ def fmt_regs(ses: gs.Session, thread: int) -> dict[str, str]:
     next whole hex digit, because a value cannot be shown in a fraction of one.
     """
     bits = ses.layout(thread).register_bits
-    return {n: hex_at_width(v, bits.get(n, 32)) for n, v in ses.registers(thread=thread).items()}
+    return {n: judges.hex_at_width(v, bits.get(n, 32))
+            for n, v in ses.registers(thread=thread).items()}
 
 
 def check_registers(from_last_stop: bool = False, cpu: str = "", **_: Any) -> None:
