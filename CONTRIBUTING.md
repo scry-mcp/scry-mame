@@ -35,7 +35,9 @@ the run's host, as the committed examples do):
 uv run python -m scry_core.reference server:REFERENCE --write
 uv run python -m scry_core.reference server:REFERENCE --write \
     --examples <transcript.jsonl ...> --mark '/tmp/<the run>=$TMPDIR'
-``` The commit itself runs scry-core's pre-commit (`python -m scry_core.hook --help` says what it checks): enable it once per clone with
+```
+
+The commit itself runs scry-core's pre-commit (`python -m scry_core.hook --help` says what it checks): enable it once per clone with
 
 ```sh
 git config core.hooksPath .githooks

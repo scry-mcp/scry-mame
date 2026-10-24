@@ -3996,8 +3996,8 @@ def test_a_renamed_log_channel_reaches_the_call_that_creates_the_file(
 
     Every consumer in that test READS a log. The one call that OPENS the file MAME's stdout is
     captured into lives inside `boot`, behind a launch, so a gate that never launches cannot
-    see it: reverting that one line to the literal leaves the whole mame
-    suite green. A writer spelling one name while every reader spells
+    see it: this is the one case that goes red when that line reverts to the literal. A writer
+    spelling one name while every reader spells
     another produces an empty log and a session that looks quiet."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
@@ -4155,12 +4155,13 @@ def test_env_carrying_the_background_hint_is_refused_before_any_emulator(
         "a start that did not start owns nothing")
 
 
-def test_a_system_this_build_does_not_carry_refuses_the_start_before_any_emulator(
+def test_a_system_this_build_does_not_carry_refuses_the_start_in_mame_s_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """Each repository ships its own narrow MAME, so which systems exist is the BINARY's
-    answer. `start` asks it before it boots, and a system it does not carry is refused in
-    MAME's own words instead of as a gdbstub that never answers after the whole `wait`."""
+    answer. `start` asks it beside the boot, and a system it does not carry is refused in
+    MAME's own words, the emulator killed, instead of as a gdbstub that never answers after the
+    whole `wait`."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
