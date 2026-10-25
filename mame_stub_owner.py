@@ -107,9 +107,7 @@ def tcp_rows(table: bytes, family: int) -> list[TcpRow]:
 
 def _tcp_table(family: int) -> bytes:
     """Windows' TCP table for `family`, as `GetExtendedTcpTable` answers it."""
-    if sys.platform != "win32":
-        raise StubUnproved("the TCP table is read on Windows only")
-    else:
+    if sys.platform == "win32":
         import ctypes
         from ctypes import wintypes
 
@@ -126,6 +124,8 @@ def _tcp_table(family: int) -> bytes:
                 return buf.raw
         raise StubUnproved(f"`GetExtendedTcpTable` answered {rc}, so no process can be "
                            "proved to serve the gdbstub's port")
+    else:
+        raise StubUnproved("the TCP table is read on Windows only")
 
 
 def _windows_rows() -> list[TcpRow]:
