@@ -117,7 +117,8 @@ class _Pane(SessionFields):
             return captured("comdelete.ok.txt")
         if command.startswith("dasm "):
             name, addr, _length, _flag, cpu = command[5:].split(",")
-            (self.scratch / name).write_text(self.line(cpu, int(addr, 16)) + "\n")
+            (self.scratch / name).write_text(self.line(cpu, int(addr, 16)) + "\n",
+                                             encoding="utf-8")       # MAME writes UTF-8
             return ""
         raise AssertionError(f"the double was sent {command!r}")
 

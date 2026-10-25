@@ -99,10 +99,17 @@ class Answer:
         self.thread_errors, self.reruns = thread_errors, reruns or []
 
 
+def _echo(raw: bytes, line: str) -> tuple[int, int]:
+    """Where `line`'s echo starts in `raw` and how long it is, or (-1, 0). MAME on Windows writes
+    its stdout in text mode, so a line there ends in CRLF."""
+    found = [(i, len(e)) for e in ((line + "\r\n").encode(), (line + "\n").encode())
+             if (i := raw.find(e)) >= 0]
+    return min(found) if found else (-1, 0)
+
+
 def find_answer(scratch: Path, line: str, seq: int) -> tuple[Answer | None, bytes]:
     """One look for the text between `line`'s echo and `seq`'s sentinel; also the bytes read."""
     log = files.log_path(scratch, "process")
-    echo = (line + "\n").encode()
     sentinel = f"{st.sentinel_line(seq)}\t".encode()
     raw = b""
     if log.exists():
@@ -110,15 +117,15 @@ def find_answer(scratch: Path, line: str, seq: int) -> tuple[Answer | None, byte
             fh.seek(STATE.console_mark)
             raw = fh.read()
     count_deaths(scratch)
-    i = raw.find(echo)
-    j = raw.find(sentinel, i + len(echo)) if i >= 0 else -1
+    i, echoed = _echo(raw, line)
+    j = raw.find(sentinel, i + echoed) if i >= 0 else -1
     end = raw.find(b"\n", j) if j >= 0 else -1
     if end < 0:
         return None, raw
     STATE.console_mark += end + 1
-    outcome = raw[j + len(sentinel):end].decode("utf-8", errors="replace")
+    outcome = raw[j + len(sentinel):end].rstrip(b"\r").decode("utf-8", errors="replace")
     ok, _, error = outcome.partition("\t")
-    text = raw[i + len(echo):j].decode("utf-8", errors="replace")
+    text = raw[i + echoed:j].replace(b"\r\n", b"\n").decode("utf-8", errors="replace")
     consumed = raw[:end]
     reruns = reruns_in(consumed, seq)
     STATE.lua_answered = max(STATE.lua_answered, seq)
@@ -201,7 +208,7 @@ def eaten(raw: bytes, line: str) -> bool:
     Two shapes after the echo: the reader died holding it, or the console reported the line's
     own `error:` and returned the prompt (`_CONSOLE_ERROR`).
     """
-    i = raw.find((line + "\n").encode())
+    i, _ = _echo(raw, line)
     if i < 0:
         return False
     after = raw[i:]
@@ -216,9 +223,8 @@ def passed_over(raw: bytes, line: str) -> bool:
     the echo. Only for the server's own chunks: a caller's script can print the prompt and hang."""
     if eaten(raw, line):
         return True
-    echo = (line + "\n").encode()
-    i = raw.find(echo)
-    return i >= 0 and CONSOLE_PROMPT in raw[i + len(echo):]
+    i, echoed = _echo(raw, line)
+    return i >= 0 and CONSOLE_PROMPT in raw[i + echoed:]
 
 
 def emulator_gone() -> int | None:

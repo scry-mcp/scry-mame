@@ -202,6 +202,7 @@ def test_the_draft_carries_the_clowns_command_and_loads(monkeypatch: pytest.Monk
     assert ": 1 format (1 proved), 1 asset, 1 command" in out["summary"], out["summary"]
     text = Path(out["manifest"]["path"]).read_text()
     assert text.split("\n", 1)[0] == mm.DRAFT_MARKER
+    assert b"\r" not in Path(out["manifest"]["path"]).read_bytes(), "the same bytes on every host"
     doc = mame_yaml.loads(text)
     cmd = doc["commands"]["write_2000"]
     assert cmd["fire"]["address"] == 0x2000 and "value" not in cmd["fire"]
@@ -214,6 +215,10 @@ def test_the_draft_carries_the_clowns_command_and_loads(monkeypatch: pytest.Monk
         assert not re.search(r"\b\d+\b", prose), f"a figure in the draft's source: {prose}"
     loaded = s.gfx_load(path=out["manifest"]["path"])
     assert loaded["status"] == "ok" and loaded["draft"] is True, loaded
+    crlf = tmp_path / "edited-gfx.yaml"            # saved again by an editor that writes CRLF
+    crlf.write_bytes(Path(out["manifest"]["path"]).read_bytes().replace(b"\n", b"\r\n"))
+    assert s.gfx_load(path=str(crlf))["draft"] is True, "a CRLF draft read as a finished manifest"
+    loaded = s.gfx_load(path=out["manifest"]["path"])
     # THE COMMAND READS THE ROWS AS THE CORRELATION DID: the row of frame 606 places the clown
     # where the screen of frame 607 showed it.
     rows = mblits.read_rows(ses.scratch, mm.command("write_2000"), 606, 608)

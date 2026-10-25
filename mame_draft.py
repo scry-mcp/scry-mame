@@ -663,7 +663,7 @@ def _written(out: Path, report: Path) -> tuple[_Draft, str, str]:
              for path, content in ((report, report_text), (out, text))]
     try:
         for tmp, _, content in aside:
-            tmp.write_text(content, encoding="utf-8")
+            tmp.write_text(content, encoding="utf-8", newline="")    # LF on every host
         for tmp, path, _ in aside:
             os.replace(tmp, path)
     except OSError as e:

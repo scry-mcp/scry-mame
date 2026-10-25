@@ -1,8 +1,11 @@
 import os
+import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
+from scry_core import host_program
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -78,3 +81,21 @@ def test_the_boot_script_quotes_a_harness_path_holding_a_quote_or_a_backslash(
     literal = (str(harness.resolve()).replace("\\", "\\\\").replace('"', '\\"')
                .replace("\n", "\\n"))
     assert text.rstrip("\n").split("\n")[-1] == f'dofile("{literal}")', text[-300:]
+
+
+def test_the_consoles_stdin_holds_what_the_posix_pipe_holds_before_a_writer_blocks() -> None:
+    """Lines queue there while the machine is stopped, and a full pipe blocks the writer with no
+    bound: Windows' own default holds a sixteenth of it."""
+    proc = launch.console_popen([host_program.INTERPRETER, "-c", "import time; time.sleep(30)"],
+                                stdout=subprocess.DEVNULL)
+    try:
+        pipe = proc.stdin
+        assert pipe is not None
+        writer = threading.Thread(target=lambda: (pipe.write(b"x" * launch.CONSOLE_PIPE_BYTES),
+                                                  pipe.flush()), daemon=True)
+        writer.start()
+        writer.join(5.0)
+        assert not writer.is_alive(), "the writer blocked short of the pipe's capacity"
+    finally:
+        proc.kill()
+        proc.wait()

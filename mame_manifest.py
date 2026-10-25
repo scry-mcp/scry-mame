@@ -683,7 +683,7 @@ def read(path: str) -> Manifest:
     try:
         text = data.decode("utf-8")
         man = parse(mame_yaml.loads(text), str(file), hashlib.sha256(data).hexdigest())
-        return dataclasses.replace(man, draft=text.split("\n", 1)[0] == DRAFT_MARKER)
+        return dataclasses.replace(man, draft=text.splitlines()[:1] == [DRAFT_MARKER])
     except UnicodeDecodeError as e:
         raise files.not_utf8(str(file), e, **still) from None
     except (mame_yaml.YamlError, ManifestError) as e:

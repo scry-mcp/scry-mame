@@ -15,6 +15,7 @@ import io
 import json
 import os
 import re
+import sys
 import tracemalloc
 from pathlib import Path
 from typing import Any
@@ -607,6 +608,8 @@ def test_a_failed_arming_whose_close_breaks_the_session_says_so(board: Any) -> N
     assert out["code"] == "session_broken" and "may still be armed" in out["message"].lower()
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="its file name passes the 260 characters a Windows path holds")
 def test_an_arming_answer_the_console_wrapped_is_read_whole(board: Any) -> None:
     """A path long enough to carry the answer past the console's column comes back cut hard
     there, as MAME's wrap cuts a line with no space to break at."""

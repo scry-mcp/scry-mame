@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -248,6 +249,31 @@ def judge_background(background: bool | None, shared: bool, env: dict[str, str] 
             f"`env` sets {BACKGROUND_VAR}, which is what `background` sets: pass "
             "`background=True` or `background=False` instead")
     return not shared if background is None else background
+
+
+#: What the console's stdin holds unread, as a POSIX pipe does: lines queue there while the machine
+#: is stopped, and a full pipe blocks the writer with no bound. Windows' default holds 4 KiB.
+CONSOLE_PIPE_BYTES = 65536
+
+
+def console_popen(cmd: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
+    """`cmd` started with a writable stdin of `CONSOLE_PIPE_BYTES`."""
+    if sys.platform == "win32":
+        import _winapi
+        import msvcrt
+        read, write = _winapi.CreatePipe(None, CONSOLE_PIPE_BYTES)
+        read_fd = msvcrt.open_osfhandle(read, os.O_RDONLY)
+        try:
+            proc = subprocess.Popen(cmd, stdin=read_fd, **kwargs)
+        except BaseException:
+            _winapi.CloseHandle(write)
+            raise
+        finally:
+            os.close(read_fd)
+        proc.stdin = open(msvcrt.open_osfhandle(write, 0), "wb")  # noqa: SIM115 (the proc's)
+        return proc
+    else:
+        return subprocess.Popen(cmd, stdin=subprocess.PIPE, **kwargs)
 
 
 def launch_environment(given: dict[str, str], background: bool) -> dict[str, str]:
@@ -718,8 +744,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     STATE.stdout_log = open(files.log_path(STATE.scratch, "process"),  # noqa: SIM115 (kill closes)
                             "wb")
     # stdin is the Lua console's; unconnected it reads end-of-file and stops for good.
-    STATE.proc = subprocess.Popen(
-        cmd, stdin=subprocess.PIPE, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
+    STATE.proc = console_popen(
+        cmd, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
         env=launch_environment(given, judged.background), cwd=STATE.scratch,
     )
     if (ledger := live_host.EmulatorLedger.from_environment()) is not None:

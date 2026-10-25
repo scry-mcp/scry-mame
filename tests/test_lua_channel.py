@@ -185,7 +185,9 @@ def test_start_hands_mame_a_stdin_pipe(monkeypatch: pytest.MonkeyPatch, tmp_path
     _stub_boot(monkeypatch, tmp_path, image, 0)
     s.start(**_boot_args(tmp_path, image))
     try:
-        assert _StubProcess.last_kwargs["stdin"] == subprocess.PIPE
+        stdin = _StubProcess.last_kwargs["stdin"]
+        # Windows': the read end of `CONSOLE_PIPE_BYTES`, created by the server itself
+        assert (isinstance(stdin, int) if sys.platform == "win32" else stdin == subprocess.PIPE)
     finally:
         s.close()
 
@@ -1089,6 +1091,20 @@ def test_an_answer_is_cut_at_its_own_line_whatever_follows_it_in_the_same_look(
     answer, _ = transport.find_answer(tmp_path, ok_line, 3)
     assert answer is not None and answer.ok is True and answer.error == ""
 
+
+def test_a_console_that_ends_its_lines_in_crlf_is_read_as_one_that_ends_them_in_lf(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """MAME on Windows writes its stdout in text mode, the echo and the sentinel included."""
+    line = transport.chunk_line("print(1)", 1)
+    log = line.encode() + b"\r\nout\r\nMAME_MCP_LUA_END#1\ttrue\t42\r\n" + PROMPT
+    scratch = _scratch_logging(tmp_path, monkeypatch, log)
+    monkeypatch.setattr(mstate.STATE, "lua_seq", 1)
+    answer, _ = transport.find_answer(scratch, line, 1)
+    assert answer is not None and (answer.ok, answer.text, answer.error) == (True, "out\n", "")
+    assert transport.passed_over(log, line) is True and transport.eaten(log, line) is False
+    died = line.encode() + b"\r\n" + transport.THREAD_ERROR + b" boom\r\n"
+    assert transport.eaten(died, line) is True
 
 def test_a_resent_line_the_reader_is_late_for_is_stepped_for_like_any_other(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path

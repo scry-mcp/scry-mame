@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -936,6 +937,8 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     ses = _RecordingSession()
     proc = _ExitingProcess(ses.events, exits=True)
     mstate.STATE.ses, mstate.STATE.proc = ses, proc  # type: ignore[assignment]
+    fd, tmp_log = tempfile.mkstemp()
+    os.close(fd)                        # Windows removes no file a descriptor still holds
     dirty: dict[str, Any] = {
         "captures": [("avi", "/x/record-1.avi")],
         "guard": subprocess.Popen(["sleep", "60"]),
@@ -975,7 +978,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "session_origin": "s9", "fingerprints": {":old": "fp9"},
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
-        "stdout_log": open(tmp_log := tempfile.mkstemp()[1], "wb"),  # noqa: SIM115 (kill closes it)
+        "stdout_log": open(tmp_log, "wb"),  # noqa: SIM115 (kill closes it)
         "presence": presence_mod.Shown(held=_ClosedPresence()),  # type: ignore[arg-type]
     }
     fresh = mstate.State()
@@ -1341,6 +1344,8 @@ def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> 
     assert r["summary"].startswith("image_compare image: no pixel differs"), r["summary"]
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="behind a `.cmd`, the double's own pid is not the one launched")
 def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_included(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The run's proof that no emulator outlived it reads this ledger."""
