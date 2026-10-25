@@ -5,6 +5,7 @@ Every failure is a controlled edit of one of them, never a header written from b
 
 import gzip
 import json
+import os
 import re
 import struct
 import sys
@@ -771,7 +772,7 @@ def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list
              + maudio.AUDIO_LUA % {"path": transport.lua_string(str(tmp_path / "ours.wav")),
                                    "frames": frames, "mark": "MAME_MCP_AUDIO#1"}
              + after + "\n")
-    return [ln.replace(str(tmp_path) + "/", "") for ln in run_host_lua(chunk, tmp_path)]
+    return [ln.replace(str(tmp_path) + os.sep, "") for ln in run_host_lua(chunk, tmp_path)]
 
 
 def test_the_lua_mixer_double_closes_a_file_as_mames_did(tmp_path: Path) -> None:
