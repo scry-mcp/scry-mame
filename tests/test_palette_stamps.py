@@ -1,13 +1,4 @@
-"""WHEN a palette write happened, as a capture row says it: each EVENT row of `palette_log` (an
-index write, a data write, a desync) carries the beam line and the emulated time of that write,
-derived by `capture.BEAM_LINE_LUA`, the one derivation both taps take. The stamp goes at the END of
-a row, so the positional `gsub` that decides a row's writer at the next stop still matches; the
-per-pen aggregates of the dump (`w`, `p`) are unchanged.
-
-WHAT A ROW HOLDS IS JUDGED BY RUNNING THE SCRIPT: the install is executed by this host's `lua`
-against a machine the chunk below stands in for, with 1942's screen (`set_raw(6 MHz, 384, 0, 256,
-262, 16, 240)`), and the rows it dumps are read back the way the server reads them.
-"""
+"""Each EVENT row of `palette_log` carries the beam line and emulated time of its write."""
 
 from __future__ import annotations
 
@@ -27,9 +18,8 @@ PIXEL_S = 1 / 6_000_000
 SCAN_S = 384 * PIXEL_S
 FRAME_S = 262 * SCAN_S
 
-#: One 68000 whose program space records its taps, 1942's screen, and a clock the accesses set.
-#: The debugger is at a stop with the park stamped at another time, so every write is UNDECIDED
-#: (`?`) until the dump decides it: the positional `gsub` has to match a stamped row.
+#: The park is stamped at another time, so every write is undecided (`?`) until the dump decides
+#: it: the positional `gsub` has to match a stamped row.
 HOST = f"""
 TAPS = {{}}
 local sp = {{data_width = 16, endianness = "big"}}
@@ -56,8 +46,7 @@ emu = {{register_periodic = function(f) PERIODIC = f end,
 
 
 def _write(port: int, value: int, seconds: int, attoseconds: int, line_s: float) -> str:
-    """One byte written to `port` (odd: the low lane of its big-endian word) at that time,
-    `line_s` seconds into the frame."""
+    """One byte written to `port` (odd: the low lane of its big-endian word)."""
     return (f"NOW = {{seconds = {seconds}, attoseconds = {attoseconds}}}\n"
             f"UNTIL = {FRAME_S!r} - {line_s!r}\n"
             f"for _, tp in ipairs(TAPS) do if tp.lo == {port & ~1:#x} then "
@@ -84,10 +73,8 @@ def test_each_event_row_carries_the_line_and_time_of_its_own_write(tmp_path: Pat
                                                   2 * capture.ATTOSECONDS_PER_SECOND + 6,
                                                   2 * capture.ATTOSECONDS_PER_SECOND + 7,
                                                   3 * capture.ATTOSECONDS_PER_SECOND]
-    # THE WRITER WAS DECIDED AT THE DUMP: every row was written `?` at a stop, and a row the
-    # positional `gsub` missed would still say `?`, which no reader parses.
-    # The dump decides against the clock it reads: the last write shares it, so it is the
-    # debugger's, and the three before it the guest's.
+    # a row the positional `gsub` missed would still say `?`; the last write shares the dump's
+    # clock, so it is the debugger's
     assert [r.by for r in rows] == ["guest", "guest", "guest", "debugger"], rows
 
 
@@ -100,8 +87,7 @@ def test_a_desync_row_carries_the_line_and_time_of_the_reset(tmp_path: Path) -> 
 
 
 def test_a_row_written_before_the_stamp_still_reads() -> None:
-    """A rows file of a log armed before the stamp existed (the captured fixtures are) reads as
-    it did, with no line and no time."""
+    """A row from a log armed before the stamp reads with no line and no time."""
     (row,) = mr.rows_of(["i 1 900 bf6 g 10"])
     assert (row.kind, row.value, row.line, row.time_attoseconds) == ("i", 0x10, None, None)
 
@@ -120,8 +106,7 @@ def test_a_row_reply_says_when_and_spells_its_numbers_as_written() -> None:
 
 
 def test_the_line_is_derived_once_by_the_capture_s_own_function_after_the_screen() -> None:
-    """One derivation for both taps: the palette log's script carries `BEAM_LINE_LUA` itself,
-    once, where the `screen` it reads is already declared."""
+    """The palette log's script carries `BEAM_LINE_LUA` once, after `screen` is declared."""
     script = rlua.install_script(LOG_ID, _ramdac(), Path("/s/h.txt"), Path("/s/r.rows"), None)
     assert script.count(capture.BEAM_LINE_LUA) == 1, "the capture's derivation, verbatim"
     assert script.index("local screen = nil") < script.index(capture.BEAM_LINE_LUA)
@@ -129,8 +114,7 @@ def test_the_line_is_derived_once_by_the_capture_s_own_function_after_the_screen
 
 
 def test_a_row_cut_inside_its_stamp_ends_the_read() -> None:
-    """The attoseconds are written at their full eighteen digits: a row a reader sees half
-    appended, cut inside them, is no row, as a capture's time is read."""
+    """A row cut inside its eighteen-digit attoseconds is no row."""
     whole = "i 1 900 bf6 g 10 40 2 000000000000000005"
     assert [r.time_attoseconds for r in mr.rows_of([whole])] == [
         2 * capture.ATTOSECONDS_PER_SECOND + 5]

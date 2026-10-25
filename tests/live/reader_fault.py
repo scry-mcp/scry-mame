@@ -1,25 +1,13 @@
-"""The console reader faulted on demand, harness-side, for the cells that need a line the
-console takes and never runs: section K's installs (`live_matrix.py`) and removals
-(`matrix_removals.py`)."""
-
 import json
 import re
 from typing import Any
 
 from live_harness import call
 
-# THE CONSOLE READER, FAULTED ON DEMAND, harness-side and nothing in the server. The console
-# plugin's periodic hook holds its reader thread as the upvalue `conth` and reads `conth.busy`
-# and then `conth.result`, the line the reader took, once per run. A proxy put in its place
-# answers for the first `kills` lines carrying `target` an empty result, so the line is echoed
-# and never evaluated (`loud`, the reader's death line is printed behind the echo, the log
-# shape of a death; silent, only the next reader's prompt follows); and with `lag`, answers
-# `busy` for that many FRAMES once the reader holds the first such line, a line the hook has
-# not got to. Frames and not hook runs, because the hook runs once a frame on one board and
-# several times on another; the first line only, because a stopped machine moves no frame and
-# a lag on every line would hold the console for good; and a board with no screen has no frame
-# to count, so it is never held. The target is split, and so is the death line, so that
-# neither travels in the plant's own echo: the server would read either there as the fault.
+# Proxy over the hook's `conth` upvalue: the first `kills` lines carrying `target` are echoed
+# and never run; `lag` holds `busy` for that many frames (not hook runs, which vary by board)
+# after the first such line only. Target and death line are split so the plant's own echo
+# does not carry them to the server.
 READER_FAULT_LUA = """local target = %(target)s
 local found, seen = {}, {}
 local function scan(v, depth)
@@ -70,18 +58,15 @@ print("planted " .. #found)"""
 
 
 def reader_fault(target: str, kills: int = 0, loud: bool = True, lag: int = 0) -> dict[str, Any]:
-    """Fault the console's reader on the lines carrying `target` (`READER_FAULT_LUA`); a new
-    plant replaces the last one's counts and wraps the same reader."""
+    """Fault the console reader on lines carrying `target`."""
     half = len(target) // 2
     return call("lua", read_only=True, script=READER_FAULT_LUA % {
-        # A JSON string of printable ASCII is a Lua literal too.
         "target": f"{json.dumps(target[:half])} .. {json.dumps(target[half:])}",
         "kills": kills, "loud": str(loud).lower(), "lag": lag})
 
 
 def reader_fault_counts() -> tuple[int, int, int]:
-    """How many lines the planted fault killed, how many hook runs it held back and across how
-    many frames past the first; -1 each when it does not answer."""
+    """Lines killed, hook runs held, frames held; -1 each when unanswered."""
     r = call("lua", read_only=True, script=(
         'local K = _G.mcp_reader_fault or {fired = -1, lagged = -1, held = -1}\n'
         'print(string.format("fault %d %d %d", K.fired, K.lagged, K.held))'))

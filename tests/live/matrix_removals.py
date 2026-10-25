@@ -1,9 +1,4 @@
-"""Section K's removal cells: a tap's removal handed back unrun is lost and never resent, and a
-range declared again while its removal is held reads nothing the removed tap left.
-
-`live_matrix.py` runs these inside section K, on circus and m68k-dual, after the install cells
-that use the same instrument (`reader_fault`); every count watch here is cleared at the end.
-"""
+"""Section K's removal cells: a removal handed back unrun is lost, never resent."""
 
 from pathlib import Path
 from typing import Any
@@ -11,8 +6,7 @@ from typing import Any
 from live_harness import blocked, call, cell, ok, said
 from reader_fault import reader_fault, reader_fault_counts
 
-# A REMOVAL LINE carries this and an install line does not (`mame_tap.remove_script`); one
-# removal is in flight at a time here, so it names the one the cell sent.
+# Present in a removal line and absent from an install line (`mame_tap.remove_script`).
 REMOVAL_LINE = "T.items[id] = nil"
 
 K_REMOVALS = [
@@ -24,15 +18,12 @@ K_REMOVALS = [
 
 
 def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
-    """`K_REMOVALS` on a stopped machine, one count watch at each of `refs` (ranges the board
-    writes on its first cpu, the last of them at least once a frame, since its cell compares
-    a total), each installed and tallied before its removal is faulted."""
+    """`K_REMOVALS` on a stopped machine; `refs[2]` must be written at least once a frame."""
     def tid(ref: str) -> str:
         return f"{int(ref, 16):x}_{length}"
 
     def item(r: dict[str, Any], ref: str) -> dict[str, Any]:
-        """`ref`'s tap whole, after the call `r` answered: a stop's row is its count alone, and
-        whether it is installed or pending is `declaration_list(kind="watch")`'s."""
+        """`ref`'s tap whole: a stop's row is its count alone, installed/pending is the list's."""
         listed = call("declaration_list", kind="watch").get("watches") or []
         return next((w for w in listed if w.get("tally_id") == tid(ref)), {})
 
@@ -52,7 +43,7 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
         for _ in range(3):
             call("step")
         fired = reader_fault_counts()[0]
-        # A LATCHED ROW STAYS LISTED for the rest of the session, so an earlier cell's is there.
+        # A latched row stays listed for the session, so filter by tally id.
         rows = [r for r in call("declaration_list",
                                 kind="watch")["session"].get("tallies_not_removed") or []
                 if r.get("tally_id") == tid(ref)]
@@ -64,9 +55,8 @@ def k_removals(t: list[str], refs: tuple[str, str, str], length: int) -> None:
              f"before {before.get('state')}; fired {fired}; not removed {rows}; pending "
              f"{waiting}; removal echoes {echoes}")
 
-    # THE REMOVED TAP'S DUMP ON DISK: its removal held by the reader for three frames, so the
-    # dumper rewrites the range's file at the next stop while the tap is still registered,
-    # and the range is declared again behind it.
+    # The held removal lets the dumper rewrite the range's file while the tap is still
+    # registered; the range is then declared again behind it.
     ref = refs[2]
     old = tallied(ref)
     planted = reader_fault(REMOVAL_LINE, lag=3)
@@ -98,10 +88,7 @@ K_CAPTURE_LEFTOVER = ("a capture declared again after its removal ran reads no r
 
 
 def k_capture_leftover(t: str, ref: str, trigger: str) -> None:
-    """A capture of `ref` on writes to `trigger` (written once a frame) holds rows; its removal is
-    held so the dumper writes its rows file again while it is still registered, then runs, and
-    the range is declared again: the new rows file must start at row 1, with none of the
-    removed capture's rows before it."""
+    """The rows file of a capture declared again after its removal ran starts at row 1."""
     args = {"ref": ref, "mode": "capture", "fmt": "u16[2]", "trigger": trigger}
     first = call("watch_add", **args)
     scratch = Path(str(call("status").get("scratch_dir")))
@@ -110,13 +97,13 @@ def k_capture_leftover(t: str, ref: str, trigger: str) -> None:
     def rows() -> list[str]:
         return rows_path.read_text().splitlines() if rows_path.exists() else []
 
-    for _ in range(10):                              # until the capture holds rows of its own
+    for _ in range(10):
         call("run_for", frames=2, seconds=10.0)
         if len(rows()) >= 3:
             break
     planted = reader_fault(REMOVAL_LINE, lag=3)
     call("declaration_clear", kind="watch", ref=ref)
-    for _ in range(5):                               # held, rewritten, then run
+    for _ in range(5):
         call("run_for", frames=1, seconds=10.0)
     left = rows()
     again = call("watch_add", **args)
@@ -136,16 +123,13 @@ K_REDECLARE_LIVE = ("a range declared again over its live tap lists that tap's d
 
 
 def k_redeclare_live(t: str, ref: str, length: int) -> None:
-    """A count watch on `ref` (written every frame) installed and tallied, then declared again
-    with no removal: the listing before the new install answers reads the live tap's dump, whose
-    counts the new install carries; two frames on, the install has answered.
+    """Declared again with no removal, the listing before the new install answers reads the live
+    tap's dump.
 
-    THE NEW INSTALL IS HELD by the reader fault's lag until a frame moves: a stub that refreshes
-    the display after a console command takes a queued line at its next command (REFERENCE.md,
-    *The console*), so without the hold the window this reads in would not exist."""
+    The reader fault's lag holds the install: without it a queued line runs at the next console
+    command (REFERENCE.md, *The console*) and the pending window would not exist."""
     def item(r: dict[str, Any]) -> dict[str, Any]:
-        """`ref`'s tap whole, after the call `r` answered (`declaration_list(kind="watch")`'s, as
-        above)."""
+        """`ref`'s tap whole, as in `k_removals`."""
         listed = call("declaration_list", kind="watch").get("watches") or []
         return next((w for w in listed if w.get("ref") == ref), {})
 

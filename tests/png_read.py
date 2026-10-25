@@ -1,9 +1,6 @@
-"""A PNG reader for the suite: what a test decodes a written picture with, so an assertion is about
-the pixels and the palette in the file and not about the writer's own idea of them.
+"""A PNG reader for the suite, so tests assert on the file's own pixels and palette.
 
-Only what the server writes is read: 8-bit samples, indexed or RGB, filter none on every row, no
-interlace. Anything else is an assertion failure naming what it met, never a guess. Every chunk's
-CRC is checked, because a writer that got the CRC wrong writes a file every viewer refuses.
+Reads only what the server writes: 8-bit indexed or RGB, filter none, no interlace. Checks CRCs.
 """
 
 from __future__ import annotations
@@ -50,9 +47,7 @@ def read(data: bytes) -> Png:
 
 
 def read_animation(data: bytes) -> tuple[int, list[tuple[int, int]], list[Png]]:
-    """An APNG: its play count, each frame's delay (numerator, denominator) and each frame as a
-    picture. The sequence numbers of `fcTL` and `fdAT` are checked to run 0, 1, 2... in file
-    order, and `acTL`'s frame count against the frames found."""
+    """An APNG: play count, per-frame delays (num, den) and frames; sequence numbers checked."""
     chunks = _chunks(data)
     actl = [b for k, b in chunks if k == b"acTL"]
     assert len(actl) == 1, "an animation has one acTL"

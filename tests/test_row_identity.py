@@ -1,7 +1,4 @@
-"""A debugger row is known by its INDEX, and the address is only where it sits: one address
-can hold a row under each cpu, or a row this server armed beside one typed through `debug`,
-and the index that appeared when a call armed is the row it placed.
-"""
+"""A debugger row is known by its index; one address can hold several rows."""
 
 from __future__ import annotations
 
@@ -38,13 +35,11 @@ import server as s  # noqa: E402
 def test_a_row_typed_at_a_controls_address_is_foreign_and_ends_run_for(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control at 0x4a0, then `bpset 4a0` typed through `debug`. The
-    typed row stops the machine, and the address being the control's no longer makes its stop
-    the control's: `run_for` ends OTHER_STOP naming row 2 instead of resuming through it."""
+    """A row typed at a control's address ends `run_for` as OTHER_STOP."""
     chunk = _first_stop_through("3D").replace("breakpoint 1", "breakpoint 2")
     reg = _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, chunk, [])
     assert s.breakpoint_at(ref="0x4a0", role="control")["entry"] == "1 @ 0004A0 if (++temp0)==0"
-    bplist_add(reg, 0x4A0)                                   # `bpset 4a0`, typed
+    bplist_add(reg, 0x4A0)
     landed = reg.current_pc
     reg.current_pc = lambda: 0x4A0 if landed() == 0x400 else 0x100  # type: ignore[method-assign]
     out = s.run_for(frames=5, seconds=2.0)
@@ -55,8 +50,7 @@ def test_a_row_typed_at_a_controls_address_is_foreign_and_ends_run_for(
 
 
 def _sub_row_at_400(ses: _RunningSession) -> None:
-    """`bp 400:subcpu`, as `bplist.two-devices.txt` holds it: row 1 at 0x400 under the sub
-    cpu, while the main cpu is the visible one."""
+    """Row 1 at 0x400 under the sub cpu, while the main cpu is visible."""
     ses.bp_devices = {1: ":subcpu"}
     bplist_add(ses, 0x400)
 
@@ -64,8 +58,7 @@ def _sub_row_at_400(ses: _RunningSession) -> None:
 def test_a_row_under_the_other_cpu_is_not_adopted_by_a_declaration(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row at the same address under the OTHER cpu is not the declaration's.
-    The declaration arms its own row on the visible cpu, and the sub cpu's stays foreign."""
+    """A row at the same address under the other cpu stays foreign."""
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     out = s.breakpoint_at(ref="0x400")
@@ -78,8 +71,7 @@ def test_a_row_under_the_other_cpu_is_not_adopted_by_a_declaration(
 def test_starts_rearm_does_not_adopt_a_row_under_the_other_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The same at `start`: the re-arm arms the stored declaration on the visible cpu rather
-    than adopting the sub cpu's row at its address."""
+    """The `start` re-arm does not adopt the sub cpu's row."""
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     arming.store().add(dec.Declaration("breakpoint", "address", "0x400", origin="s0",
@@ -92,9 +84,7 @@ def test_starts_rearm_does_not_adopt_a_row_under_the_other_cpu(
 def test_breakpoint_clear_removes_its_own_row_by_index(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The stub's `z0` removes the FIRST row at the address on the visible cpu, which can be
-    another cpu's or a typed one: the clear names its own row by index, and the sub cpu's
-    row at the same address stays."""
+    """The clear removes its own row by index."""
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     s.breakpoint_at(ref="0x400")
@@ -108,11 +98,10 @@ def test_breakpoint_clear_removes_its_own_row_by_index(
 def test_a_typed_watch_row_on_an_armed_range_is_foreign(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A watchpoint typed through `debug` over the very range a watch of this server armed is
-    a second row, known by its index, and `declaration_list(kind="watch")` names it foreign."""
+    """A watchpoint typed over an armed watch's range is a second, foreign row."""
     ses = _watching(monkeypatch, tmp_path)
     assert s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32")["status"] == "ok"
-    wplist_add(ses, 0x2031FC, 4)                             # `wp 2031fc,4,w`, typed
+    wplist_add(ses, 0x2031FC, 4)
     assert s.declaration_list("watch")["foreign"] == {"watches": ["2 @ 2031FC-2031FF write"]}
 
 
@@ -122,8 +111,7 @@ def test_a_typed_watch_row_on_an_armed_range_is_foreign(
     ("Unknown command\n\n", None),
 ], ids=["main", "sub", "no-cpulist"])
 def test_the_visible_cpu_is_the_one_cpulist_marks(answer: str, visible: str | None) -> None:
-    """The console's `cpulist` marks the visible cpu with `*` (captured with each cpu
-    visible); a console that marks none leaves it unknown rather than guessed."""
+    """`cpulist` marks the visible cpu; none marked means unknown."""
     class Console(SessionFields):
         def monitor(self, command: str, timeout: float = 10.0) -> str:
             assert command == "cpulist"
@@ -135,8 +123,7 @@ def test_the_visible_cpu_is_the_one_cpulist_marks(answer: str, visible: str | No
 def test_with_no_cpulist_the_address_alone_decides_what_a_declaration_adopts(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A console that answers `cpulist` as a command it lacks names no visible cpu, and a
-    declaration then adopts an unowned row at its address, as it did before rows had a cpu."""
+    """With no visible cpu, a declaration adopts an unowned row."""
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     real = ses.monitor
@@ -148,8 +135,7 @@ def test_with_no_cpulist_the_address_alone_decides_what_a_declaration_adopts(
 
 
 def test_a_console_that_fails_under_cpulist_leaves_the_cpu_unknown() -> None:
-    """The cpu annotates a reply that read something else: a console that raises under
-    `cpulist` leaves it unknown, and never guessed."""
+    """A console that raises under `cpulist` leaves the cpu unknown."""
     class Failing:
         def monitor(self, command: str, timeout: float = 10.0) -> str:
             raise gs.ConnectionFailed("the stub closed the connection")
@@ -161,8 +147,7 @@ def test_a_console_that_fails_under_cpulist_leaves_the_cpu_unknown() -> None:
 def test_a_watch_declared_again_on_its_cpu_after_a_stop_on_the_other_keeps_its_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A stop on the sub cpu makes it the visible one; declaring the main cpu's watch again,
-    naming its cpu, must find the row it already owns, not stack a second one beside it."""
+    """Re-declaring a watch finds its existing row."""
     ses = _watching(monkeypatch, tmp_path)
     assert s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32")["index"] == 1
     ses.visible_cpu = ":subcpu"
@@ -174,9 +159,7 @@ def test_a_watch_declared_again_on_its_cpu_after_a_stop_on_the_other_keeps_its_r
 def test_a_watch_re_armed_after_a_pass_takes_only_a_row_under_its_own_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A pass re-sends each watch with its cpu named, so the row it reads back is the one under
-    that cpu: a new row the list shows under another cpu is not this watch's, and the reply
-    says the watch did not come back rather than adopting it."""
+    """A row reappearing under another cpu is not adopted."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="FRAME_LO", mode="change", length=4, fmt="u32")
     ses.wp_devices = {2: ":subcpu"}  # type: ignore[attr-defined]
@@ -189,8 +172,7 @@ def test_a_watch_re_armed_after_a_pass_takes_only_a_row_under_its_own_cpu(
 def test_starts_rearm_tells_the_sessions_own_row_from_an_inherited_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Each row of the re-arm is the one `arming.decl_row` builds for its own declaration, so a
-    row this session's origin stamped reads `inherited: false` beside one another session left."""
+    """Re-armed rows read `inherited` by origin."""
     ses = _running(monkeypatch, tmp_path)
     own = mstate.STATE.session_origin
     arming.store().add(dec.Declaration("breakpoint", "address", "0x400", origin=own,

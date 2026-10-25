@@ -1,36 +1,24 @@
 """A watch that COUNTS: every write to a range over a pass, by value and by writer, never
 stopping for one.
 
-WHY IT EXISTS. A change watch answers "who wrote this byte" by stopping at the first write,
-and a census asks the other question: which values does this register take over a whole
-attract pass, and from which pcs. `disarm_watches` disarms the change watches for a pass, so a
-held pass counts nothing and reads exactly like an address nobody writes. Every census on
-the blitter boards went through a Lua write tap written by hand in each session; this is
-that tap, composed by the server, keyed by a declaration, read back at every stop.
+A change watch stops at the first write; a census needs every value a register takes over a
+pass and from which pcs. `disarm_watches` disarms change watches, so a held pass counts nothing.
 
-THE MECHANISM, on a 68000 board. `space:install_write_tap` calls its function once
-per BUS write with the access offset, the data and the lane mask: a `move.l` arrives as two
-word events, a `move.b` as a word carrying the byte on both lanes with the mask naming the
-one that lands. `cpu.state["CURPC"]` inside the callback is the writing instruction's own
-pc (`PC` is the prefetch, two bytes on). `emu.register_periodic` runs per frame while the
-machine runs and several times at every debugger stop, where the debugger's
-`execution_state` reads `stop`: that is where each tally is written to a file in the
-scratch, whole, through a rename, and the stop survey reads it. The tap and the registry
-live in the MAME process's `_G`, so a new `start` begins clean and `rearm` sends the
-installs again.
+`space:install_write_tap` calls its function once per BUS write with offset, data and lane
+mask: a `move.l` arrives as two word events, a `move.b` as a word with the mask naming the
+lane that lands. `cpu.state["CURPC"]` in the callback is the writing instruction's own pc
+(`PC` is the prefetch, two bytes on). `emu.register_periodic` also runs at debugger stops,
+where each tally is written whole to a file in the scratch through a rename. The tap and the
+registry live in the MAME process's `_G`: a new `start` begins clean, `rearm` reinstalls.
 
-IDEMPOTENT BY ID, because the console's reader dies now and then and the console then runs
-an earlier chunk AGAIN (`console_reruns`): the probe's tap was installed twice and every
-write counted twice. An install removes the tap already held under its id and CARRIES ITS
-COUNTS into the new one, so a rerun neither doubles nor zeroes a census. A
-`declaration_clear(kind="watch")`
-removes the tap, so a clear followed by a new declaration starts from zero. How a tap is sent,
-proved, removed and read is every tap's (`mame_tap`).
+Idempotent by id: the console reruns an earlier chunk after its reader dies
+(`console_reruns`), so an install removes the tap held under its id and carries its counts
+into the new one; `declaration_clear(kind="watch")` removes the tap, so the next declaration
+starts from zero. Sending, proving, removing and reading a tap is `mame_tap`.
 
-THE TAP IS THE HOT PATH: a blitter register takes hundreds of thousands of writes per
-line. What the callback does per write is what the census costs, so the writer's state
-entry is looked up once at install, the value key is an integer and never a formatted
-string, and a range that is bus-aligned skips the lane test altogether.
+The callback is the hot path (hundreds of thousands of writes per line): the writer's state
+entry is looked up once at install, the value key is an integer, and a bus-aligned range
+skips the lane test.
 """
 
 from __future__ import annotations
@@ -51,14 +39,9 @@ import mame_tap as mtap
 import mame_transport as transport
 from mame_state import STATE
 
-# The Lua registry every tally hangs from, in the MAME process's `_G`.
 REGISTRY = "MCP_TALLY"
-# Distinct values and distinct writer pcs a tally keeps buckets for. Past the cap a write
-# still counts in `total` and in `overflow_values` / `overflow_pcs`, so a table that was
-# cut says so instead of looking complete. A 16-bit register has at most 65536 values and
-# a handful of writers; a tally that overflows is one on a byte of a buffer.
+# Past the cap a write still counts in `total` and `overflow_*`, so a cut table says so.
 BUCKETS_MAX = 256
-# The prefix of a count watch's dump.
 HEADER = "MCP_TALLY"
 _HEAD = re.compile(
     rf"^{HEADER} (\S+) seq=(\d+) frame=(-?\d+) total=(\d+) values=(\d+) pcs=(\d+) "
@@ -68,13 +51,9 @@ _PC = re.compile(r"^p ([0-9a-f]+) (\d+)$")
 
 
 def id_for(cpu: str | None, addr: int, width: int, space: str = "program") -> str:
-    """The id a range is tallied under: in the Lua registry, in the dump's name and in every
-    reply, as `tally_id`. The range itself on its cpu, so two declarations of one range (two
-    spellings of one address) meet the same tap and the second install adopts the first, and
-    the same range on another cpu, another program's memory, is another tap. The first cpu's
-    id is the range alone and another cpu's carries its tag without the colons, since the id
-    names a file. A range in another space than the program's carries it (`@io`): port 6 and
-    RAM address 6 are two places."""
+    """The `tally_id` of a range on its cpu and space, also the dump's file name (hence no
+    colons in a cpu tag); the first cpu's id is the range alone, and a space other than
+    the program's is suffixed (`@io`)."""
     tag = "" if cpu in (None, STATE.first_cpu) else "_" + str(cpu).strip(":").replace(":", ".")
     return f"{addr:x}_{width}{tag}{mspace.suffix(space)}"
 
@@ -85,16 +64,12 @@ def dump_path(scratch: Path, tally_id: str) -> Path:
 
 def install_script(tally_id: str, addr: int, width: int, path: Path,
                    cpu: str | None = None, space: str = "program") -> str:
-    """The Lua that installs the tally `tally_id` over `width` bytes at `addr`, dumping to
-    `path`. One chunk, so `local`s hold across its lines, on `cpu` (`mtap.bound_cpu`). THE TAP
-    IS INSTALLED OVER THE BUS WORDS the range touches and the callback keeps only the writes that
-    LAND inside it: MAME refuses a tap whose ends are not bus-aligned (a one-byte tap
-    on the 16-bit 68000 bus answers "end address has low bits unset"), and a word write next to
-    the range would otherwise count for it. The value key packs the masked data and the
-    mask into one integer under the offset, so a write costs no string. WITH NO TAP OF THE
-    RANGE IN THE REGISTRY, a dump at `path` is a removed tap's (the dumper rewrites it at every
-    stop until the removal runs), so the install deletes it and the first dump read after it
-    is this tap's; with one there, the install carries its counts and the file says the same."""
+    """The one-chunk Lua that installs the tally over `width` bytes at `addr` on `cpu`.
+
+    The tap covers the bus words the range touches (MAME refuses a tap not bus-aligned: "end
+    address has low bits unset") and the callback keeps only writes that land inside. The
+    value key packs masked data and mask into one integer. With no tap of the range in the
+    registry, a dump at `path` is a removed tap's, so the install deletes it."""
     last = addr + width - 1
     dumper = f"""  local function dump(it, fr)
     if not it.dirty and it.dumped_frame == fr then return end
@@ -177,8 +152,7 @@ print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s first=%x last=%x
 
 def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int,
                  space: str = "program") -> dict[str, Any]:
-    """Put the count watch's install for `owner` in the pipe, on its cpu and in `space`, and
-    record it (`mtap.send_tap`)."""
+    """Send the count watch's install for `owner` (`mtap.send_tap`)."""
     cpu = owner[1]
     tally_id = id_for(cpu, addr, width, space)
     path = dump_path(scratch, tally_id)
@@ -188,8 +162,7 @@ def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int,
 
 
 def parse_dump(text: str) -> dict[str, Any] | None:
-    """A dump as the periodic wrote it, or None when the text is not a whole dump (a header
-    this reader does not know, or no `end` line): a half-read table is not a table."""
+    """A dump as the periodic wrote it, or None when not whole (unknown header, no `end`)."""
     whole = callbacks.read_whole(text, _HEAD, with_body=True)
     if whole is None:
         return None
@@ -213,8 +186,7 @@ def parse_dump(text: str) -> dict[str, Any] | None:
 
 def lanes(offset: int, data: int, mask: int, data_width: int,
           endianness: str) -> list[tuple[int, int]]:
-    """The bytes a bus write LANDED, as (address, byte) in address order: the mask names
-    the lanes, and on a big-endian bus the high lane is the lowest address."""
+    """The bytes a bus write landed, as (address, byte) in address order."""
     out: list[tuple[int, int]] = []
     for i in range(data_width // 8):
         shift = mspace.lane_shift(i, 1, data_width, endianness)
@@ -225,10 +197,8 @@ def lanes(offset: int, data: int, mask: int, data_width: int,
 
 def _value_rows(dump: dict[str, Any], addr: int, width: int, fmt: str,
                 shown: int) -> list[dict[str, Any]]:
-    """The value table, most written first: each bus write decoded to the bytes it landed
-    and, when one write covers the declared range whole, the `value` in the watch's own
-    format, in the byte order of the space the tap sat on, which the dump itself names. A
-    write that lands part of the range is `partial` with the bytes it wrote."""
+    """The value table, most written first; `value` only when one write covers the range
+    whole, in the byte order the dump names, else the row is `partial`."""
     rows: list[dict[str, Any]] = []
     ranked = sorted(dump["values"], key=lambda r: (-r[3], r[0], r[1]))
     for offset, data, mask, count in ranked[:shown]:
@@ -249,8 +219,7 @@ def _value_rows(dump: dict[str, Any], addr: int, width: int, fmt: str,
 
 
 def _writer_rows(dump: dict[str, Any], shown: int) -> list[dict[str, Any]]:
-    """The writer table, most frequent first, each pc placed inside the nearest symbol
-    below it when the table has one."""
+    """The writer table, most frequent first, each pc placed in the nearest symbol below."""
     rows: list[dict[str, Any]] = []
     for pc, count in sorted(dump["pcs"], key=lambda r: (-r[1], r[0]))[:shown]:
         rows.append(read.add_symbol({"pc": st.hex_addr(pc), "count": count}, pc,
@@ -260,9 +229,8 @@ def _writer_rows(dump: dict[str, Any], shown: int) -> list[dict[str, Any]]:
 
 def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str,
              frame: int | None, shown: int, at_stop: bool) -> dict[str, Any]:
-    """What a stop survey or `declaration_list(kind="watch")` says about the tally under `owner`
-    (`mtap.read_tap`), and
-    once it has a dump, its value and writer tables."""
+    """What a stop survey or `declaration_list(kind="watch")` says about the tally under
+    `owner`, with its value and writer tables once it has a dump."""
     item, dump = mtap.read_tap(scratch, owner, frame, at_stop, parse_dump, "tallied")
     if dump is None:
         return item
@@ -275,9 +243,8 @@ def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str,
 
 
 def check_count_watch(chosen: str, mode: str = "count") -> None:
-    """A count or capture watch is by symbol or by address: a tap follows no pointer (it sits
-    on one range for its life, and a range that moves under it would count, or read, the wrong
-    bytes in silence), and an expression is no range at all."""
+    """A count or capture watch is by symbol or address: a tap follows no pointer, so a
+    moving range would be counted wrong in silence."""
     if chosen not in ("symbol", "address"):
         raise st.Invalid("bad_argument",
                          f"a {mode} watch is declared by symbol or by address, not by {chosen}: "
@@ -286,16 +253,14 @@ def check_count_watch(chosen: str, mode: str = "count") -> None:
 
 
 def bus_unchecked_note(space: str) -> str:
-    """What `watch_add`'s count reply adds when its cpu's bus width in `space` is unknown."""
+    """What `watch_add`'s count reply adds when the bus width in `space` is unknown."""
     return (f"`start` gathered no {space} space for this cpu, so whether the range splits a bus "
             "word was not checked")
 
 
 def split_why(addr: int, width: int, data_width: int, cpu: str | None,
               space: str = mspace.PROGRAM) -> str:
-    """The refusal of a count range that `mspace.splits_bus_word`, naming the counts that work:
-    one per bus word the range touches, each written whole by one write, on the range's cpu and
-    in its space."""
+    """The refusal of a range that `mspace.splits_bus_word`, naming one count per bus word."""
     nb = data_width // 8
     pieces: list[tuple[int, int]] = []
     at, end = addr, addr + width

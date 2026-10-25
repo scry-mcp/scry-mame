@@ -1,11 +1,8 @@
-"""A contact sheet: pictures of one size on one page, each under its own label, as many as fit the
-inline ceiling unenlarged; the page is then enlarged by a whole factor where one fits.
+"""A contact sheet: same-size pictures, each under its own label, paged to fit the inline ceiling.
 
-WHY WHOLE CELLS AND PAGES. A sheet that shrank its cells to fit would resample them, the
-plausible wrong picture `scry_core.picture` refuses to attach; so a page holds the largest grid of
-whole cells the ceiling takes, and the caller pages through the rest. A cell is as wide as the
-widest label of every cell on every page, so the pages of one sheet lay out alike and a cell is
-found at the same place whichever page it is on.
+Cells are never shrunk to fit (resampling is the plausible wrong picture `scry_core.picture`
+refuses to attach); the caller pages instead. Cell width follows the widest label on any page, so
+every page lays out alike.
 """
 
 from __future__ import annotations
@@ -16,7 +13,6 @@ from scry_core import picture, png
 
 import mame_font as font
 
-# Each label in the 5x7 font at twice its size, over its picture, cells a gap apart on dark.
 LABEL_SCALE = 2
 LABEL_PAD = 4
 CELL_GAP = 4
@@ -26,7 +22,7 @@ INK = (255, 255, 255)
 
 @dataclass(frozen=True)
 class Layout:
-    """Where everything of a sheet goes: each cell's picture size, its label lines, its size."""
+    """Where everything of a sheet goes."""
 
     picture: tuple[int, int]
     lines: int
@@ -38,7 +34,7 @@ class Layout:
                 CELL_GAP + row * (self.cell[1] + CELL_GAP) + LABEL_PAD)
 
     def picture_origin(self, col: int, row: int) -> tuple[int, int]:
-        """Where the picture of the cell at (`col`, `row`) starts, under its label."""
+        """Where the picture of the cell at (`col`, `row`) starts."""
         return (CELL_GAP + col * (self.cell[0] + CELL_GAP),
                 CELL_GAP + row * (self.cell[1] + CELL_GAP) + self.label_height())
 
@@ -52,8 +48,7 @@ class Layout:
 
 
 def layout(picture_size: tuple[int, int], labels: list[tuple[str, ...]]) -> Layout:
-    """The layout of a sheet whose pictures are `picture_size` and whose cells carry `labels`
-    (every cell's, not one page's)."""
+    """The layout for `labels` of every cell, not one page's."""
     lines = max((len(lab) for lab in labels), default=0)
     widest = max((font.width(line, LABEL_SCALE) for lab in labels for line in lab), default=0)
     lay = Layout(picture_size, lines, (0, 0))
@@ -62,8 +57,7 @@ def layout(picture_size: tuple[int, int], labels: list[tuple[str, ...]]) -> Layo
 
 
 def page_shape(lay: Layout, n: int) -> tuple[int, int]:
-    """Columns and rows of the page holding the most of `n` cells inside the inline ceiling; one
-    cell when even one does not fit (it is then written and not attached)."""
+    """Columns and rows of the fullest page within the ceiling; 1x1 if one cell exceeds it."""
     best = (1, 1)
     for cols in range(1, n + 1):
         if not picture.within_ceiling(*lay.size(cols, 1)):
@@ -78,7 +72,7 @@ def page_shape(lay: Layout, n: int) -> tuple[int, int]:
 
 
 def compose(lay: Layout, cells: list[tuple[tuple[str, ...], bytes]]) -> png.Raster:
-    """One page: each cell's label lines and its RGB picture, laid out as `page_shape` says."""
+    """One page of (label lines, RGB picture) cells."""
     cols, rows = page_shape(lay, len(cells))
     width, height = lay.size(cols, rows)
     px = bytearray(bytes(GROUND) * (width * height))

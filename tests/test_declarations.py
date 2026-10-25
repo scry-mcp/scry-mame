@@ -1,11 +1,4 @@
-"""The persistent declarations store, keyed by system and symbol file, and the breakpoints
-declared by NAME through it.
-
-What they guard: a declaration outliving the
-session that made it and re-resolving against the next build; two guests never inheriting
-each other's; a corrupt file refused by name and never discarded; and a breakpoint that
-is an INTENT the debugger's own list is read back against.
-"""
+"""The persistent declarations store and the breakpoints declared by name through it."""
 
 import dataclasses
 import json
@@ -56,9 +49,6 @@ def _watch(tmp_path: Path) -> dec.Declaration:
                            created_at="t", origin="s1")
 
 
-# ------------------------------------------------------------------ the file behind it
-
-
 def test_a_declaration_survives_a_new_store_over_the_same_file(tmp_path: Path) -> None:
     path = tmp_path / "declarations.json"
     store = dec.DeclarationStore("m68k-dual /repo/symbols.yaml", path)
@@ -101,9 +91,7 @@ def test_a_replaced_declaration_is_on_disk_in_one_write_and_keeps_what_the_new_o
 def test_two_keys_do_not_see_each_others_declarations_and_neither_clobbers(
     tmp_path: Path,
 ) -> None:
-    """Two boards over one map are two keys (the system tells them apart); two maps of one
-    board are two keys (the path does). A store persists ONLY its own key: writing the whole
-    in-memory picture would erase every key this store never loaded."""
+    """A store persists only its own key; writing the whole picture would erase the others."""
     path = tmp_path / "declarations.json"
     a = dec.DeclarationStore("wheelfir /repo/map", path)
     b = dec.DeclarationStore("pwball /repo/map", path)
@@ -118,9 +106,7 @@ def test_two_keys_do_not_see_each_others_declarations_and_neither_clobbers(
 
 
 def test_a_bench_copy_of_a_symbol_file_is_a_store_of_its_own(tmp_path: Path) -> None:
-    """The live tier boots on a COPY of a project's symbol file, byte for byte the same, and the
-    key is the resolved path, so the copy's store neither sees the rows a session on the
-    project's own file declared nor clears them."""
+    """The key is the resolved path, so a byte-identical copy neither sees nor clears the rows."""
     path = tmp_path / "declarations.json"
     project, copy = tmp_path / "checkout" / "symbols.yaml", tmp_path / "bench" / "symbols.yaml"
     for p in (project, copy):
@@ -189,20 +175,14 @@ def test_the_default_path_is_a_state_directory_and_the_key_is_system_and_file(
         dec.store_key("", "x")
 
 
-# --------------------------------------------------------------- what start does with it
-
-
 def test_start_opens_the_store_keyed_by_system_and_symbol_file(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With a symbol file the declarations PERSIST, keyed by the system and the RESOLVED path
-    of the file, so two spellings of one file are one key; the reply says so and names the
-    file and how many declarations it found. Without a file there is no key to re-resolve
-    anything by, and the store lives as long as the session: the honest answer, said."""
+    """With a symbol file the store persists under its resolved path and the reply names it;
+    without one it lives as long as the session, and the reply says so."""
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "xdg"))
     image = bytes(range(64))
     ses = _stub_boot(monkeypatch, tmp_path, image, at=0)
-    # The re-arm at start asks the debugger's list and arms; this session has no wire.
     rows = ["No breakpoints currently installed\n\n"]
 
     def monitor(command: str, timeout: float = 10.0) -> str:
@@ -273,9 +253,6 @@ def test_a_corrupt_store_refuses_start_before_the_emulator_is_spawned(
     s.start(binary=str(binary), system="none", rompath=str(tmp_path),
             reference_rom=str(rom), reference_addr="0x10", symbols=str(sym)))
     assert mstate.STATE.scratch is None
-
-
-# --------------------------------------------------- breakpoints as declarations by name
 
 
 def test_breakpoint_at_stores_a_declaration_by_name_and_lists_it_against_bplist(
@@ -351,9 +328,7 @@ def test_a_stop_at_a_declared_breakpoint_is_attributed_by_its_name(
 def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A watch declaration is not a breakpoint and is skipped by the list and the clear; a
-    breakpoint whose row the debugger lost is `gone`; a raw address declared over another
-    build is `stale`; a stop at an address-declared breakpoint is named bare, as before."""
+    """Watches are skipped; a lost row is `gone`, a raw address from another build `stale`."""
     ses = _watching(monkeypatch, tmp_path)
     store = arming.store()
     s.watch_add(ref="frame_lo", mode="show", length=4)
@@ -372,9 +347,6 @@ def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
     assert breakpoints.breakpoint_name(0x4A0, ":maincpu") == "breakpoint at 0x4a0", (
         "declared by address this session: the bare address, nothing inherited")
     assert breakpoints.breakpoint_name(0x25A4, ":maincpu") is None, "not armed by this session"
-    # A symbol declared AFTER an address at the same place is REFUSED naming the holder
-    # (one row, one declaration, as for a watch); a store from before that rule still names
-    # a stop by the name it holds there, whatever was declared first.
     add_symbol(monkeypatch, "VBLANK_CTL", 0x4A0)
     refused(re.escape("already declared under '0x4a0': one breakpoint row is one declaration, so "
                       "`declaration_clear(kind=\"breakpoint\", ref='0x4a0', cpu=\":maincpu\")` "
@@ -392,22 +364,15 @@ def test_breakpoint_list_names_the_odd_states_and_skips_the_watches(
         arming.store()
 
 
-# ------------------------------------------------ re-resolution and re-arming at start
-
-
 def _armable_boot(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> tuple[bytes, Path, Path, list[tuple[str, int, int, bool]]]:
-    """A stub boot whose debugger keeps `bplist` and `wplist` rows for what is armed, with
-    0x400's write side unmapped: the image, the symbol file, the store's path (its folder
-    made, the file not written) and the log of every arm, for a `start` that re-arms."""
+    """A stub boot whose debugger keeps `bplist`/`wplist` rows, 0x400's write side unmapped."""
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "xdg"))
     image = bytes(range(64))
     ses = _stub_boot(monkeypatch, tmp_path, image, at=0)
     ses._layouts[1] = g.Layout({}, 0, "m68k", [])      # a 68000, no register to decode
     armed: list[tuple[str, int, int, bool]] = []
-    # ONE console for both lists, as MAME's is: `bp`/`wp` arm a row, `bpclear`/`wpclear` drop
-    # one by index (`control_console`), each logged as `(family, addr, length, removed)`.
     lists = SimpleNamespace(bplist_rows=[], bp_next_index=1, temps={}, wplist_rows=[],
                             wp_next_index=1, armed=[], watchpoints=[])
 
@@ -446,8 +411,7 @@ def _armable_boot(
 def test_the_armable_boot_numbers_its_rows_as_mame_does_and_drops_one_on_a_removal(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The fidelity of `_armable_boot`: one hex counter for every `bp`, never reused, and a
-    `bpclear` of an index takes that row away instead of adding another."""
+    """One hex counter for every `bp`, never reused; `bpclear` removes the row."""
     image, sym, _path, armed = _armable_boot(monkeypatch, tmp_path)
     s.start(**_boot_args(tmp_path, image), symbols=str(sym))
     try:
@@ -471,12 +435,8 @@ def test_the_armable_boot_numbers_its_rows_as_mame_does_and_drops_one_on_a_remov
 def test_start_re_resolves_and_re_arms_the_store_and_reports_what_it_could_not(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Every declaration the store held is re-resolved against the table this start loaded
-    and re-armed when it can be: a symbol breakpoint and a symbol change watch are armed and
-    read back; a raw address stored with no build recorded is stale, listed and not armed; a
-    name this build lacks is unresolved, kept; a change watch whose write side is unmapped NOW
-    is unarmable with its why; a show watch needs no arming. Nothing is dropped and every one is
-    named in the reply."""
+    """Every stored declaration is re-resolved and re-armed when it can be; nothing is dropped
+    and each outcome (stale, unresolved, unarmable) is named in the reply."""
     image, sym, path, armed = _armable_boot(monkeypatch, tmp_path)
     held = [
         {"kind": "breakpoint", "by": "symbol", "ref": "irq_vblank", "origin": "earlier"},
@@ -511,8 +471,6 @@ def test_start_re_resolves_and_re_arms_the_store_and_reports_what_it_could_not(
         listed = s.declaration_list("breakpoint")
         assert [(b["ref"], b["state"]) for b in listed["breakpoints"]] == [
             ("irq_vblank", "armed"), ("0x25a4", "stale"), ("scene_id", "unresolved")]
-        # The show watch is placed `evaluated` and READ by the listing on a stopped machine,
-        # and this stub holds no memory there: the stub's refusal, never a zero.
         rows = s.declaration_list("watch")["watches"]
         assert [w["state"] for w in rows] == ["armed", "stale", "gone", "evaluated"]
         assert rows[3]["reading"]["available"] is False
@@ -525,8 +483,7 @@ def test_start_re_resolves_and_re_arms_the_store_and_reports_what_it_could_not(
 def _start_over_an_earlier_store(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, rows: list[dict[str, Any]],
 ) -> tuple[str, dict[str, Any]]:
-    """`start` over a store holding `rows`, declared by an EARLIER session over this very
-    build: the fingerprint, and what `start` answered."""
+    """`start` over a store holding `rows` from an earlier session of this build."""
     image, sym, path, _armed = _armable_boot(monkeypatch, tmp_path)
     args = _boot_args(tmp_path, image)
     same = syms.fingerprint("m68k", Path(args["reference_rom"]), sym.resolve())
@@ -545,11 +502,8 @@ def _stored_conditions(out: dict[str, Any]) -> dict[str, str]:
 def test_the_store_file_holds_a_condition_as_typed_and_adopts_a_row_written_before_that(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A condition is an INTENT like the ref beside it: the file keeps the name the caller
-    typed, so the next build's address goes to the console. A row an earlier server stored
-    with the address already in place still loads and re-arms (substituting it changes
-    nothing), and declaring it again BY NAME is the same declaration: adopted, and its text
-    replaced by what was typed. Any other condition under that ref is still refused."""
+    """The file keeps the condition as typed; a row stored with the address in place still
+    loads, and declaring it again by name adopts it. Any other condition is refused."""
     _same, out = _start_over_an_earlier_store(monkeypatch, tmp_path, [
         {"kind": "breakpoint", "by": "symbol", "ref": "irq_vblank",
          "condition": "w@0x2031fc==0x25"},
@@ -575,8 +529,7 @@ def test_the_store_file_holds_a_condition_as_typed_and_adopts_a_row_written_befo
 def test_a_refused_re_declaration_leaves_the_store_file_as_it_was(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row written with the address in place, declared again by name while the console
-    cannot evaluate the condition: the call is refused, and the file holds what it held."""
+    """A refused re-declaration by name leaves the file as it was."""
     _same, out = _start_over_an_earlier_store(monkeypatch, tmp_path, [
         {"kind": "breakpoint", "by": "symbol", "ref": "irq_vblank",
          "condition": "w@0x2031fc==0x25"},
@@ -598,11 +551,8 @@ def test_a_refused_re_declaration_leaves_the_store_file_as_it_was(
 def test_a_raw_address_over_the_same_build_is_rearmed_and_every_row_says_it_was_inherited(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE PATH A LIVE SESSION HIT, which no case ran: a raw address stored by an earlier
-    session WITH the fingerprint of this very build. It is `rearmed`, never `stale` (stale
-    is a DIFFERENT build, not a raw address), and from then on nothing in a list row told it
-    from one declared this session. Every row says `inherited`, true for what the store
-    brought back and false for a declaration made here."""
+    """A raw address stored with this build's fingerprint is `rearmed`, never `stale`; every
+    row says `inherited`, true only for what the store brought back."""
     same, out = _start_over_an_earlier_store(monkeypatch, tmp_path, [
         {"kind": "breakpoint", "by": "address", "ref": "4a0"},
         {"kind": "watch", "by": "address", "ref": "203200", "width": 2, "fmt": "u16",
@@ -625,9 +575,7 @@ def test_a_raw_address_over_the_same_build_is_rearmed_and_every_row_says_it_was_
 def test_a_stop_at_an_inherited_raw_address_breakpoint_names_it_inherited(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A raw address the store brought back over the same build cuts a run like a named one
-    does, and the caller never typed it this session: the stop's `cause` keeps the bare-address
-    name and says it was inherited, as a named breakpoint's does."""
+    """The stop's `cause` keeps the bare-address name and says it was inherited."""
     _same, out = _start_over_an_earlier_store(
         monkeypatch, tmp_path, [{"kind": "breakpoint", "by": "address", "ref": "4a0"}])
     try:
@@ -641,10 +589,8 @@ def test_a_stop_at_an_inherited_raw_address_breakpoint_names_it_inherited(
 def test_a_stop_is_named_by_the_declaration_that_speaks_for_the_armed_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Two declarations at one pc, one of them inherited: the inherited clause is the one of
-    the declaration that names the stop, never the other's. A name declared this session
-    beats an inherited address; between two addresses (a store from before the one-row
-    rule), the owner of the armed row beats one listed before it."""
+    """With two declarations at one pc the one naming the stop supplies the inherited clause:
+    a name beats an inherited address; between two addresses the armed row's owner wins."""
     _watching(monkeypatch, tmp_path)
     store = arming.store()
     main = ":maincpu"
@@ -671,8 +617,6 @@ def test_rearm_reads_each_list_once_and_reports_a_row_the_debugger_did_not_list(
 ) -> None:
     ses = _watching(monkeypatch, tmp_path)
     store = arming.store()
-    # THREE ADDRESSES, one per name: `len(name)` would give all three the same one,
-    # which the alias rule refuses.
     for i, name in enumerate(("irq_a", "irq_b", "irq_c")):
         add_symbol(monkeypatch, name.upper(), 0x1000 + i * 0x10)
         store.add(dec.Declaration("breakpoint", "symbol", name, origin="s1"))
@@ -702,7 +646,6 @@ def test_a_breakpoint_the_debugger_did_not_list_is_invalid_at_arming_and_unarmab
     back = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert [u["ref"] for u in back["unarmable"]] == ["frame_lo", "copy_in_rom"]
     assert all("`bplist` does not list" in u["why"] for u in back["unarmable"])
-    # Two names, the first at another address: the loop looks past it.
     monkeypatch.setattr(ses, "breakpoint", lambda addr, remove=False:
                         ses.bplist_rows.append(f"    9 @ {addr:06X}"))
     s.breakpoint_at(ref="copy_in_rom")
@@ -712,8 +655,7 @@ def test_a_breakpoint_the_debugger_did_not_list_is_invalid_at_arming_and_unarmab
 def test_a_breakpoint_the_debugger_did_not_list_owns_no_row_that_appears_there_later(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `bp` the list never showed armed nothing, so a row somebody types at that address
-    afterwards is THEIRS: listed `foreign`, and the declaration is `gone`, never `armed`."""
+    """A row typed later where the list showed none is `foreign`; the declaration is `gone`."""
     ses = _watching(monkeypatch, tmp_path)
     monkeypatch.setattr(ses, "breakpoint", lambda addr, remove=False: None)
     refused("bplist", s.breakpoint_at(ref="frame_lo"))
@@ -727,13 +669,8 @@ def test_a_breakpoint_the_debugger_did_not_list_owns_no_row_that_appears_there_l
 def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A name and the address it holds are two declarations over ONE `Z0`: clearing either
-    must not send the `z0` and leave the other declared over a row the debugger no longer has, in
-    silence. The watch family refuses a range another declaration already arms; the
-    breakpoints refuse the same way, and the re-arm of a store that predates the rule
-    files the second `unarmable` naming the first instead of stacking a second row. Two
-    SPELLINGS of one address (`0x4a0`, `0X04A0`) are one declaration, adopted, never two
-    (a fresh client adopts a store an earlier session had written)."""
+    """A name and the address it holds share one `Z0`: the second declaration is refused (or
+    filed `unarmable` at re-arm) naming the first, and two spellings of an address are one."""
     ses = _watching(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0")
     again = s.breakpoint_at(ref="0X04A0")
@@ -742,9 +679,6 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     assert len(ses.bplist_rows) == 1
     cleared = s.declaration_clear("breakpoint", ref="0x04a0")
     assert cleared["disarmed"] and ses.bplist_rows == []
-    # A store from before the rule: its bare spelling of the address is read as `0x` and `add`
-    # adopts the same declaration again; a name over the same address, the pair an older version
-    # wrote to disk, is what the re-arm meets.
     use_table(monkeypatch, table={"IRQ": 0x4A0})
     store = arming.store()
     legacy: dict[str, object] = {"kind": "breakpoint", "by": "address", "ref": "4a0",
@@ -760,15 +694,9 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
     assert [u["ref"] for u in back["unarmable"]] == ["irq"]
     assert back["unarmable"][0]["why"].endswith(
         "already declared under '0x4a0' in this pass: one breakpoint row is one declaration")
-    # THE LIST AND THE CLEAR AGREE WITH THE RE-ARM. The address is armed and has a row, and
-    # calling the second declaration `armed` on that alone is the trap: the clear then sends
-    # a second `z0` for the shared row, which the stub refuses, and the first declaration is
-    # left sitting over a row the debugger no longer has.
     listed = {b["ref"]: b for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed["0x4a0"]["state"] == "armed" and listed["irq"]["state"] == "aliased"
     assert "'0x4a0'" in listed["irq"]["why"]
-    # A clear reaches the declarations of its own kind: the address takes the ONE armed row,
-    # and the name, which owned none, goes with nothing to disarm.
     cleared = s.declaration_clear("breakpoint", ref="0x4a0")
     assert cleared["declarations_cleared"] == 1 and cleared["disarmed"] == ["2 @ 0004A0"]
     cleared = s.declaration_clear("breakpoint", ref="IRQ")
@@ -779,10 +707,7 @@ def test_one_breakpoint_row_is_one_declaration_at_declaration_and_at_rearm(
 def test_an_address_ref_has_one_spelling_and_a_clear_takes_any_of_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A fresh stdio client declared `4a0`, and the clear of `4a0` was refused because an
-    earlier session had stored the same address as `0x4a0`: two spellings of one address,
-    compared as text. An address ref is stored in ONE spelling, the reply carries it, and
-    a clear matches an address however it is spelt; a symbol stays the exact name."""
+    """An address ref has one stored spelling and a clear matches any; a symbol stays exact."""
     ses = _watching(monkeypatch, tmp_path)
     out = s.breakpoint_at(ref="0x4A0")
     assert out["status"] == "ok" and out["ref"] == "0x4A0", out
@@ -799,10 +724,8 @@ def test_an_address_ref_has_one_spelling_and_a_clear_takes_any_of_them(
 def test_a_clear_reads_the_callers_ref_the_way_the_declaration_was_made(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Guessing the caller's ref's kind from the symbol table breaks an address declared as
-    one the moment a later build names a symbol `4A0`, so a ref is read once, by its spelling:
-    `0x4a0` reaches the address row and `4a0`, a name this build defines, the symbol row, and
-    neither reaches the other."""
+    """A ref's kind is read by its spelling, not the symbol table: `0x4a0` is the address row,
+    a defined `4a0` the symbol row, and neither reaches the other."""
     _watching(monkeypatch, tmp_path)
     assert s.breakpoint_at(ref="0x4a0", by="address")["status"] == "ok"
     add_symbol(monkeypatch, "4A0", 0x2031FC)
@@ -818,9 +741,7 @@ def test_a_clear_reads_the_callers_ref_the_way_the_declaration_was_made(
 def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The auditor's input one layer down: `[0x203300]+0x4` and `[0X203300]+4` name one place
-    through one pointer, and compared as text they stacked two watches on one byte. The
-    base inside a pointer ref folds like an address; a field name and a symbol stay."""
+    """The base inside a pointer ref folds like an address; a field name and a symbol stay."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x203300] = (0x2100).to_bytes(4, "big")
     ses.memory[0x2104] = b"\x00\x2a"
@@ -831,8 +752,6 @@ def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
     assert s.declaration_clear("watch", ref="[ 0x203300 ] + 0x4")["declarations_cleared"] == 1
     assert dec.canonical_ref("[FRAME_LO]-0x4", "pointer") == "[FRAME_LO]-0x4"
     assert dec.canonical_ref("frame_lo->x", "pointer") == "frame_lo->x"
-    # A base with no `0x` is a NAME, however hex it looks (`BEEF`): the
-    # symbol and the literal address are two places, as the address rule reads any ref.
     add_symbol(monkeypatch, "BEEF", 0x203300)
     assert dec.canonical_ref("[beef]", "pointer") == "[beef]"
     assert dec.canonical_ref("[0xBEEF]", "pointer") == "[0xbeef]"
@@ -842,12 +761,8 @@ def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
     assert literal["status"] == "ok" and literal["already_stored"] is False, literal
 
 
-# ------------------------------------------------------------------ a regpoint
-
-
 def test_a_regpoint_is_an_expression_held_by_its_text_and_nothing_else() -> None:
-    """The `ref` IS the condition, as typed: no address, so no role, no watch field, no
-    `condition` field of its own, and never stale whatever the build."""
+    """The `ref` is the condition as typed: no address, role or watch field, never stale."""
     rp = dec.Declaration("regpoint", "expr", "d1==7fff", origin="s1", fingerprint="fp")
     assert dec.Declaration.from_dict(rp.to_dict()) == rp
     assert "watch_mode" not in {k for k, v in rp.to_dict().items() if v is not None}
@@ -882,9 +797,6 @@ def test_start_re_arms_a_stored_regpoint_and_says_so_in_its_account(
         assert [(r["state"], r["inherited"]) for r in rows] == [("armed", True)]
     finally:
         s.close()
-
-
-# ------------------------------------------------------------------ comments as declarations
 
 
 def _comment(ref: str = "irq_vblank", by: str = "symbol", text: str = "a note",
@@ -975,8 +887,7 @@ def test_apply_writes_once_and_a_failed_write_keeps_the_change_in_memory(
 
 
 def test_the_rearm_leaves_comments_to_their_own_pass(monkeypatch: pytest.MonkeyPatch) -> None:
-    """`start`'s re-arm walks the store once; a comment arms no breakpoint or watch, so the
-    breakpoint and watch pass skips it by name and sends the console nothing for it."""
+    """The breakpoint and watch re-arm skips a comment and sends the console nothing."""
     store = dec.DeclarationStore("k", None)
     store.add(_comment())
     store.add(_comment("0x400", "address", cpu=":maincpu"))

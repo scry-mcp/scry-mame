@@ -1,13 +1,8 @@
-"""Section C.16 of the live matrix: what `debug` counts as a write where the command's effect
-lives in a parameter (an action, a script, a listing with none), and a condition judged on
-another cpu whose visible cpu cannot be put back.
+"""Section C.16 of the live matrix: `debug` writes whose effect lives in a parameter, and a
+condition judged on another cpu whose visible cpu cannot be put back (m68k-dual).
 
-On m68k-dual's two 68000s. Each write cell has its read beside it, run the same way, so a cell
-cannot pass on a classifier that marks everything. The put-back cell builds the one state that
-refuses it, an ignored cpu left visible: shown through the stub while MAME stays live on the
-other, then ignored, which runs nothing (REFERENCE.md, *The console*).
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
+Each write cell has its read beside it, so a cell cannot pass on a classifier that marks
+everything. Run alone, it is the same machinery over this section only:
 
     uv run python tests/live/matrix_console.py
 """
@@ -45,7 +40,7 @@ def _writes() -> Any:
 
 def c16_console() -> None:
     boot(symbols={MAIN: SYMBOLS, SUB: SUB_SYMBOLS})
-    call("run_for", frames=60, seconds=10.0)       # the sub cpu is out of reset
+    call("run_for", frames=60, seconds=10.0)  # sub cpu out of reset
     t = C16
     before = _writes()
     bare = {word: call("debug", command=word)
@@ -75,8 +70,7 @@ def c16_console() -> None:
     pane = [call("debug", command=f"{word} 0x400,c16 note") for word in ("//", "/*")]
     cell(t[4], all(ok(r) and r.get("mutates") is False for r in pane) and _writes() == before,
          "; ".join(f"{said(r, 60)} mutates {r.get('mutates')}" for r in pane))
-    # AN IGNORED CPU LEFT VISIBLE: a run by frames stops on the main cpu, which MAME is then
-    # live on; the stub shows the sub cpu without a run, and ignoring it runs nothing.
+    # a run by frames stops on the main cpu; ignoring the sub cpu shown runs nothing
     call("run_for", frames=1, seconds=10.0)
     declared = (call("cpu_info", cpu=MAIN).get("cpus") or [{}])[0].get("declarations")
     shown = call("focus", cpu=SUB)
@@ -92,8 +86,7 @@ def c16_console() -> None:
          and (visible.get("cpus") or [{}])[0].get("visible") is True,
          f"focus {said(shown, 50)}; ignore {said(ignored, 50)}; {said(out, 200)}; "
          f"declarations on {MAIN} {declared} -> {listed}")
-    # THE STOP INSIDE THE CALL, forced: its readback is held back harness-side, so the stop the
-    # condition causes reaches the session before the reply is composed.
+    # the rplist readback is held back so the condition's stop lands before the reply is composed
     ses = STATE.ses
     assert ses is not None
     send = ses.monitor
@@ -124,7 +117,7 @@ def c16_console() -> None:
 
 
 def register_c16() -> None:
-    """Register section C.16 with the matrix: after every section registered before it."""
+    """Register section C.16 after every section registered before it."""
     section("C", C16_TITLE, C16)(c16_console)
 
 

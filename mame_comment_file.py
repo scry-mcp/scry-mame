@@ -1,17 +1,4 @@
-"""THE COMMENT FILE: one line per comment, the record a project versions beside its symbol file.
-
-    # comments v1: ref<TAB>cpu<TAB>created_at<TAB>text
-    0x500<TAB>:maincpu<TAB>2026-10-02T00:30:00+00:00<TAB>clears the sprite list
-    irq_vblank<TAB>:maincpu<TAB>2026-10-02T00:31:12+00:00<TAB>vblank: blits, then the input
-
-The format is `scry_core.comment_file`'s, which both servers read and write; this module is this
-server's half of it: a ref as a file spells it here (an address as `0x`, or a symbol) and a cpu
-column that names a cpu by its tag. What a ref names and whether a cpu exists are the server's,
-which has the table and the machine.
-
-A TSV and not YAML, though the symbol files beside it are YAML: four fields split on a tab need no
-YAML reader, so a server without one reads the same file with a reader of its own.
-"""
+"""This server's half of `scry_core.comment_file`: how a ref and a cpu are spelled in the file."""
 
 from __future__ import annotations
 
@@ -30,8 +17,7 @@ __all__ = ["HEADER", "TEXT_MAX_BYTES", "CommentFileError", "Row", "cpu_fault", "
 
 
 def ref_fault(ref: str) -> str | None:
-    """What a ref breaks as a FILE spells it, or None: empty, whitespace or a character that is
-    not printable inside it, or a leading `#`, which a reader takes for a comment line."""
+    """What a ref breaks as a file spells it, or None."""
     if not ref:
         return "is empty"
     if ref.startswith("#"):
@@ -40,13 +26,11 @@ def ref_fault(ref: str) -> str | None:
 
 
 def cpu_fault(cpu: str) -> str | None:
-    """What a cpu column breaks, or None: whitespace or a character that is not printable. It may
-    be empty, on a server with one cpu."""
+    """What a cpu column breaks, or None; empty is allowed, for a one-cpu server."""
     return core.word_fault(cpu)
 
 
 POLICY = core.Policy(ref_fault=ref_fault, cpu_fault=cpu_fault)
 
 
-#: A comment file's rows read, and written, held to this server's columns.
 parse, render = POLICY.parse, POLICY.render

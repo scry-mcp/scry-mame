@@ -1,17 +1,8 @@
 """FOCUS: the debugger's visible cpu, moved by this server and read back.
 
-MAME's debugger acts on ONE cpu at a time, the visible one, and its console's own `focus` does
-not simply show another: it IGNORES every other cpu (`execute_focus`), and ignoring the cpu that
-is live makes the debugger run until the focused one executes (`device_debug::ignore` calls
-`go_next_device`). After it, a breakpoint on any other cpu has no effect. So the tool takes the
-path that moves nothing where the build has one: the gdbstub's thread patch answers `Hc<id>` by
-making that cpu visible and touching no ignore flag. Nothing running is PROVED, not assumed: the
-frame counter and every cpu's whole register block are read before and after. A build without
-the patch has only the console's `focus`, and the reply says what that did: which cpus it left
-ignored, and, when it released the machine, the survey of where the machine stopped.
-
-The cpu that ends up visible is read back off `cpulist` (`mame_cpus`), never taken from the
-request.
+The console's `focus` IGNORES every other cpu, and ignoring the live one runs the machine until
+the focused one executes. With the gdbstub's thread patch, `Hc<id>` makes a cpu visible with no
+ignore flag, and the frame counter and register blocks prove nothing ran.
 """
 
 from __future__ import annotations
@@ -32,9 +23,7 @@ import mame_running as running
 import mame_state as st
 from mame_state import STATE
 
-# How long a console `focus` or `ignore` that released the machine is given to reach the next
-# cpu, and how often the visible cpu is asked meanwhile: that run lasts until another cpu
-# executes, a slice of one frame.
+# The run a console `focus` starts lasts until another cpu executes, a slice of one frame.
 SETTLE_S = 2.0
 SETTLE_POLL_S = 0.05
 
@@ -45,13 +34,11 @@ NO_VISIBLE_AFTER_WHY = "`cpulist` marked no cpu visible after the call"
 
 
 def settled_visible(ses: gs.Session, ignored: list[str]) -> str | None:
-    """The visible cpu once MAME has stopped again after the console ignored the cpu it was live
-    on, or None when it has not within `SETTLE_S`. The debugger answers the console WHILE that
-    run goes on (`cpulist` read right after a typed `focus subcpu` still marks
-    `:maincpu`, which it now ignores), and it never stops on a cpu it ignores, so a live cpu
-    among `ignored` is a machine still running to the next one. The live cpu is the patched
-    stub's `?`, which names the last stop's until the next one; without threads the visible
-    cpu is the one that stopped, since no `Hc` can have moved it."""
+    """The visible cpu once MAME has stopped again, or None when it has not within `SETTLE_S`.
+
+    The console answers WHILE the run goes on, and the debugger never stops on an ignored cpu,
+    so a live cpu among `ignored` is still running. Without threads it is the visible one.
+    """
     clock = mprogress.Ticker(SETTLE_S, mprogress.no_progress)
     while True:
         live, visible = cpus.live_cpu(ses), cpus.visible_cpu(ses)
@@ -63,8 +50,7 @@ def settled_visible(ses: gs.Session, ignored: list[str]) -> str | None:
 
 
 def check_focus(cpu: str = "", **_: Any) -> None:
-    """`focus`'s machine-independent half: a cpu is named. Which cpus there are is the
-    machine's to say."""
+    """`focus`'s machine-independent half: a cpu is named."""
     if not inputs.cpu_given(cpu):
         raise st.Invalid("bad_argument", "cpu is empty: `focus` takes the tag of the cpu to show "
                                          "(`subcpu` or `:subcpu`), which `machine_map` lists")
@@ -82,8 +68,7 @@ def focus(ses: gs.Session, scratch: Path, cpu: str) -> dict[str, Any]:
 
 
 def _blocks(ses: gs.Session) -> dict[str, str | None]:
-    """Every thread's whole register block, by its cpu's tag; None for a cpu the stub has no
-    register map for, whose block it refuses."""
+    """Every thread's register block by cpu tag; None where the stub refuses it."""
     out: dict[str, str | None] = {}
     for tid, tag in sorted(ses.threads.items()):
         try:
@@ -94,10 +79,9 @@ def _blocks(ses: gs.Session) -> dict[str, str | None]:
 
 
 def _by_stub(ses: gs.Session, tag: str, was: str | None, thread: int) -> dict[str, Any]:
-    """`Hc<thread>`, read back, with the proof that nothing ran: the frame and each cpu's
-    register block equal before and after. A cpu whose block the stub refuses is named in
-    `unread`, never counted as unchanged. A board with no frame counter proves it by the
-    blocks alone, its `frame` unavailable."""
+    """`Hc<thread>`, read back, with the proof that nothing ran. A cpu whose block the stub
+    refuses is named in `unread`, never counted as unchanged; no frame counter leaves `frame`
+    unavailable."""
     frame_before, before = read.frame_or_none(ses), _blocks(ses)
     cpus.make_visible(ses, tag, f"`focus` shows {tag}")
     visible, frame_after, after = cpus.visible_cpu(ses), read.frame_or_none(ses), _blocks(ses)
@@ -119,9 +103,7 @@ def _by_stub(ses: gs.Session, tag: str, was: str | None, thread: int) -> dict[st
 
 
 def _by_console(ses: gs.Session, scratch: Path, tag: str, was: str | None) -> dict[str, Any]:
-    """The console's `focus`, on a stub without threads. It ignores every other cpu; when the
-    cpu that was visible is one of them, the debugger runs until `tag` executes, and the stop
-    it reaches is surveyed like any other, once the frame counter proves it at rest."""
+    """The console's `focus`, on a stub without threads; the stop it may cause is surveyed."""
     answer = ses.monitor(f"focus {tag}")
     if not answer.strip().startswith(f"Now focused on CPU '{tag}'"):
         raise st.Invalid("unexpected_answer",

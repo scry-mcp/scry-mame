@@ -1,12 +1,5 @@
-"""Section W of the live matrix: a change watch that stops the machine in a run by frames on a
-landing that also ticked the frame counter, so only the console's `Stopped at watchpoint` line
-says the landing is a stop (`mame_advance._run_for_frames` says why the counter cannot). Gridlee's
-START takes a credit in two writes inside such a frame once four coins went in, on the path
-`_four_credits` replays from cold.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
-
-    uv run python tests/live/matrix_watch_tick.py
+"""Section W of the live matrix: a watch stopping on a landing that ticked the frame counter
+(`mame_advance._run_for_frames`). Alone: `uv run python tests/live/matrix_watch_tick.py`.
 """
 
 from typing import Any
@@ -46,17 +39,13 @@ def _stopped(r: dict[str, Any], addr: str, writer: int, pc: int) -> bool:
 
 
 def _ticked(r: dict[str, Any]) -> bool:
-    """Whether the stop came on a landing that moved the counter: the path the console's line
-    is the only tell of, which a START landing in the aligning tick would not exercise."""
+    """Whether the stop landed on a frame that moved the counter."""
     before, after = r.get("frame_before"), r.get("frame_after")
     return isinstance(before, int) and isinstance(after, int) and after == before + 1
 
 
 def _four_credits() -> str:
-    """A cold gridlee taken to four credits, both credit watches armed: three
-    coins two seconds apart, the watches, a fourth coin and the coin routine's two stops, then
-    half a second more, which leaves the START to land in the frame that ticks. Returns the two
-    credit bytes read there, `0404` when the path went as it should."""
+    """Cold gridlee at four credits with both credit watches armed; returns the credit bytes."""
     free_boot("gridlee", ["gridfnla.bin"], "0xa000")
     call("run_for", milliseconds=5000, seconds=10.0)
     for _ in range(3):
@@ -78,9 +67,8 @@ def _w_gridlee(t: list[str]) -> None:
     r = call("run_for", frames=1, seconds=10.0)
     cell(t[1], _stopped(r, CREDITS_BCD, 0xD67F, 0xD682), said(r))
     call("close")
-    # A SECOND COLD RUN rather than a saved state: a START taken after `state_write(method="load")`
-    # lands inside
-    # the aligning tick, where the counter does not move, so it would not exercise the line.
+    # Cold again, not a loaded state: a START after a load lands in the aligning tick, which
+    # does not move the counter.
     credits = _four_credits()
     call("declaration_clear", kind="watch", ref=CREDITS_BIN)
     r = call("input", **START)

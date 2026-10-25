@@ -1,6 +1,4 @@
-"""The reply vocabulary of a reason: `note` is a reply's (or a sub-object's) note, one string built
-by one helper; `why` is a row's or a field's reason; a datum that could not be read is
-`{"available": false, "why": ...}`. Pinned here on the helpers every site goes through."""
+"""The reply vocabulary of a reason (`note`, `why`, `unavailable`), pinned on its helpers."""
 
 from __future__ import annotations
 
@@ -45,15 +43,13 @@ def test_merged_fields_join_their_notes_and_keep_their_order() -> None:
 
 
 def test_merged_fields_refuse_any_other_key_said_twice() -> None:
-    """Only a note has a reason to be said by two sources: any other key twice is two answers to
-    one question, a programmer's error raised where it is written, as a repeated keyword was."""
+    """Only a note may be said by two sources; any other repeated key is a programmer's error."""
     with pytest.raises(TypeError, match="'call'"):
         mstate.merged({"call": "a"}, {"call": "b"})
 
 
 def test_a_refusal_read_off_an_answer_keeps_its_own_note_beside_the_consoles() -> None:
-    """`console_said` adds the console's account to a refusal raised inside it: its `note`
-    joins the refusal's own, and the refusal's other fields win."""
+    """`console_said` joins the console's note to the refusal's own; the refusal's fields win."""
     import mame_lua as mlua
     import mame_transport as transport
 
@@ -67,7 +63,7 @@ def test_a_refusal_read_off_an_answer_keeps_its_own_note_beside_the_consoles() -
 
 
 def test_a_captured_block_its_format_cannot_decode_is_unavailable_with_why() -> None:
-    """The row keeps its bytes and its writer; the decoded `block` says why it is not there."""
+    """The row keeps its bytes; the decoded `block` says why it is not there."""
     import mame_capture as capture
 
     row = capture.row_fields(capture.Row(1, 7, 0, 0, 0x400, 0x12, 0xFF, b"\x01"), "u32", 4, 16,
@@ -86,7 +82,7 @@ def test_a_span_is_spelled_to_the_tenth_and_a_measured_time_to_the_microsecond()
                                               (2, "2 raw `lua` calls were declared")])
 def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
         monkeypatch: pytest.MonkeyPatch, claims: int, said: str) -> None:
-    """The verb agrees with the count as the noun does (`prose.agrees`), at one and at more."""
+    """The verb agrees with the count (`prose.agrees`), at one and at more."""
     import mame_envelope as menvelope
 
     monkeypatch.setattr(mstate.STATE, "ses", None)

@@ -1,14 +1,10 @@
-"""Real processes for the cases about which process holds a socket or outlives another: a
-listener that is not MAME, and the questions asked of a pid. Shared by the unit tests and the
-live matrix, which both need a process no double can stand for."""
+"""Real processes for socket-holder and pid-lifetime cases."""
 
 import subprocess
 import sys
 import time
 
-# A listener in its own process. It prints its port; in `accept` mode it accepts within its
-# timeout and prints the first byte the connection brings (`b''` for a connection closed unread),
-# or `none` when no connection came; in `hold` mode it never accepts.
+# `accept` mode prints the first byte received, or `none`; `hold` mode never accepts.
 LISTENER = """
 import socket, sys
 s = socket.socket()
@@ -33,7 +29,7 @@ sys.stdin.read()
 
 
 def listener(mode: str = "accept", timeout_s: float = 2.0) -> tuple[subprocess.Popen[str], int]:
-    """A `LISTENER` process and its port; the caller kills it."""
+    """A `LISTENER` process and its port."""
     proc = subprocess.Popen([sys.executable, "-c", LISTENER, mode, str(timeout_s)],
                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
     assert proc.stdout is not None
@@ -41,15 +37,14 @@ def listener(mode: str = "accept", timeout_s: float = 2.0) -> tuple[subprocess.P
 
 
 def heard(proc: subprocess.Popen[str]) -> str:
-    """What an `accept`-mode listener printed after its port: `none` (nothing connected), the
-    first byte's repr, or `silent`. Blocks until it prints, which its timeout bounds."""
+    """What an `accept`-mode listener printed."""
     assert proc.stdout is not None
     line: str = proc.stdout.readline().strip()
     return line
 
 
 def alive(pid: int) -> bool:
-    """Whether `pid` runs: present, and not a zombie waiting to be reaped."""
+    """Whether `pid` runs, zombies excluded."""
     stat = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True,
                           text=True, check=False).stdout.strip()
     return bool(stat) and not stat.startswith("Z")

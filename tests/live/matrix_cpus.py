@@ -1,12 +1,6 @@
-"""Section R of the live matrix: the cpus the stub describes, on the free boards and on sets that
-are not free, kept beside them in `MAME_TEST_ROMS` (BLOCKED where a set's zip is absent), and
-pangofun, booted by `pangofun_boot`.
-`registers` reads each one's PC in the byte order MAME declares for its program space, checked
-against `gdb_session._BYTE_ORDER` where the architecture has a row, against the console's own
-`print curpc` at the same stop; pangofun's i486 as its `EIP` against the console's own
-`print eip`, since an x86 PC is a segment and an offset where `curpc` is the linear address.
-And a board whose FIRST cpu the stub has no description of (alienar's mc6809e):
-`start` refuses it at once, naming the cpu, rather than launching it again into the same death.
+"""Section R of the live matrix: the cpus the stub describes.
+
+An x86 PC is a segment and an offset, so pangofun is read as `EIP` against `print eip`.
 
 `live_matrix.py` registers this section; run alone, it is the same machinery over it only:
 
@@ -51,9 +45,7 @@ from live_harness import (
 
 
 class PcBoard(NamedTuple):
-    """A board, the program ROM `free_boot` checks it against, where its cpu sees it, the
-    cpu's architecture as the stub names it, and the cpu to make visible before both readings
-    (empty: the one visible at the park)."""
+    """`focus` empty: the cpu visible at the park."""
     system: str
     members: list[str]
     addr: str
@@ -92,7 +84,6 @@ def _pc_against_console(board: PcBoard, label: str) -> None:
     regs = registers_at_a_telling_pc()
     pc = pc_of(regs)
     if not ok(regs):
-        # A refusal is the reading failing, never a missing stop to look for.
         cell(label, False, said(regs, 200))
     elif not tells_byte_order(pc):
         blocked(label, f"no stop whose PC tells the byte order in {PC_STEPS_MAX} steps: {pc}")
@@ -103,21 +94,18 @@ def _pc_against_console(board: PcBoard, label: str) -> None:
 
 
 def _r_pc(k: int) -> Callable[[list[str]], None]:
-    """The board of `R_PC_BOARDS[k]`, judging its own cell, named after it in what
-    `run_boards` says."""
+    """The runner of `R_PC_BOARDS[k]`, named after its system for `run_boards`."""
     def run(cells: list[str]) -> None:
         _pc_against_console(R_PC_BOARDS[k], cells[k])
     run.__name__ = f"_r_{R_PC_BOARDS[k].system}"
     return run
 
 
-#: The sets of this section that are not free: a host may hold the free ones alone.
 NOT_FREE = ("pockstat", "tekken", "dn3500", "dn3000", "hyprscan", "unkts", "pmac6100")
 
 
 def _set_missing(system: str) -> Callable[[], str]:
-    """Why `system` cannot run on this host: the free boards' reason, or, for a set that is not
-    free, its zip absent."""
+    """Why `system` cannot run on this host, or empty."""
     return lambda: free_boards_missing() or (zips_missing(system) if system in NOT_FREE else "")
 
 
@@ -134,8 +122,7 @@ def _r_alienar(cells: list[str]) -> None:
 
 
 def _r_pangofun(cells: list[str]) -> None:
-    """The i486 at its reset stop, whose 32-bit EIP reads differently reversed: a stop that is
-    always there, so a reading that does not tell is a FAIL rather than a stop to look for."""
+    """The reset stop is always there, so an EIP that does not tell the byte order is a FAIL."""
     pangofun_boot()
     regs = call("registers", cpu=":maincpu")
     eip = (regs.get("regs") or {}).get("EIP")
@@ -156,7 +143,7 @@ boards_cover("section R", R_CELLS, R_BOARDS)
 
 
 def register_r() -> None:
-    """Register section R with the matrix: after every section registered before it."""
+    """Register section R after every section registered before it."""
     section("R", R_TITLE, R_CELLS)(lambda: run_boards(R_CELLS, R_BOARDS))
 
 

@@ -1,10 +1,4 @@
-"""`cpu` per call: a row armed on the cpu the call names, through the console, and the visible
-cpu left where it was.
-
-Every row is armed with its cpu named (`bp <addr>:<cpu>`, `wp <addr>:<cpu>,<len>,w`) and removed
-by its index, so it lands where the reply says whichever cpu is visible. The doubles list a row
-under the cpu it was armed on, as `bplist.two-devices.txt` and `wplist.two-devices.txt` do.
-"""
+"""`cpu` per call: a row armed on the cpu the call names, and the visible cpu left where it was."""
 
 from __future__ import annotations
 
@@ -75,9 +69,7 @@ def test_a_cpu_the_machine_lacks_is_unknown_ref_naming_its_cpus_before_anything_
 def test_the_same_ref_declared_after_a_stop_elsewhere_is_a_second_declaration_there(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With no cpu named a declaration is the visible cpu's, MAME's model, and the same ref on
-    two cpus is two declarations: declaring it again after a stop moved the visible cpu arms a
-    second row there, and naming the first cpu again adopts the row it already holds."""
+    """The same ref on two cpus is two declarations; naming the first cpu again adopts its row."""
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x542")
     ses.visible_cpu = ":subcpu"
@@ -113,8 +105,7 @@ def test_run_to_arms_its_target_on_the_visible_cpu_and_removes_it_by_index(
 def test_a_change_watch_named_on_the_sub_cpu_arms_maps_and_reads_through_that_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The write side is asked of THAT cpu's `map`, the row is armed on it, and its bytes are
-    read through its thread of the patched stub; a clear takes the row by its index."""
+    """The write side is asked of that cpu's `map`, and its bytes are read through its thread."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     out = s.watch_add(ref="0x2031fc", mode="change", length=4, cpu="subcpu")
@@ -129,8 +120,7 @@ def test_a_change_watch_named_on_the_sub_cpu_arms_maps_and_reads_through_that_cp
 def test_without_threads_another_cpus_watch_is_armed_and_its_bytes_are_unreadable(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The stub without the thread patch reads its first cpu only: the row is armed on the sub
-    cpu all the same, and its reading says why it has no value rather than the main cpu's."""
+    """A stub without threads arms the row anyway, and the reading says why it has no value."""
     _watching(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x2031fc", mode="change", length=4, cpu="subcpu")
     assert out["cpu"] == ":subcpu" and out["reading"]["available"] is False, out
@@ -153,8 +143,7 @@ def test_a_watch_armed_on_the_sub_cpu_is_re_armed_there_after_a_pass(
 def test_an_expr_watch_refuses_a_cpu_other_than_the_visible_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console evaluates an expression on whichever cpu is visible, so an expr watch has no
-    cpu of its own to be read on."""
+    """The console evaluates an expression on the visible cpu, so an expr watch has no cpu."""
     ses = _watching(monkeypatch, tmp_path)
     out = refused("by the console, on the visible cpu",
                   s.watch_add(ref="beamy", mode="expr", cpu="subcpu"))
@@ -168,8 +157,7 @@ def test_an_expr_watch_refuses_a_cpu_other_than_the_visible_one(
 def test_a_read_watch_named_on_another_cpu_is_that_cpus_and_read_through_its_thread(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The declaration keeps its cpu, so every stop reads it there, through that cpu's thread of
-    the patched stub; the same address on the other cpu is another declaration."""
+    """The declaration keeps its cpu, so every stop reads it through that cpu's thread."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     out = s.watch_add(ref="0x2031fc", mode="show", length=4, cpu="subcpu")
@@ -184,8 +172,7 @@ def test_a_read_watch_named_on_another_cpu_is_that_cpus_and_read_through_its_thr
 def test_a_count_watch_binds_its_tap_to_the_cpu_named_when_it_is_composed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The install waits in the pipe until the console next reads a line; a cpu taken from the
-    visible one then would be whichever a `focus` in between made visible."""
+    """The install waits in the pipe, so an unnamed cpu is taken at run time, not at compose."""
     named = tally.install_script("2031fc_4", 0x2031FC, 4, tmp_path / "t.txt", ":subcpu")
     assert 'local cpu = manager.machine.devices[":subcpu"]' in named
     unnamed = tally.install_script("2031fc_4", 0x2031FC, 4, tmp_path / "t.txt")
@@ -195,8 +182,7 @@ def test_a_count_watch_binds_its_tap_to_the_cpu_named_when_it_is_composed(
 def test_a_watch_stop_is_named_by_the_consoles_line_under_a_packet_that_names_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console line's index names the row, on the sub cpu as on the main, under a packet
-    that names no address."""
+    """The console line's index names the row under a packet that names no address."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     s.watch_add(ref="0x2031fc", mode="change", length=4, cpu="subcpu")
@@ -211,12 +197,9 @@ def test_a_watch_stop_is_named_by_the_consoles_line_under_a_packet_that_names_no
 def test_a_watch_on_another_cpu_is_decoded_in_that_cpus_byte_order(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch's values are that cpu's memory, so they are decoded in that cpu's own byte
-    order, its thread's: a little-endian sub cpu beside a big-endian main one reads
-    its written 0x12345678 as it stores it, never byte-swapped by the main cpu's order."""
+    """A change watch decodes in its own cpu's byte order, never the main cpu's."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
-    # The double's own byte order is big.
     orders = {1: ses, 2: SimpleNamespace(byte_order="little", pc_name="PC")}
     monkeypatch.setattr(ses, "layout", lambda thread: orders[thread])
     ses.memory[0x2031FC] = bytes.fromhex("00000000")
@@ -237,9 +220,7 @@ def test_a_watch_on_another_cpu_is_decoded_in_that_cpus_byte_order(
 def test_a_watch_of_one_byte_scalars_reads_on_a_cpu_of_an_unknown_byte_order(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, length: int, value: object,
 ) -> None:
-    """A byte has no order: a read or change watch whose scalars are all one byte reads its
-    bytes on a cpu whose byte order is not established, at the declaration and in the list (the
-    stop is the change watch's case below), while a wider scalar there stays `unreadable`."""
+    """A byte has no order, so one-byte scalars read on a cpu of unknown order."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     mips = gs.Layout({}, 0, "mips", [])
@@ -256,9 +237,7 @@ def test_a_watch_of_one_byte_scalars_reads_on_a_cpu_of_an_unknown_byte_order(
 
 
 def test_a_format_the_one_byte_rule_frees_from_an_order_decodes_alike_in_either_order() -> None:
-    """The rule is the decoder's own property, asked of it: every format the rule lets read
-    without the cpu's order gives one value in both orders, and a format with any wider scalar
-    (a pointer included) is not let through."""
+    """Every format the one-byte rule admits decodes alike in both orders; wider ones are barred."""
     raw = bytes.fromhex("1234")
     for spec in ("u8", "i8", "u8[2]", "i8[2]", "char[2]", "{a:u8,b:i8}", "{s:char[2]}"):
         fmt = vf.parse(spec)
@@ -290,9 +269,7 @@ def test_a_change_watch_of_one_byte_reports_its_hit_on_a_cpu_of_an_unknown_byte_
 def test_a_watch_on_a_cpu_of_an_unknown_byte_order_is_unreadable_and_the_stops_go_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A second cpu whose byte order is not established: its watch's value cannot
-    be decoded, so it is `unreadable` with the reason, at the declaration, in the list and at
-    the stop, and none of them fails the call."""
+    """A watch value that cannot be decoded is `unreadable` with the reason and fails no call."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     mips = gs.Layout({}, 0, "mips", [])
@@ -315,8 +292,7 @@ def test_a_watch_on_a_cpu_of_an_unknown_byte_order_is_unreadable_and_the_stops_g
 def test_the_same_watch_ref_on_another_cpu_is_a_second_declaration_with_its_own_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """One range on two cpus is two programs' memory: a row on each, and a clear naming a cpu
-    takes that cpu's alone."""
+    """One range on two cpus is two rows; a clear naming a cpu takes that cpu's alone."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="change", length=4)
     other = s.watch_add(ref="0x2031fc", mode="change", length=4, cpu="subcpu")
@@ -331,13 +307,8 @@ def test_the_same_watch_ref_on_another_cpu_is_a_second_declaration_with_its_own_
                                                                                        ":maincpu")]
 
 
-# ---------------------------------------------------------- the readers MAME addresses by cpu
-
-
 def _console_on_two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
-    """The console double with the two captured cpus, the main one visible, the patched stub's
-    threads, and an inventory whose sub cpu reaches less than its main one (AUTHORED apart:
-    m68k-dual's two masks are equal)."""
+    """The console double with two cpus, the sub one reaching less (m68k-dual's masks are equal)."""
     from test_server import _console, _ConsoleSession, _masked
 
     def save(command: str) -> str:
@@ -363,9 +334,7 @@ def _console_on_two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any
 def test_each_console_reader_names_the_cpu_in_its_own_syntax_and_says_which(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`dasm <file>,<addr>,<len>,1,<cpu>`, `find <addr>:<cpu>,...`, `history <cpu>,<n>` and
-    `save <file>,<addr>:<cpu>,<len>`, each confirmed with that binary's `help` and run live;
-    with no cpu named, each command is as it was and the visible cpu answers."""
+    """`dasm`, `find`, `history` and `save` each take the cpu in their own syntax."""
     ses = _console_on_two_cpus(monkeypatch, tmp_path)
     out = [s.disassemble(ref="0x542", length=8, cpu="subcpu"),
            s.find(ref="0x0", length=0x10, data_hex="00000400", cpu="subcpu"),
@@ -386,9 +355,7 @@ def test_each_console_reader_names_the_cpu_in_its_own_syntax_and_says_which(
 def test_a_write_on_the_sub_cpu_reads_back_there_and_refreshes_only_that_cpus_watch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A write, its read-back and the baselines it refreshes are the one cpu's: a change watch
-    on the sub cpu at the address is re-read, and one on the main cpu at the same address is
-    left alone, because it watches other memory the write did not touch."""
+    """A write refreshes only the watch on its own cpu; the main cpu's is other memory."""
     ses = _watching(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     main, sub = ("w", ":maincpu"), ("w", ":subcpu")
@@ -404,8 +371,7 @@ def test_a_write_on_the_sub_cpu_reads_back_there_and_refreshes_only_that_cpus_wa
 def test_on_the_patched_stub_a_dump_names_the_cpu_its_control_reads(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With no cpu named, `save` is given the visible cpu by name, the one the control reads
-    through its thread, so the two cannot be different cpus."""
+    """`save` gets the visible cpu by name, so it and the control read the same cpu."""
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     ses.visible_cpu = ":subcpu"
@@ -427,8 +393,7 @@ def test_find_and_memdump_judge_a_range_by_the_named_cpus_own_mask(
 def test_read_memory_and_write_judge_a_range_by_the_named_cpus_own_mask(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The sub cpu's space ends at 0x3fff and the main one's does not: the named cpu's mask
-    decides, and nothing is read or written past it."""
+    """The named cpu's mask decides; nothing is read or written past it."""
     _console_on_two_cpus(monkeypatch, tmp_path)
     refused("mask is 0x3fff", s.read_memory("0x3ffc", length=8, cpu="subcpu"))
     refused("mask is 0x3fff", s.write(ref="0x4000", data_hex="aa", cpu="subcpu"))
@@ -458,8 +423,7 @@ def test_a_reader_refuses_a_cpu_the_machine_lacks(
 def test_a_block_found_by_address_is_looked_up_in_the_named_cpus_map(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The named cpu is in the script as composed, never read off the visible cpu when the
-    pipe runs it."""
+    """The named cpu is in the script as composed, not read off the visible cpu."""
     from test_lua import _channel
 
     ses = _channel(monkeypatch, tmp_path)
@@ -500,8 +464,7 @@ def test_the_lists_narrow_to_a_cpu_through_the_consoles_own_filter(
 def test_a_registerpoint_names_only_the_visible_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`rpset` takes no cpu (its `help`, and `execute_rpset` arms on the visible one), so a
-    registerpoint on another is refused naming `focus`, and moves nothing."""
+    """`rpset` takes no cpu, so a registerpoint on another is refused naming `focus`."""
     ses = _running(monkeypatch, tmp_path)
     out = refused(r"visible cpu, :maincpu, .*`focus\(cpu=':subcpu'\)` first",
                   s.regpoint_add(condition="d1==7fff", cpu="subcpu"))
@@ -511,9 +474,6 @@ def test_a_registerpoint_names_only_the_visible_cpu(
     assert listed["cpu"] == ":maincpu" and len(listed["regpoints"]) == 1
     other = s.declaration_list("regpoint", cpu="subcpu")
     assert other["cpu"] == ":subcpu" and other["regpoints"] == [], "narrowed, as breakpoints are"
-
-
-# ------------------------------------------------------------------ conditions and the temps
 
 
 def test_the_gather_reads_each_cpus_register_names_off_its_own_state() -> None:
@@ -530,9 +490,7 @@ def test_the_gather_reads_each_cpus_register_names_off_its_own_state() -> None:
 def test_a_condition_is_judged_against_the_registers_of_the_cpu_it_arms_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A symbol spelled like one of the sub cpu's registers is ambiguous there and plain
-    elsewhere. The register sets are AUTHORED apart (m68k-dual's two 68000s share theirs), the
-    way a heterogeneous board has them."""
+    """A symbol spelled like the sub cpu's register is ambiguous there only."""
     import mame_cpus as cpus
 
     _running(monkeypatch, tmp_path)
@@ -550,8 +508,7 @@ def test_a_condition_is_judged_against_the_registers_of_the_cpu_it_arms_on(
 def test_the_debuggers_temps_are_one_pool_across_cpus(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console's temps are global, so a control on each cpu counts in its own temp of the
-    one pool, and the counts are read in one `print`."""
+    """The console's temps are global: each control takes its own, read in one `print`."""
     ses = _running(monkeypatch, tmp_path)
     main = s.breakpoint_at(ref="0x4a0", role="control")
     sub = s.breakpoint_at(ref="0x542", role="control", cpu="subcpu")
@@ -565,15 +522,10 @@ def test_the_debuggers_temps_are_one_pool_across_cpus(
     assert "print temp0,temp1" in ses.commands
 
 
-# --------------------------------------------------- what the review of the block found
-
-
 def test_one_range_tallied_on_two_cpus_is_two_taps(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A tap counts one cpu's writes, so the same range on another cpu is another declaration
-    with a tap of its own: the tally's id carries that cpu, and the first cpu's id is the range
-    alone, as it always was."""
+    """A tap counts one cpu's writes, so its tally id carries a named sub cpu."""
     _watching(monkeypatch, tmp_path)
     sent: list[str] = []
 
@@ -595,9 +547,7 @@ def test_one_range_tallied_on_two_cpus_is_two_taps(
 def test_a_silent_controls_listing_is_decoded_on_the_controls_own_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The visible cpu need not be the control's: a `run_to` on a named cpu leaves another one
-    visible, and the listing that says whether a control's address is code has to be that
-    control's cpu's."""
+    """The control's listing is decoded on the control's cpu, which need not be the visible one."""
     import mame_advance as advance
 
     ses = _running(monkeypatch, tmp_path)
@@ -613,9 +563,7 @@ def test_a_silent_controls_listing_is_decoded_on_the_controls_own_cpu(
 def test_a_pointer_watch_is_read_and_placed_on_its_declarations_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The pointer is read through the thread of the cpu the watch is declared on, and the row
-    goes there; a stub without the thread patch cannot read another cpu's pointer, and the
-    declaration is refused saying so."""
+    """The pointer is read through its declaration's cpu thread; without threads it is refused."""
     from test_pointer_watches import _pointing
 
     ses = _pointing(monkeypatch, tmp_path)
@@ -632,8 +580,7 @@ def test_a_pointer_watch_is_read_and_placed_on_its_declarations_cpu(
 def test_a_watch_declared_again_after_a_stop_elsewhere_is_the_visible_cpus(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With no cpu named the declaration is the visible cpu's, so after a stop moved it the
-    write side is asked of that cpu's map and a row is armed there."""
+    """An unnamed declaration is the visible cpu's, wherever a stop left it."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="change", length=4)
     ses.visible_cpu = ":subcpu"
@@ -646,8 +593,7 @@ def test_a_watch_declared_again_after_a_stop_elsewhere_is_the_visible_cpus(
 def test_a_typed_ignore_of_the_live_cpu_records_the_stop_it_ran_to(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The run a typed `focus` released ends at a stop the stub sends no packet for: it is
-    surveyed and recorded, so `status` and the stale readers describe where the machine is."""
+    """The run a typed `focus` released ends at a stop with no packet; it is still recorded."""
     ses = _running(monkeypatch, tmp_path)
     before = mstate.STATE.last_stop["seq"]
     out = s.debug(command="focus subcpu")
@@ -655,9 +601,6 @@ def test_a_typed_ignore_of_the_live_cpu_records_the_stop_it_ran_to(
     assert mstate.STATE.last_stop["seq"] == before + 1
     assert mstate.STATE.last_stop["cause"].startswith("debug: the console ignored :maincpu")
     assert s.status()["last_stop"]["stop_seq"] == before + 1 and not ses.running
-
-
-# ------------------------------------------------------------------ MAME's endianness, by thread
 
 
 _SPACES = {"spaces": [
@@ -668,8 +611,7 @@ _SPACES = {"spaces": [
 
 
 def test_each_thread_takes_its_own_cpus_program_space_endianness() -> None:
-    """The stub encodes a thread's registers in its cpu's PROGRAM space's order, never another
-    space's, whichever the inventory lists first."""
+    """A thread's registers are in its cpu's program space's order, never another space's."""
     ses = gs.Session()
     ses.threads = {1: ":maincpu", 2: ":audiocpu"}
     assert cpus.program_endianness(ses, _SPACES, ":maincpu") == {1: "big", 2: "little"}
@@ -680,8 +622,7 @@ def test_a_stub_without_threads_serves_its_first_cpu_as_thread_one() -> None:
 
 
 def test_a_cpu_the_inventory_has_no_program_space_for_gets_no_word() -> None:
-    """No row is no word, and no word is a refusal at decode: an inventory that could not be
-    read, or a cpu with no program space, never falls back to anything."""
+    """No program-space row gives no word, and never a fallback."""
     ses = gs.Session()
     ses.threads = {1: ":maincpu", 2: ":motorcpu"}
     assert cpus.program_endianness(ses, _SPACES, ":maincpu") == {1: "big"}

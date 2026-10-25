@@ -1,13 +1,4 @@
-"""The declarations' ARMING PRIMITIVES: what every family shares where an intent meets the
-machine.
-
-A declaration is an INTENT (`mame_declarations`). The families that put one into the debugger
-and read it back are `mame_breakpoints`, `mame_watches` and `mame_regpoints`, and `start`'s re-arm
-of the whole store is `mame_rearm`; what they share lives here, once: the store and a
-declaration's shape (`declare`, `inherited`, `decl_row`), how a call's ref is classed and
-resolved, and the stop lines the console logs for a row of its own lists. The debugger's lists
-are `mame_lists`', a condition `mame_conditions`', a clear `mame_clear`'s.
-"""
+"""What the declaration families share where an intent meets the machine."""
 
 from __future__ import annotations
 
@@ -27,21 +18,16 @@ import mame_inputs as inputs
 import mame_state as st
 from mame_state import STATE
 
-# The `by` VOCABULARY: what a declaration is made by, or `auto` to have it decided.
 BY_OPTIONS = ("auto", *dec.BY)
-# The stop lines of the rows this module lists (a breakpoint's and a registerpoint's), which send
-# NO packet under a run the console started; a watchpoint's line is `mame_watches`', beside the
-# parser that names its writer.
+# Under a run the console started these stops send no packet, only the line.
 _LISTED_STOP_LINE = re.compile(r"Stopped at (break|register)point [0-9A-Fa-f]+\b")
 
 
-#: Why a list row names no cpu.
 NO_DECL_CPU_WHY = "the declaration names no cpu: it acts on the visible one"
 
 
 def decl_row(decl: dec.Declaration) -> dict[str, Any]:
-    """A list row's identity (`scry_core.declaration_rows.row`), with this server's cpu reason
-    and clock."""
+    """A list row's identity with this server's cpu reason."""
     return declaration_rows.row(ref=decl.ref, by=decl.by, cpu=decl.cpu, cpu_why=NO_DECL_CPU_WHY,
                                 created_at=decl.created_at, origin=decl.origin,
                                 own_origin=STATE.session_origin, now=st.utc_now())
@@ -67,8 +53,7 @@ def store() -> dec.DeclarationStore:
 
 def declare(kind: str, by: str, ref: str, cpu: str | None = None,
             **watch: Any) -> dec.Declaration:
-    """A declaration on `cpu` stamped with this session's origin, the clock and that cpu's
-    build, or the refusal that names what was wrong with it."""
+
     try:
         return dec.Declaration(kind, by, ref, created_at=st.now(), origin=STATE.session_origin,
                                fingerprint=STATE.fingerprint(cpu), cpu=cpu, **watch)
@@ -77,8 +62,7 @@ def declare(kind: str, by: str, ref: str, cpu: str | None = None,
 
 
 def held_names(kind: str, cpu: str | None) -> list[str]:
-    """The names `cpu`'s declarations of `kind` are stored under BY NAME: the bare spellings a
-    call may name back without being read as an address (a raw row's bare ref never is)."""
+    """Bare names a call may repeat without being read as an address."""
     if STATE.store is None:
         return []
     return [d.ref for d in STATE.store.declarations()
@@ -86,9 +70,7 @@ def held_names(kind: str, cpu: str | None) -> list[str]:
 
 
 def held_triggers(cpu: str | None, block: str, by: str) -> list[str]:
-    """The names `cpu`'s capture on `block` (a ref of kind `by`) is triggered on: declared
-    again, that capture stays reachable by its trigger's name after a rebuild drops it, as a
-    declaration stored by name does (`held_names`); a capture on another block is a new one."""
+    """Trigger names keeping a capture on `block` reachable after a rebuild."""
     if STATE.store is None:
         return []
     return [d.trigger for d in STATE.store.declarations()
@@ -98,17 +80,13 @@ def held_triggers(cpu: str | None, block: str, by: str) -> list[str]:
 
 def classify_call(ref: str, cpu: str | None, kind: str | None = None,
                   held: Collection[str] = ()) -> str:
-    """The address rule (`inputs.classify`) for a ref a CALL typed on `cpu`: against that cpu's
-    table, and, for a call that declares or clears declarations of `kind`, the names they are
-    stored under, beside `held`."""
+
     return inputs.classify(ref, STATE.table(cpu).table, cpu or STATE.first_cpu,
                            [*(held_names(kind, cpu) if kind else ()), *held])
 
 
 def decide_by(ref: str, by: str, cpu: str | None, kind: str) -> str:
-    """`by` as given, or for `auto` decided ONCE: a pointer by its grammar, else the address
-    rule itself (`classify_call`). A pointer's base is read by the address rule like any ref,
-    whether `by` named the pointer or `auto` found it."""
+    """`by` as given, or for `auto` decided once: pointer grammar, else the address rule."""
     if by not in ("auto", "pointer"):
         return by
     if (pr := vf.parse_pointer(ref)) is not None:
@@ -119,35 +97,23 @@ def decide_by(ref: str, by: str, cpu: str | None, kind: str) -> str:
 
 
 def resolve_decl(decl: dec.Declaration) -> dec.Resolved:
-    """Where `decl` points against its own cpu's table, and its types."""
+
     table = STATE.table(decl.cpu)
     return dec.resolve(decl, table.table, table.types)
 
 
 def refuse_conflict(decl: dec.Declaration) -> None:
-    """The store's refusal, asked BEFORE the machine is touched: a row armed for a
-    declaration the store then refused would be listed by nothing and cleared by nothing."""
+    """Ask the store first: a row armed for a refused declaration would be orphaned."""
     try:
         store().refuse_conflict(decl)
     except dec.DeclarationError as e:
         raise st.Invalid("ambiguous_ref", str(e)) from None
 
 
-# ----------------------------------------------------------------- a declaration at a stop
-
-
 def inherited(decl: dec.Declaration) -> str:
-    """The half of a stop's `cause` that says the declaration is not this session's.
+    """The part of a stop's `cause` saying the declaration comes from a prior session.
 
-    DECLARATIONS PERSIST ACROSS SESSIONS, which is the point of the store: a watch declared
-    yesterday re-arms itself at the next `start`. So a run can be cut by something the caller
-    never declared and cannot see in anything they typed, and `OTHER_STOP` then reads as a
-    condition somebody wrote badly rather than as an inheritance. Saying whose it is turns a
-    puzzle into a `declaration_clear(kind="watch")`.
-
-    IT SAYS THE FACT ONCE. `watch_stop` already appended a terse "(re-armed from a prior
-    session)" of its own, so calling this beside it stated the same thing twice in one
-    string; this replaces that text rather than joining it."""
+    Declarations persist, so a run can be cut by one the caller never typed."""
     if decl.origin is None or STATE.session_origin is None:
         return ""
     if decl.origin == STATE.session_origin:
@@ -163,41 +129,29 @@ def inherited(decl: dec.Declaration) -> str:
 
 
 def running_on_arrival(ses: gs.Session) -> bool:
-    """Whether the machine was running when a declaring call ARRIVED, read once at its entry,
-    which is what its `while_running` says: a stop the call's own round trips let through (a
-    condition it armed, firing an instruction later) is the next contact's, as `last_stop`
-    reports it."""
+    """Whether the machine was running when the call arrived."""
     return bool(ses.running)
 
 
 Refusal = tuple[contract.Code, str]
 
 
-# ------------------------------------------------------------------ the console's stop lines
-
-
 def debuglog_since(scratch: Path) -> list[str]:
-    """The console's lines since the previous stop, and the ONE mark moved to where the log
-    ends now. Read at EVERY stop, whether or not this server armed anything: a watchpoint or
-    a breakpoint typed through `debug` that cuts a run the console started (`gvblank`,
-    `gtime`) leaves NO stop packet and only its line, and a survey that did not read the log
-    took that stop for a landing, so `run_for(frames=N)` resumed it with the next `gvblank`
-    and every hit was lost. Both readings of a stop (`watch_stop`, `foreign_breakpoint`) take
-    their lines from here, so no line is read by one and lost to the other."""
+    """The console's lines since the previous stop; moves the one shared mark.
+
+    Read at every stop: a point typed through `debug` that cuts a console-started run
+    (`gvblank`, `gtime`) leaves only its line, and missing it loses the hit."""
     since, STATE.debuglog_mark = files.lines_since(scratch / "debug.log", STATE.debuglog_mark)
     return since
 
 
 def listed_stop_in(lines: list[str]) -> bool:
-    """Whether the console logged a breakpoint's or a registerpoint's stop among `lines`; the
-    watchpoint's half is `mame_watches.stop_line_in`, and `mame_running.stop_logged_in` asks
-    both."""
+    """Whether `lines` hold a breakpoint's or registerpoint's stop (watchpoints: `mame_watches`)."""
     return any(_LISTED_STOP_LINE.search(ln) for ln in lines)
 
 
 def newest_listed_stop(lines: list[str]) -> str | None:
-    """Which family logged the NEWEST stop among `lines`, `break` or `register`, or None. A
-    row whose action resumes the machine (`bpset a,1,{g}`) leaves its line in the window of
-    the stop that really ended the run, and the machine stands at the last one."""
+    """`break` or `register` for the newest stop in `lines`, or None; an action that resumes
+    (`bpset a,1,{g}`) leaves its line in the window of the stop that really ended."""
     kinds = [m.group(1) for ln in lines if (m := _LISTED_STOP_LINE.search(ln)) is not None]
     return kinds[-1] if kinds else None

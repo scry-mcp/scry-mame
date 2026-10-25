@@ -1,12 +1,7 @@
-"""A watch that CAPTURES (`mame_capture`): the count watch's tap on a TRIGGER, recording the
-whole block at each write to it, one row per event.
+"""A watch that CAPTURES (`mame_capture`): the whole block recorded at each write to a trigger.
 
-The known answers are CAPTURED on m68k-dual (`fixtures/capture/PROVENANCE.txt`), each beside a
-control that counted the trigger's writes over the same pass. The frame counter's capture
-measures what a row holds: its trigger is the low word of the long it captures, so every row's block
-holds that word's value from BEFORE the write, one less than the row's own `data`. The
-blitter's is the two-routine case: two drivers write the block and each row carries its own
-writer and its own block.
+Known answers are CAPTURED on m68k-dual (`fixtures/capture/PROVENANCE.txt`), each beside a
+control that counted the trigger's writes over the same pass.
 """
 
 from __future__ import annotations
@@ -51,9 +46,8 @@ OWNER = ("0x2031fc", ":maincpu")
 
 
 def _capturing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """The tally's double with m68k-dual's captured address map, where the frame counter lives in
-    the share `mainram` and the blitter's words in the share `blitram`, and the symbols that
-    place the captured writers."""
+    """The tally's double with m68k-dual's captured address map and the symbols placing its
+    writers."""
     ses = _tallying(monkeypatch, tmp_path)
     _cached(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"FRAME_LO": 0x2031FC, "IRQ_VBLANK": 0x400,
@@ -68,14 +62,12 @@ def _placed(tmp_path: Path, capture_id: str, name: str) -> None:
     rows.write_text((FIXTURES / f"{name}.rows").read_text())
 
 
-# --------------------------------------------------------------------------- the script
 
 
 def test_the_tap_sits_on_the_triggers_word_keeps_its_lanes_and_reads_the_block_it_names() -> None:
-    """MAME refuses a tap whose ends are not bus-aligned, so it covers the trigger's whole bus
-    word and the callback keeps only a write whose mask names the trigger's lane; the block is
-    read through the share the map names (a write-only block answers zeros through the space);
-    past the cap a write is only counted."""
+    """A tap needs bus-aligned ends, so it covers the trigger's whole bus word and the callback
+    keeps only a write whose mask names the trigger's lane; past the cap a write is only
+    counted."""
     src = capture.TapSource("share", ":blitram", 0x10)
     script = capture.install_script(BLIT_ID, 0x70001E, src, 10, Path("/s/h.txt"),
                                     Path("/s/r.rows"), ":maincpu")
@@ -123,11 +115,8 @@ def test_a_captured_header_and_its_rows_parse_whole_and_a_cut_one_reads_as_none(
 
 
 def test_known_answer_every_row_holds_the_trigger_word_from_before_its_write() -> None:
-    """The trigger is the low word of the long the capture holds, and a tap runs
-    before the write lands: so in every row the block's second word is the counter's value
-    before this write, one less than the row's `data`, and the first word, which the vblank
-    handler never raises in the pass, is zero. Every row is the one writer's, and there is one
-    row per write the control counted."""
+    """A tap runs before the write lands, so each row's block holds the counter from before it: one
+    less than the row's `data`. One row per write the control counted."""
     rows = capture.first_rows(FIXTURES / "counter.rows", capture.ROWS_MAX)
     head = capture.parse_capture_header((FIXTURES / "counter.txt").read_text())
     assert head is not None and len(rows) == head["rows"] == head["total"] == 230
@@ -139,12 +128,9 @@ def test_known_answer_every_row_holds_the_trigger_word_from_before_its_write() -
 
 
 def test_known_answer_the_vblank_handlers_write_lands_on_the_line_the_driver_raises_it() -> None:
-    """The frame counter's write is IRQ_VBLANK's, and m68k-dual's driver raises that
-    interrupt at scanline `NUM_SCANLINES`, 256, past its 252 visible lines: every row from the
-    second on is stamped line 256. The first is the handler's first run after the boot, at line
-    137. The times only grow, and two rows sit one frame apart to within the line both land on:
-    the driver's line is `PIXELS_PER_LINE` pixels of its 32 MHz crystal over 4, and its frame
-    `FIELD_LINES` lines."""
+    """The frame counter's write is IRQ_VBLANK's, raised at scanline `NUM_SCANLINES` (256, past
+    the 252 visible): every row from the second on is stamped line 256, and two rows sit one
+    frame apart."""
     rows = capture.first_rows(FIXTURES / "counter.rows", capture.ROWS_MAX)
     assert rows[0].line == 137 and {r.line for r in rows[1:]} == {256}, rows[:3]
     times = [r.time_attoseconds for r in rows]
@@ -157,9 +143,8 @@ def test_known_answer_the_vblank_handlers_write_lands_on_the_line_the_driver_rai
 
 
 def test_known_answer_two_routines_each_row_carries_its_own_writer_and_block() -> None:
-    """The blitter's words written by two drivers: every row is one trigger write, the arm
-    (`0000`) and the fire (`ffff`) told apart by their data, each by its own pc, and the block
-    as it stood at that write, which moves between rows as the drivers set it."""
+    """The blitter's words written by two drivers: each row is one trigger write with its own pc
+    and block."""
     rows = capture.first_rows(FIXTURES / "blit.rows", 100)
     assert len(rows) == 14
     pcs = [r.pc for r in rows]
@@ -173,7 +158,6 @@ def test_known_answer_two_routines_each_row_carries_its_own_writer_and_block() -
     assert blocks[11] == "c000" + "00" * 6 + "00ff", "B clears the word A set, and the row says so"
 
 
-# ---------------------------------------------------------------------------- the tool
 
 
 def test_a_capture_is_sent_pending_on_its_triggers_word_with_the_block_read_from_its_share(
@@ -206,8 +190,7 @@ def test_a_capture_surveys_its_rows_as_the_periodic_wrote_them(
     assert "rows" not in item, "the rows the file keeps are `rows_kept`, as palette_log's"
     assert item["since_last_stop"] == 230 and item["rows_max"] == capture.ROWS_MAX
     assert item["rows_path"] == str(capture.paths(tmp_path, COUNTER_ID)[1])
-    # A STOP NAMES THE CAPTURE AND COUNTS IT, and lists none of its rows: every reply carries a
-    # survey, whatever the call was about, and the rows are `declaration_list(kind="watch")`'s
+    # a stop counts the capture and lists none of its rows (`declaration_list` does)
     assert "first_rows" not in item, item
     assert _survey(ses, 240)["since_last_stop"] == 0, "the same dump is no new row"
     listed = s.declaration_list("watch")["watches"][0]
@@ -223,9 +206,7 @@ def test_a_capture_surveys_its_rows_as_the_periodic_wrote_them(
 
 def _listed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, fill: str,
             n: int = 300) -> dict[str, Any]:
-    """`declaration_list(kind="watch")` over a capture of the block `fmt` sizes (the widest a
-    capture holds for an
-    array), `n` rows of the block `fill` repeated, past what a reply shows."""
+    """`declaration_list(kind="watch")` over a capture of `fmt`, `n` rows past the reply."""
     _capturing(monkeypatch, tmp_path)
     width = vf.parse(fmt).width_for(0)
     out = s.watch_add(ref="0x2031fc", mode="capture", fmt=fmt, trigger="0x2031fe")
@@ -236,8 +217,7 @@ def _listed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, fill: str
     head.write_text(f"MCP_CAPTURE {cid} seq=2 frame=240 total={n} rows={n} overflow_rows=0 "
                     "data_width=16 endianness=big cpu=:maincpu\nend\n")
     block = fill * (2 * width // len(fill))
-    # THE WIDEST STAMPS a row prints: a line of a tall screen and an hour of emulated time,
-    # whose seconds print every digit a double holds
+    # the widest stamps a row prints
     rows.write_text("".join(f"r {i + 1} {12 + i} 1023 3600.123456789012345678 40e ffff ffff "
                             f"{block}\n" for i in range(n)))
     listed: dict[str, Any] = s.declaration_list("watch")
@@ -247,12 +227,8 @@ def _listed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fmt: str, fill: str
 def test_watch_list_shows_the_widest_capture_inside_the_reply_budget(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The widest block a capture accepts, decoded to the widest JSON its bytes can make (its
-    floats printed at full precision are wider than its signed bytes), over a pass
-    with rows past what a reply shows: `declaration_list(kind="watch")` carries the first
-    `ROWS_SHOWN` of them
-    inside the budget a reply is built to, and `rows_path` the rest. The control lifts the cap
-    and sees the same list cross it, which is what the client spilled."""
+    """The widest block a capture accepts, decoded to its widest JSON: the first `ROWS_SHOWN`
+    rows fit the reply budget and `rows_path` holds the rest."""
     out = _listed(monkeypatch, tmp_path, "f32[32]", "ff7fffff")
     item = out["watches"][0]
     assert item["state"] == "captured" and item["rows_kept"] == 300, item.get("state")
@@ -263,15 +239,13 @@ def test_watch_list_shows_the_widest_capture_inside_the_reply_budget(
     assert len(json.dumps(s.declaration_list("watch"))) > mstate.REPLY_BUDGET_CHARS, "the control"
 
 
-# the bytes that decode to each scalar's widest JSON: a sign and the most digits
 WIDEST_FILL = {"u8": "ff", "i8": "80", "u16": "ffff", "i16": "8000", "u32": "ffffffff",
                "i32": "80000000", "f32": "ff7fffff", "f64": "ffefffffffffffff", "char": "80"}
 
 
 @pytest.mark.parametrize("elem", list(WIDEST_FILL))
 def test_the_block_bound_is_the_json_the_widest_bytes_decode_to(elem: str) -> None:
-    """The bound a capture's format is judged by is computed from its shape, and it is exactly
-    the JSON the widest bytes of each scalar decode to, so the model is held to the decode."""
+    """The bound is exactly the JSON the widest bytes of each scalar decode to."""
     n = watches.SHOW_WATCH_MAX // vf.SCALARS.get(elem, ("", 1))[1]
     fmt = vf.parse(f"{elem}[{n}]")
     raw = bytes.fromhex(WIDEST_FILL[elem] * n)
@@ -288,8 +262,7 @@ def test_the_capture_bound_is_the_widest_array_a_capture_holds() -> None:
 
 
 def _struct(chars: int, n: int = 32) -> str:
-    """A struct of `n` one-byte fields, its names padded so its widest decoded JSON is exactly
-    `chars` characters."""
+    """A struct of `n` one-byte fields whose widest decoded JSON is exactly `chars` characters."""
     names = [f"f{i:03d}" for i in range(n)]
     base = capture.block_chars_max(vf.parse("{" + ",".join(f"{a}:i8" for a in names) + "}"), 0)
     assert base <= chars, "even the shortest names are past the bound at this many fields"
@@ -300,11 +273,9 @@ def _struct(chars: int, n: int = 32) -> str:
 def test_a_struct_at_the_bound_lists_inside_the_budget_and_one_past_it_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A struct's field names are the caller's, so a struct of many one-byte fields listed past
-    the reply's budget with nothing bounding it. A capture's format is refused
-    at `watch_add` when its widest decoded block is wider than the widest an array or a string
-    makes over the largest block a capture holds; a format at that bound lists inside the
-    budget, and one character past it is refused, nothing sent or stored."""
+    """A format is refused at `watch_add` when its widest decoded block is wider than the widest
+    an array or string makes over the largest block; at the bound it lists inside the budget,
+    one past it is refused."""
     fits = _struct(watches.capture_block_chars_max())
     out = _listed(monkeypatch, tmp_path, fits, "80")
     assert len(json.dumps(out["watches"][0]["first_rows"][0]["block"])) == (
@@ -323,8 +294,7 @@ def test_a_struct_at_the_bound_lists_inside_the_budget_and_one_past_it_is_refuse
 def test_rows_past_the_cap_are_counted_and_said(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """CAPTURED with the cap lowered to three: three rows kept, the rest counted, and the
-    total still every trigger write the control saw."""
+    """With the cap at three: three rows kept, the rest counted."""
     ses = _capturing(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fe")
     _answer(tmp_path, 1, output=INSTALLED)
@@ -353,8 +323,8 @@ def test_a_capture_is_refused_without_a_trigger_by_pointer_or_wider_than_a_row(
 def test_a_trigger_this_build_lacks_is_refused_and_one_nothing_handles_is_armed_saying_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A name the build lacks sends nothing. A trigger whose write side is unmapped is armed:
-    the tap there still sees the cpu's writes, and the note says where they go."""
+    """A name the build lacks sends nothing; an unmapped write side is armed, and the note says
+    where it goes."""
     ses = _capturing(monkeypatch, tmp_path)
     out = refused(re.escape(inputs.not_a_ref("the trigger", "gone_sym", ":maincpu")),
                   s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="gone_sym"))
@@ -371,8 +341,8 @@ def test_a_trigger_this_build_lacks_is_refused_and_one_nothing_handles_is_armed_
 def test_a_block_no_memory_backs_is_refused_before_anything_is_sent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Reading a handler inside a write would run it once per trigger: a block that no share
-    or region holds and whose read side the console calls a handler is refused."""
+    """A block no share or region holds, whose read side is a handler, is refused: reading it
+    would run it."""
     ses = _capturing(monkeypatch, tmp_path)
     ses.latches.update({0x780000, 0x780003})
     out = refused("has no memory a tap can read",
@@ -424,8 +394,8 @@ def test_a_pending_capture_reads_no_files_another_tap_left_on_its_range(
 def test_a_capture_installed_over_no_tap_removes_the_files_a_removed_one_left(
     tmp_path: Path,
 ) -> None:
-    """Its rows are APPENDED, so a re-declaration over a tap still in the registry keeps the
-    file (the install carries its rows); over none, the files are a removed tap's and go."""
+    """Rows are appended: a re-declaration over a live tap keeps the file; over none, the files
+    go."""
     head, rows = capture.paths(tmp_path, "c")
     src = capture.TapSource("space", "", 0x100)
     script = capture.install_script("c", 0x10, src, 2, head, rows)
@@ -478,9 +448,7 @@ def test_a_capture_declaration_carries_its_trigger_and_only_a_capture_does() -> 
 def test_the_capture_leaves_the_tally_state_to_the_tally(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A count and a capture over the same range are two taps with two ids, as the live
-    control runs them: the count's one-range rule is between tallies, so neither refuses the
-    other, and each is surveyed in its own words."""
+    """A count and a capture over the same range are two taps, each surveyed in its own words."""
     ses = _capturing(monkeypatch, tmp_path)
     assert s.watch_add(ref="frame_lo", mode="capture", fmt="u16[2]",
                        trigger="0x2031fe")["status"] == "ok"
@@ -490,13 +458,11 @@ def test_the_capture_leaves_the_tally_state_to_the_tally(
     assert set(mstate.STATE.tallies) == {("frame_lo", ":maincpu"), OWNER}
 
 
-# ------------------------------------------------ the review's findings, each seen red first
 
 
 def _map(*entries: tuple[int, int, str]) -> dict[str, object]:
     """An address map of `:maincpu`'s program space from `(start, end, share)` rows, in install
-    order, an empty share meaning none: the shape `start` caches, for the overlaps and the gaps
-    the captured m68k-dual map does not have."""
+    order."""
     return {"address_map": [
         {"cpu": ":maincpu", "space": "program", "index": i, "start": f"{s:#010x}",
          "end": f"{e:#010x}", **({"share": sh} if sh else {})}
@@ -506,9 +472,8 @@ def _map(*entries: tuple[int, int, str]) -> dict[str, object]:
 def test_an_overlaid_block_is_never_read_from_the_memory_under_the_overlay(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """MAME's bus answers with the entry installed last where two overlap, so a share whose
-    range a handler overlays is not where the block's values are: the console decides, and a
-    handler there is refused rather than read as the RAM beneath it."""
+    """The bus answers with the entry installed last, so a share overlaid by a handler is
+    refused."""
     monkeypatch.setattr(mstate.STATE, "machine_map",
                         _map((0x100000, 0x10FFFF, ":mainram"), (0x10F000, 0x10F0FF, "")))
     asked: list[int] = []
@@ -527,8 +492,8 @@ def test_an_overlaid_block_is_never_read_from_the_memory_under_the_overlay(
 def test_a_block_with_a_handler_inside_is_refused_where_the_handler_starts(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A direct read of a handler answers zeros that look like data: every entry that reaches
-    into the block is asked, not only its ends."""
+    """A direct read of a handler answers zeros that look like data, so every entry reaching the
+    block is asked."""
     monkeypatch.setattr(mstate.STATE, "machine_map", _map(
         (0x300000, 0x30000F, ""), (0x300010, 0x30001F, ""), (0x300020, 0x30002F, "")))
     sides = {0x300000: "memory@300000", 0x300010: "latch_w", 0x300020: "memory@300020",
@@ -543,8 +508,8 @@ def test_a_block_with_a_handler_inside_is_refused_where_the_handler_starts(
 def test_a_block_in_rom_is_read_from_its_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The captured m68k-dual map backs the main cpu's code with the region `:maincpu`: a
-    capture there reads the region, at the address's offset into it."""
+    """The map backs the main cpu's code with the region `:maincpu`: a capture there reads it at
+    an offset."""
     _capturing(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x400", mode="capture", length=4, trigger="0x2031fe")
     assert out["source"] == {"kind": "region", "tag": ":maincpu", "offset": 0x400}, out
@@ -577,10 +542,8 @@ def test_a_stale_capture_is_listed_stale_and_not_as_an_install_that_never_came(
 def test_an_install_answer_is_its_own_taps_line_among_others_sent_with_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Another tap's install, sent before this one, can be answered after this record's mark,
-    so its `installed` line can sit between the mark and this record's sentinel. The second line is
-    the captured count watch's with its cpu REPLACED by `:subcpu`, derived and said so: the
-    capture was taken on one cpu, and the case needs two."""
+    """Another tap's `installed` line can land between the mark and this record's sentinel; the
+    second line is the captured count watch's with its cpu replaced by `:subcpu`."""
     _capturing(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fe")
     other = ("MCP_TALLY installed tally_id=2031fe_1_subcpu first=2031fe last=2031fe "
@@ -597,9 +560,7 @@ def test_every_callback_a_capture_installs_runs_under_the_guard() -> None:
 
 
 def test_a_row_is_counted_only_once_it_is_kept() -> None:
-    """A body that raises half-way must not leave a counted row that was never appended: the
-    rows file would then be shorter than `rows_kept` says, and the dumper would trip over the
-    hole at every stop."""
+    """A body that raises half-way leaves no counted row that was never appended."""
     script = capture.install_script(COUNTER_ID, 0x2031FE, capture.TapSource("space", "", 0x2031FC),
                                     4, Path("/s/h.txt"), Path("/s/r.rows"))
     body = script.split("install_write_tap")[1].split("T.items[id] = t")[0]
@@ -610,8 +571,8 @@ def test_a_row_is_counted_only_once_it_is_kept() -> None:
 def test_a_capture_whose_tap_raised_says_so_and_is_never_an_empty_census(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A capture whose body raised at every trigger write kept no row, and read as a trigger
-    nobody writes: the errors ride beside the rows they qualify, at a stop and in the list."""
+    """A body that raised at every write kept no row: the errors ride beside the rows, at a stop
+    and in the list."""
     ses = _capturing(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fc", mode="capture", fmt="u16[2]", trigger="0x2031fe")
     _answer(tmp_path, 1, output=INSTALLED)
@@ -655,8 +616,8 @@ def test_a_trigger_by_name_is_placed_through_the_table_and_kept_as_typed(
 def test_the_block_captures_are_the_ones_with_a_write_trigger_in_order_on_a_bare_cpu(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """One predicate for every reader: a count watch carries no trigger and is not a capture, the
-    order is the declaring order, and a manifest's bare `subcpu` names the owner's `:subcpu`."""
+    """One predicate for every reader: a count watch is no capture, and a manifest's bare
+    `subcpu` is the owner's."""
     monkeypatch.setattr(mstate.STATE, "tallies", {
         ("b", ":subcpu"): {"trigger": 0x10},
         ("count", ":maincpu"): {"width": 4},
@@ -674,8 +635,8 @@ def test_the_block_captures_are_the_ones_with_a_write_trigger_in_order_on_a_bare
 def test_a_block_the_table_types_as_a_struct_past_the_bound_is_refused_too(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, space: str,
 ) -> None:
-    """The format can come from the symbol table (`fmt` left at auto) and the trigger from a
-    port: the bound is judged once the format is known, on either route."""
+    """The bound is judged once the format is known, whether from the symbol table or a port
+    trigger."""
     from session_doubles import io_board
     ses = _capturing(monkeypatch, tmp_path)
     wide = _struct(watches.capture_block_chars_max() + 1)
@@ -692,9 +653,8 @@ def test_a_block_the_table_types_as_a_struct_past_the_bound_is_refused_too(
 def test_a_stored_capture_whose_format_is_past_the_bound_is_unarmable_at_start(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A capture stored before the bound, or by another server, re-arms at `start` without
-    passing through `watch_add`: it is judged there too, `unarmable` with the bound's words, and
-    nothing is sent for it."""
+    """A capture stored before the bound re-arms at `start` judged there too: `unarmable`,
+    nothing sent."""
     ses = _capturing(monkeypatch, tmp_path)
     wide = _struct(watches.capture_block_chars_max() + 1)
     assert arming.store() is not None
@@ -711,10 +671,7 @@ def test_a_stored_capture_whose_format_is_past_the_bound_is_unarmable_at_start(
 def test_watch_list_cuts_an_unarmable_captures_format_as_its_refusal_does_and_the_store_keeps_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A format past the bound is long by construction, and `declaration_list(kind="watch")` lists
-    the row once a
-    row: it shows the format cut by the rule its refusal uses (`watches.shown_fmt`), and the
-    store, which is the record, keeps it whole."""
+    """A format past the bound lists cut by `watches.shown_fmt`; the store keeps it whole."""
     ses = _capturing(monkeypatch, tmp_path)
     wide = _struct(watches.capture_block_chars_max() + 1)
     assert len(wide) > 60, "the case is built: a format longer than the cut"
@@ -741,8 +698,7 @@ def test_watch_list_cuts_an_unarmable_captures_format_as_its_refusal_does_and_th
 def test_a_long_format_inside_the_bound_and_a_long_one_on_a_count_row_are_listed_whole(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The cut is for a capture past the bound alone: a format longer than the cut that still
-    fits is listed as it was declared, and so is any format of another mode."""
+    """The cut is for a capture past the bound alone."""
     ses = _capturing(monkeypatch, tmp_path)
     long_fits = "{" + ",".join(f"field{i:02d}:u8" for i in range(8)) + "}"
     assert len(long_fits) > 60 and watches.capture_chars_past_bound(8, long_fits) is None
@@ -757,8 +713,8 @@ def test_a_long_format_inside_the_bound_and_a_long_one_on_a_count_row_are_listed
 
 
 def test_a_capture_read_from_its_own_space_names_the_address() -> None:
-    """A block in no share or region is read at its own address: the source says `addr`, an
-    address as every reply spells one, where a share's or a region's says an integer offset."""
+    """A block in no share or region is read at its own address: the source says `addr`, not an
+    offset."""
     assert capture.TapSource("space", "", 0x2031FC).fields() == {"kind": "space",
                                                                  "addr": "0x002031fc"}
     assert capture.TapSource("share", ":blitram", 0x10).fields() == {

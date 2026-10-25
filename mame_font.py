@@ -1,14 +1,7 @@
-"""A 5x7 bitmap font for the labels a picture carries, drawn at an integer scale.
+"""A 5x7 bitmap font for labels drawn into a picture, at an integer scale.
 
-WHY PIXELS AND NOT A CAPTION. A contact sheet shows many frames in one picture, and each cell has
-to say which frame it is, where the model and a person both look: in the picture. The glyphs are
-the classic 5x7 matrix, enough to be read at twice their size without a font file or a library,
-and each one differs from every other, which is what lets a test read a label back off the PNG
-instead of trusting the string the writer meant to draw.
-
-THE ALPHABET IS WHAT THE LABELS SAY and no more: hex digits, the letters of a film's `FRAME`,
-`HITS` and `PC` and of a sweep's candidates (`S1C3`, `4BPP 16X16`, `PLANAR CELLS DOWN`), `=` and
-the space. A character outside it is a programming error, never a blank.
+Pixels rather than a caption so a test can read a label back off the PNG. The alphabet is what
+the labels say (hex digits, film and sweep words, `=`, space); any other character raises.
 """
 
 from __future__ import annotations
@@ -67,8 +60,7 @@ def width(text: str, scale: int) -> int:
 
 def draw(px: bytearray, stride_px: int, text: str, x: int, y: int, scale: int,
          rgb: tuple[int, int, int]) -> None:
-    """Draw `text` into `px`, an RGB picture `stride_px` pixels wide, its top left at (`x`, `y`),
-    each glyph pixel a `scale` x `scale` square of `rgb`; the background is left as it is."""
+    """Draw `text` into the RGB picture `px` (`stride_px` wide) at (`x`, `y`), background kept."""
     colour = bytes(rgb)
     for i, ch in enumerate(text):
         glyph = GLYPHS.get(ch)

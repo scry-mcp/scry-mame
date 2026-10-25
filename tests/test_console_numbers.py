@@ -1,16 +1,6 @@
-"""NUMBERS BETWEEN THE SERVER AND MAME'S CONSOLE, in both directions.
-
-Out: the console's expression parser looks a bare token up in the visible cpu's symbol table
-BEFORE it reads it as a number (`parse_symbol_or_number`, src/emu/debug/express.cpp), and a
-cpu's registers are symbols there. So `bp d0` on a 68000 arms at the value of register D0, and
-a `wp` length of ten spelled `a` is register A on a Z80. Every number the server sends travels
-with `0x`.
-
-In: `bplist` and `wplist` print each row as `%c%4X @ ...` (execute_bplist, execute_wplist in
-src/emu/debug/debugcmd.cpp): ONE flag column, a space or `D`, then the index right-aligned in
-four columns. The rows below are built with that format string, so an index whose own first
-digit is `D` is read as the index it is.
-"""
+"""Numbers to MAME's console need `0x` (a bare token is looked up as a cpu register symbol first,
+express.cpp); `bplist`/`wplist` rows are `%c%4X @ ...` (debugcmd.cpp), so an index may
+start with `D`."""
 
 from __future__ import annotations
 
@@ -40,7 +30,6 @@ def test_a_watchpoint_address_and_length_are_sent_as_numbers(length: int) -> Non
 
 
 def _row(enabled: bool, index: int, addr: int) -> str:
-    """One `bplist` row as MAME prints it: `%c%4X @ %0*X`."""
     return f"{' ' if enabled else 'D'}{index:4X} @ {addr:06X}"
 
 
@@ -66,8 +55,7 @@ def test_a_wplist_row_is_read_by_its_flag_column(enabled: bool, index: int) -> N
 
 @pytest.mark.parametrize("ref", ["4_00", "-10", "+400", "dead_beef", "0x", ""])
 def test_a_ref_that_is_neither_a_symbol_nor_plain_hex_is_refused_never_read(ref: str) -> None:
-    """`int(ref, 16)` alone takes a sign and underscores: `-10` would reach the stub as a
-    negative address and `dead_beef`, a symbol this build lacks, would read 0xdeadbeef."""
+    """`int(ref, 16)` alone would accept a sign and underscores."""
     with pytest.raises(mstate.Invalid) as refused:
         mstate.STATE.resolve(ref)
     assert refused.value.code == "unknown_ref"
@@ -97,10 +85,7 @@ def test_an_empty_list_of_steps_is_refused_before_anything() -> None:
 def test_the_frame_counter_is_asked_by_the_name_the_console_gave_at_start_never_the_map(
     monkeypatch: pytest.MonkeyPatch, symbol: str | None,
 ) -> None:
-    """MAME names the counter `frame` on a board with one screen device, `frame0`... on one with
-    several and nothing on one with none (src/emu/debug/debugcpu.cpp), and the screens a start
-    lists are no guide: topgunnr lists its `vector` display as one screen and has no counter.
-    The name is the one the console answered to (`probe_frame_symbol`), whatever the map says."""
+    """The console names the counter by its screen devices, not by the map's screen list."""
     import mame_read as read
     monkeypatch.setattr(mstate.STATE, "machine_map", {"screens": [{"tag": ":vector"}]})
     monkeypatch.setattr(mstate.STATE, "frame_symbol", symbol)
@@ -119,9 +104,7 @@ def test_a_project_name_that_only_resembles_one_is_not_the_consoles(name: str) -
 
 
 def test_an_ignore_list_the_console_wrapped_is_read_whole() -> None:
-    """`ignore` answers ONE line (src/emu/debug/debugcmd.cpp), which the console's text buffer
-    wraps at its column: at a space it drops, else hard. Read in pieces it lost every cpu past
-    the first cut."""
+    """`ignore` answers one line that the console's text buffer wraps at its column."""
     import gdb_session as gs
     import mame_cpus as cpus
     tags = [f":cpu{i:02d}_with_a_long_tag_name" for i in range(12)]

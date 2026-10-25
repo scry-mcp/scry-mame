@@ -1,10 +1,4 @@
-"""Every module of the server imports FIRST, alone, in an interpreter of its own.
-
-A cycle between modules hides inside one process: once some other module has finished importing
-the shared one, the cycle never runs, so a suite collected in one order passes while a lone test
-file, or a client importing one module, dies at its first line. Only a fresh interpreter per
-module asks each one the question it is asked in the field.
-"""
+"""Each server module imported first, alone: cycles hide in shared processes."""
 
 from __future__ import annotations
 
@@ -19,8 +13,7 @@ CHILD_TIMEOUT_S = 60.0
 
 
 def _import_alone(module: str) -> tuple[str, int | None, str]:
-    """The module, its child's exit code (None when it ran past the timeout) and the last
-    line it printed to stderr: a hang is one more failure in the list, never the end of it."""
+    """The module, its exit code (None on timeout), last stderr line."""
     try:
         done = subprocess.run([sys.executable, "-c", f"import {module}"], cwd=SERVER_DIR,
                               capture_output=True, text=True, timeout=CHILD_TIMEOUT_S,
@@ -32,7 +25,7 @@ def _import_alone(module: str) -> tuple[str, int | None, str]:
 
 
 def test_the_list_is_the_server() -> None:
-    # A glob that found nothing would pass the test below having examined nothing.
+    # An empty glob would make the next test examine nothing.
     assert {"server", "mame_running", "mame_iotaps", "mame_capture", "mame_lua",
             "mame_advance", "mame_focus"} <= set(MODULES)
 

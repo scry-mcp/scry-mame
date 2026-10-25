@@ -1,7 +1,4 @@
-"""A CALL CANCELLED WHILE ITS OWN REFUSAL IS BEING BUILT is cancelled in its body like any other:
-the translation of a tool's errors runs inside the call (`mame_mcp._invoke`), so a cancel met
-there (the survey `record_own_stop` makes polls) applies the end the tool declared and leaves the
-record for the next reply."""
+"""A cancel met while a refusal is built applies the tool's declared end."""
 
 from __future__ import annotations
 

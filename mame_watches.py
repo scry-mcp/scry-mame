@@ -1,37 +1,24 @@
-"""THE WATCH FAMILY: `watch_add` arms a WRITE watchpoint (a change watch), sends a write tap
-(a count or a capture watch, `mame_tally` and `mame_capture`) or holds a show watch
-that arms nothing; `declaration_list(kind="watch")` reads `wplist` back,
-`declaration_clear(kind="watch")` removes and reads back,
-`evaluate_watches` renders every watch's bytes at a stop, and `watch_stop` says WHO WROTE THIS
-BYTE when a stop is a watchpoint's. What every family shares is `mame_arming`'s, `mame_lists`',
+"""The watch family: `watch_add` arms a write watchpoint (change), sends a write tap (count or
+capture) or holds a show watch that arms nothing; `watch_stop` says who wrote the byte when a
+stop is a watchpoint's. What every family shares is `mame_arming`'s, `mame_lists`',
 `mame_conditions`' and `mame_clear`'s; where an address's sides go is `mame_map`'s.
 
-THE CONTROL OF A WATCH, decided the way `run_to`'s was: by naming what silences one. Three
-things do, and each has its answer here. (1) The ROM copy of a datum whose live copy is in
-RAM: the debugger ACCEPTS a watchpoint on a ROM address, lists it, and it can never
-fire, so before arming a change watch, the console's `map` is asked on the watch's cpu and a
-write side that is `unmapped` is refused as INVALID naming the line; a count or capture tap
-sees the cpu's writes there whatever handles them, so it arms and its `note` says so. (2) The
-wrong cpu: the row names its cpu, and `map` is asked of the same one. (3) A watch set while
-running: the debugger takes it and it FIRES, like a breakpoint, so it is armed at once and the
-reply says `while_running`. And the debugger's list is read back after every arm, so `armed:
-true` is the machine's answer; a row it lists DISABLED (`wpdisable` typed through `debug`) is
-`disabled` and never counts as armed.
+What silences a watch, and its answer: (1) a ROM address is accepted and listed but never
+fires, so a change watch asks the console's `map` on its cpu and refuses an `unmapped` write
+side (a tap sees the cpu's writes whatever handles them, so it arms with a `note`); (2) the
+wrong cpu, so the row names its cpu and `map` is asked of it; (3) a watch set while running
+fires like a breakpoint, so it arms at once and says `while_running`. `armed: true` is read
+back from the debugger's list; a row listed DISABLED is `disabled`, never armed.
 
-ONE WATCHED BYTE, ONE DECLARATION. Two change watches sharing a byte would make "who wrote
-this byte" ambiguous, and clearing either would disarm the other's byte in silence; so a change
-watch sharing a byte with a range another declaration already arms is refused naming it, and a
-ref declared again with another shape (width, format, mode) is refused until it is cleared.
+One watched byte, one declaration: two change watches on a byte make "who wrote this byte"
+ambiguous and a clear would disarm the other's, so overlapping a range another declaration
+arms is refused, as is a ref redeclared with another shape until it is cleared.
 
-WHO WROTE THIS BYTE, on a 68000 board: the write has LANDED when the machine stops,
-the stop's pc is the instruction AFTER the writer, and the console's own line, which
-`-debuglog` sends to `debug.log` in the scratch, names the watchpoint by its index, the value
-written, the address written and the writer's pc: `Stopped at watchpoint 1 writing 0038 to
-2031FE (PC=0000040E)`. The stub's stop packet for a console row names address 0, so that line
-is the attribution. The reply carries every line of the firing watch's own index since the
-previous stop (a long is written as two words), the value this server last saw at that address
-(`before`) and the value now (`after`).
-"""
+Who wrote this byte, on a 68000: the write has landed when the machine stops, so the stop's
+pc is the instruction after the writer. The stub's stop packet for a console row names
+address 0; attribution is the console's own line in `debug.log`, `Stopped at watchpoint 1
+writing 0038 to 2031FE (PC=0000040E)`. The reply carries every line of the firing index since
+the previous stop, the value last seen (`before`) and the value now (`after`)."""
 
 from __future__ import annotations
 
@@ -67,20 +54,15 @@ import mame_tally as tally
 import mame_tap as mtap
 from mame_state import STATE
 
-# A show watch reads at most this many bytes at a stop: a value is what a stop
-# survey carries, a region is `memdump`'s job.
+# a value is what a stop survey carries; a region is `memdump`'s job
 SHOW_WATCH_MAX = 128
 _WATCH_PACKET = re.compile(r"^T05(?:watch|rwatch|awatch):([0-9a-fA-F]+);")
-# One ceiling for every list this server hands back. Below it, the stub's watch stop packet
-# and the console's stop line, both CAPTURED.
 WRITES_MAX = read.LOG_LIMIT_MAX
-# THE `(PC=...)` IS MAME'S ONLY WHEN THE WRITER IS THE WATCH'S OWN CPU (`watchpoint::hit` in
-# src/emu/debug/points.cpp): a write by another cpu or a device prints the line bare and lets
-# the debugger break when the watch's cpu next runs, so that line names no writer.
+# the `(PC=...)` is MAME's only when the writer is the watch's own cpu
+# (`watchpoint::hit`, src/emu/debug/points.cpp); another cpu or a device prints it bare
 _STOP_LINE = re.compile(
     r"Stopped at watchpoint ([0-9A-Fa-f]+) writing ([0-9A-Fa-f]+) to ([0-9A-Fa-f]+)"
     r"(?: \(PC=([0-9A-Fa-f]+)\))?")
-#: What a write the console logged with no pc is said to have been written by.
 _NO_WRITER = "another cpu or device (MAME names a writer pc only for the watch's own cpu)"
 
 
@@ -95,10 +77,8 @@ def watch_indices(but: dec.Owner | None = None) -> set[int]:
 
 
 def check_expr_ref(ref: str) -> None:
-    """An `expr` watch's REF goes out as one parameter of `print frame,<ref>` at every stop, so
-    it is held to the rules a condition is (`conditions.expression_fault`): the console splits a
-    line at a `,` or a `;` outside brackets and EXECUTES an assignment, so `1;g` would release
-    the machine at every stop and `(d0=5)` would write a register there, with nothing counted."""
+    """An `expr` ref is held to a condition's rules: the console executes an assignment in a
+    `print`."""
     fault = conditions.expression_fault(ref)
     if fault is None:
         return
@@ -120,9 +100,7 @@ def check_expr_ref(ref: str) -> None:
 
 
 def check_expr_watch(length: int, fmt: str, by: str) -> None:
-    """An `expr` watch's machine-independent rules: it takes neither a length nor a fmt, and its
-    `by` is its mode's, so it is left at auto. The length is judged a count before it is asked to
-    be zero, so `length=False` is refused rather than read as no length."""
+    """An `expr` watch's machine-independent rules: no length, no fmt, `by` left at auto."""
     inputs.natural("length", length, " is not a number of bytes, and an expr watch takes none")
     if length or fmt != "auto":
         raise st.Invalid("bad_argument",
@@ -135,12 +113,9 @@ def check_expr_watch(length: int, fmt: str, by: str) -> None:
 
 
 def check_fmt_carries_no_class(fmt: str) -> None:
-    """A CLASS IN THE CALLER'S `fmt` IS REFUSED, never ignored. `vf.parse("ptr16@CODE")` succeeds,
-    which is why this has to be said explicitly: `fmt="ptr16@ANYTHING"` parsed fine and then did
-    EXACTLY what `fmt="ptr16"` does, with no mention of the class and no refusal, even for a class
-    that does not exist. A setting silently left at its default is indistinguishable from success.
-    Checked against what the CALLER passed, before `types` is allowed to supply a spec of its own,
-    which legitimately carries a class."""
+    """A class in the caller's `fmt` is refused, never ignored: `vf.parse("ptr16@CODE")` succeeds
+    and would behave as `ptr16`. Judged on what the caller passed, before `types` supplies a
+    spec."""
     if "@" in fmt:
         raise st.Invalid("bad_argument",
             f"fmt={fmt!r} names a pointer class, and `fmt` does not take one: a pointer's "
@@ -150,9 +125,7 @@ def check_fmt_carries_no_class(fmt: str) -> None:
 
 
 def check_fmt_width(width: int, fmt: str) -> int | None:
-    """A `fmt` the caller NAMED, against the `width` beside it, handing back the width the two
-    resolve to. `auto` is not judged here and answers None: what it resolves to comes from the
-    symbol table, which is the machine's."""
+    """The width a named `fmt` resolves to beside `width`; None for `auto`."""
     if fmt == "auto":
         return None
     try:
@@ -163,18 +136,14 @@ def check_fmt_width(width: int, fmt: str) -> int | None:
 
 @functools.cache
 def capture_block_chars_max() -> int:
-    """THE WIDEST A CAPTURE'S DECODED BLOCK MAY PRINT: the widest an array or a string makes over
-    the largest block a capture holds, the listing `declaration_list(kind="watch")`'s budget test
-    measures. A struct's
-    field names are the caller's, so a struct is held to what the arrays already make. Computed on
-    first use, since `mame_capture` is still importing this module when it is defined."""
+    """The widest decoded block a capture may print, computed lazily: `mame_capture` is still
+    importing this module when it is defined."""
     return max([capture.block_chars_max(vf.parse(f"{elem}[{SHOW_WATCH_MAX // size}]"), 0)
                 for elem, (_code, size) in vf.SCALARS.items()]
                + [capture.block_chars_max(vf.parse(f"char[{SHOW_WATCH_MAX}]"), 0)])
 
 
-# How much of a format a refusal or a row quotes: a format past the capture bound is long by
-# construction, and quoted whole it would fill the line that refuses it, or every listing.
+# a format past the capture bound is long by construction; quoted whole it fills the line
 FMT_SHOWN = 60
 
 
@@ -184,8 +153,7 @@ def shown_fmt(fmt: str) -> str:
 
 
 def capture_chars_past_bound(width: int, fmt: str) -> int | None:
-    """The characters of JSON a capture's widest row under `fmt` decodes to, when that is past
-    the bound `watch_add` refuses it at; None when it fits or the format is still `auto`."""
+    """The JSON characters of a capture's widest row under `fmt`, if past the refusal bound."""
     if not fmt or fmt == "auto":
         return None
     chars = capture.block_chars_max(vf.parse(fmt), width)
@@ -193,25 +161,19 @@ def capture_chars_past_bound(width: int, fmt: str) -> int | None:
 
 
 def row_fmt(decl: dec.Declaration) -> str | None:
-    """A watch row's `fmt`: a capture whose format is past the bound, which no tap was sent for,
-    shows it as its refusal does (`shown_fmt`); every other row, and the store, keep it whole."""
+    """A watch row's `fmt`: cut by `shown_fmt` where its capture was refused, whole elsewhere."""
     if (decl.watch_mode == "capture" and decl.fmt and decl.width is not None
             and capture_chars_past_bound(decl.width, decl.fmt) is not None):
         return shown_fmt(decl.fmt)
     return decl.fmt
 
 
-# What `watch_add(by=...)` takes: every `by` but `expr`, which the mode says (`mode="expr"`), so a
-# caller never names it twice.
 WATCH_BY = tuple(b for b in arming.BY_OPTIONS if b != "expr")
 
 
 def check_watch_width(width: int, mode: str, fmt: str = "") -> None:
-    """The ceiling on a watch's width, which depends on nothing but the mode, and for a capture
-    with its format known, the ceiling on its decoded row. Asked before the gate when the width is
-    known from the arguments alone, and by the body once the table has filled in an `auto`
-    format. A capture reads its block at every trigger into a row, so it is bounded like a show
-    watch, and `declaration_list(kind="watch")` shows `ROWS_SHOWN` of those rows decoded."""
+    """The ceiling on a watch's width, and for a capture its decoded row, judged once `fmt` is
+    known."""
     limit = SHOW_WATCH_MAX if mode in ("show", "capture") else read.READ_MAX
     if width > limit:
         raise st.Invalid("bad_argument",
@@ -226,14 +188,12 @@ def check_watch_width(width: int, mode: str, fmt: str = "") -> None:
             "every row anyway)")
 
 
-# The longest address a `wp` spells, for judging a command before its address is known: the
-# spaces this server drives are at most 32 bits wide.
+# the spaces this server drives are at most 32 bits wide
 _WIDEST_ADDR = 0xFFFFFFFF
 
 
 def wp_command(addr: int, length: int, cpu: str | None = None, condition: str = "") -> str:
-    """The console command that arms a WRITE watchpoint over `length` bytes on `cpu`, halting
-    only on a write whose `condition` holds when there is one (`wpdata` is the value written)."""
+    """The console command that arms a write watchpoint, halting only when `condition` holds."""
     return (f"wp {addr:#x}{console.cpu_suffix(cpu)},{length:#x},w"
             + (f",{condition}" if condition else ""))
 
@@ -241,15 +201,12 @@ def wp_command(addr: int, length: int, cpu: str | None = None, condition: str = 
 def check_watch_add(ref: str, mode: str, length: int = 0, fmt: str = "auto",
                     by: str = "auto", condition: str = "", trigger: str = "",
                     space: str = "program", trigger_type: str = "w", **_: Any) -> None:
-    """`watch_add`'s machine-independent half: the vocabularies, the `expr` rules, a class in
-    `fmt`, a condition's mode and shape, a trigger's and its type, and the space's. Resolving a
-    POINTER's base needs the table, so that stays past the gate."""
+    """`watch_add`'s machine-independent half; resolving a pointer's base needs the table."""
     vocab.one_of("mode", mode, dec.WATCH_MODES)
     vocab.one_of("by", by, WATCH_BY)
     vocab.one_of("trigger_type", trigger_type, dec.TRIGGER_TYPES)
     if trigger_type == "r":
-        # A READ'S TRIGGER IS ITS REF: with no block, what a row holds and what makes it are one
-        # place, so naming it twice is allowed and naming it once is enough.
+        # a read's trigger is its ref: with no block, naming it once is enough
         check_read_capture(ref, mode, length, fmt, trigger, space)
         trigger = trigger or ref
     if bool(trigger.strip()) != (mode == "capture"):
@@ -291,11 +248,8 @@ def check_watch_add(ref: str, mode: str, length: int = 0, fmt: str = "auto",
 
 def check_read_capture(ref: str, mode: str, length: int, fmt: str, trigger: str,
                        space: str) -> None:
-    """A capture on a READ trigger holds the read and no block: its `ref` is the trigger itself,
-    named again in `trigger` or left out, with no length and no format. Reading memory inside a
-    Lua read tap re-enters the bus, which MAME does not survive, so the block a write capture
-    reads is refused here rather than attempted. A port's `in` is not captured: the io space is
-    the write capture's."""
+    """A read capture holds the read and no block: Lua reading memory inside a read tap re-enters
+    the bus, which MAME does not survive. A port's `in` is not captured."""
     if mode != "capture":
         raise st.Invalid("bad_argument", f"trigger_type=\"r\" on a {mode} watch: only a "
                                          "capture takes a trigger type (`watch_add(ref=<trigger>, "
@@ -316,37 +270,30 @@ def check_read_capture(ref: str, mode: str, length: int, fmt: str, trigger: str,
                          "`watch_add(ref=<trigger>, mode=\"capture\", trigger_type=\"r\")`")
 
 
-# ------------------------------------------------------------------------------- watches
 
 
 def _one_byte_scalars(fmt: vf.Format) -> bool:
-    """Whether every scalar `fmt` reads is one byte: `u8`, `i8`, an array of them, a string, a
-    struct of such fields. A byte has no order, so such a format decodes the same either way."""
+    """Whether every scalar `fmt` reads is one byte, which has no order."""
     if fmt.kind == "struct":
         return all(_one_byte_scalars(field) for _name, field in fmt.fields)
     return fmt.kind == "string" or (fmt.elem is not None and vf.SCALARS[fmt.elem][1] == 1)
 
 
 def decode_order(ses: gs.Session, cpu: str | None, fmt: str) -> str:
-    """The order `fmt` is decoded in on `cpu`: the cpu's own, which a cpu whose order is not
-    established refuses (`SessionError`), except for a format of one-byte scalars, which needs
-    none and reads on any cpu."""
+    """The order `fmt` decodes in on `cpu`; one-byte formats need none and read on any cpu."""
     if _one_byte_scalars(vf.parse(fmt)):
-        return "little"         # either order decodes these bytes alike; it names none of the cpu's
+        return "little"
     return cpus.layout(ses, cpu).byte_order
 
 
 def _value(raw: bytes, width: int, fmt: str, order: str) -> vf.Value:
-    """`width` bytes read as `fmt` in the TARGET's byte order: one value, a list, a
-    string or a struct, as the format says."""
+    """`width` bytes read as `fmt` in the target's byte order."""
     return vf.parse(fmt).decode(raw, order, width)
 
 
 def disarm_for_pass(ses: gs.Session) -> list[dec.Owner]:
-    """Disarm every armed change watch for ONE pass, keeping the declarations: the refs
-    disarmed, in arming order. A watch on a byte written many times a frame stops every later
-    `run_to` and `run_for` of a session, and clearing and re-declaring it around each
-    unrelated question is the step that gets forgotten."""
+    """Disarm every armed change watch for one pass, keeping the declarations: a watch on a byte
+    written many times a frame would stop every later `run_to`."""
     disarmed: list[dec.Owner] = []
     for owner, armed in STATE.armed_watches.items():
         ses.monitor(mclear.clear_command("watch", armed["index"]))
@@ -355,16 +302,9 @@ def disarm_for_pass(ses: gs.Session) -> list[dec.Owner]:
 
 
 def rearm_after_pass(ses: gs.Session, refs: list[dec.Owner]) -> list[dec.Owner]:
-    """Re-arm the watches `disarm_for_pass` disarmed, each on its own cpu, and read their rows
-    back from `wplist`: the debugger numbers a re-armed row afresh, and the index is what a
-    stop's log line is matched by. The refs re-armed and listed; a ref the list no longer shows
-    is left out and its entry marked disabled, never guessed at.
-
-    THE PASS'S OWN SURVEY MAY HAVE ARMED ONE ALREADY: a pointer watch whose pointer moved is
-    followed at the stop (`_follow`), which clears the old row and arms the new place there
-    and then. Its row is listed under the record's index, so it is taken as re-armed rather
-    than sent a second time; and a follow that lost both places dropped the record, so that
-    ref has nothing to re-arm and is left out."""
+    """Re-arm what `disarm_for_pass` disarmed on each cpu and read the rows back: the debugger
+    numbers a re-armed row afresh. A ref the list no longer shows is marked disabled. A pointer
+    watch already followed to a new place during the pass is taken as re-armed."""
     before = mlists.wp_held(ses)
     held = {r["index"] for r in before}
     pending = [ref for ref in refs
@@ -394,9 +334,7 @@ def rearm_after_pass(ses: gs.Session, refs: list[dec.Owner]) -> list[dec.Owner]:
 
 
 def refresh_baselines(ses: gs.Session, addr: int, n: int, cpu: str | None) -> None:
-    """Re-read every armed watch whose bytes a write of `n` at `addr` of `cpu` touched, so the
-    next stop's `before` is what the machine held after the write and not what the previous
-    survey saw. A watch on another cpu watches other memory, which the write did not touch."""
+    """Re-read the armed watches a write touched, so the next `before` is the post-write bytes."""
     for armed in STATE.armed_watches.values():
         if armed["cpu"] in (None, cpu) and mspace.ranges_meet(armed["addr"], armed["length"],
                                                               addr, n):
@@ -404,12 +342,8 @@ def refresh_baselines(ses: gs.Session, addr: int, n: int, cpu: str | None) -> No
 
 
 def _read_exact(ses: gs.Session, addr: int, n: int, cpu: str | None = None) -> bytes:
-    """`n` bytes at `addr` of `cpu` (the stub's first cpu when None), or the refusal a SHORT
-    answer deserves: a value rendered from fewer bytes than the watch declared would be a
-    number of the right shape and the wrong meaning, and `struct` would otherwise raise a bare
-    error out of a stop survey. Another cpu is read through its thread of the patched stub; a
-    stub without threads reads only its first, and the refusal says so rather than handing
-    over the first cpu's bytes under another's name."""
+    """`n` bytes at `addr` of `cpu`, or a refusal for a short answer: fewer bytes would decode to a
+    number of the right shape and the wrong meaning. Another cpu is read through its thread."""
     if cpu is None or cpu == cpus.stub_cpu(ses):
         raw = ses.read(addr, n, thread=1)
     elif (thread := cpus.thread_of(ses, cpu)) is not None:
@@ -424,10 +358,8 @@ def _read_exact(ses: gs.Session, addr: int, n: int, cpu: str | None = None) -> b
 
 
 def chase(ses: gs.Session, res: dec.Resolved) -> tuple[int | None, dict[str, Any]]:
-    """Follow a pointer ref against the machine NOW, on its declaration's cpu: the pointer read
-    at the base, at the type's width or the cpu's, plus the offset. The address (None for a
-    null pointer, which is a state and never a watch at zero) and the `pointer` block a reply
-    carries so the reader sees through what the address was reached."""
+    """Follow a pointer ref against the machine now: the address (None for null, a state and not a
+    watch at zero) and the `pointer` block showing how it was reached."""
     assert res.pointer is not None and res.base_addr is not None
     cpu = res.decl.cpu
     lay = cpus.layout(ses, cpu)
@@ -438,14 +370,9 @@ def chase(ses: gs.Session, res: dec.Resolved) -> tuple[int | None, dict[str, Any
                             "value": st.hex_addr(value), "offset": res.offset}
     if res.pointer.field is not None:
         info["field"] = res.pointer.field
-    # A NEAR POINTER HOLDS AN OFFSET IN ITS TARGET'S SEGMENT, not a linear address: on a
-    # board relocated by `bases`, the value read through a symbol of a relocated class is
-    # placed under a class's base, the way `disassemble` places a direct operand.
-    # Read raw, `[dmaptr]` answers the assembler's offset while the struct lives at that
-    # offset plus the DATA base. WHICH class is the type's to say (`ptr16@CODE`: a routine's
-    # address kept in DATA points into CODE), else the base symbol's, which is
-    # right for a data pointer kept in data. An address base carries no class and no
-    # type, so its pointer is taken as the linear value it is.
+    # a near pointer holds an offset in its target's segment, so it is placed under a class's
+    # base, as `disassemble` places a direct operand. The class is the type's (`ptr16@CODE`),
+    # else the base symbol's; an address base carries none and is taken as linear.
     relocation: int | None = None
     table = STATE.table(cpu)
     if res.pointer_class is not None:
@@ -459,16 +386,12 @@ def chase(ses: gs.Session, res: dec.Resolved) -> tuple[int | None, dict[str, Any
         if relocation is not None:
             info["relocated"] = {"class": klass, "base": st.hex_addr(relocation),
                                  "class_from": "base"}
-    # The class is judged BEFORE the null check, so a type naming a class this table
-    # lacks is refused when declared, not at the first stop that finds the pointer set.
     if value == 0:
         return None, info
     target = (relocation or 0) + value + res.offset
     if not (relocation or 0) <= target < (1 << (8 * width)) + (relocation or 0):
-        # The pointer's own width bounds the space, FROM THE SEGMENT BASE it is placed
-        # under: an offset
-        # that reaches below the base leaves the segment, and a place below zero would
-        # reach the stub as a packet it cannot read.
+        # the pointer's width bounds the space from the segment base; a place below zero would
+        # reach the stub as a packet it cannot read
         raise gs.SessionError(f"the pointer plus the offset, {target:#x}, is outside what a "
                               f"{width}-byte pointer addresses"
                               + (f" under the {klass} base {relocation:#x}"
@@ -477,11 +400,8 @@ def chase(ses: gs.Session, res: dec.Resolved) -> tuple[int | None, dict[str, Any
 
 
 def _class_base(klass: str, table: gs.SymbolTable) -> int:
-    """The base a pointer typed into `klass` is placed under: the caller's `bases` entry
-    when it relocated the class, else the map's own segment base (`linear - offset`), which
-    is what CODE and a `rom` class run at. A class this table does not carry is refused
-    naming the ones it does, because a base guessed for it would place the watch somewhere
-    plausible and wrong."""
+    """The base a pointer typed into `klass` is placed under: `bases`, else the map's segment base.
+    A class the table lacks is refused naming the ones it has."""
     based = table.bases.get(klass)
     if based is not None:
         return based
@@ -490,14 +410,9 @@ def _class_base(klass: str, table: gs.SymbolTable) -> int:
         return seg
     carried = sorted(set(table.classes.values()))
     if klass in carried:
-        # The map carries the class and its rows do not share one `linear - offset`: a
-        # tile sheet laid out as many blocks, on a real board. No single base is honest.
-        #
-        # AND THE REMEDY DEPENDS ON WHICH OF TWO THINGS IS TRUE, so `bases` is not suggested
-        # for both. A class ALREADY in `bases` cannot be fixed by any
-        # value there: `rom` gives each row its own address rather than one base to add an
-        # offset to, and that is the whole reason the rows share none. Sending a caller back
-        # to `bases` when `bases` already names the class costs them the search.
+        # the class's rows share no `linear - offset` (a tile sheet as many blocks): no single base
+        # is honest. A class already in `bases` cannot be fixed by any value there, so `bases` is
+        # suggested only when it does not name the class.
         declared = klass in (table.bases or {})
         remedy = (f"`bases` ALREADY names {klass}, and no value there can back a pointer into "
                   "it: a class whose rows share no segment base has no single base to add a "
@@ -511,8 +426,7 @@ def _class_base(klass: str, table: gs.SymbolTable) -> int:
     hint = ""
     for c in carried:
         if klass.startswith(c) and klass != c:
-            # `ptr16@CODEu16` reads as one class name: the grammar cannot tell where the
-            # class ends and a bare target begins, so a typed target goes in braces.
+            # the grammar cannot tell where the class ends: a typed target goes in braces
             hint = (f"; `{klass}` reads as one class name, and a class-typed pointer's "
                     f"target goes in braces: `ptr16@{c}{{v:{klass[len(c):].lower()}}}`")
     raise gs.SessionError(
@@ -527,26 +441,21 @@ def null_note(info: dict[str, Any]) -> str:
 
 
 def values_from(write_maps_to: str, read_maps_to: str | None) -> str:
-    """Where a change watch's values come from. `memory` when the address reads back
-    through the handler it is written through; `bus` when it does not (the read side is
-    unmapped, or another handler: a write-only latch, a register whose read is a port), in
-    which case a memory read answers noise and the values are the writes the console logs."""
+    """Where a change watch's values come from: `memory`, or `bus` when the read side differs from
+    the write side, so the values are the writes the console logs."""
     return "memory" if read_maps_to == write_maps_to else "bus"
 
 
 def _holder(records: dict[dec.Owner, dict[str, Any]], owner: dec.Owner,
             holds: Callable[[dict[str, Any]], bool]) -> str | None:
-    """The ref of the OTHER declaration on the same cpu whose record `holds` says yes to, or
-    None: another cpu's range is another program's memory, and a cpu nobody could read falls
-    back to the address, as a row's adoption does."""
+    """The ref of the other declaration on the same cpu whose record satisfies `holds`."""
     return next((r[0] for r, rec in records.items()
                  if r != owner and cpus.same_cpu(r[1], owner[1]) and holds(rec)), None)
 
 
 def range_holder(records: dict[dec.Owner, dict[str, Any]], size_key: str,
                  owner: dec.Owner, addr: int, width: int) -> str | None:
-    """The declaration whose record holds this very range (`_holder`): one tap is one range.
-    `size_key` is the word the record spells the byte count with: a tally's `width`."""
+    """The declaration whose record holds this very range: one tap is one range."""
     return _holder(records, owner, lambda rec: (rec["addr"], rec[size_key]) == (addr, width))
 
 
@@ -558,10 +467,8 @@ def overlap_holder(owner: dec.Owner, addr: int, width: int) -> str | None:
 
 def watch_aliased(owner: dec.Owner, addr: int, width: int,
                   clear_kind: mclear.ClearKind | None = "watch") -> arming.Refusal | None:
-    """The refusal when another declaration already arms a range sharing a byte with this one:
-    two watchpoints on one byte make "who wrote this byte" ambiguous, and clearing one
-    declaration would disarm the other's byte in silence. `start`'s re-arm passes no
-    `clear_kind`: its report names no call to make."""
+    """The refusal when another declaration arms a range sharing a byte; `start`'s re-arm passes no
+    `clear_kind`."""
     other = overlap_holder(owner, addr, width)
     if other is None:
         return None
@@ -572,10 +479,9 @@ def watch_aliased(owner: dec.Owner, addr: int, width: int,
 
 def record_watch(owner: dec.Owner, row: dict[str, Any], maps_to: str,
                  read_maps_to: str | None) -> None:
-    """What this session armed for `ref`, with the debugger's own row. The console's log
-    is read from THIS moment on: before any watch is armed nothing in it can be a watch's.
-    `last` is the bytes last seen (a memory-sourced watch) and `last_wrote` the value last
-    written (a bus-sourced one): each is what `before` means at the next hit."""
+    """What this session armed for `ref`. The console log is read from the first arm on; `last` is
+    the bytes last seen and `last_wrote` the value last written, each being `before` at the next
+    hit."""
     if not STATE.armed_watches and STATE.scratch is not None:
         STATE.debuglog_mark = files.file_mark(STATE.scratch / "debug.log")
     STATE.armed_watches[owner] = {"index": row["index"], "addr": row["addr"],
@@ -589,11 +495,9 @@ def record_watch(owner: dec.Owner, row: dict[str, Any], maps_to: str,
 def change_row(held: list[dict[str, Any]], addr: int, width: int, cpu: str | None,
                condition: str, taken: set[int]
                ) -> tuple[dict[str, Any] | None, st.Invalid | None]:
-    """The row of the debugger's list a change watch at `addr` on `cpu` adopts (None when it needs
-    a new one), skipping the rows of `taken`, or the refusal when the row there stops under a
-    condition that is not `condition`: `breakpoints.stop_row`'s rule, and like it it sends and
-    raises nothing. Unlike it, it does not look for the owner's own row first: a watch keeps its
-    row by index (`_arm_change_watch`), so the caller asks that before this."""
+    """The row of the debugger's list a change watch adopts, or the refusal when that row stops
+    under another condition; sends and raises nothing. The owner's own row is asked first by the
+    caller."""
     row = mlists.adoptable_row(held, addr, cpu, taken, width)
     if row is not None and (row.get("condition") or "") != condition:
         return None, mclear.another_condition("watch", addr, row, condition, width)
@@ -602,18 +506,10 @@ def change_row(held: list[dict[str, Any]], addr: int, width: int, cpu: str | Non
 
 def _arm_change_watch(ses: gs.Session, owner: dec.Owner, addr: int, width: int,
                       condition: str = "") -> arming.Refusal | None:
-    """Arm ONE change watch on its owner's cpu: the map control over that cpu's space, the
-    alias check, the `wp` (with `condition`, as the console reads it) unless the debugger
-    already lists the row, the read back, the record. The refusal (its code and its prose) when
-    it could not be, or None. An address nothing writes is the caller's argument to change; an
-    alias is another declaration's; a listed row under a condition that is not this one is
-    `change_row`'s refusal; a row the list lacks, or lists without the condition sent
-    (`mlists.listed_as_sent`), is a readback refused. The re-arm at `start` judges each row by
-    the same two (`change_row`, `listed_as_sent`) and differs in sending every `wp` before
-    reading `wplist` back once."""
+    """Arm one change watch: map control, alias check, the `wp` unless the row is already listed,
+    the read back, the record. Returns the refusal (code, prose) or None; `start`'s re-arm judges
+    rows the same way but reads `wplist` once."""
     cpu = owner[1]
-    # ITS OWN ROW FIRST: a re-declaration must not stack a second row beside the one it
-    # already has.
     own = STATE.armed_watches.get(owner)
     held = mlists.wp_held(ses) if own is not None else None
     row = mlists.row_at_index(held, own["index"]) if own is not None and held is not None else None
@@ -645,11 +541,8 @@ def _arm_change_watch(ses: gs.Session, owner: dec.Owner, addr: int, width: int,
 
 
 def _follow(ses: gs.Session, decl: dec.Declaration, target: int) -> dict[str, str] | None:
-    """A change watch whose pointer now points elsewhere: the old row is removed, a row at
-    the new place armed and read back, the record moved. `{from, to}` when it moved, None
-    when it is where it was (or is a show watch, which arms nothing). A place nothing writes
-    or one another declaration holds leaves the old row and the record as they are, and the
-    reply's `moved` carries `why` instead."""
+    """A change watch whose pointer moved: old row removed, new one armed and read back. `{from,
+    to}` when it moved, with `why` when the move was refused and the old row kept."""
     armed = STATE.armed_watches.get(decl.owner)
     if decl.watch_mode != "change" or (armed is not None and armed["addr"] == target):
         return None
@@ -660,8 +553,6 @@ def _follow(ses: gs.Session, decl: dec.Declaration, target: int) -> dict[str, st
         return {"from": st.hex_addr(armed["addr"]) if armed is not None else "null",
                 "to": st.hex_addr(target), "why": str(e)}
     if armed is None:
-        # Declared while the pointer was NULL, so nothing was armed: the stop that finds
-        # the pointer set arms it, and says it came from null.
         refused = _arm_change_watch(ses, decl.owner, target, decl.width, cond)
         if refused is not None:
             return {"from": "null", "to": st.hex_addr(target), "why": refused[1]}
@@ -683,9 +574,7 @@ def _follow(ses: gs.Session, decl: dec.Declaration, target: int) -> dict[str, st
 
 def _watch_add_expr(ses: gs.Session, ref: str, width: int, fmt: str, by: str,
                     running: bool) -> dict[str, Any]:
-    """An `expr` watch: the expression is evaluated ONCE on the console before it is stored,
-    so a name the debugger cannot resolve is refused here, naming the console's answer,
-    and never rides on every stop unavailable."""
+    """An `expr` watch, evaluated once before storing, so an unresolvable name is refused."""
     check_expr_watch(width, fmt, by)
     decl = arming.declare("watch", "expr", ref, watch_mode="expr")
     arming.refuse_conflict(decl)
@@ -706,8 +595,7 @@ def _watch_add_expr(ses: gs.Session, ref: str, width: int, fmt: str, by: str,
 
 
 def expression_refs() -> list[str]:
-    """Every declared expression, in declaration order: what a stop survey prints beside
-    the frame."""
+    """Every declared expression, in declaration order."""
     if STATE.store is None:
         return []
     return [d.ref for d in STATE.store.declarations()
@@ -730,12 +618,9 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     running = arming.running_on_arrival(ses)
     check_watch_add(ref, mode, width, fmt, by, condition, trigger, trigger_type=trigger_type)
     if trigger_type == "r":
-        # THE READ ITSELF is what the row holds: its byte at the trigger, for the declaration's
-        # width and format, which no caller gives, and the trigger its ref when not named
-        # (`check_read_capture`).
+        # the read itself is the row: its byte at the trigger, the trigger defaulting to the ref
         width, fmt, trigger = 1, "u8", trigger or ref
-    # THE DECLARATION'S CPU is the one the call names, else the visible one, read now; an
-    # expr watch has none, since the console evaluates it on whichever cpu is visible.
+    # an expr watch has no cpu: the console evaluates it on the visible one
     on = cpus.chosen(ses, cpu)
     if mode == "expr":
         if inputs.cpu_given(cpu):
@@ -746,20 +631,15 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     if mode in dec.TAP_MODES:
         tally.check_count_watch(chosen, mode)
     if chosen == "pointer":
-        # THE BASE IS JUDGED BEFORE THE TABLE-DEPENDENT REST: a ref with no pointer to start
-        # from (a stack local, an untyped base under `->`) is refused for that rather than for a
-        # width the table would have supplied. A fault in a NAMED `fmt` is told earlier still, by
-        # `check_watch_add` before the gate, because it needs no machine to be wrong.
+        # the base is judged before the table-dependent rest, so a ref with no pointer to start
+        # from (a stack local) is refused for that and not for a width
         probe = arming.resolve_decl(arming.declare("watch", "pointer", ref, on, width=1, fmt="u8",
                                        watch_mode="show"))
         if probe.state == "unresolved" and probe.why is not None:
             raise st.Invalid("unknown_ref", probe.why)
-    # A class in `fmt` is refused by `check_fmt_carries_no_class`, applied by `check_watch_add`
-    # before this point; its reason lives there.
     if fmt == "auto":
-        # THE TYPE COMES FROM THE SYMBOL TABLE when the caller gave none: a `type:` beside
-        # the symbol, or a `types` file; through a pointer, the named FIELD's own format.
-        # Else the widest unsigned scalar the width divides.
+        # the type comes from the table when none was given: a `type:`, a `types` file, or the
+        # pointer field's format; else the widest unsigned scalar the width divides
         types = STATE.table(on).types
         typed = types.get(ref.strip().upper()) if chosen == "symbol" else None
         if chosen == "pointer":
@@ -770,13 +650,10 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
         "bad_argument", f"a {mode} watch needs a length in bytes, or a fmt that names its size "
         f"(u16[8], char[16], {{x:i16,y:i16}}), or a symbol the table types; {ref} has none of "
         "the three: `watch_add(length=...)` or `watch_add(fmt=...)`"))
-    # Stored as typed and substituted at each arming, as a breakpoint's: a rebuild moves the
-    # symbols.
+    # stored as typed and substituted at each arming: a rebuild moves the symbols
     typed = condition.strip()
     cond = conditions.console_condition(typed, on) if typed else ""
-    # A TRIGGER AT AN ADDRESS IS KEPT IN THE ONE SPELLING a ref is (`0x2031fe`), so two
-    # spellings of one capture are one declaration; a name stays as typed, and the name the
-    # capture on this block is held on stays reachable after a rebuild drops it.
+    # an address trigger is kept in a ref's one spelling, so two spellings are one declaration
     trig = trigger.strip()
     if trig and arming.classify_call(
             trig, on, held=arming.held_triggers(on, ref, chosen)) == "address":
@@ -787,8 +664,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
                           trigger_type=trigger_type)
     stored = arming.store().held_ref(ref, chosen, ("watch",), on)
     if stored is not None and stored != ref:
-        # AN ADDRESS DECLARED AGAIN IN ANOTHER SPELLING IS THE SAME DECLARATION, and
-        # it is handled under its stored spelling, the string a clear takes.
+        # an address redeclared in another spelling is the same declaration, handled as stored
         ref, decl = stored, dataclasses.replace(decl, ref=stored)
     arming.refuse_conflict(decl)
     res = arming.resolve_decl(decl)
@@ -800,13 +676,11 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     if decl.trigger:
         reply.update(trigger=decl.trigger, trigger_type=decl.trigger_type)
     if res.state == "unresolved" and res.why is not None:
-        # A pointer ref with no base to start from is refused, not kept: nothing a later
-        # build defines would give a stack local an address.
+        # nothing a later build defines would give a stack local an address
         raise st.Invalid("unknown_ref", res.why)
     if cond and res.state != "unresolved":
-        # JUDGED BEFORE ANYTHING IS STORED, a pointer's too: one stored null is armed by the
-        # stop that finds the pointer set, with no call left to refuse it in, and wherever it
-        # then points its `wp` fits no worse than at the widest address judged here.
+        # judged before anything is stored: a stored null is armed by a later stop, with no call
+        # left to refuse it in
         at = res.addr if res.addr is not None else _WIDEST_ADDR
         judged = conditions.judged_condition(ses, wp_command(at, width, on, cond), cond, on)
         conditions.refuse_if_left_visible(judged, cond, on)
@@ -840,10 +714,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
                                    "is kept and arms nothing until a build defines it"})
     if (trig and capture.trigger_addr(trig, STATE.table(on).table) is None
             and arming.store().index_of(decl) is not None):
-        # THE CAPTURE HELD ON A NAME A REBUILD DROPPED, declared again, is that declaration:
-        # adopted and listed as `declaration_list(kind="watch")` lists it, where a new one on that
-        # name is refused
-        # at its tap, which has nowhere to sit.
+        # a capture held on a name a rebuild dropped, declared again, is that declaration
         arming.store().add(decl)
         return menvelope.envelope({**reply, "stored": True, "already_stored": True, "armed": False,
                                    "state": "unresolved",
@@ -867,9 +738,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
         if code == "ambiguous_ref":
             raise st.Invalid(code, why)
         if code == "readback_refused":
-            # A WATCH IS STORED ONLY ONCE IT IS ARMED (the store write is below), so unlike a
-            # breakpoint's refusal this one leaves nothing behind, and says so rather than
-            # borrowing the breakpoints' "kept" words for a write that never happened.
+            # a watch is stored only once armed, so this refusal leaves nothing behind
             return menvelope.invalid(code, why, ref=ref, addr=reply["addr"], stored=False,
                                      armed=False, state="gone",
                                      note="nothing is stored for it: declare it again with "
@@ -883,9 +752,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
         if raw is not None:
             armed["last"] = raw
         reply["reading"] = reading
-    # `armed` IS THE ROW'S ANSWER, as the breakpoint twin's is: a row the debugger already
-    # listed at the range is adopted without a second `wp`, and one listed DISABLED (a
-    # `wpdisable` typed through `debug`) is not reported `armed: true`.
+    # `armed` is the row's answer: a row listed DISABLED is not reported armed
     reply.update(stored=True, already_stored=not is_new, armed=armed["enabled"],
                  state=mlists.row_state(armed), index=armed["index"], entry=armed["entry"],
                  cpu=armed["cpu"],
@@ -897,14 +764,13 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
 
 def _watch_add_tap(ses: gs.Session, addr: int, width: int, decl: dec.Declaration,
                    reply: dict[str, Any]) -> dict[str, Any]:
-    """A COUNT or CAPTURE watch on its declaration's cpu (`send_tap` judges and sends it), the
-    declaration stored once the send was taken, and the record kept for the surveys to read.
-    Arming moves nothing, so `altered` stays."""
+    """A count or capture watch: `send_tap` judges and sends it, the declaration is stored once the
+    send was taken. Arming moves nothing, so `altered` stays."""
     ref, cpu = decl.owner
     scratch = STATE.scratch
     assert scratch is not None
-    # SENT BEFORE STORED: a send the console's pipe refuses raises here, and a declaration
-    # stored for an install that never went would read `not_installed` for the wrong reason.
+    # sent before stored: a declaration stored for an install that never went would read
+    # `not_installed` for the wrong reason
     refused, sent = send_tap(ses, scratch, decl, addr, width)
     if refused is not None:
         code, why = refused
@@ -917,10 +783,8 @@ def _watch_add_tap(ses: gs.Session, addr: int, width: int, decl: dec.Declaration
 
 def bus_word_split(addr: int, width: int, cpu: str | None,
                    space: str = mspace.PROGRAM) -> tuple[str | None, str | None]:
-    """A count range judged against the bus of `cpu`'s `space`: the refusal of one that splits a
-    bus word (`mspace.splits_bus_word`, said by `tally.split_why`), else None; and beside it the
-    note an install adds when the bus width is unknown and the range is wider than a byte. The
-    program space's counts and the io space's take the same judgement."""
+    """A count range judged against the bus of `cpu`'s `space`: the refusal of one splitting a bus
+    word, else None, with the note an install adds when the bus width is unknown."""
     bus_bits = cpus.bus_width(cpu, space)
     if bus_bits is not None and mspace.splits_bus_word(addr, width, bus_bits):
         return tally.split_why(addr, width, bus_bits, cpu, space), None
@@ -930,10 +794,8 @@ def bus_word_split(addr: int, width: int, cpu: str | None,
 
 def size_watch(mode: str, width: int, fmt: str, typed: str | None,
                unsized: st.Invalid) -> tuple[int, str]:
-    """A watch's width and format, in either space: with `fmt` left `auto`, the table's type
-    (`typed`) when no length was given, else the widest unsigned scalar the length divides, else
-    the caller's refusal `unsized`; then the format sized against the length and the mode's
-    bound."""
+    """A watch's width and format: `fmt` auto takes the table's type, else the widest scalar the
+    length divides, else `unsized` is raised; then sized against the mode's bound."""
     if fmt == "auto":
         if typed is not None and width == 0:
             fmt = typed
@@ -951,8 +813,7 @@ def size_watch(mode: str, width: int, fmt: str, typed: str | None,
 
 def send_count(scratch: Path, owner: dec.Owner, addr: int, width: int, space: str,
                unchecked: str | None, maps_to: str, read_maps_to: str | None) -> dict[str, Any]:
-    """A count watch's install sent, once judged, in either space: its note carries the bus-word
-    caveat when the space's width could not be read, and where an unmapped write goes."""
+    """A count watch's install sent, with the bus-word caveat and where an unmapped write goes."""
     sent = tally.send_install(scratch, owner, addr, width, space)
     st.add_note(sent, unchecked)
     sent["note"] = mmap.with_unmapped_note(sent["note"], maps_to, addr, space, read_maps_to)
@@ -962,8 +823,7 @@ def send_count(scratch: Path, owner: dec.Owner, addr: int, width: int, space: st
 def send_capture(scratch: Path, owner: dec.Owner, addr: int, width: int, trigger: int,
                  src: capture.TapSource | None, space: str, maps_to: str,
                  trigger_read: str | None, trigger_type: str = "w") -> dict[str, Any]:
-    """A capture's install sent, once judged, its trigger in `space`: its note says where an
-    unmapped trigger's writes go."""
+    """A capture's install sent; its note says where an unmapped trigger's writes go."""
     sent = capture.send_install(scratch, owner, addr, width, trigger, src, space, trigger_type)
     if trigger_type == "r":
         return sent
@@ -974,13 +834,10 @@ def send_capture(scratch: Path, owner: dec.Owner, addr: int, width: int, trigger
 
 def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
              width: int) -> tuple[arming.Refusal | None, dict[str, Any]]:
-    """Judge a count or capture watch's tap and send its install, or the refusal as its code
-    beside its text, nothing sent. A COUNT: a range that splits a bus word of its cpu's program
-    space is refused before anything (`mspace.splits_bus_word`), then the range's write side is
-    asked of the console's `map` and reported, an unmapped one with its note (`unmapped_note`),
-    and one range carries one tally. A CAPTURE: its trigger resolves on its cpu, the TRIGGER's
-    write side is the one asked (the tap sits there), the block has memory a tap can read
-    (`mame_capture`), and one block on one trigger carries one capture."""
+    """Judge a count or capture tap and send its install, or the refusal (code, text), nothing sent.
+    A count's range must not split a bus word and carries one tally; a capture's trigger resolves
+    on its cpu, the trigger's write side is the one asked, and one block on one trigger carries one
+    capture."""
     owner = decl.owner
     if decl.watch_mode == "count":
         split, unchecked = bus_word_split(addr, width, owner[1])
@@ -994,8 +851,7 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
         return None, {"write_maps_to": maps_to,
                       "read_maps_to": or_unavailable(read_maps_to,
                                                         mmap.NO_READ_SIDE_WHY), **sent}
-    # A STORED CAPTURE IS JUDGED AS A DECLARED ONE: a row stored before the format bound, or by
-    # another server, re-arms at `start` through here and not through `watch_add`.
+    # a stored capture is judged as a declared one: `start` re-arms through here
     try:
         check_watch_width(width, "capture", decl.fmt or "")
     except st.Invalid as e:
@@ -1016,7 +872,6 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
                 f"{trigger:#x} is already captured under {other!r}: "
                 f"{mclear.one_declaration('capture', other, 'watch', owner[1])}"), {}
     if reads:
-        # A READ is tapped where the read side maps, and reads no block (`check_read_capture`).
         if trigger_read is None:
             return ("bad_argument", f"the trigger: the console's `map` named no `Read:` side "
                     f"at {trigger:#x}, so whether a read there can fire is unknown"), {}
@@ -1041,9 +896,7 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
 
 def _tally_write_side(ses: gs.Session, owner: dec.Owner, addr: int, width: int
                       ) -> tuple[arming.Refusal | None, str, str | None]:
-    """The write side of a range about to be tallied on the owner's cpu, and the
-    one-tally-per-range rule, each refusal as its code beside its text: the `map` first, where a
-    port's tap asks who holds it first (`mame_iotaps._held_elsewhere`)."""
+    """The write side of a range about to be tallied, and the one-tally-per-range rule."""
     refused, maps_to, read_maps_to = mmap.write_side(ses, addr, owner[1])
     if refused is not None:
         return refused, maps_to, read_maps_to
@@ -1062,10 +915,8 @@ def _tally_write_side(ses: gs.Session, owner: dec.Owner, addr: int, width: int
 
 def _tally_item(ses: gs.Session, decl: dec.Declaration, addr: int, frame: int | None,
                 shown: int, at_stop: bool) -> dict[str, Any]:
-    """What a survey or a list says about a count or capture declaration: the tap's own
-    account when this session sent one, else that none is recorded (the rearm at `start` could
-    not send it, or it was cleared), which is a state and never an empty table. A capture's
-    says which access it captures in every state."""
+    """What a survey or list says of a count or capture: the tap's account, else that none is
+    recorded (a state, never an empty table)."""
     item = _tally_state(decl, addr, frame, shown, at_stop)
     if decl.watch_mode == "capture":
         item.setdefault("trigger_type", decl.trigger_type)
@@ -1092,13 +943,10 @@ def _tally_state(decl: dec.Declaration, addr: int, frame: int | None, shown: int
 
 def _reading(ses: gs.Session, decl: dec.Declaration, addr: int, raw: bytes | None = None,
              cpu: str | None = None) -> tuple[dict[str, Any], bytes | None]:
-    """A watch's bytes read NOW, as the `reading` every reader of a watch gives them: available
-    with `value` and `raw_hex`, or `unavailable` with the stub's refusal and never a zero. It
-    is its own field because it is its own axis: the row's `state` says where the watch is
-    PLACED, and a change watch is `armed` and read at the same stop."""
+    """A watch's bytes read now: available with `value` and `raw_hex`, or `unavailable` with the
+    stub's refusal, never a zero. Its own field since `state` says where the watch is placed."""
     assert decl.width is not None and decl.fmt is not None
-    # THE CPU'S OWN BYTE ORDER, and a cpu the stub does not describe, or whose order is not
-    # established, leaves the value unreadable with the reason rather than failing the call.
+    # an unestablished byte order leaves the value unreadable with the reason
     try:
         raw = raw or _read_exact(ses, addr, decl.width, cpu)
         value = _value(raw, decl.width, decl.fmt, decode_order(ses, cpu, decl.fmt))
@@ -1115,14 +963,9 @@ def _expr_reading(value: int | gs.SessionError) -> dict[str, Any]:
 
 
 def resolved_state(decl: dec.Declaration, res: dec.Resolved, null: bool = False) -> str | None:
-    """The state word a watch row takes from its declaration and its resolution alone, the one
-    `declaration_list(kind="watch")`, the stop survey and `start`'s re-arm all ask: `evaluated` for
-    an expression, or
-    a show watch that resolves; `null_pointer` where a chase read a null pointer; `unresolved`
-    where the ref names nothing this build has. None where the state is what arming says (a
-    change watch's placement, a tap's account, a stale build). A pointer not yet chased is no
-    state of its own: a show watch through one is evaluated at every stop, which chases it, and
-    any other is chased by whoever arms it."""
+    """The state word a watch row takes from its declaration and resolution alone: `evaluated`,
+    `null_pointer` or `unresolved`; None where arming decides (a change watch's placement, a tap's
+    account, a stale build)."""
     if res.state == "expr":
         return "evaluated"
     if res.state == "unresolved" or (res.addr is None and res.state != "pointer"):
@@ -1132,10 +975,8 @@ def resolved_state(decl: dec.Declaration, res: dec.Resolved, null: bool = False)
 
 def _change_placement(decl: dec.Declaration, held: list[dict[str, Any]],
                       addr: int) -> dict[str, Any]:
-    """Where a change watch is PLACED, read against the debugger's own list, in the one
-    shape `declaration_list(kind="watch")` and the stop survey both give: its row's state with the
-    `entry`,
-    else `stale` over another build with the reason, else `gone`."""
+    """Where a change watch is placed against the debugger's list: its row's state, else `stale`,
+    else `gone`."""
     assert decl.width is not None
     armed = STATE.armed_watches.get(decl.owner)
     row = mlists.row_at_index(held, armed["index"]) if armed is not None else None
@@ -1159,9 +1000,7 @@ def _wplist_or_error(ses: gs.Session) -> list[dict[str, Any]] | gs.SessionError:
 
 def _placement(rows: list[dict[str, Any]] | gs.SessionError, decl: dec.Declaration,
                addr: int) -> dict[str, Any]:
-    """A change watch's placement against `rows`, the debugger's `wplist`. A list the console
-    cannot give does not sink the reply: the placement is then this server's own record, and
-    `why` says so."""
+    """A change watch's placement against `wplist`; an unreadable list falls back to the record."""
     if isinstance(rows, gs.SessionError):
         armed = STATE.armed_watches.get(decl.owner)
         return {"state": mlists.row_state(armed) if armed is not None else "gone",
@@ -1170,21 +1009,14 @@ def _placement(rows: list[dict[str, Any]] | gs.SessionError, decl: dec.Declarati
     return _change_placement(decl, rows, addr)
 
 
-#: WHAT A WATCH IS AT A STOP: which watch (`ref`, and its `cpu` and `space` where it has them),
-#: what it reads now (`reading`, where a pointer points, or a tap's `total` and
-#: `since_last_stop`), where it stands (`state`), and every alarm while it holds. Its
-#: declaration, the debugger's row and a tap's tables are `declaration_list(kind="watch")`'s: every
-#: reply that ends at
-#: a stop carries the survey, whatever the call was about.
+#: what a watch is at a stop: which, what it reads, where it stands and every alarm that
+#: holds; the rest is `declaration_list(kind="watch")`'s
 STOP_KEYS = ("ref", "cpu", "space", "state", "pointer", "reading", "total", "since_last_stop",
              "reset", "why", "moved", "callback_errors")
-#: Alarms a tap's row carries whether or not they hold (`superseded` false, `install_resent` 0, a
-#: tap `installed` and not `pending`): a stop keeps each only while it does, so a tap that is not
-#: counting says so at the stop.
+#: alarms a tap's row carries whether or not they hold; a stop keeps each only while it does
 _STOP_ALARM_WHEN: dict[str, Callable[[Any], bool]] = {
     "superseded": bool, "install_resent": bool, "across": bool, "pending": bool,
     "installed": lambda v: v is not True}
-#: What a stop's short rows say of the rest.
 STOP_HOW = ("`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the "
             "debugger's row for it, "
             "and a count's or a capture's tables")
@@ -1194,8 +1026,7 @@ def at_stop(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]
     """`rows` as a stop shows them (`STOP_KEYS`), and the names of the keys left out of any."""
     short, left = [], set()
     for row in rows:
-        # A POINTER'S ROW KEEPS WHERE IT READ: the place moves with the pointer, and after a move
-        # the debugger refused it is the armed one, not where the pointer points.
+        # a pointer's row keeps where it read: the armed place may differ after a refused move
         kept = {k: v for k, v in row.items()
                 if k in STOP_KEYS or (k in _STOP_ALARM_WHEN and _STOP_ALARM_WHEN[k](v))
                 or (k == "addr" and "pointer" in row)}
@@ -1206,15 +1037,12 @@ def at_stop(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]
 
 def place_after_pass(ses: gs.Session, rows: list[dict[str, Any]],
                      refs: list[dec.Owner]) -> None:
-    """Place again, in `rows` (a stop's `watches`, edited in place), every row the survey
-    found `gone` among `refs`, the change watches a pass re-armed: the survey was read while
-    they were off. One `wplist`, read after the re-arm, and only when a row needs it; a row
-    takes back what a stop shows of its placement (`STOP_KEYS`)."""
+    """Place again the rows a pass left `gone`, with one `wplist` read after the re-arm."""
     decls = {(d.ref, d.cpu): d for d in arming.store().declarations()
              if d.kind == "watch" and d.watch_mode == "change" and d.owner in refs}
     held: list[dict[str, Any]] | gs.SessionError | None = None
     for row in rows:
-        cpu = row.get("cpu")              # unavailable on a row that names none: the key's None
+        cpu = row.get("cpu")
         decl = decls.get((str(row.get("ref")), cpu if isinstance(cpu, str) else None))
         if decl is None or row.get("state") != "gone":
             continue
@@ -1224,7 +1052,6 @@ def place_after_pass(ses: gs.Session, rows: list[dict[str, Any]],
         row.update({k: v for k, v in placed.items() if k in STOP_KEYS})
 
 
-#: An expr watch's `length` and `fmt`: it reads an expression, never a span of bytes.
 EXPR_NO_BYTES_WHY = "an expr watch reads an expression, not a span of bytes"
 
 
@@ -1243,7 +1070,7 @@ def _rows(ses: gs.Session, decls: list[dec.Declaration],
         res = arming.resolve_decl(decl)
         null = False
         if res.state == "pointer":
-            # WHERE IT POINTS NOW, when the machine can be asked; else where it was armed.
+            # where it points now when the machine can be asked, else where it was armed
             armed = STATE.armed_watches.get(decl.owner)
             try:
                 if ses.running:
@@ -1261,19 +1088,15 @@ def _rows(ses: gs.Session, decls: list[dec.Declaration],
             item["state"] = word
             out.append(item)
             continue
-        # The chase above leaves no pointer, so `resolved_state` answered every row with no
-        # address: what reaches here is a place.
         assert res.addr is not None
-        if word == "evaluated":      # a show watch, read here
+        if word == "evaluated":
             item["addr"], item["state"] = st.hex_addr(res.addr), word
             if not ses.running:
                 item["reading"] = _reading(ses, decl, res.addr, cpu=decl.cpu)[0]
         elif decl.watch_mode == "count":
             item.update(_tally_item(ses, decl, res.addr, None, tally.BUCKETS_MAX, at_stop=False))
         elif decl.watch_mode == "capture":
-            # THE FIRST ROWS, AS THE SURVEY SHOWS THEM: every row is a whole block, and the
-            # listing ceiling's worth of them crossed what the client takes in line. The rest is
-            # in `rows_path`, which is the capture's whole record anyway.
+            # the first rows only: every row is a whole block; `rows_path` holds the whole record
             item.update(_tally_item(ses, decl, res.addr, None, st.ROWS_SHOWN, at_stop=False))
         else:
             item["addr"] = st.hex_addr(res.addr)
@@ -1286,9 +1109,8 @@ def _rows(ses: gs.Session, decls: list[dec.Declaration],
 
 
 def list_watches(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `declaration_list(kind="watch")` tool: every declaration, or with `cpu` the
-    watches placed
-    on it (a change watch's row under it in `wplist <cpu>`, a count watch's tap on it)."""
+    """The body of the `declaration_list(kind="watch")` tool: every declaration, or with `cpu` those
+    placed on it."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     held = mlists.wp_held(ses, only)
     rows = _rows(ses, arming.store().declarations(), held)
@@ -1299,11 +1121,9 @@ def list_watches(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
         "watches": rows,
         "foreign": [r["entry"] for r in held if r["index"] not in mine],
     }
-    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
-    # A REMOVAL IS READ HERE, because its declaration is already gone and the
-    # per-declaration survey has nothing left to reach it through. It is READ and never
-    # resent: `read_removal_answers` says why that asymmetry with the install is the point.
-    # What it finds stuck rides on every reply's session block (`tallies_not_removed`).
+    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)
+    # a removal is read, never resent, because its declaration is already gone; what it finds
+    # stuck rides on every reply's session block (`tallies_not_removed`)
     if STATE.scratch is not None:
         mtap.read_removal_answers(STATE.scratch)
     if ses.running:
@@ -1311,19 +1131,14 @@ def list_watches(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
     return menvelope.envelope(reply)
 
 
-# A segmented address, which no ref here can be: an expression watch's text never has this shape.
 _SEG_OFF = re.compile(r"(?:0[xX])?[0-9a-fA-F]+:(?:0[xX])?[0-9a-fA-F]+")
-# One token a symbol or an address could be, as against an expression watch's text.
 _ONE_TOKEN = re.compile(r"[\w.$#]+")
 
 
 def check_clear_watches(ref: str = "", all: bool = False, space: str = mspace.PROGRAM,
                       **_: Any) -> None:
     """`declaration_clear(kind="watch")`'s machine-independent half: one `ref` or `all=True`, a port
-    named by `space`
-    and never by a suffix, and a `ref` judged by the shape `watch_add` judged it by: a pointer's
-    base, else a segmented address refused, else one token that starts like an address and is
-    not one refused. An expression watch's text is matched as declared."""
+    named by `space` and never by a suffix, a `ref` judged by the shape `watch_add` judged."""
     mclear.check_clear(ref, all, "watch")
     vocab.one_of("space", space, mspace.SPACES)
     if all:
@@ -1350,9 +1165,7 @@ def check_clear_watches(ref: str = "", all: bool = False, space: str = mspace.PR
 
 
 def clear_watches(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) -> dict[str, Any]:
-    """The body of the `declaration_clear(kind="watch")` tool: `ref`'s declarations (every one with
-    no ref), on
-    every cpu or on `cpu` alone."""
+    """The body of the `declaration_clear(kind="watch")` tool, on every cpu or on `cpu` alone."""
     check_clear_watches(ref=ref, all=all_)
     ref = "" if all_ else ref
     running = arming.running_on_arrival(ses)
@@ -1364,8 +1177,7 @@ def clear_watches(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) 
     tallies_removed: list[dict[str, Any]] = []
     for decl in going:
         if decl.watch_mode in dec.TAP_MODES:
-            # THE REMOVAL IS SENT, like the install was: the tap goes when the console next
-            # reads a line, and the record and the dump go now, so nothing later reads them.
+            # the removal is sent like the install; the record and the dump go now
             if STATE.scratch is not None and (gone := mtap.send_remove(STATE.scratch,
                                                                        decl.owner)):
                 tallies_removed.append(gone)
@@ -1373,9 +1185,8 @@ def clear_watches(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) 
         armed = STATE.armed_watches.get(decl.owner)
         if armed is not None:
             rows.append((decl.owner, str(armed["entry"]), int(armed["index"])))
-    # The record goes only once the debugger's list no longer shows the row, as a breakpoint's
-    # does: a refusal of the removal, or a row still listed after it, keeps the row armed and
-    # the record with it, or the next hit there would read as foreign.
+    # the record goes only once the list no longer shows the row, or the next hit would read
+    # as foreign
     cleared, still_held = mclear.disarm_rows(ses, "watch", rows, lambda: mlists.wp_held(ses))
     for owner, _entry, _index in cleared:
         STATE.armed_watches.pop(owner)
@@ -1392,8 +1203,7 @@ def clear_watches(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False) 
 
 
 def evaluate_expressions(ses: gs.Session) -> dict[str, int] | gs.SessionError:
-    """Every declared expression's value in ONE `print`, or the console's refusal, which
-    then leaves every expression's reading unavailable rather than lost."""
+    """Every declared expression's value in one `print`, or the console's refusal."""
     refs = expression_refs()
     if not refs:
         return {}
@@ -1406,13 +1216,9 @@ def evaluate_expressions(ses: gs.Session) -> dict[str, int] | gs.SessionError:
 def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = None,
                      expressions: dict[str, int] | gs.SessionError | None = None,
                      frame: int | None = None) -> list[dict[str, Any]]:
-    """Every watch declaration EVALUATED at this stop: its bytes, rendered, or why it has
-    none. A change watch is read too: MAME arms no trap byte, so its bytes are
-    the program's. What is read is also what `before` means at the next hit. `fresh` holds
-    bytes a caller read a moment ago at this same stop (the hit's `after`), so one read
-    serves both; `expressions` holds the expr watches' values when the caller already printed
-    them beside the frame (the survey does), else they are printed here; `frame` is the
-    stop's, what a count watch's dump is waited for and judged against."""
+    """Every watch declaration evaluated at this stop: its bytes rendered, or why it has none; what
+    is read is also `before` at the next hit. `fresh` holds bytes read at this same stop,
+    `expressions` the expr values if already printed, `frame` the stop's, for a count's dump."""
     if STATE.store is None:
         return []
     fresh = fresh or {}
@@ -1421,8 +1227,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
     wp_rows: list[list[dict[str, Any]] | gs.SessionError] = []
 
     def place(decl: dec.Declaration, addr: int) -> dict[str, Any]:
-        """A change watch's placement (`_placement`), `wplist` asked once per survey and only
-        if one needs placing."""
+        """A change watch's placement, `wplist` asked once per survey."""
         if not wp_rows:
             wp_rows.append(_wplist_or_error(ses))
         return _placement(wp_rows[0], decl, addr)
@@ -1448,14 +1253,11 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
         res = arming.resolve_decl(decl)
         null = False
         if res.state == "pointer":
-            # RE-RESOLVED AT EVERY STOP, because the pointer can move: the value read is at
-            # where it points NOW, and a change watch armed at the old struct is moved to
-            # the new one, the reply saying from where to where.
+            # re-resolved at every stop, since the pointer moves: a change watch is moved with it
             try:
                 target, info = chase(ses, res)
             except gs.SessionError as e:
-                # WHERE IT POINTS could not be read, so it is placed where it was armed, as
-                # `declaration_list(kind="watch")` places it; a show watch has no such place.
+                # unreadable: placed where it was armed
                 armed = STATE.armed_watches.get(decl.owner)
                 item.update(place(decl, int(armed["addr"]))
                             if armed is not None else {"state": "unresolved"},
@@ -1469,8 +1271,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
                 moved = _follow(ses, decl, target)
                 if moved is not None:
                     item["moved"] = moved
-                # A move the debugger refused leaves the watch ARMED where it was: the value
-                # read, the address reported and the `before` baseline are that place's.
+                # a refused move leaves the watch armed where it was, so that place is read
                 still = STATE.armed_watches.get(decl.owner)
                 if moved is not None and "why" in moved and still is not None:
                     target = int(still["addr"])
@@ -1482,8 +1283,6 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
                 item["why"] = res.why
             out.append(item)
             continue
-        # The chase above leaves no pointer, so `resolved_state` answered every row with no
-        # address: what reaches here is a place.
         assert res.addr is not None
         if decl.watch_mode in dec.TAP_MODES:
             item.update(_tally_item(ses, decl, res.addr, frame, st.ROWS_SHOWN,
@@ -1492,8 +1291,7 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
             continue
         armed = STATE.armed_watches.get(decl.owner)
         if armed is not None and armed["values_from"] == "bus":
-            # A WRITE-ONLY REGISTER IS NEVER READ: the value is the last one written, off
-            # the console's log, and the read side is named so the reader knows why.
+            # a write-only register is never read: its value is the last one written
             item.update(place(decl, res.addr), addr=st.hex_addr(res.addr),
                         reading={"state": "bus",
                                  "last_wrote": or_unavailable(
@@ -1513,22 +1311,19 @@ def evaluate_watches(ses: gs.Session, fresh: dict[dec.Owner, bytes] | None = Non
     return out
 
 
-# THE WRITER'S PART OF A WATCH STOP'S `cause`, in both spellings this module composes (its own
-# watch's `... written by pc P`, and another row's `..., wrote V by pc P: ...`), so a count keys
-# the watch and not each writer, a write with no pc to name (`_NO_WRITER`) included. Read
-# here, beside the two f-strings it undoes.
+# the writer part of a stop's `cause` in both spellings composed here, so a count keys the
+# watch and not each writer
 _CAUSE_WRITER = re.compile(
     rf"(?:, wrote [0-9a-f]+)? by (?:pc 0x[0-9a-f]+|{re.escape(_NO_WRITER)})")
 
 
 def cause_key(cause: str) -> str:
-    """`cause` with the writer taken off: the key a count of stops by watch uses."""
+    """`cause` with the writer taken off: the key for counting stops by watch."""
     return _CAUSE_WRITER.sub("", cause, count=1)
 
 
 def _foreign_cause(line: re.Match[str]) -> str:
-    """How a stop by a watchpoint this server did not arm is named when the console's line
-    for it is there: its index, the address it wrote, the value and the writer's pc."""
+    """How a stop by a watchpoint this server did not arm is named from the console's line."""
     at, pc = st.hex_addr(int(line.group(3), 16)), _writer(line)
     by = f"by pc {pc}" if pc else f"by {_NO_WRITER}"
     return mclear.foreign_row_cause("watch", int(line.group(1), 16),
@@ -1543,30 +1338,22 @@ _NO_BEFORE_BUS = "the first write logged since the watch was armed: no earlier w
 
 
 def stop_line_in(lines: list[str]) -> bool:
-    """Whether the console logged a watchpoint's stop among `lines`: what a run the console
-    started looks for after each landing, since such a run sends no packet and the stop can
-    land with the counter's tick."""
+    """Whether the console logged a watchpoint stop among `lines`."""
     return any(_STOP_LINE.search(ln) for ln in lines)
 
 
 def watch_packet_addr(ses: gs.Session) -> int | None:
-    """The address a watchpoint's stop packet names, or None when the last stop was not a
-    watchpoint's. What `run_to` reads to tell a watch stop from its own target."""
+    """The address a watchpoint's stop packet names, or None when the last stop was not one."""
     m = _WATCH_PACKET.match(getattr(ses, "last_stop_packet", "") or "")
     return int(m.group(1), 16) if m else None
 
 
 def watch_stop(ses: gs.Session, since: list[str]
                ) -> tuple[str, dict[str, Any] | None, dict[dec.Owner, bytes]] | None:
-    """When the last stop was a watchpoint's: `cause`, the attribution, and the bytes read
-    for it (so the evaluation that follows reads nothing twice). The attribution is the
-    console's own line for the stop, by its watchpoint's INDEX, in `since`
-    (`debuglog_since`), with every line of that index and the bytes this server saw before
-    and sees now. None when the stop was not a watch's. A FOREIGN watch is named by its line
-    (the address WRITTEN, the value and the writer pc).
-
-    The packet names no row (the module docstring says why): it says only that a watch
-    stopped the machine, which matters when the console logged no line for it."""
+    """When the last stop was a watchpoint's: `cause`, the attribution and the bytes read for it.
+    The attribution is the console's line by the watchpoint's index in `since`, with every line
+    of that index and the bytes seen before and now. A foreign watch is named by its line. The
+    packet names no row; it matters only when the console logged no line."""
     packet = watch_packet_addr(ses)
     stops = [mm for ln in since if (mm := _STOP_LINE.search(ln)) is not None]
     by_index = {a["index"]: r for r, a in STATE.armed_watches.items()}
@@ -1584,10 +1371,8 @@ def watch_stop(ses: gs.Session, since: list[str]
     decl = next((d for d in arming.store().declarations()
                  if d.kind == "watch" and d.owner == owner), None)
     if decl is None:
-        # THE ROW OUTLIVED ITS DECLARATION: `declaration_clear(kind="watch")` sent the removal, the
-        # debugger kept
-        # the row, and the record stayed so this stop could be named. Nothing renders it (a
-        # declaration carried the width and the format), and the reply says what removes it.
+        # the row outlived its declaration: the removal was sent, the debugger kept the row, and the
+        # record stayed so this stop can be named
         return (f"watch {ref}: {st.hex_addr(armed['addr'])} written, cleared while the "
                 f"debugger still listed its row; {mclear.pasted_clear('watch', armed['index'])} "
                 "removes it",
@@ -1596,32 +1381,25 @@ def watch_stop(ses: gs.Session, since: list[str]
     hit: dict[str, Any] = {"ref": ref, "addr": st.hex_addr(armed["addr"]), "cpu": armed["cpu"],
                            "index": armed["index"]}
     if decl.condition:
-        # The console logs a conditioned row's stop only when the condition held, so every line
-        # below is one it let through.
+        # the console logs a conditioned row's stop only when the condition held
         conditions.typed_condition(hit, decl)
-    # EVERY line of THIS watchpoint since the previous stop, not the last one and not
-    # another watch's: a 68000 writes a long as two words and the console prints one line
-    # per write, and two watches can fire inside one window.
+    # every line of this watchpoint since the previous stop: a 68000 writes a long as two words
     lines = [(ln.strip(), mm) for ln in since
              if (mm := _STOP_LINE.search(ln)) is not None
              and int(mm.group(1), 16) == armed["index"]]
     writes: list[dict[str, Any]] = [{"wrote": f"0x{mm.group(2).lower()}",
                                      "to": st.hex_addr(int(mm.group(3), 16)),
                "pc": or_unavailable(_writer(mm), _NO_WRITER)} for _ln, mm in lines]
-    # THE SAME CEILING AS EVERY OTHER LIST, and the LAST writes are the ones kept: a latch
-    # written many times a frame puts hundreds of writes in one reply, and the write that
-    # stopped the machine is the last one.
+    # the last writes are kept: the one that stopped the machine is the last
     hit.update(writes_total=len(writes), truncated=len(writes) > WRITES_MAX)
     writes = writes[-WRITES_MAX:]
-    # The row is named by one of these lines, the newest, so there is always at least one.
     hit.update(writer_pc=writes[-1]["pc"], writes=writes)
     by = f"pc {writes[-1]['pc']}" if isinstance(writes[-1]["pc"], str) else _NO_WRITER
     cause = f"watch {ref}: {st.hex_addr(armed['addr'])} written by {by}"
     hit["values_from"] = armed["values_from"]
     fresh: dict[dec.Owner, bytes] = {}
     if armed["values_from"] == "bus":
-        # THE VALUES ARE THE WRITES: what the console logged is what reached the handler,
-        # and a memory read here would answer the read side, which is not this register.
+        # the values are the writes: a memory read would answer the read side
         hit["before"] = (armed["last_wrote"] if armed["last_wrote"] is not None
                          else unavailable(_NO_BEFORE_BUS))
         hit["after"] = armed["last_wrote"] = int(writes[-1]["wrote"], 16)
@@ -1639,12 +1417,9 @@ def watch_stop(ses: gs.Session, since: list[str]
         except gs.SessionError as e:
             hit["after"] = unavailable(str(e))
             if isinstance(last, bytes) and not decoded:
-                hit["before"] = unavailable(str(e))     # read before, not decoded
+                hit["before"] = unavailable(str(e))
     hit["lines"] = [ln for ln, _mm in lines]
-    # A LEFTOVER FROM AN EARLIER SESSION SAYS SO, in the stop itself and not only in
-    # `start`'s rearm block. The store keeps a declaration's original origin across a
-    # re-arm, so an origin that is not this session's is a watch re-armed at start rather
-    # than declared here -- the one that quietly deflects the first run of a new session.
+    # a watch re-armed at `start` from an earlier session says so in the stop itself
     if decl.origin is not None and decl.origin != STATE.session_origin:
         hit["rearmed"] = True
         cause += arming.inherited(decl)

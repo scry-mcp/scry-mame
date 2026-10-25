@@ -1,11 +1,4 @@
-"""Every reply that touches a cpu says which one.
-
-A call acts on the cpu it names, else on the VISIBLE one, which MAME moves to the cpu that
-stopped: the console's readers (`dasm`, `find`, `history`, `save`) through their own syntax, the
-stub's register and memory packets through that cpu's thread of the patched stub. A stub
-without threads serves its FIRST cpu alone. The doubles answer `cpulist` from the two captures,
-with the main cpu visible or the sub cpu visible.
-"""
+"""Every reply that touches a cpu says which one."""
 
 from __future__ import annotations
 
@@ -31,16 +24,14 @@ import server as s  # noqa: E402
 
 
 def _sub_visible(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _RunningSession:
-    """The running double with `:subcpu` visible, as `cpulist` answers after the stub's `Hc2`
-    or after a stop on the sub cpu."""
+    """The running double with `:subcpu` visible."""
     ses = _running(monkeypatch, tmp_path)
     ses.visible_cpu = ":subcpu"
     return ses
 
 
-# THE STUB'S FIVE READERS AND WRITERS, each with the packets the double notes for a thread other
-# than the first (`_RunningSession._on`), a writer's read-back among them, and the call that sends
-# them, naming `cpu` or not.
+# Each stub call with the packets the double notes for a thread other than the first (a writer's
+# read-back among them).
 _STUB_CALLS = [
     ("registers", ["g"], lambda **cpu: s.registers(**cpu)),
     ("read_memory", ["m"], lambda **cpu: s.read_memory(ref="0x400", length=4, **cpu)),
@@ -55,9 +46,7 @@ _IDS = [name for name, _p, _c in _STUB_CALLS]
 def test_without_threads_the_stubs_readers_serve_the_first_cpu_whichever_is_visible(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, packets: list[str], call: Any,
 ) -> None:
-    """A stub without the thread patch serves its first cpu alone: with the sub cpu visible, a
-    call naming no cpu still answers for `:maincpu`, and says so; naming the first cpu is the
-    same call, and naming another is refused, naming the patch it would need."""
+    """Without the thread patch a call answers for `:maincpu`; naming another cpu is refused."""
     ses = _sub_visible(monkeypatch, tmp_path)
     assert call()["cpu"] == ":maincpu"
     assert call(cpu="maincpu")["cpu"] == ":maincpu"
@@ -73,10 +62,9 @@ def test_without_threads_the_stubs_readers_serve_the_first_cpu_whichever_is_visi
 def test_on_the_patched_stub_a_call_acts_on_the_visible_cpu_or_the_one_it_names(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, packets: list[str], call: Any,
 ) -> None:
-    """The model, MAME's own: naming no cpu is the VISIBLE one, read now, and it goes through
-    that cpu's thread; naming one reaches it through its own thread, and the visible cpu does
-    not move. The control is the other cpu: the main one's thread is thread 1, which the double
-    notes nothing for."""
+    """No `cpu` means the visible one; naming one reaches its thread and moves nothing.
+
+    The control is the main cpu, whose thread 1 the double notes nothing for."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     assert call()["cpu"] == ":subcpu", ses.commands
@@ -91,8 +79,7 @@ def test_on_the_patched_stub_a_call_acts_on_the_visible_cpu_or_the_one_it_names(
 def test_a_cpus_registers_are_printed_at_the_widths_its_own_description_declares(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Each thread's description is its cpu's own: with the sub cpu visible, `registers` gives
-    ITS widths and prints each value at them, never the first cpu's."""
+    """`registers` prints the visible cpu's own widths, never the first cpu's."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     narrow = SimpleNamespace(register_bits={"D0": 16, "PC": 16}, byte_order="big")
@@ -102,21 +89,17 @@ def test_a_cpus_registers_are_printed_at_the_widths_its_own_description_declares
     assert s.registers(cpu="maincpu")["regs"]["D0"] == "0x00001234"
 
 
-# A 16-bit cpu's description, as a second cpu of another architecture would give its thread.
 _NARROW = dataclasses.replace(gs.Layout.parse(
     '<target><architecture>i8086</architecture><feature name="org.gnu.gdb.i386.core">'
     '<reg name="d0" bitsize="16" type="int"/><reg name="pc" bitsize="16" type="code_ptr"/>'
     '</feature></target>'), mame_order="little")
-# A cpu MAME gave no endianness for, of the one architecture that never gets a row.
 _MIPS = dataclasses.replace(_NARROW, arch="mips", mame_order="")
 
 
 def test_a_register_is_forced_within_the_width_its_own_cpu_declares(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`set_register` judges the name and the width against the NAMED cpu's description: a
-    value past a 16-bit sub cpu's register is refused there, and the same value fits the
-    32-bit main one."""
+    """`set_register` judges the width against the named cpu's description."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     monkeypatch.setattr(ses, "layout", lambda thread: _NARROW if thread == 2 else ses)
@@ -128,9 +111,7 @@ def test_a_register_is_forced_within_the_width_its_own_cpu_declares(
 def test_a_cpu_the_stub_does_not_describe_is_no_channel_for_its_registers(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, why: str,
 ) -> None:
-    """A cpu with no register map (the stub refuses its description) or whose byte order is not
-    established has no register file this server can decode: the
-    refusal says so, where an exception escaped the call."""
+    """A cpu with no register map or no established byte order is refused, not raised."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
 
@@ -150,9 +131,7 @@ def test_a_cpu_the_stub_does_not_describe_is_no_channel_for_its_registers(
 def test_a_rom_check_mismatch_names_the_cpu_it_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """After a stop on the sub cpu the visible cpu is that one, and the main cpu's image checked
-    there does not match: the mismatch says which cpu was read, so it does not read as a
-    session that lies."""
+    """A mismatch names the cpu read, so it does not read as a session that lies."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
 
@@ -181,9 +160,7 @@ def test_without_threads_a_first_cpu_the_console_does_not_name_is_said_so(
 def test_a_visible_cpu_the_stub_names_no_thread_for_is_refused_naming_the_served_ones(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The patched stub names a thread per cpu it serves; a visible cpu with none is refused
-    naming the threads and how to pick one, never read on another thread, with the code a cpu
-    this stub cannot serve has on a build without threads."""
+    """A visible cpu with no thread is refused naming the served ones, never read elsewhere."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu"}
     out = refused(r"the stub names no thread for :subcpu", s.read_memory(ref="0x400", length=4))
@@ -206,8 +183,7 @@ def test_on_the_patched_stub_a_dump_with_no_visible_cpu_is_refused_before_save(
 def test_on_the_patched_stub_a_visible_cpu_nobody_marks_is_refused_not_guessed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `cpulist` that marks no cpu leaves a call naming none with nothing to act on: it is
-    refused, and naming the cpu still answers."""
+    """A `cpulist` marking no cpu refuses a call naming none; naming the cpu still answers."""
     ses = _sub_visible(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     monkeypatch.setattr(cpus, "visible_cpu", lambda _ses: None)
@@ -219,8 +195,7 @@ def test_on_the_patched_stub_a_visible_cpu_nobody_marks_is_refused_not_guessed(
 def test_the_last_stops_registers_take_no_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`from_last_stop` hands back the survey's registers, which are that survey's cpu: a
-    `cpu` beside it would be a request nothing honours, so it is refused."""
+    """A `cpu` beside `from_last_stop` is a request nothing honours, so it is refused."""
     _sub_visible(monkeypatch, tmp_path)
     refused(r"`from_last_stop` hands back", s.registers(from_last_stop=True, cpu="subcpu"))
     assert s.registers(from_last_stop=True)["superseded"] is True
@@ -229,12 +204,11 @@ def test_the_last_stops_registers_take_no_cpu(
 def test_the_consoles_readers_name_the_visible_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`disassemble`, `find`, `history` and `memdump` go through the console, which acts on
-    the visible cpu."""
+    """The console readers act on the visible cpu."""
     ses = _ConsoleSession(bytes(0x1000), replies={
         "find": captured("find.none.txt"), "history": captured("history.txt"),
         "cpulist": captured("cpulist.sub-visible.txt")})
-    ses.threads = {1: ":maincpu", 2: ":subcpu"}      # `memdump`'s control reads the sub cpu
+    ses.threads = {1: ":maincpu", 2: ":subcpu"}
     scratch = _console(monkeypatch, tmp_path, ses)
 
     def dasm(command: str) -> str:
@@ -257,10 +231,7 @@ def test_the_consoles_readers_name_the_visible_cpu(
 def test_a_stop_on_the_sub_cpu_surveys_the_sub_cpus_registers_through_its_thread(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME makes the stopping cpu visible, and the survey reads THAT cpu's register file
-    through its own thread of the patched stub: its pc, its registers and its listing are one
-    cpu's, named once as `cpu`, and the record keeps it for `registers(from_last_stop=True)`,
-    `last_stop` and a stop found on its own. A stop on the main cpu reads thread 1."""
+    """The survey reads the stopping cpu's registers through its thread, and the record keeps it."""
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     s.resume()
@@ -290,9 +261,7 @@ def test_a_stop_on_the_sub_cpu_surveys_the_sub_cpus_registers_through_its_thread
 def test_a_stop_on_a_cpu_this_build_cannot_read_says_so_in_place_of_its_registers(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, why: str,
 ) -> None:
-    """A stop on the sub cpu of a build without the thread patch, or on a cpu the stub does not
-    describe, still surveys: `regs` says it could not be read and why, never the first cpu's
-    file under the sub cpu's name, and the last stop's registers carry no widths."""
+    """An unreadable stopping cpu still surveys: `regs` says why, never the first cpu's file."""
     ses = _running(monkeypatch, tmp_path)
     if why == "no_map":
         ses.threads = {1: ":maincpu", 2: ":subcpu"}
@@ -343,17 +312,15 @@ def test_the_arming_replies_and_their_lists_carry_the_rows_cpu(
 def test_status_on_a_broken_session_asks_no_cpu_and_one_that_breaks_under_it_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A broken session is asked nothing: `cpus` is what was read before. A `cpulist` that
-    times out under `status` latches the session, and the reply carries that latch rather than
-    the one read before it."""
+    """A broken session is asked nothing; a `cpulist` timeout latches it and the reply says so."""
     ses = _running(monkeypatch, tmp_path)
-    s.status()                                        # the cpus, read once
+    s.status()
     ses.broken = "the stub stopped answering"
     ses.commands.clear()
     out = s.status()
     assert out["cpu_tags"] == [":maincpu", ":subcpu"], out
     assert "cpulist" not in ses.commands
-    monkeypatch.setattr(mstate.STATE, "cpus", [])     # read again, once a session
+    monkeypatch.setattr(mstate.STATE, "cpus", [])
     ses.broken = None
     real = ses.monitor
 

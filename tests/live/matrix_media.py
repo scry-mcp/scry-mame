@@ -1,20 +1,7 @@
-"""Section Y of the live matrix: the media layer's scenarios, each asked twice over one answer.
+"""Section Y of the live matrix: each media scenario answered the old way and the new way.
 
-THE PAIR IS THE POINT. A new tool has no "before" of its own, so each scenario is answered the
-way a session answers it with the tools it had (`run_for` and `screen_view` per frame, a picture
-looked at) and the new way (`series_capture` and `image_compare(method="region")`,
-`screen_signature`), from the
-same machine state, and both must reach the same answer. What each way cost (calls, the text
-units of its replies, the visual tokens of the pictures they attached) is in the cell's detail,
-which is where the scenario table is read from.
-
-S1, "which frames of N changed in region R": the hand way decodes each frame's PNG and compares
-its pixels here, with this file's own comparison; the new way is the server's. Both run from
-one saved state, so the frames are the same emulation, and the changes are compared by their
-offset from the first frame, which holds whether or not a load restores the frame counter.
-S2, "is this screen the golden": the golden is a PNG of the screen at one stop; the hand way
-looks at the screen again and compares pixels, the new way compares one string. Its control is
-the same question sixty frames later, which must come out no.
+Both ways start from the same machine state and must reach the same answer; the cell detail
+carries what each cost (calls, text units, image tokens).
 
     uv run python tests/live/matrix_media.py
 """
@@ -43,14 +30,11 @@ from live_harness import (
 )
 from scry_core import png, raster, traffic
 
-#: Where S1 starts, how many frames it reads and the region asked about: m68k-dual's boot
-#: repaints the screen from about frame 24, a frame at a time, so the screen is the region and
-#: the run starts just before it.
+#: m68k-dual's boot repaints the screen from about frame 24, a frame at a time.
 S1_FROM = 20
 S1_FRAMES = 12
 S1_CROP: list[int] | None = None
-#: How far S2's control moves the machine from the golden's stop: two of the boot's later
-#: repaints are thirty frames apart and alike, so sixty.
+#: Two of the boot's later repaints are thirty frames apart and alike, so the control goes sixty.
 S2_CONTROL_FRAMES = 60
 
 Y_TITLE = "the media layer: each scenario the hand way and the new way, over one answer"
@@ -68,8 +52,7 @@ Y = [
     "view MAME took, the layout's",
     "gridlee, that view's snapshot differs from the native one exactly inside the layout's box",
 ]
-#: The layout written for the test: one view holding the screen at its own size and one box of
-#: a colour no game paints, at a known place over it (`_layout`).
+#: A box of a colour no game paints, over the screen at its own size (`_layout`).
 VIEW_NAME, BOX = "Scry Test Box", (16, 24, 32, 20)
 
 
@@ -81,13 +64,12 @@ def _cost(since: int) -> dict[str, int]:
 
 
 def _changes(pictures: list[bytes]) -> list[int]:
-    """The offsets, from the first picture, of each one whose pixels differ from the one
-    before: this file's own comparison, of the decoded bytes."""
+    """Offsets of the pictures whose bytes differ from the one before."""
     return [i for i in range(1, len(pictures)) if pictures[i] != pictures[i - 1]]
 
 
 def _kept(manifest: str) -> list[tuple[png.Raster, str]]:
-    """Each frame of a series as its PNG decodes, beside the signature its row says."""
+    """Each frame of a series decoded, beside its row's signature."""
     folder = Path(manifest).parent
     rows = json.loads(Path(manifest).read_text(encoding="utf-8"))["frames"]
     return [(png.decode((folder / r["path"]).read_bytes()), r["signature"]) for r in rows]
@@ -98,24 +80,21 @@ def _y_m68k_dual(t: list[str]) -> None:
     call("run_for", frames=S1_FROM, seconds=WAIT_CEILING_S)
     state = fresh_state()
     saved = call("state_write", method="save", name=state)
-    # S1, the hand way.
     start = len(PENDING)
     pictures: list[bytes] = []
     for _ in range(S1_FRAMES):
         call("run_for", frames=1, seconds=10.0)
         view = call("screen_view", crop=S1_CROP, scale=1)
         if ok(view):
-            # In the colours shown, as the series stores them: two pens of one colour are one.
+            # Colours as the series stores them: two pens of one colour are one.
             pictures.append(raster.rgb(png.decode(Path(view["image"]["path"]).read_bytes())))
     hand = _changes(pictures)
     hand_cost = _cost(start)
     cell(t[0], ok(saved) and len(pictures) == S1_FRAMES and bool(hand),
          f"changes at offsets {hand}; cost {hand_cost}")
-    # S1, the new way, from the same state.
     loaded = call("state_write", method="load", name=state)
     start = len(PENDING)
-    # The hand way's first picture was the frame after the saved one; the series' first is the
-    # frame after the loaded one, whatever the counter reads after a load.
+    # The counter may not survive a load, so the first frame is read after it.
     first = call("screen_signature").get("frame_screen", 0) + 1
     series = call("series_capture", first=first, last=first + S1_FRAMES - 1, crop=S1_CROP,
                   seconds=WAIT_CEILING_S)
@@ -124,8 +103,7 @@ def _y_m68k_dual(t: list[str]) -> None:
              if ok(series) else series)
     new = [f - first for f, _ in track.get("transitions", [])] if ok(track) else []
     new_cost = _cost(start)
-    # The series' frames ARE the hand way's: the same pixels, and each row signed as its picture
-    # is. Which frames changed is not enough, a consistent wrong colour moves no change.
+    # Changed offsets alone would miss a consistently wrong colour, so pixels and signatures too.
     kept = _kept(series["manifest"]) if ok(series) else []
     same = len(kept) == len(pictures) and all(
         raster.rgb(picture) == hand_rgb and signature == raster.picture_signature(picture)
@@ -134,11 +112,10 @@ def _y_m68k_dual(t: list[str]) -> None:
          and new_cost["image_tokens"] == 0,
          f"changes at offsets {new} (hand {hand}), pixels and signatures as the hand way's "
          f"{same}; cost {new_cost}; {said(track)}")
-    # Cheaper only counts when the new way answered: a refused series is one call too.
+    # A refused series is one call too, so cheaper counts only if it answered.
     cell(t[2], ok(series) and ok(track) and new_cost["calls"] < hand_cost["calls"]
          and new_cost["image_tokens"] == 0 < hand_cost["image_tokens"],
          f"hand {hand_cost}, new {new_cost}")
-    # S2: the golden is the screen at this stop.
     golden = fresh(".png")
     made = call("screen_view", scale=1, dest=golden)
     want = png.decode(Path(golden).read_bytes()) if ok(made) else None
@@ -164,8 +141,7 @@ def _y_m68k_dual(t: list[str]) -> None:
 
 
 def _layout(art: Path, width: int, height: int) -> None:
-    """`art/gridlee/default.lay`: the screen at (0, 0) at its own size and `BOX` over it, so
-    the view's snapshot is the native one with exactly that box painted."""
+    """Write `art/gridlee/default.lay`: the screen plus `BOX` painted over it."""
     x, y, w, h = BOX
     (art / "gridlee").mkdir(parents=True)
     (art / "gridlee" / "default.lay").write_text(
@@ -179,7 +155,7 @@ def _layout(art: Path, width: int, height: int) -> None:
 
 
 def _colours(pic: png.Raster) -> list[tuple[int, ...]]:
-    """Each pixel's colour, row by row, whether the picture is indexed or RGB."""
+    """Each pixel's colour, row by row, indexed or RGB."""
     if pic.palette is not None:
         return [pic.palette[i] for i in pic.pixels]
     return [tuple(pic.pixels[k:k + 3]) for k in range(0, len(pic.pixels), 3)]
@@ -202,7 +178,7 @@ def _y_gridlee_views(t: list[str]) -> None:
     call("close")
     _layout(art, width, height)
     started = free_boot("gridlee", ["gridfnla.bin"], "0xa000", ini_extra=f"artpath {art}\n")
-    # THE NATIVE SNAPSHOT WITH THE LAYOUT PRESENT: the default must ignore what the set ships.
+    # The default view must ignore the layout the set ships.
     shipped = _snap()
     cell(t[6], started.get("view") == "native" and VIEW_NAME in (started.get("views") or [])
          and native is not None and pens is not None and shipped is not None
@@ -241,7 +217,7 @@ boards_cover("Y_BOARDS", Y, Y_BOARDS)
 
 
 def register_y() -> None:
-    """Register section Y with the matrix: after every section registered before it."""
+    """Register section Y after every section registered before it."""
     section("Y", Y_TITLE, Y)(lambda: run_boards(Y, Y_BOARDS))
 
 

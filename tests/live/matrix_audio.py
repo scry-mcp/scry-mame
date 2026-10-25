@@ -1,14 +1,6 @@
 """Section L of the live matrix: `audio_record`, the mixer's WAV bounded by the frame counter.
 
-Each cell is asked on the board that can answer it: circus on the stock MAME for the contract
-(the span, the file against its own header, the listing, the refusals, and the mixer's one file
-shared with other callers), m68k-dual for a stereo mixer, and v30 for the content, where a
-tone of a known period is pinned on the AY and the recording has to carry that tone and halve
-with the period. A board that cannot run on this host has its cells BLOCKED with the reason,
-never passed.
-
-`live_matrix.py` registers this section before H; run alone, it is the same machinery over this
-section only:
+Run alone, it is the same machinery over this section only:
 
     MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_audio.py
 """
@@ -43,18 +35,13 @@ from scry_core import traffic
 
 from mame_transport import lua_string
 
-# THE CONTRACT'S TOLERANCES, written here and not imported from the server, so a change to the
-# server's turns these cells red instead of moving them with it: MAME mixes in updates of a
-# fiftieth of an emulated second (`STREAMS_UPDATE_FREQUENCY` in its `sound.h`), so a span's
-# samples are within one update of the span times the rate; the span itself is begun and ended
-# on the frame notifier, exact to a double's rounding.
+# Written here, not imported from the server, so a server change turns the cells red. MAME mixes
+# in updates of a fiftieth of a second (`STREAMS_UPDATE_FREQUENCY`); the span is exact on the
+# frame notifier.
 MIXER_UPDATES_PER_S = 50
 SPAN_TOLERANCE_S = 1e-6
-# THE AY'S KNOWN ANSWER. v30's AY-3-8910 runs at 2 MHz behind io 0x0000 (register select) and
-# 0x0002 (data); a tone channel's frequency is the clock over 16 times its 12-bit period. The
-# game's own sound driver rewrites the chip every frame, so poking the registers once a frame
-# only gates the tone: a write tap substitutes the pinned value for whatever the game writes to
-# a pinned register, and the per-frame write sets each one whether the game writes it or not.
+# v30's AY-3-8910: tone Hz = clock / (16 * 12-bit period). The game's sound driver rewrites the
+# chip every frame, so a write tap substitutes the pinned value and the per-frame write sets it.
 AY_CLOCK_HZ = 2_000_000
 AY_PERIOD_A = 0x40
 AY_PERIOD_B = 0x80
@@ -73,11 +60,9 @@ _G._mame_matrix_ay_poke = emu.add_machine_frame_notifier(function()
     for _, rv in ipairs(regs) do io:write_u8(0x0000, rv[1]) io:write_u8(0x0002, rv[2]) end
 end)
 """
-# THE MIXER'S FILE IS ONE, SHARED BY EVERY CALLER. A frame notifier of the cell's own does, at
-# its `at`-th call and so in the middle of a recording, what another caller of the mixer could:
-# stop the tool's file and begin its own, or release the tool's script as the next
-# `audio_record` would. The tool's script must neither stop the file it did not begin nor write
-# anything once released.
+# The mixer's file is shared by every caller: these notifiers do, mid-recording, what another
+# caller could (swap the file, or release the tool's script). The tool's script must not stop a
+# file it did not begin nor write once released.
 SWAP_LUA = """local snd = manager.machine.sound
 local calls = 0
 _G._mame_matrix_swap = emu.add_machine_frame_notifier(function()
@@ -125,8 +110,7 @@ L_CELLS = [f"L{n} {text}" for n, text in enumerate([
 
 
 def bounded_exactly(r: dict[str, Any], frames: int, period: float | None) -> bool:
-    """The recording spans exactly `frames` frames, its end inclusive, its emulated span is `frames`
-    periods, and its samples are that span at its rate within one mixer update."""
+    """The recording spans `frames` frames, end inclusive, and its samples fit that span."""
     if not ok(r) or not r.get("ended") or period is None:
         return False
     rate, samples, emulated = r["sample_rate_hz"], r["samples"], r["emulated_s"]
@@ -136,8 +120,8 @@ def bounded_exactly(r: dict[str, Any], frames: int, period: float | None) -> boo
 
 
 def stdlib_wave_agrees(path: Path, r: dict[str, Any]) -> bool:
-    """stdlib `wave`, an instrument the server does not use, reads the reply's channels, rate and
-    samples off the file, and the file holds every byte its header declares."""
+    """stdlib `wave` reads the reply's channels, rate and samples off a file holding its whole
+    header-declared length."""
     try:
         with wave.open(str(path)) as w:
             n, channels = w.getnframes(), w.getnchannels()
@@ -149,8 +133,7 @@ def stdlib_wave_agrees(path: Path, r: dict[str, Any]) -> bool:
 
 
 def tone_hz(path: Path) -> float | None:
-    """The zero-crossing frequency about the mean of a MONO recording, after the first mixer
-    update, which may hold the tone's attack; None for any other."""
+    """Zero-crossing frequency of a MONO recording past the first mixer update (the attack)."""
     with wave.open(str(path)) as w:
         if w.getnchannels() != 1:
             return None
@@ -223,8 +206,7 @@ def _marks(pattern: str) -> list[str] | None:
 
 
 def _finished_samples(path: Path) -> int:
-    """The samples of a CLOSED WAV whose header agrees with its length on disk, else 0: MAME
-    writes the sizes only when the file is closed, so a file still open reads 0 here."""
+    """Samples of a closed WAV whose header matches its size on disk, else 0 (open files read 0)."""
     try:
         with wave.open(str(path)) as w:
             n, block = w.getnframes(), w.getnchannels() * w.getsampwidth()
@@ -241,7 +223,7 @@ def _l_swap(t: list[str]) -> None:
     r = call("audio_record", frames=30, dest=fresh(".wav"), seconds=WAIT_CEILING_S)
     on, ends = _mixer_recording(), _end_marks()
     call("lua", script="manager.machine.sound:stop_recording()")
-    # the one end mark the tool's script logs is the control that `_end_marks` can see one
+    # the tool's own one end mark is the control that `_end_marks` can see one
     cell(t[9], on is True and refused(r, "readback_refused")
          and "does not hold the span" in str(r.get("message")) and ends is not None
          and len(ends) == 1 and _finished_samples(theirs) > 0,
@@ -256,8 +238,7 @@ def _l_release(t: list[str]) -> None:
     call("lua", script=RELEASE_LUA % {"at": 10})
     r = call("audio_record", frames=30, seconds=WAIT_CEILING_S)
     on, ends, begins = _mixer_recording(), _end_marks(), _marks(BEGIN_MARK)
-    # the begin mark is the positive beside the absences: a script that never began a recording
-    # leaves no end mark and a stopped mixer too
+    # the begin mark is the positive beside the absences
     cell(t[10], on is False and ends == [] and begins is not None and len(begins) == 1,
          f"recording after {on}, begin marks {begins}, end marks {ends} / {said(r)}")
     call("close")
@@ -270,8 +251,7 @@ def _l_wavwrite(t: list[str]) -> None:
     r = call("audio_record", frames=10, seconds=WAIT_CEILING_S)
     call("run_for", frames=30, seconds=WAIT_CEILING_S)
     on, ends = _mixer_recording(), _end_marks()
-    call("lua", script="manager.machine.sound:stop_recording()")   # its owner closes it
-    # refused after its run, the reply says the frames that run advanced the machine by
+    call("lua", script="manager.machine.sound:stop_recording()")
     moved = (isinstance(r.get("frame_before"), int) and isinstance(r.get("frame_after"), int)
              and r["frame_after"] - r["frame_before"] >= 10)    # at least the frames asked
     cell(t[11], refused(r, "readback_refused") and "mixer refused" in str(r.get("message"))
@@ -290,8 +270,7 @@ def _l_m68k_dual(t: list[str]) -> None:
 
 
 def _ay_recording(period: int, volume: int = 0x0F) -> tuple[Path, dict[str, Any]]:
-    """A fresh v30, the AY pinned at `period` and `volume`, 30 frames recorded: the file and the
-    reply."""
+    """A fresh v30 with the AY pinned, 30 frames recorded: the file and the reply."""
     v30_boot(V30)
     call("run_for", frames=60, seconds=WAIT_CEILING_S)
     call("lua", script=AY_PIN_LUA % {"period": period, "volume": volume})
@@ -318,22 +297,17 @@ def _l_v30(t: list[str]) -> None:
          f"{hz_a} Hz against {want_a:g} / {said(r)}")
     want_b = AY_CLOCK_HZ / (16 * AY_PERIOD_B)
     hz_b, r, wav_b = _ay_tone(AY_PERIOD_B)
-    # the tone halves: near its own prediction AND near half of what the first pin measured
+    # near its own prediction AND near half of the first pin
     cell(t[8], _near(hz_b, want_b) and hz_a is not None and _near(hz_b, hz_a / 2),
          f"{hz_b} Hz against {want_b:g} and half of {hz_a} / {said(r)}")
-    # S3, the new way: the question a session asks of a recording, answered in numbers. The
-    # hand way does not exist through the server: `audio_record` says how many samples and
-    # their range, and nothing about when the window sounded or whether two recordings match.
-    # The four new-way replies are kept here: the harness hands `PENDING` to the transcript at
-    # every cell, so a slice of it taken across a cell is empty.
+    # `PENDING` is handed to the transcript at every cell, so the four replies are kept here.
     heard = call("audio_compare", method="measure", path=str(wav_a))
     muted_path, muted_r = _ay_recording(AY_PERIOD_A, volume=0)
     muted = call("audio_compare", method="measure",
                  path=str(muted_path)) if ok(muted_r) else muted_r
     m = (heard.get("measures") or [{}])[0]
     q = (muted.get("measures") or [{}])[0]
-    # The AY at volume 0 rests at a steady level away from zero: silent, with no onset and no
-    # plateau, though its peak says where it rests.
+    # the AY at volume 0 rests at a steady nonzero level: silent, no onset, but a peak
     cell(t[12], ok(heard) and m.get("silent") is False and isinstance(m.get("onset_s"), float)
          and ok(muted) and q.get("silent") is True
          and (q.get("onset_s") or {}).get("available") is False

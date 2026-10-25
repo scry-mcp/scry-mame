@@ -1,10 +1,4 @@
-"""The classifier's tables against MAME's own command table, and the commands whose effect lives
-in a parameter rather than in the word: an action run at every hit, a script, a listing.
-
-`fixtures/console/commands.registered.txt` is every `register_command` of the core console, read
-off the source the build is made from (PROVENANCE.txt), so a command the tables leave unjudged
-is a red test here rather than a word `debug` silently counts as nothing.
-"""
+"""The classifier's tables against MAME's own command table (fixtures/console/PROVENANCE.txt)."""
 
 from __future__ import annotations
 
@@ -38,16 +32,13 @@ def test_every_command_mame_registers_is_classified_and_nothing_else_is() -> Non
 
 @pytest.mark.parametrize("word", ["//", "/*"])
 def test_the_comment_aliases_resolve_to_themselves(word: str) -> None:
-    """`//` is `comadd` and `/*` is `commit` under another name (debugcmd.cpp), so they are
-    judged as those are: the debugger's comment pane, never the guest."""
+    """`//` is `comadd` and `/*` is `commit` under another name (debugcmd.cpp)."""
     assert console.resolve_command(word) == word
     assert not console.mutates(f"{word} 0x400,a comment")
 
 
 @pytest.mark.parametrize("command", [
-    # A SCRIPT of console commands, any of which may write.
     "source script.txt",
-    # AN ACTION, braced or bare, at the position each command takes it.
     "epset 1,1,{fill 0x100,1,1}", "ep 1,1,{g}", "epset 1,{d0==1},{d0=1}",
     "trace t.txt,0,,{g}", "traceover t.txt,:maincpu,noloop,{fill 0x100,1,1}",
     "trace t.txt,0,noloop,g", "bpset 0x400,1,g", "rpset {d1==1},g", "wpset 0,4,w,1,g",
@@ -57,13 +48,9 @@ def test_a_script_or_an_action_counts_as_a_write(command: str) -> None:
 
 
 @pytest.mark.parametrize("command", [
-    # A CONDITION is evaluated, never run: braced, it is still a condition.
     "epset 1", "epset 1,{d0==1}", "bpset 0x400,{d0==1}", "wpset 0,4,w,{wpdata==1}",
-    # A trace with no action logs and writes a host file only.
     "trace t.txt", "trace t.txt,0,noloop", "trace off", "traceover t.txt,0",
-    # THE LISTING FORMS: with no parameter these print the set and change nothing.
     "suspend", "resume", "ignore", "observe",
-    # A press is play, not a write: the rule the `input` tool states.
     'input "abc"',
 ])
 def test_a_condition_a_plain_trace_and_a_listing_are_not_writes(command: str) -> None:
@@ -79,7 +66,7 @@ def test_suspend_and_resume_with_a_cpu_still_write(command: str) -> None:
 def test_a_bare_ignore_or_observe_lists_and_reads_no_cpu_back(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, command: str,
 ) -> None:
-    """A listing sets no cpu, so nothing is read back and no run is waited for."""
+    """A listing sets no cpu, so nothing is read back."""
     ses = _patched(monkeypatch, tmp_path)
     ses.commands.clear()
     out = s.debug(command=command)
@@ -108,14 +95,12 @@ def test_an_ignore_with_a_cpu_still_reads_the_cpus_back(
 def test_a_command_splits_into_its_word_and_parameters_as_the_console_splits_it(
     command: str, word: str, params: list[str],
 ) -> None:
-    """`internal_parse_command` and `internal_execute_command` (debugcon.cpp): the word ends at
-    the first space, and a `,` outside brackets and quotes ends a parameter."""
+    """As `internal_parse_command` splits (debugcon.cpp): a `,` outside brackets ends one."""
     assert console.parameters(command) == (word, params)
 
 
 def test_every_action_sits_at_the_last_parameter_its_command_registers() -> None:
-    """The action is each family's last parameter, so its index is the registered maximum less
-    one: a key or an index typed wrong goes red here, for every alias."""
+    """The action is the last parameter: its index is the registered maximum less one."""
     registered = _registered()
     for name, at in console._ACTION_AT.items():
         assert int(registered[name][1]) - 1 == at, (name, at, registered[name])
@@ -139,7 +124,7 @@ def test_an_action_on_an_alias_is_a_write(command: str) -> None:
 @pytest.mark.parametrize("command", ["epset 1,{temp0=1}", "trace t.txt,0,,{temp0=1}",
                                      "bp 0x400,1,{temp0=1}"])
 def test_what_an_exception_point_or_a_trace_arms_is_evaluated_later(command: str) -> None:
-    """A temp they assign is assigned at every hit or traced instruction, not by the line."""
+    """A temp they assign is assigned at every hit, not by the line."""
     assert console.evaluated_later(command)
     assert not console.evaluated_later("print temp0=1")
 
@@ -161,7 +146,7 @@ def test_the_commands_that_leave_totalcycles_stale_and_which_are_resets(
 def test_a_comments_text_is_never_evaluated_so_an_assignment_in_it_writes_nothing(
     command: str,
 ) -> None:
-    """`// 0x400,d0=7` leaves D0 as it was: the text is the pane's."""
+    """The text is the pane's, never evaluated."""
     assert not console.mutates(command), command
 
 
@@ -174,8 +159,7 @@ def test_an_assignment_in_a_comments_address_is_still_a_write() -> None:
 def test_a_typed_hardreset_is_refused_before_anything_is_sent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str,
 ) -> None:
-    """It re-creates the machine and the stub's connection dies with it, so the session would
-    answer ok and then fail: refused as the `reset` tool refuses a hard reset, naming the way."""
+    """It kills the stub's connection, so it is refused as the `reset` tool refuses it."""
     ses = _patched(monkeypatch, tmp_path)
     ses.commands.clear()
     out = s.debug(command=line)

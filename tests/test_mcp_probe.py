@@ -1,10 +1,4 @@
-"""What `scry_core.probe` judges with this server's own surface: the task set and its captures,
-the server's pre-gate check, and the texts the client delivers.
-
-The engine and the checks every server runs (`scry_core.probe_checks`) are the core's; what is
-mame's own (its `check`, its path shapes) is judged here on the real server. `captured/mame/`
-holds every task as real runs answered it, one file per task.
-"""
+"""`scry_core.probe` judged on this server's own surface: tasks, captures, pre-gate check, texts."""
 
 import json
 import sys
@@ -88,9 +82,7 @@ def test_a_task_whose_right_answer_the_server_refuses_is_refused() -> None:
     ("harness.lua", "boot_lua='harness.lua' must be an absolute path"),
 ])
 def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str, said: str) -> None:
-    """`start` is judged by `launch.start`'s own half, the shape of its paths: inline Lua where
-    the harness FILE goes, or a `~` nothing expands, is a call the server refuses, so a task
-    expecting it is refused too."""
+    """`start` is judged by the shape of its paths: inline Lua or an unexpanded `~` is refused."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
             "args": {"binary": "/b/mame", "system": "m68k-dual", "rompath": "/r",
                      "reference_rom": "/r/rom.bin", "boot_lua": boot_lua}}
@@ -101,8 +93,7 @@ def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str,
 
 
 def test_a_start_with_absolute_paths_is_judged_by_shape_not_by_what_is_on_disk() -> None:
-    """The control: paths no machine holds are taken, because whether a file is there is the
-    host's, never the probe's."""
+    """The control: paths no machine holds are taken; a file being there is the host's to judge."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
             "args": {"binary": "/no/such/mame", "system": "m68k-dual", "rompath": "/no/roms",
                      "reference_rom": "/no/rom.bin", "boot_lua": "/no/harness.lua",

@@ -1,16 +1,9 @@
-"""A watch that COUNTS (`mame_tally`): a write tap composed by the server, sent to the Lua
-console, installed when the console next reads a line, dumped by a periodic hook at every
-stop, read back by the survey.
+"""A watch that COUNTS (`mame_tally`): write tap, install, periodic dump, survey.
 
-The dump here is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`): sixty-one frames of
-m68k-dual's vblank handler writing its frame counter, two words per long, from one pc. The
-bus events the lane decoding is checked against are the ones captured on the same board:
-a `move.l` arriving as two `mask=ffff` words and a `move.b #$d8` arriving as `data=d8d8
-mask=ff00`, the byte on both lanes and the mask naming the one that lands. The dumps with
-two writers and an overflow are written by hand in the captured SHAPE, because the capture
-has one writer and no overflow, and a field that is zero in every fixture is a field two
-regex groups could swap without a test noticing.
-"""
+The dump is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`, m68k-dual's vblank handler). The
+dumps with two writers and an overflow are hand-written in the captured shape, because the
+capture has one writer and no overflow, and a field that is zero in every fixture is one two
+regex groups could swap unnoticed."""
 
 from __future__ import annotations
 
@@ -51,18 +44,14 @@ DUMP = (FIXTURES / "tally-2031fc_4.txt").read_text()
 PROMPT = b"\x1b[1;36m[MAME]\x1b[0m> "
 INSTALLED = ("MCP_TALLY installed tally_id=2031fc_4 first=2031fc last=2031ff data_width=16 "
              "endianness=big cpu=:maincpu")
-# Two writers, an overflow in each table, the captured header shape.
 TWO_WRITERS = ("MCP_TALLY 2031fe_2 seq=9 frame=40 total=500 values=2 pcs=2 overflow_values=7 "
                "overflow_pcs=3 data_width=16 endianness=big cpu=:maincpu\n"
                "v 2031fe 1 ffff 300\nv 2031fe 2 ffff 190\np 40e 490\np 1234 10\nend\n")
 
 
 def _tallying(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """The watch double with the Lua channel's sending end: a pipe the install goes into
-    and a `stdout.log` the answers are read off. Nothing answers by itself: a test that
-    wants the console's sentinel writes it, as the capture shows it."""
-    # BLANK FIRST, then this fixture's own specifics on top: a reset that ran afterwards
-    # would silently un-set what the fixture had just arranged.
+    """The watch double plus the Lua channel's sending end; nothing answers by itself."""
+    # Blank first: a reset run afterwards would un-set what the fixture arranged.
     blank_session(monkeypatch)
     ses = _watching(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "proc",
@@ -85,8 +74,7 @@ def _console_prints(tmp_path: Path, text: bytes) -> None:
 
 def _answer(tmp_path: Path, seq: int, ok: bool = True, error: str = "nil",
             output: str = INSTALLED) -> None:
-    """What the console prints once it ran the install: the chunk's echo, its output and
-    the sentinel, in the captured shape."""
+    """What the console prints once it ran the install, in the captured shape."""
     line = _sent().splitlines()[seq - 1]
     _console_prints(tmp_path, line + b"\n" + output.encode() + b"\n"
                     + f"MAME_MCP_LUA_END#{seq}\t{str(ok).lower()}\t{error}\n".encode() + PROMPT)
@@ -97,15 +85,10 @@ def _survey(ses: _WatchSession, frame: int) -> dict[str, object]:
 
 
 
-# --------------------------------------------------------------------------- the script
 
 
 def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_dumper() -> None:
-    """The console's reader dies now and then and the console then runs an earlier chunk
-    AGAIN: the probe's tap was installed twice and every write counted twice. So the
-    install removes the tap already held under its id first, CARRIES its counts (a rerun
-    must neither double nor zero a census), and the periodic dumper is registered once
-    behind a flag that lives in `_G` with the registry."""
+    """A rerun of the install chunk must neither double nor zero a census, nor add a dumper."""
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc_4.txt"))
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
     assert 'for _, k in ipairs({"total", "values", "nvalues", "pcs", "npcs",' in script
@@ -120,12 +103,7 @@ def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_du
 
 
 def test_the_tap_is_bus_aligned_filters_by_landing_and_pays_no_string_per_write() -> None:
-    """A one-byte tap on the 16-bit 68000 bus is refused by MAME (`end address
-    has low bits unset, did you mean 20351d`). The tap covers the bus words the range
-    touches, and the callback drops a write none of whose lanes land inside it, so the
-    neighbour byte of the same word never counts for this one; an aligned range skips the
-    test. The callback is the hot path: the writer's state entry is looked up once at
-    install, and the value key is one packed integer."""
+    """MAME refuses a one-byte tap on a 16-bit bus: the tap is bus-aligned, filters by landing."""
     script = tally.install_script("20351c_1", 0x20351C, 1, Path("/s/t.txt"))
     assert "local lo, hi = first - (first % nb), last + (nb - 1 - (last % nb))" in script
     assert "local aligned = lo == first and hi == last" in script
@@ -145,7 +123,6 @@ def test_the_removal_takes_the_tap_and_the_registry_entry_and_refuses_nothing() 
     assert 'print("MCP_TALLY absent tally_id=" .. id)' in script
 
 
-# ----------------------------------------------------------------------------- the dump
 
 
 def test_a_captured_dump_parses_whole_and_a_cut_one_is_no_table() -> None:
@@ -156,8 +133,7 @@ def test_a_captured_dump_parses_whole_and_a_cut_one_is_no_table() -> None:
     assert dump["data_width"] == 16 and dump["endianness"] == "big" and dump["cpu"] == ":maincpu"
     assert (0x2031FC, 0, 0xFFFF, 51) in dump["values"], "the high word, zero, 51 times"
     assert (0x2031FE, 0x32, 0xFFFF, 1) in dump["values"]
-    # NO `end` LINE IS NO TABLE: the rename makes a dump whole or absent, and a reader that
-    # accepted a prefix would report a count that stopped where the file did.
+    # No `end` line is no table: a prefix would report a count that stopped where the file did.
     assert tally.parse_dump(DUMP.rsplit("end", 1)[0]) is None
     assert tally.parse_dump("MCP_TALLY x seq=1 frame=1 total=0 nope=1\nend") is None
     assert tally.parse_dump(DUMP.replace("p 40e 102", "q 40e 102")) is None
@@ -187,17 +163,14 @@ def test_the_two_overflow_counts_are_read_from_their_own_fields() -> None:
 def test_the_lanes_a_bus_write_lands_are_decoded_by_mask_and_byte_order(
     event: tuple[int, int, int, int, str], landed: list[tuple[int, int]]
 ) -> None:
-    """The captured shapes: a word write lands both bytes, a byte write on the 16-bit
-    big-endian bus lands the HIGH lane at the even address, and the mask says which."""
+    """A byte write on the 16-bit big-endian bus lands the HIGH lane at the even address."""
     assert tally.lanes(*event) == landed
 
 
 def test_the_value_table_decodes_a_whole_write_in_the_watch_format_and_marks_partial(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A u16 watch at the low word sees the vblank's writes whole, so each row carries
-    `value`; the u32 watch the dump was taken for sees each word as PART of its range; and
-    a whole write the format cannot decode is `partial` too, never a crash."""
+    """A whole write decodes to `value`; a part of the range or an undecodable one is `partial`."""
     dump = tally.parse_dump(DUMP)
     assert dump is not None
     rows = tally._value_rows(dump, 0x2031FE, 2, "u16", 3)
@@ -218,9 +191,7 @@ def test_the_value_table_decodes_a_whole_write_in_the_watch_format_and_marks_par
 
 
 def test_a_value_is_decoded_in_the_byte_order_the_dump_names() -> None:
-    """The tap sat on one space, and its dump names that space's byte order: a whole write is
-    decoded in it, whatever cpu the session's first thread describes. The captured dump is a
-    68000's; the same dump named little-endian reads each landed pair the other way round."""
+    """A whole write is decoded in the byte order the dump names, not the first thread's cpu."""
     dump = tally.parse_dump(DUMP)
     assert dump is not None and dump["endianness"] == "big"
     assert tally._value_rows(dump, 0x2031FE, 2, "u16", 3)[1]["value"] == 1
@@ -246,7 +217,6 @@ def test_the_writer_table_places_each_pc_inside_the_nearest_symbol_and_is_capped
     assert tally._writer_rows(dump, 5)[0] == {"pc": "0x0000040e", "count": 490}, "below all"
 
 
-# ------------------------------------------------------------------------ the declaration
 
 
 def test_a_count_watch_is_a_mode_of_the_store_and_stale_like_a_change_watch() -> None:
@@ -257,13 +227,11 @@ def test_a_count_watch_is_a_mode_of_the_store_and_stale_like_a_change_watch() ->
     assert dec.is_stale(d, "fp-a") is False
     store = dec.DeclarationStore("k", path=None)
     store.add(d)
-    # THE REFUSAL NAMES THE TWO MODES THAT COLLIDED, not a fixed pair.
     with pytest.raises(dec.DeclarationError, match="not be both count AND change"):
         store.add(dec.Declaration("watch", "address", "0x2031fc", width=4, fmt="u32",
                                   watch_mode="change"))
 
 
-# ------------------------------------------------------------------------------ the tool
 
 
 def test_watch_add_count_sends_the_install_and_stores_pending_moving_nothing(
@@ -283,7 +251,7 @@ def test_watch_add_count_sends_the_install_and_stores_pending_moving_nothing(
     assert rec["addr"] == 0x2031FC and rec["width"] == 4 and rec["installed"] is None
     assert rec["path"] == tmp_path / "tally-2031fc_4.txt"
     assert out["summary"] == "watch_add frame_lo: count watch pending at 0x002031fc, 4 bytes"
-    # A re-declaration adopts, and sends the install again (idempotent in Lua by id).
+    # A re-declaration adopts and re-sends the install (idempotent in Lua by id).
     again = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert again["already_stored"] is True and again["call"] == "MAME_MCP_LUA_END#2"
 
@@ -291,9 +259,7 @@ def test_watch_add_count_sends_the_install_and_stores_pending_moving_nothing(
 def test_a_send_the_console_pipe_refuses_stores_no_declaration(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The install is SENT before the declaration is STORED: a pipe too deep refuses the
-    send, and a declaration stored for an install that never went would read
-    `not_installed` at every stop for a reason that is not the one."""
+    """The install is sent before the declaration is stored, so a refused send stores nothing."""
     _tallying(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "lua_seq", transport.PIPE_STEPS_MAX + 1)
     out = refused("ahead", s.watch_add(ref="frame_lo", mode="count", length=4))
@@ -305,11 +271,7 @@ def test_a_send_the_console_pipe_refuses_stores_no_declaration(
 def test_watch_add_count_arms_the_rom_copy_and_refuses_a_second_tally_and_a_pointer(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`map` is asked first, and an unmapped write side is a fact the reply carries:
-    a tap there still sees the cpu's writes, so the count arms and its note says where they go
-    and, on a ROM copy, where the live datum is. One range is one tally, so a second ref on it
-    is refused naming the first. A pointer is refused because the tap sits on one range for
-    the life of the tally."""
+    """An unmapped write side arms, noted; a second tally on a range or a pointer is refused."""
     _tallying(monkeypatch, tmp_path)
     out = s.watch_add(ref="copy_in_rom", mode="count", length=2)
     assert out["status"] == "ok" and out["write_maps_to"] == "unmapped", out
@@ -327,15 +289,12 @@ def test_watch_add_count_arms_the_rom_copy_and_refuses_a_second_tally_and_a_poin
     assert list(mstate.STATE.tallies) == [("copy_in_rom", ":maincpu"), ("frame_lo", ":maincpu")]
     out = refused("not by pointer", s.watch_add(ref="[frame_lo]+0x4", mode="count", length=2))
     assert out["code"] == "bad_argument"
-    # And a change watch on a range a tally holds is still one declaration per ref, the
-    # refusal naming the two modes.
     out = refused("not be both count AND change",
                   s.watch_add(ref="frame_lo", mode="change", length=4))
 
 
 def _on_bus(monkeypatch: pytest.MonkeyPatch, data_width: int) -> None:
-    """`start`'s inventory holding the double's cpu's program space `data_width` bits wide, in
-    the row shape `machine_map` gathers (`test_machine`'s capture)."""
+    """`start`'s inventory with the double's cpu's program space `data_width` bits wide."""
     monkeypatch.setattr(mstate.STATE, "machine_map", {**mstate.STATE.machine_map, "spaces": [
         {"cpu": ":maincpu", "space": "program", "data_width_bits": data_width, "endianness": "big",
          "entries": 13, "address_mask": "0x00ffffff"}]})
@@ -346,9 +305,7 @@ def _on_bus(monkeypatch: pytest.MonkeyPatch, data_width: int) -> None:
 def test_a_count_watch_that_splits_a_bus_word_is_refused_with_nothing_sent_or_stored(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, addr: int, length: int,
 ) -> None:
-    """A write lands in one bus word, so the rows of a word the range covers only in part are
-    fragments with no `value`. Refused before the console is asked anything, naming the counts
-    that do work."""
+    """A range covering a bus word only in part is refused before the console is asked anything."""
     ses = _tallying(monkeypatch, tmp_path)
     _on_bus(monkeypatch, 16)
     out = refused("split a 16-bit bus word",
@@ -382,8 +339,7 @@ def test_the_refusal_names_one_count_per_bus_word_the_range_touches(
 def test_the_refusal_names_the_cpu_when_it_is_not_the_first(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The counts it suggests go where the refused one would have: a watch on another cpu
-    than the first names it, as `watch_add(cpu=...)` needs."""
+    """The suggested counts go where the refused one would have, naming a non-first cpu."""
     monkeypatch.setattr(mstate.STATE, "first_cpu", ":maincpu")
     assert 'length=1, cpu=":subcpu")`' in tally.split_why(0x101, 2, 16, ":subcpu")
     assert "cpu=" not in tally.split_why(0x101, 2, 16, ":maincpu")
@@ -396,9 +352,7 @@ def test_the_refusal_names_the_cpu_when_it_is_not_the_first(
 def test_a_count_watch_inside_a_bus_word_or_of_whole_ones_is_installed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, addr: int, length: int, data_width: int,
 ) -> None:
-    """A range inside one bus word is written whole by one write; a range of whole words word
-    by word, each row one whole word of it (m68k-dual's u32 on its 16-bit bus). Neither is
-    refused, and an 8-bit bus refuses nothing."""
+    """A range inside one bus word, or of whole words, is installed; an 8-bit bus refuses none."""
     _tallying(monkeypatch, tmp_path)
     _on_bus(monkeypatch, data_width)
     out = s.watch_add(ref=f"{addr:#x}", mode="count", length=length)
@@ -410,8 +364,7 @@ def test_a_count_watch_inside_a_bus_word_or_of_whole_ones_is_installed(
 def test_a_count_watch_on_a_cpu_with_no_program_space_row_is_installed_and_says_unchecked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With no bus width to judge by, the range is taken and the reply says the check did not
-    run. A single byte is inside any bus word, so its note does not say so."""
+    """With no bus width to judge by the range is taken and the reply says the check did not run."""
     _tallying(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "machine_map", {})
     out = s.watch_add(ref="0x2031fd", mode="count", length=2)
@@ -424,9 +377,7 @@ def test_a_count_watch_on_a_cpu_with_no_program_space_row_is_installed_and_says_
 def test_rearm_refuses_a_stored_count_watch_that_splits_a_bus_word(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The re-arm at `start` sends a stored tally without passing through `watch_add`, so a
-    stored range that splits the bus word of the board it comes back on is judged there:
-    `unarmable` with the refusal's words, nothing sent for it, the rest re-armed."""
+    """The re-arm at `start` bypasses `watch_add`, so it judges the split itself: `unarmable`."""
     ses = _tallying(monkeypatch, tmp_path)
     _on_bus(monkeypatch, 16)
     store = arming.store()
@@ -466,9 +417,7 @@ def test_the_bus_width_is_the_program_space_row_of_the_cpu_asked(
 def test_a_pass_that_holds_the_change_watches_leaves_the_tally_counting(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The gap the card names: `disarm_watches` disarmed the change watches for a pass and a
-    held pass counted nothing. A tally is not a watchpoint, so the hold has nothing to
-    take from it: no removal is sent, the one install stands."""
+    """A tally is not a watchpoint, so holding the change watches sends no removal."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     s.watch_add(ref="0x203200", mode="change", length=2)
@@ -482,8 +431,7 @@ def test_a_pass_that_holds_the_change_watches_leaves_the_tally_counting(
 def test_a_count_watch_declared_again_keeps_what_the_survey_already_reported(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Nothing wrote between the two declarations, so the first stop after the second reports
-    no writes since the last one."""
+    """Nothing wrote between two declarations, so the next stop reports no writes since the last."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -495,7 +443,7 @@ def test_a_count_watch_declared_again_keeps_what_the_survey_already_reported(
     item = _survey(ses, 61)
     assert item["installed"] is True and item["pending"] is False and item["total"] == 102, item
     assert item["since_last_stop"] == 0 and "reset" not in item, item
-    # ANOTHER RANGE UNDER THE SAME REF is another tap with counts of its own: nothing carries.
+    # Another range under the same ref is another tap: nothing carries.
     tally.send_install(tmp_path, ("frame_lo", ":maincpu"), 0x2031FC, 2)
     rec = mstate.STATE.tallies[("frame_lo", ":maincpu")]
     assert (rec["tally_id"], rec["last_total"], rec["last_seq"]) == ("2031fc_2", 0, 0), rec
@@ -506,12 +454,10 @@ def test_the_survey_reads_the_dump_as_of_this_stop_and_says_when_it_is_behind(
 ) -> None:
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
-    # BEFORE THE MACHINE EXECUTED: no answer, no dump, and the survey says which.
     item = _survey(ses, 100)
     assert item["state"] == "no_dump_yet", item
     assert (item["installed"], item["pending"]) == (False, True), item
     assert "install has no answer" in str(item["why"])
-    # THE CONSOLE RAN IT, the periodic dumped at frame 61: read as of that stop.
     _answer(tmp_path, 1)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 61)
@@ -524,10 +470,9 @@ def test_the_survey_reads_the_dump_as_of_this_stop_and_says_when_it_is_behind(
     assert item["writers"] == [{"pc": "0x0000040e", "count": 102, "symbol": "IRQ_VBLANK+0xe"}]
     assert item["values"][0] == {"at": "0x002031fc", "raw_hex": "0000", "count": 51,  # type: ignore[index]
                                  "partial": True}
-    # THE SAME DUMP AT THE NEXT STOP: nothing since, and the survey moved on.
     again = _survey(ses, 61)
     assert again["since_last_stop"] == 0 and again["total"] == 102
-    # A STOP THE DUMPER HAS NOT REACHED within the bound is said, never read as current.
+    # A stop the dumper has not reached within the bound is never read as current.
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.05)
     behind = _survey(ses, 70)
     assert behind["superseded"] is True and behind["frame_as_of"] == 61 and "stale" not in behind
@@ -537,10 +482,7 @@ def test_the_survey_reads_the_dump_as_of_this_stop_and_says_when_it_is_behind(
 def test_a_dump_that_lands_during_the_wait_is_read_current(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The periodic hook runs on the way into the debugger's wait loop and the stub's stop
-    packet can reach this side first: the survey polls until the dump reaches the stop's
-    frame. The dump here arrives at the first poll's sleep, so a reader that looked once
-    and left would have reported the old frame as stale."""
+    """The survey polls until the dump reaches the stop's frame instead of calling it stale."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -562,10 +504,7 @@ def test_a_dump_that_lands_during_the_wait_is_read_current(
 def test_a_list_between_two_stops_looks_and_consumes_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`declaration_list(kind="watch")` is a look: it shows the whole tables and no
-    `since_last_stop`, and it
-    leaves the baseline where the last STOP put it, so the next stop still reports the
-    writes since the previous one."""
+    """`declaration_list(kind="watch")` shows the tables and leaves the stop baseline alone."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -610,22 +549,18 @@ def test_a_machine_with_no_screen_dumps_no_frame_and_the_survey_does_not_wait(
 def test_the_install_answer_is_matched_by_its_own_call_number_past_a_rerun(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console's reader dies and the console runs an EARLIER chunk again, printing its
-    sentinel a second time: a reader that took the first sentinel it saw would mark the
-    second install answered by the first's rerun, and a rerun of the first chunk landing
-    before the second's answer must leave the second pending."""
+    """A rerun of an earlier chunk prints its sentinel again; it must not answer a later install."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
     s.watch_add(ref="0x203200", mode="count", length=2)
-    # The rerun of chunk 1 lands AFTER chunk 2 was sent: its sentinel is not chunk 2's.
+    # The rerun of chunk 1 lands after chunk 2 was sent: not chunk 2's sentinel.
     _console_prints(tmp_path, INSTALLED.encode() + b"\nMAME_MCP_LUA_END#1\ttrue\tnil\n" + PROMPT)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     items = {i["ref"]: i for i in watches.evaluate_watches(ses, frame=61)}  # type: ignore[arg-type]
     assert items["frame_lo"]["installed"] is True
     assert (items["0x203200"]["installed"], items["0x203200"]["pending"]) == (False, True)
     assert items["0x203200"]["state"] == "no_dump_yet"
-    # Then chunk 2's own answer, and it is read.
     _answer(tmp_path, 2, output=INSTALLED.replace("2031fc_4", "203200_2"))
     items = {i["ref"]: i for i in watches.evaluate_watches(ses, frame=61)}  # type: ignore[arg-type]
     assert items["0x203200"]["installed"] is True and items["0x203200"]["cpu"] == ":maincpu"
@@ -634,9 +569,7 @@ def test_the_install_answer_is_matched_by_its_own_call_number_past_a_rerun(
 def test_an_install_the_console_refused_is_reported_in_its_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME's own refusal of a mis-aligned tap. The sentinel carries
-    `false` and the error, and the survey says `install_failed` with it, never `pending`
-    for ever and never a zero."""
+    """A failed sentinel is `install_failed` with the console's error, never `pending` or zero."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1, ok=False, output="",
@@ -651,16 +584,12 @@ def test_an_install_the_console_refused_is_reported_in_its_own_words(
 def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """On a cold session the first declaration's chunk can echo with no
-    `installed` line and no sentinel. A line its reader died holding is resent once, and a
-    second death is `install_lost` with `installed: false`, never a `pending` that reads as a
-    zero."""
+    """A line the reader died holding is resent once; a second death is `install_lost`."""
     ses = _tallying(monkeypatch, tmp_path)
     out = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert (out["installed"], out["pending"]) == (False, True)
     assert out["call"] == "MAME_MCP_LUA_END#1"
     first = _sent().splitlines()[0]
-    # The reader took the line (its echo) and died; no sentinel ever comes.
     _console_prints(tmp_path, first + b"\n" + transport.THREAD_ERROR + b" attempt to index\n")
     item = _survey(ses, 61)
     assert (item["installed"], item["pending"]) == (False, True), item
@@ -668,13 +597,12 @@ def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     assert "resent" not in item, "a tap's resend is `install_resent`"
     assert item["call"] == "MAME_MCP_LUA_END#2", "the resend is a new call"
     assert _sent().count(b"install_write_tap(") == 2, "the same install went out again"
-    # The resent line is answered like any other, and the tally is installed.
     _answer(tmp_path, 2)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 61)
     assert item["installed"] is True and item.get("install_resent",
                                                   0) == 1 and item["state"] == "tallied"
-    # THE SECOND DEATH: a fresh declaration whose resend dies too is lost, and says so.
+    # The second death: a resend that dies too is lost.
     s.declaration_clear("watch", ref="frame_lo")
     s.watch_add(ref="0x203200", mode="count", length=2)
     line = _sent().splitlines()[-1]
@@ -694,11 +622,7 @@ def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
 def test_a_session_that_only_declares_tallies_still_counts_the_reader_deaths(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE PATH THAT READS NO ANSWER. The session count of reader deaths is fed by whatever
-    reads the console, and the tally's readers are not among them: they find a death with
-    `eaten` and go no further. A session that declares a tally and never calls the console
-    again would then report three zeros -- "healthy" -- over a log with a dead reader in it,
-    while its own `lost` count said otherwise. The loss is what pulls the death in with it."""
+    """A lost install pulls the reader death into the session count, so it never reads healthy."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     assert mstate.STATE.console_thread_errors == 0, "nothing has died yet"
@@ -726,9 +650,7 @@ def test_a_tally_of_zero_is_a_measurement_beside_its_frame(
     assert item["writers"] == [] and item["frame_as_of"] == 5 and item["superseded"] is False
 
 
-# A dump whose tap body raised at every write since a planted fault (`fixtures/callbacks`): the
-# total counts the writes, the value table is empty, and the errors and the first one's words sit
-# beside them.
+# Tap body raised at every write since a planted fault (`fixtures/callbacks`).
 RAISED = (FIXTURES / "callbacks" / "tally-raised.txt").read_text()
 RAISED_FIRST = "mcp:3: planted fault"
 
@@ -743,9 +665,7 @@ def test_every_callback_the_count_watch_installs_runs_under_the_guard() -> None:
 def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A tap whose body raised at every write kept no value, and the census read as an address
-    nobody writes. The errors ride beside the census they qualify, on the survey and in the
-    list, and the list's summary names the watch that has them."""
+    """A tap that raised at every write reports its errors beside the census, in survey and list."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="0x70001e", mode="count", length=2)
     _answer(tmp_path, 1, output=INSTALLED.replace("2031fc_4 first=2031fc last=2031ff",
@@ -757,7 +677,7 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     listed = s.declaration_list("watch")
     assert listed["watches"][0]["callback_errors"]["count"] == 678
     assert listed["summary"].endswith(", 1 with callback errors)"), listed["summary"]
-    # A CLEAN TAP SAYS SO TOO: none raised, said as a count of zero and no message
+    # A clean tap says a count of zero and no message.
     clean = RAISED.replace("errors=678", "errors=0").replace(f"e {RAISED_FIRST}\n", "")
     assert clean.count("errors=0") == 1 and "\ne " not in clean
     (tmp_path / "tally-70001e_2.txt").write_text(clean)
@@ -768,9 +688,7 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
 
 
 def test_the_errors_and_the_first_message_are_read_from_their_own_lines() -> None:
-    """A dump is whole only with its `end`; the message line sits right before it, and a dump
-    composed before the guard (the captured fixture) carries no count, which reads as none known,
-    never as zero."""
+    """A dump from before the guard carries no error count, which reads as unknown, never zero."""
     dump = tally.parse_dump(RAISED)
     assert dump is not None and (dump["errors"], dump["first_error"]) == (678, RAISED_FIRST)
     assert dump["values"] == [] and len(dump["pcs"]) == 4
@@ -810,7 +728,6 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
     assert not (tmp_path / "tally-2031fc_4.txt.tmp").exists()
     assert b'MCP_TALLY removed tally_id=' in _sent()
     assert watches.evaluate_watches(ses, frame=61) == []  # type: ignore[arg-type]
-    # A clear of everything with no tally names none.
     s.watch_add(ref="0x203200", mode="show", length=2)
     assert "tallies_removed" not in s.declaration_clear("watch", all=True)
 
@@ -833,10 +750,7 @@ def test_the_install_and_the_removal_each_settle_the_reader_after_their_line(
 def test_rearm_sends_every_stored_tally_again_and_accounts_for_the_rest(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """What the store held comes back at `start`: a count declaration's install is sent
-    against the new session's scratch, a ROM copy's too (a tap there sees the cpu's writes), a
-    name this build lacks is `unresolved`, kept, and a send the pipe refuses is `unarmable`
-    with the refusal's words while the rest of the pass goes on."""
+    """`start` re-sends stored tallies; unknown names are `unresolved`, refused ones `unarmable`."""
     ses = _tallying(monkeypatch, tmp_path)
     store = arming.store()
     for ref in ("frame_lo", "copy_in_rom", "ghost"):
@@ -851,7 +765,7 @@ def test_rearm_sends_every_stored_tally_again_and_accounts_for_the_rest(
     assert refs(account["unresolved"]) == ["ghost"] and account["unarmable"] == []
     assert list(mstate.STATE.tallies) == [("frame_lo", ":maincpu"), ("copy_in_rom", ":maincpu")]
     assert _sent().count(b"install_write_tap") == 2
-    # THE PIPE TOO DEEP: refused by name, and the pass still accounts for every other one.
+    # A pipe too deep refuses by name; the pass still accounts for the rest.
     mstate.STATE.tallies.clear()
     monkeypatch.setattr(mstate.STATE, "lua_seq", transport.PIPE_STEPS_MAX + 1)
     account = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
@@ -864,8 +778,7 @@ def test_rearm_sends_every_stored_tally_again_and_accounts_for_the_rest(
 def test_a_count_declaration_with_no_record_this_session_says_so_at_a_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A declaration the store holds and no tally was sent for (the rearm could not, or the
-    record went) is a STATE at the stop, never an empty table."""
+    """A stored declaration with no tally sent is a state at the stop, never an empty table."""
     ses = _tallying(monkeypatch, tmp_path)
     arming.store().add(dec.Declaration("watch", "symbol", "frame_lo", width=4, fmt="u32",
                                        watch_mode="count"))
@@ -885,8 +798,7 @@ def test_the_check_of_a_count_watch_needs_no_machine() -> None:
 def _cleared_with_the_console_silent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> tuple[_WatchSession, bytes]:
-    """A tally installed and then cleared, with the console having said NOTHING yet about
-    the removal. Hands back the session and the removal's own line."""
+    """A tally installed and cleared, the console silent on the removal; returns its line."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -898,8 +810,7 @@ def _cleared_with_the_console_silent(
 
 
 def _removals(ses: _WatchSession) -> list[dict[str, object]]:
-    """What the session block says is stuck once `declaration_list(kind="watch")` has read the
-    removals."""
+    """What the session block says is stuck once `declaration_list` has read the removals."""
     watches.list_watches(ses)  # type: ignore[arg-type]
     return mstate.tallies_not_removed()
 
@@ -907,10 +818,7 @@ def _removals(ses: _WatchSession) -> list[dict[str, object]]:
 def test_a_removal_the_console_ran_leaves_no_row_and_no_record(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE COMMON CASE, and it is here because nothing exercised it. The sweep's only exit
-    for a removal that simply WORKED is the sentinel, and a removal that failed to leave
-    the list would then be re-read out of a console log that grows for the rest of the
-    session, on every later call, with the whole suite still green."""
+    """The sentinel is the sweep's only exit for a removal that worked."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     assert mstate.STATE.tally_removals, "the removal is pending and has to be recorded"
     _answer(tmp_path, 2, output="MCP_TALLY removed tally_id=2031fc_4")
@@ -922,11 +830,7 @@ def test_a_removal_the_console_ran_leaves_no_row_and_no_record(
 def test_status_lists_a_removal_while_it_waits_and_drops_it_once_the_console_ran_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE SAME TREATMENT THE THROTTLE GETS, because it is the same question:
-    `declaration_clear(kind="watch")`
-    answers `removal: pending`, and a removal waiting is a row in `status` that leaves once
-    the console ran it. A latched failure is not waiting any more, so it leaves this list and
-    stands in every reply's session block (`tallies_not_removed`), where its remedy is written."""
+    """A waiting removal is a `status` row that leaves once run; a latched failure leaves too."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     assert s.status()["tallies_pending_removal"] == [
         {"tally_id": "2031fc_4", "call": "MAME_MCP_LUA_END#2"}]
@@ -937,10 +841,7 @@ def test_status_lists_a_removal_while_it_waits_and_drops_it_once_the_console_ran
 def test_a_removal_the_console_refused_is_not_read_as_one_that_worked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE SENTINEL CARRIES A WORD AND IT DECIDES. `false` is a removal the console
-    EVALUATED and that RAISED: the tap is still there, exactly as if the line had been
-    eaten. A sweep that only asked whether A sentinel arrived would read this as success
-    and drop the record, which is the one state the feature exists to catch."""
+    """A `false` sentinel means the tap is still there, so the record must not be dropped."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _answer(tmp_path, 2, ok=False, output="",
             error="mcp:5: attempt to index a nil value (field 'tap')")
@@ -953,14 +854,8 @@ def test_a_removal_the_console_refused_is_not_read_as_one_that_worked(
 def test_a_removal_the_reader_died_holding_is_reported_and_never_resent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE OTHER HALF OF THE INSTALL'S BARGAIN, and it is deliberately only HALF.
-
-    The install resends a line its reader died holding. A removal must not: its record is
-    dropped when the removal is sent, so that a later tally on the same range cannot read
-    this one's numbers, and `tally_id` is the RANGE -- a blind resend would carry away
-    whatever tap holds that range NOW. So this looks, says what it found, and keeps saying
-    it, because a tap the server can no longer reach is not a state to mention once.
-    """
+    """The install resends; a removal must not: `tally_id` is the RANGE, so a blind resend
+    could remove whatever tap holds it now. The row latches and keeps saying so."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     sent_before = _sent().count(b"it.tap:remove()")
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" attempt to index\n")
@@ -968,8 +863,7 @@ def test_a_removal_the_reader_died_holding_is_reported_and_never_resent(
     assert [r["state"] for r in rows] == ["lost"], rows
     assert "never evaluated" in str(rows[0]["why"])
     assert _sent().count(b"it.tap:remove()") == sent_before, "a removal is NEVER resent"
-    # AND IT KEEPS SAYING SO. The install's `install_lost` is re-read at every survey; this
-    # has no declaration left to hang from, so the row itself has to latch.
+    # It keeps saying so: this has no declaration left to hang from, so the row latches.
     assert [r["state"] for r in _removals(ses)] == ["lost"], "lost stays lost"
     assert _sent().count(b"it.tap:remove()") == sent_before, "and still nothing is resent"
 
@@ -977,10 +871,7 @@ def test_a_removal_the_reader_died_holding_is_reported_and_never_resent(
 def test_a_removal_handed_back_unrun_with_no_death_is_lost_and_never_resent(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Its echo, then the next reader's prompt, and no sentinel: the console is done with the
-    line and never ran it (`transport.passed_over`, the install's rule). A removal judged by a death
-    alone would stay pending for good, and a tally declared again over it would start from zero
-    while the old tap goes on counting in the guest."""
+    """Echo then prompt, no sentinel (`transport.passed_over`): a lost removal, never resent."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     sent_before = _sent().count(b"it.tap:remove()")
     _console_prints(tmp_path, line + b"\n" + PROMPT)
@@ -994,7 +885,7 @@ def test_a_removal_handed_back_unrun_with_no_death_is_lost_and_never_resent(
 def test_a_removal_echoed_with_nothing_behind_it_still_waits(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control: an echo alone is a reader still holding the line, which may yet run it."""
+    """The control: an echo alone is a reader still holding the line."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _console_prints(tmp_path, line + b"\n")
     assert _removals(ses) == []
@@ -1005,9 +896,7 @@ def test_a_removal_echoed_with_nothing_behind_it_still_waits(
 def test_a_pending_install_reads_no_dump_another_tap_left_on_its_range(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`tally_id` is the range, so the file at its path can be a removed tap's: the dumper
-    writes it at every stop while that tap is still in the registry. Until this install has
-    answered, nothing on disk is this tap's."""
+    """`tally_id` is the range, so until this install answers nothing on disk is this tap's."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
@@ -1029,9 +918,7 @@ def test_an_answered_install_reads_its_dump(
 
 
 def test_an_install_over_no_tap_removes_the_dump_a_removed_one_left(tmp_path: Path) -> None:
-    """With no tap of the range in the registry, any dump at its path is a removed tap's, and
-    the install deletes it before the tap counts, so the first dump read after it is its own.
-    With one there, the install carries its counts and the file holds the same numbers."""
+    """With no tap of the range in the registry the install deletes any dump left at its path."""
     path = tmp_path / "tally-10_2.txt"
     script = tally.install_script("10_2", 0x10, 2, path)
     removal = 'if old == nil then os.remove(path) os.remove(path .. ".tmp") end'
@@ -1043,15 +930,10 @@ def test_an_install_over_no_tap_removes_the_dump_a_removed_one_left(tmp_path: Pa
 def test_a_resend_would_carry_away_a_tally_that_is_alive_again(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """WHY THE SWEEP ONLY LOOKS, as a case rather than as a paragraph. `tally_id` is the
-    range (`id_for`), and `send_remove` drops the record before the removal is answered, so
-    the one-tally-per-range guard cannot see the range at all. Declare it again and a
-    resend aimed at the OLD removal removes the NEW tap, leaving a census that counts
-    nothing and reads as a dump the hook has not written yet."""
+    """Why the sweep only looks: a resend aimed at the old removal would remove the NEW tap."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" died\n")
-    # The SAME range is declared again, which is allowed once the clear removed the
-    # declaration, and installs cleanly over the tap that never went.
+    # Allowed once the clear removed the declaration; installs over the tap that never went.
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 3)
     sent_before = _sent().count(b"it.tap:remove()")
@@ -1064,8 +946,7 @@ _LATER = DUMP.replace("seq=62 frame=61 total=102", "seq=63 frame=70 total=120")
 
 
 def _declared_again_over(tmp_path: Path, ses: _WatchSession) -> dict[str, object]:
-    """The same range declared again after the clear, its install answered, and the first
-    survey of the dump the tap in the guest goes on writing."""
+    """The range declared again after the clear, its install answered, then the first survey."""
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 3)
     assert "old[k]" in _sent().splitlines()[-1].decode(), "the install carries the old counts"
@@ -1077,10 +958,7 @@ def _declared_again_over(tmp_path: Path, ses: _WatchSession) -> dict[str, object
 def test_a_tally_declared_again_over_a_tap_that_never_went_reports_only_the_new_writes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, end: str,
 ) -> None:
-    """THE TAP IS STILL IN THE GUEST, and the install that replaces it carries its counts, so
-    the dump goes on from the old total. The last report went with the record the clear
-    dropped: from zero, the first stop after the re-declaration reports the old tap's whole
-    census as writes since the last stop. The latched row keeps it."""
+    """The install carries the old tap's counts, so the latched row's last report carries over."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     if end == "lost":
         _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" died\n")
@@ -1095,8 +973,7 @@ def test_a_tally_declared_again_over_a_tap_that_never_went_reports_only_the_new_
 def test_a_lost_removal_nobody_looked_at_is_looked_at_by_the_install(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The row latches when somebody reads the console's answer, and a caller who clears and
-    declares again back to back never listed anything in between: the install looks first."""
+    """A clear then a declare back to back never listed anything, so the install looks first."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" died\n")
     item = _declared_again_over(tmp_path, ses)
@@ -1106,8 +983,7 @@ def test_a_lost_removal_nobody_looked_at_is_looked_at_by_the_install(
 def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never_does(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Two removals of one range lost in a row: the tap went on counting between them, so the
-    report to carry is the SECOND row's. A lost removal of ANOTHER range says nothing here."""
+    """The newest latched row of THIS range is the report to carry; another range's says nothing."""
     ses, line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _console_prints(tmp_path, line + b"\n" + transport.THREAD_ERROR + b" died\n")
     assert _declared_again_over(tmp_path, ses)["since_last_stop"] == 18
@@ -1134,8 +1010,7 @@ def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never
 def test_a_tally_declared_again_after_a_removal_that_ran_counts_from_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE CONTROL: the console EVALUATED the removal, so the tap went and its counts with it.
-    The new tap starts at zero and its first total is all new writes, reported whole."""
+    """The control: the removal ran, so the new tap starts at zero."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _answer(tmp_path, 2, output="MCP_TALLY removed tally_id=2031fc_4")
     assert _removals(ses) == []
@@ -1146,16 +1021,13 @@ def test_a_tally_declared_again_after_a_removal_that_ran_counts_from_nothing(
 def test_a_removal_still_in_the_pipe_hands_nothing_to_the_tally_declared_after_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Only a LATCHED row says the tap stayed. One still pending may yet be evaluated, and
-    then the counts are gone: carrying the old report over would hide the new tap's writes
-    behind a total it never reached."""
+    """Only a LATCHED row says the tap stayed; a pending one may yet run."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     item = _declared_again_over(tmp_path, ses)
     assert item["since_last_stop"] == 120, item
 
 
-# AN INSTALL IS AGED ONLY ON EVIDENCE THE CONSOLE IS DONE WITH ITS LINE (`_read_install_answer`
-# says why). The watch double is parked at frame 100.
+# An install ages only on evidence the console is done with its line; the double sits at frame 100.
 
 
 def _taken(tmp_path: Path, seq: int, after: bytes = b"") -> None:
@@ -1166,9 +1038,7 @@ def _taken(tmp_path: Path, seq: int, after: bytes = b"") -> None:
 def test_an_install_whose_reader_lags_is_neither_resent_nor_lost_whatever_the_frames(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A reader the hook finds busy for frames on end leaves the line echoed and still to run:
-    no prompt has come behind it, so nothing says the console moved past it, and a resend
-    would install the tap twice and then call it lost while it counted."""
+    """Echoed with no prompt behind it, the console has not moved on; a resend doubles the tap."""
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.0)          # no dump is ever written here
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
@@ -1179,7 +1049,6 @@ def test_an_install_whose_reader_lags_is_neither_resent_nor_lost_whatever_the_fr
         assert item.get("install_resent", 0) == 0, (frame, item)
     assert _sent().count(b"install_write_tap(") == 1, "nothing was resent"
     assert mstate.STATE.console_lines_lost == 0, "a line still waiting for the hook is not lost"
-    # The hook gets to it: the answer is read, and the tap was never doubled.
     _console_prints(tmp_path, INSTALLED.encode() + b"\nMAME_MCP_LUA_END#1\ttrue\tnil\n" + PROMPT)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     item = _survey(ses, 111)
@@ -1189,7 +1058,7 @@ def test_an_install_whose_reader_lags_is_neither_resent_nor_lost_whatever_the_fr
 def test_an_install_the_console_has_not_taken_waits_whatever_the_frames(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """No echo: the line is still in the pipe, and a line never taken is never counted lost."""
+    """No echo: the line is still in the pipe and is never counted lost."""
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.0)
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
@@ -1205,9 +1074,7 @@ def test_an_install_the_console_has_not_taken_waits_whatever_the_frames(
 def test_an_install_the_console_passed_over_is_resent_with_no_frame_run_then_said_lost(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A line handed back unrun leaves its echo and then the next reader's prompt, with no
-    sentinel; that is the evidence, and it needs no frame, so a machine that only steps gets
-    the resend too."""
+    """Echo then prompt with no sentinel is the evidence; it needs no frame."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _taken(tmp_path, 1, PROMPT)
@@ -1219,7 +1086,6 @@ def test_an_install_the_console_passed_over_is_resent_with_no_frame_run_then_sai
     assert mstate.STATE.console_lines_lost == 1, "a line taken and never evaluated is lost"
     assert list(mstate.STATE.lua_pending) == [2] and mstate.STATE.lua_lost == 1, \
         "the original is settled lost and the resend is the one still ahead"
-    # The resend passed over as well: lost, and it stays lost.
     _taken(tmp_path, 2, PROMPT)
     item = _survey(ses, 100)
     assert item["state"] == "install_lost" and item["installed"] is False, item
@@ -1233,8 +1099,7 @@ def test_an_install_the_console_passed_over_is_resent_with_no_frame_run_then_sai
 def test_the_prompt_before_an_echo_is_the_reader_that_took_the_line_not_one_past_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control for the evidence above: the console prints a prompt BEFORE every echo (the
-    reader taking the line), and that one says nothing about the line it then took."""
+    """The control: the prompt before an echo is the reader taking the line."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _console_prints(tmp_path, PROMPT)
@@ -1247,9 +1112,7 @@ def test_the_prompt_before_an_echo_is_the_reader_that_took_the_line_not_one_past
 def test_installs_sent_back_to_back_wait_their_turn_whatever_the_frames(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Four installs sent while stopped (a `start`'s re-arm sends every tap at once); the console
-    answered three and took the fourth. The hook reads one line per run, and a run can pass with
-    the reader still busy, so no number of frames says the fourth never ran."""
+    """The hook reads one line per run, so no number of frames says the fourth install never ran."""
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.0)          # no dump is ever written here
     ses = _tallying(monkeypatch, tmp_path)
     adds = [s.watch_add(ref=ref, mode="count", length=4)
@@ -1284,9 +1147,7 @@ def test_a_list_resends_an_install_the_console_passed_over(
 def test_an_install_passed_over_is_out_of_the_pipe_before_any_survey_reads_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console's own accounting reads the same evidence, so a line the console is done with
-    is neither `console_pending` nor stepped for by the next call, nor drained at `close`,
-    while no survey has looked at its tap yet."""
+    """The console's own accounting settles a passed-over line before any survey looks."""
     _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _taken(tmp_path, 1, PROMPT)
@@ -1297,8 +1158,7 @@ def test_an_install_passed_over_is_out_of_the_pipe_before_any_survey_reads_it(
 def test_a_callers_own_script_followed_by_a_prompt_is_not_settled_by_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control: a script of the caller's may print the prompt's bytes itself and still be
-    running, so only the server's own chunks are settled by the bare prompt."""
+    """The control: only the server's own chunks are settled by the bare prompt."""
     _tallying(monkeypatch, tmp_path)
     line, _seq = transport.send("print('x')")
     _console_prints(tmp_path, line.encode() + b"\n" + PROMPT)
@@ -1323,11 +1183,10 @@ def test_the_late_original_after_a_resend_is_passed_over_and_the_resend_is_read(
     assert item["installed"] is True and item.get("install_resent", 0) == 1, item
 
 
-# --------------------------------------------- the two readers of an answer, held at their edges
 
 
 def _logged(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, raw: bytes) -> Path:
-    """The scratch of a blank session whose console log holds `raw` and nothing else."""
+    """The scratch of a blank session whose console log holds `raw` only."""
     blank_session(monkeypatch)
     monkeypatch.setattr(mstate.STATE, "scratch", tmp_path)
     monkeypatch.setattr(mstate.STATE, "proc", SimpleNamespace(stdin=io.BytesIO()))
@@ -1336,8 +1195,7 @@ def _logged(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, raw: bytes) -> Path
 
 
 def _record(seq: int, **fields: object) -> dict[str, object]:
-    """A tally's record as `send_install` leaves it, its script composed for the cpu `bound`
-    names (none: the visible one), which is what a resend sends again."""
+    """A tally's record as `send_install` leaves it, its script composed for cpu `bound`."""
     bound = fields.get("bound")
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/scratch/t.txt"),
                                   bound if isinstance(bound, str) else None)
@@ -1363,9 +1221,7 @@ def test_the_stopped_frame_is_the_recorded_stops_and_none_while_running(
 
 def test_the_last_stops_frame_is_read_once_and_only_a_whole_number_is_one(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    """The one reader of the last stop's frame: an integer is the frame, anything else (no stop
-    yet, a stop that read none, a value that is not a frame) is None, running or not; and the
-    stopped frame is None with no session at all."""
+    """Only an integer is the last stop's frame; the stopped frame is None with no session."""
     for last, frame in (({"frame": 42}, 42), ({}, None), ({"frame": "42"}, None),
                         ({"frame": None}, None)):
         monkeypatch.setattr(mstate.STATE, "last_stop", last)
@@ -1390,8 +1246,7 @@ def test_an_install_already_answered_or_already_lost_is_not_read_again(
 def test_an_install_answer_is_read_whatever_bytes_the_console_printed_around_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `true` with no `installed` line before it is installed on a cpu nobody named; and
-    bytes that are not UTF-8, in the output or in the error, are replaced and never raised on."""
+    """A `true` with no `installed` line is a cpu nobody named; non-UTF-8 bytes are replaced."""
     scratch = _logged(monkeypatch, tmp_path, b"noise \xff\nMAME_MCP_LUA_END#5\ttrue\tnil\n"
                                              b"MAME_MCP_LUA_END#6\tfalse\tmcp:1: bad \xfe\n")
     rec = _record(5)
@@ -1418,8 +1273,7 @@ def test_the_install_sent_again_is_the_same_install_writing_to_the_same_dump(
 
 
 class _EchoingPipe(io.BytesIO):
-    """A stdin whose console takes every line the instant it is written and hands it back
-    empty: its echo, then the next reader's prompt, both on the log before `send` returns."""
+    """A stdin whose console echoes each line and prints a prompt before `send` returns."""
 
     def __init__(self, log: Path) -> None:
         super().__init__()
@@ -1434,8 +1288,7 @@ class _EchoingPipe(io.BytesIO):
 def test_the_resend_is_read_from_before_its_own_line_reached_the_log(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The mark is taken BEFORE the resend: `send` waits for the reader to settle, and an echo
-    the console printed in that wait sits behind a mark taken after it, unseen for good."""
+    """The mark is taken before the resend, or an echo printed during `send`'s wait is unseen."""
     scratch = _logged(monkeypatch, tmp_path, b"the install line\n" + PROMPT)
     monkeypatch.setattr(mstate.STATE, "proc", SimpleNamespace(stdin=_EchoingPipe(
         tmp_path / "stdout.log")))
@@ -1465,9 +1318,7 @@ def test_a_removal_answer_is_found_past_another_calls_sentinel_and_read_in_any_b
 def test_an_install_sent_again_keeps_the_cpu_it_was_bound_to(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A resend sends the chunk the install composed, whose cpu is the one the declaration
-    named: taken from the visible cpu at evaluation instead, the tap would land on whichever a
-    `focus` since made visible."""
+    """A resend keeps the declared cpu, not whichever a later `focus` made visible."""
     scratch = _logged(monkeypatch, tmp_path, b"the install line\n" + PROMPT)
     monkeypatch.setattr(mstate.STATE, "lua_seq", 5)
     rec = _record(5, bound=":subcpu")
@@ -1480,10 +1331,7 @@ def test_an_install_sent_again_keeps_the_cpu_it_was_bound_to(
 def test_a_tap_that_counted_across_a_reset_says_so_and_the_reset_names_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A soft reset or a `stateload` replaces the machine and leaves the tap's Lua counters as
-    they were, so a total that spans one mixes two runs of the same code. The tap keeps
-    counting, which is what a caller asked of it, and says what it counted across: the reset's
-    own reply names every tap that did, and each survey after it carries `across`."""
+    """A reset or `stateload` keeps the Lua counters; the reply names taps, surveys add `across`."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -1501,9 +1349,7 @@ def test_a_tap_that_counted_across_a_reset_says_so_and_the_reset_names_it(
 def test_a_range_declared_again_over_its_live_tap_reads_that_taps_dump_while_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Declared again with no removal in between, the old tap is still installed and the new
-    install carries its counts: the file at the range's path is the live tap's own, so the
-    listing before the new install answers reads it, rather than `no_dump_yet`."""
+    """With no removal between, the file is the live tap's own, so it is read, not `no_dump_yet`."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -1522,7 +1368,7 @@ def test_a_range_declared_again_over_its_live_tap_reads_that_taps_dump_while_pen
 def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control: a removal in between makes the file a removed tap's, which is never read."""
+    """The control: a removal in between makes the file a removed tap's."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -1535,8 +1381,7 @@ def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pend
 
 
 def _dump_failed_line(tally_id: str) -> str:
-    """The guard's `error.log` line for a dumper that raised, as captured live
-    (`fixtures/callbacks/dump-failed.errorlog.txt`, its PROVENANCE), under `tally_id`."""
+    """The captured `error.log` line of a raised dumper (`fixtures/callbacks`), under `tally_id`."""
     import mame_callbacks as callbacks
     line = (FIXTURES / "callbacks" / "dump-failed.errorlog.txt").read_text()
     assert f"{callbacks.DUMP_FAILED} 70001e_2 " in line, "the capture is the guard's own line"
@@ -1546,9 +1391,7 @@ def _dump_failed_line(tally_id: str) -> str:
 def test_a_dump_older_than_the_stop_names_the_dumper_s_error_when_it_raised(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The guard logs a dumper that raised under its tap's id: the dump on disk is then the last
-    one it finished, and `why` says the error, not a timing. The control is the same old dump
-    with no such line, which names the timing."""
+    """A raised dumper leaves the last finished dump, and `why` names the error, not a timing."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -1566,8 +1409,7 @@ def test_a_dump_older_than_the_stop_names_the_dumper_s_error_when_it_raised(
 def test_a_dumper_error_followed_by_a_newer_dump_is_not_why_a_later_one_is_old(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The dumper raised once, then wrote again: a later stop the dumper has not reached is a
-    timing, not that old error."""
+    """After a newer dump a later old reading is a timing, not that old error."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
@@ -1585,9 +1427,7 @@ def test_a_dumper_error_followed_by_a_newer_dump_is_not_why_a_later_one_is_old(
 def test_a_range_declared_again_before_its_first_install_answered_reads_no_dump(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The predecessor was never installed, so the file at the range's path is not its: nothing
-    is read until an install answers. Declared a third time over a live tap and a pending one,
-    the live tap's dump is read again."""
+    """A never-installed predecessor owns no file; a live tap beside a pending one is read."""
     ses = _tallying(monkeypatch, tmp_path)
     (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
     s.watch_add(ref="frame_lo", mode="count", length=4)
@@ -1604,9 +1444,7 @@ def test_a_range_declared_again_before_its_first_install_answered_reads_no_dump(
 
 def test_the_install_note_and_throttle_say_when_the_console_reads_in_one_spelling(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A client cannot follow a link from a reply or a description, so the texts it reads keep the
-    shortest true form of when the console reads a line, and keep it ONE: the install `note`,
-    `throttle`'s `applies` and `throttle`'s description all carry `transport.CONSOLE_READS`."""
+    """The install note, `throttle`'s `applies` and description share `transport.CONSOLE_READS`."""
     import asyncio
 
     import mame_transport as transport
@@ -1621,8 +1459,7 @@ def test_the_install_note_and_throttle_say_when_the_console_reads_in_one_spellin
 def test_a_replacement_before_any_stop_says_why_it_has_no_frame(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A reset or a load before any stop read a frame leaves the tap's `frame_from` unread, said
-    in its place."""
+    """A reset before any stop read a frame leaves `frame_from` unread, said in its place."""
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     monkeypatch.setattr(mstate.STATE, "tallies", {("0x20", ":maincpu"): {}})
     mtap.mark_across("softreset")
@@ -1633,9 +1470,7 @@ def test_a_replacement_before_any_stop_says_why_it_has_no_frame(
 def test_a_removal_the_console_refused_is_latched_by_the_next_stop_and_rides_every_reply(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE ALARM RIDES EVERY REPLY, so the stop that follows the answer is what latches it:
-    no `declaration_list(kind="watch")` asked, and the row stands in the session block of a reply
-    that is not one."""
+    """The stop after the answer latches the refusal into every reply's session block."""
     ses, _line = _cleared_with_the_console_silent(monkeypatch, tmp_path)
     _answer(tmp_path, 2, ok=False, output="",
             error="mcp:5: attempt to index a nil value (field 'tap')")

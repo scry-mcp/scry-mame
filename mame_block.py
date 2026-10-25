@@ -1,22 +1,14 @@
 """`read_block`: the bytes of a memory SHARE or REGION, by MAME's tag or by an address.
 
-WHY IT EXISTS. `read_memory` reads the cpu's program space, which is what the running board
-sees, and a write-only block is INVISIBLE there: a range mapped `.w(handler).share("x")` has
-no read side, so the space answers zero for every byte and nothing says the values live
-elsewhere (on a 68000 board: zeros off the whole of the blitter's register block,
-while the share holds the words). A ROM outside the cpu's space (`gfx1` on the same board)
-is not in the space at all. MAME keeps both kinds as blocks under
-`manager.machine.memory`, `shares` and `regions`, keyed by their full tag, and reads them
-through its Lua console, which is the channel this module composes a script on.
+`read_memory` reads the cpu's program space, where a write-only block (`.w(handler).share("x")`)
+is invisible: it answers zero for every byte and nothing says the values live elsewhere. A ROM
+outside the cpu's space (`gfx1`) is not there at all. Both are blocks under
+`manager.machine.memory`, read through the Lua console.
 
-WHAT THE CONSOLE DOES, and shapes the script. `shares` is keyed by the FULL tag (`:blitram`; the
-bare `blitram` is nil), `regions` the same (`:maincpu`); an address map entry names its
-share BARE (`blitram`) and its region bare or full as the driver declared it, and a caller's
-`tag` comes in either spelling, so a lookup tries both. A
-read past a block's `size` raises nothing and answers zero, which is why the bound is judged
-here and never left to MAME. The address map the `ref` form walks is the program space of the
-cpu the call names, else the debugger's visible cpu's: the same cpu the console's `map` answers
-for.
+`shares` and `regions` are keyed by the FULL tag (`:blitram`; bare `blitram` is nil), while a map
+entry names its share bare and a caller's `tag` comes in either spelling, so a lookup tries both.
+A read past a block's `size` answers zero without raising, so the bound is judged here. The
+`ref` form walks the program space of the cpu the call names, else the visible one.
 """
 
 from __future__ import annotations
@@ -39,9 +31,8 @@ import mame_state as st
 import mame_transport as transport
 from mame_state import STATE
 
-# ONE line is parsed, and each shape the script can print is named by its own prefix so a
-# refusal is read in the script's words and never as a missing hex field. `%%` is a literal
-# per cent for Lua's `string.format`; `%(...)s` is this module's.
+# Each printed shape has its own prefix, so a refusal is not misread as a missing hex field.
+# `%%` is a literal per cent for Lua's `string.format`.
 BLOCK_LUA = """local mem = manager.machine.memory
 local function block(name)
   for _, cand in ipairs({name, ":" .. name}) do
@@ -110,16 +101,14 @@ _NOBLOCK = re.compile(r"MAME_MCP_BLOCK_NOBLOCK start=([0-9a-f]+) end=([0-9a-f]+)
 
 
 def no_block(name: str, have: dict[str, Any]) -> str:
-    """The one sentence for a share or region the machine does not have, with the ones it does
-    and the tool that lists them."""
+    """The refusal sentence for a share or region the machine does not have."""
     return (f"no share or region named {name!r} in this machine; it has "
             f"{sorted(have) or 'none'}: `machine_map` lists each one")
 
 
 def check_read_block(tag: str = "", ref: str = "", offset: int = 0, length: int = 16,
                      seconds: float = mlua.EVAL_WAIT_S, cpu: str = "", **_: Any) -> None:
-    """`read_block`'s machine-independent half: which of the two ways of naming a block was
-    used, an offset that is one, a length the reply can hold, and the bound."""
+    """`read_block`'s machine-independent argument checks."""
     if bool(tag) == inputs.given(ref):
         raise st.Invalid("bad_argument",
             "one block per call: `tag` (a share or region as MAME names it, `blitram` or "
@@ -139,10 +128,7 @@ def check_read_block(tag: str = "", ref: str = "", offset: int = 0, length: int 
 
 
 def check_tag(tag: str, cpu: str = "") -> None:
-    """A MAME tag has no whitespace, and a script prints the tag on the line the parser reads, so
-    one with a space would come back as the wrong refusal (an instrument's, not the caller's):
-    judged before the console is touched, for every tool that names a block or a device. A
-    `cpu` beside a block named by its tag would choose nothing, and is refused."""
+    """Refuse a tag with whitespace (it would corrupt the parsed line) or a `cpu` beside it."""
     if tag:
         inputs.name_word("tag", tag, "a share, region or device as MAME names it")
         if inputs.cpu_given(cpu):
@@ -155,24 +141,22 @@ def check_offset(offset: int) -> None:
 
 
 def space_of(ses: gs.Session, cpu: str) -> str:
-    """The Lua that names the device whose program space a `ref` is in: `cpu`'s, BOUND WHEN THE
-    SCRIPT IS COMPOSED, else the debugger's visible cpu when the script runs."""
+    """The Lua naming the cpu whose program space a `ref` is in: `cpu` bound at composition,
+    else the visible cpu when the script runs."""
     on = cpus.chosen(ses, cpu)
     return (f"manager.machine.devices[{transport.lua_string(on)}]" if inputs.cpu_given(cpu) and on
             else "manager.machine.debugger.visible_cpu")
 
 
 def _tags(joined: str) -> dict[str, str]:
-    """The machine's blocks as the script listed them, `tag=kind` comma-joined, as a map."""
+    """The script's comma-joined `tag=kind` list as a map."""
     return dict(item.split("=", 1) for item in joined.split(",") if "=" in item)
 
 
 def read_block(ses: gs.Session, scratch: Path, tag: str, ref: str, offset: int, length: int,
                seconds: float, progress: mprogress.Progress = mprogress.no_progress,
                cpu: str = "") -> dict[str, Any]:
-    """The body of the `read_block` tool: one Lua evaluation, bought with the step every
-    console line costs, altering nothing. A `ref` is looked up in the program space of the cpu
-    `cpu` names, BOUND WHEN THE SCRIPT IS COMPOSED, else of the visible one when it runs."""
+    """The body of the `read_block` tool: one Lua evaluation, altering nothing."""
     check_read_block(tag, ref, offset, length, seconds, cpu=cpu)
     on = cpus.chosen(ses, cpu)
     addr = STATE.resolve(ref, on) if ref.strip() else None

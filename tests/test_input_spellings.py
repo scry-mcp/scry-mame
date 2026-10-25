@@ -1,11 +1,4 @@
-"""One spelling per input concept, judged before any machine is asked for.
-
-What these hold: an empty `ref` never means "everything" (`all=True` does, alone); a clear's
-`ref` meets the same judge every other ref meets; a port is `ref` plus `space="io"`, never a
-suffix; and each renamed or retyped argument (`cell_bytes`, `transparent`, `settle_seconds`,
-`draw_command`, `film_dir`, `arm`, `palette`'s default, `pattern`, `by`) is the one the schema
-publishes. Each is a refusal or an acceptance a caller can see with no emulator running.
-"""
+"""Input spellings and their refusals, judged with no emulator running."""
 
 from __future__ import annotations
 
@@ -37,8 +30,6 @@ def _call(tool: str, args: dict[str, Any]) -> dict[str, Any]:
 def _clear(kind: str, **args: Any) -> dict[str, Any]:
     return _call("declaration_clear", {"kind": kind, **args})
 
-
-# ------------------------------------------------------------------ clearing everything (D3)
 
 @pytest.mark.parametrize("kind", KINDS)
 @pytest.mark.parametrize("ref", ["", "   "])
@@ -72,16 +63,12 @@ def test_the_clear_tool_publishes_all_as_a_boolean() -> None:
     assert props["all"]["type"] == "boolean" and props["all"].get("default") is False, props
 
 
-# --------------------------------------------------------- a clear's ref, the one judge (I4)
-
 @pytest.mark.parametrize("kind", ["breakpoint", "watch"])
 @pytest.mark.parametrize("ref", ["1000:0010", "0xZZ", "0x"])
 def test_a_clears_ref_meets_the_judge_every_other_ref_meets(kind: str, ref: str) -> None:
     reply = _clear(kind, ref=ref)
     assert reply["code"] == "bad_argument", reply
 
-
-# ------------------------------------------------------------------- a port's spelling (I5)
 
 def test_watch_clear_publishes_space() -> None:
     props = _schema("declaration_clear")["properties"]
@@ -97,8 +84,6 @@ def test_space_beside_all_is_refused() -> None:
     reply = _call("declaration_clear", {"kind": "watch", "all": True, "space": "io"})
     assert reply["code"] == "bad_argument" and "`space`" in reply["message"], reply
 
-
-# ------------------------------------------------------------------ renamed arguments (I6-I13)
 
 def test_scan_start_takes_cell_bytes_and_not_width() -> None:
     props = _schema("scan")["properties"]
@@ -158,8 +143,6 @@ def test_drive_refuses_an_empty_pattern() -> None:
     assert reply["code"] == "bad_argument" and "pattern" in reply["message"], reply
 
 
-# ------------------------------------------------------------------- a read never arms (D4)
-
 def test_palette_log_publishes_arm() -> None:
     props = _schema("palette_log")["properties"]
     assert props["arm"]["type"] == "boolean" and props["arm"].get("default") is False, props
@@ -169,8 +152,6 @@ def test_palette_log_refuses_arm_beside_clear() -> None:
     reply = _call("palette_log", {"palette_port": "ramdac", "arm": True, "clear": True})
     assert reply["code"] == "bad_argument" and "`clear`" in reply["message"], reply
 
-
-# ------------------------------------------------------- debug's offline refusals first (I15)
 
 def test_debug_refuses_a_hardreset_before_the_session_gate() -> None:
     reply = _call("debug", {"command": "hardreset"})
@@ -184,8 +165,6 @@ def test_a_line_too_long_for_a_packet_still_waits_for_the_session() -> None:
     assert reply["code"] == "no_session", reply
 
 
-# ------------------------------------------------- an empty palette, read off the chunk (I9)
-
 def test_an_empty_palette_over_several_devices_is_ambiguous_and_over_none_is_no_channel() -> None:
     import mame_palette as mpalette
     import mame_state as mstate
@@ -197,8 +176,6 @@ def test_an_empty_palette_over_several_devices_is_ambiguous_and_over_none_is_no_
     assert none.value.code == "no_channel"
     assert 'if name == "" then' in mpalette.PENS_LUA, "the chunk picks the only device itself"
 
-
-# --------------------------------------------------------------- the review's three (family a)
 
 @pytest.mark.parametrize("ref", ["[Irq_Ptr]+10", "0x1234:0x10"])
 def test_watch_clear_judges_a_ref_as_watch_add_does(ref: str) -> None:

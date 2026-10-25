@@ -1,6 +1,4 @@
-"""Every tool's reply is judged against its declared model (`scry_core.reply_schema`): each tool
-has one, the published schema names its fields and constrains none, and a reply with a field its
-model does not name fails the battery."""
+"""Every tool's reply is judged against its declared model."""
 
 from __future__ import annotations
 
@@ -34,10 +32,8 @@ def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None
         reply_schema.check("status", {"status": "ok", "pid": 1, "stray": 1})
 
 
-#: What each tool's `Reply` paragraphs quote that is no field of its reply: a value it holds or
-#: a mode, BY TOOL, so a word allowed for one tool never hides a field another tool's model
-#: lacks. A name in neither its model nor here fails; a word kept here that its tool no longer
-#: quotes fails too.
+#: Words a tool's `Reply` text quotes that are no field of its reply, kept per tool so one
+#: tool's allowance never hides another's missing field.
 REPLY_WORDS: dict[str, tuple[str, ...]] = {
     "close": ("quit",),
     "step": ("over",),

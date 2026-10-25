@@ -1,12 +1,7 @@
-"""Every path argument is judged by one rule (`mame_inputs.absolute`): absolute, holding no NUL or
-lone surrogate, the same sentence and the same remedy whichever argument it is; and a missing
-input file is `no_such`, whichever tool reads it.
+"""Every path argument is judged by one rule (`mame_inputs.absolute`), whichever tool takes it.
 
-THE SERVER RUNS MAME FROM A SCRATCH DIRECTORY OF ITS OWN, so a relative path that happens to
-exist from the server's working directory is judged in one place and used in another. The
-relative paths these cases hand to `start` and `rom_check` EXIST from the test's working
-directory, so an existence check alone would let them through: only the absolute rule refuses
-them.
+The server runs MAME from a scratch directory, so the relative paths these cases use exist from
+the test's working directory on purpose: only the absolute rule refuses them.
 """
 
 import contextlib
@@ -35,7 +30,6 @@ import mame_state as mstate
 import mame_symbols as syms
 import server as s
 
-#: How the one refusal of a relative path begins (scry-core's judge).
 R_ABS = "must be an absolute path"
 
 
@@ -48,9 +42,7 @@ def _common(tmp_path: Path) -> dict[str, Any]:
 
 @pytest.fixture
 def here(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
-    """The test's working directory, holding the relative paths the cases name, each one real:
-    `roms/`, `run/`, `game.map`, `types.txt`, `boot.lua`, `v30.cfg`; `_common(here)` adds the
-    binary `fake-mame` with its plugins beside it, and `ref.bin`."""
+    """The working directory, holding the relative paths the cases name, each one real."""
     _never_spawns(monkeypatch, tmp_path)
     monkeypatch.chdir(tmp_path)
     for d in ("roms", "run"):
@@ -96,23 +88,20 @@ def test_a_relative_types_file_is_refused_naming_its_argument(
     ("{d}/run;", "empty"),
 ])
 def test_every_element_of_inipath_is_judged(here: Path, inipath: str, said: str) -> None:
-    """`-inipath` is MAME's `;`-separated list: each element is a path, and an empty one is a
-    mistake, not a directory."""
+    """`-inipath` is a `;`-separated list: each element is a path, an empty one a mistake."""
     out = refused("inipath", s.start(**_common(here), inipath=inipath.format(d=here)))
     assert said in out["message"], out
 
 
 def test_an_inipath_that_does_not_exist_is_handed_to_mame(here: Path,
                                                           monkeypatch: pytest.MonkeyPatch) -> None:
-    """Existence is not judged: MAME ignores an ini directory it cannot find, so an absolute one
-    that is not there is not the caller's mistake. The control for the cases above: the start
-    gets past every judgement and reaches the spawn the double forbids."""
+    """MAME ignores an ini directory it cannot find, so an absent absolute one reaches the spawn."""
     with pytest.raises(AssertionError, match="SPAWNED"):
         s.start(**_common(here), inipath=f"{here}/absent;{here}/run")
 
 
 def test_a_relative_reference_rom_is_refused_by_rom_check_too(here: Path) -> None:
-    """`rom_check` takes the same file through the same judge, before it asks for a session."""
+    """`rom_check` judges the file before it asks for a session."""
     _common(here)
     out = refused("must be an absolute path", s.rom_check(reference_rom="ref.bin"))
     assert "reference_rom=" in out["message"], out
@@ -125,8 +114,7 @@ def test_a_relative_reference_rom_is_refused_by_rom_check_too(here: Path) -> Non
     (lambda d: s.gfx_load(path=f"{d}/a\x00b.yaml"), "path="),
 ])
 def test_a_nul_in_a_path_is_refused_naming_it(here: Path, call: Any, named: str) -> None:
-    """A NUL ends a C string, so no file call can take it: refused as the argument it is, never
-    an escape from `mkdir` or a `memdump` accepted for the console."""
+    """A NUL ends a C string, so no file call can take it."""
     out = refused("NUL", call(here))
     assert out["code"] == "bad_argument" and named in out["message"], out
 
@@ -161,8 +149,7 @@ def test_a_missing_input_file_is_no_such_whichever_tool_reads_it(here: Path) -> 
 
 
 def test_the_absolute_rule_is_said_once_for_every_argument(here: Path) -> None:
-    """One sentence: the same words whichever argument and whichever tool trips it, the
-    argument's name the only difference."""
+    """The same words whichever argument trips it, the argument's name the only difference."""
     sym = str(here / "game.map")
     said = {arg: refused(R_ABS, s.start(**(_common(here) | {arg: "rel"})))["message"]
             for arg in ("binary", "rompath", "reference_rom", "symbols", "boot_lua", "cfg",
@@ -181,9 +168,7 @@ def test_the_absolute_rule_is_said_once_for_every_argument(here: Path) -> None:
                                  {"bases": {"data": "400"}}])
 def test_a_refused_input_file_leaves_a_persistent_state_dir_untouched(
         here: Path, bad: dict[str, str]) -> None:
-    """`state_dir` is a directory this server never deletes, so every input is judged before
-    `cfg/` and `nvram/` are made in it: a path, an address outside the image, a `bases` with no
-    symbol file to apply it to."""
+    """`state_dir` is never deleted, so every input is judged before `cfg/` is made."""
     fresh = here / "fresh-state"
     refused("must be an absolute path|no such|OUTSIDE|no `symbols` file",
             s.start(**_common(here), state_dir=str(fresh), **bad))
@@ -191,22 +176,17 @@ def test_a_refused_input_file_leaves_a_persistent_state_dir_untouched(
 
 
 def test_an_empty_entry_of_a_types_mapping_is_not_given(here: Path) -> None:
-    """`""` means "not given" for every path argument, an entry of a mapping included: the start
-    gets past every judgement of its arguments to the machine's own list of cpus, which a
-    mapping needs and the double forbids spawning, never to a refusal of the empty entry."""
+    """`""` means "not given" for a mapping entry too: the start reaches the spawn."""
     with pytest.raises(AssertionError, match="SPAWNED"):
         s.start(**_common(here), symbols={"maincpu": str(here / "game.map")},
                 types={"maincpu": ""})
 
 
 def test_a_types_mapping_whose_entries_are_empty_loads_the_table_untyped(here: Path) -> None:
-    """Past the judge, `load` reads an empty entry as a cpu given no types file."""
+
     loaded = syms.load({"maincpu": str(here / "game.map")}, None, {"maincpu": ""},
                        [":maincpu"])
     assert loaded.tables[":maincpu"].types == {}, loaded
-
-
-# ---- what a path may hold, and what counts as already there ---------------------------------
 
 
 @pytest.mark.parametrize("call", [
@@ -214,7 +194,7 @@ def test_a_types_mapping_whose_entries_are_empty_loads_the_table_untyped(here: P
     lambda dest: s.snapshot(dest=dest),
 ])
 def test_a_dest_that_is_a_dangling_link_already_exists(here: Path, call: Any) -> None:
-    """A link to nowhere is something there, and a `dest` never replaces what is there."""
+    """A link to nowhere is something there, and a `dest` never replaces it."""
     link = here / "link.bin"
     link.symlink_to(here / "nowhere" / "target.bin")
     out = refused("already exists", call(str(link)))
@@ -231,7 +211,7 @@ def test_a_dest_holding_a_control_character_is_refused_naming_it(
 
 
 def test_a_path_the_server_hands_the_console_is_judged_by_the_same_set() -> None:
-    """The server's own scratch path, judged before a `save` line carries it."""
+
     with pytest.raises(mstate.Invalid) as err:
         files.refuse_console_path(Path("/tmp/scr\x1batch/x.bin"))
     assert err.value.code == "host_failed" and "'\\x1b'" in str(err.value), err.value
@@ -240,8 +220,7 @@ def test_a_path_the_server_hands_the_console_is_judged_by_the_same_set() -> None
 @pytest.mark.parametrize("argument", ["state_dir", "rompath", "cfg", "binary"])
 def test_a_lone_surrogate_in_any_path_argument_is_refused_naming_it(
         here: Path, argument: str) -> None:
-    """No file call can encode a lone surrogate, so it is the argument's fault, judged with the
-    absolute rule, never an escape from `mkdir` or `is_dir`."""
+    """No file call can encode a lone surrogate."""
     out = refused("lone surrogate", s.start(**(_common(here) | {argument: f"{here}/x\ud800"})))
     assert f"{argument}=" in out["message"] and "'\\ud800'" in out["message"], out
     dest = refused("lone surrogate", s.memdump(ref="0x0", length=4, dest=f"{here}/a\ud800b.bin"))
@@ -249,17 +228,14 @@ def test_a_lone_surrogate_in_any_path_argument_is_refused_naming_it(
 
 
 def test_a_joiner_or_a_name_in_another_script_is_a_name(here: Path) -> None:
-    """The forbidden set is the hazard's: a ZWJ, a ZWNJ or an accent is a real file name, and a
-    `dest` holding one is accepted (the call goes on to the session gate)."""
+    """A ZWJ, a ZWNJ or an accent is a real file name, so the call goes on to the session gate."""
     for name in ("a\u200db.bin", "a\u200cb.bin", "caf\u00e9.bin"):
         out = s.memdump(ref="0x0", length=4, dest=f"{here}/{name}")
         assert out["code"] == "no_session", (name, out)
 
 
 def test_boot_lua_refuses_only_a_lone_surrogate(here: Path) -> None:
-    """`boot_lua` reaches MAME inside the boot script, never a console line, so the console's set
-    does not apply and a space in its directory keeps working; a lone surrogate, which no file
-    call can encode, is refused like any path's."""
+    """`boot_lua` never reaches a console line, so a space in its directory keeps working."""
     spaced = here / "a dir"
     spaced.mkdir()
     (spaced / "boot.lua").write_text("-- a harness\n")
@@ -271,8 +247,7 @@ def test_boot_lua_refuses_only_a_lone_surrogate(here: Path) -> None:
 
 def test_a_state_whose_file_is_a_dangling_link_already_exists(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """MAME writes the `.sta` itself, so the double stands in for the console: a link left where
-    the state would go is something there, and the save is refused before `statesave`."""
+    """A link where the state would go is something there: refused before `statesave`."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     (sta / "linked.sta").symlink_to(tmp_path / "nowhere.sta")
     out = refused("already exists", s.state_write("save", name="linked"))
@@ -280,7 +255,7 @@ def test_a_state_whose_file_is_a_dangling_link_already_exists(
 
 
 def _state_folder(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[Any, Path]:
-    """A session double on m68k-dual, and its state folder, made."""
+
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     sta = ses.scratch / "sta" / "m68k-dual"
@@ -289,7 +264,7 @@ def _state_folder(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[Any,
 
 
 def _dangling_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[Any, Path, Path]:
-    """A session double whose state folder holds `x.sta`, a link to a file that does not exist."""
+    """A session double whose state folder holds `x.sta`, a dangling link."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     target = tmp_path / "gone" / "x.sta"
     (sta / "x.sta").symlink_to(target)
@@ -298,9 +273,7 @@ def _dangling_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple[An
 
 def test_state_list_lists_a_dangling_link_with_null_bytes_and_says_why(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The name `state_write(method="save")` refuses as already there is shown, never hidden and
-    never a
-    traceback: `bytes`, `frame` and `pc` null, and the `why` naming where the link points."""
+    """Shown with `bytes`, `frame` and `pc` null and a `why` naming where the link points."""
     _, link, target = _dangling_state(monkeypatch, tmp_path)
     out = s.state_list()
     assert out["status"] == "ok", out
@@ -312,9 +285,7 @@ def test_state_list_lists_a_dangling_link_with_null_bytes_and_says_why(
 
 def test_state_load_refuses_a_dangling_link_by_name(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Not the bare "no state named ... at": the refusal names the link and where it points, and
-    that `state_write(method="save")` refuses the name while it is there; nothing reaches the
-    console."""
+    """The refusal names the link and where it points; nothing reaches the console."""
     ses, link, target = _dangling_state(monkeypatch, tmp_path)
     out = refused("no file is reached through it", s.state_write("load", name="x"))
     assert out["code"] == "unknown_ref", out
@@ -325,8 +296,7 @@ def test_state_load_refuses_a_dangling_link_by_name(
 
 def test_a_link_to_a_state_that_exists_is_a_state_and_a_dangling_one_hides_none_after_it(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Only a link through which no file is reached is singled out: a link to a real state is
-    listed with its size like any state, and the rows after a dangling one are all there."""
+    """Only a dangling link is singled out; a link to a real state lists with its size."""
     ses, _, _ = _dangling_state(monkeypatch, tmp_path)
     sta = ses.scratch / "sta" / "m68k-dual"
     real = tmp_path / "real.sta"
@@ -340,9 +310,7 @@ def test_a_link_to_a_state_that_exists_is_a_state_and_a_dangling_one_hides_none_
 
 
 def _exists_letting_other_errors_out(self: Path, *, follow_symlinks: bool = True) -> bool:
-    """`Path.exists` as the older supported interpreters write it: only an errno saying nothing
-    is there answers False, and any other `OSError` of the `stat`, a `PermissionError` among
-    them, escapes."""
+    """`Path.exists` as older interpreters write it: any `OSError` but "nothing there" escapes."""
     try:
         self.stat(follow_symlinks=follow_symlinks)
     except OSError as e:
@@ -355,8 +323,7 @@ def _exists_letting_other_errors_out(self: Path, *, follow_symlinks: bool = True
 
 
 def _mode_letting_other_errors_out(test: Any) -> Any:
-    """`Path.is_file` or `Path.is_dir` as the older supported interpreters write them: `test`
-    on the mode, False where nothing is there, and any other `OSError` of the `stat` escapes."""
+    """`Path.is_file` or `Path.is_dir` as older interpreters write them."""
     def held(self: Path, *, follow_symlinks: bool = True) -> bool:
         try:
             return bool(test(self.stat(follow_symlinks=follow_symlinks).st_mode))
@@ -371,11 +338,8 @@ def _mode_letting_other_errors_out(test: Any) -> Any:
 
 def test_a_link_into_a_directory_nobody_may_search_is_answered_like_a_dangling_one(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """No file is reached through a link whose target sits in a directory this process may not
-    search, and every supported interpreter must answer it as a dangling one: on some of them
-    `Path.exists()`, `is_file()` and `is_dir()` raise `PermissionError` there instead of saying
-    False. All three are held to that stricter form here, so code leaning on the lenient one
-    goes red on any of them, the one the battery runs included."""
+    """A link into an unsearchable directory is dangling on every interpreter, though older ones
+    raise `PermissionError` from `exists`, `is_file` and `is_dir`: all three are held to that."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     locked = tmp_path / "locked"
     locked.mkdir()
@@ -401,16 +365,14 @@ def test_a_link_into_a_directory_nobody_may_search_is_answered_like_a_dangling_o
 
 @pytest.fixture
 def short_tmp() -> Iterator[Path]:
-    """A temporary directory with a SHORT path, where an AF_UNIX socket can be bound, removed
-    after the test (a `tmp_path` is too long for one)."""
+    """A directory with a path short enough to bind an AF_UNIX socket in."""
     short = Path(tempfile.mkdtemp(prefix="s"))
     yield short
     shutil.rmtree(short, ignore_errors=True)
 
 
 def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[Path, str]:
-    """`d.sta` in `sta` made as `kind`, and the words its `why` must hold: what the path
-    resolves to, judged through a link as well as on the path itself."""
+    """`d.sta` made as `kind`, and the words its `why` must hold."""
     path = sta / "d.sta"
     if kind == "directory":
         path.mkdir()
@@ -423,7 +385,6 @@ def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[
         path.symlink_to("/dev/null")
         return path, "a link to /dev/null, which is a character device"
     if kind == "socket":
-        # AN AF_UNIX PATH IS SHORT: bound under a short temporary name, and linked into place.
         short = short_tmp / "s"
         sock = socket.socket(socket.AF_UNIX)
         sock.bind(str(short))
@@ -431,8 +392,7 @@ def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[
         path.symlink_to(short)
         return path, f"a link to {short}, which is a socket"
     os.mkfifo(path)
-    # A REGRESSION THAT OPENS THE FIFO would block for good: its other end is opened after a
-    # while, so the open returns and the test fails rather than hangs.
+    # opened from the other end later, so a regression that opens the FIFO fails, not hangs
     threading.Thread(target=_release_fifo, args=(path,), daemon=True).start()
     return path, "a FIFO"
 
@@ -449,8 +409,7 @@ _NOT_FILES = ["directory", "link to a directory", "fifo", "socket", "link to a d
 @pytest.mark.parametrize("kind", _NOT_FILES)
 def test_state_list_lists_a_sta_that_is_no_file_with_null_bytes_and_says_what_it_is(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str, short_tmp: Path) -> None:
-    """The name is taken, so it is shown as a dangling link is: `bytes`, `frame` and `pc` null,
-    and a `why` saying what is there, never the directory's own size as a state's."""
+    """Shown with `bytes`, `frame` and `pc` null and a `why` saying what is there."""
     _, sta = _state_folder(monkeypatch, tmp_path)
     path, what = _not_a_file(sta, tmp_path, kind, short_tmp)
     out = s.state_list()
@@ -464,8 +423,7 @@ def test_state_list_lists_a_sta_that_is_no_file_with_null_bytes_and_says_what_it
 @pytest.mark.parametrize("kind", _NOT_FILES)
 def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceback(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str, short_tmp: Path) -> None:
-    """Judged before anything opens it (a FIFO would block the open for good), by what the
-    path resolves to, so a link to a directory is refused as the directory is."""
+    """Judged by what the path resolves to before anything opens it (a FIFO would block)."""
     ses, sta = _state_folder(monkeypatch, tmp_path)
     path, what = _not_a_file(sta, tmp_path, kind, short_tmp)
     out = refused("not a state", s.state_write("load", name="d"))
@@ -476,9 +434,6 @@ def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceba
     assert refused("already exists", s.state_write("save", name="d"))["code"] == "bad_argument"
 
 
-# ---- gfx_draft's dest, judged like every other dest ------------------------------------------
-
-
 @pytest.mark.parametrize("name", ["a;b.yaml", "a b.yaml", "a(b.yaml", "a\x1bb.yaml"])
 def test_gfx_drafts_dest_holds_none_of_the_characters_no_dest_may_hold(
         here: Path, name: str) -> None:
@@ -487,8 +442,7 @@ def test_gfx_drafts_dest_holds_none_of_the_characters_no_dest_may_hold(
 
 
 def test_gfx_drafts_dest_needs_a_directory_that_exists(here: Path) -> None:
-    """Its writer made a missing directory; a `dest` is written where the caller's directory
-    already is, for this tool as for every other."""
+
     refused("is not a directory", s.gfx_draft(dest=f"{here}/newboard/gfx.yaml"))
     assert not (here / "newboard").exists()
 
@@ -505,8 +459,7 @@ def test_a_dest_under_a_file_says_the_file_is_not_a_directory(here: Path, call: 
 
 def test_gfx_draft_refuses_a_link_where_the_draft_or_its_report_goes(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A link is something there that is not a draft: replacing it would drop the link, and
-    following it would write where the caller never named. Refused before any evidence is read."""
+    """Replacing a link would drop it and following it would write unnamed: refused up front."""
     _channel(monkeypatch, tmp_path)
     draft = tmp_path / "l.yaml"
     draft.symlink_to(tmp_path / "nowhere.yaml")
@@ -516,9 +469,6 @@ def test_gfx_draft_refuses_a_link_where_the_draft_or_its_report_goes(
     report.symlink_to(tmp_path / "nowhere.json")
     assert refused(link, s.gfx_draft(dest=str(tmp_path / "r.yaml")))["code"] == "bad_argument"
     assert draft.is_symlink() and report.is_symlink()
-
-
-# ---- a caller's file that is not valid text is the caller's argument --------------------------
 
 
 def test_a_types_file_that_is_not_utf8_is_refused_naming_it(here: Path) -> None:
@@ -548,9 +498,7 @@ def test_a_types_file_nobody_may_read_is_refused_naming_it(here: Path) -> None:
 ])
 def test_a_fault_in_the_symbol_file_is_the_arguments_refusal(
         here: Path, content: str | bytes, bases: dict[str, str] | None, said: str) -> None:
-    """Whatever the symbol reader finds wrong in the caller's file (a class with no base, `bases`
-    beside a YAML file, bytes that are not text, no symbol at all) is the caller's argument:
-    `bad_argument` naming it, never an exception out of the tool."""
+    """A fault in the caller's symbol file is a `bad_argument`, never an exception."""
     sym = here / "faulty.map"
     if isinstance(content, bytes):
         sym.write_bytes(content)
@@ -583,8 +531,7 @@ def test_the_manifest_and_the_types_file_say_not_utf8_in_one_sentence(here: Path
 
 
 def test_a_types_line_the_grammar_reader_chokes_on_is_the_arguments_refusal(here: Path) -> None:
-    """An array count too long for an int is not a grammar error the reader names, and it is
-    still the caller's file: refused naming the file, never an exception out of `start`."""
+    """An array count too long for an int still refuses naming the file."""
     huge = here / "huge.types"
     huge.write_text("_start: u8[" + "9" * 5000 + "]\n")
     out = refused(str(huge), s.start(**_common(here), symbols=str(here / "game.map"),
@@ -593,7 +540,7 @@ def test_a_types_line_the_grammar_reader_chokes_on_is_the_arguments_refusal(here
 
 
 def test_a_mapping_entrys_fault_is_named_as_the_caller_keyed_it(here: Path) -> None:
-    """`check_files` and the reader's refusals name one entry one way: by the caller's key."""
+
     faulty = here / "empty.map"
     faulty.write_text("")
     with pytest.raises(mstate.Invalid) as err:
@@ -604,8 +551,7 @@ def test_a_mapping_entrys_fault_is_named_as_the_caller_keyed_it(here: Path) -> N
 @pytest.mark.parametrize("kind", ["file", "directory"])
 def test_a_sta_gone_between_the_listing_and_its_stat_is_left_out_never_a_traceback(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str) -> None:
-    """Another process may remove a state while the folder is read: what is gone is no state,
-    and the call still answers."""
+    """A state removed while the folder is read is no state, and the call still answers."""
     _, sta = _state_folder(monkeypatch, tmp_path)
     gone = sta / "gone.sta"
     gone.mkdir() if kind == "directory" else gone.write_bytes(bytes(32))
@@ -625,9 +571,7 @@ def test_a_sta_gone_between_the_listing_and_its_stat_is_left_out_never_a_traceba
 
 
 def test_a_home_path_reaches_mame_expanded(here: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """A `~` passes the judge, so the text MAME is handed must be the expanded one: MAME runs
-    from a scratch of its own, where `~/roms` would name nothing and the stub would wait out
-    its bound."""
+    """MAME runs from its own scratch, where `~/roms` names nothing, so it gets the expansion."""
     monkeypatch.setenv("HOME", str(here))
     monkeypatch.setenv("USERPROFILE", str(here))
     seen: list[list[str]] = []
@@ -662,7 +606,7 @@ def test_a_home_manifest_and_draft_are_read_and_written_there(
 
 def test_a_console_path_is_judged_as_the_console_sees_it(
         here: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """A home with a space passes `~/x.bin` as typed; the console line carries the expansion."""
+
     home = here / "a b"
     home.mkdir()
     monkeypatch.setenv("HOME", str(home))

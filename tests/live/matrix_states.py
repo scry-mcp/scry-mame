@@ -1,16 +1,9 @@
-"""Section Q of the live matrix: saved states. What is not a state where one goes, a load proved
-by every readable cpu's register digits (with a frame counter and without one), the
-`totalcycles` a load, a rewind or a reset typed through `debug` leaves stale, and a load MAME
-held, on any build.
-
-Circus (one screen) boots with `rewind 1`, which `rewind` needs; topgunnr has no frame counter and
-a stub that serves its first cpu alone. topgunnr's main cpu sits in a short loop with every other
-register constant, so a run can bring it back to the saved block, and then no load is proved: the
-cells that need the block to have moved say BLOCKED when it did not, rather than judging nothing.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
+"""Section Q of the live matrix: saved states. Run alone:
 
     MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_states.py
+
+topgunnr's main cpu sits in a short loop, so a run can bring it back to the saved block and then
+no load is proved: the cells that need the block to have moved say BLOCKED, not judge nothing.
 """
 
 import contextlib
@@ -61,14 +54,12 @@ Q_CELLS = [
     "one step, verified, and does not land in the next run",
 ]
 
-#: How long a FIFO's open may hang before the harness opens its other end and releases it: a
-#: server that opens one blocks the call until a writer comes, and the matrix must still end.
+#: A server opening a FIFO blocks until a writer comes; the harness opens the other end after this.
 FIFO_RELEASE_S = 3.0
 
 
 def _release_after(path: Path) -> threading.Thread:
-    """Open `path`'s writing end after `FIFO_RELEASE_S` and close it, so a reader blocked in its
-    open gets an empty file; nothing when no reader came (the open would fail)."""
+    """Open and close `path`'s writing end after `FIFO_RELEASE_S`, releasing a blocked reader."""
     def release() -> None:
         time.sleep(FIFO_RELEASE_S)
         with contextlib.suppress(OSError):
@@ -137,11 +128,10 @@ def _q_circus(t: list[str]) -> None:
     for line in (f"stateload {first}", "rewind", "softreset"):
         if line == "rewind":
             for _ in range(3):
-                call("step")          # the debugger's own steps capture the rewind states
+                call("step")          # debugger steps capture the rewind states
         typed = call("debug", command=line)
         stale = call("run_for", frames=2, seconds=10.0)
         after = call("run_for", frames=2, seconds=10.0)
-        # A rewind with no state captured answers an error and replaces nothing.
         seen[line] = (ok(typed) and "error" not in str(typed.get("output")).lower(),
                       _cycles_of(stale), _cycles_of(after))
     cell(t[3], all(typed and stale[1] and isinstance(after[0], int)
@@ -151,17 +141,14 @@ def _q_circus(t: list[str]) -> None:
 
 
 def _q_circus_refused_rewind(t: list[str]) -> None:
-    """A fresh start has captured no rewind state, so `rewind` is MAME's own refusal; the run
-    after it is counted, against a control run of the same length before it."""
+    """A rewind with no captured state is refused, and the next run is counted like a control."""
     circus_boot("rewind 1\n")
     call("run_for", frames=10, seconds=10.0)
     control = call("run_for", frames=2, seconds=10.0)
     typed = call("debug", command="rewind")
     after = call("run_for", frames=2, seconds=10.0)
-    # the console's own words, the known answer (`fixtures/console/rewind.refused.txt`)
     refused_it = "Rewind error occured" in str(typed.get("output"))
-    # the run after it spans what the control run of the same length spanned, within a tenth:
-    # a count across a replaced machine is off by the distance between the two states
+    # within a tenth of the control: a count across a replaced machine is off by the state distance
     cell(t[6], ok(typed) and refused_it and isinstance(control.get("cycles"), int)
          and isinstance(after.get("cycles"), int)
          and abs(after["cycles"] - control["cycles"]) * 10 <= control["cycles"],
@@ -180,8 +167,7 @@ def _q_topgunnr(t: list[str]) -> None:
         blocked(t[4], f"the block came back to the saved one before the load: {said(loaded)}")
     else:
         cell(t[4], ok(loaded) and loaded.get("verified") is True, said(loaded, 200))
-    # TWO SAVES WHOSE BLOCKS DIFFER, the second's file put where the first's is: the load reads
-    # the second machine against the first's record.
+    # two saves whose blocks differ, the second's file put where the first's is
     names = [fresh_state(), fresh_state()]
     call("run_for", milliseconds=137, seconds=10.0)
     call("state_write", method="save", name=names[0])
@@ -207,9 +193,7 @@ def _q_topgunnr(t: list[str]) -> None:
 
 
 def _q_victory_held(t: list[str]) -> None:
-    """A HOLD ON ANY BUILD: the stub's memory write runs victory's sound command handler, which
-    synchronizes, so the next load is held (REFERENCE.md, Saved states). The run after it
-    starts from the loaded frame, so a load still pending would show there as a frame gone back."""
+    """The stub's write runs victory's synchronizing sound handler, so the next load is held."""
     free_boot("victory", ["vic3.j2"], "0x0")
     call("run_for", frames=10, seconds=10.0)
     name = fresh_state()

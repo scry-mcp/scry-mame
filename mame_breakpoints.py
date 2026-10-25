@@ -1,11 +1,5 @@
-"""THE BREAKPOINT FAMILY: `breakpoint_at` stores and arms a stop breakpoint or a counting
-control (never a second row on one the debugger already lists),
-`declaration_list(kind="breakpoint")` reads the
-debugger's own `bplist` back, `declaration_clear(kind="breakpoint")` removes what this server armed
-and reads the
-list back, and `breakpoint_name` names a stop by the declaration it is at. What every family
-shares is `mame_arming`'s (the store), `mame_lists`' (the debugger's lists read back, a row's
-adoption), `mame_conditions`' (a condition as the console reads it) and `mame_clear`'s."""
+"""The breakpoint family: `breakpoint_at`, the breakpoint declaration list and clear, and the
+stop names."""
 
 from __future__ import annotations
 
@@ -32,12 +26,9 @@ import mame_read as read
 import mame_state as st
 from mame_state import STATE
 
-# The `by` a breakpoint can be declared under, which `breakpoint_at` publishes and judges: no
-# `expr` or `pointer` for a place in the code.
 BREAKPOINT_BY = ("auto", "symbol", "address")
 _CONTROL_CONDITION = re.compile(r"^\(\+\+temp(\d)\)==0$")
-# The console's line at EVERY breakpoint stop, this server's rows and anybody else's alike
-# (`Stopped at breakpoint 1`, captured): only the row's index says whose it was.
+# Printed at every breakpoint stop, anybody's: only the row's index says whose it was.
 _BP_STOP_LINE = re.compile(r"Stopped at breakpoint ([0-9A-Fa-f]+)\b")
 
 
@@ -48,7 +39,7 @@ def bp_record(owner: dec.Owner) -> tuple[int, dict[str, Any]] | None:
 
 def _owned_row(held: list[dict[str, Any]], owner: dec.Owner,
                addr: int) -> dict[str, Any] | None:
-    """The listed row `owner` already holds at `addr`, or None."""
+    """The listed row `owner` holds at `addr`, or None."""
     own = bp_record(owner)
     row = mlists.row_at_index(held, own[0]) if own is not None else None
     return row if row is not None and row["addr"] == addr else None
@@ -56,21 +47,17 @@ def _owned_row(held: list[dict[str, Any]], owner: dec.Owner,
 
 def bp_owned_at(addr: int, cpu: str | None,
                 but: frozenset[dec.Owner] = frozenset()) -> dec.Owner | None:
-    """The owner whose row sits at `addr` on `cpu`, or None: what a stop at a pc is named by,
-    the owners in `but` passed over. A cpu nobody could read (a console that listed none) on
-    either side falls back to the address, as a row's adoption does."""
+    """The owner whose row sits at `addr` on `cpu`, or None, passing over `but`. An unread cpu
+    on either side falls back to the address, as a row's adoption does."""
     return next((r["owner"] for r in STATE.breakpoints.values()
                  if r["addr"] == addr and r["owner"] not in but
                  and (cpu is None or r["cpu"] is None or r["cpu"] == cpu)), None)
 
 
 def breakpoint_name(pc: int, cpu: str | None) -> str | None:
-    """The declaration a stop at `pc` is at, for the stop's `cause`: by its name when one was
-    declared by a name there, by the bare address when only by address, each with the
-    clause that says a declaration was inherited. Every declaration at the address is
-    looked at: an address declared first must not hide a name declared after, and among
-    addresses the one that owns the armed row speaks for the stop (a store from before the
-    one-row rule can hold a second, aliased one there)."""
+    """The declaration a stop at `pc` is at, for the stop's `cause`: named when declared by name,
+    else by address. An address declared first must not hide a name declared after; among
+    addresses the armed row's owner speaks (an old store can hold an aliased second)."""
     owner = bp_owned_at(pc, cpu)
     if STATE.store is None or owner is None:
         return None
@@ -89,10 +76,9 @@ def breakpoint_name(pc: int, cpu: str | None) -> str | None:
 def bp_aliased(owner: dec.Owner, addr: int, among: list[dec.Declaration],
                pass_note: str = "", clear_kind: mclear.ClearKind | None = "breakpoint"
                ) -> str | None:
-    """The refusal when ANOTHER breakpoint declaration on the same cpu already resolves to
-    `addr`: one row is one declaration, or clearing either would remove the row and leave the
-    other declared over a row the debugger no longer has. The watch family's `watch_aliased`, for
-    breakpoints. `start`'s re-arm passes no `clear_kind`: its report names no call to make."""
+    """The refusal when ANOTHER breakpoint declaration on the cpu resolves to `addr`: clearing
+    either would leave the other over a row the debugger no longer has. `start`'s re-arm passes
+    no `clear_kind`: its report names no call to make."""
     other = next((d.ref for d in among if d.kind == "breakpoint" and d.cpu == owner[1]
                   and d.owner != owner and arming.resolve_decl(d).addr == addr), None)
     if other is None:
@@ -102,24 +88,21 @@ def bp_aliased(owner: dec.Owner, addr: int, among: list[dec.Declaration],
 
 
 def bp_command(addr: int, condition: str, cpu: str | None = None) -> str:
-    """The console command that arms a breakpoint on `cpu`. The one builder, so the check that
-    it fits the stub's packet (`Session.console_packet`) judges the text that is sent."""
+    """The console command that arming sends, built once so the packet-fit check judges it."""
     return f"bp {addr:#x}{console.cpu_suffix(cpu)}" + (f",{condition}" if condition else "")
 
 
 def _row_to_adopt(held: list[dict[str, Any]], owner: dec.Owner, addr: int) -> dict[str, Any] | None:
-    """The row of the debugger's list (`held`) a declaration at `addr` takes over rather than
-    stacking a second breakpoint: the one `owner` holds, else one nobody holds there on its cpu."""
+    """The row of `held` a declaration at `addr` takes over: `owner`'s, else one nobody holds."""
     return (_owned_row(held, owner, addr)
             or mlists.adoptable_row(held, addr, owner[1], set(STATE.breakpoints)))
 
 
 def stop_row(held: list[dict[str, Any]], owner: dec.Owner, addr: int, condition: str
              ) -> tuple[dict[str, Any] | None, st.Invalid | None]:
-    """The row a STOP at `addr` adopts (None when it needs a new one), or the refusal when the row
-    there stops under a condition that is not `condition`. It sends nothing and raises nothing,
-    so a declaration and `start`'s re-arm judge a row by one rule and each decides what a refusal
-    does: the declaration raises it, the re-arm lists it and goes on with the rest."""
+    """The row a STOP at `addr` adopts (None when it needs a new one), or the refusal when that
+    row stops under another condition. Sends and raises nothing: the declaration raises the
+    refusal, `start`'s re-arm lists it."""
     row = _row_to_adopt(held, owner, addr)
     if row is not None and (row.get("condition") or "") != condition:
         return None, mclear.another_condition("breakpoint", addr, row, condition)
@@ -137,10 +120,8 @@ def _stop_row_or_refuse(held: list[dict[str, Any]], owner: dec.Owner, addr: int,
 
 def _arm_breakpoint(ses: gs.Session, owner: dec.Owner, addr: int, held: list[dict[str, Any]],
                     condition: str) -> dict[str, Any] | None:
-    """`bp addr:cpu[,condition]` on the owner's cpu, unless the debugger's list (`held`, read by
-    the caller) already holds a row `stop_row` adopts: a re-declaration must not stack a second
-    breakpoint. The row, read back, or None when the list does not show one; who OWNS it is the
-    caller's to record. Refused as `stop_row` refuses."""
+    """`bp` on the owner's cpu unless `held` has a row `stop_row` adopts, so a re-declaration
+    stacks nothing. The row read back, or None; recording its owner is the caller's."""
     row = _stop_row_or_refuse(held, owner, addr, condition)
     if row is not None:
         return row
@@ -149,8 +130,7 @@ def _arm_breakpoint(ses: gs.Session, owner: dec.Owner, addr: int, held: list[dic
 
 
 def own_row(row: dict[str, Any], owner: dec.Owner) -> None:
-    """`owner` holds the row numbered `row["index"]` from here on, and no other; a condition
-    this start could not resolve is no longer the reason it has none."""
+    """`owner` holds the row `row["index"]` and no other."""
     for index in [i for i, r in STATE.breakpoints.items() if r["owner"] == owner]:
         STATE.breakpoints.pop(index)
     STATE.breakpoints[row["index"]] = {"owner": owner, "addr": row["addr"], "cpu": row["cpu"]}
@@ -162,14 +142,9 @@ def _aliased_why(owner: str) -> str:
             "is one declaration, so this one arms nothing and clearing it disarms nothing")
 
 
-# ------------------------------------------------------------------------------ controls
-
-
 def _temp_for(owner: dec.Owner) -> int:
-    """The temp `owner`'s own record holds, when the control is declared again over its own
-    lost row; else the first of the debugger's temp variables no control holds, or the refusal
-    when all ten are taken. One temp per control: its condition `(++tempN)==0` counts every hit
-    and never comes true, so the machine is never halted and the count is `print tempN`."""
+    """The temp `owner` holds, else the first free one, or the refusal when all ten are taken.
+    A control's `(++tempN)==0` counts every hit and never comes true: the count is `print tempN`."""
     if owner in STATE.controls:
         return int(STATE.controls[owner]["temp"])
     taken = {c["temp"] for c in STATE.controls.values()}
@@ -187,9 +162,8 @@ def _temp_for(owner: dec.Owner) -> int:
 
 def _control_row(held: list[dict[str, Any]], owner: dec.Owner,
                  addr: int) -> tuple[dict[str, Any] | None, int]:
-    """The row a CONTROL at `addr` adopts with the temp its condition names, or None and the
-    free temp a new one takes; the refusal when the row there is not a counting control
-    (adopting it would count nothing) or no temp is free. It sends nothing."""
+    """The row a CONTROL at `addr` adopts with its temp, or None and the free temp; refused when
+    the row there is no counting control or no temp is free. Sends nothing."""
     row = _row_to_adopt(held, owner, addr)
     if row is None:
         return None, _temp_for(owner)
@@ -204,14 +178,10 @@ def _control_row(held: list[dict[str, Any]], owner: dec.Owner,
 
 def arm_control(ses: gs.Session, owner: dec.Owner, addr: int,
                 held: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Arm `owner` as a CONTROL at `addr` on its cpu: a console breakpoint whose condition
-    counts and never halts, unless the list (`held`, read by the caller) already shows such a
-    row there, which is adopted. The row read back, or None when the console listed nothing;
-    refused as `_control_row` refuses. The counter is zeroed first: a temp freed by an earlier
-    control still holds its count."""
+    """Arm `owner` as a CONTROL at `addr`, adopting such a row in `held`. The row read back, or
+    None. The counter is zeroed first: a freed temp still holds its count."""
     cpu = owner[1]
     row, temp = _control_row(held, owner, addr)
-    # An adopted row keeps counting in its temp, and keeps what its landings cost it.
     missed = STATE.controls.get(owner, {}).get("missed", 0) if row is not None else 0
     if row is None:
         ses.monitor(f"temp{temp} = 0")
@@ -225,17 +195,14 @@ def arm_control(ses: gs.Session, owner: dec.Owner, addr: int,
 
 
 def control_at(owner: dec.Owner) -> tuple[int, str | None]:
-    """Where the control under `owner` is armed: its address and the cpu of its row. The one
-    reading of a control's record outside this module."""
+    """Where the control under `owner` is armed: its address and the cpu of its row."""
     record = STATE.controls[owner]
     return record["addr"], STATE.breakpoints.get(record["index"], {}).get("cpu")
 
 
 def count_landing(pc: int, cpu: str | None) -> None:
-    """One hit for every control at `pc` on `cpu`, the instruction a frame stop landed on, which
-    the next release executes with its breakpoints never evaluated: MAME's instruction hook skips
-    them while the debugger is stopped, and a `gvblank` stop takes effect at the hook of the
-    instruction it lands on."""
+    """One hit for every control at `pc` on `cpu`: MAME's instruction hook skips breakpoints on
+    the instruction a frame stop (`gvblank`) lands on, so the next release never counts it."""
     for owner, rec in STATE.controls.items():
         at, on = control_at(owner)
         if at == pc and cpus.same_cpu(on, cpu):
@@ -243,10 +210,9 @@ def count_landing(pc: int, cpu: str | None) -> None:
 
 
 def control_counts(ses: gs.Session) -> dict[dec.Owner, int]:
-    """Every control's count, by owner: its temp, read in ONE `print` (`read.print_values`), plus
-    the hits frame stops' landings cost it (`count_landing`). Empty with no control armed. Raises
-    what that raises: `ExpressionRefused` for a temp the console refuses, an answer about the
-    machine; `SessionError` for one that is not a number per control."""
+    """Every control's count by owner: its temp plus the landings `count_landing` missed.
+    Raises `ExpressionRefused` for a temp the console refuses, `SessionError` for a reply that
+    is not a number per control."""
     if not STATE.controls:
         return {}
     refs = list(STATE.controls)
@@ -256,21 +222,14 @@ def control_counts(ses: gs.Session) -> dict[dec.Owner, int]:
 
 def check_breakpoint_at(ref: str, by: str = "auto", role: str = "stop",
                         condition: str = "", **_: Any) -> None:
-    """`breakpoint_at`'s machine-independent half: the two vocabularies and the condition's shape.
-
-    The declaration's own rules (a `control` carries no condition, a `by="address"` names a `0x`
-    address) are `Declaration`'s and are asked of it rather than restated here.
-    """
+    """`breakpoint_at`'s machine-independent half: the vocabularies and the condition's shape."""
     inputs.check_ref(ref) if vf.parse_pointer(ref) is None else None
     vocab.one_of("role", role, dec.ROLES)
-    vocab.one_of("by", by, BREAKPOINT_BY)     # its own words: a refusal lists none it refuses
+    vocab.one_of("by", by, BREAKPOINT_BY)
     if condition.strip():
         conditions.check_condition(condition)
-    # `Declaration` validates itself in `__post_init__`, so CONSTRUCTING one is the whole of asking,
-    # and it is asked with the CALLER's `by`: a declaration by address has a rule about the ref's
-    # shape that a placeholder would not trigger. `auto` is decided from the symbol table, which is
-    # the machine's -- except a POINTER, which its grammar decides, and a breakpoint on one is
-    # refused whatever the table says, and a `0x` ref, which the address rule decides with no table.
+    # Constructing a Declaration validates it, with the caller's `by`. `auto` needs the symbol
+    # table (the machine's) except for a pointer or a `0x` ref, which their grammar decides.
     if by != "auto":
         decided = by
     elif vf.parse_pointer(ref) is not None:
@@ -286,13 +245,11 @@ def check_breakpoint_at(ref: str, by: str = "auto", role: str = "stop",
 
 def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
                   condition: str = "", cpu: str = "") -> dict[str, Any]:
-    """The body of the `breakpoint_at` tool."""
+    """The body of `breakpoint_at`."""
     running = arming.running_on_arrival(ses)
     check_breakpoint_at(ref, by, role, condition)
-    # THE DECLARATION'S CPU is the one the call names, else the visible one, read now: the
-    # same ref on another cpu is another declaration.
     on = cpus.chosen(ses, cpu)
-    # Stored as typed and substituted at each arming: a rebuild moves the symbols.
+    # Stored as typed, substituted at each arming: a rebuild moves the symbols.
     typed = condition.strip()
     cond = conditions.console_condition(typed, on) if typed else ""
     ref = ref.strip()
@@ -300,11 +257,9 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
     decl = arming.declare("breakpoint", chosen, ref, on, role=role, condition=typed)
     stored = arming.store().held_ref(ref, chosen, ("breakpoint",), on)
     if stored is not None and stored != ref:
-        # AN ADDRESS DECLARED AGAIN IN ANOTHER SPELLING IS THE SAME DECLARATION, and
-        # it is handled under its stored spelling, the string a clear takes.
+        # Another spelling of a declared address is the same declaration, under its stored one.
         ref, decl = stored, dataclasses.replace(decl, ref=stored)
-    # A ROW STORED WITH THE ADDRESS ALREADY IN PLACE, declared again by name, is the same
-    # declaration. Its text is replaced where a new one would be added: past every refusal.
+    # A row stored with the address in place, declared again by name, is replaced, not added.
     earlier = dataclasses.replace(decl, condition=cond)
     migrates = typed != cond and arming.store().index_of(earlier) is not None
     if not migrates:
@@ -316,8 +271,7 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
         if why is not None:
             raise st.Invalid("ambiguous_ref", why)
         if cond:
-            # A COMMAND THE STUB WOULD DROP is refused before the declaration is stored,
-            # so the refusal leaves nothing behind: `CommandTooLong` is `bad_argument`.
+            # Refused before the store, so a command the stub would drop leaves nothing behind.
             judged = conditions.judged_condition(ses, bp_command(res.addr, cond, on), cond, on)
             conditions.refuse_if_left_visible(judged, cond, on)
             if (refusal := judged.refusal) is not None:
@@ -325,10 +279,8 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
                                                  "a breakpoint it cannot evaluate never stops: "
                                                  f"{refusal}. `symbols_find(name=...)` checks "
                                                  "a name; `breakpoint_at` again once it reads")
-        # THE ARMING'S OWN TWO REFUSALS (the row there, a free temp) are judged here too, before
-        # anything is stored: a declaration refused after the store took it would be listed
-        # `gone` and re-armed at the next `start` as if it had been accepted. The list read
-        # here is the one the arming below compares its row against.
+        # The arming's own refusals are judged before the store: one refused after it would be
+        # listed `gone` and re-armed at the next `start`. `held` is what the arming compares.
         held = mlists.bp_held(ses)
         if role == "control":
             _control_row(held, decl.owner, res.addr)
@@ -383,14 +335,12 @@ def breakpoint_at(ses: gs.Session, ref: str, by: str, role: str = "stop",
 
 
 def list_breakpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `declaration_list(kind="breakpoint")` tool: every declaration, or with `cpu`
-    the ones whose
-    row the debugger lists under it, read off `bplist <cpu>`."""
+    """The body of `declaration_list(kind="breakpoint")`, optionally for one `cpu`."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     held = mlists.bp_held(ses, only)
     counts = control_counts(ses)
     out: list[dict[str, Any]] = []
-    mine: set[int] = set()          # the indices of the rows this server's declarations own
+    mine: set[int] = set()
     for decl in arming.store().declarations():
         if decl.kind != "breakpoint":
             continue
@@ -415,11 +365,10 @@ def list_breakpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
                     item["hits_since_armed"] = counts[decl.owner]
                 mine.add(row["index"])
             elif owner is not None:
-                # A store from before the one-row rule: the row is another declaration's,
-                # and calling this one `armed` contradicted the re-arm's own account.
+                # An old store: the row is another declaration's.
                 item["state"], item["why"] = "aliased", _aliased_why(owner)
             elif ("breakpoint", decl.owner) in STATE.conditions_unresolved:
-                item["state"] = "unresolved"       # the ref resolved; its condition did not
+                item["state"] = "unresolved"       # the condition did not
             elif arming.stale(decl):
                 item["state"], item["why"] = "stale", arming.stale_why()
             else:
@@ -430,16 +379,14 @@ def list_breakpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
         "breakpoints": out,
         "foreign": [r["entry"] for r in held if r["index"] not in mine],
     }
-    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)   # every list tool carries it
+    reply["cpu"] = or_unavailable(only, st.NO_CPU_NAMED_WHY)
     if ses.running:
         reply["last_stop"] = STATE.as_of()
     return menvelope.envelope(reply)
 
 
 def check_clear_breakpoints(ref: str = "", all: bool = False, **_: Any) -> None:
-    """`declaration_clear(kind="breakpoint")`'s machine-independent half: one `ref` or `all=True`,
-    and a `ref` judged
-    as every breakpoint's is."""
+    """`declaration_clear(kind="breakpoint")`'s machine-independent half."""
     mclear.check_clear(ref, all, "breakpoint")
     if ref.strip():
         inputs.check_ref(ref)
@@ -447,9 +394,7 @@ def check_clear_breakpoints(ref: str = "", all: bool = False, **_: Any) -> None:
 
 def clear_breakpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False
                      ) -> dict[str, Any]:
-    """The body of the `declaration_clear(kind="breakpoint")` tool: `ref`'s declarations (every one
-    with no ref),
-    on every cpu or on `cpu` alone."""
+    """The body of `declaration_clear(kind="breakpoint")`."""
     check_clear_breakpoints(ref=ref, all=all_)
     ref = "" if all_ else ref
     running = arming.running_on_arrival(ses)
@@ -460,16 +405,14 @@ def clear_breakpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = Fal
     going: list[mclear.Going] = []
     held = mlists.bp_held(ses)
     for decl in going_decls:
-        # ONLY THE OWNER'S ROW IS REMOVED: a second declaration on the same address (an old
-        # store) owns no row, and a removal sent for it would find none.
+        # Only the owner's row is removed: an old store's second declaration owns none.
         own = bp_record(decl.owner)
         if own is None:
             continue
         index = own[0]
         row = mlists.row_at_index(held, index)
         if row is None:
-            # The debugger does not hold it any more (`gone`): nothing to disarm, and
-            # claiming it would make `disarmed` this tool's word instead of the list's.
+            # `gone`: nothing to disarm, and `disarmed` stays the list's word.
             STATE.breakpoints.pop(index, None)
             STATE.controls.pop(decl.owner, None)
             continue
@@ -489,13 +432,9 @@ def clear_breakpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = Fal
 
 
 def foreign_breakpoint(ses: gs.Session, since: list[str], pc: int) -> str | None:
-    """How a stop is named when the console's newest `Stopped at breakpoint <n>` in `since`
-    is a row this server did not arm (typed through `debug`), or None. The caller has
-    already given a row this server armed at `pc` its precedence. A row the debugger no
-    longer lists is none of anybody's now (a tool's own, removed before the survey), and
-    one whose address this server armed is its own. A list the console will not answer
-    cannot say whose the row is: the stop is still named, since resuming through it would
-    lose a stop somebody asked for."""
+    """How a stop is named when the newest `Stopped at breakpoint <n>` in `since` is a row typed
+    through `debug`, else None. The caller gave this server's own rows precedence. An unreadable
+    list still names the stop: resuming through it would lose one somebody asked for."""
     stops = [m for ln in since if (m := _BP_STOP_LINE.search(ln)) is not None]
     if not stops:
         return None

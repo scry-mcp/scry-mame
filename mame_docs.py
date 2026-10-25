@@ -1,11 +1,4 @@
-"""WHAT A TOOL'S DOCSTRING STATES THAT THE CODE ALREADY KNOWS, filled at registration.
-
-A tool's description is the one text a client reads before calling it, so its numbers are not
-typed into it: each `{NAME}` placeholder is replaced by the constant that enforces it, and the
-sentences several tools share are written once here. `server.tool` calls `filled` on every
-docstring it registers, and a placeholder nothing fills fails the import.
-"""
-
+"""Placeholders for tool docstrings, filled at registration from the constants that enforce them."""
 from __future__ import annotations
 
 from scry_core import docs, judges, log_marks, picture, recording, screen_map, series
@@ -34,21 +27,17 @@ import mame_transport as transport
 import mame_watches as watches
 import mame_write as mwrite
 
-# THE SENTENCES THE TOOL DOCSTRINGS SHARE, each filled into the placeholder of its own name
-# (`{NEEDS_STOPPED}`, ...; `DOC_VALUES` below is the whole list).
-# What the instructions already say of every reader on a running machine (`not_stopped`, and
-# which tools answer) is not said again here: each repeat is paid against the client's cap.
+# Sentences shared by the tool docstrings. The server instructions already say which readers
+# refuse on a running machine, so it is not repeated here (each repeat counts against the cap).
 NEEDS_STOPPED = "Needs the machine STOPPED (else `not_stopped`)"
 NUMBER_ARG = "an integer or a `0x` string"
 DEST_FILE = f"absolute or `~`-led, in a directory that exists, with {inputs.PATH_CHARS}"
 
-# EVERY NUMBER A DOCSTRING STATES IS READ OFF THE CONSTANT THAT ENFORCES IT, filled at
-# registration: a ceiling typed into prose drifts from the one the code refuses at, and a
-# ceiling nobody typed is a limit the caller meets only by hitting it.
+# A ceiling typed into prose drifts from the one the code refuses at.
 DOC_VALUES: dict[str, str] = {
     "NEEDS_STOPPED": NEEDS_STOPPED,
     "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
-    # The picture's two sentences and the series' bound are scry-core's, alike on both servers.
+    # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
     "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),

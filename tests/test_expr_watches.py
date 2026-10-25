@@ -1,18 +1,4 @@
-"""A watch of mode `expr`: any expression the MAME debugger evaluates, read at every stop.
-
-The debugger exposes more than memory and registers: `beamx`, `beamy` (where the beam is),
-`frame`, `cycles`, `totalcycles`, `lastinstructioncycles`, and any expression over them and
-the registers. A stop survey that carried only the frame made a session type `debug("print
-beamy")` after every stop to read the geometry it was measuring. An `expr` watch is a
-declaration like the others, so it rides on every stop's `watches`, is listed, cleared and
-re-evaluated at the next `start`; and every expression declared is read in ONE `print`
-beside the frame (the console prints several expressions space-separated), so the cost of a
-stop does not grow with the number of watches. `run_for` reads `totalcycles` the same way
-and reports the cycles the run took, which is the exact clock behind an emulated duration.
-
-The mode rests on the debugger's own expression evaluator, and the store rule it needs is
-stated as this server's own.
-"""
+"""A watch of mode `expr`: any debugger expression, read at every stop in one `print`."""
 
 from __future__ import annotations
 
@@ -37,8 +23,6 @@ import mame_rearm as rearming  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
 
-# ------------------------------------------------------------------ the declaration
-
 
 def test_an_expr_watch_carries_no_width_no_format_and_no_address() -> None:
     w = dec.Declaration("watch", "expr", "beamy", watch_mode="expr")
@@ -57,9 +41,6 @@ def test_an_expr_watch_carries_no_width_no_format_and_no_address() -> None:
         dec.Declaration("breakpoint", "expr", "beamy")
 
 
-# ------------------------------------------------------------------ the console reader
-
-
 def test_print_values_reads_several_expressions_in_one_call_and_refuses_a_short_answer(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
@@ -71,9 +52,6 @@ def test_print_values_reads_several_expressions_in_one_call_and_refuses_a_short_
     assert read.frame(ses) == 100 and ses.commands[-1] == "print frame"  # type: ignore[arg-type]
     with pytest.raises(g.SessionError, match="values for 3 expressions"):
         read.print_values(ses, ["frame", "beamy", "nosuchthing"])  # type: ignore[arg-type]
-
-
-# ------------------------------------------------------------------ declaring one
 
 
 def test_watch_add_expr_validates_the_expression_on_the_console_and_answers_its_value(
@@ -103,9 +81,6 @@ def test_watch_add_expr_while_running_stores_and_reads_no_value(
     ses.go()
     out = s.watch_add(ref="beamy", mode="expr")
     assert out["status"] == "ok" and out["while_running"] is True and "value" not in out
-
-
-# ------------------------------------------------------------------ at every stop
 
 
 def test_a_stop_reads_the_frame_and_every_expression_in_one_print(
@@ -140,13 +115,10 @@ def test_an_expression_the_console_stops_answering_is_unreadable_and_the_frame_s
     assert "beamy" in w["reading"]["why"]
 
 
-# ------------------------------------------------------------------ list, clear, rearm
-
-
 def test_expr_watches_are_listed_cleared_and_come_back_evaluated(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    ses = _watching(monkeypatch, tmp_path)        # the double that answers `wplist`
+    ses = _watching(monkeypatch, tmp_path)
     ses.exprs = {"beamy": 0xF8}
     s.watch_add(ref="beamy", mode="expr")
     (row,) = s.declaration_list("watch")["watches"]
@@ -160,9 +132,6 @@ def test_expr_watches_are_listed_cleared_and_come_back_evaluated(
     assert s.declaration_list("watch")["watches"] == []
 
 
-# ------------------------------------------------------------------ run_for's clock
-
-
 def test_run_for_reports_the_cycles_the_run_took(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
@@ -173,9 +142,6 @@ def test_run_for_reports_the_cycles_the_run_took(
     assert out["verdict"] == "ELAPSED"
     assert out["cycles"] == (out["frame_after"] - out["frame_before"]) * reg.cycles_per_frame
     assert out["cycles"] > 0
-
-
-# ------------------------------------------------------------------ the odd branches
 
 
 def test_expression_refs_and_evaluation_answer_empty_with_no_store_or_no_expressions(
@@ -230,16 +196,10 @@ def test_run_for_reports_no_cycles_when_the_console_stops_answering_them(
     assert out["verdict"] == "ELAPSED" and out["cycles"]["available"] is False
 
 
-# ------------------------------------------------------------------ run_for by frames
-
-
 def test_run_for_frames_advances_the_frame_counter_by_exactly_that_many(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A golden is a marker plus N FRAMES, and N milliseconds is not N frames: MAME's
-    `gvblank` runs to the next vblank, one per frame counter tick (from the
-    vblank line each `gvblank` moves `frame` by one and `totalcycles` by one frame's worth),
-    so `frames=N` is N of them, each confirmed on the counter, until it has moved by N."""
+    """`frames=N` sends `gvblank` until the counter has moved by exactly N."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -248,8 +208,6 @@ def test_run_for_frames_advances_the_frame_counter_by_exactly_that_many(
     assert out["frame_before"] == 10 and out["frame_after"] == 13
     assert reg.commands.count("gvblank") == 3
     assert out["cycles"] == 3 * reg.cycles_per_frame
-    # The summary names the unit that DECIDED the run: three repos read "run_for 0 ms" for a
-    # run asked in frames and took it for a run that went nowhere.
     assert out["summary"] == "run_for 3 frames: ELAPSED, frame 10 to 13", out["summary"]
     refused("exactly one", s.run_for(milliseconds=100, frames=3))
     refused("exactly one", s.run_for())
@@ -308,12 +266,7 @@ def test_run_for_frames_reports_no_cycles_when_the_console_stops_answering_them(
 def test_run_for_frames_stops_at_a_breakpoint_this_server_armed_between_two_vblanks(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A breakpoint armed on a routine that runs every frame halts the machine BEFORE the
-    vblank the `gvblank` was heading for: the counter has not moved, the pc sits on the
-    row. The contract: the stop is OTHER_STOP, attributed, and NOTHING is sent after it, so
-    the machine is left where the breakpoint put it. A run that resumed each hit with the
-    next `gvblank` instead comes back ELAPSED at its last frame, with every halt it passed
-    through lost."""
+    """A row armed here that halts before the vblank cuts the run as OTHER_STOP."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -326,8 +279,6 @@ def test_run_for_frames_stops_at_a_breakpoint_this_server_armed_between_two_vbla
     def halt_on_the_row(command: str, timeout: float = 10.0) -> str:
         nonlocal landed
         if command == "gvblank" and reg.commands.count("gvblank") == 1:
-            # The second run to the vblank meets the row first: no frame elapsed, and the
-            # pc is the row's.
             landed = True
             reg.commands.append(command)
             return ""
@@ -347,11 +298,7 @@ def test_run_for_frames_stops_at_a_breakpoint_this_server_armed_between_two_vbla
 def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A watchpoint this server did not arm (`debug("wpset ...")`) halts the machine before
-    the vblank: the counter does not tick, no packet comes, and the only trace is the
-    console's line in `debug.log`. The run is OTHER_STOP named by that line, and nothing
-    is sent after it; before, the stop was absorbed and the run came back ELAPSED with
-    every hit lost. The control is the ELAPSED run above, with no line in the log."""
+    """A foreign watchpoint, seen only in `debug.log`, cuts the run as OTHER_STOP."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -374,8 +321,7 @@ def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
     assert reg.commands.count("gvblank") == 2, reg.commands
 
 
-# CAPTURED, never authored: what the console wrote to `debug.log` while `run_for` resumed through
-# a breakpoint typed through `debug` on the vblank handler (PROVENANCE.txt says how).
+# Captured, not authored (PROVENANCE.txt).
 _CAPTURED = Path(__file__).parent / "fixtures" / "console"
 _FRAMES_LOG = (_CAPTURED / "debuglog.foreign-bp.frames.txt").read_text().splitlines(keepends=True)
 _MS_LOG = (_CAPTURED / "debuglog.foreign-bp.ms.txt").read_text()
@@ -384,15 +330,14 @@ _FOREIGN_CAUSE = ("breakpoint 1 at 0x00000400, typed through `debug`: `debug(\"b
 
 
 def _first_stop_through(last: str) -> str:
-    """The captured log from its start through the first line that begins with `last`."""
+    """The captured log through the first line that begins with `last`."""
     end = next(i for i, ln in enumerate(_FRAMES_LOG) if ln.startswith(last))
     return "".join(_FRAMES_LOG[:end + 1])
 
 
 def _foreign_breakpoint_on_the_vblank(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
                                       chunk: str, rows: list[str]) -> _RegisterSession:
-    """A double whose first `gvblank` lands, WITH the tick, on the row `bpset 0x400` made:
-    the counter moves, the pc is the handler's, and the only trace is the console's line."""
+    """The first `gvblank` lands with the tick on the row `bpset 0x400` made."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -418,10 +363,7 @@ def _foreign_breakpoint_on_the_vblank(monkeypatch: pytest.MonkeyPatch, tmp_path:
 def test_run_for_frames_stops_at_a_breakpoint_typed_through_debug(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, through: str,
 ) -> None:
-    """A breakpoint typed through `debug` on the vblank handler lands WITH the tick: the counter
-    moved, the pc is on no row of this server's, no packet comes, and the only trace is the
-    console's `Stopped at breakpoint <n>`. The run is OTHER_STOP named by that line, and
-    nothing is sent after it."""
+    """A foreign breakpoint landing with the tick is OTHER_STOP named by the console line."""
     reg = _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through(through),
                                             ["    1 @ 000400"])
     out = s.run_for(frames=5, seconds=2.0)
@@ -434,9 +376,7 @@ def test_run_for_frames_stops_at_a_breakpoint_typed_through_debug(
 def test_run_for_milliseconds_stops_at_a_breakpoint_typed_through_debug(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The same breakpoint under `gtime`: the run the console started ends at it, and the
-    survey of that end reads the line, so the verdict is OTHER_STOP named by it, not a run
-    that elapsed."""
+    """The same foreign breakpoint under `gtime` is OTHER_STOP, not an elapsed run."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=2)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -458,8 +398,7 @@ def test_run_for_milliseconds_stops_at_a_breakpoint_typed_through_debug(
 def test_a_breakpoint_stop_whose_list_the_console_will_not_answer_still_cuts_the_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With no list to say whose the row is, the stop is still a stop: named as such, with the
-    reason, and the run ends there rather than resuming through a stop somebody asked for."""
+    """With no list to say whose the row is, the stop still cuts the run, with the reason."""
     reg = _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through("3D"),
                                             ["    1 @ 000400"])
     landed = reg.monitor
@@ -477,8 +416,7 @@ def test_a_breakpoint_stop_whose_list_the_console_will_not_answer_still_cuts_the
 def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_foreign_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """PRECEDENCE AT THE CALLER: the machine stands on a row this server armed while the window
-    also holds a foreign row's line. The stop is the armed row's, whatever the line says."""
+    """A row this server armed keeps its name beside a foreign line."""
     import mame_state as mstate
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "irq_vblank", 0x400)))
     _foreign_breakpoint_on_the_vblank(
@@ -489,7 +427,7 @@ def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_foreign_line(
 
 
 def test_the_newest_breakpoint_line_in_the_window_names_the_stop(tmp_path: Path) -> None:
-    """Two breakpoint stops in one window: the machine stands at the LAST one."""
+    """With two breakpoint stops in one window the machine stands at the last."""
     reg = _RegisterSession(bits=32)
     reg.bplist_rows = ["    1 @ 000400", "    2 @ 0025A4"]
     since = ["Stopped at breakpoint 1", "3D", "Stopped at breakpoint 2", "3D"]
@@ -500,8 +438,7 @@ def test_the_newest_breakpoint_line_in_the_window_names_the_stop(tmp_path: Path)
 def test_a_resume_that_lands_on_a_breakpoint_typed_through_debug_names_it_the_same_way(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """ONE READER, ONE ANSWER: every survey reads the line, so a `resume` that stops on the
-    same row names it as `run_for` does, not as a stop at no breakpoint."""
+    """A `resume` names a foreign breakpoint stop as `run_for` does."""
     reg = _RegisterSession(bits=32, frame=10)
     _install(monkeypatch, reg, tmp_path)
     reg.bplist_rows = ["    1 @ 000400"]
@@ -520,10 +457,7 @@ def test_a_resume_that_lands_on_a_breakpoint_typed_through_debug_names_it_the_sa
 def test_a_breakpoint_line_of_a_row_this_server_armed_is_named_as_its_own(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """PRECEDENCE: the console writes the same line for a row this server armed, and that stop
-    is named as the row it is, never as foreign. The control beside it: a line whose row is no
-    longer in the debugger's list (a tool's own row, removed before the survey) names nothing,
-    and the run goes on to its frames."""
+    """An armed row's line is named as its own; a line whose row left the list names nothing."""
     import mame_state as mstate
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "irq_vblank", 0x400)))
     _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through("3D"),
@@ -540,7 +474,7 @@ def test_a_breakpoint_line_of_a_row_this_server_armed_is_named_as_its_own(
 def test_a_cut_frame_run_reports_no_cycles_when_the_console_stops_answering_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The cut's cycles are read like ELAPSED's: unreadable is None, never a guess."""
+    """Unreadable cycles on a cut run are unavailable, never a guess."""
     import mame_state as mstate
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
@@ -562,8 +496,7 @@ def test_a_cut_frame_run_reports_no_cycles_when_the_console_stops_answering_them
 def test_a_stop_packet_that_names_no_watch_and_no_row_does_not_cut_a_frame_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A packet the stub left (an earlier interrupt's, say) with the pc on no row of ours and
-    no watch in the survey is not a stop this server armed: the run goes on to its frames."""
+    """A stale stop packet naming no row or watch does not cut the run."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -583,9 +516,7 @@ def test_a_stop_packet_that_names_no_watch_and_no_row_does_not_cut_a_frame_run(
 def test_a_frame_run_landing_on_a_control_row_every_vblank_runs_to_its_frames(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control on the vblank handler is where every `gvblank` lands: it counts and never
-    halts, so the run goes to its frames. A control treated as a halt ends a long frame run
-    at the first vblank, on the control's row, with most of its frames still to go."""
+    """A control row counts and never halts, so the run goes to its frames."""
     import mame_state as mstate
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
@@ -599,22 +530,12 @@ def test_a_frame_run_landing_on_a_control_row_every_vblank_runs_to_its_frames(
     out = s.run_for(frames=4, seconds=2.0)
     assert out["verdict"] == "ELAPSED" and out["frame_after"] == 14, out
     assert reg.commands.count("gvblank") == 4
-    # Three of the four landings were released inside the run, unevaluated by MAME.
     assert mstate.STATE.controls[("irq_vblank", ":maincpu")]["missed"] == 3
-
-
-# ------------------------------------------------ what span `cycles` reports for a frame run
-#
-# THE DOUBLE HERE DECOUPLES THE TWO COUNTERS, which the shared one cannot: its `totalcycles` is
-# the frame counter times a constant, so a tick that burns cycles WITHOUT moving the frame --
-# exactly the aligning `gvblank` this loop documents -- cannot be expressed through it.
 
 
 def _misaligned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
                 align_ticks: int = 1) -> _RegisterSession:
-    """A machine stopped in the MIDDLE of a frame: the first `align_ticks` `gvblank`s reach
-    that frame's own vblank, burning a frame's worth of cycles each without moving the frame
-    counter, and every one after that moves both."""
+    """A mid-frame stop: the first `align_ticks` `gvblank`s burn cycles but not the counter."""
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -649,13 +570,7 @@ def _misaligned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 def test_the_aligning_vblank_is_outside_the_cycles_a_frame_run_reports(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`cycles` is the clock behind the frames ASKED FOR. From a mid-frame stop the first
-    `gvblank` reaches that frame's vblank without moving the counter, so its cycles sat
-    inside a span whose frame count was still exactly N, so the first
-    `run_for(frames=1)` of a session reports about twice the cycles of a later one.
-
-    `polls` is NOT touched: it reports the `gvblank`s sent, honestly, and it is the only
-    tell a caller has that the alignment fired at all."""
+    """`cycles` spans only the frames asked for; the aligning `gvblank` is outside it."""
     reg = _misaligned(monkeypatch, tmp_path)
     out = s.run_for(frames=1, seconds=5.0)
     assert out["status"] == "ok" and out["verdict"] == "ELAPSED", out
@@ -668,10 +583,7 @@ def test_the_aligning_vblank_is_outside_the_cycles_a_frame_run_reports(
 def test_a_frame_run_from_an_aligned_stop_reports_the_same_per_frame_cycles(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE KNOWN-ANSWER CASE the instrument is checked against: from a stop already ON a
-    vblank no alignment is needed, and a run of N frames must report exactly what the
-    misaligned one above reports per frame. An instrument whose answer depends on where the
-    session happened to be stopped is not measuring the run."""
+    """The known answer: an aligned stop reports exactly the per-frame cycles."""
     aligned = _misaligned(monkeypatch, tmp_path, align_ticks=0)
     one = s.run_for(frames=1, seconds=5.0)
     assert one["polls"] == 1 and one["cycles"] == aligned.cycles_per_frame, one
@@ -682,9 +594,7 @@ def test_a_frame_run_from_an_aligned_stop_reports_the_same_per_frame_cycles(
 def test_a_baseline_the_console_cannot_re_read_reports_no_cycles_rather_than_a_guess(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The re-baseline is a console read like any other, and this file's rule for one that
-    fails is the same everywhere: unreadable is None, never a number that spans the wrong
-    thing."""
+    """A failed re-baseline read reports unavailable cycles, never a wrong span."""
     reg = _misaligned(monkeypatch, tmp_path)
     real = reg.monitor
 
@@ -714,9 +624,7 @@ def test_an_expr_watch_is_declared_by_its_mode_and_its_reply_says_what_was_store
 
 @pytest.mark.parametrize("ref", ["1;g", "(d0=5)", "beamy,d0", "d0++", "{g}"])
 def test_an_expr_ref_that_would_run_a_command_or_write_is_refused_before_anything(ref: str) -> None:
-    """The ref goes out as a parameter of `print frame,<ref>` at every stop: a `;` would run a
-    second command there, a `,` a second parameter, and an assignment would write the machine at
-    every stop with nothing counted."""
+    """The ref rides in `print frame,<ref>`, so `;`, `,` and assignment are refused."""
     out = s.watch_add(ref=ref, mode="expr")
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
     assert out["session"]["altered"] is False

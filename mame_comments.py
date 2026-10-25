@@ -1,17 +1,9 @@
 """COMMENTS: a text at a place in the program, held as a declaration and shown in MAME's own pane.
 
-A comment is a declaration of the store (`mame_declarations`, kind `comment`), by symbol or by raw
-address, on one cpu: by symbol it follows its name through a rebuild, by address it is listed
-`stale` once the build changes, and the store keeps it per system and symbol file. The store is
-the record and MAME's disassembly pane a VIEW of it: each comment that resolves is fed through
-the console's `comadd` at `start` and on every add or load, and read back off one `dasm` line. A
-view that fails is said (`unarmable`, with why) and the record is kept. What the pane cannot hold,
-and why the console and not Lua, is REFERENCE.md's, Declarations; each reason is repeated here
-only where the code acts on it.
-
-The pane itself, how a comment is fed to it and read back and how a place is handed over, is
-`mame_comment_pane`'s. The file a project versions is `mame_comment_file`'s, read by
-`comment_write(method="load")` and written by `comment_write(method="save")`, never implicitly.
+The store (`mame_declarations`, kind `comment`) is the record and MAME's disassembly pane a view
+of it, fed through the console's `comadd`. A view that fails is said (`unarmable`) and the record
+is kept. Why the console and not Lua is REFERENCE.md's, Declarations. The pane is
+`mame_comment_pane`'s, the file a project versions `mame_comment_file`'s.
 """
 
 from __future__ import annotations
@@ -41,28 +33,20 @@ import mame_running as running
 import mame_state as st
 from mame_state import STATE
 
-# WHAT MAKES A REF AN EXPRESSION: the operators and brackets of MAME's own expressions. A comment
-# names a place, and an expression stored as a name would never resolve; a name the cpu's table
-# holds is a name whatever its characters (a symbol file can carry a C++ one).
+# The operators and brackets of MAME's expressions; a name the cpu's table holds is a name
+# whatever its characters (a symbol file can carry a C++ one).
 _EXPRESSION = re.compile(r"[-+*/%&|^~!<>=()\[\],;]")
 
-# What a comment call answers when the session breaks after the store was written: the store is
-# the record, written first, so the change outlives the session.
+# The store is written first, so the change outlives a session that breaks after.
 STORE_HELD = ("The declaration store already holds the change, written before the pane was fed, "
               "and the next `start` feeds the pane from it")
 
-# A NEW COMMENT FILE IS A FILE A PROJECT VERSIONS, readable by whoever reads the repository; a
-# file it replaces keeps its own mode.
+# A new comment file is versioned by a project; a file it replaces keeps its own mode.
 NEW_FILE_MODE = 0o644
 
 
-# ------------------------------------------------------------------- what a call may carry
-
-
 def check_comment_ref(ref: str) -> None:
-    """A comment's `ref`: a symbol or a linear `0x` address, as a file can write it (no whitespace
-    inside, no leading `#`; `0x` only before hex, since a file reads `0x` as an address), and
-    never a pointer or an expression, whose place moves."""
+    """A comment's `ref`: a symbol or a `0x` address as the file writes it, never a pointer."""
     inputs.check_ref(ref)
     text = ref.strip()
     if (fault := cf.ref_fault(text)) is not None:
@@ -75,8 +59,7 @@ def check_comment_ref(ref: str) -> None:
 
 
 def expression_fault(ref: str, table: dict[str, int]) -> str | None:
-    """`ref` named as an expression, or None: a call and a file share the rule, each against the
-    table of the cpu the comment is on."""
+    """`ref` named as an expression, or None, against the table of the comment's cpu."""
     if _EXPRESSION.search(ref) is None or ref.strip().upper() in table:
         return None
     return (f"{ref!r} is an expression: a comment names a place, a symbol or a `0x` address, "
@@ -84,45 +67,37 @@ def expression_fault(ref: str, table: dict[str, int]) -> str | None:
 
 
 def check_text(text: str) -> None:
-    """A comment's text against the comment file's rule, which a call and a file share."""
+    """A comment's text against the comment file's rule."""
     if (fault := cf.text_fault(text)) is not None:
         raise st.Invalid("bad_argument", f"the text {fault}; nothing is stored")
 
 
 def check_add_comment(ref: str = "", text: str = "", **_: Any) -> None:
-    """`comment_write(method="add")`'s machine-independent half: the ref's shape and the text's
-    rule."""
+    """The machine-independent half of `add`: the ref's shape and the text's rule."""
     check_comment_ref(ref)
     check_text(text)
 
 
 def check_delete_comment(ref: str = "", **_: Any) -> None:
-    """`comment_write(method="delete")`'s machine-independent half: the ref's shape."""
+    """The machine-independent half of `delete`: the ref's shape."""
     check_comment_ref(ref)
 
 
 def check_save_comments(dest: str = "", **_: Any) -> Path:
-    """`comment_write(method="save")`'s machine-independent half, a file this server may write,
-    handed back so
-    the body does not build it twice."""
+    """The machine-independent half of `save`: a file this server may write."""
     return inputs.writable_path("dest", dest)
 
 
 def check_load_comments(path: str = "", **_: Any) -> None:
-    """`comment_write(method="load")`'s machine-independent half: an absolute path."""
+    """The machine-independent half of `load`: an absolute path."""
     inputs.absolute("path", path)
 
 
-# ------------------------------------------------------------------------------ the store
-
-
 def _reached(at_place: list[dec.Declaration], by: str, ref: str) -> dec.Declaration | None:
-    """Which of the comments at one place a call spelling `ref`, of kind `by`, reaches, where a
-    rebuild left several there: the one whose own ref it spells, else the one the pane shows,
-    else the first the store holds. A STALE row of the other kind is out of the last two: its
-    place is another build's, so only its own spelling reaches it (`stale_why`'s "declare it
-    again to adopt it"), and a name never deletes or adopts a raw row it merely shares a place
-    with on paper."""
+    """The comment at one place that a call spelling `ref` of kind `by` reaches: the one whose own
+    ref it spells, else the one the pane shows, else the first held. A stale row of the other
+    kind is out of the last two: its place is another build's, so only its own spelling reaches
+    it."""
     store = arming.store()
     own = next((c for c in at_place if store.matches(c, by, ref)), None)
     if own is not None:
@@ -133,14 +108,14 @@ def _reached(at_place: list[dec.Declaration], by: str, ref: str) -> dec.Declarat
 
 
 def _at_place(d: dec.Declaration) -> dec.Declaration | None:
-    """The comment the store holds at `d`'s place, however it was spelled (`_reached`)."""
+    """The comment the store holds at `d`'s place, however spelled."""
     place = pane.place(d)
     return _reached([c for c in pane.comments() if pane.place(c) == place], d.by, d.ref)
 
 
 def _store_fields() -> dict[str, Any]:
-    """The declaration store a comment call changed, in `start`'s `declarations` shape: `path`
-    alone names a file a tool wrote, so the store's own file sits one level down."""
+    """The store in `start`'s `declarations` shape; `path` alone names a file a tool wrote, so
+    the store's own file sits one level down."""
     store = arming.store()
     return {"declarations": {"persistent": store.persistent,
                              "path": (unavailable(dec.SESSION_LIVED_WHY) if store.path is None
@@ -150,9 +125,8 @@ def _store_fields() -> dict[str, Any]:
 def _apply(adds: list[dec.Declaration] | None = None,
            replaces: list[tuple[dec.Declaration, dec.Declaration]] | None = None,
            removes: list[dec.Declaration] | None = None) -> str | None:
-    """The store changed in one write, or why the write failed: the change is then held in
-    memory for this session and not on disk, which the tool answers `host_failed`. A store file
-    that went bad under the session is the same failure as one that cannot be written."""
+    """The store changed in one write, or why it failed (the change is then held in memory only,
+    answered `host_failed`)."""
     try:
         arming.store().apply(adds or [], replaces or [], removes or [])
     except (OSError, st.Invalid, dec.DeclarationError) as e:
@@ -166,10 +140,8 @@ def _host_failed(why: str, note: dict[str, str], **fields: Any) -> dict[str, Any
 
 
 def row(d: dec.Declaration) -> dict[str, Any]:
-    """A comment as `comment_list` gives it: its declaration's row, its text, its address once
-    it resolves, and its state: `unresolved` (a name this build lacks), `stale` (a raw address
-    declared over another build), else what the last feed to the pane said, `armed` or
-    `unarmable` with why."""
+    """A comment as `comment_list` gives it: row, text, address once resolved, and state
+    (`unresolved`, `stale`, else the last feed's `armed` or `unarmable` with why)."""
     item: dict[str, Any] = {**arming.decl_row(d), "text": d.text}
     res = arming.resolve_decl(d)
     if res.addr is not None:
@@ -183,12 +155,9 @@ def _not_shown(item: dict[str, Any]) -> bool:
 
 
 def rearm(ses: gs.Session, scratch: Path) -> dict[str, Any]:
-    """`start`'s half for comments: every comment the store holds fed again, and listed under
-    the re-arm's words and in its row shape (`rearmed`, `stale`, `unresolved`, `unarmable`, each
-    row the one `arming.decl_row` builds, `unarmable`'s with `why`); the whole rows are
-    `comment_list`'s.
-    Comments that came to share a place after a rebuild are all kept: the pane shows the first
-    of them the store holds that it can show, and the others are `unarmable`, each with why."""
+    """`start`'s half for comments: every comment fed again and listed as `rearmed`, `stale`,
+    `unresolved` or `unarmable` (with `why`). Comments sharing a place after a rebuild are all
+    kept: the pane shows the first it can show, the others are `unarmable`."""
     out: dict[str, Any] = {key: [] for key in ("rearmed", "stale", "unresolved", "unarmable")}
     if STATE.store is None:
         return out
@@ -211,9 +180,6 @@ def rearm(ses: gs.Session, scratch: Path) -> dict[str, Any]:
     return st.add_note(out, *notes)
 
 
-# ------------------------------------------------------------------------------- the tools
-
-
 def _notes(*parts: str | None) -> dict[str, Any]:
     return st.add_note({}, *parts)
 
@@ -224,8 +190,7 @@ def _persistence_note() -> str | None:
 
 def add_comment(ses: gs.Session, scratch: Path, ref: str, text: str,
                 cpu: str = "") -> dict[str, Any]:
-    """The body of the `comment_write(method="add")` tool: `text` on `ref` of `cpu`, one comment per
-    place."""
+    """Body of `comment_write(method="add")`: `text` on `ref` of `cpu`, one comment per place."""
     check_add_comment(ref, text)
     on = cpus.acting(ses, cpu)
     typed = ref.strip()
@@ -240,8 +205,7 @@ def add_comment(ses: gs.Session, scratch: Path, ref: str, text: str,
     replaced: list[dict[str, Any]] = []
     shown: frozenset[pane.Place] = frozenset()
     if held is not None:
-        # ONE COMMENT PER PLACE, and the place keeps the row's ref and `by`: a comment made by
-        # symbol keeps following its symbol whatever spelling replaced its text.
+        # The place keeps the row's ref and `by`, so a symbol comment keeps following its symbol.
         replaced.append(row(held))
         shown = frozenset({pane.place(held)}) if pane.holds_text_to_clear(held) else frozenset()
         decl = dataclasses.replace(held, text=text, created_at=decl.created_at,
@@ -254,8 +218,7 @@ def add_comment(ses: gs.Session, scratch: Path, ref: str, text: str,
         rivals = pane.rivals(decl)
         if (not pane.is_shown(decl) and rivals
                 and all(not pane.is_shown(c) for c in rivals)):
-            # THE PANE SHOWS THE FIRST COMMENT AT A PLACE IT CAN SHOW, as at `start`: one it
-            # cannot show gives the place to the others there.
+            # As at `start`: a comment the pane cannot show gives the place to the others.
             place = pane.place(decl)
             put_back = st.join_notes(put_back, *pane.feed_in_turn(
                 ses, scratch, {place: rivals},
@@ -274,14 +237,12 @@ def add_comment(ses: gs.Session, scratch: Path, ref: str, text: str,
 
 
 def _broke_after_store(error: gs.SessionError, tool: str, failed: str | None) -> dict[str, Any]:
-    """A session error raised once the store was written, answered as the server answers every
-    one (`running.session_error_reply`), saying where the change is: in the store, or, when the
-    store's write `failed`, in memory only, gone at `close`. The reply of a call that latched
-    says it in its tail, one the stub refused in its message."""
+    """A session error after the store was written, saying where the change is: in the store, or,
+    when its write `failed`, in memory only, gone at `close`."""
     said = STORE_HELD if failed is None else (
         f"{failed}, so the change lives in this session only and is gone at `close`")
     reply = running.session_error_reply(error, tool, tail=said)
-    if reply["code"] != "session_broken":     # the tail is said only where the session latched
+    if reply["code"] != "session_broken":     # a latched reply already carries it in its tail
         reply["message"] = f"{reply['message']}. {said}"
     if failed is not None:
         reply["held_in_memory"] = True
@@ -289,9 +250,7 @@ def _broke_after_store(error: gs.SessionError, tool: str, failed: str | None) ->
 
 
 def comment_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `comment_list` tool: every comment, or `cpu`'s, as the store holds them
-    and as the last feed left the pane. It asks the machine nothing, so it answers while it
-    runs."""
+    """Body of `comment_list`: every comment, or `cpu`'s; it asks the machine nothing."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     rows = [row(d) for d in pane.comments() if only is None or d.cpu == only]
     reply: dict[str, Any] = {"comments": rows[:st.ROWS_SHOWN], "comments_total": len(rows),
@@ -303,11 +262,8 @@ def comment_list(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
 
 
 def _target(ref: str, on: str) -> dec.Declaration | None:
-    """The comment `ref` names on `on`: `ref` is read once by the address rule, then the comment
-    of that kind whose own ref it spells, else the one at the place `ref` resolves to
-    (`_reached`). Its own spelling first, so `beef` finds the comment a file made by the name
-    `beef` on a build that lacks it, and `0x900` the comment made at 0x900 where a symbol's
-    comment shares the place."""
+    """The comment `ref` names on `on`: its own spelling first (so `beef` finds the comment a file
+    made by that name on a build lacking it), else the one at the place it resolves to."""
     held = [d for d in pane.comments() if d.cpu == on]
     by = arming.decide_by(ref, "auto", on, "comment")
     own = next((d for d in held if arming.store().matches(d, by, ref)), None)
@@ -318,10 +274,8 @@ def _target(ref: str, on: str) -> dec.Declaration | None:
 
 
 def delete_comment(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> dict[str, Any]:
-    """The body of the `comment_write(method="delete")` tool: the comment `ref` names on `cpu`. The
-    store's
-    removal is the fact; the pane is cleared after, or given to another comment the store keeps
-    at the same place."""
+    """Body of `comment_write(method="delete")`: the store's removal is the fact; the pane is
+    cleared after, or given to another comment at the same place."""
     check_delete_comment(ref)
     on = cpus.acting(ses, cpu)
     target = _target(ref.strip(), on)
@@ -354,10 +308,8 @@ def delete_comment(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> d
 
 
 def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
-    """What `dest` holds now, when it is a comment file this server can read, None when nothing
-    is there; anything else is refused, since `comment_write(method="save")` replaces only a file of
-    its own
-    format and names the rows it drops."""
+    """What `dest` holds now as a comment file, None when nothing is there; anything else is
+    refused, since `save` replaces only a file of its own format."""
     if path.is_symlink():
         raise st.Invalid("bad_argument",
                          f"dest={dest!r} is a link: replacing it would put a file where the "
@@ -367,7 +319,7 @@ def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
     if path.is_dir():
         raise st.Invalid("bad_argument", f"dest={dest!r} is a directory")
     if not path.is_file():
-        # Judged before any open: reading a FIFO would wait for a writer, and hold the server.
+        # Before any open: reading a FIFO would wait for a writer and hold the server.
         raise st.Invalid("bad_argument", f"dest={dest!r} is not a regular file (a FIFO, a device "
                                          "or a socket): `comment_write(method=\"save\")` replaces "
                                          "only a comment "
@@ -395,9 +347,7 @@ def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
 
 
 def _row_key(r: cf.Row) -> tuple[str, str]:
-    """A row's (ref, cpu) spelled one way, so a re-save does not call a kept row dropped because
-    the old file spelled it otherwise (`0x0400` on `maincpu`): an address canonical, a name
-    upper-cased as the tables key it, the cpu as this machine's tag."""
+    """A row's (ref, cpu) spelled one way, so a re-save does not call a kept row dropped."""
     tags = [c["tag"] for c in (STATE.machine_map or {}).get("cpus", [])]
     try:
         cpu = cpus.match_tag(r.cpu, tags)
@@ -411,16 +361,11 @@ NO_ROW_CPU_WHY = "the row named no cpu"
 
 
 def save_comments(dest: str) -> dict[str, Any]:
-    """The body of the `comment_write(method="save")` tool: every comment of the store, every cpu,
-    written to
-    `dest` as the comment file. A file already there is replaced only when it is one, and the
-    rows it held that the store does not are named; the declaration store's own file never."""
+    """Body of `comment_write(method="save")`: every comment, every cpu, written to `dest`. A file
+    there is replaced only when it is a comment file, and the rows it drops are named."""
     path = check_save_comments(dest)
-    # The store's file is refused as itself, before it is read as a comment file.
-    #
-    # THE PROJECT'S TOO, whichever store this session holds: a session with its own `state_dir`
-    # writing a comment file there would refuse every later start without one.
-    # CASE FOLDED: on a volume that ignores case, `Declarations.json` IS the store's file.
+    # The project's store too, whichever this session holds: a comment file there would refuse
+    # every later start. Case folded: a volume may ignore case.
     stores = {os.path.realpath(p).casefold()
               for p in (arming.store().path, dec.default_path()) if p is not None}
     if os.path.realpath(path).casefold() in stores:
@@ -448,9 +393,8 @@ def save_comments(dest: str) -> dict[str, Any]:
 
 
 def _loaded(r: cf.Row, ses: gs.Session, where: str) -> dec.Declaration:
-    """A row of the file as a declaration of this machine, or the refusal naming its line. The
-    file says which a ref is: `0x` and hex is an address, anything else a symbol, so a saved
-    symbol `fade` never comes back as the address `0xfade`."""
+    """A row of the file as a declaration, or the refusal naming its line. `0x` and hex is an
+    address, anything else a symbol, so a saved `fade` never returns as `0xfade`."""
     if not r.cpu:
         raise st.Invalid("bad_argument", f"{where}: the cpu column is empty, and every comment "
                                          "here is on a cpu: write its tag (`:maincpu`)")
@@ -481,17 +425,13 @@ def _loaded(r: cf.Row, ses: gs.Session, where: str) -> dec.Declaration:
 
 
 def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
-    """The body of the `comment_write(method="load")` tool: the file read into the store, all or
-    nothing. Where
-    the store comments a place the file comments too, the file wins and the row it replaced
-    comes back whole; a place already holding the file's text is kept, brought to this build
-    when it was stale and fed again when the pane does not show it; rows only the store holds
-    stay."""
+    """Body of `comment_write(method="load")`: the file read into the store, all or nothing. The
+    file wins at a place both comment; a place already holding its text is kept, brought to this
+    build if stale and fed again if not shown; rows only the store holds stay."""
     check_load_comments(path)
     read = inputs.input_file("path", path, "comment file")
     try:
-        # BYTES, decoded here: a text read would turn a lone CR into a line break before the
-        # format's rule could refuse it.
+        # Bytes: a text read would turn a lone CR into a line break before the format refuses it.
         text = read.read_bytes().decode("utf-8")
     except UnicodeDecodeError as e:
         raise files.not_utf8(path, e) from None
@@ -506,10 +446,8 @@ def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
     for r in rows:
         where = f"{path}:{r.line}"
         d = _loaded(r, ses, where)
-        # ONE ROW PER COMMENT, in any spelling of its ref; two comments a rebuild put at one place
-        # both come in, as the store keeps them through the rebuild, so what
-        # `comment_write(method="save")` writes
-        # of such a store this reads back.
+        # One row per comment in any spelling of its ref; two a rebuild put at one place both
+        # come in, so what `save` writes of such a store reads back.
         key = (d.cpu, d.by, d.ref.upper() if d.by == "symbol" else d.ref)
         if key in lines:
             raise st.Invalid("bad_argument",
@@ -527,8 +465,7 @@ def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
     for d in decls:
         held = _at_place(d)
         if held is None or held.owner in replaced_owners:
-            # A row the file already replaced is not replaced twice: the next file row at its
-            # place comes in beside it.
+            # A row already replaced is not replaced twice: the next file row comes in beside it.
             adds.append(d)
             continue
         replaced_owners.add(held.owner)
@@ -541,8 +478,7 @@ def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
             continue
         unchanged += 1
         if arming.stale(held):
-            # THE FILE'S ROW IS TRUSTED FOR THIS BUILD, as an added one is: the stale row is
-            # brought to it, keeping its own ref and stamp.
+            # The file's row is trusted for this build, as an added one is.
             new = dataclasses.replace(held, fingerprint=STATE.fingerprint(held.cpu),
                                       origin=STATE.session_origin)
             replaces.append((held, new))

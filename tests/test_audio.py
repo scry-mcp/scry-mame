@@ -1,11 +1,6 @@
-"""`audio_record`: the mixer's WAV over exactly `frames` frames, and the reader that checks it.
+"""`audio_record` and its WAV reader, tested on real files MAME wrote (`tests/fixtures/audio/`).
 
-The doubles are REAL files MAME wrote, gzipped in `tests/fixtures/audio/` with their provenance:
-a tone pinned on v30's AY, the same board's plain attract, a closed file that never received
-an update, an unfinished one copied while the recording was still open, and a stereo recording
-from m68k-dual, with the `begin` and `end` marks the recording script logged beside the first and
-the last. Every failure the tool must refuse is a controlled edit of one of them, never a header
-written from what a WAV is believed to look like.
+Every failure is a controlled edit of one of them, never a header written from belief.
 """
 
 import gzip
@@ -54,8 +49,7 @@ def _marks(name: str, seq: int) -> list[str]:
 
 
 def _with_sizes(data: bytes) -> bytes:
-    """`data` with its RIFF and data sizes made to agree with its length, as MAME's writer leaves
-    them when it closes the file."""
+    """`data` with its RIFF and data sizes made to agree with its length."""
     out = bytearray(data)
     struct.pack_into("<I", out, 4, len(out) - 8)
     struct.pack_into("<I", out, 40, len(out) - mfiles.WAV_HEADER_BYTES)
@@ -74,8 +68,7 @@ def _put(ses: object, seq: int, path: Path, content: bytes | None, marks: list[s
 @pytest.mark.parametrize("name", ["v30-ay-tone", "v30-plain", "v30-closed-empty",
                                   "m68k-dual-stereo"])
 def test_the_reader_agrees_with_stdlib_wave_on_every_real_file(tmp_path: Path, name: str) -> None:
-    """The known answer for the header is a reader this server does not use: `wave` from the
-    standard library reads channels, rate and frames off each file MAME wrote."""
+    """`wave` from the standard library is the known answer for the header."""
     path = tmp_path / f"{name}.wav"
     path.write_bytes(_wav(name))
     got = mfiles.wav_header(path)
@@ -104,8 +97,7 @@ def test_the_levels_of_a_tone_differ_and_those_of_a_held_level_do_not(tmp_path: 
 
 def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyPatch,
                                                      tmp_path: Path) -> None:
-    """The file is read in bounded chunks; the extremes found are the whole file's, whatever
-    chunk holds them."""
+    """The extremes found are the whole file's, whatever chunk holds them."""
     path = tmp_path / "tone.wav"
     path.write_bytes(_wav("v30-ay-tone"))
     whole = mfiles.wav_levels(path)
@@ -114,8 +106,7 @@ def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyP
 
 
 def test_the_levels_of_a_file_longer_than_one_chunk_are_its_own(tmp_path: Path) -> None:
-    """The chunk the levels are read in holds whole samples, so the second chunk starts on a
-    sample too: the AY tone repeated past one chunk reads the levels stdlib `wave` reads."""
+    """A file longer than one chunk reads the levels stdlib `wave` reads."""
     tone = _wav("v30-ay-tone")[mfiles.WAV_HEADER_BYTES:]
     data = tone * (mfiles.WAV_CHUNK_BYTES // len(tone) + 2)
     path = tmp_path / "long.wav"
@@ -129,8 +120,7 @@ def test_the_levels_of_a_file_longer_than_one_chunk_are_its_own(tmp_path: Path) 
 @pytest.mark.parametrize("at", ["first", "last", "second chunk"])
 def test_a_lone_outlier_is_found_wherever_it_lies(monkeypatch: pytest.MonkeyPatch,
                                                   tmp_path: Path, at: str) -> None:
-    """Silence with one sample out of it: the levels see it at the data's first sample, at its
-    last, and at the first sample of the second chunk."""
+    """One sample out of silence is seen at the first, last and second-chunk positions."""
     monkeypatch.setattr(mfiles, "WAV_CHUNK_BYTES", 64)
     n = 100
     index = {"first": 0, "last": n - 1, "second chunk": 32}[at]
@@ -152,8 +142,7 @@ STEREO = _wav("m68k-dual-stereo")
 
 
 def _no_speaker(data: bytes) -> bytes:
-    """The header MAME writes for a machine with no speaker: `wav_open` with zero channels sets
-    the channels, the byte rate and the block align to zero together."""
+    """The header MAME writes for no speaker: channels, byte rate and block align all zero."""
     return _edit(_edit(_edit(data, 22, "<H", 0), 28, "<I", 0), 32, "<H", 0)
 
 
@@ -252,8 +241,7 @@ def test_audio_record_checks_the_wav_and_answers_its_fields_in_order(
 def test_audio_record_writes_where_it_is_told_and_counts_its_default_with_record(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`dest` is taken as given; the default name shares `record`'s session counter, so an AVI
-    and a WAV of one session never take the same number."""
+    """`dest` is taken as given; the default name shares `record`'s session counter."""
     ses = _channel(monkeypatch, tmp_path)
     dest = tmp_path / "out.wav"
     _put(ses, 1, dest, _wav("m68k-dual-stereo"), _marks("m68k-dual-stereo", 1))
@@ -360,9 +348,7 @@ def test_a_recording_cut_short_is_still_open_and_says_so(
 def test_a_recording_a_stop_came_before_is_not_begun_and_says_when_it_begins(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The script ran and its notifier has not: only the `armed` line the chunk logs as it is
-    evaluated, here at a stop in the active display, so the notifier is first called on the
-    frame the counter read."""
+    """Only the `armed` line is logged: the notifier has not run, so it is not begun."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None,
          ["[luaengine] MAME_MCP_AUDIO#1 armed frame=60 vblank=false"])
@@ -378,9 +364,7 @@ def test_a_recording_a_stop_came_before_is_not_begun_and_says_when_it_begins(
 
 
 def test_both_recording_scripts_end_by_logging_where_their_notifier_first_runs() -> None:
-    """The `armed` line is each chunk's last, so a chunk that answered has logged it, and it
-    reads the vblank off the screen's own two timers: inside a vblank its end comes before the
-    next one's start, and on a screen with no vblank period the two are the same instant."""
+    """The `armed` line is each chunk's last and reads the vblank off the two screen timers."""
     assert "time_until_vblank_end():as_double()\n        < screen:time_until_vblank_start()" in (
         mrec.ARMED_LUA)
     for script in (mrec.RECORD_LUA, maudio.AUDIO_LUA):
@@ -390,8 +374,7 @@ def test_both_recording_scripts_end_by_logging_where_their_notifier_first_runs()
 def test_an_end_mark_with_no_begin_mark_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The script ended a recording whose beginning the log does not hold: no reply can say
-    what the file is, and "not begun" would be false."""
+    """No reply can say what the file is, and "not begun" would be false."""
     ses = _channel(monkeypatch, tmp_path)
     _refused_with(ses, AY, _marks("v30-ay-tone", 1)[1:], 30, "no `begin` mark")
 
@@ -458,10 +441,7 @@ def test_captures_lists_a_wav_with_its_header_and_nulls_once_it_no_longer_reads(
 
 
 def test_the_script_stops_the_mixer_in_one_place_and_prints_its_times_whole() -> None:
-    """The release and the end both go through `stop_own`, the one place that stops the mixer,
-    and only for a file this script began that MAME has not closed (its RIFF size still 0); the
-    live matrix's section L holds what it does. The times travel to 17 significant digits, so a
-    60 Hz period is not rounded."""
+    """Release and end both go through `stop_own`, only for a file this script began."""
     script = maudio.AUDIO_LUA % {"path": transport.lua_string("/x.wav"), "frames": 5,
                                  "mark": "MAME_MCP_AUDIO#9"}
     release = script.split("_G._mame_mcp_audio_release = function()", 1)[1].split("end\n", 1)[0]
@@ -475,8 +455,7 @@ def test_the_script_stops_the_mixer_in_one_place_and_prints_its_times_whole() ->
 
 
 def _spanning(seq: int, emulated: float, frames: int = 30, t0: float | None = None) -> list[str]:
-    """Begin and end marks whose span is `emulated` seconds over `frames` periods, from `t0`
-    or the fixture's own begin time."""
+    """Marks whose span is `emulated` seconds over `frames` periods, from `t0` or the fixture's."""
     begin, _ = _marks("v30-ay-tone", seq)
     if t0 is None:
         t0 = float(begin.rsplit("time=", 1)[1].split()[0])
@@ -491,8 +470,7 @@ def _spanning(seq: int, emulated: float, frames: int = 30, t0: float | None = No
 def test_the_samples_are_held_to_one_update_and_one_sample_either_way(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, off: float, ok: bool
 ) -> None:
-    """The fixture's 28800 samples against a span whose expected count is `off` away: one
-    update (960 at 48 kHz) and one sample is the bound, in both directions."""
+    """One update (960 at 48 kHz) and one sample is the bound, in both directions."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", AY, _spanning(1, (28800 - off) / 48000))
     out = s.audio_record(frames=30)
@@ -580,9 +558,7 @@ def test_recording_after_is_what_the_begin_mark_read(
 def test_the_run_gets_the_script_for_this_call_and_the_callers_bound(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """What reaches the run: the script naming THIS call's mark, the file's absolute path and
-    the count asked, the run four frames longer, the caller's `seconds`, and the end the
-    replies predict at the count the script ends on."""
+    """The run gets this call's script, absolute path, count, four frames more, and `seconds`."""
     _channel(monkeypatch, tmp_path)
     seen: dict[str, Any] = {}
 
@@ -623,8 +599,7 @@ def _armed(seq: int, frame: int = 60, vblank: str = "false") -> str:
 
 
 def test_the_armed_line_the_lua_writes_is_the_line_the_parser_reads() -> None:
-    """The `armed` line is written by Lua and read by Python, and nothing else ties the two: the
-    format the chunk sends, filled as Lua's `string.format` fills it, is what `_event` reads."""
+    """Lua writes the `armed` line and Python reads it: the format must round-trip."""
     tag = "MAME_MCP_AUDIO#7"
     chunk = mrec.ARMED_LUA % {"mark": tag}
     m = re.search(r'string\.format\("(.*?)\\n"', chunk)
@@ -637,8 +612,7 @@ def test_the_armed_line_the_lua_writes_is_the_line_the_parser_reads() -> None:
 def test_a_finished_recording_with_its_armed_line_is_finished(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The live shape: the chunk logs `armed` as it is evaluated, then the notifier `begin` and
-    `end`. An `armed` line beside a `begin` is a recording that began."""
+    """The live shape: `armed` logged first, then `begin` and `end`."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", _wav("v30-ay-tone"),
          [_armed(1), *_marks("v30-ay-tone", 1)])
@@ -650,8 +624,7 @@ def test_a_finished_recording_with_its_armed_line_is_finished(
 def test_a_refusal_after_the_run_says_the_frames_the_run_advanced(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A refusal raised once the run is over has moved the machine by the whole run: it says
-    from which frame to which, in the run refusals' own keys."""
+    """A refusal after the run says from which frame to which, in the run refusals' keys."""
     ses = _channel(monkeypatch, tmp_path)
     began = [ln.replace(" ok=true", " ok=false") for ln in _marks("v30-ay-tone", 1)]
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1), *began])
@@ -664,8 +637,7 @@ def test_a_refusal_after_the_run_says_the_frames_the_run_advanced(
 def test_a_recording_cut_short_by_an_unsettled_run_is_the_runs_refusal_with_its_path(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """One shape: the run's `not_settled` refusal, with the file's `path` and a message that says
-    the notifier may still be armed, never the recording's own fields under a refusal."""
+    """The run's `not_settled` refusal with the file's `path`, never the recording's fields."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1)])
     unsettled = {"status": "INVALID", "code": "not_settled",
@@ -689,9 +661,7 @@ def test_a_recording_cut_short_by_an_unsettled_run_is_the_runs_refusal_with_its_
 def test_the_spent_bound_after_an_answer_carries_the_consoles_account(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The bound runs out after the step brought the script's answer and before the frames bought
-    again: the refusal is raised past an answer, so it carries the console's trio as every other
-    refusal raised past one does."""
+    """A refusal raised past an answer carries the console's trio."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1)])
     now = {"t": 0.0, "stepped": False}
@@ -719,9 +689,7 @@ def test_the_spent_bound_after_an_answer_carries_the_consoles_account(
 def test_a_refusal_past_a_resent_answer_counts_the_resend_and_a_not_begun_names_its_file(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console's account rides on a refusal raised past the answer with the call's own
-    `resent`, never a zero written in its place; and the reply of a recording not begun names
-    the file the notifier will write."""
+    """The refusal carries the call's own `resent`; not begun names its file."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [])
     real = lua.queued_then_ran
@@ -797,8 +765,7 @@ function release() _G._mame_mcp_audio_release() end
 
 
 def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list[str]:
-    """The mixer, then `before`, then the recording script for `frames` frames on `ours.wav`,
-    then `after`: what it printed, one event a line (`stop <path>`, `log <mark line>`)."""
+    """Mixer, `before`, the recording script for `frames` frames, then `after`; one event a line."""
     header = _wav("v30-unfinished")[:mfiles.WAV_HEADER_BYTES]
     chunk = (MIXER_LUA % {"header": _lua_bytes(header)} + before + "\n"
              + maudio.AUDIO_LUA % {"path": transport.lua_string(str(tmp_path / "ours.wav")),
@@ -808,8 +775,7 @@ def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list
 
 
 def test_the_lua_mixer_double_closes_a_file_as_mames_did(tmp_path: Path) -> None:
-    """The double's fidelity: a file begun and stopped with no update is, byte for byte, the
-    header MAME wrote for exactly that."""
+    """The double closes a file begun and stopped with no update as MAME did, byte for byte."""
     out = _run_audio_lua(tmp_path, 2, 'other_begins("x.wav") machine = manager.machine '
                          'machine.sound:stop_recording()', "")
     assert out[0] == "stop x.wav", out
@@ -819,8 +785,7 @@ def test_the_lua_mixer_double_closes_a_file_as_mames_did(tmp_path: Path) -> None
 def test_the_script_begins_on_its_first_notifier_call_and_ends_frames_calls_later(
     tmp_path: Path,
 ) -> None:
-    """Begun at the first call, ended at the call where the counter reaches `frames`, so the
-    span between the marks is `frames` frames, and its own file stopped once."""
+    """Begun at the first call, ended where the counter reaches `frames`, own file stopped once."""
     out = _run_audio_lua(tmp_path, 3, "", "tick(1) update(4) tick(5)")
     begin = next(ln for ln in out if " begin " in ln)
     end = next(ln for ln in out if " end " in ln)
@@ -831,23 +796,19 @@ def test_the_script_begins_on_its_first_notifier_call_and_ends_frames_calls_late
 def test_the_script_never_stops_a_file_another_caller_began_on_the_mixer(
     tmp_path: Path,
 ) -> None:
-    """A `lua` call stops the tool's file before its first mixer update and begins its own: the
-    tool's file was closed with its RIFF size written and its data size still zero, and the
-    script, finding the RIFF size, leaves the other recording alone."""
+    """The script finding a RIFF size written leaves the other caller's recording alone."""
     out = _run_audio_lua(tmp_path, 3, "", 'tick(1) other_swaps("other.wav") tick(5)')
     assert "stop ours.wav" in out and "stop other.wav" not in out, out
 
 
 def test_a_script_whose_begin_was_refused_stops_nothing_at_its_release(tmp_path: Path) -> None:
-    """The mixer was already recording (an ini naming `wavwrite`): the begin is refused, and the
-    next call's release must not stop the recording the script never began."""
+    """A refused begin leaves nothing for the next release to stop."""
     out = _run_audio_lua(tmp_path, 3, 'other_begins("ini.wav")', "tick(2) release()")
     assert any("ok=false" in ln for ln in out) and "stop ini.wav" not in out, out
 
 
 def test_a_finished_script_stops_nothing_more_at_its_release(tmp_path: Path) -> None:
-    """Once the script stopped its own file, a later recording on the same path is somebody
-    else's: the next call's release leaves it recording."""
+    """After the script stopped its file, a later recording on the path is somebody else's."""
     out = _run_audio_lua(tmp_path, 2, "", 'tick(4) other_begins("ours.wav") release()')
     assert out.count("stop ours.wav") == 1, out
 
@@ -860,8 +821,7 @@ def test_a_finished_script_stops_nothing_more_at_its_release(tmp_path: Path) -> 
 def test_an_unsettled_recording_says_what_its_script_did(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, answer: Any, said: str,
 ) -> None:
-    """The run did not settle, so the recording's state is not read; what the message says of
-    the script is what the console answered: nothing yet, a raise, or an evaluation."""
+    """The message says what the console answered: nothing yet, a raise, or an evaluation."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1)])
     unsettled = {"status": "INVALID", "code": "not_settled", "message": "still moves",
@@ -876,8 +836,7 @@ def test_an_unsettled_recording_says_what_its_script_did(
 def test_a_refusal_carrying_its_own_frames_keeps_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A refusal that names its own `frame_before`/`frame_after` (a run's) keeps them: the call's
-    span is added only where none is said."""
+    """A refusal naming its own `frame_before`/`frame_after` keeps them."""
     ses = _channel(monkeypatch, tmp_path)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", None, [_armed(1)])
 
@@ -889,9 +848,7 @@ def test_a_refusal_carrying_its_own_frames_keeps_them(
 
 
 def test_the_frames_refusal_states_the_mixer_rate_from_its_constant() -> None:
-    """The rate and the minimum the refusal explains itself by are `MIXER_UPDATE_HZ`'s and
-    `FRAMES_MIN`'s, never a second spelling of them in prose: the module run with other values
-    says the other values, which a sentence written by hand would not."""
+    """The refusal states `MIXER_UPDATE_HZ` and `FRAMES_MIN`, never a hand-written copy."""
     import types
     source = Path(maudio.__file__).read_text()
     assert source.count("MIXER_UPDATE_HZ = 50\n") == 1 and source.count("FRAMES_MIN = 2\n") == 1
@@ -909,8 +866,7 @@ def test_the_frames_refusal_states_the_mixer_rate_from_its_constant() -> None:
 def test_a_refusal_after_the_run_began_says_why_it_has_no_frames(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A recording refused once its run began says from which frame to which; with no stop
-    having read a frame, both say so in their place."""
+    """With no stop having read a frame, both frame fields say so."""
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     with pytest.raises(mstate.Invalid) as e, mrec._frames_said(None):
         raise mstate.Invalid("unexpected_answer", "the run is this test's")
@@ -919,7 +875,6 @@ def test_a_refusal_after_the_run_began_says_why_it_has_no_frames(
 
 
 def test_a_recording_is_begun_under_its_name_without_the_extension_mame_appends() -> None:
-    """Under `-snapview native` MAME appends `.avi` to the name `begin_recording` is given, so
-    the name handed over leaves it off, and the file lands at the path the reply names."""
+    """MAME appends `.avi` itself, so the name handed over leaves it off."""
     assert mrec.begun_as(Path("/x/snap/record-2.avi")) == str(Path("/x/snap/record-2"))
     assert mrec.begun_as(Path("/x/out/take.AVI")) == str(Path("/x/out/take"))

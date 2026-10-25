@@ -1,19 +1,9 @@
-"""`audio_record`: the sound of exactly `frames` frames, as the WAV MAME's own mixer writes.
+"""`audio_record`: the WAV MAME's own mixer writes over exactly `frames` frames.
 
-THE MIXER ALREADY KNOWS HOW. MAME's sound manager writes the speakers' input mix, before any
-effect, to a WAV whenever it is asked (`sound:start_recording`, the Lua side of `-wavwrite`), so
-this tool adds no sound path of its own: it asks for the file on the frame notifier `record`
-trusts, ends it a counted number of frames later, and then reads the file back, because MAME's
-WAV writer checks none of its writes and the header is the one account of what reached the disk.
-
-WHOLE MIXER UPDATES, NOT FRAMES. The mixer writes in updates of a fiftieth of an emulated second
-(`STREAMS_UPDATE_FREQUENCY` in `src/emu/sound.h`), so a recording bounded by frames holds the
-updates that fell inside the span: its sample count differs from the span times the rate by up
-to one update, and a recording that holds the session's first update carries one sample more.
-Nothing is written while the machine stands at the debugger, since no update runs there.
-
-The run itself (the drain, the queued script, the console's account, the marks) is
-`mame_recording.recording_run`, shared with `record`.
+The mixer writes in updates of 1/50 emulated second (`STREAMS_UPDATE_FREQUENCY` in
+`src/emu/sound.h`), so the sample count differs from span times rate by up to one update. MAME's
+WAV writer checks none of its writes, so the file is read back and its header is the account.
+The run itself is `mame_recording.recording_run`, shared with `record`.
 """
 
 from __future__ import annotations
@@ -35,28 +25,18 @@ import mame_transport as transport
 from mame_state import STATE
 
 AUDIO_MARK = "MAME_MCP_AUDIO"
-# `STREAMS_UPDATE_FREQUENCY` in MAME's `src/emu/sound.h`: the mixer's updates per emulated second.
 MIXER_UPDATE_HZ = 50
-# The span is begun and ended on the frame notifier, so it IS `frames` periods; the times travel
-# as 17 significant digits, and this is room for a double's rounding, not for a missed frame.
+# Room for a double's rounding after 17 significant digits, not for a missed frame.
 SPAN_TOLERANCE_S = 1e-6
-# The fewest frames a span may cover: on a screen under `FRAMES_MIN * MIXER_UPDATE_HZ` Hz, that
-# many frames always hold one whole mixer update.
 FRAMES_MIN = 2
 FRAMES_WHY = (f": MAME mixes in whole updates of 1/{MIXER_UPDATE_HZ} of an emulated second, and "
               f"{FRAMES_MIN} is the fewest frames that always hold one on a screen under "
               f"{FRAMES_MIN * MIXER_UPDATE_HZ} Hz")
 
-# BEGUN ON THE FIRST NOTIFIER CALL AND ENDED ON THE CALL WHERE `counted` REACHES `frames`, one call
-# later than `record`'s script ends, so the span between the two marks is `frames` frame periods
-# of emulated time, as their `time` fields measure it.
-# THE MIXER HAS ONE FILE, AND OTHER CALLERS. The script stops only the recording it began, and
-# only while the mixer is still writing it: a session whose ini names `wavwrite` is already
-# recording, and a `lua` call may stop this file and begin its own, and stopping either would
-# end somebody else's file. MAME writes the RIFF size only when it closes a file, so a size
-# there means this one was closed under the script, and the mixer's file is no longer its own.
-# Once released or ended, the notifier does nothing more. The chunk's last line logs where the
-# notifier first runs, as `record`'s does (`mame_recording.ARMED_LUA`).
+# Ends one notifier call after `record`'s script does. It stops only its own recording and only
+# while the mixer still writes it: a session whose ini names `wavwrite`, or a `lua` call, may have
+# replaced the file, and MAME writes the RIFF size only on close, so a size there means it is
+# no longer this script's.
 AUDIO_LUA = """if _G._mame_mcp_audio_release then _G._mame_mcp_audio_release() end
 local snd = manager.machine.sound
 local path = %(path)s
@@ -107,14 +87,12 @@ end)
 
 def check_audio_record(frames: int, dest: str = "", seconds: float = 60.0,
                        **_: Any) -> Path | None:
-    """`audio_record`'s machine-independent half: how many frames, the bound on waiting for
-    them, and the file they go to, handed back as the `Path` it built."""
+    """`audio_record`'s machine-independent checks; returns the destination `Path`, if given."""
     inputs.count("frames", frames, tail=FRAMES_WHY, lo=FRAMES_MIN)
     vocab.check_wait(seconds)
     return inputs.optional_dest(dest)
 
 
-# The file's keys, `unavailable` while there is no finished file to read them from.
 _FILE_KEYS = ("bytes", "channels", "sample_rate_hz", "samples", "emulated_s", "sample_min",
               "sample_max")
 
@@ -125,9 +103,7 @@ def _refused(path: Path, message: str, **fields: Any) -> st.Invalid:
 
 def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: float,
                  progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `audio_record` tool: the mixer's WAV over exactly `frames` frames,
-    begun and ended by the script's own frame notifier, then the file checked before its
-    path is given."""
+    """The mixer's WAV over exactly `frames` frames, checked before its path is given."""
     given = check_audio_record(frames, dest, seconds)
     if given is not None:
         path = given
@@ -150,8 +126,7 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
                 frame_end_planned=int(begin["frame"]) + frames - 1,
                 note="the recording is still OPEN: the run stopped before its last frame, "
                      "and the script closes it when the machine reaches it")
-        # The file is closed before the end mark is logged, by the script or by whoever stopped
-        # it first, so a file that does not read as finished now never will.
+        # Closed before the end mark is logged, so a file unreadable now never will be.
         wav = files.wav_header(path)
         if wav is None:
             why = (": this machine has no speaker, so MAME wrote a WAV with no channel"
@@ -183,11 +158,8 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
             ran, **own, ended=True, bytes=path.stat().st_size, channels=wav.channels,
             sample_rate_hz=wav.sample_rate, samples=wav.samples,
             emulated_s=st.measured_s(emulated), sample_min=lo, sample_max=hi,
-            # the mixer stops AT the end frame, so the last frame it recorded is the one before:
-            # a span's end is inclusive, as `record`'s
+            # the mixer stops AT the end frame; the span's end is inclusive, as `record`'s
             frame_end=int(end["frame"]) - 1)
 
-    # The script ends the recording when its counter reaches `frames`, `frames` after it began,
-    # so the last frame recorded is `frames - 1` after it.
     return mrec.recording_run(ses, scratch, "audio_record", script, tag, frames + 4, seconds,
                               progress, path, frames, frames - 1, _FILE_KEYS, finish)

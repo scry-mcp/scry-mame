@@ -1,8 +1,4 @@
-"""A CONDITION IN THE CONSOLE'S GRAMMAR, as a breakpoint, a change watch, a registerpoint or a run
-takes one: what it may not contain (an assignment, a statement), how a name in it becomes the
-console's (a symbol resolved here, a console variable kept), whether the console evaluates it
-on the row's cpu before anything is armed, and the fields a reply says it with.
-"""
+"""A condition in the console's grammar: refusals, symbol substitution, pre-arm evaluation."""
 
 from __future__ import annotations
 
@@ -16,31 +12,22 @@ import mame_lexer as lexer
 import mame_state as st
 from mame_state import STATE
 
-# A NAME IN A CONDITION: the console's expression parser knows MAME's own symbols and none of
-# the project's, so every word of the table is replaced by its address before the condition
-# reaches it, which needs no channel of its own. A word is matched whole, not
-# inside a number or another word, so `0x25` and `$beef` stay as they are, and never the SIZE
-# before an `@` (`w@`, `b@`, `d@`, `q@`), which is the console's own syntax and not a name.
+# The console knows MAME's symbols and none of the project's, so table words become addresses.
+# Whole words only: `0x25`, `$beef` and the size before `@` (`w@`) are not names.
 _SYMBOL_WORD = re.compile(r"(?<![0-9A-Za-z_$])[A-Za-z_][A-Za-z0-9_]*(?![A-Za-z0-9_@])")
 
 
-# A CONDITION READS AND NEVER WRITES: a condition reaches the console outside `debug`'s
-# classifier, on a path whose reply says the session is not altered, and it is evaluated at
-# every hit. So an assignment is refused here, and so is `;`, `{` or `}`, which would start
-# another statement or an action.
+# A condition reaches the console outside `debug`'s classifier and is evaluated at every hit,
+# so assignments and `;{}` (a new statement or action) are refused.
 CONDITION_WRITES = re.compile(lexer.ASSIGNS + r"|[;{}]")
 
 
-#: The rule a console expression breaks, as `expression_fault` names it.
+#: The rule `expression_fault` names.
 ExpressionRule = Literal["empty", "split", "writes"]
 
 
 def expression_fault(text: str) -> tuple[ExpressionRule, str] | None:
-    """Which rule a console expression breaks, and what broke it, or None: `empty`, `split` for a
-    comma or a newline (the console splits the line there), or `writes` with what the console
-    would EXECUTE at every evaluation. The rules are the console's; each caller says
-    them in its own sentence, because a condition and an expr watch are refused for different
-    consequences."""
+    """Which rule a console expression breaks, and what broke it, or None."""
     stripped = text.strip()
     if not stripped:
         return ("empty", "")
@@ -51,10 +38,7 @@ def expression_fault(text: str) -> tuple[ExpressionRule, str] | None:
     return None
 
 
-# THE CONSOLE'S OWN NAMES a condition may use: a project symbol spelled like one of them is
-# ambiguous, and substituting it would turn `pc==0x400` into a comparison of two constants.
-# Read off the debugger's global symbol table (`debugcpu.cpp`, `debugcmd.cpp`, `points.cpp`):
-# its variables, its functions, and each screen's own counter on a board with several.
+# A project symbol spelled like one of these would turn `pc==0x400` into a constant comparison.
 _CONSOLE_NAMES = frozenset({"pc", "curpc", "frame", "totalcycles", "cycles",
                             "lastinstructioncycles", "cpunum", "beamx", "beamy", "wpaddr",
                             "wpdata", "wpsize", "abs", "bit", "if", "max", "min", "s8", "s16",
@@ -63,17 +47,14 @@ _CONSOLE_NUMBERED = re.compile(r"(?:beamx|beamy|frame)\d+")
 
 
 def is_console_name(name: str) -> bool:
-    """Whether the console already knows `name` (case aside) as one of its own symbols."""
+    """Whether the console already knows `name` as one of its own symbols."""
     low = name.lower()
     return low in _CONSOLE_NAMES or _CONSOLE_NUMBERED.fullmatch(low) is not None
 
 
 def console_condition(condition: str, cpu: str | None = None) -> str:
-    """`condition` as the console will read it: stripped, every symbol of `cpu`'s table (the cpu
-    the row is armed on, the first cpu's when None) replaced by `0x<addr>`. Refused: an empty
-    condition (`bp addr,` arms nothing a caller meant), a comma or a newline (the start of an
-    ACTION), an assignment or a step (a write at every evaluation), and a symbol spelled like a
-    register of that cpu or like a console variable (ambiguous)."""
+    """`condition` as the console reads it: stripped, `cpu`'s symbols replaced by `0x<addr>`.
+    Refuses what `check_condition` refuses and a symbol spelled like a register or console name."""
     text = check_condition(condition)
     registers = {r.lower() for r in (cpus.register_names(STATE.ses, cpu) if STATE.ses else [])}
     symbols = STATE.table(cpu).table
@@ -96,10 +77,9 @@ _ONE_NUMBER = re.compile(r"^[0-9A-Fa-f]+$")
 
 
 def not_evaluated(ses: gs.Session, condition: str) -> str | None:
-    """The console's own words when it cannot evaluate `condition`, or None when it can.
-    MAME ARMS a condition its evaluator refuses (`rpset {d1==}`, captured), on a breakpoint
-    as on a registerpoint, so the text is put to the evaluator before it is armed. The
-    braces are the console's: bare, it reads the condition as an assignment."""
+    """The console's words when it cannot evaluate `condition`, or None.
+
+    MAME arms a condition its evaluator refuses (`rpset {d1==}`); the braces stop an assignment."""
     answer = ses.monitor(evaluate_command(condition)).strip()
     return None if _ONE_NUMBER.fullmatch(answer) else " ".join(answer.split())
 
@@ -109,18 +89,13 @@ def evaluate_command(condition: str) -> str:
 
 
 def check_condition_fits(ses: gs.Session, arm: str, condition: str) -> None:
-    """Both commands a declared condition goes out in, `arm` (the row's own `bp` or `wp`) and
-    its evaluation, judged against the stub's packet before either is sent, the LONGER first so
-    the refusal names the one that decides."""
+    """Both commands a condition goes out in, the LONGER first so the refusal names it."""
     for command in sorted((arm, evaluate_command(condition)), key=len, reverse=True):
         ses.console_packet(command)
 
 
 class ConditionVerdict(NamedTuple):
-    """What `judged_condition` found: the console's own words when it cannot evaluate the
-    condition (None when it can), and the note naming the cpu left visible when the visible one
-    could not be put back (None when it was, or never moved). The second never replaces the
-    first: the evaluation had completed."""
+    """What `judged_condition` found; `left_visible` never replaces `refusal`."""
 
     refusal: str | None
     left_visible: str | None
@@ -128,16 +103,10 @@ class ConditionVerdict(NamedTuple):
 
 def judged_condition(ses: gs.Session, arm: str, condition: str,
                      cpu: str | None = None) -> ConditionVerdict:
-    """The condition put to the console's evaluator once both commands it goes out in fit a
-    packet (a `CommandTooLong` raises): what every conditioned row, a breakpoint's or a change
-    watch's, is put through before it is armed.
+    """The condition put to the console's evaluator once both commands fit a packet.
 
-    EVALUATED ON THE CPU THE ROW IS ARMED ON. `print` reads the VISIBLE cpu's symbols while `bp`
-    and `wp` parse their condition in the named cpu's (src/emu/debug/debugcmd.cpp), so on a
-    board of two cpus a register of the one would be judged by the other: `hl` refused under a
-    68000, `d0` taken as the constant 0xd0 under a Z80. The row's cpu is made visible through
-    the stub for the evaluation and the visible one put back (`mame_cpus.on_cpus`), which runs
-    nothing; a build that cannot show a cpu without running refuses, naming `focus`."""
+    `print` reads the VISIBLE cpu's symbols while `bp` and `wp` parse in the named cpu's, so
+    the row's cpu is made visible for the evaluation and put back."""
     check_condition_fits(ses, arm, condition)
     visible = cpus.visible_cpu(ses)
     if cpu is None or visible is None or cpus.same_cpu(cpu, visible):
@@ -156,9 +125,7 @@ def judged_condition(ses: gs.Session, arm: str, condition: str,
 
 
 def refuse_if_left_visible(judged: ConditionVerdict, condition: str, cpu: str | None) -> None:
-    """A declaration on `cpu` whose condition was judged and whose visible cpu could not be put
-    back is refused there, before anything is stored, carrying what the evaluation found and
-    naming the cpu left visible (`visible_cpu`): `cpu`, the one shown for the evaluation."""
+    """Refuse a declaration whose visible cpu could not be put back."""
     if judged.left_visible is None:
         return
     found = ("evaluates" if judged.refusal is None
@@ -169,16 +136,14 @@ def refuse_if_left_visible(judged: ConditionVerdict, condition: str, cpu: str | 
 
 
 def condition_fields(reply: dict[str, Any], typed: str, cond: str) -> None:
-    """`condition` as the console reads it now, and `condition_typed` only when the caller
-    typed something else, which is when there is anything to recognise."""
+    """`condition` as the console reads it, and `condition_typed` only when it differs."""
     reply["condition"] = cond
     if typed != cond:
         reply["condition_typed"] = typed
 
 
 def typed_condition(item: dict[str, Any], decl: dec.Declaration) -> None:
-    """A listed declaration's condition fields, as its arming reply gave them; as typed alone
-    when this build's table refuses a name in it."""
+    """A listed declaration's condition fields; as typed alone when the table refuses a name."""
     try:
         condition_fields(item, decl.condition, console_condition(decl.condition, decl.cpu))
     except st.Invalid:
@@ -186,9 +151,7 @@ def typed_condition(item: dict[str, Any], decl: dec.Declaration) -> None:
 
 
 def check_condition(condition: str) -> str:
-    """A console condition's machine-independent half, and the stripped text it judged. The rule
-    it does NOT apply is the last one: whether a word in the condition collides with a register
-    name, which is a question about THIS cpu and has no answer without one."""
+    """The machine-independent half of a condition check; returns the stripped text."""
     text = condition.strip()
     fault = expression_fault(text)
     if fault is None:
@@ -215,9 +178,7 @@ def check_condition(condition: str) -> str:
 
 def refused_on_rearm(refusal: str | None, cond: str, kind: str, owner: dec.Owner,
                      name: dict[str, Any], out: dict[str, list[Any]]) -> bool:
-    """A condition the console would not evaluate, sorted where a re-arm reports it: a name
-    this build lacks is `unresolved` (kept, and armed again once the name exists), any other
-    refusal `unarmable` with the console's words. True when the declaration was sorted."""
+    """A condition the console would not evaluate, sorted for the re-arm report; True if sorted."""
     if refusal is None:
         return False
     if "unknown symbol" in refusal:

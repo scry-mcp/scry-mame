@@ -1,12 +1,4 @@
-"""Gate for the pure parts of the gdbstub client: the ones that need no live MAME.
-
-The rest (registers, memory, breakpoints) is validated against a known answer with the machine
-in front of you. What lives here are the pieces that can break SILENTLY and spoil a
-measurement without anything failing: the packet layer, which refuses by name every shape
-MAME's stub never sends instead of reading it as data, and the reader of the project's symbol
-file, which on failure loads ZERO symbols and lets every lookup fall back to hex parsing, so
-everything appears to work while reading the wrong addresses.
-"""
+"""Gate for the pure parts of the gdbstub client."""
 
 import dataclasses
 import json
@@ -29,10 +21,7 @@ import gdb_session as g  # noqa: E402
 
 @pytest.mark.parametrize("body", ["0* ", "00ff*\"00", "*", "<reg name=\"a*\"/>"])
 def test_a_run_length_marker_in_a_reply_is_refused_by_name(body: str) -> None:
-    """MAME's stub never compresses what it sends (its `send_reply` frames and checksums, its
-    `escape_packet` escapes `#`, `$` and `}` only), and nothing it answers carries a literal
-    `*`. So one that arrives is a reply that cannot be trusted, refused where it is read and
-    never decoded on a guess: a wrong byte count in a memory read looks like a finding."""
+    """MAME's stub never compresses, so a literal `*` in a reply is refused by name, not decoded."""
     ses, _wire = _wired([body])
     at = body.index("*")
     with pytest.raises(g.SessionError, match=rf"run-length marker `\*` at position {at} of"):
@@ -42,7 +31,7 @@ def test_a_run_length_marker_in_a_reply_is_refused_by_name(body: str) -> None:
 
 
 def test_a_reply_without_the_marker_is_read_as_it_came() -> None:
-    """THE CONTROL for the case above: the same read, answered as the stub answers it."""
+    """THE CONTROL for the case above."""
     ses, _wire = _wired(["46fc2700"])
     assert ses.request("m0,4") == "46fc2700"
 
@@ -59,10 +48,6 @@ def test_reads_the_projects_symbols(tmp_path: Path) -> None:
         "  - addr: 642778\n"
         "    name: wf_pal_blast\n"
         "    description: ignored\n"
-        # `nombre:` IS THE LEGACY KEY OF THE FILE FORMAT, not prose, and it is exercised here
-        # beside `name:` on purpose: symbol files in the field still carry it, `symbols()`
-        # accepts both, and dropping it from the fixture would delete the only coverage of a
-        # spelling real input still uses.
         "  - addr: 0x1234\n"
         "    nombre: other_symbol\n",
         encoding="utf-8",
@@ -75,24 +60,14 @@ def test_reads_the_projects_symbols(tmp_path: Path) -> None:
 
 
 def test_a_description_is_not_mistaken_for_a_name(tmp_path: Path) -> None:
-    """Only the FIRST name key after an `addr` counts; otherwise any later field overwrites it.
-
-    `name_long` is the near miss that decides it: the pattern demands the colon immediately
-    after the key, so a field merely STARTING with the key must not be read as a second name.
-    """
+    """Only the FIRST name key after an `addr` counts."""
     y = tmp_path / "s.yaml"
     y.write_text("- addr: 16\n  name: first\n  name_long: second\n", encoding="utf-8")
     t = g.symbols(str(y))
     assert t.table == {"FIRST": 16}
 
 
-# ------------------------------------------------- the linker's own map, read directly
 
-# The shape v30tool writes: one row per symbol, five TAB-separated fields, under a header
-# that names the tool. A converter to turn this into
-# the YAML above is not needed; the reader takes it as it is. The two header lines are
-# CAPTURED from a real map, backslash-t literal included: that header carries no real tab, which is
-# why it is a comment to this reader and never a row.
 V30_MAP = (
     "# v30tool symbol map\n"
     "# columns: name\\tlinear_hex\\tseg_name\\toffset_hex\\tclass\n"
@@ -104,27 +79,20 @@ V30_MAP = (
 
 
 def test_a_tsv_map_loads_every_row_by_class(tmp_path: Path) -> None:
-    """THE REGRESSION THIS EXISTS FOR: a TSV row matches neither `addr:` nor `name:`, so the
-    reader loaded ZERO symbols out of the linker's own map and every lookup fell back to hex
-    parsing, which is the worst failure this reader has: everything works, on wrong addresses."""
+    """THE REGRESSION THIS EXISTS FOR."""
     m = tmp_path / "game.map"
     m.write_text(V30_MAP, encoding="utf-8")
     t = g.symbols(str(m), bases={"DATA": 0x400})
     assert t.format == "tsv"
     assert len(t.table) == 3
-    # CODE runs where the locator placed it: the map's linear address is the runtime one.
     assert t.table["_START"] == 0xED000
     assert t.table["DRAW_IBLOCK"] == 0xED27E
-    # DATA is copied to RAM at boot and addressed off DS, so the runtime address is the caller's
-    # base plus the map's offset. The linear address in the map is the ROM copy of the INITIAL
-    # value, which reads plausibly and is the wrong answer.
     assert t.table["DEMO_COUNT"] == 0x400 + 0xA007
     assert t.by_class == {"CODE": 2, "DATA": 1}
 
 
 def test_the_map_header_is_accepted_and_not_required(tmp_path: Path) -> None:
-    """Detection is by the SHAPE of the rows, so a map with another comment header, or none,
-    loads all the same."""
+    """Detection is by the SHAPE of the rows, so any comment header, or none, loads."""
     m = tmp_path / "game.map"
     m.write_text("_start\tED000\t_TEXT\t0\tCODE\n", encoding="utf-8")
     t = g.symbols(str(m))
@@ -135,7 +103,7 @@ def test_the_map_header_is_accepted_and_not_required(tmp_path: Path) -> None:
 
 
 def test_a_rows_class_and_name_are_normalised(tmp_path: Path) -> None:
-    """The file's own class column may be lower-case or padded; the table's keys are upper."""
+    """The file's own class column may be lower-case or padded."""
     m = tmp_path / "game.map"
     m.write_text("foo \t1\t_TEXT\t1\tcode \n", encoding="utf-8")
     t = g.symbols(str(m))
@@ -152,8 +120,7 @@ def test_a_duplicate_name_in_a_map_is_refused_naming_both_lines(tmp_path: Path) 
 
 
 def test_a_base_for_a_class_no_row_carries_is_refused(tmp_path: Path) -> None:
-    """A parameter honoured by nothing is refused, not ignored: a typo in the class name
-    would otherwise load the map with the DATA symbols nobody relocated... or none at all."""
+    """A parameter honoured by nothing is refused, not ignored."""
     m = tmp_path / "game.map"
     m.write_text("_start\tED000\t_TEXT\t0\tCODE\n", encoding="utf-8")
     with pytest.raises(ValueError, match=r"DTA") as e:
@@ -169,8 +136,7 @@ def test_a_row_that_is_not_hex_is_refused_with_its_line(tmp_path: Path) -> None:
 
 
 def test_a_map_whose_tabs_became_spaces_is_refused_not_emptied(tmp_path: Path) -> None:
-    """An editor that expands tabs turns a map into a file that matches neither shape. Loading
-    it as a YAML file gives zero symbols, and zero symbols is the silent worst case."""
+    """An editor that expands tabs turns a map into a file that matches neither shape."""
     m = tmp_path / "game.map"
     m.write_text(V30_MAP.replace("\t", "    "), encoding="utf-8")
     with pytest.raises(ValueError, match=r"ZERO symbols"):
@@ -178,8 +144,7 @@ def test_a_map_whose_tabs_became_spaces_is_refused_not_emptied(tmp_path: Path) -
 
 
 def test_a_tab_inside_a_yaml_file_is_still_yaml(tmp_path: Path) -> None:
-    """A tab is legal YAML text (indentation, a description), and the YAML format is the
-    caller's: a file that loaded before the map reader existed must load the same after."""
+    """A tab is legal YAML text and does not make a file a map."""
     y = tmp_path / "s.yaml"
     y.write_text("\t- addr: 16\n\tname: first\n\tdescription: a\tb\n", encoding="utf-8")
     t = g.symbols(str(y))
@@ -188,8 +153,7 @@ def test_a_tab_inside_a_yaml_file_is_still_yaml(tmp_path: Path) -> None:
 
 
 def test_an_explicit_base_wins_over_the_code_default(tmp_path: Path) -> None:
-    """A parameter that silently does nothing is the class of defect this server hunts: a
-    caller who names a base for CODE gets base + offset, not the linear address."""
+    """A parameter that silently does nothing is the class of defect this server hunts."""
     m = tmp_path / "game.map"
     m.write_text("_start\tED000\t_TEXT\t10\tCODE\n", encoding="utf-8")
     t = g.symbols(str(m), bases={"code": 0x1000})
@@ -197,10 +161,7 @@ def test_an_explicit_base_wins_over_the_code_default(tmp_path: Path) -> None:
 
 
 def test_a_rom_resident_class_is_declared_and_keeps_the_maps_linear_address(tmp_path: Path) -> None:
-    """A class that lives in ROM (a tile sheet the locator placed) runs where the map says, like
-    CODE; a repository had to hand `linear - offset` back as its "base" to say so. The declared
-    way is a base of None: "this class is resident, runtime = linear", and it is honoured only
-    for rows of that class."""
+    """A class that lives in ROM (a tile sheet the locator placed) runs where the map says."""
     m = tmp_path / "game.map"
     m.write_text(V30_MAP + "juke_tiles\t60000\tJUKE\t0\tV30_JUKEBOX\n", encoding="utf-8")
     t = g.symbols(str(m), bases={"DATA": 0x400, "V30_JUKEBOX": None})
@@ -210,9 +171,7 @@ def test_a_rom_resident_class_is_declared_and_keeps_the_maps_linear_address(tmp_
 
 
 def test_a_class_with_no_base_refuses_and_names_the_row(tmp_path: Path) -> None:
-    """Loading a class nobody located would read the linker's image address as a runtime
-    one, which is exactly the DATA-case defect. The refusal names the class,
-    the first row carrying it, and the parameter that would fix it."""
+    """A class nobody located is refused, not read at the linker's image address."""
     m = tmp_path / "game.map"
     m.write_text(
         V30_MAP + "stack_top\t2B000\t_STACK\t0\tSTACK\nstack_bot\t2B100\t_STACK\t100\tSTACK\n",
@@ -242,8 +201,7 @@ def test_a_file_holding_both_shapes_is_refused(tmp_path: Path) -> None:
 
 
 def test_bases_given_with_a_yaml_file_are_refused(tmp_path: Path) -> None:
-    """A YAML symbol file already carries runtime addresses and has no classes to apply a base
-    to, so a `bases` beside it would be honoured by nothing: refused, rather than ignored."""
+    """`bases` with a YAML file is refused: it has no classes to apply it to."""
     y = tmp_path / "s.yaml"
     y.write_text("- addr: 16\n  name: first\n", encoding="utf-8")
     with pytest.raises(ValueError, match=r"YAML|yaml"):
@@ -254,8 +212,7 @@ def test_bases_given_with_a_yaml_file_are_refused(tmp_path: Path) -> None:
 def test_a_file_with_nothing_in_it_given_with_bases_is_refused_for_its_emptiness(
     tmp_path: Path, text: str,
 ) -> None:
-    """An empty or comment-only file is refused for what was seen, ZERO symbols, with or
-    without `bases`: a file is called YAML only once a YAML pair was read in it."""
+    """An empty or comment-only file is refused for its ZERO symbols."""
     f = tmp_path / "s.yaml"
     f.write_text(text, encoding="utf-8")
     with pytest.raises(ValueError, match=r"ZERO symbols") as e:
@@ -266,41 +223,31 @@ def test_a_file_with_nothing_in_it_given_with_bases_is_refused_for_its_emptiness
 
 
 def test_a_malformed_row_in_a_map_is_refused_with_its_line(tmp_path: Path) -> None:
-    """In a file that IS a map, a tabbed line that is not five fields is a broken row, and the
-    line is named; the same line in a YAML file is just text (see the tab case above)."""
+    """In a file that IS a map, a tabbed line that is not five fields is a broken row."""
     m = tmp_path / "game.map"
     m.write_text("_start\tED000\t_TEXT\t0\tCODE\nbroken\tED100\t_TEXT\n", encoding="utf-8")
     with pytest.raises(ValueError, match=r":2\b.*3 TAB"):
         g.symbols(str(m))
 
 
-# ------------------------------------------------- the reference image and its base
 
 
 
 def test_self_check_slices_the_reference_image_from_its_base() -> None:
-    """THE REGRESSION THIS EXISTS FOR. A V30 ROM is mapped at 0x20000 and the linker emits the
-    ROM alone, so `rom[addr]` would index the file at a CPU offset it does not have: it lands on
-    somebody else's bytes, or past the end on a short slice, the compare fails either way, and
-    the check says LIES about a session that is fine, so no padding of the image is needed."""
+    """THE REGRESSION THIS EXISTS FOR."""
     image = bytes(range(64))
     ses = reading_session(image, 0x20000)
     ses.self_check(image, 0x20010, n=16, base=0x20000, thread=1)
-    # The exact last window is INSIDE: 16 bytes ending on the file's last byte.
     ses.self_check(image, 0x20030, n=16, base=0x20000, thread=1)
     ses.self_check(image, 0x20038, n=8, base=0x20000, thread=1)
-    # The control, through the same call: a base of zero still means "the image IS cpu space".
     cpu_space = bytes(0x20000) + image
     ses.self_check(cpu_space, 0x20010, n=16, thread=1)
 
 
 def test_an_address_outside_the_reference_image_is_not_a_lie() -> None:
-    """Below the base, or past the end, the file has no opinion. Saying LIES there blames the
-    session for a fact about the file, so it is a different refusal that names the file."""
+    """Below the base, or past the end, the file has no opinion."""
     image = bytes(range(64))
     ses = reading_session(image, 0x20000)
-    # One byte below the base; one window that runs one byte past the end; one that starts
-    # inside but does not fit.
     for addr, n in ((0x1FFFF, 16), (0x20031, 16), (0x20038, 16)):
         with pytest.raises(g.SessionError, match=r"OUTSIDE") as e:
             ses.self_check(image, addr, n=n, base=0x20000, thread=1)
@@ -312,15 +259,7 @@ def test_an_address_outside_the_reference_image_is_not_a_lie() -> None:
 
 
 def test_the_port_probe_does_not_consume_the_gdbstub_connection() -> None:
-    """Regression: the probe must not ask with `connect_ex`.
-
-    MAME accepts exactly ONE gdbstub connection per session, so connecting to a port to see
-    whether it is busy EATS the connection of whoever was listening: an orphaned MAME, or the
-    debug run somebody has open, is left useless without saying why.
-
-    A server that accepts ONE connection: the probe calls its port taken, and the server still
-    has its connection to give afterwards.
-    """
+    """Regression."""
     import socket as _s
 
     from mame_launch import port_is_free
@@ -332,7 +271,6 @@ def test_the_port_probe_does_not_consume_the_gdbstub_connection() -> None:
 
         assert not port_is_free(port), "reported as free a port that is taken"
 
-        # And what really matters: nobody ate its connection.
         listener.settimeout(0.2)
         try:
             conn, _ = listener.accept()
@@ -343,10 +281,7 @@ def test_the_port_probe_does_not_consume_the_gdbstub_connection() -> None:
 
 
 def test_the_port_probe_sees_a_session_the_stub_is_still_serving() -> None:
-    """MAME's shape after it accepts: the listener bound WITH SO_REUSEADDR, its one connection
-    accepted, the listener closed, and only the established socket left on the port. The probe
-    must call that port taken, which it does only because it binds WITHOUT the option: with it,
-    the bind succeeds there and a second MAME would be sent onto a session in use."""
+    """MAME's shape after it accepts."""
     import socket as _s
 
     from mame_launch import port_is_free
@@ -361,8 +296,6 @@ def test_the_port_probe_sees_a_session_the_stub_is_still_serving() -> None:
     listener.close()
     try:
         assert not port_is_free(port), "a session still being served was called free"
-        # THE CONTROL: the same bind WITH the option succeeds there, so the case above is the
-        # one the option decides, not a port held for some other reason.
         with _s.socket() as reuse:
             reuse.setsockopt(_s.SOL_SOCKET, _s.SO_REUSEADDR, 1)
             reuse.bind(("127.0.0.1", port))
@@ -372,13 +305,7 @@ def test_the_port_probe_sees_a_session_the_stub_is_still_serving() -> None:
 
 
 def test_the_boot_harness_reaches_the_mame_command_line() -> None:
-    """The missing flag, and why it is tested here instead of by looking at the process.
-
-    Without a boot harness a live session only reaches what the machine does BY ITSELF:
-    everything living behind a menu, a coin or a game is out. A harness routed
-    in through `-inipath` with its own `mame.ini` never arrives, and nothing says so: the
-    only tell is reading game memory to deduce the harness had not run.
-    """
+    """The missing flag, and why it is tested here instead of by looking at the process."""
     from mame_launch import build_command
 
     cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
@@ -386,13 +313,11 @@ def test_the_boot_harness_reaches_the_mame_command_line() -> None:
 
     assert "-autoboot_script" in cmd
     assert cmd[cmd.index("-autoboot_script") + 1] == "/tmp/harness.lua"
-    # The delay goes to ZERO: the session starts stopped in the debugger, so a delay only makes
-    # the harness later than anything anyone is waiting for.
     assert cmd[cmd.index("-autoboot_delay") + 1] == "0"
 
 
 def test_without_a_harness_no_autoboot_slips_through() -> None:
-    """The negative case: a flag that shows up unasked is as bad as one that is missing."""
+    """The negative case."""
     from mame_launch import build_command
 
     cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
@@ -416,18 +341,10 @@ def test_the_gdbstub_and_its_port_always_go() -> None:
     assert cmd[cmd.index("-inipath") + 1] == "/ini"
 
 
-# --------------------------------------------------------------- the program counter
 
 
 def _session_with(xml: str, endianness: str = "") -> g.Session:
-    """A Session whose register map came from THIS target description and nothing else, and
-    whose first cpu MAME declares `endianness` (none read when empty), told AFTER the layout
-    was read, as `start` tells it.
-
-    It goes through the REAL `Session.layout`, not a copy of it: the parsing and the
-    resolution are what these cases are about, and a reimplementation here would pass
-    while the thing shipped stayed broken.
-    """
+    """A Session whose register map came from THIS target description and nothing else."""
 
     def canned(cmd: str, timeout: float | None = None) -> str:
         return ("l" + xml) if cmd.startswith("qXfer") else ""
@@ -452,17 +369,11 @@ I386 = """<target><architecture>i386</architecture>\n<feature name="org.gnu.gdb.
 
 
 def test_a_registers_width_is_the_one_the_description_declares() -> None:
-    """The display must not pad every value to eight hex digits whatever the cpu says.
-
-    A V30 board declares 16-bit registers, so each one then shows as though it were 32 bits
-    wide and the `set_register` ceiling above 0xffff reads as a broken tool. The widths come
-    from the description, aliases excluded, exactly like the names beside them.
-    """
+    """The display must not pad every value to eight hex digits whatever the cpu says."""
     narrow = """<target><architecture>i386</architecture>
     <feature name="org.gnu.gdb.i386.core"><reg name="eax" bitsize="16" type="int"/>
     <reg name="eip" bitsize="16" type="code_ptr"/></feature></target>"""
     assert _session_with(narrow).layout(1).register_bits == {"EAX": 16, "EIP": 16}
-    # The 68000 fixture is the control: same code path, and it must NOT come back narrow.
     wide = _session_with(M68K).layout(1).register_bits
     assert set(wide.values()) == {32}
     assert "A7" not in wide, "an alias has no width of its own to report"
@@ -474,9 +385,7 @@ def test_the_program_counter_is_found_on_a_68000() -> None:
 
 
 def test_the_program_counter_is_found_on_an_x86() -> None:
-    """THE REGRESSION THIS EXISTS FOR: asking for "PC" by name makes a V30 board
-    refuse, because GDB's i386 feature mandates `eip`. A working machine would be reported as a
-    broken one."""
+    """THE REGRESSION THIS EXISTS FOR."""
     assert _session_with(I386).layout(1).pc_name == "EIP"
 
 
@@ -487,8 +396,7 @@ def test_the_program_counter_is_found_on_an_amd64() -> None:
 
 
 def test_a_second_code_ptr_does_not_steal_the_program_counter() -> None:
-    """Keying on the TYPE alone is the tempting wrong answer: a link register is a
-    `code_ptr` too, and MAME marks one on three of its cpu families."""
+    """Keying on the TYPE alone is the tempting wrong answer."""
     xml = M68K.replace("</feature>", '<reg name="lr" bitsize="32" type="code_ptr"/></feature>')
     assert _session_with(xml).layout(1).pc_name == "PC"
 
@@ -501,8 +409,7 @@ def test_an_unfamiliar_name_falls_back_to_a_lone_code_ptr() -> None:
 
 
 def test_an_unresolvable_program_counter_is_refused_not_guessed() -> None:
-    """Two candidates and no standard name: a wrong guess here is a stop address reported
-    confidently against the wrong register, so it refuses and says what it saw."""
+    """Two candidates and no standard name."""
     xml = """<target><feature name="x"><reg name="acc" bitsize="16" type="int"/>
     <reg name="iar" bitsize="16" type="code_ptr"/>
     <reg name="lr" bitsize="16" type="code_ptr"/></feature></target>"""
@@ -515,13 +422,10 @@ def test_an_unresolvable_program_counter_is_refused_not_guessed() -> None:
         raise AssertionError(f"it guessed {resolved!r} instead of refusing")
 
 
-# ------------------------------------------------------------------ the target's byte order
 
 
 def test_an_x86_target_decodes_little_endian() -> None:
-    """THE REGRESSION THIS EXISTS FOR: a fixed big-endian decode returns 0x568b for a V30
-    program counter that MAME's own console reports as 8B56. Every register read
-    on an x86 board would be byte-swapped, and nothing would fail."""
+    """THE REGRESSION THIS EXISTS FOR."""
     assert _session_with(I386, "little").layout(1).byte_order == "little"
 
 
@@ -538,21 +442,18 @@ def _refused(ses: g.Session) -> str:
 
 
 def test_a_cpu_whose_endianness_mame_did_not_give_refuses_whatever_its_row() -> None:
-    """The order is MAME's; a row is only its cross-check. With no word from MAME (the
-    inventory not read, no program space) a cpu with a row is refused as one without."""
+    """The order is MAME's."""
     assert "MAME" in _refused(_session_with(I386)) and "i386" in _refused(_session_with(I386))
 
 
 def test_mame_disagreeing_with_a_measured_row_refuses_naming_both() -> None:
-    """A row is a measurement; MAME saying otherwise means one of the two is wrong for this
-    cpu, and decoding either way would be a plausible wrong number."""
+    """A row is a measurement."""
     why = _refused(_session_with(M68K, "little"))
     assert "little" in why and "big" in why and "m68k" in why, why
 
 
 def test_an_architecture_with_no_row_is_decoded_in_mames_order() -> None:
-    """`mips` gets no row, ever: MAME maps BOTH a big-endian r4600 and a little-endian PSX cpu
-    onto that one string, so only the cpu's own address space can say which it is."""
+    """`mips` gets no row, ever."""
     xml = M68K.replace("m68k.core", "mips.core")
     xml = xml.replace("<target>", "<target><architecture>mips</architecture>")
     assert _session_with(xml, "little").layout(1).byte_order == "little"
@@ -564,7 +465,7 @@ def test_an_architecture_with_no_row_is_decoded_in_mames_order() -> None:
     ("m6502", "little"), ("z80", "little"), ("m6809", "big"), ("arm", "little"),
     ("powerpc:common", "big"), ("score7", "little"), ("nios2", "little")])
 def test_the_architectures_measured_have_their_order(arch: str, order: str) -> None:
-    """Each recorded row: MAME saying its order decodes, MAME saying the other refuses."""
+    """Each recorded row."""
     assert g.Layout({}, 0, arch, [], mame_order=order).byte_order == order
     other = "big" if order == "little" else "little"
     with pytest.raises(g.UnknownByteOrder):
@@ -572,30 +473,24 @@ def test_the_architectures_measured_have_their_order(arch: str, order: str) -> N
 
 
 def test_a_description_with_no_architecture_takes_mames_order_and_no_more() -> None:
-    """Absence is not a default: with no architecture there is no row to cross-check, so the
-    order is MAME's, and with no word from MAME it is refused."""
+    """Absence is not a default."""
     xml = M68K.replace("<architecture>m68k</architecture>", "")
     assert _session_with(xml, "big").layout(1).byte_order == "big"
     assert "none declared" in _refused(_session_with(xml))
 
 
 def test_mames_word_reaches_a_layout_read_before_it_and_one_read_after() -> None:
-    """`start` reads the first description during the boot, before the inventory says the
-    endianness; the word reaches the layout kept from then and every one read later."""
+    """`start` reads the first description during the boot."""
     ses = _session_with(M68K)
     kept = ses.layout(1)
     ses.know_endianness({1: "big"})
     assert ses.layout(1).byte_order == "big" and kept.mame_order == ""
 
 
-# ------------------------------------------------------------------ the clean exit
 
 
 def test_quit_schedules_through_the_console_and_then_lets_the_machine_run() -> None:
-    """THE REGRESSION THIS EXISTS FOR: `quit` alone leaves the process up: the console
-    answers at once and MAME stays, because a
-    machine stopped in the debugger never processes a scheduled exit. The `c` that follows is
-    what ends it, and nothing waits for a reply that will never come."""
+    """THE REGRESSION THIS EXISTS FOR."""
     sent: list[str] = []
 
     def request(cmd: str, timeout: float | None = None) -> str:
@@ -612,13 +507,10 @@ def test_quit_schedules_through_the_console_and_then_lets_the_machine_run() -> N
     assert sent == ["qRcmd," + b"quit".hex(), "c"], sent
 
 
-# ------------------------------------------------ the running state, on a socket of bytes
 
 
 class _Wire:
-    """A socket that answers from a scripted list of PACKETS, one `recv` per packet, and
-    records what was sent: enough to drive `_receive` and `request` through the real
-    parser, with the stop packet the stub sends on its own scripted where a test wants it."""
+    """A socket that answers from a scripted list of PACKETS, one `recv` per packet."""
 
     def __init__(self, packets: list[str], send_error: OSError | None = None) -> None:
         self.packets = [f"${p}#{g._checksum(p)}".encode() for p in packets]
@@ -662,9 +554,7 @@ _NEVER_SENT = ["S05", "S0B", "W00", "X09"]
 
 @pytest.mark.parametrize("packet", _NEVER_SENT)
 def test_a_stop_shape_the_stub_never_sends_is_refused_by_name(packet: str) -> None:
-    """The protocol also defines `S`, `W` and `X` stop replies, and MAME's stub builds `T`
-    and nothing else. One of the others is not read as a stop and not handed back as an
-    answer: it is refused, wherever a stop can arrive."""
+    """The protocol also defines `S`, `W` and `X` stop replies, and MAME's stub builds `T` only."""
     with pytest.raises(g.SessionError, match="a stop reply of a shape MAME's stub never sends"):
         g._is_stop_reply(packet)
 
@@ -687,10 +577,7 @@ def test_every_wait_for_a_stop_refuses_the_shapes_the_stub_never_sends(
 
 
 def test_a_stop_packet_landing_in_front_of_an_answer_is_read_as_the_stop() -> None:
-    """The stub dispatches packets while the machine RUNS, and sends its own stop
-    reply when a breakpoint fires, so the answer to a `Z0` sent to a running machine can
-    arrive BEHIND the stop the machine just reached. A client that does not look hands that stop
-    packet back as the answer (the "not hex" read the timeout path was written against)."""
+    """A `Z0` sent to a running machine can be answered BEHIND the stop it just reached."""
     ses, wire = _wired(["T050e:00000000;0f:00200fea;11:000004a0;", "OK"])
     ses.go()
     before = (ses.running, ses.stop_count)
@@ -701,36 +588,21 @@ def test_a_stop_packet_landing_in_front_of_an_answer_is_read_as_the_stop() -> No
     assert ses.last_stop_packet.startswith("T05")
 
 
-# CAPTURED off MAME's own stub on a 68000 board, raw on the wire: a packet the stub does not
-# implement is answered `$#00`, the protocol's EMPTY packet, which the remote protocol defines
-# as "unsupported"; a packet it implements and refuses is answered `$E01#a6`. Only the second
-# was ever a failure here.
 STUB_UNSUPPORTED = ""
-# And the one that LOOKS like it and is not: a `qRcmd` whose console command prints nothing
-# (`temp0 = 0`, `softreset`, `quit`) answers `0A`, one newline, hex-encoded. Captured the
-# same way, so the console path is checked untouched and not assumed.
 STUB_SILENT_CONSOLE = "0A"
 
 
 def test_an_empty_reply_is_the_stubs_unsupported_and_never_a_success() -> None:
-    """`request` must refuse more than `E` followed by two digits: an empty packet read as
-    a good answer makes `write`, `set_register` and `breakpoint` report the operation done
-    on a stub that did nothing. The readbacks the tools make catch the first two
-    downstream; the client itself is what has to say no, since `breakpoint` is read back
-    through the console and a control that never armed silences the very verdict that
-    exists to catch a mute breakpoint."""
+    """`request` must refuse more than `E` followed by two digits."""
     for cmd in ("P0=deadbeef", "M4a0,1:00", "Z0,4a0,2", "qFooUnsupported"):
         ses, wire = _wired([STUB_UNSUPPORTED])
         with pytest.raises(g.SessionError, match="does not support"):
             ses.request(cmd)
-        assert wire.sent[-2].startswith(b"$" + cmd.encode()), wire.sent   # [-1] is the ack
-    # Through the writers: the refusal reaches the caller, and `writes` still counts the
-    # attempt, because the packet went out before anything could fail.
+        assert wire.sent[-2].startswith(b"$" + cmd.encode()), wire.sent
     ses, _wire = _wired([STUB_UNSUPPORTED])
     with pytest.raises(g.SessionError, match="does not support"):
         ses.write(0x4A0, b"\x00", thread=1)
     assert ses.writes == 1
-    # THE CONTROL: the captured refusal shape and the captured OK are unchanged.
     ses, _wire = _wired(["E01"])
     with pytest.raises(g.SessionError, match="refused"):
         ses.request("P0=deadbeef")
@@ -758,8 +630,7 @@ def test_something_other_than_a_stop_while_running_is_a_distrusted_session() -> 
 
 
 def test_interrupt_sends_nothing_to_a_stopped_machine() -> None:
-    """A 0x03 to a machine already stopped in the debugger is answered with
-    NOTHING, so waiting for its reply timed out for no reason."""
+    """A 0x03 to a machine already stopped in the debugger is answered with NOTHING."""
     ses, wire = _wired([])
     ses.last_stop_packet = "T05"
     assert ses.interrupt() == "T05"
@@ -771,16 +642,14 @@ def test_interrupt_sends_nothing_to_a_stopped_machine() -> None:
 
 
 def test_halt_sends_the_interrupt_and_waits_for_nothing() -> None:
-    """A run the CONSOLE started (`gtime`) sends no stop packet: the stub sets that up only
-    after a `c` or `s` of ours. `halt` is the interrupt for that case."""
+    """A run the CONSOLE started (`gtime`) sends no stop packet."""
     ses, wire = _wired([])
     ses.halt()
     assert wire.sent == [b"\x03"]
 
 
 def test_a_watch_stop_arrives_as_its_own_packet_and_is_noted_as_any_stop() -> None:
-    """A watchpoint's stop arrives as `T05watch:<addr>;`, read and noted like any
-    other stop; which row it was is the console's line to say (`mame_watches.watch_stop`)."""
+    """A watchpoint's stop arrives as `T05watch:<addr>;`, read and noted like any other stop."""
     ses, _wire = _wired(["T05watch:2031fc;0e:00000000;11:000025f6;"])
     ses.go()
     assert ses.poll_stop(0.0) is True and ses.last_stop_packet.startswith("T05watch:2031fc;")
@@ -788,10 +657,7 @@ def test_a_watch_stop_arrives_as_its_own_packet_and_is_noted_as_any_stop() -> No
 
 
 def test_a_timeout_is_its_own_exception_type_and_poll_stop_reads_the_type_not_the_words() -> None:
-    """`poll_stop` told a timeout from a broken session by a SUBSTRING of the message, so a
-    reworded message would have made every poll raise, and a different failure carrying
-    the same words would have read as "still running". The deadline raises `Timeout`, a
-    `SessionError` still, and the poll catches the type."""
+    """`poll_stop` told a timeout from a broken session by a SUBSTRING of the message."""
     ses, _wire = _wired([])
     with pytest.raises(g.Timeout):
         ses._receive(0.0)
@@ -817,7 +683,6 @@ def test_a_timeout_is_its_own_exception_type_and_poll_stop_reads_the_type_not_th
     assert raised.type is g.ConnectionFailed, "a failed connection is never a wait that ran out"
 
 
-# ------------------------------------------------ a release reads a stop, or says it did not
 
 
 @pytest.mark.parametrize("release", ["resume", "interrupt", "step"])
@@ -825,8 +690,7 @@ def test_a_timeout_is_its_own_exception_type_and_poll_stop_reads_the_type_not_th
 def test_a_release_that_reads_something_other_than_a_stop_raises_as_poll_stop_does(
     release: str, packet: str,
 ) -> None:
-    """Handed back in silence, the packet would leave `running` True over a channel whose two ends
-    no longer agree where a packet starts, and no caller would look at what came back."""
+    """A stray packet is never handed back in silence."""
     ses, _wire = _wired([packet])
     if release == "interrupt":
         ses.go()
@@ -852,12 +716,10 @@ def test_a_release_still_hands_back_the_stop_packet_it_read(release: str) -> Non
     assert (ses.running, ses.stop_count) == (False, 1)
 
 
-# ------------------------------------------------ a connection that failed is a SessionError
 
 
 class _FailingWire(_Wire):
-    """A wire whose `recv`, or whose `sendall` of one given payload, raises the `OSError` a
-    dead connection raises."""
+    """A wire whose `recv`, or `sendall` of one payload, raises a dead connection's `OSError`."""
 
     def __init__(self, packets: list[str], error: OSError, on_recv: bool = False,
                  on_send: bytes | None = None, on_settimeout: bool = False) -> None:
@@ -896,8 +758,7 @@ _DEAD = [ConnectionResetError(54, "Connection reset by peer"), BrokenPipeError(3
 def test_a_connection_that_failed_is_a_session_error_at_every_site_that_touches_the_socket(
     site: str, error: OSError,
 ) -> None:
-    """Every handler above the packet layer catches `SessionError` and nothing else, so an
-    `OSError` that escaped as itself went past all of them."""
+    """Every handler above the packet layer catches `SessionError` and nothing else."""
     asks: dict[str, tuple[g.Session, Callable[[g.Session], object]]] = {
         "send": (_failing([], error, on_send=b"$"), lambda ses: ses.request("m0,4")),
         "recv": (_failing([], error, on_recv=True), lambda ses: ses.request("m0,4")),
@@ -927,8 +788,7 @@ def test_a_connection_the_stub_closed_is_a_failed_connection_too() -> None:
 
 
 def test_a_wait_that_ran_out_is_still_a_timeout_and_never_a_failed_connection() -> None:
-    """`TimeoutError` IS an `OSError`: translated with the rest it would turn every poll of a
-    running machine into a broken session."""
+    """`TimeoutError` IS an `OSError`."""
     assert issubclass(TimeoutError, OSError)
     ses = _failing([], TimeoutError("timed out"), on_recv=True)
     with pytest.raises(g.Timeout):
@@ -938,11 +798,7 @@ def test_a_wait_that_ran_out_is_still_a_timeout_and_never_a_failed_connection() 
 
 
 def test_the_register_file_is_read_in_one_g_packet_at_the_stubs_own_widths() -> None:
-    """Every stop survey reads the whole register file, and it cost one `p` round trip per
-    register: a 68000's file was eighteen trips a stop. The stub answers `g` with every
-    register in number order, each at the width its own formatter uses (two, four, eight or
-    sixteen hex digits), in the TARGET's byte order like `p`; the reply is cut by those
-    widths, and one whose length is not the sum is refused rather than read short."""
+    """A stop survey reads the register file in one `g`, not one `p` per register."""
     narrow = """<target><architecture>i386</architecture>
     <feature name="org.gnu.gdb.i386.core"><reg name="eax" bitsize="16" type="int"/>
     <reg name="eip" bitsize="16" type="code_ptr"/><reg name="fl" bitsize="8" type="int"/>
@@ -960,8 +816,6 @@ def test_the_register_file_is_read_in_one_g_packet_at_the_stubs_own_widths() -> 
     ses.request = lambda cmd, timeout=None: "568b00"  # type: ignore[method-assign]
     with pytest.raises(g.SessionError, match="6 hex digits"):
         ses.registers(thread=1)
-    # Five same-width registers with DIFFERENT values, or a slice that never advanced would
-    # read every register as the first and still pass.
     m68k = _session_with(M68K, "big")
     m68k.request = lambda cmd, timeout=None: "".join(  # type: ignore[method-assign]
         f"{v:08x}" for v in (0x1111, 0x2222, 0x3333, 0x4444, 0x5555))
@@ -970,9 +824,7 @@ def test_the_register_file_is_read_in_one_g_packet_at_the_stubs_own_widths() -> 
 
 
 def test_an_alias_answers_the_width_of_the_register_it_aliases() -> None:
-    """`register_bits` lists the description's own file and no alias, on purpose; a forced
-    register is read back at ITS width, so an alias (`A7` for `SP`) has to answer the width
-    of the register it names, not a default. On a 16-bit file the default was 32."""
+    """`register_bits` lists the description's own file and no alias, on purpose."""
     narrow = """<target><architecture>m68k</architecture>
     <feature name="org.gnu.gdb.m68k.core"><reg name="d0" bitsize="16" type="int"/>
     <reg name="sp" bitsize="16" type="data_ptr"/><reg name="pc" bitsize="32" type="code_ptr"/>
@@ -985,9 +837,7 @@ def test_an_alias_answers_the_width_of_the_register_it_aliases() -> None:
 
 
 def test_a_soft_reset_is_scheduled_stepped_into_and_counted_as_a_write() -> None:
-    """The console's `softreset` is a timer that fires when the machine next runs: the
-    session schedules it, steps once so it applies, counts the write, and answers the pc the
-    machine is at afterwards, which is the caller's readback."""
+    """The console's `softreset` is a timer that fires when the machine next runs."""
     ses = g.Session()
     sent: list[str] = []
 
@@ -1007,11 +857,7 @@ def test_a_soft_reset_is_scheduled_stepped_into_and_counted_as_a_write() -> None
 
 
 def test_a_16_bit_register_answers_to_its_short_name_and_a_32_bit_one_does_not() -> None:
-    """A register a map serves 16 bits wide under an `E`-prefixed name answers to its short
-    spelling, and the reply carries the stub's name: a V30's `AX` is served as `EAX`. This
-    map also serves `EIP` 16 bits wide, which a V30's stub does not (its `EIP` is the 32-bit
-    linear pc), so here `IP` reaches it. On a 32-bit map `AX` is half of
-    `EAX`, and that half is not a register here: refused, listing the file."""
+    """A register a map serves 16 bits wide under an `E`-prefixed name answers to its short name."""
     narrow = """<target><architecture>i386</architecture>
     <feature name="org.gnu.gdb.i386.core"><reg name="eax" bitsize="16" type="int"/>
     <reg name="eip" bitsize="16" type="code_ptr"/></feature></target>"""
@@ -1048,10 +894,7 @@ def _two_cpus() -> g.Session:
 
 
 def test_another_devices_appended_state_is_not_a_register_of_this_cpu() -> None:
-    """The stub appends every other device's visible state after the main cpu's registers,
-    under a `mame./<tag>` feature; the second 68000 names its own `D0` there, and folded
-    upper-case it would have overwritten the main cpu's `d0`. This cpu's registers are the
-    ones outside those features, and a name resolves to this cpu's register."""
+    """The stub appends other devices' state after the main cpu's registers."""
     ses = _two_cpus()
     names = ses.layout(1).register_names
     assert names[:2] == ["D0", "D1"] and names[-1] == "PC" and len(names) == 18, names
@@ -1060,10 +903,7 @@ def test_another_devices_appended_state_is_not_a_register_of_this_cpu() -> None:
 
 
 def test_the_g_reply_of_a_stub_that_appends_other_devices_is_cut_at_this_cpus_registers() -> None:
-    """`g` carries every register the description declares, the appended ones included, so
-    the length judged is the whole description's, and the values read are this cpu's, each
-    equal to what the stub answers to `p` for that register: the known answer, captured from
-    the same stub at the same stop."""
+    """`g` carries every register the description declares, the appended ones included."""
     ses = _two_cpus()
     reply = (TWO_CPUS / "g.reply").read_text()
     by_p = json.loads((TWO_CPUS / "p.json").read_text())
@@ -1078,8 +918,7 @@ def test_the_g_reply_of_a_stub_that_appends_other_devices_is_cut_at_this_cpus_re
 
 
 def test_a_feature_named_mame_without_the_slash_is_still_this_cpus() -> None:
-    """Only `mame./<tag>` is another device. A cpu map whose own core feature is `mame.<cpu>`
-    (the z80's was, before it took GDB's name) keeps its registers."""
+    """Only `mame./<tag>` is another device."""
     xml = """<target><architecture>z80</architecture><feature name="mame.z80">
     <reg name="af" bitsize="16" type="int"/><reg name="pc" bitsize="16" type="code_ptr"/>
     </feature></target>"""
@@ -1087,9 +926,7 @@ def test_a_feature_named_mame_without_the_slash_is_still_this_cpus() -> None:
 
 
 def test_another_devices_state_numbered_before_this_cpus_is_refused_not_misread() -> None:
-    """The `g` reply is cut from its start at this cpu's widths, which is right because the
-    stub appends the other devices AFTER the debugged cpu. A description that numbers one of
-    them first would shift every value onto the wrong name, so it is refused at the read."""
+    """The `g` reply is cut from its start at this cpu's widths."""
     xml = """<target><architecture>m68k</architecture>
     <feature name="mame./subcpu"><reg name="X" bitsize="32" type="int"/></feature>
     <feature name="org.gnu.gdb.m68k.core"><reg name="d0" bitsize="32" type="int"/>
@@ -1099,26 +936,20 @@ def test_another_devices_state_numbered_before_this_cpus_is_refused_not_misread(
 
 
 def test_a_16_bit_x86_target_decodes_little_endian() -> None:
-    """The stub serves the NEC family as `i8086` once it can: same board as the `i386`
-    case above, so the same byte order."""
+    """The stub serves the NEC family as `i8086` once it can."""
     assert _session_with(NEC, "little").layout(1).byte_order == "little"
 
 
 def test_a_pointer_is_as_wide_as_the_stack_pointer_not_the_program_counter() -> None:
-    """On the V30 the stub serves `eip` as the linear address, 32 bits wide, while a near
-    pointer held in memory is a 16-bit offset, as wide as `esp`: the stack pointer is the
-    measure, and the 32-bit program counter beside it must not be."""
+    """`eip` is a 32-bit linear address on the V30, wider than a near pointer."""
     ses = _session_with(NEC, "little")
     assert ses.layout(1).register_width("EIP") == 32, "the case only discriminates if eip is wider"
     assert ses.layout(1).pointer_width == 2
-    # The 68000 is the control: its stack pointer is a long, and so is a pointer.
     assert _session_with(M68K).layout(1).pointer_width == 4
 
 
 def test_the_stack_pointer_is_found_by_name_not_by_position_or_type() -> None:
-    """A description whose FIRST register is a wide `data_ptr` and whose stack pointer
-    comes later and narrower: the first register, the first `int` and the program counter
-    all answer 4 here, and only the stack pointer answers 2."""
+    """A description whose FIRST register is a wide `data_ptr`."""
     xml = """<target><architecture>m68k</architecture><feature name="org.gnu.gdb.m68k.core">
     <reg name="fp" bitsize="32" type="data_ptr"/><reg name="d0" bitsize="32" type="int"/>
     <reg name="sp" bitsize="16" type="int"/><reg name="pc" bitsize="32" type="code_ptr"/>
@@ -1134,11 +965,7 @@ def test_a_description_with_no_stack_pointer_falls_back_to_the_program_counter()
 
 
 def test_the_register_file_is_cut_at_each_declared_width() -> None:
-    """The V30 map carries 16-bit registers, a 32-bit program counter and 80-bit x87
-    placeholders, and the stub prints each at its declared width: the file is cut the same
-    way, or the 80-bit ones would be read two digits wide and everything after them
-    shifted. The file below is the captured map's 32 registers, each with a value no
-    other register carries."""
+    """Each V30 register prints at its declared width."""
     ses = _session_with(NEC, "little")
     widths = [ses.layout(1).register_bits[n] for n in ses.layout(1).register_names]
     assert len(widths) == 32 and 80 in widths and 16 in widths and 32 in widths
@@ -1147,7 +974,6 @@ def test_the_register_file_is_cut_at_each_declared_width() -> None:
                    for n in ses.layout(1).register_names)
     ses.request = lambda cmd, timeout=None: file if cmd == "g" else ""  # type: ignore[method-assign]
     assert ses.registers(thread=1) == values
-    # The control: a file two digits short of that is refused, never read off by one.
     short = file[:-2]
     ses.request = lambda cmd, timeout=None: short if cmd == "g" else ""  # type: ignore[method-assign]
     with pytest.raises(g.SessionError, match="hex digits"):
@@ -1155,19 +981,13 @@ def test_the_register_file_is_cut_at_each_declared_width() -> None:
 
 
 def test_the_packet_size_the_stub_advertises_is_read_off_qsupported() -> None:
-    """MAME's stub answers `qSupported` with `PacketSize=4000` (hex, its `MAX_PACKET_SIZE` of
-    16384) and drops a packet longer than that WITHOUT an answer. A stub that says nothing
-    about it leaves the size unknown rather than guessed."""
+    """A packet longer than the stub's advertised `PacketSize` is never sent."""
     assert g.packet_size("PacketSize=4000;qXfer:features:read+") == 0x4000
     assert g.packet_size("qXfer:features:read+;PacketSize=400") == 0x400
     assert g.packet_size("qXfer:features:read+") is None
     assert g.packet_size("") is None
 
 
-# THE STUB'S THREADS, as m68k-dual's two builds answered them over the socket (captured by the
-# proof of the gdbstub patch 0004): the patched stub lists one thread per cpu and names each
-# by its tag, hex encoded as the protocol wants; the stub before it lists one thread and
-# answers the empty packet, "unsupported", to `qThreadExtraInfo`.
 _PATCHED_THREADS = {"qfThreadInfo": "m1,2", "qsThreadInfo": "l",
                     "qThreadExtraInfo,1": b":maincpu".hex(),
                     "qThreadExtraInfo,2": b":subcpu".hex()}
@@ -1177,16 +997,13 @@ _UNPATCHED_THREADS = {"qfThreadInfo": "m1", "qsThreadInfo": "l", "qThreadExtraIn
 @pytest.mark.parametrize(("answers", "threads"), [
     (_PATCHED_THREADS, {1: ":maincpu", 2: ":subcpu"}),
     (_UNPATCHED_THREADS, {}),
-    # A stub that pages its list, as the protocol allows: every page is read.
     ({"qfThreadInfo": "m1", "qsThreadInfo": ["m2", "l"],
       "qThreadExtraInfo,1": b":maincpu".hex(),
       "qThreadExtraInfo,2": b":subcpu".hex()}, {1: ":maincpu", 2: ":subcpu"}),
 ], ids=["patched", "unpatched", "paged"])
 def test_the_threads_are_read_off_the_stub_and_a_stub_with_none_serves_the_first_cpu(
         answers: dict[str, Any], threads: dict[int, str]) -> None:
-    """Which thread is which cpu is the stub's own answer, read once at `connect`. A stub that
-    does not name its threads serves the first cpu alone, which is every build before the
-    patch: the map stays empty rather than guessing a tag for thread 1."""
+    """Which thread is which cpu is the stub's own answer, read once at `connect`."""
     pages = {k: list(v) if isinstance(v, list) else [v] for k, v in answers.items()}
 
     def canned(cmd: str, timeout: float | None = None) -> str:
@@ -1201,8 +1018,7 @@ def test_the_threads_are_read_off_the_stub_and_a_stub_with_none_serves_the_first
 
 
 def test_connect_reads_the_threads_after_the_register_map(monkeypatch: pytest.MonkeyPatch) -> None:
-    """The handshake asks the stub its threads once, after the register map, so `status` reports
-    what THIS build serves; the packets it sends are the protocol's own, in order."""
+    """The handshake asks the stub its threads once, after the register map."""
     wire = _Wire(["PacketSize=4000", "l" + M68K, *(_PATCHED_THREADS[k] for k in (
         "qfThreadInfo", "qsThreadInfo", "qThreadExtraInfo,1", "qThreadExtraInfo,2"))])
     monkeypatch.setattr(socket, "create_connection", lambda *_a, **_k: wire)
@@ -1215,10 +1031,7 @@ def test_connect_reads_the_threads_after_the_register_map(monkeypatch: pytest.Mo
 
 
 def test_a_description_with_no_register_and_one_that_is_not_xml_are_their_own_errors() -> None:
-    """A well-formed `<target>` that declares no `reg` is `NoRegisters`; a document that does
-    not parse (empty, cut, garbled, a number that is not one) is `BadTargetXml`, never the
-    parser's own exception. `start` relaunches on both: a live stub serving either was not
-    ready."""
+    """A well-formed `<target>` that declares no `reg` is `NoRegisters`."""
     with pytest.raises(g.NoRegisters, match="declares no registers"):
         _session_with("<target><architecture>m68k</architecture></target>")
     with pytest.raises(g.BadTargetXml, match="not a well-formed"):
@@ -1229,8 +1042,7 @@ def test_a_description_with_no_register_and_one_that_is_not_xml_are_their_own_er
 
 
 def test_a_packet_size_that_is_not_hex_is_a_session_error_of_the_handshake() -> None:
-    """A garbled `qSupported` is the stub's failure, marked with its phase, never a `ValueError`
-    escaping `start` as a crash."""
+    """A garbled `qSupported` is the stub's failure, marked with its phase."""
     ses, _wire = _wired(["PacketSize=zz"])
     with pytest.raises(g.SessionError, match="PacketSize") as got:
         ses.handshake()
@@ -1252,8 +1064,7 @@ _NO_REGS = "<target><architecture>m68k</architecture></target>"
         "xml-timeout", "threads-not-hex"])
 def test_a_handshake_failure_says_where_it_failed_and_what_the_stub_answered(
         packets: list[str], error: type[g.SessionError], phase: str, reply: str) -> None:
-    """Which of the handshake's three questions failed, and the stub's own answer to it: what
-    tells a stub not ready yet (`start` relaunches) from one that hung (it does not)."""
+    """Which of the handshake's three questions failed, and the stub's own answer to it."""
     ses, _wire = _wired(packets)
     with pytest.raises(error) as got:
         ses.handshake()
@@ -1261,7 +1072,7 @@ def test_a_handshake_failure_says_where_it_failed_and_what_the_stub_answered(
 
 
 def test_the_answer_a_handshake_failure_keeps_is_cut_to_two_hundred_characters() -> None:
-    """The reply rides on a refusal and into `start_retries`: a whole description is not."""
+    """The reply rides on a refusal and into `start_retries`."""
     doc = "<target><architecture>" + "x" * 300 + "</architecture></target>"
     ses, _wire = _wired(["PacketSize=4000", "l" + doc])
     with pytest.raises(g.NoRegisters) as got:
@@ -1270,9 +1081,7 @@ def test_the_answer_a_handshake_failure_keeps_is_cut_to_two_hundred_characters()
 
 
 class _Endless(_Wire):
-    """A stub that keeps sending `page` once its scripted packets are spent, never the closing
-    `l`, and falls silent after `ENDLESS_CHUNKS`, so a loop with no deadline ends the test red
-    in seconds instead of hanging the suite."""
+    """A stub that never sends the closing `l` and falls silent after `ENDLESS_CHUNKS`."""
 
     ENDLESS_CHUNKS = 500
     CHUNK_EVERY_S = 0.01
@@ -1291,9 +1100,7 @@ class _Endless(_Wire):
 
 
 def test_a_description_that_never_ends_stops_at_the_handshakes_deadline() -> None:
-    """The description is read in chunks until one starts with `l`, and a stub that never sent
-    it held the handshake, and `start`'s one lock, for ever: the loop takes the handshake's
-    deadline and raises `Timeout` past it."""
+    """The description is read in chunks until one starts with `l`."""
     wire = _Endless(["PacketSize=4000"])
     ses = g.Session(timeout=0.2)
     ses._sock = wire  # type: ignore[assignment]
@@ -1305,8 +1112,7 @@ def test_a_description_that_never_ends_stops_at_the_handshakes_deadline() -> Non
 
 
 def test_a_thread_list_that_never_ends_stops_at_the_handshakes_deadline() -> None:
-    """The thread list is paged the same way, until a page that is not `m`: the handshake's
-    bound holds there too."""
+    """The thread list is paged the same way, until a page that is not `m`."""
     wire = _Endless(["PacketSize=4000", "l" + M68K, "m1"], page="m1")
     ses = g.Session(timeout=0.2)
     ses._sock = wire  # type: ignore[assignment]
@@ -1319,9 +1125,7 @@ def test_a_thread_list_that_never_ends_stops_at_the_handshakes_deadline() -> Non
 
 def test_a_dial_whose_first_byte_fails_closes_its_socket_and_says_so(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    """The kernel completed the connection and the `+` could not go out on it: the socket is
-    closed, not dropped for the collector, and the failure is its own type, which `start`
-    refuses at once because MAME serves that one connection and no other."""
+    """The kernel completed the connection and the `+` could not go out on it."""
     wire = _Wire([], send_error=ConnectionResetError(54, "Connection reset by peer"))
     monkeypatch.setattr(socket, "create_connection", lambda *_a, **_k: wire)
     ses = g.Session(timeout=0.2)
@@ -1331,9 +1135,7 @@ def test_a_dial_whose_first_byte_fails_closes_its_socket_and_says_so(
 
 
 def test_a_stop_on_another_thread_is_undone_before_the_next_register_or_memory_packet() -> None:
-    """The patched stub makes the stopped thread the one `g` and `m` serve, as gdbserver does;
-    a read for thread 1 then selects thread 1 again, once, before its packet, and a stop that
-    names thread 1, or no thread, sends nothing extra."""
+    """The patched stub makes the stopped thread the one `g` and `m` serve, as gdbserver does."""
     ses, wire = _wired(["OK", "00000400", "00000400"])
     ses._note_stop("T05thread:2;0e:0000083b;11:00000542;")
     ses.read(0x4, 4, thread=1)
@@ -1351,9 +1153,7 @@ def test_a_stop_on_another_thread_is_undone_before_the_next_register_or_memory_p
 
 
 def test_a_threads_block_selects_it_once_and_the_first_cpu_is_put_back_after() -> None:
-    """`register_block` reads one thread's whole `g` reply with that thread selected, once
-    however often it is asked, and the next packet for thread 1 selects it again. `Hc` is its
-    own packet and moves no selection. The replies are m68k-dual's (captured by B3's focus)."""
+    """`register_block` reads one thread's whole `g` reply with that thread selected."""
     block = "00600080000031bf"
     ses, wire = _wired(["OK", block, block, "OK", "OK", "00000400"])
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
@@ -1364,8 +1164,6 @@ def test_a_threads_block_selects_it_once_and_the_first_cpu_is_put_back_after() -
     assert _packets(wire) == ["Hg2", "g", "g", "Hc2", "Hg1", "m4,4"]
 
 
-# EVERY REGISTER AND MEMORY PACKET, each with the call that sends it and a reply m68k-dual's stub
-# gives it (the `m` and `g` words captured off m68k-dual; `OK` for a write).
 _THREAD_PACKETS = [
     ("read", lambda s, t: s.read(0x4, 4, thread=t), "m4,4", "00000401"),
     ("write", lambda s, t: s.write(0x4, b"\x01", thread=t), "M4,1:01", "OK"),
@@ -1380,13 +1178,11 @@ _THREAD_PACKETS = [
                          ids=[p[0] for p in _THREAD_PACKETS])
 def test_every_register_and_memory_packet_goes_to_the_thread_it_names(
         call: Any, packet: str, reply: str) -> None:
-    """The session owns the stub's one selection: a packet for another thread selects it first,
-    a second one for the same thread sends no `Hg`, and a packet for thread 1 after it selects
-    thread 1 again. No packet runs on the thread a previous call left selected."""
+    """The session owns the stub's one selection."""
     ses, wire = _wired(["l" + M68K, "OK", reply, reply, "OK", reply])
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     ses.know_endianness({1: "big", 2: "big"})
-    ses._layouts[2] = ses.layout(1)     # each thread's own description is its own case
+    ses._layouts[2] = ses.layout(1)
     call(ses, 2)
     call(ses, 2)
     call(ses, 1)
@@ -1394,9 +1190,7 @@ def test_every_register_and_memory_packet_goes_to_the_thread_it_names(
 
 
 def test_a_stub_without_threads_is_asked_for_thread_one_alone() -> None:
-    """A build without the thread patch serves its first cpu, thread 1, and is sent no `Hg`
-    for it; another thread is a caller's error, refused before a byte goes out, since the
-    stub's `H` answers only threads 0, 1 and -1."""
+    """A build without the thread patch serves its first cpu, thread 1."""
     ses, wire = _wired(["00000400"])
     assert ses.read(0x4, 4, thread=1) == bytes.fromhex("00000400")
     with pytest.raises(ValueError, match=r"thread 2 is not one this stub serves \(\[1\]\)"):
@@ -1406,10 +1200,7 @@ def test_a_stub_without_threads_is_asked_for_thread_one_alone() -> None:
 
 def test_the_stopped_thread_is_read_off_the_question_and_moves_the_selection_as_a_stop_does(
 ) -> None:
-    """`?` answers the stop reply of the last stop, which selects its thread for `g` and `m`
-    on the stub, as the stop did: the session follows, or the next read for thread 1 would be
-    served for the stopped thread's cpu without a word. A reply naming no thread is None and
-    moves nothing. The replies are m68k-dual's (captured by B3's probe of `?`)."""
+    """`?` answers the stop reply of the last stop, which selects its thread for `g`."""
     ses, wire = _wired(["T05thread:2;0e:0000083a;0f:00201000;11:00000542;", "OK", "00000400"])
     assert ses.stopped_thread() == 2
     ses.read(0x4, 4, thread=1)
@@ -1421,9 +1212,7 @@ def test_the_stopped_thread_is_read_off_the_question_and_moves_the_selection_as_
 
 
 def test_the_empty_reply_is_its_own_error_and_still_a_session_error() -> None:
-    """`Unsupported` lets a caller tell "the stub has no such packet" from a timeout, which
-    latches the session broken, and it stays a `SessionError` for every caller that already
-    catches that."""
+    """`Unsupported` lets a caller tell "the stub has no such packet" from a timeout."""
     ses, _wire = _wired([""])
     with pytest.raises(g.Unsupported):
         ses.request("qThreadExtraInfo,1")
@@ -1431,8 +1220,7 @@ def test_the_empty_reply_is_its_own_error_and_still_a_session_error() -> None:
 
 
 def test_a_thread_name_that_is_not_hex_is_refused_rather_than_read() -> None:
-    """A stub answering `qThreadExtraInfo` with something that is not hex has not named its
-    cpu, and a tag made up from it would be a guess."""
+    """A stub answering `qThreadExtraInfo` with something that is not hex has not named its cpu."""
     def canned(cmd: str, timeout: float | None = None) -> str:
         return {"qfThreadInfo": "m1", "qsThreadInfo": "l"}.get(cmd, "maincpu")
 
@@ -1448,10 +1236,7 @@ def _packets(wire: _Wire) -> list[str]:
 
 @pytest.mark.parametrize("addr", [0x200000, 0x20000])
 def test_a_write_longer_than_one_packet_goes_out_in_packets_that_fit(addr: int) -> None:
-    """An `M` packet carries two hex digits per byte and the stub drops one past its advertised
-    size unanswered, so the write is split to fit: contiguous addresses, every packet at most
-    the size, all the bytes once, and ONE write to `writes`. The two addresses give headers of
-    both parities, so one of them fills its packets exactly to the size, which the stub takes."""
+    """An `M` packet carries two hex digits per byte."""
     data = bytes(range(100))
     ses, wire = _wired(["OK"] * 10)
     ses.packet_size = 0x40
@@ -1466,15 +1251,13 @@ def test_a_write_longer_than_one_packet_goes_out_in_packets_that_fit(addr: int) 
         assert start == at and len(payload) == 2 * n
         got, at = got + bytes.fromhex(payload), at + n
     assert got == data and ses.writes == 1
-    # THE CONTROL: with no size known, one packet, as before.
     ses, wire = _wired(["OK"])
     ses.write(addr, data, thread=1)
     assert len(_packets(wire)) == 1
 
 
 def test_a_packet_too_small_for_one_byte_is_refused_and_writes_nothing() -> None:
-    """A size that cannot carry the header and one byte would otherwise send empty packets and
-    count a write that changed nothing: the success-with-no-change shape. Nothing goes out."""
+    """A size that cannot carry the header and one byte would otherwise send empty packets."""
     ses, wire = _wired(["OK"] * 4)
     ses.packet_size = 8
     with pytest.raises(g.SessionError, match="cannot carry"):
@@ -1486,9 +1269,7 @@ def test_a_packet_too_small_for_one_byte_is_refused_and_writes_nothing() -> None
 
 
 def test_a_console_command_past_the_packet_size_is_refused_before_a_byte_goes_out() -> None:
-    """`qRcmd` carries the command as two hex digits per character, and the limit is the one
-    `write` sizes its packets by, a body of the size itself: a command AT it goes out, and one
-    character past it is refused with nothing written to the socket."""
+    """`qRcmd` carries the command as two hex digits per character."""
     size = 0x40
     limit = (size - len("qRcmd,")) // 2
     ses, wire = _wired([])
@@ -1504,8 +1285,6 @@ def test_a_console_command_past_the_packet_size_is_refused_before_a_byte_goes_ou
     assert _packets(wire) == ["qRcmd," + ("x" * limit).encode().hex()]
     assert ses.max_payload() == size
     assert len(_packets(wire)[0]) == size
-    # AN ODD SIZE cannot be filled by a prefix of even length and two digits per character, so
-    # the largest body lands one under it: it is sent, and one character more is not.
     ses, wire = _wired(["4f4b"])
     ses.packet_size = 0x41
     at = (0x41 - len("qRcmd,")) // 2
@@ -1513,18 +1292,15 @@ def test_a_console_command_past_the_packet_size_is_refused_before_a_byte_goes_ou
     assert ses.monitor("x" * at) == "OK"
     with pytest.raises(g.CommandTooLong):
         ses.monitor("x" * (at + 1))
-    # A size too small for the prefix itself carries no character, never a negative count.
     ses, wire = _wired([])
     ses.packet_size = 4
     with pytest.raises(g.CommandTooLong) as tiny:
         ses.monitor("x")
     assert tiny.value.limit_chars == 0 and wire.sent == []
-    # THE CONTROL: a stub that advertised no size is checked by nothing, as `write` is not.
     ses, wire = _wired(["4f4b"])
     assert ses.max_payload() is None and ses.monitor("x" * 4 * limit) == "OK"
 
 
-# ------------------------------------------------------------------ the console's wrapped lines
 
 CONSOLE = Path(__file__).parent / "fixtures" / "console"
 ROW_START = re.compile(r"^(?:[ D][ 0-9A-F]{3}[0-9A-F] @ |Device )")
@@ -1535,8 +1311,7 @@ def _zeros_cond(row: str) -> str:
 
 
 def test_unwrap_console_rebuilds_a_row_cut_at_the_space_after_if() -> None:
-    """Captured at one short of, at, and one past the console's wrap column: the first comes
-    back as one line; the other two were cut at the space after `if`, which MAME dropped."""
+    """Captured at one short of, at, and one past the console's wrap column."""
     for name, index, zeros in (("row249", 1, 224), ("row250", 2, 225), ("row251", 3, 226)):
         cond = "d0==0x" + "0" * zeros + "1"
         text = (CONSOLE / f"bplist.{name}.txt").read_text()
@@ -1558,14 +1333,13 @@ def test_unwrap_console_joins_a_hard_cut_with_nothing_and_a_space_cut_with_a_spa
 
 
 def _space_cut(head: str, tail: str) -> str:
-    """A line MAME cut at the space after `head`: `head`, then `tail` on the next line, sized so
-    the space fell inside the wrap column and `tail`'s first word reached it."""
+    """A line MAME cut at the space after `head`."""
     return head + "\n" + tail
 
 
 def test_unwrap_console_joins_only_what_the_wrap_could_have_cut() -> None:
-    head = "    9 @ 000400 do " + "a" * 226          # the space after it is at column 244
-    cont = "Device online"                          # five characters carried past it, no space
+    head = "    9 @ 000400 do " + "a" * 226
+    cont = "Device online"
     assert g.unwrap_console(_space_cut(head, cont) + "\n\n", ROW_START) == [head + " " + cont], \
         "a continuation that happens to start like a header is still the row's"
     assert g.unwrap_console("    1 @ 000400 if d0==1\n5 things happened\n\n", ROW_START) == [
@@ -1576,27 +1350,20 @@ def test_unwrap_console_joins_only_what_the_wrap_could_have_cut() -> None:
 
 
 def test_unwrap_console_breaks_the_one_ambiguous_tie_with_the_callers_starts() -> None:
-    """A piece one short of the column is a whole line OR a line whose last column was the space
-    MAME dropped, which carried nothing over: only the next line's own shape can tell."""
+    """A piece one short of the column is a whole line or one ending in a dropped space."""
     head = "    1 @ 000400 if " + "x" * 231
     assert len(head) == g.CONSOLE_WRAP_COLS - 1
     assert g.unwrap_console(head + "\n    2 @ 000404\n\n", ROW_START) == [head, "    2 @ 000404"]
     assert g.unwrap_console(head + "\nx==1\n\n", ROW_START) == [head + " x==1"]
 
 
-# ----------------------------------------------- the framing, on the bytes MAME's stub sent
-#
-# `_Wire` hands `_receive` one whole packet per read, so where a packet ENDS was never asked.
-# The chunks below are what a quick m68k-dual session put on the socket, cut as they arrived:
-# the ack alone and then the packet, the ack glued to it, and a stop reply with its registers.
 
 STOP_PARKED = b"$T050e:00000000;0f:00201000;11:000f2034;#67"
 STOP_AT_4A0 = b"$T050e:00200fd8;0f:00200fb6;11:000004a0;#3e"
 
 
 class _ByteWire:
-    """A socket that answers from scripted CHUNKS of bytes (a `TimeoutError` in the list is a
-    read that found nothing), and records the bound each read was given."""
+    """A socket that answers from scripted CHUNKS of bytes; a `TimeoutError` entry reads nothing."""
 
     def __init__(self, chunks: list[bytes | type[TimeoutError]]) -> None:
         self.chunks = list(chunks)
@@ -1662,8 +1429,7 @@ def test_a_read_is_bounded_by_the_time_it_was_given_and_by_nothing_else() -> Non
 
 
 def test_a_stop_reply_is_an_answer_when_the_machine_was_not_running() -> None:
-    """`?` on a parked machine is answered with a stop reply, and that IS the answer: only a
-    machine this session let go can have a stop of its own in front of one."""
+    """`?` on a parked machine is answered with a stop reply, and that IS the answer."""
     ses, _ = _on_bytes([b"+" + STOP_PARKED])
     assert ses.request("?") == STOP_PARKED[1:-3].decode()
     assert (ses.running, ses.stop_count, ses.last_stop_packet) == (False, 0, "")
@@ -1713,14 +1479,12 @@ def test_a_session_with_no_socket_says_so_before_it_interrupts_anything() -> Non
 
 
 def test_a_wrapped_piece_one_character_short_of_two_continues_by_what_it_carried() -> None:
-    """A piece two short of the column carried ONE character past the dropped space, so the
-    geometry decides and the caller's pattern is not asked."""
+    """A piece two short of the column carried ONE character past the dropped space."""
     starts = re.compile("ab")
     assert g._continues("x" * (g.CONSOLE_WRAP_COLS - 2), "ab cd", starts) is True
     assert g._continues("x" * (g.CONSOLE_WRAP_COLS - 2), " b cd", starts) is False
 
 
-# ------------------------------------- what goes out on the wire, and what a caller reads back
 
 
 def test_a_stop_shape_never_sent_is_refused_in_lower_case_hex_and_quoted_short() -> None:
@@ -1747,8 +1511,7 @@ def test_the_packet_size_is_the_feature_of_that_name_and_no_other() -> None:
 
 
 def test_unwrap_console_opens_with_no_piece_and_a_blank_line_leaves_none() -> None:
-    """A first line, or one after a blank, continues nothing however long and spaceless it
-    is: there is no piece before it for the wrap to have cut it from."""
+    """A first line, or one after a blank, continues nothing however long and spaceless it is."""
     solid = "x" * (g.CONSOLE_WRAP_COLS - 1)
     starts = re.compile("never")
     assert g.unwrap_console(solid, starts) == [solid]
@@ -1849,7 +1612,6 @@ def test_a_value_too_wide_for_its_register_is_refused_before_anything_is_sent() 
     assert wire.sent == [] and ses.writes == 0
 
 
-# ------------------------------------------------ a reply that missed its deadline is still owed
 
 
 def _late(reply: str) -> list[bytes | type[TimeoutError]]:
@@ -1860,16 +1622,14 @@ def _late(reply: str) -> list[bytes | type[TimeoutError]]:
 def _two_cpus_on(wire: _ByteWire) -> g.Session:
     """The captured two-cpu description, its `request` the REAL one again, over `wire`."""
     ses = _two_cpus()
-    del ses.request          # the canned one `_session_with` read the description through
+    del ses.request
     ses._sock = wire  # type: ignore[assignment]
     ses.timeout = 0.05
     return ses
 
 
 def test_each_threads_registers_are_cut_by_its_own_description() -> None:
-    """KNOWN ANSWER, m68k-dual on the patched stub: each thread has its own description, read
-    with that thread selected and once only, and its `g` reply is cut by it. The two cpus stood
-    at different pcs at the one instant the captures were taken."""
+    """KNOWN ANSWER, m68k-dual on the patched stub."""
     xml2 = (TWO_CPUS / "target.thread2.xml").read_text()
     g1, g2 = ((TWO_CPUS / f"g.thread{t}.reply").read_text() for t in (1, 2))
     ses, wire = _wired(["l" + (TWO_CPUS / "target.xml").read_text(), g1,
@@ -1885,9 +1645,7 @@ def test_each_threads_registers_are_cut_by_its_own_description() -> None:
 
 
 def test_two_cpus_of_different_architectures_are_each_decoded_as_their_own() -> None:
-    """A board whose second cpu is another architecture: its thread's description gives its own
-    register widths and byte order, so its file is cut and decoded as ITS OWN, never as the
-    first cpu's. The two descriptions are this suite's 68000 and i386 ones."""
+    """A board whose second cpu is another architecture."""
     ses, wire = _wired(["l" + M68K, "OK", "l" + I386, "34120000" + "fc0f2000" + "00020000"
                         + "08000000"])
     ses.threads = {1: ":maincpu", 2: ":audiocpu"}
@@ -1898,10 +1656,7 @@ def test_two_cpus_of_different_architectures_are_each_decoded_as_their_own() -> 
 
 
 def test_a_request_that_ran_out_latches_the_session_and_its_late_answer_is_never_paired() -> None:
-    """Nothing in the protocol numbers a reply, so the answer a request is still owed would be
-    read by the NEXT request as its own. The captured answer of `p` for the program counter
-    lands after the deadline; a read of D0 on the same session must never come back holding
-    it, so the request that ran out latches the session and the next one sends nothing."""
+    """Nothing in the protocol numbers a reply."""
     by_p = json.loads((TWO_CPUS / "p.json").read_text())
     wire = _ByteWire(_late(by_p["pc"]))
     ses = _two_cpus_on(wire)
@@ -1929,8 +1684,7 @@ def test_a_console_command_that_ran_out_is_named_by_its_words_not_its_hex() -> N
 def test_a_wait_for_a_stop_that_ran_out_keeps_its_own_handling_and_latches_nothing(
     wait: str,
 ) -> None:
-    """A stop packet says what it is, so a stop wait that ran out is not a reply left owed:
-    the machine is still RUNNING and `stop` is the recovery that reads the packet."""
+    """A stop packet says what it is, so a stop wait that ran out is not a reply left owed."""
     ses = _two_cpus_on(_ByteWire([]))
     if wait == "poll":
         ses.go()
@@ -1942,8 +1696,7 @@ def test_a_wait_for_a_stop_that_ran_out_keeps_its_own_handling_and_latches_nothi
 
 
 def test_a_session_broken_by_anything_sends_no_further_request() -> None:
-    """The guard reads the latch, not the words of one cause: a session that broke on
-    something read in a stop's place sends nothing either."""
+    """The guard reads the latch, not the words of one cause."""
     ses, wire = _wired(["OK"])
     ses.broken = "the stub sent 'OK' while the machine ran, which is not a stop reply"
     with pytest.raises(g.SessionError, match="asked nothing more: the stub sent 'OK'"):
@@ -1958,9 +1711,7 @@ def test_a_packet_is_labelled_by_its_console_words_else_as_sent(packet: str, lab
 
 
 def test_every_capture_is_taken_through_the_screen_alone_unless_a_view_is_named() -> None:
-    """`-snapview` always reaches the command line: `native` (the emulated screen alone, at its
-    own size) by default, so a capture never depends on which layout a set ships; a named view
-    passes through as given, for MAME to match by prefix."""
+    """`-snapview` always reaches the command line."""
     from mame_launch import build_command
 
     plain = build_command("/bin/mame", "gridlee", "/roms", 23946, [], "/scratch/mame-mcp-t")
@@ -1976,9 +1727,7 @@ def _packet(reply: str) -> bytes:
 
 def test_an_owed_request_that_ran_out_latches_nothing_and_the_next_one_collects_its_answer(
 ) -> None:
-    """A request that may run out without breaking the session (the presence's repaint): its
-    answer, still owed, is read and set aside by the NEXT request before that one is sent, so
-    no reply is ever paired with the wrong request; the session stays whole."""
+    """A request that may run out without breaking the session (the presence's repaint)."""
     by_p = json.loads((TWO_CPUS / "p.json").read_text())
     wire = _ByteWire([TimeoutError, _packet("300a"), _packet(by_p["d0"])])
     ses = _two_cpus_on(wire)
@@ -1990,9 +1739,7 @@ def test_an_owed_request_that_ran_out_latches_nothing_and_the_next_one_collects_
 
 
 def test_an_owed_answer_is_collected_before_a_step_and_a_stop_ahead_of_it_is_noted() -> None:
-    """Whatever goes out next collects what the owed request was still owed: a `step` sends no
-    `request`, and read straight after an owed timeout it would take the late answer for its
-    stop and break the session. A stop the machine reached before the answer is the machine's."""
+    """Whatever goes out next collects what the owed request was still owed."""
     wire = _ByteWire([TimeoutError, _packet("300a"), _packet("T05thread:01;")])
     ses = _two_cpus_on(wire)
     with pytest.raises(g.Timeout):
@@ -2017,8 +1764,7 @@ def test_an_owed_answer_that_never_comes_latches_the_request_that_waited_for_it(
 
 
 def test_a_second_owed_request_while_one_is_owed_is_not_sent_and_latches_nothing() -> None:
-    """Two repaints in a row with the console silent: the second is not sent, the session stays
-    whole, and the next ordinary request collects the first answer."""
+    """Two repaints in a row with the console silent."""
     ses = _two_cpus_on(_ByteWire([TimeoutError, TimeoutError]))
     ses.timeout = 0.05
     with pytest.raises(g.Timeout):

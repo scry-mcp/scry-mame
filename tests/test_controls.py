@@ -1,17 +1,9 @@
 """The CONTROL is a declared breakpoint that MAME counts and never stops on.
 
-A control's whole job is to make a zero mean something: a target that never fires reads
-exactly like a breakpoint that cannot fire, unless something known to be hot proves the
-mechanism works. Arming the control through the stub would
-release the machine at every hit, one round trip per firing. MAME's own debugger has the
-sanctioned shape: a breakpoint whose CONDITION is an expression that counts and never comes
-true, `bp <addr>,(++temp0)==0`, so the machine is never halted and the count is read with
-`print temp0`. On a real board it counts every hit, reports no stop to the
-stub, and a stub `run_to` runs beside it.
-
-The doubles answer the console shapes CAPTURED from a real board (`control_console` in
-the shared doubles): the `bplist` row of a conditioned breakpoint (`    2 @ 000404 if
-(++temp1)==0`) and the space-separated answer of a multi-expression `print`.
+It makes a zero mean something: a target that never fires reads like a breakpoint that cannot
+fire unless something known to be hot proves the mechanism. The shape is MAME's own, a
+breakpoint whose condition counts and never comes true, `bp <addr>,(++temp0)==0`, read with
+`print temp0`. The doubles answer console shapes captured from a real board.
 """
 
 from __future__ import annotations
@@ -108,8 +100,7 @@ def test_a_stop_and_a_control_under_one_ref_are_not_the_same_declaration() -> No
 
 
 def test_bplist_rows_with_a_condition_or_an_action_parse_and_keep_them() -> None:
-    """The captured action row: the text after `do`, spaces as the console prints them,
-    and no condition, since the console prints no `if` for a condition of `1`."""
+    """The captured action row keeps the text after `do`; a condition of `1` prints no `if`."""
     assert mlists.parse_bplist(BPLIST_ACTION) == [
         {"index": 1, "addr": 0x25A4, "cpu": ":maincpu", "enabled": True,
          "entry": "1 @ 0025A4 do temp0++ ; g", "condition": None, "action": "temp0++ ; g"}]
@@ -126,8 +117,7 @@ CONSOLE = Path(__file__).parent / "fixtures" / "console"
 
 
 def _hard_cut_cond(name: str) -> str:
-    """The condition a captured at-limit row carries: its pieces after the `if` header, every
-    one but the last cut at the same column with no space, joined back with nothing."""
+    """The condition of a captured at-limit row: its pieces after `if`, joined with nothing."""
     pieces = [p for p in (CONSOLE / name).read_text().split("\n") if p]
     tail = []
     for p in pieces[2:]:
@@ -211,8 +201,7 @@ def _ten_controls(ses: _RunningSession) -> None:
 def test_a_control_redeclared_over_its_own_lost_row_takes_its_temp_back(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """TEN CONTROLS, ONE ROW LOST: declaring that control again takes the temp its own record
-    holds, which no other control holds, and the pool stays full for an eleventh."""
+    """Redeclaring a lost control takes the temp its record holds, so the pool stays full."""
     ses = _controlled(monkeypatch, tmp_path)
     _ten_controls(ses)
     ses.bplist_rows = [r for r in ses.bplist_rows if not r.endswith("@ 001006 if (++temp3)==0")]
@@ -241,8 +230,7 @@ _REFUSED_ARMINGS: dict[str, tuple[Callable[[_RunningSession], None], str, dict[s
 def test_a_breakpoint_the_arming_refuses_is_never_stored(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, case: str,
 ) -> None:
-    """A refusal leaves no state: the declaration is judged whole before it is stored, so a
-    refused one is neither listed `gone` nor carried into the next `start`."""
+    """A refusal leaves no state: neither listed `gone` nor carried into the next `start`."""
     console_as, ref, kw, said = _REFUSED_ARMINGS[case]
     ses = _controlled(monkeypatch, tmp_path)
     console_as(ses)
@@ -256,8 +244,7 @@ def test_a_breakpoint_the_arming_refuses_is_never_stored(
 def test_the_double_numbers_its_bplist_rows_as_mame_prints_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME lists a breakpoint as `%c%4X @ ...`, so the tenth index is `A` right-aligned in
-    four, and clearing that control drops exactly that row."""
+    """The tenth index lists as `A` right-aligned in four; clearing it drops that row."""
     ses = _controlled(monkeypatch, tmp_path)
     for i in range(10):
         s.breakpoint_at(ref=f"{0x1000 + i * 2:#x}", role="control")
@@ -270,8 +257,7 @@ def test_the_double_numbers_its_bplist_rows_as_mame_prints_them(
 def test_the_double_never_reuses_a_breakpoint_index(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME's breakpoint index only increments, so a breakpoint set after a clear takes a new
-    one even when the list is empty again."""
+    """MAME's breakpoint index only increments, even when the list is empty again."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")
     s.declaration_clear("breakpoint", ref="0x25a4")
@@ -280,9 +266,7 @@ def test_the_double_never_reuses_a_breakpoint_index(
 
 
 def test_every_breakpoint_takes_the_doubles_one_counter(tmp_path: Path) -> None:
-    """Every `bp`, on any cpu, conditioned or not, takes MAME's one breakpoint index, so a
-    double that numbered them apart would list two rows under one index and a `bpclear` of
-    either would take both."""
+    """Every `bp` on any cpu takes the one index, or a `bpclear` of either would take both."""
     for ses in (_RunningSession(tmp_path), _RegisterSession(bits=32, frame=10)):
         control_console(ses, "bp 1000::maincpu")
         control_console(ses, "bp 2000")
@@ -296,9 +280,7 @@ def test_every_breakpoint_takes_the_doubles_one_counter(tmp_path: Path) -> None:
 
 
 def test_the_list_doubles_rebuild_the_two_device_captures_byte_for_byte() -> None:
-    """The fidelity of `bplist_answer` and `wplist_answer` on a board with two cpus: a section
-    per cpu, ONE counter numbering the rows of both, and the same address free to sit under
-    each. A double that printed one header would hide the second cpu from every case."""
+    """The list doubles rebuild the two-device captures: one counter, a header per cpu."""
     assert bplist_answer(["    1 @ 000400", "    2 @ 0004A0 if d0==1", "    3 @ 000400"],
                          {3: ":subcpu"}) == captured("bplist.two-devices.txt")
     assert wplist_answer(["    1 @ 203200-203201 write", "    2 @ 008000-008001 write"],
@@ -313,9 +295,7 @@ def test_the_list_doubles_rebuild_the_two_device_captures_byte_for_byte() -> Non
 
 
 def test_a_listed_row_keeps_the_cpu_its_devices_header_names() -> None:
-    """On a board with two cpus the same address sits under each, and only the `Device` header
-    above a row says whose it is: every row carries that cpu, and a watchpoint's row the space
-    its header names too, read off the two captures as MAME printed them."""
+    """Only the `Device` header says whose row it is, so every row carries that cpu (and space)."""
     assert [(r["index"], r["addr"], r["cpu"]) for r in
             mlists.parse_bplist(captured("bplist.two-devices.txt"))] == [
         (1, 0x400, ":maincpu"), (2, 0x4A0, ":maincpu"), (3, 0x400, ":subcpu")]
@@ -330,8 +310,7 @@ def test_a_listed_row_keeps_the_cpu_its_devices_header_names() -> None:
 
 
 def test_the_doubles_bpclear_reads_an_index_wider_than_four_digits() -> None:
-    """MAME prints the index `%4X`, which WIDENS at the fifth hex digit: a double comparing a
-    four-character field would leave that row listed after its `bpclear`."""
+    """MAME's `%4X` index widens at the fifth digit; the double's `bpclear` must read it."""
     ses = SimpleNamespace(bplist_rows=[], bp_next_index=0xFFFF, bp_devices=None, temps={})
     bplist_add(ses, 0x400)
     assert control_console(ses, "bp 4a0,d0==1") == "Breakpoint 10000 set\n\n"
@@ -344,8 +323,7 @@ def test_the_doubles_bpclear_reads_an_index_wider_than_four_digits() -> None:
 
 
 def test_the_doubles_bpclear_answers_a_number_no_row_holds_as_the_console_does() -> None:
-    """MAME answers `Invalid breakpoint number N` (captured); a double answering `cleared`
-    there lets a clear of a row nobody holds read as a removal."""
+    """An unheld index answers `Invalid breakpoint number N`, not `cleared`."""
     ses = SimpleNamespace(bplist_rows=[], bp_next_index=1, bp_devices=None, temps={})
     bplist_add(ses, 0x400)
     assert control_console(ses, "bpclear 7") == captured("bpclear.invalid.txt")
@@ -369,8 +347,7 @@ def test_clearing_a_control_goes_through_the_console_and_frees_its_temp(
 def test_clearing_a_disabled_control_takes_its_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME's `bpclear N` clears breakpoint N whether it is enabled or not; the `D` a disabled
-    row opens with (`%c` in `execute_bplist`) is not part of its index."""
+    """`bpclear N` clears a disabled row too; its leading `D` is not part of the index."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")
     ses.bplist_rows[0] = "D" + ses.bplist_rows[0][1:]
@@ -442,8 +419,7 @@ def _finds_a_stop_on_the_way_in(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_a_stop_found_on_the_way_in_rides_on_run_to_when_it_declares_its_control(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`run_to(control=...)` builds `breakpoint_at`'s reply on its way; that reply is dropped,
-    and the account of the found stop must not be dropped with it."""
+    """The found stop's account survives `run_to(control=...)` dropping `breakpoint_at`'s reply."""
     ses = _controlled(monkeypatch, tmp_path, pcs=[0xF2034, 0x4A0])
     ses.stops_after_polls = 1
     _finds_a_stop_on_the_way_in(monkeypatch)
@@ -456,8 +432,7 @@ def test_a_stop_found_on_the_way_in_rides_on_run_to_when_it_declares_its_control
 def test_a_stop_found_by_a_call_that_escapes_is_not_reported_by_the_next_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """An exception raised INSIDE one of the wrapper's handlers never reaches a sibling
-    handler, so the account is dropped in a `finally` and not in an `except`."""
+    """An exception in one handler never reaches a sibling, so the account drops in a `finally`."""
     _controlled(monkeypatch, tmp_path)
     _finds_a_stop_on_the_way_in(monkeypatch)
 
@@ -615,11 +590,7 @@ def test_run_to_refuses_a_resolved_control_whose_row_is_disabled(
 def test_a_breakpoint_whose_row_is_listed_disabled_is_re_armed_saying_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, enabled: bool, role: str,
 ) -> None:
-    """The re-arm adopts a breakpoint's own row, stop or control, as `breakpoint_at` does, and a
-    row the debugger lists disabled is said to be, with the command that enables it: an account
-    that reads `rearmed` with no state hides a stop that never halts or a control that counts
-    nothing. An enabled row adds nothing. The session's records are emptied, as a fresh
-    `start` has them."""
+    """The re-arm adopts a stop or control row and says a disabled one is, with the enabler."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role=role)
     if not enabled:
@@ -857,8 +828,7 @@ def test_a_conditioned_stop_is_re_armed_with_its_condition(
 def test_a_second_declaration_of_a_ref_is_refused_naming_what_the_held_one_is(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The store finds ANOTHER declaration under the ref and does not ask what differs, so
-    the refusal describes the one it holds (its role, its condition) and nothing else."""
+    """The refusal describes the declaration the store holds (role, condition) and nothing else."""
     _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", condition="d0==1")
     out = refused("declared as a stop breakpoint under the condition 'd0==1'; "
@@ -888,8 +858,7 @@ def test_perform_refuses_a_condition_on_a_control_before_running(
 def test_a_foreign_row_under_another_condition_refuses_the_declaration(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row typed through `debug` at the address, under some other condition: the
-    declaration is refused rather than adopting a row that stops on something else."""
+    """A row at the address under another condition is refused, never adopted."""
     ses = _controlled(monkeypatch, tmp_path)
     ses.bplist_rows.append("    3 @ 0004A0 if d0==1")
     out = refused("another condition", s.breakpoint_at(ref="0x4a0", condition="d1==2"))
@@ -905,8 +874,7 @@ def test_a_foreign_row_under_another_condition_refuses_the_declaration(
 def test_a_stored_stop_rearmed_listed_without_its_condition_is_unarmable(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The `bp` answers the same whatever it did with the condition, so `start`'s read back is the
-    proof, as the declaration's is: a row that lost it would stop at every pass."""
+    """The `bp` answers alike whatever it did with the condition, so the read back is the proof."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", condition="d0==1")
     ses.bplist_rows[:] = []
@@ -940,9 +908,7 @@ def test_perform_refuses_a_run_to_condition_with_a_comma_before_running(
 def test_rearm_refuses_to_adopt_a_row_under_another_condition(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A conditioned declaration meets an UNCONDITIONED row at its address at the next
-    start: adopting it would arm a stop on every hit while the store says "only when this
-    holds". It is `unarmable` with the reason, never `rearmed`."""
+    """A conditioned declaration meeting an unconditioned row is `unarmable`, never `rearmed`."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", condition="w@0x2031fc==0x25")
     ses.bplist_rows[:] = ["    9 @ 0004A0"]
@@ -962,8 +928,7 @@ def test_rearm_refuses_to_adopt_a_row_under_another_condition(
 
 def _new_start(monkeypatch: pytest.MonkeyPatch, ses: _RunningSession,
                symbols: dict[str, int]) -> None:
-    """What the next `start` finds: the store as it was, a debugger holding nothing, and the
-    table of another build."""
+    """The next `start`: the store as it was, an empty debugger, another build's table."""
     ses.bplist_rows.clear()
     ses.commands.clear()
     monkeypatch.setattr(mstate.STATE, "breakpoints", {})
@@ -1036,10 +1001,8 @@ def test_a_condition_the_console_cannot_evaluate_is_refused_before_anything_is_s
 def test_a_re_arm_accounts_for_a_condition_this_build_cannot_evaluate(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A symbol the rebuild DROPPED reaches the console as a bare word it does not know: the
-    declaration is `unresolved`, kept, and nothing is armed blind. Any other refusal is
-    `unarmable` with the console's words. A breakpoint whose REF is unresolved is not
-    evaluated at all: nothing would be sent for it."""
+    """A symbol the rebuild dropped makes the declaration `unresolved` and kept; other refusals are
+    `unarmable`; an unresolved ref sends nothing."""
     ses = _controlled(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"DEMOLEN": 0x2031FC, "OTHER": 0x203400,
                                   "WHERE": 0x4C0})
@@ -1061,10 +1024,7 @@ def test_a_re_arm_accounts_for_a_condition_this_build_cannot_evaluate(
 def test_a_breakpoint_whose_condition_is_unresolved_is_listed_so_until_cleared_or_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The list says `unresolved`, as the regpoint family does, for a declaration whose ref
-    resolved (so it carries `addr`) and whose CONDITION this build could not: `gone` reads
-    as a row the debugger dropped, which is the wrong thing to fix. It stops being so once
-    the declaration is cleared or armed: a declaration back in the store unarmed is `gone`."""
+    """The list says `unresolved` (not `gone`) when the ref resolved and the condition did not."""
     ses = _controlled(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"DEMOLEN": 0x2031FC, "OTHER": 0x00203400})
     s.breakpoint_at(ref="0x4a0", condition="w@DemoLen==0x25")
@@ -1102,9 +1062,7 @@ def test_a_breakpoint_whose_condition_is_unresolved_is_listed_so_until_cleared_o
 def test_a_console_error_while_a_re_arm_evaluates_a_condition_is_that_declarations_alone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `print {...}` the console does not answer (a session error other than a packet too
-    long) is `unarmable` for that declaration alone, with the error's words, and the pass goes
-    on to the next one: every declaration after it is still accounted for."""
+    """A `print {...}` the console does not answer is `unarmable` for that declaration alone."""
     ses = _controlled(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"DEMOLEN": 0x2031FC})
     s.breakpoint_at(ref="0x4a0", condition="w@DemoLen==0x25")
@@ -1132,8 +1090,7 @@ def test_a_console_error_while_a_re_arm_evaluates_a_condition_is_that_declaratio
 # any of it, and at `start` a stored one that does not fit this binary must not kill the start.
 
 def _refusing(ses: _RunningSession) -> None:
-    """The double's console refuses a command past its packet size the way the real one does:
-    the session's own `console_packet` is asked before the command is taken."""
+    """The double's console refuses a command past its packet size, as the real one does."""
     taken = ses.monitor
 
     def monitor(command: str, timeout: float = 10.0) -> str:
@@ -1150,9 +1107,7 @@ def _limit(ses: _RunningSession) -> int:
 
 
 def _cond(ses: _RunningSession, addr: int, over: int, evaluated: bool = True) -> str:
-    """A condition whose LONGEST command is `over` characters past the limit, in the live
-    matrix's shape (`_condition` there): the `bp` at `addr`, and for a declaration the
-    `print {...}` that evaluates it."""
+    """A condition whose longest command is `over` characters past the limit."""
     sent = ([breakpoints.bp_command(addr, "d0==0x1", ":maincpu")]
             + (["print {d0==0x1}"] if evaluated else []))
     zeros = _limit(ses) + over - max(len(c) for c in sent)
@@ -1221,8 +1176,7 @@ def test_run_to_a_condition_past_the_packet_declares_no_control_and_disarms_noth
 def test_rearm_puts_a_condition_past_the_packet_in_unarmable_and_goes_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, over: int,
 ) -> None:
-    """A stored condition that fits the packet of the binary it was declared on and not this
-    one's: the start must answer, with the declaration kept, reported and the rest re-armed."""
+    """A condition too long for this binary's packet is reported and kept; the rest re-arm."""
     ses = _controlled(monkeypatch, tmp_path)
     _refusing(ses)
     ses.packet_size = 0x41
@@ -1313,10 +1267,7 @@ def test_step_over_that_never_returns_is_halted_and_says_how_far_it_got(
 def test_a_g_typed_through_debug_marks_the_machine_running_and_the_stop_is_proved(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The readers refuse after a console `g`, `stop` brings it back through `halt` and the
-    frame counter's rest, and the first contact after a stop the console's breakpoint
-    produced records it. The rest of the counter is scripted here; `frame_at_rest` itself
-    is proved on a register session below."""
+    """Readers refuse after a console `g`; `stop` returns via `halt` and the counter's rest."""
     import mame_running as running
 
     ses = _controlled(monkeypatch, tmp_path)
@@ -1358,8 +1309,7 @@ def test_frame_at_rest_reads_the_counter_three_times() -> None:
 def test_step_over_that_settles_only_after_the_interrupt_is_an_invalid_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The pc moves under the `over` until the interrupt, then rests: the machine IS
-    stopped, so the reply is a stop survey, INVALID with `not_settled` and `completed`."""
+    """The pc moves until the interrupt, then rests: a stop survey, INVALID `not_settled`."""
 
     ses = _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(running, "CONSOLE_HALT_SETTLE_S", 0.3)
@@ -1422,9 +1372,7 @@ def test_perform_refuses_a_step_mode_it_does_not_know_before_running(
 def test_step_over_is_not_fooled_by_a_callee_spinning_on_one_pc(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A callee that spins on a flag reads the SAME pc three times while the machine
-    runs: the frame counter is what tells that from a stop. It is halted, and when the
-    halt does not land either, the session says RUNNING so the readers refuse."""
+    """A callee spinning on a flag reads one pc; the frame counter tells it from a stop."""
 
     ses = _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(running, "CONSOLE_HALT_SETTLE_S", 0.3)
@@ -1508,9 +1456,8 @@ def test_debug_reads_every_command_of_a_line_for_a_release_a_clear_and_a_focus(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str, released: bool,
     forgot: list[str], rereads: bool,
 ) -> None:
-    """Each family's records are forgotten once per line, in the line's order; a `focus`,
-    `ignore` or `observe` anywhere, spelled by any prefix the console takes, has the visible
-    cpu and the ignored set read back; a `;` inside quotes splits nothing."""
+    """Each family's records are forgotten once per line in order; `focus`, `ignore`, `observe`
+    (any prefix) re-read the cpu state; a `;` inside quotes splits nothing."""
     import mame_write as mwrite
 
     calls: list[str] = []
@@ -1548,10 +1495,7 @@ def test_a_debug_line_that_assigns_a_controls_temp_names_the_control(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str, mutates: bool,
     now: list[str], armed: list[str],
 ) -> None:
-    """A temp is the debugger's, so writing one is no write to the guest, but a control counts
-    its hits in one. Assigned now, the note points at `hits_since_armed` and says `control_hits`
-    does not see it; assigned by a row the line arms, it says both counts do. A temp no control
-    uses, a read of one, one used as an address or one inside a string names nothing."""
+    """Writing a temp is no guest write, but a control counts in one: the note names the counts."""
     import mame_write as mwrite
 
     monkeypatch.setattr(mstate.STATE, "controls", {
@@ -1588,8 +1532,7 @@ def test_a_debug_line_that_releases_and_assigns_a_counter_says_both(
 def test_a_settle_proof_whose_console_answers_nothing_is_not_a_rest(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Both proofs of rest read the console; a console that cannot answer proves NOTHING,
-    so each says not-at-rest rather than raising out of the tool or assuming a stop."""
+    """A console that cannot answer proves nothing, so each proof of rest says not-at-rest."""
     from test_server import _RegisterSession
 
     import mame_advance as advance
@@ -1609,10 +1552,8 @@ def test_a_settle_proof_whose_console_answers_nothing_is_not_a_rest(
 def test_run_to_refuses_a_target_that_already_carries_a_breakpoint(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """On a V30 board a declared stop at the target's address, under its own
-    condition, halts the run while the run's own condition never holds, and the reply says
-    TARGET; then the removal takes the declaration's row and leaves the run's. A stop at an
-    address two entries share cannot be attributed, so the run is refused before it starts."""
+    """A declared stop at the target halts the run and the reply says TARGET; the removal leaves
+    the run's row; an address two entries share is refused before the run starts."""
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", condition="w@0x2031fc==0x0")
     armed_before = list(_console_bps(ses))
@@ -1633,11 +1574,7 @@ def test_run_to_refuses_a_target_that_already_carries_a_breakpoint(
 def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_doing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control never halts, so a machine interrupted while its pc happens to sit on the
-    control's address (the vblank handler, where every frame passes) was stopped by the
-    interrupt. With the control's row in place `stop` names the control as its `cause`; with no
-    row at all it says `interrupt`. The one place that decides whether a row halts is
-    `halts`."""
+    """An interrupt on a control's address is the `cause` if its row exists, else `interrupt`."""
     import mame_running as running
 
     ses = _controlled(monkeypatch, tmp_path)
@@ -1671,8 +1608,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
 
 
 def _never_lands(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
-    """A double whose `gvblank` releases the machine and whose frame counter never settles:
-    two readings in a row never agree, so the run bails at its clock."""
+    """A double whose `gvblank` releases the machine and whose frame counter never settles."""
     from test_server import _install, _RegisterSession
 
     import mame_advance as advance
@@ -1701,8 +1637,7 @@ def _never_lands(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
 def test_a_run_by_frames_that_runs_out_of_clock_leaves_the_session_saying_running(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`not_settled` from `_run_for_frames`: its own message says the machine may be RUNNING
-    under a `gvblank` this server cannot see end, so the readers have to refuse."""
+    """`not_settled` from `_run_for_frames`: the machine may be RUNNING, so the readers refuse."""
     reg = _never_lands(monkeypatch, tmp_path)
     out = s.run_for(frames=3, seconds=0.05)
     assert out["status"] == "INVALID" and out["code"] == "not_settled", out
@@ -1714,14 +1649,8 @@ def test_a_run_by_frames_that_runs_out_of_clock_leaves_the_session_saying_runnin
 def test_a_run_by_frames_that_emulated_nothing_leaves_the_session_saying_running(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`no_progress`: the counter did not move over more `gvblank`s than frames asked. The
-    proof of a stop here is two agreeing counter readings, and a machine RUNNING without
-    ever reaching a vblank reads exactly the same, so "nothing was emulated" is a claim
-    about the COUNTER and never about the machine being at rest.
-
-    So the counter cannot prove the stop later either: THIS DOUBLE IS IN FACT STOPPED, and the
-    next reader still refuses, because two agreeing readings are exactly what the run already
-    showed. `stop` interrupts it, which is a proof the counter is not, and the readers serve."""
+    """`no_progress`: the counter never moved. This double is in fact stopped, but two agreeing
+    readings prove nothing; `stop` interrupts it, which does, and the readers serve."""
     from test_server import _install, _RegisterSession
 
     import mame_advance as advance
@@ -1744,8 +1673,7 @@ def test_a_run_by_frames_that_emulated_nothing_leaves_the_session_saying_running
 def test_a_run_by_milliseconds_that_never_came_to_rest_leaves_the_session_saying_running(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`not_settled` from `_run_for`: the interrupt at the bound did not land, its own
-    message says the machine may be RUNNING, and the readers have to refuse."""
+    """`not_settled` from `_run_for`: the bound interrupt did not land, so the readers refuse."""
     from test_server import _install, _RegisterSession
 
     import mame_advance as advance
@@ -1765,9 +1693,7 @@ def test_a_run_by_milliseconds_that_never_came_to_rest_leaves_the_session_saying
 def test_the_inherited_clause_names_the_familys_tools_and_is_silent_without_an_origin(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The clause a stop's `cause` carries for a declaration another session made: none for a
-    row with no origin recorded (a store from before origins) or for this session's own, and
-    the family's own list and clear for an inherited one."""
+    """No clause for a row with no origin or this session's own; list and clear otherwise."""
     _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "session_origin", "s-now")
     assert arming.inherited(dec.Declaration("breakpoint", "address", "0x4a0")) == ""

@@ -1,37 +1,15 @@
-"""The Lua CHANNEL, MAME's own `-console` fed through the process's stdin and read back off its
-stdout, and the typed wrappers built on it; the bytes of the channel are `mame_transport`'s.
+"""The Lua channel: MAME's own `-console` fed through stdin and read back off stdout, and the
+typed wrappers built on it. The bytes of the channel are `mame_transport`'s.
 
-WHY A CHANNEL AT ALL. What the board asked for that is Lua and nothing else: an input by its
-name (`field:set_value`), a recording bounded to a stretch (`video:begin_recording`, which
-`mame_recording` builds on this channel), and the throttle switched at a PLACE rather than at a
-frame decided at launch. The debugger
-console, which is all the gdbstub speaks, knows none of them. `-console` is MAME's own Lua
-console: it reads a line from stdin, loads it as a chunk, runs it and prints the prompt
-again, and it works with no terminal attached (linenoise falls back to a plain line read and
-ECHOES the line).
+The console evaluates a line from its periodic hook, so a line sent while the machine is
+stopped sits in the pipe until the hook next runs (REFERENCE.md, *The console*). Texts a client
+reads keep the shortest true form of that, since a client cannot follow a link.
 
-WHAT THE CONSOLE DOES, and shapes everything here. The console evaluates a line from its
-PERIODIC hook, so a line sent while the machine is STOPPED sits in the pipe until the hook
-next runs: what runs it is stated once, in REFERENCE.md under *The console* ("The console
-evaluates when its periodic hook runs"); this module points there, and the texts a client
-reads (`throttle`'s description and `applies`, a tap's install `note`) keep its
-shortest true form, since a client cannot follow a link. A wrapper's marks in `error.log`
-carry the sequence number the transport gives each call, so a mark a cut-short run leaves
-behind is never attributed to a later call.
-
-The recordings, `record` and the run `audio_record` shares, and `captures` are
-`mame_recording`'s, built on the queued run here.
-
-THE HONESTY RULE. A Lua string can read a byte or rewrite the whole of RAM and nothing in
-the text says which, so the raw form (`lua`) marks the session ALTERED always and buys its
-evaluation with a step the reply declares (`pc_before`, `pc`). The typed wrappers are
-scripts THIS SERVER composed, each knowing what it does: they are QUEUED and evaluated by
-the advance the wrapper itself makes, and they prove their effect through `error.log`
-(`logerror` is flushed as it is written; a `print` from a frame notifier would sit in the
-stdio buffer until the next prompt). A run cut short by another stop leaves a wrapper's
-notifier armed, so the reply SAYS what is left behind and when the notifier will act.
+The raw form (`lua`) marks the session altered always and buys its evaluation with a step.
+The typed wrappers are queued, evaluated by the advance they make, and prove their effect
+through `error.log` (`logerror` is flushed as written; a `print` from a frame notifier would sit
+in the stdio buffer). A run cut short leaves a wrapper's notifier armed, and the reply says so.
 """
-
 from __future__ import annotations
 
 import re
@@ -59,18 +37,13 @@ import mame_transport as transport
 import mame_write as mwrite
 from mame_state import STATE
 
-# A Lua call's default bound for its answer: the machine ticks within a frame when it runs, and
-# at once on the step the raw form makes.
 EVAL_WAIT_S = 5.0
-# The marks the wrappers' scripts write through `logerror`, each followed by `#<seq>` of the
-# call that sent it (a chunk's own last line is `st.sentinel_line`).
+# Marks the wrappers write through `logerror`, each followed by the `#<seq>` of its call.
 INPUT_MARK = "MAME_MCP_INPUT"
 THROTTLE_MARK = "MAME_MCP_THROTTLE"
 
-# The wrappers' scripts. Each is one chunk; the values are substituted as Lua LITERALS
-# through `lua_string`/ints so a port tag with a quote in it cannot break out of the string.
-# A wrapper's notifier is kept under a global; a new script of the same family RELEASES the
-# previous one's effect first, so at most one is ever armed.
+# Values go in as Lua literals through `lua_string`/ints so a quote in a port tag cannot break
+# out. A new script of a family releases the previous notifier first: at most one is armed.
 INPUT_LUA = """if _G._mame_mcp_input_release then _G._mame_mcp_input_release() end
 local p = manager.machine.ioport.ports[%(port)s]
 if p == nil then error("no port " .. %(port)s) end
@@ -107,20 +80,13 @@ manager.machine:logerror(string.format("%(mark)s throttled=%%s frame=%%d\\n",
 """
 
 
-# ---------------------------------------------------- the halves that need no machine
-#
-# Each is the machine-independent half of one tool in this module, exposed so the server can ask it
-# BEFORE it reaches for the live machine and so the tool below asks the same function rather than a
-# copy of it. What is NOT here is anything the emulator decides: whether the script RUNS, whether
-# the port and field MAME names exist, whether a frame ever arrives.
+# The halves that need no machine: the server asks them before reaching for it.
 
 
 def check_input(port: str, field: str, frames: int = 4, seconds: float = 30.0,
                 **_: Any) -> None:
-    """`input`'s machine-independent half: that both names were GIVEN, how many frames, and the
-    bound. Whether MAME has a port by that name is the machine's answer and comes back from it. The
-    bound is judged here and not by the run: a run whose clock has expired before it starts leaves
-    the field pressed and reports a frame that never came."""
+    """`input`'s machine-independent half. The bound is judged here because a run whose clock
+    expired before it starts leaves the field pressed."""
     inputs.count("frames", frames, tail=": an input is held one frame or more")
     if not port or not field:
         raise st.Invalid("bad_argument", "port and field are both needed, as MAME names them "
@@ -129,13 +95,12 @@ def check_input(port: str, field: str, frames: int = 4, seconds: float = 30.0,
 
 
 def check_throttle(on: bool = True, seconds: float = 5.0, **_: Any) -> None:
-    """`throttle`'s machine-independent half: the bound on waiting for its mark. Unjudged, a zero
-    reads as a measurement that expired rather than as the malformed argument it is."""
+    """`throttle`'s machine-independent half: the bound on waiting for its mark."""
     vocab.check_wait(seconds)
 
 
 def check_lua(script: str, seconds: float = EVAL_WAIT_S, **_: Any) -> None:
-    """The `lua` TOOL's machine-independent half: the script, and the bound on waiting for it."""
+    """The `lua` tool's machine-independent half."""
     transport.check_script(script)
     vocab.check_wait(seconds)
 
@@ -143,23 +108,15 @@ def check_lua(script: str, seconds: float = EVAL_WAIT_S, **_: Any) -> None:
 def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,
         read_only: bool = False,
         progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `lua` tool: the raw form, altered always unless the caller declares
-    otherwise, one step to evaluate.
+    """The body of the `lua` tool: altered always unless the caller declares otherwise, one step
+    to evaluate.
 
-    `read_only` IS THE CALLER'S WORD AND IS RECORDED AS SUCH. The default stays what it was,
-    and it is the honest one: a Lua string can read a byte or rewrite the whole of RAM and
-    nothing in the text says which, so a call is a write until proven otherwise. What that
-    cost in practice is that one `print` stamped a session that only ever read with
-    "MODIFIED" for the rest of its life, after which the flag said nothing about anything.
-    There is no classifier that could judge this honestly: `debug` classifies by prefix over a
-    CLOSED command vocabulary, and Lua has none, so a prefix rule here would be a guess
-    wearing a measurement's clothes. So the claim is the caller's, it is not verified, and
-    it is never silent: the session block counts the claims and says whose word they are."""
+    `read_only` is the caller's word, unverified and counted in the session block. No classifier
+    could judge a Lua string (`debug` classifies by prefix over a closed vocabulary; Lua has
+    none), and a call is a write until proven otherwise."""
     check_lua(script, seconds)
     pc_before = ses.current_pc()
-    # REFUSED BEFORE IT IS COUNTED: a call turned away for a pipe somebody else filled, or for a
-    # script that is empty or too long, never reached the console, and counting it would put a
-    # write (or a read_only claim) in the session block for something that did not happen.
+    # Refused before counted: a turned-away call never reached the console.
     transport.refuse_if_too_deep(scratch)
     if read_only:
         STATE.lua_read_only_claims += 1
@@ -170,8 +127,6 @@ def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,
     refuse_if_raised(answer, "lua", resent, pc_before=st.hex_addr(pc_before), output=answer.text)
     hint: dict[str, str] = {}
     if not answer.text and "print" not in script:
-        # Two repos wrote `return x`, read an empty `output` beside `ok`, and could not tell
-        # it from a silent failure: the console captures what prints and nothing else.
         hint["note"] = ("no output: the console captures what the script `print`s, and a "
                         "`return` value never reaches it; print what you want back")
     return running.stop_reply(ses, scratch, f"lua: {evaluated_by}", script_chars=len(script),
@@ -189,10 +144,8 @@ def marks_since(scratch: Path, mark: int, tag: str) -> list[str]:
 
 def refuse_a_rerun(seen: list[str], tag: str, answer: transport.Answer, resent: int,
                    **fields: Any) -> None:
-    """A wrapper's OWN chunk run twice, read off its own marks. The sentinel check cannot see
-    it, because the call's own number is the one it skips, but a chunk that ran twice logs
-    each of its marks twice, and a recording begun twice on one file or a field set twice
-    is not an `ok`. Every repeat beyond the first is listed and held against the session."""
+    """Refuse a wrapper's own chunk run twice, read off its marks: the sentinel check skips the
+    call's own number, but a chunk that ran twice logs each mark twice."""
     counts: dict[str, int] = {}
     for ln in seen:
         m = re.search(re.escape(tag) + r"(?!\d) (\w+)", ln)
@@ -212,18 +165,14 @@ def refuse_a_rerun(seen: list[str], tag: str, answer: transport.Answer, resent: 
 
 
 def one_event(seen: list[str], tag: str, event: str) -> dict[str, str] | None:
-    """The fields of the ONE `event` line the wrapper's chunk logged, or None when it logged
-    none. One, because `refuse_a_rerun` has already refused a chunk that logged two."""
+    """The fields of the `event` line the wrapper's chunk logged, or None."""
     lines = [ln for ln in seen if f"{tag} {event}" in ln]
     return st.mark_fields(lines[0]) if lines else None
 
 
 def with_fields(ran: dict[str, Any], **fields: Any) -> dict[str, Any]:
-    """The run's reply with the wrapper's own fields added where the docstrings list them:
-    before the stop survey, which begins at `cause`; a run with no survey (a refusal) takes them
-    at the end. The `session` block is `mame_mcp.tool`'s, composed after this call read
-    its answer, so it agrees with the console counters that answer moved. A `note` the wrapper
-    adds joins the run's own, after it."""
+    """The run's reply with the wrapper's fields added before the stop survey (which begins at
+    `cause`), or at the end when there is none. A wrapper's `note` joins the run's own."""
     keys = [k for k in ran if k != "session"]
     at = keys.index("cause") if "cause" in keys else len(keys)
     if "note" in fields and "note" in ran:
@@ -236,18 +185,12 @@ def with_fields(ran: dict[str, Any], **fields: Any) -> dict[str, Any]:
 
 def drain_ahead(ses: gs.Session, scratch: Path) -> tuple[int, int]:
     """Step the lines ahead in the pipe off before a wrapper sends its own: how many there
-    were, and how many steps that took (`drain_steps`).
+    were, and how many steps that took.
 
-    THE PIPE IS DRAINED FIRST, the raw form's rule. A `throttle` asked while stopped leaves
-    its line there, and the console reads one line each time its hook runs: a wrapper that
-    just ran its own frames spent them on somebody else's line and came back with its notifier never
-    released (on v30, `input` behind a backlog answers `released: false`,
-    the field still held). So the lines ahead are stepped off first, and the frames the
-    wrapper asks for are then its own."""
+    The console reads one line per hook run, so a wrapper's frames would otherwise go on
+    somebody else's line and its notifier come back unreleased."""
     ahead = transport.refuse_if_too_deep(scratch)
-    # THE BACKLOG IS STEPPED OFF AND THE STEPPING IS VERIFIED, not counted out and trusted:
-    # a step whose line the reader had not taken buys nothing, and sending this script on
-    # top of a pipe that did not clear is the very thing this drain exists to prevent.
+    # Verified, not counted out: a step whose line the reader had not taken buys nothing.
     drain_steps = 0
     while transport.pending_lines(scratch) and drain_steps < ahead + transport.PIPE_STEPS_MAX:
         ses.step()
@@ -257,8 +200,7 @@ def drain_ahead(ses: gs.Session, scratch: Path) -> tuple[int, int]:
 
 @contextmanager
 def drain_said(ahead: int, drain_steps: int) -> Iterator[None]:
-    """Every refusal raised inside carries the pipe's depth and the drain's steps
-    (`lines_ahead`, `drain_steps`): they were spent whatever the call ends in."""
+    """Every refusal raised inside carries `lines_ahead` and `drain_steps`."""
     try:
         yield
     except st.Invalid as refusal:
@@ -269,14 +211,12 @@ def drain_said(ahead: int, drain_steps: int) -> Iterator[None]:
 
 @contextmanager
 def console_said(answer: transport.Answer, resent: int) -> Iterator[None]:
-    """Every refusal raised inside, once a wrapper has read its chunk's answer, carries the
-    console's account of that answer (`thread_errors`, `console_reruns`, `resent`), as the ok
-    reply and the chunk readers' refusals do: a refusal of what the answer showed is still a
-    reply that read it."""
+    """Every refusal raised inside, once a wrapper has read its answer, carries the console's
+    account of it (`thread_errors`, `console_reruns`, `resent`)."""
     try:
         yield
     except st.Invalid as refusal:
-        # THE REFUSAL'S OWN FIELDS WIN, its note joined after the console's.
+        # The refusal's own fields win; its note joins after the console's.
         console = transport.console_did(answer, resent)
         note = st.join_notes(console.get("note"), refusal.fields.get("note"))
         refusal.fields = {**console, **refusal.fields}
@@ -289,23 +229,18 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
                     progress: mprogress.Progress) -> tuple[dict[str, Any],
                                                            transport.Answer | None, int,
                                                            int]:
-    """Queue `script` on a pipe `drain_ahead` emptied, run `frames` frames (the run evaluates it
-    on its first frame), then consume the console's framing for it. Returns the run's stop
-    reply, the answer (None when no sentinel for the script came), how many times the line
-    was sent again after the reader died holding it, and how many FRAMES the run spent (kept
-    separately because a pending reply's survey is the extra step's, not the run's)."""
-    # THE RUN IS ROUTED BEFORE THE SCRIPT IS SENT: a run by frames the build refuses would
-    # otherwise leave the script in the pipe, for some later call's step to evaluate.
+    """Queue `script` on a pipe `drain_ahead` emptied, run `frames` frames, then consume the
+    console's framing. Returns the run's stop reply, the answer (None when no sentinel came),
+    how many times the line was resent after the reader died holding it, and the frames the run
+    spent (a pending reply's survey is the extra step's, not the run's)."""
+    # Routed before the send: a refused run would leave the script in the pipe.
     route = advance.route_frames(ses)
-    # ONE BOUND FOR THE WHOLE CALL, the caller's `seconds`: every run and every wait for the
-    # answer below takes what is LEFT of it, so a resend or a second run never stretches the
-    # call past what was asked. A retry the bound has no room for is refused, not taken.
+    # One bound for the whole call: every run and wait takes what is left of it.
     deadline = time.monotonic() + seconds
 
     def left(what: str, answer: transport.Answer | None = None) -> float:
-        """What is left of the bound for a RUN, or the refusal of a spent one. A script with an
-        `answer` is not pending: the refusal says the answer came and the frames did not, and,
-        raised past an answer, carries the console's account of it as every such refusal does."""
+        """What is left of the bound for a run, or the refusal of a spent one. With an `answer`
+        the script is not pending: the answer came and the frames did not."""
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             if answer is not None:
@@ -323,8 +258,7 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
         return remaining
 
     def answer_wait() -> float:
-        """What is left of the bound for an ANSWER, never less than one last look: a spent
-        bound is the pending path's to report, which says what the run did."""
+        """What is left of the bound for an answer, never less than one last look."""
         return min(EVAL_WAIT_S, max(deadline - time.monotonic(), LAST_LOOK_S))
 
     mark = transport.stdout_mark(scratch)
@@ -336,13 +270,10 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
     if answer is None:
         _, raw = transport.find_answer(scratch, line, seq)
         if transport.eaten(raw, line):
-            # THE READER DIED HOLDING THE LINE: never evaluated, so it is sent once more
-            # and the frames bought again; a second death is the refusal `evaluate` gives.
+            # The reader died holding the line: resend once; a second death is refused.
             transport.record_lost(seq)
-            # THE MARK MOVES WITH THE SEND. The death that made us resend printed its own
-            # `[LUA ERROR] in thread`, and it is behind us: read from before it and this
-            # call would diagnose the resent line as dead on the strength of the FIRST
-            # line's death, which it already handled.
+            # The mark moves with the send, or the first line's death would be blamed on
+            # the resent one.
             mark = transport.stdout_mark(scratch)
             line, seq = transport.send(script)
             resent = 1
@@ -358,14 +289,9 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
                                      thread_errors=raw.count(transport.THREAD_ERROR),
                                      console_reruns=len(transport.reruns_in(raw, seq)))
     if answer is None:
-        # THE RUN DID NOT ALWAYS EVALUATE THE LINE (the same five recordings can come
-        # back complete on one run and two of them pending on another, with the chunk still
-        # in the pipe). A single step does, on the way into the debugger; then the frames
-        # are bought again so the script's notifier can do its work.
-        # THE RUN'S FRAME DELTA IS KEPT BEFORE THE STEP REPLACES THE SURVEY: the note owes
-        # the caller the frames the RUN spent, and the pc/frame fields owe them the machine
-        # as it stands NOW. Reporting the run's survey after stepping past it made the
-        # reply's prose ("and one step") describe a machine its own numbers predated.
+        # A run does not always evaluate the line; a single step does, on the way into the
+        # debugger, and the frames are then bought again for the notifier. The run's frame
+        # delta is kept before the step replaces the survey, so prose and numbers agree.
         moved = int(ran.get("frame_after", 0)) - int(ran.get("frame_before", 0))
         stepped = advance.step(ses, scratch, 1)
         answer = _answer_or_none(scratch, line, seq, progress, answer_wait())
@@ -374,12 +300,9 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
                                   progress, frames=frames)
         else:
             ran = stepped
-    # NO ANSWER AFTER THE RUN AND THE STEP, AND A READER DEATH SINCE THE SEND. Said as a
-    # death, never as a plain "pending": a caller told only to step again would not know the
-    # reader went. The step can have handed the line to a reader that died holding it, and
-    # then the log proves it eaten; otherwise it is NOT COUNTED LOST: the console answers
-    # more lines after a death (the capture `tests/fixtures/console/session.volume.stdout`),
-    # so it stays ahead in the pipe until the log settles it (`transport._settle_pending`).
+    # No answer after run and step: said as a reader death, never plain "pending". Only a log
+    # that proves the line eaten counts it lost; the console answers more lines after a death,
+    # so otherwise it stays ahead in the pipe until `transport._settle_pending` settles it.
     after = transport.since(scratch, mark)
     if answer is None and transport.eaten(after, line):
         transport.record_lost(seq)
@@ -401,7 +324,6 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
     return ran, answer, resent, moved
 
 
-# The shortest wait for an answer once the call's bound is spent: one more look at the log.
 LAST_LOOK_S = 0.05
 
 
@@ -409,11 +331,8 @@ def _answer_or_none(scratch: Path, line: str, seq: int, progress: mprogress.Prog
                     wait: float = EVAL_WAIT_S) -> transport.Answer | None:
     """The answer, or None when the bound expired with the line still in the pipe.
 
-    IT SWALLOWS ONE REFUSAL AND NOT THE OTHER. "No answer yet" is this function's whole
-    business and its callers go on to run more frames for it. A BROKEN SESSION is not that:
-    nothing later in this call can make a dead emulator answer, and catching it here would
-    turn it into the pending path, which reports a machine that will execute again. A bare
-    `except` made the liveness check above unreachable from `input` and `record`."""
+    A broken session is re-raised: catching it would turn a dead emulator into the pending path,
+    which reports a machine that will execute again."""
     try:
         return transport.await_answer(scratch, line, seq, wait, progress)
     except st.Invalid as refusal:
@@ -425,11 +344,7 @@ def _answer_or_none(scratch: Path, line: str, seq: int, progress: mprogress.Prog
 def not_evaluated(ran: dict[str, Any], what: str, ahead: int, resent: int,
                    moved: int, drain_steps: int) -> dict[str, Any]:
     """The reply for a script with no answer and no reader death in the log since its send.
-
-    THE NOTE NAMES WHAT THIS RUN ACTUALLY DID. A flat "the machine did not emulate a frame"
-    beside `frame_before`/`frame_after` differing by five in the same reply is a message
-    contradicting its own numbers. The frames are the reply's own, so the note counts them
-    instead of asserting a zero."""
+    The note counts the frames the run spent rather than asserting a zero."""
     ran = with_fields(ran, lines_ahead=ahead, drain_steps=drain_steps, reader_steps=0,
                       resent=resent)
     twice = (f" It was sent {prose.counted(resent + 1, 'time')}: the console took the first and "
@@ -446,10 +361,9 @@ def not_evaluated(ran: dict[str, Any], what: str, ahead: int, resent: int,
 def unsettled(ran: dict[str, Any], subject: str, effect: str, after: str, ahead: int,
               drain_steps: int, answer: transport.Answer | None, resent: int,
               **fields: Any) -> dict[str, Any]:
-    """A wrapper whose run did not settle: the run's own refusal, its message carried on with
-    what the script did and what its notifier may still do (`effect`, then `after`, the way to
-    learn the outcome), and never the wrapper's own fields beside it. The machine may still be
-    running, so nothing read off it now is a state of what the script set up."""
+    """A wrapper whose run did not settle: the run's refusal, its message extended with what
+    the notifier may still do (`effect`, then `after`), and none of the wrapper's own fields,
+    since the machine may still be running."""
     console = {} if answer is None else transport.console_did(answer, resent)
     left = ("its script may not have been evaluated yet" if answer is None else
             f"its script raised ({answer.error}), so it armed nothing" if not answer.ok else
@@ -463,18 +377,15 @@ def unsettled(ran: dict[str, Any], subject: str, effect: str, after: str, ahead:
 def refuse_if_raised(answer: transport.Answer, what: str, resent: int,
                      code: contract.Code = "bad_argument",
                      **fields: Any) -> None:
-    """The refusal of a script that raised, under `code`: `bad_argument` when the script is the
-    caller's own (`lua`), another when it is this server's, which raises on its own only when
-    the caller named what does not exist, or when the machine answered what it was not built
-    for."""
+    """Refuse a script that raised, under `code`: `bad_argument` when the script is the caller's
+    own (`lua`), another when it is this server's."""
     if not answer.ok:
         raise st.Invalid(code, f"{what}: the script raised: {answer.error}",
                          **transport.console_did(answer, resent), **fields)
 
 
 def input_refusal_code(error: str) -> contract.Code:
-    """`INPUT_LUA` raises on its own for a port or a field the machine lacks, which is a name
-    resolving to nothing; anything else it raises the server did not expect."""
+    """`INPUT_LUA` raises on its own only for a port or field the machine lacks."""
     return "unknown_ref" if ": no port " in error or " has no field " in error else (
         "unexpected_answer")
 
@@ -482,8 +393,7 @@ def input_refusal_code(error: str) -> contract.Code:
 def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: int,
                 frames: int, seconds: float,
                 progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `input` tool: hold a field for `frames`, released by the script's own
-    frame notifier, and read the port back at the release."""
+    """The body of the `input` tool: hold a field for `frames`, released by a frame notifier."""
     check_input(port, field, frames, seconds)
     mark = files.log_mark(scratch)
     tag = f"{INPUT_MARK}#{STATE.lua_seq + 1}"
@@ -520,9 +430,7 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
                        port_before=f"{int(set_line['port_before'], 16):#010x}",
                        frame_set=int(set_line["frame"]))
             if rel_line is None:
-                # THE RUN WAS CUT SHORT (another stop, or its bound) before the notifier released
-                # the field: it is STILL HELD, and the notifier releases it at the frame named
-                # here, on whatever run reaches it. Said in the reply, never hidden in a refusal.
+                # Cut short before the release: the field is still held, and said so.
                 held_why = unavailable("the field is still HELD: the port is read at its "
                                           "release, which the run has not reached")
                 return with_fields(ran, **own, released=False, active=held_why,
@@ -533,18 +441,15 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
             held = int(rel_line["port_held"], 16)
             return with_fields(ran, **own, released=True, port_held=f"{held:#010x}",
                          frame_released=int(rel_line["frame"]),
-                         # ACTIVE is read off the port itself at the release, against the field's
-                         # own default: a set that never reached the port reads inactive here.
+                         # Read at the release: a set that never reached the port is inactive.
                          active=(held & mask) != (defvalue & mask))
 
 
 def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
              progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `throttle` tool: queued, applied when the console next reads a
-    line. Running, the tool waits for its own tag; stopped, it says the switch is
-    pending and names the tag to wait for. It proves itself by the tag in error.log and
-    never reads stdout, so it carries no `thread_errors`/`console_reruns`: a reader death
-    around its line is counted by the next call that does read the console."""
+    """The body of the `throttle` tool: queued, applied when the console next reads a line.
+    Running, it waits for its tag in error.log; stopped, it reports the switch pending. It never
+    reads stdout, so a reader death around its line is counted by the next call that does."""
     check_throttle(on, seconds)
     mark = files.log_mark(scratch)
     tag = f"{THROTTLE_MARK}#{STATE.lua_seq + 1}"
@@ -552,9 +457,7 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
     _line, seq = transport.send(script)
 
     def pending() -> dict[str, Any]:
-        # THE RECORD IS WHAT CLOSES THE LOOP: on a stopped machine the mark is written only
-        # when the console next reads the line, which this call cannot wait for. What the
-        # record MEANS is `REFERENCE.md`'s, once.
+        # The record closes the loop: the mark is written only when the console next reads.
         STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
         return menvelope.envelope({"on": on, "pending": True,
                                    "applies": "when the console next reads a line: "
@@ -584,19 +487,16 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
         if gone is not None:
             raise transport.died_waiting(gone, "its own throttle tag in error.log", tag=tag)
         if running.came_to_rest(ses, scratch, 0.0):
-            # A STOP BEFORE THE NEXT FRAME: the line waits in the pipe exactly as it does on a
-            # machine that was stopped already, and is recorded the same way.
+            # Stopped before the next frame: the line waits in the pipe, recorded as above.
             return pending()
         try:
             expired = clock.expired()
         except BaseException as e:
-            # A CANCELLED WAIT leaves the switch in the pipe exactly as an expired one does.
             if cancel.is_cancellation(e):
                 STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
             raise
         if expired:
-            # STILL IN THE PIPE, and applied whenever it is evaluated: recorded, so its tag is
-            # looked for later and its absence is said, never lost with this refusal.
+            # Still in the pipe: recorded so its tag is looked for later.
             STATE.throttles_pending.append({"tag": tag, "on": on, "seq": seq})
             raise st.Invalid("wait_expired",
                 f"no {tag} in error.log within {seconds:g} s: the switch is "
@@ -604,5 +504,5 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
                 tag=tag)
         clock.tick("throttle: waiting for the tag, {elapsed:.0f}s of {seconds:g}s",
                    seconds=seconds)
-        time.sleep(core_wait.POLL_S)          # a log on disk is read as the log wait reads it
+        time.sleep(core_wait.POLL_S)
 

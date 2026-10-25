@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vendored-version: 1 (every server's copy is this file; a sweep compares this stamp)
+# vendored-version: 2 (every server's copy is this file; a sweep compares this stamp)
 # The wiring of `pre-commit.sh`: its one line reaches scry-core's hook, through the real jscpd and
 # the real probe check. What the hook decides is tested in scry-core; here the CONTROL (this tree
 # passes) and one planted clone (blocked at 1) are what shows the line works.
@@ -32,8 +32,9 @@ hook() { (cd "$tree" && UV_PROJECT_ENVIRONMENT="$root/.venv" UV_NO_SYNC=1 \
 
 rc=0; hook || rc=$?
 if [ "$rc" -eq 0 ]; then ok "this tree passes (the control)"; else bad "the control gave rc=$rc: $(cat "$copy/out")"; fi
-if grep -q "no new duplication" "$copy/out" && grep -q "^   OK " "$copy/out"; then
-    ok "and both checks ran"
+if grep -q "no new duplication" "$copy/out" && grep -q "^   OK " "$copy/out" \
+        && grep -q "^prose: " "$copy/out"; then
+    ok "and the three checks ran"
 else
     bad "a check did not run: $(cat "$copy/out")"
 fi

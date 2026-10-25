@@ -1,8 +1,4 @@
-"""A session started with its own `state_dir` and a symbol file keeps its declarations in
-`<state_dir>/declarations.json` and never opens the project store, which every session of the
-same system and symbol file shares: nothing it declares, adopts or clears reaches another
-session's rows. And every listed declaration says how long ago it was declared (`age_s`).
-"""
+"""A `state_dir` session keeps its declarations in its own store, never the shared project one."""
 
 import hashlib
 import json
@@ -34,10 +30,7 @@ def _sha(path: Path) -> str:
 def test_a_state_dir_session_never_opens_the_project_store(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The project store holds a control another session declared; a session with its own
-    `state_dir` declares the same control and then clears everything. The project file's bytes
-    do not move, the start inherits nothing from it, and the session's rows are in
-    `<state_dir>/declarations.json`, exactly its own."""
+    """The project file's bytes never move and the start inherits nothing from it."""
     image, sym, project, _armed = _armable_boot(monkeypatch, tmp_path)
     key = dec.store_key("m68k", str(sym))
     project.write_text(json.dumps({key: [
@@ -70,9 +63,7 @@ def test_a_state_dir_session_never_opens_the_project_store(
 def test_without_a_state_dir_the_project_store_is_the_one_used(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control of the case above: with no `state_dir`, the same start inherits the
-    project's row and reports the project's file, and the list says it is inherited and how
-    old it is, through the tool."""
+    """Control of the case above: with no `state_dir` the project's row is inherited."""
     image, sym, project, _armed = _armable_boot(monkeypatch, tmp_path)
     project.write_text(json.dumps({dec.store_key("m68k", str(sym)): [
         {"kind": "breakpoint", "by": "symbol", "ref": "irq_vblank", "origin": "earlier",
@@ -91,9 +82,7 @@ def test_without_a_state_dir_the_project_store_is_the_one_used(
 def test_starts_rearm_rows_carry_the_identity_the_lists_give(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Every row of `start`'s re-arm account is the row `arming.decl_row` builds for its
-    declaration: the row armed and the row a name this build lacks left unresolved, each with
-    its own stamp, origin and age."""
+    """Armed and unresolved rows of the re-arm account carry their own stamp, origin and age."""
     image, sym, project, _armed = _armable_boot(monkeypatch, tmp_path)
     project.write_text(json.dumps({dec.store_key("m68k", str(sym)): [
         {"kind": "breakpoint", "by": "symbol", "ref": "irq_vblank", "origin": "earlier",
@@ -118,8 +107,7 @@ def test_starts_rearm_rows_carry_the_identity_the_lists_give(
 def test_a_corrupt_project_store_does_not_reach_a_state_dir_session(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Never OPENED, not merely never written: a project file that would refuse any start
-    without a `state_dir` is not read by one with it, and stays as it was."""
+    """The project file is never opened, not merely never written."""
     image, sym, project, _armed = _armable_boot(monkeypatch, tmp_path)
     project.write_text("[]")
     out = s.start(**_boot_args(tmp_path, image), symbols=str(sym),
@@ -149,8 +137,7 @@ def test_a_corrupt_own_store_refuses_the_start_before_the_spawn_and_is_kept(
 def test_a_state_dir_named_again_brings_back_what_an_earlier_pass_declared_there(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The store is the DIRECTORY's, not one boot's: a second pass over the same `state_dir`
-    inherits what the first declared there, which is what a bare clear then reaches."""
+    """The store belongs to the directory, not to one boot."""
     image, sym, _project, _armed = _armable_boot(monkeypatch, tmp_path)
     own = str(tmp_path / "session-state")
     s.start(**_boot_args(tmp_path, image), symbols=str(sym), state_dir=own)
@@ -170,8 +157,7 @@ def test_a_state_dir_named_again_brings_back_what_an_earlier_pass_declared_there
 def test_a_state_dir_that_is_a_file_is_refused_as_a_state_dir_with_a_symbol_file_too(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The store under it is read before `cfg/` and `nvram/` are made, so the refusal has to
-    name the argument there too, not a declaration file inside a file."""
+    """The store is read before `cfg/` is made, so the refusal must name the argument."""
     _never_spawns(monkeypatch, tmp_path)
     image, sym, _project, _armed = _armable_boot(monkeypatch, tmp_path)
     a_file = tmp_path / "a-file"
@@ -185,8 +171,7 @@ def test_a_state_dir_that_is_a_file_is_refused_as_a_state_dir_with_a_symbol_file
 def test_a_state_dir_that_is_the_project_store_directory_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Named directly or through a link, the project's own state directory would make the
-    session's store the shared one under an own-store reply: refused, nothing spawned."""
+    """Named directly or through a link, it would make the shared store look like an own one."""
     _never_spawns(monkeypatch, tmp_path)
     image, sym, project, _armed = _armable_boot(monkeypatch, tmp_path)
     link = tmp_path / "link"
@@ -201,8 +186,7 @@ def test_a_state_dir_that_is_the_project_store_directory_is_refused(
 def test_a_state_dir_session_with_no_symbol_file_stays_session_lived(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """No symbol file means nothing could re-resolve by name, whatever the `state_dir`: no
-    file is written there for the declarations."""
+    """With no symbol file nothing re-resolves by name, so nothing is written to `state_dir`."""
     image, _sym, _project, _armed = _armable_boot(monkeypatch, tmp_path)
     own = tmp_path / "session-state"
     out = s.start(**_boot_args(tmp_path, image), state_dir=str(own))
@@ -221,8 +205,7 @@ def _row(created_at: str | None) -> dict[str, Any]:
 
 
 def test_a_listed_row_carries_its_age_in_whole_seconds(monkeypatch: pytest.MonkeyPatch) -> None:
-    """`age_s` is computed when the row is listed, from `created_at`, in whole seconds: a
-    known stamp and a known clock give a known age, in any offset the stamp was written in."""
+    """`age_s` is whole seconds from `created_at`, in any offset."""
     monkeypatch.setattr(mstate, "utc_now", lambda: datetime(2026, 1, 1, 0, 1, 40, 900000,
                                                             tzinfo=UTC))
     assert _row(SEEDED_AT)["age_s"] == 100
@@ -230,8 +213,7 @@ def test_a_listed_row_carries_its_age_in_whole_seconds(monkeypatch: pytest.Monke
 
 
 def test_a_stamp_ahead_of_this_clock_is_a_negative_age(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Floored, never clamped: a row stamped by a clock ahead of this one reads below zero,
-    which says so, where a zero would claim it was declared just now."""
+    """Floored, never clamped: zero would claim the row was declared just now."""
     monkeypatch.setattr(mstate, "utc_now", lambda: datetime(2026, 1, 1, 0, 0, 0, 500000,
                                                             tzinfo=UTC))
     assert _row("2026-01-01T00:00:01+00:00")["age_s"] == -1
@@ -241,9 +223,7 @@ def test_a_stamp_ahead_of_this_clock_is_a_negative_age(monkeypatch: pytest.Monke
 def test_a_row_with_no_readable_date_has_no_age_and_says_why(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A row written before declarations were dated has no age, and says so in its place rather
-    than with a zero that would read as "declared just now"; a stamp that is not a date with an
-    offset is no date either."""
+    """An undated row, or a stamp that is no date with an offset, has no age and says so."""
     monkeypatch.setattr(mstate, "utc_now", lambda: datetime(2026, 1, 1, tzinfo=UTC))
     assert _row(None)["age_s"]["available"] is False
     assert _row(None)["created_at"]["available"] is False
@@ -254,8 +234,7 @@ def test_a_row_with_no_readable_date_has_no_age_and_says_why(
 def test_a_state_dir_whose_cfg_is_a_file_is_refused_naming_the_argument(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A directory that cannot hold `cfg/` is found only when `cfg/` is made, after every
-    other judgement: still the caller's, named as such, nothing spawned."""
+    """A directory that cannot hold `cfg/` is found late but is still the caller's fault."""
     _never_spawns(monkeypatch, tmp_path)
     image, _sym, _project, _armed = _armable_boot(monkeypatch, tmp_path)
     own = tmp_path / "session-state"

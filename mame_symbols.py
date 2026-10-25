@@ -1,11 +1,7 @@
-"""THE SYMBOL TABLES A START LOADS, ONE PER CPU (why one per cpu: REFERENCE.md, The session).
+"""The symbol tables a start loads, one per cpu (why: REFERENCE.md, The session).
 
-`symbols` is one path, the first cpu's table, or a mapping `{cpu: path}`; `bases` and `types`
-take the same shape, one value beside one path and one per cpu beside a mapping.
-
-A mapping names cpus, so it is judged against the machine's own list (`-listxml`'s) before
-anything is spawned. One path names none: its table is keyed `None` here and takes the first
-cpu's tag once the machine answers (`Loaded.keyed`).
+One path is keyed `None` until the machine names the first cpu (`Loaded.keyed`); a mapping
+names its cpus and is judged against the machine's list before anything is spawned.
 """
 
 from __future__ import annotations
@@ -33,42 +29,39 @@ Types = str | dict[str, str]
 
 
 def expanded(files: Given) -> Given:
-    """`files` (one path, or one per cpu) with each `~` expanded (`judges.expanded`)."""
+    """`files` with each `~` expanded (`judges.expanded`)."""
     if isinstance(files, dict):
         return {cpu: judges.expanded(path) for cpu, path in files.items()}
     return judges.expanded(files)
 
 
 def is_mapping(symbols: Given) -> bool:
-    """Whether `symbols` names its cpus. An empty mapping is no table at all, as `""` is."""
+    """Whether `symbols` names its cpus; an empty mapping is no table, as `""` is."""
     return isinstance(symbols, dict) and bool(symbols)
 
 
 @dataclass(frozen=True)
 class Loaded:
-    """Every table a start loaded, by the cpu it belongs to, and the file each came from.
-    `None` keys the table given as ONE path, whose cpu the machine names after the boot."""
+    """Every table a start loaded, by cpu, and its file."""
 
     tables: dict[str | None, gs.SymbolTable]
     paths: dict[str | None, Path]
 
     def keyed(self, first: str | None) -> dict[str | None, gs.SymbolTable]:
-        """The tables with the one path's table under the first cpu's tag, once it is read.
-        With no tag to give it (a console that listed no cpu) it stays under `None`, which
-        `State.table` then serves for every cpu: nothing says which one it belongs to."""
+        """The tables with the one path's table under the first cpu's tag.
+        With no tag it stays under `None`, which `State.table` serves for every cpu."""
         return {first if cpu is None else cpu: t for cpu, t in self.tables.items()}
 
     def path_of(self, cpu: str | None, first: str | None) -> Path | None:
-        """The file `cpu`'s table came from, or None when it has none."""
+        """The file `cpu`'s table came from, if any."""
         if cpu == first and None in self.paths:
             return self.paths[None]
         return self.paths.get(cpu)
 
 
 def named_files(symbols: Given, types: Types) -> list[tuple[str, str, str]]:
-    """Every file `symbols` and `types` name, as (argument, path, what it is): an entry of a
-    mapping named by its cpu (`symbols['maincpu']`). A `types` entry of `""` is a cpu given no
-    types file, as `""` is everywhere else; a `symbols` entry has no such meaning."""
+    """Every file named, as (argument, path, what it is). A `types` entry of `""` is a cpu
+    with no types file; a `symbols` entry has no such meaning."""
     out: list[tuple[str, str, str]] = []
     for argument, given, thing in (("symbols", symbols, "symbol file"),
                                    ("types", types, "types file")):
@@ -80,23 +73,20 @@ def named_files(symbols: Given, types: Types) -> list[tuple[str, str, str]]:
 
 
 def check_files(symbols: Given, types: Types) -> None:
-    """Every file `symbols` and `types` name is an input file (`inputs.input_file`)."""
+    """Every named file is an input file (`inputs.input_file`)."""
     for name, path, thing in named_files(symbols, types):
         inputs.input_file(name, path, thing)
 
 
 def _parse_bases(bases: dict[str, str]) -> dict[str, int | None]:
-    """One table's `bases`: `rom` is the one non-hex value, a resident class whose runtime
-    address is the map's linear one."""
+    """One table's `bases`: `rom` is the one non-hex value (resident at its linear address)."""
     return {k.upper(): (None if v.strip().lower() == "rom" else inputs.hex_arg(f"bases[{k!r}]", v))
             for k, v in bases.items()}
 
 
 def _one(name: str, path: str, bases: dict[str, str], types: str) -> gs.SymbolTable:
-    """One cpu's table: the file read under its `bases`, its `types` merged over any `type:`
-    the file carries, and a type naming a symbol the table lacks refused. Whatever the symbol
-    reader finds wrong in the file, or in `bases` against it, is the caller's argument `name`,
-    the reader's own sentence kept (it names the file); a file nobody may read is `unreadable`."""
+    """One cpu's table: the file read under its `bases`, `types` merged over its `type:` lines.
+    A reader complaint is refused as argument `name`; an unreadable file is `unreadable`."""
     parsed = _parse_bases(bases)
     try:
         table = gs.symbols(path, parsed)
@@ -114,24 +104,21 @@ def _one(name: str, path: str, bases: dict[str, str], types: str) -> gs.SymbolTa
 
 
 def read_types(path: str) -> dict[str, str]:
-    """A `types` file read for `start`: the grammar's reader over the file's text, with a
-    refusal that names the file and the line."""
+    """A `types` file read for `start`; a refusal names the file and line."""
     text = files.read_text("types", path, "types file")
     try:
         return vf.read_types(text, path)
     except vf.FormatError as e:
         raise st.Invalid("bad_argument", str(e)) from None
     except ValueError as e:
-        # A value the grammar matched and Python could not hold (an array count past the
-        # integer-string limit): still the caller's file, named.
+        # A value the grammar matched and Python could not hold (array count past the int limit).
         raise st.Invalid("bad_argument", f"{path}: {e}") from None
 
 
 def _per_cpu(what: str, value: dict[str, str] | dict[str, dict[str, str]] | str,
              mapped: dict[str, str], tags: list[str]) -> dict[str, object]:
-    """`bases` or `types` beside a mapping: one entry per cpu, each a cpu of the mapping's,
-    by the tag it resolves to. A value in the one-path shape is refused, because which cpu's
-    program it describes is exactly what it does not say."""
+    """`bases` or `types` beside a mapping: one entry per cpu, keyed by resolved tag. The
+    one-path shape is refused: it does not say which cpu's program it describes."""
     entry_type = dict if what == "bases" else str
     if not isinstance(value, dict) or not all(isinstance(v, entry_type) for v in value.values()):
         raise st.Invalid("bad_argument",
@@ -152,8 +139,7 @@ def _per_cpu(what: str, value: dict[str, str] | dict[str, dict[str, str]] | str,
 
 
 def load(symbols: Given, bases: Bases | None, types: Types, tags: list[str]) -> Loaded:
-    """Every table `symbols` names, judged whole before the machine exists. `tags` is the
-    machine's cpus, which only a mapping needs."""
+    """Every table `symbols` names, judged before the machine exists."""
     if not is_mapping(symbols):
         path = symbols if isinstance(symbols, str) else ""
         if bases and any(isinstance(v, dict) for v in bases.values()):
@@ -191,12 +177,10 @@ def load(symbols: Given, bases: Bases | None, types: Types, tags: list[str]) -> 
 
 
 def store_key(system: str, loaded: Loaded, tags: list[str]) -> str | None:
-    """THE STORE'S KEY, or None when no table was given and nothing can be re-resolved by name.
+    """The store's key, or None when no table was given.
 
-    One path keys it by the system and that file, as it always did. A mapping keys it the same
-    way by the FIRST cpu's file, so a start that adds a table for another cpu keeps the store it
-    had: what is declared on the other cpu is a row of that store with its cpu. A mapping that
-    gives the first cpu no table keys it by the first cpu it does give one, named."""
+    Keyed by the system and the FIRST cpu's file, so adding a table for another cpu keeps the
+    store; without the first cpu's table, by the first cpu it gives, named."""
     if None in loaded.paths:
         return dec.store_key(system, str(loaded.paths[None]))
     for tag in tags:
@@ -208,11 +192,8 @@ def store_key(system: str, loaded: Loaded, tags: list[str]) -> str | None:
 
 def fingerprint(system: str, reference_rom: Path, symbols: Path | None,
                 cpu: str | None = None) -> str:
-    """The build a declaration is judged against: the system's name, the reference ROM
-    image and the symbol file, hashed, and the cpu's tag for any cpu but the first, so a raw
-    address declared on one cpu is never judged against another's build. A byte of ROM or a
-    moved symbol changes it; a second session over the same build re-arms every raw address
-    the first left."""
+    """The build a declaration is judged against: a hash of system, reference ROM and symbol
+    file, plus the tag of any cpu but the first."""
     digest = hashlib.sha256(system.encode())
     digest.update(reference_rom.read_bytes())
     if symbols is not None:

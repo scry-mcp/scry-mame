@@ -1,10 +1,4 @@
-"""The cross-tool rules the published text states, each held where a caller reads it.
-
-What these hold: a left-out `cpu` acts on the visible cpu and lists every cpu, and the
-instructions do not say it is always the visible one; a condition's bare number is hex, said in
-each description that takes one and never contradicted by an example; `start` says which of its
-paths are directories; `gfx_locate` names its own source arguments; one sentence states one base.
-"""
+"""Cross-tool rules the published text states, each held where a caller reads it."""
 
 from __future__ import annotations
 
@@ -39,11 +33,8 @@ def test_a_condition_says_its_bare_numbers_are_hex(tool: str) -> None:
 
 
 def test_no_condition_example_writes_a_bare_number() -> None:
-    """The tools that take a `condition`; a clear's `Matching` sentence shows the spellings that
-    match one another on purpose."""
     takers = ("run_to", "breakpoint_at", "watch_add", "regpoint_add")
     examples = re.findall(r"`[^`]*(?:==|!=)[^`]*`", " ".join(_texts()[t] for t in takers))
-    # A bare number of two digits or more reads one way as hex and another as decimal.
     bare = [e for e in examples if re.search(r"(?:==|!=)(?!0x)\d{2,}", e)]
     assert examples and not bare, (examples, bare)
 

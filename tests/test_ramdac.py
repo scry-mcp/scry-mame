@@ -1,18 +1,9 @@
-"""The palette write log (`mame_ramdac`, `palette_log`) and the pixel query it answers
-(`screen_view` mode `pixel`, `set_by`).
+"""The palette write log (`mame_ramdac`, `palette_log`) and the pixel query it answers.
 
-THE m68k-dual CASE IS CAPTURED, on its own build through this server, with the board's BT478
-declared as the fixture manifest's `palette_ports.ramdac` (index `0x720001`, data `0x720003`, r g b,
-8 bits). The log was armed at the stop at frame 898, inside the game's palette upload, and read at a
-stop in frame 901, away from the upload: `ramdac-m68k-dual.txt` is the dump the pixel query's own
-chunk wrote there, `ramdac-m68k-dual.rows.gz` the rows file as it was, `screen-m68k-dual-pixel.txt`
-and `m68k-dual-pixel-screen.bin.gz` that chunk's capture line and screen. At that stop pixel (100,
-100) is pen 0x49, and the colour its last port write left agreed with the live pen. Then, at the
-same stop, pen 0x49 was written through the server's `write` (index, then 12 34 56), again from a
-Lua chunk (21 43 65), a state was saved, the machine run and the state loaded:
-`ramdac-m68k-dual-after.*` is the log after all that, the debugger's writes and the load's desync
-in it. Being captured, the rows begin with the upload the arming cut into, before any index
-write, which is what `unsynced` is.
+The m68k-dual fixtures are captured: the board's BT478 declared as `palette_ports.ramdac` (index
+`0x720001`, data `0x720003`, r g b, 8 bits), armed inside the palette upload (frame 898) and read
+away from it (frame 901). The `-after` files add a debugger write, a Lua write and a state load,
+so the rows begin with the upload the arming cut into, before any index write: that is `unsynced`.
 """
 
 from __future__ import annotations
@@ -56,8 +47,7 @@ def _text(name: str) -> str:
 
 
 def _edited(name: str, old: str, new: str) -> str:
-    """A captured fixture with `old` replaced by `new` exactly once: an edit that matched nothing
-    would test the capture under the edit's name."""
+    """A captured fixture with `old` replaced by `new` exactly once."""
     text = _text(name)
     assert text.count(old) == 1, f"the edit {old!r} does not match {name} exactly once"
     return text.replace(old, new)
@@ -103,7 +93,6 @@ def _armed(ses: _ChannelSession, name: str = "ramdac-m68k-dual") -> dict[str, An
     return rec
 
 
-# ------------------------------------------------------------------ the tap
 
 def test_the_install_runs_the_devices_state_machine_on_both_ports() -> None:
     """Each port's tap sits on its bus word and keeps the writes whose lane covers the port's
@@ -176,10 +165,7 @@ def test_rows_parse_every_kind_and_a_cut_row_ends_the_read(tmp_path: Path) -> No
 
 
 def _device(rows: list[mr.Row], auto: bool) -> list[tuple[int, int | None, int | None]]:
-    """`ramdac_device` as its source reads, written again here: an index write sets the index
-    and resets the counter, a data write lands on the index and the counter, and the counter
-    returns to 0 at three, moving the index on when it auto-increments. The index is unknown
-    until an index write, and again after a desync."""
+    """`ramdac_device` written again; the index is unknown until an index write."""
     out: list[tuple[int, int | None, int | None]] = []
     idx: int | None = None
     slot = 0
@@ -200,10 +186,8 @@ def _device(rows: list[mr.Row], auto: bool) -> list[tuple[int, int | None, int |
 
 
 def test_known_answer_the_taps_pens_are_the_devices_own() -> None:
-    """Captured rows, judged by the device's law written again in Python: every data write the
-    tap placed is on the pen and component the device would put it on, and the unsynced ones are
-    exactly those before the first index write. The same law without the auto-increment
-    disagrees, which is the control that this comparison can fail."""
+    """Every data write the tap placed is on the pen and component the device would put it on;
+    the same law without auto-increment disagrees, the control that this can fail."""
     rows = list(mr.rows_of(_text("ramdac-m68k-dual-after.rows.gz").splitlines()))
     tap = [(r.n, r.pen, r.slot) for r in rows if r.kind == "d"]
     assert len(tap) > 1000 and sum(1 for _n, p, _s in tap if p is None) == 562
@@ -254,13 +238,10 @@ def test_a_component_is_widened_the_way_mames_palnbit_does() -> None:
     assert mr.colour((1, None, 2), 8) is None, "a component not seen yet gives no colour"
 
 
-# ------------------------------------------------------------------ palette_log
 
 
 def test_palette_logs_description_says_the_install_waits_for_the_consoles_read() -> None:
-    """The install is a line in the console's pipe, and on a stub that refreshes the display
-    after a debugger command that command reads it with nothing executed: the description
-    names the read, never an execution."""
+    """The description names the console's read of the install, never an execution."""
     text = published("palette_log")
     assert "installed when the console next reads a line" in documented("palette_log")
     assert "execut" not in text, text
@@ -521,7 +502,6 @@ def test_a_log_armed_from_another_entry_is_refused(monkeypatch: pytest.MonkeyPat
     assert s.palette_log(palette_port="ramdac", clear=True)["cleared"] is True
 
 
-# ------------------------------------------------------------------ the pixel query
 
 def _pixel(ses: _ChannelSession) -> dict[str, Any]:
     _serve(ses, "screen-m68k-dual-pixel", screen="m68k-dual-pixel-screen")
@@ -707,7 +687,6 @@ def test_the_rows_shown_are_each_rendered_as_what_they_were(monkeypatch: pytest.
     assert (placed["pen"], placed["value"]) == (0, "0x23") and "unsynced" not in placed, placed
 
 
-# ------------------------------------------------------------------ the packed protocols
 
 PACKED_FIX = Path(__file__).parent / "fixtures" / "ramdac"
 

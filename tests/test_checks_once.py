@@ -1,10 +1,4 @@
-"""Each argument check written once, in the input module every tool imports: the natural-number
-guard (`mame_inputs.natural`, its predicate `is_natural`) and the rectangle (`is_rectangle`), the
-counts held to a range (`mame_inputs.count`), the bound on a wait (scry-core's
-`vocabulary.check_wait`, zero taken where it means something), the regular-expression judge
-(`mame_inputs.regex`, whose compiled pattern the log checks and `drive`'s hand back) and the rules
-a console expression keeps (`mame_conditions.expression_fault`). A bool is an `int` to Python, so
-each judge asks the type before the range, and each refusal keeps its caller's sentence."""
+"""Each argument check is written once, in the input module every tool imports."""
 
 import inspect
 import re
@@ -84,14 +78,12 @@ def test_one_regex_judge_refuses_a_non_string_an_empty_one_and_one_that_does_not
 
 @pytest.mark.parametrize("tool", ["log", "log_wait"])
 def test_an_empty_pattern_is_refused_by_the_log_readers_too(tool: str) -> None:
-    """One rule for every `pattern`: empty never means every line, here as in `drive`."""
     reply = s.log(pattern="", channel="emulator") if tool == "log" else s.log_wait(
         pattern="", channel="emulator", seconds=1.0)
     assert reply["code"] == "bad_argument" and "'.' for every line" in reply["message"], reply
 
 
 def test_log_refuses_a_pattern_that_is_not_a_string() -> None:
-    """A pattern is judged as a string before it is compiled, by `log` as by every tool."""
     with pytest.raises(mstate.Invalid, match="is a regular expression"):
         files.check_log(123, "emulator")  # type: ignore[arg-type]
 
@@ -107,15 +99,12 @@ def test_one_expression_rule_set_names_the_rule_that_failed(text: str, rule: str
 
 
 def test_a_count_held_to_a_range_refuses_a_bool_and_a_string_and_takes_a_json_number() -> None:
-    """`True` is an `int` to Python and lies inside 1..N, and a string would reach a comparison:
-    the count helpers judge the type first. An integral float is the JSON number a client's
-    schema turns into the int, so it stays a count."""
+    """The count helpers judge the type first; an integral float stays a count."""
     for value in (True, "2"):
         with pytest.raises(mstate.Invalid, match=rf"^limit is a count; got {value!r}$"):
             inputs.count("limit", value, 400)  # type: ignore[arg-type]
     with pytest.raises(mstate.Invalid, match=r"^limit=401 is outside 1\.\.400$"):
         inputs.count("limit", 401, 400)
-    # ONE JUDGE, THE FLOOR ITS PARAMETER: no ceiling says "or more", and a floor of 0 takes 0.
     with pytest.raises(mstate.Invalid, match=r"^length=0 is below 1: a length counts bytes$"):
         inputs.count("length", 0, tail=": a length counts bytes")
     inputs.count("limit", 0, 400, lo=0)
@@ -139,8 +128,7 @@ def test_a_signature_crop_refuses_a_bool() -> None:
 ])
 def test_a_count_or_a_wait_refuses_a_bool_and_a_string_naming_itself(
         name: str, judge: Any, value: Any) -> None:
-    """A bool is an `int` to Python and lies inside every range from zero; a string reaches a
-    comparison and raises: each guard asks the type first, in its caller's sentence."""
+    """Each guard asks the type first, in its caller's sentence."""
     with pytest.raises(mstate.Invalid, match=rf"^{name}={re.escape(repr(value))} "):
         judge(value)
 
@@ -179,9 +167,7 @@ def test_the_bound_on_a_wait_can_take_zero_and_then_says_what_zero_means() -> No
 ])
 def test_the_bound_on_a_wait_says_what_every_value_it_refuses_is_not(
         value: Any, zero_means: str, floor: str) -> None:
-    """The refusal is a sentence the refused value fails: a bool is an `int` to Python, `True`
-    inside every range and `False` inside one that takes zero, so the sentence names the type
-    before the range."""
+    """The refusal names the type before the range."""
     with pytest.raises(mstate.Invalid) as err:
         vocab.check_wait(value, zero_means=zero_means)
     assert str(err.value) == (f"seconds={value!r} is not a bound: a number of seconds, never a "
@@ -191,7 +177,7 @@ def test_the_bound_on_a_wait_says_what_every_value_it_refuses_is_not(
 
 
 def test_the_log_checks_and_drive_hand_back_the_patterns_they_compiled() -> None:
-    """The regex a check judged is the one the tool searches with, handed back compiled."""
+    """The regex a check judged is handed back compiled."""
     rx = files.check_log("a+", "emulator")
     assert isinstance(rx, re.Pattern) and rx.pattern == "a+"
     rx = files.check_log_wait(".", "emulator")
@@ -236,9 +222,7 @@ COUNT_JUDGES = [
 @pytest.mark.parametrize(("judge", "check"), COUNT_JUDGES, ids=[j for j, _ in COUNT_JUDGES])
 def test_every_count_judge_takes_an_integral_float_and_refuses_the_rest(
         judge: str, check: Any) -> None:
-    """One rule in every judge of a count: `6.0` is exactly the integer 6, which is what a
-    client's schema delivers as the int, so a direct call is judged as the wire is; a fractional
-    float counts nothing, and neither does `nan` or an infinity, none of which is integral."""
+    """`6.0` is the integer 6, as the wire delivers it; a fractional float, nan or inf is not."""
     check(6.0)
     check(6)
     for value in (6.5, float("nan"), float("inf"), float("-inf"), True, "6"):
@@ -254,9 +238,7 @@ def test_every_count_judge_takes_an_integral_float_and_refuses_the_rest(
 ])
 def test_a_list_of_naturals_is_one_rule_and_never_a_type_error(
         name: str, judge: Any, value: Any) -> None:
-    """`crop` and `point` are lists of naturals, judged by one predicate: a number, a string or
-    a list of the wrong length is refused in the caller's sentence, never a `TypeError` from
-    `len()` on what was not a list."""
+    """Refused in the caller's sentence, never a `TypeError` from `len()`."""
     if value is None and name == "crop":
         return                  # no crop is the whole screen, an answer and not a refusal
     out = judge(value)
@@ -266,7 +248,7 @@ def test_a_list_of_naturals_is_one_rule_and_never_a_type_error(
 
 @pytest.mark.parametrize("value", [True, "1", 5, [True], [-1], [3.0], ["16"]])
 def test_the_isolate_pens_refuse_what_is_not_a_list_of_pens(value: Any) -> None:
-    """The list is judged as a list, and each item as every pen is: `pens[0]` named."""
+    """The list is judged as a list, and each item as every pen is."""
     out = s.screen_view(mode="isolate", pens=value)
     assert out["status"] == "INVALID" and out["message"].startswith("pens"), out
     if isinstance(value, list):
@@ -275,8 +257,7 @@ def test_the_isolate_pens_refuse_what_is_not_a_list_of_pens(value: Any) -> None:
 
 @pytest.mark.parametrize("value", [False, True, "0"])
 def test_an_expr_watch_refuses_a_length_that_is_not_a_count(value: Any) -> None:
-    """An expr watch takes no length, and a length that is not a count is refused as one, so
-    `length=False` is never read as no length."""
+    """`length=False` is never read as no length."""
     with pytest.raises(mstate.Invalid, match=rf"^length={re.escape(repr(value))} "):
         watches.check_watch_add(ref="1+1", mode="expr", length=value)
 
@@ -314,9 +295,7 @@ def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
 
 
 def test_a_count_published_with_a_schema_half_still_reaches_its_body_as_an_int() -> None:
-    """A count whose annotation carries its schema half (`Annotated[int, ...]`, or a list of
-    them) is still a count to the wrapper: `length=2.0` is the length 2, never a float that a
-    shift downstream refuses with a TypeError."""
+    """An `Annotated[int, ...]` count is still a count to the wrapper."""
     assert inputs.integral_counts(2.0, _annotation("gfx_film", "length")) == 2
     assert type(inputs.integral_counts(2.0, _annotation("gfx_film", "length"))) is int
     planes = inputs.integral_counts([4.0, 8.0], _annotation("gfx_sweep", "planes"))
@@ -330,9 +309,7 @@ def test_a_count_published_with_a_schema_half_still_reaches_its_body_as_an_int()
 
 def test_every_body_behind_a_tool_receives_an_integral_float_as_the_int_it_equals(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    """The judges take `6.0` as the count 6; the tool wrapper hands the body the int, a scalar
-    count and every count of a list alike, so `range()` or a `%x` downstream never meets a
-    float. A fractional float is left as it came, for its judge to refuse."""
+    """The wrapper hands the body the int; a fractional float is left for its judge."""
     seen: dict[str, Any] = {}
     for tool in ("step", "screen_view"):
         monkeypatch.setitem(mame_mcp.BOUNDARY.summaries, tool, lambda args, reply: "the body ran")
@@ -353,10 +330,7 @@ def test_every_body_behind_a_tool_receives_an_integral_float_as_the_int_it_equal
 
 
 def test_every_default_a_check_holds_is_its_tools() -> None:
-    """A default is the tool's signature's: a batch step's preflight fills what the step left out
-    from it (`sequence.refuse_steps`). The check keeps its own copy because its module calls it
-    with only some arguments, positionally; where both hold one they are held equal here, so a
-    change in one place and not the other goes red by name."""
+    """Where a check and its tool both hold a default, they hold the same one."""
     import mame_args as margs
 
     compared, drifted = 0, []
@@ -377,8 +351,7 @@ def test_every_default_a_check_holds_is_its_tools() -> None:
 
 def test_the_isolate_pens_written_0x_reach_the_body_as_the_ints_they_spell(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    """Every pen takes `0x`, each of a list's too: the wrapper reads them, and the body is handed
-    the integers."""
+    """The wrapper reads `0x` pens; the body is handed the integers."""
     seen: dict[str, Any] = {}
     monkeypatch.setitem(mame_mcp.BOUNDARY.summaries, "screen_view",
                         lambda args, reply: "the body ran")
@@ -391,8 +364,7 @@ def test_the_isolate_pens_written_0x_reach_the_body_as_the_ints_they_spell(
 
 def test_a_step_that_leaves_an_argument_out_is_judged_with_the_tools_default(
         monkeypatch: pytest.MonkeyPatch) -> None:
-    """The preflight fills what a step left out from the TOOL's signature, so the check judges
-    the call the step will make even where the check's own default says something else."""
+    """The preflight fills a step's omissions from the tool's signature, not the check's."""
     seen: dict[str, Any] = {}
 
     def check(length: int = 999, ref: str = "", **_: Any) -> None:

@@ -1,33 +1,23 @@
 """`trace`: the addresses one cpu executed over a run bounded like `run_for`, joined to the symbols.
 
-MAME ALREADY TRACES. Its console's `trace <file>,<cpu>` writes one line per executed instruction
-from the debugger's instruction hook, so this module adds no hook, no Lua binding and no stub
-packet: it arms that tracer, runs `run_for`'s own body, closes the tracer and reads the file
-back. Both ends live in ONE call, because a trace left armed keeps writing on the next run of a
-client that forgot it.
+MAME's console `trace <file>,<cpu>` writes one line per executed instruction, so this arms it,
+runs `run_for`'s own body, closes the tracer and reads the file back, all in ONE call: a trace
+left armed keeps writing on the next run of a client that forgot it. The file is flushed per
+line, so it is whole when `trace off` answers.
 
-THE FILE IS FLUSHED PER LINE (`m_file->flush()` after every write in `debugcpu.cpp`), so what
-the file holds when `trace off` answers is the whole record, and the parse needs no
-`traceflush`.
+Condensed by default: the tracer skips a pc already twice among the last 64 logged and writes
+`(loops for N instructions)`. The SET of addresses survives exactly, the counts do not
+(`noloop` buys them back). One hole: the history starts as zeros, so address 0 among the first
+instructions reads as a loop and is skipped.
 
-CONDENSED BY DEFAULT. The tracer keeps the last 64 logged pcs and skips a pc already twice among
-them, writing `(loops for N instructions)` when the run leaves the loop. The SET of executed
-addresses survives that exactly (a skipped pc was logged before it was skipped), the counts do
-not, which is what `noloop` buys back at a larger file. The one hole in the set: the history
-starts as zeros, so address 0 among the first logged instructions reads as a loop and is
-skipped.
+The parked edges: the tracer logs a pc on arrival, before executing it. So the pc a stopped cpu
+is parked on is absent from a trace armed there although the window executes it, and the pc the
+run ends parked on is logged although never executed. Both are corrected when readable, and
+`note` says so. A cpu the run did not stop on has no end edge, and on a core that yields
+mid-instruction (MAME's 68000) one not parked at the start may resume inside an instruction
+with no hook; `note` says that too.
 
-THE PARKED EDGES. The tracer logs a pc when the cpu reaches it, before executing it, so the pc a
-stopped cpu is parked on is absent from a trace armed there although the window executes it
-first, and the pc the run ends parked on is logged although the window never executed it. Both
-are corrected when they can be read, and `note` says so. A cpu the run did not stop on has no
-end edge: its last line is the last instruction it began, which a core that yields
-mid-instruction (MAME's 68000) finishes only after the window. Its twin at the start: on such a
-core, a cpu the last stop did not park may be inside an instruction when the window begins, which
-it resumes with no hook, so it is finished in the window and never logged; `note` says that too.
-
-THE FILE IS READ A LINE AT A TIME, never whole: a call at the cap writes about a gibibyte, and
-held whole it would cost the server that much again and more in the lines split out of it.
+The file is read a line at a time: a call at the cap writes about a gibibyte.
 """
 
 from __future__ import annotations
@@ -56,15 +46,12 @@ import mame_state as st
 from mame_state import STATE
 
 SET_SUFFIX = ".set.jsonl"
-# Inline per-symbol rows; the rest is counted, and the set file holds every address.
+# Inline per-symbol rows; the set file holds every address.
 SYMBOLS_SHOWN = 64
-# THE ASKED WORK IS BOUNDED BY THE FILE IT MAKES, never by the wait (that is `seconds`): each cap
-# is the work at which the heaviest window measured on any bench fills a gibibyte, taken from
-# bytes because bytes are the same on any host and a cap from bytes per wall-second would not
-# be. It is a measurement, not a guarantee: a window heavier than every one measured can write
-# more than a gibibyte within it. By time, the bench heaviest
-# per emulated millisecond (its bytes per frame times its screen's refresh), which need not be
-# the one heaviest per frame.
+# The work is bounded by the file it makes, not by the wait: each cap fills a gibibyte at the
+# heaviest window measured, from bytes because bytes are the same on any host. A heavier window
+# can exceed it. The time cap uses the bench heaviest per emulated millisecond, which need not
+# be the one heaviest per frame.
 FRAMES_MAX = 5026
 MILLISECONDS_MAX = 98143
 # `noloop` writes every instruction, so its file grows faster and its caps are its own.
@@ -86,8 +73,7 @@ def caps(noloop: bool) -> tuple[int, int]:
 
 def check_trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds: float = 60.0,
                 noloop: bool = False, **_: Any) -> Path | None:
-    """`trace`'s machine-independent half: `run_for`'s own judgement of the bound, the mode, the
-    cap on the asked work, and the two files, handed back as the `Path` it built."""
+    """`trace`'s machine-independent half: the bound, the mode, the cap and the two files."""
     advance.check_run_bound(milliseconds, frames, seconds, "trace")
     vocab.check_bool("noloop", noloop)
     fmax, mmax = caps(noloop)
@@ -104,8 +90,7 @@ def check_trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds:
 
 @dataclass
 class Parsed:
-    """What a trace file accounts for: instruction lines, the loop lines' counts, and the
-    instruction lines per pc."""
+    """What a trace file accounts for."""
     lines: int = 0
     loop_sum: int = 0
     counts: dict[int, int] = field(default_factory=dict)
@@ -113,11 +98,9 @@ class Parsed:
 
 
 def parse(lines: Iterable[bytes], width: int | None, mask: int | None, cpu: str) -> Parsed:
-    """Every line by its shape, as the tracer prints it, and any other line refused by number:
-    a column index would read a new shape as a plausible pc. `lines` as an open binary file
-    yields them, ending in their newline or not; `width` and `mask` are the program space's
-    (None: not judged); a pc field of another width, or paged, is a space this parser does not
-    place."""
+    """Every line by its shape, any other refused by number: a column index would read a new
+    shape as a plausible pc. `width` and `mask` are the program space's (None: not judged); a
+    pc of another width, or paged, is refused."""
     p = Parsed()
     for n, raw in enumerate(lines, 1):
         line = raw[:-1] if raw.endswith(b"\n") else raw
@@ -154,8 +137,7 @@ def parse(lines: Iterable[bytes], width: int | None, mask: int | None, cpu: str)
 
 def join(counts: dict[int, int], place: read.Placer | None,
          noloop: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
-    """The set rows ascending, the per-symbol rows ascending by base, and how many addresses no
-    symbol places. A row's `symbol` is spelled as every reply spells a placed pc."""
+    """The set rows, the per-symbol rows by base, and how many addresses no symbol places."""
     rows: list[dict[str, Any]] = []
     by_base: dict[int, dict[str, Any]] = {}
     unplaced = 0
@@ -188,12 +170,10 @@ def join(counts: dict[int, int], place: read.Placer | None,
 
 
 def _parked_start(ses: gs.Session, tag: str) -> tuple[int | None, str | None]:
-    """The pc `tag` is parked on, when it is the cpu parked in its hook AND the visible one, so
-    `current_pc` reads it: the window executes it first and the tracer, armed there, never logs
-    it. Read before the route, which may change the visible cpu. Beside it, the note for a pc it
-    could not read, or for a cpu the stop did not park, whose first instruction may go unlogged."""
-    # A stop that recorded no cpu was the first cpu's, the one a stub without threads binds:
-    # ASSUMED for the comparison, and never named in the note as if the stop had recorded it.
+    """The pc `tag` is parked on when it is the parked and visible cpu, else None with a note.
+    Read before the route, which may change the visible cpu."""
+    # A stop that recorded no cpu was the first cpu's (a stub without threads): assumed here,
+    # never named in the note as recorded.
     recorded = STATE.last_stop.get("cpu")
     stopped_on = recorded or next(iter(cpus.cpu_list(ses)), None)
     if stopped_on != tag:
@@ -209,16 +189,14 @@ def _parked_start(ses: gs.Session, tag: str) -> tuple[int | None, str | None]:
 
 
 def _close(ses: gs.Session, scratch: Path, tag: str) -> bool | None:
-    """Stop a machine a bail-out left running, so the tracer is never destroyed under a moving
-    cpu, then `trace off`: True when it answered as it should, False when it did not, None when
-    the session latched broken and nothing it answers can be believed."""
+    """Stop a machine a bail-out left running, then `trace off`: True when it answered as it
+    should, False when not, None when the session latched broken."""
     if ses.broken:
         return None
     try:
         if ses.running:
             running.stop(ses, scratch)
-        # READ AGAIN: the stop may have latched the session, which the first read cannot know;
-        # the cast keeps the type checker from carrying that first read's answer past the call.
+        # read again: the stop may have latched the session; the cast stops mypy narrowing it
         if cast("str | None", ses.broken):
             return None
         if ses.running:
@@ -237,9 +215,7 @@ def _left(path: Path, closed: bool | None) -> dict[str, Any]:
 
 
 def _with_trace(reply: dict[str, Any], block: dict[str, Any]) -> dict[str, Any]:
-    """`reply` with `trace` added: the survey's own `cpu` and `pc` stay at the top level, so the
-    trace's live under their own key. Closing the tracer may have stopped a machine the run
-    left running, which the `session` block `mame_mcp.tool` composes afterwards says."""
+    """`reply` with `trace` added; the survey's own `cpu` and `pc` stay at the top level."""
     reply["trace"] = block
     return reply
 
@@ -247,9 +223,8 @@ def _with_trace(reply: dict[str, Any], block: dict[str, Any]) -> dict[str, Any]:
 def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: str,
           seconds: float, cpu: str, noloop: bool,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `trace` tool. Every refusal about the arguments, the cpu and the route is
-    made before the tracer is armed, so it leaves nothing armed and no file; once armed, the
-    tracer is closed on every way out."""
+    """The body of the `trace` tool. Refusals come before arming, leaving nothing armed and no
+    file; once armed, the tracer is closed on every way out."""
     given = check_trace(milliseconds, frames, dest, seconds, noloop)
     tag = cpus.acting(ses, cpu)
     if (missing := read.no_disassembler(ses, tag)) is not None:
@@ -260,15 +235,14 @@ def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: 
     if given is not None:
         path = given
     else:
-        # THE NUMBER IS TAKEN ONLY ONCE THE PATH IS ACCEPTED: a refused one leaves the next
-        # trace the name it would have had.
+        # the number is taken only once the path is accepted
         path = scratch / "snap" / f"trace-{STATE.recordings + 1}.trace"
         files.refuse_console_path(path)
         STATE.next_number("recordings")
     parked, parked_note = _parked_start(ses, tag)
     route = advance.route_frames(ses, read.BY_TIME.format(tool="trace")) if frames else None
     set_path = Path(str(path) + SET_SUFFIX)
-    # a long path wraps at the console's column: the answer is read as its logical line
+    # a long path wraps at the console's column
     answer = ses.monitor(f"trace {path},{tag}" + (",noloop" if noloop else ""))
     armed = " ".join(gs.unwrap_console(answer, _ANSWER)).strip()
     if armed != f"Tracing CPU '{tag}' to file {path}":
@@ -296,9 +270,8 @@ def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: 
         _close(ses, scratch, tag)
         raise
     except gs.SessionError as e:
-        # answered as the server answers it, latching the session when the error does, before
-        # the close, so a broken channel is not asked to close anything; the close is reached
-        # even when building that answer raises
+        # latch before the close, so a broken channel is not asked to close; the close is
+        # reached even when building the answer raises
         try:
             broke = running.session_error_reply(
                 e, "trace", tail="The file is named in the reply's `trace` block")
@@ -331,8 +304,7 @@ def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: 
     if reply.get("status") != "ok":
         return _with_trace(reply, _left(path, True))
     block = _account(path, set_path, tag, mask, noloop, parked, parked_note, reply, ses)
-    # listed only once checked and handed back, as `captures` promises: a refused trace's path
-    # is in its own reply
+    # listed only once checked and handed back, as `captures` promises
     STATE.captures.append(("trace", str(path)))
     return _with_trace(reply, block)
 
@@ -347,8 +319,7 @@ def _unclosed(path: Path, tag: str, run: str) -> dict[str, Any]:
 
 
 def _nothing(ses: gs.Session, tag: str, path: Path, what: str) -> st.Invalid:
-    """The refusal of a trace that recorded no executed address: an instrument that examined
-    nothing, whose two causes cannot be told apart from the file."""
+    """The refusal of a trace that recorded no address; its two causes look alike in the file."""
     ignored = tag in (cpus.ignored(ses) or [])
     return st.Invalid("readback_refused",
                       f"the trace on {tag} {what}: either the cpu executed nothing in the "
@@ -390,9 +361,8 @@ def _account(path: Path, set_path: Path, tag: str, mask: int | None, noloop: boo
                      "finishes only after the window")
     elif stopped_on == tag and isinstance(survey_pc, str) and p.last_pc == int(survey_pc, 16):
         # the last line is an arrival the window never executed; condensed, an address that
-        # also ran earlier stays, since only its last arrival is not an execution. The two edges
-        # commute, so the note on the end pc is decided after both: a pc the run started and
-        # ended parked on was executed once, first.
+        # also ran earlier stays. The note on the end pc waits for both edges: a pc the run
+        # started and ended parked on was executed once, first.
         ended = p.last_pc
         executed -= 1
         if noloop or counts[ended] == 1:

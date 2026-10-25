@@ -1,10 +1,7 @@
-"""What every demo on a free mamedev.org set shares: where to get the set, how its reference
-image comes out of the zip, the session's own ini and state directories, the checks a stock boot
-and a close answer, and the reply keys that differ between two honest runs.
+"""What every demo on a free mamedev.org set shares.
 
-A set mamedev.org distributes is free for non-commercial use from its own site only, so a demo
-says where to get it and never carries it. Each `demos/<set>/demo.py` puts the repository root on
-its import path, imports this as `demos.free_set`, and declares only its own steps.
+The set is free for non-commercial use from mamedev.org only, so a demo says where to get it
+and never carries it.
 """
 
 from __future__ import annotations
@@ -24,10 +21,9 @@ import mame_binary  # isort: skip -- the repository root, which each demo puts o
 
 __all__ = ["RUN_S", "Demo", "Reply", "Run", "Step", "demo", "expect", "main"]
 
-#: The `seconds` bound on one timed run, in wall-clock time: generous, because a board can
-#: emulate well below real speed under the debugger.
+#: Wall-clock bound on one timed run: a board can emulate well below real speed under the debugger.
 RUN_S = 300
-#: Reply keys a MAME session answers differently on two honest runs, each with its reason.
+#: Reply keys that differ between two honest runs, each with its reason.
 VOLATILE = {
     "stdout_tail": "the emulator's console as `close` found it, which echoes the session's "
                    "temporary paths",
@@ -37,10 +33,8 @@ VOLATILE = {
     "binary_origin": "how the host's MAME was found",
 }
 
-#: The arguments whose values are the host's own: where it keeps its ROM sets.
 HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
 
-#: What only the start step hides: its summary names the host's MAME binary.
 START_VOLATILE = {"summary": "names where the host installed MAME"}
 
 
@@ -54,10 +48,7 @@ def url(system: str) -> str:
 
 
 def precheck(system: str) -> Callable[[Run], str]:
-    """Why the demo cannot run: a relative path the server would refuse, no zip of the set in
-    `--rompath`, said with where to get it, or a host that cannot start MAME (`live_host.canary`,
-    with no joystick provider as the demo's own ini). A binary that resolves to nothing is left
-    to `start`, which names the ladder."""
+    """Why the demo cannot run, or "". An unresolvable binary is left to `start`."""
     def check(run: Run) -> str:
         relative = [f"--{k} {v}" for k, v in run.options.items()
                     if k in ("rompath", "binary") and not Path(v).is_absolute()]
@@ -79,11 +70,9 @@ def precheck(system: str) -> Callable[[Run], str]:
 
 
 def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
-    """`start`'s arguments: the reference image out of the zip, found by its CRC (MAME's own
-    key, whatever the file is called) and placed at `addr`, where the cpu sees it; an ini
-    directory that turns the joystick provider off, since a debug build can abort at boot with
-    a controller connected; and a state directory under the run's own, emptied first, since
-    `state_write(method="save")` never overwrites and a path there reads the same on every run."""
+    """`start`'s arguments: the reference image found in the zip by CRC, an ini that turns the
+    joystick provider off (a debug build can abort at boot with a controller connected), and an
+    emptied state directory, since `state_write(method="save")` never overwrites."""
     def args(run: Run) -> dict[str, Any]:
         with zipfile.ZipFile(Path(run.options["rompath"]) / f"{system}.zip") as z:
             members = [i for i in z.infolist() if crc == i.CRC]
@@ -129,14 +118,14 @@ def saved(reply: Reply, run: Run) -> str:
 
 
 def loaded(reply: Reply, run: Run) -> str:
-    """The state `save` wrote, back at the frame it was saved at and verified by the server."""
+    """The state `save` wrote, loaded back at its frame and verified."""
     expect(reply["verified"] is True, f"verified {reply['verified']}")
     expect(reply["frame"] == run.replies["save"]["frame"], f"loaded at frame {reply['frame']}")
     return f"state {reply['name']} loaded and verified, frame {reply['frame']}"
 
 
 def pictured(what: str) -> Callable[[Reply, Run], str]:
-    """The capture `screen_view` wrote at the run's `screen.png`, which `--update-readme` copies."""
+    """The capture `screen_view` wrote at the run's `screen.png`."""
     def check(reply: Reply, run: Run) -> str:
         image = reply["image"]
         expect(Path(image["path"]) == run.dir / "screen.png" and Path(image["path"]).is_file(),
@@ -151,9 +140,7 @@ def closed(reply: Reply, run: Run) -> str:
 
 
 def demo(system: str, demo_file: str, steps: Sequence[Step]) -> Demo:
-    """The demo of `system` whose `demo.py` is `demo_file`: its server, README and capture where
-    every demo on a free set keeps them, with `--rompath` and `--shared` offered as `start` takes
-    them."""
+    """The demo of `system` whose `demo.py` is `demo_file`."""
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
     return Demo(name=system, root=root, server=[sys.executable, str(root / "server.py")],

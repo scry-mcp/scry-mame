@@ -1,16 +1,4 @@
-"""Gate for the server's guarantees: the things that, when broken, return a FALSE measurement.
-
-None of these needs a live MAME, and that is exactly why they exist: they are the places where
-the server can lie SILENTLY, and a silent lie is not found by looking.
-
-Every test here comes from a REAL fault found auditing the server, and is written to go RED
-against the previous code:
-
-- the classification of `debug` commands, which was the open door in the `altered` guarantee;
-- the window helper, whose absence killed the whole of `start` on anyone else's machine;
-- the lock, without which two overlapping calls steal each other's stops;
-- the MAME command line, which already had its test and is kept.
-"""
+"""Gate for the server's guarantees."""
 
 import ast
 import asyncio
@@ -89,19 +77,12 @@ def _wait_emulator(ses: Any, scratch: Path, alive: Any, on_stop: Any, pattern: s
 
 
 def _install(monkeypatch: pytest.MonkeyPatch, ses: Any, tmp_path: Path) -> None:
-    """Install `ses` as the live session with a scratch under `tmp_path`: the gate every tool
-    goes through asks for both, because a stop survey writes its listing into the scratch."""
+    """Install `ses` as the live session with a scratch under `tmp_path`."""
     monkeypatch.setattr(mstate.STATE, "alive", lambda: ses)
     monkeypatch.setattr(mstate.STATE, "scratch", tmp_path)
-    # No stop is on record for a session a test installs, so the first contact surveys
-    # nothing; a record left by an earlier test would make it survey a stop that is not this
-    # double's.
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     monkeypatch.setattr(mstate.STATE, "errorlog_mark", 0)
     monkeypatch.setattr(mstate.STATE, "found_stop_last", {})
-    # What `start` creates beside every session: a store (session-lived here), the stamp
-    # and the controls table, so a tool that declares (`run_to` with a `control`) works on
-    # any installed double.
     monkeypatch.setattr(mstate.STATE, "store", dec.DeclarationStore("test", path=None))
     monkeypatch.setattr(mstate.STATE, "session_origin", "s1")
     monkeypatch.setattr(mstate.STATE, "first_cpu", ":maincpu")      # the doubles' first cpu
@@ -116,9 +97,6 @@ def _install(monkeypatch: pytest.MonkeyPatch, ses: Any, tmp_path: Path) -> None:
     ["fill 0x1000,1,0", "filld 0,1,0", "softreset", "softr", "hardreset", "g", "step", "n",
      "over", "o", "load x,0,10", "loadr x,0,0,:gfx", "stateload s", "sl s", "gtime 100",
      "gvblank", "gint 3", "rewind", "rw", "mount cart x", "suspend 1",
-     # A bare ASSIGNMENT is how the console writes a register or a byte without any command
-     # word: its own parser treats a one-parameter line holding `=`, `++` or `--` as an
-     # expression to execute, so a prefix list alone could never see it.
      "d0=1234", "pc = 0x400", "w@0x2031fc=1", "d0++", "do d0=1",
      # An assignment AFTER a comma is executed too: `print` takes a list of expressions,
      # and a breakpoint's action (`bpset a,{cond},{action}`) runs its expression on each hit.
@@ -154,10 +132,7 @@ def test_read_only_commands_are_not_marked(command: str) -> None:
      ("pc==0x400", False)],
 )
 def test_a_condition_and_a_typed_line_agree_on_what_assigns(text: str, assigns: bool) -> None:
-    """ONE DECISION, TWO CONSUMERS: what the console counts as an assignment refuses a
-    breakpoint CONDITION and marks a `debug` line as mutating. The day `+=` or `|=` has to
-    count differently, both must move together, or a condition slips a write past the refusal
-    that `debug` would have flagged. The inputs are ones only the assignment rule decides."""
+    """ONE DECISION, TWO CONSUMERS."""
     try:
         conditions.check_condition(text)
         refused_as_condition = False
@@ -167,10 +142,6 @@ def test_a_condition_and_a_typed_line_agree_on_what_assigns(text: str, assigns: 
     assert (refused_as_condition, marked_as_line) == (assigns, assigns), text
 
 
-# EVERY OPERATOR THAT WRITES in MAME's expression parser, read from its lexer
-# (`src/emu/debug/express.cpp`, `parse_string_into_tokens`): the eleven `TVL_ASSIGN*` and the
-# two steps, `TVL_PLUSPLUS` and `TVL_MINUSMINUS`. Listed whole, so an operator the rule misses
-# fails by its own name rather than hiding behind the ones it happens to catch.
 MAME_ASSIGNMENTS = ["=", "*=", "/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=", "++", "--"]
 
 
@@ -196,16 +167,12 @@ def test_every_assignment_mame_parses_assigns_for_both_consumers(operator: str) 
     ids=lambda v: str(v),
 )
 def test_a_write_to_a_debugger_temp_alone_is_not_a_write(command: str, mutates: bool) -> None:
-    """`mame_lexer.without_temp_writes` says why a temp alone is not a write; a chain that
-    reaches memory or a register, an action in braces, and a second command after a `;`
-    still write."""
+    """`mame_lexer.without_temp_writes` says why a temp alone is not a write."""
     assert mconsole.mutates(command) is mutates, command
 
 
 def test_a_condition_still_refuses_a_temp_the_debug_line_does_not_mark() -> None:
-    """THE ONE PLACE THE TWO CONSUMERS DIFFER, on purpose: a condition that writes a temp
-    would change a control's count at every hit, so it is refused; the same text typed
-    through `debug` touches nothing of the guest."""
+    """THE ONE PLACE THE TWO CONSUMERS DIFFER, on purpose."""
     with pytest.raises(mstate.Invalid):
         conditions.check_condition("(++temp3)==0")
     assert mconsole.mutates("(++temp3)==0") is False
@@ -226,9 +193,7 @@ def test_altered_counts_both_paths(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_a_softreset_whose_step_fails_is_counted_as_the_write_it_may_have_been() -> None:
-    """The console's `softreset` is a timer the next step fires: a step that fails leaves the
-    reset scheduled, and a write the counter missed is `altered: false` on a machine that no
-    longer runs the game from where it was."""
+    """The console's `softreset` is a timer the next step fires."""
     ses = g.Session()
     ses.monitor = lambda command, timeout=None: ""  # type: ignore[method-assign]
 
@@ -276,16 +241,9 @@ def test_a_shared_session_without_the_helper_fails(
 def test_a_helper_that_is_there_but_not_executable_does_not_take_start_down(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE THIRD STATE, and `exists()` could not see it.
-
-    The helper is reached through a SYMLINK. A checkout that did not materialise it leaves a
-    short text file, mode 644, no shebang, where the program should be -- and that is neither
-    "absent" nor "working". A guard of `helper.exists()` answers True here, and
-    `subprocess.run` then raises PermissionError: an OSError, which `check=False` does NOT
-    suppress, so the whole of `start` comes down. Both cases above test only the ABSENT state.
-    """
+    """THE THIRD STATE, and `exists()` could not see it."""
     fake = tmp_path / "place-window"
-    fake.write_text("place-window.sh")          # what an unmaterialised symlink looks like
+    fake.write_text("place-window.sh")
     fake.chmod(0o644)
     monkeypatch.setenv("WINDOW_APP", str(fake))
     flags = launch.window_flags(shared=False)
@@ -307,13 +265,7 @@ def test_a_shared_session_refuses_on_a_helper_that_is_not_executable(
 def test_a_helper_that_cannot_be_executed_at_all_is_caught_rather_than_raised(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The state the exec bit cannot rule out: executable, and still impossible to run.
-
-    A symlink that DID materialise, onto a `.sh` whose interpreter is not on this machine,
-    passes both `is_file()` and `os.access(X_OK)` and then fails inside `execve`. That is an
-    OSError too, and `check=False` does not suppress it either, so the guard alone is not
-    enough and the call needs its own `except`.
-    """
+    """The state the exec bit cannot rule out."""
     fake = tmp_path / "place-window"
     fake.write_text("#!/nonexistent/interpreter\necho hi\n")
     fake.chmod(0o755)
@@ -325,11 +277,7 @@ def test_a_helper_that_cannot_be_executed_at_all_is_caught_rather_than_raised(
 def test_with_no_window_app_no_helper_is_looked_for_anywhere(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`WINDOW_APP` is the only route to a window helper: unset, none is run, wherever one might
-    sit beside the package, so a clone reads the same on every machine. A quick start takes the
-    default flags; a shared one refuses as `host_failed`, naming the variable that would fix it.
-    A working helper is planted where a default could have pointed, so a default that survived
-    would answer with its flags instead of refusing."""
+    """`WINDOW_APP` is the only route to a window helper."""
     planted = tmp_path / "place-window.sh"
     planted.write_text('#!/bin/sh\nprintf -- "-window\\n-planted\\n"\n')
     planted.chmod(0o755)
@@ -357,13 +305,7 @@ def test_with_no_window_app_no_helper_is_looked_for_anywhere(
 
 
 def test_the_tools_are_serialized() -> None:
-    """Two calls at once over ONE machine steal each other's breakpoint stops.
-
-    The probe is REMOVED from the registry afterwards. `@mame_mcp.tool` registers into the real
-    server, so without the cleanup this test left a tool named after itself in the live surface,
-    and any assertion about that surface became order-dependent. Found by the roster gate below
-    on its first run, which is what a roster gate is for.
-    """
+    """Two calls at once over ONE machine steal each other's breakpoint stops."""
     order: list[str] = []
 
     @mame_mcp.tool("Slow probe", summary=lambda args, reply: "slow_probe: ok")
@@ -397,10 +339,7 @@ def test_the_mame_line_carries_the_harness_and_the_port() -> None:
 
 
 def test_startup_leaves_no_state_in_the_servers_directory() -> None:
-    """MAME writes `cfg/` and `nvram/` into its cwd, and that cwd was the SHARED tool's own.
-
-    One project's EEPROM ended up inside the server and the next project to use it inherited it.
-    """
+    """MAME writes `cfg/` and `nvram/` into its cwd, and that cwd was the SHARED tool's own."""
     here = Path(s.__file__).resolve().parent
     for leftover in ("cfg", "nvram"):
         assert not (here / leftover).exists(), (
@@ -409,18 +348,7 @@ def test_startup_leaves_no_state_in_the_servers_directory() -> None:
 
 
 def test_a_timeout_leaves_the_machine_stopped() -> None:
-    """`run_to` must not hand back a session whose machine is still RUNNING.
-
-    No unit test could see it because none of them touches the
-    wire: after `resume` times out, the machine keeps running, and the very next memory read comes
-    back as something that is not hex at all, because the stub will not serve `m` to a target
-    that is not stopped. The session looks alive and answers garbage, which is the worst state
-    a debug session can be in: it does not fail, it lies.
-
-    Here the contract is pinned structurally, since the behaviour itself needs a live machine:
-    the client must expose an interrupt, and `run_to` must call it on the TIMEOUT path before
-    removing its breakpoints.
-    """
+    """`run_to` must not hand back a session whose machine is still RUNNING."""
     import inspect
 
     assert hasattr(g.Session, "interrupt"), "the client has no way to stop a running machine"
@@ -432,17 +360,7 @@ def test_a_timeout_leaves_the_machine_stopped() -> None:
 
 
 def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() -> None:
-    """The `instructions` field is how the PROTOCOL hands a session the server's own contract.
-
-    It replaced a `SessionStart` hook that pasted equivalent prose by hand, and nothing asserted
-    it: deleting the `instructions=` argument, or truncating it to "", left both suites green
-    while every session lost the text. The failure direction was silence, which is what a
-    compliant server looks like.
-
-    It asserts the CLAIMS, not the wording, and the two it forbids are the two a text copied
-    from the sibling server gets wrong: `rom_check` described with a sentence true there and
-    false here, and the console reader told to take a `pattern` it does not have.
-    """
+    """The `instructions` field is how the PROTOCOL hands a session the server's own contract."""
     text = s.mcp.instructions
     assert text, "the server declares no instructions at all"
     # ABSENCE, not just presence. A presence assertion cannot say "and does not ALSO claim X",
@@ -463,13 +381,6 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
     assert "reference_base" in text, (
         "a caller following the instructions with a raw V30 image is otherwise refused OUTSIDE"
     )
-    # The tools that answer with a PATH, and only those: a caller told everything comes back in
-    # the reply would read a file-returning tool as a broken one, and one told `log` returns a
-    # path looks for a field its reply, which carries `lines`, does not have.
-    # `series_capture` and `image_compare(method="region")` answer with a path too, and their own
-    # descriptions say
-    # so: the room went to saying the file tools answer in any state, which no description
-    # placed after a refusal could.
     assert ("`memdump`, `snapshot` answer with a PATH"
             in " ".join(text.split())), "the instructions do not name the file-returning tools"
     assert "Files" in mame_mcp.ROSTER.answering_split()[0] and (
@@ -484,13 +395,7 @@ def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() ->
 
 
 def test_every_tool_this_server_promises_is_actually_registered() -> None:
-    """`mcp.tool()` returns the function unchanged, so dropping the registration leaves every
-    ordinary test green while the server exposes NOTHING: no ordinary assertion can see that
-    hole, which is why the MCP surface gets one of its own.
-
-    The names are stated, not derived, because deriving them from the same object under test is
-    how a roster proves itself: this list is the SECOND statement, and the comparison is the gate.
-    """
+    """`mcp.tool()` returns the function unchanged."""
     registered = sorted(t.name for t in s.mcp._tool_manager.list_tools())
     assert registered == sorted([
         "breakpoint_at", "declaration_clear", "declaration_list", "close", "debug", "disassemble",
@@ -511,14 +416,11 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
     ]), f"the registered surface changed: {registered}"
 
 
-# ------------------------------------------------- what a start refuses before anything exists
 
 
 def test_a_missing_rom_directory_is_refused_before_the_emulator_is_spawned(
         tmp_path: Path) -> None:
-    """A missing ROM directory is the worst shaped failure if it reaches MAME: it starts
-    without its ROMs, the gdbstub never listens, and the caller waits the whole `seconds` to be
-    told the STUB did not answer. The refusal names the argument, and nothing is spawned."""
+    """A missing ROM directory is the worst shaped failure if it reaches MAME."""
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
@@ -529,10 +431,7 @@ def test_a_missing_rom_directory_is_refused_before_the_emulator_is_spawned(
 
 
 def test_a_missing_symbol_file_is_refused_before_the_emulator_is_spawned(tmp_path: Path) -> None:
-    """IT WAS THE ONE PATH NOT CHECKED UP FRONT, and the cost was not cosmetic: it was read
-    after MAME had been launched and the ROM verified, so a typo surfaced as a bare OSError
-    from deep inside and left a running emulator nobody owned. Refusing here means there is
-    nothing to clean up."""
+    """IT WAS THE ONE PATH NOT CHECKED UP FRONT, and the cost was not cosmetic."""
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
@@ -554,11 +453,7 @@ def test_a_missing_reference_rom_is_refused_too(tmp_path: Path) -> None:
 
 
 def _never_spawns(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Whatever `start` does past its checks, it may not reach the emulator in these cases.
-
-    The window helper is pointed at nothing first: `subprocess.run` is `Popen` underneath, so
-    without that the sentinel fires on the helper call and blames the emulator for it.
-    """
+    """Whatever `start` does past its checks, it may not reach the emulator in these cases."""
     import subprocess
 
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
@@ -594,9 +489,7 @@ def test_a_directory_where_a_file_is_due_is_refused_naming_the_argument(
 def test_a_binary_that_is_a_file_and_cannot_be_run_is_refused_as_such(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The other half of the binary's check, and the reason it is two sentences and not one:
-    a file that is there and has no exec bit is not missing, and telling its owner "no such
-    MAME binary" would send them looking for a path that is exactly where they put it."""
+    """The other half of the binary's check, and the reason it is two sentences and not one."""
     _never_spawns(monkeypatch, tmp_path)
     args = _boot_args(tmp_path, bytes(16))
     unrunnable = tmp_path / "not-a-program"
@@ -643,8 +536,7 @@ def test_bases_beside_a_yaml_file_refuse_start(
 def test_a_bases_value_of_rom_means_the_class_stays_at_its_linear_address(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The word `rom` where a hex base would go: the class is ROM-resident and runs where the
-    map says. Spelled at the boundary, so a caller never computes `linear - offset` to say it."""
+    """The word `rom` where a hex base would go."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     sym = tmp_path / "game.map"
@@ -677,10 +569,7 @@ def test_a_bases_value_that_is_not_hex_refuses_start(
 def test_bases_with_no_symbol_file_refuse_start(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `bases` with nothing to apply it to is a parameter honoured by nothing, and it is the
-    CALLER's: it was the one refusal of `judge` raised as a bare ValueError, which the tool
-    wrapper does not translate, so it escaped as an execution failure where every neighbour
-    answers `bad_argument` in the envelope."""
+    """A `bases` with nothing to apply it to is a parameter honoured by nothing."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -696,9 +585,7 @@ def test_bases_with_no_symbol_file_refuse_start(
 def test_a_reference_address_outside_the_image_refuses_start_before_the_emulator_exists(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The window is a function of the file's LENGTH and three numbers; asked only once the
-    machine is up, a raw V30 image with the wrong base pays a whole boot to be told OUTSIDE.
-    The same goes for a `reference_addr` that is not hex."""
+    """The window is a function of the file's LENGTH and three numbers."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "raw.bin"
@@ -710,9 +597,7 @@ def test_a_reference_address_outside_the_image_refuses_start_before_the_emulator
 
 
 def test_the_spawn_sentinel_can_fire(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The red control for every `_never_spawns` case above: with inputs that pass every check,
-    `start` DOES reach the emulator, and the sentinel says so. Without this, a refusal arriving
-    for any reason at all would satisfy those tests, and they would prove nothing about ORDER."""
+    """The red control for every `_never_spawns` case above."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -726,7 +611,6 @@ def test_the_spawn_sentinel_can_fire(monkeypatch: pytest.MonkeyPatch, tmp_path: 
     assert mstate.STATE.scratch is None and mstate.STATE.port == 0 and mstate.STATE.state_dir == ""
 
 
-# ------------------------------------------------- the reference image and its base
 
 
 # The debugger's banner as `tests/fixtures/console/session.volume.stdout` captured it.
@@ -737,7 +621,7 @@ class _StubProcess:
     """What `start` gets back from `Popen`: alive until killed, with a pid, and nothing else."""
 
     PID = 4242
-    last_argv: list[str] = []  # what the most recent `Popen` was handed, for the argv tests
+    last_argv: list[str] = []
     last_kwargs: dict[str, Any] = {}
 
     def __init__(self, *a: object, **k: object) -> None:
@@ -766,25 +650,17 @@ class _StubProcess:
 def _stub_boot(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, image: bytes, at: int
 ) -> g.Session:
-    """Everything `start` needs to run its happy path with no emulator: a helper that is not
-    there (small-window defaults), a `Popen` that returns `_StubProcess`, and a REAL `Session`
-    serving `image` at `at` whose wire-touching methods are stubbed."""
+    """Everything `start` needs to run its happy path with no emulator."""
     import subprocess
 
     ses = reading_session(image, at)
     ses.dial = lambda: None  # type: ignore[method-assign]
     ses.handshake = lambda timeout=None: None  # type: ignore[method-assign]
-    ses._layouts[1] = g.Layout({}, 0, "", [])      # what that connect described: no register
+    ses._layouts[1] = g.Layout({}, 0, "", [])
     ses.current_pc = lambda: at  # type: ignore[method-assign]
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     real_popen = subprocess.Popen
 
-    # Only the EMULATOR is stubbed, and what makes an invocation the emulator is `-debugger`,
-    # not the binary's name. `_window_flags` reaches the helper through `subprocess.run`, which
-    # is `Popen` underneath, and a test that points `WINDOW_APP` at a recording double needs
-    # that one to really run; `start` asks the SAME binary `-listxml` before it boots, and
-    # that one has to really run too, or the double answers for a question it was not built
-    # for (it has no context manager, which is what `subprocess.run` needs).
     def popen(*a: Any, **k: Any) -> Any:
         argv = a[0] if a else k["args"]
         if str(argv[0]).endswith("fake-mame") and "-debugger" in argv:
@@ -808,10 +684,7 @@ def _boot_args(tmp_path: Path, image: bytes) -> dict[str, Any]:
 def test_start_checks_the_image_at_its_base_and_reports_the_table(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The happy path of `start`, which no test read before: the base reaches the comparison
-    (a raw image placed at 0x20000 passes), the parsed `bases` reach the table (a DATA row
-    resolves to base + offset, in HEX), and the reply carries the table's shape. Delete
-    `base=` from the `rom_check` call, or read `bases` in decimal, and this goes red."""
+    """The happy path of `start`, which no test read before."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0x20000)
     binary = fake_mame(tmp_path)
@@ -855,8 +728,7 @@ def test_start_on_a_machine_that_does_not_hold_the_rom_is_refused_in_the_envelop
 def test_start_without_a_symbol_file_reports_none(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The third value of `symbols_format`, which the reader never produces and the server
-    does: no file given is not a YAML file with nothing in it."""
+    """The third value of `symbols_format`, which the reader never produces and the server does."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     out = s.start(**_boot_args(tmp_path, image))
@@ -884,9 +756,6 @@ def test_start_and_status_say_the_machine_runs_under_the_debugger(
         argv = launch.build_command("mame", "m68k", "/r", 1, [], str(tmp_path))
         assert argv[argv.index("-debugger") + 1] == debugger["attached"] == "gdbstub"
         assert "-debug" in argv and "frame" in debugger["note"], debugger["note"]
-        # An autoboot capture is byte-identical with and without `-debug
-        # -debugger gdbstub`, and one frame either side is not, so the note may not blame the
-        # debugger for the frame; what differs is where in the frame each method takes it.
         assert "timing" not in debugger["note"] and "autoboot" in debugger["note"]
         assert s.status()["debugger"] == debugger, "one fact, one shape, in both replies"
     finally:
@@ -897,9 +766,7 @@ def test_start_and_status_say_the_machine_runs_under_the_debugger(
 def test_rom_check_takes_the_reference_base(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The tool passes the base through to the comparison, so a raw linker image works. It IS
-    the base that makes the difference: the case below, same image and address, no base,
-    is refused."""
+    """The tool passes the base through to the comparison, so a raw linker image works."""
     ses = reading_session(bytes(range(64)), 0x20000)
     _install(monkeypatch, ses, tmp_path)
     rom = tmp_path / "raw.bin"
@@ -913,9 +780,7 @@ def test_rom_check_takes_the_reference_base(
 def test_rom_check_without_the_base_indexes_the_file_as_cpu_space(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The control: the default base is zero, so a raw image the board places elsewhere is
-    refused as OUTSIDE rather than compared at the wrong offset, and refused as an ARGUMENT,
-    in the envelope, the way `start` refuses it."""
+    """The control."""
     ses = reading_session(bytes(range(64)), 0x20000)
     _install(monkeypatch, ses, tmp_path)
     rom = tmp_path / "raw.bin"
@@ -924,22 +789,10 @@ def test_rom_check_without_the_base_indexes_the_file_as_cpu_space(
     assert got["code"] == "bad_argument" and "OUTSIDE" in got["message"], got
 
 
-# ------------------------------------------------------ a write says whether the bytes landed
 
 
 class _FakeSession(SessionFields):
-    """A tiny addressed memory that accepts writes, and a `writable` switch to model ROM.
-
-    IT HOLDS STATE ON PURPOSE, which is the whole point of this double. One answering `read`
-    from a constant slice, ignoring `addr` and unaffected by `write`, lets `verified` be
-    decided by the fixture and never by the write: the tool's write can then be replaced by
-    `pass` and the cases below still pass. A double that cannot reproduce the property under
-    test (read after write sees what was written) turns its cases into decoration.
-
-    `writable=False` is how a ROM address is modelled: the write is accepted and sent,
-    exactly as a real stub accepts it, and the memory simply does not change. That is the
-    real board's behaviour and the reason the tool reads back at all.
-    """
+    """A tiny addressed memory that accepts writes, and a `writable` switch to model ROM."""
 
     def __init__(self, holds: bytes, *, writable: bool = True) -> None:
         self.mem = bytearray(holds)
@@ -958,12 +811,11 @@ class _FakeSession(SessionFields):
 
     def read(self, addr: int, n: int, *, thread: int) -> bytes:
         if self.writable and addr != self.base:
-            return bytes(n)          # nothing was ever written here
+            return bytes(n)
         return bytes(self.mem[:n])
 
     def monitor(self, command: str, timeout: float = 10.0) -> str:
-        """`map` as the console answers it: ROM when the double models ROM, RAM otherwise, and
-        `cpulist` as the two-cpu board answers it, which a reply reads to name its cpu."""
+        """`map` as the console answers it."""
         if command == "cpulist":
             return captured("cpulist.main-visible.txt")
         assert command.startswith("map "), f"this double's console answers only `map`: {command}"
@@ -985,9 +837,7 @@ def test_a_write_that_lands_reports_verified(monkeypatch: pytest.MonkeyPatch,
 
 def test_a_write_that_goes_nowhere_says_so(monkeypatch: pytest.MonkeyPatch,
                                            tmp_path: Path) -> None:
-    """THE REGRESSION THIS EXISTS FOR: answering `written: 4` and nothing else reports a count
-    of what was SENT. On a real 68000 board a write to ROM comes back with that
-    same `written: 4` while the memory still holds its old bytes."""
+    """THE REGRESSION THIS EXISTS FOR."""
     fake = _FakeSession(bytes.fromhex("7ffff3ff"), writable=False)
     _install(monkeypatch, fake, tmp_path)
     monkeypatch.setattr(mstate.STATE, "machine_map", {})
@@ -995,9 +845,6 @@ def test_a_write_that_goes_nowhere_says_so(monkeypatch: pytest.MonkeyPatch,
     assert out["verified"] is False
     assert out["readback"] == "7ffff3ff"
     assert out["bytes_written"] == 4, "it still reports what was attempted"
-    # `written` is the tool echoing len(data), so it proves nothing on its own: this is what
-    # pins that the write was ATTEMPTED against the right address. Without it, deleting the
-    # write from the tool leaves this case green -- a ROM readback is unchanged either way.
     assert fake.written == (0x20000, bytes.fromhex("aa55aa55"))
     # WHY it went nowhere, and with no inventory cached, no region is guessed at.
     assert out["target"] == "rom" and "region" not in out, out
@@ -1025,8 +872,7 @@ def test_a_readback_that_fails_after_the_write_refuses_as_session_broken(
 
 
 class _DroppingWire:
-    """A socket whose stub DROPS everything, as MAME's does a packet past its size: whatever is
-    sent is recorded and no answer ever comes."""
+    """A socket whose stub DROPS everything, as MAME's does a packet past its size."""
 
     def __init__(self, answers: tuple[str, ...] = ()) -> None:
         self.sent: list[bytes] = []
@@ -1065,11 +911,9 @@ def test_a_debug_command_past_the_packet_size_is_a_bad_argument_at_once(
 
 def test_a_go_command_too_long_to_send_leaves_the_machine_stopped_and_no_run_window(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A go-family command reads the emulated clock to open its run window before it is sent;
-    refused as too long, it is refused before that read too, so nothing at all reaches the
-    stub, the session is not marked running and no window is opened."""
+    """A go-family command reads the emulated clock to open its run window before it is sent."""
     ses = g.Session(timeout=0.2)
-    wire = _DroppingWire(answers=(b"1.0".hex(),))     # the console's `time`, never asked
+    wire = _DroppingWire(answers=(b"1.0".hex(),))
     ses._sock = wire  # type: ignore[assignment]
     ses.packet_size = 0x40
     _install(monkeypatch, ses, tmp_path)
@@ -1082,8 +926,7 @@ def test_a_go_command_too_long_to_send_leaves_the_machine_stopped_and_no_run_win
 
 def test_a_reader_too_long_to_send_leaves_an_open_run_window_alone(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A refusal belongs to its own command: a window a console run opened earlier, not yet
-    closed by the stop that ends it, survives an unrelated command refused as too long."""
+    """A refusal belongs to its own command."""
     ses = g.Session(timeout=0.2)
     ses._sock = _DroppingWire()  # type: ignore[assignment]
     ses.packet_size = 0x40
@@ -1094,15 +937,10 @@ def test_a_reader_too_long_to_send_leaves_an_open_run_window_alone(
     assert mstate.STATE.run_release is window
 
 
-# ------------------------------------------------- the start contract: argv mark, display, port
 
 
 def test_the_command_line_carries_the_mark_and_its_directories(tmp_path: Path) -> None:
-    """A repo's own `make stop` kills by binary path, and a live session's MAME is the same
-    binary: the ONLY thing that tells them apart is the argv. The scratch directory is unique
-    already; putting it on the command line, on the flag that points the console's `snap` at
-    the scratch, is what a `ps | awk` in another repo can exclude. `cfg/` and `nvram/` go where
-    the caller's state lives: the scratch by default, a `state_dir` when one is given."""
+    """A repo's own `make stop` kills by binary path."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}abc"
     cmd = launch.build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"], str(scratch))
     snap = Path(cmd[cmd.index("-snapshot_directory") + 1])
@@ -1126,8 +964,7 @@ def test_the_command_line_carries_the_mark_and_its_directories(tmp_path: Path) -
 def test_a_display_on_a_quick_run_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The helper ignores `--display` without `--shared`, out loud on stderr, which a caller of
-    this server never sees: a parameter that silently does nothing is refused here instead."""
+    """The helper ignores `--display` without `--shared`, out loud on stderr."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -1142,8 +979,7 @@ def test_a_display_on_a_quick_run_is_refused(
 def test_an_unknown_display_is_refused_before_the_helper_is_asked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The helper exits 1 on a bad value, and `_window_flags` would then report that as "no
-    geometry", blaming the helper for the caller's typo. Judged here, by name."""
+    """The helper exits 1 on a bad value."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -1157,8 +993,7 @@ def test_an_unknown_display_is_refused_before_the_helper_is_asked(
 
 
 def _recording_helper(tmp_path: Path) -> tuple[Path, Path]:
-    """A `place-window` double that records its argv and prints a plausible flag list.
-    Returns the double's path (for `WINDOW_APP`) and the log it writes."""
+    """A `place-window` double that records its argv and prints a plausible flag list."""
     log = tmp_path / "argv.log"
     fake = tmp_path / "place-window.sh"
     fake.write_text(
@@ -1188,8 +1023,7 @@ def test_a_shared_session_hands_the_display_to_the_helper(
 def test_a_taken_port_is_refused_before_the_emulator_exists(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A caller who names a port names it for a reason (a repo's own gdb client expects it),
-    so a port somebody else holds is refused rather than silently swapped for a free one."""
+    """A caller who names a port names it for a reason."""
     import socket as _s
 
     _never_spawns(monkeypatch, tmp_path)
@@ -1209,9 +1043,7 @@ def test_a_taken_port_is_refused_before_the_emulator_exists(
 def test_a_given_port_and_the_pid_are_used_and_reported(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`start` and `status` say which process and which port this session is: what a repo's
-    kill path or a second client needs, and what otherwise lives only in the server's
-    memory."""
+    """`start` and `status` say which process and which port this session is."""
     import socket as _s
 
     with _s.socket() as probe:
@@ -1235,9 +1067,7 @@ def test_a_given_port_and_the_pid_are_used_and_reported(
 def test_a_state_dir_survives_close_and_the_scratch_does_not(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Two session shapes in one parameter: no `state_dir` is today's fresh, disposable boot;
-    a path is a persistent one whose `cfg/` and `nvram/` two passes can share, and which this
-    server NEVER deletes because it did not create the decision to keep it."""
+    """Two session shapes in one parameter."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     state = tmp_path / "state"
@@ -1276,8 +1106,7 @@ def test_a_state_dir_survives_close_and_the_scratch_does_not(
 def test_a_shared_start_hands_the_display_to_the_helper_and_uses_its_flags(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """At the level of `start`, not of `_window_flags`: revert the one line that passes
-    `display` through and `_window_flags` alone would still pass its own test."""
+    """At the level of `start`, not of `_window_flags`."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     fake, log = _recording_helper(tmp_path)
@@ -1312,8 +1141,7 @@ def test_an_unknown_display_never_reaches_the_helper(
 def test_a_port_outside_the_tcp_range_is_refused_not_overflowed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, port: int
 ) -> None:
-    """`socket.bind` answers OverflowError for these, which is not an OSError, so it escaped
-    `_port_is_free` as the interpreter's own wording, after the live session was already gone."""
+    """`socket.bind` answers OverflowError for these."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -1328,10 +1156,7 @@ def test_a_port_outside_the_tcp_range_is_refused_not_overflowed(
 def test_a_relative_or_unusable_state_dir_is_refused_and_leaves_no_scratch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Relative, MAME would resolve it against ITS cwd (the scratch) and the persistent half
-    would die with the session while this server created a stray copy under its own cwd. A
-    file where a directory should be is the caller's, named as such, and neither refusal may
-    leave a scratch directory behind."""
+    """Relative, MAME would resolve it against ITS cwd."""
     _never_spawns(monkeypatch, tmp_path)
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
@@ -1392,8 +1217,7 @@ def test_a_clean_close_names_the_last_words_it_left_out(
 def test_a_quit_that_exits_nonzero_keeps_the_last_words_unasked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The crash on the way out MAME's Lua collector is known for: `quit` was taken, the code
-    says something went wrong, and the words are what says what."""
+    """The crash on the way out MAME's Lua collector is known for."""
     _closing(monkeypatch, tmp_path, exits=True, code=-11)
     closed = s.close()
     assert closed["ended_by"] == "quit" and closed["exit_code"] == -11, closed
@@ -1439,10 +1263,7 @@ class _ExitingProcess:
 def test_close_carries_the_tail_of_each_log_before_the_scratch_goes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`close` deletes the scratch, and with it the only record of what MAME printed last:
-    a crash on the way out cannot be read through the server afterwards. The reply carries
-    the tail of each channel, read BEFORE the kill, so the last words survive the
-    directory."""
+    """`close` deletes the scratch, and with it the only record of what MAME printed last."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}close"
     scratch.mkdir()
     (scratch / "stdout.log").write_text("boot\n" + "x" * 20 + "\nSegmentation fault\n")
@@ -1470,11 +1291,8 @@ def test_the_instructions_warn_that_the_target_of_run_to_carries_no_stop_of_its_
 
 
 def test_close_asks_mame_to_quit_before_it_kills() -> None:
-    """MAME writes `cfg/` and `nvram/` on a CLEAN exit and ignores SIGTERM, so a session ended
-    with SIGKILL leaves a persistent `state_dir` empty forever: a `close` followed
-    by a second `start` on the same `state_dir` finds nothing to share. The console's `quit`
-    is the clean exit, through the connection the server already holds."""
-    ses = _RecordingSession(quit_raises=True)   # the connection drops as the process goes
+    """MAME writes `cfg/` and `nvram/` on a CLEAN exit and ignores SIGTERM."""
+    ses = _RecordingSession(quit_raises=True)
     proc = _ExitingProcess(ses.events, exits=True)
     mstate.STATE.ses, mstate.STATE.proc = ses, proc  # type: ignore[assignment]
     closed = s.close()
@@ -1528,10 +1346,7 @@ def test_close_reports_a_kill_that_could_not_be_reaped_instead_of_raising() -> N
 
 @pytest.mark.parametrize("which", ["session", "stdout_log"])
 def test_kill_resets_the_state_even_when_a_close_raises(which: str) -> None:
-    """`quit` is guarded and the scratch's removal ignores errors, but the two closes between
-    them were not: a raise there skipped `_reset`, so the dead session's fields stood under an
-    error about something else, and the original failure `start`'s guard was reporting was
-    masked by it."""
+    """`quit` is guarded and the scratch's removal ignores errors."""
 
     class _Raising:
         def close(self) -> None:
@@ -1552,8 +1367,7 @@ def test_kill_resets_the_state_even_when_a_close_raises(which: str) -> None:
 
 
 def test_close_with_no_session_says_so() -> None:
-    """`closed: true` with nothing to close is a green about nothing, so the answer is
-    `closed: false` with a note."""
+    """`closed."""
     mstate.STATE.ses = mstate.STATE.proc = None
     closed = s.close()
     assert closed["closed"] is False and closed["ended_by"] == "none"
@@ -1561,7 +1375,6 @@ def test_close_with_no_session_says_so() -> None:
     assert closed["summary"] == "close: no session"
 
 
-# ------------------------------------------- outputs to files, and the result channels
 
 
 def _masked(mask: int, cpu: str = ":maincpu") -> dict[str, Any]:
@@ -1570,12 +1383,7 @@ def _masked(mask: int, cpu: str = ":maincpu") -> dict[str, Any]:
 
 
 class _ConsoleSession(SessionFields):
-    """A session whose console answers from canned replies, and whose memory is `image`.
-
-    A reply may be text, or a callable taking the command and returning text, so a fake `save`
-    or `snap` can WRITE THE FILE the tool then checks: the property under test is the file the
-    console produced, and a double that only answered "OK" could not exercise it.
-    """
+    """A session whose console answers from canned replies, and whose memory is `image`."""
 
     def __init__(self, image: bytes = b"", replies: dict[str, Any] | None = None) -> None:
         self.image = image
@@ -1611,9 +1419,7 @@ def _console(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ses: _ConsoleSessi
 def test_a_read_above_the_ceiling_is_refused_and_names_memdump(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A frame is 64000 bytes of VRAM; through `read` that is a hex string on the wire and again
-    in the reply, two characters a byte and never compressed. The ceiling is on the bytes
-    asked for, and the refusal names the tool that keeps them off the socket."""
+    """A frame is 64000 bytes of VRAM."""
     _console(monkeypatch, tmp_path, _ConsoleSession(bytes(read.READ_MAX + 1)))
     refused("memdump",
     s.read_memory("0x0", length=read.READ_MAX + 1))
@@ -1626,10 +1432,7 @@ def test_a_read_above_the_ceiling_is_refused_and_names_memdump(
 def test_a_read_summary_carries_its_bytes_whole_to_a_ceiling_and_counts_the_rest(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Under `perform(summaries=True)` the summary line is all a read step keeps, and a
-    `read_memory` cut to `2 bytes at 0x0020bd5c` cost a step and answered nothing. The line
-    carries the bytes whole up to the ceiling; past it, the count left in `hex`, never a
-    cut inside a byte."""
+    """Under `perform(summaries=True)` the summary line is all a read step keeps."""
     image = bytes(range(256)) * 4
     _console(monkeypatch, tmp_path, _ConsoleSession(image))
     short = s.read_memory("0x2", length=2)
@@ -1698,9 +1501,7 @@ def test_memdump_refuses_a_bad_dest_before_touching_the_console(
 def test_a_semicolon_in_a_dest_is_refused_before_the_console(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console ends a command at a `;` (`debugcon.cpp`), so a path holding one reaches it as
-    the first command's broken parameter: refused as the caller's argument, naming the
-    character, before any console line, and the same for every tool that takes a `dest`."""
+    """The console ends a command at a `;`."""
     split = str(tmp_path / "a;b.bin")
     message = _refusal_text(inputs.fresh_dest, "dest", split)
     assert "semicolon" in message and "';'" in message, message
@@ -1753,9 +1554,7 @@ def test_memdump_refuses_a_range_that_wraps_the_program_space(
 def test_memdump_judges_the_range_by_the_mask_of_the_cpu_it_saves_from(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`save` reads the VISIBLE cpu's program space, read off `cpulist` at the call, so the wrap
-    is judged by that cpu's own mask: after a `focus` another cpu's mask never decides. The two
-    masks here are AUTHORED apart (m68k-dual's are equal) so the case can tell them apart."""
+    """`save` reads the VISIBLE cpu's program space, read off `cpulist` at the call."""
     def save(command: str) -> str:
         path, _start, length = command[len("save "):].split(",")
         Path(path).write_bytes(bytes(int(length, 16)))
@@ -1776,9 +1575,7 @@ def test_memdump_judges_the_range_by_the_mask_of_the_cpu_it_saves_from(
 def test_memdump_checks_the_file_against_a_read_of_the_cpu_save_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`save` reads the visible cpu, so the control does too: through that cpu's thread on
-    the patched stub. Without threads the stub reads its first cpu only, and another visible
-    cpu is refused before `save`, naming `focus`, rather than checked against the wrong one."""
+    """`save` reads the visible cpu, so the control does too."""
     def save(command: str) -> str:
         path, _start, length = command[len("save "):].split(",")
         Path(path).write_bytes(bytes(int(length, 16)))
@@ -1798,9 +1595,7 @@ def test_memdump_checks_the_file_against_a_read_of_the_cpu_save_read(
 def test_memdump_writes_the_bytes_and_checks_them_against_a_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console's `save` takes HEX for the address and the length (`1000` writes
-    4096 bytes), and the file it writes is checked twice: its size, and its first bytes against
-    a protocol `read` of the same range, the known-answer control inside the tool."""
+    """The console's `save` takes HEX for the address and the length."""
     # NOT periodic: a repeating image lets a control read at the wrong address stay green.
     image = bytes((i * 7 + i // 256) & 0xFF for i in range(4096))
 
@@ -1860,9 +1655,7 @@ def test_memdump_is_invalid_when_the_file_comes_out_wrong(
 def test_a_save_not_kept_leaves_no_file_and_names_none(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A save the server makes for itself (`keep=False`, the value scan's range copy) answers its
-    bytes and is removed, on success and on every refusal, and a refusal then names no path: the
-    file is the session's, and one left behind is state nobody owns."""
+    """A save the server makes for itself."""
     image = bytes((i * 7 + i // 256) & 0xFF for i in range(4096))
     path = tmp_path / "snap.bin"
 
@@ -1928,9 +1721,7 @@ def test_a_save_not_kept_leaves_no_file_and_names_none(
 def test_memdump_names_the_file_it_left_when_the_control_read_breaks_the_channel(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The file is on disk when the control read is made, so a channel that breaks there
-    is `session_broken` naming the file, its size and the range, as `write` names what
-    landed; before, the exception escaped and the caller could not learn a file was left."""
+    """The file is on disk when the control read is made."""
     image = bytes(range(64))
 
     def save(command: str) -> str:
@@ -1962,8 +1753,7 @@ def test_memdump_names_the_file_it_left_when_the_control_read_breaks_the_channel
 def test_log_returns_the_newest_matching_lines_and_counts_the_rest(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The reply's shape: `lines_total` is the total in the file, `lines` the slice handed
-    back, newest last, and `truncated` says whether they differ."""
+    """The reply's shape."""
     scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
     (scratch / "error.log").write_text(
         "".join(f"[:] blit start {i}\n" if i % 2 else f"other {i}\n" for i in range(100))
@@ -2038,10 +1828,7 @@ def test_snapshot_without_a_dest_lands_in_the_scratch_and_counts(
 def test_snapshot_with_a_dest_moves_the_file_there(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """MAME writes `snap <abs path>` RELATIVE to its snapshot directory, so an
-    absolute path produces `snap/Users/.../shot.png`. The tool therefore snaps into the
-    scratch under a name it controls and MOVES the file to `dest`. `dest` must be absolute and
-    must not exist, judged before the console is touched."""
+    """MAME writes `snap <abs path>` RELATIVE to its snapshot directory."""
     ses = _ConsoleSession()
     scratch = _console(monkeypatch, tmp_path, ses)
     ses.replies["snap"] = _snapping(scratch / "snap")
@@ -2109,9 +1896,7 @@ def test_snapshot_waits_for_a_file_that_arrives_late(
 def test_start_passes_log_and_reports_both_channels(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`logerror`, the channel the repos' tracers read, went NOWHERE: `start` never passed
-    `-log`, and stdout and stderr went to DEVNULL. Both now land in the scratch and the reply
-    says where."""
+    """`logerror`, the channel the repos' tracers read, went NOWHERE."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     out = s.start(**_boot_args(tmp_path, image))
@@ -2140,24 +1925,18 @@ def test_start_passes_log_and_reports_both_channels(
     assert mstate.STATE.stdout_log is None and handed["stdout"].closed, "close releases the handle"
 
 
-# --------------------------------------------- typed console reads, against captured text
 
 FIXTURES = Path(__file__).parent / "fixtures" / "console"
 
 
 def _first_window(answer: str) -> Callable[[str], str]:
-    """A console that holds `answer`'s hits in the window starting at zero and none after it:
-    a captured `find` replayed under the windows the tool now sends, so one capture over a
-    range wider than a window is not counted once per window."""
+    """A console that holds `answer`'s hits in the window starting at zero and none after it."""
     none = (FIXTURES / "find.none.txt").read_text()
     return lambda cmd: answer if cmd.split()[1].startswith("0x0,") else none
 
 
 def test_the_console_fixtures_were_captured_and_say_so() -> None:
-    """The parsers below are written against MAME's OWN text, captured live; a fixture authored
-    from memory is the double that answers a question the real tool does not. The list of
-    fixtures is the DIRECTORY, so a new one is covered the day it lands, and every one has to be
-    named in the provenance, so a fixture with no recorded command cannot slip in."""
+    """The parsers below are written against MAME's OWN text, captured live."""
     provenance = (FIXTURES / "PROVENANCE.txt").read_text()
     assert provenance.startswith("Captured live from MAME")
     fixtures = sorted(f.name for f in FIXTURES.iterdir() if f.name != "PROVENANCE.txt")
@@ -2197,9 +1976,7 @@ def test_disassemble_reads_the_file_the_console_wrote(
 
 
 def test_an_operand_quoted_in_a_comment_is_not_resolved() -> None:
-    """A note quoting where a value lives is not an operand of the line it sits on, and a note
-    holding ` // ` itself is cut at the first. The instructions are captured V30 lines, padded to
-    one column as `dasm` pads a listing before its comments."""
+    """A note quoting where a value lives is not an operand of the line it sits on."""
     lines = ["F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h // the copy at [0E849h]",
              "F5BCC: 75 03             bne     0F5BD1h              // see [0C014h] // [0D000h]"]
     out = read.resolve_operands(lines, {"DATA": 0x400}, {}, {})
@@ -2209,19 +1986,9 @@ def test_an_operand_quoted_in_a_comment_is_not_resolved() -> None:
 def test_disassemble_resolves_direct_memory_operands_under_the_bases(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A DIRECT memory operand on a segmented board prints as the raw offset inside its
-    class (`word ptr [0C014h]`), which is the map's `offset` column and NOT the linear
-    address `read_memory` and `watch_add` take (`0x400 + offset` with DS=0x40). On
-    v30-alt a caller reads and watches the wrong byte, and gets a
-    plausible zero with no error. So the listing carries `resolved`: each direct operand's
-    linear address under every class base `start` was given, with the symbol it lands in.
-    Register-relative (`ds1:[bw-31BBh]`, `[ix]`), an immediate (`0CA35h`) and a call target
-    are NOT direct operands and are left alone. Captured listings, not authored."""
+    """A DIRECT memory operand on a segmented board prints as the raw offset inside its class."""
     ses = _ConsoleSession()
     scratch = _console(monkeypatch, tmp_path, ses)
-    # A CODE symbol sits just below a DATA linear address on purpose: the placement is
-    # among the symbols of the operand's OWN class, never the nearest of any class, which
-    # would name a routine for a datum on a board whose classes interleave.
     use_table(monkeypatch, table={"IN_IRQ": 0xC414, "TOTALTIME": 0xEC49,
                                   "DEMOSTATE": 0xCA30, "SOME_CODE": 0xC415})
     use_table(monkeypatch, classes={"IN_IRQ": "DATA", "TOTALTIME": "DATA", "DEMOSTATE": "DATA",
@@ -2309,10 +2076,7 @@ def _listing_pair(scratch: Path, name: str) -> Callable[[str], str]:
 def test_disassemble_classifies_each_line_off_the_listing_without_opcode_bytes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`flow` holds one class per line of `lines`, and `flow_source` says the class was READ
-    OFF A MNEMONIC TABLE for the cpu's type, which `start` cached: MAME computes the same
-    distinction and its console drops it (`mame_flow`). The mnemonic comes off a second
-    listing written without the opcode bytes, on the same cpu the first one named."""
+    """`flow` holds one class per line of `lines`."""
     ses = _ConsoleSession(replies={"cpulist": captured("cpulist.main-visible.txt")})
     scratch = _console(monkeypatch, tmp_path, ses)
     # TWO CPUS OF DIFFERENT TYPES, so a class read off one cpu's words with the other's table
@@ -2342,10 +2106,7 @@ def test_disassemble_classifies_each_line_off_the_listing_without_opcode_bytes(
 def test_disassemble_without_a_table_marks_every_line_unknown_once(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A type with no table, a type the inventory never recorded, and a second listing that
-    did not come out each leave `lines` whole and every class `unknown`, with ONE `note`
-    saying why and `flow_source: none`. The first two cost no second call; none of the three is
-    a guess from the nearest family's table."""
+    """A type with no table, a type the inventory never recorded."""
     ses = _ConsoleSession(replies={"cpulist": captured("cpulist.main-visible.txt")})
     scratch = _console(monkeypatch, tmp_path, ses)
     ses.replies["dasm"] = _listing_pair(scratch, "dasm.m68k.560")
@@ -2377,8 +2138,7 @@ def test_disassemble_without_a_table_marks_every_line_unknown_once(
 def test_find_parses_hits_and_an_empty_result(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The captured `find` answered two hits for the image's first four bytes over 64 KB, and
-    "Not found" for a pattern that is not there; both shapes are the parser's whole input."""
+    """The captured `find` answered two hits for the image's first four bytes over 64 KB."""
     ses = _ConsoleSession(replies={"find": _first_window((FIXTURES / "find.txt").read_text())})
     _console(monkeypatch, tmp_path, ses)
     out = s.find(ref="0x0", length=0x10000, data_hex="00201000")
@@ -2407,9 +2167,7 @@ def test_find_parses_hits_and_an_empty_result(
 def test_find_is_invalid_when_the_console_answers_something_else(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Zero hits is a measurement only when the console said `Not found`; an error, an empty
-    reply or a line of another shape is the console complaining, and a zero there would be the
-    false all-clear this whole server exists to refuse."""
+    """Zero hits is a measurement only when the console said `Not found`."""
     ses = _ConsoleSession()
     _console(monkeypatch, tmp_path, ses)
     for answer in ("Invalid memory space", "", "OK", "Found at 000000 (mirror)", "Not found at 0",
@@ -2422,8 +2180,7 @@ def test_find_is_invalid_when_the_console_answers_something_else(
 
 
 def test_a_pattern_is_held_to_the_parameters_the_consoles_find_takes() -> None:
-    """Each byte is a parameter of its own after the address and the length, and the console
-    takes `MAX_COMMAND_PARAMS` (src/emu/debug/debugcon.h): at the edge, and one past it."""
+    """Each byte is a parameter of its own after the address and the length."""
     assert len(read.check_find(ref="0x0", length=16, data_hex="00" * read.FIND_BYTES_MAX)) == 126
     with pytest.raises(mstate.Invalid, match=r"byte count of data_hex=127 is outside 1\.\.126"):
         read.check_find(ref="0x0", length=16, data_hex="00" * (read.FIND_BYTES_MAX + 1))
@@ -2432,8 +2189,7 @@ def test_a_pattern_is_held_to_the_parameters_the_consoles_find_takes() -> None:
 def test_a_listing_with_a_raw_byte_is_decoded_with_replacement_never_an_exception(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A comment or a label the disassembler prints raw out of ROM: the line comes back
-    with the replacement character, as a log line does, and the listing stands."""
+    """A comment or a label the disassembler prints raw out of ROM."""
     ses = _running(monkeypatch, tmp_path)
     real = ses.monitor
 
@@ -2468,9 +2224,7 @@ def test_find_caps_the_hits_it_hands_back_and_keeps_the_count(
 def test_find_is_bounded_by_the_program_space_when_the_mask_is_known(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `length` past what the program space holds is refused naming the space and its mask
-    (`read.space_bound`, every range-taking tool's judge); the space is the one `start` read
-    from the address mask, and with none known the range is the console's."""
+    """A `length` past what the program space holds is refused naming the space and its mask."""
     ses = _ConsoleSession(replies={"find": "Not found\n",
                                    "cpulist": captured("cpulist.main-visible.txt")})
     _console(monkeypatch, tmp_path, ses)
@@ -2489,8 +2243,7 @@ def test_find_is_bounded_by_the_program_space_when_the_mask_is_known(
 def test_find_sends_a_long_range_in_windows_and_merges_their_hits(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`FIND_WINDOW`, whose comment says why: the windows tile the range with no gap and no
-    overlap, the last one short, and their hits merge in address order."""
+    """`FIND_WINDOW`, whose comment says why."""
     window = read.FIND_WINDOW
 
     def answer(cmd: str) -> str:
@@ -2550,9 +2303,7 @@ def test_the_console_readers_do_not_count_as_writes(command: str) -> None:
 def test_every_reply_opens_with_a_summary_and_closes_with_the_session(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The line the client paints is the tool's name, its arguments and its reply, so the
-    reply's FIRST field is the one-line summary and the `session` block stays last. Decided
-    in the wrapper, so it is read through a registered tool and not through `_envelope`."""
+    """The line the client paints is the tool's name, its arguments and its reply."""
     ses = _RegisterSession(bits=32)
     _install(monkeypatch, ses, tmp_path)
     use_table(monkeypatch, table={})
@@ -2591,24 +2342,16 @@ def test_every_reply_opens_with_a_summary_and_closes_with_the_session(
 
 def test_set_register_takes_an_integer_and_answers_hex(monkeypatch: pytest.MonkeyPatch,
                                                        tmp_path: Path) -> None:
-    """The value reaches the stub as the integer given (its `0x` spelling is
-    `test_number_args.py`'s). The reply prints it back as hex at the register's width, which is
-    how every register reads here; a negative is refused before it reaches the stub."""
+    """The value reaches the stub as the integer given."""
     ses = _RegisterSession(bits=16)
     _install(monkeypatch, ses, tmp_path)
     out = s.set_register("EAX", 0x1234)
     assert ses.values["EAX"] == 0x1234, "the integer reached the stub as it came"
     assert out["value"] == "0x1234" and out["register"] == "EAX"
-    # READ BACK, as `write` is: a reply that echoes the argument reports what was SENT and
-    # says nothing about a register that answers something else. And at
-    # the register's OWN width, asked of the session, which resolves an alias too.
     assert out["readback"] == "0x1234" and out["verified"] is True
     assert out["summary"] == "set_register EAX = 0x1234, verified True"
     refused("negative",
     s.set_register("EAX", -1))
-    # THE CLIENT'S OWN REFUSALS ARE ARGUMENT REFUSALS: an unknown register and a value that
-    # does not fit its width would otherwise escape as the session's error, outside the
-    # contract.
     got = refused("unknown register", s.set_register("NOTAREG", 1))
     assert got["code"] == "bad_argument", got
     got = refused("does not fit", s.set_register("EAX", 1 << 16))
@@ -2627,12 +2370,7 @@ def test_set_register_takes_an_integer_and_answers_hex(monkeypatch: pytest.Monke
 
 
 def test_every_tool_has_a_live_case_calling_it_through_the_server() -> None:
-    """A tool with no live case is a tool whose green means nothing: one can ship having
-    never once worked, with the whole contract tier green over it. The population is the MCP
-    registry, so a tool added tomorrow turns this red
-    until `tests/live/live_check.py` CALLS it through the server; the calls are found by AST
-    (`s.<tool>(...)` on the server alias), never by searching the text, so a comment naming a
-    tool does not count."""
+    """A tool with no live case is a tool whose green means nothing."""
     import ast
 
     live = Path(__file__).parent / "live" / "live_check.py"
@@ -2648,10 +2386,7 @@ def test_every_tool_has_a_live_case_calling_it_through_the_server() -> None:
 
 
 def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
-    """`title` is what the client shows; `readOnlyHint` is what lets it run readers in
-    parallel. A writer WITH the hint is a lie a client would act on, so the writers are pinned
-    as not read-only by name: anything that advances the machine, writes to it, or writes a
-    file."""
+    """`title` is what the client shows; `readOnlyHint` is what lets it run readers in parallel."""
     tools = {t.name: t for t in s.mcp._tool_manager.list_tools()}
     untitled = sorted(n for n, t in tools.items() if not t.title)
     assert not untitled, f"tools with no title: {untitled}"
@@ -2661,9 +2396,6 @@ def test_every_tool_declares_a_title_and_the_readers_a_read_only_hint() -> None:
                          "log_wait", "registers", "declaration_list", "rom_check",
                          "symbols_find", "state_list", "captures", "machine_map",
                          "cpu_info", "comment_list", "audio_compare"}, read_only
-    # IDEMPOTENT IS A STRONGER CLAIM than read-only and almost nothing here can make it: a
-    # reader of a machine that moves answers differently on the second call. Held as an exact
-    # set so a tool that grows a cache, or loses one, cannot drift into or out of it quietly.
     idempotent = {n for n, t in tools.items()
                   if t.annotations is not None and t.annotations.idempotent_hint}
     assert idempotent == {"machine_map"}, idempotent
@@ -2680,12 +2412,10 @@ def test_the_front_door_sends_the_reader_to_the_generated_index_and_keeps_no_tab
     assert "| tool |" not in readme, "a hand-kept tool table is back in the front door"
 
 
-# ------------------------------------------- one register width, and a run that ends by itself
 
 
 class _OwnRegisterFile:
-    """A double that is its own register file for every thread: `values` by name, each `bits`
-    wide, the program counter named as `Layout.pc_name` names it (`PC`, `EIP` or `RIP`)."""
+    """A double that is its own register file for every thread."""
 
     values: dict[str, int]
     bits = 32
@@ -2711,36 +2441,15 @@ class _OwnRegisterFile:
 
 
 class _RegisterSession(_OwnRegisterFile, SessionFields):
-    """A session with a register file of a declared width, a frame counter and a console.
-
-    The frame counter is a MACHINE, not a list: `emulating=True` makes every `print frame`
-    answer one more than the last (a machine still emulating), `emulating=False` answers the
-    same value (a machine stopped in the debugger). `gtime` starts it emulating and `stop_after`
-    says after how many polled readings it stops by itself; `halt` stops it at once. This is
-    what lets a test tell "the tool waited for the stop" from "the tool read the counter once
-    and left". `running`, `stop_count`, `go` and `poll_stop` are the PROTOCOL's half, the one
-    `resume`/`run_to` drive: a `go` runs, and the stop arrives at the first poll.
-
-    `frameless=True` is a board with no screen device: every `print` naming a frame symbol
-    answers the console's captured refusal, and the emulated clock (`emulated_seconds`) is
-    the machine instead, one millisecond further at each reading while it emulates.
-
-    `stale_after_load=True` keeps `statesave`'s frame by name and gives it back at `stateload`,
-    and `totalcycles` then answers the count from BEFORE the load until the cpu next executes
-    (a `gvblank`, a `gtime`, a `go`, a step), as the capture `totalcycles-after-load.txt` shows
-    MAME doing; `cycles_offset` is the count at frame 0, which a real board does not start at zero.
-    With it, a `rewind`/`rw` goes back one frame with the counter left as it was, and a
-    `softreset` leaves the counter as it was until the cpu executes, which applies the reset and
-    restarts the count from zero there, as MAME does for each typed through `debug`.
-    """
+    """A session with a register file of a declared width, a frame counter and a console."""
 
     def __init__(self, bits: int, frame: int = 10, stop_after: int | None = 3,
                  values: dict[str, int] | None = None) -> None:
         self.bits = bits
-        self.byte_order = "big"               # a register file a cpu's order decodes
+        self.byte_order = "big"
         self.frame = frame
         self.stop_after = stop_after
-        self.emu_clock = 0.0                  # emulated seconds the console's `time` reports
+        self.emu_clock = 0.0
         self.emulating = False
         self.running = False
         self.stop_count = 0
@@ -2749,8 +2458,8 @@ class _RegisterSession(_OwnRegisterFile, SessionFields):
         self.threads: dict[int, str] = {}
         self.values = values or {"EAX": 0x1234, "EIP": 0x8B56}
         self.temps: dict[int, int] = {}
-        self.cycles_per_frame = 0x1000          # `totalcycles` is the frame times this
-        self.frozen = False                     # a `gvblank` that moves no frame
+        self.cycles_per_frame = 0x1000
+        self.frozen = False
         self.pcs = [0xF2034, 0xF2100]
         self.commands: list[str] = []
         self.writes = 0
@@ -2762,13 +2471,13 @@ class _RegisterSession(_OwnRegisterFile, SessionFields):
         self.bp_devices: dict[int, str] | None = None
         self.rplist_rows: list[tuple[int, str, bool]] = []
         self.rp_next_index = 1
-        self.packet_size: int | None = None   # what a stub advertises; this one says nothing
+        self.packet_size: int | None = None
         self.frameless = False
         self.cycles_offset = 0
         self.stale_after_load = False
         self.saved_frames: dict[str, int] = {}
-        self.stale_cycles: int | None = None    # what `totalcycles` holds until the cpu runs
-        self.reset_pending = False              # a typed `softreset` the next execution applies
+        self.stale_cycles: int | None = None
+        self.reset_pending = False
 
     # The real rules, not copies of them: they read nothing but `packet_size`.
     max_payload = g.Session.max_payload
@@ -2788,16 +2497,14 @@ class _RegisterSession(_OwnRegisterFile, SessionFields):
         return self.frame * self.cycles_per_frame + self.cycles_offset
 
     def executed(self) -> None:
-        """The cpu ran: MAME's `totalcycles` is up to date again, and counts from zero at a reset
-        that run applied."""
+        """The cpu ran."""
         self.stale_cycles = None
         if self.reset_pending:
             self.reset_pending = False
             self.cycles_offset = -self.frame * self.cycles_per_frame
 
     def close(self) -> None:
-        """A no-op: these tests reach `close` only to read `average_speed` before the kill,
-        never to exercise the process teardown (that is `_RecordingSession`'s job)."""
+        """A no-op."""
 
     def registers(self, *, thread: int) -> dict[str, int]:
         return dict(self.values)
@@ -2910,9 +2617,7 @@ class _RegisterSession(_OwnRegisterFile, SessionFields):
 def test_run_to_prints_registers_at_their_declared_width(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE REGRESSION THIS EXISTS FOR: `registers` learned to pad each value to the width the
-    target description declares, and `run_to` kept its fixed ten characters, so the same V30
-    register read `0x8b56` in one reply and `0x00008b56` in the next. One helper, two callers."""
+    """THE REGRESSION THIS EXISTS FOR."""
     ses = _RegisterSession(bits=16)
     _install(monkeypatch, ses, tmp_path)
     use_table(monkeypatch, table={})
@@ -2934,11 +2639,7 @@ def test_run_to_prints_registers_at_their_declared_width(
 def test_registers_states_each_width_explicitly_beside_the_values(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The width is in the digit count of a zero-padded value, but reading it means COUNTING
-    digits, and a V30 register named EAX at 16 bits is exactly where a reader second-guesses.
-    So `registers` states it: a `register_bits` map beside `regs`, the cpu's declared bits per
-    register. It rides only on `registers`, whose job is to answer about the register file;
-    a stop reply carries the values, and the width stays in their digits there."""
+    """The width is in the digit count of a zero-padded value."""
     ses = _RegisterSession(bits=16)
     _install(monkeypatch, ses, tmp_path)
     use_table(monkeypatch, table={})
@@ -2955,17 +2656,10 @@ def test_registers_states_each_width_explicitly_beside_the_values(
 def test_run_for_waits_until_the_frame_counter_stops_moving(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console answers `print frame` while the machine still runs, so
-    reading it once after `gtime` would report a mid-run count under ELAPSED and hand back a
-    running machine. The tool polls until three readings agree; the milliseconds travel in hex
-    like every other console number (a bare `gtime 100` runs 0x100 ms)."""
+    """The console answers `print frame` while the machine still runs."""
     ses = _RegisterSession(bits=32, frame=10, stop_after=4)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
-    # THE PREVIOUS STOP'S PACKET IS NOT THIS RUN'S. A run the console starts (`gtime`) ends
-    # with no stop packet, so the packet of the stop before it (a watchpoint's, say) is
-    # still the last one the stub sent, and a survey reading it named this ELAPSED stop a
-    # watch's, with a `watch_hit` whose own before/after said nothing was written.
     ses.last_stop_packet = "T05watch:2031fc;thread:1;"
     out = s.run_for(milliseconds=250)
     assert out["verdict"] == "ELAPSED"
@@ -2994,18 +2688,15 @@ def test_run_for_is_invalid_when_the_counter_did_not_move_or_went_backwards(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _RegisterSession(bits=32, frame=10)
-    ses.frame_answers = ["a"] * 5   # a run shorter than a frame: the counter never moved
+    ses.frame_answers = ["a"] * 5
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
     out = s.run_for(milliseconds=1)
     assert out["status"] == "INVALID" and "shorter than one frame" in out["message"]
     assert out["code"] == "no_progress"
-    # INVALID AND STILL A STOP: the machine is where the run left it, and the survey rides
-    # on the reply as it does on `run_to`'s INVALID. Without it a watch that stopped the
-    # machine inside the run was thrown away with the verdict, while `run_to` kept it.
     assert "pc" in out and "regs" in out and "dasm" in out, out
     back = _RegisterSession(bits=32, frame=10, stop_after=0)
-    back.frame_answers = ["64", "3", "3", "3", "3"]   # the counter fell under the run
+    back.frame_answers = ["64", "3", "3", "3", "3"]
     _install(monkeypatch, back, tmp_path)
     out = s.run_for(milliseconds=100)
     assert out["status"] == "INVALID" and "this call saw only the counter" in out["message"]
@@ -3016,9 +2707,7 @@ def test_run_for_is_invalid_when_the_counter_did_not_move_or_went_backwards(
 def test_run_for_interrupts_a_machine_still_moving_at_the_bound(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The grace is a bound, not a promise: a machine still emulating at `timeout` is stopped by
-    the tool and the verdict says so, because a running machine handed back is the worst state
-    a session can be in."""
+    """The grace is a bound, not a promise."""
     import time as _time
 
     ses = _RegisterSession(bits=32, frame=10, stop_after=None)   # never stops by itself
@@ -3047,7 +2736,7 @@ def test_run_for_treats_a_non_numeric_frame_as_a_refusal_and_stops_the_machine(
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
 
     def after_halt() -> None:
-        ses.frame_answers = None   # the machine, stopped, answers numbers again
+        ses.frame_answers = None
         ses.frame = 20             # and it had run meanwhile
         ses.interrupted = True
         ses.emulating = False
@@ -3057,15 +2746,8 @@ def test_run_for_treats_a_non_numeric_frame_as_a_refusal_and_stops_the_machine(
     assert ses.interrupted and out["verdict"] == "TIMEOUT"
 
 
-# ------------------------------------- which argument is judged before the machine is asked for
 
 
-#: AN ARGUMENT WHOSE VALIDITY DOES NOT DEPEND ON THE MACHINE, and the refusal it earns with no
-#: machine running. A relative `dest`, a `length` of zero, a regex that does not compile: every
-#: one of these is exactly as wrong on a running machine as on no machine at all, so answering
-#: "no machine running" withholds the only thing the caller needed to hear.
-#: A directory that does not exist under the system temp dir, so no path built from it can be
-#: there; its PARENT does exist, for the rows that need a directory and a file that is not.
 _FRESH: Path = Path(tempfile.gettempdir()) / "mame-boundary-never-created"
 
 MACHINE_INDEPENDENT: dict[str, Any] = {
@@ -3075,9 +2757,6 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "history": lambda: s.history(limit=0),
     "log": lambda: s.log(channel="emulator", pattern="[", limit=0),
     "log-channel": lambda: s.log(channel="nosuch", pattern="."),
-    # A name nothing creates, under a directory that exists: the row must be refused for the
-    # LENGTH it names, and the message is asserted below because a leftover file would refuse it
-    # for the path instead.
     "memdump-length": lambda: s.memdump(
         ref="0x0", length=0, dest=str(_FRESH.parent / "mame-boundary-probe-never-written.bin")),
     "memdump-relative": lambda: s.memdump(ref="0x0", length=4, dest="relative.bin"),
@@ -3122,11 +2801,6 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
 }
 
 
-#: AND THE OTHER HALF, WHICH IS WHAT KEEPS THE RULE HONEST: an argument only the machine can
-#: judge. A `ref` is a symbol in THAT machine's table or an address its stub serves, so a verdict
-#: about one with no machine running would be a verdict about a table that does not exist. These
-#: still answer `no_session`, and a change that moved them would be the mechanical reading of the
-#: rule rather than the rule.
 MACHINE_DEPENDENT: dict[str, Any] = {
     "read_memory": lambda: s.read_memory(ref="no_such_symbol", length=4),
     "disassemble": lambda: s.disassemble(ref="no_such_symbol", length=4),
@@ -3138,18 +2812,7 @@ MACHINE_DEPENDENT: dict[str, Any] = {
 
 @pytest.mark.parametrize("name", sorted(MACHINE_INDEPENDENT))
 def test_an_argument_the_machine_cannot_judge_is_refused_with_no_machine(name: str) -> None:
-    """THE RULE IS THE PROPERTY, NOT THE ARGUMENT'S NAME: an argument is judged before the gate
-    when its validity does not depend on the machine.
-
-    The opposite rule (EVERY argument waits for the machine) has its own defect: a caller told off
-    about a `length` on a machine that does not exist. What it gets right is `MACHINE_DEPENDENT`
-    below; what it over-reaches on is here. A relative `dest` is not a verdict about a machine, it
-    is a verdict
-    about a string, and the server runs MAME from a scratch directory of its own whether or not
-    one is booted.
-
-    Which is why the rule names the property and not the argument.
-    """
+    """THE RULE IS THE PROPERTY, NOT THE ARGUMENT'S NAME."""
     mstate.STATE.kill()
     got = MACHINE_INDEPENDENT[name]()
     assert got["status"] == "INVALID", got
@@ -3169,12 +2832,7 @@ def test_an_argument_the_machine_cannot_judge_is_refused_with_no_machine(name: s
 def test_a_batch_is_refused_whole_before_any_step_runs_even_with_no_machine(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """NOTHING IN A STEP NEEDS A MACHINE TO BE WRONG, and `perform`'s own docstring has always
-    promised the whole list is checked before its first step runs. It was checked inside
-    `run_steps`, which the server only reaches after fetching the session, so the promise held on a
-    warm server and not on a cold one -- and on a warm one a later step's `dest` was never checked
-    at all, so the earlier steps ran for real first.
-    """
+    """NOTHING IN A STEP NEEDS A MACHINE TO BE WRONG."""
     mstate.STATE.kill()
     for later in ({"op": "memdump", "ref": "0x0", "length": 8, "dest": "relative.bin"},
                   {"op": "snapshot", "dest": "relative.png"},
@@ -3191,9 +2849,7 @@ def test_a_batch_is_refused_whole_before_any_step_runs_even_with_no_machine(
 def test_a_warm_batch_is_also_refused_whole_for_a_later_steps_path(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE SAME THING WITH A MACHINE UP, which is the half that was observed from the outside: the
-    earlier steps ran and the bad path was reported as an ordinary step failure. The list is refused
-    whole now, and `ran` being empty is what says so."""
+    """THE SAME THING WITH A MACHINE UP, which is the half that was observed from the outside."""
     _running(monkeypatch, tmp_path)
     # `snapshot` is the step the repository actually tried, and the one the batch table had left
     # out: `memdump` alone was covered, so a green here on `memdump` said nothing about `snapshot`.
@@ -3207,12 +2863,7 @@ def test_a_warm_batch_is_also_refused_whole_for_a_later_steps_path(
 
 @pytest.mark.parametrize("name", sorted(MACHINE_DEPENDENT))
 def test_an_argument_only_the_machine_can_judge_still_waits_for_it(name: str) -> None:
-    """THE CONTROL FOR THE RULE ABOVE, and without it that rule is half a sentence. A `ref` is
-    resolved against the symbol table of a machine, so with none running there is nothing to
-    resolve it against and `no_session` is the honest answer. A refactor that moved every
-    argument in front of the gate would leave the test above green and this one red, which is the
-    whole reason it exists.
-    """
+    """THE CONTROL FOR THE RULE ABOVE, and without it that rule is half a sentence."""
     mstate.STATE.kill()
     got = MACHINE_DEPENDENT[name]()
     got = refused("no machine running", got)
@@ -3220,15 +2871,10 @@ def test_an_argument_only_the_machine_can_judge_still_waits_for_it(name: str) ->
         f"{name} judged a machine-dependent argument with no machine to judge it against")
 
 
-# ----------------------------------------------------------------- the RUNNING guest
 
 
 class _RunningSession(_OwnRegisterFile, SessionFields):
-    """A session with the PROTOCOL's running state: `go` runs, a stop arrives at a poll when
-    the test has scheduled one (`stops_after_polls`), `interrupt` stops it at once, and the
-    console answers `print frame`, `print curpc` and a `dasm` that WRITES its listing, so the
-    stop survey the tools build is exercised against a file the way the real console feeds it.
-    """
+    """A session with the PROTOCOL's running state."""
 
     def __init__(self, scratch: Path, pcs: list[int] | None = None) -> None:
         self.scratch = scratch
@@ -3245,25 +2891,25 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         self.values = {"D0": 0x1234, "PC": 0xF2034}
         self.commands: list[str] = []
         self.armed: list[tuple[int, bool]] = []
-        self.bplist_rows: list[str] = []      # what the console's `bplist` lists on a real board
-        self.bp_next_index = 1                # MAME's breakpoint counter, never reused
+        self.bplist_rows: list[str] = []
+        self.bp_next_index = 1
         self.bp_devices: dict[int, str] | None = None   # a row's cpu, by index
         self.rplist_rows: list[tuple[int, str, bool]] = []   # what `rplist` lists
-        self.rp_next_index = 1                # the registerpoints' own counter, never reused
-        self.rp_devices: dict[int, str] = {}       # the cpu of a row that is not the main one's
-        self.rp_errors: dict[str, str] = {}        # what `rpset` AND `print` refuse, by condition
-        self.rp_print_errors: dict[str, str] = {}  # what `print` alone refuses (MAME arms it)
-        self.temps: dict[int, int] = {}       # the debugger's temp variables, moved by a test
-        self.exprs: dict[str, int] = {}       # what `print <name>` answers for an expression
+        self.rp_next_index = 1
+        self.rp_devices: dict[int, str] = {}
+        self.rp_errors: dict[str, str] = {}
+        self.rp_print_errors: dict[str, str] = {}
+        self.temps: dict[int, int] = {}
+        self.exprs: dict[str, int] = {}
         self.writes = 0
         self.interrupted = 0
-        self.byte_order = "big"               # read by the watch family on any session
-        self.packet_size: int | None = None   # what a stub advertises; this one says nothing
+        self.byte_order = "big"
+        self.packet_size: int | None = None
         self.emu_clock = 0.0
-        self.visible_cpu = ":maincpu"            # the cpu `cpulist` marks, moved by a test
+        self.visible_cpu = ":maincpu"
         self.ignoring: list[str] = []            # the cpus `ignore` lists
-        self.no_map: set[int] = set()            # threads whose register block is refused
-        self.live: str | None = None             # the cpu the last stop was on; None: visible
+        self.no_map: set[int] = set()
+        self.live: str | None = None
 
     # The real rules, not copies of them: they read nothing but `packet_size`.
     max_payload = g.Session.max_payload
@@ -3273,7 +2919,7 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         return self.emu_clock
 
     def know_endianness(self, by_thread: dict[int, str]) -> None:
-        self.endianness = dict(by_thread)    # the layout double decodes big whatever it hears
+        self.endianness = dict(by_thread)
 
     def registers(self, *, thread: int) -> dict[str, int]:
         self._on("g", thread)
@@ -3303,7 +2949,7 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
             return True
         self.polls += 1
         if self.stops_after_polls is not None:
-            self.stops_after_polls -= 1           # a countdown, so it is set at any moment
+            self.stops_after_polls -= 1
             if self.stops_after_polls <= 0:
                 self.stops_after_polls = None
                 self._stop()
@@ -3321,15 +2967,12 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         return "T05"
 
     def breakpoint(self, addr: int, remove: bool = False) -> None:
-        """What a plain `bp` does to the debugger's list, which the console half routes here
-        (`session_doubles.control_console`): a row under the next index, logged in `armed`. A
-        case replaces it to stand in for the debugger, one that takes a row and lists none."""
+        """What a plain `bp` does to the debugger's list."""
         self.armed.append((addr, False))
         bplist_add(self, addr)
 
     def make_visible(self, thread: int) -> None:
-        """`Hc`, as the patched stub answers it: the thread's cpu visible and no ignore flag
-        touched; a cpu the debugger ignores is refused (`E01`, captured)."""
+        """`Hc`, as the patched stub answers it."""
         self.commands.append(f"Hc{thread:x}")
         tag = self.threads[thread]
         if tag in self.ignoring:
@@ -3343,8 +2986,7 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         return next((tid for tid, name in self.threads.items() if name == tag), None)
 
     def register_block(self, thread: int) -> str:
-        """One thread's whole `g` reply, which a run changes: the thread and the frame in it.
-        A thread in `no_map` is refused, as the stub refuses a cpu with no register map."""
+        """One thread's whole `g` reply, which a run changes."""
         self.commands.append(f"g{thread:x}")
         if thread in self.no_map:
             raise g.Refused("the stub refused `g`: E01")
@@ -3373,9 +3015,6 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         self.writes += 1
         self.values[name.upper()] = value
 
-    # The lifecycle and the known-answer half, inert: the tests of those drive `start` and
-    # `close` on their own doubles; these exist so THIS double has the whole surface the
-    # package calls on a session, which the AST case below holds it to.
     def connect(self) -> None:
         pass
 
@@ -3395,9 +3034,6 @@ class _RunningSession(_OwnRegisterFile, SessionFields):
         self._stop()
 
     def reset(self) -> int:
-        # The real one steps once to apply the reset, and that step is a STOP the stub
-        # counts: a reset that leaves it unrecorded is found by the next contact as a stop
-        # the machine reached on its own.
         self.commands.append("softreset")
         self.writes += 1
         self._stop()
@@ -3463,7 +3099,7 @@ def _running(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
     monkeypatch.setattr(mstate.STATE, "breakpoints", {})
     use_table(monkeypatch, table={})
     monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
-    monkeypatch.setattr(mstate.STATE, "ses", ses)      # the envelope reads `running` off it
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
     # What `start` creates beside the session: a session-lived store and the stamp.
     monkeypatch.setattr(mstate.STATE, "store", dec.DeclarationStore("test", path=None))
     monkeypatch.setattr(mstate.STATE, "session_origin", "s1")
@@ -3495,9 +3131,7 @@ def test_status_names_the_stubs_threads_and_none_on_a_stub_without_them(
 def test_resume_without_a_bound_lets_the_machine_run_and_the_readers_refuse(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE RUNNING-GUEST CONTRACT: a reader on a running machine
-    answers INVALID, names the last stop and the tools that DO answer, and never a value
-    read off a moving machine."""
+    """THE RUNNING-GUEST CONTRACT."""
     ses = _running(monkeypatch, tmp_path)
     out = s.resume()
     assert "verdict" not in out and out["session"]["running"] is True and ses.running
@@ -3554,10 +3188,7 @@ def test_resume_without_a_bound_lets_the_machine_run_and_the_readers_refuse(
 def test_a_stop_the_machine_reached_on_its_own_is_recorded_by_the_first_contact(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A breakpoint fires while nobody waits: the first tool that touches the session finds
-    the stop packet, surveys the stop once, records it as the last stop and says so in its
-    reply, ONCE. Without that, `last_stop` stays on the previous stop while `registers`
-    reads the address of the new one."""
+    """A breakpoint fires while nobody waits."""
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0")
     s.resume()
@@ -3574,8 +3205,7 @@ def test_a_stop_the_machine_reached_on_its_own_is_recorded_by_the_first_contact(
 def test_a_call_that_steps_and_then_refuses_owns_its_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A refusal that comes after the call's own step owns that stop (`record_own_stop` says
-    why): the next contact finds nothing on its own, and the record names the tool."""
+    """A refusal that comes after the call's own step owns that stop."""
     _running(monkeypatch, tmp_path)
 
     def steps_then_refuses(ses_: Any, *_: Any) -> dict[str, Any]:
@@ -3595,8 +3225,7 @@ def test_a_call_that_steps_and_then_refuses_owns_its_stop(
 def test_a_refusal_that_moved_nothing_records_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The other side of `record_own_stop`: a refusal before any step leaves the record as it
-    was and never surveys, so an ordinary argument refusal costs the console nothing."""
+    """The other side of `record_own_stop`."""
     _running(monkeypatch, tmp_path)
 
     def must_not_survey(*_: Any) -> dict[str, Any]:
@@ -3625,8 +3254,7 @@ class _CrashedProcess:
 def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_close(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Not the bare `alive: false` of no session at all: the process is gone while the session
-    still holds it, so the reply carries the exit code and says `close` collects the rest."""
+    """Not the bare `alive."""
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     monkeypatch.setattr(mstate.STATE, "proc", _CrashedProcess())
@@ -3640,8 +3268,7 @@ def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_clos
 def test_a_stop_is_not_recorded_for_a_machine_that_cannot_be_surveyed(
     state: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The states a refusal can find the session in: a machine let go, an emulator that
-    went, a session half torn down."""
+    """The states a refusal can find the session in."""
     ses = _running(monkeypatch, tmp_path)
     ses.step()
     if state == "running":
@@ -3723,8 +3350,7 @@ def test_stop_interrupts_a_running_machine_and_surveys_it(
 def test_the_stop_survey_shows_the_log_since_the_previous_stop_capped(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The delta is what the driver logged BETWEEN two stops, not the whole log, and above the
-    cap the count stays whole while the lines are the newest."""
+    """The delta is what the driver logged BETWEEN two stops, not the whole log."""
     log = tmp_path / "error.log"
     log.write_text("boot\n")
     ses = _running(monkeypatch, tmp_path)              # stop 1 reads `boot`
@@ -3743,8 +3369,7 @@ def test_the_stop_survey_shows_the_log_since_the_previous_stop_capped(
 def test_breakpoints_arm_and_clear_while_running_and_say_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `Z0` sent to a running machine is taken and FIRES, so nothing
-    is queued; the reply says it was armed while running."""
+    """A `Z0` sent to a running machine is taken and FIRES."""
     ses = _running(monkeypatch, tmp_path)
     s.resume()
     armed = s.breakpoint_at(ref="0x25a4")
@@ -3845,8 +3470,7 @@ class _RecordingCtx:
 
 
 def test_the_sdk_injects_the_context_and_the_schema_does_not_show_it() -> None:
-    """`ctx` is found by its type through the wrapper (`functools.wraps` carries the
-    annotations), it is not an argument the client can pass, and it stays out of the summary."""
+    """`ctx` is found by its type through the wrapper."""
     for name in ("run_to", "run_for", "resume", "log_wait"):
         tool = s.mcp._tool_manager.get_tool(name)
         assert tool is not None and tool.context_kwarg == "ctx", name
@@ -3873,10 +3497,7 @@ def test_the_session_block_says_whether_the_machine_runs(
 def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The loop checks the condition FIRST and reads LAST, so a line written in between was
-    never looked for: the exit trace of a driver going away, the reaction logged just before
-    a breakpoint fired, the line that lands between the final poll and the clock. Each path
-    reads once more, and only then refuses."""
+    """The loop checks the condition FIRST and reads LAST."""
     log = tmp_path / "error.log"
     log.write_text("boot\n")
     ses = _running(monkeypatch, tmp_path)
@@ -3920,7 +3541,7 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
     clock = _Clock()
     monkeypatch.setattr(core_wait, "time", clock)
     monkeypatch.setattr(mstate, "time", clock)
-    monkeypatch.setattr(mprogress, "time", clock)  # the Ticker reads the same scripted clock
+    monkeypatch.setattr(mprogress, "time", clock)
     # A line landing between the final read and the deadline is found by the last look (the
     # progress callback fires after the read, so it plays the driver writing right then).
     out = _wait_emulator(ses, tmp_path, lambda: True, lambda: None,
@@ -3928,9 +3549,6 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
     assert out["status"] == "ok" and out["line"] == "late line" and out["already"] is False, out
     assert out["waited_s"] == 0.0, ("a wait is spelled to the tenth of a second, and this one "
                                     "took a hundredth", out)
-    # And a stop that lands as the bound expires is named as such: one clock read per
-    # iteration now, so a bound of one and a half readings expires after the first poll,
-    # and the second poll is the last look's.
     ses.stops_after_polls = 2
     out = _wait_emulator(ses, tmp_path, lambda: True, lambda: None,
                               "never", 0.015)
@@ -3940,15 +3558,7 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
 def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE CONSTANT EXISTED AND ALMOST NOBODY DRANK FROM IT. `LOG_FILES` held the two names
-    while the launcher and the Lua channel spelled them by hand at ten sites between them, so
-    a rename of either channel would have moved one map and left ten readers opening a file
-    nothing writes any more -- and every one of those readers answers EMPTY for a file that is
-    not there, which is indistinguishable from a quiet emulator.
-
-    So the rename is what this asks for: both names are changed and every consumer that can
-    answer without an emulator is put to it. A consumer still holding the literal reads a
-    file that does not exist, and the empty answer it gives back is what goes red here."""
+    """THE CONSTANT EXISTED AND ALMOST NOBODY DRANK FROM IT."""
     import mame_transport as transport
     monkeypatch.setitem(files.LOG_FILES, "emulator", "renamed-emulator.log")
     monkeypatch.setitem(files.LOG_FILES, "process", "renamed-process.log")
@@ -3973,9 +3583,6 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     assert transport.stdout_mark(tmp_path) > 0
     assert b"nonsense" in transport.since(tmp_path, 0)
     assert files.log_mark(tmp_path) > 0, "and the error log the same way"
-    # THE TWO LUA READERS THAT LOOK FOR A SHAPE, not merely for bytes: both answer None/0 for
-    # a file that is not there, which is what a consumer still holding the literal produces
-    # and is indistinguishable from a console that has not replied yet.
     answered = f"echo-me\n{mstate.LUA_SENTINEL}#7\ttrue\t\n"
     (tmp_path / "renamed-process.log").write_text(answered, encoding="utf-8")
     monkeypatch.setattr(mstate.STATE, "console_mark", 0)
@@ -3990,13 +3597,7 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
 def test_a_renamed_log_channel_reaches_the_call_that_creates_the_file(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE WRITER, which the reader gate above cannot reach.
-
-    Every consumer in that test READS a log. The one call that OPENS the file MAME's stdout is
-    captured into lives inside `boot`, behind a launch, so a gate that never launches cannot
-    see it: this is the one case that goes red when that line reverts to the literal. A writer
-    spelling one name while every reader spells
-    another produces an empty log and a session that looks quiet."""
+    """THE WRITER, which the reader gate above cannot reach."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     monkeypatch.setitem(files.LOG_FILES, "emulator", "renamed-emulator.log")
@@ -4059,15 +3660,12 @@ def test_resume_refuses_a_negative_bound_and_reports_progress(
     assert out["verdict"] == "TIMEOUT" and ticks and ticks[0].startswith("resume: running")
 
 
-# --------------------------------------- what start hands the driver, and says it handed
 
 
 def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A watched run has to say which variant it is: the reply carries the variables this
-    call added, the display it went to (the session's exported answer when `display` is
-    empty), and the flags, so a reader of the reply and not of the process can check them."""
+    """A watched run has to say which variant it is."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     fake, log = _recording_helper(tmp_path)
@@ -4139,9 +3737,7 @@ def test_start_launches_behind_by_who_watches_unless_background_says_otherwise(
 def test_env_carrying_the_background_hint_is_refused_before_any_emulator(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, value: str, background: bool | None
 ) -> None:
-    """Two spellings of one switch let the reply name one while the process obeys the other,
-    so the hint is `background`'s alone, whatever value `env` gives it and whatever
-    `background` says beside it."""
+    """Two spellings of one switch let the reply name one while the process obeys the other."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     _never_spawns(monkeypatch, tmp_path)
@@ -4156,10 +3752,7 @@ def test_env_carrying_the_background_hint_is_refused_before_any_emulator(
 def test_a_system_this_build_does_not_carry_refuses_the_start_in_mame_s_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Each repository ships its own narrow MAME, so which systems exist is the BINARY's
-    answer. `start` asks it beside the boot, and a system it does not carry is refused in
-    MAME's own words, the emulator killed, instead of as a gdbstub that never answers after the
-    whole `wait`."""
+    """Each repository ships its own narrow MAME, so which systems exist is the BINARY's answer."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
@@ -4177,14 +3770,7 @@ def test_a_system_this_build_does_not_carry_refuses_the_start_in_mame_s_own_word
 def test_when_the_boot_fails_the_query_holds_the_cause_and_it_outranks_the_symptom(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The query is put before the boot and collected after the park, so a system the build
-    does not carry is not refused until the emulator has already failed to come up. What the
-    boot reports then is that the gdbstub never answered, which is true and useless; the query
-    holds the real diagnosis in MAME's own words, and it is collected FIRST so that the cause
-    outranks the symptom.
-
-    Nothing is stubbed here but the clock: the binary really runs, really answers rc=5, and
-    really fails to serve a gdbstub."""
+    """The query is put before the boot and collected after the park."""
     image = bytes(range(64))
     args = _boot_args(tmp_path, image)
     Path(args["binary"]).write_text(
@@ -4203,9 +3789,7 @@ def test_when_the_boot_fails_the_query_holds_the_cause_and_it_outranks_the_sympt
 
 def _query_that_outlives_the_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
                                   ) -> tuple[dict[str, str], list[Any]]:
-    """A binary whose `-listxml` sleeps past any boot, and the query `start` asks of it
-    HELD, so a test can read whether the process was collected: the `start` arguments and
-    the list the `Popen` lands in."""
+    """A binary whose `-listxml` sleeps past any boot."""
     args = _boot_args(tmp_path, bytes(range(64)))
     Path(args["binary"]).write_text(
         '#!/bin/sh\n[ "$1" = -version ] && { echo "0.0 (a slow query)"; exit 0; }\nsleep 30\n')
@@ -4225,21 +3809,7 @@ def _query_that_outlives_the_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
 def test_a_start_that_did_not_start_leaves_no_query_running_behind_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A start owns nothing when it fails, and that includes the process it asked a question
-    of: one left running with this server as its parent is reachable by nobody and reaped by
-    nothing. Here the query outlives the boot on purpose, so a start that collected it only on
-    the happy path would strand it.
-
-    The guarantee is STRUCTURAL rather than a cleanup: the answer is read the moment the boot
-    is over, on both its paths, so there is no window to forget. This case watches the
-    guarantee, not the mechanism, and stays honest if the mechanism changes again.
-
-    WHAT IT DOES NOT REACH, said rather than left to be assumed: it exercises the path where
-    the BOOT fails. Moving the collect back to after the park was tried as a mutation and this
-    stayed green, because on this path the failure handler collects the query either way. The
-    other path needs a raise between two adjacent statements, and a test that injected one
-    would be a test about its own injection.
-    """
+    """A start owns nothing when it fails, and that includes the process it asked a question of."""
     args, held = _query_that_outlives_the_boot(monkeypatch, tmp_path)
     out = s.start(**{**args, "boot_seconds": 0.4})
     assert out["status"] == "INVALID", out
@@ -4251,11 +3821,7 @@ def test_a_start_that_did_not_start_leaves_no_query_running_behind_it(
 def test_a_boot_that_raises_anything_but_a_refusal_reaps_the_query_and_the_error_propagates(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The guard above collects the query on a REFUSAL, because MAME's own words outrank the
-    symptom there. A boot that raises anything else (a bug, a broken helper) went through
-    the outer guard alone, which kills the session and never collects the query, so the
-    `-listxml` process was left with this server as its parent and reaped by nothing. Now
-    it is killed and reaped, and the ORIGINAL exception still propagates."""
+    """The guard above collects the query on a REFUSAL."""
     args, held = _query_that_outlives_the_boot(monkeypatch, tmp_path)
     def boom(judged: Any, progress: Any = None, last_launch: bool = True) -> Any:
         raise RuntimeError("boom: the boot itself is broken")
@@ -4270,8 +3836,7 @@ def test_a_boot_that_raises_anything_but_a_refusal_reaps_the_query_and_the_error
 
 
 def test_discard_has_nothing_to_do_for_a_query_already_read_or_never_asked() -> None:
-    """The `symbols` mapping path waits for the query in `judge`, and a binary that could not
-    be run asked none: both leave `discard` nothing to reap, and neither raises."""
+    """The `symbols` mapping path waits for the query in `judge`."""
     import subprocess
     from types import SimpleNamespace
     from typing import cast
@@ -4292,9 +3857,7 @@ def test_discard_has_nothing_to_do_for_a_query_already_read_or_never_asked() -> 
 def test_a_listxml_that_fails_for_any_other_reason_leaves_the_start_working(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A debug session must not be blocked on an inventory: `start` works today without one.
-    But a silently missing section cannot be told from a machine that has none, so the
-    failure is NAMED in the coverage note and the sections it backs come back empty."""
+    """A debug session must not be blocked on an inventory."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
@@ -4314,10 +3877,7 @@ def test_a_listxml_that_fails_for_any_other_reason_leaves_the_start_working(
 def test_start_says_the_shape_of_the_board_on_its_summary_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The client paints a tool's name, its arguments and its reply and nothing else, so a
-    multi-cpu board has to be visible on the ONE line `start` writes. Counts only: a whole
-    inventory riding on every start would be paid for by every caller, and `machine_map`
-    serves the rows free."""
+    """The client paints a tool's name, its arguments and its reply and nothing else."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
@@ -4336,9 +3896,7 @@ def test_start_says_the_shape_of_the_board_on_its_summary_line(
 def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The throttle on arrival is a boot harness this server writes: `-nothrottle` on the
-    command line (once, whatever the helper emitted), the frame in the environment, the
-    harness on `-autoboot_script`, and the caller's own harness chained after it."""
+    """The throttle on arrival is a boot harness this server writes."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     mine = tmp_path / "mine.lua"
@@ -4365,9 +3923,6 @@ def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
         s.close()
     out = s.start(**_boot_args(tmp_path, image), boot_lua=str(mine))
     try:
-        # THE CALLER'S HARNESS IS CHAINED, NEVER SENT ON ITS OWN, because the server now
-        # always writes a script of its own for the inventory: what reaches MAME is the
-        # composed one, and the caller's is reached from inside it.
         composed = Path(out["boot_lua_path"])
         assert composed.parent == mstate.STATE.scratch
         text = composed.read_text()
@@ -4395,16 +3950,12 @@ def test_starts_counts_refuse_a_bool_a_string_and_their_edges_before_any_spawn(
     assert out["code"] == "bad_argument", out
 
 
-# --------------------------------------------------- what the review of the change found
 
 
 def test_run_to_counts_a_control_off_its_temp_and_ticks_meanwhile(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control is MAME's own counting breakpoint: the machine is never stopped for it,
-    so the run is one `go` and one stop, and its hits are the counter's delta. The tick
-    still fires while the run waits: releasing the machine at every control hit would cost a
-    round trip per firing, and a hot control would starve the tick."""
+    """The control is MAME's own counting breakpoint."""
     ses = _running(monkeypatch, tmp_path)
     ses.pcs = [0xF2034, 0x4A0]                      # park, target
     ses.stops_after_polls = 3
@@ -4416,7 +3967,7 @@ def test_run_to_counts_a_control_off_its_temp_and_ticks_meanwhile(
     def go() -> None:
         gos.append(ses.stop_count)
         real_go()
-        ses.temps[0] = ses.temps.get(0, 0) + 2      # the control fires twice meanwhile
+        ses.temps[0] = ses.temps.get(0, 0) + 2
 
     ses.go = go  # type: ignore[method-assign]
     out = advance.run_to(ses, tmp_path, "0x4a0", "0x25a4", 2.0,  # type: ignore[arg-type]
@@ -4440,7 +3991,7 @@ def test_run_to_stops_elsewhere_and_times_out_with_the_right_verdicts(
 
     def go() -> None:
         real_go()
-        ses.temps[0] = ses.temps.get(0, 0) + 1       # the control counted once meanwhile
+        ses.temps[0] = ses.temps.get(0, 0) + 1
 
     ses.go = go  # type: ignore[method-assign]
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=2.0)
@@ -4476,9 +4027,7 @@ def test_run_to_reports_a_session_that_broke_under_the_run_as_invalid(
 def test_run_for_refuses_to_survey_a_machine_that_did_not_settle_after_the_interrupt(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The interrupt of a console-started run gets no reply, so the proof of the stop is the
-    frame counter at rest, the same proof the ELAPSED path uses; one reading after the 0x03
-    proved nothing about a machine that had not processed it yet."""
+    """The interrupt of a console-started run gets no reply."""
     ses = _RegisterSession(bits=32, frame=10, stop_after=None)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -4496,9 +4045,6 @@ def test_a_stop_found_by_a_call_that_then_refused_is_not_carried_to_the_next_rep
     ses = _running(monkeypatch, tmp_path)
     s.resume()
     ses.stops_after_polls = 1                        # a breakpoint fired meanwhile
-    # THE REFUSAL HAS TO BE ONE THAT MAKES CONTACT, which `data_hex="zz"` is not: a malformed
-    # hex string is judged before the machine is asked for. An unresolvable `ref` is the refusal
-    # that still reaches the machine, because resolving it is what needs the table.
     out = s.write(ref="no_such_symbol", data_hex="00")
     assert out["status"] == "INVALID", out
     assert out["stopped_on_its_own"]["stop_seq"] == 2, "the account rides on the refusal itself"
@@ -4510,18 +4056,11 @@ def test_a_stop_found_by_a_call_that_then_refused_is_not_carried_to_the_next_rep
 def test_a_refusal_that_never_reached_the_machine_reports_nothing_about_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """THE MIRROR OF THE CASE ABOVE, and it is new because the boundary is. A refusal judged before
-    the gate never contacts the machine, so it cannot have found a stop and says nothing about one
-    -- which is the honest answer, not a loss: the call asked the machine nothing. The stop is
-    still delivered exactly once, by the next call that does make contact.
-
-    Without this case the change is invisible: the case above would simply have moved its scenario
-    and nothing would pin what happens on the path it left behind.
-    """
+    """THE MIRROR OF THE CASE ABOVE, and it is new because the boundary is."""
     ses = _running(monkeypatch, tmp_path)
     s.resume()
     ses.stops_after_polls = 1                        # a breakpoint fired meanwhile
-    out = s.write(ref="0x0", data_hex="zz")            # judged before the gate: no contact at all
+    out = s.write(ref="0x0", data_hex="zz")
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
     assert "stopped_on_its_own" not in out, (
         "a refusal that never asked the machine anything reported a stop it could not have seen")
@@ -4558,9 +4097,7 @@ def test_the_survey_says_when_the_console_gave_no_listing(
 
 
 def test_the_tools_carry_the_clients_context_to_their_waits(tmp_path: Path) -> None:
-    """End to end: a tool called with the SDK's context, from the worker thread the SDK uses,
-    ticks through it. Dropping the `bridge(ctx)` argument at a call site leaves every
-    direct test green; this one goes red."""
+    """End to end."""
     import anyio
 
     got: list[str] = []
@@ -4591,9 +4128,7 @@ def test_the_tools_carry_the_clients_context_to_their_waits(tmp_path: Path) -> N
 def test_the_advance_family_refuses_its_malformed_arguments_and_a_cold_control(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control at the target's own address, a step of nothing, and a bound that expires
-    with the control never having fired: the last is the INVALID that makes a silence a
-    measurement only when the control spoke."""
+    """A control at the target's own address, a step of nothing."""
     ses = _running(monkeypatch, tmp_path)
     refused("same address",
     s.run_to(ref="0x4a0", control="0x4a0", seconds=1.0))
@@ -4607,9 +4142,6 @@ def test_the_advance_family_refuses_its_malformed_arguments_and_a_cold_control(
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "INVALID" and "never fired" in out["message"]
     assert out["code"] == "control_silent"
-    # THE LISTING AT EACH CONTROL AND THE HINT: a control that never fires reads the same
-    # for a wrong address and for a right one that runs rarely; the listing says whether
-    # the address decodes as code, without another pass.
     listed = out["control_dasm"]
     assert [(c["ref"], c["cpu"]) for c in listed] == [("0x25a4", ":maincpu")], out
     assert isinstance(listed[0]["dasm"], list) and listed[0]["dasm"], out
@@ -4671,11 +4203,7 @@ def test_a_run_to_that_comes_back_invalid_still_records_the_stop_it_made(
 def test_run_to_reads_bplist_back_after_arming_its_two_breakpoints(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`breakpoint_at` and the re-arm read `bplist` after every arm, because a row taken can be
-    one the console does not list; `run_to` once armed its target on the stub's OK alone, and
-    a target the console never listed then came back TIMEOUT beside a control that fired,
-    which the contract reads as "the routine never ran". The list is read after the target is
-    armed, and a row missing is INVALID naming it, before the machine moves."""
+    """`breakpoint_at` and the re-arm read `bplist` after every arm."""
     ses = _running(monkeypatch, tmp_path)
     real = ses.monitor
 
@@ -4707,16 +4235,10 @@ class _ClosedPresence:
 
 
 def test_kill_clears_every_field_of_the_session_it_ends() -> None:
-    """Deleting one reset line from `kill` left the suite green: nothing exercised a close
-    followed by a fresh session and read what the old one left. `armed_watches` is the one
-    that bites, since a watch stop is attributed by the range it brackets and a leftover
-    entry names the wrong ref; `symbols` and `system` were never cleared at all."""
+    """Deleting one reset line from `kill` left the suite green."""
     ses = _RecordingSession()
     proc = _ExitingProcess(ses.events, exits=True)
     mstate.STATE.ses, mstate.STATE.proc = ses, proc  # type: ignore[assignment]
-    # EVERY field is dirtied, or a reset dropped from `kill` for a field this test left at
-    # its default would pass on the default: the comparison walks a fresh State's fields
-    # and this list is held to that same set, so a field added and not dirtied here is red.
     dirty: dict[str, Any] = {
         "captures": [("avi", "/x/record-1.avi")],
         "guard": subprocess.Popen(["sleep", "60"]),
@@ -4782,10 +4304,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
 def test_a_window_helper_that_ran_and_failed_is_reported_with_its_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The helper's stderr was captured and dropped, and the refusal then said the helper was
-    "not at" a path it had just been run from: a bad display or a topology failure read as
-    a missing program. A shared start now names the exit code and the stderr; a quick run
-    keeps its default, since nobody is watching it, and says nothing."""
+    """The helper's stderr was captured and dropped."""
     helper = tmp_path / "place-window"
     helper.write_text("#!/bin/sh\necho 'display-topology: no such display' >&2\nexit 1\n")
     helper.chmod(0o755)
@@ -4800,8 +4319,7 @@ def test_a_window_helper_that_ran_and_failed_is_reported_with_its_own_words(
 def test_start_refuses_while_a_session_is_live(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`start` must not kill whatever was live and boot again in silence: it refuses and
-    asks for `close`. One machine per server, and ending one is a deliberate act."""
+    """`start` must not kill whatever was live and boot again in silence."""
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     e = refused("live",
@@ -4845,19 +4363,13 @@ def test_the_doubles_surface_is_derived_from_the_package_and_held_to_the_real_se
     # And the non-callable attributes the package reads, which a double answers as fields.
     fields = {n for n in used if not n.startswith("_") and hasattr(g.Session, n)
               and not callable(getattr(g.Session, n))}
-    # `host`, `port` and `timeout` are the socket's and `owner` the dial's proof, read by the
-    # client alone; `pc_name` is resolved inside the client. Everything else the package reads
-    # on a session, the double answers, `byte_order` among them, which the watch family reads.
     missing = sorted(n for n in fields if not hasattr(double, n)
                      and n not in ("host", "port", "timeout", "owner", "pc_name"))
     assert missing == [], f"session fields the package reads and the double lacks: {missing}"
 
 
 def test_the_live_interlock_is_declared_in_the_package() -> None:
-    """The live tier of this package is a script and pytest collects none of it today, which is
-    a naming accident and not a declared property: the day a `test_*_live.py` joins
-    `tests/live/`, a stranger running `pytest` from a clone would launch an emulator per case.
-    The package deselects the tier by itself."""
+    """The live tier of this package is a script and pytest collects none of it today."""
     here = Path(__file__).resolve().parent.parent
     mine = tomllib.loads((here / "pyproject.toml").read_text(encoding="utf-8"))
     section = mine.get("tool", {}).get("pytest", {}).get("ini_options", {})
@@ -4869,9 +4381,7 @@ def test_the_live_interlock_is_declared_in_the_package() -> None:
 def test_run_to_over_a_declared_breakpoint_leaves_the_declaration_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `run_to` over a declared STOP breakpoint leaves that declaration armed: the target's
-    row is the only one the run adds and removes, and a declared stop is not a control (one
-    ref is one role; naming a declared stop as the control is refused by name)."""
+    """A `run_to` over a declared STOP breakpoint leaves that declaration armed."""
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "store", dec.DeclarationStore("t", None))
     monkeypatch.setattr(mstate.STATE, "session_origin", "s1")
@@ -4904,19 +4414,10 @@ class _AlreadyDead:
 
 
 def test_close_reports_a_process_that_had_already_died_and_the_session_as_it_was() -> None:
-    """Two things `close` said wrong. A MAME that crashed between calls came back as
-    `closed: false, note: there was no session to close`, the same reply as a server that
-    never started anything, with the exit code `poll` already held thrown away; it is
-    `ended_by: died` with that code. And the reply's `session` block was built after the kill,
-    so it read `altered: false` about a session that had been written to; it now describes
-    the state as it was BEFORE closing, so its `altered` is the truth about the session
-    that ended."""
+    """Two things `close` said wrong."""
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _AlreadyDead()  # type: ignore[assignment]
     mstate.STATE.console_writes = 3
-    # NONZERO ON PURPOSE, like `console_writes` beside it: the reply describes the session
-    # as it was BEFORE the kill, so a block built after the reset would read three zeros
-    # and an all-zero expectation could not tell the two apart.
     mstate.STATE.console_thread_errors = 2
     mstate.STATE.console_reruns_seen = 1
     mstate.STATE.console_lines_lost = 1
@@ -4941,14 +4442,12 @@ def test_close_reports_a_process_that_had_already_died_and_the_session_as_it_was
 def test_a_window_helper_that_hangs_is_bounded_and_one_that_prints_nothing_is_named(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`subprocess.run` on the helper had no bound, so a hung helper held `start` forever
-    with the lock; and a helper that failed printing NOTHING was never exercised, though
-    it is the shape a crash leaves. Both name the helper and what happened."""
+    """`subprocess.run` on the helper had no bound."""
     slow = tmp_path / "slow"
     slow.write_text("#!/bin/sh\nsleep 5\n")
     slow.chmod(0o755)
     monkeypatch.setenv("WINDOW_APP", str(slow))
-    with monkeypatch.context() as tight:            # the tiny bound is for the hung helper only
+    with monkeypatch.context() as tight:
         tight.setattr(placement, "HELPER_TIMEOUT_S", 0.2)
         with pytest.raises(mstate.Invalid, match="did not answer within") as e:
             launch.window_flags(shared=True, display="main")
@@ -4986,10 +4485,7 @@ def test_run_to_refused_at_the_readback_removes_only_what_was_listed_and_says_if
 
 def test_write_refuses_empty_data_and_reset_and_a_mutating_debug_count_as_writes(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The three decision points of the write family the battery executed through no
-    test: an empty `data_hex` is refused before anything is sent, `reset` reports its
-    kind and counts as a write, and a `debug` command the classifier marks as mutating
-    bumps the console-write count while a reader leaves it alone."""
+    """The three decision points of the write family the battery executed through no test."""
     ses = _running(monkeypatch, tmp_path)
     refused("nothing to write",  # the tool's error, as an
     s.write(ref="0x100", data_hex=""))
@@ -5009,7 +4505,7 @@ def test_write_refuses_empty_data_and_reset_and_a_mutating_debug_count_as_writes
 
 
 @pytest.mark.parametrize("command, mutates", [
-    ("print {d1==7fff}", False),        # the captured probe line: the console answered `0`
+    ("print {d1==7fff}", False),
     ("print {d1!=7fff}", False),
     ("print {d1<=7fff}", False),
     ("print {d1>=7fff}", False),
@@ -5022,20 +4518,18 @@ def test_write_refuses_empty_data_and_reset_and_a_mutating_debug_count_as_writes
     ("wpset 400,2,w,1,{ temp0++ ; g }", True),
     ("rpset {d1==7fff},{d0=1}", True),
     ("bpset 400,1,{d0==1}", True),          # an action, whatever it holds
-    ("wpdset 400,2,w,1,{ g }", True),        # the abbreviated spellings of the family
+    ("wpdset 400,2,w,1,{ g }", True),
     ("bpdisable 1", False),
-    ("rpset{d1==7fff}", False),              # the bare condition with no space before it
-    ("statesave x", False),                  # a state written OUT changes nothing
+    ("rpset{d1==7fff}", False),
+    ("statesave x", False),
     ("stateload x", True),
-    ("temp9=0", False),                      # a debugger temp alone is not the guest
-    ("temp9=0;fill 100,1,1", True),          # the second command is judged too
+    ("temp9=0", False),
+    ("temp9=0;fill 100,1,1", True),
 ])
 def test_a_comparison_typed_through_debug_is_a_read_and_an_assignment_or_an_action_a_write(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, command: str, mutates: bool,
 ) -> None:
-    """A comparison operator is never an assignment, so `print {d1==7fff}` is a read; an
-    assignment anywhere on the line, and an action in braces on a `bp`/`wp`/`rp` line, count
-    as writes whatever the action holds, and a registerpoint's bare condition does not."""
+    """A comparison operator is never an assignment."""
     _console(monkeypatch, tmp_path, _ConsoleSession(replies={"print": "0\n"}))
     monkeypatch.setattr(mstate.STATE, "console_writes", 0)
     out = s.debug(command=command)
@@ -5045,11 +4539,28 @@ def test_a_comparison_typed_through_debug_is_a_read_and_an_assignment_or_an_acti
     assert out["session"]["altered"] is mutates, out["session"]
 
 
+def _boot_judged(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, session: type,
+                 spawned: type, *, port: int, wait: float, presence: bool) -> Any:
+    """`boot`'s judged arguments, with `session` as the stub and `spawned` as the process."""
+    import subprocess
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(g, "Session", session)
+    monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: spawned())
+    monkeypatch.setattr(mstate.STATE, "scratch", tmp_path)
+    monkeypatch.setattr(mstate.STATE, "ses", None)
+    monkeypatch.setattr(mstate.STATE, "proc", None)
+    return SimpleNamespace(
+        state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
+        system="sys", rompath=str(tmp_path), port=port, flags=[], inipath="", wait=wait,
+        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
+        presence=presence, view="")
+
+
 def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
                   exit_code: int | None, wait: float, presence: bool = False) -> Any:
     """`boot` against a gdbstub that refuses every connection and a process whose `poll`
     answers `exit_code` (None: alive). Hands back the refusal it raised."""
-    from types import SimpleNamespace
 
     class Refusing:
         def __init__(self, port: int, owner: object = None) -> None:
@@ -5064,19 +4575,10 @@ def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
         def poll(self) -> int | None:
             return exit_code
 
-    import subprocess
-    monkeypatch.setattr(g, "Session", Refusing)
-    monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: Spawned())
-    monkeypatch.setattr(mstate.STATE, "scratch", tmp_path)
-    monkeypatch.setattr(mstate.STATE, "ses", None)
-    monkeypatch.setattr(mstate.STATE, "proc", None)       # restored: the double has no poll
-    judged = SimpleNamespace(
-        state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
-        system="sys", rompath=str(tmp_path), port=1, flags=[], inipath="", wait=wait,
-        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
-        presence=presence, view="")
+    judged = _boot_judged(monkeypatch, tmp_path, Refusing, Spawned, port=1, wait=wait,
+                          presence=presence)
     with pytest.raises(mstate.Invalid) as e:
-        launch.boot(judged)  # type: ignore[arg-type]
+        launch.boot(judged)
     assert mstate.STATE.ses is None
     return e.value
 
@@ -5128,18 +4630,14 @@ def test_the_boundary_tells_the_session_s_presence_of_each_call(
 
 def test_boot_names_a_gdbstub_that_never_answers_within_its_wait(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The connect loop keeps trying until `wait` runs out and then names the last
-    refusal: a stub that never answers is reported as such, not as a hang."""
+    """The connect loop keeps trying until `wait` runs out and then names the last refusal."""
     refusal = _boot_against(monkeypatch, tmp_path, exit_code=None, wait=0.05)
     assert "did not answer within 0.05 s: connection refused" in str(refusal), refusal
 
 
 def test_boot_names_a_process_that_died_without_waiting_out_the_bound(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A MAME THAT DIED IS KNOWN DEAD AT ONCE, and waiting out a bound sized for a whole
-    board's boot to learn it costs the caller that bound for nothing. It is a different
-    diagnosis from a stub that never answered, and sends a reader somewhere else, so the
-    refusal says the process exited and with which code."""
+    """A MAME THAT DIED IS KNOWN DEAD AT ONCE."""
     began = time.monotonic()
     refusal = _boot_against(monkeypatch, tmp_path, exit_code=7, wait=5.0)
     took = time.monotonic() - began
@@ -5150,23 +4648,14 @@ def test_boot_names_a_process_that_died_without_waiting_out_the_bound(
 
 def test_reset_is_soft_applied_and_read_back_and_a_hard_reset_is_refused(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The console's `softreset` is a timer that fires when the
-    machine next runs, so the pc read right after it is the old one and one `step` lands on
-    the boot pc; `hardreset` re-creates the machine and the stub connection dies with it,
-    taking the session. So `reset` schedules the soft one, steps once, and reads the pc back
-    against the pc `start` parked at; the hard one is refused with the way to do it
-    (`close`, then `start`). Both are writes: the session is altered afterwards."""
+    """The console's `softreset` is a timer that fires when the machine next runs."""
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "boot_pc", 0xF2034)
     # NO HARD RESET IS OFFERED: it would end the session, which is `close` and `start`.
     assert "hard" not in inspect.signature(s.reset).parameters
     assert ses.writes == 0 and "hardreset" not in ses.commands
-    # THE FRAME COUNTER DOES NOT RESTART across a soft reset, so the reply carries the frame
-    # the reset was applied at, and a later stop's frame is compared with a cold boot's by
-    # subtracting it. A reset that answered no frame would leave every golden's frame
-    # number after it looking like a cold boot's, and nothing in the reply would say so.
     ses.frame = 661
-    ses.pcs = [0xF2034, 0xF2034]        # the step that applies the reset lands on the boot pc
+    ses.pcs = [0xF2034, 0xF2034]
     out = s.reset()
     assert out["kind"] == "softreset" and out["pc"] == f"{0xF2034:#010x}", out
     assert out["verified"] is True and out["boot_pc"] == f"{0xF2034:#010x}"
@@ -5180,29 +4669,19 @@ def test_reset_is_soft_applied_and_read_back_and_a_hard_reset_is_refused(
         "the frame is read AFTER the reset is applied")
     assert out["summary"] == (f"reset: softreset applied at frame {ses.frame}, pc 0x000f2034 "
                               "verified True")
-    # THE RESET IS A STOP OF ITS OWN, surveyed and recorded like `step`'s (left unrecorded,
-    # the next call on a V30 board reports it as `stopped_on_its_own` at no
-    # breakpoint this server armed). So the reply carries the stop survey, and the next
-    # contact finds nothing to attribute to the machine alone.
     assert out["cause"] == "softreset" and out["frame"] == ses.frame and "regs" in out, out
     after = s.status()
     assert "stopped_on_its_own" not in after, after
     assert after["last_stop"]["cause"] == "softreset" and after["last_stop"]["frame"] == ses.frame
 
-    ses.pcs = [0xF2034, 0x1000]        # the step lands elsewhere: not verified
+    ses.pcs = [0xF2034, 0x1000]
     assert s.reset()["verified"] is False
 
 
 def test_find_can_search_within_a_symbol_class_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A one-byte pattern searched over the whole address space drowns in false positives
-    (0xAD is the LODSW opcode as well as the inverted CP437 mark, and text tables live in
-    CODE), so `find` takes an optional `symbol_class`: a class name whose loaded symbols
-    give the range to search, instead of a hand-counted ref and length. The class span is
-    the min and max address of that class's symbols; a match past the last symbol's own
-    start is not covered, because a linker map carries no sizes. Without `region` it is the
-    old ref+length search, and giving both is refused."""
+    """A one-byte pattern searched over the whole address space drowns in false positives."""
     ses = _ConsoleSession(replies={"find": (FIXTURES / "find.none.txt").read_text()})
     _console(monkeypatch, tmp_path, ses)
     use_table(monkeypatch, table={"MSG_A": 0x420, "MSG_B": 0x480})
@@ -5212,10 +4691,6 @@ def test_find_can_search_within_a_symbol_class_region(
     assert out["symbol_class"] == "DATA" and out["addr"] == "0x00000420"
     # length spans lo..hi inclusive of the last symbol's first byte.
     assert ses.commands[-1] == "find 0x420,0x61,0xad", ses.commands[-1]
-    # THE SPAN EXAMINED IS IN THE REPLY, with where it came from: a class's span is its
-    # symbols' [min, max] and not the segment, so a zero over it is "not among the symbols"
-    # and never "not in DATA"; a caller reading `region: DATA` alone took it for the latter
-    # (the span ends at the last DATA symbol, well short of the segment).
     assert out["span"] == {"from": "0x00000420", "length": 0x61, "source": "class symbols",
                            "note": "the class's symbols' [min, max]: a match past the last "
                                    "symbol's own start is not covered"}, out
@@ -5236,24 +4711,18 @@ def test_find_can_search_within_a_symbol_class_region(
 def test_resume_then_close_reports_the_speed_the_host_held_over_the_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME's own `Average speed` line is suppressed on a debugger-driven exit, so
-    the speed is COMPUTED from the debugger's own emulated clock (`time`) and the wall clock:
-    over the run a `resume` opened, emulated seconds / wall seconds. A watched run ended by
-    `close` carries it on the close reply; a run that stops first carries
-    it on that stop. Here: released at emulated 5.0s / wall 100.0s, closed at 6.0s / 102.0s,
-    so 1 emulated second over 2 wall seconds is 50% -- the host ran the guest at half real
-    speed over that window."""
+    """MAME's own `Average speed` line is suppressed on a debugger-driven exit."""
     ses = _RegisterSession(bits=32)
     _install(monkeypatch, ses, tmp_path)
-    monkeypatch.setattr(mstate.STATE, "ses", ses)      # close/kill read STATE.ses directly
-    wall = [100.0]                            # a mutable wall clock the phases set
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
+    wall = [100.0]
     monkeypatch.setattr("mame_running.time.monotonic", lambda: wall[0])
     ses.emu_clock = 5.0
     r = s.resume()
     assert "verdict" not in r and "running" not in r and ses.running, r
     wall[0] = 102.0
     ses.emu_clock = 6.0
-    ses.running = False                       # the watched run is ended by close
+    ses.running = False
     closed = s.close()
     assert closed["average_speed"] == {"percent": 50.0, "emulated_s": 1.0,
                                        "wall_s": 2.0}, closed
@@ -5281,8 +4750,7 @@ def test_a_stop_found_by_a_later_contact_ends_the_run_and_carries_its_speed(
 def test_a_close_with_no_run_open_reports_no_speed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A session closed without a `resume` in flight has no window to measure, so `close`
-    carries no `average_speed` rather than a zero or a division by no time."""
+    """A session closed without a `resume` in flight has no window to measure."""
     ses = _RegisterSession(bits=32)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
@@ -5396,9 +4864,7 @@ def test_the_throttle_lift_resets_the_speed_window_to_the_real_speed_start(
 def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot(
     tmp_path: Path,
 ) -> None:
-    """MAME's `-console` is fatal without the console plugin, and its default search does
-    not reach a build's tree from this server's working directory: the refusal names every
-    file it looked for and the remedy, and nothing is spawned."""
+    """MAME's `-console` is fatal without the console plugin."""
     binary = tmp_path / "bare-mame"
     binary.write_text("#!/bin/sh\nexit 0\n")
     # EXECUTABLE, because this case is about the PLUGINS and nothing else: the check that asks
@@ -5421,8 +4887,7 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
 def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_rung(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The same build reached by the PATH rung: nothing the caller passed is wrong, so the
-    refusal is the host's, and it names the rung the build came from and both ways past it."""
+    """The same build reached by the PATH rung."""
     (tmp_path / "bin").mkdir()
     binary = tmp_path / "bin" / "mame"
     binary.write_text("#!/bin/sh\nexit 0\n")
@@ -5441,10 +4906,7 @@ def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_
 def test_a_packaged_mame_finds_its_console_plugin_under_its_prefixs_share(
     tmp_path: Path,
 ) -> None:
-    """A Homebrew keg: `bin/mame` is a symlink into `Cellar/mame/<version>/bin/`, and the
-    plugins are installed under `share/mame/plugins` of the keg. Resolved first, so the
-    symlink's own directory is not where it is looked; a `plugins/` beside the executable
-    without the console plugin is passed over; one holding it is asked first."""
+    """A Homebrew keg."""
     version = "1.0"
     keg = tmp_path / "Cellar" / "mame" / version
     (keg / "bin").mkdir(parents=True)
@@ -5476,9 +4938,7 @@ def test_the_command_line_names_the_plugins_beside_the_binary(tmp_path: Path) ->
 
 
 def test_every_registered_tool_carries_a_description() -> None:
-    """A tool can reach the client with no `description` at all: a docstring composed with
-    `+` is an expression, not a docstring, so `__doc__` is None and the tool is registered
-    mute."""
+    """A tool can reach the client with no `description` at all."""
     import asyncio
     tools = asyncio.run(s.mcp.list_tools())
     assert len(tools) > 30, "the registry answered almost nothing"
@@ -5489,8 +4949,7 @@ def test_every_registered_tool_carries_a_description() -> None:
 def test_registers_from_the_last_stop_before_any_stop_is_no_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A stale read before the session has recorded a stop has nothing to hand back, and
-    says so with its own code rather than an empty register map."""
+    """A stale read before the session has recorded a stop has nothing to hand back."""
     _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "last_stop", {})
     out = s.registers(from_last_stop=True)
@@ -5501,8 +4960,7 @@ def test_registers_from_the_last_stop_before_any_stop_is_no_stop(
 def test_history_counts_what_came_back_and_keeps_what_was_asked_apart(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """At the boot only one instruction has retired: `instructions` is what the console
-    LISTED, never an echo of the argument, which three repos read as eight lines."""
+    """At the boot only one instruction has retired."""
     ses = _ConsoleSession(replies={"history": "0025E8: lea     $201000.l, A0\n"})
     _console(monkeypatch, tmp_path, ses)
     out = s.history(limit=8)
@@ -5513,8 +4971,7 @@ def test_history_counts_what_came_back_and_keeps_what_was_asked_apart(
 def test_find_summary_names_the_pattern_and_where_it_looked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A session's summaries are what a reader has to tell one search from the next: the
-    pattern and the place, not `find : 452 hits` with a hole where the ref should be."""
+    """A session's summaries are what a reader has to tell one search from the next."""
     ses = _ConsoleSession(replies={"find": _first_window((FIXTURES / "find.txt").read_text())})
     _console(monkeypatch, tmp_path, ses)
     out = s.find(ref="0x0", length=0x10000, data_hex="00201000")
@@ -5524,7 +4981,6 @@ def test_find_summary_names_the_pattern_and_where_it_looked(
     assert by_region["summary"] == "find e8 in CODE: 2 hits", by_region["summary"]
 
 
-# ------------------------------------------------------------ the cabinet's cfg, installed
 
 CFG_OK = """<?xml version="1.0"?>
 <mameconfig version="10">
@@ -5542,11 +4998,7 @@ CFG_OK = """<?xml version="1.0"?>
 def test_start_installs_the_repos_cfg_where_mame_reads_it_and_close_says_if_it_changed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The cabinet's key map is a versioned `.cfg` in the repo, the ONE source of those keys
-    (the driver carries no PORT_CODE), and without it a live session plays on MAME's generic
-    defaults with nothing saying so. `start(cfg=)` copies it to `<state>/cfg/<system>.cfg`,
-    the file `-cfg_directory` makes MAME read, and the reply says so; `close` never touches
-    the repo's file and says whether MAME rewrote the copy on its way out."""
+    """The cabinet's key map is a versioned `.cfg` in the repo, the ONE source of those keys."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     source = tmp_path / "repo" / "run" / "cfg" / "v30.cfg"
@@ -5585,11 +5037,7 @@ def test_start_installs_the_repos_cfg_where_mame_reads_it_and_close_says_if_it_c
 def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Two XML subtleties MAME meets in SILENCE (the MAME reference carries both): a `<port>`
-    without `tag`, `mask` and `defvalue` parses, binds nothing and is overwritten on exit;
-    a comment holding `--` makes MAME log "Error parsing XML configuration file" and load
-    the defaults. Both are refused before anything is spawned, naming the line; so is a
-    cfg for another system, a relative path and a missing file."""
+    """Two XML subtleties MAME meets in SILENCE (the MAME reference carries both)."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
@@ -5622,13 +5070,7 @@ def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
 def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The control AFTER the boot. MAME says it refused the file with `osd_printf_warning`
-    (`config.cpp`, `load_xml`), and the OSD sends the WARNING channel to stderr
-    (`osdobj_common.cpp`, `output_callback`), never to `error.log`, which is `logerror`'s:
-    the line lands in the `stdout.log` this server captures both streams into. The first
-    version read `error.log`, so the control could never fire. The line planted where MAME
-    writes it is INVALID with the session closed, like the ROM check; planted in
-    `error.log` it is not the proof."""
+    """The control AFTER the boot."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     cfg = tmp_path / "good.cfg"
@@ -5636,8 +5078,7 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     line = "Error parsing XML configuration file m68k.cfg\n"
 
     class _Complaining(_StubProcess):
-        """A MAME that refuses its cfg: the warning goes down the stdout handle it was
-        handed, the way the real one's stderr does (`stderr=STDOUT`)."""
+        """A MAME that refuses its cfg."""
 
         def __init__(self, *a: object, **k: object) -> None:
             super().__init__(*a, **k)
@@ -5648,9 +5089,6 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
 
     import subprocess
     real_popen = subprocess.Popen
-    # `-debugger` is what makes an invocation the EMULATOR: `start` asks the same binary
-    # `-listxml` first, and that one must really run rather than meet a double built for
-    # the boot.
     monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: _Complaining(*a, **k)
                         if (str((a[0] if a else k["args"])[0]).endswith("fake-mame")
                             and "-debugger" in (a[0] if a else k["args"]))
@@ -5702,8 +5140,7 @@ def test_every_path_refusal_names_the_remedy_and_not_only_the_rule() -> None:
 def test_close_lists_its_fields_in_the_order_its_docstring_promises(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The last words of each channel come right after `closed`, then how it ended: the
-    order the `Reply:` line gives, which a reader of the JSON follows."""
+    """The last words of each channel come right after `closed`, then how it ended."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}order"
     scratch.mkdir()
     (scratch / "stdout.log").write_text("bye\n")
@@ -5717,8 +5154,7 @@ def test_close_lists_its_fields_in_the_order_its_docstring_promises(
 
 
 def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
-    """The summary is one line a person reads without the JSON, so a long refusal is cut
-    there: at a word, with a mark that says the rest is in `message`, never mid-word."""
+    """The summary is one line a person reads without the JSON, so a long refusal is cut there."""
     message = "the write side of 0x4a0 is unmapped: " + "a change watch there can never fire " * 6
     line = mame_mcp.BOUNDARY.line("watch_add", {}, {"status": "INVALID", "code": "bad_argument",
                                         "message": message})
@@ -5733,8 +5169,7 @@ def test_an_invalid_summary_is_cut_at_a_word_and_says_so() -> None:
 
 
 def test_a_docstring_placeholder_is_filled_from_its_constant_or_fails_the_import() -> None:
-    """A number a description states is the constant that enforces it, and a placeholder
-    nothing fills is a failure at import: shipped, it would read as a word, not a number."""
+    """A number a description states is the constant that enforces it."""
     assert mdocs.filled("x", "at most {READ_MAX} bytes") == f"at most {read.READ_MAX} bytes"
     with pytest.raises(TypeError, match=r"x's docstring names \['\{NOPE\}'\]"):
         mdocs.filled("x", "at most {NOPE} bytes")
@@ -5742,15 +5177,13 @@ def test_a_docstring_placeholder_is_filled_from_its_constant_or_fails_the_import
 
 
 def test_the_docstrings_name_what_the_replies_carry_and_what_by_accepts() -> None:
-    """`start` answers `symbols_typed` beside `symbols`, and `by` on a breakpoint takes
-    five words: a docstring that names three teaches a caller two of them do not exist."""
+    """`start` answers `symbols_typed` beside `symbols`."""
     assert "`symbols_typed`" in documented("start")
     (tool,) = [t for t in asyncio.run(s.mcp.list_tools()) if t.name == "breakpoint_at"]
     assert tool.input_schema["properties"]["by"]["enum"] == ["auto", "symbol", "address"]
     assert "never an expression" in published("breakpoint_at")
 
 
-# --------------------------------------- what moves the machine, held at the fields it answers
 
 
 def test_a_controls_hits_are_the_delta_and_the_count_after_only_when_it_fell() -> None:
@@ -5879,7 +5312,7 @@ def test_an_interrupt_the_stub_refuses_at_the_bound_does_not_escape_run_to(
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
 
     def wedged(timeout: float = 5.0) -> str:
-        raise g.Timeout("no answer within 5 s")     # as the real one: no stop was noted
+        raise g.Timeout("no answer within 5 s")
 
     monkeypatch.setattr(ses, "interrupt", wedged)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
@@ -6027,14 +5460,13 @@ def test_a_conditional_target_the_console_does_not_list_is_refused_as_the_consol
 def test_a_target_listed_without_its_condition_is_removed_before_the_refusal(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row armed bare where a conditioned one was sent stops at every pass, and nobody would
-    own it: the refusal takes it down first, by its index."""
+    """A row armed bare where a conditioned one was sent stops at every pass."""
     ses = _running(monkeypatch, tmp_path)
     real_monitor = ses.monitor
 
     def bare(command: str, timeout: float = 10.0) -> str:
         if command.startswith("bp 0x4a0:") and "," in command:
-            command = command.split(",", 1)[0]          # the console dropped the condition
+            command = command.split(",", 1)[0]
         return real_monitor(command, timeout)
 
     monkeypatch.setattr(ses, "monitor", bare)
@@ -6044,7 +5476,6 @@ def test_a_target_listed_without_its_condition_is_removed_before_the_refusal(
                    ), "the bare row is gone"
 
 
-# ------------------------------------------------ the two runs the console starts, at their edges
 
 
 def _by_frames(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> _RegisterSession:
@@ -6079,9 +5510,7 @@ def test_a_run_by_frames_that_elapsed_says_so_with_its_clock_its_polls_and_its_p
 def test_a_run_by_frames_reports_frames_done_of_the_frames_asked_and_ends_at_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The measure of a frame run is its frames, not its wall-clock bound: a run that finishes
-    well inside `seconds` ends its bar at 100%, and one report comes when the loop ends,
-    whatever the period let through before it."""
+    """The measure of a frame run is its frames, not its wall-clock bound."""
     ses = _by_frames(monkeypatch, tmp_path)
     monkeypatch.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
     got: list[tuple[float, float | None]] = []
@@ -6123,7 +5552,7 @@ def test_a_run_by_frames_whose_alignment_clock_cannot_be_read_reports_no_cycles(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _by_frames(monkeypatch, tmp_path)
-    ses.frozen = True                           # the aligning tick: the counter does not move
+    ses.frozen = True
     real = ses.monitor
 
     def monitor(command: str, timeout: float = 10.0) -> str:
@@ -6164,16 +5593,16 @@ class _ScriptedClock(mprogress.Ticker):
 
 
 @pytest.mark.parametrize("looks,reads,after", [
-    ([False, True], ["a"], 10),                 # no reading of the landing (the survey's one)
-    ([False, False, True], ["b"], 11),          # one reading, and it is the landing's
-    ([False, False, False, True], ["b", "c"], 12),   # two that disagree: the LAST one
+    ([False, True], ["a"], 10),
+    ([False, False, True], ["b"], 11),
+    ([False, False, False, True], ["b", "c"], 12),
 ])
 def test_a_run_by_frames_out_of_clock_reports_the_last_frame_it_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, looks: list[bool], reads: list[str],
     after: int,
 ) -> None:
     ses = _by_frames(monkeypatch, tmp_path)
-    ses.frame_answers = ["a", *reads]           # the first is the reading before the run
+    ses.frame_answers = ["a", *reads]
     monkeypatch.setattr(_ScriptedClock, "answers", list(looks))
     monkeypatch.setattr(mprogress, "Ticker", _ScriptedClock)
     out = s.run_for(frames=5)
@@ -6223,8 +5652,7 @@ def test_a_run_by_frames_cut_by_a_stop_this_server_armed_counts_the_clock_up_to_
 
 
 def test_each_reason_a_run_has_no_cycles_is_its_own(monkeypatch: pytest.MonkeyPatch) -> None:
-    """`cycles` unavailable names which of the three it is: no baseline, two cpus' counters, or
-    a counter that could not be read after the run."""
+    """`cycles` unavailable names which of the three it is."""
     def refused(_ses: object, _names: list[str]) -> list[int]:
         raise g.SessionError("the console refused `print totalcycles`")
 
@@ -6262,14 +5690,13 @@ def test_a_run_by_time_cut_at_a_breakpoint_this_server_armed_is_named_by_it(
 def test_a_run_by_time_at_its_bound_reports_the_frame_the_machine_came_to_rest_at(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, refusal: Exception,
 ) -> None:
-    """The interrupt lands a few readings late, and a refused one is not the news: the frame
-    reported is the one the counter RESTED at, and the progress line names the frame it read."""
+    """The interrupt lands a few readings late, and a refused one is not the news."""
     ses = _by_frames(monkeypatch, tmp_path, stop_after=None)
     monkeypatch.setattr(mprogress, "PROGRESS_EVERY_S", 0.0)
 
     def halt() -> None:
         ses.interrupted = True
-        ses.stop_after = ses.polls_since_gtime + 3      # three more frames go by first
+        ses.stop_after = ses.polls_since_gtime + 3
         halted_at.append(len(ses.commands))
         raise refusal
 
@@ -6301,16 +5728,12 @@ def test_a_run_by_time_that_never_rests_reports_the_last_frame_it_saw_moving(
     assert (out["frame_before"], out["frame_after"]) == (10, ses.frame), out
 
 
-# ------------------------ what the mutation survivors of launch and state left loose
 
 
 def test_boot_hands_the_inipath_and_the_scratch_as_cwd_to_the_process(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`build_command` is tested alone; whether `boot` hands it the caller's `inipath` and
-    runs the process IN the scratch was not. A driver's `mame.ini` routed in through
-    `-inipath` fell out of the argv in silence, and a MAME run anywhere else writes its
-    `cfg/` where it stands rather than where the reply says."""
+    """`build_command` is tested alone."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     ini = tmp_path / "ini"
@@ -6327,11 +5750,7 @@ def test_boot_hands_the_inipath_and_the_scratch_as_cwd_to_the_process(
 def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestly(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Two things the connect loop must get right that no case held: the session is opened on
-    the port `judge` chose, and a `wait` of zero, which never enters the loop, is reported as
-    a stub that did not answer and never as a process that exited with an empty code."""
-    import subprocess
-    from types import SimpleNamespace
+    """Two things the connect loop must get right that no case held."""
 
     ports: list[int] = []
     owners: list[Any] = []
@@ -6350,18 +5769,10 @@ def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestl
         def poll(self) -> int | None:
             return None
 
-    monkeypatch.setattr(g, "Session", Refusing)
-    monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: Spawned())
-    monkeypatch.setattr(mstate.STATE, "scratch", tmp_path)
-    monkeypatch.setattr(mstate.STATE, "ses", None)
-    monkeypatch.setattr(mstate.STATE, "proc", None)
-    judged = SimpleNamespace(
-        state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
-        system="sys", rompath=str(tmp_path), port=23999, flags=[], inipath="", wait=0.05,
-        ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
-        presence=False, view="")
+    judged = _boot_judged(monkeypatch, tmp_path, Refusing, Spawned, port=23999, wait=0.05,
+                          presence=False)
     with pytest.raises(mstate.Invalid) as e:
-        launch.boot(judged)  # type: ignore[arg-type]
+        launch.boot(judged)
     assert ports and set(ports) == {23999}, ports
     # THE PROOF IS THIS LAUNCH'S: the spawned pid on the judged port, a deadline no sooner than
     # one request's wait, and the liveness of this session's MAME.
@@ -6374,7 +5785,7 @@ def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestl
     (tmp_path / "second").mkdir()
     monkeypatch.setattr(mstate.STATE, "scratch", tmp_path / "second")
     with pytest.raises(mstate.Invalid) as e:
-        launch.boot(judged)  # type: ignore[arg-type]
+        launch.boot(judged)
     assert "did not answer within 0" in str(e.value) and "exited" not in str(e.value)
     assert e.value.fields["exit_code"]["available"] is False
 
@@ -6382,14 +5793,7 @@ def test_boot_connects_the_stub_on_the_judged_port_and_names_a_zero_wait_honestl
 def test_start_records_for_the_later_tools_everything_it_judged(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """What `start` writes into STATE for the tools that come after it, held field by field:
-    `system` (`status`), `reference` (`state_write(method="load")`'s ROM check), `boot_pc`
-    (`reset`'s
-    readback), the table's spans, bases, classes and segment bases (`find`, `disassemble`,
-    the pointer watches), which a `types` file must not strip when it rebuilds the table, a
-    `bases` key in any case, and the `wait` handed to the `-listxml` collection, which bounds
-    a query that would otherwise be waited for without limit, on the boot that works and on
-    the one that fails."""
+    """What `start` writes into STATE for the tools that come after it, held field by field."""
     image = bytes(range(64))
     ses = _stub_boot(monkeypatch, tmp_path, image, at=0x20000)
     waits: list[tuple[str, float]] = []
@@ -6433,8 +5837,7 @@ def test_start_records_for_the_later_tools_everything_it_judged(
 def test_start_hands_its_progress_to_the_kill_its_guard_makes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The kill a failed boot triggers is a wait the owner watches, and it paints through the
-    progress `start` was given; handed None, the first tick would raise inside the guard."""
+    """The kill a failed boot triggers is a wait the owner watches."""
     image = bytes(range(64))
     ses = _stub_boot(monkeypatch, tmp_path, image, at=0)
     monkeypatch.setattr(ses, "dial", lambda: (_ for _ in ()).throw(OSError("refused")))
@@ -6453,10 +5856,7 @@ def test_start_hands_its_progress_to_the_kill_its_guard_makes(
 def test_close_reports_the_console_pipe_as_it_found_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Three shapes of the drain's account: a session that BROKE is drained of nothing and
-    says zero and zero with no note; a drain the channel refuses falls back to the count of
-    lines still in the pipe with nothing drained, and the note says stepping did not evaluate
-    them (the machine was stopped); a drain that emptied the pipe earns no note at all."""
+    """Three shapes of the drain's account."""
     import mame_transport as transport
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}pipe"
@@ -6530,11 +5930,7 @@ def test_close_counts_the_deaths_and_reruns_no_lua_call_read(
 def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`how: quit` must not mean only "exited within the grace period after quit was asked for",
-    which a crash on the way out also satisfies. MAME rewrites `<state>/cfg/<system>.cfg`
-    as it exits cleanly, so that file, newer than it was before the quit, is the proof:
-    with it the ending is `quit`, without it `exited`, and `state_written` carries the
-    reading; a State with no directory to read it in says null and keeps `quit`."""
+    """`how."""
     import os
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}proof"
@@ -6574,8 +5970,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
 def test_a_cfg_that_cannot_be_read_back_says_which_file_and_why(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`changed: null` alone left a caller deciding whether to commit a cfg with no idea
-    which of the two files could not be read; the `why` names it."""
+    """`changed."""
     import os
 
     source = tmp_path / "repo.cfg"
@@ -6600,10 +5995,7 @@ def test_a_cfg_that_cannot_be_read_back_says_which_file_and_why(
 def test_free_port_takes_the_kernels_choice_and_refuses_when_there_is_none(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """`free_port` asks the kernel for a port (a bind on 0) and never walks from a fixed number,
-    which two starts at once would share; a kernel that hands out nothing is `host_failed` in
-    the envelope. The bind is a double here,
-    so the choice is judged on its own and never on what the host happens to hold."""
+    """`free_port` asks the kernel for a port."""
     asked: list[int] = []
 
     def bind(port: int) -> int:
@@ -6619,8 +6011,7 @@ def test_free_port_takes_the_kernels_choice_and_refuses_when_there_is_none(
 
 
 def test_a_free_port_is_the_kernels_and_binds() -> None:
-    """The real kernel: the port it hands out is one a bind accepts, and it is not the stub's
-    usual 23946 a walk would have started from."""
+    """The real kernel."""
     port = launch.free_port()
     assert port != 23946 and launch.port_is_free(port), port
 
@@ -6643,9 +6034,7 @@ def test_the_top_of_the_tcp_range_is_a_port(
 def test_judge_cfg_refuses_a_wrong_root_an_unreadable_file_and_a_cut_off_document_in_the_envelope(
     tmp_path: Path,
 ) -> None:
-    """Three refusals of `judge_cfg` no case reached: each is `bad_argument` naming the file,
-    and a document cut off before its closing tags is refused as not XML rather than parsed
-    as a whole one (the parser is told the buffer is FINAL)."""
+    """Three refusals of `judge_cfg` no case reached."""
     import os
 
     wrong_root = tmp_path / "root.cfg"
@@ -6687,9 +6076,7 @@ def test_a_broken_sessions_refusal_carries_the_reason_as_a_field(
 
 
 def test_settle_throttles_keeps_the_machines_word_verbatim_and_flags_the_other_setting() -> None:
-    """A mark whose `throttled=` is neither word is kept VERBATIM in the row, because a value
-    nobody anticipated is the one worth reading; and `false` after asking for `on` is the
-    other setting, a row, never a switch that landed."""
+    """A mark whose `throttled=` is neither word is kept VERBATIM in the row."""
     mstate.STATE.throttles_pending = [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
                                       {"tag": "MAME_MCP_THROTTLE#2", "on": True, "seq": 2}]
     mstate.settle_throttles(["[luaengine] MAME_MCP_THROTTLE#1 throttled=maybe frame=3",
@@ -6713,7 +6100,6 @@ def test_wait_exit_polls_the_process_at_the_exit_poll_and_never_for_ever() -> No
     assert seen and all(t == mstate.EXIT_POLL_S for t in seen), seen
 
 
-# ---------------------- what the mutation survivors of the tool surface's helpers left loose
 
 
 @pytest.mark.parametrize(("name", "args", "reply", "expected"), [
@@ -6789,10 +6175,7 @@ def test_wait_exit_polls_the_process_at_the_exit_poll_and_never_for_ever() -> No
 def test_the_summary_line_of_each_tool_says_what_came_back(
     name: str, args: dict[str, Any], reply: dict[str, Any], expected: str,
 ) -> None:
-    """One line per tool, in the tool's own words: the client paints nothing else, so a tool
-    whose case fell out of `_summary` reads `<name>: ok` and two calls of it cannot be told
-    apart. Each case here is a tool's line with its reply's own fields, and the branch of a
-    line that reads one way or the other (stale, while running, cut, mutates, seen)."""
+    """One line per tool, in the tool's own words."""
     assert mame_mcp.BOUNDARY.line(name, args, {"status": "ok", **reply}) == expected
 
 
@@ -6811,9 +6194,7 @@ def test_a_start_summary_names_the_re_armed_declarations_only_when_there_are_any
 
 
 def test_a_refusal_is_clipped_for_the_summary_line_at_a_word_and_never_inside_one() -> None:
-    """The ceiling is where a line stops being a line: a text at the ceiling is whole, one
-    past it is cut at the last space before the ceiling with the mark, a text with no space
-    is cut hard, and a space at the very start is not a word to cut at."""
+    """The ceiling is where a line stops being a line."""
     assert summaries.clipped("a" * 120) == "a" * 120
     assert summaries.clipped("a" * 121) == "a" * 120 + "..."
     assert summaries.clipped("a" * 100 + " " + "b" * 30) == "a" * 100 + "..."
@@ -6833,8 +6214,7 @@ def test_the_schemas_refusal_carries_its_body_as_structured_content_too() -> Non
 
 
 def test_a_by_outside_breakpoint_ats_words_lists_only_the_words_it_takes() -> None:
-    """A closed vocabulary's refusal names the words the tool takes: listing `expr` and
-    `pointer` to `breakpoint_at` sends the caller to a value it then refuses."""
+    """A closed vocabulary's refusal names the words the tool takes."""
     out = refused("by is one of", s.breakpoint_at(ref="0x4a0", by="bogus"))
     assert "'address'" in out["message"] and "expr" not in out["message"], out["message"]
     assert "pointer" not in out["message"], out["message"]
@@ -6847,8 +6227,7 @@ def test_a_by_outside_breakpoint_ats_words_lists_only_the_words_it_takes() -> No
     ("10", False), ("0x10", True), ("0X10", True), ("4", True), ("9", True), ("1c", True),
     ("1C", True), ("99", False)])
 def test_a_pointer_offset_that_reads_two_ways_is_written_0x(offset: str, accepted: bool) -> None:
-    """`[PTR]+10` reads as 0x10 (sixteen bytes) in the shared grammar and as ten in decimal, so a
-    call spells it `0x`: one digit or a hex letter reads one way."""
+    """`[PTR]+10` reads as 0x10 (sixteen bytes) in the shared grammar and as ten in decimal."""
     import mame_inputs as minputs
     if accepted:
         minputs.check_pointer_offset(f"[PTR]+{offset}")
@@ -6874,8 +6253,7 @@ def test_a_port_not_written_0x_is_refused_naming_its_argument() -> None:
 
 
 def test_a_control_carrying_a_segment_is_refused_before_any_session() -> None:
-    """A `control` is a ref like `ref`, and the shape every ref is held to is judged offline:
-    a segment, or `0x` before what is not hex."""
+    """A `control` is a ref like `ref`, and the shape every ref is held to is judged offline."""
     out = refused("carries a segment", s.run_to(ref="0x4a0", control="12:34"))
     assert out["code"] == "bad_argument", out
     refused(r"control='0xzz'", s.run_to(ref="0x4a0", control="0xzz"))
@@ -6898,8 +6276,7 @@ def test_the_port_probe_answers_the_port_it_bound() -> None:
 
 
 def test_each_mark_reads_its_own_channel_and_a_missing_file_is_zero(tmp_path: Path) -> None:
-    """The stdout mark is the process channel's, `error.log`'s the emulator's: sizes told apart,
-    and a channel not written yet is 0, never a FileNotFoundError on a fresh scratch."""
+    """The stdout mark is the process channel's, `error.log`'s the emulator's."""
     import mame_transport as transport
     assert files.log_mark(tmp_path) == 0 and transport.stdout_mark(tmp_path) == 0
     files.log_path(tmp_path, "process").write_bytes(b"x" * 7)
@@ -6910,8 +6287,7 @@ def test_each_mark_reads_its_own_channel_and_a_missing_file_is_zero(tmp_path: Pa
 
 
 def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> None:
-    """The file tools' bodies are scry-core's and answer bare fields; through this server each
-    wears the envelope every other reply wears: `status`, `session` and its own summary."""
+    """The file tools' bodies are scry-core's and answer bare fields."""
     from scry_core import png
     pic = tmp_path / "a.png"
     pic.write_bytes(png.encode(png.Raster(2, 2, bytes(12))))
@@ -6922,9 +6298,7 @@ def test_a_media_file_tool_answers_in_this_server_s_envelope(tmp_path: Path) -> 
 
 def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_included(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """The run's proof that no emulator outlived it reads this ledger: a start whose MAME
-    never answered is exactly the one that would stay behind unrecorded. The fake writes its
-    own pid, which is the one the ledger has to hold; outside a live run nothing is written."""
+    """The run's proof that no emulator outlived it reads this ledger."""
     from scry_core import live_host
 
     pid_file = tmp_path / "pid"

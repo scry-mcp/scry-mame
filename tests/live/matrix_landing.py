@@ -1,17 +1,6 @@
-"""Section V of the live matrix: a control on the instruction a frame stop lands on, on
-m68k-dual-alt, where that instruction is the first of the handler the vblank interrupt enters.
+"""Section V of the live matrix: a control on the handler instruction a frame stop lands on.
 
-Two arms over one run by frames, in `run_frames`' legs, whose stops between them the server
-counts as it counts any (`breakpoints.count_landing` says why the arms differ). The server's:
-a control there counts as many hits as a control on the next instruction. MAME's own: a logging
-breakpoint there, typed through `debug`, logs fewer lines than one on the next instruction. The
-day MAME evaluates that instruction the second arm goes red, and the server's correction is the
-thing to revisit. m68k-dual-alt runs on its copies on the bench, BLOCKED naming the file when they
-are absent or off their pins.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
-
-    uv run python tests/live/matrix_landing.py
+Run alone: `uv run python tests/live/matrix_landing.py`
 """
 
 from typing import Any
@@ -30,10 +19,10 @@ from live_harness import (
     section,
 )
 
-HANDLER = "0x564"               # the target of vectors 28 and 29, two autovectors
-INSIDE = "0x568"                # the handler's second instruction
+HANDLER = "0x564"               # vectors 28 and 29 share this target
+INSIDE = "0x568"
 RUN_FRAMES = 600
-AT_HANDLER, AT_INSIDE = "MCPH", "MCPI"      # each logging breakpoint's own word in error.log
+AT_HANDLER, AT_INSIDE = "MCPH", "MCPI"
 
 V_TITLE = "a control on the instruction a stop lands on"
 V = [
@@ -70,7 +59,7 @@ boards_cover("V_BOARDS", V, V_BOARDS)
 
 
 def register_v() -> None:
-    """Register section V with the matrix: after every section registered before it."""
+    """Register section V with the matrix."""
     section("V", V_TITLE, V)(lambda: run_boards(V, V_BOARDS))
 
 

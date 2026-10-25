@@ -1,18 +1,13 @@
 """The `gfx_layout` language and the decoder under it: MAME's own terms for how tiles sit in bytes.
 
-WHY MAME'S LANGUAGE. A `GFXDECODE_ENTRY` in a driver names a layout of seven fields (width,
-height, planes, plane offsets, x offsets, y offsets, char increment, all in BITS), and every
-format MAME decodes is written in it: byte-interleaved planes, planes a third of a region apart,
-packed nibbles, a linear framebuffer with one plane per bit. So the layout is taken with those
-field names and the macros drivers write them with (`RGN_FRAC(n,d)`, `STEPn(a,b)`), and a layout
-transcribes from a driver by copy and paste. `total` is not a field: `first` and `count` choose
-the tiles, because the count is the caller's question and not the format's.
+A layout takes MAME's field names and driver macros (`RGN_FRAC(n,d)`, `STEPn(a,b)`, all in BITS),
+so it transcribes from a `GFXDECODE_ENTRY` by copy and paste. `total` is not a field: `first` and
+`count` choose the tiles, because the count is the caller's question and not the format's.
 
-HOW A BIT IS FOUND, as `gfx_element::decode` finds it (`src/emu/drawgfx.cpp`): tile `t`'s pixel
-`(x, y)` has, for plane `p`, the bit at `t * charincrement + planeoffset[p] + yoffset[y] +
-xoffset[x]` from the block's first byte, most significant bit of a byte first, and plane 0 is the
-MOST significant bit of the pixel. `RGN_FRAC(n,d)` is `n/d` of the WHOLE block's length in bits,
-whatever `offset` says (`digfx.cpp`).
+As `gfx_element::decode` (`src/emu/drawgfx.cpp`) finds it, tile `t`'s pixel `(x, y)` has, for
+plane `p`, the bit at `t * charincrement + planeoffset[p] + yoffset[y] + xoffset[x]` from the
+block's first byte, most significant bit of a byte first, and plane 0 is the MOST significant bit
+of the pixel. `RGN_FRAC(n,d)` is `n/d` of the WHOLE block's length in bits, whatever `offset` says.
 """
 
 from __future__ import annotations
@@ -34,11 +29,8 @@ _TOKEN = re.compile(r"\s*(?:(0[xX][0-9a-fA-F]+|\d+)|(RGN_FRAC)|([-+*(),]))")
 _STEP = re.compile(r"^\s*STEP(\d+)\s*\((.*)\)\s*$", re.S)
 
 
-# ------------------------------------------------------------------ the layout language
-#
-# A value is LINEAR in the block's length: `const + sum(coef * (bits * num // den))`, which is
-# what an expression over integers and `RGN_FRAC` can say. It is kept in that form until the
-# block's length is known, so a layout is judged whole before the machine is asked anything.
+# A value is LINEAR in the block's length: `const + sum(coef * (bits * num // den))`. It stays in
+# that form until the block's length is known, so a layout is judged before the machine is asked.
 
 @dataclass(frozen=True)
 class Value:
@@ -62,9 +54,7 @@ class LayoutError(ValueError):
 
 
 def _expr(text: str, field: str) -> Value:
-    """`text` as a `Value`: integers (decimal or hex), `RGN_FRAC(n,d)`, `+`, `-`, `*`, brackets.
-    The parser recurses once a bracket or a sign, so a depth past the interpreter's is refused as
-    what it is, a layout no driver writes."""
+    """`text` as a `Value`; nesting past the interpreter's recursion limit is refused."""
     try:
         return _parsed(text, field)
     except RecursionError:
@@ -160,8 +150,7 @@ def _scalar(raw: Any, field: str) -> Value:
 
 
 def _split(text: str) -> list[str]:
-    """A list written the way a driver writes it, `{ STEP8(0,1), 64, RGN_FRAC(1,2) }`, split at
-    the commas outside brackets."""
+    """A driver-style list, `{ STEP8(0,1), 64, RGN_FRAC(1,2) }`, split at top-level commas."""
     text = text.strip()
     if text.startswith("{") and text.endswith("}"):
         text = text[1:-1]
@@ -180,8 +169,7 @@ def _split(text: str) -> list[str]:
 
 
 def _items(raw: Any, field: str) -> list[Value]:
-    """A list field: a JSON list of integers and expressions, or one string as a driver writes
-    the braces; `STEPn(a,b)` expands to its `n` terms."""
+    """A list field, as a JSON list or a braced string; `STEPn(a,b)` expands to its `n` terms."""
     if isinstance(raw, str):
         raw = _split(raw)
     if not isinstance(raw, list):
@@ -242,16 +230,14 @@ class Resolved:
                 "charincrement": self.charincrement}
 
     def tile_bits(self) -> tuple[int, int]:
-        """The lowest and highest bit tile 0 touches, relative to the block's `offset`. A bit is
-        `planeoffset + yoffset + xoffset` with the three chosen independently, so the extremes
-        are the sums of each list's extremes: exact, without building every pixel's bits."""
+        """The lowest and highest bit tile 0 touches, relative to the block's `offset`: the sums
+        of each list's extremes, since the three are chosen independently."""
         lists = (self.planeoffset, self.yoffset, self.xoffset)
         return sum(min(v) for v in lists), sum(max(v) for v in lists)
 
     @cached_property
     def pixel_bits(self) -> tuple[tuple[tuple[int, int], ...], ...]:
-        """For each pixel, row-major, the bit of every plane relative to the tile's first bit and
-        the weight it carries: the same for every tile of the layout, so worked out once."""
+        """Per pixel, row-major, each plane's (bit relative to the tile start, weight)."""
         weights = [1 << (self.planes - 1 - p) for p in range(self.planes)]
         return tuple(tuple((po + yo + xo, wt) for po, wt in zip(self.planeoffset, weights,
                                                                 strict=True))
@@ -259,8 +245,7 @@ class Resolved:
 
 
 def parse_layout(raw: Any, allow_name: bool = False, where: str = "layout") -> Layout:
-    """`raw` as a `Layout`, judged whole: every one of MAME's field names and no other (`name`
-    too when `allow_name`), each list as long as its count, the counts inside their bounds."""
+    """`raw` as a `Layout`: exactly MAME's fields (plus `name` if `allow_name`), counts matching."""
     if not isinstance(raw, dict):
         raise LayoutError(f"{where} is an object with the fields {list(LAYOUT_KEYS)}")
     allowed = set(LAYOUT_KEYS) | ({"name"} if allow_name else set())
@@ -295,10 +280,8 @@ def parse_layout(raw: Any, allow_name: bool = False, where: str = "layout") -> L
 
 
 def resolve(lay: Layout, bits: int | None) -> Resolved:
-    """`lay` for a block of `bits` bits (None for a range of a cpu's space, which is a fraction
-    of nothing), refused when an offset or the increment falls below zero. An increment of 0 is
-    MAME's too (every tile is the same bits, as `drawgfx.cpp` takes it), and `available` counts
-    such a layout as the one tile it is."""
+    """`lay` for a block of `bits` bits (None for a cpu-space range), refused below zero.
+    A charincrement of 0 is MAME's too: every tile is the same bits, so `available` says one."""
     def r(v: Value) -> int:
         return v.resolve(bits)
 
@@ -313,18 +296,15 @@ def resolve(lay: Layout, bits: int | None) -> Resolved:
 
 
 def check_layout(raw: Any, allow_name: bool = False, where: str = "layout") -> Layout:
-    """The layout as a refusal the reply contract knows, for the pre-gate checks."""
+    """`parse_layout`, refusing as `bad_argument`."""
     try:
         return parse_layout(raw, allow_name, where)
     except LayoutError as e:
         raise st.Invalid("bad_argument", str(e)) from None
 
 
-# ------------------------------------------------------------------ the decoder
-
 def available(res: Resolved, block_bits: int, offset: int) -> int:
-    """How many whole tiles fit in the block from byte `offset`: a tile any of whose bits falls
-    past the end is not one."""
+    """How many whole tiles fit in the block from byte `offset`."""
     _, hi = res.tile_bits()
     room = block_bits - offset * 8 - hi - 1
     if room < 0:

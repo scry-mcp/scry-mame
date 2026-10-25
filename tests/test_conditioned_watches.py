@@ -1,13 +1,6 @@
-"""A change watch CONDITIONED on the value written: `watch_add(mode="change",
-condition="(wpdata&3)!=0")` is the console's `wp <addr>,<len>,w,<condition>`, declared, stored
-and re-armed like any other watch.
+"""A change watch conditioned on the value written (`wp <addr>,<len>,w,<condition>`).
 
-The question it answers is "who writes bits 0-1 of this byte", among a register's hundreds of
-thousands of writes: a plain change watch stops at every one of them and a count watch never
-stops. The console's answers are CAPTURED (`fixtures/console/PROVENANCE.txt`): `wpdata` sits in
-the debugger's global symbol table, so `print {wpdata}` answers outside a watchpoint, and a
-condition MAME can parse but not evaluate is ARMED and never fires, which is why each condition
-is put to the evaluator before its `wp`.
+The console's answers are captured (`fixtures/console/PROVENANCE.txt`).
 """
 
 from __future__ import annotations
@@ -36,14 +29,13 @@ import server as s  # noqa: E402
 COND = "(wpdata&3)!=0"
 ARM = f"wp 0x2031fc::maincpu,0x4,w,{COND}"
 OWNER = ("frame_lo", ":maincpu")
-# The debug log's line for a conditioned row, CAPTURED: the unconditioned shape, which the
-# console prints only once the condition held.
+# The console prints the unconditioned shape, and only once the condition held.
 STOP_LINE = next(ln for ln in captured("debuglog.conditioned-wp.txt").splitlines(keepends=True)
                  if ln.startswith("Stopped at watchpoint 1 "))
 
 
 def _conditioned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """The watch double with the console's captured answer to the condition's evaluation."""
+    """The watch double with the captured answer to the condition's evaluation."""
     ses = _watching(monkeypatch, tmp_path)
     ses.rp_print_errors = {COND: captured("print.braces.wpdata-masked-outside.txt")}
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
@@ -51,8 +43,7 @@ def _conditioned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSessi
 
 
 def test_the_captured_row_and_arm_are_the_shapes_the_doubles_answer() -> None:
-    """The double's conditioned row is the console's (`wplist.condition.txt`), and the parser
-    reads the condition off it, so every case below runs on the shape MAME prints."""
+    """The doubles answer in the shapes MAME prints, and the parser reads the condition off."""
     live = captured("wplist.condition.txt")
     assert "write if (wpdata&3)==0" in live
     (row,) = mlists.parse_wplist(live)
@@ -60,8 +51,7 @@ def test_the_captured_row_and_arm_are_the_shapes_the_doubles_answer() -> None:
     assert captured("wpset.set-condition.txt") == captured("wpset.set.txt"), (
         "a conditioned `wp` answers the plain sentence, so only the list proves the condition")
     assert captured("print.braces.wpdata-outside.txt").strip() == "0"
-    # WHY THE EVALUATOR IS ASKED FIRST: a condition MAME parses and cannot evaluate is SET and
-    # listed, and never fires; one naming an unknown symbol is refused at the arm itself.
+    # MAME sets a condition it cannot evaluate and never fires it, hence the evaluator first.
     assert captured("wpset.malformed-condition.txt") == "Watchpoint 2 set\n\n"
     malformed = [r for r in mlists.parse_wplist(captured("wplist.malformed-armed.txt"))
                  if r["index"] == 2]
@@ -101,8 +91,7 @@ def test_a_symbol_in_the_condition_reaches_the_console_as_its_address(
 def test_a_condition_the_console_cannot_evaluate_arms_nothing_and_stores_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME SETS `wp ...,w,wpdata==` and never fires it (captured), so the evaluator is asked
-    first and its words are the refusal."""
+    """The evaluator's words are the refusal: MAME would set the `wp` and never fire it."""
     ses = _conditioned(monkeypatch, tmp_path)
     ses.rp_print_errors["wpdata=="] = captured("print.braces.malformed.txt")
     out = refused("did not evaluate `wpdata==`",
@@ -113,8 +102,7 @@ def test_a_condition_the_console_cannot_evaluate_arms_nothing_and_stores_nothing
 
 def test_a_condition_on_another_mode_or_of_a_writing_shape_is_refused_before_the_machine(
 ) -> None:
-    """Only a change watch stops, so only it is conditioned; and a condition compares, never
-    writes and never carries an action. Each is wrong with no machine at all."""
+    """Only a change watch is conditioned, and a condition compares, never writes or acts."""
     for mode in ("show", "count", "expr"):
         out = refused("only a change watch", s.watch_add(ref="frame_lo", mode=mode, length=4,
                                                          condition=COND))
@@ -142,8 +130,7 @@ def test_the_same_ref_under_another_condition_is_already_declared(
 def test_a_row_listed_without_the_condition_sent_is_not_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The `wp` answers the plain sentence whatever it did with the condition, so the list is
-    the proof: a row that lost it would stop at every write."""
+    """The `wp` answer is the same whatever became of the condition, so the list is the proof."""
     ses = _conditioned(monkeypatch, tmp_path)
     real = ses.watchpoint
 
@@ -160,8 +147,7 @@ def test_a_row_listed_without_the_condition_sent_is_not_armed(
 def test_a_row_typed_under_another_condition_is_never_adopted(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Adopting a row the console holds under another condition, or none, would arm a stop that
-    judges something else than the declaration says: the breakpoints' rule, for a watch."""
+    """A row held under another condition, or none, would judge something else than declared."""
     ses = _conditioned(monkeypatch, tmp_path)
     ses.wplist_rows.append("    1 @ 2031FC-2031FF write")
     ses.wp_next_index = 2
@@ -231,8 +217,7 @@ def test_a_stored_row_under_another_condition_is_unarmable_at_start(
 def test_a_held_pass_re_arms_the_watch_under_its_condition(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A pass run with the watches disarmed re-arms each one after it; bare, a conditioned
-    watch would come back stopping at every write."""
+    """A pass with the watches disarmed re-arms each one under its condition."""
     ses = _conditioned(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4, condition=COND)
     out = advance._with_watches_disarmed(ses, True, lambda: {"verdict": "ELAPSED"})  # type: ignore[arg-type]
@@ -278,8 +263,7 @@ def test_a_pointer_watch_that_moves_takes_its_condition_along(
 def test_a_project_symbol_spelled_like_a_watchpoint_variable_is_ambiguous(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, name: str,
 ) -> None:
-    """`wpdata`, `wpaddr` and `wpsize` are the console's own: a table symbol of that spelling
-    substituted by its address would turn the value written into a constant."""
+    """A table symbol spelled like a console variable would make the value written a constant."""
     _conditioned(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"FRAME_LO": 0x2031FC, name.upper(): 0x100})
     out = refused("both a symbol of the table and a name the console knows",
@@ -287,13 +271,8 @@ def test_a_project_symbol_spelled_like_a_watchpoint_variable_is_ambiguous(
     assert out["code"] == "ambiguous_ref"
 
 
-# ------------------------------------------------ the review's findings, each seen red first
-
-
 def test_the_write_side_under_lua_taps_is_the_memory_they_wrap() -> None:
-    """MAME names every write tap in `map` before what it wraps (captured under a capture and a
-    count watch): read as the handler, it made a change watch beside them bus-sourced and the
-    address a handler."""
+    """MAME names a write tap in `map` before what it wraps; the memory is what it wraps."""
     for name in ("map.one-tap.txt", "map.two-taps.txt"):
         sides = mmap.map_sides(captured(name))
         assert sides == {"read": "memory@200000", "write": "memory@200000"}, (name, sides)
@@ -303,9 +282,7 @@ def test_the_write_side_under_lua_taps_is_the_memory_they_wrap() -> None:
 def test_a_condition_on_a_pointer_watch_stored_null_is_judged_before_it_is_stored(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A watch stored while its pointer is null is armed by the stop that finds the pointer set,
-    with no call left to refuse it in: so its condition is put to the evaluator, and its `wp` to
-    the packet at the widest address, before it is stored."""
+    """A null-pointer watch is armed later with no call to refuse it, so it is judged first."""
     ses = _conditioned(monkeypatch, tmp_path)
     ses.pointer_width = 4
     use_table(monkeypatch, table={"_G_ENGINE": 0x2031FC})
@@ -320,8 +297,7 @@ def test_a_condition_on_a_pointer_watch_stored_null_is_judged_before_it_is_store
 def test_a_held_pass_that_gets_the_row_back_without_its_condition_says_it_is_not_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row re-armed bare would stop at every write: the pass reads the list back, and a row
-    at the range without the condition is not the watch's."""
+    """The pass reads the list back, and a row without the condition is not the watch's."""
     ses = _conditioned(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4, condition=COND)
     owners = watches.disarm_for_pass(ses)  # type: ignore[arg-type]
@@ -339,9 +315,8 @@ def test_a_held_pass_that_gets_the_row_back_without_its_condition_says_it_is_not
 def test_a_stored_condition_the_console_refuses_at_start_is_unarmable_and_kept(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """At `start` a condition that no longer evaluates for another reason than a lost name, or
-    whose `wp` no longer fits this stub's packet, is `unarmable` with why, and the pass goes
-    on to the next declaration."""
+    """At `start` a condition that no longer evaluates, or whose `wp` no longer fits, is
+    `unarmable` with why, and the pass goes on."""
     ses = _conditioned(monkeypatch, tmp_path)
     store = arming.store()
     store.add(dec.Declaration("watch", "symbol", "frame_lo", width=4, fmt="u32",

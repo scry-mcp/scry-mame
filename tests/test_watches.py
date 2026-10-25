@@ -1,11 +1,4 @@
-"""The watch family: the typed watchpoint, its list, its clearing, its control, and the
-declarations they are stored as.
-
-Every case here was written RED before the code that turns it green, and each guards a
-place where the server could answer a false measurement: a watch the debugger accepted and
-can never fire (the ROM copy of a datum), a stop attributed to the wrong thing, a value
-read off a watch that no longer resolves.
-"""
+"""The watch family: typed watchpoint, list, clear, control and the stored declarations."""
 
 import sys
 from collections.abc import Callable
@@ -51,17 +44,14 @@ import mame_state as mstate  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
 
-# The console's answers, CAPTURED from a live m68k-dual session, never authored: `wplist` with
-# one watch and with none; `map`'s are in `session_doubles`.
+# Captured from a live m68k-dual session, never authored (`map`'s are in `session_doubles`).
 WPLIST_ONE = "Device ':maincpu' program space watchpoints:\n    1 @ 2031FC-2031FF write\n\n"
 WPLIST_NONE = "No watchpoints currently installed\n\n"
 STOP_LINE = "Stopped at watchpoint 1 writing 0038 to 2031FE (PC=0000040E)\n"
 
 
 class _WatchSession(_RunningSession):
-    """The running double plus what a watch needs: the console's `wp`/`wpclear` (answered by
-    the shared console half), `map` and `wplist`, a byte order, memory that holds values, and a
-    stop packet that can be a watch's (`T05watch:<addr>;`)."""
+    """The running double plus `map`, `wplist`, a byte order, memory and watch stop packets."""
 
     def __init__(self, scratch: Path) -> None:
         super().__init__(scratch)
@@ -70,12 +60,12 @@ class _WatchSession(_RunningSession):
         self.memory: dict[int, bytes] = {}
         self.watchpoints: list[tuple[int, int, bool]] = []
         self.rom_write_unmapped: set[int] = {0x400}
-        self.latches: set[int] = set()         # addresses `map` answers MAP_LATCH for
+        self.latches: set[int] = set()
         self.wplist_rows: list[str] = []
-        self.wp_next_index = 1                # MAME's watchpoint counter, never reused
+        self.wp_next_index = 1
         self.next_packet = "T05"
-        self.packets: list[str] = []          # one per coming stop, ahead of `next_packet`
-        self.stop_queue: list[int] = []       # polls before each coming stop, in order
+        self.packets: list[str] = []
+        self.stop_queue: list[int] = []
 
     def read(self, addr: int, n: int, *, thread: int) -> bytes:
         if thread != 1:
@@ -107,16 +97,14 @@ class _WatchSession(_RunningSession):
         return super().poll_stop(timeout)
 
     def _receive(self, timeout: float | None = None) -> str:
-        raise gs.SessionError("no answer within the drain")   # a `gtime` run sends no packet
+        raise gs.SessionError("no answer within the drain")
 
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         if (armed := WP_ARM.fullmatch(command)) is not None:
             self.commands.append(command)
             index = self.wp_next_index
-            # A condition goes to the stand-in only when there is one, so a case standing in
-            # for the debugger with the plain signature still answers every plain row.
             addr, length = int(armed.group(1), 16), int(armed.group(3), 16)
-            if armed.group(4):       # a stand-in with the plain signature answers plain rows
+            if armed.group(4):
                 self.watchpoint(addr, length, cpu=armed.group(2), cond=armed.group(4))
             else:
                 self.watchpoint(addr, length, cpu=armed.group(2))
@@ -154,12 +142,8 @@ def _watching(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
     return ses
 
 
-# --------------------------------------------------------------------------- the model
-
-
 def test_a_watch_declaration_needs_a_mode_a_format_and_a_coherent_width() -> None:
-    """The store refuses an ill-formed watch at construction, so nothing three layers down
-    meets one: the STORE is where an ill-formed declaration dies."""
+    """The store refuses an ill-formed watch at construction."""
     with pytest.raises(dec.DeclarationError, match="mode"):
         dec.Declaration("watch", "symbol", "x", width=4, fmt="u32", watch_mode="poll")
     with pytest.raises(dec.DeclarationError, match="format"):
@@ -177,17 +161,13 @@ def test_a_watch_declaration_needs_a_mode_a_format_and_a_coherent_width() -> Non
 
 
 def test_one_address_may_not_be_both_read_and_change() -> None:
-    """THE HARD-WON RULE CARRIED ACROSS, NOT REDISCOVERED. MAME arms no trap byte (the
-    bytes read the same before and after `Z2`), so the mechanical reason is absent here;
-    the exclusivity is kept anyway, because a store rule that holds on one server and not the
-    other is a rule nobody can rely on."""
+    """Read and change watches on one address stay exclusive, as on the other server."""
     store = dec.DeclarationStore("k", path=None)
     assert store.add(dec.Declaration("watch", "symbol", "x", width=4, fmt="u32",
                                      watch_mode="show")) is True
     with pytest.raises(dec.DeclarationError, match="may not be both"):
         store.add(dec.Declaration("watch", "symbol", "x", width=4, fmt="u32",
                                   watch_mode="change"))
-    # An exact duplicate is a no-op that says so, never a second copy.
     assert store.add(dec.Declaration("watch", "symbol", "x", width=4, fmt="u32",
                                      watch_mode="show")) is False
     assert len(store.declarations()) == 1
@@ -204,11 +184,7 @@ def test_a_declaration_by_name_re_resolves_and_a_vanished_name_is_kept() -> None
 
 
 def test_the_spelling_decides_an_address_and_bare_hex_names_a_symbol_or_nothing() -> None:
-    """`BEEF` is a valid hex address AND a plausible symbol, so the spelling decides: `0x` is an
-    address whatever the table holds, a name the table holds (or a ref a row is stored under)
-    is a symbol, bare hex naming neither is refused, and anything else is a symbol not yet
-    defined (kept unresolved), which is what lets a declaration precede the build that
-    defines it."""
+    """`0x` is an address, a held name a symbol, bare hex naming neither is refused."""
     table, main = {"BEEF": 0x100}, ":maincpu"
     assert inputs.classify("beef", table, main) == "symbol"
     assert inputs.classify("0xbeef", table, main) == "address"
@@ -217,9 +193,6 @@ def test_the_spelling_decides_an_address_and_bare_hex_names_a_symbol_or_nothing(
     assert inputs.classify("4a0", table, main, held=["4A0"]) == "symbol"
     with pytest.raises(inputs.BareHex, match="an address is written 0x4a0"):
         inputs.classify("4a0", table, main)
-
-
-# ------------------------------------------------------------------- the typed watchpoint
 
 
 def test_a_change_watch_arms_reads_the_list_back_and_says_where_it_maps(
@@ -286,9 +259,6 @@ def test_a_read_watch_arms_nothing_and_is_evaluated_at_every_stop(
     assert ses.watchpoints == []
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     stop = s.step()
-    # A STOP SHOWS WHAT THE WATCH READS NOW; its declaration and placement are
-    # `declaration_list(kind="watch")`'s,
-    # and the stop says so.
     assert stop["watches"] == [{
         "ref": "frame_lo", "cpu": ":maincpu",
         "state": "evaluated", "reading": {"available": True, "value": 0x38, "raw_hex": "00000038"},
@@ -340,8 +310,6 @@ def test_values_render_in_the_targets_byte_order_and_in_every_format(
     assert watches._value(bytes.fromhex("00010002"), 4, "u16", "little") == [0x100, 0x200]
     assert watches._value(bytes.fromhex("ffffffff"), 4, "i32", "big") == -1
     assert watches._value(bytes.fromhex("3f800000"), 4, "f32", "big") == 1.0
-    # THE SIGNED NARROW ONES: a counter the driver reads as int16_t was watchable only as
-    # `u16` and sign-interpreted by hand; a signed format renders it as the driver reads it.
     assert watches._value(bytes.fromhex("fffb"), 2, "i16", "big") == -5
     assert watches._value(bytes.fromhex("80"), 1, "i8", "big") == -128
     assert watches._value(bytes.fromhex("0102"), 2, "u8", "big") == [1, 2]
@@ -376,7 +344,6 @@ def test_a_watch_stop_is_attributed_from_the_packet_and_the_console_log(
         "writes_total": 1, "truncated": False,
         "before": 0x37, "after": 0x38, "lines": [STOP_LINE.strip()], "values_from": "memory",
     }
-    # And a stop a tool produces carries the same account in its survey.
     ses.next_packet = "T05watch:2031fc;"
     ses.stops_after_polls = 1
     (tmp_path / "debug.log").open("a").write(STOP_LINE.replace("0038", "0039") + "25F6\n")
@@ -396,16 +363,12 @@ def test_a_watch_stop_is_attributed_from_the_packet_and_the_console_log(
 def test_a_watch_that_stops_a_console_started_run_is_attributed_from_the_log_alone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A run the console starts (`run_for`'s `gtime`) ends with NO stop packet, so a watch
-    that stops it leaves nothing for the packet path to read: the survey attributed the stop
-    to the run and the write was lost, while the console's own line sat in `debug.log`. With
-    no packet, a `Stopped at watchpoint` line of an armed watch since the previous stop IS the
-    attribution: the ref by its index, the writer and the value from the line."""
+    """A watch stopping a console-started run (`gtime`, no packet) is attributed from the log."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
     (tmp_path / "debug.log").write_text("F2034\n")
-    ses.last_stop_packet = ""                      # a `gtime` run: the stub sent nothing
+    ses.last_stop_packet = ""
     (tmp_path / "debug.log").open("a").write(STOP_LINE + "25F6\n")
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     found = watches.watch_stop(ses, arming.debuglog_since(tmp_path))  # type: ignore[arg-type]
@@ -414,23 +377,19 @@ def test_a_watch_that_stops_a_console_started_run_is_attributed_from_the_log_alo
     assert how == "watch frame_lo: 0x002031fc written by pc 0x0000040e"
     assert hit is not None and hit["writes"][0]["wrote"] == "0x0038" and hit["after"] == 0x38
     assert fresh == {("frame_lo", ":maincpu"): bytes.fromhex("00000038")}
-    # And with neither a packet nor a line, the stop is not a watch's.
     assert watches.watch_stop(ses, arming.debuglog_since(tmp_path)) is None  # type: ignore[arg-type]
 
 
 def test_a_run_for_cut_by_a_watch_before_a_frame_is_a_stop_and_not_a_void_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch that fires inside `run_for` before a frame elapsed is a MEASUREMENT: the
-    machine ran, the watch caught the writer it was armed for, and the word for it is
-    `OTHER_STOP`. A reply of `no_progress` instead, with the whole `watch_hit` beside the
-    refusal, makes a reader filtering on `status: ok` throw a correct stop away."""
+    """A change watch firing inside `run_for` is a measurement (`OTHER_STOP`), not `no_progress`."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
     (tmp_path / "debug.log").write_text("F2034\n")
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
-    ses.last_stop_packet = ""                      # a `gtime` run: the stub sends nothing
+    ses.last_stop_packet = ""
     (tmp_path / "debug.log").open("a").write(STOP_LINE + "25F6\n")
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
     out = s.run_for(milliseconds=1)
@@ -443,15 +402,12 @@ def test_a_run_for_cut_by_a_watch_before_a_frame_is_a_stop_and_not_a_void_run(
 def test_a_write_by_this_server_moves_the_watchs_baseline(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`before` is what the previous survey saw, and a `write` by this server IS a survey of
-    those bytes: after forcing a watched value, the next watch stop must not report `before` as the
-    value at arm time, several writes earlier, rather than the one the writer actually read.
-    On a V30 board: arm at 18, write 4660, the game's `inc` writes 4661, and the
-    reply must say before 4660, not 18. Every armed watch the write overlaps is re-read."""
+    """`before` is the previous survey's value, and a `write` is a survey (arm at 18, write 4660,
+    the game writes 4661: before is 4660)."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000012")
     s.watch_add(ref="frame_lo", mode="change", length=4)
-    s.watch_add(ref="0x2000", mode="change", length=2, fmt="u16")   # untouched by the write
+    s.watch_add(ref="0x2000", mode="change", length=2, fmt="u16")
     assert s.write(ref="frame_lo", data_hex="00001234")["verified"] is True
     (tmp_path / "debug.log").write_text(STOP_LINE + "25F6\n")
     ses.memory[0x2031FC] = bytes.fromhex("00001235")
@@ -465,10 +421,7 @@ def test_a_write_by_this_server_moves_the_watchs_baseline(
 def test_a_short_read_refreshing_a_baseline_after_a_write_refuses_and_names_the_write(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The write has landed and read back by the time the watches are re-read, so a short
-    answer then is not a bad argument; it is an ANSWER, so the channel kept its place and
-    nothing latches: the refusal is `readback_refused` and still says what was written and
-    whether it read back."""
+    """A short re-read after the write is an answer: `readback_refused`, nothing latches."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     plain = ses.read
@@ -483,8 +436,7 @@ def test_a_short_read_refreshing_a_baseline_after_a_write_refuses_and_names_the_
     assert out["bytes_written"] == 2 and out["verified"] is True and out["readback"] == "1234", out
     assert getattr(ses, "broken", None) is None, "an answer latches nothing"
     assert "3 bytes for 4" in out["message"], out
-    # Only the channel's failure is dressed as a broken session: a defect in the re-read is
-    # still the defect it is.
+    # Only the channel's failure is dressed as a broken session; a re-read defect stays itself.
 
     def defective(ses_: Any, addr: int, n: int, cpu: str | None) -> None:
         raise KeyError("last")
@@ -495,8 +447,7 @@ def test_a_short_read_refreshing_a_baseline_after_a_write_refuses_and_names_the_
 
 
 def _rom_under_write(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
-    """m68k-dual as the machine answers a write to its ROM: `map` gives the address no write
-    side, the bytes land nowhere, and the inventory `start` cached is the captured one."""
+    """m68k-dual answers a write to its ROM: `map` gives no write side, the bytes land nowhere."""
     ses = _watching(monkeypatch, tmp_path)
     ses.rom_write_unmapped.add(0x7B8)
     ses.memory[0x7B8] = bytes.fromhex("80a0")
@@ -511,9 +462,7 @@ def _rom_under_write(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchS
 def test_a_write_that_goes_nowhere_on_rom_says_so_and_names_the_region_behind_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """KNOWN ANSWER, m68k-dual: the write side of 0x7b8 is unmapped and its read side is
-    memory, and the captured inventory backs :maincpu's program space from 0 with the region
-    `:maincpu` at offset 0, so the bytes live at offset 0x7b8 of that region."""
+    """m68k-dual 0x7b8: write side unmapped, read side memory at offset 0x7b8 of `:maincpu`."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     out = s.write(ref="0x7b8", data_hex="8020")
     assert out["verified"] is False and out["readback"] == "80a0", out
@@ -525,9 +474,7 @@ def test_a_write_that_goes_nowhere_on_rom_says_so_and_names_the_region_behind_it
 def test_a_rom_write_on_two_cpus_names_the_region_of_the_cpu_it_went_to(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """m68k-dual backs 0..0xfffff with a region on BOTH cpus, and the write, its read-back and
-    the `map` asked why are one cpu's, named: a stub without threads writes its first cpu
-    whatever `cpulist` marks, and that cpu's region is the one named."""
+    """m68k-dual backs 0..0xfffff on both cpus; write, read-back and `map` ask one named cpu."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     real = ses.monitor
     monkeypatch.setattr(ses, "monitor",
@@ -541,8 +488,7 @@ def test_a_rom_write_on_two_cpus_names_the_region_of_the_cpu_it_went_to(
 def test_a_rom_write_to_a_cpu_the_console_cannot_name_names_no_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `cpulist` that lists no cpu leaves a stub without threads with no name for the cpu it
-    serves, and a region is named for a cpu or not at all."""
+    """A `cpulist` naming no cpu leaves a threadless stub with no name for a region."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     real = ses.monitor
     monkeypatch.setattr(ses, "monitor",
@@ -556,8 +502,7 @@ def test_a_rom_write_to_a_cpu_the_console_cannot_name_names_no_region(
 def test_a_map_the_console_refuses_after_a_rom_write_keeps_what_landed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The explanation is one more request; its refusal is an answer, so nothing latches and
-    the reply still carries the write and its read-back."""
+    """A refused `map` explanation latches nothing; the reply keeps the write and read-back."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     real = ses.monitor
 
@@ -578,9 +523,7 @@ def test_a_map_the_console_refuses_after_a_rom_write_keeps_what_landed(
 def test_a_rom_write_with_another_cpu_visible_is_explained_on_the_cpu_it_went_to(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, threads: dict[int, str], went_to: str,
 ) -> None:
-    """After a `focus` the visible cpu is the sub one. The patched stub writes it, a stub
-    without threads writes its first cpu; either way the `map` is asked of that cpu, by name,
-    and the region is that cpu's."""
+    """After a `focus` the `map` is asked of the sub cpu by name and the region is its own."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     ses.visible_cpu, ses.threads = ":subcpu", threads
     out = s.write(ref="0x7b8", data_hex="8020")
@@ -588,8 +531,7 @@ def test_a_rom_write_with_another_cpu_visible_is_explained_on_the_cpu_it_went_to
     assert f"map 0x7b8:{went_to}" in ses.commands, ses.commands
 
 
-# m68k-dual's :maincpu ROM entry as captured, with a mirror bit and then a second entry over it:
-# the two shapes of map the captured board does not have.
+# m68k-dual's :maincpu ROM entry with a mirror bit, then one overlapped by a second entry.
 _ROM_ENTRY = "ENTRY :maincpu program 1 start=0 end=fffff mirror=0 "
 _MIRRORED = M68K_DUAL.replace(_ROM_ENTRY, "ENTRY :maincpu program 1 start=0 end=fffff "
                              "mirror=100000 ")
@@ -601,8 +543,7 @@ _OVERLAPPED = M68K_DUAL.replace(
 def test_a_rom_write_through_a_mirror_names_the_bytes_it_mirrors(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME ignores the mirror bits when it matches an address, so 0x1007b8 on a map mirrored
-    at 0x100000 is offset 0x7b8 of the same region."""
+    """MAME ignores mirror bits: 0x1007b8 mirrored at 0x100000 is offset 0x7b8 of the region."""
     assert _MIRRORED != M68K_DUAL, "the anchor matched nothing"
     ses = _rom_under_write(monkeypatch, tmp_path)
     ses.rom_write_unmapped.add(0x1007B8)
@@ -627,8 +568,7 @@ def test_a_rom_write_under_two_entries_of_one_cpu_names_no_region(
 def test_a_request_after_a_rom_write_that_loses_the_connection_latches(
     where: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The `map` asked why, and a watched range's re-read, follow the read-back's rule: only a
-    refusal keeps the channel."""
+    """The `map` asked why and a watched range's re-read follow the read-back's rule."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     gone = gs._connection_failed(ConnectionResetError(54, "Connection reset by peer"))
     if where == "map":
@@ -671,8 +611,7 @@ def test_a_rom_write_the_map_cannot_place_names_no_offset(
 def test_a_write_that_does_not_read_back_on_ram_is_not_explained_as_rom(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`verified: false` off ROM has causes the map cannot tell apart (a register answering
-    something else), so nothing is added to the reply."""
+    """`verified: false` off ROM has causes the map cannot tell apart, so nothing is added."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     monkeypatch.setattr(ses, "write", lambda addr, data, *, thread: None)
     out = s.write(ref="0x200000", data_hex="8020")
@@ -683,7 +622,7 @@ def test_a_write_that_does_not_read_back_on_ram_is_not_explained_as_rom(
 def test_a_write_that_reads_back_asks_the_map_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The common path costs no extra round trip: a verified write is not explained."""
+    """A verified write is not explained: no extra round trip."""
     ses = _rom_under_write(monkeypatch, tmp_path)
     out = s.write(ref="0x200000", data_hex="8020")
     assert out["verified"] is True and "target" not in out, out
@@ -693,14 +632,13 @@ def test_a_write_that_reads_back_asks_the_map_nothing(
 def test_a_watch_stop_with_no_console_line_says_so_instead_of_inventing_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Without the console's line for the stop no row can be named, even the one armed here:
-    the packet names none."""
+    """Without the console's line no row can be named, even the one armed here."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.resume()
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
-    out = s.stop()          # the first contact finds the stop; `stop` then has nothing to do
+    out = s.stop()
     assert out["interrupted"] is False
     assert out["stopped_on_its_own"]["cause"] == (
         "a watchpoint stopped the machine and the console logged no line for it, so which one "
@@ -726,9 +664,8 @@ def test_a_watch_stop_by_a_row_this_server_did_not_arm_is_named_as_foreign(
 def test_the_watchpoint_stop_line_the_doubles_author_is_the_shape_the_console_prints(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """CAPTURED (`debuglog.foreign-wp.resume.txt`): the console's own line for a watchpoint
-    typed through `debug`. `STOP_LINE` above is authored for the scenarios; this holds the
-    reader to the capture, so the authored shape cannot drift from the printed one."""
+    """Captured (`debuglog.foreign-wp.resume.txt`): holds the authored `STOP_LINE` to the
+    printed shape."""
     ses = _watching(monkeypatch, tmp_path)
     (tmp_path / "debug.log").write_text(captured("debuglog.foreign-wp.resume.txt"))
     found = watches.watch_stop(ses, arming.debuglog_since(tmp_path))  # type: ignore[arg-type]
@@ -740,12 +677,8 @@ def test_the_watchpoint_stop_line_the_doubles_author_is_the_shape_the_console_pr
 def test_a_foreign_watch_stop_with_no_packet_is_named_by_its_console_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A `wpset` typed through `debug` cuts a `gvblank` many times over a run
-    and `run_for` must not report ELAPSED with a poll count that large: a run the console starts
-    sends no stop packet, the survey reads no log with no watch of its own armed, and each
-    hit would be taken for a landing. And the packet of such a stop, when there is one, names
-    address 0x0, so the line is the better name either way: index, address written, value
-    and writer pc. The control: a stop with neither a packet nor a line is not a watch's."""
+    """A `wpset` typed through `debug` stops `run_for`: the log line names it, not the packet.
+    A console-started run sends no packet, and a packet naming 0x0 yields to the line."""
     ses = _watching(monkeypatch, tmp_path)
     (tmp_path / "debug.log").write_text(
         "Stopped at watchpoint 1 writing 0003 to 700011 (PC=0009BC74)\n")
@@ -754,9 +687,7 @@ def test_a_foreign_watch_stop_with_no_packet_is_named_by_its_console_line(
         "watch 1 at 0x00700011 this server did not arm, wrote 0003 by pc 0x0009bc74: "
         "`debug(\"wpclear 0x1\")` removes it"), found
     assert mstate.STATE.debuglog_mark > 0, "the log is read at every stop now"
-    # The line was consumed by that survey: the next stop, with nothing new, is no watch's.
     assert watches.watch_stop(ses, arming.debuglog_since(tmp_path)) is None  # type: ignore[arg-type]
-    # A packet naming 0x0 beside a line: the line names the stop.
     ses.last_stop_packet = "T05watch:0;"
     with open(tmp_path / "debug.log", "a") as fh:
         fh.write("Stopped at watchpoint 1 writing 0001 to 700011 (PC=000EAB8E)\n")
@@ -779,10 +710,8 @@ def test_watch_list_names_every_declaration_and_its_state(
     assert listed["watches"][0]["origin"] == "s1" and listed["watches"][0]["created_at"]
     assert "foreign" not in listed
     assert listed["summary"] == "declaration_list watch: 2 watches (1 armed)"
-    # A row the debugger holds that no declaration placed is foreign, never claimed.
     ses.wplist_rows.append("    7 @ 300000-300003 write")
     assert s.declaration_list("watch")["foreign"] == {"watches": ["7 @ 300000-300003 write"]}
-    # And while running the list answers from what the server holds, dated.
     s.resume()
     listed = s.declaration_list("watch")
     assert listed["session"]["running"] is True and listed["last_stop"]["stop_seq"] == 1
@@ -843,12 +772,7 @@ def test_watch_add_refuses_a_bad_mode_width_or_format_before_the_stub(
 
 
 def test_the_watch_tools_refuse_with_no_machine_unless_the_argument_says_otherwise() -> None:
-    """`mode="poll"` is not one of the
-    three a watch takes, and that is as true with no machine as with one: the vocabulary is this
-    server's, not the emulator's, so it is answered before the machine is asked for. What still
-    waits for the machine is a watch whose ARGUMENTS are fine -- there is no list to give and no
-    row to clear without one.
-    """
+    """`mode="poll"` is refused even with no machine: the vocabulary is this server's."""
     mstate.STATE.kill()
     bad_vocabulary = s.watch_add(ref="x", mode="poll", length=0)
     assert bad_vocabulary["code"] == "bad_argument", bad_vocabulary
@@ -870,9 +794,7 @@ def test_the_command_line_carries_the_debug_log() -> None:
 def test_the_watch_double_numbers_its_rows_as_mame_prints_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME prints a watchpoint row `%c%4X` from a counter of its own that only increments
-    (`execute_wplist`, `get_watchpoint_index`): the tenth is `   A`, a clear never frees a
-    number, and the breakpoints count on a counter of their own."""
+    """MAME numbers watchpoint rows from a counter that only increments; a clear frees no number."""
     ses = _watching(monkeypatch, tmp_path)
     for i in range(11):
         ses.watchpoint(0x200000 + 4 * i, 4)
@@ -889,7 +811,7 @@ def test_the_watch_double_numbers_its_rows_as_mame_prints_them(
 def test_two_stored_watches_of_one_range_in_one_pass_say_sent_and_never_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The second of the pass meets a `Z2` that was SENT a moment ago and not yet read back."""
+    """The second watch of a pass meets a `Z2` sent but not yet read back."""
     ses = _watching(monkeypatch, tmp_path)
     for by, ref in (("symbol", "frame_lo"), ("address", "0x2031fc")):
         arming.store().add(dec.Declaration("watch", by, ref, width=4, fmt="u32",
@@ -903,8 +825,8 @@ def test_two_stored_watches_of_one_range_in_one_pass_say_sent_and_never_armed(
 def test_a_stored_change_watch_overlapping_one_sent_in_the_pass_is_unarmable_and_kept(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """At `start` a change watch sharing a byte with one already sent in the pass is not armed,
-    and says why; the declaration stays in the store, never dropped."""
+    """At `start` a change watch sharing a byte with one sent in the pass is not armed; it stays
+    stored."""
     ses = _watching(monkeypatch, tmp_path)
     for ref, width, fmt in (("frame_lo", 4, "u32"), ("0x2031fe", 2, "u16")):
         arming.store().add(dec.Declaration("watch", "symbol" if ref == "frame_lo" else "address",
@@ -921,8 +843,8 @@ def test_a_stored_change_watch_overlapping_one_sent_in_the_pass_is_unarmable_and
 def test_a_pointer_watch_on_a_released_machine_is_refused_for_what_the_flag_says(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`running` is set at every release and cleared only by a stop that was READ: it says
-    the machine MAY be running, and the refusal says no more than that."""
+    """`running` is set at every release and cleared only by a read stop: the machine MAY be
+    running."""
     ses = _watching(monkeypatch, tmp_path)
     ses.running = True
     out = refused("no stop read since, so it is taken as RUNNING: `stop` it, then `watch_add` "
@@ -955,8 +877,8 @@ def test_a_conditioned_wplist_row_keeps_its_condition_short_or_wrapped() -> None
 
 
 def test_a_wplist_row_with_an_action_keeps_it_as_the_console_prints_it() -> None:
-    """The captured action row (`wplist.action.txt`): the text after `do`, spaces as printed,
-    and no condition, since the console prints no `if` for a condition of `1`."""
+    """Captured action row (`wplist.action.txt`): text after `do`, no condition as `1` prints no
+    `if`."""
     assert mlists.parse_wplist((CONSOLE / "wplist.action.txt").read_text()) == [
         {"index": 1, "addr": 0x25A4, "cpu": ":maincpu", "space": "program", "length": 2,
          "kind": "write", "enabled": True, "entry": "1 @ 0025A4-0025A5 write do temp1++ ; g",
@@ -966,10 +888,6 @@ def test_a_wplist_row_with_an_action_keeps_it_as_the_console_prints_it() -> None
 def test_wplist_with_a_line_it_does_not_recognise_is_refused_naming_it() -> None:
     with pytest.raises(mstate.Invalid, match="Unexpected thing"):
         mlists.parse_wplist("Unexpected thing\n" + WPLIST_ONE)
-
-
-
-# ------------------------------------------------------- the refusals and the odd states
 
 
 def test_the_model_refuses_every_malformed_shape_by_name() -> None:
@@ -991,9 +909,8 @@ def test_the_model_refuses_every_malformed_shape_by_name() -> None:
 
 
 def test_a_re_declaration_from_another_session_adopts_it_and_a_raw_address_is_stale() -> None:
-    """The stamp travels with the declaration and out of its equality: the same thing
-    declared again is adopted by the new session, and a raw address declared over ANOTHER
-    build is stale (kept, listed, never re-armed blind), while a symbol never is."""
+    """The stamp travels outside the declaration's equality: a raw address over ANOTHER build
+    is stale, a symbol never is."""
     store = dec.DeclarationStore("k", path=None)
     first = dec.Declaration("breakpoint", "address", "0x4a0", created_at="t1", origin="s1",
                             fingerprint="fp1")
@@ -1026,17 +943,13 @@ def test_watch_add_refuses_a_bad_by_and_the_other_half_of_a_held_watch(
 def test_watch_list_and_the_survey_name_the_odd_states(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """TWO AXES, TWO FIELDS. `state` is where a watch is PLACED: a change watch whose row the
-    debugger no longer holds is `gone`, a raw address declared over another build `stale`, a
-    show watch `evaluated`, a name this build lacks `unresolved`. `reading` is what was read:
-    `read` with the value, or `unreadable` with the stub's refusal and never a zero. The list
-    and the stop survey place every watch the same way, and a breakpoint declaration is not
-    a watch and is skipped."""
+    """`state` is where a watch is placed (`gone`, `stale`, `evaluated`, `unresolved`); `reading` is
+    what was read (`read`, or `unreadable` with the stub's refusal, never a zero)."""
     ses = _watching(monkeypatch, tmp_path)
     store = arming.store()
     store.add(dec.Declaration("breakpoint", "symbol", "frame_lo", origin="s1"))
     s.watch_add(ref="frame_lo", mode="change", length=4)
-    ses.wplist_rows.clear()                                    # the debugger lost the row
+    ses.wplist_rows.clear()
     store.add(dec.Declaration("watch", "address", "0x203200", width=2, fmt="u16",
                               watch_mode="change", origin="another"))
     store.add(dec.Declaration("watch", "symbol", "copy_in_rom", width=1, fmt="u8",
@@ -1066,9 +979,7 @@ def test_watch_list_and_the_survey_name_the_odd_states(
 def test_a_survey_whose_wplist_fails_places_by_its_own_record_and_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The survey asks the debugger's `wplist` to place a change watch, and a console that
-    cannot answer it must not sink the stop's reply: the placement falls back to what this
-    server armed, `why` says the list was not read back, and the reading is still taken."""
+    """A console that cannot answer `wplist` must not sink the stop's reply: `why` says so."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1090,9 +1001,8 @@ def test_a_survey_whose_wplist_fails_places_by_its_own_record_and_says_so(
 def test_a_change_watch_whose_bytes_cannot_be_read_at_arming_is_armed_and_unreadable(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The row is armed whether or not its bytes read back, so a refused read is the
-    watch's `reading`, never a failed call: `unreadable` with the stub's words, and no
-    baseline, which the first hit then reports as unknown rather than zero."""
+    """A refused read is the watch's `reading` (`unreadable`), never a failed call, with no
+    baseline."""
     ses = _watching(monkeypatch, tmp_path)
 
     def refuse(addr: int, n: int, *, thread: int) -> bytes:
@@ -1105,16 +1015,11 @@ def test_a_change_watch_whose_bytes_cannot_be_read_at_arming_is_armed_and_unread
     assert mstate.STATE.armed_watches[("frame_lo", ":maincpu")]["last"] is None
 
 
-# ------------------------------------------------------------------------- symbols_find
-
-
 def test_symbols_find_answers_by_name_exact_then_prefix_and_by_address(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The table `start` parsed, asked from the outside through `symbols_find`, one
-    question per call. By name an exact match wins, else prefixes up to `limit`; by
-    `linear` (an address as the debugger shows it) the nearest symbol AT OR BELOW and the
-    distance above it, since the table carries no sizes."""
+    """`symbols_find`: exact name else prefixes up to `limit`; by `linear`, the nearest symbol
+    at or below."""
     _watching(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"IRQ_VBLANK": 0x400, "IRQ_BLITTER": 0x506, "IRQ1_CHAIN": 0x71C,
                                   "MAIN_RAM": 0x00200000, "IRQ": 0x300})
@@ -1145,7 +1050,6 @@ def test_symbols_find_answers_by_name_exact_then_prefix_and_by_address(
     s.symbols_find())
     refused("limit",
     s.symbols_find(name="x", limit=0))
-    # THE CEILING'S OWN EDGES: at it a list, one past it a refusal.
     assert s.symbols_find(name="x", limit=read.SYMBOLS_LIMIT_MAX)["symbols_total"] == 0
     refused("limit", s.symbols_find(name="x", limit=read.SYMBOLS_LIMIT_MAX + 1))
 
@@ -1165,13 +1069,12 @@ def test_symbols_find_is_invalid_with_no_table_and_answers_while_running(
 def test_a_watch_hit_whose_bytes_cannot_be_read_says_so_and_a_short_read_is_unreadable(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A stub answering FEWER bytes than the watch declared would render as a number of the
-    right shape and the wrong meaning; it is `unreadable` at a stop and `after: None` with
-    why on a hit, never a value."""
+    """Fewer bytes than declared are `unreadable` at a stop and `after: None` on a hit, never a
+    value."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.resume()
-    ses.memory[0x2031FC] = b"\x00\x01"                 # two bytes where four were asked
+    ses.memory[0x2031FC] = b"\x00\x01"
     monkeypatch.setattr(ses, "read", lambda addr, n, *, thread: ses.memory.get(addr, bytes(n)))
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
     ses.next_packet = "T05watch:0;"
@@ -1190,9 +1093,8 @@ def test_a_watch_hit_whose_bytes_cannot_be_read_says_so_and_a_short_read_is_unre
 def test_a_rearm_never_stacks_a_row_the_debugger_already_holds_and_a_clear_reads_back(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A breakpoint or a watch the debugger already lists is not armed a second time; a
-    show watch declared while running reads nothing; and `disarmed` is the list's answer:
-    a row still held after the `z2` is NOT reported gone."""
+    """A listed breakpoint or watch is not armed twice; a show watch declared while running reads
+    nothing; a row still held after the `z2` is not `disarmed`."""
     ses = _watching(monkeypatch, tmp_path)
     store = arming.store()
     store.add(dec.Declaration("breakpoint", "symbol", "frame_lo", origin="s1"))
@@ -1213,15 +1115,10 @@ def test_a_rearm_never_stacks_a_row_the_debugger_already_holds_and_a_clear_reads
         "the row is still listed, so nothing is claimed disarmed")
 
 
-# ------------------------------------------- the review's findings, each seen red first
-
-
 def test_a_watch_redeclared_under_one_ref_with_another_shape_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The same ref declared again with another width, format or mode was accepted as a
-    SECOND declaration: a second `Z2`, the record overwritten, and a clear that dropped
-    both declarations while one row stayed armed with nothing to explain it."""
+    """The same ref redeclared with another width, format or mode is refused, not stored twice."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     refused("already declared.*width 4.*declaration_clear",
@@ -1236,9 +1133,7 @@ def test_a_watch_redeclared_under_one_ref_with_another_shape_is_refused(
 def test_two_refs_on_one_address_do_not_share_a_watchpoint_in_silence(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Two declarations resolving to one address shared ONE `Z2`, and clearing either
-    disarmed the other without a word. One physical watch, one declaration: the second is
-    refused naming the first."""
+    """Two declarations resolving to one address would share one `Z2`: the second is refused."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     refused("already armed under 'frame_lo'",
@@ -1252,9 +1147,8 @@ def test_two_refs_on_one_address_do_not_share_a_watchpoint_in_silence(
 def test_a_change_watch_sharing_a_byte_with_an_armed_one_is_refused_naming_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ref: str, length: int,
 ) -> None:
-    """Two watchpoints on one byte make "who wrote this byte" ambiguous, and clearing one
-    declaration would disarm the other's byte: a change watch over any byte another arms is
-    refused naming the holder, and nothing is armed or stored."""
+    """A change watch over a byte another arms is refused naming the holder, keeping the writer
+    unambiguous."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     out = refused("shares a byte with a range already armed under 'frame_lo'",
@@ -1295,18 +1189,15 @@ def test_watch_clear_keeps_its_record_when_the_stub_refuses_the_removal(
 def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The stub TOOK the removal and the debugger's `wplist` still lists the row: the record
-    goes only once the list no longer shows it, as `declaration_clear(kind="breakpoint")` does, so
-    `disarmed`
-    stays the machine's answer and the next hit there is not read as foreign. The reply's
-    `note` names the row still held; the declaration goes as it does today."""
+    """The stub took the removal but `wplist` still lists the row: the record stays until the list
+    drops it, and the `note` names the row."""
     ses = _watching(monkeypatch, tmp_path)
-    ses.wp_next_index = 0x1F               # the index as `wplist` spells it, not decimal
+    ses.wp_next_index = 0x1F
     s.watch_add(ref="frame_lo", mode="change", length=4)
 
     def taken_but_listed(addr: int, length: int, remove: bool = False, cpu: str | None = None,
         index: int | None = None) -> None:
-        ses.watchpoints.append((addr, length, remove))          # the row stays in `wplist`
+        ses.watchpoints.append((addr, length, remove))
 
     monkeypatch.setattr(ses, "watchpoint", taken_but_listed)
     out = s.declaration_clear("watch", ref="frame_lo")
@@ -1316,9 +1207,7 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
     assert out["note"].endswith('`debug("wpclear 0x1f")` removes the row'), out["note"]
     assert out["summary"] == "declaration_clear watch frame_lo: 1 cleared, 0 disarmed"
     refused("already armed under 'frame_lo'",
-            s.watch_add(ref="0x2031fc", mode="change", length=4))   # the record is still held
-    # AND THE ROW CAN STILL FIRE: the stop is named by the ref whose record is held, says the
-    # declaration was cleared while the debugger kept the row, and names what removes it.
+            s.watch_add(ref="0x2031fc", mode="change", length=4))
     (tmp_path / "debug.log").open("a").write(STOP_LINE.replace("watchpoint 1 ", "watchpoint 1F "))
     ses.next_packet = "T05watch:0;0e:00000000;11:0000040e;"
     ses.stops_after_polls = 1
@@ -1327,7 +1216,6 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
     assert ("cleared" in stop["cause"]
             and "`debug(\"wpclear 0x1f\")`" in stop["cause"]), stop["cause"]
     assert stop.get("watch_hit") is None, "nothing renders a hit whose declaration is gone"
-    # THE COMMAND THE NOTE NAMES, typed: the list drops the row and the record goes.
     monkeypatch.setattr(ses, "watchpoint", _WatchSession.watchpoint.__get__(ses))
     ses.wplist_rows.clear()
     s.debug(command="wpclear 1F")
@@ -1338,9 +1226,8 @@ def test_watch_clear_keeps_its_record_while_the_list_still_shows_the_row(
 def test_a_change_watch_the_list_does_not_show_after_the_z2_is_refused_with_nothing_stored(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The stub TOOK the `Z2` and `wplist` does not list the row: `readback_refused` with
-    nothing stored, stopped or running, and the note names what to do next. The control:
-    with the row listed, the same call arms and stores."""
+    """A `Z2` taken but not listed is `readback_refused`: nothing stored, the note says what to
+    do."""
     ses = _watching(monkeypatch, tmp_path)
 
     def taken_but_not_listed(addr: int, length: int, remove: bool = False, cpu: str | None = None,
@@ -1391,9 +1278,8 @@ def test_a_disabled_row_is_listed_disabled_and_never_counts_as_armed(
 def test_the_console_line_is_matched_to_the_firing_watchs_index(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """With two change watches, another watch's line inside the same window was attributed
-    to the firing one; and `writer_pc` is the LAST of the firing watch's own lines, the
-    long counter's two words being the case in point."""
+    """Another watch's line in the window is not the firing one's; `writer_pc` is the LAST of
+    its own."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1416,12 +1302,11 @@ def test_the_console_line_is_matched_to_the_firing_watchs_index(
 def test_a_write_inside_the_range_names_its_watch_and_a_read_watch_with_no_line_is_unknown(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The row is named by the console's line, whichever byte of its range was written; a
-    stop the console logged no line for is not guessed at from a packet that names nothing."""
+    """The row is named by the console's line, whichever byte was written; no line, no guess."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.resume()
-    (tmp_path / "debug.log").open("a").write(STOP_LINE)       # a write to 0x002031fe
+    (tmp_path / "debug.log").open("a").write(STOP_LINE)
     ses.next_packet = "T05watch:0;"
     ses.stops_after_polls = 1
     assert s.status()["stopped_on_its_own"]["cause"].startswith("watch frame_lo: 0x002031fc")
@@ -1434,13 +1319,11 @@ def test_a_write_inside_the_range_names_its_watch_and_a_read_watch_with_no_line_
 def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch that stops the machine at the target's own address answered TARGET
-    with the control silent and a `cause` naming the watch: contradictory. The packet decides."""
+    """A change watch stopping at the target's own address is attributed to the watch."""
     import mame_advance as advance
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
-    # The control counts (a hot control), then the watch stops it AT the target.
     ses.pcs = [0xF2034, 0x4A0]
     ses.packets = ["T05watch:0;"]
     ses.stop_queue = [1]
@@ -1460,15 +1343,13 @@ def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
 def test_a_run_cut_by_a_watch_before_the_control_fired_does_not_call_the_control_cold(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A watch that stopped the machine before the control had its chance left the reply
-    saying `control_silent`, sending the caller to doubt a good control after a run of a
-    few milliseconds. The cut is named as what it is, with the watch's own account, and
-    the control is not judged over a window it never got."""
+    """A watch stopping the run before the control had its chance is named a cut, not
+    `control_silent`."""
     import mame_advance as advance
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
-    ses.pcs = [0xF2034, 0x1000]                  # the watch stops it somewhere else, at once
+    ses.pcs = [0xF2034, 0x1000]
     ses.packets = ["T05watch:0;"]
     ses.stop_queue = [1]
     (tmp_path / "debug.log").open("a").write(STOP_LINE)
@@ -1496,9 +1377,8 @@ def test_a_watch_row_is_matched_by_address_and_length_and_by_is_honoured(
 def test_a_stop_at_a_watch_reads_the_bytes_once_and_the_log_at_every_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The console log is read at EVERY stop, armed watch or none: a watchpoint typed
-    through `debug` leaves only its line there, and a survey that skipped the log while
-    nothing of its own was armed took that stop for a `gvblank` landing."""
+    """The log is read at every stop: a watchpoint typed through `debug` is not a `gvblank`
+    landing."""
     ses = _watching(monkeypatch, tmp_path)
     (tmp_path / "debug.log").write_text("boot noise\n" * 3)
     s.step()
@@ -1525,12 +1405,8 @@ def test_a_stop_at_a_watch_reads_the_bytes_once_and_the_log_at_every_stop(
 def test_watch_add_adopting_a_disabled_row_reports_it_disabled_and_so_does_the_rearm(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row the debugger already lists at the range is adopted without a second `Z2`, and
-    `armed` as the literal True whatever the row says is the trap: a `wpdisable` typed
-    through `debug` before the declaration leaves a dead watch under `state: armed`. The
-    breakpoint twin reads `enabled` off the row; the watch does the same, at declaration and
-    at the re-arm, which adopts the row as the declaration does and says it is disabled and
-    what enables it."""
+    """A row already listed at the range is adopted without a second `Z2`, and `armed` follows
+    the row's `enabled` as the breakpoint twin does, at declaration and at the re-arm."""
     ses = _watching(monkeypatch, tmp_path)
     ses.wplist_rows.append("D   1 @ 2031FC-2031FF write")
     out = s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1546,14 +1422,11 @@ def test_watch_add_adopting_a_disabled_row_reports_it_disabled_and_so_does_the_r
 def test_a_pass_can_hold_the_armed_watches_and_gets_them_back_renumbered(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch on a byte written every frame stops every later run of the session,
-    and clearing and re-declaring it around each unrelated question is the step that gets
-    forgotten. `disarm_watches` disarms every armed change watch for ONE pass and re-arms them
-    after it whatever the run answered, reading the rows back: a re-armed row takes the next
-    index, never its old one, and the index is what a stop's log line is matched by."""
+    """`disarm_watches` disarms every armed change watch for one pass and re-arms after it,
+    reading the rows back; a re-armed row takes the next index, which a stop's log line matches."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
-    s.watch_add(ref="0x202e86", mode="show", length=2, fmt="u16")   # a show watch arms nothing
+    s.watch_add(ref="0x202e86", mode="show", length=2, fmt="u16")
     before = dict(mstate.STATE.armed_watches[("frame_lo", ":maincpu")])
     ses.watchpoints.clear()
 
@@ -1568,32 +1441,26 @@ def test_a_pass_can_hold_the_armed_watches_and_gets_them_back_renumbered(
     after = mstate.STATE.armed_watches[("frame_lo", ":maincpu")]
     assert after["addr"] == before["addr"] and after["enabled"] is True
     assert after["index"] == before["index"] + 1 and "2031FC" in after["entry"]
-    # A ROW THE LIST NO LONGER SHOWS after the re-arm is reported, not guessed at.
     ses.watchpoints.clear()
     real = ses.watchpoint
 
     def refusing(addr: int, length: int, remove: bool = False, cpu: str | None = None,
         index: int | None = None, cond: str = "") -> None:
         if not remove:
-            return                                    # the stub took the Z2 and listed nothing
+            return
         real(addr, length, remove, cpu, index, cond)
 
     ses.watchpoint = refusing  # type: ignore[method-assign]
     out = advance._with_watches_disarmed(ses, True, lambda: {"verdict": "ELAPSED"})  # type: ignore[arg-type]
     assert out["not_rearmed"] == [{"ref": "frame_lo", "cpu": ":maincpu"}]
     assert mstate.STATE.armed_watches[("frame_lo", ":maincpu")]["enabled"] is False
-    # AND WITHOUT THE FLAG the reply is the run's own, nothing disarmed.
     plain = advance._with_watches_disarmed(ses, False, lambda: {"verdict": "ELAPSED"})  # type: ignore[arg-type]
     assert plain == {"verdict": "ELAPSED"}
 
 
 def test_the_write_side_is_read_past_an_armed_watchpoints_annotation() -> None:
-    """MAME's `map` annotates the write side of an address that already carries a
-    watchpoint (`-> (wp@91d0) handler`), and the match that wanted one last token read
-    that line as having no write side: re-declaring an armed watch was refused with a
-    claim about the address that was false. The handler is the rest of the line, with or
-    without the annotation. `unmapped` is a fact `write_side` returns, and only the change
-    watch's side refuses it."""
+    """`map` annotates the write side of an address carrying a watchpoint (`-> (wp@91d0) handler`);
+    the handler is the rest of the line."""
     from types import SimpleNamespace
     lines = {
         0x91D0: ("   Read: 091D0 logical program == 091D0 physical program -> (wp@91d0) "
@@ -1614,11 +1481,8 @@ def test_the_write_side_is_read_past_an_armed_watchpoints_annotation() -> None:
 def test_watch_add_picks_a_format_that_fits_the_width_when_none_is_named(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A width-2 watch with no `fmt` cannot be judged against a default u32, which does not
-    divide two bytes: that would make a caller who says `width=2` also know to say
-    `fmt=u16`. With no `fmt` the server picks the widest unsigned format the width is a
-    whole number of: u8, u16 or u32. An explicit `fmt` is still honoured and still refused when it
-    does not fit."""
+    """With no `fmt` the server picks the widest unsigned format the width divides; an explicit
+    `fmt` that does not fit is still refused."""
     ses = _watching(monkeypatch, tmp_path)
     two = s.watch_add(ref="frame_lo", mode="show", length=2)
     assert two["status"] == "ok" and two["fmt"] == "u16", two
@@ -1630,19 +1494,12 @@ def test_watch_add_picks_a_format_that_fits_the_width_when_none_is_named(
 def test_a_stop_from_a_watch_re_armed_from_a_prior_session_says_it_was_a_leftover(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch declared in an earlier session persists in the store and is re-armed at
-    the next `start`; the first `run_to`/`run_for` of the new session then stops at it, and
-    only `start`'s `rearm` block named it. The stop itself now says the watch was a re-armed
-    leftover (`rearmed: true` in `watch_hit`, and the `cause` says so), so a caller who did not
-    scroll back to the start reply is not left thinking they armed it this session. A watch
-    declared THIS session carries no such flag, which the exact-equality attribution test
-    above pins."""
+    """A change watch re-armed from an earlier session says so in its stop: `rearmed: true` in
+    `watch_hit` and in the `cause`."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
-    # The declaration is now the CURRENT session's; make it a prior session's leftover the
-    # way a re-arm leaves it: the store keeps the original origin, which differs from this
-    # session's. `is_stale` stays False (it is by NAME), so origin is the only tell.
+    # Make it a prior session's leftover: the store keeps the original origin.
     monkeypatch.setattr(mstate.STATE, "session_origin", "a_later_session")
     (tmp_path / "debug.log").write_text(STOP_LINE + "25F6\n")
     ses.memory[0x2031FC] = bytes.fromhex("00000038")
@@ -1656,10 +1513,8 @@ def test_a_stop_from_a_watch_re_armed_from_a_prior_session_says_it_was_a_leftove
 
 def _frame_run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ticks: bool, writes: bool,
                stale: str = "") -> tuple[dict[str, Any], list[str], list[int]]:
-    """`run_for(frames=3)` over a change watch on `frame_lo`, every `gvblank` intercepted: each
-    moves the counter when `ticks`, and with `writes` the watch fires in the first (the byte
-    written and the console's stop line logged). `stale` is log the previous stop already
-    surveyed. Returns the reply, the `gvblank`s sent, and the pc of every survey taken."""
+    """`run_for(frames=3)` over a change watch on `frame_lo`, each `gvblank` intercepted:
+    `ticks` moves the counter, `writes` fires the watch in the first, `stale` is surveyed log."""
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1695,11 +1550,8 @@ def _frame_run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ticks: bool, wri
 def test_a_frame_run_cut_by_a_watch_between_two_vblanks_is_a_stop_and_sends_nothing_after(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The run by frames: a change watch fires before the vblank the `gvblank` was heading
-    for, so the counter does not tick, which is the tell (a console-started run sends no
-    packet); the stop is surveyed, named from the debugger's own log, and no `gvblank`
-    follows it. Resuming every hit with the next `gvblank` makes a run over a latch written
-    each frame come back ELAPSED, with every write it passed through lost."""
+    """A change watch firing before the vblank leaves the counter unticked (the tell): the stop is
+    named from the log and no `gvblank` follows."""
     out, sent, _ = _frame_run(monkeypatch, tmp_path, ticks=False, writes=True)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
     assert out["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["cause"]
@@ -1710,9 +1562,8 @@ def test_a_frame_run_cut_by_a_watch_between_two_vblanks_is_a_stop_and_sends_noth
 def test_a_frame_run_cut_by_a_watch_that_lands_with_the_tick_is_a_stop_and_sends_nothing_after(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The watch fires in a frame whose tick the run already took, so the counter MOVED and the
-    pc is on no row of this server's: only the console's line says the landing is a stop, and a
-    `gvblank` sent after it would carry the machine past the writer (live section W)."""
+    """The watch fires in a frame whose tick was taken: only the console's line says it is a
+    stop."""
     out, sent, surveyed = _frame_run(monkeypatch, tmp_path, ticks=True, writes=True)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
     assert out["cause"] == "watch frame_lo: 0x002031fc written by pc 0x0000040e", out["cause"]
@@ -1724,10 +1575,8 @@ def test_a_frame_run_cut_by_a_watch_that_lands_with_the_tick_is_a_stop_and_sends
 def test_a_frame_run_whose_landings_all_tick_with_no_new_stop_line_surveys_only_its_end(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, stale: str,
 ) -> None:
-    """The control beside the case above: every landing ticks and the console logs no stop
-    line during the run, so nothing stopped the machine early, the run is ELAPSED, and the
-    survey is taken once, at its end: a landing surveyed for nothing costs console reads at
-    every frame. A stop line the previous survey already read is behind the run's cursor."""
+    """Control: every landing ticks and no stop line is logged, so the run is ELAPSED, surveyed
+    once."""
     out, sent, surveyed = _frame_run(monkeypatch, tmp_path, ticks=True, writes=False, stale=stale)
     assert out["status"] == "ok" and out["verdict"] == "ELAPSED", out
     assert sent == ["gvblank"] * 3 and surveyed == [3], (sent, surveyed)
@@ -1735,10 +1584,10 @@ def test_a_frame_run_whose_landings_all_tick_with_no_new_stop_line_surveys_only_
 
 @pytest.mark.parametrize(("line", "stop"), [
     (STOP_LINE, True),
-    ("Stopped at watchpoint 2 writing 03 to 042C\n", True),        # a writer on another cpu
+    ("Stopped at watchpoint 2 writing 03 to 042C\n", True),
     ("Stopped at breakpoint 3\n", True),
     ("Stopped at registerpoint 1\n", True),
-    ("Stopped at VBLANK\n", False),                                # a frame stop's own line
+    ("Stopped at VBLANK\n", False),
     ("Watchpoint 1 set\n", False),
     ("F2034\n", False),
 ])
@@ -1751,10 +1600,7 @@ def test_the_stop_lines_a_frame_run_looks_for(line: str, stop: bool) -> None:
 def test_a_watch_hit_lists_at_most_the_shared_ceiling_of_writes_and_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A latch written many times a frame fills one reply with writes, so the list is capped
-    at the ceiling every other list of this server keeps,
-    the LAST writes are the ones kept (the writer of the stop is the last one), and the
-    reply says how many there were and that it was cut."""
+    """A latch written many times a frame is capped at the list ceiling, keeping the LAST writes."""
     from mame_read import LOG_LIMIT_MAX
     assert watches.WRITES_MAX == LOG_LIMIT_MAX, "one ceiling for every list this server hands back"
     ses = _watching(monkeypatch, tmp_path)
@@ -1777,20 +1623,14 @@ def test_a_watch_hit_lists_at_most_the_shared_ceiling_of_writes_and_says_so(
 def test_symbols_find_says_whether_each_symbol_is_live_ram_or_its_rom_copy(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A change watch on a symbol that lives in ROM is refused only when tried (the write
-    side is unmapped), and a caller needs to know beforehand. Stopped, every symbol answered
-    carries `memory` from the console's own `map`: `ram` (written and read through
-    memory), `rom` (unwritable), `latch` (written through a handler, read nowhere). Running,
-    the console cannot be asked and the field says `unknown`."""
+    """A symbol's `memory` kind comes from the console's `map` when stopped; `unknown` while
+    running."""
     ses = _watching(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"IRQ_VBLANK": 0x400, "MAIN_RAM": 0x00200000,
                                   "SOUND_LATCH": 0x00740000})
     ses.latches.add(0x740000)
     assert mmap.memory_kind(ses, 0x400) == "rom"  # type: ignore[arg-type]
-    # A paired `_r`/`_w` region (both sides handlers, the read side mapped) is readable and
-    # is NOT a latch. The lines are the captured shape with the handler names of a paired
-    # region; no board of the fleet was captured with one, so the case is authored from
-    # the captured format and says so.
+    # Captured shape with paired handler names; no fleet board has one, so authored from it.
     paired = MAP_LATCH.replace("-> unmapped\n", "-> m68k_dual_state::latch_r\n", 1)
     real_monitor = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda command, timeout=10.0:
@@ -1820,18 +1660,13 @@ def test_memory_kind_is_unknown_when_the_console_names_no_side(
 def test_drive_waits_for_the_expectation_only_while_the_machine_runs(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """An act that leaves the machine RUNNING (`resume` without a bound): the expectation
-    is waited for up to `seconds`, and a line that lands meanwhile is seen; none within
-    the bound is `wait_expired` naming the machine still running; a stop reached during
-    the wait ends it, the log read once at the stop; and a `look` that does not compile
-    is refused in the regex's own words."""
+    """A run left RUNNING waits up to `seconds` for the expectation: a landing line is seen, none is
+    `wait_expired`, a stop ends the wait with one log read, a bad regex is refused as it is."""
     import threading
     ses = _watching(monkeypatch, tmp_path)
-    # Something can stop it.
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "SOMEWHERE", 0x500)))
     log = tmp_path / "error.log"
     threading.Timer(0.3, lambda: log.open("a").write("[driver] RE_DAC start=1\n")).start()
-    # With an `expect` the act's tail does not wait `wait` for a stop: the VERIFY is the wait.
     out = s.drive(act=[{"op": "resume", "seconds": 0}], expect="RE_DAC start", seconds=3,
                   pattern="RE_DAC")
     assert out["status"] == "ok" and out["verify"]["seen"] is True, out
@@ -1840,16 +1675,11 @@ def test_drive_waits_for_the_expectation_only_while_the_machine_runs(
     out = s.drive(act=[{"op": "status"}], expect="never", seconds=0.3)
     assert out["status"] == "ok" and out["verify"]["verdict"] == "TIMEOUT", out
     assert "still running" in out["verify"]["why"], out
-    # A stop reached DURING the wait (not before it): the poll notes it, the log is read
-    # once, and the wait ends well inside its bound.
     threading.Timer(0.3, lambda: setattr(ses, "stops_after_polls", 1)).start()
     out = s.drive(act=[{"op": "status"}], expect="never", seconds=3)
     assert out["status"] == "INVALID" and "STOPPED" in out["verify"]["why"], out
     assert out["verify"]["waited_s"] < 2
     assert "does not compile" in s.drive(act=[{"op": "status"}], pattern="(")["message"]
-
-
-# ------------------------------------- what a mutation run left loose, each seen RED first
 
 
 def test_watch_add_replies_say_stored_armed_and_state_for_every_placement(
@@ -1864,16 +1694,12 @@ def test_watch_add_replies_say_stored_armed_and_state_for_every_placement(
     assert s.watch_add(ref="scene_id", mode="show", length=2)["already_stored"] is True
     read = s.watch_add(ref="frame_lo", mode="show", length=4)
     assert (read["stored"], read["already_stored"], read["state"]) == (True, False, "evaluated")
-    # An address declared again in another spelling is the SAME declaration, under its stored
-    # spelling: one declaration in the store, the reply's `ref` the string a clear takes.
     s.watch_add(ref="0x2031fc", mode="change", length=4)
     again = s.watch_add(ref="0x2031FC", mode="change", length=4)
     assert again["ref"] == "0x2031fc" and again["already_stored"] is True, again
     assert len([d for d in arming.store().declarations() if d.kind == "watch"]) == 3
-    # A refusal from the map control carries the ref and the address it judged.
     out = refused("unmapped", s.watch_add(ref="copy_in_rom", mode="change", length=2))
     assert (out["code"], out["ref"], out["addr"]) == ("bad_argument", "copy_in_rom", "0x00000400")
-    # `by` reaches the gate: a change watch declared by expr is refused there.
     out = refused("by is one of",
                   s.watch_add(ref="0x203200", mode="change", length=2, by="expr"))
     assert out["code"] == "bad_argument" and ses.watchpoints == [(0x2031FC, 4, False)]
@@ -1882,14 +1708,13 @@ def test_watch_add_replies_say_stored_armed_and_state_for_every_placement(
 def test_a_survey_evaluates_every_declaration_after_an_unresolved_or_a_bus_watch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The rows a stop survey skips with `continue` must not end the survey: a watch after an
-    unresolved one, or after a bus-sourced one, is still evaluated, and the bus row carries
-    its reading, its address in the list."""
+    """Rows a survey skips (unresolved, bus-sourced) must not end it; the bus row carries its
+    reading."""
     ses = _watching(monkeypatch, tmp_path)
     ses.latches.add(0x740000)
-    s.watch_add(ref="scene_id", mode="show", length=2)              # unresolved
-    s.watch_add(ref="0x740000", mode="change", length=2)               # a write-only latch: bus
-    s.watch_add(ref="frame_lo", mode="show", length=4)               # plain, last
+    s.watch_add(ref="scene_id", mode="show", length=2)
+    s.watch_add(ref="0x740000", mode="change", length=2)
+    s.watch_add(ref="frame_lo", mode="show", length=4)
     rows = s.step()["watches"]
     assert [(r["ref"], r["state"]) for r in rows] == [
         ("scene_id", "unresolved"), ("0x740000", "armed"), ("frame_lo", "evaluated")], rows
@@ -1904,7 +1729,7 @@ def test_a_survey_that_cannot_read_wplist_places_by_its_record_and_says_gone_wit
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     arming.store().add(dec.Declaration("watch", "address", "0x203200", width=2, fmt="u16",
-                                       watch_mode="change", origin="s1"))    # never armed
+                                       watch_mode="change", origin="s1"))
     real = ses.monitor
 
     def no_list(command: str, timeout: float = 10.0) -> str:
@@ -1919,9 +1744,8 @@ def test_a_survey_that_cannot_read_wplist_places_by_its_record_and_says_gone_wit
 
 
 def test_memory_kind_reads_both_sides_of_the_map_answer() -> None:
-    """What an address IS, from the console's `map`: a side the answer lacks is `unknown`, both
-    sides unmapped is `unmapped`, a write side only is `rom`, a read side only is `latch`,
-    the same memory both ways is `ram`, and the same HANDLER both ways is `handlers`."""
+    """Address kind from `map`: a missing side `unknown`, both unmapped `unmapped`, write only
+    `rom`, read only `latch`, same memory `ram`, same handler `handlers`."""
     from types import SimpleNamespace
     both_handlers = ("   Read: 091D0 logical program == 091D0 physical program -> "
                      "twins_state::access_w\n  Write: 091D0 logical program == 091D0 physical "
@@ -1938,9 +1762,8 @@ def test_memory_kind_reads_both_sides_of_the_map_answer() -> None:
 def test_a_pass_re_arms_each_watch_by_its_own_range_and_refreshes_its_row(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """After a pass the stub numbers the rows afresh: each record takes its new index and
-    entry from the row at ITS range (the same address under another length is not it), a
-    ref the list no longer shows is marked disabled, and the next ref is still handled."""
+    """After a pass the stub renumbers rows: each record takes the new index of the row at ITS
+    range."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     s.watch_add(ref="0x203200", mode="change", length=2)
@@ -1951,7 +1774,7 @@ def test_a_pass_re_arms_each_watch_by_its_own_range_and_refreshes_its_row(
     def lose_the_first(addr: int, length: int, remove: bool = False, cpu: str | None = None,
         index: int | None = None) -> None:
         if addr == 0x2031FC:
-            wplist_add(ses, addr, 2)             # the stub lists ANOTHER length there
+            wplist_add(ses, addr, 2)
             return
         real(addr, length, remove, cpu, index)
 
@@ -1961,15 +1784,13 @@ def test_a_pass_re_arms_each_watch_by_its_own_range_and_refreshes_its_row(
     assert listed["frame_lo"]["state"] == "gone", listed["frame_lo"]
     assert listed["0x203200"]["state"] == "armed", listed["0x203200"]
     assert listed["0x203200"]["entry"] == "4 @ 203200-203201 write", "the row numbered afresh"
-    # The record took the new row too: a clear reports the row as the debugger numbers it NOW.
     assert s.declaration_clear("watch", ref="0x203200")["disarmed"] == ["4 @ 203200-203201 write"]
 
 
 def test_the_console_log_is_read_from_the_first_arm_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A stop line the console logged BEFORE anything was armed belongs to nobody here: the
-    mark is taken at the first arm, at the end of `debug.log`, and not moved by a later one."""
+    """A log line from before anything was armed is nobody's: the mark is taken at the first arm."""
     ses = _watching(monkeypatch, tmp_path)
     (tmp_path / "debug.log").write_text("F2034\n" + STOP_LINE + "25F6\n")
     s.watch_add(ref="frame_lo", mode="change", length=4)
@@ -1982,8 +1803,8 @@ def test_the_console_log_is_read_from_the_first_arm_on(
 
 
 def test_a_write_by_another_cpu_is_named_without_a_writer_pc() -> None:
-    """`watchpoint::hit` (src/emu/debug/points.cpp) prints `(PC=...)` only when the writer is the
-    watch's own cpu; another cpu or a device gets the bare line, and it is still that watch's."""
+    """`watchpoint::hit` prints `(PC=...)` only for the watch's own cpu; the bare line is still
+    its."""
     bare = "Stopped at watchpoint 1 writing 0025 to 002031FC"
     own = bare + " (PC=0004A0)"
     for line, pc in ((bare, None), (own, "0x000004a0")):
@@ -2001,8 +1822,8 @@ def test_a_write_by_another_cpu_is_named_without_a_writer_pc() -> None:
 def test_the_unmapped_note_points_at_the_live_datum_only_where_the_address_reads_as_memory(
     space: str, read_side: str | None, says: str | None,
 ) -> None:
-    """A read handler is a register, not the ROM copy of a datum; an address nothing reads
-    copies nothing; a port has no ROM copy."""
+    """A read handler is a register, not a datum's ROM copy; nothing read copies nothing; a port
+    has none."""
     note = mmap.unmapped_note(0x400, space, read_side)
     assert "the tap still sees every one the cpu makes" in note
     assert ("ROM" in note) == (says is not None) and (says is None or says in note), note
@@ -2033,8 +1854,7 @@ def test_a_stop_keeps_a_taps_count_and_its_alarms_while_they_hold_and_names_the_
             "why": "older"}
     assert "values" in left and "writers" in left and "frame_as_of" in left
     assert "total" not in left and "superseded" in left, "named where it was left out"
-    # A TAP WHOSE STATE COULD NOT BE READ IS AN ALARM, as one not installed is: kept on the row,
-    # never folded into what the stop left out, where a healthy tap's `installed` goes.
+    # A tap whose state could not be read is an alarm: kept on the row, not folded away.
     unread = {"available": False, "why": "the console did not answer"}
     rows, _ = watches.at_stop([{**tally, "installed": False}, {**tally, "installed": unread}])
     assert rows[0]["installed"] is False and rows[1]["installed"] == unread, rows

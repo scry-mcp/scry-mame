@@ -1,10 +1,4 @@
-"""`while_running` says whether the machine was running when the call ARRIVED, read once at its
-entry: a stop that reaches the session during the call's own round trips (a condition armed by
-the call, firing an instruction later) is the next contact's, as `last_stop` reports it.
-
-The double clears `running` the way `gdb_session.request`'s `_note_stop` does when a stop packet
-arrives ahead of a reply: after one of the call's list readings.
-"""
+"""`while_running` is the machine state at call arrival; a mid-call stop is `last_stop`'s."""
 
 from __future__ import annotations
 
@@ -64,7 +58,6 @@ def test_while_running_is_the_machine_the_call_arrived_on(
     monkeypatch.setitem(mstate.STATE.tallies, ("0x6@io", ":maincpu"), {
         "tally_id": "6_1@io", "registry": tally.REGISTRY, "files": [], "last_total": 0,
         "space": "io", "last_seq": 0})
-    # The removal's own send is the console channel's business, not this test's.
     monkeypatch.setattr(mtap, "send_remove", lambda _scratch, owner: {
         "tally_id": "6_1@io", "removal": "pending", "lines_ahead": 0, "call": "x"})
     ses.go()

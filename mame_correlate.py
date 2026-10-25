@@ -1,34 +1,21 @@
 """Which word of a captured block holds a drawn object's x, y and tile: proved against the screen.
 
-THE TWO SIDES. A capture (`mame_capture`) keeps the block as it stood at every write to its
-trigger, with the frame the write happened in. A `gfx_locate` answer whose matches all sit in ONE
-window is an EVENT: on the screen of frame F, one object of a known layout sits at a known place,
-and its tile is known when one tile matched there (a block that holds one image twice leaves the
-place known and the tile not). Each role is tested only on the events where it is known.
+An event is a `gfx_locate` answer whose matches sit in one window: on the screen of frame F, one
+object sits at a known place, and its tile is known when one tile matched. Each role is tested
+only on events where it is known. An event pairs with the capture's row of frame F - lag when
+that frame has exactly one row; none or several leave it unpaired, counted by reason.
 
-THE PAIRING IS ONE TO ONE. An event of screen frame F pairs with the capture's row of frame
-F - lag when that frame has exactly one row; none or several leave it unpaired, counted by
-reason. "Agrees on every event" means something only when each event has one row to agree with.
+A hypothesis (unit, role, sign, `add`) holds when `sign * unit + add` equals the role on every
+paired event, with `MIN_PAIRED` of them and `MIN_VALUES` distinct values of the role. The sign is
+there because coordinates are often stored reversed.
 
-A HYPOTHESIS is a unit (a word of the bus, or one byte of it), a role (`dest_x` and `dest_y`
-from the match's window, `source_tile` from its tile), a sign and an `add`: it HOLDS when
-`sign * unit + add` equals the role on every paired event, with at least `MIN_PAIRED` of them
-and `MIN_VALUES` distinct values of the role, since a value that never moved proves nothing.
-Coordinates stored reversed (`add - value`) are common, which is why the sign is part of it.
+The lag is one law, not chosen per field: the one lag at which both `dest_x` and `dest_y` hold
+(steady speed agrees at several, which proves nothing). A role holding only at another lag is
+named (`elsewhere`), not assigned.
 
-THE LAG IS ONE LAW. Every field of a draw is read in the same frame relation, so the lag is not
-chosen per field: it is the lag at which both `dest_x` and `dest_y` hold, and there must be one.
-None proves nothing; several (an object moving at a steady speed agrees at more than one lag)
-prove nothing either, and the account says which. A role that holds only at another lag is not
-assigned and is named (`elsewhere`): the block is read at the trigger, and a word the game
-writes at another time of the frame is one frame off from the others.
-
-AMBIGUITY IS REFUSED, NEVER RANKED. At the lag, a role two hypotheses hold is ambiguous, and so
-is a unit holding two roles: neither is assigned. The one exception is not a ranking: a byte
-and the word holding it that both hold a role with the same sign say the same thing about the
-events, since the word's other bytes then held one value on every one of them (their share of
-the word is what the two `add`s differ by), so the byte, the claim the evidence exercised, is
-kept.
+Ambiguity is refused, never ranked. The one exception: a byte and its word both holding a role
+with the same sign say the same thing (the word's other bytes held one value throughout), so the
+byte is kept.
 """
 
 from __future__ import annotations
@@ -48,11 +35,11 @@ MIN_VALUES = 2
 class Event:
     """One object on one screen: a `gfx_locate` answer whose matches sit in one window."""
 
-    locate: int          # the answer's number in the evidence
+    locate: int
     frame: int
     dest_x: int
     dest_y: int
-    source_tile: int | None     # None: several tiles matched the one window
+    source_tile: int | None
 
     def role(self, name: str) -> int | None:
         value: int | None = getattr(self, name)
@@ -66,7 +53,7 @@ class Unit:
     word: int
     mask: int
     whole: bool
-    word_bytes: int          # the bus word's width, which the `mask` text is written at
+    word_bytes: int
 
     def value(self, words: Sequence[int]) -> int:
         shift = (self.mask & -self.mask).bit_length() - 1
@@ -133,8 +120,7 @@ def _holding(paired: list[tuple[Event, list[int]]], all_units: list[Unit]) -> li
 
 
 def _narrowest(holds: list[Holds]) -> list[Holds]:
-    """Drop a whole word that says what one of its bytes already says (the module's
-    exception): same role, same sign, whatever the add."""
+    """Drop a whole word that says what one of its bytes already says (the module's exception)."""
     return [h for h in holds if not (h.unit.whole and any(
         o.unit.word == h.unit.word and not o.unit.whole and o.role == h.role
         and o.sign == h.sign for o in holds))]
@@ -144,8 +130,7 @@ Frames = dict[int, list[list[int]]]
 
 
 def frames(rows: Iterable[tuple[int, bytes]], word_bytes: int, endianness: str) -> Frames:
-    """A capture's rows as words, by the frame each was written in: decoded once per capture,
-    whatever number of groups it is correlated with."""
+    """A capture's rows as words by frame written, decoded once per capture."""
     by_frame: Frames = {}
     for frame, block in rows:
         by_frame.setdefault(frame, []).append(split_words(block, word_bytes, endianness))
@@ -154,8 +139,7 @@ def frames(rows: Iterable[tuple[int, bytes]], word_bytes: int, endianness: str) 
 
 def correlate(by_frame: Frames, events: list[Event], word_bytes: int,
               words: int) -> dict[str, Any]:
-    """The account of one capture (`frames`) against one group of events: the pairing at every
-    lag, the hypotheses that held, the lag chosen (or why none), and each role's verdict."""
+    """The account of one capture against one group of events."""
     all_units = units(words, word_bytes)
     per_lag: dict[int, dict[str, Any]] = {}
     holding: dict[int, list[Holds]] = {}

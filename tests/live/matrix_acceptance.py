@@ -1,13 +1,7 @@
-"""Section H of the live matrix: contracts at the edges of boards other than m68k-dual, each asked
-on the board that exposes it.
+"""Section H of the live matrix: contracts at the edges of boards other than m68k-dual.
 
-Circus runs on the stock MAME over the sets in `MAME_TEST_ROMS` and pangofun as `pangofun_boot`
-does; m68k-dual and the two V30 boards run on their copies on the bench (`bench_boards`), the
-V30s' palettes written by the `sequence` and the `latch` protocols. A board that cannot run on
-this host has its cells BLOCKED with the reason, never passed.
-
-`live_matrix.py` registers this section after its own; run alone, it is the same machinery over
-this section only:
+A board that cannot run on this host has its cells BLOCKED with the reason, never passed.
+Run alone, it is the same machinery over this section only:
 
     MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_acceptance.py
 """
@@ -57,8 +51,6 @@ from live_harness import (
 import mame_lexer as lexer  # isort: skip -- found through the path the harness sets
 import mame_ramdac as mramdac  # isort: skip
 
-# The pens each V30 board's palette log is held to: spread across its table, each one its attract
-# screen has written by the time they are compared.
 V30_PENS = (1, 17, 100, 200, 255)
 V30_ALT_PENS = (16, 17, 512, 1022)
 
@@ -105,17 +97,14 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
 
 
-#: The leg these boards' runs go in: they hold less than the real speed `LEG_FRAMES` is sized for.
+#: Shorter than `LEG_FRAMES`: these boards run below real speed.
 RUN_STEP_FRAMES = 100
 
 
-
 def palette_manifest(name: str, label: str) -> str:
-    """The tracked palette manifest `name` as a session on board `label` loads it: `gfx_load`
-    refuses a manifest whose `systems` do not hold the set the session runs, and the tracked
-    file never names the set, so the copy's `systems` line is the bench identity's. The line
-    must match exactly once: a substitution that matched nothing would load the tracked file
-    unchanged."""
+    """A copy of the tracked palette manifest `name` with `systems` set to board `label`'s set.
+
+    The line must match exactly once: a miss would load the tracked file unchanged."""
     line = f"systems: [{value(label, 'system')}]"
     text, n = re.subn(r"(?m)^systems: \[[^\]\n]*\]$", lambda _m: line,
                       (PALETTE_MANIFESTS / name).read_text(encoding="utf-8"))
@@ -126,30 +115,25 @@ def palette_manifest(name: str, label: str) -> str:
     return str(out)
 
 def _run_frames(frames: int) -> list[str]:
-    """Run `frames` (`run_frames`, in legs of `RUN_STEP_FRAMES`): what the run said when it was
-    no ELAPSED one, empty when it was, since a cell after a run that stopped short judges a
-    machine that never got there."""
+    """Run `frames` in legs; what the run said if it was not ELAPSED, else empty."""
     r = run_frames(frames, RUN_STEP_FRAMES)
     return [] if ok(r) and r.get("verdict") == "ELAPSED" else [said(r, 60)]
 
 
 def _palette_log_matches(port: str, pens: tuple[int, ...]) -> tuple[bool, str]:
-    """Each pen's colour as the log composed it against the palette device's live one, and no
-    data write the log left unplaced: the verdict and what it compared."""
+    """Whether each pen's logged colour equals the live palette's and no write is unplaced."""
     pairs = []
     for pen in pens:
         logged = call("palette_log", palette_port=port, pen=pen, limit=1).get("pen_state") or {}
         live = (call("palette", first=pen, count=1).get("colors") or [None])[0]
         pairs.append((pen, logged.get("color"), live))
     whole_log = call("palette_log", palette_port=port, limit=0)
-    # two colours at least: pens all one colour agree however the log placed its writes
+    # pens all one colour agree however the log placed its writes
     agree = (ok(whole_log) and "unsynced_writes" not in whole_log
              and all(log is not None and log == live for _, log, live in pairs)
              and len({live for _, _, live in pairs}) > 1)
     return agree, f"unsynced {whole_log.get('unsynced_writes')}; {pairs}"
 
-
-# ============================================================================ circus
 
 CONTROLS = [f"{0x1300 + i:#x}" for i in range(lexer.TEMPS)]
 ONE_CONTROL_TOO_MANY = f"{0x1300 + lexer.TEMPS:#x}"
@@ -171,7 +155,7 @@ def _h_circus(t: list[str]) -> None:
     cell(t[1], refused(r, "bad_argument") and "0xffff" in str(r.get("message")), said(r))
     r = call("read_memory", ref="0xfffe", length=4)
     cell(t[2], refused(r, "bad_argument") and "0xffff" in str(r.get("message")), said(r))
-    # the byte a write wrapped under the mask would land on, and a value it does not hold yet
+    # byte 0 is where a write wrapped under the mask would land
     first = str(call("read_memory", ref="0x0", length=1).get("hex", ""))
     before = call("status").get("session", {}).get("altering_writes")
     r = call("write", ref="0x10000", data_hex=f"{int(first or '0', 16) ^ 0xFF:02x}")
@@ -210,12 +194,12 @@ def _h_circus(t: list[str]) -> None:
          f"{[(b.get('ref'), b.get('state')) for b in rows]}: {said(r)}")
     call("declaration_clear", kind="breakpoint", all=True)
 
-    # 0x80 is a `brk` the game never reaches, 0x12f7 its main loop's every frame
+    # 0x80 is a `brk` never reached, 0x12f7 the main loop
     r = call("run_to", ref="0x12f7", control="0x80", seconds=WAIT_CEILING_S)
     cell(t[8], ok(r) and r.get("verdict") == "TARGET" and r.get("control_hits") == 0, said(r))
     call("declaration_clear", kind="breakpoint", all=True)
 
-    # a frame's stop first, so the millisecond after it cannot reach the next vblank
+    # from a frame's stop, a millisecond cannot reach the next vblank
     call("run_for", frames=1, seconds=WAIT_CEILING_S)
     r = call("run_for", milliseconds=1, seconds=WAIT_CEILING_S)
     cell(t[7], refused(r, "no_progress") and "stop_seq" in r and "pc" in r
@@ -230,9 +214,7 @@ def _h_circus(t: list[str]) -> None:
     call("close")
 
 
-# ========================================================================== m68k-dual
-
-M68K_DUAL_SETTERS = 256  # its upload is an unrolled loop: one writer pc per pen
+M68K_DUAL_SETTERS = 256  # unrolled upload: one writer pc per pen
 
 
 def _h_m68k_dual(t: list[str]) -> None:
@@ -253,12 +235,7 @@ def _h_m68k_dual(t: list[str]) -> None:
     call("close")
 
 
-# ========================================================================= the V30s
-#
-# How a session starts on each V30 board: its label, then its start's arguments, the paths
-# relative to the board's directory on the bench (its checkout's layout) and the names that say
-# which program it is taken from the bench's identity; a start carries the symbols only where a
-# cell needs a name.
+# Per V30 board: label, then start's arguments; paths are relative to the board's bench directory.
 
 V30 = ("v30", {"binary": value("v30", "binary"), "system": value("v30", "system"),
                   "rompath": ROMPATH, "inipath": "run", "reference_rom": V30_REFERENCE_ROM,
@@ -270,8 +247,7 @@ V30_ALT = ("v30-alt", {"binary": value("v30-alt", "binary"), "system": value("v3
                       "reference_addr": "0xFFFF0", "reference_base": "0x20000"})
 PATHS = ("binary", "rompath", "inipath", "reference_rom")
 
-# v30's score digit: 24x24 pixels, a byte a pixel read as eight planes, so a row is 24 * 8
-# bits and a digit 24 rows of them; ten digits from 0x81a20
+# v30's score digit: 24x24 pixels, a byte a pixel as eight planes; ten digits from 0x81a20
 DIGIT_ROW_BITS = 24 * 8
 V30_DIGIT: dict[str, Any] = {
     "width": 24, "height": 24, "planes": 8, "planeoffset": "STEP8(0,1)",
@@ -292,7 +268,7 @@ def v30_boot(board: tuple[str, dict[str, str]],
 
 def _h_v30(t: list[str]) -> None:
     v30_boot(V30)
-    # armed before anything executes: a `sequence` log knows the index only from the start
+    # a `sequence` log knows the index only from the start
     call("gfx_load", path=palette_manifest("v30-palette.yaml", "v30"))
     call("palette_log", palette_port="pal", arm=True)
     r = call("read_block", ref="0x81a20", length=16)
@@ -320,20 +296,18 @@ def _h_v30(t: list[str]) -> None:
     call("close")
 
 
-# THE CPU'S OWN `out` on v30-alt's V30, planted at 0000:8000 and stepped, so a count's tally is a
-# write the cell caused rather than one the attract mode may or may not make.
+# The V30's own `out`, planted and stepped, so a tally is a write the cell caused.
 V30_ALT_CODE_ADDR = 0x8000
 V30_ALT_OUT_WORD = 0x1234
 
 
 def _v30_out_word(port: int, value: int) -> None:
-    """`mov dx, port; mov ax, value; out dx, ax; jmp $` run by the V30 from V30_ALT_CODE_ADDR."""
+    """Run `mov dx, port; mov ax, value; out dx, ax; jmp $` from V30_ALT_CODE_ADDR."""
     code = bytes([0xBA, port & 0xFF, port >> 8, 0xB8, value & 0xFF, value >> 8, 0xEF, 0xEB, 0xFE])
     call("write", ref=hex(V30_ALT_CODE_ADDR), data_hex=code.hex())
     call("set_register", name="CS", value=0)
     call("set_register", name="EIP", value=V30_ALT_CODE_ADDR)
-    # A count's install waits in the console's pipe until a line is read, and a step reads none:
-    # this chunk drains it, so the tap exists before the `out` runs.
+    # a count's install waits in the console pipe and a step reads none: drain it first
     call("lua", script='print("drained")')
     call("step", count=3)
 
@@ -360,8 +334,7 @@ def _h_v30_alt(t: list[str]) -> None:
     r = call("run_for", frames=1, seconds=WAIT_CEILING_S)
     cell(t[19], ok(r) and "cycles" in r and bool(unavailable_why(r["cycles"])),
          said(r))
-    # LAST, because the planted code leaves the cpu in its `jmp $`: every cell before it needs the
-    # game running, and a count armed only now tallies the planted `out` and nothing else.
+    # LAST: the planted code leaves the cpu in `jmp $`, and cells before need the game running
     none = call("watch_add", ref="0x7e", mode="count", space="io", length=2)
     _v30_out_word(0x7E, V30_ALT_OUT_WORD)
     none_values = _io_count_values("0x7e")
@@ -373,15 +346,12 @@ def _h_v30_alt(t: list[str]) -> None:
     call("close")
 
 
-# ============================================================================ pangofun
-
-# THE PORTS THIS CELL WRITES: 0xe0..0xe3, one 32-bit io word the driver maps to nothing that
-# reacts (`nopw`), and the word after it. The dword goes out from code planted in RAM and run by
-# the cpu itself, since the accesses under test are the cpu's own bus cycles; the bios is still
-# in real mode when it runs, which the 16-bit encoding assumes.
+# Ports 0xe0..0xe7 are mapped to nothing that reacts (`nopw`). The dword goes out from code the
+# cpu runs, since the accesses under test are its own bus cycles; the bios is still in real mode,
+# which the 16-bit encoding assumes.
 PANGOFUN_CODE_ADDR = 0x8000
 PANGOFUN_DWORD = 0x12345678
-# Globals, because the dump is another chunk, and the global holds the tap for the session.
+# Globals: the dump is another chunk, and the tap lives for the session.
 PANGOFUN_IO_TAP_LUA = """
 local io_space = manager.machine.devices[":maincpu"].spaces["io"]
 IO_TAP_LOG = {}
@@ -393,9 +363,7 @@ PANGOFUN_IO_TAP_DUMP = 'print(table.concat(IO_TAP_LOG, " ")); IO_TAP_LOG = {}'
 
 
 def _bus_log_of_out_dword(port: int) -> str:
-    """The bus accesses the io tap saw while the i486 ran `cli; mov dx, port; mov eax,
-    PANGOFUN_DWORD; out dx, eax` from PANGOFUN_CODE_ADDR, each `offset:data:mask` in hex: the
-    tap's log is emptied first, and the four instructions are stepped to the `jmp $` after them."""
+    """The io tap's `offset:data:mask` log (hex) of an `out dx, eax` of PANGOFUN_DWORD."""
     code = bytes([0xFA, 0xBA, port & 0xFF, port >> 8, 0x66, 0xB8,
                   *PANGOFUN_DWORD.to_bytes(4, "little"), 0x66, 0xEF, 0xEB, 0xFE])
     call("write", ref=hex(PANGOFUN_CODE_ADDR), data_hex=code.hex())
@@ -407,8 +375,7 @@ def _bus_log_of_out_dword(port: int) -> str:
 
 
 def _io_count_values(ref: str) -> list[object]:
-    """The values the io count at `ref` tallied, as `declaration_list(kind="watch")` gives them; []
-    when none is."""
+    """The values the io count at `ref` tallied, [] when none."""
     watch: dict[str, Any] = next((w for w in call("declaration_list",
                                                   kind="watch").get("watches") or []
                                   if (w.get("ref"), w.get("space")) == (ref, "io")), {})

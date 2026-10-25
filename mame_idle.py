@@ -1,9 +1,4 @@
-"""The idle bound: a session no tool has touched for `IDLE_CLOSE_S` is closed by the server.
-
-The clock restarts when a call ends, so a call's own bounded wait never counts, and a call in
-progress is never interrupted: it holds the server's lock, which the bound only ever tries. The
-close is the ordinary `close`, and the next reply that finds no machine says why (`note`).
-"""
+"""A session no tool has touched for `IDLE_CLOSE_S` is closed by the server."""
 
 from __future__ import annotations
 
@@ -14,19 +9,14 @@ from collections.abc import Callable
 
 from scry_core import boundary
 
-#: A SESSION NO TOOL TOUCHED FOR AN HOUR IS ABANDONED. Longer than any pause a working session
-#: makes between calls (a question waiting on its owner, a measurement read and thought over),
-#: and short enough that a forgotten machine costs an hour of a core, not a night.
+#: Longer than any pause between a working session's calls.
 IDLE_CLOSE_S = 3600.0
 
-#: How often the server looks for an idle session: the bound is an hour, a minute late is
-#: nothing.
 IDLE_POLL_S = 60.0
 
 
 class Idle:
-    """When the last tool call ended, and what the bound last closed. One per server, like the
-    machine it watches."""
+    """When the last tool call ended, and why the bound last closed a session."""
 
     def __init__(self) -> None:
         self.last_call = time.monotonic()
@@ -40,7 +30,7 @@ class Idle:
         return self._closed_why
 
     def clear_note(self) -> None:
-        """A new session is the answer to that note."""
+        """A new session answers the note."""
         self._closed_why = ""
 
     def _idle_s(self, now: float | None) -> float:
@@ -48,13 +38,11 @@ class Idle:
 
     def reap(self, lock: boundary.ServerLock, alive: Callable[[], bool],
              close: Callable[[], object], now: float | None = None) -> bool:
-        """Close the session if it has been idle past the bound and no call holds `lock`;
-        answer whether it did."""
+        """Close the session if idle past the bound and `lock` is free; say whether it did."""
         if self._idle_s(now) < IDLE_CLOSE_S or not lock.acquire(blocking=False):
             return False
         try:
-            # READ AGAIN UNDER THE LOCK: a call may have ended, or closed the session, between
-            # the look above and the acquire.
+            # a call may have ended between the first look and the acquire
             idle = self._idle_s(now)
             if idle < IDLE_CLOSE_S or not alive():
                 return False
@@ -69,9 +57,7 @@ class Idle:
 
     def watch(self, lock: boundary.ServerLock, alive: Callable[[], bool],
               close: Callable[[], object]) -> None:
-        """Apply the bound for the life of the server, on a thread of its own. A close that
-        raises is said on stderr, the server's log, and the bound keeps watching: a thread that
-        died on it would leave every later session with no bound and nobody told."""
+        """Apply the bound on a daemon thread that survives a raising close."""
         def loop() -> None:
             while True:
                 time.sleep(IDLE_POLL_S)

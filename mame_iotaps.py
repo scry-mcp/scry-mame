@@ -1,16 +1,10 @@
 """Taps in a cpu's io space: a count watch on a port, and a capture a port's write triggers.
 
-WHY ANOTHER SPACE. A board that drives its palette or its sound through ports writes them with
-`out`, and nothing of that lands in the program space, so a tap there is blind to it. MAME's own
-Lua reaches the io space as it reaches the program (`cpu.spaces["io"]`, `install_write_tap`), and
-its console answers a port's handlers with `mapi` where an address has `map`. A capture's block
-stays in the program space, where a block lives: only its trigger moves.
-
-WHERE IT LIVES. An io tap is never in the declaration store (`NOT_STORED` says why): it is a
-record among the session's taps (`STATE.tallies`) under a ref that carries its space, and the
-server routes `watch_add`, `declaration_list(kind="watch")` and `declaration_clear(kind="watch")`
-here for it, since this module builds
-on `mame_watches` and so cannot be imported by it.
+A board that drives its palette or sound through `out` lands nothing in the program space, so a
+program-space tap is blind to it. A capture's block stays in the program space: only its trigger
+moves. An io tap is never in the declaration store (`NOT_STORED`): it is a record among
+`STATE.tallies` under a ref that carries its space, and the server routes the watch tools here
+(this module builds on `mame_watches`, so that one cannot import it).
 """
 
 from __future__ import annotations
@@ -48,9 +42,7 @@ def cpus_with_io() -> list[str]:
 
 
 def check_has_io(on: str | None) -> None:
-    """A port is tapped on a cpu that has an io space. A machine whose map `start` could not
-    read, or a cpu nobody could name, is not judged here: the install then says what the
-    console found."""
+    """Refuse a cpu with no io space; an unreadable map or unnamed cpu is left to the install."""
     cpu = on or STATE.first_cpu
     if not STATE.machine_map.get("cpus") or cpu is None:
         return
@@ -61,16 +53,14 @@ def check_has_io(on: str | None) -> None:
 
 
 def io_ref(text: str, by: str) -> str:
-    """The one spelling a ref is held under in the io space: `0x6@io` for an address or a port,
-    the symbol upper-case (the table's own case) for a capture's block."""
+    """The one spelling a ref is held under: `0x6@io` for a port, a block's symbol upper-case."""
     ref = text.strip()
     held = f"0x{int(ref, 16):x}" if by == "address" else ref.upper()
     return f"{held}{mspace.suffix(mspace.IO)}"
 
 
 def _sized(ref: str, mode: str, width: int, fmt: str, by: str, on: str | None) -> tuple[int, str]:
-    """A tap's width and format: `length`, a sized `fmt`, or a typed symbol's type for a
-    capture's block (a port has no type in any table)."""
+    """A tap's width and format; a port has no type in any table, only a capture's block does."""
     typed = STATE.table(on).types.get(ref.strip().upper()) if by == "symbol" else None
     return watches.size_watch(mode, width, fmt, typed, st.Invalid(
         "bad_argument", f"a {mode} watch on a port needs a length in bytes or a sized fmt"
@@ -79,12 +69,8 @@ def _sized(ref: str, mode: str, width: int, fmt: str, by: str, on: str | None) -
 
 def _held_elsewhere(owner: dec.Owner, tally_id: str, mode: str, addr: int, width: int
                     ) -> arming.Refusal | None:
-    """ONE REF, ONE TAP, as in the program space: the ref already holding another tap (another
-    length, trigger or kind) keeps it until it is cleared, since a second install under it would
-    leave the first counting where nothing reaches it; and one tap is under one ref, since two
-    records of one id are cleared from under each other. Asked BEFORE the port's `mapi`, where the
-    program space asks its `map` first (`watches.send_tap`): when both refuse, each space keeps
-    the refusal it has always given."""
+    """One ref, one tap, and one tap under one ref, as in the program space. Asked before the
+    port's `mapi`, as the program space asks its `map` first, so each space keeps its refusal."""
     held = STATE.tallies.get(owner)
     if held is not None and held["tally_id"] != tally_id:
         port = mspace.shown(owner[0])["ref"]
@@ -106,8 +92,7 @@ def _held_elsewhere(owner: dec.Owner, tally_id: str, mode: str, addr: int, width
 
 def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: str, cpu: str,
               trigger: str) -> dict[str, Any]:
-    """The body of `watch_add(space="io")`: a count watch on the port `ref`, or a capture of the
-    program block `ref` on the port `trigger`. Nothing is stored."""
+    """The body of `watch_add(space="io")`; nothing is stored."""
     watches.check_watch_add(ref, mode, width, fmt, by, "", trigger, mspace.IO)
     on = cpus.chosen(ses, cpu)
     check_has_io(on)
@@ -119,8 +104,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: st
         chosen, addr = "address", mspace.port(ref, "ref")
         width, fmt = _sized(ref, mode, width, fmt, chosen, on)
         owner: dec.Owner = (io_ref(ref, chosen), on)
-        # JUDGED BY THE IO BUS'S OWN WIDTH, as a program count is by the program's: a word `out`
-        # at an odd port reaches the tap as two bus-word fragments, as a program write does.
+        # a word `out` at an odd port reaches the tap as two bus-word fragments
         split, unchecked = watches.bus_word_split(addr, width, on, mspace.IO)
         if split is not None:
             return menvelope.invalid("bad_argument", split, **mspace.shown(owner[0]))
@@ -139,8 +123,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: st
         chosen = arming.decide_by(ref, by, on, "watch")
         tally.check_count_watch(chosen, mode)
         port = mspace.port(trigger, "trigger")
-        # THE BLOCK IS READ AS `by` SAYS, never re-read: a `by="address"` not written `0x` is the
-        # declaration's refusal, and a name this build lacks is refused, not guessed.
+        # the block is read as `by` says, never re-read, so a bad spelling is refused, not guessed
         res = arming.resolve_decl(arming.declare("watch", chosen, ref.strip(), on, width=1,
                                                  fmt="u8", watch_mode="show"))
         if res.addr is None:
@@ -165,8 +148,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str, by: st
                                     None)
         reply.update(trigger=f"{port:#x}", trigger_addr=st.hex_addr(port),
                      trigger_maps_to=maps_to, source=src.fields())
-    # STAMPED BY THE DECLARATIONS' ONE CLOCK (`st.now`), so its row ages as theirs do; declared
-    # again, the record is new, and the stamp with it, as a re-declaration re-stamps a row.
+    # the declarations' one clock, so the row ages as theirs do
     STATE.tallies[owner].update(mode=mode, fmt=fmt, created_at=st.now())
     return menvelope.envelope(st.add_note(st.merged(
         {**mspace.shown(owner[0]), "by": chosen, **reply, "length": width, "fmt": fmt,
@@ -190,10 +172,7 @@ def taps_by_cpu() -> dict[str, int]:
 
 
 def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[str, Any]]:
-    """Each io tap as `declaration_list(kind="watch")` (`at_stop` False) or a stop's survey (True)
-    shows a watch, cut
-    where theirs are: a count's tables at the bucket ceiling in a list, a capture's first rows,
-    and at a stop no rows at all."""
+    """Each io tap as a watch row of `declaration_list` or a stop survey, cut as theirs are."""
     out: list[dict[str, Any]] = []
     scratch = STATE.scratch
     if scratch is None:
@@ -216,15 +195,13 @@ def rows(frame: int | None, at_stop: bool, cpu: str | None = None) -> list[dict[
 
 
 def held_key(ref: str) -> str:
-    """The key an io tap a call names is held under: a port in its one address spelling
-    (`0x06` is `0x6`), a capture's block by its symbol, so a clear matches any spelling."""
+    """The key a named io tap is held under, so a clear matches any spelling (`0x06` is `0x6`)."""
     held = ref.strip()
     return io_ref(held, "address" if inputs.is_address(held) else "symbol")
 
 
 def clear(ref: str, cpu: str | None = None) -> list[dict[str, Any]]:
-    """Send the removal of the io taps under `ref` (every one when empty), on `cpu` or every
-    cpu, and answer what went, as `declaration_clear(kind="watch")` reports a tap's removal."""
+    """Remove the io taps under `ref` (every one when empty), on `cpu` or every cpu."""
     gone: list[dict[str, Any]] = []
     if STATE.scratch is None:
         return gone
@@ -237,9 +214,7 @@ def clear(ref: str, cpu: str | None = None) -> list[dict[str, Any]]:
 
 
 def clear_taps(ses: gs.Session, ref: str, cpu: str | None) -> dict[str, Any]:
-    """The body of `declaration_clear(kind="watch")` for an io ref: its tap's removal, in
-    `declaration_clear(kind="watch")`'s own reply
-    shape, with nothing in the store to drop."""
+    """The body of `declaration_clear(kind="watch")` for an io ref; nothing in the store to drop."""
     running = arming.running_on_arrival(ses)
     gone = clear(ref, cpu)
     if not gone:

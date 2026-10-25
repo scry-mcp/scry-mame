@@ -1,13 +1,6 @@
-"""Section S of the live matrix: boards with more than one cpu, on a build whose gdbstub serves a
-thread per cpu (`MAME_MULTICPU_BINARY`). victory is a Z80 and a 6502, two different register
-files; hardhat is two 6502s; topgunnr is a 68000 beside two cpus that stub has no description
-of, so its second cpu's registers are refused. Each board's threads and descriptions are read
-first; then the calls that name the SECOND cpu (`cpu=`) are made with the FIRST one visible, so
-a server that ignored `cpu=` would answer for the wrong cpu, and judged against MAME's own
-reading of the second: its console made to look at it (`console_pc`), its Lua, or the stop a
-breakpoint on it ends in.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
+"""Section S of the live matrix: boards with more than one cpu, on a build whose gdbstub serves
+a thread per cpu. Calls naming the second cpu are made with the first visible and judged against
+MAME's own reading of the second.
 
     MAME_MULTICPU_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_multicpu.py
 """
@@ -42,7 +35,6 @@ from live_harness import (
 from mame_state import STATE  # isort: skip -- found through the path the harness sets
 
 S_TITLE = "a second cpu named by cpu=, on the build that serves a thread per cpu"
-# The second cpu of victory and of hardhat, both on Exidy's sound board.
 SOUNDBD = ":soundbd:audiocpu"
 TOPGUNNR_AUDIO, TOPGUNNR_MOTOR = ":440audio:audiocpu", ":motorcpu"
 S_CELLS = [
@@ -67,9 +59,7 @@ S_CELLS = [
 
 
 def _described(threads: dict[int, str]) -> dict[str, tuple[str, int] | str]:
-    """Each thread's cpu, the architecture its description declares and the bits its `g` reply
-    takes: that cpu's registers and the state the stub appends of the board's other devices,
-    which is why one cpu type sums differently on two boards. Or the refusal."""
+    """Each thread's cpu, its declared architecture and `g` reply bits, or the refusal."""
     assert STATE.ses is not None
     out: dict[str, tuple[str, int] | str] = {}
     for tid, tag in threads.items():
@@ -82,10 +72,8 @@ def _described(threads: dict[int, str]) -> dict[str, tuple[str, int] | str]:
 
 
 def _registers_cell(label: str, cpu: str, first: str) -> int | None:
-    """`registers` of `cpu` at a stop whose PC tells the byte order, against the console's
-    `print curpc` for it, read again with `first` visible so a server that ignored `cpu=` would
-    answer `first`'s PC, which must differ. BLOCKED when no stop tells, or when the two cpus
-    hold one PC and cannot be told apart. Returns the PC it judged."""
+    """`registers` of `cpu` against the console's `print curpc`, re-read with `first` visible
+    (a server ignoring `cpu=` would answer `first`'s PC, which must differ). Returns the PC."""
     regs = registers_at_a_telling_pc(cpu)
     pc = pc_of(regs)
     if ok(regs) and not tells_byte_order(pc):
@@ -140,9 +128,7 @@ def _s_victory(t: list[str]) -> None:
 
 
 def _s_victory_breakpoint(label: str) -> None:
-    """A breakpoint on the 6502, armed with the Z80 visible, at the pc the 6502 holds after a
-    stretch of running: its idle loop, which it comes back to. Judged on the stop the release
-    ends in: that cpu, that pc, and named as that breakpoint's rather than an unattributed stop."""
+    """A breakpoint on the 6502's idle pc, armed with the Z80 visible, judged on the stop."""
     ran = call("run_for", frames=60, seconds=10.0)
     idle = pc_of(call("registers", cpu=SOUNDBD))
     if not ok(ran) or idle is None:
@@ -162,8 +148,7 @@ def _s_victory_breakpoint(label: str) -> None:
 
 
 def _s_hardhat(t: list[str]) -> None:
-    """The pair of one architecture: two descriptions alike, so only the registers cell, read
-    with the first 6502 visible and its own PC beside, tells the two cpus apart."""
+    """Two alike descriptions: only the registers cell tells the two cpus apart."""
     free_boot("hardhat", ["hhl-2.11a"], "0xa000", binary=MULTICPU_BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)
@@ -176,8 +161,7 @@ def _s_hardhat(t: list[str]) -> None:
 
 
 def _s_topgunnr(t: list[str]) -> None:
-    """A second cpu with no description: its registers are refused naming it, which is all a
-    call on it can be judged by here."""
+    """A second cpu with no description: its registers are refused naming it."""
     free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000", binary=MULTICPU_BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)

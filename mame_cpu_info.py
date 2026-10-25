@@ -1,8 +1,4 @@
-"""WHAT THE DEBUGGER SEES OF EACH CPU at the call, one row per cpu (the contract is `cpu_info`'s
-in `server.py`). Nothing here moves the machine: the listings are the console's own (`cpulist`,
-and `ignore` and `suspend` with no argument, which only list) and each pc is a register read off
-the stub, so no cpu is made visible.
-"""
+"""The `cpu_info` body: listings and register reads only, so no cpu is made visible."""
 
 from __future__ import annotations
 
@@ -21,8 +17,7 @@ from mame_state import STATE
 
 
 def _counts(tags: list[str]) -> dict[str, dict[str, int]]:
-    """This server's declarations on each of `tags`, zeros included, then on any other cpu a
-    declaration names."""
+    """Declaration counts per cpu: `tags` with zeros, then any other cpu a declaration names."""
     held = STATE.store.counts_by_cpu(iotaps.taps_by_cpu()) if STATE.store is not None else {}
     return {cpu: held.get(cpu) or dec.no_counts()
             for cpu in [*tags, *(c for c in held if c not in tags)]}
@@ -33,23 +28,19 @@ UNLISTED_WHY = "`cpulist` does not list this cpu, so nothing of it is read"
 
 
 def cpu_info(ses: gs.Session, cpu: str) -> dict[str, Any]:
-    """The body of the `cpu_info` tool: a row per cpu, or the one row `cpu` names."""
+    """The `cpu_info` body: a row per cpu, or the one `cpu` names."""
     tags, visible = cpus.listed(ses)
     counts = _counts(tags)
-    # The name is judged against the rows this call gives, so a cpu listed unfiltered can be
-    # named, and one named is never an empty answer.
+    # Judged against these rows so a named cpu is never an empty answer.
     wanted = cpus.match_tag(cpu, list(counts)) if inputs.cpu_given(cpu) else None
     shown = [tag for tag in counts if wanted in (None, tag)]
     ignored, suspended = cpus.ignored(ses), cpus.suspended(ses)
     read = [tag for tag in shown if tag in tags]
     pcs = {} if ses.running else cpus.pc_by_cpu(ses, read)
-    # A wait that ran out in one of the reads latched the session: a half-read row is not a
-    # reading, so the latch is the answer.
+    # A half-read row is not a reading: a latched session is the answer.
     st.refuse_broken(ses)
 
     def reading(tag: str, value: Any, known: object) -> Any:
-        """`value`, or `unavailable` for a cpu `cpulist` does not list, or a listing the console
-        did not answer."""
         if tag not in tags:
             return unavailable(UNLISTED_WHY)
         return value if known is not None else unavailable(

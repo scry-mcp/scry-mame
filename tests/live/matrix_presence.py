@@ -1,27 +1,9 @@
-"""Section Z of the live matrix: the presence edge, drawn over the window and never in the
-evidence, on circus, and on 1942 for the recordings. Why it cannot reach the evidence is
-`mame_presence`'s to say; this section proves each claim on a running MAME, each with a control
-that can go red.
+"""Section Z of the live matrix: the presence edge is drawn over the window and never in the
+evidence. Circus covers the stills and the window; 1942 covers the recordings, because circus's
+do not repeat from one state, so a comparison there would judge the driver, not the edge.
 
-DRAWN: the drawer counts the repaints it draws in each state, read back through `lua`; a run
-(`acting`) and the console commands of a stopped machine (`held`) must each raise their own count
-by the frames they drew. SEEN: the host's capture of the window with the edge `acting` against the
-same stopped machine with it `off` differs on all four sides of the content and nowhere deeper
-than the edge, towards orange; a host that does not grant the capture BLOCKS that cell.
-
-NEVER IN THE EVIDENCE: `snapshot`, `screen_view` and `screen_signature` compared byte for byte
-with the edge `acting` and `off` on one stopped machine, and `record` and `series_capture` from
-one saved state, with the edge off twice first (two that disagree say nothing of the edge, so
-the cell is BLOCKED), then held at `acting` by the state file, then lit by the session itself as
-it would be. The recordings are 1942's: circus's do not repeat from one state (REFERENCE, Saved
-states), so a comparison there would judge the driver, not the edge. Where the state file is
-written here, the session's writer is set aside and given time to land what it had pending, so
-the file is the test's alone; every such leg reads the drawer's count, so a drawer that drew
-nothing cannot pass it. The reds: the production drawer
-moved onto the screen's container must change a stopped `snapshot`; and the bitmap readers and
-the recordings, which nothing drawn at frame-done reaches, must differ across a machine moved on.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
+Every cell carries a control that can go red; a host that refuses the window capture BLOCKS
+that cell. `live_matrix.py` registers this section; run alone:
 
     uv run python tests/live/matrix_presence.py
 """
@@ -80,21 +62,17 @@ Z_CELLS = [
     "held repaints rose; sent by hand, the adapter's repaint draws at least one held frame and "
     "a repaint taken away draws none",
 ]
-#: Long enough for the session's writer to land a state it had pending.
+#: Long enough for the session's writer to land a pending state.
 QUIET_S = 0.3
-#: The frames each recording leg records, and the run before the state they start from.
 LEG_FRAMES = 20
 RUN_FRAMES = 60
-#: How long a stopped machine is left alone for the writer to land `held` and repaint it.
 REPAINT_WAIT_S = 1.0
-#: How far the machine is moved for the reds that compare across it: circus's attract screen
-#: holds still for stretches shorter than this.
+#: Circus's attract screen holds still for stretches shorter than this.
 MOVE_FRAMES = 600
 
 
 def _written(tool: str, suffix: str, **kw: Any) -> str:
-    """`tool` writing to a fresh `dest`, and the digest of what it wrote there: of the file, or
-    of a series folder's frames in order; "" when the call failed or nothing was written."""
+    """Digest of what `tool` wrote to a fresh `dest`; "" on failure."""
     dest = Path(fresh(suffix))
     if not ok(call(tool, dest=str(dest), **kw)):
         return ""
@@ -106,8 +84,7 @@ def _written(tool: str, suffix: str, **kw: Any) -> str:
 
 
 def _frames() -> dict[str, int] | None:
-    """The drawer's repaint counts, `{held, acting}`; -1 each where no drawer runs; None when the
-    read itself failed, which no cell may take for an answer."""
+    """The drawer's repaint counts, -1 each where no drawer runs; None when the read failed."""
     r = call("lua", script="local f = _G.scry_presence_frames "
                            "if f then print(f.held, f.acting) else print(-1, -1) end",
              read_only=True)
@@ -118,7 +95,7 @@ def _frames() -> dict[str, int] | None:
 
 
 def _rise(before: dict[str, int] | None, after: dict[str, int] | None, state: str) -> int:
-    """How many repaints `state` gained between two reads; -1 when either read failed."""
+    """Repaints `state` gained between two reads; -1 when either read failed."""
     return -1 if before is None or after is None else after[state] - before[state]
 
 
@@ -128,7 +105,7 @@ def _state_file() -> Path:
 
 
 def _put(path: Path, word: str) -> None:
-    """`word` written whole, the way the session's adapter writes it."""
+    """`word` written atomically, as the session's adapter does."""
     part = path.with_suffix(".part")
     part.write_text(word + "\n", encoding="ascii")
     os.replace(part, path)
@@ -136,8 +113,7 @@ def _put(path: Path, word: str) -> None:
 
 @contextlib.contextmanager
 def _by_hand() -> Iterator[None]:
-    """The session's writer stopped, so nothing but this section writes the state file until the
-    block ends; a fresh one is opened after."""
+    """The session's writer stopped, so only this section writes the state file in the block."""
     STATE.presence.close()
     STATE.presence = scry_presence.Shown()
     time.sleep(QUIET_S)
@@ -151,7 +127,7 @@ def _by_hand() -> Iterator[None]:
 
 
 def _repaint() -> None:
-    """One still call that goes through the debugger's console, which repaints a stopped MAME."""
+    """A still call through the debugger's console, which repaints a stopped MAME."""
     call("cpu_info")
 
 
@@ -176,7 +152,7 @@ def _stills() -> dict[str, str]:
 
 
 def _record(tool: str, name: str) -> str:
-    """`tool` once from the saved state `name`."""
+    """`tool` once from saved state `name`."""
     call("state_write", method="load", name=name)
     if tool == "record":
         return _written("record", ".avi", frames=LEG_FRAMES, seconds=10.0)
@@ -186,8 +162,7 @@ def _record(tool: str, name: str) -> str:
 
 
 def _legs(tool: str, name: str) -> dict[str, Any]:
-    """`tool` from `name`: off twice and acting by the file, the writer set aside; then once more
-    with the session lighting the edge itself."""
+    """`tool` from `name`: off twice and acting by file, then lit by the session itself."""
     with _by_hand():
         off = []
         for _ in range(2):
@@ -200,9 +175,7 @@ def _legs(tool: str, name: str) -> dict[str, Any]:
 
 
 def _z_recordings(t: list[str]) -> None:
-    """The recordings from one saved state, on 1942, whose recording repeats. The state is saved
-    at a frame's end, and the drawer's count is read before the run that ends at the save and
-    after every leg: the rise it must show is what that run and the legs that draw drew."""
+    """The recordings from one saved state, on 1942, whose recording repeats."""
     free_boot("1942", ["srb-03.m3"], "0x0", presence=True)
     first = _frames()
     call("run_for", frames=RUN_FRAMES, seconds=10.0)
@@ -217,7 +190,7 @@ def _z_recordings(t: list[str]) -> None:
     if broken:
         cell(t[4], False, f"a recording leg failed or wrote nothing: {broken}")
     elif unrepeatable:
-        # TWO RECORDINGS WITH THE EDGE OFF THAT DISAGREE say nothing of the edge: the instrument.
+        # Two disagreeing off recordings say nothing of the edge.
         blocked(t[4], f"two recordings from one state with the edge off differ: {unrepeatable}")
     else:
         cell(t[4], all(r["off"][0] == r["by_file"] == r["lit"] for r in runs.values())
@@ -227,7 +200,7 @@ def _z_recordings(t: list[str]) -> None:
 
 def _z_circus(t: list[str]) -> None:
     started = circus_boot(presence=True)
-    at_start = _frames()                 # the first call: whatever `start` itself repainted
+    at_start = _frames()
     status = call("status")
     cell(t[0], started.get("presence") is True and status.get("presence") is True
          and at_start is not None and at_start["held"] >= 1,
@@ -245,7 +218,6 @@ def _z_circus(t: list[str]) -> None:
          f"before {before}, after a run of 60 frames {after_run}, after three console "
          f"commands {after_commands}")
 
-    # SEEN, and the stills, on one stopped machine.
     with _by_hand():
         _paint("off")
         off_stills = _stills()
@@ -264,14 +236,11 @@ def _z_circus(t: list[str]) -> None:
          f"off {off_stills}, acting {acting_stills}, acting repaints between {drew}")
 
     _z_repaint(t[8])
-    # THE RED OF EVERYTHING FRAME-DONE CANNOT REACH: the same comparisons across a machine one
-    # run apart.
-    call("state_write", method="save",
-         name="z")        # at a frame's end, as every save of this section
+    call("state_write", method="save", name="z")
     moved_before = {**_stills(), "record": _record("record", "z"),
                     "series_capture": _record("series_capture", "z")}
     call("run_for", frames=MOVE_FRAMES, seconds=10.0)
-    call("state_write", method="save", name="z2")       # at a frame's end too, as `z` was
+    call("state_write", method="save", name="z2")
     moved_after = {**_stills(), "record": _record("record", "z2"),
                    "series_capture": _record("series_capture", "z2")}
     keys = ("screen_view", "screen_signature", "record", "series_capture")
@@ -292,22 +261,15 @@ def _z_circus(t: list[str]) -> None:
 
 
 def _z_repaint(label: str) -> None:
-    """THE EDGE GOES DIM ON A STOPPED MAME, in two halves. The session's: a `run_for` that ends
-    stopped, a quiet wait, and the state file says `held` and the drawer's held count rose. The
-    repaint's own, by hand: the file says `held` only around the adapter's repaint and `off`
-    while the count is read, since a read is `lua`, whose steps repaint a stopped machine.
-
-    WHY THE RED IS NOT TAKEN THROUGH THE SESSION: the writer delivers each state off the call's
-    path, so on a loaded host a driving call's first repaints can still find the previous `held`
-    in the file, and a count read through the session rises with the repaint taken away;
-    `_by_hand` removes that race. That the writer asks for the repaint once `held` lands is
-    scry-core's `test_presence`."""
+    """The edge goes dim on a stopped MAME: through the session, then the repaint by hand.
+    The red is not taken through the session: its writer delivers states off the call's path, so
+    a count read there can rise with the repaint taken away; `_by_hand` removes that race."""
     def repaints_drawn(repaint: Callable[[Callable[[], bool]], None]) -> int:
-        """The held repaints `repaint` drew, the file `held` around it alone."""
+        """The held repaints `repaint` drew, with the file `held` around it alone."""
         before = _frames()
-        time.sleep(REPAINT_WAIT_S)               # what the read drew late lands on `off`
+        time.sleep(REPAINT_WAIT_S)
         _put(_state_file(), "held")
-        due = time.monotonic() + REPAINT_WAIT_S  # still due until then: a lock never freed ends it
+        due = time.monotonic() + REPAINT_WAIT_S
         repaint(lambda: time.monotonic() < due)
         time.sleep(REPAINT_WAIT_S)
         _put(_state_file(), "off")
@@ -315,7 +277,7 @@ def _z_repaint(label: str) -> None:
     call("run_for", frames=10, seconds=10.0)
     after_run = _frames()
     time.sleep(REPAINT_WAIT_S)
-    # READ BEFORE THE COUNT: `lua` drives, so the file says `acting` while it runs.
+    # Before the count: `lua` drives, so the file says `acting` while it runs.
     word = _state_file().read_text().strip() if _state_file().exists() else ""
     rose = _rise(after_run, _frames(), "held")
     assert STATE.scratch is not None
@@ -340,7 +302,7 @@ def _judge_window(label: str, off: window_capture.Image, acting: window_capture.
 
 
 def _window(tag: str) -> window_capture.Image | str:
-    """The window captured, or why the host would not."""
+    """The window captured, or why the host refused."""
     assert STATE.proc is not None
     try:
         return window_capture.capture(STATE.proc.pid, scratch() / f"z-window-{tag}.png")
@@ -349,9 +311,7 @@ def _window(tag: str) -> window_capture.Image | str:
 
 
 def _z_leak(label: str) -> None:
-    """THE RED of the stills: the production drawer, moved onto the screen's container and
-    reading a file of this cell's own, as a caller's boot harness. Two snapshots with it off
-    agree first, so a difference with it on is the drawer's."""
+    """The red of the stills: the production drawer moved onto the screen's container."""
     leak_state = scratch() / "z-leak.state"
     _put(leak_state, "off")
     leaking, moved = re.subn(r"manager\.machine\.render\.ui_container",

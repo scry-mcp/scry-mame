@@ -1,6 +1,4 @@
-"""A step's `recorded`: what a session's reply said, which the replay's `perform` holds the step's
-own reply to. A mismatch stops the list there as INVALID `diverged`, naming the field, what was
-recorded and what came back (`failed_at`, as any step failure); a match is an ordinary step."""
+"""A step's `recorded` holds its reply; a mismatch stops the list as INVALID `diverged`."""
 
 from __future__ import annotations
 
@@ -47,9 +45,7 @@ def test_a_step_that_does_not_hold_stops_the_list_as_diverged(
 
 def test_the_replay_runner_reads_this_servers_own_diverged_reply(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The contract between this server's `perform` and the runner (`scry_core.replay`): the
-    reply a diverged step gives is the one the runner names the step, the field and both values
-    from, never an exit 3 for a reply it cannot read."""
+    """The runner names a diverged step, field and values from this server's reply, not exit 3."""
     _running(monkeypatch, tmp_path)
     got = s.read_memory(ref="0x4a0", length=2)["hex"]
     steps = [_read({"hex": got}), _read({"hex": "ffff"}), _read({"hex": got})]
@@ -76,8 +72,7 @@ def test_a_recorded_that_is_not_a_mapping_is_refused_before_any_step_runs(
 
 
 def test_the_lists_a_replay_reads_are_this_servers_own_tools() -> None:
-    """The document names the tools a replay reads the store back through (`needs.declarations`):
-    each is one this server registers, or every replay of its sessions would end at exit 3."""
+    """Each list tool a replay reads back is one this server registers."""
     import mame_mcp
 
     served = {t.name for t in s.mcp._tool_manager.list_tools()}
@@ -87,9 +82,7 @@ def test_the_lists_a_replay_reads_are_this_servers_own_tools() -> None:
 
 def test_the_declarations_the_recorder_reads_are_the_refs_the_list_tools_answer(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """THE REPLAY'S PRECONDITION: the runner holds the replayed store, read through each list tool
-    the recorder names, to what `_declared` read at the recorded start, so the two readings are one
-    for every kind a `start` re-arms."""
+    """The recorder's stored declarations equal what each list tool answers."""
     from test_watches import _watching
 
     import mame_mcp

@@ -1,13 +1,4 @@
-"""The reply contract of a refusal, fixed for every tool: `status`, `code`, `message`.
-
-WHY A CONTRACT TEST AND NOT A GREP. One verdict spelled several ways (`verdict: INVALID` with
-`why`, and sometimes `cause` beside it) leaves every reader of a refusal -- the summary line,
-the stdio client, the agents, the live checks -- reading the spelling it happens to know. The
-contract is a CLASS (`scry_core.reply_contract.Invalid`) that refuses a code outside the
-table and a reserved field, and an envelope that refuses a malformed refusal; this suite walks
-every tool through the two gates every tool crosses (no machine, a running machine) and fixes
-the envelope those gates produce.
-"""
+"""The reply contract of a refusal, fixed for every tool: `status`, `code`, `message`."""
 
 from __future__ import annotations
 
@@ -36,8 +27,7 @@ SOURCES = sorted(PACKAGE.glob("*.py"))
 
 
 def _tools() -> list[str]:
-    """Every tool the server registers, read off its source: a list kept by hand would be one
-    short the day a tool is added, and the walk would report a contract it never checked."""
+    """Every tool the server registers, read off its source, not a hand-kept list."""
     tree = ast.parse((PACKAGE / "server.py").read_text())
     names = [
         node.name for node in tree.body
@@ -46,23 +36,18 @@ def _tools() -> list[str]:
             for d in node.decorator_list)
     ]
     assert len(names) > 20, "the walk found almost no tools, so it examined nothing"
-    # And the media file tools, which the server registers by name through scry-core's
-    # `register` rather than by a decorated function of its own.
     return names + list(media_tools.TOOLS)
 
 
-# The arguments a tool needs to be CALLED at all; the gate refuses before any is judged.
 _ARGS: dict[str, dict[str, Any]] = {
     "start": {"binary": "/nonexistent/mame", "system": "x", "rompath": "/",
               "reference_rom": "/nonexistent/rom"},
-    # A file that EXISTS (this one), so the row is refused at the gate and not for the path: the
-    # path is judged before the machine now, and a row refused for it never reaches the gate.
+    # exists, so the gate refuses it and not the path
     "rom_check": {"reference_rom": __file__},
     "run_to": {"ref": "0x4a0", "control": "0x4b0"},
     "run_for": {"milliseconds": 16},
     "trace": {"frames": 2},
     "series_capture": {"at_frames": [10 ** 6]},
-    # The media file tools: absolute paths of files that are not there, refused for the path.
     "image_compare": {"method": "image", "a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
     "audio_compare": {"method": "diff", "a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
     "breakpoint_at": {"ref": "0x4a0"},
@@ -78,9 +63,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "scan": {"method": "start", "ref": "0x4a0", "length": 16},
     "write": {"ref": "0x4a0", "data_hex": "00"},
     "set_register": {"name": "D0", "value": 1},
-    # THE `dest` HAS TO BE VALID: a path the server can judge without a machine is judged without
-    # one, so a bad path never reaches the gate this suite is about. Nothing is written, because
-    # every case here is refused AT THE GATE, before any console.
+    # a valid `dest`: a bad path is judged before the gate under test
     "memdump": {"ref": "0x4a0", "length": 16,
                 "dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract-never-written.bin")},
     "log": {"pattern": ".", "channel": "emulator"},
@@ -102,8 +85,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_locate": {"layouts": [{"width": 8, "height": 8, "planes": 1, "planeoffset": [0],
                                 "xoffset": "{ STEP8(0,1) }", "yoffset": "{ STEP8(0,8) }",
                                 "charincrement": 64}], "patch": [0, 0, 8, 8], "tag": "gfx1"},
-    # a manifest that EXISTS and loads, so the row is refused at the gate and not for the file,
-    # which is read before the gate
+    # a manifest that loads, since the file is read before the gate
     "gfx_load": {"path": str(Path(__file__).parent / "fixtures" / "gfx" / "manifest-blitter.yaml")},
     "gfx_blits": {"draw_command": "blit"},
     "gfx_blit_source": {"draw_command": "blit", "index": 0},
@@ -111,7 +93,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_film": {},
     "gfx_sweep": {"tag": "gfx1"},
     "gfx_draft": {},
-    # An absolute path on every host, so what refuses is the empty map, not the spelling.
+    # absolute on every host, so the empty map refuses, not the spelling
     "map_write": {"method": "save",
                   "dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.scry-map.json")},
 }
@@ -130,24 +112,20 @@ def _no_session(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_every_tool_answers_the_contract_with_no_machine(
     name: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """THE FIRST GATE. With no machine, every tool that needs one refuses `no_session`; `start`
-    refuses its argument before spawning anything; `status` and `close` answer `ok` about the
-    absence. Whichever it is, the reply is the one envelope."""
+    """With no machine, every tool answers the one envelope: a refusal, or `ok` for status/close."""
     _no_session(monkeypatch)
     reply = getattr(s, name)(**_ARGS.get(name, {}))
     if name in ("status", "close"):
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
-    # `start` refuses its argument; a media tool and the export need no machine and refuse the
-    # path they were given.
-    # A map's file methods need no machine either: a save refuses the empty map.
+    # start, the media tools and the export refuse their argument; a map save refuses the empty map
     expected = {"map_write": "needs_call"}.get(name)
     contract.check_refusal(name, reply, expected or ("bad_argument" if name in (
         "start", "perform_export") or name in media_tools.TOOLS else "no_session"))
 
 
 class _Running(SessionFields):
-    """A machine that RUNS and nothing else: what the readers' gate reads."""
+    """A machine that runs and nothing else."""
 
     running = True
     stop_count = 1
@@ -180,7 +158,7 @@ _READERS = ["registers", "read_memory", "read_block", "disassemble", "find", "hi
 def test_every_reader_refuses_a_running_machine_with_the_contract(
     name: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE SECOND GATE: `not_stopped`, with the two context fields beside the envelope."""
+    """A running machine refuses with `not_stopped` and the two context fields."""
     ses = _Running()
     monkeypatch.setattr(mstate.STATE, "alive", lambda: ses)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
@@ -213,7 +191,7 @@ def test_the_envelope_refuses_a_malformed_refusal(monkeypatch: pytest.MonkeyPatc
                                 word: "x"})
     ok = menvelope.envelope({"verdict": "TARGET"})
     assert ok["status"] == "ok" and ok["verdict"] == "TARGET"
-    # A ROW'S OR A FIELD'S `why` IS AN OK REPLY'S OWN WORD, and an unread datum is its shape.
+    # a row's or a field's `why` is an ok reply's own word
     rows = menvelope.envelope({"rows": [{"why": "a row's"}], "cycles": unavailable("n")})
     assert rows["status"] == "ok" and rows["cycles"] == {"available": False, "why": "n"}
     bad = menvelope.invalid("control_silent", "cold", control_hits=0)
@@ -221,9 +199,7 @@ def test_the_envelope_refuses_a_malformed_refusal(monkeypatch: pytest.MonkeyPatc
 
 
 def test_every_code_written_in_the_sources_is_in_the_table() -> None:
-    """The class checks at RUNTIME; the contract's own scan reads the sources so a code typed
-    wrong in a branch no test reaches is caught here, and a code cannot be computed from a
-    string at runtime."""
+    """The scan reads the sources, so a wrong code in a branch no test reaches is caught."""
     seen = contract.codes_written_in(SOURCES)
     assert len(seen) > 40, "the scan found almost no refusals, so it examined nothing"
     wrong = [(f, n, c) for f, n, c in seen if c not in contract.CODES]
@@ -231,8 +207,7 @@ def test_every_code_written_in_the_sources_is_in_the_table() -> None:
 
 
 def _prose_matched_for_a_code(path: Path) -> list[int]:
-    """The lines of `path` that test a string literal against `why`, `message` or `str(e)`:
-    the shape of a refusal's CODE chosen by reading its own prose."""
+    """Lines testing a string literal against `why`, `message` or `str(e)`."""
     tree = ast.parse(path.read_text())
     lines: list[int] = []
     for node in ast.walk(tree):
@@ -250,11 +225,8 @@ def _prose_matched_for_a_code(path: Path) -> list[int]:
 
 
 def test_no_refusal_code_is_chosen_by_matching_its_own_prose(tmp_path: Path) -> None:
-    """A code decided by `"already armed under" in why` changes in silence the day the
-    sentence is reworded (it happened, and a test caught it after the fact). The helper that
-    knows why a call is refused answers the code beside the text, and this scan holds every
-    module of the package to it. The scan is checked against a planted case first, so an empty
-    finding is a finding and not a scan that read nothing."""
+    """A code decided by `"already armed under" in why` changes silently when the sentence is
+    reworded; the planted control proves an empty finding is not a scan that read nothing."""
     planted = tmp_path / "planted.py"
     planted.write_text('code = "ambiguous_ref" if "already" in why else "bad_argument"\n'
                        'if "armed" in str(e):\n    pass\nif "x" in message:\n    pass\n'
@@ -270,7 +242,7 @@ _FAMILY_MODULES = ["mame_arming.py", "mame_breakpoints.py", "mame_watches.py", "
 
 
 def _literal_text(node: ast.expr) -> str | None:
-    """A string literal, an f-string (its placeholders as `{}`) or a concatenation of them."""
+    """A string literal, an f-string (placeholders as `{}`) or a concatenation of them."""
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
         return node.value
     if isinstance(node, ast.JoinedStr):
@@ -283,9 +255,8 @@ def _literal_text(node: ast.expr) -> str | None:
 
 
 def _refusal_literals(path: Path) -> list[tuple[int, str]]:
-    """Every literal message of a refusal in `path`: the second argument of an
-    `st.Invalid(...)` / `st.invalid(...)` call, and the first of a `DeclarationError(...)`,
-    the store's own refusal, which reaches a caller as `bad_argument` through `str(e)`."""
+    """Literal refusal messages: arg 2 of `Invalid`/`invalid`, arg 1 of `DeclarationError`
+    (which a caller reads as `bad_argument`)."""
     found: list[tuple[int, str]] = []
     for node in ast.walk(ast.parse(path.read_text())):
         if not isinstance(node, ast.Call):
@@ -307,14 +278,8 @@ def _refusal_literals(path: Path) -> list[tuple[int, str]]:
 def test_every_refusal_of_the_three_families_names_the_call_that_resolves_it(
     tmp_path: Path,
 ) -> None:
-    """A refusal that ends without naming what resolves it leaves the agent retrying the
-    same call. The literal message of every refusal in the four modules of the declarations
-    tier names a tool of the server, backticked (`declaration_clear(kind="breakpoint", ref=...)`,
-    `start`,
-    `debug("bpclear 0x3")`); the store's `DeclarationError`s are refusals too, since a caller
-    reads them as `bad_argument`. The scan is checked against a planted file first, so an empty
-    finding is a finding and not a scan that read nothing; a message built by a helper is
-    read where the helper returns it, which this scan does not reach, and says so."""
+    """Every literal refusal of the declarations tier names a backticked tool that resolves it;
+    a message built by a helper is not reached by this scan."""
     tools = _tools()
     names = re.compile(r"`(" + "|".join(tools) + r")(?:\(|`)")
     planted = tmp_path / "planted.py"

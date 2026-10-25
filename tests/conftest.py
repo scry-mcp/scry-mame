@@ -1,6 +1,3 @@
-"""Every test starts on a blank `STATE` (`blank_session` says why), with no test having to ask,
-and every re-arm account it drives is checked row by row (`checked_rearms`)."""
-
 import sys
 from pathlib import Path
 
@@ -15,12 +12,7 @@ from session_doubles import blank_session, checked_rearms  # noqa: E402
 def fresh_state(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     blank_session(monkeypatch)
     checked_rearms(monkeypatch)
-    # THE STATE DIRECTORY IS THE TEST'S OWN, so nothing a case provokes (a failed start's
-    # kept output, a persistent store) lands in the owner's real one.
+    # keeps a failed start's output out of the developer's real state dir
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "xdg-state"))
-    # The window helper is the developer's machine, never the suite's: a case that wants one
-    # names it.
     monkeypatch.delenv("WINDOW_APP", raising=False)
-    # So is the binary the developer's `MAME_BINARY` names: the ladder a case climbs is the one
-    # the case sets up.
     monkeypatch.delenv("MAME_BINARY", raising=False)

@@ -1,11 +1,4 @@
-"""The watch mode that reads at every stop and arms nothing is `show`: "read" names an access
-(`trigger_type="r"`), and one word cannot name both.
-
-What these hold: the schema publishes `show` and the server refuses `read` in its own sentence;
-a store written before the rename comes back as `show`, row by row, and the next write persists
-the new word; and the two places that branch on the mode (the width ceiling and the state a
-watch takes from its declaration) treat `show` as the old word was treated.
-"""
+"""The watch mode that reads at every stop and arms nothing is `show`; `read` names an access."""
 
 import asyncio
 import json
@@ -25,9 +18,7 @@ import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
 
 KEY = "x /nowhere/x.map"
-# One row per shape a store written before the rename was found to hold: by address, pointer
-# and symbol, with and without a cpu, scalar and struct formats; and beside them the modes the
-# rename leaves alone, so a migration that rewrote every mode shows.
+# Modes the rename leaves alone sit beside the renamed ones, so a migration rewriting all shows.
 LEGACY_ROWS: list[dict[str, object]] = [
     {"kind": "watch", "by": "address", "ref": "0x203200", "width": 8, "fmt": "f64",
      "watch_mode": "read", "cpu": ":maincpu", "created_at": "t", "origin": "s0",

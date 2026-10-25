@@ -1,13 +1,5 @@
-"""CLEARING A DECLARATION: which rows of the debugger's lists a ref owns, the console command that
-takes each one away (pasted where a caller must type it, as it is in naming a row this server did
-not arm), the refusal when a ref matches nothing, what a clear or a refused arm left behind, and
-the records forgotten once their rows are gone from the lists. Breakpoints, watches and
-registerpoints clear through these, so a clear says the same thing whichever family it ends.
-
-And the sentences that point at a clear: a row under another condition, a place a second
-declaration would hold (`one_declaration`), a ref that matched nothing (`nothing_matched`, which
-comments and io taps say too).
-"""
+"""Clearing a declaration: the rows a ref owns, the console command that removes each, and the
+refusals and records around a clear, shared by breakpoints, watches and registerpoints."""
 
 from __future__ import annotations
 
@@ -30,33 +22,26 @@ _CLEAR_WORD = {"breakpoint": "bpclear", "watch": "wpclear", "registerpoint": "rp
 
 
 def clear_command(kind: str, index: int) -> str:
-    """The console command that removes ONE row by its index, whoever placed it and whatever
-    cpu it is under. `0x` because the console EVALUATES the index against the visible cpu's
-    symbols: a bare `D0` is the register D0 on a 68000, a bare `A` the register A on a Z80,
-    and either clears whatever row that register's value numbers."""
+    """The console command that removes one row by index; `0x` because a bare `D0` or `A` would
+    be evaluated as a cpu register."""
     return f"{_CLEAR_WORD[kind]} {index:#x}"
 
 
 def pasted_clear(kind: str, index: int) -> str:
-    """`clear_command` as a reply pastes it, ready to type through `debug`: the same spelling
-    the server sends, so it can be typed as it stands on any cpu."""
+    """`clear_command` as a reply pastes it, ready to type through `debug`."""
     return f'`debug("{clear_command(kind, index)}")`'
 
 
 def another_condition(kind: Literal["breakpoint", "watch"], addr: int, row: dict[str, Any],
                       declared: str, width: int | None = None) -> st.Invalid:
-    """The one refusal for a row the debugger already holds where a declaration would arm, under
-    a condition that is not the declaration's: adopting it would arm a stop that judges something
-    else, so it is named with the command that removes it. Both sides of the comparison are
-    said, either of which may be no condition at all."""
+    """Refusal for a row already held where a declaration would arm, under another condition."""
     span = f" for {prose.counted(width, 'byte')}" if width else ""
     held = "under another condition" if row.get("condition") else "with no condition"
     theirs = (f"this declaration's is {declared!r}" if declared
               else "this declaration has none")
     lead = (f"the debugger already holds a row at {addr:#x}{span} {held} ({row['entry']}), and "
             f"{theirs}: {pasted_clear(kind, row['index'])} removes it, or ")
-    # ONE LITERAL PER FAMILY, as `refuse_unmatched_clear` writes it: the refusal scan reads a
-    # backticked tool name only where it stands in the literal.
+    # One literal per family: the refusal scan reads a tool name only inside a literal.
     if kind == "breakpoint":
         return st.Invalid("ambiguous_ref", f"{lead}`declaration_clear(kind=\"breakpoint\")` when a "
                                            "declaration of this server owns it "
@@ -71,10 +56,8 @@ ClearKind = Literal["breakpoint", "watch", "regpoint"]
 
 def one_declaration(thing: str, other: str, clear_kind: ClearKind | None, cpu: str | None,
                     space: str = "") -> str:
-    """The one sentence for a second declaration of what `other` already holds on `cpu` (in
-    `space`, named only outside the program's): a place is held by one declaration, so a caller
-    frees it, on that cpu alone, or uses the one there. With no `clear_kind` the sentence ends at
-    the rule, for a report (`start`'s re-arm) that no call answers."""
+    """Sentence for a second declaration of what `other` holds on `cpu`; with no `clear_kind` it
+    ends at the rule, for a report no call answers."""
     rule = f"one {thing} is one declaration"
     if clear_kind is None:
         return rule
@@ -85,11 +68,9 @@ def one_declaration(thing: str, other: str, clear_kind: ClearKind | None, cpu: s
 
 def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "regpoint"]
                 ) -> None:
-    """A clear names what it takes: one `ref`, or `all=True` and no `ref`. An empty `ref` never
-    means everything, since a value left out by mistake would otherwise empty the store."""
+    """A clear names one `ref` or `all=True`; an empty `ref` never means everything."""
     if all_ and ref.strip():
         both = f"`all` clears every declaration of this kind and takes no `ref`; got ref={ref!r}"
-        # ONE LITERAL PER FAMILY, as `refuse_unmatched_clear` writes it.
         if family == "breakpoint":
             raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"breakpoint\", "
                                              "all=True)` alone")
@@ -112,16 +93,14 @@ def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "re
 
 
 def kept_fields(clear_kind: ClearKind, ref: str) -> dict[str, Any]:
-    """What a `readback_refused` reply says about the declaration it leaves behind: it was
-    stored before the arm, so it is kept and re-arms at the next `start`, and the reply
-    names the call that removes it."""
+    """What a `readback_refused` reply says of the declaration it leaves behind."""
     return {"stored": True, "armed": False, "state": "gone",
             "note": f"the declaration is kept and re-arms at the next `start`; "
                     f'declaration_clear(kind="{clear_kind}", ref={ref!r}) removes it'}
 
 
 class Clearing(NamedTuple):
-    """What a clear of one kind reaches, and what its refusal names when it reaches nothing."""
+    """What a clear reaches, and what its refusal names when that is nothing."""
     going: list[dec.Declaration]    # the declarations `ref` names on the cpus cleared
     held: list[dec.Declaration]     # every declaration of the kind held on those cpus
     away: list[dec.Declaration]     # what `ref` names outside the cpu the clear named
@@ -129,15 +108,11 @@ class Clearing(NamedTuple):
 
 
 def clearing(ses: gs.Session, kind: str, ref: str, cpu: str) -> Clearing:
-    """A clear's declarations of `kind`: those `ref` names (every one with no ref), on every cpu
-    or with `cpu` on that one alone; every declaration of the kind held there, and what `ref`
-    names elsewhere (on another cpu, or an expression watch, which is on none), which a refusal
-    names. `ref` is read ONCE by the address rule (`inputs.classify`, against the tables of
-    the cpus cleared and the names rows of the kind are stored under on any cpu) and reaches
-    only rows of its own kind, compared under `dec.match_key` (`dec.REF_MATCH` says it in
-    the client's words); an expression or a pointer ref is compared as its row was declared, and a
-    registerpoint's ref is an expression. An expression watch's text is one of those names: a
-    register such as `d0` is hex, and no address."""
+    """A clear's declarations of `kind`: those `ref` names (all with no ref), on `cpu` or every
+    cpu, the kind's held ones there, and what `ref` names elsewhere (another cpu, or an
+    expression watch, which is on none). `ref` is classified once (`inputs.classify`) and
+    compared under `dec.match_key`; an expression watch's text is a name, so a register such
+    as `d0` is not an address."""
     only = cpus.named(ses, cpu) if inputs.cpu_given(cpu) else None
     kept = [d for d in arming.store().declarations() if d.kind == kind]
     held = [d for d in kept if only is None or d.cpu == only]
@@ -158,15 +133,13 @@ def clearing(ses: gs.Session, kind: str, ref: str, cpu: str) -> Clearing:
 
 
 def nothing_matched(ref: str, what: str, there: str, held: list[str], done: str) -> str:
-    """The one sentence for a `ref` that matched nothing a call could act on: what was not done,
-    and what is held where it looked (`there`), so the caller can pick the ref it meant."""
+    """Sentence for a `ref` that matched nothing: what was not done and what is held there."""
     return (f"{ref!r} matches no {what}{there}, so nothing was {done}. The {what}s held{there}: "
             f"{', '.join(held) or 'none at all'}.")
 
 
 def refuse_unmatched_clear(ref: str, family: str, c: Clearing) -> dict[str, Any]:
-    """A clear that reached nothing: what is held where it looked, and where `ref` names a
-    declaration it did not look."""
+    """A clear that reached nothing: what is held, and where `ref` names a declaration."""
     there = f" on {c.cpu}" if c.cpu is not None else ""
     where = ", ".join(sorted({d.cpu or "no cpu" for d in c.away}))
     expr = " (an expression watch is on none)" if any(d.cpu is None for d in c.away) else ""
@@ -179,9 +152,8 @@ def refuse_unmatched_clear(ref: str, family: str, c: Clearing) -> dict[str, Any]
     lead = (f"{nothing}{away} A `ref` is compared with the one the `{declares}` reply carried, "
             "which ")
     matching = f"Matching: {dec.REF_MATCH[family]}."
-    # ONE LITERAL PER FAMILY, each naming its own list backticked: the scan of
-    # `test_every_refusal_of_the_three_families_names_the_call_that_resolves_it` reads a
-    # refusal's literal, and an interpolated `{family}_list` would name no tool there.
+    # One literal per family: `test_every_refusal_of_the_three_families_names_the_call_that_\
+    # resolves_it` reads literals, and an interpolated `{family}_list` names no tool there.
     if family == "breakpoint":
         return menvelope.invalid("unknown_ref",
                                  f"{lead}`declaration_list(kind=\"breakpoint\")` shows as `ref`. "
@@ -193,19 +165,15 @@ def refuse_unmatched_clear(ref: str, family: str, c: Clearing) -> dict[str, Any]
                                             f"`ref`. {matching}")
 
 
-#: A row a clear is taking down: whose declaration it is, its entry as the list printed it, and
-#: its index.
+#: A row a clear takes down: owner, entry as listed, index.
 Going = tuple[dec.Owner, str, int]
 
 
 def disarm_rows(ses: gs.Session, kind: str, rows: list[Going],
                 listed: Callable[[], list[dict[str, Any]]]
                 ) -> tuple[list[Going], list[tuple[str, int]]]:
-    """THE ONE REMOVAL EVERY FAMILY SHARES: each row's removal sent by its INDEX, whoever
-    placed it and whichever cpu it is under, then the debugger's list read back ONCE, so
-    `disarmed` is the machine's answer and never the tool's claim. Returns the rows the list no
-    longer shows, and each row it still shows as `still_held_note` names it; what a row's
-    record is, and when it goes, stays the family's."""
+    """The removal every family shares: send each row's removal by index, read the list back
+    once, so `disarmed` is the machine's answer. Returns the rows gone and those still shown."""
     if not rows:
         return [], []
     for _owner, _entry, index in rows:
@@ -217,10 +185,8 @@ def disarm_rows(ses: gs.Session, kind: str, rows: list[Going],
 
 
 def still_held_note(kind: str, rows: list[tuple[str, int]]) -> str:
-    """What a clear says of the rows the debugger still lists after their removal was
-    sent: each entry as the list prints it, and the console command that removes it
-    (`pasted_clear`), so it can be typed as it stands. The record stays with the row
-    meanwhile, or the next stop there would read as foreign."""
+    """What a clear says of rows still listed after removal: the record stays, or the next stop
+    there would read as foreign."""
     named = "address" if kind == "breakpoint" else "ref"
     commands = ", ".join(pasted_clear(kind, index) for _entry, index in rows)
     return (f"the debugger still lists {[entry for entry, _index in rows]} after the removal "
@@ -229,12 +195,9 @@ def still_held_note(kind: str, rows: list[tuple[str, int]]) -> str:
 
 
 def forget_rows_gone(ses: gs.Session, kind: str) -> list[dec.Owner]:
-    """After a `bpclear` or a `wpclear` typed through `debug` (`kind` is `breakpoint` or
-    `watch`; an `rpclear` is `mame_regpoints.forget_gone`): every record this server kept for
-    a row the debugger's list no longer shows goes with the row, whether or not a declaration
-    still names it (its list says `gone` either way), so nothing here believes a stop can land
-    where nothing is armed and a row typed there later is named as the foreign row it is. The
-    owners forgotten."""
+    """After a `bpclear` or `wpclear` typed through `debug` (`rpclear` is
+    `mame_regpoints.forget_gone`): drop every record of a row the list no longer shows, and
+    return the owners forgotten."""
     gone: list[dec.Owner] = []
     if kind == "breakpoint":
         held = mlists.bp_held(ses)
@@ -253,15 +216,10 @@ def forget_rows_gone(ses: gs.Session, kind: str) -> list[dec.Owner]:
 
 
 def row_index(index: int) -> str:
-    """One spelling for a debugger row's index in every sentence of every family: as
-    the console's own lists print it (hex, upper case), so a row named here is the row the
-    list shows. A COMMAND that takes the index is `clear_command`, which prefixes it."""
+    """A row's index as the console lists print it (upper-case hex)."""
     return f"{index:X}"
 
 
 def foreign_row_cause(kind: str, index: int, detail: str) -> str:
-    """How a stop by a row this server did not place is named, in every family: the
-    family's word, the index as `row_index` spells it, what the caller gave as `detail`,
-    and the sentence ENDS by naming the console command that removes the row
-    (`pasted_clear`), so nothing has to be translated to act on it."""
+    """How a stop by a row this server did not place is named; ends with the removing command."""
     return f"{kind} {row_index(index)}{detail}: {pasted_clear(kind, index)} removes it"

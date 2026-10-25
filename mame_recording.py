@@ -1,15 +1,3 @@
-"""The recordings: `record`'s AVI and the run every recording bounded by the frame notifier
-makes (`audio_record`'s WAV is the other), and `captures`, which re-reads every file this
-session handed back.
-
-A recording is a wrapper on the Lua channel (`mame_lua`): its script is queued on a drained
-pipe, evaluated by the run the wrapper makes, and proves itself through its marks in
-`error.log`. What lives here is what only a recording does: the notifier that begins and ends
-the file from one place in the frame, the `armed` line that predicts where a notifier the
-debugger evaluated will first run, the replies of a recording not yet begun, still open, or
-whose run did not settle, and the check of the finished file.
-"""
-
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator
@@ -34,32 +22,19 @@ import mame_state as st
 import mame_transport as transport
 from mame_state import STATE
 
-# The mark `record`'s script writes through `logerror`, followed by `#<seq>` of the call that
-# sent it, as every wrapper's mark is (`mame_lua`).
 RECORD_MARK = "MAME_MCP_RECORD"
 
-# WHERE A RECORDING SCRIPT'S NOTIFIER FIRST RUNS, logged by the chunk as it is evaluated, its last
-# line (after the host script's own `local screen`), so a chunk that answered has logged it. It
-# is read only when no `begin` followed, which is a chunk the debugger evaluated at a stop: one
-# the running frame update evaluates has its notifier called right after it, in that same
-# update (`video.cpp`). MAME calls the frame notifiers from the frame update at the START of a
-# vblank and moves the frame counter at its END (`vblank_begin` and `vblank_end` in
-# `src/emu/screen.cpp`): a chunk evaluated at a stop inside a vblank is first called on the
-# next frame, one in the active display on the frame the counter already reads, and a screen
-# with no vblank period is never inside one. Inside a vblank its end comes before the next
-# one's start, which is the test. A driver that asks MAME to update AFTER the vblank
-# (`VIDEO_UPDATE_AFTER_VBLANK`) has its notifiers called at the end instead, which Lua cannot
-# see: on such a screen a chunk evaluated inside the vblank is predicted one frame late.
+# Predicts where a notifier the debugger evaluated first runs. A chunk evaluated at a stop
+# inside a vblank is first called on the next frame (frame notifiers run at vblank start, the
+# counter moves at vblank end: `screen.cpp`); the running frame update's own chunk is called in
+# that same update. Wrong by one frame under `VIDEO_UPDATE_AFTER_VBLANK`, which Lua cannot see.
 ARMED_LUA = """manager.machine:logerror(string.format("%(mark)s armed frame=%%d vblank=%%s\\n",
     screen:frame_number(), tostring(screen:time_until_vblank_end():as_double()
         < screen:time_until_vblank_start():as_double())))
 """
 
-# The frame notifier registered by a chunk runs in the SAME frame update that evaluated it
-# (the periodic hook comes just before the frame notifiers in `video.cpp`), so a recording
-# begun at frame F and ended when the counter reads F + N - 1 holds exactly N frames;
-# ended at F + N, the AVI declares N + 1.
-# What the recording scripts raise on a machine with no screen, and what reads that back.
+# The chunk's notifier runs in the same frame update that evaluated it, so a recording begun at
+# frame F and ended when the counter reads F + N - 1 holds exactly N frames.
 NO_SCREEN = "this machine has no screen"
 RECORD_LUA = """if _G._mame_mcp_record_release then _G._mame_mcp_record_release() end
 local v = manager.machine.video
@@ -98,10 +73,7 @@ end)
 """ + ARMED_LUA
 
 def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -> Path | None:
-    """`record`'s machine-independent half: how many frames, the bound on waiting for them, and the
-    file they go to -- handed back as the `Path` it built, so the body does not build it twice.
-    The bound matters here more than anywhere: a recording waits inside the server's one lock, and
-    an unbounded one held it for as long as the caller cared to type."""
+    """`record`'s machine-independent checks; returns the `Path` built from `dest`, if any."""
     inputs.count("frames", frames, tail=": the frame notifier cannot end a recording on the "
                  "call that begins it, so one frame asked for would be two recorded", lo=2)
     vocab.check_wait(seconds)
@@ -109,9 +81,7 @@ def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -
 
 
 class Recording(NamedTuple):
-    """A bounded recording's run, read off its own marks: `ran`, the run's reply with the
-    console's account in it; `begin`, the fields of the one `begin` mark; `end`, the `end`
-    mark's, or None when the run stopped before the notifier ended the recording."""
+    """A bounded recording's run read off its marks; `end` is None when the run stopped first."""
     ran: dict[str, Any]
     begin: dict[str, str]
     end: dict[str, str] | None
@@ -130,12 +100,8 @@ def not_read(keys: tuple[str, ...], why: str) -> dict[str, Any]:
 
 def _not_begun(ran: dict[str, Any], what: str, armed: dict[str, str], path: Path,
                frames: int, ends_after: int, file_keys: tuple[str, ...]) -> dict[str, Any]:
-    """The reply of a recording whose script ran and whose frame notifier has not: a stop came
-    between the two, as when the debugger evaluates the chunk at a breakpoint the run reached
-    before the frame update. The notifier stays armed and begins the recording on the next
-    frame the machine reaches, unless the next call of the same tool releases it first, so the
-    reply says that instead of refusing. The frame is the one the chunk's `armed` line predicts
-    (`ARMED_LUA`). Only a settled run gets here (`_unsettled` answers the others)."""
+    """The reply of a recording whose script ran and whose notifier has not: the notifier stays
+    armed and begins on the frame the `armed` line predicts, unless the next call releases it."""
     begins = int(armed["frame"]) + (1 if armed["vblank"] == "true" else 0)
     return mlua.with_fields(ran, path=str(path), frames=frames, began=False, ended=False,
                        **not_read((*file_keys, "frame_begin", "recording_after"), NOT_BEGUN_WHY),
@@ -148,9 +114,7 @@ def _not_begun(ran: dict[str, Any], what: str, armed: dict[str, str], path: Path
 
 @contextmanager
 def _frames_said(before: int | None) -> Iterator[None]:
-    """A refusal raised once a recording's run began has moved the machine by that run: it says
-    from which frame to which, under the run refusals' own `frame_before`/`frame_after`. A
-    refusal that already carries them (the run's own) keeps its own."""
+    """Stamp a refusal with `frame_before`/`frame_after` unless it already carries them."""
     try:
         yield
     except st.Invalid as refusal:
@@ -163,8 +127,7 @@ def _frames_said(before: int | None) -> Iterator[None]:
 
 def _unsettled(ran: dict[str, Any], what: str, path: Path, ahead: int, drain_steps: int,
                answer: transport.Answer | None, resent: int) -> dict[str, Any]:
-    """A recording whose run did not settle: the run's own refusal (`mame_lua.unsettled`), with
-    the file's `path`."""
+    """The run's own refusal (`mame_lua.unsettled`) with the file's `path`."""
     return mlua.unsettled(ran, f"{what} recording", "begins or ends the recording at `path`",
                           "`stop`, then `captures` says whether a file was written", ahead,
                           drain_steps, answer, resent, path=str(path))
@@ -175,25 +138,14 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
                   frames: int, ends_after: int, file_keys: tuple[str, ...],
                   finish: Callable[[Recording], dict[str, Any]]) -> dict[str, Any]:
     """The run a recording bounded by the frame notifier makes, `record`'s AVI and
-    `audio_record`'s WAV alike: its script begins and ends on the notifier and logs `begin` and
-    `end` marks under `tag`, and everything between sending that script and reading those marks
-    lives once, here, so the file format is the only thing a recording tool adds.
+    `audio_record`'s WAV alike.
 
-    `what` is the tool's name, the word the pending and refusal sentences use for it; `tag` is the
-    mark the script logs, built from the same console sequence before anything is sent; `path` is
-    the file, named in the refusals. `run_frames` is the run that carries the script past its last
-    notifier call; `ends_after` is how many frames after the begin frame the last recorded frame is
-    (a span's end is inclusive), and `file_keys` the caller's file keys, `unavailable` while there
-    is no file. A script never evaluated is answered as pending, and one whose notifier has not run
-    as not begun; an `end` mark with no `begin` is refused; otherwise `finish` checks the file and
-    returns the reply through `with_fields`. No `begin` mark is "not begun" only beside the chunk's
-    `armed` line, which a chunk that answered has logged, so a settled run with neither is refused
-    as lost marks (the debugger can evaluate a chunk at the run's own last stop, so a run that
-    reached every frame is no proof its notifier ran). A run that did not settle is its own refusal
-    with the file's `path` (`_unsettled`), never the recording's fields. It runs inside the drain's
-    account, and past the answer inside the console's, so every `Invalid` it raises carries
-    `lines_ahead` and `drain_steps`, the
-    console's trio once read, and the frames the call moved the machine by (`_frames_said`)."""
+    `what` is the tool's name; `tag` the mark its script logs; `run_frames` carries the script
+    past its last notifier call; `ends_after` is the last recorded frame's offset from the begin
+    frame; `file_keys` are `unavailable` while there is no file. A settled run with neither a
+    `begin` nor the chunk's `armed` mark is refused as lost marks: the debugger can evaluate a
+    chunk at the run's last stop, so reaching every frame proves nothing about the notifier.
+    Every `Invalid` raised carries `lines_ahead`, `drain_steps` and the frames moved."""
     mark = files.log_mark(scratch)
     advance.refuse_frameless(f"`{what}`, a count of frames,")   # before the drain, which steps
     before = st.last_stop_frame()
@@ -208,7 +160,6 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
         if answer is None:
             return mlua.not_evaluated(ran, what, ahead, resent, moved, drain_steps)
         with mlua.console_said(answer, resent):
-            # THIS SERVER'S SCRIPT raises on its own only on a machine with no screen.
             code: contract.Code = ("no_channel" if NO_SCREEN in (answer.error or "")
                                    else "unexpected_answer")
             mlua.refuse_if_raised(answer, what, resent, code, path=str(path))
@@ -228,24 +179,21 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
                     "writes as it is evaluated: the log does not hold the script's marks",
                     tagged_lines=seen, path=str(path))
             if begin is None:
-                assert armed is not None       # refused just above when neither was logged
+                assert armed is not None
                 return _not_begun(ran, what, armed, path=path, frames=frames,
                                   ends_after=ends_after, file_keys=file_keys)
             return finish(Recording(ran, begin, end))
 
 
 def begun_as(path: Path) -> str:
-    """The name `video:begin_recording` is handed for `path`: without its `.avi`. Under
-    `-snapview native` MAME appends the extension to the name it is given whether or not it
-    already ends in one (its native branch builds the file name apart from the other), so a
-    name carrying it is written as `.avi.avi`; without it both branches write `path`."""
+    """The name for `video:begin_recording`, without `.avi`: under `-snapview native` MAME
+    appends the extension even to a name that has one."""
     return str(path.with_suffix("")) if path.suffix.lower() == ".avi" else str(path)
 
 
 def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: float,
            progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `record` tool: an AVI of exactly `frames` frames, begun and ended by
-    the script's own frame notifier, then the file checked before its path is given."""
+    """The body of the `record` tool."""
     given = check_record(frames, dest, seconds)
     if given is not None:
         path = given
@@ -254,7 +202,7 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
     tag = f"{RECORD_MARK}#{STATE.lua_seq + 1}"
     script = RECORD_LUA % {"path": transport.lua_string(begun_as(path)), "frames": frames,
                            "mark": tag}
-    ends_after = frames - 1                       # the script's `counted >= frames - 1`
+    ends_after = frames - 1
     file_keys = ("avi_frames", "bytes")
 
     def finish(rec: Recording) -> dict[str, Any]:
@@ -290,9 +238,7 @@ NOT_FINISHED_WHY = "the file does not read as a finished recording"
 
 
 def _avi_frames(path: Path) -> int | None:
-    """The frame count an AVI declares in its main header (`scry_core.avi`), or None when the
-    file is not an AVI with one. Waited for briefly: the writer closes the file after the
-    notifier."""
+    """The frame count an AVI declares, or None. Waited for: the writer closes late."""
     def declared() -> int | None:
         found = avi.header(path)
         return None if found is None else found.frames
@@ -301,22 +247,15 @@ def _avi_frames(path: Path) -> int | None:
 
 
 def captures() -> dict[str, Any]:
-    """The body of the `captures` tool: every file `record`, `audio_record`, `trace`, `snapshot`
-    and the graphics tools checked and handed back this session, re-read now; a recording its
-    call answered still open or not begun is finished, or released, by a later run that reads no
-    file, so it is not listed and its path is in that call's reply. An AVI carries the frames
-    its header declares, a WAV its samples, channels and rate (unavailable once it no longer reads
-    as a finished WAV); a file that has gone since is listed as not present rather than dropped,
-    because "what did this session produce" and "what is still on disk" are two questions and
-    both are answered."""
+    """The body of the `captures` tool: every file the tools checked and handed back this
+    session, re-read now. A recording its call answered still open or not begun is not listed.
+    A file that has gone is listed as not present, not dropped."""
     out: list[dict[str, Any]] = []
     for kind, path_s in STATE.captures:
         path = Path(path_s)
         entry: dict[str, Any] = {"kind": kind, "path": path_s, "present": path.is_file()}
         gone = unavailable("the file is gone")
         entry["bytes"] = path.stat().st_size if entry["present"] else gone
-        # EVERY KEY OF A KIND ON EVERY ROW OF IT, unavailable with its why when nothing on disk
-        # says it: a key that comes and goes is a shape a reader has to guess.
         if kind == "avi":
             frames = _avi_frames(path) if entry["present"] else None
             entry["avi_frames"] = (frames if frames is not None else gone if not entry["present"]

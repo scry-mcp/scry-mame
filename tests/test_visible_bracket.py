@@ -1,10 +1,4 @@
-"""Make a cpu visible, act, put the visible one back: what a refused put-back leaves.
-
-A put-back is refused when the cpu to put back is one the debugger ignores (the stub will not
-show it, since a step on it would never end). The act has completed by then, so its outcome is
-kept and the cpu left visible is named, never replaced by the put-back's refusal. The double
-refuses the SECOND `make_visible`: the first shows the row's cpu, the second is the put-back.
-"""
+"""A refused put-back keeps the act's outcome and names the cpu left visible."""
 
 from __future__ import annotations
 
@@ -30,7 +24,7 @@ import server as s  # noqa: E402
 
 
 def _refuses_the_put_back(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _RunningSession:
-    """The two-cpu double, :maincpu visible, whose second `Hc` is refused."""
+    """The two-cpu double whose second `make_visible` (the put-back) is refused."""
     ses = _two_programs(monkeypatch, tmp_path)
     plain = ses.make_visible
     calls: list[int] = []
@@ -61,7 +55,7 @@ def test_the_evaluation_is_kept_and_the_cpu_left_visible_is_named(
 def test_the_put_back_accepted_says_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control: the same call on a double that takes both switches."""
+    """Control: a double that takes both switches."""
     ses = _two_programs(monkeypatch, tmp_path)
     ses.exprs["{d0==1}"] = 1
     judged = conditions.judged_condition(ses, "bp 0x4a0::subcpu,d0==1", "d0==1", SUB)  # type: ignore[arg-type]
@@ -77,8 +71,7 @@ def test_the_put_back_accepted_says_nothing(
 def test_a_declaration_whose_put_back_was_refused_stores_nothing_and_says_both(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, call: object,
 ) -> None:
-    """Judged before anything is stored, so the call refuses there: its message carries what
-    the evaluation found and names the cpu left visible."""
+    """Judged before anything is stored: the refusal carries the evaluation and the cpu."""
     ses = _refuses_the_put_back(monkeypatch, tmp_path)
     ses.exprs["{d0==1}"] = 1
     ses.exprs["{wpdata==1}"] = 1
@@ -93,8 +86,7 @@ def test_a_declaration_whose_put_back_was_refused_stores_nothing_and_says_both(
 def test_start_keeps_a_rows_judgement_when_the_put_back_was_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """At `start` the row is armed by its cpu's name, which no visible cpu changes: the row
-    comes back, and the pass names the cpu it left visible."""
+    """The row is armed by its cpu's name, so it comes back and the note names the cpu."""
     ses = _refuses_the_put_back(monkeypatch, tmp_path)
     ses.exprs["{d0==1}"] = 1
     arming.store().add(dec.Declaration("breakpoint", "address", "0x4a0", cpu=SUB,
@@ -108,8 +100,7 @@ def test_start_keeps_a_rows_judgement_when_the_put_back_was_refused(
 def test_a_refused_put_back_after_an_act_that_refused_says_both(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The act's own refusal goes out, and it names the cpu left visible: a refusal that hid it
-    would leave the cpu moved with nothing saying so."""
+    """The act's own refusal goes out and still names the cpu left visible."""
     ses = _refuses_the_put_back(monkeypatch, tmp_path)
 
     def act(_item: None, _refusal: object) -> None:
@@ -124,8 +115,7 @@ def test_a_refused_put_back_after_an_act_that_refused_says_both(
 def test_the_bracket_puts_back_the_cpu_it_was_given_whatever_cpulist_says_later(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The caller read the visible cpu once; a second reading that came back empty would leave
-    nothing to put back."""
+    """The put-back uses the cpu the caller read, not a second reading."""
     ses = _two_programs(monkeypatch, tmp_path)
     ses.exprs["{d0==1}"] = 1
     monkeypatch.setattr(cpus, "visible_cpu", lambda _ses: None)
@@ -136,7 +126,7 @@ def test_the_bracket_puts_back_the_cpu_it_was_given_whatever_cpulist_says_later(
 def test_start_keeps_a_change_watchs_judgement_when_the_put_back_was_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The watch branch of the re-arm, which collects its own note."""
+    """The watch branch of the re-arm collects its own note."""
     ses = _refuses_the_put_back(monkeypatch, tmp_path)
     ses.exprs["{wpdata==1}"] = 1
     arming.store().add(dec.Declaration("watch", "address", "0x4a0", cpu=SUB,

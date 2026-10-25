@@ -1,15 +1,8 @@
 """The Lua channel: MAME's `-console` fed through stdin, read back off stdout.
 
-The doubles here are CAPTURED from real sessions, byte for byte, in `tests/fixtures/`:
-`console.stdout` is what the console printed for a raw `lua` call, a raw call whose script
-raised, an `input`, an `input` on a field that does not exist, a `record` and a `throttle`
-(the echo of each chunk, what it printed, the sentinel with the outcome, the prompt), and
-`console.error.log` the marks those wrappers' scripts wrote through `logerror`. What the
-probe established, and these tests pin: a line sent while the machine is STOPPED is not
-evaluated until the console's periodic hook runs (the gdbstub spins in its own packet loop,
-and the hook runs once per stop, on the way in, and on a stub that refreshes the display after
-a console command, once more per command), so the raw tool buys the evaluation with ONE
-single-step; while it RUNS a line is evaluated within a frame.
+The doubles are captured from real sessions in `tests/fixtures/`. A line sent while the machine
+is stopped is not evaluated until the console's periodic hook runs, so the raw tool buys the
+evaluation with one single-step; while it runs a line is evaluated within a frame.
 """
 
 import inspect
@@ -59,17 +52,15 @@ PROMPT = b"\x1b[1;36m[MAME]\x1b[0m> "
 BANNER = (b"mame 0.288\t\nCopyright (C) Nicola Salmoria and the MAME team\n\nLua 5.4\t\n"
           b"Copyright (C) Lua.org, PUC-Rio\n\n" + PROMPT
           + b"gdbstub: listening on address localhost port 23990\n")
-# THE CONSOLE REFUSING A LINE AT ITS TOP LEVEL, captured on m68k-dual by writing a bare
-# `error(...)` into the pipe: the echo, then `error:`, a TAB and the chunk's name, then the
-# prompt. What the double prints is the bytes between that echo and that prompt, verbatim.
+# THE CONSOLE REFUSING A LINE AT ITS TOP LEVEL, captured on m68k-dual by writing a bare `error(...)`
+# into the pipe.
 CONSOLE_REFUSAL = (FIXTURES / "console.refused.stdout").read_bytes().split(b"\n", 1)[1].split(
     PROMPT, 1)[0]
 
 
 def _captured(seq: int, as_seq: int = 1) -> bytes:
-    """What the console printed AFTER the echo of chunk `seq` in the capture, up to the
-    next prompt (the duplicated sentinel MAME prints after a raised script is kept: the
-    reader has to survive it), renumbered as call `as_seq` of the test's session."""
+    """What the console printed AFTER the echo of chunk `seq` in the capture, up to the next prompt
+    (the duplicated sentinel MAME prints after a raised script is kept"""
     m = re.search(rb'"MAME_MCP_LUA_END#%d", false, e\) [^\n]*\n' % seq, CONSOLE)
     assert m, seq
     rest = CONSOLE[m.end():]
@@ -81,13 +72,8 @@ def _marks_of(tag: str) -> list[str]:
 
 
 class _ChannelSession(_RegisterSession):
-    """A register session (a frame counter, a console that answers `print`, a `gvblank`
-    that moves one frame) with the CHANNEL's two ends: the pipe the server writes lines
-    into, and the console's periodic hook, run on every `step` and on every `gvblank`,
-    which appends the echo of each pending line, then `answers[seq]` (the captured bytes:
-    output and sentinel), then the prompt, to stdout.log, and `marks[seq]` to error.log.
-    A line with no answer prepared stays pending, as the real console leaves one the
-    machine has not ticked for."""
+    """A register session (a frame counter, a console that answers `print`, a `gvblank` that moves
+    one frame) with the CHANNEL's two ends"""
 
     def __init__(self, scratch: Path) -> None:
         super().__init__(bits=32, frame=100)
@@ -104,11 +90,7 @@ class _ChannelSession(_RegisterSession):
         self.pc = 0x400
         self.stdin = _TimedPipe()
         self.advanced: list[float] = []
-        # THE READER DIED FOR GOOD: unlike `reader_dies`, no later tick starts one that
-        # reads. Nothing is ever taken from the pipe again, the shape a wrapper must survive.
-        # AUTHORED, and kept because it is what drives a wrapper into the death it cannot pin
-        # on its line; "never again" is this double's, not MAME's (`_queued_then_ran` says
-        # why), and no case asserts it.
+        # THE READER DIED FOR GOOD.
         self.reader_dead = False
         self.reader_dead_said = False
         self.quit_asked = False
@@ -142,22 +124,13 @@ class _ChannelSession(_RegisterSession):
 
     def _tick(self) -> None:
         if self.reader_dead:
-            # It prints MAME's own words ONCE and never reads again: no echo of any line,
-            # so nothing downstream can see the death through the echo.
+            # It prints MAME's own words ONCE and never reads again.
             if not self.reader_dead_said:
                 self.reader_dead_said = True
                 with open(self.scratch / "stdout.log", "ab") as fh:
                     fh.write(b"[LUA ERROR] in thread: attempt to index a nil value\n" + PROMPT)
             return
-        # ONE LINE PER TICK, the property of the real console (m68k-dual, MAME
-        # 0.288): a throttle line sent while stopped and a `lua` line after it were answered
-        # by two successive steps, one each. A double answering every pending line per tick
-        # could not have shown the defect this models. A line with no answer prepared stays
-        # at the head of the queue, as one the machine has not ticked for.
-        # THE READER DIED STARTING UP (on m68k-dual): the console prints MAME's own
-        # words, RUNS THE PREVIOUS CHUNK AGAIN from the result the dead thread never
-        # cleared (its answer, with no echo: nothing read it), and takes nothing from
-        # the pipe; the next tick starts a reader that does.
+        # ONE LINE PER TICK, the property of the real console (m68k-dual, MAME 0.288).
         if self.reader_dies > 0 and self.last is not None:
             self.reader_dies -= 1
             with open(self.scratch / "stdout.log", "ab") as fh:
@@ -167,8 +140,7 @@ class _ChannelSession(_RegisterSession):
         fresh = self.stdin.getvalue()[self.consumed:]
         self.consumed = len(self.stdin.getvalue())
         self.queue.extend(line for line in fresh.split(b"\n") if line)
-        # THE READER DIED HOLDING THE LINE (on m68k-dual): it echoes the line, its return
-        # is lost ("return value must be string"), and the chunk never ran.
+        # THE READER DIED HOLDING THE LINE (on m68k-dual).
         if self.reader_eats > 0 and self.queue:
             self.reader_eats -= 1
             line = self.queue.pop(0)
@@ -176,9 +148,7 @@ class _ChannelSession(_RegisterSession):
                 fh.write(line + b"\n[LUA ERROR] in thread: return value must be string\n"
                          + PROMPT)
             return
-        # THE CONSOLE REFUSED THE LINE AT ITS TOP LEVEL, the second shape `eaten` knows: the
-        # reader is alive, the console prints its own `error:` and hands the prompt back, and
-        # neither a `[LUA ERROR] in thread:` nor a duplicate sentinel is left behind.
+        # THE CONSOLE REFUSED THE LINE AT ITS TOP LEVEL, the second shape `eaten` knows.
         if self.console_refuses > 0 and self.queue:
             self.console_refuses -= 1
             line = self.queue.pop(0)
@@ -186,8 +156,7 @@ class _ChannelSession(_RegisterSession):
                 fh.write(line + b"\n" + CONSOLE_REFUSAL + PROMPT)
             return
         for line in self.queue[:1]:
-            # THE WRAPPER'S SENTINEL IS THE LAST ON THE LINE: a script may print the
-            # sentinel's text itself, and that one comes first, inside the quoted chunk.
+            # THE WRAPPER'S SENTINEL IS THE LAST ON THE LINE.
             seqs = re.findall(rb"MAME_MCP_LUA_END#(\d+)", line)
             assert seqs, line
             seq = int(seqs[-1])
@@ -210,8 +179,7 @@ class _ChannelSession(_RegisterSession):
         self.executed()
         self.advanced.append(time.monotonic())
         self.pc += 4
-        # THE READER IS A THREAD (on m68k-dual): `reader_late` stops pass with the hook
-        # finding it still busy taking the line, so nothing is evaluated at that stop.
+        # THE READER IS A THREAD (on m68k-dual).
         if self.reader_late > 0:
             self.reader_late -= 1
             return "T05"
@@ -221,8 +189,6 @@ class _ChannelSession(_RegisterSession):
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         if command == "gvblank":
             self.advanced.append(time.monotonic())
-            # `sluggish` frames pass without the console reading its pipe (a run
-            # that evaluates nothing, the line still pending); a step always reads it.
             if self.sluggish > 0:
                 self.sluggish -= 1
             else:
@@ -241,9 +207,7 @@ class _ChannelSession(_RegisterSession):
 
 
 class _TimedPipe(io.BytesIO):
-    """The stdin end, with the CLOCK: every line written is stamped, so a test can measure
-    the gap between a line reaching the pipe and the machine being advanced for it. That
-    gap is the whole of `READER_SETTLE_S`, and nothing else observes it."""
+    """The stdin end, with the CLOCK"""
 
     def __init__(self) -> None:
         super().__init__()
@@ -255,8 +219,7 @@ class _TimedPipe(io.BytesIO):
 
 
 class _PipeProcess:
-    """The process end of the channel: alive, with the stdin the session double writes.
-    It exits 0 once the console has been asked to quit, which is what `close` measures."""
+    """The process end of the channel"""
 
     pid = 4243
 
@@ -282,8 +245,7 @@ def _channel(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession
     scratch.mkdir()
     (scratch / "snap").mkdir()
     ses = _ChannelSession(scratch)
-    # BLANK FIRST, then this fixture's own specifics on top: a reset that ran afterwards
-    # would silently un-set what the fixture had just arranged.
+    # BLANK FIRST, then this fixture's own specifics on top.
     blank_session(monkeypatch)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
@@ -293,26 +255,14 @@ def _channel(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession
     return ses
 
 
-# ------------------------------------------------------------------------- the raw form
-
 def test_the_fixtures_reset_is_derived_from_state_and_not_from_a_list(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """THE MECHANISM THAT REPLACED TWO HAND-WRITTEN LISTS, held to what it claims.
-
-    A list of field names goes quietly short, and the field it misses leaks from one case into
-    the next in SILENCE, which is the worst way for a suite to be wrong: every case still
-    passes and one of them is measuring the previous one's leftovers. It had already happened.
-    `blank_session` derives the set from a fresh `State`, so a field added tomorrow is covered
-    without anybody remembering; this case is what says that out loud, by dirtying EVERY field
-    there is and finding none of them left standing.
-    """
+    """THE MECHANISM THAT REPLACED TWO HAND-WRITTEN LISTS, held to what it claims."""
     fresh = mstate.State()
     for name, value in vars(fresh).items():
         if name == "start_seq":
             continue
-        # A VALUE OF THE RIGHT SHAPE BUT THE WRONG CONTENT, so a field this leaves at its
-        # default cannot pass for one that was cleared.
         dirty = (value + 7 if isinstance(value, int) and not isinstance(value, bool)
                  else not value if isinstance(value, bool)
                  else {"leftover": 1} if isinstance(value, dict)
@@ -327,11 +277,8 @@ def test_the_fixtures_reset_is_derived_from_state_and_not_from_a_list(
 
 
 def test_a_script_becomes_one_chunk_under_pcall_with_its_sentinel() -> None:
-    """The console reads stdin a LINE at a time and loads each as its own chunk, so a
-    two-line script would run as two chunks and a `local` on the first would be gone by
-    the second. The whole script travels as one Lua string literal on one line, quoted so
-    quotes, backslashes and newlines survive, run under `pcall`, and closed by the sentinel
-    of THIS call, so the outcome and the error come back in the console's own words."""
+    """The console reads stdin a LINE at a time and loads each as its own chunk, so a two-line
+    script would run as two chunks and a `local` on the first would be gone by the second."""
     line = transport.chunk_line('local x = "a\\b"\nprint(x)', 7)
     assert "\n" not in line
     assert line.startswith('local f, e = load("')
@@ -346,9 +293,7 @@ def test_a_script_becomes_one_chunk_under_pcall_with_its_sentinel() -> None:
 def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The shape: stopped, the line sits in the pipe until the console's hook runs;
-    one step buys the evaluation; the answer is what sits between the echo and the
-    sentinel; and the raw form marks the session ALTERED always, its pc moved by the step."""
+    """The shape"""
     script = 'print(string.format("PROBE %02x %02x", 0x20, 0x34))'
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = _captured(1)
@@ -362,8 +307,7 @@ def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
     assert out["cause"] == "lua: one step"
     assert out["summary"].startswith("lua: 12 chars back, pc 0x00000404")
     assert "note" not in out, "a script that printed needs no hint"
-    # The mark moved past the sentinel: the same script again is read from ITS echo and
-    # ITS sentinel, not the first one's.
+    # The mark moved past the sentinel.
     ses.answers[2] = b"PROBE 20 35\n" + ses.sentinel(2)
     again = s.lua(script)
     assert again["output"] == "PROBE 20 35\n" and _whole()["altering_writes"] == 2
@@ -372,10 +316,7 @@ def test_a_script_is_evaluated_by_one_step_and_read_between_echo_and_sentinel(
 def test_an_empty_output_from_a_script_that_never_printed_says_where_the_channel_is(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console captures what `print`s, and a `return` prints nothing: two repos wrote
-    `return emu.romname()`, read `output: ""` beside `status: ok`, and could not tell it from
-    a silent failure. The reply says so, once, only when the output is empty and the script
-    holds no `print`."""
+    """The console captures what `print`s, and a `return` prints nothing"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     out = s.lua("return emu.romname()")
@@ -390,10 +331,7 @@ def test_an_empty_output_from_a_script_that_never_printed_says_where_the_channel
 def test_a_script_that_raises_is_a_refusal_in_the_consoles_words_and_the_reader_survives(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The captured answer to a raised script: the sentinel carries `false` and the error,
-    MAME prints a `[LUA ERROR] in thread` and the sentinel a SECOND time, and the channel
-    goes on. The refusal quotes the error, the session is altered (the step happened), and
-    the next call reads its own answer, not the duplicate."""
+    """The captured answer to a raised script"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = _captured(2)
     assert ses.answers[1].count(b"MAME_MCP_LUA_END#1") == 2, "the duplicate is in the capture"
@@ -416,8 +354,7 @@ def test_a_script_printing_the_prompt_bytes_does_not_cut_its_own_answer(
 def test_a_line_the_console_never_answers_is_wait_expired_and_says_it_is_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """No sentinel within the bound: the line is still in the pipe, and the reply says so
-    rather than reading the banner as an answer."""
+    """No sentinel within the bound"""
     _channel(monkeypatch, tmp_path)
     out = refused("no sentinel for the line", s.lua("print(1)", seconds=0.3))
     assert out["code"] == "wait_expired" and out["pending"] is True
@@ -479,8 +416,7 @@ def test_the_command_line_opens_the_console_and_names_the_state_directory(
 
 
 def test_start_hands_mame_a_stdin_pipe(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """The channel's write end: MAME spawned with stdin connected to nothing leaves the
-    console reading end-of-file at once."""
+    """The channel's write end"""
     from test_server import _boot_args, _stub_boot, _StubProcess
 
     image = bytes(range(256)) * 64
@@ -492,21 +428,18 @@ def test_start_hands_mame_a_stdin_pipe(monkeypatch: pytest.MonkeyPatch, tmp_path
         s.close()
 
 
-# ----------------------------------------------------------------- the typed wrappers
-
 def test_inputs_value_comes_back_as_the_32_bit_value_the_port_took(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """MAME's port value is unsigned and 32 bits wide, so a negative value reaches the port as
-    its two's complement, and the reply says what the port took in the `0x` spelling a call
-    takes back: a `-0x...` would be refused as an argument."""
+    """MAME's port value is unsigned and 32 bits wide, so a negative value reaches the port as its
+    two's complement, and the reply says what the port took in the `0x` spelling a call takes
+    back"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = _captured(3)
     ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
     out = s.input(port=":P1", field="Coin 1", value=-1, frames=4)
     assert out["status"] == "ok" and out["value"] == "0xffffffff", out
-    # THE ROUTE, the word the DOSBox-X server uses for its own in-guest one: set from MAME's Lua,
-    # inside the machine.
+    # THE ROUTE, the word the DOSBox-X server uses for its own in-guest one.
     assert out["route"] == "ioport", out
 
 
@@ -514,11 +447,7 @@ def test_inputs_value_comes_back_as_the_32_bit_value_the_port_took(
 def test_input_queues_the_script_and_reads_the_port_back_off_the_marks(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The wrapper does not step: it queues the script and RUNS `frames + 1` frames, the
-    run's first frame evaluates it, and the two marks the script logs are the measurement:
-    the field's own mask and default, the port before, and the port as read at the release.
-    `active` is computed off those, never assumed from the set; the chunk sent is the one
-    the capture holds, byte for byte."""
+    """The wrapper does not step"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = _captured(3)
     ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
@@ -542,11 +471,9 @@ def test_input_queues_the_script_and_reads_the_port_back_off_the_marks(
     [
         # The captured case: the coin's bit went low against a high default.
         (0xDBFF, 0x0400, 0x0400, True),
-        # A bit outside the mask changed and the field's own did not: NOT active. A
-        # comparison without the mask would say True here.
+        # A bit outside the mask changed and the field's own did not.
         (0xDBFF, 0x0401, 0x0001, False),
-        # The field's bit equals its default while other bits differ from the port
-        # before: comparing against `port_before` instead of `defvalue` would say True.
+        # The field's bit equals its default while other bits differ from the port before.
         (0x0400, 0x0400, 0x0400, False),
     ],
 )
@@ -577,10 +504,8 @@ def test_input_refuses_in_the_consoles_words_when_the_field_does_not_exist(
 def test_input_cut_short_says_the_field_is_still_held_and_a_later_call_ignores_its_mark(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A run another stop cuts before the release frame leaves the field HELD and the
-    notifier armed: the reply says so, with the frame the release lands on, and is never a
-    refusal that reads as nothing happened. When that release mark lands later, the next
-    call's own tag keeps it from being read as its own."""
+    """A run another stop cuts before the release frame leaves the field HELD and the notifier
+    armed"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     ses.marks[1] = [_marks_of("MAME_MCP_INPUT#3 set")[0].replace("#3", "#1")]
@@ -589,8 +514,7 @@ def test_input_cut_short_says_the_field_is_still_held_and_a_later_call_ignores_i
     assert out["active"]["available"] is False and out["port_held"]["available"] is False
     assert out["frame_release_planned"] == 305 and "still HELD" in out["note"]
     assert out["summary"] == "input :P1 'Coin 1': still HELD from frame 301, releases at 305"
-    # The stale release lands in the log with the FIRST call's tag, before the second call
-    # runs: the second call must not take it as its own release.
+    # The stale release lands in the log with the FIRST call's tag, before the second call runs.
     with open(ses.scratch / "error.log", "a") as log:
         log.write(_marks_of("MAME_MCP_INPUT#3 release")[0].replace("#3", "#1") + "\n")
     ses.answers[2] = ses.sentinel(2)
@@ -603,10 +527,7 @@ def test_input_cut_short_says_the_field_is_still_held_and_a_later_call_ignores_i
 def test_input_under_a_run_that_did_not_settle_is_the_runs_refusal_as_a_recordings_is(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, answered: str
 ) -> None:
-    """The recordings' shape: the run's own `not_settled` refusal, its message carried on with
-    what the script did and what may still happen to the field, and never the field's half (the
-    set, the release, `active`) under it, whether the script had not answered, had answered with
-    its `set` mark logged, or had raised."""
+    """The recordings' shape"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
@@ -687,8 +608,8 @@ def test_record_checks_the_avi_header_and_runs_two_frames_past_the_recording(
 def test_record_writes_to_the_dest_it_is_given_and_names_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `dest` is where the script records, as a Lua string in the chunk, and the file checked
-    and named in the reply; the session's own numbering is not used for it."""
+    """A `dest` is where the script records, as a Lua string in the chunk, and the file checked and
+    named in the reply"""
     ses = _channel(monkeypatch, tmp_path)
     dest = tmp_path / "mine.avi"
     ses.answers[1] = _captured(5)
@@ -727,8 +648,8 @@ def test_a_wrapper_whose_own_mark_appears_twice_refuses_as_a_console_rerun(
 
 
 def test_a_console_rerun_refusal_keeps_the_earlier_chunks_the_console_ran_again() -> None:
-    """The sentinel check and the wrapper's own marks each find reruns, and a refusal on the
-    second carries the first too: one list, the earlier chunks and this call's own."""
+    """The sentinel check and the wrapper's own marks each find reruns, and a refusal on the second
+    carries the first too"""
     answer = transport.Answer("", True, "", reruns=["MAME_MCP_LUA_END#1"])
     tag = "MAME_MCP_RECORD#2"
     seen = [f"[luaengine] {tag} begin frame=1", f"[luaengine] {tag} begin frame=1"]
@@ -741,12 +662,8 @@ def test_a_console_rerun_refusal_keeps_the_earlier_chunks_the_console_ran_again(
 def test_captures_lists_what_this_session_recorded_and_snapped_and_says_what_is_gone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Without a listing, `record` and `snapshot` each hand back a path and nothing
-    remembers them. Every file the two checked and handed back this session, in the scratch or
-    at a `dest`,
-    with its size and (an AVI) the frames its header declares; a file that has
-    since gone is listed as gone rather than dropped, and the list answers while the machine
-    runs."""
+    """Without a listing, `record` and `snapshot` each hand back a path and nothing remembers
+    them."""
     ses = _channel(monkeypatch, tmp_path)
     empty = s.captures()
     assert empty["status"] == "ok" and empty["captures"] == [], empty
@@ -777,9 +694,7 @@ def test_captures_lists_what_this_session_recorded_and_snapped_and_says_what_is_
 def test_the_captures_summary_counts_every_kind_and_its_parts_sum_to_the_total(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A graphics tool's `image` is a capture like any other, and the line counts every kind:
-    the known kinds first in their own order, then a kind not yet listed in the order first
-    seen, so the parts always sum to the total."""
+    """A graphics tool's `image` is a capture like any other, and the line counts every kind"""
     _channel(monkeypatch, tmp_path)
     for kind, name in (("image", "a.png"), ("mmm", "h.mmm"), ("zzz", "f.zzz"), ("png", "b.png"),
                        ("image", "c.png"), ("wav", "e.wav"), ("aaa", "g.aaa"),
@@ -806,8 +721,6 @@ def test_record_refuses_a_missing_file_a_wrong_header_and_fewer_than_two_frames(
         out = s.record(frames=2)
         assert out["status"] == "INVALID" and out["code"] == "readback_refused", out
     assert "ZERO frames" in out["message"]
-    # The notifier begins the recording on its first call and returns, so it can end one no
-    # earlier than the next frame: one frame asked for would be two recorded.
     out = refused("cannot end a recording on the call that begins it", s.record(frames=1))
     assert out["code"] == "bad_argument"
     refused("frames=0 is below 2: the frame notifier cannot end", s.record(frames=0))
@@ -824,8 +737,6 @@ def test_record_raised_or_cut_short_is_said_in_the_consoles_words_or_as_still_op
     ses.answers[2] = ses.sentinel(2)
     ses.marks[2] = ["[luaengine] MAME_MCP_RECORD#2 begin frame=10 recording=true"]
     out = s.record(frames=5)
-    # Begun at frame 10, the script ends the AVI when its counter reads `frames - 1`, so on
-    # the notifier call of frame 14: the frame the raw `end` mark names.
     assert out["status"] == "ok" and out["ended"] is False and out["frame_end_planned"] == 14, out
     assert out["began"] is True, out
     assert out["summary"] == "record: still OPEN from frame 10, ends at 14"
@@ -859,12 +770,9 @@ TRIO = {"thread_errors", "console_reruns"}
 def test_a_recording_not_begun_begins_where_its_armed_mark_says(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, vblank: str, begins: int
 ) -> None:
-    """MAME calls the frame notifiers as a vblank BEGINS and moves the frame counter as it ENDS,
-    so a chunk the debugger evaluated at a stop inside a vblank is first called on the next
-    frame, and one at a stop in the active display on the frame the counter read; the frame the
-    run stopped at (108 here) is not the prediction. The run reached every frame it asked for:
-    the debugger can evaluate the chunk at that run's own last stop, after its last notifier
-    call, so a run that elapsed is no proof the recording began."""
+    """MAME calls the frame notifiers as a vblank BEGINS and moves the frame counter as it ENDS, so
+    a chunk the debugger evaluated at a stop inside a vblank is first called on the next frame, and
+    one at a stop in the active display on."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     ses.marks[1] = [f"[luaengine] MAME_MCP_RECORD#1 armed frame=60 vblank={vblank}"]
@@ -883,10 +791,8 @@ def test_a_recording_not_begun_begins_where_its_armed_mark_says(
 def test_a_recording_whose_marks_are_lost_is_refused_and_not_called_not_begun(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """No `begin` mark reads as "not begun" only beside the chunk's own `armed` line, which a
-    chunk that answered has logged as it was evaluated: with neither, the log lost the marks.
-    A run that did not settle is not judged on its marks: it may have left the machine running,
-    and its reply is the run's refusal with the file's path, none of the recording's fields."""
+    """No `begin` mark reads as "not begun" only beside the chunk's own `armed` line, which a chunk
+    that answered has logged as it was evaluated"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     out = refused("not even the `armed` line", s.record(frames=5))
@@ -904,10 +810,8 @@ def test_a_recording_whose_marks_are_lost_is_refused_and_not_called_not_begun(
 def test_a_refusal_of_what_a_wrappers_answer_showed_carries_the_consoles_trio(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The trio rides on every reply that read a chunk's answer back, as the chunk readers'
-    refusals carry it, so a wrapper's refusal of what its answer showed carries it too: `input`
-    with no `set` mark, `record` with an `end` mark and no `begin`, and a file that does not
-    check."""
+    """The trio rides on every reply that read a chunk's answer back, as the chunk readers' refusals
+    carry it, so a wrapper's refusal of what its answer showed carries it too"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mfiles, "FILE_WAIT_S", 0.05)
     ses.answers[1] = ses.sentinel(1)
@@ -925,10 +829,8 @@ def test_a_refusal_of_what_a_wrappers_answer_showed_carries_the_consoles_trio(
 
 
 def test_captures_says_a_recording_its_call_left_unfinished_is_not_listed() -> None:
-    """A recording its call answered open or not begun is finished, or released, by a later run
-    that reads no file, so `captures` never lists it: every text that describes the list says
-    which files it holds, the ones a call checked and handed back, and none claims every file
-    the tools wrote."""
+    """A recording its call answered open or not begun is finished, or released, by a later run that
+    reads no file, so `captures` never lists it"""
     here = Path(__file__).resolve().parent.parent
     texts = {"server": documented("captures"), "mame_recording": mrec.captures.__doc__ or "",
              "REFERENCE": (here / "REFERENCE.md").read_text()}
@@ -943,9 +845,8 @@ def test_captures_says_a_recording_its_call_left_unfinished_is_not_listed() -> N
 def test_state_save_checks_the_header_and_state_load_judges_it_before_the_console(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`statesave` through the console, the `.sta` found in the system's own folder and its
-    header checked; `stateload` marks the session altered, re-runs `start`'s ROM check on
-    the machine the state replaced, and compares the frame and pc with the save's."""
+    """`statesave` through the console, the `.sta` found in the system's own folder and its header
+    checked"""
     ses = _channel(monkeypatch, tmp_path)
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
@@ -964,8 +865,7 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     assert out["session"]["altered"] is False
     refused("already exists", s.state_write("save", name="live"))
     refused("letters, digits", s.state_write("save", name="a b"))
-    # THE MACHINE MOVES before the load, so the comparison after it can prove one: the double
-    # gives the saved frame back at `stateload`.
+    # THE MACHINE MOVES before the load, so the comparison after it can prove one.
     ses.stale_after_load = True
     ses.saved_frames["live"] = ses.frame
     ses.frame += 3
@@ -976,8 +876,7 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
         "one spelling per concept: the pc inside `saved` reads like the pc beside it")
     assert ses.checked == [(0x10, 0x20)], "the ROM check ran again, with start's arguments"
     assert loaded["session"]["altered"] is True
-    # ONE WORD, ONE SHAPE: `console` is the session's block of counters on every reply, so
-    # the text the debugger console printed for `stateload` is `output`, as `debug` names it.
+    # ONE WORD, ONE SHAPE.
     assert isinstance(loaded["output"], str) and "console" not in loaded, loaded
     assert isinstance(_whole()["console"], dict)
     assert "stateload live" in ses.commands
@@ -1008,8 +907,8 @@ def _logging_stateload(monkeypatch: pytest.MonkeyPatch, ses: Any, line: str) -> 
 def test_what_mame_logs_during_stateload_is_in_the_stop_surveys_errorlog(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The survey reads `error.log` from the last stop, which is before the load began, so
-    what the load logged is in the survey's `errorlog` and needs no field of its own."""
+    """The survey reads `error.log` from the last stop, which is before the load began, so what the
+    load logged is in the survey's `errorlog` and needs no field of its own."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     assert s.state_write("save", name="live")["status"] == "ok"
@@ -1023,8 +922,8 @@ def test_what_mame_logs_during_stateload_is_in_the_stop_surveys_errorlog(
 def test_state_load_hands_the_stop_no_field_the_survey_also_writes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A field the tool passes beside the survey and the survey writes too is overwritten on
-    every reply: one of the two meanings never reaches the caller."""
+    """A field the tool passes beside the survey and the survey writes too is overwritten on every
+    reply"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     assert s.state_write("save", name="live")["status"] == "ok"
@@ -1045,9 +944,7 @@ def test_state_list_names_every_state_in_the_folder_with_what_this_session_knows
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """Writing and loading states with no way to list them leaves the caller remembering the
-    names. Every `.sta` in the session's folder, with its size, and the frame and pc when
-    THIS session wrote it (a state from an earlier session
-    is listed with `not checked` there, as `state_write(method="load")` reports it)."""
+    names."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     empty = s.state_list()
@@ -1070,9 +967,8 @@ def test_state_list_names_every_state_in_the_folder_with_what_this_session_knows
 def test_state_load_refuses_a_state_mame_would_refuse_in_silence(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A corrupt header and a foreign system's state both load as `ok` through
-    the console with nothing in any log. So the header is judged BEFORE the console, and
-    a load MAME did not take is caught by the frame and pc not being the save's."""
+    """A corrupt header and a foreign system's state both load as `ok` through the console with
+    nothing in any log."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")
     assert s.state_write("save", name="good")["status"] == "ok"
@@ -1149,9 +1045,8 @@ def test_throttle_is_pending_on_a_stopped_machine_and_applied_on_a_running_one(
 def test_a_throttle_whose_running_machine_stops_before_a_frame_is_pending_not_expired(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A breakpoint that stops the machine before its next frame leaves the line in the pipe,
-    as a stopped machine does: the reply is `pending` and the switch is recorded, never a wait
-    sat out and then forgotten."""
+    """A breakpoint that stops the machine before its next frame leaves the line in the pipe, as a
+    stopped machine does"""
     ses = _channel(monkeypatch, tmp_path)
     ses.running = True
     monkeypatch.setattr(ses, "poll_stop", lambda timeout=0.0: True)
@@ -1160,19 +1055,11 @@ def test_a_throttle_whose_running_machine_stops_before_a_frame_is_pending_not_ex
     assert [r["tag"] for r in mstate.STATE.throttles_pending] == [out["tag"]]
 
 
-# ------------------------------- a throttle asked while stopped, and what became of it
-#
-# THE STOPPED PATH CANNOT WAIT FOR ITS OWN MARK: nothing reads its line while it would wait.
-# It answered `pending` and forgot, so a switch that never landed stayed pending for ever and
-# every timing taken afterwards described a speed nobody had asked for. It now leaves a
-# record, and the next survey reads it -- the shape the tally's removal already has.
-
 
 def test_a_throttle_that_landed_leaves_no_row_because_it_is_not_news(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE COMMON CASE COSTS NOTHING AND SAYS NOTHING. A switch that worked is not a finding,
-    and a row for it would be one more thing every caller learns to skip."""
+    """THE COMMON CASE COSTS NOTHING AND SAYS NOTHING."""
     ses = _channel(monkeypatch, tmp_path)
     out = s.throttle(on=True)
     assert out["pending"] is True and out["tag"] == "MAME_MCP_THROTTLE#1", out
@@ -1189,18 +1076,14 @@ def test_a_throttle_that_landed_leaves_no_row_because_it_is_not_news(
 def test_status_lists_a_throttle_while_it_waits_and_drops_it_once_its_mark_is_logged(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """WAITING AND LANDED ARE BOTH VISIBLE, on one channel. The list is always there, so an
-    empty one says somebody looked; a switch waiting is a row in it, and a switch that landed
-    is its row leaving. Without it the only way to learn either was a second channel: a Lua
-    read of `manager.machine.video.throttled` and the mark in the emulator's log."""
+    """WAITING AND LANDED ARE BOTH VISIBLE, on one channel."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     first = s.status()
     assert "throttles_pending" not in first, first
     s.throttle(on=True)
     assert s.status().get("throttles_pending", []) == [{"tag": "MAME_MCP_THROTTLE#1", "on": True}]
-    # THE MARK IS LOGGED WITH NO STOP SINCE: `status` reads what is already in the log rather
-    # than answering as of the last stop, which would call a landed switch still waiting.
+    # THE MARK IS LOGGED WITH NO STOP SINCE.
     with open(ses.scratch / "error.log", "a") as log:
         log.write("[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=101\n")
     out = s.status()
@@ -1211,10 +1094,7 @@ def test_status_lists_a_throttle_while_it_waits_and_drops_it_once_its_mark_is_lo
 def test_a_throttle_whose_mark_never_comes_is_reported_and_keeps_being_reported(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE DEFECT ITSELF. The console worked its way past the line and logged no mark, so the
-    switch was never applied. It LATCHES: the declaration it would otherwise hang from is
-    already answered, so a caller who does not happen to ask again would never hear of it,
-    and every measurement they take meanwhile is at the wrong speed."""
+    """THE DEFECT ITSELF."""
     ses = _channel(monkeypatch, tmp_path)
     s.throttle(on=True)
     ses.answers = {1: ses.sentinel(1), 2: b"7\n" + ses.sentinel(2)}   # no marks[1]: no mark
@@ -1232,10 +1112,7 @@ def test_a_throttle_whose_mark_never_comes_is_reported_and_keeps_being_reported(
 def test_a_throttle_still_in_the_pipe_is_pending_and_not_yet_a_finding(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE CONTROL, and without it the row would fire on every stopped throttle ever asked.
-    Until the console has worked past the line the `pending` the caller was given is TRUE: the
-    console may simply not have read the line. A row here would be a false alarm about a switch
-    that is about to land."""
+    """THE CONTROL, and without it the row would fire on every stopped throttle ever asked."""
     ses = _channel(monkeypatch, tmp_path)
     s.throttle(on=True)
     assert "throttles_not_applied" not in menvelope.session_block()
@@ -1243,8 +1120,7 @@ def test_a_throttle_still_in_the_pipe_is_pending_and_not_yet_a_finding(
     running.survey(ses, ses.scratch)  # type: ignore[arg-type]
     assert mstate.STATE.throttles_pending, "still waiting, and still honestly pending"
     assert "throttles_not_applied" not in menvelope.session_block()
-    # AND THE BOUNDARY ITSELF, which is where an off-by-one lives: the console answering the
-    # line BEFORE this one leaves it pending; answering THIS one is what makes the mark due.
+    # AND THE BOUNDARY ITSELF, which is where an off-by-one lives.
     mstate.STATE.lua_answered = mstate.STATE.throttles_pending[0]["seq"] - 1
     running.survey(ses, ses.scratch)  # type: ignore[arg-type]
     assert mstate.STATE.throttles_pending, "the call before it is not past it"
@@ -1256,11 +1132,8 @@ def test_a_throttle_still_in_the_pipe_is_pending_and_not_yet_a_finding(
 def test_an_older_pending_switch_is_not_answered_by_a_younger_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`MAME_MCP_THROTTLE#1` IS A SUBSTRING OF `MAME_MCP_THROTTLE#10`, and a caller who asks
-    for several switches while stopped reaches two digits without doing anything unusual. Read
-    with a bare substring test, switch #1 would be answered off switch #10's line, and it
-    fails in the worst direction available: #1's own line is missing precisely BECAUSE it
-    never ran, so a younger line that AGREES makes it vanish with no row at all."""
+    """`MAME_MCP_THROTTLE#1` IS A SUBSTRING OF `MAME_MCP_THROTTLE#10`, and a caller who asks for
+    several switches while stopped reaches two digits without doing anything unusual."""
     _channel(monkeypatch, tmp_path)
     mstate.STATE.throttles_pending = [{"tag": "MAME_MCP_THROTTLE#1", "on": True, "seq": 1},
                                       {"tag": "MAME_MCP_THROTTLE#10", "on": True, "seq": 10}]
@@ -1274,10 +1147,7 @@ def test_an_older_pending_switch_is_not_answered_by_a_younger_one(
 
 
 def test_a_wrappers_marks_close_the_digits_of_their_number(tmp_path: Path) -> None:
-    """THE SAME AXIS ON THE LUA WRAPPERS' SIDE. `input`, `record` and `throttle` read their
-    own marks back off `error.log`, and `#1` is a substring of `#10`: the digits have to be
-    closed where the lines are SELECTED, so no caller's safety rests on the suffix it happens
-    to filter with or on its mark being the newest in the window."""
+    """THE SAME AXIS ON THE LUA WRAPPERS' SIDE."""
     log = mfiles.log_path(tmp_path, "emulator")
     log.write_text("[luaengine] MAME_MCP_THROTTLE#10 throttled=true frame=50\n"
                    "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=51\n")
@@ -1291,8 +1161,7 @@ def test_the_row_stands_on_a_reply_from_a_tool_that_did_not_make_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """EVERY REPLY MEANS EVERY REPLY, including a refusal, which is the one a caller gets when
-    something is already wrong. A row visible only from the tool whose survey earned it would
-    be a row most callers never see."""
+    something is already wrong."""
     ses = _channel(monkeypatch, tmp_path)
     s.throttle(on=True)
     ses.answers = {1: ses.sentinel(1), 2: b"7\n" + ses.sentinel(2)}
@@ -1321,9 +1190,7 @@ def _closed_after_the_mark(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 def test_close_judges_a_throttle_whose_mark_disagrees_before_the_scratch_goes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE LAST REPLY JUDGES TOO. The mark lives in the scratch's error log, which `close`
-    deletes, so `close` judges every throttle still pending against it first and its reply
-    names one that did not land."""
+    """THE LAST REPLY JUDGES TOO."""
     out = _closed_after_the_mark(monkeypatch, tmp_path,
                                  "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=101")
     rows = out["session"].get("throttles_not_applied")
@@ -1334,8 +1201,7 @@ def test_close_judges_a_throttle_whose_mark_disagrees_before_the_scratch_goes(
 def test_close_judges_a_throttle_whose_line_only_its_own_drain_runs(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE ORDER IS THE CONTRACT: a line still in the pipe at `close` runs in its drain, so the
-    settlement comes after the drain, or it judges a log the mark has not reached yet."""
+    """THE ORDER IS THE CONTRACT"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     assert s.throttle(on=True)["pending"] is True
@@ -1359,9 +1225,8 @@ def test_close_says_nothing_of_a_throttle_that_landed(
 def test_a_machine_that_reports_the_opposite_switch_is_a_row_too(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE DISAGREEMENT THE RUNNING PATH REFUSES ON, reached by a caller who could not wait
-    for it. It cannot be a refusal here, because the call that finds it asked about something
-    else entirely; it is the same fact carried to the caller a different way."""
+    """THE DISAGREEMENT THE RUNNING PATH REFUSES ON, reached by a caller who could not wait for
+    it."""
     ses = _channel(monkeypatch, tmp_path)
     s.throttle(on=False)
     ses.marks[1] = ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=101"]
@@ -1383,9 +1248,8 @@ def test_the_error_paths_nobody_reaches_by_accident(
     ses.sluggish = 2                           # the console reads nothing for two frames
     out = s.record(frames=2)
     assert out["pending"] is True and out["summary"] == "record: " + summaries.PENDING_SCRIPT
-    # A record whose script answered and logged no mark at all, not even the `armed` line it
-    # writes as it is evaluated (the first line is read on the first frame, this one on the
-    # second): the log lost the marks, and "not begun" would be false.
+    # A record whose script answered and logged no mark at all, not even the `armed` line it writes
+    # as it is evaluated (the first line is read on the first frame, this one on the second).
     ses.answers[1] = ses.sentinel(1)
     ses.answers[2] = ses.sentinel(2)
     out = refused("not even the `armed` line", s.record(frames=2))
@@ -1428,8 +1292,7 @@ def test_the_error_paths_nobody_reaches_by_accident(
     monkeypatch.setattr(ses, "monitor", no_frame)
     assert s.state_write("save", name="noframe")["frame"] == {"available": False,
                                                      "why": mstate.FRAME_UNREAD_WHY}
-    # A CHANNEL that fails during the re-check is not a mismatch: it latches, as it would
-    # under any other tool, instead of reading as a refusal the next call could ignore.
+    # A CHANNEL that fails during the re-check is not a mismatch.
     monkeypatch.setattr(mstate.STATE, "reference", (rom, 0, 0))
 
     def silent(rom_: bytes, addr: int, n: int = 16, base: int = 0, *, thread: int) -> None:
@@ -1441,11 +1304,8 @@ def test_the_error_paths_nobody_reaches_by_accident(
     assert out["code"] == "session_broken" and getattr(ses, "broken", None), out
 
 
-# ----------------------------------------------------------- the waits the owner watches
-
 class _SlowExit:
-    """A process that leaves `after` seconds from now, whatever it is sent: what `close`
-    waits on, sliced so the line can be painted."""
+    """A process that leaves `after` seconds from now, whatever it is sent"""
 
     pid = 77
 
@@ -1469,8 +1329,8 @@ class _SlowExit:
 def test_close_reports_its_progress_while_mame_takes_its_time(
     monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """`close` blocking in `proc.wait(timeout)` and painting nothing makes a quit that takes
-    seconds look like a hung server. The control: a process already gone reports nothing."""
+    """`close` blocking in `proc.wait(timeout)` and painting nothing makes a quit that takes seconds
+    look like a hung server."""
 
     ticks: list[str] = []
     monkeypatch.setattr(mstate.STATE, "ses", None)
@@ -1522,9 +1382,7 @@ def test_start_reports_its_progress_while_the_gdbstub_is_slow(
 def test_start_and_close_carry_the_clients_context_to_their_waits(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Through the TOOLS, with a real context: the two waits the owner watches longest
-    reach `report_progress` from the worker thread the SDK runs them in. A `ctx` dropped
-    at either tool's signature would leave the two body tests above green."""
+    """Through the TOOLS, with a real context"""
     import time
 
     import anyio
@@ -1563,9 +1421,8 @@ def test_start_and_close_carry_the_clients_context_to_their_waits(
 def test_a_start_whose_stub_never_answers_carries_mames_own_last_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`start` kills the session and deletes the scratch when the gdbstub never listens, so
-    the refusal is the only place MAME's last lines survive: a plugin it could not find, a
-    fatal error. Without them a `session_broken` refusal gives no way to tell why."""
+    """`start` kills the session and deletes the scratch when the gdbstub never listens, so the
+    refusal is the only place MAME's last lines survive"""
     from test_server import _boot_args, _stub_boot, _StubProcess
 
     image = bytes(range(256)) * 64
@@ -1596,10 +1453,8 @@ def test_the_stdout_tail_of_a_session_with_no_scratch_is_empty() -> None:
 def test_a_line_the_run_did_not_evaluate_is_bought_with_one_step_and_the_frames_again(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """On m68k-dual five recordings in a row can all be exact on one run, and on another
-    the last two come back PENDING with the chunk still in the pipe after the whole run.
-    One step evaluates it on the way into the debugger; the frames are then bought again so
-    the notifier finishes, and the reply is the finished recording, not a pending note."""
+    """On m68k-dual five recordings in a row can all be exact on one run, and on another the last
+    two come back PENDING with the chunk still in the pipe after the whole run."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.sluggish = 40                      # the whole first run passes without a read
@@ -1630,11 +1485,8 @@ def test_the_double_answers_one_line_per_tick_like_the_console(
 def test_lua_steps_once_per_line_still_in_the_pipe_before_its_own(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `throttle` asked on a stopped machine leaves its line in the pipe, and the console
-    reads ONE line each time its hook runs: where nothing reads it first, `lua`'s single step
-    buys the THROTTLE's evaluation and its own answer never comes, seen as `wait_expired`
-    with the session altered. So `lua` counts the lines ahead of its own and steps once for
-    each."""
+    """A `throttle` asked on a stopped machine leaves its line in the pipe, and the console reads
+    ONE line each time its hook runs"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: ses.sentinel(1), 2: b"m68k-dual\n" + ses.sentinel(2)}
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"]}
@@ -1656,12 +1508,9 @@ def test_lua_steps_once_per_line_still_in_the_pipe_before_its_own(
 def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_step(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The console's reader is a THREAD (`plugins/console/init.lua`, `emu.thread`), and the
-    periodic hook, run once at a stop, returns without evaluating while that thread is still
-    taking the line. On m68k-dual a signature sent right after another expires with
-    the line in the pipe, and ONE more step lands its answer at once. So a step whose answer
-    does not come within the reader's window is followed by another, said in the reply, up
-    to a cap that keeps a reader that never hands the line over a refusal."""
+    """The console's reader is a THREAD (`plugins/console/init.lua`, `emu.thread`), and the periodic
+    hook, run once at a stop, returns without evaluating while that thread is still taking the
+    line."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     slept: list[float] = []
@@ -1672,12 +1521,9 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
     assert out["status"] == "ok" and out["output"] == "2140790385\n", out
     assert out["evaluated_by"] == "2 steps" and out.get("reader_steps", 0) == 1, out
     assert out["lines_ahead"] == 0 and ses.stepped == 2 and out["session"]["altered"] is False
-    # THE SETTLE: the first sleep of the call is the reader's settle, after the write and
-    # before the first step (the double's step count says the steps came after).
+    # THE SETTLE.
     assert slept and slept[0] == transport.READER_SETTLE_S, slept[:3]
-    # A reader that never hands the line over inside the bound: the steps are capped and
-    # the refusal counts them, so a stalled reader is not stepped through forever. The cap
-    # is set to one so the case does not race the bound on a loaded host.
+    # A reader that never hands the line over inside the bound.
     monkeypatch.setattr(transport, "READER_STEPS_MAX", 1)
     ses.reader_late = 20
     out = refused("reader", s.lua("print(1)", seconds=0.4, read_only=True))
@@ -1697,11 +1543,7 @@ def test_a_stop_the_reader_had_not_taken_the_line_for_is_followed_by_one_more_st
 def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """MAME's console thread is unsafe by its own admission (`luaengine.cpp`): on
-    m68k-dual the reader dies at start and the hook runs the PREVIOUS chunk again, its
-    sentinel printed twice, before a new reader took the line. A chunk that wrote has then
-    written twice, so every reply counts the deaths and names the chunks run again, and
-    a reply with nothing to say carries the zeros rather than nothing."""
+    """MAME's console thread is unsafe by its own admission (`luaengine.cpp`)"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     sig = b"%d\n"
@@ -1744,9 +1586,8 @@ def test_a_dead_reader_and_the_chunk_the_console_ran_again_are_said_in_the_reply
 def test_a_line_legitimately_ahead_is_not_a_rerun_and_a_rerun_after_it_is(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `throttle`'s line, read by the step the next call spends for it, prints its sentinel
-    once, for the first time, inside that call's window: not a rerun. The same sentinel
-    printed again later, after its answer was consumed, is one."""
+    """A `throttle`'s line, read by the step the next call spends for it, prints its sentinel once,
+    for the first time, inside that call's window"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: ses.sentinel(1), 2: b"m68k-dual\n" + ses.sentinel(2),
                    3: b"1\n" + ses.sentinel(3)}
@@ -1766,10 +1607,8 @@ def test_a_line_legitimately_ahead_is_not_a_rerun_and_a_rerun_after_it_is(
 def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """On m68k-dual the first line of a session is echoed, the reader dies with
-    "return value must be string", and no sentinel for it ever comes: the script is never
-    evaluated. Sending it again runs it once, which is what the caller asked for; twice is a
-    refusal that says the script never ran, not one that calls it pending."""
+    """On m68k-dual the first line of a session is echoed, the reader dies with "return value must
+    be string", and no sentinel for it ever comes"""
     ses = _channel(monkeypatch, tmp_path)
     sig = b"%d\n"
     ses.answers = {2: sig % 22 + ses.sentinel(2)}
@@ -1797,9 +1636,7 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
     ses.reader_eats = 1
     out = s.lua("print(9)", seconds=1.0)
     assert out["status"] == "ok" and out.get("resent", 0) == 1 and out["output"] == "9\n", out
-    # A wrapper's line eaten on its run is sent again and the run bought again: the
-    # resent chunk is the same text, so its marks carry the FIRST number (the tag is in
-    # the script) while the double keys them by the resent sentinel's number.
+    # A wrapper's line eaten on its run is sent again and the run bought again.
     ses.marks[10] = [m.replace("#3", "#9") for m in _marks_of("MAME_MCP_INPUT#3")]
     ses.answers[10] = ses.sentinel(10)
     ses.reader_eats = 1
@@ -1814,9 +1651,7 @@ def test_a_line_the_reader_died_holding_is_sent_again_once_and_the_reply_says_so
 def test_a_resend_the_bound_has_no_room_for_is_refused_not_taken(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """One bound for the whole call: the first run spent it, the reader then died holding the
-    line, and a second run would stretch the call past what was asked, so it is refused as
-    `wait_expired`, pending, instead of taken."""
+    """One bound for the whole call"""
     ses = _channel(monkeypatch, tmp_path)
     ses.reader_eats = 1
     real = advance.run_for
@@ -1841,9 +1676,8 @@ def test_a_resend_the_bound_has_no_room_for_is_refused_not_taken(
 def test_an_answer_the_step_brought_with_the_bound_spent_is_not_reported_as_missing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The run spent the whole bound, the step evaluated the line and its answer came in on
-    the last look, and the frames bought again have no room left. The refusal says the
-    script WAS evaluated and not pending, never that its answer is not in."""
+    """The run spent the whole bound, the step evaluated the line and its answer came in on the last
+    look, and the frames bought again have no room left."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.sluggish = 40                      # the whole first run passes without a read
@@ -1864,9 +1698,7 @@ def test_an_answer_the_step_brought_with_the_bound_spent_is_not_reported_as_miss
 
 
 class _DiesMidWait:
-    """MAME gone while a call waits for the console. `poll` answers None until the line has
-    been sent and its step spent, then the code the crash left, which is what separates a
-    process that DIED from a console that is merely slow."""
+    """MAME gone while a call waits for the console."""
 
     pid = 4243
 
@@ -1881,12 +1713,8 @@ class _DiesMidWait:
 def test_a_call_whose_emulator_died_while_it_waited_says_so_instead_of_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`wait_expired` says the line is still pending in the pipe, to be evaluated when the
-    console's hook next runs. About a process that is GONE that is not a bound expiring,
-    it is a sentence describing a machine that no longer exists, and the caller waits the
-    whole bound to be told to wait some more. MAME's own Lua thread crashes (`luaengine.cpp`,
-    `thread_context::start`, its own FIXME) and that is not ours to fix; describing a dead
-    process as a busy one is."""
+    """`wait_expired` says the line is still pending in the pipe, to be evaluated when the console's
+    hook next runs."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=1))
@@ -1896,8 +1724,7 @@ def test_a_call_whose_emulator_died_while_it_waited_says_so_instead_of_pending(
     assert "pending" not in out["message"], out
     assert "was stepped 1 time for it" in out["message"], out
     assert out["lines_ahead"] == 0 and out["call"] == "MAME_MCP_LUA_END#1", out
-    # THE CONTROL: a process that is still there over the same wait refuses as it always
-    # did, so the code above is the death speaking and not every expired bound.
+    # THE CONTROL.
     monkeypatch.setattr(mstate.STATE, "proc", _PipeProcess(ses.stdin, ses))
     out = refused("no sentinel for the line", s.lua("print(1)", seconds=0.3))
     assert out["code"] == "wait_expired", out
@@ -1906,24 +1733,10 @@ def test_a_call_whose_emulator_died_while_it_waited_says_so_instead_of_pending(
 def test_every_console_wait_says_the_emulator_died_rather_than_calling_it_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE SAME LIE, TOLD BY THREE LOOPS. Each bound here expires into words about a machine
-    that will execute again -- "still pending in the pipe", "the switch is still pending" --
-    and about a process that is GONE those describe a busy machine, so the caller sits out
-    the whole bound to be told to wait longer. `evaluate` has its own case; these are the two
-    that `input`, `record` and `throttle` reach.
-
-    THE SWALLOW IS THE POINT OF THE SECOND HALF. `_answer_or_none` exists to turn "no answer
-    yet" into None so its callers can run more frames, and it caught EVERY refusal, so a
-    liveness check inside `await_answer` was unreachable from `input` and `record`: the check
-    would have been there, the tests for it green at the unit, and the tool would still have
-    said pending. It now lets a broken session through and keeps swallowing the other.
-    """
+    """THE SAME LIE, TOLD BY THREE LOOPS."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
 
-    # THE CONTROL FIRST, and it is what keeps the assertions below about the death rather
-    # than about any refusal at all: a live emulator that simply has not answered yet still
-    # reaches the pending path, with the run's own words and no refusal.
     ses.answers = {}
     out = s.input(port=":P1", field="Coin 1", frames=4, seconds=1.0)
     assert out["status"] == "ok" and out.get("released") is not True, out
@@ -1936,8 +1749,6 @@ def test_every_console_wait_says_the_emulator_died_rather_than_calling_it_pendin
     assert out["code"] == "session_broken" and out["exit_code"] == -11, out
     assert "pending" not in out["message"], out
 
-    # `throttle` on a RUNNING machine waits for its own mark, and said the switch was still
-    # pending about an emulator that had gone.
     ses.running = True
     monkeypatch.setattr(ses, "poll_stop", lambda timeout=0.0: False)
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=0))
@@ -1949,11 +1760,7 @@ def test_every_console_wait_says_the_emulator_died_rather_than_calling_it_pendin
 def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE SECOND SHAPE OF A LOST LINE, through a real call: the console reports the line's
-    own top-level failure and carries on, which leaves no dead reader and no duplicate
-    sentinel behind. The line is resent and runs, so `thread_errors` and `console_reruns` are
-    both empty while `resent` and `session.console.lost` say 1, and the prose has to say the
-    same thing the counters do: a reply with a counter at 1 and no note is two answers."""
+    """THE SECOND SHAPE OF A LOST LINE, through a real call"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.console_refuses = 1
@@ -1964,22 +1771,15 @@ def test_a_line_the_console_refused_and_that_was_sent_again_is_named_in_the_note
     note = out.get("note", "")
     assert "never evaluated" in note and "sent again (1 time)" in note, out
     assert "died" not in note and "AGAIN" not in note, out
-    # THE CONTROL: the same call with nothing lost carries no note at all, so the note above
-    # is the loss speaking and not a sentence every reply carries.
+    # THE CONTROL.
     ses.answers[3] = b"8\n" + ses.sentinel(3)
     clean = s.lua("print(8)")
     assert clean.get("resent", 0) == 0 and "note" not in clean, clean
 
-# ------------------------------------------------------------------------------ drive
-
 def test_drive_marks_the_emulator_log_acts_verifies_and_looks_from_the_mark(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """LOOK, ACT, VERIFY for an arcade board: the emulator log (`error.log`,
-    what the driver and the scripts `logerror`) is marked BEFORE the act, the act runs as
-    `perform` runs it, the overall `expect` is read from that mark (once, when the act left
-    the machine stopped: a stopped machine logs nothing more), and the LOOK is what landed
-    since the mark, filtered and cut. A stale line before the mark is neither."""
+    """LOOK, ACT, VERIFY for an arcade board"""
     ses = _channel(monkeypatch, tmp_path)
     (ses.scratch / "error.log").write_text("[luaengine] MAME_MCP_INPUT#0 release frame=1 "
                                            "port_held=00000000\n")   # STALE, before the mark
@@ -2024,8 +1824,7 @@ def test_drive_reports_a_miss_a_failed_act_and_refuses_what_it_cannot_do(
     # A failed step ends the act before any verification, with the account and the look.
     out = s.drive(act=[{"op": "run_for", "frames": -1}], expect="x")
     assert out["status"] == "INVALID" and out["act"]["steps_completed"] == 0, out
-    # Refused before anything moves: an empty act, an unknown op, a bad pattern, seconds
-    # without expect, a bound out of range.
+    # Refused before anything moves.
     bad: dict[str, Any]
     moved = ses.commands.count("gvblank")
     for bad in ({"act": []}, {"act": [{"op": "no_such_op"}]},
@@ -2041,8 +1840,7 @@ def test_drive_reports_a_miss_a_failed_act_and_refuses_what_it_cannot_do(
 def test_lua_refuses_a_pipe_too_far_ahead_and_says_how_a_frame_drains_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Nine lines nobody answered would cost nine steps and a pc nine instructions on; a
-    frame reads them all, so the call refuses naming it, and sends nothing."""
+    """Nine lines nobody answered would cost nine steps and a pc nine instructions on"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "lua_seq", transport.PIPE_STEPS_MAX + 1)
     out = refused("ahead", s.lua("print(1)", seconds=0.2))
@@ -2053,9 +1851,8 @@ def test_lua_refuses_a_pipe_too_far_ahead_and_says_how_a_frame_drains_it(
 def test_a_script_printing_the_sentinels_text_cannot_poison_the_count_of_lines_ahead(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The raw `lua` prints what it likes, the sentinel's text included, and a number this
-    server never sent must not read as "everything is answered": the next call would then
-    buy no step. Only numbers up to what was sent count, and `ahead` is never negative."""
+    """The raw `lua` prints what it likes, the sentinel's text included, and a number this server
+    never sent must not read as "everything is answered" """
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = b"MAME_MCP_LUA_END#999\tfaked\n" + ses.sentinel(1)
     out = s.lua('print("MAME_MCP_LUA_END#999", "faked")')
@@ -2087,14 +1884,10 @@ def test_a_missing_stdout_log_is_a_pending_line_with_nothing_seen(
     assert out["code"] == "wait_expired" and out["seen_bytes"] == 0
 
 
-# ------------------------------------------------------ the wrappers and the pipe's floor
-
 def test_a_queued_wrapper_lets_the_reader_take_the_line_before_it_advances(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE WINDOW THAT KILLS THE READER, on a wrapper that runs frames rather than
-    steps: the machine is advanced no sooner than `READER_SETTLE_S` after the line reached the
-    pipe, because a frame run inside that window loses the reader like a step does."""
+    """THE WINDOW THAT KILLS THE READER, on a wrapper that runs frames rather than steps"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = _captured(3)
     ses.marks[1] = [m.replace("#3", "#1") for m in _marks_of("MAME_MCP_INPUT#3")]
@@ -2108,10 +1901,8 @@ def test_a_queued_wrapper_lets_the_reader_take_the_line_before_it_advances(
 
 
 def _settles(monkeypatch: pytest.MonkeyPatch, ses: _ChannelSession) -> list[tuple[float, int, int]]:
-    """Every sleep, with what the pipe held and how many steps the machine had taken when
-    it began: a settle is a sleep of `READER_SETTLE_S` that starts with the line already in
-    the pipe and the machine not yet moved for it. The settle is given a value no other wait
-    has (`POLL_S` shares its default), so a sleep of the wrong constant cannot pass for it."""
+    """Every sleep, with what the pipe held and how many steps the machine had taken when it
+    began"""
     monkeypatch.setattr(transport, "READER_SETTLE_S", 0.0137)
     slept: list[tuple[float, int, int]] = []
     monkeypatch.setattr(time, "sleep",
@@ -2122,8 +1913,8 @@ def _settles(monkeypatch: pytest.MonkeyPatch, ses: _ChannelSession) -> list[tupl
 def test_send_returns_only_after_the_reader_settle_that_follows_its_write(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The window that kills the reader is opened by the WRITE, so the function that writes
-    owns the wait: every caller inherits it, and none can forget it."""
+    """The window that kills the reader is opened by the WRITE, so the function that writes owns the
+    wait"""
     ses = _channel(monkeypatch, tmp_path)
     slept = _settles(monkeypatch, ses)
     line, _seq = transport.send("print(1)")
@@ -2133,8 +1924,7 @@ def test_send_returns_only_after_the_reader_settle_that_follows_its_write(
 def test_a_throttle_asked_while_stopped_settles_the_reader_after_its_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The stopped path returns `pending` at once, and the next call moves the machine: with
-    no settle between the two, that call's step lands inside the window this line opened."""
+    """The stopped path returns `pending` at once, and the next call moves the machine"""
     ses = _channel(monkeypatch, tmp_path)
     slept = _settles(monkeypatch, ses)
     out = s.throttle(on=False)
@@ -2145,8 +1935,7 @@ def test_a_throttle_asked_while_stopped_settles_the_reader_after_its_line(
 def test_a_lua_call_settles_the_reader_once_before_its_first_step(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """ONE OWNER: a caller that still waits on its own after `send` doubles the settle, and
-    a wait nobody owns is the one that goes missing on the next path added."""
+    """ONE OWNER"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = b"1\n" + ses.sentinel(1)
     slept = _settles(monkeypatch, ses)
@@ -2159,11 +1948,7 @@ def test_a_lua_call_settles_the_reader_once_before_its_first_step(
 def test_a_queued_wrapper_drains_the_pipe_first_and_says_how_deep_it_was(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `throttle` asked while stopped leaves its line in the pipe. `lua` counts those and
-    steps once for each before its own; the wrappers must too, or their FRAMES are spent
-    draining somebody else's line and the input loses its own release frame (on
-    v30: `released: false`, the field left held). And the reply carries `lines_ahead`,
-    so a caller sees the pipe filling before tripping over it."""
+    """A `throttle` asked while stopped leaves its line in the pipe."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: ses.sentinel(1), 2: _captured(3, as_seq=2)}
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"],
@@ -2183,9 +1968,7 @@ def test_a_queued_wrapper_drains_the_pipe_first_and_says_how_deep_it_was(
 def test_a_wrapper_whose_reader_died_before_the_echo_says_so_and_counts_nothing_lost(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE DEATH NOTHING COULD PIN ON THE LINE: no echo, so not `eaten`. The refusal says
-    the death and that the line has not run YET: it stays pending, and nothing is counted
-    lost that the log does not prove eaten."""
+    """THE DEATH NOTHING COULD PIN ON THE LINE"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.reader_dead = True
@@ -2204,9 +1987,7 @@ def test_a_pending_line_a_later_reader_dies_holding_is_counted_lost_and_costs_no
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """The line a death could not be pinned on stays ahead in the pipe until the log says
-    otherwise. The next wrapper's first drain step hands it to a reader that dies holding it:
-    counted lost once, and the drain stops there instead of stepping on for a line that will
-    never answer (`ahead + PIPE_STEPS_MAX` steps before)."""
+    otherwise."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.reader_dead = True
@@ -2227,9 +2008,8 @@ def test_a_pending_line_a_later_reader_dies_holding_is_counted_lost_and_costs_no
 def test_a_wrapper_line_the_step_after_its_run_hands_to_a_dying_reader_is_lost_not_pending(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The run evaluated nothing, and the one step after it gave the line to a reader that
-    died holding it: the log proves it eaten, so the refusal says NEVER evaluated and counts
-    it lost, rather than calling it pending and leaving it ahead for the next drain."""
+    """The run evaluated nothing, and the one step after it gave the line to a reader that died
+    holding it"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.sluggish = 1000
@@ -2242,8 +2022,7 @@ def test_a_wrapper_line_the_step_after_its_run_hands_to_a_dying_reader_is_lost_n
 def test_a_throttle_line_a_drain_step_hands_to_a_dying_reader_stops_the_drain(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Every line sent is settled against the log, not only a wrapper's: a `throttle` left in
-    the pipe and eaten by the drain's first step is lost, and the drain goes no further."""
+    """Every line sent is settled against the log, not only a wrapper's"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: _captured(3, as_seq=2)}
     ses.marks = {2: [m.replace("#3", "#2") for m in _marks_of("MAME_MCP_INPUT#3")]}
@@ -2272,8 +2051,8 @@ def test_a_wrapper_refusal_after_its_drain_still_says_the_steps(
 def test_settling_the_pending_lines_survives_a_loss_that_settles_another_on_the_way(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`record_lost` reads the log again, and a log that grew meanwhile settles the rest from
-    inside the first settlement: the outer pass must not find those gone from under it."""
+    """`record_lost` reads the log again, and a log that grew meanwhile settles the rest from inside
+    the first settlement"""
     ses = _channel(monkeypatch, tmp_path)
     lines = [transport.chunk_line("print(1)", n) for n in (1, 2)]
     with open(ses.scratch / "stdout.log", "ab") as fh:
@@ -2298,8 +2077,8 @@ def test_settling_the_pending_lines_survives_a_loss_that_settles_another_on_the_
 def test_a_wrapper_says_the_steps_its_drain_spent_on_a_line_ahead(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A `throttle` left in the pipe costs the next wrapper a step before its own line, and
-    the reply says so beside `lines_ahead`."""
+    """A `throttle` left in the pipe costs the next wrapper a step before its own line, and the
+    reply says so beside `lines_ahead`."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: ses.sentinel(1), 2: _captured(3, as_seq=2)}
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"],
@@ -2316,11 +2095,8 @@ def test_status_counts_the_lines_the_console_has_not_evaluated_and_close_drains_
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A backlog left in the pipe is what MAME's Lua GC tears down at `quit` (SIGSEGV in
-    `lua_engine::close`). So the count is READABLE before it bites, and `close`
-    drains what it can and says what it could not."""
+    `lua_engine::close`)."""
     ses = _channel(monkeypatch, tmp_path)
-    # `status` answers off the session and the process, not off the `alive` gate the other
-    # tests install, so both are wired here.
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"]}
     assert s.status()["console_pending"] == 0, "nothing sent, nothing pending"
@@ -2336,12 +2112,7 @@ def test_status_counts_the_lines_the_console_has_not_evaluated_and_close_drains_
 def test_a_stale_thread_error_from_an_earlier_call_is_not_this_calls_reader_dying(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE FALSE POSITIVE the death detector invites. `find_answer` hands back everything
-    since the session's console mark, and that mark only moves when an answer is CONSUMED,
-    so a `[LUA ERROR] in thread` the session already survived sits in the tail for ever. A
-    detector reading the whole tail would call every later slow call a dead reader and tell
-    the caller to throw a working session away. It looks only at what arrived after its own
-    line was sent."""
+    """THE FALSE POSITIVE the death detector invites."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     # A death this session already survived, left in the log before anything is sent.
@@ -2356,14 +2127,11 @@ def test_a_stale_thread_error_from_an_earlier_call_is_not_this_calls_reader_dyin
 def test_the_pending_reply_says_the_line_was_sent_twice_when_it_was(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A chunk sent again is a second write for a script that writes, which this channel
-    promises never to leave silent. The resend was counted and then dropped on the one path
-    that most needs it: the pending one."""
+    """A chunk sent again is a second write for a script that writes, which this channel promises
+    never to leave silent."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
-    # The first send is TAKEN by the reader and never run (its echo, then the thread's
-    # death); the resend is merely slow, because no answer is prepared for it, so the line
-    # sits at the head of the pipe exactly as one the machine has not ticked for.
+    # The first send is TAKEN by the reader and never run (its echo, then the thread's death).
     ses.reader_eats = 1
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["pending"] is True, out
@@ -2374,12 +2142,8 @@ def test_the_pending_reply_says_the_line_was_sent_twice_when_it_was(
 def test_close_does_not_step_a_running_machine_to_drain_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`throttle` is the one wrapper callable while the guest RUNS, and its own timeout
-    leaves the line queued with the machine still running. `close` works on a running
-    machine too, so the drain it now does would have stepped a machine that was mid-run:
-    every other stepper in this package is behind a stopped gate. A running machine reads
-    its own pipe frame by frame anyway, so there is nothing to buy: the count is reported
-    and no step is spent."""
+    """`throttle` is the one wrapper callable while the guest RUNS, and its own timeout leaves the
+    line queued with the machine still running."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     ses.marks = {1: ["[luaengine] MAME_MCP_THROTTLE#1 throttled=true frame=100"]}
@@ -2397,15 +2161,8 @@ def test_close_does_not_step_a_running_machine_to_drain_it(
 def test_a_lua_the_caller_declares_read_only_does_not_alter_but_says_whose_word_it_is(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The raw form marks the session ALTERED on every call, a read included, because a
-    Lua string can read a byte or rewrite RAM and the text does not say which. That is the
-    honest default and it stays the default; the cost is that one `print` stamps a session
-    that only ever read with "MODIFIED", and from then on the flag says nothing.
-
-    So `read_only=True` is the CALLER'S DECLARATION, and it is recorded AS a declaration. It
-    is not verified and it never could be, so it may not be silent: the session block counts
-    the claims and names them as the caller's word, and a session carrying one can never be
-    mistaken for one nothing was ever declared about."""
+    """The raw form marks the session ALTERED on every call, a read included, because a Lua string
+    can read a byte or rewrite RAM and the text does not say which."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: b"5\n" + ses.sentinel(1), 2: b"6\n" + ses.sentinel(2)}
     read = s.lua("print(5)", read_only=True)
@@ -2425,22 +2182,10 @@ def test_a_lua_the_caller_declares_read_only_does_not_alter_but_says_whose_word_
 def test_the_drive_summary_reads_the_field_the_reply_actually_carries(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE HALF OF A RENAME THAT GOES QUIET. `verify.verified` became `verify.checked`, and
-    a one-line summary the client PAINTS still reading the old key would `.get()` a key
-    nobody writes, get None, and announce "no expectation" for a drive that ran a check.
-
-    SAID PLAINLY: on THIS server that middle branch is currently unreachable, because a
-    check that ran and saw nothing returns INVALID and an INVALID summary is the refusal's.
-    The key is still corrected, because dead code that lies is what a later change makes
-    live. What is asserted here is the pair that IS reachable, so the branch is exercised in
-    both directions rather than asserted about a path this server cannot take today."""
+    """THE HALF OF A RENAME THAT GOES QUIET."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
-    # The guest's own line, written where the emulator writes it AND WHEN it would: `drive`
-    # marks the log, acts, then reads what landed SINCE the mark, so a line written before
-    # the call is behind the mark and invisible by construction. The act's own step writes
-    # it, which is what a real guest's act does.
-    # No `expect`, and no `seconds` either: bounding a wait that will not happen is refused.
+    # The guest's own line, written where the emulator writes it AND WHEN it would.
     none = s.drive(act=[{"op": "step", "count": 1}])
     assert none["verify"]["checked"] is False, none
     assert "no expectation" in none["summary"], none["summary"]
@@ -2462,10 +2207,7 @@ def test_the_drive_summary_reads_the_field_the_reply_actually_carries(
 def test_a_lua_refused_for_somebody_elses_backlog_is_not_counted_as_a_call(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A CALL THAT NEVER REACHED THE CONSOLE IS NOT A CALL. `lua` stamps the session before
-    it evaluates, and the pipe-depth refusal lived inside the evaluation: a call turned away
-    for a backlog somebody ELSE left had already been counted, so the very reply that said
-    INVALID also reported a write (or, with `read_only`, a claim) that never happened."""
+    """A CALL THAT NEVER REACHED THE CONSOLE IS NOT A CALL."""
     _channel(monkeypatch, tmp_path)
     for _ in range(transport.PIPE_STEPS_MAX + 1):          # a pipe nobody here filled
         transport.send("print(0)")
@@ -2480,9 +2222,7 @@ def test_a_batch_refuses_a_class_in_fmt_before_a_single_step_runs(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """`perform` promises the WHOLE list is judged before the first step runs, and the tool's
-    `@`-in-fmt refusal was not mirrored here: `vf.parse("ptr16@CODE")` succeeds, so the step
-    passed validation and failed only when it was dispatched, with the batch's earlier steps
-    already executed for real."""
+    `@`-in-fmt refusal was not mirrored here"""
     ses = _channel(monkeypatch, tmp_path)
     before = ses.stepped
     out = refused("does not take one", s.perform(steps=[
@@ -2492,21 +2232,11 @@ def test_a_batch_refuses_a_class_in_fmt_before_a_single_step_runs(
     assert ses.stepped == before, "an earlier step of the batch ran before the refusal"
 
 
-# --------------------------------------- what the console channel did to the WHOLE session
-#
-# THE PER-CALL FIELDS ARE GONE FROM THE NEXT ANSWER. `thread_errors` and `console_reruns`
-# describe the window around ONE line, so a caller reading the third reply after a reader died
-# has no way to know it happened, and `altered` alone cannot say that a chunk which wrote has
-# written twice. The session block carries the running total instead, on every reply, the same
-# argument `altered` itself rests on.
-
 
 def test_a_clean_session_reports_three_zeros_and_not_an_absent_object(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE CONTROL, and it is the one that makes the counts worth reading. An object that
-    appears only when something went wrong is one a caller never learns to look for, and its
-    absence is then indistinguishable from a caller who forgot to check."""
+    """THE CONTROL, and it is the one that makes the counts worth reading."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: b"7\n" + ses.sentinel(1)}
     out = s.lua("print(7)", seconds=1.0)
@@ -2518,9 +2248,7 @@ def test_a_clean_session_reports_three_zeros_and_not_an_absent_object(
 def test_a_reader_death_is_held_against_the_session_and_still_there_two_replies_later(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The line was taken and never evaluated, so the session carries BOTH: a reader death and
-    a lost line. The second reply is the point of the whole block -- it carries no per-call
-    field about the death, and the session count is the only thing that still says it."""
+    """The line was taken and never evaluated, so the session carries BOTH"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.reader_eats = 1
@@ -2537,7 +2265,7 @@ def test_a_chunk_the_console_ran_again_is_counted_for_the_session(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A RERUN IS THE ONE THAT MATTERS MOST and the one a single number could not tell from a
-    harmless restart: the chunk it ran again may have WRITTEN, and then it wrote twice."""
+    harmless restart"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {1: b"7\n" + ses.sentinel(1), 2: b"8\n" + ses.sentinel(2)}
     out = s.lua("print(7)", seconds=1.0)
@@ -2546,8 +2274,8 @@ def test_a_chunk_the_console_ran_again_is_counted_for_the_session(
     out = s.lua("print(8)", seconds=1.0)
     assert out["console_reruns"] == 1, out
     assert out["session"]["console"] == {"thread_errors": 1, "reruns": 1, "lost": 0}, out
-    # AND THE NEAR MISS, which is what stops the counter firing on anything that merely looks
-    # like one: a script that PRINTS a sentinel this server never sent is a script's own text.
+    # AND THE NEAR MISS, which is what stops the counter firing on anything that merely looks like
+    # one.
     ses.answers[3] = b"MAME_MCP_LUA_END#99\tfake\n" + ses.sentinel(3)
     out = s.lua('print("MAME_MCP_LUA_END#99\\tfake")', seconds=1.0)
     assert out["console_reruns"] == 0, out
@@ -2557,12 +2285,7 @@ def test_a_chunk_the_console_ran_again_is_counted_for_the_session(
 def test_a_refusal_does_not_contradict_its_own_session_block(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """ONE REPLY MAY NOT CARRY TWO ANSWERS TO ONE QUESTION. The `reader_died` refusal names
-    the deaths it saw in its own field, and the session block spells that word too, so the two
-    must agree in one reply: the refusal reads bytes it never consumes, and a count that
-    followed whichever path consumed them would let them differ. Counting by POSITION is
-    what makes the two agree, and a refusal is the reply where the counts matter most: it is
-    the one a caller gets when the channel is in trouble."""
+    """ONE REPLY MAY NOT CARRY TWO ANSWERS TO ONE QUESTION."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.reader_eats = 2
@@ -2575,10 +2298,8 @@ def test_a_refusal_does_not_contradict_its_own_session_block(
 def test_two_separate_incidents_add_up_rather_than_replacing_each_other(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """CUMULATIVE IS THE WHOLE CLAIM, and with only one incident ever exercised an accumulator
-    and an assignment produce the same number: every other case here would stay green with
-    `+=` written as `=`. Two deaths in two separate calls is the smallest arrangement that
-    can tell them apart."""
+    """CUMULATIVE IS THE WHOLE CLAIM, and with only one incident ever exercised an accumulator and
+    an assignment produce the same number"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.reader_eats = 1
@@ -2594,10 +2315,8 @@ def test_two_separate_incidents_add_up_rather_than_replacing_each_other(
 def test_a_second_look_at_one_window_does_not_count_its_deaths_twice(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A COUNT THAT DOUBLE-COUNTS IS WORSE THAN NO COUNT, because it reads as a channel in
-    worse trouble than it is. The console's mark moves past the bytes an answer consumed, so
-    the window is counted once however many times the poll loop looked at it: here the wait
-    spans several looks before the answer lands."""
+    """A COUNT THAT DOUBLE-COUNTS IS WORSE THAN NO COUNT, because it reads as a channel in worse
+    trouble than it is."""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers = {2: b"7\n" + ses.sentinel(2)}
     ses.reader_eats = 1
@@ -2608,23 +2327,16 @@ def test_a_second_look_at_one_window_does_not_count_its_deaths_twice(
     assert out["session"]["console"]["lost"] == 1, out
 
 
-# ---------------------------------------- the FIRST shape of a lost line, as seen on the board
-
 
 def test_a_reader_that_died_after_the_echo_is_a_line_that_was_never_evaluated() -> None:
-    """THE FIRST SHAPE: the console's reader dies holding the line, printing `[LUA ERROR] in
-    thread:`, and no sentinel for the call ever comes. Only one reader exists at a time, so a
-    death standing AFTER the echo is that reader's."""
+    """THE FIRST SHAPE"""
     line = transport.chunk_line('print("x")', 11)
     raw = (line + "\n").encode() + b"[LUA ERROR] in thread: return value must be string\n"
     assert transport.eaten(raw, line) is True
 
 
 def test_a_reader_death_that_precedes_the_echo_belongs_to_an_earlier_line() -> None:
-    """THE CONTROL, and it is the one that makes the shape above worth anything: the console's
-    tail holds everything the session has ever printed, so a death sitting BEFORE this line's
-    echo is somebody else's. Read without that ordering, this line would be resent on the
-    strength of a death it survived, which is a SECOND execution of a script that may write."""
+    """THE CONTROL, and it is the one that makes the shape above worth anything"""
     line = transport.chunk_line('print("x")', 11)
     stale = b"[LUA ERROR] in thread: an earlier line killed it\n" + (line + "\n").encode()
     assert transport.eaten(stale, line) is False
@@ -2632,38 +2344,18 @@ def test_a_reader_death_that_precedes_the_echo_belongs_to_an_earlier_line() -> N
     assert transport.eaten((line + "\n").encode() + stale[:47], line) is True
 
 
-# ------------------------------------- the SECOND shape of a lost line, as seen on the board
-#
-# A LINE CAN BE TAKEN AND NEVER ANSWERED IN TWO WAYS, and `install_lost` covers one
-# of them: the console's reader dies, printing `[LUA ERROR] in thread:`. On m68k-dual
-# (MAME 0.288), a line that raises at its TOP LEVEL does something else entirely -- the
-# console catches it, prints its own `error:` line, hands back the prompt and carries on
-# reading. The reader is alive; the line was taken, never evaluated, and no sentinel will
-# ever come.
-#
-# For the caller that is the SAME fact: the script did not run, and sending it again runs it
-# once. It is not the same fact to a detector that reads only deaths: it waits for
-# an answer that cannot arrive -- a tally left `installed: false, pending: true` for ever,
-# which is the state `install_lost` exists to replace.
-
 
 def test_a_console_that_reports_its_own_error_is_a_line_that_was_never_evaluated() -> None:
-    """THE SECOND SHAPE, in the console's own framing. `error:` then a TAB then `[string "`
-    is what MAME prints for a line that raised at its top level; matching on the bare word
-    would let a script that merely PRINTS "error:" be read as a line that never ran."""
+    """THE SECOND SHAPE, in the console's own framing."""
     line = transport.chunk_line('print("x")', 4)
-    # THE PROMPT IS PART OF THE DOUBLE because it is part of what the console emits: it prints
-    # its error and hands the prompt straight back, which is what says it is done with the
-    # line. A double that leaves it out is not the shape the real console produces.
+    # THE PROMPT IS PART OF THE DOUBLE because it is part of what the console emits.
     raw = ((line + "\n").encode()
            + b'error: \t[string "..."]:2: something raised at the top level\n' + PROMPT)
     assert transport.eaten(raw, line) is True
 
 
 def test_a_script_that_merely_prints_the_word_error_is_not_a_lost_line() -> None:
-    """THE CONTROL FOR THE CASE ABOVE, and it is the one that makes the match worth anything:
-    a resend runs the script a SECOND time, so a false positive here is a double write on a
-    line that answered perfectly well."""
+    """THE CONTROL FOR THE CASE ABOVE, and it is the one that makes the match worth anything"""
     line = transport.chunk_line('print("x")', 4)
     raw = ((line + "\n").encode()
            + b"error: the guest printed this itself\n"
@@ -2672,9 +2364,7 @@ def test_a_script_that_merely_prints_the_word_error_is_not_a_lost_line() -> None
 
 
 def test_the_console_error_has_to_follow_the_echo_and_not_precede_it() -> None:
-    """AN EARLIER LINE'S DEATH IS NOT THIS LINE'S. The console's tail holds everything the
-    session has ever printed, so a report that sits BEFORE this line's echo belongs to
-    somebody else's line and reading it here would resend a line that is merely slow."""
+    """AN EARLIER LINE'S DEATH IS NOT THIS LINE'S."""
     line = transport.chunk_line('print("x")', 4)
     raw = (b'error: \t[string "..."]:2: a previous line raised\n' + (line + "\n").encode())
     assert transport.eaten(raw, line) is False
@@ -2682,9 +2372,7 @@ def test_the_console_error_has_to_follow_the_echo_and_not_precede_it() -> None:
 
 def test_a_console_error_with_no_prompt_behind_it_is_a_script_that_hung_not_a_lost_line() -> None:
     """THE PROMPT IS WHAT SAYS THE CONSOLE FINISHED WITH THE LINE, and it is what separates the
-    console reporting a failure from a script that PRINTED that framing itself and then hung.
-    Without it the script would be resent, which is a SECOND execution of a script that is
-    still running -- the one harm a wrong verdict here can do."""
+    console reporting a failure from a script that PRINTED that framing itself and then hung."""
     line = transport.chunk_line('print("x")', 9)
     hung = (line + "\n").encode() + b'error: \t[string "y"]:1: the guest printed this\n'
     assert transport.eaten(hung, line) is False
@@ -2693,23 +2381,11 @@ def test_a_console_error_with_no_prompt_behind_it_is_a_script_that_hung_not_a_lo
     assert transport.eaten(finished, line) is True
 
 
-# ------------------------------------------------- and the axis every double above is blind to
-#
-# EVERY CASE ABOVE IS A DOUBLE OF ONE OR TWO LINES, and they cover the SHAPE axis well: each
-# failure shape, each control, each near miss. What none of them can hold is VOLUME. `eaten`
-# works by finding THIS line's echo in a buffer that holds the whole session and searching the
-# tail after it, so its correctness rests on there being a second candidate somewhere else to
-# get wrong -- another line's echo, another line's death -- and a two-line double has nowhere
-# to put one. A fake producer emitting one line where the real one emits kilobytes cannot fail
-# on volume.
-
 VOLUME = (FIXTURES / "console" / "session.volume.stdout").read_bytes()
 
 
 def _volume_line(seq: int) -> str:
-    """The line the server SENT for call `seq`, lifted out of the capture rather than authored:
-    the console echoes the line whole behind its prompt, so the bytes between that prompt and
-    the newline are exactly what `eaten` is asked about, byte for byte."""
+    """The line the server SENT for call `seq`, lifted out of the capture rather than authored"""
     m = re.search(re.escape(PROMPT) + rb'([^\n]*MAME_MCP_LUA_END#' + str(seq).encode()
                   + rb'"[^\n]*)\n', VOLUME)
     assert m, f"no echoed command line for call {seq} in the capture"
@@ -2717,10 +2393,7 @@ def _volume_line(seq: int) -> str:
 
 
 def test_passed_over_answers_no_for_every_captured_line_before_its_own_sentinel() -> None:
-    """THE LAG SHAPE ON REAL TRAFFIC. Cut the captured session just before a line's sentinel and
-    the console has echoed the line and not finished it: no prompt behind the echo yet, so the
-    line is waiting, never passed over. Cut that sentinel's line out instead and the next
-    reader's prompt stands behind the echo, which is exactly a line handed back unrun."""
+    """THE LAG SHAPE ON REAL TRAFFIC."""
     seqs = sorted({int(n) for n in re.findall(
         re.escape(PROMPT) + rb'[^\n]*MAME_MCP_LUA_END#(\d+)"[^\n]*\n', VOLUME)})
     judged = 0
@@ -2748,55 +2421,33 @@ def test_passed_over_takes_no_prompt_before_the_echo_and_no_error_framing_withou
 
 
 def test_eaten_holds_its_ordering_against_a_console_log_with_real_volume_in_it() -> None:
-    """THE VOLUME AXIS, against a captured session rather than an authored buffer.
-
-    The capture holds a session's worth of echoed command lines and exactly ONE reader death,
-    sitting among them rather than at either end, so this line's echo, another line's death
-    and this line's own answer are all present at different offsets -- the arrangement that
-    discriminates. What each figure actually is belongs in the capture's `PROVENANCE.txt`,
-    where it is a record of one run and nobody has to keep it true.
-
-    `eaten` is asked only after the caller has failed to find an answer, so a line that WAS
-    answered is not a question it is ever put; what is pinned here is its ordering rule, which
-    is the one that decides whether somebody's script is executed a second time.
-    """
+    """THE VOLUME AXIS, against a captured session rather than an authored buffer."""
     assert VOLUME.count(transport.THREAD_ERROR) == 1, "the capture's single death is what places it"
     death = VOLUME.find(transport.THREAD_ERROR)
-    # THE NUMBERING COMES OFF THE CAPTURE, never a literal range: a recapture that appended
-    # more calls would leave a hardcoded bound quietly examining the first few and calling
-    # that the volume axis, which is the one thing this case exists to hold.
-    # Off the ECHOES, not off every sentinel in the file: the boot harness's own call prints
-    # a sentinel the console never echoed, and it is not a line `eaten` can be asked about.
+    # THE NUMBERING COMES OFF THE CAPTURE, never a literal range.
     seqs = sorted({int(n) for n in re.findall(
         re.escape(PROMPT) + rb'[^\n]*MAME_MCP_LUA_END#(\d+)"[^\n]*\n', VOLUME)})
     before = [n for n in seqs if VOLUME.find(_volume_line(n).encode()) < death]
     after = [n for n in seqs if VOLUME.find(_volume_line(n).encode()) > death]
     assert len(before) >= 5 and len(after) >= 50, (len(before), len(after))
 
-    # (b) THIS LINE'S ECHO WITH A DEATH AFTER IT is a line the console took and never
-    # evaluated: the last call whose echo precedes the death.
+    # (b) THIS LINE'S ECHO WITH A DEATH AFTER IT is a line the console took and never evaluated.
     taken = _volume_line(before[-1])
     assert (taken + "\n").encode() in VOLUME
     assert transport.eaten(VOLUME, taken) is True
 
-    # (c) A DEATH SITTING BEFORE THIS LINE'S ECHO IS SOMEBODY ELSE'S, which is the claim
-    # `eaten`'s docstring makes and the one a small double cannot put to it: the first call
-    # whose echo follows the death.
+    # (c) A DEATH SITTING BEFORE THIS LINE'S ECHO IS SOMEBODY ELSE'S, which is the claim `eaten`'s
+    # docstring makes and the one a small double cannot put to it.
     survived = _volume_line(after[0])
     assert (survived + "\n").encode() in VOLUME
     assert transport.eaten(VOLUME, survived) is False
 
-    # (a) AND WITH SEVENTY CALLS IN BETWEEN it is still somebody else's: the death is not
-    # merely adjacent-and-before, it is buried far behind a wall of other traffic.
+    # (a) AND WITH SEVENTY CALLS IN BETWEEN it is still somebody else's.
     distant = _volume_line(after[-1])
     assert (distant + "\n").encode() in VOLUME
     assert transport.eaten(VOLUME, distant) is False
 
-    # WHAT THE CAPTURE ADDS OVER THE DOUBLES, stated exactly rather than assumed. The same
-    # question put to a hand-built two-line double answers the SAME, because the ordering
-    # rule alone settles it and the test above already holds that with two lines. So the
-    # ordering is not what the volume buys, and this case does not pretend otherwise: what
-    # it buys is the assertion below, which needs a session's worth of calls to make at all.
+    # WHAT THE CAPTURE ADDS OVER THE DOUBLES, stated exactly rather than assumed.
     two_line = b"[LUA ERROR] in thread: an earlier line killed it\n" + (survived + "\n").encode()
     assert transport.eaten(two_line, survived) == transport.eaten(VOLUME, survived)
 
@@ -2818,22 +2469,17 @@ def test_no_two_calls_of_a_session_share_a_line_so_the_echo_search_has_one_candi
     echoes = re.findall(re.escape(PROMPT) + rb'([^\n]*MAME_MCP_LUA_END#\d+"[^\n]*)\n', VOLUME)
     assert len(echoes) > 50, f"{len(echoes)} echoed lines is not a session's worth"
     assert len(set(echoes)) == len(echoes), "two calls sent the same bytes"
-    # AND THE SCRIPTS REPEAT, which is what makes the line above worth asserting rather than
-    # a property of a session that happened to send a different script every time: strip
-    # each line's call number and one and the same text comes back many times over.
+    # AND THE SCRIPTS REPEAT, which is what makes the line above worth asserting rather than a
+    # property of a session that happened to send a different script every time.
     bare = Counter(re.sub(rb"MAME_MCP_LUA_END#\d+", b"#", e) for e in echoes)
     assert max(bare.values()) >= 10, f"no script was sent twice: {bare.most_common(3)}"
 
 
 def test_the_volume_fixture_keeps_the_size_that_is_its_whole_point() -> None:
-    """THE SIZE IS PART OF THE CONTRACT, so it is asserted rather than assumed. A later tidy
-    that sliced this file down to a few lines would leave every case above still passing
-    while the axis they exist for had quietly gone; this is what goes RED instead."""
+    """THE SIZE IS PART OF THE CONTRACT, so it is asserted rather than assumed."""
     assert len(VOLUME) > 100_000, f"the capture is {len(VOLUME)} bytes: the volume is gone"
     assert VOLUME.count(PROMPT) > 50, "a session's worth of calls is what gives it volume"
 
-
-# ------------------------------------------------- the channel's decisions, held at their edges
 
 
 def _scratch_logging(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, raw: bytes) -> Path:
@@ -2847,10 +2493,7 @@ def _scratch_logging(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, raw: bytes
 def test_an_answer_is_cut_at_its_own_line_whatever_follows_it_in_the_same_look(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """One look can hold more than this call's answer (a frame evaluates several lines). The
-    mark stops right after this sentinel's line, so what follows is still there for whoever it
-    belongs to; the outcome is split at its FIRST tab, because an error's own words may carry
-    one; and bytes that are not UTF-8 are replaced rather than raised on."""
+    """One look can hold more than this call's answer (a frame evaluates several lines)."""
     line = transport.chunk_line("print(1)", 1)
     own = (line.encode() + b"\nout \xff put\nMAME_MCP_LUA_END#1\tfalse\tmcp:1: a\ttab \xfe\n")
     later = PROMPT + b"somebody else's line\nMAME_MCP_LUA_END#2\ttrue\tnil\n" + PROMPT
@@ -2871,9 +2514,7 @@ def test_an_answer_is_cut_at_its_own_line_whatever_follows_it_in_the_same_look(
 def test_a_rerun_is_counted_per_printing_and_a_number_never_sent_is_not_one(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A chunk not yet answered that prints twice in one window ran again ONCE; one already
-    answered ran again every time it prints; a number this server never sent is a script's
-    own text however often it prints, and it does not end the reading either."""
+    """A chunk not yet answered that prints twice in one window ran again ONCE"""
     blank_session(monkeypatch)
     monkeypatch.setattr(mstate.STATE, "lua_seq", 5)
     monkeypatch.setattr(mstate.STATE, "lua_answered", 2)
@@ -2888,8 +2529,7 @@ def test_a_rerun_is_counted_per_printing_and_a_number_never_sent_is_not_one(
 def test_the_deaths_are_counted_up_to_the_size_read_and_no_further(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The count is by POSITION: what lies past the size it took belongs to the next count. A
-    log that grew between the two reads would otherwise have that death counted twice."""
+    """The count is by POSITION"""
     death = transport.THREAD_ERROR + b" attempt to index a nil value\n"
     scratch = _scratch_logging(tmp_path, monkeypatch, death + death)
     monkeypatch.setattr(transport, "stdout_mark", lambda _scratch: len(death))
@@ -2901,8 +2541,8 @@ def test_the_deaths_are_counted_up_to_the_size_read_and_no_further(
 def test_a_resent_line_the_reader_is_late_for_is_stepped_for_like_any_other(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The reader's window restarts at the resend's own step, and every step spent for the
-    reader is counted: the reply's arithmetic is the machine's, one step per instruction."""
+    """The reader's window restarts at the resend's own step, and every step spent for the reader is
+    counted"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     ses.reader_eats = 1
@@ -2926,8 +2566,7 @@ def test_a_resent_line_the_reader_is_late_for_is_stepped_for_like_any_other(
 def test_a_refusal_counts_its_steps_and_names_where_the_machine_stood(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """What a refused evaluation cost is in the refusal, in the reply's own fields: the steps
-    spent for the reader ADD to the ones bought, and so does the one a resend took."""
+    """What a refused evaluation cost is in the refusal, in the reply's own fields"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     monkeypatch.setattr(transport, "READER_STEPS_MAX", 1)
@@ -2949,8 +2588,7 @@ def test_a_refusal_counts_its_steps_and_names_where_the_machine_stood(
 def test_a_wrapper_whose_line_died_twice_says_twice_and_counts_both_deaths(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The wrapper's own refusal, told apart from the one a reader that never took the line
-    earns: both say the script never ran, and only this one is about two taken lines."""
+    """The wrapper's own refusal, told apart from the one a reader that never took the line earns"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     ses.reader_eats = 2
@@ -2964,8 +2602,8 @@ def test_a_wrapper_whose_line_died_twice_says_twice_and_counts_both_deaths(
 def test_a_backlog_that_does_not_clear_is_stepped_a_bounded_number_of_times(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A wrapper steps the lines ahead off before it sends its own, and a line the console
-    never evaluates cannot make that a walk without end."""
+    """A wrapper steps the lines ahead off before it sends its own, and a line the console never
+    evaluates cannot make that a walk without end."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
     transport.send("print('never answered')")
@@ -2979,9 +2617,7 @@ def test_a_backlog_that_does_not_clear_is_stepped_a_bounded_number_of_times(
 def test_a_calls_own_chunk_run_again_is_left_in_the_log_for_the_next_call_to_name(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The answer ends at the FIRST sentinel of the call. A second printing of it, after a
-    reader death, is a rerun of a chunk by then answered: it stays past the mark, and the
-    next answer names it instead of it being read as part of this one."""
+    """The answer ends at the FIRST sentinel of the call."""
     line = transport.chunk_line("print(1)", 1)
     own = line.encode() + b"\n1\nMAME_MCP_LUA_END#1\ttrue\tnil\n"
     again = (transport.THREAD_ERROR
@@ -2997,8 +2633,6 @@ def test_a_calls_own_chunk_run_again_is_left_in_the_log_for_the_next_call_to_nam
     assert second.reruns == ["MAME_MCP_LUA_END#1"] and second.thread_errors == 1
 
 
-# ------------------------------------ the throttle's own words, and the edges of the pipe's depth
-
 
 def _running(monkeypatch: pytest.MonkeyPatch, ses: _ChannelSession) -> None:
     ses.running = True
@@ -3009,8 +2643,7 @@ def _running(monkeypatch: pytest.MonkeyPatch, ses: _ChannelSession) -> None:
 def test_the_throttle_script_that_reaches_the_pipe_carries_the_switch_that_was_asked(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, on: bool, word: str
 ) -> None:
-    """The reply says `on`; what moves the machine is the line in the pipe, so that line is
-    what is read here, for both switches."""
+    """The reply says `on`"""
     ses = _channel(monkeypatch, tmp_path)
     out = s.throttle(on=on)
     assert out["on"] is on and out["pending"] is True, out
@@ -3024,8 +2657,8 @@ def test_the_throttle_script_that_reaches_the_pipe_carries_the_switch_that_was_a
 def test_the_throttle_body_judges_its_own_bound_with_both_arguments(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The body is callable without the tool in front of it (`perform` reaches it), so the
-    bound is judged there too, and with the bound it was given rather than the default."""
+    """The body is callable without the tool in front of it (`perform` reaches it), so the bound is
+    judged there too, and with the bound it was given rather than the default."""
     ses = _channel(monkeypatch, tmp_path)
     seen: list[tuple[Any, ...]] = []
     check = lua.check_throttle
@@ -3090,8 +2723,7 @@ def test_a_throttle_wait_reports_its_progress_to_the_client(
 def test_the_pipe_is_refused_one_line_past_the_steps_a_call_spends_and_not_at_them(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Exactly `PIPE_STEPS_MAX` lines ahead is a depth the call steps off; one more is the
-    refusal, which carries the depth as a field and in its words."""
+    """Exactly `PIPE_STEPS_MAX` lines ahead is a depth the call steps off"""
     blank_session(monkeypatch)
     monkeypatch.setattr(mstate.STATE, "lua_seq", transport.PIPE_STEPS_MAX)
     assert transport.refuse_if_too_deep(tmp_path) == transport.PIPE_STEPS_MAX
@@ -3103,12 +2735,9 @@ def test_the_pipe_is_refused_one_line_past_the_steps_a_call_spends_and_not_at_th
     assert str(e).startswith(f"{transport.PIPE_STEPS_MAX + 1} lines are still ahead"), str(e)
 
 
-# ------------------------------------------------------- the drain `close` spends before `quit`
-
 
 class _Stepper:
-    """A stopped session that counts its steps and refuses a walk without end: the cap is the
-    test's own, far past any count the drain may legitimately reach."""
+    """A stopped session that counts its steps and refuses a walk without end"""
 
     running = False
     WALK_MAX = 80
@@ -3178,8 +2807,7 @@ def test_a_drain_whose_step_the_stub_refuses_stops_there_and_still_answers(
 def test_the_drain_close_asks_for_is_bounded_by_the_clock_it_was_written_with(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`close` passes no bound, so the default IS the bound of every real drain; and a clock
-    that has run out ends the walk with budget to spare."""
+    """`close` passes no bound, so the default IS the bound of every real drain"""
     scratch = _backlog(monkeypatch, tmp_path, 1)
     bounds: list[float] = []
 
@@ -3196,8 +2824,6 @@ def test_the_drain_close_asks_for_is_bounded_by_the_clock_it_was_written_with(
     assert transport.drain(ses, scratch) == (1, 0)  # type: ignore[arg-type]
     assert bounds == [2.0] and ses.stepped == 0
 
-
-# ------------------------------------------------ what a refusal of the channel carries with it
 
 
 def test_a_wrappers_rerun_refusal_carries_its_marks_its_fields_and_what_was_resent(
@@ -3242,8 +2868,7 @@ def test_a_session_with_no_process_has_no_emulator_that_could_have_gone(
 def test_the_deaths_are_counted_from_where_the_last_count_stopped_to_the_size_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The read is of the bytes BETWEEN the two positions: with a count already behind it, a
-    read as long as the size itself would run into what the next count owns."""
+    """The read is of the bytes BETWEEN the two positions"""
     death = transport.THREAD_ERROR + b" attempt to index a nil value\n"
     scratch = _scratch_logging(tmp_path, monkeypatch, death * 3)
     monkeypatch.setattr(mstate.STATE, "console_counted", len(death))
@@ -3256,11 +2881,7 @@ def test_the_deaths_are_counted_from_where_the_last_count_stopped_to_the_size_re
 def test_a_wrappers_session_block_is_built_after_its_answer_was_read(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The run's reply was built inside `run_for`, BEFORE the wrapper read its answer; what
-    the answer showed (a reader death, the previous chunk run again) moved the session
-    counters after that block was taken, so the reply named the rerun in its own
-    `console_reruns` while its `session.console` still said zero. The block a wrapper
-    returns is the one built after everything the call read."""
+    """The run's reply was built inside `run_for`, BEFORE the wrapper read its answer"""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     ses.answers = {1: b"7\n" + ses.sentinel(1), 2: ses.sentinel(2)}
@@ -3296,8 +2917,7 @@ def test_the_pending_summary_never_says_no_frame_ran(tool: str, args: dict[str, 
 def test_a_record_refused_after_its_run_says_the_frames_it_advanced(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The AVI is checked after the whole run: a refusal there has moved the machine, and it
-    says from which frame to which, in the run refusals' own keys."""
+    """The AVI is checked after the whole run"""
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = ses.sentinel(1)
     ses.marks[1] = ["[luaengine] MAME_MCP_RECORD#1 armed frame=100 vblank=false",
@@ -3316,16 +2936,15 @@ def test_a_record_refused_after_its_run_says_the_frames_it_advanced(
     ("mcp:3: boom", "unexpected_answer"),
 ])
 def test_inputs_own_script_raising_is_coded_by_what_it_raised(error: str, code: str) -> None:
-    """The console prefixes the chunk's place (`mcp:N:`): the port and the field the script
-    refuses on its own are the caller's names resolving to nothing."""
+    """The console prefixes the chunk's place (`mcp:N:`)"""
     assert lua.input_refusal_code(error) == code
 
 
 def test_a_read_only_chunk_that_expires_says_it_altered_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """An expiry says the machine was stepped and that NOTHING was altered, and under which
-    sentinel the answer will land: a reader that read "is altered" beside `altered: false`."""
+    """An expiry says the machine was stepped and that NOTHING was altered, and under which sentinel
+    the answer will land"""
     _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     out = refused("alters nothing", s.lua("print(1)", seconds=0.2, read_only=True))

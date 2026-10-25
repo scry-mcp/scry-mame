@@ -1,10 +1,4 @@
-"""The READ family: bytes, a disassembly, a search, the trail, the registers.
-
-Each answers from a STOPPED machine and reduces by MEANING before it crosses into the
-conversation: a read is capped at `READ_MAX` bytes (above it, `memdump` writes a file), a
-listing or a trail at `LOG_LIMIT_MAX` lines, and a console answer that is not the shape
-asked for is `verdict: INVALID`, never a zero or a trail of the wrong thing.
-"""
+"""The READ family: bytes, a disassembly, a search, the trail, the registers."""
 
 from __future__ import annotations
 
@@ -26,60 +20,39 @@ import mame_inputs as inputs
 import mame_state as st
 from mame_state import STATE
 
-# CEILINGS ON WHAT CROSSES INTO THE CONVERSATION, the readers' half. A `read_memory` answers
-# hex, two characters per byte, exactly as the stub sent it (it never compresses): a frame
-# of VRAM through it is over a hundred thousand characters in a reply somebody has
-# to scroll past. Above this many bytes the answer is `memdump`, which keeps the bytes in a file.
-# `find`, `history` and `log` cap how many LINES they hand back, so a chatty driver cannot
-# flood the reply. `debug`'s ceiling on TEXT sits with `debug`, in the server.
+# `read_memory` answers two hex characters per byte; above READ_MAX the answer is `memdump`,
+# which keeps the bytes in a file. `find`, `history` and `log` cap LINES so a chatty driver
+# cannot flood the reply.
 READ_MAX = 1024
 LOG_LIMIT_MAX = 400
-# THE WIDEST RANGE ONE CONSOLE `find` IS ASKED. Its answer is one `Found at` line per hit, so a
-# one-byte pattern over a window answers up to one line per byte, and an answer that long takes
-# MAME itself down (SIGSEGV, the stub gone) on a search the contract accepts. A window bounds
-# the worst answer well under the length that kills it, whatever `length` the caller asked for.
+# A one-byte pattern answers one `Found at` line per hit, and an answer long enough takes MAME
+# down (SIGSEGV); a window bounds it.
 FIND_WINDOW = 0x8000
-# A PATTERN'S BYTES ARE PARAMETERS of the console's `find`, one each after the address and the
-# length, and the console takes at most `MAX_COMMAND_PARAMS` (src/emu/debug/debugcon.h): past
-# it the command is refused whole.
+# Each pattern byte is a console parameter of `find`; past `MAX_COMMAND_PARAMS`
+# (src/emu/debug/debugcon.h) the command is refused whole.
 CONSOLE_PARAMS_MAX = 128
 FIND_BYTES_MAX = CONSOLE_PARAMS_MAX - 2
 
-# ONE SPELLING, THREE MECHANICS, AND THAT IS NOT AN OVERSIGHT. Every bounded list here says
-# `truncated`, a boolean, because one word has to mean one shape. WHICH END each cuts from is a
-# different question and the three answers differ on purpose: `find` keeps the LAST hits,
-# because a search over a range is read from the end; `symbols_find` and `machine_map` keep the
-# FIRST rows, because a prefix match and an inventory are read from the top. A helper taking a
-# flag to say which end to cut from is two functions badly packed into one, and it would save
-# two lines. So the mechanics stay three and the name stays one.
+# `truncated` names every bounded list; the end cut differs on purpose: `find` keeps the LAST
+# hits (a range is read from the end), `symbols_find` and `machine_map` the FIRST rows.
 
 
-# The two shapes the console's `find` was captured answering: one line per hit, or one word.
 _FOUND_AT = re.compile(r"^Found at ([0-9A-Fa-f]+)\s*$", re.M)
 _NOT_FOUND = re.compile(r"^\s*Not found\s*$")
 
 
-# What one line of the console's `history` looks like: an address, a colon, the instruction.
 _HISTORY_LINE = re.compile(r"^[0-9A-Fa-f]+: ")
 
-# A DIRECT memory operand as MAME's x86-family disassembler prints one: hex digits and an
-# `h` inside brackets with nothing else (`word ptr [0C014h]`, captured on a V30 board). A
-# register-relative form (`ds1:[bw-31BBh]`, `[ix]`) has more inside the brackets and is
-# not matched: its address is the register's business at run time, not the map's.
+# A DIRECT memory operand (`word ptr [0C014h]`); a register-relative form is the register's
+# business at run time, not the map's.
 _DIRECT_OPERAND = re.compile(r"\[([0-9A-Fa-f]+)h\]")
 
 
 def print_values(ses: gs.Session, names: list[str]) -> list[int]:
-    """Several debugger expressions evaluated in ONE console round trip: `print a,b,c` answers
-    the values space-separated, in order, as hex (read in the debugger's own source). One
-    call whatever the count is what lets a stop survey carry every declared expression
-    beside the frame at no extra cost.
+    """Several debugger expressions in ONE console round trip (`print a,b,c`), values as hex.
 
-    Anything that is not exactly one number per expression is a `SessionError`, like
-    `current_pc` does for `curpc`: a stop packet or an error line arriving here must take the
-    caller down its refusal path, never out of the tool as a bare `ValueError` with the
-    machine left running. The console REFUSING an expression is its own type,
-    `ExpressionRefused`: an answer about this machine, so the channel kept its place.
+    Anything but one number per expression is a `SessionError`, so the caller takes its refusal
+    path with the machine left stopped; a refused expression is `ExpressionRefused`.
     """
     command = "print " + ",".join(names)
     said = ses.monitor(command)
@@ -100,29 +73,23 @@ def print_values(ses: gs.Session, names: list[str]) -> list[int]:
         ) from exc
 
 
-# What a board with no frame counter is: the fact, and the reason `frame_symbol` carries in
-# place of a name, which adds what that changes for a run.
 FRAMELESS_WHY = ("this machine has no screen device (a vector display, for one), so MAME's "
                  "debugger defines no `frame` and no vblank stop")
-# The way round it for a run, when the tool runs by time too.
 BY_TIME = "`{tool}(milliseconds=)` works"
 FRAMELESS_NOTE = f"{FRAMELESS_WHY}: `run_for(frames=)` is refused, {BY_TIME.format(tool='run_for')}"
 
 
 def frame_symbol() -> str | None:
-    """The console's name for the frame counter on THIS machine, as `start` asked it
-    (`probe_frame_symbol`); None on a board with no screen device, which has none."""
+    """The console's name for the frame counter, None on a board with no screen device."""
     return STATE.frame_symbol
 
 
 def probe_frame_symbol(ses: gs.Session) -> str | None:
-    """Which name the frame counter answers to, asked of the console before anything surveys
-    a frame. MAME registers `frame` only on a board with exactly one screen device, `frame0`,
-    `frame1`... on one with several, and nothing on one with none (src/emu/debug/debugcpu.cpp),
-    and the screens a start can list are no guide: a vector board lists its `vector` display
-    and still has no screen device. So the console is asked, `frame0` first. None when both
-    names are refused; an answer that is neither a number nor a refusal keeps `frame`, the
-    name an unasked board is read by."""
+    """Which name the frame counter answers to: `frame0` first, then `frame`; None if both refused.
+
+    MAME registers `frame` only with exactly one screen device (src/emu/debug/debugcpu.cpp), and
+    a vector board lists a display yet has none. An answer neither number nor refusal keeps
+    `frame`."""
     for symbol in ("frame0", "frame"):
         try:
             print_values(ses, [symbol])
@@ -139,14 +106,13 @@ def probe_frame_symbol(ses: gs.Session) -> str | None:
 
 
 def frame_fields() -> dict[str, Any]:
-    """What `start`, `status` and `machine_map` say of the counter: its name, or on a board
-    with none `unavailable` saying what that changes."""
+    """What `start`, `status` and `machine_map` say of the counter."""
     symbol = frame_symbol()
     return {"frame_symbol": symbol if symbol is not None else unavailable(FRAMELESS_NOTE)}
 
 
 def frame(ses: gs.Session) -> int:
-    """MAME's own frame counter, read through the console: the clock emulated time is proved by."""
+    """MAME's frame counter, read through the console."""
     return print_values(ses, [known_frame_symbol()])[0]
 
 
@@ -156,8 +122,7 @@ def frame_or_none(ses: gs.Session) -> int | None:
 
 
 def known_frame_symbol() -> str:
-    """The frame counter's name, for a read that needs one: a board with none refuses it
-    without a console round trip."""
+    """The frame counter's name; a board with none refuses without a console round trip."""
     symbol = frame_symbol()
     if symbol is None:
         raise gs.ExpressionRefused(f"a frame was asked for, and {FRAMELESS_WHY}")
@@ -165,8 +130,7 @@ def known_frame_symbol() -> str:
 
 
 def rest_reading(ses: gs.Session) -> int | float:
-    """What a proof of rest reads twice: the frame counter, or on a board with none the
-    emulated clock (the console's `time`), which a stopped machine holds still as well."""
+    """The frame counter, or on a board with none the emulated clock; both hold still stopped."""
     if frame_symbol() is not None:
         return frame(ses)
     seconds = ses.emulated_seconds()
@@ -177,14 +141,9 @@ def rest_reading(ses: gs.Session) -> int | float:
 
 
 def fmt_regs(ses: gs.Session, thread: int) -> dict[str, str]:
-    """Every register of `thread`'s cpu, printed at ITS OWN declared width. The one formatter
-    both readers use.
+    """Every register of `thread`'s cpu at its own declared width, rounded up to a whole hex digit.
 
-    Why the width is the cpu's and not a fixed eight digits is `Session.register_bits`'s to
-    say. Why there is ONE formatter is this one's: two of them disagreeing about a register's
-    width means one reply pads it and the next does not, and a reader comparing the two sees a
-    value change that never happened. A width that is not a multiple of four rounds UP to the
-    next whole hex digit, because a value cannot be shown in a fraction of one.
+    One formatter for both readers, so a width never pads in one reply and not the next.
     """
     bits = ses.layout(thread).register_bits
     return {n: judges.hex_at_width(v, bits.get(n, 32))
@@ -192,20 +151,17 @@ def fmt_regs(ses: gs.Session, thread: int) -> dict[str, str]:
 
 
 def check_registers(from_last_stop: bool = False, cpu: str = "", **_: Any) -> None:
-    """`registers`' machine-independent half: the last stop's registers are that stop's cpu's,
-    so naming another beside them asks for two things at once."""
+    """`registers`' machine-independent half."""
     if from_last_stop and inputs.cpu_given(cpu):
         raise st.Invalid("bad_argument", "`from_last_stop` hands back the last stop survey's "
                          "registers, which are that survey's cpu: `cpu` names a live read")
 
 
 def space_bound(addr: int, length: int, cpu: str | None) -> None:
-    """Refuse `length` (1 or more) bytes from `addr` when their last byte lies past the address
-    mask `start` read for `cpu`'s program space, the cpu the bytes are read or written on; with
-    no mask known the range is the console's. The one judge of the tools that name a range of a
-    program space by address (`read_memory`, `write`, `find`, `memdump`): past the mask no
-    address exists, and the stub answers the bytes at the space's start again, a plausible value
-    for a place that is not there."""
+    """Refuse `length` bytes from `addr` whose last byte lies past `cpu`'s program-space mask.
+
+    Past the mask the stub wraps to the space's start and answers a plausible value; with no mask
+    known the range is the console's."""
     mask = cpus.program_mask(cpu)
     last = addr + length - 1
     if mask is not None and last > mask:
@@ -216,7 +172,7 @@ def space_bound(addr: int, length: int, cpu: str | None) -> None:
 
 
 def check_read_memory(length: int = 16, ref: str = "", **_: Any) -> None:
-    """`read_memory`'s machine-independent half: the reply has a size and this is it."""
+    """`read_memory`'s machine-independent half."""
     inputs.check_ref(ref)
     inputs.count("length", length, READ_MAX,
                    ": for more bytes use `memdump`, which writes them to a file instead of into "
@@ -224,7 +180,6 @@ def check_read_memory(length: int = 16, ref: str = "", **_: Any) -> None:
 
 
 def read_memory(ses: gs.Session, ref: str, length: int, cpu: str = "") -> dict[str, Any]:
-    """The body of the `read_memory` tool."""
     check_read_memory(length, ref)
     on, thread = cpus.thread_for(ses, cpu)
     addr = STATE.resolve(ref, on)
@@ -236,12 +191,10 @@ def read_memory(ses: gs.Session, ref: str, length: int, cpu: str = "") -> dict[s
 
 def dasm_lines(ses: gs.Session, scratch: Path, addr: int, length: int,
                cpu: str | None = None, opcodes: bool = True) -> list[str]:
-    """MAME's own `dasm` listing of `length` bytes at `addr` of `cpu` (the visible one when
-    None), one line per decoded item, or a `SessionError` naming what the console said when no
-    listing came out. The one reader both `disassemble` and the stop reply use, so a stop shows
-    the same text the tool would. The `opcodes` flag is spelled out whenever a cpu follows it or
-    it is off, and left to `dasm`'s default of 1 otherwise (`dasm <file>,<addr>,<len>[,<opcodes>
-    [,<CPU>]]`, its `help`); without the bytes a line is `<addr>: <instruction>`."""
+    """MAME's `dasm` listing of `length` bytes at `addr`, one line per item.
+
+    A `SessionError` when no listing came out. `opcodes` is spelled out when a cpu follows it or
+    it is off, else left to `dasm`'s default of 1."""
     listing = scratch / ("dasm.txt" if opcodes else "dasm.bare.txt")
     listing.unlink(missing_ok=True)
     flag = "1" if opcodes else "0"
@@ -249,8 +202,7 @@ def dasm_lines(ses: gs.Session, scratch: Path, addr: int, length: int,
     said = ses.monitor(f"dasm {listing.name},{addr:#x},{length:#x}{named}").strip()
     if not listing.exists():
         raise gs.SessionError(f"the console's `dasm` wrote no file; it said {said!r}")
-    # Replacement on purpose, as the log reader's: a comment or a label the disassembler
-    # prints raw out of ROM must not turn the whole listing into an exception.
+    # Replacement on purpose: a raw ROM label must not turn the listing into an exception.
     text = listing.read_text(encoding="utf-8", errors="replace")
     lines = [line for line in text.splitlines() if line.strip()]
     if not lines:
@@ -265,9 +217,8 @@ def check_disassemble(length: int = 16, ref: str = "", **_: Any) -> None:
 
 def disassemble(ses: gs.Session, scratch: Path, ref: str, length: int,
                 cpu: str = "") -> dict[str, Any]:
-    """The body of the `disassemble` tool."""
     check_disassemble(length, ref)
-    on = cpus.chosen(ses, cpu)                  # the cpu whose program `dasm` decodes
+    on = cpus.chosen(ses, cpu)
     addr = STATE.resolve(ref, on)
     try:
         lines = dasm_lines(ses, scratch, addr, length, on if inputs.cpu_given(cpu) else None)
@@ -282,20 +233,16 @@ def disassemble(ses: gs.Session, scratch: Path, ref: str, length: int,
     return menvelope.envelope(reply)
 
 
-# ONE LEADING HEX ADDRESS AND ITS COLON: where a `dasm` line says which instruction it is.
 _LISTED_AT = re.compile(r"^([0-9A-Fa-f]+):")
 
 
 def flows(ses: gs.Session, scratch: Path, addr: int, length: int, on: str | None,
           lines: list[str]) -> dict[str, Any]:
-    """`flow` (one class per line of `lines`), `flow_source`, and a `note` when no line could
-    be classified, said once for the listing rather than on every line.
+    """`flow` per line, `flow_source`, and one `note` when no line could be classified.
 
-    THE MNEMONIC IS READ OFF A SECOND LISTING WITHOUT OPCODE BYTES. In the first, the bytes and
-    the instruction share one padded column and nothing marks where one ends: a 68000's `abcd`
-    is four hex digits exactly like an opcode word. A type with no table costs no second call.
-    The second listing NAMES `on` even when the first left the cpu to the console: the table is
-    `on`'s, so the words it classifies have to be `on`'s too, not whichever cpu is visible."""
+    The mnemonic is read off a second listing without opcode bytes: in the first, bytes and
+    instruction share one column (a 68000's `abcd` looks like an opcode word). That listing
+    names `on`, since the table is `on`'s."""
     kind = cpus.cpu_type(on)
     source = flow.source(kind)
     if kind is None or source is None:
@@ -322,20 +269,13 @@ def _unclassified(lines: list[str], note: str) -> dict[str, Any]:
 
 def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str, int],
                      classes: dict[str, str]) -> list[dict[str, Any]]:
-    """Every DIRECT memory operand in a listing, resolved under every class base: the
-    operand as printed, its offset, and per class the linear address `read_memory` and
-    `watch_add` take and the nearest symbol OF THAT CLASS at or below it, with the distance
-    (`symbol` unavailable when the class has none below it: a routine of another class would be
-    a plausible name for a datum).
+    """Every DIRECT memory operand, resolved under every class base.
 
-    A segmented board prints such an operand as the offset inside its class (the map's
-    `offset` column), which is NOT the runtime address: read or watched as printed, it names
-    the wrong byte and answers a plausible zero with no error. Which class an operand belongs to
-    is the instruction's segment register's business, so every class with a base is answered
-    and the caller picks; on a board with
-    one relocated class that is one answer. The table is sorted once per class and searched
-    by bisection: a listing of the full length against a table of thousands is the common
-    case, and a scan of the table per operand would pay it hundreds of times."""
+    Per class: the linear address `read_memory` and `watch_add` take, and the nearest symbol of
+    that class at or below it (a routine of another class would be a plausible name for a datum).
+    A segmented board prints the offset inside its class, not the runtime address, so read as
+    printed it names the wrong byte; the segment register picks the class, so every class with a
+    base is answered. Classes are bisected, not scanned."""
     by_class: dict[str, tuple[list[int], list[str]]] = {}
     for klass in bases:
         members = sorted((a, n) for n, a in symbols.items() if classes.get(n) == klass)
@@ -357,15 +297,10 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
 
 
 def hex_bytes(name: str, value: str, *, verb: str) -> bytes:
-    """The bytes a caller wrote as hex, or the refusal. THE ONLY HEX PARSER THIS SERVER HAS.
+    """The bytes a caller wrote as hex, or the refusal; the one hex parser of this server.
 
-    It is `bytes.fromhex`, which IGNORES ASCII WHITESPACE by documented design, so `de ad` is two
-    bytes: the standard library's answer, and a line pasted out of a dump is exactly what
-    somebody has in hand. One parser, so no two tools can disagree about what hex IS.
-
-    `verb` is the ONE thing the two callers differ on -- what the bytes were FOR -- so it is a
-    parameter rather than a second copy of the function.
-    """
+    `bytes.fromhex` ignores ASCII whitespace, so `de ad` is two bytes. `verb` is what the bytes
+    were for."""
     try:
         data = bytes.fromhex(value)
     except ValueError:
@@ -378,10 +313,9 @@ def hex_bytes(name: str, value: str, *, verb: str) -> bytes:
 
 def check_find(data_hex: str = "", ref: str = "", length: int = 0, symbol_class: str = "",
                **_: Any) -> bytes:
-    """`find`'s machine-independent half: the bytes, and which of the two ways of naming a range
-    was used. WHICH CLASS a `symbol_class` names is the machine's to answer -- the table's
-    `class_span` is built from the table that machine was started with -- so that stays in `find`
-    itself."""
+    """`find`'s machine-independent half: the bytes, and which way of naming a range was used.
+
+    Which class a `symbol_class` names is the machine's to answer, so that stays in `find`."""
     if inputs.given(ref):
         inputs.check_ref(ref)
     wanted = hex_bytes("data_hex", data_hex, verb="search for")
@@ -403,10 +337,8 @@ def check_find(data_hex: str = "", ref: str = "", length: int = 0, symbol_class:
     return wanted
 
 
-# WHAT A SYMBOL CLASS'S SPAN IS AND WHAT IT IS NOT, in ONE place. `find` searches a class
-# over it and `machine_map` reports it as the symbols' coverage of the machine: two tools
-# answering two different spans for one class is the disagreement this constant prevents, and
-# the caveat is the whole reason the span has to be said at all.
+# One span per class for `find` and `machine_map`, so the two cannot disagree; the note is why
+# the span must be said at all.
 CLASS_SPAN = {"source": "class symbols",
               "note": "the class's symbols' [min, max]: a match past the last symbol's own "
                       "start is not covered"}
@@ -414,19 +346,15 @@ CLASS_SPAN = {"source": "class symbols",
 
 def find(ses: gs.Session, data_hex: str, ref: str, length: int,
          symbol_class: str = "", cpu: str = "") -> dict[str, Any]:
-    """The body of the `find` tool."""
-    # THE PARSED BYTES, NOT THE TEXT AGAIN: the parser tolerates whitespace, so re-slicing the
-    # string two characters at a time would hand the console `0xde,0x a,0xd` for `de ad`. Parsing
-    # once and carrying the bytes is the only version of this that cannot disagree with itself.
+    # Parsed bytes, not the text: re-slicing `de ad` two characters at a time would hand the
+    # console `0xde,0x a,0xd`.
     wanted = check_find(data_hex, ref, length, symbol_class)
     named = inputs.cpu_given(cpu)
-    on = cpus.chosen(ses, cpu)                  # the cpu whose program the search walks
+    on = cpus.chosen(ses, cpu)
     class_of: str | None = None
     # THE SPAN EXAMINED RIDES ON THE REPLY, with where it came from. A class's span is its
-    # symbols' [min, max] and NOT the segment (a linker map carries no sizes), so zero hits
-    # over it mean "not among the class's symbols" and a caller reading `symbol_class` alone took
-    # it for "not in the segment" (on a V30 board the span ends at the last DATA
-    # symbol, well short of the segment's end). Saying the span is what makes a zero honest.
+    # The span rides on the reply: it is the symbols' [min, max], not the segment, so zero hits
+    # mean not among the class's symbols.
     span_reply: dict[str, Any]
     if symbol_class:
         spans = STATE.table(on).class_span
@@ -441,19 +369,15 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     else:
         addr = STATE.resolve(ref, on)
         span_reply = {"source": "ref+length"}
-    # a class's span as well as a `ref`+`length`, in `cpu`'s space, the visible one's by default
     space_bound(addr, length, on)
     items = ",".join(f"0x{b:02x}" for b in wanted)
     found: list[str] = []
-    # The windows tile the range, the last one short. A hit belongs to the window it STARTS in
-    # (the console's own rule), so a pattern running past a window's end is counted once.
+        # A hit belongs to the window it STARTS in (the console's rule).
     for start in range(addr, addr + length, FIND_WINDOW):
         width = min(FIND_WINDOW, addr + length - start)
         text = ses.monitor(f"find {start:#x}{f':{on}' if named else ''},{width:#x},{items}")
         window = _FOUND_AT.findall(text)
-        # EVERY LINE IS A HIT, or the answer is `Not found` alone: a hit beside a line of any
-        # other shape is a console that also said something else, and a count read off half
-        # of an answer is not one.
+        # Every line a hit, or `Not found` alone; half an answer is not a count.
         answered = [line for line in text.splitlines() if line.strip()]
         if not (_NOT_FOUND.match(text) if not window else len(window) == len(answered)):
             return menvelope.invalid("unexpected_answer",
@@ -473,8 +397,7 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     return menvelope.envelope(reply)
 
 
-# MAME'S OWN DEPTH, `device_debug::HISTORY_SIZE` (src/emu/debug/debugcpu.h): the console clamps
-# a longer request to it in silence, so a ceiling above it would promise a trail nobody keeps.
+# MAME's `device_debug::HISTORY_SIZE`; the console clamps a longer request in silence.
 HISTORY_MAX = 256
 
 
@@ -487,16 +410,14 @@ NO_DISASSEMBLER = "No disassembler available for device"
 
 
 def no_disassembler(ses: gs.Session, tag: str) -> str | None:
-    """The console's own sentence when `tag` has no disassembler, which neither its trail nor a
-    trace can be listed without; None when it has one. Asked through a one-line `history`."""
+    """The console's sentence when `tag` has no disassembler, else None (a one-line `history`)."""
     lines = [line for line in ses.monitor(f"history {tag},1").splitlines() if line.strip()]
     return lines[0] if len(lines) == 1 and lines[0].startswith(NO_DISASSEMBLER) else None
 
 
 def history(ses: gs.Session, limit: int, cpu: str = "") -> dict[str, Any]:
-    """The body of the `history` tool."""
     check_history(limit)
-    on = cpus.chosen(ses, cpu)                  # the cpu whose trail the console keeps
+    on = cpus.chosen(ses, cpu)
     text = ses.monitor(f"history {on if inputs.cpu_given(cpu) else ''},{limit:#x}")
     lines = [line for line in text.splitlines() if line.strip()]
     if len(lines) == 1 and lines[0].startswith(NO_DISASSEMBLER):
@@ -505,28 +426,17 @@ def history(ses: gs.Session, limit: int, cpu: str = "") -> dict[str, Any]:
         return menvelope.invalid("unexpected_answer",
                                  "the console answered something other than a trail: "
                                  f"{text.strip()!r}")
-    # WHAT CAME BACK IS THE LINES, and what was asked rides beside them: at the boot one
-    # instruction has retired, not the eight asked for. NONE is an answer too: MAME prints
-    # nothing for a cpu that has retired no instruction yet.
+    # Fewer lines than asked is an answer, and so is none (no instruction retired yet).
     note = ({} if lines else
             {"note": f"{on} has retired no instruction yet, so MAME keeps no trail for it"})
     return menvelope.envelope({"asked": limit, "lines": lines,
                                "cpu": or_unavailable(on, st.NO_CPU_READ_WHY), **note})
 
 
-# WHY, for the reader of this code (the client gets the docstring above the code):
-#
-# The names come from the target description the stub sends and are not a fixed list: one
-# cpu's names promised here would refuse every call on a board with another set. The m68k
-# aliases (`A6`, `A7`, `SR`, `USP` over `FP`, `SP`, `PS`) are accepted by name and not listed,
-# because the list is the description's own register file in register-number order and an alias
-# has no number of its own. Both halves of that have to be said, or the omission reads as a
-# discrepancy.
+# The names come from the stub's target description, not a fixed list. The m68k aliases (`A6`,
+# `A7`, `SR`, `USP`) are accepted but not listed, having no register number of their own.
 def registers(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of the `registers` tool. `register_bits` states each register's declared width in
-    bits, so a reader does not have to count a value's hex digits to know a V30's EAX is 16
-    bits wide. It rides on `registers` alone; a stop reply carries the values and the width
-    stays in their digits there."""
+    """`register_bits` gives each width; a stop reply leaves it in the digits."""
     on, thread = cpus.thread_for(ses, cpu)
     lay = cpus.described(ses, on, thread)
     return menvelope.envelope({"regs": fmt_regs(ses, thread),
@@ -535,17 +445,14 @@ def registers(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
 
 
 def registers_at_last_stop(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
-    """The body of `registers(from_last_stop=True)`: the registers AS THEY WERE at the last stop,
-    marked stale, which answers on a running machine because it reads nothing off it."""
+    """The registers as they were at the last stop, marked stale; answers on a running machine."""
     check_registers(from_last_stop=True, cpu=cpu)
-    # A DELIBERATE GUARD NO LIVE SESSION REACHES: `start` records its park as stop 1
-    # (`running.record_park`), so a session that answers holds one.
+    # Unreachable in a live session: `start` records its park as stop 1.
     if not STATE.last_stop:
         raise st.Invalid("no_stop", "no stop yet in this session, so there are no last-stop "
                                     "registers to hand back")
     stop = STATE.last_stop
-    # THE WIDTHS ARE THE STOP'S CPU'S, off its own thread's description, and there are none
-    # for registers the survey could not read.
+    # Widths are the stop's cpu's; none for registers the survey could not read.
     widths = ({} if "available" in stop["regs"]
               else dict(cpus.layout(ses, stop.get("cpu")).register_bits))
     return menvelope.envelope({"regs": dict(stop["regs"]),
@@ -559,9 +466,7 @@ SYMBOLS_LIMIT_MAX = 50
 
 def check_symbols_find(name: str = "", linear: str = "", limit: int = 10,
                        **_: Any) -> None:
-    """`symbols_find`'s machine-independent half. Its refusals are verdicts about the arguments
-    alone: which question was asked, how many answers were wanted, and a `linear` that is not
-    written as an address."""
+    """`symbols_find`'s machine-independent half."""
     if bool(name) == bool(linear):
         raise st.Invalid("bad_argument",
             "one question per call: `name` (a symbol to look up) or `linear` "
@@ -575,17 +480,14 @@ def check_symbols_find(name: str = "", linear: str = "", limit: int = 10,
 
 Placer = Callable[[int], tuple[int, str] | None]
 
-# One sorted copy per table, keyed by the cpu asked and checked by IDENTITY: tables are frozen
-# and `start` replaces them whole, so a table that is not the cached object is a new board.
+# One sorted copy per cpu, checked by identity: `start` replaces tables whole.
 _PLACERS: dict[str | None, tuple[gs.SymbolTable, Placer]] = {}
 
 
 def placer(cpu: str | None = None) -> Placer:
-    """`cpu`'s table as a function from an address to the symbol it is inside: the highest at
-    or below it, as (base, name), ties to the greatest name; None when the table is empty or
-    every symbol sits above it. The table is sorted once and each address bisected, because a
-    trace places every address it executed and a scan of the table per address is the cost
-    that would dominate the call."""
+    """`cpu`'s table as address -> (base, name) of the highest symbol at or below it.
+
+    Ties go to the greatest name. Sorted once and bisected: a trace places every address."""
     table = STATE.table(cpu)
     cached = _PLACERS.get(cpu)
     if cached is not None and cached[0] is table:
@@ -601,14 +503,12 @@ def placer(cpu: str | None = None) -> Placer:
 
 
 def nearest_symbol(addr: int, cpu: str | None = None) -> tuple[int, str] | None:
-    """The symbol `addr` is inside in `cpu`'s table (`placer`'s rule). The one routine that
-    places an address, so `symbols_find`, a tally's writer table and a trace cannot disagree."""
+    """The symbol `addr` is inside (`placer`'s rule); the one placer all tools share."""
     return placer(cpu)(addr)
 
 
 def symbol_label(addr: int, cpu: str | None = None) -> str | None:
-    """`addr` placed as a reply shows it, `NAME` or `NAME+0x12`, or None when no symbol sits at
-    or below it (`nearest_symbol`)."""
+    """`addr` as `NAME` or `NAME+0x12`, or None."""
     placed = nearest_symbol(addr, cpu)
     if placed is None:
         return None
@@ -617,10 +517,7 @@ def symbol_label(addr: int, cpu: str | None = None) -> str | None:
 
 
 def add_symbol(row: dict[str, Any], pc: int, cpu: str | None) -> dict[str, Any]:
-    """Append `symbol` LAST to `row`, IN PLACE, when `cpu`'s table places `pc` (`symbol_label`),
-    and return `row`, so a caller may use it as a statement or as an expression: every reply
-    that shows a writer's pc names it the same way, in the same place. `cpu` passes through
-    unchanged, since the table lookup already reads None and an unknown cpu its own way."""
+    """Set `symbol` LAST on `row` in place when the table places `pc`, and return `row`."""
     label = symbol_label(pc, cpu)
     if label is not None:
         row["symbol"] = label
@@ -630,12 +527,10 @@ def add_symbol(row: dict[str, Any], pc: int, cpu: str | None) -> dict[str, Any]:
 def symbols_find(name: str, linear: str, limit: int,
                  kind: Callable[[int], str] | None = None,
                  cpu: str | None = None) -> dict[str, Any]:
-    """The body of the `symbols_find` tool: a reader over `cpu`'s TABLE, the one `start` loaded
-    for it, which is why it takes no session; the server still asks for the machine first,
-    because the table is that session's and not the last one's, and names the cpu. `kind`
-    answers what an address IS to that cpu (`ram`, `rom`, `latch`), from the console, when the
-    caller has one to ask: None while the machine runs, and every symbol then reads `unknown`
-    with a note."""
+    """A reader over `cpu`'s table, so it takes no session.
+
+    `kind` says what an address is (`ram`, `rom`, `latch`); None while the machine runs, and
+    every symbol then reads `unknown` with a note."""
     def memory(addr: int) -> str:
         return "unknown" if kind is None else kind(addr)
     note = ({} if kind is not None else

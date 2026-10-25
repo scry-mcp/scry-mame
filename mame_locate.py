@@ -1,45 +1,37 @@
 """`gfx_locate`: a patch of the index screen searched in a block, under candidate layouts.
 
-WHY IT EXISTS. `gfx_view` shows bytes under a format somebody stated; nothing in it says the
-format is right. This is the known-answer case that does: if a layout decodes, somewhere in the
-block, a tile whose pixels are exactly the pens the screen holds, the format, the tile's place in
-the block and the palette bank are proved together, against the screen and not against what a
-driver believes. A decoder that has never matched the screen is an instrument nobody validated.
+WHY IT EXISTS. `gfx_view` shows bytes under a stated format; nothing says the format is right.
+If a layout decodes, somewhere in the block, a tile whose pixels are exactly the pens the screen
+holds, the format, the tile's place and the palette bank are proved together against the screen,
+not against what a driver believes.
 
 HOW A MATCH IS JUDGED. Every window of the layout's tile size inside the patch is tried against
 every tile of the range under the flips asked for. A pixel on screen is `bank + value`, the bank
-aligned to `2^planes` (`index & ~(2^planes - 1)`), and a match needs one bank for the window and
-every value equal: exact, or not a match. A window of one pen matches every blank tile and proves
-nothing, so it is skipped and counted, and so is a window whose pixels span two banks (it is not
-one tile's pens). The window is flipped, never the tile: every flip is its own inverse, so a tile
-flipped matches a window exactly when the window flipped matches the tile, and a window is
-flipped once where a tile would be flipped once per window.
+aligned to `2^planes`, and a match needs one bank for the window and every value equal. A window
+of one pen matches every blank tile and proves nothing; a window spanning two banks is not one
+tile's pens: both are skipped and counted. The window is flipped, never the tile: every flip is
+its own inverse, and a window is flipped once where a tile would be flipped once per window.
 
-TRANSPARENCY PROVES LESS. With `transparent`, tile pixels of that value are not compared (a sprite
-drawn over something else), and a match then needs two distinct values compared. On a real board
-it leaves several candidates where one sprite is drawn, so each match says how many pixels it
-`compared`, and a window more than one tile or flip matched is `ambiguous`. Nothing is ranked: a
-heuristic that looks like proof is worse than an honest list, and which candidate is right is a
-person's call, or another patch's.
+TRANSPARENCY PROVES LESS. With `transparent`, tile pixels of that value are not compared, and a
+match needs two distinct values compared. It leaves several candidates where one sprite is drawn,
+so each match says how many pixels it `compared`, and a window more than one tile or flip matched
+is `ambiguous`. Nothing is ranked: which candidate is right is a person's call, or another patch's.
 
-WHAT A MATCH PROVES OF THE LAYOUT. Each match carries its window's `shape`: its distinct rows,
-its distinct columns and the pixels of its rarest pen, by which, with the answer's other matches,
-`mame_draft` judges whether the match could have happened by chance.
+WHAT A MATCH PROVES OF THE LAYOUT. Each match carries its window's `shape` (distinct rows,
+distinct columns, pixels of its rarest pen), by which `mame_draft` judges chance.
 
-WHEN NO WINDOW IS ONE BANK'S. A board can draw a tile's ink and its paper from two banks (a 1-bit
-char's ink in one colour register, its paper in another), or draw one value in two pens (a colour
-attribute beside the pixel), and then no window is `bank + value`. So when the single-bank search
-matched nothing, a PEN MAP is tried: per window and tile, a table from each pen of the window to
-the value it stands for, which has to be a function (a pen standing for two values is no table)
-and read two values, a tile of one value proving nothing. With `transparent` the left-out pixels
-are free; a 1-bit tile then compares one value, which proves its shape only if the ink's pens are
-nowhere among the left-out pixels. A pen map proves the format and the tile, never a bank:
-its matches carry the table (`pen_map`) and no `base`.
+WHEN NO WINDOW IS ONE BANK'S. A board can draw a tile's ink and paper from two banks, or one
+value in two pens (a colour attribute beside the pixel). So when the single-bank search matched
+nothing, a PEN MAP is tried: per window and tile, a table from each pen of the window to the
+value it stands for, which has to be a function and read two values. With `transparent` the
+left-out pixels are free; a 1-bit tile then compares one value, which proves its shape only if
+the ink's pens are nowhere among the left-out pixels. A pen map proves the format and the tile,
+never a bank: its matches carry `pen_map` and no `base`.
 
 NO MATCH IS NOT A NEAR MATCH. When nothing matched, `nearest` names the candidate with the
-smallest share of disagreeing pixels found within a budget of comparisons (why a share and not
-a count: REFERENCE.md, `gfx_locate`), lists them, is called what it is, and says whether the
-budget let it look at every candidate (`complete`).
+smallest share of disagreeing pixels found within a budget of comparisons (why a share:
+REFERENCE.md, `gfx_locate`), and says whether the budget let it look at every candidate
+(`complete`).
 """
 
 from __future__ import annotations
@@ -77,8 +69,7 @@ FLIPS = ("none", "x", "y", "xy")
 
 
 def _shown(match: dict[str, Any]) -> dict[str, Any]:
-    """A match as the reply shows it: a `base` or a `byte` it has none of says why in its place,
-    while the row the evidence keeps stays as found."""
+    """A match as the reply shows it; the row the evidence keeps stays as found."""
     return {**match,
             "base": or_unavailable(match["base"], "matched through a pen map, which `pen_map` "
                                                      "carries instead of a palette bank"),
@@ -90,9 +81,8 @@ def check_gfx_locate(layouts: Any = None, patch: list[int] | None = None, tag: s
                      transparent: int | None = None, flips: list[str] | None = None,
                      seconds: float = mlua.EVAL_WAIT_S, cpu: str = "",
                      **_: Any) -> list[ml.Layout]:
-    """`gfx_locate`'s machine-independent half: the candidates whole, the patch, the source, the
-    tiles and the flips; handed back parsed, so the body does not parse them twice. A candidate
-    NAMED by the manifest is left out: the body resolves it past the gate (`candidates`)."""
+    """`gfx_locate`'s machine-independent checks; returns the parsed candidates. A candidate
+    NAMED by the manifest is left out: the body resolves it past the gate."""
     vocab.check_wait(seconds)
     if not isinstance(layouts, list) or not 1 <= len(layouts) <= LAYOUTS_MAX:
         raise st.Invalid("bad_argument", f"layouts is a list of 1..{LAYOUTS_MAX} candidate "
@@ -114,8 +104,8 @@ def check_gfx_locate(layouts: Any = None, patch: list[int] | None = None, tag: s
 
 
 def check_transparent(transparent: int | None, layouts: list[ml.Layout]) -> None:
-    """`transparent` is a pixel value every candidate can hold: a value none can take would
-    leave every pixel compared while the reply says transparency was used."""
+    """`transparent` must be a value every candidate can hold, or every pixel is compared
+    while the reply says transparency was used."""
     if transparent is None:
         return
     inputs.natural("transparent", transparent, " is a pixel value, an integer at or above zero")
@@ -128,9 +118,8 @@ def check_transparent(transparent: int | None, layouts: list[ml.Layout]) -> None
 
 
 def candidates(layouts: list[Any], resolve: bool) -> list[ml.Layout]:
-    """The candidates parsed and named (an unnamed one is `layout<its index>`), names unique; a
-    format NAMED by the manifest is resolved when `resolve`, else judged by its shape and left
-    out."""
+    """The candidates parsed and named (unnamed: `layout<index>`), names unique; a manifest-NAMED
+    format is resolved when `resolve`, else left out."""
     parsed = [manifest.layout_arg(raw, f"layouts[{i}]", resolve) for i, raw in enumerate(layouts)]
     named = [lay if lay.name else _named(lay, f"layout{i}")
              for i, lay in enumerate(parsed) if lay is not None]
@@ -149,9 +138,8 @@ def _named(lay: ml.Layout, name: str) -> ml.Layout:
 
 @dataclass
 class Budget:
-    """The pixel comparisons `nearest` may still spend, across every candidate layout, and
-    whether it ran out with a comparison left undone: what `complete` says, which the amount
-    left cannot (a budget spent to exactly zero on the last comparison looked at everything)."""
+    """The pixel comparisons `nearest` may still spend, and whether it ran out with one undone
+    (`cut`): a budget spent to exactly zero on the last comparison looked at everything."""
 
     left: int
     cut: bool = False
@@ -179,8 +167,7 @@ def gfx_locate(ses: gs.Session, scratch: Path, layouts: Any, patch: list[int], t
                ref: str, offset: int, first: int, count: int, transparent: int | None,
                flips: list[str] | None, cpu: str, seconds: float,
                progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `gfx_locate` tool: ONE evaluation captures the screen's pens and dumps the
-    block, so the patch and the bytes are of one instant."""
+    """The body of `gfx_locate`: ONE evaluation captures the pens and dumps the block."""
     cands = check_gfx_locate(layouts, patch, tag, ref, offset, first, count, transparent,
                              flips, seconds, cpu)
     if any(isinstance(raw, str) for raw in layouts):
@@ -247,7 +234,6 @@ def gfx_locate(ses: gs.Session, scratch: Path, layouts: Any, patch: list[int], t
                                    budget, MATCHES_MAX - len(matches), common, False)
         matches += found
         rows.append({**row, "tiles_available": avail})
-        # the share of the tile's pixels, cross-multiplied (the module's `nearest`)
         if near is not None and (best is None
                                  or near["disagree"] * best["of"] < best["disagree"] * near["of"]):
             best = near
@@ -285,17 +271,15 @@ def gfx_locate(ses: gs.Session, scratch: Path, layouts: Any, patch: list[int], t
                 "every window was of one pen or of two banks")
                 + ("; the pen map read none of them as a tile"
                    if pen_map is not None and pen_map["tried"] else ""))
-    # what `gfx_draft` derives a draft from: this answer whole, every match included
     fields["evidence"] = {"locate": evidence.record_locate(fields, matches)}
     return running.stop_reply(ses, scratch, f"gfx_locate: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
 
 def _work(wins: int, n: int, flips: int, pixels: int, transparent: bool) -> int:
-    """What one candidate costs, in pixel operations: every tile decoded, then, opaque, every
-    window's pixels gathered (its tiles are then found in a table, and a window x tile x flip
-    product bounds how many matches a block of repeated tiles can yield), or, transparent, every
-    window compared with every tile pixel by pixel under each flip."""
+    """One candidate's cost in pixel operations: opaque, tiles are found in a table (the window
+    x tile x flip product bounds the matches repeated tiles yield); transparent, every window is
+    compared with every tile under each flip."""
     decoded = n * pixels
     if transparent:
         return decoded + wins * flips * n * pixels
@@ -306,9 +290,8 @@ def _search(cap: screen.Capture, blk: gfx.Block, start: int, res: ml.Resolved, f
             n: int, patch: list[int], transparent: int | None, tried: tuple[str, ...],
             budget: Budget, room: int, common: dict[str, Any], by_pen_map: bool,
             ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any] | None]:
-    """One candidate over every window of the patch: its matches, at most `room` of them, its
-    row of counts, and (with no match and no transparency) its nearest non-match within the
-    budget; `by_pen_map`, through a pen map, every window of two pens or more tried."""
+    """One candidate over every window: at most `room` matches, its row of counts, and (no
+    match, no transparency) its nearest non-match; `by_pen_map` tries every window of two pens."""
     px, py, pw, ph = patch
     w, h = res.width, res.height
     mask = (1 << res.planes) - 1
@@ -388,9 +371,8 @@ def _by_pen_map(cap: screen.Capture, blk: gfx.Block, start: int,
                 transparent: int | None, tried: tuple[str, ...], rows: list[dict[str, Any]],
                 matches: list[dict[str, Any]], spend: int, common: dict[str, Any],
                 ) -> dict[str, Any]:
-    """The pen map's pass over every candidate, once the single-bank one matched nothing: its
-    matches join `matches`, each row says how many were its own. Not tried past the work bound,
-    which counts it beside the first pass (the module's paragraph)."""
+    """The pen map's pass once the single-bank one matched nothing; not tried past the work
+    bound, which counts it beside the first pass."""
     if spend > WORK_MAX:
         return {"tried": False, "why": f"with the pen map the call passes the {WORK_MAX} pixel "
                 "operations it spends: narrow `patch`, `first` and `count` to try it"}
@@ -404,8 +386,7 @@ def _by_pen_map(cap: screen.Capture, blk: gfx.Block, start: int,
 
 def _pen_map_match(values: list[int], pens: list[int], transparent: int | None,
                    planes: int) -> tuple[dict[int, int], int] | None:
-    """The table from each compared pen to the value it stands for, and the pixels compared,
-    when the window reads as the tile through one; None otherwise (the module's paragraph)."""
+    """The pen-to-value table and the pixels compared when the window reads as the tile."""
     table: dict[int, int] = {}
     left_out: set[int] = set()
     for v, p in zip(values, pens, strict=True):
@@ -424,8 +405,7 @@ def _pen_map_match(values: list[int], pens: list[int], transparent: int | None,
 
 
 def _shape(pens: list[int], w: int, h: int) -> list[int]:
-    """The window's distinct rows, its distinct columns and the pixels of its rarest pen: what
-    says whether the match could have happened by chance (the module's paragraph)."""
+    """The window's distinct rows, distinct columns and rarest pen's pixels."""
     return [len({tuple(pens[y * w:(y + 1) * w]) for y in range(h)}),
             len({tuple(pens[x::w]) for x in range(w)}),
             min(pens.count(p) for p in set(pens))]
@@ -433,8 +413,7 @@ def _shape(pens: list[int], w: int, h: int) -> list[int]:
 
 def _transparent_match(values: list[int], pens: list[int], mask: int,
                        transparent: int | None) -> tuple[int, int] | None:
-    """The bank and the pixels compared when every opaque pixel is `bank + value`, with two
-    distinct values among them; None otherwise."""
+    """The bank and pixels compared when every opaque pixel is `bank + value`, two values min."""
     bank: int | None = None
     seen: set[int] = set()
     for v, p in zip(values, pens, strict=True):
@@ -452,10 +431,8 @@ def _transparent_match(values: list[int], pens: list[int], mask: int,
 def _nearest(windows: list[Window], tile: Callable[[int], list[int]], first: int, n: int,
              w: int, h: int, mask: int, name: str, tried: tuple[str, ...],
              budget: Budget) -> dict[str, Any] | None:
-    """The candidate with the fewest disagreeing pixels, found within `budget` pixel
-    comparisons (spent across every candidate layout); each comparison stops once it is no
-    better than the best so far. A comparison is started only with budget left, and one that
-    could not be is what makes the search incomplete."""
+    """The candidate with the fewest disagreeing pixels within `budget`; a comparison starts
+    only with budget left, and one that could not is what makes the search incomplete."""
     best: tuple[int, Window, int, str, list[int]] | None = None
     for win in windows:
         for flip in tried:
@@ -482,7 +459,6 @@ def _near_reply(best: tuple[int, Window, int, str, list[int]] | None, w: int, h:
     if best is None:
         return None
     bad, win, t, flip, values = best
-    # Compared in the flipped window's frame; each disagreement is named where it sits on screen.
     at = _flipped(list(range(w * h)), w, h, flip)
     pixels = [[win.x + at[i] % w, win.y + at[i] // w, win.pens[at[i]], d]
               for i, (v, d) in enumerate(zip(values, tile(t), strict=True)) if v != d]

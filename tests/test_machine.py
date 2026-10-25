@@ -1,10 +1,4 @@
-"""The machine's inventory: the boot harness's dump, read back into the sections `machine_map`
-serves.
-
-The dump under `tests/fixtures/machine/` was CAPTURED from a real two-cpu board, never authored:
-a parser written against a shape somebody remembered is a parser that agrees with the memory
-and not with MAME.
-"""
+"""The machine inventory: the boot harness's dump read back into the `machine_map` sections."""
 
 from __future__ import annotations
 
@@ -27,27 +21,19 @@ from mame_state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "machine"
 M68K_DUAL = (FIXTURES / "m68k-dual.txt").read_text(encoding="utf-8")
-# THE SUB CPU'S PROGRAM SPACE as the capture carries it, and an AUTHORED variant of the capture
-# whose sub cpu reaches less, derived by replacement and said so: m68k-dual's two masks are equal,
-# so no case on the capture alone can tell one cpu's mask from the other's. The case using it
-# asserts the line was there to replace, so the variant cannot silently equal the capture.
+# The sub cpu's program space as captured, and an authored variant whose sub cpu reaches less:
+# m68k-dual's two masks are equal, so the capture alone cannot tell one cpu's mask from the other's.
 SUB_PROGRAM = "SPACE :subcpu program data_width=16 endianness=big entries=5 address_mask=ffffff\n"
 SUB_NARROWED = M68K_DUAL.replace(SUB_PROGRAM, SUB_PROGRAM.replace("=ffffff", "=3fff"))
 
 
 def test_the_captured_dump_of_a_two_cpu_board_reads_back_as_two_cpus() -> None:
-    """THE MULTI-CPU CASE, which is what the single-cpu reader elsewhere here would miss: both
-    68000s come back with distinct tags, each with the two spaces it exposes, and the entry
-    counts the gather declared are the entries the parse produced."""
+    """Both 68000s come back with distinct tags; declared entry counts equal parsed."""
     found = machine.parse(M68K_DUAL)
     assert [cpu["tag"] for cpu in found["cpus"]] == [":maincpu", ":subcpu"]
     assert all(cpu["name"] == "Motorola MC68000" for cpu in found["cpus"])
-    # THE TYPE IS MAME'S SHORTNAME, the word `disassemble` picks its flow table by: the
-    # full name is a label, and two models can share one.
     assert all(cpu["type"] == "m68000" for cpu in found["cpus"])
     assert all(cpu["spaces"] == ["cpu_space", "program"] for cpu in found["cpus"])
-    # THE DECLARED COUNT AND THE PARSED COUNT ARE HELD TOGETHER: a parse that dropped an entry
-    # would still answer a plausible map, and nothing else in the reply could tell.
     for space in found["spaces"]:
         entries = [e for e in found["address_map"]
                    if (e["cpu"], e["space"]) == (space["cpu"], space["space"])]
@@ -56,17 +42,14 @@ def test_the_captured_dump_of_a_two_cpu_board_reads_back_as_two_cpus() -> None:
 
 
 def test_the_capture_is_still_the_multi_cpu_case_it_was_taken_for() -> None:
-    """The case above proves a two-cpu reading only while the capture HAS two cpus with
-    distinct tags. Re-captured one day off a single-cpu board it would keep passing and stop
-    testing anything, so what the fixture is for is asserted here rather than assumed."""
+    """The two-cpu case holds only while the capture has two cpus with distinct tags."""
     cpus = machine.parse(M68K_DUAL)["cpus"]
     tags = [cpu["tag"] for cpu in cpus]
     assert len(cpus) > 1 and len(set(tags)) == len(tags), tags
 
 
 def test_an_entry_names_its_block_or_names_nothing_at_all() -> None:
-    """Decision: a field neither source backs is ABSENT. The dump spells an absent share or
-    region `-`, and that dash must never reach the reply as if it were a tag."""
+    """A field neither source backs is absent: the dump's `-` never reaches the reply as a tag."""
     found = machine.parse(M68K_DUAL)["address_map"]
     entries = {(e["cpu"], e["space"], e["index"]): e for e in found}
     rom = entries[(":maincpu", "program", 1)]
@@ -84,9 +67,6 @@ def test_an_entry_names_its_block_or_names_nothing_at_all() -> None:
 
 def test_the_blocks_and_the_screen_come_back_with_their_sizes() -> None:
     found = machine.parse(M68K_DUAL)
-    # EVERY FIELD OF EVERY ROW, not just the identifying one: each of these could be wired to
-    # a constant and the row would still look plausible. The whole dict is compared so a field
-    # added to the gather cannot arrive unwatched either.
     assert found["regions"] == [
         {"tag": ":gfx1", "size": 16777216, "bytewidth": 1, "endianness": "little"},
         {"tag": ":maincpu", "size": 1048576, "bytewidth": 2, "endianness": "big"},
@@ -103,8 +83,7 @@ def test_the_blocks_and_the_screen_come_back_with_their_sizes() -> None:
 
 
 def test_a_space_carries_the_width_and_the_byte_order_the_machine_declared() -> None:
-    """A cpu's bus width and byte order decide how every value under it is read, so a space
-    row that answered a plausible constant would mislead every reader of the map below it."""
+    """A space row carries the bus width and byte order the machine declared."""
     found = machine.parse(M68K_DUAL)
     assert found["spaces"] == [
         {"cpu": ":maincpu", "space": "cpu_space", "data_width_bits": 16, "endianness": "big",
@@ -120,8 +99,7 @@ def test_a_space_carries_the_width_and_the_byte_order_the_machine_declared() -> 
 
 def test_an_entry_names_its_share_and_its_region_by_the_full_tag_whatever_the_dump_spells(
 ) -> None:
-    """A bare share and a bare region, as a driver that names them relatively has the gather
-    write them, come out under the full tag the `regions` and `shares` tables carry."""
+    """A bare share and region come out under their full tags."""
     line = ("ENTRY :maincpu program 1 start=0 end=fff mirror=0 mask=0 share=videoram "
             "region=maincpu region_offset=16")
     entry = machine.parse(f"{machine.BEGIN}\nCPU :maincpu type=m6502 name=X spaces=program\n"
@@ -132,10 +110,7 @@ def test_an_entry_names_its_share_and_its_region_by_the_full_tag_whatever_the_du
 
 
 def test_a_mirror_a_mask_and_a_region_offset_are_carried_when_they_are_not_zero() -> None:
-    """The captured board has a mirror but no mask and no region offset, so those two branches
-    have nothing to be proved against in it. They are proved here against a dump in the
-    gather's OWN format, which is the one thing about this input that is not a capture: what it
-    asserts is the parser's reading of a shape MAME can emit, not a claim about this board."""
+    """Mirror, mask and region-offset, which the capture cannot prove, in the gather's format."""
     line = ("ENTRY :maincpu program 1 start=200000 end=20ffff mirror=10000 mask=ff00 "
             "share=- region=:gfx1 region_offset=524288")
     entry = machine.parse(f"{machine.BEGIN}\nCPU :maincpu type=m68000 name=X spaces=program\n"
@@ -150,17 +125,14 @@ def test_a_mirror_a_mask_and_a_region_offset_are_carried_when_they_are_not_zero(
 
 
 def test_a_cpu_with_no_address_space_lists_none_rather_than_an_empty_name() -> None:
-    """The gather writes `spaces=` with nothing after it for a device that executes and maps
-    no space; split as it stands, that empty text is ONE space named ``, a row a caller would
-    look up and never find. In the gather's own format, as the case above."""
+    """`spaces=` empty means no spaces, not one space named ``."""
     cpus = machine.parse(f"{machine.BEGIN}\nCPU :mcu type=m68000 name=X spaces=\n{machine.END}\n"
                          )["cpus"]
     assert cpus == [{"tag": ":mcu", "type": "m68000", "name": "X", "spaces": []}], cpus
 
 
 def test_why_a_listing_failed_keeps_the_complaints_and_the_last_line_once() -> None:
-    """What a failed `-listxml` said, reduced by MEANING: every line that complains, then the
-    last line whatever it says, once; an output of nothing but blanks comes back as it was."""
+    """A failed `-listxml` reduces by meaning: complaining lines, then the last line once."""
     why = machine._why_it_failed
     assert why("loading\nerror: no rom\n  \nmore\nthe end\n") == "error: no rom / the end"
     assert why("warning: a\nfatal: b\n") == "warning: a / fatal: b", "the last one is not twice"
@@ -169,9 +141,7 @@ def test_why_a_listing_failed_keeps_the_complaints_and_the_last_line_once() -> N
 
 
 def test_a_dump_that_was_cut_off_is_refused_rather_than_parsed() -> None:
-    """A truncated inventory is indistinguishable from a small machine, which is the shape that
-    reads as a verdict when it is a failure. Both ends are checked, so a producer that died
-    half way and one that never started are each refused in their own words."""
+    """A truncated inventory is refused at both ends, never read as a small machine."""
     with pytest.raises(LookupError, match="cut off"):
         machine.parse("\n".join(M68K_DUAL.splitlines()[:20]) + "\n")
     with pytest.raises(LookupError, match="does not open"):
@@ -186,18 +156,13 @@ def test_the_harness_saying_it_failed_is_read_as_a_failure_and_not_as_an_empty_m
 
 
 def test_a_line_the_gather_does_not_write_is_refused() -> None:
-    """The parse and the gather are one contract: a line neither recognises is a dump from
-    some other producer, and reading past it would drop data in silence."""
+    """A line neither the parse nor the gather recognises is refused, not read past."""
     with pytest.raises(LookupError, match="a line the gather does not write"):
         machine.parse(f"{machine.BEGIN}\nCPU :maincpu type=m68000 name=X spaces=program\nWHAT 1\n"
                       f"{machine.END}\n")
 
 
-# AUTHORED, not captured: a board whose mcu carries the entry MAME was seen to answer with a ""
-# region (pangofun's keyboard 8051, pmac6100's cudamcu: `share=- region= region_offset=0`) and
-# one with a "" share, which no board was seen to give and the same helper writes; beside it, a
-# cpu whose entries name a real region and a real share. Run through the gather by the host's
-# `lua`.
+# Authored: an mcu with a "" region (pangofun, pmac6100), one with a "" share, a cpu with real ones.
 EMPTY_TAGS_BOARD = """manager = {machine = {
   devices = {
     [":kbd:ms_naturl:ms_natrl_cpu"] = {
@@ -223,8 +188,7 @@ EMPTY_TAGS_BOARD = """manager = {machine = {
 
 def test_an_empty_region_or_share_is_absent_and_the_other_cpus_tags_are_kept(
         tmp_path: Path) -> None:
-    """An empty region or share is absent: `_ENTRY` needs a non-empty field, so a bare "" would
-    fail the parse and lose the whole inventory, each cpu's byte order included."""
+    """An empty region or share is absent, not a parse failure that loses the whole inventory."""
     dump = tmp_path / "machine.txt"
     run_host_lua(EMPTY_TAGS_BOARD + machine.harness(dump))
     parsed = machine.parse(dump.read_text(encoding="utf-8"))
@@ -238,35 +202,26 @@ def test_an_empty_region_or_share_is_absent_and_the_other_cpus_tags_are_kept(
 
 
 def test_no_executing_device_is_invalid_and_never_a_board_with_no_cpu() -> None:
-    """Every session here runs under `-debug`, so a machine with no device MAME gives a debug
-    is an instrument that examined nothing. It says so instead of answering an empty list."""
+    """A machine with no debug device is an instrument that examined nothing, and says so."""
     with pytest.raises(LookupError, match="recognised no cpu"):
         machine.parse(f"{machine.BEGIN}\nREGION :maincpu size=16 bytewidth=2 endianness=big\n"
                       f"{machine.END}\n")
 
 
 def test_the_cache_of_a_scratch_with_no_dump_is_empty_sections_and_a_note(tmp_path: Path) -> None:
-    """A gather that did not happen is not a reason to fail a start: every section the live
-    machine backs comes back present and empty, and the note says why, so a missing section is
-    never read as a machine that has none."""
+    """A failed gather never fails a start: empty sections and a note saying why."""
     cached = machine.cache(tmp_path, NO_XML)
     assert all(cached[name] == [] for name in machine.LIVE_SECTIONS)
     assert "wrote no inventory" in cached["note"]
     assert machine.BANKING_NOTE in cached["note"]
-    # EVERY SECTION SAYS WHAT BACKS IT, even when that source produced nothing this time: a
-    # section with no source line would leave a reader guessing which half was missing.
     assert cached["sources"] == {
         "cpus": ["live", "-listxml"], "screens": ["live", "-listxml"],
         "spaces": ["live"], "address_map": ["live"], "regions": ["live"], "shares": ["live"],
         "rom_files": ["-listxml"],
-        # THE SYMBOL CHANNEL IS NAMED WITH NO TABLE LOADED, which is this test's own point read
-        # once more: `sources` says where a section's rows WOULD come from, so it is a fact about
-        # the section and not about this run, and it is there before there is a single row.
+        # `sources` is a fact about the section, so it names the symbol channel with no table.
         "symbol_coverage": ["symbols"],
     }
-    # AND THE MAP REACHES BEYOND THE EMULATOR'S OWN SECTIONS. `SECTIONS` is the tuple of what
-    # the two emulator channels produce, and a `sources` map held to exactly that set is a map
-    # that cannot name a third channel at all, which is how one section came to have none.
+    # `SECTIONS` holds only the emulator channels; `sources` must reach past them.
     assert set(machine.SECTIONS) < set(cached["sources"])
 
 
@@ -287,8 +242,7 @@ def test_a_dump_that_cannot_be_parsed_leaves_the_sections_empty_and_says_why(
 
 
 def test_the_harness_text_carries_the_dump_path_and_its_own_sentinels(tmp_path: Path) -> None:
-    """The harness is composed into the ONE boot script, so its text is what proves the dump
-    path reached it: a path that did not substitute would write nowhere, in silence."""
+    """The dump path reaches the composed boot script; an unsubstituted path would write nowhere."""
     text = machine.harness(tmp_path / "machine.txt")
     assert str(tmp_path / "machine.txt") in text
     assert machine.BEGIN in text and machine.END in text and machine.FAILED in text
@@ -296,8 +250,7 @@ def test_the_harness_text_carries_the_dump_path_and_its_own_sentinels(tmp_path: 
     assert "pcall" in text, "the gather cannot be allowed to abort the rest of the boot script"
 
 
-# What `listxml` hands `cache` when the XML half could not be gathered: the shape, so a case
-# about the LIVE half is not quietly also a case about the other one.
+# What `listxml` hands `cache` when the XML half could not be gathered.
 NO_XML: tuple[dict[str, list[dict[str, object]]], str] = (
     {"cpus": [], "screens": [], "rom_files": []}, "")
 LISTXML_M68K_DUAL = (FIXTURES / "listxml-m68k-dual.xml").read_bytes()
@@ -305,7 +258,7 @@ LISTXML_V30 = (FIXTURES / "listxml-v30.xml").read_bytes()
 
 
 def test_listxml_gives_both_cpus_their_clocks_which_the_live_channel_has_not() -> None:
-    """The clock is the whole reason this source exists: the live channel answers nil for it."""
+    """The clock comes from `-listxml` only: the live channel answers nil for it."""
     found = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]
     assert [(c["tag"], c["name"], c["clock_hz"]) for c in found["cpus"]] == [
         (":maincpu", "Motorola MC68000", 16_000_000),
@@ -314,8 +267,7 @@ def test_listxml_gives_both_cpus_their_clocks_which_the_live_channel_has_not() -
 
 
 def test_a_single_cpu_board_reads_back_as_one_cpu_at_its_own_clock() -> None:
-    """The counter-case to the one above: a reading that hard-wired two cpus, or one clock,
-    is red here."""
+    """Counter-case: no hard-wired two cpus or one clock."""
     found = machine.parse_listxml(LISTXML_V30, "v30-board")[0]
     assert [(c["tag"], c["name"], c["clock_hz"]) for c in found["cpus"]] == [
         (":maincpu", "NEC V30", 8_000_000),
@@ -325,12 +277,9 @@ def test_a_single_cpu_board_reads_back_as_one_cpu_at_its_own_clock() -> None:
 
 
 def test_a_rom_nobody_has_dumped_carries_no_crc_and_no_sha1() -> None:
-    """A zero crc would be a fabrication about the one thing this section exists to carry."""
+    """A zero crc would fabricate the one thing this section carries."""
     roms = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]["rom_files"]
-    # `dump_status` (MAME's `status`) is on EVERY row, not only the bad ones: MAME's own DTD
-    # declares it with a default of `good`, and an XML parser fills a declared default in. So
-    # what says a ROM is undumped is the word, and what proves nothing was invented is the
-    # missing crc.
+    # `dump_status` is on every row (the DTD defaults it to `good`); the word marks an undumped ROM.
     dumped = [r for r in roms if r["dump_status"] == "good"]
     nodump = [r for r in roms if r["dump_status"] == "nodump"]
     assert nodump and dumped
@@ -339,9 +288,7 @@ def test_a_rom_nobody_has_dumped_carries_no_crc_and_no_sha1() -> None:
 
 
 def test_a_roms_size_and_its_offset_are_numbers() -> None:
-    """MAME's DTD calls both CDATA and settles neither, so this reads them off the data: under
-    the wrong reading the graphics ROMs overlap, and a region's size stops agreeing with what
-    the live channel measures for it."""
+    """The DTD leaves both CDATA; graphics ROMs would overlap under the wrong reading."""
     roms = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]["rom_files"]
     gfx = sorted((r for r in roms if r.get("region") == ":gfx1"), key=lambda r: r["offset"])
     assert len(gfx) > 2
@@ -354,8 +301,7 @@ def test_a_roms_size_and_its_offset_are_numbers() -> None:
 
 
 def test_a_tag_is_spelled_the_live_channels_way_by_both_sources() -> None:
-    """`-listxml` names a tag relative to the machine root and the live channel absolutely. Two
-    spellings of one device is two devices to a reader, and nothing would line up."""
+    """`-listxml` tags are relative and the live channel's absolute: one device, not two."""
     found = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")[0]
     assert all(c["tag"].startswith(":") for c in found["cpus"])
     assert all(s["tag"].startswith(":") for s in found["screens"])
@@ -365,9 +311,7 @@ def test_a_tag_is_spelled_the_live_channels_way_by_both_sources() -> None:
 
 
 def test_a_screen_that_is_mounted_turned_reports_the_rotation_it_was_given() -> None:
-    """Both captures are of horizontal cabinets, so `rotate="0"` is all they can prove. A
-    turned screen is the ordinary case this tool exists to describe, and the value must reach
-    the reply rather than being answered as zero whatever MAME said."""
+    """Both captures are horizontal; a turned screen's `rotate` must reach the reply."""
     turned = LISTXML_M68K_DUAL.replace(b'rotate="0"', b'rotate="270"', 1)
     assert turned != LISTXML_M68K_DUAL, "the substitution matched nothing, so nothing was tested"
     assert machine.parse_listxml(turned, "m68k-dual")[0]["screens"][0]["rotation"] == 270
@@ -375,9 +319,7 @@ def test_a_screen_that_is_mounted_turned_reports_the_rotation_it_was_given() -> 
 
 
 def test_a_document_that_does_not_carry_the_machine_asked_about_is_refused() -> None:
-    """`-listxml` answers the set asked for AND a machine per device it is built from, so a
-    walk of every element in the document would attribute another board's hardware to this one.
-    A document holding none of the right name is the observable half of that scoping."""
+    """`-listxml` also lists device machines; a whole-document walk would take their hardware."""
     with pytest.raises(LookupError, match="carries no <machine name='v30'>"):
         machine.parse_listxml(LISTXML_M68K_DUAL, "v30")[0]
     with pytest.raises(LookupError, match="carries no <machine name='m68k-dual'>"):
@@ -385,13 +327,7 @@ def test_a_document_that_does_not_carry_the_machine_asked_about_is_refused() -> 
 
 
 def test_hardware_belonging_to_a_device_machine_never_reaches_the_set() -> None:
-    """THE HALF OF THE SCOPING THAT EXCLUDES, which no capture on this machine could prove:
-    neither build has a device machine carrying hardware of its own, so a parser that read the
-    whole document would have answered the same as one that scoped. The fixture is the capture
-    with a chip and a rom added by hand INSIDE a device machine, marked as such where they sit,
-    and its only job is to be left out.
-
-    Delete the scoping and this goes red, which is what a case is for."""
+    """A chip and rom added inside a device machine must be left out."""
     doctored = (FIXTURES / "listxml-device-with-hardware.xml").read_bytes()
     assert b'name="Imaginary DSP"' in doctored, "the fixture lost the thing it exists for"
     found, dropped = machine.parse_listxml(doctored, "m68k-dual")
@@ -399,17 +335,13 @@ def test_hardware_belonging_to_a_device_machine_never_reaches_the_set() -> None:
     assert [c["name"] for c in found["cpus"]] == ["Motorola MC68000", "Motorola MC68000"]
     assert all(c["name"] != "Imaginary DSP" for c in found["cpus"])
     assert all(r["name"] != "never.dumped" for r in found["rom_files"])
-    # AND THE SET'S OWN HARDWARE IS UNTOUCHED BY THE DOCTORING: the same counts as the capture,
-    # so this proves an exclusion and not a parser that stopped reading early.
     clean, _ = machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual")
     assert len(found["cpus"]) == len(clean["cpus"])
     assert len(found["rom_files"]) == len(clean["rom_files"])
 
 
 def test_a_chip_or_a_display_mame_did_not_name_is_dropped_and_the_note_says_so() -> None:
-    """A tag is OPTIONAL in MAME's own DTD. Filled from an absent attribute it came out as the
-    bare `:`, which matches no device: the real cpu silently lost its clock and a phantom row
-    appeared beside it carrying one. A row that cannot be named is dropped, out loud."""
+    """A tag is optional in the DTD: an absent one is a dropped row, said aloud."""
     untagged = LISTXML_M68K_DUAL.replace(
         b'<chip type="cpu" tag="maincpu" name="Motorola MC68000" clock="16000000"/>',
         b'<chip type="cpu" name="Motorola MC68000" clock="16000000"/>', 1)
@@ -421,10 +353,7 @@ def test_a_chip_or_a_display_mame_did_not_name_is_dropped_and_the_note_says_so()
 
 
 def test_a_value_mame_spelled_some_other_way_does_not_take_the_start_down() -> None:
-    """Every number in the XML half is converted from an attribute, and a raise from inside the
-    handler travels out through the parser and would take the whole `start` with it. It is the
-    same class of failure as unreadable XML and answers the same way: the section is absent,
-    the reason is said, and the session comes up."""
+    """A raise in attribute conversion is an absent section with a reason, not a failed start."""
     odd = LISTXML_M68K_DUAL.replace(b'clock="16000000"', b'clock="XTAL_16MHz"', 1)
     assert odd != LISTXML_M68K_DUAL, "the substitution matched nothing"
     with pytest.raises(LookupError, match="not the number this reads"):
@@ -432,9 +361,7 @@ def test_a_value_mame_spelled_some_other_way_does_not_take_the_start_down() -> N
 
 
 def test_the_device_machines_beside_the_set_are_not_read_as_part_of_it() -> None:
-    """The scoping has something to exclude: each document carries several machines and only
-    one of them is the set. On these two builds no device machine carries a chip, a rom or a
-    display of its own, so what is asserted here is that the counts are the SET's own."""
+    """Each document holds several machines and only the set's own counts are asserted."""
     for text, system, n_cpus, roms in ((LISTXML_M68K_DUAL, "m68k-dual", 2, 22),
                                        (LISTXML_V30, "v30-board", 1, 3)):
         assert text.count(b"<machine name=") > 1, "a one-machine document proves no scoping"
@@ -444,8 +371,7 @@ def test_the_device_machines_beside_the_set_are_not_read_as_part_of_it() -> None
 
 
 def _stub_mame(tmp_path: Path, name: str, body: str) -> str:
-    """A stand-in for the MAME binary whose ANSWER is what the real one gives: the
-    exit code and the stream it says it on. The shape is captured, not imagined."""
+    """A stand-in for the MAME binary with its real exit code and stream."""
     path = tmp_path / name
     path.write_text(f"#!/bin/sh\n{body}\n", encoding="utf-8")
     path.chmod(0o755)
@@ -454,17 +380,14 @@ def _stub_mame(tmp_path: Path, name: str, body: str) -> str:
 
 def _listxml(binary: str, system: str, seconds: float = 20.0
              ) -> tuple[dict[str, list[dict[str, Any]]], str]:
-    """Both halves of the query over a REAL process: put the question, then collect it. They
-    are two calls in production precisely so the second can happen after the boot, and a test
-    that only exercised one of them would not be testing the thing that ships."""
+    """Both halves of the query (put, then collect) over a real process."""
     return machine.listxml(machine.ask_listxml(binary, system), binary, system, seconds)
 
 
 def test_a_system_this_build_does_not_carry_refuses_the_start_in_mames_own_words(
     tmp_path: Path,
 ) -> None:
-    """The real binary gives exit code 5, and the sentence on STDERR, not stdout. It is
-    the one `-listxml` failure that is the caller's mistake, so it refuses rather than noting."""
+    """The real binary exits 5 with the sentence on stderr: the caller's mistake, so a refusal."""
     binary = _stub_mame(tmp_path, "mame",
                         "echo \"No matching machines found for '$1'\" >&2\nexit 5")
     with pytest.raises(st.Invalid) as refused:
@@ -478,9 +401,7 @@ def test_a_system_this_build_does_not_carry_refuses_the_start_in_mames_own_words
 def test_any_other_listxml_failure_leaves_start_working_and_quotes_what_it_said(
     tmp_path: Path,
 ) -> None:
-    """A debug session must not be blocked on an inventory. But a section that is silently
-    missing cannot be told from a machine that has none, so the failure is NAMED, with its
-    exit code and its own words."""
+    """A failed inventory never blocks a debug session, and names its exit code and words."""
     binary = _stub_mame(tmp_path, "mame", "echo 'Fatal error: out of memory' >&2\nexit 3")
     found, note = _listxml(binary, "m68k-dual")
     assert found == {"cpus": [], "screens": [], "rom_files": []}
@@ -501,8 +422,7 @@ def test_listxml_that_answers_something_other_than_its_own_xml_is_a_note(
 
 
 def test_a_successful_listxml_comes_back_parsed(tmp_path: Path) -> None:
-    """The positive control for the three notes above: the same wrapper, over the captured
-    document, answers the board rather than a sentence about why it could not."""
+    """Positive control: the same wrapper over the captured document answers the board."""
     xml = FIXTURES / "listxml-m68k-dual.xml"
     binary = _stub_mame(tmp_path, "mame", f"cat {xml}")
     found, note = _listxml(binary, "m68k-dual")
@@ -510,8 +430,7 @@ def test_a_successful_listxml_comes_back_parsed(tmp_path: Path) -> None:
 
 
 def test_the_two_halves_join_into_one_cpu_with_both_sources_fields(tmp_path: Path) -> None:
-    """What the whole thing is for: one row per cpu carrying the spaces only the live channel
-    knows AND the clock only `-listxml` knows."""
+    """One row per cpu with the live spaces and the `-listxml` clock."""
     (tmp_path / machine.DUMP_NAME).write_text(M68K_DUAL, encoding="utf-8")
     cached = machine.cache(tmp_path,
                            machine.parse_listxml(LISTXML_M68K_DUAL, "m68k-dual"))
@@ -527,18 +446,15 @@ def test_the_two_halves_join_into_one_cpu_with_both_sources_fields(tmp_path: Pat
 
 
 def test_the_two_sources_disagreeing_is_reported_and_never_resolved() -> None:
-    """Labelling by source exists to make a disagreement VISIBLE. Which of the two is right is
-    not something this can know, so it is said rather than decided."""
+    """A disagreement between the sources is said, not decided."""
     rows, clashes = machine.merge(
         [{"tag": ":maincpu", "name": "Motorola MC68000", "spaces": ["program"]}],
         [{"tag": ":maincpu", "name": "Motorola MC68010", "clock_hz": 16_000_000}], "cpu")
     assert len(rows) == 1 and rows[0]["clock_hz"] == 16_000_000
     assert len(clashes) == 1 and ":maincpu" in clashes[0]
-    # WHICH VALUE CAME FROM WHERE, not merely that both appear: a message that swapped the two
-    # attributions still holds both substrings and would send a reader to the wrong source.
+    # Attribution order: a swapped message would still hold both substrings.
     assert "'Motorola MC68000' from live" in clashes[0], clashes[0]
     assert "'Motorola MC68010' from the other" in clashes[0], clashes[0]
-    # AND THE FIELD CARRIES THE LIVE ONE, because that is the board that is running.
     assert rows[0]["name"] == "Motorola MC68000"
 
 
@@ -552,8 +468,7 @@ def test_a_device_only_one_source_has_keeps_only_that_sources_fields() -> None:
 
 def _cached(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, dump: str = "",
             xml: bytes = b"", system: str = "m68k-dual") -> None:
-    """Put a machine on the STATE the way `start` does, and nothing else: `machine_map` serves
-    that cache and must not need a session, a process or a console to answer from it."""
+    """Put a machine on the STATE as `start` does; `machine_map` needs no session."""
     (tmp_path / machine.DUMP_NAME).write_text(dump or M68K_DUAL, encoding="utf-8")
     static = machine.parse_listxml(xml or LISTXML_M68K_DUAL, system)
     monkeypatch.setattr(STATE, "machine_map", machine.cache(tmp_path, static))
@@ -583,13 +498,8 @@ def test_the_reply_carries_every_section_its_sources_and_the_full_counts(
                                "shares": 2, "screens": 1, "rom_files": 22,
                                "symbol_coverage": 0}
     assert all(reply["counts"][name] == len(reply[name]) for name in reply["counts"])
-    # A boolean, for the reason `mame_read.LOG_LIMIT_MAX` carries.
     assert reply["truncated"] is False
-    # THE DENOMINATOR IS THE REPLY'S OWN SECTIONS, and never the `SECTIONS` tuple: that tuple
-    # holds only what the two emulator channels produce, so a comparison against it leaves
-    # `symbol_coverage` outside BOTH sides and cannot see a section with no source at all.
-    # `counts` is the reply's own list of what it carries, so a section added tomorrow enters
-    # the denominator the moment it enters the answer.
+    # The denominator is the reply's own `counts`, not `SECTIONS`, which omits `symbol_coverage`.
     assert set(reply["sources"]) == set(reply["counts"])
     assert menvelope.session_block()["altered"] is False
     assert reply["cpu"]["available"] is False, "no cpu was asked for, so none is named"
@@ -617,7 +527,6 @@ def test_sections_answers_only_the_ones_named_in_the_reply_order(
     assert set(reply["counts"]) == set(reply["sources"]) == {"cpus", "rom_files"}
     assert reply["cpus"][0]["cpu"] == ":maincpu"
     assert "spaces" in reply["omitted"] and "symbol_coverage" in reply["omitted"]
-    # Asked without `symbol_coverage`, the note says nothing about its classes.
     assert "classes" not in str(reply["note"])
 
 
@@ -635,10 +544,7 @@ def test_a_bad_section_list_is_refused_before_the_machine_is_asked(
 def test_two_calls_answer_the_same_bytes_and_spawn_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE IDEMPOTENT CLAIM, asserted rather than eyeballed. The tool declares
-    `idempotentHint`, which invites a client to call it again; if it re-shelled `-listxml` or
-    re-read the machine, the second answer could differ and the call would not be free. The
-    spawn count is what says so: a `1` here is a tool that went out to the host."""
+    """The tool declares `idempotentHint`: a second call must not re-shell `-listxml`."""
     _cached(monkeypatch, tmp_path)
     spawns: list[object] = []
     real_popen = subprocess.Popen
@@ -657,8 +563,7 @@ def test_two_calls_answer_the_same_bytes_and_spawn_nothing(
 def test_a_cpu_narrows_only_what_belongs_to_one_and_answers_the_full_tag(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The blocks, the screens and the ROM files are the BOARD's: narrowing them to a cpu
-    would answer that the other cpu's ROMs do not exist."""
+    """Blocks, screens and ROM files are the board's: narrowing to a cpu must not hide them."""
     _cached(monkeypatch, tmp_path)
     whole = machine.machine_map(sections=EVERY)
     for spelling in (":subcpu", "subcpu"):
@@ -667,8 +572,7 @@ def test_a_cpu_narrows_only_what_belongs_to_one_and_answers_the_full_tag(
         assert [c["cpu"] for c in one["cpus"]] == [":subcpu"]
         assert "tag" not in one["cpus"][0]
         assert {e["cpu"] for e in one["address_map"]} == {":subcpu"}
-        # `spaces` NARROWS TOO, and nothing watched that: it is in PER_CPU, and dropping it
-        # from there left both cpus' spaces in a reply that claims to be about one.
+        # `spaces` is in PER_CPU: dropping it left both cpus' spaces in a one-cpu reply.
         assert {sp["cpu"] for sp in one["spaces"]} == {":subcpu"}
         assert len(one["spaces"]) < len(whole["spaces"])
         assert one["counts"]["address_map"] == 12 < whole["counts"]["address_map"]
@@ -689,9 +593,7 @@ def test_a_cpu_this_machine_lacks_is_refused_naming_the_ones_it_has(
 def test_a_section_past_the_ceiling_is_cut_and_says_so_with_the_full_count(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A reply with no ceiling is a bug this project has already recorded four of. What makes a
-    cut honest is that `counts` keeps the FULL number and `truncated` names the section: a
-    short list that says nothing about being short gets acted on as the whole machine."""
+    """A cut keeps the full number in `counts` and names the section in `truncated`."""
     _cached(monkeypatch, tmp_path)
     over = read.LOG_LIMIT_MAX + 7
     one = STATE.machine_map["address_map"][0]
@@ -700,8 +602,6 @@ def test_a_section_past_the_ceiling_is_cut_and_says_so_with_the_full_count(
     assert len(reply["address_map"]) == read.LOG_LIMIT_MAX
     assert reply["counts"]["address_map"] == over, "the count is of the machine, not the reply"
     assert reply["truncated"] is True
-    # WHICH section was cut is answered without a second field, and that is the point of
-    # dropping the dict: the two numbers that say it are already in the reply.
     assert [name for name in machine.SECTIONS
             if len(reply[name]) < reply["counts"][name]] == ["address_map"]
 
@@ -709,8 +609,7 @@ def test_a_section_past_the_ceiling_is_cut_and_says_so_with_the_full_count(
 def test_symbol_coverage_is_empty_and_says_why_when_the_table_has_no_classes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The spec's own edge case: the ABSENCE of symbol coverage is informative, so the list is
-    present and empty rather than omitted, and the note says which of the two reasons it is."""
+    """Absent symbol coverage is informative: the list is present and empty, the note says why."""
     _cached(monkeypatch, tmp_path)
     use_table(monkeypatch, class_span={})
     reply = machine.machine_map()
@@ -721,8 +620,7 @@ def test_symbol_coverage_is_empty_and_says_why_when_the_table_has_no_classes(
 def test_a_board_with_no_frame_counter_says_so_in_frame_symbol_and_keeps_its_own_note(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Two things to say, one `note`: the map's caveats and the board's missing counter, neither
-    replacing the other."""
+    """One `note` carries both the map's caveats and the board's missing counter."""
     _cached(monkeypatch, tmp_path)
     monkeypatch.setattr(read, "frame_symbol", lambda: None)
     reply = machine.machine_map()
@@ -734,9 +632,7 @@ def test_a_board_with_no_frame_counter_says_so_in_frame_symbol_and_keeps_its_own
 def test_symbol_coverage_is_finds_own_span_and_nulls_a_base_it_cannot_disambiguate(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A failure here means one of three: this tool and `find` have drifted to two spans for
-    one class, a `base` went absent instead of null, or a row names a cpu other than the one
-    its table was given for (here a one-path table whose cpu nobody named: none)."""
+    """Two spans for one class, an absent `base`, or a wrong cpu row goes red."""
     _cached(monkeypatch, tmp_path)
     use_table(monkeypatch, class_span={"DATA": (0x400, 0x4FF), "CODE": (0x1000, 0x1FFF)})
     use_table(monkeypatch, bases={"DATA": 0x400})
@@ -752,11 +648,7 @@ def test_symbol_coverage_is_finds_own_span_and_nulls_a_base_it_cannot_disambigua
 def test_a_populated_symbol_section_names_the_channel_that_backs_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """THE POPULATED CASE IS THE ONE THAT BIT, and the empty one hid it. With a table loaded
-    the section carries rows and `NO_CLASSES_NOTE` is suppressed by its own `if`, so the only
-    prose that named the provenance disappeared exactly when there was something to attribute,
-    and `sources` -- the field the tool's own description promises for EVERY section -- said
-    nothing about it at all."""
+    """With a table loaded `NO_CLASSES_NOTE` is suppressed, so `sources` carries the provenance."""
     _cached(monkeypatch, tmp_path)
     use_table(monkeypatch, class_span={"CODE": (0x1000, 0x1FFF)})
     use_table(monkeypatch, classes={"C": "CODE"})
@@ -764,9 +656,7 @@ def test_a_populated_symbol_section_names_the_channel_that_backs_it(
     assert reply[machine.SYMBOL_SECTION], "this case is about the section with rows in it"
     assert machine.NO_CLASSES_NOTE not in reply["note"]
     assert reply["sources"][machine.SYMBOL_SECTION] == [machine.SYMBOL_SOURCE]
-    # AND THE WORD IS `start`'S OWN ARGUMENT NAME, tied here rather than hoped: a reader who
-    # meets `symbols` in `sources` and `symbols=` on `start` is entitled to be reading one word
-    # for one thing, and a rename of either that leaves the other behind goes red here.
+    # `symbols` is `start`'s own argument name; a rename of either goes red here.
     import inspect
 
     import server as srv
@@ -776,8 +666,7 @@ def test_a_populated_symbol_section_names_the_channel_that_backs_it(
 def test_the_summary_says_what_the_board_is_and_never_just_ok(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """Under `perform(summaries=True)` the summary is ALL an earlier step keeps, so a line
-    reading `ok` would say nothing about the machine that was asked about."""
+    """Under `perform(summaries=True)` the summary is all a step keeps."""
     import mame_mcp
     _cached(monkeypatch, tmp_path)
     reply = machine.machine_map(sections=EVERY)
@@ -794,9 +683,7 @@ def test_the_summary_says_what_the_board_is_and_never_just_ok(
 
 
 def test_every_space_carries_its_own_mask_and_a_cpu_is_judged_by_its_own() -> None:
-    """The last address each space reaches, gathered per space, so `memdump` and `find` judge a
-    range by the mask of the cpu they read, whichever is visible. A cpu the inventory lacks, or
-    none named, has no mask here rather than another cpu's."""
+    """The last address per space, so `memdump` and `find` judge by the reading cpu's mask."""
     assert [r["address_mask"] for r in machine.parse(M68K_DUAL)["spaces"]] == ["0x00ffffff"] * 4
     assert SUB_NARROWED != M68K_DUAL, "the capture no longer carries the sub cpu's program line"
     STATE.machine_map = machine.parse(SUB_NARROWED)
@@ -810,8 +697,7 @@ def test_every_space_carries_its_own_mask_and_a_cpu_is_judged_by_its_own() -> No
 def test_the_reply_carries_each_rows_mask_and_no_key_of_its_own(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Whole or narrowed, every `spaces` row carries its own `address_mask`, and the reply adds
-    no mask key beside the sections."""
+    """Each `spaces` row carries its own `address_mask`; no mask key beside the sections."""
     _cached(monkeypatch, tmp_path, dump=SUB_NARROWED)
     whole = machine.machine_map()
     masks = {(r["cpu"], r["space"]): r["address_mask"] for r in whole["spaces"]}
@@ -825,9 +711,7 @@ def test_the_reply_carries_each_rows_mask_and_no_key_of_its_own(
 def test_the_matrix_derives_its_edge_refs_from_the_reply_alone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """An edge only the server's own process could compute is one no MCP client can ask for,
-    so the live matrix takes both from a `machine_map` reply: the derivation is held to a
-    reply here, and the block that uses it is held to not naming the server's state."""
+    """The live matrix takes the edge from a `machine_map` reply, held here."""
     import ast
     import importlib.util
 
@@ -864,14 +748,10 @@ def test_the_matrix_derives_its_edge_refs_from_the_reply_alone(
     assert not named & {"STATE", "PROGRAM_MASK"}, named & {"STATE", "PROGRAM_MASK"}
 
 
-# ---------------------------- what the mutation survivors of the machine left loose
 
 
 def test_a_cut_off_listxml_is_refused_and_a_device_after_the_set_keeps_its_hardware() -> None:
-    """The parser is told the buffer is FINAL, so a document cut off before `</mame>` is
-    refused rather than read as a small machine; and the scoping to the set's own element
-    closes when that element does: a device machine listed AFTER the set carries nothing
-    into it. The ROM rows carry their names."""
+    """A cut-off document is refused, and the set's scoping closes with its element."""
     with pytest.raises(LookupError, match="XML"):
         machine.parse_listxml(LISTXML_M68K_DUAL[:4000], "m68k-dual")
     ghost = (b'<machine name="zzz" isdevice="yes"><description>x</description>'
@@ -886,9 +766,7 @@ def test_a_cut_off_listxml_is_refused_and_a_device_after_the_set_keeps_its_hardw
 
 
 def test_listxml_bounds_the_collection_reads_a_bad_byte_and_refuses_the_measured_shape() -> None:
-    """The collection waits at most the boot's own `wait`; a byte MAME's output holds that is
-    not UTF-8 is replaced, never raised; and the start is refused only when the exit code AND
-    the sentence agree, since either alone is some other failure, quoted."""
+    """Collection waits the boot's `wait`, replaces non-UTF-8, refuses on exit code and sentence."""
     seen: list[float | None] = []
 
     class Proc:
@@ -919,8 +797,7 @@ def test_a_dump_with_a_bad_byte_is_read_as_a_failure_and_never_raises(tmp_path: 
 def test_machine_map_hands_back_copies_that_cannot_rewrite_the_cache(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A caller that touches a nested row of the reply must not touch the cache: the rows and
-    the sources are DEEP copies, or the next call answers something else."""
+    """Callers touching nested rows must not touch the cache: rows and sources are deep copies."""
     _cached(monkeypatch, tmp_path)
     reply = machine.machine_map()
     reply["cpus"][0]["spaces"].append("rewritten")
@@ -931,8 +808,7 @@ def test_machine_map_hands_back_copies_that_cannot_rewrite_the_cache(
 
 
 def test_the_inventory_carries_the_set_s_views_and_the_one_snapshots_take() -> None:
-    """The views a layout gives the set, in MAME's order, and the view its snapshot target
-    resolved `-snapview` to; a dump that names none carries none."""
+    """The layout's views in MAME's order and the resolved `-snapview`."""
     lines = M68K_DUAL.splitlines()
     end = lines.index(machine.END)
     dump = "\n".join([*lines[:end], "VIEW Screen 0 Standard (4:3)", "VIEW Shifter-R Overlay",
@@ -945,8 +821,7 @@ def test_the_inventory_carries_the_set_s_views_and_the_one_snapshots_take() -> N
 
 
 def test_start_says_which_view_its_captures_take() -> None:
-    """`native` when none was asked; the view MAME took when one was, read off the machine
-    (its prefix match or its own fallback); unavailable, saying why, when nothing was read."""
+    """`native` if none asked, else the view MAME took, else unavailable with a reason."""
     from mame_launch import view_shown, views_shown
 
     taken = {machine.VIEWS: ["Shifter-R Overlay"], machine.SNAPVIEW: "Shifter-R Overlay"}
@@ -958,7 +833,7 @@ def test_start_says_which_view_its_captures_take() -> None:
 
 
 def test_a_view_line_with_no_name_costs_nothing_but_itself() -> None:
-    """A layout may name a view with nothing: its line is skipped, and the inventory stands."""
+    """A view named with nothing is skipped and the inventory stands."""
     lines = M68K_DUAL.splitlines()
     end = lines.index(machine.END)
     got = machine.parse("\n".join([*lines[:end], "VIEW ", "VIEW Shifter", *lines[end:]]))

@@ -1,12 +1,4 @@
-"""What a launch that failed before its session existed says, and whether `start` launches it
-again.
-
-`mame_launch.boot` raises a `LaunchFailed` for the failures `start` may launch again; `start`
-launches again while `relaunch()` says so, under its cap, and keeps each one's `evidence()` in
-`start_retries`, because the scratch holding MAME's words is deleted with the attempt. Which
-failures are launched again, and why those, is `REFERENCE.md`, *The session*. `fold_attempt`
-keeps the dial attempts of one boot.
-"""
+"""Launch failures before a session exists, and whether `start` launches again (REFERENCE.md)."""
 
 from __future__ import annotations
 
@@ -24,11 +16,8 @@ ONE_CONNECTION = "MAME serves one connection per session, so a second is never d
 
 
 class LaunchFailed(st.Invalid):
-    """A launch that failed before a session existed, `session_broken` unless a subclass names
-    its code. `relaunch(port_picked)` says whether launching again can change the answer (never,
-    unless a subclass says so), given whether the gdbstub's port was this server's pick, which a
-    relaunch picks afresh; `evidence()` is its `start_retries` entry and `what` its relaunch's
-    progress line."""
+    """A launch that failed before a session existed; `evidence()` is its `start_retries` entry
+    (the scratch holding MAME's words is deleted with the attempt), `what` its progress line."""
 
     def __init__(self, message: str, what: str, evidence: dict[str, Any],
                  code: contract.Code = "session_broken", **fields: Any) -> None:
@@ -53,29 +42,24 @@ def handshake_failed(phase: str, after_s: float, error: BaseException) -> str:
             f"{after_s:.1f} s: {error}")
 
 
-# WHAT A FAILED `assert` PRINTS before its SIGABRT, as the macOS libc spells it. An assertion is
-# deterministic: the same build aborts the same way on every launch, so a relaunch buys nothing
-# but another identical death.
+# What the macOS libc prints before the SIGABRT of a failed assert; deterministic, so no relaunch.
 ASSERTION_MARK = "Assertion failed"
-# SDL3's joystick ids are unsigned, so a debug MAME asserting one negative aborts at boot as soon
-# as a controller is enumerated; the ini line is what a caller can do about it without a rebuild.
+# SDL3 joystick ids are unsigned, so a debug MAME asserts on a negative one once a controller is
+# enumerated.
 SDL3_JOYSTICK_MARK = "input_sdl3"
 SDL3_JOYSTICK_NOTE = ("a debug MAME built with SDL3 aborts at boot when a game controller is "
                       "connected (an upstream regression in input_sdl3.cpp); `joystickprovider "
                       "none` in a mame.ini passed as `inipath` avoids it")
 
 
-# A stub without the thread patch, at its first stop, describes the board's FIRST cpu or ends
-# MAME with this fatal error, on every launch. Matched anywhere in a line: stdout shares the file
-# and can leave a console prompt with no newline before it.
+# Matched anywhere in a line: stdout shares the file and can leave a prompt with no newline.
 _NOT_SERVED = re.compile(
     r"Fatal error: gdbstub: cpuname (\S+) not found in gdb stub descriptions$", re.MULTILINE)
 
 
 def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invalid:
-    """What a MAME that ended before its gdbstub answered is refused as: `no_channel` when its
-    stub said it has no description of the first cpu, which every launch would meet again;
-    else `DiedBeforeStub`."""
+    """`no_channel` when the stub has no description of the first cpu (every launch meets it
+    again), else `DiedBeforeStub`."""
     if m := _NOT_SERVED.search(stdout_tail):
         ended = (f"died by signal {-exit_code}" if exit_code < 0
                  else f"exited with code {exit_code}")
@@ -91,15 +75,12 @@ def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invali
     return DiedBeforeStub(exit_code, after_s, stdout_tail)
 
 
-# What MAME prints before it exits when its gdbstub cannot listen on the port it was given.
 _PORT_TAKEN = re.compile(r"Fatal error: gdbstub: failed to start listening on address \S+ port \d+")
 
 
 class DiedBeforeStub(LaunchFailed):
-    """A MAME that EXITED before its gdbstub answered. Launched again when a signal ended it,
-    other than an assertion's abort; an exit code is MAME refusing what the caller gave it, and
-    would answer the same again, except a port taken before MAME could listen on it
-    (`port_taken`) when a relaunch picks another."""
+    """A MAME that exited before its gdbstub answered. An exit code is MAME refusing the
+    caller's input, so only a signal (not an assertion's abort) or `port_taken` relaunches."""
 
     def __init__(self, exit_code: int, after_s: float, stdout_tail: str) -> None:
         self.exit_code = exit_code
@@ -121,19 +102,16 @@ class DiedBeforeStub(LaunchFailed):
         return (self.exit_code < 0 and not self.asserted) or (port_picked and self.port_taken())
 
     def port_taken(self) -> bool:
-        """MAME's own line that another process held its gdbstub port, and an exit code."""
+        """MAME's own line that another process held its gdbstub port."""
         return self.exit_code > 0 and _PORT_TAKEN.search(self.stdout_tail) is not None
 
 
-# The handshake failures of a LIVE process that mean its stub answered before it was ready,
-# rather than a stub that hung (`Timeout`), a packet it lacks (`Unsupported`) or a channel gone.
+# Handshake failures of a live process whose stub answered before it was ready.
 NOT_READY_ERRORS = (gs.NoRegisters, gs.BadTargetXml, gs.Refused)
 
 
 class StubNotReady(LaunchFailed):
-    """A live MAME whose stub answered its handshake with one of `NOT_READY_ERRORS`: launched
-    again like a death, under the same cap. `live` is what a refusal of the wait for the stub
-    carries, `stdout_tail` among it."""
+    """A live MAME whose stub failed its handshake with one of `NOT_READY_ERRORS`."""
 
     def __init__(self, error: gs.SessionError, after_s: float, **live: Any) -> None:
         own: dict[str, Any] = {"error": type(error).__name__, "phase": error.phase,
@@ -149,9 +127,8 @@ class StubNotReady(LaunchFailed):
 
 
 class PortServed(LaunchFailed):
-    """Another process serves the gdbstub's port (`mame_stub_owner.StubNotOurs`), proved before
-    anything was sent: `host_failed`, launched again when the port was this server's pick, since
-    a relaunch picks another, never on the caller's own `stub_port`."""
+    """Another process serves the gdbstub's port (`mame_stub_owner.StubNotOurs`); relaunches
+    only when the port was this server's pick."""
 
     def __init__(self, error: gs.SessionError, port_picked: bool, **live: Any) -> None:
         then = ("launched again on another port" if port_picked
@@ -167,10 +144,7 @@ class PortServed(LaunchFailed):
 
 
 def fold_attempt(attempts: list[dict[str, Any]], at_s: float, error: BaseException) -> None:
-    """One dial attempt into `attempts`, folded into the last entry when its error is the same:
-    a boot's whole run stays a few entries, each with its first and last time (seconds from the
-    launch) and its count, so a stub that never listened is told from one that listened and was
-    refused later."""
+    """One dial attempt into `attempts`, folded into the last entry when its error is the same."""
     said = f"{type(error).__name__}: {error}"
     at = st.spent_s(at_s)
     if attempts and attempts[-1]["error"] == said:

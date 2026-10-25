@@ -1,14 +1,4 @@
-"""A change watch on a WRITE-ONLY register reads its values off the bus, not off memory.
-
-A latch or a blitter register is written through a handler and read through nothing (or
-through a different handler: an input port that happens to share the address), so reading
-the address at a stop answers noise that looks like a value: `before: 0, after: 0` on every
-hit of a register that was just written. The console's `map` answers BOTH sides in the one
-call the arming already makes, and a watchpoint stop names the value written (`wpdata`, in
-the console's own stop line). So a watch whose read side is not the write side takes its
-`before` and `after` from the writes the console logged, says `values_from: "bus"`, and is
-never read from memory. A RAM address keeps `values_from: "memory"` and its bytes.
-"""
+"""A watch on a write-only register takes its values from the bus, never from memory."""
 
 from __future__ import annotations
 
@@ -26,8 +16,6 @@ import mame_map as mmap  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
-# The console's own stop lines for the latch, in the shape captured on a RAM watch; the pcs
-# and values are the ones the board's own account gives for this register.
 LATCH_HIT_1 = "Stopped at watchpoint 1 writing FFFF to 740000 (PC=00000528)\n"
 LATCH_HIT_2 = "Stopped at watchpoint 1 writing A0A0 to 740000 (PC=00203176)\n"
 
@@ -81,8 +69,6 @@ def test_a_latch_hit_takes_before_and_after_from_the_writes_the_console_logged(
     assert hit["values_from"] == "bus" and hit["after"] == 0xFFFF
     assert hit["before"]["available"] is False and "first write" in hit["before"]["why"], hit
     assert hit["writes"] == [{"wrote": "0xffff", "to": "0x00740000", "pc": "0x00000528"}]
-    # The second hit: `before` is what the first wrote, and the survey's `watches` carries
-    # the last value written, never a memory read.
     ses.packets = ["T05watch:740000;"]
     (tmp_path / "debug.log").open("a").write(LATCH_HIT_2 + "25F6\n")
     out = s.step()                     # a step that lands on the watch's own stop
@@ -97,8 +83,7 @@ def test_a_latch_hit_takes_before_and_after_from_the_writes_the_console_logged(
 def test_a_latch_stop_with_no_console_line_claims_no_hit_and_says_why(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A bus-sourced watch's values ARE the console's lines, and a console row's packet names
-    address 0: with no line there is neither a value nor a row to name."""
+    """With no console line there is neither a value nor a row to name."""
     ses = _watching(monkeypatch, tmp_path)
     ses.latches.add(0x740000)
     s.watch_add(ref="0x740000", mode="change", length=2)
@@ -114,9 +99,7 @@ def test_a_latch_stop_with_no_console_line_claims_no_hit_and_says_why(
 def test_a_row_this_server_holds_no_record_for_is_foreign_and_its_declaration_gone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A row is known by the index this server recorded when it armed it, never by its
-    range: with the record gone, the declaration owns no row, and the row it once placed
-    is listed like any other nobody here holds."""
+    """A row is known by the index recorded at arming, never by its range."""
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     mstate.STATE.armed_watches.clear()                # the row stays listed, the record is gone

@@ -1,17 +1,8 @@
-"""What every live script of this server shares: the board to drive, a declaration store of the
-run's own, the ledger of checks and the verdict that closes it.
+"""What every live script shares: the board, the run's own declaration store, the ledger of
+checks and cells, and the verdict that closes the run.
 
-Importing it puts the server's own directory on the path, which is what lets the scripts beside
-it `import server` and run the code on disk; the boards on the bench are `bench_boards`'. It does
-NOT isolate the store: a script calls `isolate_state(prefix)` before its first `start`, and that
-call is what keeps the owner's own declaration store untouched.
-
-It also holds the MATRIX's ledger (a section declared with its cells before anything boots,
-each cell judged once, every call kept whole in a transcript), the boots more than one section
-shares, and the runner of boards that own their cells, so that a section kept in a module of its
-own registers with the same machinery rather than a copy of it. `run_sections` runs whatever
-sections were registered, which is how such a module runs alone. Importing it therefore also
-makes the run's scratch directory and sees to it that no emulator outlives the process.
+Importing it puts the server's directory on the path; call `isolate_state(prefix)` before the
+first `start`.
 """
 
 import atexit
@@ -34,7 +25,6 @@ from scry_core import live_host, live_pool
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-# The server's own files, found through the path just set, which is why they come after it.
 from evidence import keep  # noqa: E402
 
 import mame_binary  # noqa: E402
@@ -51,43 +41,29 @@ from bench_boards import (  # noqa: E402  # isort: skip
     m68k_dual_missing,
 )
 
-# THE THREE OUTCOMES, scry-core's for every instrument (`scry_core.verdict`): a run that examined
-# nothing is never folded into either of the other two.
 from scry_core.verdict import EXIT_FAIL as EXIT_FAIL  # noqa: E402
 from scry_core.verdict import EXIT_INVALID as EXIT_INVALID  # noqa: E402
 from scry_core.verdict import EXIT_PASS as EXIT_PASS  # noqa: E402
 
-# THIS RUN ON ITS HOST (`scry_core.live_host`): its scratch, its canary, its ledger, its end.
 SCRATCH_PREFIX = "mame-live-matrix-"
-# Where a run that is one job of another declares what it judged; set by that run, never by hand.
 SUMMARY_VAR = "MAME_LIVE_SUMMARY"
 RUN = live_host.LiveRun.for_process(SCRATCH_PREFIX, job=bool(os.environ.get(SUMMARY_VAR)))
 
 
 def _unfinished() -> None:
-    """The end of a run `finish` never reached: closed, proved and kept (`LiveRun.unfinished`)."""
     RUN.unfinished(lambda: STATE.kill())
 
 
 def invalid(message: str) -> None:
-    """Refuse the whole run: nothing here is a verdict about the server. The run is ended first
-    (`_unfinished`), so the verdict is the last line."""
     _unfinished()
     print(f"INVALID: {message}", file=sys.stderr)
     sys.exit(EXIT_INVALID)
 
 
-# m68k-dual's boot, every live script's: the board on the bench (`bench_boards`).
-# THE PRESENCE EDGE IS OFF in every start of the live tiers but section Z's, which asks for it by
-# name: the tiers are a battery, and the edge is for the owner watching a session. Here for the
-# direct callers, in `call` for the rest.
 BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_ROMS,
             reference_rom=REFERENCE_ROM, reference_addr="0x0", boot_seconds=25.0, presence=False)
 
-# WHETHER THIS RUN'S MACHINES TAKE THE OWNER'S FOCUS, asked per run and never per cell: unset,
-# each `start` keeps its own default; `1` or `0` forces every one of this run behind or in front.
-# Read once, handed to every `start` (`BOOT` for the direct callers, `call` for the rest), and
-# printed, so a run says which way it ran.
+# Unset leaves each `start` its default; 1 or 0 forces every one behind or in front.
 BACKGROUND_VAR = "MAME_BACKGROUND"
 _background = os.environ.get(BACKGROUND_VAR, "")
 if _background not in ("", "0", "1"):
@@ -101,25 +77,14 @@ print(f"background: {'each start its own default' if BACKGROUND is None else BAC
 
 
 def isolate_state(prefix: str) -> str:
-    """Point the declaration store at a scratch of this run, and answer where.
-
-    Declarations persist per system and symbol file and re-arm on every `start`, by design: a
-    watch another session left on this board would stop the machine at every frame here, and
-    the checks on control hits and on "one armed watch" would fail over somebody else's state.
-    The store's location is read when the session starts, so this runs before the `start` it is
-    meant for.
-    """
     os.environ["XDG_STATE_HOME"] = str(live_tmp(prefix))
     return os.environ["XDG_STATE_HOME"]
 
 
-# EVERY CHECK THAT FAILED, BY LABEL, and the verdict is derived from it: two names for one
-# fact (a boolean beside a list) drift the moment one of them is set and the other forgotten.
 failures: list[str] = []
 
 
 def row(word: str, label: str, detail: str = "") -> None:
-    """One result line: the word in a fixed column, so the labels line up whatever it says."""
     print(f"  {word:<4}  {label}{'  ' + detail if detail else ''}")
 
 
@@ -130,12 +95,6 @@ def check(label: str, condition: bool, detail: str = "") -> None:
 
 
 def finish(name: str) -> None:
-    """Print the failing labels, then the verdict as the LAST line, and exit by the outcome.
-
-    THE REASONS SIT ABOVE THE VERDICT. A reader who takes the tail of this output gets the
-    failing labels AND the word that judges them together; a verdict at the end with its
-    reasons only at the top of a long run is the truncation trap that reads a red run as green.
-    """
     _close_run()
     RUN.finished = True
     print()
@@ -147,12 +106,7 @@ def finish(name: str) -> None:
     sys.exit(EXIT_FAIL if failures else EXIT_PASS)
 
 
-# ============================================================ the run on its host
-
-
 def _canary_argv() -> list[str] | None:
-    """The canary in the form of the run's first boot: the bench's board when it is there, else
-    the free boards' circus as `free_boot` starts it; None when this host has neither."""
     if not m68k_dual_missing():
         return mame_binary.canary_argv(str(BOOT["binary"]), str(BOOT["system"]),
                                        str(BOOT["rompath"]))
@@ -163,9 +117,6 @@ def _canary_argv() -> list[str] | None:
 
 
 def begin() -> None:
-    """THE RUN'S FIRST ACT ON THE HOST, before its first `start`: a signal made an exit, the end
-    that runs on every way out, and the canary and the ledger (`live_host.LiveRun.begin`)."""
-    # SIGHUP is POSIX's; Windows has SIGTERM alone.
     for sig in (signal.SIGTERM, getattr(signal, "SIGHUP", signal.SIGTERM)):
         signal.signal(sig, _leave)
     atexit.register(_unfinished)
@@ -174,18 +125,12 @@ def begin() -> None:
 
 
 def _close_run() -> None:
-    """The machine this process holds closed, every MAME the run launched proved gone, and one
-    still alive a failure of the run by name."""
     if line := RUN.close(lambda: STATE.kill()):
         print(line)
         failures.append(line.removeprefix("FAIL  "))
 
 
-# ============================================================ the matrix's ledger
-
-# THIS RUN'S SCRATCH, named at import because cells are declared with paths inside it, and made
-# by `scratch()` when a run first writes there: every file that imports the harness, a unit
-# suite included, would otherwise leave a directory behind.
+# Made on first write, or every importer would leave a directory.
 SCRATCH = RUN.scratch
 TRANSCRIPT = SCRATCH / "transcript.jsonl"
 
@@ -195,24 +140,19 @@ def scratch() -> Path:
 
 
 def live_tmp(prefix: str) -> Path:
-    """A new directory of this run, under its scratch, so `finish` removes it with the rest."""
     return Path(tempfile.mkdtemp(prefix=prefix, dir=scratch()))
 
 
-# ONE CALL'S OWN WAIT (the matrix's rule B1), and the reason a cell is BLOCKED rather than run: a
-# matrix that waits on a hung channel measures the wait. A `start`'s boot wait is exempt, since a
-# boot is not a channel that hung; the boards booted here other than m68k-dual get START_WAIT_S.
+# Rule B1: a matrix that waits on a hung channel measures the wait. A boot wait is exempt.
 WAIT_CEILING_S = 10.0
 START_WAIT_S = 30.0
 WAIT_ARGS = ("seconds", "settle_seconds")
-#: Starts the reason of a cell BLOCKED by the matrix's own wait ceiling (rule B1), so the summary
-#: names those apart from what the host could not run.
+#: Starts the reason of a cell BLOCKED by the wait ceiling.
 B1_PREFIX = "B1: "
 
 
 class Blocked(Exception):
-    """A call the matrix refuses to make, or a run the host could not carry to what a cell reads
-    (`run_frames`), and why: the cell it belonged to is BLOCKED."""
+    """A call the matrix refuses, or a run the host could not carry: the cell is BLOCKED."""
 
 
 @dataclass
@@ -222,8 +162,7 @@ class Section:
     labels: list[str]
     run: Callable[[], None]
     judged: dict[str, str] = field(default_factory=dict)
-    # A SECTION THAT HAS TO SPAN THE RUN (the focus gate's control and verdict) runs in the run's
-    # own process, never as a job of a pooled run.
+    # Spans the run, so it never runs as a pooled job.
     alone: bool = False
 
 
@@ -232,26 +171,21 @@ CURRENT: list[Section] = []
 PENDING: list[dict[str, Any]] = []
 BLOCKED: list[tuple[str, str]] = []
 TALLY = {"OK": 0, "FAIL": 0, "BLOCKED": 0}
-#: The detail of every FAIL, for the summary a pooled run's job declares.
+#: The detail of every FAIL, for a pooled job's summary.
 FAIL_WHY: dict[str, str] = {}
-# The logs of a FAILED cell's session, copied out before `close` deletes its scratch: a cell
-# that fails once in many runs leaves nothing else to be read afterwards.
+# A FAILED cell's session logs, copied out before `close` deletes its scratch.
 EVIDENCE = SCRATCH / "evidence"
 KEPT: list[Path] = []
 
 
 def section(block: str, title: str, labels: list[str],
             alone: bool = False) -> Callable[[Callable[[], None]], None]:
-    """Declare a section and the cells it will judge, BEFORE anything runs; `alone`, it spans
-    the run and stays in the run's own process when the rest is pooled."""
     def register(fn: Callable[[], None]) -> None:
         SECTIONS.append(Section(block, title, labels, fn, alone=alone))
     return register
 
 
 def _record(label: str, verdict: str) -> None:
-    """Every call made since the last judged cell fed this one: they go to the transcript under
-    its label and verdict."""
     sec = CURRENT[0]
     with (scratch() / TRANSCRIPT.name).open("a") as fh:
         for rec in PENDING:
@@ -261,11 +195,8 @@ def _record(label: str, verdict: str) -> None:
 
 
 def cell(label: str, condition: bool, detail: str = "") -> None:
-    """Judge one PLANNED cell, once."""
     sec = CURRENT[0]
     if label not in sec.labels or label in sec.judged:
-        # A label nobody planned, or one judged twice, is the section's defect: it fails
-        # under its own name rather than passing as the cell it collided with.
         label = f"UNPLANNED OR REPEATED: {label}"
         condition = False
     verdict = "OK" if condition else "FAIL"
@@ -275,8 +206,7 @@ def cell(label: str, condition: bool, detail: str = "") -> None:
     sec.judged[label] = verdict
     TALLY[verdict] += 1
     if verdict == "FAIL" and STATE.scratch is not None:
-        # A copy that fails costs this cell its evidence and nothing else: raised from here it
-        # would abort the section and BLOCK cells that had nothing wrong with them.
+        # Raised, it would abort the section and BLOCK innocent cells.
         try:
             if (kept := keep(STATE.scratch, EVIDENCE, label)) is not None:
                 KEPT.append(kept)
@@ -295,8 +225,6 @@ def blocked(label: str, reason: str) -> None:
 
 
 def folded(name: str, kw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    """A probe name, `<tool>` or a fold's `<tool> <value>`, as the tool and its arguments: the
-    value is the fold's `kind` for the declarations, its `method` otherwise."""
     tool, _, value = name.partition(" ")
     if not value:
         return tool, kw
@@ -304,14 +232,10 @@ def folded(name: str, kw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
 
 
 def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
-    """Call a tool the way the client would, and keep the WHOLE reply for the transcript.
+    """Call a tool the way the client would, keeping the whole reply for the transcript.
 
-    An exception is caught and turned into a reply carrying it, so the cell that reads it FAILS
-    by name instead of the run dying. A wait above the ceiling is not made at all (`Blocked`),
-    unless `b1_exempt` says why this call cannot wait: a value refused before any wait, or a
-    line the contract answers at once. Nor is a call handed a file of the bench whose board is
-    off its pins (`args_missing`). A fold is named with its selector, `<tool> <value>`
-    (`comment_write add`, `declaration_list watch`).
+    An exception becomes a reply carrying it. A wait above the ceiling raises `Blocked` unless
+    `b1_exempt` says why this call cannot wait. A fold is named `<tool> <value>`.
     """
     tool, kw = folded(tool, kw)
     fn = getattr(s, tool)
@@ -320,7 +244,7 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
     if tool == "start" and BACKGROUND is not None:
         kw.setdefault("background", BACKGROUND)
     if tool == "start":
-        kw.setdefault("presence", False)    # as `BOOT` says why
+        kw.setdefault("presence", False)
     params = inspect.signature(fn).parameters
     for name in WAIT_ARGS:
         if name in params:
@@ -341,21 +265,13 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
 def last_wall() -> float:
     return float(PENDING[-1]["wall_s"]) if PENDING else 0.0
 
-# A RUN COUNTED IN FRAMES COSTS WALL TIME AT THE BOARD'S OWN SPEED, and a board boots throttled to
-# real speed: so a frame run goes in legs, each inside one call's wait with room to spare, and each
-# must reach its frames before a cell reads the screen or a count. A leg whose bound ran out short
-# of them says the host could not hold the board's speed, which is BLOCKED naming it, never a FAIL
-# of whatever the cell read next; any other answer is the cell's to judge.
-#: The speed a leg is sized for, and the leg: half of one call's wait at that speed.
+# A board boots throttled to real speed, so a frame run goes in legs inside one call's wait; a
+# leg that ran out short is BLOCKED, never a FAIL of what a cell read next.
 REAL_SPEED_FPS = 60
 LEG_FRAMES = int(WAIT_CEILING_S * REAL_SPEED_FPS) // 2
 
 
 def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
-    """Run `frames` from where the machine stands, in legs of at most `leg_frames`, each later
-    leg asking for what the counter says is left. The last leg's reply, or the first that is no
-    ELAPSED run counted on the frame counter (a refusal, a stop that cut it, a run that would not
-    settle), for the cell to judge; `Blocked` when a leg's bound ran out short of its frames."""
     if frames < 1 or leg_frames < 1:
         raise ValueError(f"run_frames runs at least one frame in legs of at least one, not "
                          f"{frames} in legs of {leg_frames}")
@@ -369,8 +285,7 @@ def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
         before, after = reply.get("frame_before"), reply.get("frame_after")
         if not (isinstance(before, int) and isinstance(after, int)):
             return reply
-        # A LOADED HOST RUNS SLOW, it does not stop: a counter that stood still for the whole
-        # bound is the cell's to judge, never blamed on the host.
+        # A loaded host runs slow, it does not stop: a counter that stood still is the cell's.
         if (reply.get("code") == "not_settled" and before < after < before + leg
                 and spent >= WAIT_CEILING_S):
             raise Blocked(f"run_for({leg} frames, {WAIT_CEILING_S:g} s) reached frame {after} "
@@ -385,12 +300,7 @@ def run_frames(frames: int, leg_frames: int = LEG_FRAMES) -> dict[str, Any]:
 
 
 
-# ------------------------------------------------------------------ what every reply promises
-
-
 def whole(r: dict[str, Any]) -> bool:
-    """The envelope every reply promises: `summary` first, `session` last, `status` either word,
-    and a refusal carrying its `code` and its `message`."""
     keys = list(r)
     if not keys or keys[0] != "summary" or keys[-1] != "session":
         return False
@@ -404,14 +314,10 @@ def ok(r: dict[str, Any]) -> bool:
 
 
 def unavailable_why(value: Any) -> str | None:
-    """The reason a reply gives for a datum it could not read, `{"available": false, "why"}`,
-    or None when the datum is a value."""
     return value.get("why") if isinstance(value, dict) and value.get("available") is False else None
 
 
 def rearm_pairs(rearm: dict[str, Any], which: str) -> list[tuple[str | None, str | None]]:
-    """One bucket of `start`'s re-arm account as (ref, cpu) pairs, the two keys that name a
-    declaration; a row that names no cpu answers it unavailable, and the pair holds None."""
     return [(e.get("ref"), e.get("cpu") if isinstance(e.get("cpu"), str) else None)
             for e in rearm.get(which, [])]
 
@@ -421,14 +327,11 @@ def refused(r: dict[str, Any], *codes: str) -> bool:
 
 
 def visible_of(cpu_info: dict[str, Any]) -> str | None:
-    """The cpu a `cpu_info` reply marks visible, or None: no rows, or none marked."""
     return next((row["cpu"] for row in cpu_info.get("cpus") or [] if row["visible"] is True),
                 None)
 
 
 def ignored_of(cpu_info: dict[str, Any]) -> list[str] | None:
-    """The cpus a `cpu_info` reply marks ignored, or None when it could not say: a refusal, no
-    rows, or a row whose listing the console did not answer."""
     rows = cpu_info.get("cpus") or []
     if not rows or any(not isinstance(row["ignored"], bool) for row in rows):
         return None
@@ -436,7 +339,6 @@ def ignored_of(cpu_info: dict[str, Any]) -> list[str] | None:
 
 
 def said(r: dict[str, Any], limit: int = 110) -> str:
-    """What a reply said, short: the exception if it raised, else its summary line."""
     text = r.get("exception") or r.get("summary") or str(r)[:limit]
     return str(text)[:limit]
 
@@ -450,8 +352,6 @@ _names = count(1)
 
 
 def fresh(suffix: str) -> str:
-    """An absolute path that does not exist yet, in this run's scratch: a `dest` every tool
-    takes."""
     return str(scratch() / f"f{next(_names)}{suffix}")
 
 
@@ -467,11 +367,6 @@ def boot(**extra: Any) -> dict[str, Any]:
 
 
 def ensure_closed() -> None:
-    """No machine at a section's edge: each section boots what it needs and ends with none.
-
-    It never raises: a stub that hung makes `status` itself time out, and a teardown that died
-    there took every later section and the verdict with it. Anything but a clear "no machine"
-    is closed, which kills after the grace period whatever the stub does."""
     try:
         alive = s.status().get("session", {}).get("alive")
     except Exception:  # noqa: BLE001 -- a status that cannot answer is a machine to close
@@ -480,23 +375,18 @@ def ensure_closed() -> None:
         call("close")
 
 
-# THE LAST WORD ON THE EMULATOR IS THIS PROCESS'S: a run that dies half-way must not leave a
-# MAME behind it on the owner's display.
+# A run that dies half-way must not leave a MAME on the owner's display.
 atexit.register(lambda: STATE.kill())
 
 
-# ======================================================== the free boards of mamedev.org
-
 FREE_BINARY = os.environ.get("MAME_STOCK_BINARY", "")
 FREE_ROMS = os.environ.get("MAME_TEST_ROMS", "")
-# A build whose gdbstub is patched to serve a thread per cpu, for the boards with several: the
-# stock stub serves its first cpu alone.
+# The stock gdbstub serves its first cpu alone; this build serves a thread per cpu.
 MULTICPU_BINARY = os.environ.get("MAME_MULTICPU_BINARY", "")
 
 
 def free_image(system: str, members: list[str], dest: Path, held: Path | None = None) -> str:
-    """The reference image of a free set, out of its zip in `held` (MAME_TEST_ROMS unless
-    named): one file, or two interleaved a byte each (`ROM_LOAD16_BYTE`)."""
+    """The reference image of a free set out of its zip: one file, or two byte-interleaved."""
     with zipfile.ZipFile((held or Path(FREE_ROMS)) / f"{system}.zip") as z:
         parts = [z.read(m) for m in members]
     data = (parts[0] if len(parts) == 1
@@ -507,10 +397,8 @@ def free_image(system: str, members: list[str], dest: Path, held: Path | None = 
 
 
 def no_joystick_ini(extra: str = "") -> str:
-    """An ini directory whose `mame.ini` names no joystick provider, made on first use: the free
-    boards run on whatever build they are given, and a debug build may abort at boot with a
-    controller connected (`mame_boot_failures.SDL3_JOYSTICK_NOTE` says why). `extra` lines
-    follow it, in a directory of their own."""
+    """An ini directory naming no joystick provider: a debug build may abort at boot with a
+    controller connected (`mame_boot_failures.SDL3_JOYSTICK_NOTE`). `extra` lines follow it."""
     ini = Path(fresh("-ini")) if extra else scratch() / "ini-no-joystick"
     if not ini.is_dir():
         ini.mkdir()
@@ -519,13 +407,11 @@ def no_joystick_ini(extra: str = "") -> str:
 
 
 class BootFailed(Exception):
-    """A board's `start` was not `ok`: its message, and the last line MAME printed."""
+    """A board's `start` was not `ok`."""
 
 
 def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
-    """`r`, the reply of a `start` that booted; otherwise `BootFailed`, which `run_boards` turns
-    into a FAIL of every cell the board owns, rather than each cell failing on the missing
-    session with `no_session` where the reason is the boot."""
+    """`r` if the `start` booted; else `BootFailed`, which `run_boards` turns into FAILs."""
     if ok(r):
         return r
     tail = str(r.get("stdout_tail") or "").strip().splitlines()
@@ -535,9 +421,6 @@ def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
 
 def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
               binary: str = FREE_BINARY, **launch: Any) -> dict[str, Any]:
-    """A free board booted on `binary` (the stock MAME unless named), `start` checking its image
-    at `addr`, and refused unless it booted (`require_booted`); `ini_extra` added to its ini
-    (`no_joystick_ini`)."""
     folder = Path(fresh("-image"))
     folder.mkdir()
     image = free_image(system, members, folder)
@@ -548,13 +431,10 @@ def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
 
 
 def circus_boot(ini_extra: str = "", **launch: Any) -> dict[str, Any]:
-    """circus, checked against its one program ROM, which its cpu sees at 0x1000, `ini_extra`
-    added to its ini, `launch` passed to `start` (`background`)."""
     return free_boot("circus", ["9004a.1a"], "0x1000", ini_extra, **launch)
 
 
 def _boards_missing(binary: str, variable: str, what: str, boards: str) -> str:
-    """Why `boards` cannot run on this host (`binary` or the zips absent), or empty."""
     if binary and FREE_ROMS and Path(binary).is_file() and Path(FREE_ROMS).is_dir():
         return ""
     return (f"set {variable} ({what}, its plugins beside it) and MAME_TEST_ROMS (the sets' "
@@ -562,38 +442,28 @@ def _boards_missing(binary: str, variable: str, what: str, boards: str) -> str:
 
 
 def free_boards_missing() -> str:
-    """Why the free boards cannot run on this host, or empty when they can."""
     return _boards_missing(FREE_BINARY, "MAME_STOCK_BINARY", "a stock MAME", "the free boards")
 
 
 def multicpu_missing() -> str:
-    """Why the multi-cpu boards cannot run on this host, or empty when they can."""
     return _boards_missing(MULTICPU_BINARY, "MAME_MULTICPU_BINARY",
                            "a MAME whose gdbstub serves a thread per cpu", "the multi-cpu boards")
 
 
-# ================================================= pangofun, a set kept apart for not verifying
-
-# PANGOFUN IS KEPT IN ITS OWN FOLDER under MAME_TEST_ROMS: MAME wants a dump of its PAL that its
-# set does not carry, and runs it once a file of that size stands in (a WRONG CHECKSUMS warning,
-# nothing more), because the driver loads it into the `pld` region and never reads that region.
-# The stand-in is written to this run's scratch only.
+# Kept in its own folder: MAME wants a dump of its PAL that the set lacks, and runs once a file of
+# that size stands in, because the driver never reads the `pld` region.
 PANGOFUN_FOLDER = "pending-pangofun"
 PANGOFUN_PAL_NAME = "palce20v8h.u42"
 PANGOFUN_PAL_BYTES = 0x157
 
 
 def pangofun_missing() -> str:
-    """Why pangofun cannot run here: the free boards' reason, or its zip absent from its folder."""
     zip_path = Path(FREE_ROMS) / PANGOFUN_FOLDER / "pangofun.zip"
     return free_boards_missing() or ("" if zip_path.is_file()
                                      else f"{PANGOFUN_FOLDER}/pangofun.zip not in MAME_TEST_ROMS")
 
 
 def pangofun_boot() -> dict[str, Any]:
-    """pangofun (an i486) booted on the stock MAME from a scratch rompath holding its zips and
-    the PAL's stand-in, `start` checking its bios, and refused unless it booted
-    (`require_booted`)."""
     held = Path(FREE_ROMS) / PANGOFUN_FOLDER
     rompath = Path(fresh("-roms"))
     (rompath / "pangofun").mkdir(parents=True)
@@ -608,20 +478,15 @@ def pangofun_boot() -> dict[str, Any]:
         boot_seconds=START_WAIT_S))
 
 
-# ======================================================== a cpu's PC against MAME's own console
-
-# Instructions a cpu is stepped to reach a PC that reads differently with its bytes reversed,
-# which a PC such as 0x0000 does not: it would judge no byte order.
+# A PC such as 0x0000 reads the same reversed, so it would judge no byte order.
 PC_STEPS_MAX = 50
 
 
 def pc_of(reply: dict[str, Any]) -> str | None:
-    """The PC a `registers` reply holds, or None."""
     return next((str(v) for k, v in (reply.get("regs") or {}).items() if k.lower() == "pc"), None)
 
 
 def tells_byte_order(pc: object) -> bool:
-    """Whether `pc` (`0x` and whole bytes) reads differently with its bytes reversed."""
     if not isinstance(pc, str) or not pc.startswith("0x") or len(pc) % 2:
         return False
     raw = bytes.fromhex(pc[2:])
@@ -629,9 +494,8 @@ def tells_byte_order(pc: object) -> bool:
 
 
 def registers_at_a_telling_pc(cpu: str = "") -> dict[str, Any]:
-    """`registers` of `cpu` (the visible one when empty) at a stop whose PC tells the byte order
-    (`tells_byte_order`), stepping that cpu up to `PC_STEPS_MAX` times; a refused read or step
-    at once, as the reply to judge, and the last reading when no stop told."""
+    """`registers` of `cpu` at a stop whose PC tells the byte order, stepping up to `PC_STEPS_MAX`
+    times; a refused read or step is returned at once."""
     named = {"cpu": cpu} if cpu else {}
     regs = call("registers", **named)
     for _ in range(PC_STEPS_MAX):
@@ -645,10 +509,8 @@ def registers_at_a_telling_pc(cpu: str = "") -> dict[str, Any]:
 
 
 def console_pc(cpu: str = "", symbol: str = "curpc") -> int | None:
-    """MAME's console's own `print <symbol>` (`curpc` unless named), for `cpu` when named: made
-    visible for it by `focus`, which must say nothing ran, and the cpu visible before put back.
-    None when the focus was refused or ran the machine, or the console's answer is not a
-    number."""
+    """MAME's console `print <symbol>` for `cpu` when named, restoring the visible cpu after.
+    None when `focus` was refused or ran the machine, or the answer is not a number."""
     before = visible_of(call("cpu_info")) if cpu else None
     if cpu:
         shown = call("focus", cpu=cpu)
@@ -662,44 +524,31 @@ def console_pc(cpu: str = "", symbol: str = "curpc") -> int | None:
 
 
 def make_visible(cpu: str) -> bool:
-    """`cpu` made the visible one, read back through `cpu_info`: a call that names another cpu
-    is then judged with the named cpu NOT the one a call naming none would act on."""
     return ok(call("focus", cpu=cpu)) and visible_of(call("cpu_info")) == cpu
 
 
 def zips_missing(*systems: str) -> str:
-    """Why one of `systems` cannot run here: its zip absent from MAME_TEST_ROMS, or empty."""
     absent = [s for s in systems if not (Path(FREE_ROMS) / f"{s}.zip").is_file()]
     return f"{', '.join(absent)} not in MAME_TEST_ROMS" if absent else ""
 
 
-# ========================================================== boards that own their cells
-
 @dataclass(frozen=True)
 class Board:
-    """A board's run, handed the section's cells; the indexes of the cells it judges; and why
-    it cannot run on this host, empty when it can, which every board states rather than
-    defaults, so a board added without it does not run unguarded."""
+    """A board's run, the cells it judges, and why it cannot run here (empty when it can),
+    stated rather than defaulted so a new board does not run unguarded."""
     run: Callable[[list[str]], None]
     owned: tuple[int, ...]
     missing: Callable[[], str]
 
 
 def boards_cover(name: str, cells: list[str], boards: tuple[Board, ...]) -> None:
-    """Refuse the run unless `boards` gives every cell of `cells` to exactly one board."""
     if sorted(i for b in boards for i in b.owned) != list(range(len(cells))):
         invalid(f"{name} does not give every cell of its section to exactly one board")
 
 
 def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
-    """Run each board in turn, each ending with no machine, and hold it to the cells it owns.
-
-    A board that cannot run here has its cells BLOCKED with the reason; one that does not boot
-    FAILS them with it, rather than each failing on the missing session. The table is checked
-    both ways, since a cell left out of it would be BLOCKED as never reached, which no verdict
-    counts: `boards_cover` at import says it names every cell once, and after each board runs,
-    what the board judged must be what it owns.
-    """
+    """Run each board in turn and hold it to the cells it owns: BLOCKED when it cannot run here,
+    FAILED when it does not boot."""
     judged = CURRENT[0].judged
     for board in boards:
         run, mine = board.run, [cells[i] for i in board.owned]
@@ -711,15 +560,11 @@ def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
         try:
             run(cells)
         except Blocked as e:
-            # A CALL THE MATRIX REFUSED (a wait past the ceiling, a bench copy gone wrong) or a
-            # run the host could not carry: the cells it left open could not be run, which is
-            # BLOCKED and never a FAIL.
             for label in mine:
                 if label not in judged:
                     blocked(label, str(e))
         except Exception as e:  # noqa: BLE001 -- a board's end is judged here, whatever it was
-            # A CRASH FAILS THE BOARD'S OPEN CELLS: left to the section it would BLOCK them,
-            # the next boards' included, and BLOCKED never counts against the run.
+            # BLOCKED never counts against the run, so a crash FAILS the open cells.
             why = (str(e) if isinstance(e, BootFailed)
                    else f"{run.__name__} raised {type(e).__name__}: {e}")
             PENDING.append({"tool": "(board)", "args": {}, "wall_s": 0.0,
@@ -736,16 +581,11 @@ def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
                 cell(label, False, f"{run.__name__} owns this cell and never judged it")
 
 
-# ================================================================ the run itself
-
-
 SECTIONS_VAR = "MAME_LIVE_SECTIONS"
 JOBS_VAR = "MAME_LIVE_JOBS"
 
 
 def _chosen() -> list[Section]:
-    """The sections `MAME_LIVE_SECTIONS` names by letter, all of them when it is unset; an
-    unknown letter is INVALID."""
     wanted = os.environ.get(SECTIONS_VAR, "").strip().upper()
     letters = {sec.block for sec in SECTIONS}
     if unknown := sorted(set(wanted) - letters):
@@ -766,8 +606,6 @@ def _workers() -> int:
 
 
 def _pool(pooled: list[Section], workers: int) -> live_pool.PoolResult:
-    """The pooled sections as one job per letter, this very script run with that letter alone,
-    one line per job as it ends."""
     out = scratch() / "jobs"
     print(f"jobs: {workers} at once, logs and summaries in {out}", flush=True)
     letters = sorted({sec.block for sec in pooled})
@@ -786,8 +624,6 @@ def _pool(pooled: list[Section], workers: int) -> live_pool.PoolResult:
 
 
 def _adopt(pooled: list[Section], result: live_pool.PoolResult) -> None:
-    """The pooled sections' cells judged here as their jobs declared them, in plan order, and
-    the jobs' transcripts appended to this run's."""
     for sec in pooled:
         print(f"\n== [{sec.block}] {sec.title} (pooled)")
         CURRENT[:] = [sec]
@@ -798,10 +634,8 @@ def _adopt(pooled: list[Section], result: live_pool.PoolResult) -> None:
             else:
                 cell(label, outcome == "OK", why)
     for r in result.results:
-        # A JOB'S EXIT CODE THAT ITS SUMMARY DOES NOT EXPLAIN is a failure of its own: a cell
-        # judged under a label nobody planned fails the child by that name and never reaches
-        # the summary, which may declare only the planned labels. 1 is a FAIL and 3 a run with
-        # nothing judged; anything else is a child that did not end by itself.
+        # A cell under an unplanned label fails the child by that name without reaching its
+        # summary, so an exit code the summary does not explain is a failure of its own.
         declared_fail = any(v == "FAIL" for v in r.outcomes().values())
         if (r.rc == 1 and not declared_fail) or r.rc not in (0, 1, 3, None):
             cell(f"JOB {r.job.name} EXITED {r.rc}, WHICH ITS SUMMARY DOES NOT EXPLAIN", False,
@@ -813,7 +647,6 @@ def _adopt(pooled: list[Section], result: live_pool.PoolResult) -> None:
 
 
 def _declare(path: Path, chosen: list[Section], elapsed_s: float) -> None:
-    """This run's cells as one job of a pooled run declares them (`live_pool`)."""
     outcomes: dict[str, live_pool.Outcome] = {
         x: cast(live_pool.Outcome, sec.judged.get(x, "BLOCKED")) for sec in chosen
         for x in sec.labels}
@@ -824,24 +657,19 @@ def _declare(path: Path, chosen: list[Section], elapsed_s: float) -> None:
 
 
 def _invalid_run(why: str) -> None:
-    """A run with no verdict: ended first, so INVALID is its last line."""
     _unfinished()
     print(f"INVALID: {why}")
     raise SystemExit(EXIT_INVALID)
 
 
 def _leave(signum: int, _frame: object) -> None:
-    """`timeout` ends a run with SIGTERM and a closed terminal with SIGHUP: turned into an exit,
-    a pooled run's stop reaches its children, which run in process groups of their own."""
     raise SystemExit(128 + signum)
 
 
 def run_sections(name: str) -> None:
-    """Run the sections `MAME_LIVE_SECTIONS` names (every one when unset) in order, each on a
-    declaration store of its own, and close with the tally and the verdict `finish` prints under
-    `name`: exit 0 with no FAIL, 1 with any, 3 when nothing ran, the plan names a cell twice, or
-    a pooled merge cannot be believed. With more than one job (`MAME_LIVE_JOBS`, unset half the
-    host's CPUs) the sections that are not `alone` run as jobs of their own, one per letter."""
+    """Run the chosen sections in order, then the tally and `finish(name)`: exit 0 with no FAIL,
+    1 with any, 3 when nothing ran, a cell is planned twice or a pooled merge is not believable.
+    With more than one job (`MAME_LIVE_JOBS`) sections not `alone` run one job per letter."""
     chosen = _chosen()
     summary = os.environ.get(SUMMARY_VAR, "")
     workers = _workers()
@@ -869,8 +697,7 @@ def run_sections(name: str) -> None:
                 continue
             print(f"\n== [{sec.block}] {sec.title}")
             CURRENT[:] = [sec]
-            # A clean declaration store per section: what one section declared cannot re-arm in
-            # the next one's `start` and cut its runs.
+            # What one section declared must not re-arm in the next one's `start`.
             isolate_state("mame-live-matrix-state-")
             try:
                 sec.run()

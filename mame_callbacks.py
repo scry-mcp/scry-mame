@@ -1,17 +1,6 @@
-"""The guard the callbacks of every census this server keeps (the count watch, the capture, the
-palette log, the film) run their bodies under, and how a dump carries what it caught.
+"""Guards for census callbacks, and how a dump carries what they caught.
 
-WHY IT EXISTS. MAME drops an error raised inside a write tap without a trace (not on
-stdout, not in `error.log`, and the tap goes on firing and raising at every write), so a body with
-a bug read as a tap that saw nothing, a zero indistinguishable from a register nobody writes. An
-error in a notifier or a periodic hook lands on stdout as a `[LUA ERROR]` line per call, which no
-census reads. So each tap and notifier passes its body through `guarded`, and each dumper runs
-under `dump_guarded`: an error is counted on its item and the first message kept, the dump writes
-both (`errors=` on its head line, read by name, the message on an `e` line right before `end`),
-and the reply carries them as `callback_errors`. A dumper opens its files through the guard's
-`opened`, so one that raises half way through a write has them closed, and its failure logged.
-
-It imports nothing of the server's: every census module imports it.
+MAME drops an error raised in a write tap silently, so a buggy body read as a tap that saw nothing.
 """
 
 from __future__ import annotations
@@ -22,23 +11,15 @@ from typing import Any
 from scry_core import prose
 from scry_core.reply_contract import or_unavailable
 
-# The characters of the first error a dump keeps: it rides on every survey of its tap.
 FIRST_ERROR_MAX_CHARS = 300
-# The frame a dump carries on a machine with no screen.
 NO_FRAME = -1
 
-# THE NAME OF THE GUARD'S OPEN, interpolated where a dumper writes after it opens (the tally's,
-# the capture's, the palette log's; the film's composes its text first), so a dumper that raises
-# half way through a write has its handles closed by the guard rather than left to the collector.
 OPENED = "opened"
-# The mark a dumper that raised logs, once per run of failures, under its tap's id: the dump on disk
-# is then an older one, and a reply reading it says the error and not a timing.
+# Logged once per run of failures: the dump on disk is then an older one.
 DUMP_FAILED = "MCP_DUMP_FAILED"
 
-# Three arguments and no varargs in `guarded`, because a tap is the hot path. The first message is
-# cut to printable ASCII on one line: the `e` line must read back as the one line it was written
-# as, and a byte cut must not split a character. A dumper that keeps failing is counted once per
-# run of failures, not once per periodic call, so `count` stays a count of events.
+# No varargs in `guarded`: a tap is the hot path. The first error is cut to printable ASCII on
+# one line so the `e` line reads back whole.
 LUA = f"""local function fault(t, err)
   t.errors = (t.errors or 0) + 1
   if t.first_error == nil then
@@ -84,41 +65,33 @@ local function dump_at_stops(T, dump, before)
 end
 """
 
-# A dump head's error count, read by its NAME wherever the head puts it: a group read by its
-# position in a head pattern shifts silently when a field is added or reordered before it. Optional:
-# the dumps captured as fixtures carry none, and a dump that does not say is read as saying nothing,
-# never as a zero.
+# Read by name: a positional group shifts silently when a head field moves. A dump without it
+# says nothing, which is not a zero.
 _ERRORS = re.compile(r" errors=(\d+)(?= |$)")
 
 
 def match_head(pattern: re.Pattern[str], head: str) -> tuple[re.Match[str], str | None] | None:
-    """A dump's head line matched by `pattern` once its `errors=` field is taken out, and that
-    count (None when the head carries none); None when the rest does not match, or the head
-    names a count twice."""
+    """Match `pattern` on the head minus `errors=`; also that count (None if absent)."""
     found = _ERRORS.findall(head)
     m = pattern.match(_ERRORS.sub("", head)) if len(found) <= 1 else None
     return None if m is None else (m, found[0] if found else None)
 
 
 def split_error_line(lines: list[str]) -> tuple[list[str], str | None]:
-    """A dump's lines without the `e` line the first error is written on, right before `end`, and
-    that message; None when no callback raised."""
+    """The lines without the `e` line before `end`, and its message (or None)."""
     if len(lines) >= 2 and lines[-1] == "end" and lines[-2].startswith("e "):
         return lines[:-2] + lines[-1:], lines[-2][2:]
     return lines, None
 
 
 def parsed(count: str | None, first: str | None) -> dict[str, Any]:
-    """The `errors` and `first_error` a parser adds to a dump: `errors` None for a dump that
-    carries no count."""
+    """The `errors` and `first_error` a parser adds to a dump."""
     return {"errors": None if count is None else int(count), "first_error": first}
 
 
 def read_whole(text: str, head: re.Pattern[str], with_body: bool
                ) -> tuple[re.Match[str], list[str], dict[str, Any]] | None:
-    """A dump or a header as a dumper wrote it: its head line matched by `head`, the lines
-    between it and `end` (none for a header alone, `with_body` False), and its error account
-    (`parsed`); None when the text is not a whole one, since a half-written file is no answer."""
+    """Head match, body and error account of a whole dump."""
     lines, first = split_error_line(text.splitlines())
     if not lines or lines[-1] != "end" or (not with_body and len(lines) != 2):
         return None
@@ -134,7 +107,7 @@ NONE_RAISED_WHY = "no callback raised"
 
 
 def reply(dump: dict[str, Any]) -> dict[str, Any] | None:
-    """A parsed dump's `callback_errors` as a reply carries them, None when it carries no count."""
+    """A parsed dump's `callback_errors`, None without a count."""
     if dump.get("errors") is None:
         return None
     return {"count": dump["errors"],
@@ -142,8 +115,7 @@ def reply(dump: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def said(errors: dict[str, Any] | None, whose: str = "its") -> str:
-    """The clause a reply's prose adds when `whose` callbacks raised, empty when none did: the one
-    sentence every summary, `why` and refusal carries."""
+    """The clause a reply adds when `whose` callbacks raised."""
     if not errors or not errors.get("count"):
         return ""
     return (f"{whose} callbacks raised {prose.counted(errors['count'], 'time')} (the first: "

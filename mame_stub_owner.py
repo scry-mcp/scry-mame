@@ -1,27 +1,9 @@
 """Whose gdbstub a port serves, proved by the process that holds it and never by the port.
 
-A connected stub leaves nothing listening on its port (`Session.dial`), so a second MAME told
-the same port listens beside a live session, and a dial reaches whichever listens first: two
-starts racing between a free-port probe and MAME's own bind both end up told one port, and each
-drives the other's machine with neither reply saying so. So the pid this server spawned is
-proved around the one dial:
-
-- before it, the only listener on the port has to be that pid. A port nothing listens on is the
-  boot under way (`NotListening`, an `OSError`, so the boot's wait goes on); any other pid
-  listening is refused WITHOUT dialling, because the dial would take the one connection that
-  other MAME serves;
-- after it and before its first byte, the far end has to live in that same pid. MAME accepts
-  only when its debugger first polls, so the connection can sit in the listen queue, owned by no
-  process, for the rest of the boot: the proof waits for the accept, and a far end in another
-  process is closed with nothing sent on it.
-
-`bind_probe` answers whether a port is free at all, by binding it (`mame_launch` asks it for a
-free port and of a port a caller names). The instrument that names the holder is `lsof` in its
-declared field format (`-F`, one field per line, a letter
-naming each), never its table. `-w` silences its warnings, so anything it prints on stderr is
-an error: `lsof` answers 1 for "no match" and for a failure alike, and stderr is what tells
-them apart. An `lsof` that is absent or broken is a host that cannot prove whose stub this is,
-refused as such, never read as "nobody listens".
+A connected stub leaves nothing listening, so racing starts can share a port. Before
+the dial the only listener must be the spawned pid (a dial takes its one connection); after
+it the far end must live in that pid. A missing or broken `lsof` is refused, never read
+as "nobody listens".
 """
 
 from __future__ import annotations
@@ -35,17 +17,13 @@ from dataclasses import dataclass
 
 import gdb_session as gs
 
-#: How long one `lsof` may take before it counts as broken: it answers in tens of milliseconds
-#: on this kind of query, so five seconds is a hung instrument, not a slow one.
 LSOF_TIMEOUT_S = 5.0
 
-#: How often the accept is looked for after the dial: the boot it waits on takes seconds.
 ACCEPT_POLL_S = 0.1
 
 
 class StubNotOurs(gs.SessionError):
-    """Another process serves the gdbstub's port: its listener before the dial (never dialled),
-    or the far end of the connection after it (closed with nothing sent)."""
+    """Another process serves the gdbstub's port."""
 
     def __init__(self, port: int, pids: list[int], ours: int) -> None:
         super().__init__(f"port {port} is served by pid {', '.join(map(str, pids))}, not by "
@@ -56,28 +34,23 @@ class StubNotOurs(gs.SessionError):
 
 
 class StubUnproved(gs.SessionError):
-    """Whose gdbstub the port serves could not be established: the instrument that proves it
-    is absent or failed."""
+    """`lsof` is absent or failed."""
 
 
 class StubNotAccepted(gs.SessionError):
-    """The connection was made and no process accepted it within the boot's bound: a stub that
-    never answered, told apart from one that answered as somebody else's."""
+    """No process accepted the connection in time."""
 
 
 class NotListening(OSError):
-    """Nothing listens on the port yet: the boot has not reached the stub. An `OSError`, the
-    family a refused connection already belongs to, so the boot's wait treats it as one."""
+    """Nothing listens yet; an `OSError` so the boot keeps waiting."""
 
 
 class MameGone(ConnectionAbortedError):
-    """The MAME the proof waits on exited before it accepted: an `OSError`, so the boot reads
-    it as the death it is, with its exit code, rather than waiting out its bound."""
+    """The MAME exited before it accepted."""
 
 
 def _fields(args: list[str]) -> list[str]:
-    """`lsof`'s field lines for `args`, empty for an honest "no match"; `StubUnproved` for an
-    `lsof` that is absent, hung, or said anything on stderr."""
+    """`lsof`'s field lines, empty for "no match"; `StubUnproved` if absent, hung or noisy."""
     lsof = shutil.which("lsof")
     if lsof is None:
         raise StubUnproved("`lsof` is not on this host's PATH, and it is the instrument that "
@@ -94,14 +67,9 @@ def _fields(args: list[str]) -> list[str]:
 
 
 def bind_probe(port: int) -> int | None:
-    """THE ONE PROBE: bind `127.0.0.1:port` and let go at once, answering the port bound (the
-    one the kernel chose, for 0) or None when the bind is refused. It asks by BIND and never by
-    connecting: a connect CONSUMES the one connection a MAME's stub serves.
+    """Bind `127.0.0.1:port` and release it: the bound port, or None if refused.
 
-    SO_REUSEADDR IS NOT SET, and that is what makes the answer true. MAME's stub binds WITH it
-    and closes its listener once it accepts, so a connected session leaves only its established
-    socket on the port: a probe without the option is refused there, while one with it binds
-    and calls free the port of a session still being served."""
+    SO_REUSEADDR stays unset: MAME sets it, so a probe with it calls a served port free."""
     with socket.socket() as s:
         try:
             s.bind(("127.0.0.1", port))
@@ -112,15 +80,13 @@ def bind_probe(port: int) -> int | None:
 
 
 def listeners(port: int) -> set[int]:
-    """Every pid with a TCP socket LISTENING on `port`."""
+    """Every pid listening on `port`."""
     return {int(line[1:]) for line in _fields([f"-iTCP:{port}", "-sTCP:LISTEN", "-Fp"])
             if line.startswith("p")}
 
 
 def accepted_by(port: int, local_port: int) -> set[int]:
-    """Every pid holding the far end of the connection this process made from `local_port` to
-    `port`: the socket whose own address is `port` and whose peer is `local_port`. This
-    process's end, the reverse pair, is not counted."""
+    """Every pid holding the far end of the connection made from `local_port` to `port`."""
     holders: set[int] = set()
     pid = 0
     for line in _fields([f"-iTCP:{port}", "-sTCP:ESTABLISHED", "-Fpn"]):
@@ -135,9 +101,7 @@ def accepted_by(port: int, local_port: int) -> set[int]:
 
 @dataclass
 class StubOwner:
-    """The proof `Session.dial` runs around its connection, for the MAME this server spawned:
-    `alive` says whether that process still runs, `deadline` (`time.monotonic()`) is when the
-    accept stops being waited for."""
+    """The proof `Session.dial` runs around its connection."""
 
     pid: int
     port: int
@@ -145,9 +109,8 @@ class StubOwner:
     alive: Callable[[], bool]
 
     def before_dial(self) -> None:
-        # THE CHEAP QUESTION FIRST: a port that binds holds no socket at all, which is every
-        # poll of a boot that has not reached its stub yet, and costs no `lsof`.
-        if bind_probe(self.port) is not None:     # nothing on it: `lsof` has nothing to say
+        # A port that binds holds no socket, so boot polls skip `lsof`.
+        if bind_probe(self.port) is not None:
             raise NotListening(f"nothing listens on port {self.port} yet")
         holders = listeners(self.port)
         if holders - {self.pid}:

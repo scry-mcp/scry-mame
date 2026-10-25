@@ -1,17 +1,6 @@
-"""Section U of the live matrix: what a `palette_log` row says about WHEN, on m68k-dual, whose
-RAMDAC the project's manifest declares and whose game uploads its palette a frame at a time.
+"""Section U: a `palette_log` row's line and time on m68k-dual's RAMDAC.
 
-THE LINE'S REFERENCE IS MAME'S OWN `vpos()`, the debugger's `beamy`, as section T takes it for a
-capture row: read at a breakpoint on the instruction that writes the RAMDAC's data port and again
-one `step` later, the two bracket the write, and the log's row of that write must carry a line
-inside the bracket, and the line itself where the bracket is one line. Its control is the same
-log armed with the line derived one line ahead, which must miss wherever the bracket is one line.
-THE ORDER'S known answer is the log itself: one tap, one clock, so the time a row carries rises
-with the row's number.
-
-`live_matrix.py` registers this section; run alone, it is the same machinery over it only:
-
-    uv run python tests/live/matrix_palette_stamps.py
+Run alone: `uv run python tests/live/matrix_palette_stamps.py`.
 """
 
 from __future__ import annotations
@@ -53,7 +42,7 @@ U_CELLS = [
 
 
 def _rows() -> list[mramdac.Row]:
-    """The log's rows, from the file its read names."""
+    """The log's rows."""
     read = call("palette_log", palette_port=RAMDAC, limit=1)
     path = read.get("rows_path")
     return list(mramdac.rows(Path(str(path)))) if path else []
@@ -68,15 +57,13 @@ def _line_of(frame: Any, pc: int) -> int | None:
 def _u_m68k_dual(t: list[str]) -> None:
     boot()
     call("gfx_load", path=MANIFEST)
-    # The upload runs once the game is past its boot, as section F finds it.
     for _ in range(9):
         call("run_for", frames=100, seconds=10.0)
     armed = call("palette_log", palette_port=RAMDAC, arm=True)
     call("run_for", frames=2, seconds=10.0)
     rows = _rows()
-    # THE WRITER WHOSE WRITES SPREAD OVER THE MOST LINES, so the bracket is taken where the
-    # beam moves (a writer confined to the vblank answers one line at every stop); its count of
-    # writes breaks a tie. Spelled as a reply spells a pc, which the stop's `pc` is compared with.
+    # Pick the writer spread over the most lines: one confined to vblank gives one line at every
+    # stop. The pc is spelled as a reply spells it.
     lines: dict[int, set[int | None]] = collections.defaultdict(set)
     for r in rows:
         if r.kind == "d":
@@ -84,8 +71,6 @@ def _u_m68k_dual(t: list[str]) -> None:
     counts = collections.Counter(r.pc for r in rows if r.kind == "d")
     best = max(lines, key=lambda pc: (len(lines[pc]), counts[pc]), default=None)
     if best is None:
-        # The game wrote no palette in the frames armed: a fact about its scene, which says
-        # nothing of the log.
         for label in t:
             blocked(label, f"no data write logged in two frames ({said(armed, 80)})")
         call("palette_log", palette_port=RAMDAC, clear=True)
@@ -101,13 +86,11 @@ def _u_m68k_dual(t: list[str]) -> None:
     call("run_for", frames=2, seconds=10.0)
     times = [r.time_attoseconds for r in sorted(_rows(), key=lambda r: r.n)
              if r.time_attoseconds is not None]
-    # Two writes of one instruction can share a reading of the clock, so the order is `>=`; no
-    # state load is made here, which is the one row whose time goes back.
+    # `>=`: two writes of one instruction can share a clock reading.
     cell(t[1], len(times) > 1 and all(b >= a for a, b in zip(times, times[1:], strict=False)),
          f"{len(times)} stamped rows of {len(rows)}; first {times[:2]}")
     call("palette_log", palette_port=RAMDAC, clear=True)
-    # THE CONTROL: the derivation one line ahead, armed in the log's place, at the same kind of
-    # stop, must disagree with `beamy` every time the bracket is one line.
+    # Control: a derivation one line ahead must miss beamy wherever the bracket is one line.
     exact = mcapture.BEAM_LINE_LUA
     ahead, moved = re.subn(r"return math\.floor\(", "return 1 + math.floor(", exact)
     if moved != 1:

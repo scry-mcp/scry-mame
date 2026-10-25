@@ -1,34 +1,22 @@
-"""The palette write log: which pen each write to a palette's ports landed on, who made it, and
-the colour it left, taken inside MAME at emulation speed (`palette_log`), and the answer to "who
-set this pen" that `screen_view`'s pixel mode joins to the index screen. It covers every kind of
-palette port the manifest states (`palette_ports`: a RAMDAC, a latch, a sequence).
+"""The palette write log (`palette_log`): which pen each write to a palette's ports landed on,
+who made it and the colour it left, taken inside MAME at emulation speed, and the answer to "who
+set this pen" that `screen_view`'s pixel mode joins to the index screen.
 
-WHY A LOG AND NOT A COUNT WATCH. A RAMDAC is an index port and a data port: the index is written
-once, then the components one after another on the data port, and the index moves on by itself
-after the last of them. So a pen's colour is the sum of several writes to a port that names no
-pen, and which pen a data write landed on is only known by following the device's own state from
-the last index write. A count watch on the ports counts values; the log runs the state machine.
+A log and not a count watch: a RAMDAC's colour is several data writes to a port that names no
+pen, so which pen a write landed on is only known by following the device's own state machine
+(`ramdac_device`, `src/devices/video/ramdac.cpp`): an index write sets the index and zeroes the
+component counter; a data write lands on pen `pen_base + index`, component `order[counter]`;
+after the third the index moves on by one if the device auto-increments (`auto_increment: false`
+keeps it). Until the first index write after arming, a reset or a state load the index is not
+known: such a write is counted `unsynced` and lands on no pen, because a guessed index is a
+plausible wrong pen. The Lua that runs it is `mame_ramdac_lua`'s.
 
-THE STATE MACHINE IS MAME'S `ramdac_device` (`src/devices/video/ramdac.cpp`): an index write sets
-the index and sends the component counter back to 0; a data write lands on pen `pen_base +
-index`, component `order[counter]`, and the counter moves on, returning to 0 at three, when the
-index (a byte) moves on by one if the device auto-increments (MAME's `ramdac_device` always does;
-`auto_increment: false` states a device that keeps its index). Until the first index write after
-the log is armed, the machine is reset or a state is loaded, the index is not known: such a write
-is counted `unsynced` and lands on no pen, because a guessed index is a plausible wrong pen. The
-Lua that runs it inside MAME, and how it tells the guest's writes from the debugger's, is
-`mame_ramdac_lua`'s; this module arms it, reads what it wrote and answers from that.
+The packed protocols (`latch`, `sequence`, laws in REFERENCE.md) put a whole colour in one word:
+their pens are dumped as the word and the bits of it seen written, and `decode` reads the colour.
 
-TWO PACKED PROTOCOLS put a whole colour in one word (`protocol` `latch` and `sequence`, whose
-laws REFERENCE.md states): their pens are dumped as the word and the bits of it seen written,
-never as components, and `decode` reads the colour out of the word under the entry's law, so
-the tap keeps what the port carried and the reading of it lives in one place.
-
-WHAT IS KEPT. Per pen, the newest data write and the components as the log composed them: at most
-`pen_count` pens, never cut, which is what answers "who set it" after any length of run. Beside it
-the ordered log, the capture's way (`mame_capture`): the first `ROWS_MAX` rows kept and the rest
-counted, appended to the scratch at a stop. The record, the install answer, the dump reading and
-the removal are every tap's (`mame_tap`), in a registry of this module's own.
+Kept: per pen the newest data write and its composed components, at most `pen_count` pens and
+never cut, so "who set it" survives any run; beside it the ordered log, the capture's way
+(`mame_capture`): the first `ROWS_MAX` rows, the rest counted.
 """
 
 from __future__ import annotations
@@ -64,9 +52,7 @@ from mame_state import STATE
 ROWS_MAX = capture.ROWS_MAX
 LIMIT_MAX = 256
 LIMIT_DEFAULT = 16
-# THE SETTERS A REPLY LISTS: a guest that uploads its palette through an unrolled loop has one
-# writer per pen, a list no argument bounded, so the reply carries the first ones and the count
-# beside them, as `gfx_locate` cuts its matches, and a file holds the whole list.
+# an unrolled palette upload has one writer per pen: the reply lists the first and a file the rest
 SETTERS_LISTED_MAX = 32
 BY = {"g": "guest", "d": "debugger"}
 DEBUGGER_NOTE = ("a `debugger` write was made while the machine stood in the debugger (this "
@@ -80,8 +66,7 @@ PARTIAL_NOTE = ("`partial_writes` merged into a pen whose other bits the log had
 _HEAD = re.compile(
     rf"^{rlua.HEADER} (\S+) seq=(\d+) frame=(-?\d+) total=(\d+) index_writes=(\d+) unsynced=(\d+) "
     r"desyncs=(\d+) rows=(\d+) overflow_rows=(\d+) notifiers=(\d+) data_width=(\d+) "
-    # `partial_writes` is optional, as `errors` is (read by name, `callbacks.match_head`):
-    # the byte RAMDAC dumps captured as fixtures carry neither
+    # `partial_writes` is optional: the byte RAMDAC dumps captured as fixtures lack it
     r"endianness=(\w+) cpu=(\S+)(?: partial_writes=(\d+))?$")
 _PEN = re.compile(r"^p ([0-9a-f]+) (\d+) (\d+) (-?\d+) ([0-9a-f]+) ([gd]) (\S+) (\S+) (\S+)$")
 _WORD = re.compile(r"^w ([0-9a-f]+) (\d+) (\d+) (-?\d+) ([0-9a-f]+) ([gd]) ([0-9a-f]+) "
@@ -89,57 +74,47 @@ _WORD = re.compile(r"^w ([0-9a-f]+) (\d+) (\d+) (-?\d+) ([0-9a-f]+) ([gd]) ([0-9
 _ROW = re.compile(r"^(?:([idw]) (\d+) (-?\d+) ([0-9a-f]+) ([gd]) (.*)|x (\d+) (-?\d+) (\w+))$")
 
 
-# ------------------------------------------------------------------ the tap
-
 def cpu_of(r: mm.PalettePort) -> str | None:
-    """The cpu a palette port is written by: the entry's, else the stub's first cpu."""
+    """The cpu a palette port is written by."""
     return ":" + r.cpu.lstrip(":") if r.cpu else STATE.first_cpu
 
 
 def owner_of(r: mm.PalettePort) -> dec.Owner:
-    """The key the log's record is held under beside the count watches: never a watch's ref."""
+    """The key the log's record is held under, never a watch's ref."""
     return (f"ramdac:{r.name}", cpu_of(r))
 
 
 def id_for(r: mm.PalettePort) -> str:
-    """The id the Lua registry holds the log under and its files are named by: the two ports on
-    their cpu, so two names for one palette port meet one tap."""
+    """The id the Lua registry and the files name the log by; two names for one port share it."""
     first = r.data_port if r.index_port is None else r.index_port
     return f"ramdac_{tally.id_for(cpu_of(r), first, 1, r.space)}_{r.data_port:x}"
 
 
 def paths(scratch: Path, log_id: str) -> tuple[Path, Path, Path]:
-    """The dump the tap's periodic rewrites, the rows file the tap appends to, and the setters file
-    a read with no `pen` writes: the files `clear` removes."""
+    """The dump, rows and setters files: the ones `clear` removes."""
     return (scratch / f"ramdac-{log_id}.txt", scratch / f"ramdac-{log_id}.rows",
             scratch / f"ramdac-{log_id}.setters.json")
 
 
 def law(r: mm.PalettePort) -> tuple[Any, ...]:
-    """What the tap was composed from: an entry that differs here reads the log wrongly."""
+    """What the tap was composed from: an entry differing here reads the log wrongly."""
     return (st.bare_tag(r.palette), cpu_of(r), r.index_port, r.data_port, r.order,
             r.component_bits, r.auto_increment, r.pen_base, r.space, r.protocol, r.pen_count,
             r.components_bit_reversed, r.index_flag_mask)
 
 
 def fresh() -> bool:
-    """Whether the machine stands where `start` parked it and has executed nothing since (no
-    stop has been read after the park's, and it was not released): v30's driver zeroes its
-    `sequence` offset as its video starts, before the first instruction, so a log armed here
-    knows it."""
+    """Whether the machine stands where `start` parked it, executed nothing since: v30's driver
+    zeroes its `sequence` offset before the first instruction, so a log armed here knows it."""
     ses, stop = STATE.ses, STATE.last_stop
     return (ses is not None and not ses.running and stop.get("cause") == "start"
             and ses.stop_count == stop.get("stop_count"))
 
 
-# ------------------------------------------------------------------ what the tap wrote
-
 @dataclass(frozen=True)
 class PenWrite:
-    """A pen as the dump holds it: its writes, the newest one, and its components in r, g, b
-    order, None where the log has not seen that component written. A packed protocol's pen
-    holds its `word` instead, with the bits of it the log saw written (`known`), and its
-    components are `decode`d from that under the entry's law."""
+    """A pen as the dump holds it: components in r, g, b order (None where unseen); a packed
+    protocol's pen holds its `word` and the bits seen written (`known`) instead."""
 
     pen: int
     writes: int
@@ -186,9 +161,8 @@ def parse_dump(text: str) -> dict[str, Any] | None:
 
 @dataclass(frozen=True)
 class Row:
-    """One row of the ordered log: an index write (`kind` `i`, `value` the index), a data write
-    (`d`: `pen` None when unsynced, `slot` its place in `order`), a packed protocol's data write
-    (`w`: `value` the word, `mask` the bits of it written), or a desync (`x`, `reason`)."""
+    """One log row: index write `i`, data write `d` (`pen` None when unsynced, `slot` in `order`),
+    packed data write `w` (`value` the word, `mask` the bits written), or desync `x`."""
 
     kind: str
     n: int
@@ -200,15 +174,12 @@ class Row:
     value: int = 0
     reason: str = ""
     mask: int = 0
-    # WHEN, as a capture row says it: the beam line and the emulated time of the write. None on a
-    # row a log armed before the stamp wrote (the rows of a capture taken then).
+    # None on a row written by a log armed before rows carried the stamp
     line: int | None = None
     time_attoseconds: int | None = None
 
 
-#: The stamp every event row ends with: the beam line, then the emulated seconds and attoseconds,
-#: the attoseconds at their full eighteen digits, so a row cut inside them is no row (as a
-#: capture's time is read).
+#: Beam line, emulated seconds, attoseconds at full eighteen digits so a cut row is no row.
 _STAMP = re.compile(r"^(.*) (-?\d+) (\d+) (\d{18})$")
 
 
@@ -218,8 +189,7 @@ def rows(path: Path) -> Iterator[Row]:
 
 
 def rows_of(lines: Iterable[str]) -> Iterator[Row]:
-    """Every row of `lines` in order, up to the first line of another shape (`mame_capture.rows`
-    says why)."""
+    """Every row of `lines` in order, up to the first line of another shape."""
     for line in lines:
         row = _row(line.rstrip("\n"))
         if row is None:
@@ -228,8 +198,7 @@ def rows_of(lines: Iterable[str]) -> Iterator[Row]:
 
 
 def _row(line: str) -> Row | None:
-    """A row, its stamp read off its end when it carries one: the fields before the stamp keep
-    the shape and the count every kind has, so a line is either a stamped row or an old one."""
+    """A row, its stamp read off its end when it carries one."""
     stamped = _STAMP.match(line)
     if stamped is not None and (row := _fields(stamped.group(1))) is not None:
         beam = int(stamped.group(2))
@@ -266,8 +235,7 @@ def _fields(line: str) -> Row | None:
 
 
 def widen(value: int, bits: int) -> int:
-    """A component of `bits` bits as the 8 a colour holds, by bit replication: MAME's `palNbit`
-    (`pal6bit` is `v << 2 | v >> 4`), and the value itself at 8."""
+    """A `bits`-bit component as 8 bits by bit replication, as MAME's `palNbit`."""
     v = value & ((1 << bits) - 1)
     out, filled = 0, 0
     while filled < 8:
@@ -289,10 +257,8 @@ def _reversed(value: int, bits: int) -> int:
 
 
 def decode(r: mm.PalettePort, word: int, known: int) -> tuple[int | None, int | None, int | None]:
-    """A packed protocol's word as r, g, b components: `order`'s components from bit 0 up,
-    `component_bits` each, each bit-reversed when the entry says so (v30's
-    `bitswap<8>(x,7,6,5,0,1,2,3,4)` on a 5-bit component); all None until every colour bit of
-    the word has been seen written (`known`)."""
+    """A packed word as r, g, b components: `order`'s from bit 0 up, `component_bits` each,
+    bit-reversed when the entry says so; all None until every colour bit has been seen (`known`)."""
     bits = r.component_bits
     if known & r.colour_mask() != r.colour_mask():
         return None, None, None
@@ -304,14 +270,12 @@ def decode(r: mm.PalettePort, word: int, known: int) -> tuple[int | None, int | 
 
 
 def components_of(p: PenWrite, r: mm.PalettePort) -> tuple[int | None, int | None, int | None]:
-    """A dumped pen's r, g, b components, a packed word decoded under `r`'s law."""
+    """A dumped pen's r, g, b components."""
     return p.components if p.word is None else decode(r, p.word, p.known)
 
 
 def replay(path: Path, r: mm.PalettePort) -> Iterator[tuple[Row, str | None]]:
-    """Every kept row with the colour its pen held after it (None for an index write, a desync,
-    an unsynced write, or a pen with a component or a bit not yet seen): the rows start where
-    the log began, so composing them in order is what the tap composed."""
+    """Every kept row with the colour its pen held after it (None where not yet known)."""
     comps: dict[int, list[int | None]] = {}
     words: dict[int, tuple[int, int]] = {}
     for row in rows(path):
@@ -339,9 +303,7 @@ def _writer(n: int, frame: int, pc: int, by: str, cpu: str | None) -> dict[str, 
 
 
 def pen_fields(p: PenWrite, r: mm.PalettePort, cpu: str | None) -> dict[str, Any]:
-    """A pen of the dump as a reply shows it: its colour, whether all three components were seen,
-    the raw components (and a packed protocol's word), how many writes it took, and the newest
-    of them."""
+    """A pen of the dump as a reply shows it."""
     comps = components_of(p, r)
     col = colour(comps, r.component_bits)
     out = {"pen": p.pen, "color": or_unavailable(col, INCOMPLETE_WHY),
@@ -354,8 +316,7 @@ def pen_fields(p: PenWrite, r: mm.PalettePort, cpu: str | None) -> dict[str, Any
 
 
 def setters(pens: list[PenWrite], cpu: str | None) -> list[dict[str, Any]]:
-    """Who set the pens as they stand: each writer of a pen's newest write, with how many pens it
-    set last, most first."""
+    """The writers of the pens' newest writes, most pens first."""
     counts: dict[tuple[int, str], list[int]] = {}
     for p in pens:
         counts.setdefault((p.pc, p.by), []).append(p.pen)
@@ -369,9 +330,8 @@ def setters(pens: list[PenWrite], cpu: str | None) -> list[dict[str, Any]]:
 
 
 def _setters_fields(every: list[dict[str, Any]], path: Path) -> dict[str, Any]:
-    """The first `SETTERS_LISTED_MAX` setters, their total, and the file holding them all, written
-    whole or not at all. The dump has been read by now: a scratch that refuses the file costs the
-    file, said where `setters_path` would be (`unavailable`), and never the read."""
+    """The first `SETTERS_LISTED_MAX` setters, their total and the file holding all of them; a
+    scratch that refuses the file costs the file (`setters_path` unavailable), never the read."""
     fields: dict[str, Any] = {"setters": every[:SETTERS_LISTED_MAX], "setters_total": len(every)}
     tmp = path.with_name(path.name + ".tmp")
     try:
@@ -383,23 +343,20 @@ def _setters_fields(every: list[dict[str, Any]], path: Path) -> dict[str, Any]:
     return {**fields, "setters_path": str(path)}
 
 
-#: Why a row says no line and no time: a log armed before rows carried their stamp wrote it.
 UNSTAMPED_WHY = "this row was written before the log's rows carried their line and time"
 
 
 def _when(row: Row) -> dict[str, Any]:
-    """A row's `line` and `time_s`, as a capture row says them (`mame_capture.row_fields`)."""
+    """A row's `line` and `time_s`."""
     if row.time_attoseconds is None:
         return {"line": unavailable(UNSTAMPED_WHY), "time_s": unavailable(UNSTAMPED_WHY)}
     return {"line": or_unavailable(row.line, capture.NO_SCREEN_WHY),
             "time_s": row.time_attoseconds / capture.ATTOSECONDS_PER_SECOND}
 
 
-#: A pen's colour before all its components were seen, and a component not seen yet.
 INCOMPLETE_WHY = "the pen's components have not all been seen written"
 UNSEEN_WHY = "no write of this component has been seen"
 
-#: Why a desync row lost the index, by the word its tap logged.
 DESYNC_WHY = {
     "reset": "the machine was reset, so the index the device holds is no longer known",
     "load": "a state was loaded, so the index the device holds is no longer known",
@@ -409,8 +366,7 @@ DESYNC_WHY = {
 
 
 def row_fields(row: Row, col: str | None, r: mm.PalettePort, cpu: str | None) -> dict[str, Any]:
-    """One row as a reply shows it, with WHEN it was written; an index and a data byte are `0x`
-    text at the width written (the pen index's digits, the byte's)."""
+    """One row as a reply shows it."""
     if row.kind == "x":
         return {"n": row.n, "frame": _frame(row.frame), **_when(row), "desync": True,
                 "why": DESYNC_WHY.get(row.reason, f"the log lost its index ({row.reason})")}
@@ -434,8 +390,6 @@ def row_fields(row: Row, col: str | None, r: mm.PalettePort, cpu: str | None) ->
     return out
 
 
-# ------------------------------------------------------------------ palette_log
-
 def check_palette_log(palette_port: str = "", pen: int | None = None,
                       limit: int = LIMIT_DEFAULT, clear: bool = False, arm: bool = False,
                       **_: Any) -> None:
@@ -444,8 +398,7 @@ def check_palette_log(palette_port: str = "", pen: int | None = None,
                      "the name of an entry of the loaded manifest's `palette_ports`")
     if pen is not None:
         inputs.pen("pen", pen)
-    # ZERO ROWS IS AN ANSWER HERE: the log's account (its counts, its pens, its setters) with no
-    # row listed, which is what a caller asks for when the rows are in `rows_path`.
+    # zero rows is an answer: the account without rows, for a caller reading `rows_path`
     inputs.count("limit", limit, LIMIT_MAX, " rows", lo=0)
     vocab.check_bool("clear", clear)
     vocab.check_bool("arm", arm)
@@ -472,15 +425,14 @@ def _entry(r: mm.PalettePort) -> dict[str, Any]:
 
 
 def held(r: mm.PalettePort) -> tuple[dec.Owner, dict[str, Any]] | None:
-    """The record of the log armed under `r`'s NAME, whatever cpu it was armed on: a reloaded
-    manifest that moved the port to another cpu must still reach the tap it armed."""
+    """The record of the log armed under `r`'s name on any cpu, so a manifest that moved the port
+    still reaches its tap."""
     return mtap.held(owner_of(r)[0])
 
 
 def armed(r: mm.PalettePort) -> dict[str, Any] | None:
-    """The record of the log armed on `r`, or None; refused when it was armed from an entry the
-    loaded manifest no longer states the same way, since the rows would be read under another
-    law than the tap composed them with."""
+    """The record of the log armed on `r`, or None; refused when the entry changed since, as the
+    rows would be read under another law."""
     found = held(r)
     rec = found[1] if found else None
     if rec is not None and law(rec["palette_port"]) != law(r):
@@ -493,8 +445,7 @@ def armed(r: mm.PalettePort) -> dict[str, Any] | None:
 
 def palette_log(scratch: Path, palette_port: str, pen: int | None, limit: int,
                 clear: bool, arm: bool = False) -> dict[str, Any]:
-    """The body of the `palette_log` tool: arm the log (`arm`), read it, or clear it. A read
-    never arms: a read of a log nobody armed says which call does."""
+    """The body of the `palette_log` tool: arm, read or clear. A read never arms."""
     check_palette_log(palette_port, pen, limit, clear, arm)
     r = mm.palette_port(palette_port)
     if pen is not None and pen not in r.pens():
@@ -550,7 +501,6 @@ def palette_log(scratch: Path, palette_port: str, pen: int | None, limit: int,
     else:
         fields["pen_state"] = (pen_fields(shown[0], r, cpu) if shown else unavailable(
             f"no write of pen {pen} has been logged since the log was armed"))
-    # the newest `limit` rows, placed in the symbol table once kept rather than all of them
     kept: collections.deque[tuple[Row, str | None]] = collections.deque(maxlen=limit)
     kept.extend((row, col) for row, col in replay(rec["rows_path"], r)
                 if pen is None or row.pen == pen)
@@ -579,13 +529,9 @@ def _not_proved(r: mm.PalettePort) -> list[str]:
     return [] if r.status == "proved" else [f"{mm.PALETTE_PORTS}.{r.name}"]
 
 
-# ------------------------------------------------------------------ who set this pen
-
 def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str, Any]:
-    """`screen_view` pixel mode's third answer: the newest logged write to `pen` of the screen's
-    `palette`, joined to the pen's `live` colour (ARGB) read in the same chunk, whose
-    `mame_ramdac_lua.dump_lua` wrote the dump this reads. `set_by` unavailable says what is
-    missing."""
+    """`screen_view` pixel mode's third answer: the newest logged write to `pen`, joined to the
+    pen's `live` colour (ARGB). `set_by` unavailable says what is missing."""
     man = STATE.manifest
     name = st.bare_tag(palette)
     if man is None:
@@ -609,7 +555,6 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
             f"no palette write log is armed on palette port {r.name!r}: `palette_log(palette_port="
             f"\"{r.name}\", arm=True)` arms it, and it records from when the console next reads a "
             "line, so run the frames that set the pen again")}
-    # past `armed`, the record's cpu is the entry's, so its owner is the entry's
     item, dump = mtap.read_tap(scratch, owner_of(r), None, False, parse_dump, "logged")
     if dump is None:
         return {"set_by": unavailable(item.get("why", (
@@ -626,7 +571,6 @@ def set_by(scratch: Path, palette: str | None, pen: int, live: int) -> dict[str,
         out["callback_errors"] = errors
     live_col = f"#{live & 0xFFFFFF:06x}"
     fields: dict[str, Any] = {"set_by": out}
-    # who wrote and whether the colour moved since are two facts: the note keeps both
     notes = [DEBUGGER_NOTE] if p.by == "debugger" else []
     if out["complete"]:
         out["agrees"] = out["color"] == live_col

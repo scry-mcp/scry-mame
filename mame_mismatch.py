@@ -1,13 +1,8 @@
-"""How MAME's snapshot at a stop differs from the screen a film reads, with the one
-cause each rule leaves standing named as a candidate and none asserted.
+"""How MAME's snapshot at a stop differs from the screen a film reads, with the one cause
+each rule leaves standing named as a candidate and none asserted.
 
-WHY A FILM ASKS. A kept frame is checked against `video:snapshot_pixels()`, MAME's rendering of
-it, only where that rendering is the bare screen. Where it is not, the difference is still
-information: a mirror of the screen, another picture drawn in the same pens, one colour turned
-into another everywhere, and something laid over the screen each leave a different mark, and
-`measure` reads the mark. It classifies and never diagnoses: an overlay drawn in pen colours
-leaves another picture's mark. What each field and candidate means is REFERENCE.md's, in the
-`gfx_film` section.
+It classifies and never diagnoses: an overlay drawn in pen colours leaves another picture's
+mark. What each field and candidate means is REFERENCE.md's, in the `gfx_film` section.
 """
 
 from __future__ import annotations
@@ -45,8 +40,7 @@ def _flip(shown: list[int], got: list[int], w: int, h: int) -> str:
 
 
 def _one_to_one(shown: list[int], got: list[int]) -> bool:
-    """Every screen colour is drawn as one snapshot colour, and no snapshot colour comes from two
-    screen colours."""
+    """Every screen colour maps to one snapshot colour and back."""
     ahead: dict[int, int] = {}
     back: dict[int, int] = {}
     return all(ahead.setdefault(a, b) == b and back.setdefault(b, a) == a

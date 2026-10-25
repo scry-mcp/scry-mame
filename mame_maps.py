@@ -1,13 +1,6 @@
-"""The screen maps on this server (`scry_core.screen_map`): an application's screens, each known
-by the `scry-sig/1` signatures of regions that stay still on it, and the named controls on each.
+"""The screen maps of this server (`scry_core.screen_map`), matched against one capture.
 
-ONE CAPTURE PER IDENTIFICATION. A screen is read the way `screen_signature` reads it, colours only
-in one Lua chunk, so no pen is touched, and every candidate's regions are cut from that one read:
-each read is a console round trip, and a map of many screens must not cost one per screen.
-
-IDENTIFICATION ONLY. A board takes its inputs by port and field (`input`), so there is no pointer
-for a control to be aimed at: the controls a map names are places to read, and `map_find` answers
-where each is.
+A board takes inputs by port and field, so a control is a place to read, never a pointer target.
 """
 
 from __future__ import annotations
@@ -73,8 +66,7 @@ def map_find(ses: gs.Session, scratch: Path,
     reply = running.stop_reply(ses, scratch, f"map_find: {common['evaluated_by']}",
                                **st.merged(fields, common))
     if STATE.maps.found is not None:
-        # DATED AFTER THE READ: the capture can step the machine, so the stop the screen was read
-        # at is the one this reply recorded, not the one before the call.
+        # the capture can step the machine: the stop is the reply's, not the one before the call
         STATE.maps.found = dataclasses.replace(STATE.maps.found,
                                                stop=reply.get("stop_seq"))
     return reply
@@ -82,8 +74,7 @@ def map_find(ses: gs.Session, scratch: Path,
 
 def _reader(ses: gs.Session, scratch: Path, common: dict[str, Any],
             progress: mprogress.Progress) -> screen_map.Read:
-    """`screen_signature`'s capture as the one read a map is matched against; the console's
-    account it gave lands in `common` for the reply."""
+    """`screen_signature`'s capture as the one read a map is matched against."""
     def read() -> screen_map.Grid:
         cap, said = mscreen.capture(ses, scratch, False, mlua.EVAL_WAIT_S, progress)
         common.update(said)

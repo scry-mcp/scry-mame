@@ -1,10 +1,4 @@
-"""ONE SEAM CLOSES EVERY REPLY: `summary` first, the tool's own fields, `session` last, and the
-`session` block composed by the `tool` decorator AFTER the body, from the state the server holds.
-A body that released the machine, or added a field once its envelope was built, cannot leave a
-block that describes the machine before it ran, nor a key after `session`. `running` is said in
-the `session` block alone (and by `status`, whose subject it is), so a sequence asks the block
-whether a step left the machine moving.
-"""
+"""Every reply is closed by one seam: `summary` first, `session` last, composed after the body."""
 
 from __future__ import annotations
 
@@ -30,8 +24,7 @@ import server as s  # noqa: E402
 
 @pytest.fixture
 def late_tool() -> Any:
-    """A tool registered through the decorator whose body releases the machine and adds a
-    field AFTER its envelope was built, as a body that finishes its reply late does."""
+    """A decorated tool whose body releases the machine and adds a field after its envelope."""
     def late_body() -> dict[str, Any]:
         reply = menvelope.envelope({"first": 1})
         assert mstate.STATE.ses is not None
@@ -61,8 +54,7 @@ def test_the_decorator_puts_session_last_and_composes_it_after_the_body(
 def test_a_schema_refusal_is_closed_by_the_same_composer(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The schema's refusal never reaches the decorator, so it calls the composer itself: its
-    block is the one composed from the state, here a machine the double has running."""
+    """A schema refusal never reaches the decorator, so the composer is called directly."""
     seen: list[str] = []
     real = mame_mcp.BOUNDARY.finished
 
@@ -135,9 +127,7 @@ def test_a_sequence_asks_the_session_block_whether_a_step_left_the_machine_runni
 def test_status_says_running_and_names_which_pc_it_carries(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """`status` keeps `running`, its subject. Its `pc` is the machine's, read now, and only
-    then: on a running machine the last stop's pc is `last_stop.pc`, under the key that says
-    so. `broken` follows the session block: present when the session broke, absent when not."""
+    """`status` keeps `running`; its `pc` is read now, the last stop's lives in `last_stop.pc`."""
     _running(monkeypatch, tmp_path)
     stopped = s.status()
     assert stopped["session"]["running"] is False and stopped["pc"] == "0x000f2034", stopped

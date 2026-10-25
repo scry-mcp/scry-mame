@@ -1,8 +1,3 @@
-"""One composer per refusal sentence the package says in several places: a ref that is neither a
-symbol nor an address, a ref that matches no declaration, a second declaration of what one already
-holds, a block the machine does not have. Each is pinned once here as the exact sentence; the
-callers are pinned by their own tests to go through it."""
-
 from __future__ import annotations
 
 import sys
@@ -18,7 +13,7 @@ import mame_inputs as inputs  # noqa: E402
 
 
 def test_a_ref_that_is_neither_a_symbol_nor_an_address_names_the_call_that_settles_it() -> None:
-    """The lookup named is the one that was made: on a cpu's table, `symbols_find` on that cpu."""
+    """The lookup named is the one that was made."""
     assert inputs.not_a_ref("the trigger", "fram", ":subcpu") == (
         "the trigger 'fram' is neither a symbol of :subcpu's table nor a `0x` address: "
         '`symbols_find(name=..., cpu=":subcpu")` says whether the table has one')
@@ -40,8 +35,7 @@ def test_a_ref_that_is_neither_a_symbol_nor_an_address_names_the_call_that_settl
 def test_a_second_declaration_of_one_place_names_the_clear_on_its_cpu(
     kind: mclear.ClearKind | None, cpu: str | None, tail: str,
 ) -> None:
-    """The clear reaches the holder on its own cpu alone; a report no call answers ends at the
-    rule."""
+    """The clear names the holder's own cpu; a report no call answers ends at the rule."""
     assert mclear.one_declaration("tally", "x", kind, cpu) == "one tally is one declaration" + tail
 
 
@@ -61,8 +55,7 @@ def test_a_ref_that_matches_nothing_says_what_is_held_there() -> None:
 
 
 def test_a_cpu_a_stub_without_threads_cannot_show_names_the_console_way() -> None:
-    """With no thread patch the stub shows no other cpu without running: the refusal names
-    `focus`, which shows it through the console and runs the machine."""
+    """Without a thread patch the refusal names `focus`, the console way."""
     import mame_cpus as cpus
     import mame_state as mstate
 
@@ -78,8 +71,7 @@ def test_a_cpu_a_stub_without_threads_cannot_show_names_the_console_way() -> Non
 
 
 def test_the_table_a_refusal_names_is_the_one_the_lookup_read() -> None:
-    """One table loaded for every cpu is the build's; else the named cpu's, the first cpu's when
-    none is named."""
+    """The build's table when one serves every cpu, else the named or first cpu's."""
     import mame_state as mstate
 
     one = mstate.State()

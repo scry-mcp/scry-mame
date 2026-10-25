@@ -1,8 +1,4 @@
-"""`cycles` right after `state_write(method="load")` (`mame_cycles.cycles_why`): the counter a load
-leaves
-behind is the capture's (`fixtures/console/totalcycles-after-load.txt`), and a run whose
-baseline still reads it reports `cycles` unavailable, with why; the next one reports a number.
-"""
+"""`cycles` right after a state load: a run whose baseline is the stale counter is withheld."""
 
 from __future__ import annotations
 
@@ -37,15 +33,14 @@ def _readings(text: str) -> list[tuple[int, int]]:
     return out
 
 
-# THE CAPTURE'S OWN CLOCK, from its first two readings: the cycles a frame, and where frame 0
-# would sit.
+# The capture's own clock from its first two readings.
 (_F0, _C0), (_F1, _C1) = _readings(CAPTURE)[:2]
 PER_FRAME = (_C1 - _C0) // (_F1 - _F0)
 AT_FRAME_0 = _C0 - _F0 * PER_FRAME
 
 
 def _board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
-    """A stopped machine at the capture's frame 10 whose counter behaves as the capture's."""
+    """A stopped machine at frame 10 whose counter behaves as the capture's."""
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "system", "m68k-dual")   # the captured header's name
     monkeypatch.setattr(advance, "VBLANK_SETTLE_S", 0.0)
@@ -59,10 +54,7 @@ def _board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession:
 def test_the_double_answers_as_the_capture_does(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The instrument first: the double, walked through the capture's sequence (save, five
-    frames, load, step), answers its first three readings exactly, and after the step the
-    loaded count (the capture adds that instruction's cycles, which this double does not
-    model)."""
+    """The double walked through the capture's sequence answers its readings (control)."""
     saved, ran, loaded, stepped = _readings(CAPTURE)
     ses = _board(monkeypatch, tmp_path)
     assert (_C1 - _C0) % (_F1 - _F0) == 0, "a whole number of cycles a frame"
@@ -93,8 +85,7 @@ def _run(frames: int) -> dict[str, Any]:
 def test_a_run_right_after_a_load_reports_no_cycles_and_the_next_one_does(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Save, run 5, load, run 2: the baseline is the count of frame 15 and the end is the
-    count of frame 12, a negative span. The next run is a number."""
+    """Baseline is frame 15's count and the end frame 12's: a negative span, withheld."""
     _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -110,8 +101,7 @@ def test_a_run_right_after_a_load_reports_no_cycles_and_the_next_one_does(
 def test_a_forward_load_is_withheld_too_never_a_silent_positive(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A state NEWER than where the machine stands leaves a count too small behind it, so
-    the run would read longer than it was and still look plausible."""
+    """A newer state leaves a count too small, so the run would read long yet plausible."""
     _board(monkeypatch, tmp_path)
     s.state_write("save", name="old")
     _run(5)
@@ -126,8 +116,7 @@ def test_a_forward_load_is_withheld_too_never_a_silent_positive(
 def test_a_load_whose_aligning_tick_re_reads_the_baseline_reports_the_run(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """From a stop inside a frame the first `gvblank` only reaches that frame's vblank and the
-    baseline is read again there, after the cpu executed: the count is the loaded machine's."""
+    """The first `gvblank` from inside a frame re-reads the baseline after the cpu ran."""
     ses = _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -169,8 +158,7 @@ def test_a_run_by_milliseconds_right_after_a_load_reports_no_cycles(
 def test_a_load_the_rom_check_refused_still_withholds_the_next_runs_cycles(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The refusal comes after `stateload` went out: the machine was replaced all the same,
-    and its counter is as stale as after a load that passed."""
+    """The refusal follows `stateload`, so the machine was replaced all the same."""
     ses = _board(monkeypatch, tmp_path)
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
@@ -190,8 +178,7 @@ def test_a_load_the_rom_check_refused_still_withholds_the_next_runs_cycles(
 def test_a_stop_recorded_without_running_does_not_make_the_counter_current(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A stop can be recorded while nothing executes (a console command's survey, a refusal
-    that records its own stop): the counter is still the one from before the load."""
+    """A stop recorded while nothing executes leaves the counter stale."""
     ses = _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -204,8 +191,7 @@ def test_a_stop_recorded_without_running_does_not_make_the_counter_current(
 def test_a_long_run_after_an_older_load_is_withheld_though_its_number_would_look_plausible(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Loading back five frames and running ten would have read as five frames' worth: a
-    positive number, short by the distance between the two states."""
+    """Loading back five frames and running ten would read as a short positive number."""
     _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -229,8 +215,7 @@ def test_a_step_between_the_load_and_the_run_makes_the_counter_current(
 def test_a_load_that_broke_the_session_asks_the_console_nothing_more(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A channel that lost its place is asked nothing (the mark is then unknown, taken as
-    stale), so the refusal stays the latch's."""
+    """A channel that lost its place is asked nothing; the mark is taken as stale."""
     ses = _board(monkeypatch, tmp_path)
     rom = tmp_path / "rom.bin"
     rom.write_bytes(bytes(64))
@@ -249,16 +234,11 @@ def test_a_load_that_broke_the_session_asks_the_console_nothing_more(
     assert mstate.STATE.stale_counter == cycles.StaleCounter(None, None, cycles.STATE_LOAD)
 
 
-# ------------------------------------------------- the same counter, left by a typed command
-
-
 @pytest.mark.parametrize("line", ["stateload c1", "sl c1", "rewind", "rw"])
 def test_a_typed_load_or_rewind_withholds_the_next_runs_cycles(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str,
 ) -> None:
-    """On circus, after `stateload` or `rewind` typed through `debug` the counter reads
-    what it read before, and the next run's span crosses two machines (negative, or plausible
-    and wrong). The tool's own load marks it; a typed one marks it the same way."""
+    """A typed load or rewind marks the counter stale as the tool's own load does."""
     _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -274,7 +254,7 @@ def test_a_typed_load_or_rewind_withholds_the_next_runs_cycles(
 def test_a_typed_reset_withholds_the_run_that_applies_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A typed `softreset` is applied by the next run, which restarts the count inside it."""
+    """A typed `softreset` is applied by the next run, which restarts the count."""
     _board(monkeypatch, tmp_path)
     _run(5)
     assert s.debug(command="softreset")["status"] == "ok"
@@ -288,8 +268,7 @@ def test_a_typed_reset_withholds_the_run_that_applies_it(
 def test_a_typed_reset_a_step_applied_leaves_the_next_run_counted(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The control: the step executes, so the counter is current again and the mark no longer
-    matches the baseline: the step refreshed the counter."""
+    """Control: the step executes, refreshing the counter past the mark."""
     ses = _board(monkeypatch, tmp_path)
     _run(5)
     assert s.debug(command="softreset")["status"] == "ok"
@@ -302,8 +281,7 @@ def test_a_typed_reset_a_step_applied_leaves_the_next_run_counted(
 def test_a_line_that_replaces_nothing_or_runs_after_it_sets_no_mark(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, line: str,
 ) -> None:
-    """A read marks nothing, and a line that runs the machine after its load leaves a counter
-    the run made current."""
+    """A read marks nothing; a line that runs after its load leaves a current counter."""
     _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -314,8 +292,7 @@ def test_a_line_that_replaces_nothing_or_runs_after_it_sets_no_mark(
 def test_a_typed_load_sent_and_not_answered_still_marks_the_counter(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Sent is enough: the machine may be the state's from the send on, as the tool's own load
-    takes it (`state_write(method="load")` marks in a `finally`)."""
+    """Sent is enough: `state_write(method="load")` marks in a `finally` too."""
     ses = _board(monkeypatch, tmp_path)
     s.state_write("save", name="c1")
     _run(5)
@@ -346,8 +323,7 @@ def test_the_last_command_of_a_line_that_left_the_counter_stale_names_the_why(
 def test_a_rewind_mame_refused_leaves_the_next_runs_cycles_counted(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A rewind the console refused (`rewind.refused.txt`) replaced nothing, so the next run is
-    counted. The control is the same line answered with nothing, a rewind that ran."""
+    """A refused rewind replaced nothing; the control is the same line answered with nothing."""
     refused_answer = (FIXTURES / "rewind.refused.txt").read_text()
     for line, answer, withheld in (("rewind", refused_answer, False), ("rw", refused_answer, False),
                                    ("rewind", "", True)):

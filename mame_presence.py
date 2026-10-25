@@ -1,24 +1,9 @@
-"""PRESENCE ON MAME: the edge `scry_core.presence` holds, drawn by MAME's own Lua over the window.
+"""Presence on MAME: the edge `scry_core.presence` holds, drawn by MAME's own Lua.
 
-WHERE IT IS DRAWN decides whether it can reach the evidence. The drawer draws on the render
-manager's UI container (`manager.machine.render.ui_container`), which the window's target shows
-and the snapshot target, the one `snapshot` and `record` render through, does not; the screen
-views read `screen:pixels()`, the screen's own bitmap, which no container reaches. A screen's
-container would be the wrong one: it is composed into the snapshot and the recording.
-
-WHEN IT IS DRAWN is MAME's frame-done hook (`emu.register_frame_done`), the one the UI's own
-overlays use, which runs at every repaint: every frame while the machine runs, and while the
-debugger holds it at the stop and at each command sent through the debugger's console (a
-register or memory read through the stub does not repaint). So once a call that ends stopped is
-over and `held` is in the file, the adapter sends one console command of its own (`REPAINT`),
-between calls, and the window goes dim as it would on a machine that repaints by itself.
-
-THE STATE travels in a file of the session's scratch, one word, replaced whole (`os.replace`),
-and read by the hook at each repaint: no console line, so nothing queues behind the debugger,
-and the Lua channel stays the transport's alone. The look is substituted into the drawer once,
-at `start`, from `scry_core.presence.LOOK`.
+Drawn on the render manager's UI container, which the window shows and the snapshot target and
+`screen:pixels()` do not. A stopped machine repaints only on debugger console commands, so the
+adapter sends `REPAINT` between calls once `held` is in the state file.
 """
-
 from __future__ import annotations
 
 import os
@@ -31,12 +16,9 @@ from scry_core import boundary, presence
 #: The state file's name in the scratch.
 STATE_FILE = "presence.state"
 
-#: The calls during which the session drives the machine, so presence is `acting`: a call that
-#: can move the guest on or change what it holds (it lets the machine run or stops it, feeds it
-#: input, records it running, writes its memory or registers, resets or restores it), or that
-#: cannot be told from one (`lua`, `debug`, and `focus`, which may run the machine on a stub that
-#: serves one cpu). Every other tool is `STILL_TOOLS`, and the two lists are written out so a new
-#: tool has to be put on one side: the suite holds them against the registry.
+#: Calls that can move the guest or change what it holds, or cannot be told from one (`lua`,
+#: `debug`, `focus`): presence is `acting`. Every other tool is in `STILL_TOOLS`; both are
+#: written out so a new tool must be placed (the suite holds them against the registry).
 DRIVING_TOOLS = frozenset({
     "run_to", "run_for", "trace", "step", "resume", "stop", "series_capture", "input", "record",
     "audio_record", "reset", "state_write", "throttle", "drive", "perform", "lua", "debug",
@@ -50,15 +32,7 @@ STILL_TOOLS = frozenset({
     "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
     "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add"})
 
-# THE DRAWER, one chunk of the boot harness inside its own `pcall` like the others. Its file holds
-# `held`, `acting`, or nothing at all (no session state yet), which draws nothing. Each band of the
-# edge is a ring of four boxes that do not overlap, so no pixel is blended twice; the alpha falls
-# from the rim inwards. The fade from `acting` to `held` runs over `fade` seconds of the host's
-# clock while the machine RUNS; a stopped machine is repainted only now and then, so what a
-# repaint there draws is the state as it is, never a frame of a fade. While the machine runs the
-# file is read at most every `REREAD` seconds, so a thousand frames a second do not cost a
-# thousand reads. A drawer that raises, or one that could not be set up at all, draws no more and
-# writes why beside the state file, where `status` reads it.
+# A drawer that raises writes why beside the state file, where `status` reads it.
 DRAWER = """-- Written by the mame MCP server for ONE session: the presence edge.
 local path, broke = %(path)s, %(broke)s
 local function stopped(err)
@@ -117,20 +91,17 @@ end)
 if not set_up then stopped(why) end
 """
 
-#: How often a running machine's drawer reads the state file: well inside the latency a state
-#: change may take to show, and far below the frame rate of a machine running flat out.
+#: Seconds between state-file reads while running.
 REREAD_S = 0.05
-#: THE REPAINT: a console command that touches nothing (pc, the cycle count and memory are the
-#: same across it) and repaints a stopped machine once. A `print` of a constant answers at once.
+#: A console command that touches nothing and repaints a stopped machine once.
 REPAINT = "print 0"
 
-#: What the drawer writes, beside the state file, when it raises.
 BROKEN_FILE = "presence.broken"
 
 
 def drawer(scratch: Path, look: presence.Look = presence.LOOK) -> str:
     """The drawer's chunk for a session whose scratch is `scratch`."""
-    # IMPORTED HERE: the session state reads this module, and the transport reads the state.
+    # Imported here: the session state reads this module, and the transport reads the state.
     import mame_transport as transport
     return DRAWER % {"path": transport.lua_string(str(scratch / STATE_FILE)),
                      "broke": transport.lua_string(str(scratch / BROKEN_FILE)), "rgb": look.rgb,
@@ -146,21 +117,18 @@ def broken(scratch: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace").strip() or "no reason given"
 
 
-#: A session to repaint, asked by the scratch of the session the adapter was made for: None when
-#: that session is gone, broken, running or exited.
+#: The console of the adapter's session, or None when it is gone, broken, running or exited.
 Repaintable = Callable[[Path], "Console | None"]
 
 
 class Console(Protocol):
-    """What the repaint sends through: a console command whose answer nobody reads."""
+    """The console the repaint sends through."""
 
     def monitor_owed(self, command: str, timeout: float = ...) -> None: ...
 
 
 class FileAdapter:
-    """`scry_core.presence.Adapter` over the state file: each state replaces the file whole, so
-    the hook reads one word or the previous one, never half of either. The repaint's server
-    lock, the session it repaints and the console's queue are handed in, never reached for."""
+    """`scry_core.presence.Adapter` over the state file, replaced whole (no half reads)."""
 
     def __init__(self, scratch: Path, lock: boundary.ServerLock, session: Repaintable,
                  pending: Callable[[Path], int]) -> None:
@@ -173,17 +141,15 @@ class FileAdapter:
         os.replace(part, self._path)
 
     def wake(self) -> None:
-        """A repaint waiting for the lock asks `still()` again now (`ServerLock.wake`)."""
+        """Make a repaint waiting for the lock ask `still()` again."""
         self._lock.wake()
 
     def repaint(self, still: Callable[[], bool]) -> None:
-        """`REPAINT` sent through the session's console, under the server's lock, taken while
-        `still()` holds and asked again only when a call frees the lock (`ServerLock`), so a long
-        still call costs no wake-ups and a driving call makes it moot; sent only to this
-        session's machine, alive, unbroken and stopped (a running one repaints by itself), and
-        never while a Lua line waits in the console's pipe, which a console command would have
-        MAME evaluate there and then. Its console request runs out as the presence's failure
-        and never breaks the session (`monitor_owed`)."""
+        """Send `REPAINT` under the server lock while `still()` holds.
+
+        Never while a Lua line waits in the console's pipe: a console command would make MAME
+        evaluate it there and then.
+        """
         if not self._lock.acquire_while(still):
             return
         try:

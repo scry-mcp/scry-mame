@@ -1,18 +1,8 @@
-"""Debugging DECLARATIONS: the intent behind a breakpoint, a watch or a registerpoint, declared BY
-NAME.
+"""Debugging declarations: the intent behind a breakpoint, a watch or a registerpoint, by name.
 
-The debugger holds the ARMED instances; this holds what the caller MEANT: a breakpoint or a
-watch at a SYMBOL or at a raw ADDRESS, or a registerpoint's condition with its symbols by name.
-Keeping the intent is what makes a rebuild free: an address moves when the program is
-relinked, a name does not, so a declaration by name re-resolves against the new table and
-re-arms itself, and one whose name has VANISHED is KEPT, unresolved and said out loud, never
-dropped in silence.
-
-A resolution here is a lookup in the flat table `start` loaded for the declaration's cpu
-(`name -> address`): the linker's map and the per-class bases already solve the moving half,
-so nothing is measured at load time.
-
-WHAT IT DOES NOT DO: talk to the debugger. Arming is `mame_arming`'s.
+A declaration by name re-resolves against the new symbol table after a rebuild and re-arms
+itself; one whose name vanished is kept, unresolved and said out loud, never dropped. Arming is
+`mame_arming`'s; this module never talks to the debugger.
 """
 
 from __future__ import annotations
@@ -32,13 +22,8 @@ from scry_core.reply_contract import unavailable
 import mame_comment_file as cf
 import mame_inputs as inputs
 
-# The kinds that stop or watch, and the comment. MAME has no interrupt breakpoint to declare:
-# an arcade board's vectors are addresses like any other, and a breakpoint on one is a
-# breakpoint. A REGPOINT (the kind's name in the store; the debugger calls it a registerpoint) is
-# a stop when a condition over the registers comes true wherever that happens: it has no address,
-# so its `ref` IS the condition, as typed. A COMMENT is a text at a place, by symbol or by
-# address, which neither stops nor watches: it is held here so it follows its symbol through a
-# rebuild like the others, and MAME's own disassembly is fed from it (`mame_comments`).
+# A regpoint has no address: its `ref` is the condition as typed. A comment neither stops nor
+# watches; it is held here so it follows its symbol through a rebuild (`mame_comments`).
 COUNTED_KINDS = ("breakpoint", "watch", "regpoint")
 KINDS = (*COUNTED_KINDS, "comment")
 #: Each kind that stops or watches, by its name as a count of it in a reply.
@@ -48,49 +33,32 @@ COUNT_KEYS = dict(zip(COUNTED_KINDS, ("breakpoints", "watches", "regpoints"), st
 def no_counts() -> dict[str, int]:
     """A cpu's count of each kind, before any is counted."""
     return dict.fromkeys(COUNT_KEYS.values(), 0)
-# A declaration is BY a symbol name, BY a raw address, or BY an EXPRESSION: the third is a
-# watch of mode `expr`, an expression the MAME debugger evaluates (`beamy`, `totalcycles`,
-# `a0+4`), which resolves against no table and arms nothing, or a registerpoint, whose condition
-# is one.
-# And BY A POINTER: a watch whose place is reached THROUGH a pointer held at a global, the
-# grammar being `[base]`, `[base]+0x28`, `[base]-0x4` or `base->field`, with `base` a symbol
-# or a raw address. The address is resolved when the watch is armed and AGAIN at every stop,
-# because the pointer can move; a breakpoint is never declared this way (code does not move
-# behind a pointer, and a stop at a moving address is one nobody can attribute).
+
+
+# `expr` is evaluated by the MAME debugger (`beamy`, `a0+4`) and resolves against no table.
+# `pointer` is a watch reached through a global (`[base]+0x28`, `base->field`),
+# re-resolved at every stop because the pointer can move; a breakpoint never goes through one,
+# since a stop at a moving address cannot be attributed.
 BY = ("symbol", "address", "expr", "pointer")
-# A breakpoint has a ROLE. A `stop` halts the machine, which is what a breakpoint is for. A
-# `control` never does: it is the debugger's own conditioned breakpoint whose condition counts
-# and never comes true (`bp <addr>,(++tempN)==0`), so it proves a run reached something hot
-# without costing a stop. `run_to` reads the controls' counts around every run, and a target's
-# silence is a measurement only when a control counted.
+# A `control` breakpoint never stops: its condition counts and never comes true
+# (`bp <addr>,(++tempN)==0`), so `run_to` can tell a silent target from a run that never got there.
 ROLES = ("stop", "control")
-# A watch has TWO halves: SHOW evaluates the bytes at every stop and arms nothing;
-# BREAK-ON-CHANGE arms a write watchpoint in the debugger. One ref may not be both (see
-# `DeclarationStore.add`), and that is kept here although MAME arms no trap byte:
-# the rule is the store's, and a store rule that holds on one server only is one nobody can
-# rely on. COUNT is the third thing a datum can be asked: a write tap (`mame_tally`) that
-# counts every write over a pass by value and by writer and never stops for one, the
-# datum's twin of a control breakpoint. CAPTURE is the same tap on a TRIGGER, recording the
-# whole block at each write to it (`mame_capture`): the joint question a count cannot answer.
-# `show` was spelled `read` until "read" was left to name an access only (`trigger_type="r"`):
-# a stored row still carrying the old word is read as the new one (`Declaration.from_dict`).
+# `show` evaluates at every stop and arms nothing; `change` arms a write watchpoint. One ref may
+# not be both (`DeclarationStore.add`): a store rule held on one server only cannot be relied on.
+# `count` and `capture` are Lua write taps (`mame_tally`, `mame_capture`); a capture records the
+# whole block at each write to its trigger.
 WATCH_MODES = ("show", "change", "expr", "count", "capture")
+# A stored row still carrying a retired mode name is read as its new one (`Declaration.from_dict`).
 RETIRED_MODES = {"read": "show"}
-# The modes whose watch is a Lua write tap rather than a debugger row: one list, so a mode added
-# to the family is added once.
 TAP_MODES = ("count", "capture")
-# Which access to a capture's trigger makes a row, `wpset`'s own words: `w` a write, `r` a read.
+# `wpset`'s own words: `w` a write, `r` a read.
 TRIGGER_TYPES = ("w", "r")
-# A watch is BYTES AT A NAME read as a FORMAT: a scalar (N of them, `width` bytes), an
-# array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`), the grammar of
-# `value_format`. The values render in the TARGET's byte
-# order, which the session knows and this module does not.
+# Values render in the target's byte order, which the session knows and this module does not.
 FORMATS = tuple(vf.SCALARS)
 FORMAT_WIDTH = {name: size for name, (_code, size) in vf.SCALARS.items()}
 
 
-#: A declaration's identity where its ref alone is not one: the same ref declared on two cpus
-#: is two declarations, so every record of what this server armed is keyed by (ref, cpu).
+#: The same ref on two cpus is two declarations, so records are keyed by (ref, cpu).
 Owner = tuple[str, str | None]
 
 
@@ -101,36 +69,30 @@ def owner_fields(owner: Owner) -> dict[str, Any]:
 
 
 def fmt_for_width(width: int) -> str:
-    """The default `fmt` for a width the caller did not name a format for: the widest
-    UNSIGNED integer the width is a whole number of. A width divisible by four is read as
-    u32 values, an even one as u16, anything else as u8. Signed or float is a caller's
-    choice and is never a default."""
+    """The default `fmt` for a bare width: the widest unsigned integer it divides into."""
     if width % 4 == 0:
         return "u32"
     if width % 2 == 0:
         return "u16"
     return "u8"
 
-# A STORE FILE THAT CANNOT BE READ IS NEVER DISCARDED: what it holds is somebody's intent.
+
+# A store file that cannot be read is never discarded: what it holds is somebody's intent.
 UNTIL_FIXED = "until the file is fixed or removed by hand; it is never discarded"
-# Why a session started with no symbol file holds its declarations in memory alone.
 SESSION_LIVED_WHY = ("no `symbols` file was given, so nothing can be re-resolved by name: "
                      "declarations are by address and die with this session")
 
 
 class DeclarationError(Exception):
-    """A declaration that cannot be held: malformed, or in conflict with one already held.
-    Its own type so the server can turn it into a refusal that names what was wrong."""
+    """A declaration that cannot be held: malformed, or in conflict with one already held."""
 
 
 @dataclass(frozen=True)
 class Declaration:
-    """One thing a caller wants armed, BY a symbol name or BY a raw `0x` address.
+    """One thing a caller wants armed, by symbol name or raw `0x` address.
 
-    The watch fields belong to `kind == "watch"` only and are refused on a breakpoint, so an
-    ill-formed declaration cannot be constructed. `created_at` and `origin` (which session
-    made or last adopted it) stay OUT of equality: re-declaring the same thing from a new
-    session is the same declaration, adopted, and not a second one.
+    `created_at`, `origin` and `fingerprint` stay out of equality: re-declaring the same thing
+    from a new session adopts it rather than doubling it.
     """
 
     kind: str
@@ -140,31 +102,22 @@ class Declaration:
     fmt: str | None = field(default=None, kw_only=True)
     watch_mode: str | None = field(default=None, kw_only=True)
     role: str = field(default="stop", kw_only=True)
-    # A CONDITION IN THE CONSOLE'S OWN GRAMMAR (`w@0x2031fc==0x25`), on a stop breakpoint or a
-    # change watch (where `wpdata` is the value being written): the console evaluates it at
-    # every hit and halts when it holds. Part of equality, since the same address under another
-    # condition is another declaration.
+    # In the console's own grammar (`w@0x2031fc==0x25`); on a change watch `wpdata` is the value
+    # written. Part of equality: another condition is another declaration.
     condition: str = field(default="", kw_only=True)
-    # A CAPTURE'S TRIGGER, a symbol as typed or a `0x` address: the write that makes a row. Part
-    # of equality, since the same block on another trigger is another capture.
+    # A symbol as typed or a `0x` address. Part of equality.
     trigger: str = field(default="", kw_only=True)
-    # WHICH ACCESS TO THE TRIGGER makes a row, in `wpset`'s words: `w` a write, `r` a read. Part
-    # of equality, since a capture of the reads is another capture than one of the writes.
+    # Part of equality: a capture of the reads is not one of the writes.
     trigger_type: str = field(default="w", kw_only=True)
     created_at: str | None = field(default=None, kw_only=True, compare=False)
     origin: str | None = field(default=None, kw_only=True, compare=False)
-    # THE BUILD IT WAS DECLARED AGAINST: the fingerprint of the system, the ROM image and
-    # the symbol file (`mame_launch.fingerprint`). A raw address is re-armed only over the
-    # same fingerprint; a name re-resolves whatever the fingerprint. Out of equality like
-    # the stamps: the same thing declared against a new build is adopted, not doubled.
+    # The build it was declared against (`mame_launch.fingerprint`): a raw address is re-armed
+    # only over the same one, a name re-resolves whatever it is.
     fingerprint: str | None = field(default=None, kw_only=True, compare=False)
-    # THE CPU IT IS DECLARED ON, part of equality: each cpu runs its own program, so the same
-    # ref on two cpus is two declarations. An expr watch carries none, since the console
-    # evaluates it on whichever cpu is visible. A row the store read without one (written
-    # before a declaration had a cpu) is the first cpu's (`DeclarationStore.bind_first_cpu`).
+    # An expr watch carries none: the console evaluates it on whichever cpu is visible. A row
+    # stored without one is the first cpu's (`DeclarationStore.bind_first_cpu`).
     cpu: str | None = field(default=None, kw_only=True)
-    # A COMMENT'S TEXT, and only a comment's. Out of equality: a comment is the place it names,
-    # so the same place under a new text is the same declaration with its text replaced.
+    # Out of equality: a comment is the place it names, so a new text replaces the old.
     text: str = field(default="", kw_only=True, compare=False)
 
     @property
@@ -227,8 +180,7 @@ class Declaration:
                         f"role={self.role!r} condition={self.condition!r} "
                         f"trigger={self.trigger!r}: `comment_write(method=\"add\", ref=..., "
                         "text=...)` alone")
-                # THE FILE'S RULES, held where a comment is held: a store edited by hand cannot
-                # carry a comment the comment file could not write.
+                # A hand-edited store cannot carry a comment the comment file could not write.
                 if (fault := cf.ref_fault(self.ref)) is not None:
                     raise DeclarationError(f"a comment's ref {self.ref!r} {fault}: "
                                            "`comment_write(method=\"add\", ref=...)` takes a "
@@ -299,8 +251,7 @@ class Declaration:
             width = vf.parse(self.fmt).width_for(self.width or 0)
         except vf.FormatError as e:
             raise DeclarationError(str(e)) from None
-        # A SIZED FORMAT NAMES ITS OWN WIDTH: the declaration carries it so every reader
-        # of `width` (the watchpoint's length, the read) sees one number.
+        # A sized format names its own width; every reader of `width` sees that one number.
         object.__setattr__(self, "width", width)
 
     def to_dict(self) -> dict[str, object]:
@@ -324,8 +275,7 @@ class Declaration:
 
     def adopted_by(self, origin: str | None, created_at: str | None,
                    fingerprint: str | None = None) -> Declaration:
-        """The same declaration under a new origin, stamp and build; a half not carried
-        (None) keeps what was held."""
+        """The same declaration under a new origin, stamp and build (None keeps the held one)."""
         return Declaration(self.kind, self.by, self.ref, width=self.width, fmt=self.fmt,
                            watch_mode=self.watch_mode, role=self.role,
                            condition=self.condition, trigger=self.trigger,
@@ -335,9 +285,7 @@ class Declaration:
 
     @staticmethod
     def from_dict(d: dict[str, object]) -> Declaration:
-        """Rebuild a declaration from a stored object, refusing corruption as a
-        `DeclarationError`: a hand-edited or truncated file must come back as a NAMED
-        refusal, because the store reads it at `start`."""
+        """Rebuild a declaration from a stored object; corruption is a `DeclarationError`."""
         width = d.get("width")
         if width is not None:
             try:
@@ -347,27 +295,19 @@ class Declaration:
                                        f"`start` refuses it {UNTIL_FIXED}") from None
         opt = {k: (str(d[k]) if d.get(k) is not None else None)
                for k in ("fmt", "watch_mode", "created_at", "origin", "fingerprint", "cpu")}
-        # A ROW STORED UNDER A RETIRED MODE is read under its new word, and the next write
-        # persists that word, as a bare-hex address below.
         opt["watch_mode"] = RETIRED_MODES.get(opt["watch_mode"] or "", opt["watch_mode"])
-        # A MISSING key is refused by name: `str(None)` is the four-letter word "None",
-        # which is a truthy ref and would have sailed past every check below.
+        # `str(None)` is a truthy "None" ref that would sail past every check below.
         for key in ("kind", "by", "ref"):
             if d.get(key) is None:
                 raise DeclarationError(f"a stored declaration lacks `{key}`: {d!r}; `start` "
                                        f"refuses it {UNTIL_FIXED}")
-        # A COMMENT'S STAMP IS THE FILE'S, held where the store is read, as `__post_init__`
-        # holds its ref and text: a store edited by hand cannot carry a stamp
-        # `comment_write(method="save")`
-        # could not write.
+        # As in `__post_init__`: a hand-edited store cannot carry a stamp the file could not.
         if d["kind"] == "comment" and (
                 fault := cf.stamp_fault(opt["created_at"] or "")) is not None:
             raise DeclarationError(f"a stored comment's created_at {fault}; `start` refuses it "
                                    f"{UNTIL_FIXED}")
-        # A ROW STORED BY ADDRESS IN BARE HEX is read in the address's one spelling: its `by`
-        # says what it is, so nothing is guessed, and the next write persists it so. A row
-        # stored BY SYMBOL in the `0x` spelling names no symbol any table can hold, so it is
-        # read as the address it spells rather than refusing the whole store.
+        # Bare-hex addresses fold to the one spelling; a `0x` "symbol" can name nothing in any
+        # table, so it is read as the address it spells rather than refusing the whole store.
         ref, by = str(d["ref"]), str(d["by"])
         if by == "symbol" and inputs.is_address(ref):
             by = "address"
@@ -383,36 +323,29 @@ class Declaration:
 
 @dataclass(frozen=True)
 class Resolved:
-    """A declaration paired with where it points NOW: `address` (a raw address, nothing to
-    resolve), `resolved` (the name is in the table), or `unresolved` (it is not, and the
-    declaration is kept). `addr` is None only when unresolved."""
+    """A declaration paired with where it points now: `address`, `resolved` (name in the table)
+    or `unresolved` (kept). `addr` is None only when unresolved."""
 
     decl: Declaration
     state: str
     addr: int | None = None
-    # A POINTER ref resolves to its BASE here and to its address only against the machine
-    # (the pointer's value is a read), so the state is `pointer` and the arming side
-    # chases it: `base_addr` holds the pointer, `offset` is added to what it holds,
-    # `pointer_width` is the type's when `types` says (else the machine's word), and
-    # `field_fmt` is the named field's format. `why` says what an unresolved pointer lacks.
+    # A pointer ref resolves only to its base here (the pointer's value is a read), so the state
+    # is `pointer` and the arming side chases it: `offset` is added to what `base_addr` holds.
+    # `pointer_width` is the type's when `types` says, else the machine's word.
     pointer: vf.PointerRef | None = None
     base_addr: int | None = None
     offset: int = 0
     pointer_width: int | None = None
     field_fmt: str | None = None
-    # The class the pointer's TARGET lives in when the type names it (`ptr16@CODE`): the
-    # arming side places the value under that class's base instead of the base symbol's.
+    # `ptr16@CODE`: the target is placed under that class's base.
     pointer_class: str | None = None
     why: str | None = None
 
 
 def resolve(decl: Declaration, symbols: dict[str, int],
             types: dict[str, str] | None = None) -> Resolved:
-    """Where a declaration points against THIS table. The one name->address routine, so the
-    tool that arms and the list that reports cannot disagree on what a name means. The
-    table's keys are upper-cased by the reader that built it; a name is looked up the same
-    way, and MAME's own reader refuses a table with one name twice, so there is no ambiguity
-    to report here."""
+    """Where a declaration points against this table: the one name->address routine, so arming
+    and listing cannot disagree. Table keys are upper-cased; a name is looked up the same way."""
     if decl.by == "address":
         return Resolved(decl, "address", int(decl.ref, 16))
     if decl.by == "expr":
@@ -427,10 +360,8 @@ def resolve(decl: Declaration, symbols: dict[str, int],
 
 def _resolve_pointer(decl: Declaration, symbols: dict[str, int],
                      types: dict[str, str]) -> Resolved:
-    """The base of a pointer ref against the table and the types: `pointer` with the base's
-    address, the offset (a field's from the type) and the pointer's width when typed; else
-    `unresolved` with `why`. A base the table lacks is named as what it most likely is, a
-    stack local, which has no stable address a pointer ref could start from."""
+    """The base of a pointer ref against the table and the types: `pointer`, else `unresolved`
+    with `why`."""
     pr = vf.parse_pointer(decl.ref)
     assert pr is not None
     base = inputs.stored_place(pr.base, symbols)
@@ -461,17 +392,14 @@ def _resolve_pointer(decl: Declaration, symbols: dict[str, int],
 
 
 def same_place(a: Declaration, b: Declaration) -> bool:
-    """Two declarations are ONE when they differ only in how their ref is spelt: the store
-    compares them with the ref under `match_key` (an address in any spelling, a symbol in any
-    case), and everything else as the dataclass compares it."""
+    """Two declarations are one when they differ only in how their ref is spelt."""
     from dataclasses import replace
     return (replace(a, ref=match_key(a.ref, a.by), trigger=inputs.place_key(a.trigger))
             == replace(b, ref=match_key(b.ref, b.by), trigger=inputs.place_key(b.trigger)))
 
 
-# `match_key`'s rule in a client's words, one clause per kind of ref, composed per family from
-# the kinds that family declares: a clear's refusal and its tool's description carry the same
-# words, and a family is never told of a kind it cannot hold.
+# `match_key`'s rule in a client's words, composed per family so a clear's refusal and its
+# tool's description carry the same words.
 _ADDRESS = "a `0x` address in any spelling (`0x00ff` is `0xff`)"
 _SYMBOL = "a symbol in any case"
 _POINTER = "a pointer's base as either of those"
@@ -489,9 +417,7 @@ REF_MATCH = {
 
 
 def match_key(ref: str, by: str) -> str:
-    """The spelling a ref of kind `by` is compared under (`inputs.match_key`); a pointer ref
-    in its canonical shape, its base a name in any case or an address in any spelling
-    (`inputs.place_key`)."""
+    """The spelling a ref of kind `by` is compared under (`inputs.match_key`)."""
     if by != "pointer":
         return inputs.match_key(ref, by)
     text = canonical_ref(ref, by)
@@ -508,17 +434,14 @@ def _pointer_text(pr: vf.PointerRef, base: str) -> str:
 
 
 def canonical_ref(ref: str, by: str) -> str:
-    """The one spelling a ref is stored and matched under: an address as `0x` and lower-case
-    hex with no padding; a symbol, an expression or a pointer ref as typed, stripped. Inside
-    a pointer ref a `0x` base folds the same way and any other base is a name kept as typed:
-    `[BEEF]` through a symbol and `[0xBEEF]` at an address are two places. What a ref is
-    COMPARED under is `match_key`."""
+    """The spelling a ref is stored under: an address as unpadded lower-case `0x` hex, anything
+    else as typed, stripped. A `0x` pointer base folds likewise: `[BEEF]` (symbol) and
+    `[0xBEEF]` (address) are two places."""
     text = ref.strip()
     if by == "address" and inputs.HEX_ADDR.fullmatch(text):
         return f"0x{int(text, 16):x}"
     if by == "pointer":
-        # A `0x` BASE INSIDE A POINTER REF FOLDS LIKE AN ADDRESS REF, and the ref is rebuilt
-        # in one shape: two spellings of one base stacked two watches on one byte.
+        # Two spellings of one base once stacked two watches on one byte.
         pr = vf.parse_pointer(text)
         if pr is not None:
             base = pr.base.strip()
@@ -529,30 +452,20 @@ def canonical_ref(ref: str, by: str) -> str:
 
 
 def is_stale(decl: Declaration, fingerprint: str | None) -> bool:
-    """A raw-ADDRESS declaration made against ANOTHER BUILD (or against none recorded):
-    kept and listed `stale`, never re-armed on its own, because an address re-resolves
-    against nothing and armed blind it lands on whatever the new build put there. The
-    build is the fingerprint of the system, the ROM image and the symbol file, so a session
-    over the same board re-arms every raw address it finds, whoever declared it; the first
-    rule keyed this on the declaring SESSION and threw away every declaration of a board
-    that had not changed. A by-symbol declaration is never stale: it is re-placed against
-    the new table, which is the point of keeping it. WHERE THIS DIFFERS FROM THE SIBLING:
-    there only a breakpoint can be stale, because nothing re-arms a watch across sessions;
-    here `start`'s re-arm brings change watches back too, and a count watch's tap with them, so
-    the same caution covers both. A capture's trigger is a second place, raw when it is written as
-    an address (`inputs.is_address`), the reading `inputs.stored_place` gives it. A show or
-    expr watch arms nothing and is never stale."""
+    """A raw-address declaration made against another build, or none recorded: listed `stale`
+    and never re-armed on its own, since armed blind it lands on whatever the new build put
+    there. A by-symbol one, and a show or expr watch (which arms nothing), is never stale.
+    A capture's trigger is a second place."""
     raw = decl.by == "address" or inputs.is_address(decl.trigger)
     if not raw or fingerprint is None:
-        return False          # no build recorded for this session: nothing to judge against
+        return False
     if decl.kind == "watch" and decl.watch_mode not in ("change", *TAP_MODES):
         return False
     return decl.fingerprint is None or decl.fingerprint != fingerprint
 
 
 def state_home() -> Path:
-    """This server's XDG state directory: what lives here survives a session and is not
-    mistaken for a cache to be cleared."""
+    """This server's XDG state directory."""
     base = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local" / "state")
     return Path(base) / "mame-debug"
 
@@ -566,30 +479,22 @@ def default_path() -> Path:
 
 
 def store_path(state_dir: Path | None) -> Path:
-    """The store a session with a symbol file uses: its own `state_dir`'s when it names one,
-    else the project's, which every session without one shares."""
+    """The store a session with a symbol file uses: `state_dir`'s, else the project's."""
     return state_dir / _STORE_FILENAME if state_dir is not None else default_path()
 
 
 def store_key(system: str, symbols: str) -> str:
-    """THE IDENTITY THAT KEYS THE STORE: the system name plus the RESOLVED path of the symbol
-    file. Two spellings of one file are one key; two boards sharing a map (a family of sets)
-    are told apart by the system; two maps of one board by the path. A session started with
-    no symbol file has no key, because it can re-resolve nothing: its declarations are by
-    address and die with it, which is the honest answer."""
+    """The store's key: the system name plus the resolved symbol-file path. A session with no
+    symbol file has none: its declarations are by address and die with it."""
     if not system:
         raise DeclarationError("a store key needs the system name: `start(system=...)` gives it")
     return f"{system} {Path(symbols).resolve()}"
 
 
 class DeclarationStore:
-    """The declarations of ONE guest: persistent in a file shared by every guest, or in
-    memory for this session.
+    """The declarations of one guest: in a file shared by every guest, or in memory (`path=None`).
 
-    The file maps a key (`store_key`) to a list of declarations; a store reads the whole
-    file but exposes only its own key's list, and a write persists ONLY that key, so a
-    store opened for another guest never clobbers this one's. With `path=None` the store
-    lives as long as the session.
+    The file maps a `store_key` to a list; a store exposes and writes only its own key's.
     """
 
     def __init__(self, identity: str, path: Path | None) -> None:
@@ -603,8 +508,7 @@ class DeclarationStore:
 
     @staticmethod
     def _decls_for(raw: dict[str, object], key: str) -> list[Declaration]:
-        """This key's declarations out of the whole file, refusing a shape that is not a
-        list of objects as a NAMED refusal, never an `AttributeError` three layers down."""
+        """This key's declarations; a shape that is not a list of objects is a named refusal."""
         items = raw.get(key, [])
         if not isinstance(items, list):
             raise DeclarationError(
@@ -618,17 +522,14 @@ class DeclarationStore:
                     f"a declaration under {key!r} is a {type(d).__name__}, not an object: "
                     f"{d!r}; `start` refuses it {UNTIL_FIXED}")
             decl = Declaration.from_dict(d)
-            # ONE DECLARATION IN TWO SPELLINGS (`4a0` and `0x4a0` by address) reads as one, the
-            # first kept, as `add` adopts the second rather than holding it twice.
+            # Two spellings of one declaration (`4a0`, `0x4a0`) read as one, the first kept.
             if decl not in seen:
                 seen.add(decl)
                 out.append(decl)
         return out
 
     def _read_raw(self) -> dict[str, object]:
-        """The whole file as it is on disk right now, or empty when there is none. A file
-        that cannot be read is refused and NOT discarded: fix or remove it rather than lose
-        what it holds."""
+        """The whole file as on disk now, or empty when there is none; unreadable is refused."""
         assert self._path is not None
         try:
             raw = json.loads(self._path.read_text(encoding="utf-8"))
@@ -658,10 +559,8 @@ class DeclarationStore:
         return list(self._items)
 
     def counts_by_cpu(self, more_watches: dict[str, int]) -> dict[str, dict[str, int]]:
-        """How many declarations of each kind every cpu holds, in any state, by the cpu each
-        names and under each kind's `COUNT_KEYS` name, plus `more_watches` (watches the store
-        never holds, by cpu); one that names no cpu (an expr watch) is counted nowhere, and a
-        comment, which neither stops nor watches, is not counted."""
+        """How many declarations of each kind every cpu holds, plus `more_watches` (watches the
+        store never holds, by cpu). A cpu-less expr watch and comments are counted nowhere."""
         out: dict[str, dict[str, int]] = {}
         for d in self._items:
             if d.cpu is not None and d.kind in COUNT_KEYS:
@@ -671,21 +570,19 @@ class DeclarationStore:
         return out
 
     def bind_first_cpu(self, cpu: str | None) -> None:
-        """Every row read without a cpu is the FIRST cpu's, `cpu`: a store written before a
-        declaration had one held the declarations of the only table a start then took, the
-        first cpu's. An expr watch keeps none. Held in memory; the next write persists it."""
+        """Every row read without a cpu is `cpu`'s, the first; an expr watch keeps none. Held in
+        memory until the next write."""
         if cpu is None:
             return
         self._items = [d if d.cpu is not None or d.watch_mode == "expr"
                        else dataclasses.replace(d, cpu=cpu) for d in self._items]
 
     def add(self, decl: Declaration) -> bool:
-        """Hold a declaration; True when NEW, False when this exact one was already held and
-        is ADOPTED by the caller's origin and stamp (each half taken only when carried).
+        """Hold a declaration; True when new, False when already held and adopted by the caller's
+        origin, stamp and build (each taken only when carried).
 
-        ONE conflict is refused: the same watch `ref` carrying the OTHER half, show where a
-        change already sits or the reverse: one row is one declaration, and clearing either
-        half would disarm the other.
+        The same watch `ref` with the other half (show where a change sits, or the reverse) is
+        refused: clearing either half would disarm the other.
         """
         i = self.index_of(decl)
         if i is not None:
@@ -703,9 +600,7 @@ class DeclarationStore:
         return True
 
     def replace(self, old: Declaration, new: Declaration) -> None:
-        """`new` in the place `old` holds, persisted once: for a declaration whose TEXT is
-        corrected and whose identity is not. It is ADOPTED in the same write, as `add` adopts
-        one declared again: each of origin, stamp and build taken from `new` only when carried."""
+        """`new` in the place `old` holds, adopted as in `add`, persisted once."""
         i = self.index_of(old)
         if i is None:
             raise DeclarationError(f"{old.ref!r} is not held, so there is nothing to replace: "
@@ -723,27 +618,21 @@ class DeclarationStore:
         return next((i for i, d in enumerate(self._items) if same_place(d, decl)), None)
 
     def matches(self, d: Declaration, by: str, ref: str) -> bool:
-        """Whether `ref`, a ref of kind `by`, names what `d` names: only a declaration of the
-        same kind can (an address never reaches a symbol's row, nor the reverse), compared
-        under `match_key`."""
+        """Whether `ref` names what `d` names: an address never reaches a symbol's row."""
         return d.by == by and match_key(d.ref, by) == match_key(ref, by)
 
     def held_ref(self, ref: str, by: str, kinds: tuple[str, ...], cpu: str | None) -> str | None:
-        """The stored spelling of `ref`, of kind `by`, among `cpu`'s declarations of `kinds`
-        (`matches`); None when nothing is held under it."""
+        """The stored spelling of `ref` among `cpu`'s declarations of `kinds`, or None."""
         return next((d.ref for d in self._items if d.kind in kinds and d.cpu == cpu
                      and self.matches(d, by, ref)), None)
 
     def refuse_conflict(self, decl: Declaration) -> None:
-        """The refusals `add` makes, asked on their own by the tool that ARMS before it
-        arms: a watchpoint left in the debugger for a declaration the store then refused
-        would be a row nothing lists and nothing clears (a test found exactly that). A
-        watch's ref carries ONE declaration: the other half (show where change sits, or the
-        reverse) is refused for the shared rule, and another SHAPE (width, format, condition,
-        trigger) under the same ref is refused too, because it would be a second declaration
-        arming a second row that a clear by ref could only half account for."""
+        """The refusals `add` makes, asked by the tool that arms before it arms: a watchpoint
+        left in the debugger for a declaration the store then refused is a row nothing lists
+        and nothing clears. A watch ref carries one declaration: another half or shape (width,
+        format, condition, trigger) under it is refused."""
         if self.index_of(decl) is not None or decl.kind == "regpoint":
-            return      # a registerpoint's ref is its whole identity: the same text is the same one
+            return      # a registerpoint's ref is its whole identity
         if decl.kind == "comment":
             return      # a comment shares its place with whatever else is declared there
         if decl.kind == "breakpoint":
@@ -780,13 +669,8 @@ class DeclarationStore:
     def apply(self, adds: Collection[Declaration] = (),
               replaces: Collection[tuple[Declaration, Declaration]] = (),
               removes: Collection[Declaration] = ()) -> None:
-        """Several changes as ONE write: every `(old, new)` of `replaces` puts `new` where `old`
-        is held, `removes` go, `adds` are appended, the new list is installed in memory and
-        then persisted once. A write that fails leaves the new list in memory and raises, so
-        the caller can say the change is held for this session and not on disk. Unlike `add`
-        and `replace` it judges nothing: each `old` and removal is a declaration as
-        `declarations()` returned it, and the caller has already decided what is one place
-        and kept every stamp it means to keep."""
+        """Replaces, removes and adds as one write. A failed write leaves the new list in memory
+        and raises. Unlike `add` and `replace` it judges nothing."""
         items = list(self._items)
         for old, new in replaces:
             items[items.index(old)] = new
@@ -804,12 +688,8 @@ class DeclarationStore:
         return removed
 
     def _persist(self) -> None:
-        """Re-read the file and replace ONLY this key's entry, written through a temporary
-        and moved into place, so a crash mid-write cannot leave a half-written file that a
-        later read would refuse. ONE WRITER is assumed, which is what this fleet has: the
-        server holds one session and serialises its tools under one lock; two servers over
-        one file could each read before the other's replace and lose an add, a race this
-        design does not run and does not guard. Nothing to do for a session-lived store."""
+        """Re-read the file and replace only this key's entry, atomically. One writer is assumed
+        (one session, tools under one lock): two servers over one file could lose an add."""
         if self._path is None:
             return
         raw = self._read_raw()

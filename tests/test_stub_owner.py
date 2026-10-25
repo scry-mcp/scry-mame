@@ -1,5 +1,4 @@
-"""Whose gdbstub a port serves (`mame_stub_owner`), proved against REAL processes and the real
-`lsof`: the property is about which process holds a socket, which no double can stand for."""
+"""Whose gdbstub a port serves, proved against real processes and the real `lsof`."""
 
 import shutil
 import socket
@@ -44,9 +43,7 @@ def test_listeners_names_the_process_that_listens_and_nobody_on_a_free_port() ->
 
 
 def test_another_pid_listening_is_refused_and_never_dialled() -> None:
-    """The dial would take the one connection that other MAME serves: refused before it, so the
-    other listener's accept times out with nothing (`none`, where a dial closed unread would be
-    `b''`)."""
+    """Refused before the dial: it would take the other MAME's one connection."""
     proc, port = listener("accept", timeout_s=1.0)
     try:
         ses = gs.Session(port=port, owner=_proof(NOT_A_PID, port))
@@ -64,8 +61,7 @@ def test_another_pid_listening_is_refused_and_never_dialled() -> None:
 def test_our_pid_beside_another_listening_is_refused_too(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Two listeners on one port (SO_REUSEPORT allows it): a dial could reach either, so ours
-    being among them is not enough."""
+    """SO_REUSEPORT allows two listeners: ours among them is not enough."""
     monkeypatch.setattr(owner, "bind_probe", lambda port: None)
     monkeypatch.setattr(owner, "listeners", lambda port: {10, 20})
     with pytest.raises(owner.StubNotOurs) as e:
@@ -86,8 +82,7 @@ def test_nothing_on_the_port_is_the_boot_under_way_and_asks_no_lsof(
 
 
 def test_a_port_held_only_by_a_connection_is_not_yet_ours_listening() -> None:
-    """A served session's port, listener closed: it does not bind, `lsof` finds no listener,
-    and the boot waits for its own MAME to listen there."""
+    """A served session's port with its listener closed does not bind and has no listener."""
     lst = socket.socket()
     lst.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     lst.bind(("127.0.0.1", 0))
@@ -107,8 +102,7 @@ def test_a_port_held_only_by_a_connection_is_not_yet_ours_listening() -> None:
 def test_the_far_end_in_another_process_is_closed_with_nothing_sent(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The race the listener check cannot close: the port looked like ours and the connection
-    landed in another process. Closed before the first byte, so that process reads `b''`."""
+    """The race the listener check cannot close: closed before the first byte is sent."""
     proc, port = listener("accept")
     try:
         monkeypatch.setattr(owner, "listeners", lambda p: {NOT_A_PID})
@@ -124,8 +118,7 @@ def test_the_far_end_in_another_process_is_closed_with_nothing_sent(
 
 
 def test_the_far_end_in_our_process_passes_and_the_first_byte_goes_out() -> None:
-    """THE CONTROL of the case above: the same child named as ours, and the dial goes through,
-    its first byte read on the far side."""
+    """Control of the case above: the same child named as ours gets the dial through."""
     proc, port = listener("accept")
     try:
         ses = gs.Session(port=port, owner=_proof(proc.pid, port))
@@ -139,8 +132,7 @@ def test_the_far_end_in_our_process_passes_and_the_first_byte_goes_out() -> None
 
 
 def test_a_connection_nobody_accepts_is_not_accepted_at_the_deadline() -> None:
-    """A connection in the listen queue belongs to no process's files until it is accepted, so
-    the proof waits for the accept, and a deadline reached first is `StubNotAccepted`."""
+    """A queued connection has no owner until accepted: the deadline is `StubNotAccepted`."""
     proc, port = listener("hold")
     try:
         began = time.monotonic()
@@ -155,8 +147,7 @@ def test_a_connection_nobody_accepts_is_not_accepted_at_the_deadline() -> None:
 
 
 def test_a_mame_that_dies_before_it_accepts_ends_the_wait_as_a_death() -> None:
-    """Its exit is known at once: `MameGone`, an `OSError` the boot reads as a death, long
-    before the deadline."""
+    """`MameGone`, an `OSError` the boot reads as a death, long before the deadline."""
     proc, port = listener("hold")
     dead = threading.Event()
     try:
@@ -186,8 +177,7 @@ def test_an_absent_lsof_is_a_host_that_cannot_prove_never_nobody_listening(
 def test_an_lsof_that_complains_or_fails_is_unproved_never_an_empty_answer(
     monkeypatch: pytest.MonkeyPatch, rc: int, stderr: str,
 ) -> None:
-    """`lsof` answers 1 for "no match" AND for a failure: stderr is what tells them apart, and
-    any other exit code is a failure outright."""
+    """`lsof` answers 1 for "no match" and for a failure: stderr tells them apart."""
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(
         a[0], rc, stdout="", stderr=stderr))
     with pytest.raises(owner.StubUnproved) as e:
@@ -208,8 +198,7 @@ def test_a_hung_lsof_is_unproved(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_accepted_by_reads_the_far_end_and_skips_this_process_end(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """The field lines as `lsof -Fpn` prints them: the pair whose own port is the stub's and
-    whose peer is our local port is the far end; the reverse pair is this process's own."""
+    """In `lsof -Fpn` output the pair owning the stub port, peered to ours, is the far end."""
     lines = "p10\nf3\nn127.0.0.1:5000->127.0.0.1:6000\np20\nf4\nn127.0.0.1:6000->127.0.0.1:5000\n"
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(
         a[0], 0, stdout=lines, stderr=""))

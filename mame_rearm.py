@@ -1,7 +1,4 @@
-"""THE RE-ARM AT `start`: every declaration the store holds re-resolved and re-armed in
-ONE pass, whatever its family, each debugger list read once before it and once after,
-and every declaration accounted for. It walks the store in its own order, which is
-why it is one pass over both families rather than one per family."""
+"""Re-resolve and re-arm every stored declaration in one pass, both families."""
 
 from __future__ import annotations
 
@@ -23,8 +20,6 @@ import mame_state as st
 import mame_watches as watches
 from mame_state import STATE
 
-# --------------------------------------------------------------------------- the re-arm
-
 
 def _trigger_lost(decl: dec.Declaration) -> bool:
     """A capture held on a trigger name this build's table lacks."""
@@ -33,35 +28,20 @@ def _trigger_lost(decl: dec.Declaration) -> bool:
 
 
 def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
-    """RE-RESOLVE AND RE-ARM every declaration the store holds, at `start`, against the table
-    this start loaded, and account for every one of them, all inherited since nothing of this
-    session's is declared yet: `rearmed` (a breakpoint or a change watch armed and read back,
-    a count or capture watch's tap sent, with its `note` when its write side is unmapped, by
-    name whatever the build and by raw address over
-    this same build fingerprint), `stale` (a raw address declared over another build, kept
-    and not armed: `dec.is_stale`), `unresolved` (a name this build lacks, kept, in the ref,
-    in a condition or in a capture's trigger), `unarmable` (with why: a change watch's write side
-    unmapped now, an address or a range sharing a byte with one another declaration already holds, a
-    row the debugger did not list or lists under another condition, a condition too long for
-    one packet of THIS binary's stub, a capture's block with no memory a tap can read; a
-    breakpoint's, stop or control, or a change watch's row it lists disabled is adopted into
-    `rearmed` with its state, `mlists.adopted_state`, as `mame_regpoints.rearm` adopts a
-    registerpoint's),
-    `evaluated` (a show watch, which needs no arming and rides on every stop). Nothing is
-    dropped and nothing is silent: the whole point of keeping the intent is that it comes back.
-    Each debugger list is read ONCE before the pass and once after it, whatever the store
-    holds. Every row is the one `arming.decl_row` builds for its declaration."""
+    """Re-arm every stored declaration at `start` and account for each one.
+
+    Buckets: `rearmed`, `stale` (raw address from another build), `unresolved` (a name this
+    build lacks), `unarmable` (with why) and `evaluated` (show watches, which need no arming).
+    Each debugger list is read once before the pass and once after.
+    """
     out: dict[str, Any] = {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [],
                            "evaluated": []}
     if STATE.store is None:
         return out
-    # A STORE WRITTEN BEFORE A DECLARATION HAD A CPU held the first cpu's alone.
     STATE.store.bind_first_cpu(STATE.first_cpu)
-    # Each list is read the first time a declaration needs it, and once: a store with no
-    # breakpoint never asks `bplist`, and a stub answering nothing else stays untouched.
+    # Read lazily: a store with no breakpoint never asks `bplist`.
     lists: dict[str, list[dict[str, Any]]] = {}
-    # THE INDICES EACH LIST HELD BEFORE THE PASS SENT ANYTHING, from its first reading, which
-    # every send follows: a row the pass sent is one whose index is not among them.
+    # Indices held before the pass sent anything: a row the pass sent is not among them.
     before: dict[str, set[int]] = {}
     def held(which: str) -> list[dict[str, Any]]:
         if which not in lists:
@@ -69,21 +49,19 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
             before.setdefault(which, {r["index"] for r in lists[which]})
         return lists[which]
 
-    # A VISIBLE CPU NOT PUT BACK after a condition's evaluation: the row keeps its judgement and
-    # is armed by its cpu's name, which no visible cpu changes; the pass names the cpu once.
+    # Armed by cpu name, which no visible cpu changes, so a cpu left visible by a condition's
+    # evaluation is only reported (once).
     put_backs: list[str | None] = []
     sent_bp: list[tuple[dec.Declaration, int, str]] = []
-    done_bp: list[dec.Declaration] = []     # the breakpoints this pass has placed, for aliases
+    done_bp: list[dec.Declaration] = []     # for alias checks
     sent_wp: list[tuple[dec.Declaration, int, int, str, str | None, str]] = []
     for decl in STATE.store.declarations():
         if decl.kind in ("regpoint", "comment"):
-            continue        # `mame_regpoints.rearm` and `mame_comments.rearm` account for these
+            continue        # accounted for by their own modules' `rearm`
         name = arming.decl_row(decl)
         res = arming.resolve_decl(decl)
         if decl.kind == "watch" and decl.watch_mode in ("show", "expr"):
-            # ONE WORD PER ROW in every view (`watches.resolved_state`): a show watch whose ref
-            # this build cannot place is `unresolved` here as in `declaration_list(kind="watch")`
-            # and the survey.
+            # same word as `declaration_list(kind="watch")` and the survey
             word = watches.resolved_state(decl, res)
             out["unresolved" if word == "unresolved" else "evaluated"].append(name)
             continue
@@ -99,7 +77,7 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
             res = dec.Resolved(decl, "resolved", target)
         if (decl.kind == "watch" and watches.resolved_state(decl, res) == "unresolved"
                 or res.addr is None or _trigger_lost(decl)):
-            # a capture's trigger this build lacks is what it lacks first, as the list says
+            # a lost trigger outranks the rest, as in the list
             out["unresolved"].append(name)
             continue
         if arming.stale(decl):
@@ -116,11 +94,11 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
                 out["unarmable"].append({**name, "why": str(e)})
                 continue
             if refused is not None and refused[0] == "unknown_ref":
-                out["unresolved"].append(name)       # a trigger this build lacks
+                out["unresolved"].append(name)
             elif refused is not None:
                 out["unarmable"].append({**name, "why": refused[1]})
             elif "unmapped" in (sent.get("write_maps_to"), sent.get("trigger_maps_to")):
-                out["rearmed"].append({**name, "note": sent["note"]})    # where the writes go
+                out["rearmed"].append({**name, "note": sent["note"]})
             else:
                 out["rearmed"].append(name)
             continue
@@ -139,7 +117,7 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
                 out["unarmable"].append({**name, "why": mlists.not_listed(
                     f"a `bp` at {res.addr:#x}", "bplist")})
             else:
-                lists.pop("bp", None)      # the list changed: the next reader re-reads it
+                lists.pop("bp", None)      # stale now: re-read on next use
                 out["rearmed"].append({**name, **mlists.adopted_state("bp", row)})
                 done_bp.append(decl)
             continue
@@ -148,7 +126,6 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
                                            None)
             cond = ""
             if why is None and decl.condition:
-                # A name this build lacks reaches the console as a word it does not know.
                 try:
                     cond = conditions.console_condition(decl.condition, decl.cpu)
                     judged = conditions.judged_condition(
@@ -156,9 +133,7 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
                     refusal = judged.refusal
                     put_backs.append(judged.left_visible)
                 except (st.Invalid, gs.SessionError) as e:
-                    # A packet smaller than the one that stored it, a name this table makes
-                    # ambiguous, or a console that raised under the evaluation. Nothing was
-                    # armed for it, and the start goes on to the next declaration.
+                    # nothing was armed; the start goes on
                     out["unarmable"].append({**name, "why": str(e)})
                     continue
                 if conditions.refused_on_rearm(refusal, cond, "breakpoint", decl.owner, name,
@@ -186,7 +161,6 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
         arm_on = decl.cpu
         cond = ""
         if decl.condition:
-            # The breakpoints' pass, for a watch: a name this build lacks is `unresolved`.
             try:
                 cond = conditions.console_condition(decl.condition, decl.cpu)
                 judged = conditions.judged_condition(
@@ -220,11 +194,7 @@ def rearm_breakpoints_and_watches(ses: gs.Session) -> dict[str, Any]:
         else:
             ses.monitor(watches.wp_command(res.addr, decl.width, arm_on, cond))
             sent_wp.append((decl, res.addr, decl.width, maps_to, read_maps_to, cond))
-    # READ EACH LIST BACK ONCE for everything sent: `rearmed` is the machine's answer. Which row a
-    # declaration adopts, what refuses it and whether a row read back is the one sent are the
-    # declarations' own rules (`stop_row`, `change_row`, `mlists.listed_as_sent`); what is the
-    # pass's alone is the batching, one `bplist` and one `wplist` for the whole store where a
-    # declaration reads its list after its own command.
+    # One read-back per list for everything sent: `rearmed` is the machine's answer.
     if sent_bp:
         bp_rows = mlists.bp_held(ses)
         for placed, addr, cond in sent_bp:

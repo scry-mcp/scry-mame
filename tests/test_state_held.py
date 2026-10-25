@@ -1,9 +1,4 @@
-"""A save or a load MAME held (`mame_savestates.complete_held`) is completed by one step.
-
-The double holds them as MAME does, logging MAME's words (`fixtures/console/
-statesave.held.errorlog.txt`, captured on circus), and completes the held one after the step's
-instruction, which moves the pc, the register block and the cycle counter.
-"""
+"""A save or a load MAME held (`mame_savestates.complete_held`) is completed by one step."""
 
 from __future__ import annotations
 
@@ -26,19 +21,15 @@ import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
 
 HELD_LOG = captured("statesave.held.errorlog.txt")
-#: What the console prints for each command, held or not (`debugcmd.cpp`).
 ATTEMPTED = {"statesave": "State save attempted.  Please refer to window message popup for "
                           "results.\n",
              "stateload": "State load attempted.  Please refer to window message popup for "
                           "results.\n"}
-#: The cycles the double's stepped instruction takes.
 STEP_CYCLES = 7
 
 
 class _HeldSession(_BlockSession):
-    """`held` saves or loads MAME holds instead of running them in the command; the step after
-    one completes it, unless `stays`, when MAME logs that it is still held, or `times_out`, when
-    no stop comes."""
+    """`held` operations are deferred to the next step, unless `stays` or `times_out`."""
 
     held: int
     stays: bool
@@ -50,13 +41,12 @@ class _HeldSession(_BlockSession):
             fh.write(HELD_LOG)
 
     def monitor(self, command: str, timeout: float = 10.0) -> str:
-        # The console runs every command of a `;` line inside the one request.
         if ";" in command:
             return "".join(self.monitor(one.strip(), timeout) for one in command.split(";"))
         word = {"ss": "statesave", "sl": "stateload"}.get(command.split()[0], command.split()[0])
         if word in ATTEMPTED and self.held > 0:
             self.held -= 1
-            self.pending = f"{word} {command.split()[1]}"     # MAME's one pending slot
+            self.pending = f"{word} {command.split()[1]}"     # one pending slot
             self.log_held()
             return ATTEMPTED[word]
         return super().monitor(command, timeout)
@@ -67,7 +57,7 @@ class _HeldSession(_BlockSession):
         stop = super().step()
         self.cycles_offset += STEP_CYCLES
         self.blocks[1]["PC"] = f"{self.pc:08x}"
-        # THE INSTRUCTION RAN FIRST: the timeslice ends after it, and only then the operation.
+        # the operation lands after the instruction
         if self.pending is not None:
             if self.stays:
                 self.log_held()
@@ -84,7 +74,7 @@ def _held(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, held: int = 0) -> _He
 
 
 def _saved_and_moved(ses: _HeldSession) -> int:
-    """A state `a` saved in the command, then the machine moved: the pc it was saved at."""
+    """Save `a` in the command, move the machine, return the pc saved."""
     assert s.state_write("save", name="a")["status"] == "ok"
     saved_pc = ses.pc
     _moved(ses)
@@ -111,23 +101,18 @@ def test_a_held_save_is_completed_by_one_step_and_records_the_machine_it_holds(
 ) -> None:
     ses = _held(monkeypatch, tmp_path, held=1)
     at_send = ses.pc
-    # a line logged since the last stop and before the save, which is not the save's
     with open(mfiles.log_path(ses.scratch, "emulator"), "a") as fh:
         fh.write("[:maincpu] logged before the save\n")
     out = s.state_write("save", name="a")
     assert out["status"] == "ok", out
-    # the reply of a save that ran in the command, with what the hold adds and no survey
     assert set(out) == {"name", "path", "bytes", "frame", "pc", "errorlog", "held", "stop_seq",
                         "summary", "status", "session"}, sorted(out)
     assert ses.stepped == 1 and ses.pending is None
-    # the record is the machine the file holds: the one after the step's instruction
     assert out["pc"] == mstate.hex_addr(ses.pc) != mstate.hex_addr(at_send), out
     assert mstate.STATE.states["a"]["pc"] == ses.pc
     assert mstate.STATE.states["a"]["blocks"][":maincpu"]["PC"] == f"{ses.pc:08x}"
     assert "stepped" in out["held"] and mstate.hex_addr(ses.pc) in out["held"], out
-    # the reply's errorlog is the save's own: MAME's words, from the command on
     assert out["errorlog"]["lines_total"] == len(HELD_LOG.splitlines()), out["errorlog"]
-    # the step is a stop, recorded as one
     assert mstate.STATE.last_stop["cause"] == "statesave a", mstate.STATE.last_stop
     assert out["stop_seq"] == mstate.STATE.last_stop["seq"], out
 
@@ -135,7 +120,7 @@ def test_a_held_save_is_completed_by_one_step_and_records_the_machine_it_holds(
 def test_a_held_save_loads_back_verified(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The record of a held save is the machine its file holds, so its load is proved by it."""
+    """A held save records the machine its file holds, so its load verifies."""
     ses = _held(monkeypatch, tmp_path, held=1)
     assert s.state_write("save", name="a")["status"] == "ok"
     _moved(ses)
@@ -190,7 +175,6 @@ def test_a_held_load_typed_through_debug_is_completed_and_its_stop_recorded(
     assert ses.stepped == 1 and ses.pc == saved_pc
     assert "stepped" in str(out.get("note")), out
     assert mstate.STATE.last_stop["cause"] == "debug: sl a", mstate.STATE.last_stop
-    # the counter is marked after the load landed, so the next run withholds its cycles
     mark = mstate.STATE.stale_counter
     assert mark is not None and mark.reading == ses.totalcycles(), mark
 
@@ -208,7 +192,7 @@ def test_a_held_save_typed_through_debug_is_completed(
 def test_a_typed_load_still_held_is_refused_and_still_marks_the_counter(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The load may land inside the next run, whose cycles would span two machines."""
+    """The load may land inside the next run, so the counter is marked."""
     ses = _held(monkeypatch, tmp_path)
     _saved_and_moved(ses)
     ses.held, ses.stays = 1, True
@@ -220,7 +204,7 @@ def test_a_typed_load_still_held_is_refused_and_still_marks_the_counter(
 def test_a_line_holding_two_saves_says_only_the_last_was_completed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """MAME keeps one pending operation: the second save replaced the first, which is lost."""
+    """MAME keeps one pending operation: the second save replaces the first."""
     ses = _held(monkeypatch, tmp_path, held=2)
     out = s.debug(command="statesave b; statesave c")
     assert out["status"] == "ok", out

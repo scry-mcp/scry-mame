@@ -1,12 +1,8 @@
-"""What a capture row says about WHEN: the beam line and the emulated time of the access, and the
-capture on a READ trigger, whose row carries them with the value read and no block.
+"""The beam line and emulated time a capture row carries, and the capture on a READ trigger.
 
-WHAT A ROW HOLDS IS JUDGED BY RUNNING THE SCRIPT: the install a capture sends is executed by this
-host's `lua` against a machine the chunk below stands in for, whose screen and clock are set per
-call to known answers.
-The screen's numbers are 1942's (`set_raw(6 MHz, 384, 0, 256, 262, 16, 240)`): a line of 384
-pixels, 262 lines, vblank from line 240. The line a row carries must be the one MAME's own `vpos()`
-gives, which rounds to the NEAREST pixel: so the last half pixel of a line is already the next.
+The install is run by the host's `lua` against a stand-in machine whose screen and clock are set
+per access. The screen is 1942's (6 MHz, 384 x 262, vblank from line 240); the line must be
+MAME's `vpos()`, which rounds to the nearest pixel, so a line's last half pixel is the next line.
 """
 
 from __future__ import annotations
@@ -34,8 +30,6 @@ PIXEL_S = 1 / 6_000_000
 SCAN_S = 384 * PIXEL_S
 FRAME_S = 262 * SCAN_S
 
-#: The machine the install runs on: one cpu with a program space whose taps are recorded, and a
-#: screen and a clock whose readings the driver below sets before each access.
 HOST = f"""
 TAPS = {{}}
 local function space()
@@ -76,8 +70,7 @@ def _at(seconds: int, attoseconds: int, line_s: float) -> str:
 
 def _ran(tmp_path: Path, accesses: str, trigger_type: str = "w",
          screen: bool = True) -> list[capture.Row]:
-    """The capture's install run on the host machine, `accesses` made, its rows dumped at a
-    stop and read back the way the server reads them."""
+    """The capture's install run on the host machine, `accesses` made, rows read back."""
     head, rows = tmp_path / "h.txt", tmp_path / "r.rows"
     script = capture.install_script("x_t12", 0x12, capture.TapSource("space", "", 0x10),
                                     1, head, rows, ":maincpu", trigger_type=trigger_type)
@@ -88,14 +81,10 @@ def _ran(tmp_path: Path, accesses: str, trigger_type: str = "w",
     return capture.first_rows(rows, capture.ROWS_MAX)
 
 
-# ------------------------------------------------------- the line and the time a row carries
-
-
 def test_a_row_carries_the_beam_line_and_the_access_time_as_known_answers(
         tmp_path: Path) -> None:
-    """Mid-line 240 is line 240; the last half pixel of line 240 is already 241, as MAME's `vpos()`
-    rounds; the first instants of a frame are line 0. The time is the clock's own, to the
-    attosecond, so two accesses one cycle apart never share it."""
+    """Mid-line 240 is 240, its last half pixel is 241, a frame's first instants are 0; the time
+    is the clock's own, to the attosecond."""
     rows = _ran(tmp_path,
                 _at(2, 28936333331304397, 240 * SCAN_S + 50 * PIXEL_S)
                 + _at(2, 28936666664637730, 241 * SCAN_S - PIXEL_S / 4)
@@ -107,10 +96,8 @@ def test_a_row_carries_the_beam_line_and_the_access_time_as_known_answers(
 
 
 def test_an_access_on_the_rounding_tie_takes_the_line_vpos_gives(tmp_path: Path) -> None:
-    """Exactly half a pixel before a line starts, `vpos()` gives that line: integer attoseconds
-    round the tie up. The derivation works in doubles, where the tie lands either side of the
-    line's start by a rounding error, and must still give the same line, the first one of the
-    next frame included."""
+    """Half a pixel before a line starts, `vpos()` gives that line (the tie rounds up); the
+    derivation works in doubles, where the tie lands either side by a rounding error."""
     rows = _ran(tmp_path, "".join(_at(2, i, k * SCAN_S - PIXEL_S / 2)
                                   for i, k in enumerate((1, 2, 3, 120, 241, 261)))
                 + _at(2, 9, FRAME_S - PIXEL_S / 2)
@@ -139,19 +126,15 @@ def test_a_row_as_a_reply_shows_its_line_and_its_time_in_seconds(tmp_path: Path)
 
 
 def test_a_row_without_its_line_and_time_is_no_row(tmp_path: Path) -> None:
-    """A row is read by its shape: one with no line and no time is not read as one whose pc
-    is a line."""
+    """A row with no line and no time is not read as one whose pc is a line."""
     old = tmp_path / "old.rows"
     old.write_text("r 1 12 40e 1 ffff 00000000\n")
     assert capture.first_rows(old, 5) == []
 
 
-# ------------------------------------------------------------------- the capture on a READ trigger
-
-
 def test_a_read_capture_taps_the_reads_and_reads_no_memory_inside_them(tmp_path: Path) -> None:
-    """A Lua read tap that reads memory inside its callback re-enters the bus, which MAME does
-    not survive: the read capture's row is the access alone, its value and mask, and no block."""
+    """A read tap that reads memory in its callback re-enters the bus, which MAME does not
+    survive: the row is the access alone, with no block."""
     (row,) = _ran(tmp_path, _at(2, 7, 109 * SCAN_S + PIXEL_S), trigger_type="r")
     assert (row.line, row.time_attoseconds, row.data, row.mask, row.block) == (
         109, 2_000000000000000007, 0xAB, 0xFF, b""), row
@@ -182,8 +165,7 @@ def test_watch_add_declares_a_read_capture_on_its_trigger_and_sends_a_read_tap(
 
 def test_a_read_capture_s_trigger_is_its_ref_when_not_named(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A read has no block, so what a row holds and what makes it are one place: `trigger` may
-    be left out, and the declaration is the one naming it would make."""
+    """A read has no block, so `trigger` may be left out and defaults to the ref."""
     _capturing(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x2031fe", mode="capture", trigger_type="r")
     assert out["status"] == "ok" and out["trigger"] == "0x2031fe", out
@@ -251,8 +233,7 @@ def test_a_read_capture_where_nothing_handles_a_read_is_armed_saying_so(
 
 def test_a_read_capture_of_a_port_or_with_no_read_side_is_refused(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A port's reads are not captured; and a read side the console does not name is a read
-    nobody can say will fire, refused as a write capture's unnamed write side is."""
+    """A port's reads are not captured, and an unnamed read side is refused like a write's."""
     _capturing(monkeypatch, tmp_path)
     refused("taps a program address", s.watch_add(ref="0x6", mode="capture", trigger_type="r",
                                                   space="io"))
@@ -266,9 +247,8 @@ def test_a_read_capture_of_a_port_or_with_no_read_side_is_refused(
 
 def test_one_ref_holds_one_capture_and_the_refusal_says_which_access_it_holds(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A read capture's ref is its trigger, so a write capture of that one word under the same
-    ref is a second declaration of the ref, refused as any is; the refusal says the held one
-    captures the writes, which is the difference the caller could not see."""
+    """A write capture under a read capture's ref is a second declaration of it; the refusal
+    says the held one captures the writes."""
     _capturing(monkeypatch, tmp_path)
     assert s.watch_add(ref="0x2031fe", mode="capture", length=1, trigger="0x2031fe")[
         "status"] == "ok"
@@ -279,8 +259,7 @@ def test_one_ref_holds_one_capture_and_the_refusal_says_which_access_it_holds(
 
 def test_a_read_capture_listed_before_its_tap_says_it_is_one(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """A row with no tap of this session (not installed, stale, unresolved) still says which
-    access it captures, or a read capture lists as a one-byte capture of nothing."""
+    """A row with no tap of this session still says which access it captures."""
     _capturing(monkeypatch, tmp_path)
     arming.store().add(dec.Declaration("watch", "address", "0x2031fe", width=1, fmt="u8",
                                        watch_mode="capture", trigger="0x2031fe",

@@ -1,11 +1,6 @@
-"""The layouts the graphics tests and the live scripts decode the free boards under, written ONCE.
+"""Layouts transcribed from MAME's drivers, in their own spelling.
 
-Each is transcribed from its driver in MAME's source, in the driver's own spelling where the
-driver writes a string: `circus.cpp`'s `charlayout`; `goldnpkr.cpp`'s `tilelayout` (witchgme's);
-and for gridlee, whose driver draws its sprites and its framebuffer by hand with no
-`GFXDECODE`, the layout its drawing code implies (`gridlee_v.cpp`: eight pixels a line, two
-4-bit pixels a byte, high nibble first; a sprite 64 bytes, the framebuffer 128 bytes a line).
-`BYTES_8X8` is no driver's: one bit a pixel, eight bytes a tile, a layout any block reads under.
+Gridlee has no `GFXDECODE`; its layouts are implied by `gridlee_v.cpp`. `BYTES_8X8` is no driver's.
 """
 
 from typing import Any

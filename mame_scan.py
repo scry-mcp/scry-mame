@@ -1,17 +1,11 @@
 """The value scan: `scan(method="start")`, `scan(method="filter")`, `scan(method="clear")`.
 
-THE RANGE IS READ WITH THE CONSOLE'S `save` AND COMPARED IN PYTHON, not with MAME's own cheat
-engine: `save` reads through handlers (a work RAM behind a bank or a handler, which the engine's
-`cheatinit` refuses as "No writable bytes"), with the debugger's side effects disabled, into a
-file whose bytes never cross the socket, and it neither steps nor writes the machine. The engine
-is what the tests compare against, never the mechanism.
+The range is read with the console's `save` and compared in Python, not with MAME's cheat engine:
+`save` reads through handlers (the engine's `cheatinit` refuses a banked work RAM as "No writable
+bytes"), with the debugger's side effects disabled, and neither steps nor writes the machine.
 
-ONE READ RULE: every read saves from the first survivor to the last, which right after
-`scan(method="start")` is the whole range; a cell outside that span can no longer change the answer.
-The
-survivors are `array` columns, the two values in the cell's own width and the offset in the
-narrowest that spans the ceiling, so a scan holds a few bytes per cell rather than a Python int
-and a list slot each.
+Every read saves from the first survivor to the last. Survivors are `array` columns (values in the
+cell's width, offsets in the narrowest typecode spanning the ceiling), a few bytes per cell.
 """
 
 from __future__ import annotations
@@ -39,7 +33,6 @@ import mame_space as mspace
 import mame_state as st
 from mame_state import STATE
 
-#: The cell sizes a scan takes, in bytes: the argument is the count the reply calls it.
 CELL_BYTES = (1, 2, 4)
 _TESTS: dict[str, Callable[[int, int], bool]] = {
     "=": op.eq, "!": op.ne, ">": op.gt, ">=": op.ge, "<": op.lt, "<=": op.le}
@@ -50,22 +43,17 @@ SCAN_BYTES_MAX = 0x100000
 
 
 def _unsigned(size: int) -> str:
-    """The unsigned `array` typecode of `size` bytes. C's sizes behind the codes are the
-    platform's, so they are found by asking rather than assumed, and a platform with none fails
-    here, at import."""
+    """The unsigned `array` typecode of `size` bytes; fails at import if none."""
     return next(c for c in "BHILQ" if array(c).itemsize == size)
 
 
-#: The typecode holding one cell of each size, and the narrowest holding any offset in cells.
 TYPECODES = {n: _unsigned(n) for n in CELL_BYTES}
 OFFSET_TYPECODE = _unsigned(next(n for n in (1, 2, 4, 8) if 1 << (8 * n) >= SCAN_BYTES_MAX))
 
 
 @dataclass
 class Scan:
-    """The open scan: its range and cell, the cpu every filter reads, and per survivor (in
-    address order) its offset in cells, the value it held when the scan opened, and the value
-    the last read found."""
+    """The open scan; per survivor, in address order: offset in cells, opening and latest value."""
     addr: int
     length: int
     cell_bytes: int
@@ -87,16 +75,13 @@ class Scan:
                 for i, v in zip(self.offsets, self.values, strict=True)]
 
 
-#: `scan(method="filter")`'s `value` when none was given: each cell is held against its own opening
-#: value.
 NO_VALUE_WHY = ("no `value` was given, so each cell was compared with its value at "
                 "`scan(method=\"start\")`")
 NO_VALUE = unavailable(NO_VALUE_WHY)
 
 
 def check_start_scan(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: Any) -> None:
-    """`scan(method="start")`'s machine-independent half: the cell's size, and a length of whole
-    cells."""
+    """`scan(method="start")`'s machine-independent half."""
     inputs.check_ref(ref)
     vocab.one_of("cell_bytes", cell_bytes, CELL_BYTES)
     cell = cell_bytes
@@ -114,8 +99,7 @@ def check_start_scan(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: A
 
 def check_filter_scan(operator: str = "=", value: int | None = None,
                       limit: int = judges.HITS_DEFAULT, **_: Any) -> None:
-    """`scan(method="filter")`'s machine-independent half; the value against the width is the open
-    scan's to judge."""
+    """`scan(method="filter")`'s machine-independent half; the value's width is judged later."""
     vocab.one_of("operator", operator, OPERATORS)
     if value is not None:
         inputs.natural("value", value, " is not a whole number from 0: a scan compares unsigned")
@@ -123,12 +107,12 @@ def check_filter_scan(operator: str = "=", value: int | None = None,
 
 
 def _cells_at(ses: gs.Session, scratch: Path, scan: Scan) -> array[int] | dict[str, Any]:
-    """The cells from the first survivor to the last as the console's `save` reads them now,
-    decoded in the scan's byte order and indexed from the first survivor (`offset - offsets[0]`),
-    or the refusal it came to; the file is gone either way. The cpu goes on the `save` line
-    always, so every filter reads the scan's own cpu whatever is visible."""
+    """The cells from the first survivor to the last, indexed `offset - offsets[0]`, or the refusal.
+
+    The cpu always goes on the `save` line, so every filter reads the scan's own cpu.
+    """
     folder = scratch / "scan"
-    # A name of its own per save: a file a killed call left behind is never read as this one's.
+    # A unique name: a file a killed call left behind is never read as this save's.
     path = folder / f"{uuid.uuid4().hex}.bin"
     files.refuse_console_path(path)
     folder.mkdir(exist_ok=True)
@@ -165,8 +149,8 @@ def start_scan(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
     addr = STATE.resolve(ref, on)
     order = cpus.described(ses, on, thread).byte_order if cell_bytes > 1 else "little"
     code = TYPECODES[cell_bytes]
-    # The two value columns start empty: `_cells_at` reads the span the offsets name, which here
-    # is every cell, and the scan is held only once that read filled them.
+    # The value columns start empty: `_cells_at` reads the span the offsets name, and the scan is
+    # held only once that read succeeded.
     scan = Scan(addr, length, cell_bytes, on, thread, order,
                 array(OFFSET_TYPECODE, range(length // cell_bytes)), array(code), array(code))
     opening = _cells_at(ses, scratch, scan)
@@ -182,10 +166,7 @@ def start_scan(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
 
 def filter_scan(ses: gs.Session, scratch: Path, operator: str,
                 value: int | None, limit: int = judges.HITS_DEFAULT) -> dict[str, Any]:
-    """The body of the `scan(method="filter")` tool: each survivor against `value`, or with none
-    against
-    what it held when the scan opened. The read spans the first survivor to the last; only the
-    survivors are compared."""
+    """The body of the `scan(method="filter")` tool: survivors against `value` or opening value."""
     check_filter_scan(operator=operator, value=value, limit=limit)
     scan = STATE.scan
     if scan is None:
@@ -222,7 +203,7 @@ def filter_scan(ses: gs.Session, scratch: Path, operator: str,
                                            "truncated": False} | where)
     scan.offsets, scan.opening, scan.values = offsets, opening, values
     scan.iterations += 1
-    # PAST `limit`, THE FIRST ONES, never an empty list: the rest are counted in `hits_total`.
+    # Past `limit` the first hits, never an empty list; `hits_total` counts the rest.
     hits = [{"addr": st.hex_addr(a), "value": hex_cell(v)}
             for a, v in itertools.islice(scan.surviving(), limit)]
     return menvelope.envelope(reply | {"closed": False, "hits": hits, "hits_total": survivors,

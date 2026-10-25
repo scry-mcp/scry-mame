@@ -1,7 +1,3 @@
-"""REFERENCE's table of how a cancelled call ends is the tools' own declarations, read back: every
-tool that declares an `on_cancel` sits in the row of that end, and every tool a row names declares
-it (`scry_core.ends_table`)."""
-
 from __future__ import annotations
 
 import sys

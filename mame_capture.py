@@ -1,45 +1,25 @@
-"""A watch that CAPTURES: one row each time a trigger is written, holding a whole block, or each
-time it is read, holding the read.
+"""A watch that captures: one row each time a trigger is written (holding a whole block) or read.
 
-WHY IT EXISTS. A count watch answers per byte and per writer over a whole pass, and a joint
-question dies in it: on a register block written by several routines ("the scale each blit
-carries"), the raster routine's writes drown the sprite routine's, the values are shared across
-writers, and two tallies cannot be joined afterwards. What the question needs is the block as it
-stood at the one write that matters, the blit's strobe: every word, together, per event.
+A count watch cannot answer a joint question: on a register block written by several routines,
+two tallies cannot be joined afterwards. A capture keeps the block as it stood at the one write
+that matters. The mechanism is every tap's (`mame_tap`).
 
-THE MECHANISM is every tap's (`mame_tap`), a fifth mode of the same tap: composed by the server,
-sent through the console pipe and never stepped for, idempotent by id, answered by its sentinel
-and resent once, removed by a send, re-armed at `start`. The tap sits on the bus word
-that holds the TRIGGER and keeps the writes whose lanes cover the trigger's byte. For each one it
-reads the block and appends a row: the frame, the beam line and the emulated time of the write,
-the writer's pc (`CURPC`), the trigger write's own data and lane mask, and the block's bytes in the
-cpu's order.
+`machine.time` inside a tap is the accessing cpu's local time, so rows of two cpus order by it,
+but below the driver's interleave that order is the scheduler's choice, not the board's.
 
-WHEN, TO THE CYCLE. The time is MAME's `machine.time`, which inside a tap is the accessing cpu's
-own local time, so two accesses one cycle apart never share it and two cpus' rows order by it;
-below the driver's interleave the order of two cpus' accesses is the scheduler's choice, not the
-board's. The line is MAME's `vpos()`, which Lua does not bind, derived as `BEAM_LINE_LUA` says. A
-machine with no screen stamps no frame and no line.
+A read trigger (`trigger_type="r"`) taps the reads and its row has no block: a Lua read tap that
+reads memory inside its callback re-enters the bus, which MAME does not survive.
 
-A READ TRIGGER (`trigger_type="r"`, `wpset`'s word) taps the reads instead, and its row is the
-access alone, its value and its mask, with no block: a Lua read tap that reads memory inside its
-callback re-enters the bus, which MAME does not survive.
+The block is read from its memory share or region when the address map backs it with one (a
+write-only register block has no read side, so the space answers zeros for it); plain memory is
+read through the space's direct read, which touches no handler. A block whose read side is a
+handler is refused: reading it inside a write would run that handler once per trigger.
 
-WHERE THE BLOCK IS READ FROM, decided before the install. A block the address map backs with a
-memory SHARE or REGION is read there, through the block's own reader: a write-only register
-block (`.w(handler).share(...)`) has no read side, so the space answers zeros for it, while the
-share holds every word the handler kept. Plain memory with no block of its own is read through
-the space's DIRECT read, which touches no handler. A block whose read side is a handler is
-refused: reading it inside a write would run that handler once per trigger.
-
-WHAT A ROW SHOWS. The tap runs BEFORE the write lands, so the block holds every word already
-written and, when the trigger lies inside the block, the trigger's value from BEFORE this write;
+The tap runs before the write lands, so a trigger inside the block shows its previous value;
 the write's own value is the row's `data`.
 
-ROWS. The first `ROWS_MAX` are kept and the rest counted in `overflow_rows`, so a pass of any
-length says what it dropped. They wait in the guest until a debugger stop, where the periodic
-hook appends them to a file in the scratch and rewrites a header beside it, whole, through a
-rename: the rows file only grows, so a reply names its path and shows the first rows.
+Rows past `ROWS_MAX` are counted in `overflow_rows`. Rows wait in the guest until a debugger
+stop, where the periodic hook appends them to a file and rewrites the header by rename.
 """
 
 from __future__ import annotations
@@ -69,10 +49,8 @@ import mame_tap as mtap
 import mame_transport as transport
 from mame_state import STATE
 
-# The Lua registry every capture hangs from, beside the count watches' own.
 REGISTRY = "MCP_CAPTURE"
 HEADER = "MCP_CAPTURE"
-# Rows a capture keeps before it only counts: a pass the length of an attract loop with margin.
 ROWS_MAX = 100_000
 _HEAD = re.compile(
     rf"^{HEADER} (\S+) seq=(\d+) frame=(-?\d+) total=(\d+) rows=(\d+) overflow_rows=(\d+) "
@@ -80,13 +58,10 @@ _HEAD = re.compile(
 _ROW = re.compile(r"^r (\d+) (-?\d+) (-?\d+) (\d+)\.(\d{18}) ([0-9a-f]+) ([0-9a-f]+) "
                   r"([0-9a-f]+) ([0-9a-f]*)$")
 ATTOSECONDS_PER_SECOND = 10**18
-# THE BEAM LINE OF THE PRESENT INSTANT, `vpos()` as Lua cannot call it, and the one place that
-# says how it is derived. `vpos()` takes the time since line 0, adds half a pixel, divides by the
-# line's period in integer attoseconds and wraps over the frame's lines, so the tie half a pixel
-# before a line is already that line and the last half pixel of a frame is line 0. Lua binds the
-# periods as doubles, where the tie lands either side by a rounding error: the quotient is nudged
-# by a billionth of a line, far above that error and far below one cycle, so it rounds as
-# `vpos()` does. The frame's sentinel on a machine with no screen.
+# `vpos()` as Lua cannot call it. It adds half a pixel to the time since line 0, so the tie half a
+# pixel before a line is already that line. Lua binds the periods as doubles, where the tie lands
+# either side by rounding error: the nudge of a billionth of a line is far above that error and far
+# below one cycle.
 BEAM_LINE_LUA = f"""local function beam_line()
   if screen == nil then return {callbacks.NO_FRAME} end
   local scan = screen.scan_period
@@ -99,9 +74,7 @@ end
 
 @dataclass(frozen=True)
 class TapSource:
-    """Where a capture's block is read inside the tap: a `share` or a `region` by `tag`, the full
-    tag the address map carries (`mame_machine.full_tag`), at `offset` into it, or `space` at
-    `offset`, the block's own address."""
+    """Where a block is read inside the tap: a `share` or `region` by full `tag`, or `space`."""
     kind: str
     tag: str
     offset: int
@@ -113,16 +86,13 @@ class TapSource:
 
 def id_for(cpu: str | None, addr: int, width: int, trigger: int,
            space: str = "program", trigger_type: str = "w") -> str:
-    """The id a capture is kept under: the block and the trigger on its cpu, so two
-    declarations of one capture meet the same tap, and the count watch's rules for the cpu and
-    for a trigger outside the program space; a read trigger's carries an `r`, since a capture of
-    the reads is not the capture of the writes."""
+    """The id a capture is kept under; a read trigger's carries an `r`."""
     read = "r" if trigger_type == "r" else ""
     return f"{tally.id_for(cpu, addr, width)}_t{trigger:x}{read}{mspace.suffix(space)}"
 
 
 def paths(scratch: Path, capture_id: str) -> tuple[Path, Path]:
-    """The header the periodic rewrites and the rows file it appends to."""
+    """The header path and the rows path."""
     return scratch / f"capture-{capture_id}.txt", scratch / f"capture-{capture_id}.rows"
 
 
@@ -135,16 +105,11 @@ def source(addr: int, width: int, cpu: str | None,
            read_side: Callable[[int], str | None]) -> TapSource:
     """Where the block `width` bytes at `addr` of `cpu` is read inside the tap, or the refusal.
 
-    A share or a region when ONE entry of the cpu's program space, in the address map `start`
-    cached, reaches the block and holds it whole: where entries overlap, MAME's bus answers
-    with the one installed last, so a first match would read the memory under an overlay. An
-    entry that masks its addresses is not placed by offset here (`mame_region.place` says
-    why). Otherwise the space's direct read, which takes the space's own decode, when the
-    console's `map` (`read_side`, asked on the block's cpu) answers memory at the block's
-    first byte and at the first byte of every entry that reaches into it; a direct read of a
-    handler answers zeros that look like data, so a block with one inside is refused. The
-    reader comes in as an argument (`mame_map.read_side` builds it) so this decision is a pure
-    function its tests drive with a table of answers."""
+    A share or region when one entry of the program space holds the block whole: where entries
+    overlap the bus answers with the one installed last, so a first match would read the memory
+    under an overlay. Otherwise the space's direct read, when `read_side` (the console's `map`)
+    answers memory at the block's first byte and at every entry start inside it; a direct read of
+    a handler answers zeros that look like data."""
     last = addr + width - 1
     rows = STATE.machine_map.get("address_map", []) if STATE.machine_map else []
     reaching = [e for e in rows if e["cpu"] == cpu and e["space"] == "program"
@@ -175,12 +140,8 @@ def source(addr: int, width: int, cpu: str | None,
 
 def block_captures(cpu: str = "",
                    space: str = "program") -> list[tuple[dec.Owner, dict[str, Any]]]:
-    """The session's captures of a block, in the order first recorded, on `cpu` (every cpu when
-    empty, compared by `st.bare_tag`), whose trigger is in `space` (any when empty): a manifest's
-    fire word is a program address, so a port's capture never answers for one. A capture's
-    record is the one tap record that carries a `trigger`: one predicate, beside the code that
-    writes the record. A read trigger's capture holds no block, so it is none of these: every
-    caller here reads blocks."""
+    """The session's captures of a block, on `cpu` (every cpu when empty), whose trigger is in
+    `space` (any when empty). A read trigger's capture holds no block, so it is none of these."""
     return [(owner, rec) for owner, rec in STATE.tallies.items()
             if rec.get("trigger") is not None and rec.get("trigger_type", "w") == "w"
             and (not space or rec.get("space", "program") == space)
@@ -188,8 +149,8 @@ def block_captures(cpu: str = "",
 
 
 def reading_region(tag: str, offset: int, length: int) -> list[dict[str, str | None]]:
-    """Every capture whose block the region `tag` backs within `offset`..`offset+length-1`:
-    what a region write changes under a capture without a bus write it could see."""
+    """Every capture whose block the region `tag` backs within the range: a region write changes
+    it without a bus write the tap could see."""
     last = offset + length - 1
     return [{**mspace.shown(ref), "cpu": cpu} for (ref, cpu), rec in block_captures(space="")
             if (src := rec.get("source")) is not None and src.kind == "region"
@@ -199,14 +160,8 @@ def reading_region(tag: str, offset: int, length: int) -> list[dict[str, str | N
 def install_script(capture_id: str, trigger: int, src: TapSource, width: int, head: Path,
                    rows: Path, cpu: str | None = None, trigger_space: str = "program",
                    trigger_type: str = "w") -> str:
-    """The Lua that installs capture `capture_id`: a tap on the bus word holding `trigger`,
-    keeping the accesses that cover its byte, each appending a row stamped with its frame, beam
-    line and time; a write's row carries the block read from `src`, a read's (`trigger_type`
-    `r`) none. One chunk, on `cpu` (`mtap.bound_cpu`). The trigger's tap sits in `trigger_space`
-    (`tsp`, a port's `out` in `io`) and the block is read in the program space (`sp`), where a
-    block lives. The install prints every tap's `installed` line (`mtap.ANSWER_PREFIX`). The files
-    a removed tap left on the range go as a count watch's dump does (`tally.install_script`);
-    with a tap there, its rows file is what the install carries on appending to."""
+    """The Lua that installs capture `capture_id`: a tap on the bus word holding `trigger`.
+    The tap sits in `trigger_space`; the block is read in the program space."""
     reads = trigger_type == "r"
     reader = ("sp:read_direct_u8(off + i)" if src.kind == "space" else "blk:read_u8(off + i)")
     capture_id_literal = transport.lua_string(capture_id)
@@ -288,7 +243,7 @@ print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s trigger=%x ", id
 
 
 def parse_capture_header(text: str) -> dict[str, Any] | None:
-    """A header as the periodic wrote it, or None when the text is not a whole one."""
+    """A header, or None when the text is not a whole one."""
     whole = callbacks.read_whole(text, _HEAD, with_body=False)
     if whole is None:
         return None
@@ -300,8 +255,7 @@ def parse_capture_header(text: str) -> dict[str, Any] | None:
 
 
 class Row(NamedTuple):
-    """One row of a rows file. `frame` and `line` are `callbacks.NO_FRAME` on a machine with no
-    screen; `block` is empty on a read trigger's row."""
+    """One row; `frame`/`line` are `callbacks.NO_FRAME` with no screen, `block` empty on a read."""
     n: int
     frame: int
     line: int
@@ -313,8 +267,7 @@ class Row(NamedTuple):
 
 
 def rows(path: Path) -> Iterator[Row]:
-    """Every row of a rows file in order; a line of another shape ends the read, since a row cut
-    by a write in progress is no row."""
+    """Every row in order; a line of another shape ends the read (a row cut mid-write is no row)."""
     for line in files.file_lines(path):
         m = _ROW.match(line.rstrip("\n"))
         if m is None:
@@ -327,8 +280,7 @@ def rows(path: Path) -> Iterator[Row]:
 
 def lane(data: int, mask: int, data_width: int, endianness: str, trigger: int,
          width: int) -> int | None:
-    """The `width` bytes at `trigger` in one bus write, placed as the tap places the trigger's
-    byte; None when the write did not cover every one of them, or when they cross the bus word."""
+    """The `width` bytes at `trigger` in one bus write; None if uncovered or across the bus word."""
     if mspace.crosses(trigger, width, data_width):
         return None
     shift = mspace.lane_shift(trigger % (data_width // 8), width, data_width, endianness)
@@ -337,13 +289,11 @@ def lane(data: int, mask: int, data_width: int, endianness: str, trigger: int,
 
 
 def first_rows(path: Path, count: int) -> list[Row]:
-    """The first `count` rows of a rows file (`rows`)."""
+    """The first `count` rows."""
     return list(itertools.islice(rows(path), count))
 
 
-# THE WIDEST JSON A FLOAT PRINTS AS, by its width in bytes: a sign, the 17 significant digits a
-# double's repr can need, the point, and an exponent of up to 3 digits for a double (`e-308`) and 2
-# for a single, whose range is a double's narrower one. `nan` and the infinities print shorter.
+# Widest JSON a float prints as, by width in bytes: sign, 17 digits, point, exponent.
 _FLOAT_CHARS = {4: 1 + 17 + 1 + 2 + 2, 8: 1 + 17 + 1 + 2 + 3}
 
 
@@ -362,10 +312,8 @@ def _list_chars(n: int, each: int) -> int:
 
 
 def block_chars_max(fmt: vf.Format, width: int) -> int:
-    """The widest a block of `width` bytes decoded in `fmt` prints as JSON (`json.dumps`, which a
-    reply is measured by): every scalar at its widest, a string as six characters a byte (a
-    byte past ASCII is escaped `\\u00XX`), a struct's field names counted with their quotes. What
-    a capture's format is held to, since a struct's names are the caller's and unbounded."""
+    """The widest a block of `width` bytes decoded in `fmt` prints as `json.dumps` JSON: a string
+    is six characters a byte (escaped `\\u00XX`), a struct's field names are the caller's."""
     if fmt.kind == "struct":
         fields = [len(json.dumps(name)) + 2 + block_chars_max(sub, 0) for name, sub in fmt.fields]
         return 2 + sum(fields) + 2 * (len(fields) - 1)
@@ -384,10 +332,8 @@ NO_SCREEN_WHY = "this machine has no screen, so no frame or line is counted"
 
 def row_fields(row: Row, fmt: str, width: int,
                data_width: int, endianness: str, cpu: str | None) -> dict[str, Any]:
-    """One row as a reply shows it: its frame, line and time (`time_s` at a double's full
-    precision, since two accesses one cycle apart are nanoseconds apart), the trigger access's
-    data and mask at the bus's width, the accessor placed in the symbol table, and a write's
-    block decoded in the watch's format; a read's row has no block."""
+    """One row as a reply shows it; `time_s` keeps a double's full precision since two accesses
+    one cycle apart are nanoseconds apart."""
     out: dict[str, Any] = {
         "n": row.n,
         "frame": unavailable(NO_SCREEN_WHY) if row.frame == callbacks.NO_FRAME else row.frame,
@@ -409,8 +355,7 @@ def row_fields(row: Row, fmt: str, width: int,
 def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int, trigger: int,
                  src: TapSource | None, trigger_space: str = "program",
                  trigger_type: str = "w") -> dict[str, Any]:
-    """Put the capture's install for `owner` in the pipe, on its cpu, and record it as every tap
-    is (`mtap.send_tap`). A read trigger's has no `src`: it reads no block."""
+    """Put the capture's install for `owner` in the pipe (`mtap.send_tap`); a read has no `src`."""
     cpu = owner[1]
     capture_id = id_for(cpu, addr, width, trigger, trigger_space, trigger_type)
     head, rows = paths(scratch, capture_id)
@@ -423,12 +368,8 @@ def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int, trigger
 
 def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str, frame: int | None,
              shown: int, at_stop: bool) -> dict[str, Any]:
-    """What a stop survey or `declaration_list(kind="watch")` says about the capture under `owner`
-    (`mtap.read_tap`,
-    whose `total` is every trigger access), and once it has a header: `rows_kept`, `overflow_rows`,
-    `rows_path`, and in `declaration_list(kind="watch")` the first `shown` rows. A STOP LISTS NONE:
-    every reply
-    carries a survey whatever the call was about, and a block of rows in each one is noise."""
+    """What a stop survey or `declaration_list(kind="watch")` says about the capture under
+    `owner`; the first `shown` rows only in the list, since every stop reply carries a survey."""
     item, head = mtap.read_tap(scratch, owner, frame, at_stop, parse_capture_header, "captured")
     rec = STATE.tallies[owner]
     reads = rec.get("trigger_type", "w") == "r"

@@ -1,15 +1,7 @@
-"""The FILE family: memory to a file, a PNG of the screen, the lines of `error.log`, and the
-wait for a line of it.
+"""The FILE family: memory to a file, a PNG of the screen, the log channels and the wait on them.
 
-The tools here that answer with a PATH and not with content each CHECK the file they claim
-to have produced: `memdump` (the console's `save`, then the size and a protocol read of the
-first bytes) and `snapshot` (the console's `snap`, then a complete PNG). Every `dest` is
-judged before any console is touched (`mame_inputs.fresh_dest`), so a refused call never leaves
-a file behind.
-`log` reads the newest matching lines of a channel, capped; `log_wait` is its waiting form,
-the one channel that answers while the machine RUNS; and `errorlog_since` is what a stop
-reply shows of the log since the previous stop. `wav_header` and `wav_levels` read the WAV
-MAME's mixer writes, for `audio_record` and for `captures`.
+Tools that answer with a PATH check the file they claim to have produced, and every `dest` is
+judged before any console is touched, so a refused call never leaves a file behind.
 """
 
 from __future__ import annotations
@@ -40,17 +32,14 @@ import mame_read as read
 import mame_state as st
 from mame_state import STATE
 
-# How long a tool waits for a file the emulator writes at its own pace after the command that
-# asked for it (a `snap`'s PNG, a `statesave`, the AVI a recording closes on its way out), and
-# how often it looks.
+# How long a tool waits for a file the emulator writes at its own pace, and how often it looks.
 FILE_WAIT_S = 2.0
 FILE_POLL_S = 0.02
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PNG_TRAILER = b"IEND\xaeB`\x82"
 
-# THE WAV MAME'S MIXER WRITES (`util::wav_open` in `src/lib/util/wavwrite.cpp`): a 44-byte header,
-# 16-bit PCM, the RIFF and data sizes written only when the file is closed. The levels are read in
-# bounded chunks, an even number of bytes so no sample is split, whatever the recording's length.
+# The WAV MAME's mixer writes (`util::wav_open`): a 44-byte header, 16-bit PCM, the RIFF and data
+# sizes written only when the file is closed. Chunks are an even byte count so no sample splits.
 WAV_HEADER_BYTES = 44
 WAV_HEADER = struct.Struct("<4sI4s4sIHHIIHH4sI")
 WAV_CHUNK_BYTES = 1 << 20
@@ -60,8 +49,7 @@ Waited = TypeVar("Waited")
 
 
 def wait_for(check: Callable[[], Waited], bound_s: float, poll_s: float) -> Waited:
-    """`check()` until it answers (anything but None or False: a count of 0 is an answer) or
-    `bound_s` passes; its last answer either way."""
+    """`check()` until it answers (not None or False; 0 is an answer) or `bound_s` passes."""
     deadline = time.monotonic() + bound_s
     while True:
         got = check()
@@ -72,10 +60,8 @@ def wait_for(check: Callable[[], Waited], bound_s: float, poll_s: float) -> Wait
 
 def whole_file(path: Path, length: int, said: str, command: str, after: str = "",
                **fields: Any) -> None:
-    """Refuse unless the file a console `command` was to write is there and `length` bytes;
-    `after` closes the message and `fields` ride on the refusal. The console's own sentence is
-    no proof: `save` and `saver` clamp a span at the end of what they read and still say they
-    succeeded."""
+    """Refuse unless the file a console `command` was to write is there and `length` bytes.
+    The console's own sentence is no proof: `save` clamps a span and still says it succeeded."""
     if not path.exists():
         raise st.Invalid("unexpected_answer", f"no file at {path} came out of the console's "
                          f"`{command}`; the console said {said.strip()!r}{after}", **fields)
@@ -87,28 +73,25 @@ def whole_file(path: Path, length: int, said: str, command: str, after: str = ""
 
 
 def refuse_console_path(path: Path) -> None:
-    """A path of the server's own making that the console would cut: the host's failure (its
-    scratch sits somewhere unusual), never the caller's argument."""
+    """Refuse a server-made path the console would cut: the host's failure, not the caller's."""
     if broken := inputs.path_break(str(path)):
         raise st.Invalid("host_failed", f"the scratch path {str(path)!r} holds "
                          f"{broken!r}, which a path handed to the console may not hold")
 
 
 def unreadable(thing: str, path: str, e: OSError, **fields: Any) -> st.Invalid:
-    """The refusal of a caller's file the server cannot read: the caller's argument, naming it."""
+    """The refusal of a caller's file the server cannot read."""
     return st.Invalid("bad_argument", f"cannot read the {thing} {path}: {e.strerror or e}",
                       **fields)
 
 
 def not_utf8(path: str, e: UnicodeDecodeError, **fields: Any) -> st.Invalid:
-    """The refusal of a caller's file that is not UTF-8 text, naming it and where it broke."""
+    """The refusal of a caller's file that is not UTF-8 text."""
     return st.Invalid("bad_argument", f"{path} is not UTF-8 text: {e}", **fields)
 
 
 def read_text(name: str, path: str, thing: str, **fields: Any) -> str:
-    """A caller's TEXT file, read whole: `inputs.input_file`, then refused as `unreadable` or
-    `not_utf8`, never an exception out of the tool. A fault in the caller's file is the caller's
-    argument."""
+    """A caller's text file, read whole; a fault in it is refused, never raised."""
     file = inputs.input_file(name, path, thing, **fields)
     try:
         return file.read_text(encoding="utf-8")
@@ -119,9 +102,8 @@ def read_text(name: str, path: str, thing: str, **fields: Any) -> str:
 
 
 def check_memdump(length: int, dest: str, ref: str = "", **_: Any) -> Path:
-    """`memdump`'s machine-independent half, and it hands back the `Path` it built so the caller
-    that is about to write does not build it twice. The path goes FIRST because a caller who named
-    a file this server cannot write has to hear about the file."""
+    """`memdump`'s machine-independent half, handing back the `Path` it built. The path is judged
+    first because a caller who named a file this server cannot write has to hear about it."""
     inputs.check_ref(ref)
     dest_path = inputs.fresh_dest("dest", dest)
     inputs.count("length", length, tail=": a length counts bytes")
@@ -143,13 +125,10 @@ def memdump(ses: gs.Session, ref: str, length: int, dest: str, cpu: str = "") ->
 
 
 def save_target(ses: gs.Session, cpu: str) -> tuple[str | None, int, str]:
-    """The cpu the console's `save` reads, the stub thread its control read goes through, and the
-    `:<cpu>` suffix the `save` line carries.
+    """The cpu `save` reads, the stub thread its control read uses, and the `:<cpu>` suffix.
 
-    THE CONTROL READS THE SAME CPU `save` DOES, named in both: through that cpu's thread on the
-    patched stub. Without one the stub reads only its first cpu, so a file of another cpu's
-    memory could not be checked at all; there `save` keeps the visible cpu when no cpu is named,
-    and a console that marks none leaves the cpu null and the check the first cpu's."""
+    The control must read the same cpu `save` does; without the patched stub's threads it reads
+    only its first cpu, so another cpu's file could not be checked."""
     if ses.threads:
         on, thread = cpus.thread_for(ses, cpu)
     else:
@@ -159,7 +138,6 @@ def save_target(ses: gs.Session, cpu: str) -> tuple[str | None, int, str]:
                 f"`save` reads {on}, and the file is checked against a read of the same range "
                 f"through the stub, which without the gdbstub's thread patch reads only "
                 f"{served}: `memdump(cpu={served!r})` is the dump it can check")
-    # `save <file>,<addr>[:<cpu>],<len>`, the cpu named wherever the control is its thread's
     return on, thread, (f":{on}" if on and (ses.threads or inputs.cpu_given(cpu)) else "")
 
 
@@ -171,26 +149,20 @@ def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr
                  length: int, path: Path, *, keep: Literal[False]) -> dict[str, Any] | bytes: ...
 def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr: int,
                  length: int, path: Path, *, keep: bool) -> dict[str, Any] | bytes | None:
-    """`save` `length` bytes at `addr` of `on` into `path`, and check the file: its size, and its
-    first bytes against a protocol read of the same range through `thread`. When it holds: None
-    for a kept file, and the copy's bytes for one that is not.
-    A range past the space, and a file that did not come out whole, RAISE; the control read's
-    two failures and a file that differs from it are RETURNED (a raised one that latched the
-    session would be re-worded by the tool layer). `keep=False` is the server's own copy of the
-    range, which must not exist yet: removed on every exit, and a refusal names no path."""
-    # THE CONSOLE'S `save` WALKS FROM THE MASKED START TO THE MASKED END AND NEVER FINISHES WHEN
-    # THE END WRAPS BELOW THE START: the stub hangs until the process is killed. A range past the
-    # space, judged on the cpu `save` reads (`read.space_bound`), is refused before it, so no
-    # range that wraps reaches it while the mask is known.
+    """`save` `length` bytes at `addr` of `on` into `path`, and check its size and its first bytes
+    against a protocol read through `thread`. Holding: None for a kept file, else the bytes.
+    A range past the space and a short file RAISE; the control read's failures and a mismatch are
+    RETURNED (a raised one that latched the session would be re-worded by the tool layer).
+    `keep=False` is the server's own copy, which must not exist yet: removed on every exit."""
+    # `save` never finishes when the masked end wraps below the start: the stub hangs until the
+    # process is killed, so a range past the space is refused before it.
     read.space_bound(addr, length, on)
     if not keep and path.exists():
         raise st.Invalid("host_failed", "the range copy's file is there before the `save`: this "
                          "server writes and removes its own, and overwrites nothing")
     gone = "the range copy was removed"
     try:
-        # The console evaluates both fields as EXPRESSIONS: a bare `d0` is the register, not
-        # 0xD0, so the numbers travel with the `0x` prefix that no symbol can start with. They
-        # are hex either way (`1000` there is 4096 bytes).
+        # Both fields are expressions: a bare `d0` is the register, so numbers keep the `0x`.
         said = ses.monitor(f"save {path},{addr:#x}{suffix},{length:#x}")
         try:
             whole_file(path, length, said, "save")
@@ -211,9 +183,7 @@ def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr
         try:
             control = ses.read(addr, control_len, thread=thread)
         except gs.SessionError as e:
-            # The file is on disk by now, so a kept one's refusal still names it, as `write`'s
-            # does what landed. The stub's `no` keeps the channel paired, as `write`'s read-back
-            # does; any other failure is the channel breaking, and it LATCHES like every other.
+            # A stub `no` keeps the channel paired; any other failure is the channel breaking.
             refused = isinstance(e, gs.Refused)
             if not refused:
                 ses.latch(str(e))
@@ -239,25 +209,15 @@ def save_checked(ses: gs.Session, on: str | None, thread: int, suffix: str, addr
             path.unlink(missing_ok=True)
 
 
-# THE CHANNELS MAME WRITES. `error.log` is what the core and the drivers say through
-# `logerror` (`-log`); the process's own stdout and stderr, which the launcher captures into
-# `stdout.log`, is where `osd_printf_error` and `-verbose` go. A driver that prints its
-# counters through the second would otherwise be unreadable through the server. There is no
-# `guest` channel: an arcade board has no port of the program's own.
+# `error.log` is what the core and drivers say through `logerror`; the process's stdout and
+# stderr (`stdout.log`) is where `osd_printf_error` and `-verbose` go.
 LOG_CHANNELS = ("emulator", "process", "all")
 NO_GUEST = ". There is no `guest` channel: an arcade board has no port of the program's own"
 LOG_FILES = {"emulator": "error.log", "process": "stdout.log"}
 
 
 def log_path(scratch: Path, channel: str) -> Path:
-    """Where ONE of the two channels writes. THE ONLY PLACE EITHER FILE NAME IS SPELLED.
-
-    `channel_files` below is the same map read for the READER: it serves `all` too and tags
-    each path with its source, which is what a reader wants and what a single consumer does
-    not -- so every consumer that already knew which channel it meant spelled the file name
-    by hand to get at one path, and the constant sat there with one caller. `all` is not a
-    file and raises here, which is the honest answer: there is no one path for both.
-    """
+    """Where one channel writes; the only place either file name is spelled. `all` raises."""
     return scratch / LOG_FILES[channel]
 
 
@@ -278,9 +238,7 @@ def tagged(tag: str, line: str, channel: str) -> str:
 
 
 def label_counts(lines: list[str]) -> dict[str, int]:
-    """How many lines carry each LABEL, the line's first word once a source tag is
-    stepped over: one glance at who is talking (`RE_DAC`, `RE_IRQ`); the `pattern` still
-    selects."""
+    """How many lines carry each label, the first word once a source tag is stepped over."""
     counts: dict[str, int] = {}
     for ln in lines:
         words = re.sub(r"^\[(emulator|process)\] ", "", ln).split()
@@ -290,8 +248,7 @@ def label_counts(lines: list[str]) -> dict[str, int]:
 
 
 def _check_mark(since_mark: int, channel: str) -> None:
-    """`since_mark`'s half that needs no log: `all` takes none, since one position cannot name a
-    place in two files, and a position is 0 or more."""
+    """`since_mark`'s half that needs no log: one position cannot name a place in two files."""
     if since_mark and channel == "all":
         raise st.Invalid("bad_argument",
             f"since_mark is a position in one file, and `all` reads two "
@@ -302,9 +259,8 @@ def _check_mark(since_mark: int, channel: str) -> None:
 
 def check_log(pattern: str, channel: str, limit: int = 40, since_mark: int = 0,
               **_: Any) -> re.Pattern[str]:
-    """`log`'s machine-independent half, in its own order: how many lines, then the regex, then
-    the channel, then the mark. None of them needs an emulator to be wrong. The regex is handed
-    back compiled, so the tool searches with the one it judged."""
+    """`log`'s machine-independent half: limit, regex, channel, mark, in that order. The regex
+    is handed back compiled."""
     inputs.count("limit", limit, read.LOG_LIMIT_MAX)
     rx = inputs.regex("pattern", pattern)
     check_channel(channel)
@@ -314,9 +270,8 @@ def check_log(pattern: str, channel: str, limit: int = 40, since_mark: int = 0,
 
 def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark: int = 0,
                    **_: Any) -> re.Pattern[str]:
-    """`log_wait`'s machine-independent half, in its own order: the bound, then the regex, then the
-    channel, then the mark. The bound comparison is `vocab.check_wait`, which every waiting
-    tool shares; the regex is handed back compiled, as `check_log` hands back its own."""
+    """`log_wait`'s machine-independent half: bound, regex, channel, mark, in that order. The
+    regex is handed back compiled."""
     vocab.check_wait(seconds)
     rx = inputs.regex("pattern", pattern)
     check_channel(channel)
@@ -325,9 +280,7 @@ def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark
 
 
 def channel_marks(scratch: Path) -> dict[str, int]:
-    """Where each channel's file ends now: `state_write(method="load")`'s `mark`, one number per
-    channel a mark
-    can name (`all` reads two files, so none is its own)."""
+    """Where each channel's file ends now, one number per channel (`all` has none of its own)."""
     return {tag: file_mark(scratch / name) for tag, name in LOG_FILES.items()}
 
 
@@ -339,10 +292,7 @@ def _from_mark(path: Path, since_mark: int, channel: str) -> int:
 
 def log(scratch: Path, pattern: str, limit: int, channel: str,
         labels: bool = False, since_mark: int = 0) -> dict[str, Any]:
-    """The body of the `log` tool: the newest `limit` lines of `channel` matching `pattern`,
-    each file read whole (the log is the emulator's, and text mode folds a CRLF log), and
-    for `all` the files one after the other with every line tagged; with `since_mark`, the
-    whole lines written after it (`lines_since`)."""
+    """The body of the `log` tool: the newest `limit` matching lines of `channel`."""
     rx = check_log(pattern, channel, limit, since_mark)
     files = channel_files(scratch, channel)
     present = [(tag, path) for tag, path in files if path.exists()]
@@ -353,9 +303,8 @@ def log(scratch: Path, pattern: str, limit: int, channel: str,
     hits: list[str] = []
     counts: dict[str, int] = {}
     for tag, path in present:
-        # Decoded with replacement on purpose: a driver may `logerror` a raw byte out of ROM,
-        # and one such byte must not turn the whole log into an exception. `utf-8-sig`, because
-        # MAME opens `error.log` with a byte-order mark, which is not the first line's.
+        # A driver may `logerror` a raw ROM byte, so decode with replacement; MAME opens
+        # `error.log` with a byte-order mark, hence `utf-8-sig`.
         if since_mark:
             after, _ = lines_since(path, _from_mark(path, since_mark, channel))
             mine = [tagged(tag, line, channel) for line in after if rx.search(line)]
@@ -381,53 +330,37 @@ def log(scratch: Path, pattern: str, limit: int, channel: str,
 
 
 def file_mark(log: Path) -> int:
-    """How many bytes `log` holds right now: the mark a caller takes before it acts, so what it
-    reads back is only what its own action wrote; 0 for a file not written yet."""
+    """How many bytes `log` holds now (0 if unwritten): the mark taken before acting."""
     return log.stat().st_size if log.exists() else 0
 
 
 def log_mark(scratch: Path, channel: str = "emulator") -> int:
-    """`file_mark` of `channel`'s file in the scratch, `error.log` by default."""
+    """`file_mark` of `channel`'s file in the scratch."""
     return file_mark(log_path(scratch, channel))
 
 
 def errorlog_since(scratch: Path, mark: int) -> tuple[list[str], int]:
-    """The WHOLE lines `error.log` gained since byte `mark`, and the next mark
-    (`lines_since`)."""
+    """The whole lines `error.log` gained since byte `mark`, and the next mark."""
     return lines_since(log_path(scratch, "emulator"), mark)
 
 
-# The whole lines a log gained since a byte mark, the core's reader: MAME's `error.log` (what the
-# driver logged) and its `debug.log` (what the debugger console printed, which is where a
-# watchpoint stop names its writer) are read this way.
 lines_since = core_wait.lines_since
 
 
 def check_snapshot(dest: str = "", **_: Any) -> Path | None:
-    """`snapshot`'s machine-independent half, handing back the `Path` it built. An EMPTY `dest` is
-    not a mistake here: the file lands in the scratch under a name this module chooses."""
+    """`snapshot`'s machine-independent half; an empty `dest` lands in the scratch."""
     return inputs.optional_dest(dest)
 
 
-# WHY, for the reader of this code (the client gets the docstring above the code):
-#
-# THE ONE READER THAT ANSWERS WHILE THE MACHINE RUNS: what the log ALREADY holds is
-# answered first (a line that went past before the
-# call is still found, marked `already`), and only then does it wait. A bound that expires is
-# `verdict: TIMEOUT` and says what it examined -- how many lines arrived during the wait, how
-# many the log holds -- so "nothing matched" and "there was nothing to match against" never read the
-# same. A STOPPED machine logs nothing, so a wait on one is refused at once, naming the stop,
-# and a stop that lands DURING the wait ends it the same way after one last read of the log.
-# Over `all`, each file keeps its own mark and the lines are tagged; the first match in
-# file order wins the poll.
+# What the log already holds is answered first (marked `already`), then it waits. A timeout says
+# what it examined, so "nothing matched" and "nothing to match against" differ. A stopped machine
+# logs nothing, so waiting on one is refused at once.
 def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
              on_stop: Callable[[], None], pattern: str, seconds: float, channel: str,
              progress: mprogress.Progress = mprogress.no_progress,
              since_mark: int = 0) -> dict[str, Any]:
-    """The body of the `log_wait` tool, on the core's wait (`scry_core.log_wait`). `on_stop`
-    records a stop the wait found (the running module's survey, handed in because that module
-    imports this one), so the refusal names the stop the machine is IN and the reply carries
-    `stopped_on_its_own`."""
+    """The body of the `log_wait` tool, on the core's wait. `on_stop` records a stop the wait
+    found (handed in because the running module imports this one)."""
     rx = check_log_wait(pattern, channel, seconds, since_mark)
     files = channel_files(scratch, channel)
     marks = {tag: _from_mark(path, since_mark, channel) for tag, path in files}
@@ -435,7 +368,7 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
     parked = not ses.running
 
     def fresh() -> list[str]:
-        """What every file of the channel gained since its mark, tagged, marks moved."""
+        """What every file of the channel gained since its mark, tagged."""
         out: list[str] = []
         for tag, path in files:
             mine, marks[tag] = lines_since(path, marks[tag])
@@ -443,7 +376,6 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
         return out
 
     def stopped() -> bool:
-        # Asked passively (no console round trip); a stop the poll consumed is recorded once.
         nonlocal recorded
         if ses.running and not ses.poll_stop(0.0):
             return False
@@ -473,8 +405,7 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
         ses.latch("the emulator exited during a wait")
         return menvelope.invalid("session_broken", core_wait.gone_message(pattern, got, seconds),
                                  pattern=pattern)
-    # THE BOUND RAN OUT AND THE WAIT ANSWERED: a verdict, not a refusal (the machine is still
-    # running, and the caller decides whether to wait longer).
+    # The bound ran out: a verdict, not a refusal, as the machine is still running.
     return menvelope.envelope({
         "verdict": contract.TIMEOUT, "pattern": pattern, "channel": channel,
         "arrived_during": got.arrived_during, "lines_examined": got.lines_examined,
@@ -482,13 +413,9 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
         "note": core_wait.timeout_note(pattern, got, "in the log", "driver")})
 
 
-# WHY, for the reader of this code (the client gets the docstring above the code):
-#
-# The console's `snap` treats even an absolute path as RELATIVE to the snapshot
-# directory (an absolute one produces `snap/Users/.../shot.png`), which is why the tool snaps under
-# a name it controls and MOVES the file to `dest`. And "Saved screen" is what the console says, not
-# what is on disk: a zero-byte or half-written PNG is what a full disk leaves, hence the trailer
-# check.
+# The console's `snap` treats even an absolute path as relative to the snapshot directory, so the
+# tool snaps under its own name and moves the file. "Saved screen" is not proof either: a full
+# disk leaves a half-written PNG, hence the trailer check.
 
 def snapshot(ses: gs.Session, scratch: Path, dest: str) -> dict[str, Any]:
     """The body of the `snapshot` tool."""
@@ -507,13 +434,11 @@ def snapshot(ses: gs.Session, scratch: Path, dest: str) -> dict[str, Any]:
         shutil.move(str(produced), str(dest_path))
         final = dest_path
     STATE.captures.append(("png", str(final)))
-    # THE HASH THE GOLDENS COMPARE, over the bytes handed back: a repo checked every capture
-    # against its own `checksums.sha256` by hand, and the server had the bytes all along.
     return menvelope.envelope(judges.file_facts(final))
 
 
 def _complete_png(path: Path) -> bool:
-    """A PNG on disk with both ends in place: what tells a finished snapshot from a partial one."""
+    """A PNG with both ends in place: a finished snapshot, not a partial one."""
     if not path.is_file():
         return False
     with open(path, "rb") as fh:
@@ -526,7 +451,7 @@ def _complete_png(path: Path) -> bool:
 
 
 class Wav(NamedTuple):
-    """What a finished WAV's header declares: `samples` is sample frames per channel."""
+    """A finished WAV's header; `samples` is frames per channel."""
     channels: int
     sample_rate: int
     data_bytes: int
@@ -534,7 +459,7 @@ class Wav(NamedTuple):
 
 
 def _wav_fields(path: Path) -> tuple[int, tuple[Any, ...]] | None:
-    """The file's size and its 44-byte header unpacked, or None when it has no such header."""
+    """The file's size and its unpacked header, or None."""
     try:
         size = path.stat().st_size
         with open(path, "rb") as fh:
@@ -545,11 +470,7 @@ def _wav_fields(path: Path) -> tuple[int, tuple[Any, ...]] | None:
 
 
 def wav_header(path: Path) -> Wav | None:
-    """The header of a FINISHED 16-bit PCM WAV at `path`, or None.
-
-    EVERY FIELD AGAINST THE OTHERS AND AGAINST THE FILE. MAME writes both sizes only when it
-    closes the file, from where the file then ends, so a file still open reads 0 in both, and
-    one cut after it closed disagrees with its own length."""
+    """The header of a finished 16-bit PCM WAV, or None: a file still open reads 0 in both sizes."""
     got = _wav_fields(path)
     if got is None:
         return None
@@ -567,8 +488,7 @@ def wav_header(path: Path) -> Wav | None:
 
 
 def wav_without_channel(path: Path) -> bool:
-    """A WAV header naming zero channels: what MAME writes for a machine with no speaker, since
-    it opens the file with the sum of its speakers' inputs."""
+    """A WAV header naming zero channels: what MAME writes for a machine with no speaker."""
     got = _wav_fields(path)
     if got is None:
         return False
@@ -577,8 +497,7 @@ def wav_without_channel(path: Path) -> bool:
 
 
 def wav_levels(path: Path) -> tuple[int, int]:
-    """The lowest and the highest sample of a finished WAV's data, over every channel: equal is
-    one constant level, which is silence to the ear whether it is zero or not."""
+    """The lowest and highest sample over every channel: equal is one constant level, silence."""
     lo = hi = None
     with open(path, "rb") as fh:
         fh.seek(WAV_HEADER_BYTES)
@@ -594,7 +513,7 @@ def wav_levels(path: Path) -> tuple[int, int]:
 
 
 def file_lines(path: Path) -> Iterator[str]:
-    """Every line of a tap's rows file as written, none when it is not written yet."""
+    """Every line of a tap's rows file, none when not written yet."""
     try:
         with path.open(encoding="utf-8", errors="replace") as fh:
             yield from fh

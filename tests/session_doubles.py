@@ -1,8 +1,4 @@
-"""Doubles shared by this suite's modules, so the same fake is not written twice in two shapes.
-
-A PLAIN MODULE AND NOT THE `conftest.py` beside it: these are helpers a test imports and calls
-by name, and the `conftest.py` holds only the one fixture every test gets without asking.
-"""
+"""Doubles shared by this suite's modules."""
 
 import asyncio
 import dataclasses
@@ -16,15 +12,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import gdb_session as g  # noqa: E402
 import mame_state as mstate  # noqa: E402
 
-# `map`'s answers, CAPTURED from a live m68k-dual session, never authored: a RAM address, a ROM
-# one, and a write-only latch.
+# `map` answers captured from a live m68k-dual session: RAM, ROM, write-only latch.
 MAP_RAM = ("   Read: 200000 logical program == 200000 physical program -> memory@200000\n"
            "  Write: 200000 logical program == 200000 physical program -> memory@200000\n"
            "  Fetch: 200000 logical program == 200000 physical program -> memory@200000\n")
 MAP_ROM = ("   Read: 000400 logical program == 000400 physical program -> memory@0\n"
            "  Write: 000400 logical program == 000400 physical program -> unmapped\n"
            "  Fetch: 000400 logical program == 000400 physical program -> memory@0\n")
-# A write-only latch: the write side is a handler, the read side is nowhere (captured).
 MAP_LATCH = ("   Read: 740000 logical program == 740000 physical program -> unmapped\n"
              "  Write: 740000 logical program == 740000 physical program -> "
              "m68k_dual_state::latch_w\n"
@@ -32,8 +26,7 @@ MAP_LATCH = ("   Read: 740000 logical program == 740000 physical program -> unma
 
 
 def published(tool: str) -> str:
-    """A tool's description as the client receives it, its wrapped lines joined. The server is
-    imported here, not at the top: `conftest.py` imports this module for every test."""
+    # Imported here: `conftest.py` imports this module for every test.
     import server as s
     found = [t for t in asyncio.run(s.mcp.list_tools()) if t.name == tool]
     assert len(found) == 1, f"the server registers no tool named {tool}"
@@ -41,8 +34,7 @@ def published(tool: str) -> str:
 
 
 def documented(tool: str) -> str:
-    """What a reader finds for `tool` past its description: its family's page and REFERENCE.md,
-    their wrapped lines joined."""
+    """What a reader finds for `tool` past its description: its family page and REFERENCE.md."""
     import mame_mcp
     root = Path(__file__).resolve().parent.parent
     family = next(f for f, tools in mame_mcp.ROSTER.families if tool in tools)
@@ -51,27 +43,12 @@ def documented(tool: str) -> str:
 
 
 def bp_records(*rows: tuple[int, str, int]) -> dict[int, dict[str, Any]]:
-    """`STATE.breakpoints` as the server keeps it, one `(index, ref, addr)` per row, each held
-    by a declaration on the main cpu the doubles list, and listed under it."""
     return {index: {"owner": (ref, ":maincpu"), "addr": addr, "cpu": ":maincpu"}
             for index, ref, addr in rows}
 
 
 def blank_session(monkeypatch: Any) -> None:
-    """Every field of the module-global `STATE` back to what a brand-new session has.
-
-    NO HAND-WRITTEN LIST, and that is the whole point. Two fixtures named the fields to reset
-    one by one, and nothing held either list to what `State` actually carries: a field added
-    later leaks from one case into the next in SILENCE, which is the worst way for a suite to
-    be wrong, because every case still passes and one of them is measuring the previous one's
-    leftovers. It has already happened once. A fresh `State` knows its own fields, so this
-    cannot go short.
-
-    `start_seq` is left alone for the same reason `kill`'s own completeness case leaves it:
-    it counts sessions rather than describing one, so resetting it would be a lie about how
-    many there have been. Everything a fixture wants set to something OTHER than blank is set
-    after this, by the fixture, which is where that belongs.
-    """
+    """Every field of `STATE` back to a brand-new session's, except `start_seq`."""
     blank = mstate.State()
     for name, value in vars(blank).items():
         if name == "start_seq":
@@ -80,9 +57,7 @@ def blank_session(monkeypatch: Any) -> None:
 
 
 class SessionFields:
-    """What every session double holds of `gdb_session.Session`'s own state, so the code reads
-    `running` and `broken` as it reads them on a real session, and latches through the real
-    method."""
+    """The `gdb_session.Session` state every session double holds, latching via the real method."""
 
     running = False
     broken: str | None = None
@@ -91,23 +66,18 @@ class SessionFields:
 
 
 def refs(entries: Any) -> list[str]:
-    """The refs of a list of rows that each name a declaration (`start`'s `rearm`)."""
     return [e["ref"] for e in entries]
 
 
-#: The keys of a row naming a declaration, as the lists and `start`'s `rearm` give it, written
-#: out rather than read off `arming.decl_row`, so a key it loses is a red here.
+#: Written out rather than read off `arming.decl_row`, so a key it loses is a red here.
 IDENTITY_KEYS = frozenset({"ref", "by", "cpu", "created_at", "origin", "inherited", "age_s"})
 
 
 def ref_cpu(entries: Any) -> list[tuple[str, str | None]]:
-    """Each row's `ref` and `cpu`, the pair that names a declaration in `start`'s `rearm`."""
     return [(e["ref"], e["cpu"]) for e in entries]
 
 
 def identities(out: dict[str, Any]) -> list[dict[str, Any]]:
-    """Every row of a re-arm account, each bucket's (a `note` is not a bucket), refused unless
-    it carries every identity key: one call checks the whole account a test drove."""
     rows = [r for v in out.values() if isinstance(v, list) for r in v]
     for r in rows:
         assert set(r) >= IDENTITY_KEYS, r
@@ -115,9 +85,7 @@ def identities(out: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def checked_rearms(monkeypatch: Any) -> None:
-    """The three halves of `start`'s re-arm, each wrapped so every account any test drives is
-    put through `identities`: one invariant over every path a case reaches, where an assertion
-    per case would leave the paths nobody thought to assert on."""
+    """Wrap `start`'s re-arm halves so every account a test drives goes through `identities`."""
     import mame_comments
     import mame_rearm
     import mame_regpoints
@@ -145,26 +113,19 @@ def checked_rearms(monkeypatch: Any) -> None:
 
 
 def use_table(monkeypatch: Any, cpu: str | None = None, **fields: Any) -> None:
-    """`cpu`'s symbol table replaced by the one it held with `fields` over it, each a whole
-    field of `gdb_session.SymbolTable` as `start` would have loaded it. `None`, the default, is
-    the table that serves every cpu: a one-path start's whose cpu the console did not name."""
+    """`cpu`'s symbol table with `fields` of `gdb_session.SymbolTable` replaced; `None` is the
+    table serving every cpu (a one-path start)."""
     held = mstate.STATE.tables.get(cpu, mstate.NO_TABLE)
     monkeypatch.setitem(mstate.STATE.tables, cpu, dataclasses.replace(held, **fields))
 
 
 def add_symbol(monkeypatch: Any, name: str, addr: int, cpu: str | None = None) -> None:
-    """One more name in `cpu`'s table (`use_table`'s `None` by default)."""
     held = mstate.STATE.tables.get(cpu, mstate.NO_TABLE).table
     use_table(monkeypatch, cpu, table={**held, name: addr})
 
 
 def reading_session(image: bytes, at: int) -> g.Session:
-    """A REAL `Session` whose `read` serves `image` as if it sat at CPU address `at`.
-
-    Everything above `read` (`self_check`, `determinism`, the OUTSIDE refusal) is the code
-    under test, not a copy of it. The double honours `addr`: a fake that returned the same
-    slice whatever the address would let a check that ignores the base stay green.
-    """
+    """A REAL `Session` whose `read` serves `image` as if it sat at CPU address `at`."""
     ses = g.Session()
     def read(addr: int, n: int, *, thread: int) -> bytes:
         return image[addr - at : addr - at + n]
@@ -174,17 +135,7 @@ def reading_session(image: bytes, at: int) -> g.Session:
 
 
 def fake_mame(tmp_path: Path, *, name: str = "fake-mame", version: str = "") -> Path:
-    """A MAME that exits at once, with the console plugin beside it the way a source build
-    ships it: `judge` refuses a binary without one before anything is spawned.
-
-    RUNNABLE ON PURPOSE. `start` asks the binary `-listxml` before it boots anything, and that
-    call is NOT the emulator, so it is not the one the process double intercepts: it really
-    runs this script. Left unreadable-as-a-program it would answer differently depending on
-    the host's exec bit, and a double whose behaviour is a property of the filesystem is a
-    double that cannot be reasoned about. Exiting 0 with nothing on stdout is a MAME that
-    answered no XML, which is the shape `start` has to survive. `version`, the shell a
-    `-version` call runs (none: it prints nothing), and `name` serve the ladder's cases.
-    """
+    """A MAME that exits at once, with the console plugin beside it. `start` really runs it."""
     tmp_path.mkdir(parents=True, exist_ok=True)
     binary = tmp_path / name
     answer = f'case "$1" in -version) {version} ;; esac\n' if version else ""
@@ -197,28 +148,20 @@ def fake_mame(tmp_path: Path, *, name: str = "fake-mame", version: str = "") -> 
 
 
 def refused(pattern: str, reply: dict[str, Any]) -> dict[str, Any]:
-    """A refusal read off the REPLY, with the prose matched: every tool answers `status:
-    INVALID` with `code` and `message` rather than raising, so a test that wrapped a call
-    in `pytest.raises` reads the envelope instead. The pattern goes first so a multi-line call
-    keeps its own shape as the second argument."""
+    """A refusal read off the REPLY, which tools return rather than raise."""
     assert reply["status"] == "INVALID", reply
     assert re.search(pattern, reply["message"]), (pattern, reply["message"])
     return reply
 
 
 def row_index(row: str) -> int:
-    """The index a list row carries: the `%4X` field after the `%c` a disabled row fills with
-    `D`, which WIDENS past four digits rather than wrapping, so it is parsed up to the ` @`
-    and never sliced."""
+    # Parsed, not sliced: an index widens past four digits.
     return int(row[1:].split(" @", 1)[0], 16)
 
 
 def _by_device(title: str, rows: list[str], devices: dict[int, str] | None,
                by_address: bool = False) -> str:
-    """A breakpoint or watchpoint list in its captured shape: one `Device '<tag>'` section per
-    cpu that holds a row, the sections by tag, which is the captured order for `:maincpu` and
-    `:subcpu` and is not known for any other pair. `devices` names the cpu of a row by its
-    index; the rest are the main one's. `by_address` orders a section as `bplist` does."""
+    """A breakpoint or watchpoint list, one `Device` section per cpu (default main)."""
     where = devices or {}
     if by_address:
         rows = sorted(rows, key=lambda r: int(r.split(" @ ", 1)[1][:6], 16))
@@ -230,25 +173,19 @@ def _by_device(title: str, rows: list[str], devices: dict[int, str] | None,
 
 
 def bplist_answer(rows: list[str], devices: dict[int, str] | None = None) -> str:
-    """The console's `bplist` for the rows a double holds, in its captured shape: a section's
-    rows by ADDRESS whatever order they were set in (`bplist.by-address.txt`)."""
     if not rows:
         return "No breakpoints currently installed\n\n"
     return _by_device("breakpoints", rows, devices, by_address=True)
 
 
 def wplist_answer(rows: list[str], devices: dict[int, str] | None = None) -> str:
-    """The console's `wplist` for the rows a double holds, in its captured shape."""
     if not rows:
         return "No watchpoints currently installed\n\n"
     return _by_device("program space watchpoints", rows, devices)
 
 
 def bplist_add(double: Any, addr: int, cond: str = "") -> int:
-    """Add a row to `double.bplist_rows` under MAME's breakpoint index and answer it. The index
-    is one counter shared by the stub's `Z0` and the console's `bp`, that only increments,
-    printed `%c%4X` in `bplist` (`execute_bplist`), so the tenth is `   A` and a clear never
-    frees a number for the next breakpoint. The double carries `bp_next_index`."""
+    """Add a row to `double.bplist_rows`; the counter only increments, so a clear frees nothing."""
     index: int = double.bp_next_index
     double.bp_next_index += 1
     double.bplist_rows.append(f" {index:4X} @ {addr:06X}" + (f" if {cond}" if cond else ""))
@@ -256,10 +193,7 @@ def bplist_add(double: Any, addr: int, cond: str = "") -> int:
 
 
 def wplist_add(double: Any, addr: int, length: int, cond: str = "") -> int:
-    """Add a row to `double.wplist_rows` under MAME's watchpoint index and answer it: a counter
-    of its own (`get_watchpoint_index`), separate from the breakpoints', that only increments,
-    printed `%c%4X` in `wplist` (`execute_wplist`), a condition after ` if ` as the console lists
-    one (`wplist.condition.txt`). The double carries `wp_next_index`."""
+    """Add a row to `double.wplist_rows`; its counter is separate from the breakpoints'."""
     index: int = double.wp_next_index
     double.wp_next_index += 1
     double.wplist_rows.append(f" {index:4X} @ {addr:06X}-{addr + length - 1:06X} write"
@@ -267,33 +201,19 @@ def wplist_add(double: Any, addr: int, length: int, cond: str = "") -> int:
     return index
 
 
-# How the server arms every row (`mame_breakpoints.bp_command`, `wp_command`): the cpu after the
-# address, absolute (`bp 0x400::maincpu,<cond>`, `wp 0x2031fc::subcpu,0x4,w`), or none at all.
+# How the server arms every row: the cpu after the address, absolute, or none.
 BP_ARM = re.compile(r"bp (?:0x)?([0-9a-fA-F]+)(?::(:?[^,]+))?(?:,(.*))?")
 WP_ARM = re.compile(r"wp (?:0x)?([0-9a-fA-F]+)(?::(:?[^,]+))?,(?:0x)?([0-9a-fA-F]+),w(?:,(.*))?")
 
 
 def place_row(double: Any, devices: str, index: int, cpu: str | None) -> None:
-    """Record the cpu a row was armed on, by its index, where the list double reads it: a row
-    named on no cpu, or on the main one, is the main one's (the doubles' visible cpu)."""
     tag = ":" + cpu.lstrip(":") if cpu else ":maincpu"
     if tag != ":maincpu":
         setattr(double, devices, {**(getattr(double, devices, None) or {}), index: tag})
 
 
 def control_console(double: Any, command: str) -> str | None:
-    """The console half every armed row needs, shared by every double that lists them:
-    `bp <addr>[:<cpu>][,<cond>]` adds a row spelled as the console lists a conditioned one
-    (`    2 @ 000404 if (++temp1)==0`, captured live), a plain one through the double's own
-    `breakpoint(addr)` when it has one (a case stands in for the debugger there), `bpclear N`
-    drops that row (or answers
-    the captured `Invalid breakpoint number N` when no row holds N), `wp <addr>[:<cpu>],<len>,w`
-    adds one for a double that lists watchpoints (whose own `monitor` answers `wpclear`), each
-    row's cpu kept where the list double reads it, and `print tempA,tempB` answers the counters
-    the test moves by hand through `double.temps`, space-separated as the console does. None
-    for any other command, so the double's own `monitor` goes on. The double carries `bplist_rows`,
-    `bp_next_index` and `temps`; the index is `bplist_add`'s, echoed `%X` as `bpset` and
-    `bpclear` print it."""
+    """`bp`, `bpclear`, `wp` and `print tempA,tempB` for a double that lists rows, else None."""
     if (armed := BP_ARM.fullmatch(command)) is not None:
         addr, index = int(armed.group(1), 16), double.bp_next_index
         if armed.group(3) or not callable(getattr(double, "breakpoint", None)):
@@ -329,14 +249,10 @@ _CAPTURED = Path(__file__).parent / "fixtures" / "console"
 
 
 def visible_in(cpu_info: dict[str, Any]) -> str | None:
-    """The cpu a `cpu_info` reply marks visible, or None when no row marks one (an unread
-    `visible` included)."""
     return next((row["cpu"] for row in cpu_info["cpus"] if row["visible"] is True), None)
 
 
 def ignored_in(cpu_info: dict[str, Any]) -> list[str] | None:
-    """The cpus a `cpu_info` reply marks ignored, or None when it could not say: no rows, or
-    a row whose listing the console did not answer."""
     if not cpu_info["cpus"] or any(not isinstance(row["ignored"], bool)
                                    for row in cpu_info["cpus"]):
         return None
@@ -344,15 +260,11 @@ def ignored_in(cpu_info: dict[str, Any]) -> list[str] | None:
 
 
 def captured(name: str) -> str:
-    """One captured console answer, by its file name under `fixtures/console/`."""
     return (_CAPTURED / name).read_text()
 
 
 def rplist_answer(rows: list[tuple[int, str, bool]],
                   devices: dict[int, str] | None = None) -> str:
-    """The console's `rplist` for the rows a double holds, in its captured shape: a section
-    per cpu that has any, each newest first, the index `%4X` after the `%c` a disabled row
-    fills with `D`. `devices` names the cpu of a row by its index; the rest are the main one's."""
     if not rows:
         return captured("rplist.none.txt")
     where = devices or {}
@@ -366,13 +278,8 @@ def rplist_answer(rows: list[tuple[int, str, bool]],
 
 
 def regpoint_console(double: Any, command: str) -> str | None:
-    """The console half the registerpoints need, every answer in its captured shape: `rpset
-    {<cond>}` arms a row under a counter that only increments (and ARMS a condition the
-    evaluator refuses, as MAME does), `print {<cond>}` evaluates it, `rpclear N` drops a row or
-    names the number no row holds, `rplist` lists. A condition in `double.rp_errors` gets that
-    text from BOTH commands (an unknown symbol); one in `double.rp_print_errors` from `print`
-    alone (a malformed one). None for any other command. The double carries `rplist_rows` and
-    `rp_next_index`."""
+    """`rpset`, `print`, `rpclear` and `rplist`. `rpset` ARMS a condition the evaluator refuses,
+    as MAME does; `rp_errors` fails both commands, `rp_print_errors` `print` alone."""
     if command == "rplist":
         return rplist_answer(double.rplist_rows, getattr(double, "rp_devices", None))
     braced = re.fullmatch(r"(rpset|print) \{(.*)\}", command)
@@ -399,8 +306,6 @@ def regpoint_console(double: Any, command: str) -> str | None:
 
 
 def debugger_lists(double: Any, command: str) -> str | None:
-    """Everything a double's console answers about the debugger's own lists (a control's half,
-    the registerpoints, `bplist`), or None so the double's own `monitor` goes on."""
     for half in (control_console, regpoint_console, suspend_console):
         if (answer := half(double, command)) is not None:
             return answer
@@ -410,7 +315,6 @@ def debugger_lists(double: Any, command: str) -> str | None:
         return one_cpus_list(double.bplist_rows, getattr(double, "bp_devices", None),
                              command.split()[1], bplist_answer, "bplist.sub-none.txt")
     if command == "cpulist":
-        # Two cpus, `:maincpu` visible unless the double says `:subcpu` is (both captured).
         sub = getattr(double, "visible_cpu", ":maincpu") == ":subcpu"
         return captured("cpulist.sub-visible.txt" if sub else "cpulist.main-visible.txt")
     return focus_console(double, command)
@@ -418,8 +322,6 @@ def debugger_lists(double: Any, command: str) -> str | None:
 
 def one_cpus_list(rows: list[str], devices: dict[int, str] | None, cpu: str,
                   answer: Any, none: str) -> str:
-    """`bplist <cpu>` or `wplist <cpu>`: that cpu's section alone, or the captured sentence for
-    none naming it (`bplist.sub-none.txt`, `wplist.sub-none.txt`)."""
     where = devices or {}
     mine = [r for r in rows if where.get(row_index(r), ":maincpu") == cpu]
     if not mine:
@@ -431,18 +333,11 @@ _TWO_CPUS = (":maincpu", ":subcpu")
 
 
 def focus_console(double: Any, command: str) -> str | None:
-    """The console's `focus <tag>` and `ignore` over the two captured cpus: `focus` ignores the
-    other cpu and, when the one it ignores was visible, leaves the focused one visible, which is
-    where MAME stops once it has run until that cpu executes (the frame counter held across it,
-    captured). `ignore` with no argument lists what is ignored. A `focus` is found in any
-    command of a `;` line, as the console splits it, and takes a tag in either spelling. The
-    double carries `ignoring` and `live`."""
     focused = next((c.strip() for c in command.split(";") if c.strip().startswith("focus ")), "")
     if focused:
         tag = ":" + focused[len("focus "):].strip().lstrip(":")
         double.ignoring = [t for t in _TWO_CPUS if t != tag]
-        # MAME runs only when the cpu it is LIVE on is ignored; after an `Hc` that is not the
-        # visible one (`live`, None meaning the visible one), and then nothing moves.
+        # After an `Hc` the live cpu may not be the visible one (`live`, None meaning visible).
         live = getattr(double, "live", None) or getattr(double, "visible_cpu", ":maincpu")
         if live in double.ignoring:
             double.visible_cpu = double.live = tag
@@ -456,10 +351,6 @@ def focus_console(double: Any, command: str) -> str | None:
 
 
 def suspend_console(double: Any, command: str) -> str | None:
-    """The console's `suspend` and `resume`, each answer a capture with the tag replaced: with a
-    tag in either spelling each sets or clears that cpu's flag, and `suspend` with none lists
-    the suspended cpu (only one: MAME refuses to suspend the last cpu that runs, and the
-    doubles have two). The double carries `suspending`."""
     verb, _, tag = command.partition(" ")
     if verb not in ("suspend", "resume") or (verb == "resume" and not tag.strip()):
         return None
@@ -477,9 +368,7 @@ def suspend_console(double: Any, command: str) -> str | None:
 
 
 def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "program")) -> None:
-    """`ses`'s cpu given an io space, and its console answering `mapi` as a V30 board's did: the
-    palette ports 6..7, one map entry, written through its handler, every other port unmapped
-    (`mapi.v30-*.txt`; the captured answer is port 6's, and 7 shares its entry)."""
+    """`ses`'s cpu given an io space, its console answering `mapi` as a V30 board did."""
     monkeypatch.setattr(mstate.STATE, "machine_map",
                         {**mstate.STATE.machine_map,
                          "cpus": [{"tag": ":maincpu", "spaces": list(spaces)}]})
@@ -497,10 +386,7 @@ def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "progr
 
 
 def with_stamps(rows: str, salt: int = 0) -> str:
-    """Capture rows of six fields, a row without its line and time, completed with both: the
-    line as the no-screen sentinel and a time that differs per row and per `salt`. The fixtures
-    that need this hold captures of a live run whose build is not repeated, and the readers
-    they feed take neither field; two salts giving one answer is what shows it."""
+    """Capture rows of six fields completed with a no-screen line and a per-row, per-`salt` time."""
     out = []
     for i, line in enumerate(rows.splitlines(keepends=True)):
         head, n, frame, rest = line.split(" ", 3)
@@ -509,9 +395,7 @@ def with_stamps(rows: str, salt: int = 0) -> str:
 
 
 def run_host_lua(chunk: str, cwd: Path | None = None) -> list[str]:
-    """`chunk` run by this host's `lua`, as a server script runs in MAME's, against the doubles
-    the chunk itself defines: what it printed, a line an event. No interpreter is a failure, never
-    a skip, since nothing would have been examined."""
+    """`chunk` run by this host's `lua`: what it printed, a line an event."""
     import shutil
     import subprocess
 

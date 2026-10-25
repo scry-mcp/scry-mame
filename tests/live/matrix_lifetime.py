@@ -1,19 +1,10 @@
-"""Section P of the live matrix: a session's two ends, the port it is reached on and the moment
-its emulator stops, and the declarations store a session with its own `state_dir` keeps.
+"""Section P of the live matrix: a session's two ends and its own declarations store.
 
-The stub is proved to be this launch's MAME by its pid around the dial (`mame_stub_owner`).
-The emulator stops in one of three ways, each proved by its process being gone: an ordered
-`close` asks it to quit, the server's death takes it along (`scry_core.guardian`), and a session
-idle past the bound is closed (`mame_idle`). Each cell carries its control: the foreign
-listener read back for a dial it must not have had, the same SIGKILL with the guardian
-withheld, the MAME seen alive before the bound or the `close` ended it. A `state_dir` session
-declares and clears everything over a project store seeded with another session's row, which
-it must neither inherit nor touch; its own file is read before the clear, so an unchanged
-project hash cannot come from declarations that never landed anywhere. The harness gives each
-section a store of its own, so the seed reaches no other.
-
-`live_matrix.py` registers this section before H; run alone, it is the same machinery over this
-section only:
+The emulator stops three ways, each proved by its process being gone: an ordered `close`, the
+server's death (`scry_core.guardian`), and the idle bound (`mame_idle`). Each cell carries its
+control: the foreign listener, the SIGKILL with the guardian withheld, the MAME seen alive before
+the stop. A `state_dir` session runs over a project store seeded with another session's row,
+which it must neither inherit nor touch.
 
     uv run python tests/live/matrix_lifetime.py
 """
@@ -74,8 +65,7 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
 MAME_DIR = Path(launch.__file__).resolve().parent
 WITHIN_S = 5 * guardian.POLL_S
 
-# The server stand-in for the SIGKILL: the server's own `start`, the guardian withheld when
-# told to (the control), MAME's pid printed, then a wait to be killed in.
+# `bare` withholds the guardian: the control.
 SERVER = """
 import json, sys, time
 sys.path.insert(0, sys.argv[1])
@@ -107,8 +97,7 @@ def _p_port(t: list[str]) -> None:
 
 def _p_foreign(t: list[str]) -> None:
     foreign, port = listener("accept", timeout_s=30.0)
-    # THE RACE, MADE TO HAPPEN: the probe is told the port is free, as it was for the two
-    # starts that collided, so the boot meets the foreign listener where its MAME should be.
+    # Force the start race: the probe says the port is free while a foreign listener holds it.
     real_free = launch.port_is_free
     launch.port_is_free = lambda port: True
     try:
@@ -127,10 +116,8 @@ def _p_foreign(t: list[str]) -> None:
 
 
 def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
-    """A child server started in `mode`, then SIGKILLed: MAME's pid, whether it was that
-    server's child before the kill, and whether it was gone within the guardian's polls."""
-    # ITS TEMPORARY DIRECTORY IS THIS RUN'S: a server killed outright never removes the scratch
-    # its session made, so that scratch has to land where the run's own end takes it.
+    """SIGKILL a child server in `mode`: MAME's pid, was it the server's child, was it gone."""
+    # A SIGKILLed server leaves its scratch behind, so it must land in this run's tmp.
     server = subprocess.Popen(
         [sys.executable, "-c", SERVER, str(MAME_DIR), json.dumps(BOOT), mode],
         stdout=subprocess.PIPE, text=True,
@@ -193,21 +180,17 @@ def _p_quit(t: list[str]) -> None:
          f"gone {gone}, status alive {after}")
 
 
-# Another session's row in the project store: a stop on a routine a healthy boot never runs, so
-# a session that inherited it would hold it armed without ever being cut by it.
+# A stop on a routine a healthy boot never runs, so an inherited row is armed but never hit.
 SEEDED = {"kind": "breakpoint", "by": "symbol", "ref": "exception_handler",
           "origin": "another-session", "created_at": "2026-01-01T00:00:00+00:00"}
 
 
 def _store_key() -> str:
-    """The m68k-dual board's key in the project store, asked when a cell needs it: at import
-    it would refuse a host whose bench has no m68k-dual, and take every other section with it."""
+    """The m68k-dual store key; at import it would refuse a host without that board."""
     return dec.store_key(str(BOOT["system"]), SYMBOLS)
 
 
-# How far apart the two lists of the age cell are, and how much later than that the second may
-# read: flooring two readings adds up to a second, the list call's latency the rest, so the slack
-# bounds a wrong unit, never a slow host.
+# Flooring two readings adds up to a second; the slack bounds a wrong unit, not a slow host.
 AGE_GAP_S = 2.2
 AGE_SLACK_S = 2
 
@@ -217,7 +200,7 @@ def _sha(path: Path) -> str:
 
 
 def _declare_all() -> list[dict[str, Any]]:
-    """One declaration of every family the store keeps, the seeded control among them."""
+    """One declaration of every family the store keeps."""
     return [call("breakpoint_at", ref="exception_handler"),
             call("breakpoint_at", ref="0x4a0", role="control"),
             call("watch_add", ref="main_ram", mode="change", length=4),
@@ -294,7 +277,7 @@ boards_cover("section P", P_CELLS, P_BOARDS)
 
 
 def register_p() -> None:
-    """Register section P with the matrix: after every section registered before it."""
+    """Register section P after every section registered before it."""
     section("P", P_TITLE, P_CELLS)(lambda: run_boards(P_CELLS, P_BOARDS))
 
 

@@ -1,9 +1,4 @@
-"""A value, a byte offset or a pen base is a JSON integer or a `0x` string, read by
-`inputs.number_arg`, and nothing else: judged at the edges of that judge, at the MCP surface (the
-schema offers both, the judge decides), in a batch step (`perform`, `drive`), in the probe's own
-judging, at every body (which receives the integer whatever the spelling), and in what a reply
-hands back.
-"""
+"""A number argument is a JSON integer or a `0x` string, read by `inputs.number_arg`."""
 
 from __future__ import annotations
 
@@ -38,8 +33,6 @@ import mame_sweep as msweep  # noqa: E402
 import mame_write as mwrite  # noqa: E402
 import server as s  # noqa: E402
 
-# ------------------------------------------------------------------------------ the judge
-
 
 @pytest.mark.parametrize("given,want", [
     (0, 0), (4660, 4660), (-1, -1), ("0x1234", 0x1234), ("0X1a", 0x1A), (" 0x10 ", 0x10),
@@ -64,8 +57,6 @@ def test_decimal_text_a_bool_and_anything_else_is_refused_naming_the_argument(
     assert says in str(e.value), str(e.value)
 
 
-# ------------------------------------------------------------------- at the MCP surface
-
 def _call(name: str, args: dict[str, Any]) -> dict[str, Any]:
     return test_envelope_seam._call(name, args)[1]
 
@@ -77,9 +68,8 @@ _LOCATE_DEEP = {**_LOCATE, "layouts": [{**CIRCUS_CHARLAYOUT, "planes": 5,
                                         "planeoffset": "{ 0, 1, 2, 3, 4 }"}]}
 _SWEEP = {"tag": "gfx1", "palette": "palette"}
 
-#: Every argument the rule covers: (tool, argument) -> the other arguments a call needs, and
-#: where its body takes it (the module, the function, the position in the body's own call,
-#: counting the session and the scratch). An argument added to the rule joins this table.
+#: (tool, argument) -> other arguments a call needs, then the body's module, function and the
+#: position of the argument in the body's call (session and scratch counted).
 TABLE: dict[tuple[str, str], tuple[dict[str, Any], Any, str, int]] = {
     ("set_register", "value"): ({"name": "d0"}, mwrite, "set_register", 2),
     ("scan", "value"): ({"method": "filter"}, mscan, "filter_scan", 3),
@@ -99,8 +89,7 @@ NUMBERS = [(tool, others, arg) for (tool, arg), (others, *_) in TABLE.items()]
 
 
 def test_the_table_is_every_argument_the_server_declares_a_number() -> None:
-    """The table above against the registry: an argument declared `NumberArg` that no case
-    holds, or a case whose argument is declared otherwise, fails by name."""
+    """The table matches the registry's `NumberArg` declarations both ways."""
     declared = {(op, name) for op, fn in s._step_ops().items()
                 for name in inputs.number_params(fn)}
     assert declared == {(t, a) for t, _, a in NUMBERS}, declared ^ {(t, a) for t, _, a in NUMBERS}
@@ -119,8 +108,7 @@ def test_the_published_schema_offers_an_integer_and_a_string(
 def test_a_0x_string_passes_and_decimal_text_or_a_bool_is_refused_at_the_surface(
     tool: str, others: dict[str, Any], arg: str,
 ) -> None:
-    """With no machine, a `0x` value reaches the session gate (`no_session`); decimal text is the
-    judge's refusal naming the argument, and a bool the schema's."""
+    """With no machine, `0x` reaches the session gate; decimal text and a bool are refused."""
     passed = _call(tool, {**others, arg: "0x1"})
     assert passed.get("code") == "no_session", passed
     text = _call(tool, {**others, arg: "16"})
@@ -142,8 +130,7 @@ def test_a_0x_string_passes_and_decimal_text_or_a_bool_is_refused_at_the_surface
 def test_the_ranges_stay_each_tools_own_whichever_spelling_carried_the_number(
     tool: str, args: dict[str, Any], says: str,
 ) -> None:
-    """The judge answers the integer and decides nothing about it: each tool's own range and
-    pairing refuse a `0x` value exactly as they refuse the integer it spells."""
+    """Each tool's own range and pairing refuse a `0x` value as they refuse its integer."""
     reply = _call(tool, args)
     assert reply["code"] == "bad_argument" and says in reply["message"], reply
     as_int = {k: inputs.number_arg(k, v) if k in ("value", "offset", "pen_base") else v
@@ -165,14 +152,11 @@ def test_a_negative_integer_is_still_each_tools_to_refuse() -> None:
     assert "unsigned" in _call("scan", {"method": "filter", "value": -1})["message"]
 
 
-# --------------------------------------------------------------------------- in a batch
-
 @pytest.mark.parametrize("tool,others,arg", NUMBERS)
 def test_a_step_takes_the_same_spellings_through_the_same_judge(
     tool: str, others: dict[str, Any], arg: str,
 ) -> None:
-    """A step carrying `0x` passes the preflight, as at the surface; decimal text in the THIRD
-    step refuses the list before its first step runs, naming the step and the argument."""
+    """`0x` passes the preflight; decimal text in the third step refuses the whole list."""
     good = sequence.refuse_steps([{"op": tool, **others, arg: "0x1"}], s._step_ops())
     assert good is None, good
     bad = sequence.refuse_steps([{"op": "status"}, {"op": "status"},
@@ -194,8 +178,6 @@ def test_perform_and_drive_refuse_decimal_text_before_any_step_runs() -> None:
     out = s.drive(act=[{"op": "scan", "method": "filter", "value": "4660"}])
     assert out["status"] == "INVALID" and "value='4660'" in json.dumps(out), out
 
-
-# -------------------------------------------------------------- every body gets the int
 
 
 @pytest.mark.parametrize("tool,others,arg", NUMBERS)
@@ -219,13 +201,10 @@ def test_every_body_receives_the_integer_whichever_spelling_the_caller_used(
     assert seen == [0x12, 0x12] and all(type(v) is int for v in seen), seen
 
 
-# ------------------------------------------------- what comes back goes back in as it came
-
 def test_set_register_echoes_its_value_at_the_registers_width_as_it_would_take_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The value sent is shown as `readback` is, through the one formatter, so the two compare as
-    text and either goes back in as a `value`."""
+    """`value` is formatted as `readback` is, and either goes back in."""
     from test_server import _install, _RegisterSession
     ses = _RegisterSession(bits=16)
     _install(monkeypatch, ses, tmp_path)
@@ -250,8 +229,7 @@ def test_a_films_value_and_its_hits_come_back_written_0x_at_the_triggers_width(
 def test_a_films_hit_and_baseline_are_shown_at_the_triggers_width(
     length: int, want: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A small value is padded to the trigger's own width, in the one spelling the film's value
-    has, and goes back in as the same integer."""
+    """A small value is padded to the trigger's width and goes back in as the same integer."""
     import dataclasses
 
     from test_film import _armed
@@ -263,15 +241,12 @@ def test_a_films_hit_and_baseline_are_shown_at_the_triggers_width(
     assert inputs.number_arg("value", want) == 1
 
 
-# ------------------------------------------------------------------- the review's cases
-
 @pytest.mark.parametrize("given", [None, True, 6.0, "0x", "-0x1", "16", [1]])
 @pytest.mark.parametrize("tool,others,arg", NUMBERS)
 def test_every_step_spelling_the_judge_refuses_is_refused_before_any_step_runs(
     tool: str, others: dict[str, Any], arg: str, given: object,
 ) -> None:
-    """A step after a harmless one, carrying what no tool takes: the list is refused whole with
-    the argument named, never run up to it. `None` is the absence only of an optional number."""
+    """The list is refused whole with the argument named; `None` is valid only if optional."""
     optional = (tool, arg) in {("scan", "value"), ("gfx_film", "value"),
                                ("palette_log", "pen"), ("gfx_locate", "transparent")}
     assert inputs.number_params(s._step_ops()[tool])[arg] is optional
@@ -285,8 +260,7 @@ def test_every_step_spelling_the_judge_refuses_is_refused_before_any_step_runs(
 
 
 def test_a_number_past_64_bits_is_refused_in_either_spelling() -> None:
-    """Every number here is a value or an offset MAME's debugger holds in 64 bits; past that a
-    `0x` string could spell an integer no reply or script can print."""
+    """MAME's debugger holds these in 64 bits."""
     assert inputs.number_arg("value", "0x" + "f" * 16) == (1 << 64) - 1
     assert inputs.number_arg("value", -(1 << 64) + 1) == -(1 << 64) + 1
     assert inputs.number_arg("value", "0x" + "0" * 40 + "1") == 1
@@ -305,8 +279,7 @@ def test_a_sign_or_a_bare_0x_is_refused_in_words_that_fit_it(given: str) -> None
 
 
 def test_the_probe_judges_a_number_as_the_tool_reads_it() -> None:
-    """The probe asks the server's own check about a call it never makes: a `0x` answer is
-    judged on the integer it spells, decimal text refused as the tool refuses it."""
+    """The probe judges a `0x` answer on its integer and refuses decimal text as the tool does."""
     mame_mcp.probe_check("set_register", {}, {"name": "d0", "value": "0x2f00", "cpu": ""})
     with pytest.raises(mstate.Invalid, match="value='4660'"):
         mame_mcp.probe_check("set_register", {}, {"name": "d0", "value": "4660", "cpu": ""})
@@ -321,8 +294,7 @@ def test_the_probe_judges_a_number_as_the_tool_reads_it() -> None:
 def test_every_pen_argument_is_judged_in_one_sentence(
     tool: str, others: dict[str, Any], arg: str,
 ) -> None:
-    """One pen judge (`inputs.pen`), whatever the tool: `0x` is read as a pen is everywhere, and
-    a number that is no pen is refused in the same words."""
+    """One pen judge (`inputs.pen`) refuses a non-pen in the same words for every tool."""
     out = _call(tool, {**others, arg: -1})
     assert out.get("code") == "bad_argument", out
     assert out["message"] == f"{arg}=-1 is not a pen number", out
