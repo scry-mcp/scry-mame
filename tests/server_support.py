@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import host_program  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core.host_program import temporary as _tmp  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
     MAP_ROM,
@@ -198,10 +199,6 @@ class _DroppingWire:
         raise TimeoutError
 
 
-
-def _in_tmp(name: str) -> str:
-    """`name` in a directory every host has, as an absolute path."""
-    return str(Path(tempfile.gettempdir(), name))
 
 def _recording_helper(tmp_path: Path) -> tuple[Path, Path]:
     """A `place-window` double that records its argv and prints a plausible flag list."""
@@ -573,12 +570,12 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "memdump-length": lambda: s.memdump(
         ref="0x0", length=0, dest=str(_FRESH.parent / "mame-boundary-probe-never-written.bin")),
     "memdump-relative": lambda: s.memdump(ref="0x0", length=4, dest="relative.bin"),
-    "memdump-nul": lambda: s.memdump(ref="0x0", length=4, dest=_in_tmp("pro\x00be.bin")),
+    "memdump-nul": lambda: s.memdump(ref="0x0", length=4, dest=_tmp("pro\x00be.bin")),
     "snapshot-relative": lambda: s.snapshot(dest="relative.png"),
-    "snapshot-nul": lambda: s.snapshot(dest=_in_tmp("pro\x00be.png")),
-    "record-frames": lambda: s.record(frames=0, dest=_in_tmp("probe.avi")),
+    "snapshot-nul": lambda: s.snapshot(dest=_tmp("pro\x00be.png")),
+    "record-frames": lambda: s.record(frames=0, dest=_tmp("probe.avi")),
     "record-relative": lambda: s.record(frames=4, dest="relative.avi"),
-    "audio_record-frames": lambda: s.audio_record(frames=0, dest=_in_tmp("probe.wav")),
+    "audio_record-frames": lambda: s.audio_record(frames=0, dest=_tmp("probe.wav")),
     "audio_record-relative": lambda: s.audio_record(frames=4, dest="relative.wav"),
     "run_for": lambda: s.run_for(milliseconds=0),
     "step": lambda: s.step(count=0),
@@ -617,7 +614,7 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
 MACHINE_DEPENDENT: dict[str, Any] = {
     "read_memory": lambda: s.read_memory(ref="no_such_symbol", length=4),
     "disassemble": lambda: s.disassemble(ref="no_such_symbol", length=4),
-    "memdump": lambda: s.memdump(ref="no_such_symbol", length=4, dest=_in_tmp("probe.bin")),
+    "memdump": lambda: s.memdump(ref="no_such_symbol", length=4, dest=_tmp("probe.bin")),
     "run_to": lambda: s.run_to(ref="no_such_symbol"),
     "symbols_find": lambda: s.symbols_find(name="no_such_symbol"),
 }

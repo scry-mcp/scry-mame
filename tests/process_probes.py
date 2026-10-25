@@ -1,8 +1,9 @@
 """Real processes for socket-holder and pid-lifetime cases."""
 
 import subprocess
-import sys
 import time
+
+from scry_core import host_program
 
 # `accept` mode prints the first byte received, or `none`; `hold` mode never accepts.
 LISTENER = """
@@ -30,7 +31,8 @@ sys.stdin.read()
 
 def listener(mode: str = "accept", timeout_s: float = 2.0) -> tuple[subprocess.Popen[str], int]:
     """A `LISTENER` process and its port."""
-    proc = subprocess.Popen([sys.executable, "-c", LISTENER, mode, str(timeout_s)],
+    # the pid the socket names, not a launcher's: the cases compare the two
+    proc = subprocess.Popen([host_program.INTERPRETER, "-c", LISTENER, mode, str(timeout_s)],
                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
     assert proc.stdout is not None
     return proc, int(proc.stdout.readline())

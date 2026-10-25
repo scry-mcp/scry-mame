@@ -89,7 +89,7 @@ class State:
     def _reset(self) -> None:
         """Every per-session field at its pre-session value, shared by `__init__` and `kill`."""
         self.proc: subprocess.Popen[bytes] | None = None
-        self.guard: subprocess.Popen[bytes] | None = None
+        self.guard: guardian.Guard | None = None
         self.presence = presence.Shown()
         self.ses: gs.Session | None = None
         # Symbol tables by cpu tag: each cpu runs its own program. Read through `table`.

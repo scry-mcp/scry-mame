@@ -10,10 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import mame_launch as launch  # noqa: E402
 import mame_state as mstate  # noqa: E402
 
-POSIX = pytest.mark.skipif(not guardian.SUPPORTED, reason="the guardian is POSIX only")
 
-
-@POSIX
 def test_kill_stops_the_guardian_only_once_the_mame_is_ended(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -26,7 +23,7 @@ def test_kill_stops_the_guardian_only_once_the_mame_is_ended(
     seen: list[tuple[bool, object]] = []
     real_stop = guardian.stop
 
-    def stop(g: subprocess.Popen[bytes] | None) -> None:
+    def stop(g: guardian.Guard | None) -> None:
         seen.append((mame.poll() is not None, g))
         real_stop(g)
 
@@ -37,7 +34,6 @@ def test_kill_stops_the_guardian_only_once_the_mame_is_ended(
 
 
 
-@POSIX
 def test_a_mame_still_unreaped_after_its_kill_keeps_its_guardian(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

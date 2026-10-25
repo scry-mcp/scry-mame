@@ -1,5 +1,7 @@
-"""Whose gdbstub a port serves, proved against real processes and the real `lsof`."""
+"""Whose gdbstub a port serves, proved against real processes and the host's real instrument:
+`lsof` on POSIX, the TCP table on Windows, read here also from rows captured on one."""
 
+import json
 import shutil
 import socket
 import subprocess
@@ -18,6 +20,15 @@ import gdb_session as gs  # noqa: E402
 import mame_stub_owner as owner  # noqa: E402
 
 NOT_A_PID = 2**22 + 7  # above macOS's pid ceiling: a pid no process can hold
+#: The cases about `lsof` itself, which Windows replaces with its TCP table.
+LSOF = pytest.mark.skipif(sys.platform == "win32", reason="Windows reads its TCP table")
+#: Cases about a connection queued and not accepted, which Windows already lists as the
+#: listener's.
+QUEUED_UNOWNED = pytest.mark.skipif(sys.platform == "win32",
+                                    reason="Windows owns a queued connection to its listener")
+#: Rows `GetExtendedTcpTable` returned on Windows (`fixtures/stub_owner/PROVENANCE.txt`).
+CAPTURED = json.loads((Path(__file__).parent / "fixtures" / "stub_owner" / "tcp_rows.json")
+                      .read_text(encoding="utf-8"))
 
 
 def _proof(pid: int, port: int, seconds: float = 5.0, alive: bool = True) -> owner.StubOwner:
@@ -69,6 +80,7 @@ def test_our_pid_beside_another_listening_is_refused_too(
     assert e.value.pids == [20]
 
 
+@LSOF
 def test_nothing_on_the_port_is_the_boot_under_way_and_asks_no_lsof(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -131,6 +143,7 @@ def test_the_far_end_in_our_process_passes_and_the_first_byte_goes_out() -> None
         proc.wait()
 
 
+@QUEUED_UNOWNED
 def test_a_connection_nobody_accepts_is_not_accepted_at_the_deadline() -> None:
     """A queued connection has no owner until accepted: the deadline is `StubNotAccepted`."""
     proc, port = listener("hold")
@@ -146,6 +159,7 @@ def test_a_connection_nobody_accepts_is_not_accepted_at_the_deadline() -> None:
         proc.wait()
 
 
+@QUEUED_UNOWNED
 def test_a_mame_that_dies_before_it_accepts_ends_the_wait_as_a_death() -> None:
     """`MameGone`, an `OSError` the boot reads as a death, long before the deadline."""
     proc, port = listener("hold")
@@ -164,6 +178,7 @@ def test_a_mame_that_dies_before_it_accepts_ends_the_wait_as_a_death() -> None:
         proc.wait()
 
 
+@LSOF
 def test_an_absent_lsof_is_a_host_that_cannot_prove_never_nobody_listening(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -173,6 +188,7 @@ def test_an_absent_lsof_is_a_host_that_cannot_prove_never_nobody_listening(
     assert "`lsof` is not on this host's PATH" in str(e.value)
 
 
+@LSOF
 @pytest.mark.parametrize(("rc", "stderr"), [(1, "lsof: unsupported option"), (2, "")])
 def test_an_lsof_that_complains_or_fails_is_unproved_never_an_empty_answer(
     monkeypatch: pytest.MonkeyPatch, rc: int, stderr: str,
@@ -185,6 +201,7 @@ def test_an_lsof_that_complains_or_fails_is_unproved_never_an_empty_answer(
     assert f"exit code {rc}" in str(e.value)
 
 
+@LSOF
 def test_a_hung_lsof_is_unproved(monkeypatch: pytest.MonkeyPatch) -> None:
     def hang(*a: object, **k: object) -> None:
         raise subprocess.TimeoutExpired("lsof", owner.LSOF_TIMEOUT_S)
@@ -195,6 +212,7 @@ def test_a_hung_lsof_is_unproved(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "could not be run" in str(e.value) and "timed out" in str(e.value)
 
 
+@LSOF
 def test_accepted_by_reads_the_far_end_and_skips_this_process_end(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -204,3 +222,55 @@ def test_accepted_by_reads_the_far_end_and_skips_this_process_end(
         a[0], 0, stdout=lines, stderr=""))
     assert owner.accepted_by(5000, 6000) == {10}
     assert owner.accepted_by(5000, 6001) == set()
+
+
+def _captured_table(family: str) -> bytes:
+    rows = [bytes.fromhex(r) for r in CAPTURED["rows"][family]]
+    return len(rows).to_bytes(4, "little") + b"".join(rows)
+
+
+@pytest.fixture
+def on_windows(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The Windows branch on any host, its TCP table the captured one."""
+    tables = {socket.AF_INET: _captured_table("v4"), socket.AF_INET6: _captured_table("v6")}
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(owner, "_tcp_table", lambda family: tables[family])
+
+
+def test_the_captured_table_reads_as_the_probe_held_it() -> None:
+    pid, p4, p6, near = (CAPTURED[k] for k in ("pid", "listen4", "listen6", "client_local"))
+    v4 = owner.tcp_rows(_captured_table("v4"), socket.AF_INET)
+    assert v4 == [owner.TcpRow(owner.TCP_LISTEN, p4, 0, pid),
+                  owner.TcpRow(owner.TCP_ESTABLISHED, p4, near, pid),
+                  owner.TcpRow(owner.TCP_ESTABLISHED, near, p4, pid)]
+    v6 = owner.tcp_rows(_captured_table("v6"), socket.AF_INET6)
+    assert v6 == [owner.TcpRow(owner.TCP_LISTEN, p6, 0, pid)]
+
+
+@pytest.mark.usefixtures("on_windows")
+def test_on_windows_the_table_names_the_listener_and_the_far_end_of_a_connection() -> None:
+    pid, p4, p6, near = (CAPTURED[k] for k in ("pid", "listen4", "listen6", "client_local"))
+    assert owner.listeners(p4) == {pid} and owner.listeners(p6) == {pid}
+    assert owner.listeners(near) == set(), "a connection's end is no listener"
+    assert owner.accepted_by(p4, near) == {pid}
+    assert owner.accepted_by(p4, near + 1) == set(), "another connection's far end"
+
+
+@pytest.mark.usefixtures("on_windows")
+def test_on_windows_a_port_only_a_connection_holds_is_not_free() -> None:
+    """Windows binds such a port, so a bind alone would call a served session free."""
+    assert owner.bind_probe(CAPTURED["client_local"]) is None
+    free = _free_port()
+    assert owner.bind_probe(free) == free, "the control: a port in no row binds"
+
+
+@pytest.mark.parametrize("table", [b"", b"\x02\x00\x00\x00" + bytes(24)])
+def test_a_tcp_table_shorter_than_it_says_is_unproved(table: bytes) -> None:
+    with pytest.raises(owner.StubUnproved, match="the TCP table claims"):
+        owner.tcp_rows(table, socket.AF_INET)
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="this host reads it")
+def test_on_another_host_the_tcp_table_is_never_read() -> None:
+    with pytest.raises(owner.StubUnproved, match="on Windows only"):
+        owner._tcp_table(socket.AF_INET)
