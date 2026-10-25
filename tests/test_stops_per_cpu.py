@@ -11,8 +11,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _install, _RegisterSession, _running  # noqa: E402
 from session_doubles import bp_records, refused  # noqa: E402
-from test_server import _install, _RegisterSession, _running  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402
@@ -383,7 +383,7 @@ def test_a_lua_wrapper_whose_run_by_frames_is_refused_sends_nothing(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A refused run is refused before the script is sent, or it would sit in the pipe."""
-    from test_lua import _channel
+    from lua_support import _channel
 
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(ses, "visible_cpu", ":subcpu", raising=False)

@@ -10,8 +10,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _RunningSession  # noqa: E402
 from test_resolution_per_cpu import MAIN, SUB, _two_programs  # noqa: E402
-from test_server import _RunningSession  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_arming as arming  # noqa: E402

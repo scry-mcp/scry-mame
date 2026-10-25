@@ -10,6 +10,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
     SessionFields,
@@ -19,7 +20,6 @@ from session_doubles import (  # noqa: E402
     wplist_add,
 )
 from test_expr_watches import _first_stop_through, _foreign_breakpoint_on_the_vblank  # noqa: E402
-from test_server import _running, _RunningSession  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import gdb_session as gs  # noqa: E402

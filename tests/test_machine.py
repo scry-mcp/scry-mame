@@ -739,7 +739,7 @@ def test_the_matrix_derives_its_edge_refs_from_the_reply_alone(
     with pytest.raises(LookupError, match="no program entry"):
         edges.program_edges({"spaces": [], "address_map": []}, ":x")
 
-    tree = ast.parse((live / "live_matrix.py").read_text(encoding="utf-8"))
+    tree = ast.parse((live / "matrix_edges.py").read_text(encoding="utf-8"))
     block = next(n for n in ast.walk(tree)
                  if isinstance(n, ast.FunctionDef) and n.name == "block_b_edges")
     named = ({n.id for n in ast.walk(block) if isinstance(n, ast.Name)}

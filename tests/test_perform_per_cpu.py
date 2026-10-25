@@ -12,7 +12,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _running, _RunningSession  # noqa: E402
+from server_support import _running, _RunningSession  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_sequence as sequence  # noqa: E402

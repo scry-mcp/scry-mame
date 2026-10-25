@@ -11,8 +11,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running  # noqa: E402
 from session_doubles import add_symbol, refs, refused  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_symbols_per_cpu import _m68k_dual_boot, _two_tables  # noqa: E402
 
 import mame_arming as arming  # noqa: E402

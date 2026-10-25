@@ -11,7 +11,7 @@ from scry_core import demo, replay
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _running  # noqa: E402
+from server_support import _running  # noqa: E402
 
 import server as s  # noqa: E402
 

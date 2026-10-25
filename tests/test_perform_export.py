@@ -15,7 +15,7 @@ from scry_core import recording
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _running  # noqa: E402
+from server_support import _running  # noqa: E402
 
 import mame_mcp  # noqa: E402
 import mame_state as mstate  # noqa: E402

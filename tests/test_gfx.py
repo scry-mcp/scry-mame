@@ -31,11 +31,11 @@ from mcp.types import CallToolResult
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
+from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core import png, raster  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import refused  # noqa: E402
-from test_lua import _channel, _ChannelSession  # noqa: E402
 
 import mame_chunk as mchunk  # noqa: E402
 import mame_gfx as gfx  # noqa: E402

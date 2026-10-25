@@ -13,11 +13,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel  # noqa: E402
+from server_support import _running  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_gfx_layout import CIRCUS_CHARLAYOUT  # noqa: E402
-from test_lua import _channel  # noqa: E402
 from test_machine import _cached  # noqa: E402
-from test_server import _running  # noqa: E402
 
 import mame_machine as machine  # noqa: E402
 import server as s  # noqa: E402

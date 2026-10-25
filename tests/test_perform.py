@@ -21,8 +21,8 @@ from scry_core import sequence_account  # noqa: E402
 from scry_core import steps as step_judge  # noqa: E402
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable  # noqa: E402
+from server_support import _running  # noqa: E402
 from session_doubles import refused  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
 import gdb_session as gs  # noqa: E402

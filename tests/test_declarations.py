@@ -14,6 +14,7 @@ from scry_core import declaration_rows
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _boot_args, _never_spawns, _stub_boot  # noqa: E402
 from session_doubles import (
     add_symbol,
     bplist_add,  # noqa: E402
@@ -27,7 +28,6 @@ from session_doubles import (
     use_table,
     wplist_answer,  # noqa: E402
 )
-from test_server import _boot_args, _never_spawns, _stub_boot  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import gdb_session as g  # noqa: E402

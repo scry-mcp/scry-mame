@@ -19,8 +19,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel  # noqa: E402
 from session_doubles import refused, run_host_lua  # noqa: E402
-from test_lua import _channel  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
 import mame_audio as maudio  # noqa: E402

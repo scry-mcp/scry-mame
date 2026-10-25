@@ -13,8 +13,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _console, _ConsoleSession, _running, _RunningSession  # noqa: E402
 from session_doubles import captured, refused, visible_in, wplist_add  # noqa: E402
-from test_server import _console, _ConsoleSession, _running, _RunningSession  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import gdb_session as gs  # noqa: E402

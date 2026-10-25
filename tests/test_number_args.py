@@ -205,7 +205,7 @@ def test_set_register_echoes_its_value_at_the_registers_width_as_it_would_take_i
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """`value` is formatted as `readback` is, and either goes back in."""
-    from test_server import _install, _RegisterSession
+    from server_support import _install, _RegisterSession
     ses = _RegisterSession(bits=16)
     _install(monkeypatch, ses, tmp_path)
     for spelled in ("0x12", 0x12):

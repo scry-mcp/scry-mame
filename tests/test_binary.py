@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from server_support import _running, _stub_boot, _StubProcess
 from session_doubles import fake_mame, refused
-from test_server import _running, _stub_boot, _StubProcess
 
 import mame_binary as binaries
 import server as s

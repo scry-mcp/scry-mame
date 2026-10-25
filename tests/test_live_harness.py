@@ -371,15 +371,15 @@ def test_the_pin_check_on_a_manifest_that_is_not_one_is_a_reason_and_never_a_cra
 
 
 def _matrix_function(name: str) -> object:
-    """One function of `live_matrix.py`, compiled alone: the module boots boards on import."""
+    """One function of `matrix_manifest.py`, compiled alone: the module boots boards on import."""
     import ast
     from typing import Any
-    tree = ast.parse((LIVE / "live_matrix.py").read_text(encoding="utf-8"))
+    tree = ast.parse((LIVE / "matrix_manifest.py").read_text(encoding="utf-8"))
     node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
     space: dict[str, Any] = {"Any": Any}
     # A name no file has: compiled under the matrix's own path, coverage would count the whole
     # matrix, which only a live run executes.
-    exec(compile(ast.Module(body=[node], type_ignores=[]), f"<live_matrix.{name}>", "exec"),
+    exec(compile(ast.Module(body=[node], type_ignores=[]), f"<matrix_manifest.{name}>", "exec"),
          space)
     return space[name]
 

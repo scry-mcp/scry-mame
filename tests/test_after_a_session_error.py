@@ -18,10 +18,10 @@ from scry_core import media_tools
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import progress as mprogress  # noqa: E402
+from server_support import _install, _RegisterSession, _running  # noqa: E402
 from session_doubles import captured, documented, refused  # noqa: E402
 from test_gdb_session import _wired  # noqa: E402
 from test_reply_contract import _ARGS, _tools  # noqa: E402
-from test_server import _install, _RegisterSession, _running  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402

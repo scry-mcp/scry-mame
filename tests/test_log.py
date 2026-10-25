@@ -21,8 +21,8 @@ from scry_core import vocabulary as vocab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _console, _ConsoleSession, _running  # noqa: E402
 from session_doubles import refused  # noqa: E402
-from test_server import _console, _ConsoleSession, _running  # noqa: E402
 
 import mame_files as files  # noqa: E402
 import mame_read as read  # noqa: E402

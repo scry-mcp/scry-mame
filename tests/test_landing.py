@@ -12,7 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from test_server import _install, _RegisterSession  # noqa: E402
+from server_support import _install, _RegisterSession  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
 import mame_breakpoints as breakpoints  # noqa: E402

@@ -70,8 +70,19 @@ stock MAME, and a host without either leaves something unexamined, which is INVA
 pass. The tracked live code names boards only by label.
 
 `tests/live/live_matrix.py` is the matrix around those checks (every tool, every machine state,
-every argument edge); its docstring holds its command, its variables and what OK, FAIL and
-BLOCKED mean.
+every argument edge, every pair of tools that share state), one printed line per cell:
+
+    timeout 1800 uv run python tests/live/live_matrix.py
+
+Its cells are declared before anything boots, so the count PLANNED is printed first and a cell the
+run never reached shows at the end. A cell is OK when the reply matches the tool's published
+contract for that state and input, FAIL when it contradicts it, raises, or leaves the session
+block disagreeing with the machine, and BLOCKED when it could not run, with the reason; every call
+lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run (all, unset);
+`MAME_LIVE_JOBS` runs each letter as a process of its own, that many at once (unset, half the
+host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
+the parent so its watch spans every job. The free boards and the multi-cpu build each section
+needs are named by `free_boards_missing` and `multicpu_missing`; unset, those cells are BLOCKED.
 
 ## The bench the live tier reads
 

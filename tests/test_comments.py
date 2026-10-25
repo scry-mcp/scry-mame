@@ -20,8 +20,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _install  # noqa: E402
 from session_doubles import IDENTITY_KEYS, SessionFields, documented, refused, use_table  # noqa: E402
-from test_server import _install  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
 import mame_arming as arming  # noqa: E402

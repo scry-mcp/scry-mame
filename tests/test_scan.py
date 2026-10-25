@@ -20,8 +20,8 @@ from typing import Any, Literal
 
 import pytest
 from scry_core import judges
+from server_support import _console, _ConsoleSession, _masked
 from session_doubles import captured, published
-from test_server import _console, _ConsoleSession, _masked
 
 import gdb_session as gs
 import mame_scan as mscan

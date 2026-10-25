@@ -18,9 +18,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from lua_support import _channel
+from server_support import _never_spawns
 from session_doubles import fake_mame, refused
-from test_lua import _channel
-from test_server import _never_spawns
 
 import mame_binary as mbinary
 import mame_files as files

@@ -19,9 +19,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel  # noqa: E402
 from session_doubles import blank_session, refused  # noqa: E402
 from test_gfx import _png, _serve  # noqa: E402
-from test_lua import _channel  # noqa: E402
 
 import mame_manifest as mm  # noqa: E402
 import mame_state as mstate  # noqa: E402

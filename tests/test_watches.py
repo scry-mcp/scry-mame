@@ -9,6 +9,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import (
     MAP_LATCH,
     MAP_RAM,
@@ -28,7 +29,6 @@ from session_doubles import (
 )
 from test_gdb_session import _wired  # noqa: E402
 from test_machine import M68K_DUAL, _cached  # noqa: E402
-from test_server import _running, _RunningSession  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
 import mame_advance as advance  # noqa: E402

@@ -12,7 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from test_server import _running  # noqa: E402
+from server_support import _running  # noqa: E402
 
 import mame_arming as arming  # noqa: E402
 import mame_clear as mclear  # noqa: E402

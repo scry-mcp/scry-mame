@@ -19,8 +19,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import ignored_in, refused, visible_in  # noqa: E402
-from test_server import _running, _RunningSession  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
 import mame_cpus as cpus  # noqa: E402

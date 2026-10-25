@@ -10,8 +10,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_lua import _channel, _ChannelSession  # noqa: E402
-from test_server import FIXTURES  # noqa: E402
+from lua_support import _channel, _ChannelSession  # noqa: E402
+from server_support import FIXTURES  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402

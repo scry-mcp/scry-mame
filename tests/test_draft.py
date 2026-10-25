@@ -26,8 +26,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel, _ChannelSession  # noqa: E402
 from session_doubles import refused, with_stamps  # noqa: E402
-from test_lua import _channel, _ChannelSession  # noqa: E402
 
 import mame_blits as mblits  # noqa: E402
 import mame_capture as capture  # noqa: E402

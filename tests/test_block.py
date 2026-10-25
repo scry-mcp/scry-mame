@@ -16,8 +16,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel  # noqa: E402
 from session_doubles import refused, use_table  # noqa: E402
-from test_lua import _channel  # noqa: E402
 
 import mame_block as block  # noqa: E402
 import mame_state as mstate  # noqa: E402

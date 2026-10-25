@@ -19,7 +19,7 @@ from scry_core import progress as mprogress
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _running  # noqa: E402
+from server_support import _running  # noqa: E402
 
 import mame_mcp  # noqa: E402
 import mame_state as mstate  # noqa: E402
@@ -150,7 +150,7 @@ def test_a_console_run_cancelled_in_flight_is_stopped_and_proved_at_rest(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """A run the console started (`gtime`) sends no stop packet and leaves `running` unset while
     it is in flight: cancelled there, it is still moving, so its end has to stop it."""
-    from test_server import _AliveProcess, _install, _RegisterSession
+    from server_support import _AliveProcess, _install, _RegisterSession
 
     import mame_advance as advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=50)
@@ -296,7 +296,7 @@ def test_a_schema_refusal_whose_call_was_cancelled_spends_no_account(
 def test_a_start_cancelled_before_its_session_is_up_is_killed_without_a_grace(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
     """Nobody can ask a MAME with no session to quit, so waiting for it to is time held."""
-    from test_server import _AliveProcess
+    from server_support import _AliveProcess
     monkeypatch.setattr(mstate.STATE, "ses", None)
     monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
     graces: list[bool] = []
@@ -356,7 +356,7 @@ def test_a_step_over_cancelled_while_it_waits_for_rest_is_stopped_as_its_own(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """`over` is a console run: cancelled in the wait for the pc to settle (`_settled_pc`, a
     bounded wait that polls), it ends as its bound does, stopped."""
-    from test_server import _AliveProcess, _install, _RegisterSession
+    from server_support import _AliveProcess, _install, _RegisterSession
 
     import mame_advance as advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=50)
@@ -378,7 +378,7 @@ def test_a_run_for_cancelled_at_its_last_line_has_already_recorded_its_landing(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """The last progress line is a poll: met there, a cancel must find the landing recorded,
     or the machine rests where no record says it is."""
-    from test_server import _AliveProcess, _install, _RegisterSession
+    from server_support import _AliveProcess, _install, _RegisterSession
 
     import mame_advance as advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=4)

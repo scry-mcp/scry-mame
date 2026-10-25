@@ -16,13 +16,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running  # noqa: E402
 from session_doubles import refused, use_table  # noqa: E402
 from test_capture import _capturing  # noqa: E402
 from test_comments import MAIN, _pane, _states  # noqa: E402
 from test_controls import _controlled  # noqa: E402
 from test_film import _session as _film_session  # noqa: E402
 from test_iotaps import _io_board  # noqa: E402
-from test_server import _running  # noqa: E402
 
 import mame_comments as comments  # noqa: E402
 import mame_declarations as dec  # noqa: E402

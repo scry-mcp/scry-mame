@@ -19,6 +19,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _RegisterSession, _running, _RunningSession  # noqa: E402
 from session_doubles import (
     bp_records,
     bplist_add,
@@ -32,7 +33,6 @@ from session_doubles import (
     use_table,  # noqa: E402
     wplist_answer,
 )
-from test_server import _RegisterSession, _running, _RunningSession  # noqa: E402
 from test_watches import WPLIST_ONE  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
@@ -1295,7 +1295,7 @@ def test_a_g_typed_through_debug_marks_the_machine_running_and_the_stop_is_prove
 
 
 def test_frame_at_rest_reads_the_counter_three_times() -> None:
-    from test_server import _RegisterSession
+    from server_support import _RegisterSession
 
     import mame_running as running
 
@@ -1338,7 +1338,7 @@ def test_step_over_that_settles_only_after_the_interrupt_is_an_invalid_stop(
 def test_a_console_run_that_never_rests_is_not_settled_and_the_counter_read_can_fail(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    from test_server import _RegisterSession
+    from server_support import _RegisterSession
 
     import mame_running as running
 
@@ -1533,7 +1533,7 @@ def test_a_settle_proof_whose_console_answers_nothing_is_not_a_rest(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """A console that cannot answer proves nothing, so each proof of rest says not-at-rest."""
-    from test_server import _RegisterSession
+    from server_support import _RegisterSession
 
     import mame_advance as advance
     import mame_running as running
@@ -1609,7 +1609,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
 
 def _never_lands(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     """A double whose `gvblank` releases the machine and whose frame counter never settles."""
-    from test_server import _install, _RegisterSession
+    from server_support import _install, _RegisterSession
 
     import mame_advance as advance
 
@@ -1651,7 +1651,7 @@ def test_a_run_by_frames_that_emulated_nothing_leaves_the_session_saying_running
 ) -> None:
     """`no_progress`: the counter never moved. This double is in fact stopped, but two agreeing
     readings prove nothing; `stop` interrupts it, which does, and the readers serve."""
-    from test_server import _install, _RegisterSession
+    from server_support import _install, _RegisterSession
 
     import mame_advance as advance
 
@@ -1674,7 +1674,7 @@ def test_a_run_by_milliseconds_that_never_came_to_rest_leaves_the_session_saying
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """`not_settled` from `_run_for`: the bound interrupt did not land, so the readers refuse."""
-    from test_server import _install, _RegisterSession
+    from server_support import _install, _RegisterSession
 
     import mame_advance as advance
 

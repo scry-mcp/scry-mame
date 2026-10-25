@@ -18,8 +18,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running  # noqa: E402
 from test_perform import FRAME_STEP, _frames_and_the_watch  # noqa: E402
-from test_server import _running  # noqa: E402
 
 import mame_running as running  # noqa: E402
 import mame_sequence as sequence  # noqa: E402

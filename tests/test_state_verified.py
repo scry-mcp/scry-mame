@@ -19,8 +19,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from lua_support import _channel, _ChannelSession  # noqa: E402
 from session_doubles import refused  # noqa: E402
-from test_lua import _channel, _ChannelSession  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
 import mame_savestates as savestates  # noqa: E402

@@ -12,7 +12,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _running  # noqa: E402
+from server_support import _running  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import mame_envelope as menvelope  # noqa: E402

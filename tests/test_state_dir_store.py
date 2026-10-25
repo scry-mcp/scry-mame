@@ -11,9 +11,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _boot_args, _never_spawns  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_declarations import _armable_boot  # noqa: E402
-from test_server import _boot_args, _never_spawns  # noqa: E402
 
 import mame_arming as arming  # noqa: E402
 import mame_declarations as dec  # noqa: E402

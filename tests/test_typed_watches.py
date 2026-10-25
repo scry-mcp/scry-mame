@@ -16,8 +16,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _boot_args, _stub_boot  # noqa: E402
 from session_doubles import add_symbol, refused, use_table  # noqa: E402
-from test_server import _boot_args, _stub_boot  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import gdb_session as g  # noqa: E402

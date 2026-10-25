@@ -10,8 +10,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from server_support import _running  # noqa: E402
 from session_doubles import captured, wplist_answer  # noqa: E402
-from test_server import _running  # noqa: E402
 
 import mame_console as console  # noqa: E402
 import mame_lexer as lexer  # noqa: E402

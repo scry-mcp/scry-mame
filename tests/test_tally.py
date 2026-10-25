@@ -735,7 +735,7 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
 def test_the_install_and_the_removal_each_settle_the_reader_after_their_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Both return `pending` at once, like a stopped `throttle` (`test_lua.py`)."""
+    """Both return `pending` at once, like a stopped `throttle` (`test_lua_throttle.py`)."""
     _tallying(monkeypatch, tmp_path)
     monkeypatch.setattr(transport, "READER_SETTLE_S", 0.0137)       # not `POLL_S`'s value
     slept: list[tuple[float, int]] = []

@@ -15,9 +15,9 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from server_support import _running  # noqa: E402
 from session_doubles import io_board, refused  # noqa: E402
 from test_iotaps import BLOCK_MAP  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_stops_per_cpu import _LAYOUT, _THREADS, _two_cpus  # noqa: E402
 from test_tally import _tallying  # noqa: E402
 

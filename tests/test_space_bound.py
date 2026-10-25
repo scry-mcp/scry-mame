@@ -8,8 +8,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _console, _ConsoleSession, _masked  # noqa: E402
 from session_doubles import captured, refused  # noqa: E402
-from test_server import _console, _ConsoleSession, _masked  # noqa: E402
 
 import mame_read as read  # noqa: E402
 import mame_state as mstate  # noqa: E402

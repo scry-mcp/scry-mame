@@ -12,7 +12,7 @@ from scry_core import boundary
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from test_server import _boot_args, _stub_boot  # noqa: E402
+from server_support import _boot_args, _stub_boot  # noqa: E402
 
 import mame_idle as idle  # noqa: E402
 import mame_session as msession  # noqa: E402

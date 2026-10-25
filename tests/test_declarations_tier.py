@@ -16,9 +16,9 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scry_core import reply_contract as contract  # noqa: E402
+from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import IDENTITY_KEYS, captured, ref_cpu, refs, refused, use_table  # noqa: E402
 from test_controls import _cond, _controlled, _limit, _refusing  # noqa: E402
-from test_server import _running, _RunningSession  # noqa: E402
 from test_tally import _tallying  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 

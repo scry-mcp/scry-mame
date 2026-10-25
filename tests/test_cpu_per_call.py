@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scry_core import value_format as vf  # noqa: E402
+from server_support import _running  # noqa: E402
 from session_doubles import captured, refused, use_table, visible_in  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
 import gdb_session as gs  # noqa: E402
@@ -309,7 +309,7 @@ def test_the_same_watch_ref_on_another_cpu_is_a_second_declaration_with_its_own_
 
 def _console_on_two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     """The console double with two cpus, the sub one reaching less (m68k-dual's masks are equal)."""
-    from test_server import _console, _ConsoleSession, _masked
+    from server_support import _console, _ConsoleSession, _masked
 
     def save(command: str) -> str:
         path, _start, length = command[len("save "):].split(",")
@@ -424,7 +424,7 @@ def test_a_block_found_by_address_is_looked_up_in_the_named_cpus_map(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The named cpu is in the script as composed, not read off the visible cpu."""
-    from test_lua import _channel
+    from lua_support import _channel
 
     ses = _channel(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "machine_map",

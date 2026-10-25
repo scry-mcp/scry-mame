@@ -11,8 +11,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running  # noqa: E402
 from session_doubles import bplist_add, place_row, ref_cpu, visible_in  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import mame_arming as arming  # noqa: E402
@@ -159,9 +159,9 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     every thread: only the inventory can tell the two cpus apart."""
     import json
 
+    from server_support import _boot_args
     from test_declarations import _armable_boot
     from test_machine import M68K_DUAL
-    from test_server import _boot_args
     from test_symbols_per_cpu import LISTXML, _yaml
 
     import mame_launch as launch

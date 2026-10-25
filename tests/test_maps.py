@@ -13,10 +13,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from lua_support import _channel  # noqa: E402
 from scry_core import screen_map  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_gfx import _serve  # noqa: E402
-from test_lua import _channel  # noqa: E402
 
 import mame_state as mstate  # noqa: E402
 import server as s  # noqa: E402
@@ -122,7 +122,7 @@ def test_find_with_nothing_mapped_asks_for_a_map(monkeypatch: pytest.MonkeyPatch
 def test_a_start_empties_the_session_layer_and_keeps_the_file(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    from test_server import _boot_args, _stub_boot
+    from server_support import _boot_args, _stub_boot
 
     maps = mstate.STATE.maps
     maps.file["kept"] = screen_map.Screen("kept", "pixel", (8, 8), (((0, 0, 8, 8), "0" * 16),), ())

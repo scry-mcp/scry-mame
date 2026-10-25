@@ -18,9 +18,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from session_doubles import refused  # noqa: E402
-from test_lua import _channel  # noqa: E402
-from test_server import (  # noqa: E402
+from lua_support import _channel  # noqa: E402
+from server_support import (  # noqa: E402
     FIXTURES,
     _AliveProcess,
     _boot_args,
@@ -29,6 +28,7 @@ from test_server import (  # noqa: E402
     _running,
     _stub_boot,
 )
+from session_doubles import refused  # noqa: E402
 
 import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402

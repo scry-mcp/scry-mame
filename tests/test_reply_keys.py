@@ -12,10 +12,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server_support import _running  # noqa: E402
 from session_doubles import IDENTITY_KEYS, ref_cpu  # noqa: E402
 from test_address_rule import _stale_raw_and_unshowable_symbol  # noqa: E402
 from test_comments import MAIN  # noqa: E402
-from test_server import _running  # noqa: E402
 from test_tally import _survey, _tallying  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
