@@ -436,7 +436,9 @@ def frame_at_rest(ses: gs.Session, reads: int = 3, gap_s: float = 0.1) -> bool:
             if ses.broken:
                 raise      # a LATCHED channel is not a moving machine: the tool answers it
             return False
-    return len(set(seen)) == 1
+        if seen[-1] != seen[0]:
+            return False
+    return True
 
 
 def _survey_read_stop(ses: gs.Session, scratch: Path, name: Callable[[int, str | None], str],

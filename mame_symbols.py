@@ -110,9 +110,6 @@ def read_types(path: str) -> dict[str, str]:
         return vf.read_types(text, path)
     except vf.FormatError as e:
         raise st.Invalid("bad_argument", str(e)) from None
-    except ValueError as e:
-        # A value the grammar matched and Python could not hold (array count past the int limit).
-        raise st.Invalid("bad_argument", f"{path}: {e}") from None
 
 
 def _per_cpu(what: str, value: dict[str, str] | dict[str, dict[str, str]] | str,

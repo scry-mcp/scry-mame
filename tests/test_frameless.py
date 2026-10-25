@@ -393,3 +393,17 @@ def test_the_probe_does_not_guess_past_a_channel_that_failed(
     """Only an answer keeps the default name; a channel that failed is the start's failure."""
     with pytest.raises(type(error)):
         read.probe_frame_symbol(_Probed(error, latch))  # type: ignore[arg-type]
+
+
+def test_a_moving_counter_is_judged_at_the_first_reading_that_differs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    readings: list[int] = []
+
+    def moving(_ses: object) -> int:
+        readings.append(len(readings))
+        return len(readings)
+
+    monkeypatch.setattr(read, "rest_reading", moving)
+    assert not running.frame_at_rest(object(), reads=3, gap_s=0.0)  # type: ignore[arg-type]
+    assert len(readings) == 2, readings
