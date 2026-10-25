@@ -16,7 +16,7 @@ def test_kill_stops_the_guardian_only_once_the_mame_is_ended(
 ) -> None:
     """Stopped before the MAME is reaped, a dying server would leave it unwatched."""
     state = mstate.State()
-    state.proc = subprocess.Popen(["sleep", "60"])
+    state.proc = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
     mame = state.proc
     state.guard = guardian.spawn(mame, launch.PROCESS_NAME)
     guard = state.guard
@@ -39,7 +39,7 @@ def test_a_mame_still_unreaped_after_its_kill_keeps_its_guardian(
 ) -> None:
     """An unreaped MAME may still exist, so `kill` leaves its guardian running."""
     state = mstate.State()
-    state.proc = subprocess.Popen(["sleep", "60"])
+    state.proc = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
     mame = state.proc
     state.guard = guardian.spawn(mame, launch.PROCESS_NAME)
     guard = state.guard

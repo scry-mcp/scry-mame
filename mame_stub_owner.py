@@ -47,7 +47,7 @@ class StubNotOurs(gs.SessionError):
 
 
 class StubUnproved(gs.SessionError):
-    """`lsof` is absent or failed."""
+    """The instrument that proves the owner (`lsof`, or Windows' TCP table) is absent or failed."""
 
 
 class StubNotAccepted(gs.SessionError):
@@ -186,7 +186,7 @@ class StubOwner:
     alive: Callable[[], bool]
 
     def before_dial(self) -> None:
-        # A port that binds holds no socket, so boot polls skip `lsof`.
+        # A port that binds holds no socket, so boot polls skip `lsof`; Windows asks its TCP table.
         if bind_probe(self.port) is not None:
             raise NotListening(f"nothing listens on port {self.port} yet")
         holders = listeners(self.port)

@@ -252,7 +252,7 @@ def judge_background(background: bool | None, shared: bool, env: dict[str, str] 
 
 
 #: What the console's stdin holds unread, as a POSIX pipe does: lines queue there while the machine
-#: is stopped, and a full pipe blocks the writer with no bound. Windows' default holds 4 KiB.
+#: is stopped, and a full pipe blocks the writer with no bound. Windows' default is far smaller.
 CONSOLE_PIPE_BYTES = 65536
 
 
