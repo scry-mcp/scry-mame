@@ -68,6 +68,13 @@ in `start_retries`), `0004` serves one GDB thread per cpu, so any cpu's register
 without the machine running, and `0005` ends MAME with its own exit code on a fatal error under
 the debugger (merged upstream as mamedev/mame#16363, so a MAME from it on carries it).
 
+## Platforms
+
+macOS and Windows: the server and its tests run on both. On Windows the server
+proves which process serves MAME's gdbstub from the system's own TCP table instead of `lsof`, and
+a MAME outlives no server: it runs in a job object the server holds, which Windows closes, ending
+MAME, however the server ends. Linux is not supported: nothing here has run on it.
+
 ## See it run
 
 Two demos on free mamedev.org sets, each a `demo.py` that makes the calls a model would and
