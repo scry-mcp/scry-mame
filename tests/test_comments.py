@@ -18,6 +18,7 @@ from typing import Any
 
 import pytest
 from scry_core import host_program
+from scry_core.host_program import MODE_BITS
 from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -25,7 +26,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from server_support import _install  # noqa: E402
 from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
-    MODE_BITS,
     SessionFields,
     documented,
     refused,

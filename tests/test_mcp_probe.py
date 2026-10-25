@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 from scry_core import probe, probe_checks
+from scry_core.host_program import POSIX_TASKS
 from scry_core.host_program import absolute as _abs
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,9 +25,6 @@ def _tasks() -> list[dict[str, Any]]:
     return doc["tasks"]
 
 
-#: The task file spells POSIX paths, as the answers captured with it do; a probe runs on macOS.
-POSIX_TASKS = pytest.mark.skipif(sys.platform == "win32",
-                                 reason="the task file spells POSIX paths")
 
 
 def _narrowed() -> probe.Surface:

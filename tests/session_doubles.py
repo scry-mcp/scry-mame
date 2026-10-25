@@ -7,16 +7,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import pytest
 from scry_core import host_program
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-#: Cases a file's mode decides: Windows keeps no mode bit that refuses a read or a write.
-MODE_BITS = pytest.mark.skipif(sys.platform == "win32", reason="Windows keeps no mode bit")
-#: Cases whose file name holds a quote or a newline, which Windows refuses to create.
-POSIX_NAMES = pytest.mark.skipif(sys.platform == "win32",
-                                 reason="Windows forbids a quote or a newline in a file name")
 
 import gdb_session as g  # noqa: E402
 import mame_state as mstate  # noqa: E402

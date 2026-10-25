@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 from scry_core import host_program
+from scry_core.host_program import POSIX_NAMES
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from session_doubles import POSIX_NAMES  # noqa: E402
 
 import mame_files as files  # noqa: E402
 import mame_launch as launch  # noqa: E402

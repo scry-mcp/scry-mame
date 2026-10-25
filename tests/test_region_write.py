@@ -17,7 +17,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from session_doubles import MAP_LATCH, MAP_ROM, POSIX_NAMES, captured  # noqa: E402
+from scry_core.host_program import POSIX_NAMES  # noqa: E402
+from session_doubles import MAP_LATCH, MAP_ROM, captured  # noqa: E402
 from test_machine import M68K_DUAL, _cached  # noqa: E402
 from test_watches import _rom_under_write, _WatchSession  # noqa: E402
 
