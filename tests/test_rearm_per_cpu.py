@@ -12,7 +12,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server_support import _running  # noqa: E402
-from session_doubles import bplist_add, place_row, ref_cpu, visible_in  # noqa: E402
+from session_doubles import bplist_add, place_row, prints_file, ref_cpu, rewrite_mame, visible_in  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
 import mame_arming as arming  # noqa: E402
@@ -172,7 +172,7 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     dump = M68K_DUAL.replace(sub_regs, sub_regs + "IX,")
     image, _sym, store, _armed = _armable_boot(monkeypatch, tmp_path)
     args = {**_boot_args(tmp_path, image), "system": "m68k-dual"}
-    Path(args["binary"]).write_text(f"#!/bin/sh\ncat {LISTXML}\n")    # m68k-dual's -listxml
+    rewrite_mame(args["binary"], prints_file(LISTXML))                # m68k-dual's -listxml
     real_boot = launch.boot
 
     def boot(*a: object, **k: object) -> object:

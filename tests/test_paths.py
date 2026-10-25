@@ -4,12 +4,13 @@ The server runs MAME from a scratch directory, so the relative paths these cases
 the test's working directory on purpose: only the absolute rule refuses them.
 """
 
-import contextlib
 import errno
 import os
+import re
 import shutil
 import socket
 import stat
+import sys
 import tempfile
 import threading
 import time
@@ -19,6 +20,7 @@ from typing import Any
 
 import pytest
 from lua_support import _channel
+from scry_core import host_program
 from server_support import _never_spawns
 from session_doubles import fake_mame, refused
 
@@ -382,16 +384,22 @@ def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[
         path.symlink_to(tmp_path / "elsewhere")
         return path, f"a link to {tmp_path / 'elsewhere'}, which is a directory"
     if kind == "link to a device":
-        path.symlink_to("/dev/null")
-        return path, "a link to /dev/null, which is a character device"
+        if sys.platform == "win32":
+            pytest.skip("Windows has no device node to link to")
+        else:
+            path.symlink_to("/dev/null")
+            return path, "a link to /dev/null, which is a character device"
     if kind == "socket":
-        short = short_tmp / "s"
-        sock = socket.socket(socket.AF_UNIX)
-        sock.bind(str(short))
-        sock.close()          # the file it bound stays, and is what the case needs
-        path.symlink_to(short)
-        return path, f"a link to {short}, which is a socket"
-    os.mkfifo(path)
+        if sys.platform == "win32":
+            pytest.skip("Windows binds no socket to a file")
+        else:
+            short = short_tmp / "s"
+            sock = socket.socket(socket.AF_UNIX)
+            sock.bind(str(short))
+            sock.close()          # the file it bound stays, and is what the case needs
+            path.symlink_to(short)
+            return path, f"a link to {short}, which is a socket"
+    host_program.fifo(path)
     # opened from the other end later, so a regression that opens the FIFO fails, not hangs
     threading.Thread(target=_release_fifo, args=(path,), daemon=True).start()
     return path, "a FIFO"
@@ -399,8 +407,7 @@ def _not_a_file(sta: Path, tmp_path: Path, kind: str, short_tmp: Path) -> tuple[
 
 def _release_fifo(path: Path) -> None:
     time.sleep(3.0)
-    with contextlib.suppress(OSError):
-        os.close(os.open(path, os.O_WRONLY | os.O_NONBLOCK))
+    host_program.release_fifo(path)
 
 
 _NOT_FILES = ["directory", "link to a directory", "fifo", "socket", "link to a device"]
@@ -534,7 +541,7 @@ def test_a_types_line_the_grammar_reader_chokes_on_is_the_arguments_refusal(here
     """An array count too long for an int still refuses naming the file."""
     huge = here / "huge.types"
     huge.write_text("_start: u8[" + "9" * 5000 + "]\n")
-    out = refused(str(huge), s.start(**_common(here), symbols=str(here / "game.map"),
+    out = refused(re.escape(str(huge)), s.start(**_common(here), symbols=str(here / "game.map"),
                                      types=str(huge)))
     assert out["code"] == "bad_argument", out
 
@@ -548,6 +555,8 @@ def test_a_mapping_entrys_fault_is_named_as_the_caller_keyed_it(here: Path) -> N
     assert str(err.value).startswith("symbols['maincpu']: "), err.value
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="Windows answers `is_file` without `os.stat`, which stages the race")
 @pytest.mark.parametrize("kind", ["file", "directory"])
 def test_a_sta_gone_between_the_listing_and_its_stat_is_left_out_never_a_traceback(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kind: str) -> None:

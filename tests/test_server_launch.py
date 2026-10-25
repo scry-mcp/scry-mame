@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import host_program
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -35,6 +36,7 @@ from session_doubles import (  # noqa: E402
     fake_mame,  # noqa: E402
     reading_session,
     refused,
+    rewrite_mame,
     use_table,  # noqa: E402
 )
 
@@ -152,6 +154,7 @@ def test_a_directory_where_a_file_is_due_is_refused_naming_the_argument(
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="Windows keeps no mode bit")
 def test_a_binary_that_is_a_file_and_cannot_be_run_is_refused_as_such(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -474,16 +477,16 @@ def test_a_warm_batch_is_also_refused_whole_for_a_later_steps_path(
 def test_a_log_shorter_than_its_mark_is_read_from_the_start(tmp_path: Path) -> None:
     """A mark past the end describes a file that no longer exists (MAME rewrote it)."""
     log = tmp_path / "error.log"
-    log.write_text("a\nb\nc\n")
+    log.write_text("a\nb\nc\n", newline="")
     assert files.errorlog_since(tmp_path, 0) == (["a", "b", "c"], 6)
     assert files.errorlog_since(tmp_path, 4) == (["c"], 6)
-    log.write_text("x\n")
+    log.write_text("x\n", newline="")
     assert files.errorlog_since(tmp_path, 6) == (["x"], 2)
     # A CRLF log, and a line still being written: the half line is NOT a line yet, the mark
     # stays before it, and it is seen whole, once, when its newline arrives.
-    log.write_text("p\r\nq")
+    log.write_text("p\r\nq", newline="")
     assert files.errorlog_since(tmp_path, 0) == (["p"], 3)
-    with open(log, "a") as fh:
+    with open(log, "a", newline="") as fh:
         fh.write("uiet\n")
     assert files.errorlog_since(tmp_path, 3) == (["quiet"], 9)
     assert files.errorlog_since(tmp_path / "none", 0) == ([], 0)
@@ -497,9 +500,8 @@ def test_a_system_this_build_does_not_carry_refuses_the_start_in_mame_s_own_word
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
     # The shape of the real refusal: exit code 5, the sentence on stderr.
-    Path(args["binary"]).write_text(
-        "#!/bin/sh\necho \"No matching machines found for '$1'\" >&2\nexit 5\n")
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], (
+        "sys.stderr.write(f\"No matching machines found for '{sys.argv[1]}'\\n\")\nsys.exit(5)"))
     out = refused("does not carry", s.start(**{**args, "system": "notthisone"}))
     assert "No matching machines found for 'notthisone'" in out["message"]
     assert out["exit_code"] == 5
@@ -514,8 +516,7 @@ def test_a_listxml_that_fails_for_any_other_reason_leaves_the_start_working(
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    Path(args["binary"]).write_text("#!/bin/sh\necho 'Fatal error: no memory' >&2\nexit 3\n")
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], "sys.stderr.write('Fatal error: no memory\\n')\nsys.exit(3)")
     out = s.start(**args)
     try:
         assert out["rom_check"] == "OK", "the session still came up"
@@ -571,11 +572,9 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
     tmp_path: Path,
 ) -> None:
     """MAME's `-console` is fatal without the console plugin."""
-    binary = tmp_path / "bare-mame"
-    binary.write_text("#!/bin/sh\nexit 0\n")
     # EXECUTABLE, because this case is about the PLUGINS and nothing else: the check that asks
     # whether the binary can be RUN fires first and answers a different question.
-    binary.chmod(0o755)
+    binary = host_program.write(tmp_path / "bare-mame", "")
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
     out = refused("no console plugin for", s.start(
@@ -589,15 +588,11 @@ def test_a_binary_with_no_console_plugin_in_any_place_is_refused_before_the_boot
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
-@pytest.mark.skipif(os.name == "nt", reason="the build is a POSIX shell program")
 def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_rung(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """The same build reached by the PATH rung."""
-    (tmp_path / "bin").mkdir()
-    binary = tmp_path / "bin" / "mame"
-    binary.write_text("#!/bin/sh\nexit 0\n")
-    binary.chmod(0o755)
+    host_program.write(tmp_path / "bin" / "mame", "")
     monkeypatch.setenv("PATH", str(tmp_path / "bin"))
     monkeypatch.delenv("MAME_BINARY", raising=False)
     rom = tmp_path / "ref.bin"
@@ -609,6 +604,7 @@ def test_a_plugin_less_build_the_path_found_is_the_host_s_to_fix_and_says_which_
     assert mstate.STATE.proc is None, "a refused start spawned something"
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="a keg is a POSIX prefix reached by symlink")
 def test_a_packaged_mame_finds_its_console_plugin_under_its_prefixs_share(
     tmp_path: Path,
 ) -> None:
@@ -749,7 +745,7 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     import subprocess
     real_popen = subprocess.Popen
     monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: _Complaining(*a, **k)
-                        if (str((a[0] if a else k["args"])[0]).endswith("fake-mame")
+                        if (Path((a[0] if a else k["args"])[0]).stem == "fake-mame"
                             and "-debugger" in (a[0] if a else k["args"]))
                         else real_popen(*a, **k))
     out = refused("did not read", s.start(**_boot_args(tmp_path, image), cfg=str(cfg)))
@@ -761,9 +757,9 @@ def test_a_cfg_mame_did_not_read_ends_the_session_it_started(
     scratch = tmp_path / "scratch"
     scratch.mkdir()
     assert launch.cfg_parse_error(scratch) is None
-    (scratch / "error.log").write_text("boot\n" + line)
+    (scratch / "error.log").write_text("boot\n" + line, newline="")
     assert launch.cfg_parse_error(scratch) is None, "error.log is not where MAME writes it"
-    (scratch / "stdout.log").write_text("boot\n" + line + "more\n")
+    (scratch / "stdout.log").write_text("boot\n" + line + "more\n", newline="")
     assert launch.cfg_parse_error(scratch) == line.strip()
 
 
@@ -793,8 +789,8 @@ def test_close_lists_its_fields_in_the_order_its_docstring_promises(
     """The last words of each channel come right after `closed`, then how it ended."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}order"
     scratch.mkdir()
-    (scratch / "stdout.log").write_text("bye\n")
-    (scratch / "error.log").write_text("")
+    (scratch / "stdout.log").write_text("bye\n", newline="")
+    (scratch / "error.log").write_text("", newline="")
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
@@ -834,7 +830,6 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """`how."""
-    import os
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}proof"
     (scratch / "cfg").mkdir(parents=True)
@@ -874,7 +869,6 @@ def test_a_cfg_that_cannot_be_read_back_says_which_file_and_why(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """`changed."""
-    import os
 
     source = tmp_path / "repo.cfg"
     source.write_text("<mameconfig/>")
@@ -899,7 +893,6 @@ def test_judge_cfg_refuses_a_wrong_root_an_unreadable_file_and_a_cut_off_documen
     tmp_path: Path,
 ) -> None:
     """Three refusals of `judge_cfg` no case reached."""
-    import os
 
     wrong_root = tmp_path / "root.cfg"
     wrong_root.write_text('<?xml version="1.0"?>\n<foo><system name="m68k"/></foo>\n')

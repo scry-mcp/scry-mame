@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# vendored-version: 2 (every server's copy is this file; a sweep compares this stamp)
-# The wiring of `pre-commit.sh`: its one line reaches scry-core's hook, through the real jscpd and
-# the real probe check. What the hook decides is tested in scry-core; here the CONTROL (this tree
+# vendored-version: 3 (every server's copy is this file; a sweep compares this stamp)
+# The wiring of `pre-commit.sh`: its one line reaches scry-core's hook, through the real jscpd, the
+# real probe check and the real mypy. What the hook decides is tested in scry-core; here the CONTROL (this tree
 # passes) and one planted clone (blocked at 1) are what shows the line works.
 #
 # BOTH RUN ON A COPY of the tree (its tracked and untracked files), so a clone planted here never
@@ -9,7 +9,7 @@
 # repository's own environment, unsynced, so nothing is installed and the venv is not re-pointed.
 set -euo pipefail
 # The real tools, never the hook's seams, whatever the caller's shell exports.
-unset PRECOMMIT_JSCPD PRECOMMIT_PROBE
+unset PRECOMMIT_JSCPD PRECOMMIT_PROBE PRECOMMIT_MYPY
 
 cd "$(dirname "$0")/.." || exit 3
 root=$PWD
@@ -33,8 +33,8 @@ hook() { (cd "$tree" && UV_PROJECT_ENVIRONMENT="$root/.venv" UV_NO_SYNC=1 \
 rc=0; hook || rc=$?
 if [ "$rc" -eq 0 ]; then ok "this tree passes (the control)"; else bad "the control gave rc=$rc: $(cat "$copy/out")"; fi
 if grep -q "no new duplication" "$copy/out" && grep -q "^   OK " "$copy/out" \
-        && grep -q "^prose: " "$copy/out"; then
-    ok "and the three checks ran"
+        && grep -q "^prose: " "$copy/out" && grep -q "^win32: .* files clean on win32$" "$copy/out"; then
+    ok "and the four checks ran"
 else
     bad "a check did not run: $(cat "$copy/out")"
 fi

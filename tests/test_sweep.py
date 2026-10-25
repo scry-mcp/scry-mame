@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import png_read  # noqa: E402
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
-from session_doubles import refused  # noqa: E402
+from session_doubles import MODE_BITS, refused  # noqa: E402
 from test_film import _read_label  # noqa: E402
 from test_gfx import _mark, _png, _serve  # noqa: E402
 
@@ -566,6 +566,7 @@ def test_a_choice_among_layouts_the_screen_could_not_tell_apart_says_so(
             "tell apart") in out["not_proved"], out["not_proved"]
 
 
+@MODE_BITS
 def test_a_choice_made_again_and_then_failed_keeps_the_first(monkeypatch: pytest.MonkeyPatch,
                                                              tmp_path: Path) -> None:
     _swept(monkeypatch, tmp_path)

@@ -17,7 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from session_doubles import MAP_LATCH, MAP_ROM, captured  # noqa: E402
+from session_doubles import MAP_LATCH, MAP_ROM, POSIX_NAMES, captured  # noqa: E402
 from test_machine import M68K_DUAL, _cached  # noqa: E402
 from test_watches import _rom_under_write, _WatchSession  # noqa: E402
 
@@ -214,6 +214,7 @@ def test_a_region_write_that_cannot_be_placed_is_refused_before_anything_is_sent
     assert out["session"]["altered"] is False, out
 
 
+@POSIX_NAMES
 def test_a_scratch_path_the_console_would_split_is_refused_before_saver(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

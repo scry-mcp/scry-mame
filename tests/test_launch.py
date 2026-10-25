@@ -6,11 +6,14 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from session_doubles import POSIX_NAMES  # noqa: E402
+
 import mame_files as files  # noqa: E402
 import mame_launch as launch  # noqa: E402
 import mame_machine as machine  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_symbols as syms  # noqa: E402
+import mame_transport as transport  # noqa: E402
 
 
 def test_a_types_file_that_cannot_be_read_is_refused_naming_it(tmp_path: Path) -> None:
@@ -57,11 +60,13 @@ def test_the_boot_script_carries_the_inventory_and_adds_the_throttle_after_it(
 ) -> None:
     """The throttle is added behind the inventory, never in its place."""
     alone = Path(launch.boot_harness(tmp_path, "", 0)).read_text(encoding="utf-8")
-    assert str(tmp_path / machine.DUMP_NAME) in alone and launch.THROTTLE_MARK not in alone
+    dump = transport.lua_string(str(tmp_path / machine.DUMP_NAME))
+    assert dump in alone and launch.THROTTLE_MARK not in alone
     both = Path(launch.boot_harness(tmp_path, "", 900)).read_text(encoding="utf-8")
     assert both.startswith(alone) and launch.THROTTLE_MARK in both, "the throttle follows it"
 
 
+@POSIX_NAMES
 def test_the_boot_script_quotes_a_harness_path_holding_a_quote_or_a_backslash(
         tmp_path: Path) -> None:
     """The path enters `dofile("...")` with quote, backslash and newline escaped."""

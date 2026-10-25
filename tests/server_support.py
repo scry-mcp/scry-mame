@@ -11,9 +11,11 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import host_program  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
@@ -24,6 +26,7 @@ from session_doubles import (  # noqa: E402
     debugger_lists,
     fake_mame,  # noqa: E402
     reading_session,
+    rewrite_mame,
     use_table,  # noqa: E402
 )
 
@@ -125,7 +128,7 @@ def _stub_boot(
 
     def popen(*a: Any, **k: Any) -> Any:
         argv = a[0] if a else k["args"]
-        if str(argv[0]).endswith("fake-mame") and "-debugger" in argv:
+        if Path(argv[0]).stem == "fake-mame" and "-debugger" in argv:
             return _StubProcess(*a, **k)
         return real_popen(*a, **k)
 
@@ -195,14 +198,18 @@ class _DroppingWire:
         raise TimeoutError
 
 
+
+def _in_tmp(name: str) -> str:
+    """`name` in a directory every host has, as an absolute path."""
+    return str(Path(tempfile.gettempdir(), name))
+
 def _recording_helper(tmp_path: Path) -> tuple[Path, Path]:
     """A `place-window` double that records its argv and prints a plausible flag list."""
     log = tmp_path / "argv.log"
-    fake = tmp_path / "place-window.sh"
-    fake.write_text(
-        f'#!/bin/sh\nprintf "%s\\n" "$@" > "{log}"\nprintf -- "-window\\n-nomaximize\\n"\n'
-    )
-    fake.chmod(0o755)
+    fake = host_program.write(tmp_path / "place-window", (
+        f"import pathlib, sys\npathlib.Path({str(log)!r}).write_text("
+        "''.join(a + '\\n' for a in sys.argv[1:]))\n"
+        "sys.stdout.buffer.write(b'-window\\n-nomaximize\\n')\n"))
     return fake, log
 
 
@@ -566,12 +573,12 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "memdump-length": lambda: s.memdump(
         ref="0x0", length=0, dest=str(_FRESH.parent / "mame-boundary-probe-never-written.bin")),
     "memdump-relative": lambda: s.memdump(ref="0x0", length=4, dest="relative.bin"),
-    "memdump-nul": lambda: s.memdump(ref="0x0", length=4, dest="/tmp/pro\x00be.bin"),
+    "memdump-nul": lambda: s.memdump(ref="0x0", length=4, dest=_in_tmp("pro\x00be.bin")),
     "snapshot-relative": lambda: s.snapshot(dest="relative.png"),
-    "snapshot-nul": lambda: s.snapshot(dest="/tmp/pro\x00be.png"),
-    "record-frames": lambda: s.record(frames=0, dest="/tmp/probe.avi"),
+    "snapshot-nul": lambda: s.snapshot(dest=_in_tmp("pro\x00be.png")),
+    "record-frames": lambda: s.record(frames=0, dest=_in_tmp("probe.avi")),
     "record-relative": lambda: s.record(frames=4, dest="relative.avi"),
-    "audio_record-frames": lambda: s.audio_record(frames=0, dest="/tmp/probe.wav"),
+    "audio_record-frames": lambda: s.audio_record(frames=0, dest=_in_tmp("probe.wav")),
     "audio_record-relative": lambda: s.audio_record(frames=4, dest="relative.wav"),
     "run_for": lambda: s.run_for(milliseconds=0),
     "step": lambda: s.step(count=0),
@@ -596,7 +603,7 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "input-seconds": lambda: s.input(port=":P1", field="Coin 1", seconds=0),
     "throttle-seconds": lambda: s.throttle(on=True, seconds=0),
     "resume-ceiling": lambda: s.resume(seconds=1e9),
-    "rom_check-addr": lambda: s.rom_check(reference_rom="/nope", reference_addr="zz"),
+    "rom_check-addr": lambda: s.rom_check(reference_rom=_abs("nope"), reference_addr="zz"),
     "rom_check-file": lambda: s.rom_check(reference_rom=str(_FRESH / "rom.bin")),
     "state_write save-name": lambda: s.state_write("save", name="../x"),
     "state_write load-name": lambda: s.state_write("load", name="../x"),
@@ -610,7 +617,7 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
 MACHINE_DEPENDENT: dict[str, Any] = {
     "read_memory": lambda: s.read_memory(ref="no_such_symbol", length=4),
     "disassemble": lambda: s.disassemble(ref="no_such_symbol", length=4),
-    "memdump": lambda: s.memdump(ref="no_such_symbol", length=4, dest="/tmp/probe.bin"),
+    "memdump": lambda: s.memdump(ref="no_such_symbol", length=4, dest=_in_tmp("probe.bin")),
     "run_to": lambda: s.run_to(ref="no_such_symbol"),
     "symbols_find": lambda: s.symbols_find(name="no_such_symbol"),
 }
@@ -887,9 +894,8 @@ def _query_that_outlives_the_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
                                   ) -> tuple[dict[str, str], list[Any]]:
     """A binary whose `-listxml` sleeps past any boot."""
     args = _boot_args(tmp_path, bytes(range(64)))
-    Path(args["binary"]).write_text(
-        '#!/bin/sh\n[ "$1" = -version ] && { echo "0.0 (a slow query)"; exit 0; }\nsleep 30\n')
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], "if sys.argv[1:2] == ['-version']:\n"
+                 "    print('0.0 (a slow query)')\n    sys.exit(0)\ntime.sleep(30)")
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     held: list[Any] = []
     real_ask = machine.ask_listxml

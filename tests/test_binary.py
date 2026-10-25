@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-import os
+import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.host_program import absolute as _abs
 from server_support import _running, _stub_boot, _StubProcess
 from session_doubles import fake_mame, refused
 
@@ -17,11 +18,8 @@ VERSION = "0.0 (a stub build)"
 
 
 
-#: Windows runs no shebang.
-POSIX_BUILDS = pytest.mark.skipif(os.name == "nt", reason="the builds are POSIX shell programs")
-
-def build(where: Path, *, version: str = f'echo "{VERSION}"', name: str = "mame") -> Path:
-    """An executable answering `-version` with the shell in `version`, console plugin beside it."""
+def build(where: Path, *, version: str = f"print({VERSION!r})", name: str = "mame") -> Path:
+    """An executable answering `-version` with the Python in `version`, console plugin beside it."""
     return fake_mame(where, name=name, version=version)
 
 
@@ -45,7 +43,7 @@ def test_a_broken_session_answers_as_such_whatever_the_variable_names(
     ses = _running(monkeypatch, tmp_path)
     ses.broken = "the stub stopped answering"
     monkeypatch.setenv(binaries.VARIABLE, str(tmp_path / "nope"))
-    out = s.start(system="x", rompath="/", reference_rom="/x.bin")
+    out = s.start(system="x", rompath=_abs(), reference_rom=_abs("x.bin"))
     assert out["status"] == "INVALID" and out["code"] == "session_broken", out
 
 
@@ -77,8 +75,11 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[s
     return out
 
 
-@POSIX_BUILDS
-@pytest.mark.parametrize("rung", ["argument", "MAME_BINARY", "PATH"])
+#: The PATH rung's build is a symlink, which Windows reserves to its administrators.
+LINKED = pytest.mark.skipif(sys.platform == "win32", reason="Windows reserves symlinks")
+
+
+@pytest.mark.parametrize("rung", ["argument", "MAME_BINARY", pytest.param("PATH", marks=LINKED)])
 def test_start_launches_the_rung_it_resolved_and_says_which(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch, rung: str) -> None:
     """The build the boot spawns is the one the reply names, with its rung and version."""
@@ -112,11 +113,11 @@ def test_start_with_no_rung_resolving_is_refused_in_the_envelope(
     assert out["code"] == "host_failed" and out.get("start_retries", []) == [], out
 
 
-@POSIX_BUILDS
 def test_start_asks_the_version_with_the_launch_s_environment(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """`-version` is asked under the launch's `env`."""
-    mine = build(tmp_path, name="fake-mame", version='echo "built for ${SCRY_HINT:-nobody}"')
+    mine = build(tmp_path, name="fake-mame",
+                 version="print('built for ' + os.environ.get('SCRY_HINT', 'nobody'))")
     out = _start(monkeypatch, tmp_path, binary=str(mine), env={"SCRY_HINT": "this launch"})
     try:
         assert out["status"] == "ok" and out["version"] == "built for this launch", out
@@ -124,11 +125,10 @@ def test_start_asks_the_version_with_the_launch_s_environment(
         s.close()
 
 
-@POSIX_BUILDS
 def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(binaries, "VERSION_TIMEOUT_S", 0.3)
-    slow = build(tmp_path / "slow", name="fake-mame", version="exec sleep 5")
+    slow = build(tmp_path / "slow", name="fake-mame", version="time.sleep(5)")
     out = _start(monkeypatch, tmp_path / "slow", binary=str(slow))
     try:
         assert out["status"] == "ok" and "did not return in 0.3 s" in str(out["version"]), out
@@ -136,11 +136,10 @@ def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         s.close()
 
 
-@POSIX_BUILDS
 def test_start_bounds_the_version_call_by_the_boot_s_budget_when_it_is_shorter(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """A `boot_seconds` shorter than the probe's own bound is the bound."""
-    slow = build(tmp_path / "slow", name="fake-mame", version="exec sleep 5")
+    slow = build(tmp_path / "slow", name="fake-mame", version="time.sleep(5)")
     out = _start(monkeypatch, tmp_path / "slow", binary=str(slow), boot_seconds=0.4)
     try:
         assert out["status"] == "ok" and "did not return in 0.4 s" in str(out["version"]), out
@@ -148,7 +147,6 @@ def test_start_bounds_the_version_call_by_the_boot_s_budget_when_it_is_shorter(
         s.close()
 
 
-@POSIX_BUILDS
 @pytest.mark.parametrize(("view", "said"), [("a\x00b", "NUL"), ("-video", "starts with `-`"),
                                             ("a\ud800", "surrogate")])
 def test_a_view_no_command_line_can_carry_is_refused_before_anything_starts(

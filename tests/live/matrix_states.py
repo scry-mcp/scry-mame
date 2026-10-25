@@ -6,9 +6,9 @@ topgunnr's main cpu sits in a short loop, so a run can bring it back to the save
 no load is proved: the cells that need the block to have moved say BLOCKED, not judge nothing.
 """
 
-import contextlib
 import os
 import shutil
+import sys
 import threading
 import time
 from pathlib import Path
@@ -33,6 +33,7 @@ from live_harness import (
     section,
     unavailable_why,
 )
+from scry_core import host_program
 
 from mame_state import STATE  # isort: skip -- found through the path the harness sets
 
@@ -62,8 +63,7 @@ def _release_after(path: Path) -> threading.Thread:
     """Open and close `path`'s writing end after `FIFO_RELEASE_S`, releasing a blocked reader."""
     def release() -> None:
         time.sleep(FIFO_RELEASE_S)
-        with contextlib.suppress(OSError):
-            os.close(os.open(path, os.O_WRONLY | os.O_NONBLOCK))
+        host_program.release_fifo(path)
     thread = threading.Thread(target=release, daemon=True)
     thread.start()
     return thread
@@ -74,11 +74,12 @@ def _not_states(t: str) -> None:
     folder.mkdir(parents=True, exist_ok=True)
     elsewhere = folder.parent / "q-elsewhere"
     elsewhere.mkdir(exist_ok=True)
-    made = {"qdir": "a directory", "qlink": f"a link to {elsewhere}, which is a directory",
-            "qfifo": "a FIFO"}
+    made = {"qdir": "a directory", "qlink": f"a link to {elsewhere}, which is a directory"}
     (folder / "qdir.sta").mkdir()
     (folder / "qlink.sta").symlink_to(elsewhere)
-    os.mkfifo(folder / "qfifo.sta")
+    if sys.platform != "win32":                 # Windows has no FIFO
+        made["qfifo"] = "a FIFO"
+        os.mkfifo(folder / "qfifo.sta")
     try:
         rows = {r["name"]: r for r in call("state_list").get("states") or []}
         listed = {name: (rows.get(name, {}).get("bytes") or {}) for name in made}

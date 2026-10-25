@@ -1380,7 +1380,7 @@ def test_a_stop_at_a_watch_reads_the_bytes_once_and_the_log_at_every_stop(
     """The log is read at every stop: a watchpoint typed through `debug` is not a `gvblank`
     landing."""
     ses = _watching(monkeypatch, tmp_path)
-    (tmp_path / "debug.log").write_text("boot noise\n" * 3)
+    (tmp_path / "debug.log").write_text("boot noise\n" * 3, newline="")
     s.step()
     assert mstate.STATE.debuglog_mark == len("boot noise\n") * 3, "read at the first stop"
     ses.memory[0x2031FC] = bytes.fromhex("00000037")

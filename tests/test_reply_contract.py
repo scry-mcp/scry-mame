@@ -11,6 +11,7 @@ from typing import Any
 
 import pytest
 from scry_core import media_tools
+from scry_core.host_program import absolute as _abs
 from scry_core.reply_contract import unavailable  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -40,16 +41,18 @@ def _tools() -> list[str]:
 
 
 _ARGS: dict[str, dict[str, Any]] = {
-    "start": {"binary": "/nonexistent/mame", "system": "x", "rompath": "/",
-              "reference_rom": "/nonexistent/rom"},
+    "start": {"binary": _abs("nonexistent", "mame"), "system": "x", "rompath": _abs(),
+              "reference_rom": _abs("nonexistent", "rom")},
     # exists, so the gate refuses it and not the path
     "rom_check": {"reference_rom": __file__},
     "run_to": {"ref": "0x4a0", "control": "0x4b0"},
     "run_for": {"milliseconds": 16},
     "trace": {"frames": 2},
     "series_capture": {"at_frames": [10 ** 6]},
-    "image_compare": {"method": "image", "a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
-    "audio_compare": {"method": "diff", "a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
+    "image_compare": {"method": "image", "a": _abs("nonexistent", "a.png"),
+                      "b": _abs("nonexistent", "b.png")},
+    "audio_compare": {"method": "diff", "a": _abs("nonexistent", "a.wav"),
+                      "b": _abs("nonexistent", "b.wav")},
     "breakpoint_at": {"ref": "0x4a0"},
     "watch_add": {"ref": "0x4a0", "mode": "show", "length": 2},
     "regpoint_add": {"condition": "d1==7fff"},
@@ -69,7 +72,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "log": {"pattern": ".", "channel": "emulator"},
     "log_wait": {"pattern": ".", "channel": "emulator", "seconds": 0.01},
     "perform": {"steps": [{"op": "status"}]},
-    "perform_export": {"dest": "/nonexistent/session.json"},
+    "perform_export": {"dest": _abs("nonexistent", "session.json")},
     "drive": {"act": [{"op": "status"}], "pattern": "."},
     "debug": {"command": "bplist"},
     "lua": {"script": "print(1)"},

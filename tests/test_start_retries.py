@@ -16,6 +16,7 @@ from typing import Any
 
 import pytest
 from pydantic import BaseModel, ValidationError
+from scry_core import host_program
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -40,39 +41,56 @@ IMAGE = bytes(range(256)) * 64
 # Knobs: DEATHS launches die by SIGSEGV (after LATE s); EXIT is a plain exit code; HANG never
 # boots; ABORT/FATAL print their line then die by SIGABRT/SIGSEGV; the banner prints BANNER_AFTER s
 # after boot (never when None); the first LOST launches end as MAME does on a taken port, exit 3.
-DOUBLE = """#!/bin/sh
-case " $* " in *" -listxml "*) exit 0 ;; *" -version "*) echo "0.0 (double)"; exit 0 ;; esac
-here=$(dirname "$0")
-rm -f "$here/booted"
-n=$(( $(cat "$here/launches" 2>/dev/null || echo 0) + 1 ))
-echo "$n" > "$here/launches"
-echo "launch $n"
-[ -n "%(exit)s" ] && exit %(exit)s
-if [ "$n" -le %(lost)d ]; then
-  port=; prev=; for a in "$@"; do [ "$prev" = "-debugger_port" ] && port=$a; prev=$a; done
-  echo "Fatal error: gdbstub: failed to start listening on address localhost port $port" >&2
-  exit 3
-fi
-[ -n "%(hang)s" ] && exec sleep 60
-[ -n "%(abort)s" ] && { echo "%(abort)s"; kill -ABRT $$; }
-[ -n "%(fatal)s" ] && { echo "Ignoring MAME exception: %(fatal)s"
-                       echo "Fatal error: %(fatal)s" >&2; kill -SEGV $$; }
-if [ "$n" -le %(deaths)d ]; then sleep %(late)s; kill -SEGV $$; fi
-touch "$here/booted"
+DOUBLE = """import os, signal, sys, time
+from pathlib import Path
+args = sys.argv[1:]
+if "-listxml" in args:
+    sys.exit(0)
+if "-version" in args:
+    print("0.0 (double)")
+    sys.exit(0)
+here = Path(sys.argv[0]).parent
+(here / "booted").unlink(missing_ok=True)
+launches = here / "launches"
+n = int(launches.read_text()) + 1 if launches.exists() else 1
+launches.write_text(str(n))
+print(f"launch {n}", flush=True)
+if %(exit)r:
+    sys.exit(int(%(exit)r))
+if n <= %(lost)d:
+    port = args[args.index("-debugger_port") + 1] if "-debugger_port" in args else ""
+    sys.stderr.write("Fatal error: gdbstub: failed to start listening on address localhost "
+                     f"port {port}\\n")
+    sys.exit(3)
+if %(hang)r:
+    time.sleep(60)
+    sys.exit(0)
+if %(abort)r:
+    print(%(abort)r, flush=True)
+    os.kill(os.getpid(), signal.SIGABRT)
+if %(fatal)r:
+    print("Ignoring MAME exception: " + %(fatal)r, flush=True)
+    sys.stderr.write("Fatal error: " + %(fatal)r + "\\n")
+    sys.stderr.flush()
+    os.kill(os.getpid(), signal.SIGSEGV)
+if n <= %(deaths)d:
+    time.sleep(%(late)r)
+    os.kill(os.getpid(), signal.SIGSEGV)
+(here / "booted").touch()
 %(banner)s
-exec sleep 60
+time.sleep(60)
 """
 
 
 def _double(tmp_path: Path, deaths: int = 0, exit_code: str = "", hang: bool = False,
             late: float = 0, abort: str = "", fatal: str = "",
             banner_after: float | None = 0, lost: int = 0) -> Path:
-    binary = tmp_path / "segv-mame"
-    binary.write_text(DOUBLE % {"deaths": deaths, "exit": exit_code, "hang": "y" if hang else "",
-                                "late": late, "abort": abort, "fatal": fatal, "lost": lost,
-                                "banner": "" if banner_after is None else
-                                f"sleep {banner_after}; printf '%s' '{BANNER_LINE}'"})
-    binary.chmod(0o755)
+    if sys.platform == "win32" and (deaths or abort or fatal):
+        pytest.skip("a death by signal is POSIX's: Windows ends a process with an exit code")
+    binary = host_program.write(tmp_path / "segv-mame", DOUBLE % {
+        "deaths": deaths, "exit": exit_code, "hang": hang, "late": late, "abort": abort,
+        "fatal": fatal, "lost": lost, "banner": "" if banner_after is None else
+        f"time.sleep({banner_after!r})\nsys.stdout.write({BANNER_LINE!r})\nsys.stdout.flush()"})
     console = tmp_path / "plugins" / "console"
     console.mkdir(parents=True, exist_ok=True)
     (console / "init.lua").write_text("-- the console plugin's place, not its code\n")

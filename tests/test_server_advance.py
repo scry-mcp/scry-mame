@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scry_core import log_marks, placement
+from scry_core import host_program, log_marks, placement
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -58,6 +58,7 @@ import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_stub_owner as owner  # noqa: E402
+import mame_transport as transport  # noqa: E402
 import mame_watches as watches  # noqa: E402
 import server as s  # noqa: E402
 
@@ -475,7 +476,7 @@ def test_the_stop_survey_shows_the_log_since_the_previous_stop_capped(
 ) -> None:
     """The delta is what the driver logged BETWEEN two stops, not the whole log."""
     log = tmp_path / "error.log"
-    log.write_text("boot\n")
+    log.write_text("boot\n", newline="")
     ses = _running(monkeypatch, tmp_path)              # stop 1 reads `boot`
     assert mstate.STATE.errorlog_mark == 5
     with open(log, "a") as fh:
@@ -509,7 +510,7 @@ def test_log_wait_answers_the_log_first_then_waits_and_refuses_honestly(
     import threading
 
     log = tmp_path / "error.log"
-    log.write_text("boot done\n")
+    log.write_text("boot done\n", newline="")
     ses = _running(monkeypatch, tmp_path)
     # Already there: no wait, and the machine may be stopped for that.
     out = s.log_wait(channel="emulator", pattern="boot", seconds=1.0)
@@ -586,7 +587,7 @@ def test_log_wait_reads_the_log_one_last_time_before_every_refusal(
 ) -> None:
     """The loop checks the condition FIRST and reads LAST."""
     log = tmp_path / "error.log"
-    log.write_text("boot\n")
+    log.write_text("boot\n", newline="")
     ses = _running(monkeypatch, tmp_path)
     ses.go()
     monkeypatch.setattr(core_wait, "POLL_S", 0.0)
@@ -684,7 +685,7 @@ def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
         assert harness == Path(out["boot_lua_path"]) and harness.parent == mstate.STATE.scratch
         text = harness.read_text()
         assert launch.THROTTLE_MARK in text and "video.throttled = true" in text
-        assert text.rstrip().endswith(f'dofile("{mine.resolve()}")')
+        assert text.rstrip().endswith(f"dofile({transport.lua_string(str(mine.resolve()))})")
         assert out.get("env", {}) == {launch.THROTTLE_FRAME_VAR: "2790"}
         assert _StubProcess.last_kwargs.get("env", {})[launch.THROTTLE_FRAME_VAR] == "2790"
         assert out.get("throttle_from_frame", 0) == 2790
@@ -701,7 +702,7 @@ def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
         composed = Path(out["boot_lua_path"])
         assert composed.parent == mstate.STATE.scratch
         text = composed.read_text()
-        assert text.rstrip().endswith(f'dofile("{mine.resolve()}")')
+        assert text.rstrip().endswith(f"dofile({transport.lua_string(str(mine.resolve()))})")
         assert launch.THROTTLE_MARK not in text, "no throttle frame, no throttle harness"
         assert "-nothrottle" not in _StubProcess.last_argv
     finally:
@@ -991,18 +992,14 @@ def test_a_window_helper_that_hangs_is_bounded_and_one_that_prints_nothing_is_na
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """`subprocess.run` on the helper had no bound."""
-    slow = tmp_path / "slow"
-    slow.write_text("#!/bin/sh\nsleep 5\n")
-    slow.chmod(0o755)
+    slow = host_program.write(tmp_path / "slow", "import time\ntime.sleep(5)\n")
     monkeypatch.setenv("WINDOW_APP", str(slow))
     with monkeypatch.context() as tight:
         tight.setattr(placement, "HELPER_TIMEOUT_S", 0.2)
         with pytest.raises(mstate.Invalid, match="did not answer within") as e:
             launch.window_flags(shared=True, display="main")
     assert "not at" not in str(e.value)
-    mute = tmp_path / "mute"
-    mute.write_text("#!/bin/sh\nexit 3\n")
-    mute.chmod(0o755)
+    mute = host_program.write(tmp_path / "mute", "import sys\nsys.exit(3)\n")
     monkeypatch.setenv("WINDOW_APP", str(mute))
     with pytest.raises(mstate.Invalid, match="exit code 3 and printed 'nothing'"):
         launch.window_flags(shared=True, display="main")
@@ -1187,7 +1184,7 @@ def test_the_throttle_lift_resets_the_speed_window_to_the_real_speed_start(
     ses = _RegisterSession(bits=32)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
-    (tmp_path / "error.log").write_text("boot\nMAME_MCP throttled from frame 900\n")
+    (tmp_path / "error.log").write_text("boot\nMAME_MCP throttled from frame 900\n", newline="")
     mstate.STATE.run_release = {"emulated": 0.0, "wall": 100.0}   # the ramp's start
     ses.emu_clock = 15.0                                          # emulated at the lift
     monkeypatch.setattr("mame_running.time.monotonic", lambda: 200.0)
@@ -1414,7 +1411,7 @@ def test_the_survey_says_truncated_only_past_what_it_shows_and_dates_the_watches
     ses = _running(monkeypatch, tmp_path)
     log = files.log_path(tmp_path, "emulator")
     shown = log_marks.STOP_LINES_SHOWN
-    log.write_text("".join(f"line {n}\n" for n in range(shown)))
+    log.write_text("".join(f"line {n}\n" for n in range(shown)), newline="")
     monkeypatch.setattr(mstate.STATE, "errorlog_mark", 0)
     seen = running.survey(ses, tmp_path)  # type: ignore[arg-type]
     assert seen["errorlog"]["lines_total"] == shown and seen["errorlog"]["mark"] == 0

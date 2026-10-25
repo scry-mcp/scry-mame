@@ -27,7 +27,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from lua_support import _channel, _ChannelSession  # noqa: E402
-from session_doubles import refused, with_stamps  # noqa: E402
+from session_doubles import MODE_BITS, refused, with_stamps  # noqa: E402
 
 import mame_blits as mblits  # noqa: E402
 import mame_capture as capture  # noqa: E402
@@ -612,6 +612,7 @@ def test_a_directory_where_a_file_goes_is_refused(monkeypatch: pytest.MonkeyPatc
     assert out["code"] == "bad_argument"
 
 
+@MODE_BITS
 @pytest.mark.parametrize("which", ["draft", "report"])
 def test_a_file_that_cannot_be_read_where_a_file_goes_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, which: str,

@@ -142,7 +142,9 @@ def test_record_writes_to_the_dest_it_is_given_and_names_it(
     ses.files[1] = (dest, AVI_HEAD)
     out = s.record(frames=30, dest=str(dest))
     assert out["status"] == "ok" and out["path"] == str(dest), out
-    assert mrec.begun_as(dest).encode() in ses.stdin.getvalue(), "the chunk records to the dest"
+    # a Lua literal inside the chunk, which quotes the whole script once more
+    sent = transport.lua_string(transport.lua_string(mrec.begun_as(dest)))[1:-1]
+    assert sent.encode() in ses.stdin.getvalue(), "the chunk records to the dest"
     assert not (ses.scratch / "snap" / "record-1.avi").exists()
 
 

@@ -14,6 +14,7 @@ from typing import Any, cast
 
 import pytest
 from scry_core import media_tools
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -298,7 +299,7 @@ def test_a_media_file_tool_answers_on_a_broken_session(
 
 
 @pytest.mark.parametrize(("method", "args", "code"), [
-    ("load", {"path": "/nonexistent/x.scry-map.json"}, "bad_argument"),
+    ("load", {"path": _abs("nonexistent", "x.scry-map.json")}, "bad_argument"),
     ("save", _ARGS["map_write"], "needs_call"),
     ("add", {"screen": "s", "match": [[0, 0, 1, 1]]}, "session_broken")])
 def test_a_map_file_method_answers_on_a_broken_session_and_add_does_not(

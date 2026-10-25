@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import host_program
 from session_doubles import run_host_lua, use_table  # noqa: E402
 
 import mame_cpus as cpus
@@ -16,6 +17,7 @@ import mame_machine as machine
 import mame_read as read
 import mame_state as st
 import mame_summaries as summaries
+import mame_transport as transport
 import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
 from mame_state import STATE
 
@@ -244,7 +246,7 @@ def test_a_dump_that_cannot_be_parsed_leaves_the_sections_empty_and_says_why(
 def test_the_harness_text_carries_the_dump_path_and_its_own_sentinels(tmp_path: Path) -> None:
     """The dump path reaches the composed boot script; an unsubstituted path would write nowhere."""
     text = machine.harness(tmp_path / "machine.txt")
-    assert str(tmp_path / "machine.txt") in text
+    assert transport.lua_string(str(tmp_path / "machine.txt")) in text
     assert machine.BEGIN in text and machine.END in text and machine.FAILED in text
     assert "%(" not in text, "every placeholder was filled"
     assert "pcall" in text, "the gather cannot be allowed to abort the rest of the boot script"
@@ -371,11 +373,8 @@ def test_the_device_machines_beside_the_set_are_not_read_as_part_of_it() -> None
 
 
 def _stub_mame(tmp_path: Path, name: str, body: str) -> str:
-    """A stand-in for the MAME binary with its real exit code and stream."""
-    path = tmp_path / name
-    path.write_text(f"#!/bin/sh\n{body}\n", encoding="utf-8")
-    path.chmod(0o755)
-    return str(path)
+    """A stand-in for the MAME binary with its real exit code and stream, its `body` Python."""
+    return str(host_program.write(tmp_path / name, f"import sys\n{body}\n"))
 
 
 def _listxml(binary: str, system: str, seconds: float = 20.0
@@ -388,8 +387,8 @@ def test_a_system_this_build_does_not_carry_refuses_the_start_in_mames_own_words
     tmp_path: Path,
 ) -> None:
     """The real binary exits 5 with the sentence on stderr: the caller's mistake, so a refusal."""
-    binary = _stub_mame(tmp_path, "mame",
-                        "echo \"No matching machines found for '$1'\" >&2\nexit 5")
+    binary = _stub_mame(tmp_path, "mame", "sys.stderr.write("
+                        "f\"No matching machines found for '{sys.argv[1]}'\\n\")\nsys.exit(5)")
     with pytest.raises(st.Invalid) as refused:
         _listxml(binary, "nosuchsystem")
     assert refused.value.code == "bad_argument"
@@ -402,7 +401,8 @@ def test_any_other_listxml_failure_leaves_start_working_and_quotes_what_it_said(
     tmp_path: Path,
 ) -> None:
     """A failed inventory never blocks a debug session, and names its exit code and words."""
-    binary = _stub_mame(tmp_path, "mame", "echo 'Fatal error: out of memory' >&2\nexit 3")
+    binary = _stub_mame(tmp_path, "mame",
+                        "sys.stderr.write('Fatal error: out of memory\\n')\nsys.exit(3)")
     found, note = _listxml(binary, "m68k-dual")
     assert found == {"cpus": [], "screens": [], "rom_files": []}
     assert "exit code 3" in note and "out of memory" in note and "rom_files" in note
@@ -416,7 +416,7 @@ def test_a_binary_that_cannot_be_run_is_a_note_and_not_a_crash(tmp_path: Path) -
 def test_listxml_that_answers_something_other_than_its_own_xml_is_a_note(
     tmp_path: Path,
 ) -> None:
-    binary = _stub_mame(tmp_path, "mame", "echo 'not xml at all'")
+    binary = _stub_mame(tmp_path, "mame", "print('not xml at all')")
     found, note = _listxml(binary, "m68k-dual")
     assert found["cpus"] == [] and "did not answer XML" in note
 
@@ -424,7 +424,8 @@ def test_listxml_that_answers_something_other_than_its_own_xml_is_a_note(
 def test_a_successful_listxml_comes_back_parsed(tmp_path: Path) -> None:
     """Positive control: the same wrapper over the captured document answers the board."""
     xml = FIXTURES / "listxml-m68k-dual.xml"
-    binary = _stub_mame(tmp_path, "mame", f"cat {xml}")
+    binary = _stub_mame(tmp_path, "mame",
+                        f"sys.stdout.buffer.write(open({str(xml)!r}, 'rb').read())")
     found, note = _listxml(binary, "m68k-dual")
     assert note == "" and len(found["cpus"]) == 2 and len(found["rom_files"]) == 22
 

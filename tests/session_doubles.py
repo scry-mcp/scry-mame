@@ -7,7 +7,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import pytest
+from scry_core import host_program
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+#: Cases a file's mode decides: Windows keeps no mode bit that refuses a read or a write.
+MODE_BITS = pytest.mark.skipif(sys.platform == "win32", reason="Windows keeps no mode bit")
+#: Cases whose file name holds a quote or a newline, which Windows refuses to create.
+POSIX_NAMES = pytest.mark.skipif(sys.platform == "win32",
+                                 reason="Windows forbids a quote or a newline in a file name")
 
 import gdb_session as g  # noqa: E402
 import mame_state as mstate  # noqa: E402
@@ -135,16 +144,25 @@ def reading_session(image: bytes, at: int) -> g.Session:
 
 
 def fake_mame(tmp_path: Path, *, name: str = "fake-mame", version: str = "") -> Path:
-    """A MAME that exits at once, with the console plugin beside it. `start` really runs it."""
+    """A MAME that exits at once, with the console plugin beside it. `start` really runs it.
+    `version` is the Python statement it runs when asked `-version`."""
     tmp_path.mkdir(parents=True, exist_ok=True)
-    binary = tmp_path / name
-    answer = f'case "$1" in -version) {version} ;; esac\n' if version else ""
-    binary.write_text(f"#!/bin/sh\n{answer}exit 0\n", encoding="utf-8")
-    binary.chmod(0o755)
+    answer = f"if sys.argv[1:2] == ['-version']:\n    {version}\n" if version else ""
+    binary = host_program.write(tmp_path / name, f"import os, sys, time\n{answer}sys.exit(0)\n")
     console = tmp_path / "plugins" / "console"
     console.mkdir(parents=True, exist_ok=True)
     (console / "init.lua").write_text("-- the console plugin's place, not its code\n")
     return binary
+
+
+def rewrite_mame(binary: str, body: str) -> None:
+    """The fake MAME at `binary` made to run the Python `body`, its plugins kept beside it."""
+    host_program.write(Path(binary).with_suffix(""), f"import os, sys, time\n{body}\n")
+
+
+def prints_file(path: Path) -> str:
+    """Python that copies `path`'s bytes to stdout as they are."""
+    return f"sys.stdout.buffer.write(open({str(path)!r}, 'rb').read())"
 
 
 def refused(pattern: str, reply: dict[str, Any]) -> dict[str, Any]:

@@ -18,13 +18,19 @@ contract tests and `tests/live/` the tiers that drive a real emulator.
 ```sh
 uv run ruff check .
 uv run mypy --strict .
+uv run mypy --strict --platform win32 .
 uv run pytest -q
 bash .githooks/pre-commit.test.sh   # the hook's own cases
 ```
 
-Ruff and mypy (strict, over the whole tree) judge the code; pytest runs the contract tests and,
-through `--cov`, the coverage floor in `pyproject.toml`; the last line runs the pre-commit hook's
-own cases. All four green is what a change needs before it is committed.
+Ruff and mypy (strict, over the whole tree) judge the code, the second mypy as Windows sees it, so
+a call Windows lacks goes red on any host until it is guarded by `sys.platform`; pytest runs the
+contract tests and, through `--cov`, the coverage floor in `pyproject.toml`; the last line runs the
+pre-commit hook's own cases. All five green is what a change needs before it is committed.
+
+On Windows the battery is the same, with `uv run pytest -q --no-cov`: the floor is judged on macOS
+only, because Windows skips by design the cases that need what it lacks (a FIFO, a mode bit, a
+symlink), and the floor counts the whole tree.
 
 A change to a tool's arguments, reply model or description changes its reference page, and
 `tests/test_reference_pages.py` goes red naming the tool, the page and the line. Regenerate the pages from the

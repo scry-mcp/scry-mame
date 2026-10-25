@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -474,11 +475,15 @@ def test_a_path_that_is_not_absolute_is_refused_by_its_shape(path: str, said: st
         mm.check_gfx_load(path)
 
 
-def test_a_file_that_cannot_be_read_is_refused(tmp_path: Path) -> None:
+def test_a_file_that_is_not_there_is_refused(tmp_path: Path) -> None:
     with pytest.raises(mstate.Invalid, match=r"no such manifest"):
-        mm.read("/nonexistent/gfx.yaml")
+        mm.read(str(tmp_path / "nonexistent" / "gfx.yaml"))
     with pytest.raises(mstate.Invalid, match=r"no such manifest"):
         mm.read(str(tmp_path))
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Windows keeps no mode that refuses a read")
+def test_a_file_that_cannot_be_read_is_refused(tmp_path: Path) -> None:
     locked = tmp_path / "locked.yaml"
     locked.write_text("systems: []\n")
     locked.chmod(0)
@@ -826,9 +831,10 @@ _RAMDAC_PROV = "    status: declared\n    source: m68k-dual.cpp main_map"
 ])
 def test_every_refusal_names_the_path_of_what_it_refuses(tmp_path: Path, old: str, new: str,
                                                          said: str) -> None:
+    path = _edited(tmp_path, old, new)
     with pytest.raises(mstate.Invalid) as err:
-        mm.read(_edited(tmp_path, old, new))
-    reason = str(err.value).split(": ", 1)[1] if str(err.value).startswith("/") else str(err.value)
+        mm.read(path)
+    reason = str(err.value).removeprefix(f"{path}: ")
     assert re.search(said, reason, re.M), reason
 
 
@@ -945,7 +951,7 @@ def test_every_refusal_about_a_manifest_says_which_one_is_still_loaded(
     with pytest.raises(mstate.Invalid) as err:
         mm.check_gfx_load("relative.yaml")
     assert err.value.fields["still_loaded"] == held
-    for path in ("/nonexistent/gfx.yaml",):
+    for path in (_abs("nonexistent", "gfx.yaml"),):
         with pytest.raises(mstate.Invalid) as err:
             mm.read(path)
         assert err.value.fields["still_loaded"] == held

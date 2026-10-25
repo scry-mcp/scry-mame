@@ -12,7 +12,6 @@ which it must neither inherit nor touch.
 import hashlib
 import json
 import os
-import signal
 import subprocess
 import sys
 import time
@@ -133,11 +132,11 @@ def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
         server.wait()
         return None, False, False
     before = alive(mame) and parent_of(mame) == server.pid
-    server.send_signal(signal.SIGKILL)
+    server.kill()                       # SIGKILL, or TerminateProcess: no `finally` runs
     server.wait()
     gone = gone_within(mame, WITHIN_S)
     if not gone:
-        os.kill(mame, signal.SIGKILL)
+        os.kill(mame, guardian.KILL)
     return mame, before, gone
 
 

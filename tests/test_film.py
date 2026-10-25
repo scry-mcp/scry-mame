@@ -1060,7 +1060,8 @@ def test_a_new_film_never_inherits_the_state_of_one_whose_removal_was_lost() -> 
     film = mf.Film("70001e", 0x70001E, 2, None, "", None, ":maincpu", 12, 3, None,
                    Path("/nowhere"), ":screen", 336, 252, 60.0, True, None, True)
     script = mf.install_script(film, Path("/nowhere/film.txt"))
-    assert 'local same = old ~= nil and old.head == "/nowhere/film.txt"' in script
+    head = transport.lua_string(str(Path("/nowhere/film.txt")))
+    assert f"local same = old ~= nil and old.head == {head}" in script
     assert "local t = same and old or {" in script
     lost = script[script.index("local function lost(field)"):script.index("local subs = {}")]
     assert "t.prev" not in lost and "baseline" not in lost

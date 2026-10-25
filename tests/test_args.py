@@ -14,6 +14,7 @@ from typing import Any
 
 import pytest
 from scry_core import media_tools, roster
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
@@ -306,7 +307,7 @@ def test_the_one_hex_parser_refuses_what_is_not_hex(value: str) -> None:
 
 @pytest.mark.parametrize(("dest", "expected"), [
     ("relative/x.png", "must be an absolute path or start with `~`"),
-    ("/x\x00y.png", "holds a NUL"),
+    (_abs("x\x00y.png"), "holds a NUL"),
 ])
 def test_a_dest_is_judged_as_a_path_with_no_machine_in_sight(dest: str, expected: str) -> None:
     """The refusal comes from the table directly, with no session, and says why each fails."""
@@ -430,43 +431,47 @@ def test_rom_check_refuses_an_address_outside_the_image_before_the_machine(
     assert control["code"] == "no_session", control
 
 
-_START_OK = {"binary": "/b/mame", "rompath": "/r", "reference_rom": "/r/rom.bin"}
+_START_OK = {"binary": _abs("b", "mame"), "rompath": _abs("r"),
+             "reference_rom": _abs("r", "rom.bin")}
 
 
 @pytest.mark.parametrize(("given", "name"), [
     ({"binary": "mame"}, "binary"),
     ({"reference_rom": "rom.bin"}, "reference_rom"),
     ({"rompath": "roms"}, "rompath"),
-    ({"inipath": "/a;ini"}, r"inipath\[1\]"),
+    ({"inipath": f"{_abs('a')};ini"}, r"inipath\[1\]"),
     ({"cfg": "x.cfg"}, "cfg"),
     ({"boot_lua": "print('x')"}, "boot_lua"),
     ({"symbols": {"maincpu": "a.map"}}, r"symbols\['maincpu'\]"),
     ({"types": "t.types"}, "types"),
     ({"state_dir": "states"}, "state_dir"),
-    ({"boot_lua": "/x\0y"}, "boot_lua"),
+    ({"boot_lua": _abs("x\0y")}, "boot_lua"),
 ])
 def test_starts_machine_independent_half_judges_every_path_by_its_name(
         given: dict[str, Any], name: str) -> None:
     """Each path's shape is refused under its own name; whether a file exists is the host's."""
     with pytest.raises(st.Invalid, match=rf"^{name}="):
         launch.check_start(**{**_START_OK, **given})
-    launch.check_start(**_START_OK, boot_lua="/no/such/harness.lua", symbols={"a": "/no/a.map"},
-                       inipath="/no/ini;/no/ini2", cfg="/no/x.cfg", state_dir="/no/states",
-                       types={"maincpu": "/no/a.types", "audiocpu": ""})
-    launch.check_start(**_START_OK, types="/no/a.types")
+    launch.check_start(**_START_OK, boot_lua=_abs("no", "such", "harness.lua"),
+                       symbols={"a": _abs("no", "a.map")},
+                       inipath=f"{_abs('no', 'ini')};{_abs('no', 'ini2')}",
+                       cfg=_abs("no", "x.cfg"), state_dir=_abs("no", "states"),
+                       types={"maincpu": _abs("no", "a.types"), "audiocpu": ""})
+    launch.check_start(**_START_OK, types=_abs("no", "a.types"))
 
 
 def test_starts_path_shapes_are_judged_in_the_order_judge_reads_them() -> None:
     """With two paths wrong, the one `judge` reads first is named."""
     with pytest.raises(st.Invalid, match=r"^binary="):
-        launch.check_start(binary="mame", rompath="/r", reference_rom="rom.bin")
+        launch.check_start(binary="mame", rompath=_abs("r"), reference_rom="rom.bin")
     with pytest.raises(st.Invalid, match=r"^reference_rom="):
-        launch.check_start(binary="/b/mame", rompath="roms", reference_rom="rom.bin")
+        launch.check_start(binary=_abs("b", "mame"), rompath="roms", reference_rom="rom.bin")
 
 
 def test_a_start_refused_for_the_shape_of_a_path_leaves_out_its_empty_start_retries() -> None:
     """A path-shape refusal happens before any launch, so `start_retries` is left out."""
-    out = s.start(binary="mame", system="m68k", rompath="/r", reference_rom="/r/rom.bin")
+    out = s.start(binary="mame", system="m68k", rompath=_abs("r"),
+                  reference_rom=_abs("r", "rom.bin"))
     assert out["code"] == "bad_argument" and out["message"].startswith("binary="), out
     assert "start_retries" not in out, out
 

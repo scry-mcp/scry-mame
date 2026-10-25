@@ -13,6 +13,7 @@ from typing import Any
 import pytest
 from scry_core import judges, media_tools, placement
 from scry_core import vocabulary as vocab
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -178,8 +179,8 @@ NEEDS: dict[str, dict[str, Any]] = {
     "declaration_clear": {"kind": "watch", "ref": "0x400"}, "state_write": {"name": "a"},
     "breakpoint_at": {"ref": "0x400"}, "gfx_film": {"trigger": "0x400"},
     "log": {"pattern": "."}, "log_wait": {"pattern": "."},
-    "start": {"binary": "/nowhere/mame", "system": "x", "rompath": "/nowhere",
-              "reference_rom": "/nowhere/x.bin"},
+    "start": {"binary": _abs("nowhere", "mame"), "system": "x", "rompath": _abs("nowhere"),
+              "reference_rom": _abs("nowhere", "x.bin")},
     "gfx_locate": {"layouts": ["8x8"], "patch": [0, 0, 8, 8], "tag": "gfx"},
     "gfx_sweep": {"tag": "gfx"}}
 
@@ -230,8 +231,8 @@ def test_a_display_outside_its_words_is_refused_before_the_quick_run_is() -> Non
     """A bad display is judged before `shared` and before any file is looked for."""
     with pytest.raises(st.Invalid, match=r"^display is one of \('', 'main', 'secondary'\); "
                                          r"got 'tv'$"):
-        launch.judge(binary="/nowhere/mame", system="x", rompath="/nowhere",
-                     reference_rom="/nowhere/x.bin", symbols="", reference_addr="0x0",
+        launch.judge(binary=_abs("nowhere", "mame"), system="x", rompath=_abs("nowhere"),
+                     reference_rom=_abs("nowhere", "x.bin"), symbols="", reference_addr="0x0",
                      inipath="", wait=8.0, shared=False, boot_lua="", env=None, bases=None,
                      reference_base="0x0", display="tv", port=0, state_dir="",
                      throttle_from_frame=0)

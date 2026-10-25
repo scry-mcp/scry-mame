@@ -1059,7 +1059,8 @@ def test_the_boxes_ask_the_screen_for_its_colours_and_touch_no_pen(
     out = s.gfx_blits(draw_command="blit", scale=1)
     assert out["status"] == "ok", out
     sent = ses.stdin.getvalue().decode()
-    asked = re.findall(r'mcp_capture\(\\"[^"\\]+\\", (true|false)\)', sent)
+    # the path between the quotes: escaped twice in the chunk, so a Windows one holds `\\\\`
+    asked = re.findall(r'mcp_capture\(\\"(?:[^"\\]|\\\\)+\\", (true|false)\)', sent)
     assert asked == ["false"], f"the capture asked for the pens: {asked}"
 
 

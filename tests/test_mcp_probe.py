@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 from scry_core import probe, probe_checks
+from scry_core.host_program import absolute as _abs
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -23,6 +24,11 @@ def _tasks() -> list[dict[str, Any]]:
     return doc["tasks"]
 
 
+#: The task file spells POSIX paths, as the answers captured with it do; a probe runs on macOS.
+POSIX_TASKS = pytest.mark.skipif(sys.platform == "win32",
+                                 reason="the task file spells POSIX paths")
+
+
 def _narrowed() -> probe.Surface:
     return probe_checks.narrowed(SURFACE, _tasks())
 
@@ -31,10 +37,12 @@ def _judge(task_id: str, line: str) -> probe.Verdict:
     return probe_checks.judge_line(SURFACE, _tasks(), task_id, line)
 
 
+@POSIX_TASKS
 def test_the_tasks_cover_the_server() -> None:
     assert probe_checks.refused(REPO, "mame") == []
 
 
+@POSIX_TASKS
 def test_every_task_is_captured_and_judged_as_it_was() -> None:
     assert probe_checks.captures_misjudged(REPO, "mame") == []
 
@@ -84,8 +92,8 @@ def test_a_task_whose_right_answer_the_server_refuses_is_refused() -> None:
 def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str, said: str) -> None:
     """`start` is judged by the shape of its paths: inline Lua or an unexpanded `~` is refused."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
-            "args": {"binary": "/b/mame", "system": "m68k-dual", "rompath": "/r",
-                     "reference_rom": "/r/rom.bin", "boot_lua": boot_lua}}
+            "args": {"binary": _abs("b", "mame"), "system": "m68k-dual", "rompath": _abs("r"),
+                     "reference_rom": _abs("r", "rom.bin"), "boot_lua": boot_lua}}
     (problem,) = probe.task_problems(SURFACE, [task])
     assert problem.startswith("mame task M1: its own expected call is refused: the server's "
                               "check refuses it: "), problem
@@ -95,7 +103,8 @@ def test_a_start_whose_expected_boot_lua_is_not_a_path_is_refused(boot_lua: str,
 def test_a_start_with_absolute_paths_is_judged_by_shape_not_by_what_is_on_disk() -> None:
     """The control: paths no machine holds are taken; a file being there is the host's to judge."""
     task = {"id": "M1", "prompt": "p", "tool": "start",
-            "args": {"binary": "/no/such/mame", "system": "m68k-dual", "rompath": "/no/roms",
-                     "reference_rom": "/no/rom.bin", "boot_lua": "/no/harness.lua",
-                     "symbols": {"maincpu": "/no/a.map"}}}
+            "args": {"binary": _abs("no", "such", "mame"), "system": "m68k-dual",
+                     "rompath": _abs("no", "roms"),
+                     "reference_rom": _abs("no", "rom.bin"), "boot_lua": _abs("no", "harness.lua"),
+                     "symbols": {"maincpu": _abs("no", "a.map")}}}
     assert probe.task_problems(SURFACE, [task]) == []

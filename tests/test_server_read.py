@@ -481,7 +481,7 @@ def test_log_returns_the_newest_matching_lines_and_counts_the_rest(
     scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
     (scratch / "error.log").write_text(
         "".join(f"[:] blit start {i}\n" if i % 2 else f"other {i}\n" for i in range(100))
-    )
+    , newline="")
     out = s.log("blit start", channel="emulator", limit=3)
     assert out["lines_total"] == 50 and len(out["lines"]) == 3 and out["truncated"] is True
     assert out["lines"] == ["[:] blit start 95", "[:] blit start 97", "[:] blit start 99"]
@@ -502,7 +502,7 @@ def test_log_refuses_a_bad_limit_or_regex_and_is_invalid_without_a_log(
     scratch = _console(monkeypatch, tmp_path, _ConsoleSession())
     out = s.log("x", channel="emulator")
     assert out["status"] == "INVALID" and "error.log" in out["message"]
-    (scratch / "error.log").write_text("a\n")
+    (scratch / "error.log").write_text("a\n", newline="")
     refused("limit",
     s.log("x", channel="emulator", limit=0))
     refused("limit",
@@ -932,9 +932,9 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     import mame_transport as transport
     monkeypatch.setitem(files.LOG_FILES, "emulator", "renamed-emulator.log")
     monkeypatch.setitem(files.LOG_FILES, "process", "renamed-process.log")
-    (tmp_path / "renamed-emulator.log").write_text("DRIVER: a line\n", encoding="utf-8")
+    (tmp_path / "renamed-emulator.log").write_text("DRIVER: a line\n", encoding="utf-8", newline="")
     (tmp_path / "renamed-process.log").write_text(
-        f"{launch.CFG_PARSE_ERROR}: nonsense\n", encoding="utf-8")
+        f"{launch.CFG_PARSE_ERROR}: nonsense\n", encoding="utf-8", newline="")
     # THE OLD NAMES ARE WRITTEN BY NOBODY, which is what makes every assertion below a
     # statement about the constant rather than about a file that happens to be there twice.
     assert not (tmp_path / "error.log").exists() and not (tmp_path / "stdout.log").exists()
@@ -954,7 +954,7 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     assert b"nonsense" in transport.since(tmp_path, 0)
     assert files.log_mark(tmp_path) > 0, "and the error log the same way"
     answered = f"echo-me\n{mstate.LUA_SENTINEL}#7\ttrue\t\n"
-    (tmp_path / "renamed-process.log").write_text(answered, encoding="utf-8")
+    (tmp_path / "renamed-process.log").write_text(answered, encoding="utf-8", newline="")
     monkeypatch.setattr(mstate.STATE, "console_mark", 0)
     monkeypatch.setattr(mstate.STATE, "lua_seq", 7)
     monkeypatch.setattr(mstate.STATE, "lua_lost", 0)

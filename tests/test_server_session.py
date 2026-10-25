@@ -16,6 +16,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import host_program
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from server_support import (  # noqa: E402
@@ -45,7 +46,9 @@ from server_support import (  # noqa: E402
 )
 from session_doubles import (  # noqa: E402
     fake_mame,  # noqa: E402
+    prints_file,
     refused,
+    rewrite_mame,
     use_table,  # noqa: E402
 )
 
@@ -362,7 +365,7 @@ def test_a_taken_port_is_refused_before_the_emulator_exists(
     with _s.socket() as holder:
         holder.bind(("127.0.0.1", 0))
         held = holder.getsockname()[1]
-        refused(str(held),
+        refused(re.escape(str(held)),
         s.start(
             binary=str(binary), system="none", rompath=str(tmp_path),
             reference_rom=str(rom), stub_port=held,
@@ -819,10 +822,9 @@ def test_when_the_boot_fails_the_query_holds_the_cause_and_it_outranks_the_sympt
     """The query is put before the boot and collected after the park."""
     image = bytes(range(64))
     args = _boot_args(tmp_path, image)
-    Path(args["binary"]).write_text(
-        "#!/bin/sh\nfor a in \"$@\"; do [ \"$a\" = -listxml ] && "
-        "{ echo \"No matching machines found for '$1'\" >&2; exit 5; }; done\nexit 0\n")
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], "if '-listxml' in sys.argv:\n"
+                 "    sys.stderr.write(f\"No matching machines found for '{sys.argv[1]}'\\n\")\n"
+                 "    sys.exit(5)")
     monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     out = refused("does not carry",
                   s.start(**{**args, "system": "notthisone", "boot_seconds": 0.6}))
@@ -889,8 +891,7 @@ def test_start_says_the_shape_of_the_board_on_its_summary_line(
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
     xml = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"
-    Path(args["binary"]).write_text(f"#!/bin/sh\ncat {xml}\n")
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], prints_file(xml))
     out = s.start(**{**args, "system": "m68k-dual"})
     try:
         assert out["machine"]["cpus"] == 2 and out["machine"]["rom_files"] == 22
@@ -1001,9 +1002,9 @@ def test_a_window_helper_that_ran_and_failed_is_reported_with_its_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The helper's stderr was captured and dropped."""
-    helper = tmp_path / "place-window"
-    helper.write_text("#!/bin/sh\necho 'display-topology: no such display' >&2\nexit 1\n")
-    helper.chmod(0o755)
+    helper = host_program.write(tmp_path / "place-window", "import sys\n"
+                                "sys.stderr.write('display-topology: no such display\\n')\n"
+                                "sys.exit(1)\n")
     monkeypatch.setenv("WINDOW_APP", str(helper))
     with pytest.raises(mstate.Invalid) as e:
         launch.window_flags(shared=True, display="main")
@@ -1347,8 +1348,9 @@ def test_a_live_runs_ledger_learns_every_mame_launched_a_start_that_fails_includ
 
     pid_file = tmp_path / "pid"
     binary = fake_mame(tmp_path)
-    binary.write_text(f'#!/bin/sh\ncase "$*" in *-listxml*|*-version*) exit 0;; esac\n'
-                      f'echo $$ > {pid_file}\nexit 0\n')
+    rewrite_mame(str(binary), "if '-listxml' in sys.argv or '-version' in sys.argv:\n"
+                 "    sys.exit(0)\n"
+                 f"open({str(pid_file)!r}, 'w').write(str(os.getpid()))")
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
     ledger = tmp_path / "emulators.tsv"

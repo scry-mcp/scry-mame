@@ -13,6 +13,7 @@ from __future__ import annotations
 import gzip
 import io
 import json
+import os
 import re
 import tracemalloc
 from pathlib import Path
@@ -299,7 +300,8 @@ def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> No
     out = call(ses)
     t = out["trace"]
     assert list(out)[-2:] == ["trace", "session"], "trace sits just before session"
-    assert t["path"].endswith("/snap/trace-1.trace") and t["bytes"] == len(data)
+    assert t["path"].endswith(os.path.join("", "snap", "trace-1.trace")), t["path"]
+    assert t["bytes"] == len(data)
     rows = [json.loads(x) for x in Path(t["set_path"]).read_text().splitlines()]
     assert len(rows) == t["addresses"] > 0
     assert [r["addr"] for r in rows] == sorted(r["addr"] for r in rows)

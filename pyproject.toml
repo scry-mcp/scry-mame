@@ -12,7 +12,7 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.55.1",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.57.0",
 ]
 
 [dependency-groups]
@@ -84,5 +84,7 @@ omit = [".venv/*", "demos/*/*"]
 # `--cov` run. The number is the total the run that fixed it measured, raised by hand from a run.
 # It counts lines EXECUTED, not asserted: what proves a test bites is having seen it red.
 fail_under = 98.98
+# A branch only Windows runs: the floor is judged on macOS, where no such line can execute.
+exclude_also = ['if sys\.platform == "win32":']
 precision = 2
 show_missing = true

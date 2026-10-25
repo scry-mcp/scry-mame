@@ -14,7 +14,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server_support import _boot_args, _never_spawns, _stub_boot  # noqa: E402
-from session_doubles import refused  # noqa: E402
+from session_doubles import prints_file, refused, rewrite_mame  # noqa: E402
 
 import mame_declarations as dec  # noqa: E402
 import mame_state as mstate  # noqa: E402
@@ -122,8 +122,7 @@ def _m68k_dual_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    Path(args["binary"]).write_text(f"#!/bin/sh\ncat {LISTXML}\n")
-    Path(args["binary"]).chmod(0o755)
+    rewrite_mame(args["binary"], prints_file(LISTXML))
     return {**args, "system": "m68k-dual"}
 
 

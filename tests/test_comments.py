@@ -17,11 +17,20 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import host_program
+from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from server_support import _install  # noqa: E402
-from session_doubles import IDENTITY_KEYS, SessionFields, documented, refused, use_table  # noqa: E402
+from session_doubles import (  # noqa: E402
+    IDENTITY_KEYS,
+    MODE_BITS,
+    SessionFields,
+    documented,
+    refused,
+    use_table,
+)
 
 import gdb_session as gs  # noqa: E402
 import mame_arming as arming  # noqa: E402
@@ -294,6 +303,7 @@ def test_a_pane_that_does_not_read_back_the_text_is_said(
     assert out["comment"]["state"] == "unarmable" and "reads" in out["comment"]["why"], out
 
 
+@MODE_BITS
 def test_a_store_that_cannot_be_written_answers_host_failed_and_holds_the_comment(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     where = tmp_path / "store"
@@ -639,10 +649,10 @@ def test_start_pins_the_comment_directory_in_the_scratch() -> None:
     """MAME writes the comments it holds into `comment_directory` on every exit of a `-debug`
     machine; pinned on the command line, an ini given through `inipath` cannot move that file
     where a later plain MAME would show a deleted comment again."""
-    cmd = launch.build_command("mame", "m68k-dual", "/roms", 1234, [], "/tmp/scratch",
-                               inipath="/ini", state_dir="/state")
+    cmd = launch.build_command("mame", "m68k-dual", _abs("roms"), 1234, [], _abs("tmp", "scratch"),
+                               inipath=_abs("ini"), state_dir=_abs("state"))
     i = cmd.index("-comment_directory")
-    assert cmd[i + 1] == "/tmp/scratch/comments"
+    assert cmd[i + 1] == _abs("tmp", "scratch", "comments")
     assert i < cmd.index("-inipath"), "beside the other pinned directories"
 
 
@@ -731,6 +741,7 @@ def test_a_store_file_that_went_bad_answers_host_failed_rather_than_escaping(
     assert out["code"] == "host_failed" and out["held_in_memory"] is True, out
 
 
+@MODE_BITS
 @pytest.mark.parametrize("tool", ["comment_write delete", "comment_write load"])
 def test_delete_and_load_answer_host_failed_when_the_store_cannot_be_written(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, tool: str) -> None:
@@ -839,6 +850,7 @@ def test_save_refuses_its_own_format_with_a_row_it_cannot_read(
     refused("not UTF-8", s.comment_write("save", dest=str(latin)))
 
 
+@MODE_BITS
 def test_a_new_comment_file_is_readable_by_others_and_a_replaced_one_keeps_its_mode(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _three(monkeypatch, tmp_path)
@@ -922,6 +934,7 @@ def test_load_feeds_again_a_comment_holding_the_files_text_that_the_pane_lacks(
     assert s.comment_list()["comments"][0]["state"] == "armed"
 
 
+@MODE_BITS
 def test_a_store_that_cannot_be_written_keeps_the_notes_of_the_call(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     where = tmp_path / "store"
@@ -1114,14 +1127,14 @@ def test_save_refuses_a_dest_that_is_not_a_regular_file_without_opening_it(
     import threading
     _pane(monkeypatch, tmp_path)
     fifo = tmp_path / "pipe.tsv"
-    os.mkfifo(fifo)
+    host_program.fifo(fifo)
     box: dict[str, dict[str, object]] = {}
     t = threading.Thread(target=lambda: box.update(out=s.comment_write("save", dest=str(fifo))),
                          daemon=True)
     t.start()
     t.join(5)
     if t.is_alive():            # a writer releases the blocked reader so the thread ends
-        os.close(os.open(fifo, os.O_WRONLY | os.O_NONBLOCK))
+        host_program.release_fifo(fifo)
         t.join(5)
         pytest.fail("comment_write save blocked on a FIFO at dest")
     assert box["out"]["code"] == "bad_argument" and "regular file" in str(box["out"]), box

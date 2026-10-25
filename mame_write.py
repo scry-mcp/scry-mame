@@ -186,7 +186,7 @@ def clip_text(output: str, scratch: Path, stem: str) -> dict[str, Any]:
     if len(output) <= DEBUG_MAX:
         return {"output": output, "clipped": False}
     path = scratch / f"{stem}-{STATE.next_number('debug_dumps')}.txt"
-    path.write_text(output, encoding="utf-8")
+    path.write_text(output, encoding="utf-8", newline="")    # as printed, never CRLF
     preview = output.split("\n", 1)[0][:DEBUG_PREVIEW]
     return {"output": preview + "...", "output_chars": len(output), "output_path": str(path),
             "clipped": True}
