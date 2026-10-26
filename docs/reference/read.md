@@ -527,17 +527,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }

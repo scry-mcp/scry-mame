@@ -106,30 +106,29 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
-  "system": "circus",
-  "rompath": "~/Code/mame-test-roms",
-  "reference_rom": "$TMPDIR/mame-live-matrix-1674617bb625/f2-image/circus.ref",
-  "reference_addr": "0x1000",
-  "reference_base": "0x1000",
-  "inipath": "$TMPDIR/mame-live-matrix-1674617bb625/ini-no-joystick",
-  "boot_seconds": 30.0,
-  "background": false,
-  "presence": false
+  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "system": "radendur",
+  "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
+  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_addr": "0x0",
+  "boot_seconds": 25.0,
+  "presence": false,
+  "background": true,
+  "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "start circus on ~/.local/state/mame-builds/stock-9c28def3/mamed (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
+  "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
   "status": "ok",
-  "system": "circus",
-  "binary": "~/.local/state/mame-builds/stock-9c28def3/mamed",
+  "system": "radendur",
+  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "0.289 (unknown)",
-  "pid": 65221,
-  "stub_port": 52818,
-  "scratch_dir": "$TMPDIR/mame-mcp-7_754fwq",
+  "pid": 26150,
+  "stub_port": 61630,
+  "scratch_dir": "$TMPDIR/mame-mcp-7jiu71hs",
   "state_dir": "",
   "cfg": {
     "available": false,
@@ -139,32 +138,33 @@ Example, from a live run:
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-7_754fwq/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-7_754fwq/stdout.log",
+  "errorlog_path": "$TMPDIR/mame-mcp-7jiu71hs/error.log",
+  "stdout_path": "$TMPDIR/mame-mcp-7jiu71hs/stdout.log",
   "rom_check": "OK",
-  "symbols_total": 0,
-  "symbols_format": "none",
+  "symbols_total": 64,
+  "symbols_format": "yaml",
   "symbols_by_class": {},
-  "symbols_by_cpu": {},
+  "symbols_by_cpu": {
+    ":maincpu": 64
+  },
   "registers": [
-    "A",
-    "X",
-    "Y",
-    "P",
-    "SP",
-    "PC"
+    "D0",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "... 12 more"
   ],
-  "pc": "0x00001000",
+  "pc": "0x000f2034",
   "frame": 0,
   "frame_symbol": "frame",
   "view": "native",
   "views": [
-    "Color Overlay",
     "Screen 0 Standard (4:3)",
-    "Screen 0 Pixel Aspect (31:32)",
     "Cocktail"
   ],
-  "background": false,
+  "background": true,
   "flags": [
     "-window",
     "-nomaximize",
@@ -174,29 +174,23 @@ Example, from a live run:
     "-screen0",
     "... 1 more"
   ],
-  "boot_lua_path": "$TMPDIR/mame-mcp-7_754fwq/boot.lua",
+  "boot_lua_path": "$TMPDIR/mame-mcp-7jiu71hs/boot.lua",
   "presence": false,
   "machine": {
-    "cpus": 1,
-    "spaces": 1,
-    "address_map": 10,
+    "cpus": 2,
+    "spaces": 4,
+    "address_map": 32,
     "regions": 4,
     "shares": 2,
     "screens": 1,
-    "rom_files": 15
+    "rom_files": 22
   },
   "declarations": {
-    "persistent": false,
-    "path": {
-      "available": false,
-      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
-    },
-    "key": {
-      "available": false,
-      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
-    },
+    "persistent": true,
+    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json",
+    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
-    "fingerprint": "cbc781678431dfe1",
+    "fingerprint": "07549ca6b6e1c4ed",
     "rearm": {
       "rearmed": [],
       "stale": [],
@@ -317,7 +311,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "status: no machine",
+  "summary": "status: no session",
   "status": "ok"
 }
 ```
@@ -379,28 +373,23 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
+  "summary": "close: no session",
   "status": "ok",
-  "closed": true,
-  "omitted": [
-    "stdout_tail",
-    "errorlog_tail"
-  ],
-  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
-  "ended_by": "quit",
-  "exit_code": 0,
-  "state_written": true,
+  "closed": false,
+  "ended_by": "none",
+  "exit_code": {
+    "available": false,
+    "why": "no session was running"
+  },
+  "state_written": {
+    "available": false,
+    "why": "no session was running"
+  },
   "cfg": {
     "available": false,
     "why": "no cfg was given, so MAME runs on its defaults"
   },
-  "average_speed": {
-    "percent": 2032.13,
-    "emulated_s": 81.337645,
-    "wall_s": 4.002575
-  },
-  "console_pending_before": 0,
-  "console_drained": 0
+  "note": "there was no session to close"
 }
 ```
 <!-- scry-reference:end close -->
@@ -538,11 +527,11 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.244 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.205 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001244,
+  "query_s": 0.001205,
   "cpu": ":maincpu"
 }
 ```

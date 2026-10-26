@@ -536,7 +536,7 @@ Example, from a live run:
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-24T22:09:58+00:00"
+    "wall_at": "2026-10-26T11:03:26+00:00"
   }
 }
 ```
@@ -658,9 +658,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-7jiu71hs/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,
@@ -802,7 +802,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-f5qd8ts7/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-7jiu71hs/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
@@ -847,7 +847,7 @@ Example, from a live run:
     "lines": [],
     "mark": 66062
   },
-  "manifest": "$TMPDIR/mame-mcp-f5qd8ts7/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-7jiu71hs/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,

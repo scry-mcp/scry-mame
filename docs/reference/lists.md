@@ -371,15 +371,15 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json"
+  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json",
+  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json",
   "steps": 43,
   "checks": 7,
   "dropped": [
@@ -420,7 +420,7 @@ Example, from a live run:
     "available": false,
     "why": "the recording kept every call a replay takes"
   },
-  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->

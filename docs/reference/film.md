@@ -292,7 +292,7 @@ Example, from a live run:
       "available": false,
       "why": "no `crop`: the whole screen"
     },
-    "film_dir": "$TMPDIR/mame-mcp-f5qd8ts7/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-7jiu71hs/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"

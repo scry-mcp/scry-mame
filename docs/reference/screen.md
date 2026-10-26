@@ -114,7 +114,7 @@ Example, from a live run:
     "... 250 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/palette-1.png",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -624,7 +624,7 @@ Example, from a live run:
   "real_colors": false,
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/gfx-1.png",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -1069,7 +1069,7 @@ Example, from a live run:
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/sweep-1.png",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1174,21 +1174,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml"
+  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft $TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.yaml",
+    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
   },
   "report": {
-    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/f9.report.json",
-    "sha256": "9be4fe9b5e1bcf6deb8a4b619f69116c120c3f06531912b7d9689155b23da34b"
+    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.report.json",
+    "sha256": "c1af08a2d0809e8a44bc7694150cbcf58c4a3256f33f4591870c685c9fd7bac9"
   },
   "formats": {},
   "asset_names": [],
@@ -1318,7 +1318,7 @@ Example, from a live run:
   "frame_screen": 8,
   "width": 336,
   "height": 252,
-  "rows_path": "$TMPDIR/mame-mcp-f5qd8ts7/capture-700000_32_t70001e.rows",
+  "rows_path": "$TMPDIR/mame-mcp-7jiu71hs/capture-700000_32_t70001e.rows",
   "rows_kept": 7,
   "overflow_rows": 0,
   "callback_errors": {
@@ -1362,7 +1362,7 @@ Example, from a live run:
     "... 1 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/blits-1.png",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -1606,7 +1606,7 @@ Example, from a live run:
   ],
   "reads_source": true,
   "image": {
-    "path": "$TMPDIR/mame-mcp-f5qd8ts7/gfx/source-1.png",
+    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,

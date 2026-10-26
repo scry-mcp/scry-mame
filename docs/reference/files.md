@@ -113,7 +113,7 @@ Example, from a live run:
 ```json
 {
   "method": "region",
-  "manifest": "$TMPDIR/mame-mcp-oot6fd3b/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-msfvssr0/series/series-1/manifest.json",
   "measure": "changed_pixels"
 }
 ```
@@ -171,8 +171,8 @@ Example, from a live run:
     "... 2 more"
   ],
   "transitions_total": 9,
-  "path": "$TMPDIR/mame-mcp-oot6fd3b/series/series-1/track-1.json",
-  "manifest": "$TMPDIR/mame-mcp-oot6fd3b/series/series-1/manifest.json"
+  "path": "$TMPDIR/mame-mcp-msfvssr0/series/series-1/track-1.json",
+  "manifest": "$TMPDIR/mame-mcp-msfvssr0/series/series-1/manifest.json"
 }
 ```
 <!-- scry-reference:end image_compare -->
@@ -242,7 +242,7 @@ Example, from a live run:
 ```json
 {
   "method": "measure",
-  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/L/f4.wav"
 }
 ```
 
@@ -276,7 +276,7 @@ Example, from a live run:
     }
   ],
   "pcm_sha256": "9c808cd852605b03eea32b76138f7c9f518c7f2f29e3b9ca76530161be7301fb",
-  "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/L/f4.wav"
 }
 ```
 <!-- scry-reference:end audio_compare -->
@@ -318,9 +318,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-f5qd8ts7/snap/snapshot-1.png",
+  "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-7jiu71hs/snap/snapshot-1.png",
   "status": "ok",
-  "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/snapshot-1.png",
+  "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/snapshot-1.png",
   "bytes": 441,
   "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
   "view": "native"
@@ -368,7 +368,7 @@ Example, from a live run:
   "captures": [
     {
       "kind": "png",
-      "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/snapshot-1.png",
+      "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/snapshot-1.png",
       "present": true,
       "bytes": 441
     }

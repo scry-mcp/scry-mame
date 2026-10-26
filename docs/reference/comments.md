@@ -53,8 +53,8 @@ Example, from a live run:
       "ref": "irq_vblank",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-24T22:09:55+00:00",
-      "origin": "2026-10-24T22:09:54+00:00#65429.1",
+      "created_at": "2026-10-26T11:03:23+00:00",
+      "origin": "2026-10-26T11:03:22+00:00#25981.1",
       "inherited": false,
       "age_s": 0,
       "text": "matrix A",
@@ -66,7 +66,7 @@ Example, from a live run:
   "truncated": false,
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/mame-live-matrix-state-gtki_cyl/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json"
   },
   "cpu": {
     "available": false,
@@ -168,8 +168,8 @@ Example, from a live run:
     "ref": "irq_vblank",
     "by": "symbol",
     "cpu": ":maincpu",
-    "created_at": "2026-10-24T22:09:55+00:00",
-    "origin": "2026-10-24T22:09:54+00:00#65429.1",
+    "created_at": "2026-10-26T11:03:23+00:00",
+    "origin": "2026-10-26T11:03:22+00:00#25981.1",
     "inherited": false,
     "age_s": 0,
     "text": "matrix A",
@@ -179,7 +179,7 @@ Example, from a live run:
   "replaced_comments": [],
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-1674617bb625/jobs-scratch/A/mame-live-matrix-state-gtki_cyl/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json"
   },
   "cpu": ":maincpu"
 }

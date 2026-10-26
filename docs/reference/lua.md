@@ -258,7 +258,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-f5qd8ts7/snap/record-2.avi",
+  "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-7jiu71hs/snap/record-2.avi",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 19,
@@ -268,7 +268,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/record-2.avi",
+  "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/record-2.avi",
   "frames": 2,
   "began": true,
   "frame_begin": 20,
@@ -416,7 +416,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-f5qd8ts7/snap/audio-3.wav",
+  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-7jiu71hs/snap/audio-3.wav",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 24,
@@ -426,7 +426,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "$TMPDIR/mame-mcp-f5qd8ts7/snap/audio-3.wav",
+  "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/audio-3.wav",
   "frames": 2,
   "began": true,
   "frame_begin": 25,
