@@ -3,6 +3,7 @@ before the first runs, stopped at the first INVALID, with the account of what ra
 
 from __future__ import annotations
 
+import dataclasses
 import re
 import subprocess
 import sys
@@ -378,7 +379,8 @@ def test_perform_dispatches_throttle_on_a_running_machine_without_waiting_for_a_
     assert out["status"] == "ok" and out["steps_completed"] == 2, out
     assert out["ran"][1]["reply"]["pending"] is False and ses.running
     assert "throttle" in mame_mcp._ANSWERS_WHILE_RUNNING and "throttle" in sequence.RUNNING_OK_OPS
-    monkeypatch.setattr(sequence, "RUNNING_OK_OPS", sequence.RUNNING_OK_OPS - {"throttle"})
+    monkeypatch.setattr(sequence, "GATE", dataclasses.replace(
+        sequence.GATE, ops=sequence.GATE.ops - {"throttle"}))
     ses.running = False
     out = s.perform(steps=[{"op": "resume"}, {"op": "throttle", "on": False}], settle_seconds=0.05)
     assert out["verdict"] == "TIMEOUT" and out["steps_completed"] == 1, out
@@ -394,7 +396,7 @@ def test_a_step_with_a_value_of_the_wrong_type_is_refused_naming_the_argument() 
     flag = s.perform(steps=[{"op": "step", "count": True}])
     assert "step 1 ('step') count is an integer; got True" in flag["message"], flag["message"]
     whole = s.perform(steps=[{"op": "step", "count": 1.0}])
-    assert "is an integer" not in str(whole.get("message")), whole
+    assert "step 1 ('step') count is an integer; got 1.0" in whole["message"], whole
     half = s.perform(steps=[{"op": "step", "count": 1.5}])
     assert "step 1 ('step') count is an integer; got 1.5" in half["message"], half["message"]
 
@@ -1526,3 +1528,10 @@ def test_an_unprovable_console_run_reads_each_logged_line_once_and_status_agrees
     monkeypatch.setattr(running, "_found", lambda _s, _d, packet: found.append(packet))
     running.observe_stop(cast(Any, ses), tmp_path)
     assert not ses.running and found == ["none: a run the console started"], found
+
+
+def test_a_step_count_given_as_a_float_is_refused_as_the_tool_itself_refuses_it() -> None:
+    """`length: 4.0` is refused by the schema of a direct call, so a step refuses it too, before
+    anything runs; the DOSBox-X server's `perform` says the same."""
+    out = s.perform(steps=[{"op": "read_memory", "ref": "0x0", "length": 4.0}])
+    assert out["code"] == "bad_argument" and "length" in out["message"], out

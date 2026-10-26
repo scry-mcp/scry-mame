@@ -115,7 +115,7 @@ def test_a_missing_symbol_file_is_refused_before_the_emulator_is_spawned(tmp_pat
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
-    refused("no such symbol file",
+    refused("no symbol file at",
     s.start(
         binary=str(binary), system="none", rompath=str(tmp_path),
         reference_rom=str(rom), symbols=str(tmp_path / "absent.sym"),
@@ -125,7 +125,7 @@ def test_a_missing_symbol_file_is_refused_before_the_emulator_is_spawned(tmp_pat
 def test_a_missing_reference_rom_is_refused_too(tmp_path: Path) -> None:
     """The control for the case above: the neighbouring check still refuses as it should."""
     binary = fake_mame(tmp_path)
-    refused("no such reference ROM",
+    refused("no reference ROM at",
     s.start(
         binary=str(binary), system="none", rompath=str(tmp_path),
         reference_rom=str(tmp_path / "absent.bin"),
@@ -134,10 +134,10 @@ def test_a_missing_reference_rom_is_refused_too(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize(("argument", "refusal"), [
     ("binary", r"MAME binary resolves from the argument rung: .*\(a directory\)"),
-    ("reference_rom", "no such reference ROM"),
-    ("symbols", "no such symbol file"),
-    ("boot_lua", "no such boot harness"),
-    ("cfg", "no such cfg"),
+    ("reference_rom", "no reference ROM at"),
+    ("symbols", "no symbol file at"),
+    ("boot_lua", "no boot harness at"),
+    ("cfg", "no cfg at"),
 ])
 def test_a_directory_where_a_file_is_due_is_refused_naming_the_argument(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, argument: str, refusal: str
@@ -348,7 +348,7 @@ def test_a_state_dir_survives_close_and_the_scratch_does_not(
     assert (state / "cfg").is_dir(), "the state_dir outlives the session"
     dead = s.status()
     assert dead["session"]["alive"] is False
-    assert list(dead)[0] == "summary" and dead["summary"] == "status: no machine"
+    assert list(dead)[0] == "summary" and dead["summary"] == "status: no session"
     # The second pass finds the first one's state, and a pre-existing state_dir is not an error.
     (state / "cfg" / "m68k.cfg").write_text("<mameconfig/>")
     again = s.start(**_boot_args(tmp_path, image), state_dir=str(state))
@@ -718,7 +718,7 @@ def test_a_cfg_mame_would_not_bind_is_refused_before_the_boot_naming_the_line(
     cfg.write_text(CFG_OK.replace('name="m68k"', 'name="v30"'))
     refused("v30", s.start(**args, cfg=str(cfg)))
     refused("must be an absolute path", s.start(**args, cfg="run/cfg/v30.cfg"))
-    refused("no such cfg", s.start(**args, cfg=str(tmp_path / "missing.cfg")))
+    refused("no cfg at", s.start(**args, cfg=str(tmp_path / "missing.cfg")))
     assert s.status()["session"]["alive"] is False, "nothing was spawned"
 
 

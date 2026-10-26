@@ -31,6 +31,7 @@ from scry_core import fresh, judges, png, raster, series
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
+from scry_core.prose import counted
 
 import gdb_session as gs
 import mame_advance as advance
@@ -221,17 +222,18 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
                          f"({run.get('cause')}) before the last frame was read: no series is "
                          "written from part of one", frame_after=run.get("frame_after"))
     if done["errors"]:
-        raise st.Invalid("unexpected_answer", f"the series notifier raised {done['errors']} "
-                         f"time(s), first: {done['first_error']}")
+        raise st.Invalid("unexpected_answer", f"the series notifier raised "
+                         f"{counted(int(done['errors']), 'time')}, first: {done['first_error']}")
     lost = sorted(int(f) for f in done["lost"].split(",") if f)
     kept_frames = [f for f in wanted if (folder / f"raw-{f}.txt").exists()]
     signed = {frame: _develop(folder, frame, width, height, area, common)
               for frame in kept_frames}
     missing = sorted(set(wanted) - set(kept_frames) - set(lost))
     if missing:
-        raise st.Invalid("unexpected_answer", f"{len(missing)} wanted frame(s) came out of the "
-                         f"run neither kept nor lost (first {missing[:8]}): the run ended before "
-                         "their picture was read")
+        raise st.Invalid("unexpected_answer",
+                         f"{counted(len(missing), 'wanted frame')} came out of the run neither "
+                         f"kept nor lost (first {missing[:8]}): the run ended before their "
+                         "picture was read")
     if not kept_frames:
         raise st.Invalid("no_progress", "the run reached the last frame and every wanted frame "
                          "was skipped by frameskip, so none was drawn")

@@ -295,7 +295,7 @@ def test_a_media_file_tool_answers_on_a_broken_session(
     ses.broken = NOT_A_STOP
     out = getattr(s, name)(**_ARGS[name])
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", (name, out)
-    assert "is not a file" in out["message"], (name, out)
+    assert "no file at" in out["message"], (name, out)
 
 
 @pytest.mark.parametrize(("method", "args", "code"), [

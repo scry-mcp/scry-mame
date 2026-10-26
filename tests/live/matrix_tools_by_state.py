@@ -376,7 +376,7 @@ RUNNING_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
 def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     """A tool's reply in a state against its contract, and the session block against the machine."""
     if tool in MEDIA_ABSENT:
-        good = refused(r, "bad_argument") and "is not a file" in str(r.get("message"))
+        good = refused(r, "bad_argument") and "no file at" in str(r.get("message"))
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
     elif tool in ("map_write load", "map_write save"):
         # a load of a missing file is refused by name; a save needs a map first

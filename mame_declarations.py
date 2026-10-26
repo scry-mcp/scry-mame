@@ -8,14 +8,13 @@ itself; one whose name vanished is kept, unresolved and said out loud, never dro
 from __future__ import annotations
 
 import dataclasses
-import json
 import os
 from collections.abc import Collection
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from scry_core import fresh
+from scry_core import declaration_file
 from scry_core import value_format as vf
 from scry_core.reply_contract import unavailable
 
@@ -503,48 +502,16 @@ class DeclarationStore:
                                    "it from the system and the symbol file")
         self._identity = identity
         self._path = path
-        self._items: list[Declaration] = (
-            [] if path is None else self._decls_for(self._read_raw(), identity))
+        self._items: list[Declaration] = [] if path is None else self._read(path, identity)
 
     @staticmethod
-    def _decls_for(raw: dict[str, object], key: str) -> list[Declaration]:
-        """This key's declarations; a shape that is not a list of objects is a named refusal."""
-        items = raw.get(key, [])
-        if not isinstance(items, list):
-            raise DeclarationError(
-                f"key {key!r} maps to a {type(items).__name__}, not a list of declarations; "
-                f"`start` refuses it {UNTIL_FIXED}")
-        out: list[Declaration] = []
-        seen: set[Declaration] = set()
-        for d in items:
-            if not isinstance(d, dict):
-                raise DeclarationError(
-                    f"a declaration under {key!r} is a {type(d).__name__}, not an object: "
-                    f"{d!r}; `start` refuses it {UNTIL_FIXED}")
-            decl = Declaration.from_dict(d)
-            # Two spellings of one declaration (`4a0`, `0x4a0`) read as one, the first kept.
-            if decl not in seen:
-                seen.add(decl)
-                out.append(decl)
-        return out
-
-    def _read_raw(self) -> dict[str, object]:
-        """The whole file as on disk now, or empty when there is none; unreadable is refused."""
-        assert self._path is not None
-        try:
-            raw = json.loads(self._path.read_text(encoding="utf-8"))
-        except FileNotFoundError:
-            return {}
-        except (OSError, ValueError) as exc:
-            raise DeclarationError(
-                f"the declaration file {self._path} could not be read: {exc}. It is not "
-                f"discarded: fix or remove it by hand rather than lose what it holds, and "
-                "`start` again") from None
-        if not isinstance(raw, dict):
-            raise DeclarationError(
-                f"the declaration file {self._path} is not a mapping of key to declarations; "
-                f"it holds a {type(raw).__name__}; `start` refuses it {UNTIL_FIXED}")
-        return raw
+    def _read(path: Path, key: str) -> list[Declaration]:
+        """This key's declarations; two spellings of one (`4a0`, `0x4a0`) read as one, the first
+        kept."""
+        then = f"; `start` refuses it {UNTIL_FIXED}"
+        rows = declaration_file.rows(declaration_file.read(path, DeclarationError, then), key,
+                                     DeclarationError, then)
+        return list(dict.fromkeys(Declaration.from_dict(d) for d in rows))
 
     @property
     def persistent(self) -> bool:
@@ -690,10 +657,6 @@ class DeclarationStore:
     def _persist(self) -> None:
         """Re-read the file and replace only this key's entry, atomically. One writer is assumed
         (one session, tools under one lock): two servers over one file could lose an add."""
-        if self._path is None:
-            return
-        raw = self._read_raw()
-        raw[self._identity] = [d.to_dict() for d in self._items]
-        self._path.parent.mkdir(parents=True, exist_ok=True)
-        fresh.replace(self._path, json.dumps(raw, indent=2, sort_keys=True).encode(),
-                      "the declarations file", named_by_caller=False)
+        if self._path is not None:
+            declaration_file.write(self._path, self._identity,
+                                   [d.to_dict() for d in self._items], DeclarationError)

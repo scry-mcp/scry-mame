@@ -545,7 +545,7 @@ def symbols_find(name: str, linear: str, limit: int,
                                  f"for {whose} program, so there is nothing to look a "
                                  "name up in", cpu=cpu)
     if name:
-        key = name.strip().upper()
+        key = name.strip().upper()     # MAME's expressions fold a symbol's case, so its table does
         hits = ([key] if key in table else
                 sorted((n for n in table if n.startswith(key)), key=lambda n: table[n]))
         return menvelope.envelope({

@@ -28,9 +28,10 @@ NO_DECL_CPU_WHY = "the declaration names no cpu: it acts on the visible one"
 
 def decl_row(decl: dec.Declaration) -> dict[str, Any]:
     """A list row's identity with this server's cpu reason."""
-    return declaration_rows.row(ref=decl.ref, by=decl.by, cpu=decl.cpu, cpu_why=NO_DECL_CPU_WHY,
-                                created_at=decl.created_at, origin=decl.origin,
-                                own_origin=STATE.session_origin, now=st.utc_now())
+    return declaration_rows.row(kind=decl.kind, ref=decl.ref, by=decl.by, cpu=decl.cpu,
+                                cpu_why=NO_DECL_CPU_WHY, created_at=decl.created_at,
+                                origin=decl.origin, own_origin=STATE.session_origin,
+                                now=st.utc_now())
 
 
 def stale_why() -> str:

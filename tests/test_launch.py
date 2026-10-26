@@ -24,7 +24,7 @@ def test_a_types_file_that_cannot_be_read_is_refused_naming_it(tmp_path: Path) -
     with pytest.raises(mstate.Invalid) as refused:
         syms.read_types(str(tmp_path))
     assert refused.value.code == "bad_argument", refused.value.code
-    assert str(refused.value) == f"no such types file: {tmp_path}", refused.value
+    assert str(refused.value) == f"types: no types file at {tmp_path}", refused.value
     locked = tmp_path / "locked.types"
     locked.write_text("x: u16\n")
     locked.chmod(0)
@@ -32,7 +32,7 @@ def test_a_types_file_that_cannot_be_read_is_refused_naming_it(tmp_path: Path) -
         pytest.skip("this user reads a mode-0 file (root), so nothing is unreadable")
     with pytest.raises(mstate.Invalid) as refused:
         syms.read_types(str(locked))
-    assert str(refused.value).startswith(f"cannot read the types file {locked}: "), refused.value
+    assert str(refused.value).startswith(f"types: {locked} cannot be read: "), refused.value
 
 
 def test_a_reference_rom_nobody_may_read_is_refused_as_the_arguments_fault(tmp_path: Path) -> None:

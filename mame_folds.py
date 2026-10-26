@@ -52,7 +52,7 @@ def list_declarations(kind: str, cpu: str) -> dict[str, Any]:
     check_list_declarations(kind)
     ses = contact()[0]
     return declaration_rows.merged({summaries.DECLARATION_ROWS[k]: _LISTS[k](ses, cpu)
-                                    for k in ((kind,) if kind else KINDS)})
+                                    for k in declaration_rows.chosen_kinds(kind, KINDS)})
 
 
 def check_clear_declarations(kind: str = "", ref: str = "", all: bool = False,
@@ -148,7 +148,7 @@ def _clear_scan() -> dict[str, Any]:
 SCAN = {
     "start": Method(_start_scan, mscan.check_start_scan, summaries.start_scan),
     "filter": Method(_filter_scan, mscan.check_filter_scan, summaries.filter_scan),
-    "clear": Method(_clear_scan, lambda **_: None, summaries.clear_scan),
+    "clear": Method(_clear_scan, methods.no_check, summaries.clear_scan),
 }
 
 
@@ -164,6 +164,10 @@ STATE_METHODS = {
     "save": Method(_save_state, savestates.check_state_name, summaries.save_state),
     "load": Method(_load_state, savestates.check_state_name, summaries.load_state),
 }
+
+#: Each `method` fold's method names, which the running gate is held to.
+METHODS = {"comment_write": tuple(COMMENT), "map_write": tuple(MAP), "scan": tuple(SCAN),
+           "state_write": tuple(STATE_METHODS)}
 
 #: Each fold's pre-gate judge, as the batch's table holds it.
 CHECKS = {

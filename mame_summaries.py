@@ -19,7 +19,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from scry_core import prose, screen_map
+from scry_core import prose, screen_map, session_block
 from scry_core import reply_contract as contract
 
 import mame_callbacks as callbacks
@@ -79,7 +79,7 @@ def start(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 def close(args: dict[str, Any], reply: dict[str, Any]) -> str:
     if not reply["closed"]:
-        return "close: no session"
+        return session_block.NO_SESSION_CLOSE
     when = {"quit": "quit", "died": "the emulator had already exited",
             "exited": "exited without writing its state",
             "killed": "killed after the grace period"}[reply["ended_by"]]
@@ -100,7 +100,7 @@ def status(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # A LIVE SESSION'S REPLY NAMES ITS SYSTEM, and a `pc` that is unavailable means running:
     # `alive` and `running` are the session block's, added after this.
     if "system" not in reply:
-        return ("status: no machine" if "exit_code" not in reply
+        return (session_block.NO_SESSION_STATUS if "exit_code" not in reply
                 else f"status: MAME exited with code {reply['exit_code']}, `close` it")
     last = (reply.get("last_stop") or {}).get("pc")
     if reply.get("broken"):

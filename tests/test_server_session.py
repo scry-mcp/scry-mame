@@ -229,7 +229,7 @@ def test_start_checks_the_image_at_its_base_and_reports_the_table(
         s.close()
     dead = s.status()
     assert dead["session"]["alive"] is False
-    assert list(dead)[0] == "summary" and dead["summary"] == "status: no machine"
+    assert list(dead)[0] == "summary" and dead["summary"] == "status: no session"
 
 
 def test_start_and_status_say_the_machine_runs_under_the_debugger(

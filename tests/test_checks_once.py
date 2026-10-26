@@ -33,7 +33,7 @@ from gfx_layouts import CIRCUS_CHAR  # noqa: E402
 
 @pytest.mark.parametrize(("value", "lo", "hi", "ok"), [
     (0, 0, None, True), (5, 0, None, True), (-1, 0, None, False), (True, 0, None, False),
-    (False, 0, None, False), (1.0, 0, None, True), (6.5, 0, None, False),
+    (False, 0, None, False), (1.0, 0, None, False), (6.5, 0, None, False),
     (float("nan"), 0, None, False), (float("inf"), 0, None, False), ("1", 0, None, False),
     (None, 0, None, False),
     (3, 1, 3, True), (1, 1, 3, True), (4, 1, 3, False), (0, 1, 3, False),
@@ -98,9 +98,9 @@ def test_one_expression_rule_set_names_the_rule_that_failed(text: str, rule: str
     assert (fault[0] if fault else None) == rule, fault
 
 
-def test_a_count_held_to_a_range_refuses_a_bool_and_a_string_and_takes_a_json_number() -> None:
-    """The count helpers judge the type first; an integral float stays a count."""
-    for value in (True, "2"):
+def test_a_count_held_to_a_range_refuses_a_bool_a_string_and_a_float() -> None:
+    """The count helpers judge the type first: `2.0` is no count, as a call's schema says."""
+    for value in (True, "2", 2.0):
         with pytest.raises(mstate.Invalid, match=rf"^limit is a count; got {value!r}$"):
             inputs.count("limit", value, 400)  # type: ignore[arg-type]
     with pytest.raises(mstate.Invalid, match=r"^limit=401 is outside 1\.\.400$"):
@@ -110,7 +110,6 @@ def test_a_count_held_to_a_range_refuses_a_bool_and_a_string_and_takes_a_json_nu
     inputs.count("limit", 0, 400, lo=0)
     with pytest.raises(mstate.Invalid, match=r"^limit=-1 is outside 0\.\.400 rows$"):
         inputs.count("limit", -1, 400, " rows", lo=0)
-    inputs.count("limit", 2.0, 400)  # type: ignore[arg-type]
 
 
 def test_a_signature_crop_refuses_a_bool() -> None:
@@ -190,7 +189,7 @@ def test_the_log_checks_and_drive_hand_back_the_patterns_they_compiled() -> None
 @pytest.mark.parametrize(("value", "ok"), [
     ([0, 0, 1, 1], True), ((2, 3, 4, 5), True), ([0, 0, 0, 8], False), ([0, 0, 8, 0], False),
     ([-1, 0, 1, 1], False), ([0, 0, 1], False), ([0, 0, 1, 1, 1], False),
-    ([True, 0, 1, 1], False), ([0, 0, 1.5, 1], False), ([0, 0, 1.0, 1], True), ("abcd", False),
+    ([True, 0, 1, 1], False), ([0, 0, 1.5, 1], False), ([0, 0, 1.0, 1], False), ("abcd", False),
     (5, False),
     (None, False),
 ])
@@ -220,12 +219,10 @@ COUNT_JUDGES = [
 
 
 @pytest.mark.parametrize(("judge", "check"), COUNT_JUDGES, ids=[j for j, _ in COUNT_JUDGES])
-def test_every_count_judge_takes_an_integral_float_and_refuses_the_rest(
-        judge: str, check: Any) -> None:
-    """`6.0` is the integer 6, as the wire delivers it; a fractional float, nan or inf is not."""
-    check(6.0)
+def test_every_count_judge_takes_an_int_and_refuses_the_rest(judge: str, check: Any) -> None:
+    """`6.0` is no count: a call's schema refuses it, and a step's judge with it."""
     check(6)
-    for value in (6.5, float("nan"), float("inf"), float("-inf"), True, "6"):
+    for value in (6.0, 6.5, float("nan"), float("inf"), float("-inf"), True, "6"):
         with pytest.raises(mstate.Invalid) as err:
             check(value)
         assert err.value.code == "bad_argument" and "count" in str(err.value), (judge, value)
@@ -292,41 +289,6 @@ def _annotation(tool: str, arg: str) -> str:
 def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
         annotation: str, bare: str) -> None:
     assert steps.unannotated(annotation) == bare
-
-
-def test_a_count_published_with_a_schema_half_still_reaches_its_body_as_an_int() -> None:
-    """An `Annotated[int, ...]` count is still a count to the wrapper."""
-    assert inputs.integral_counts(2.0, _annotation("gfx_film", "length")) == 2
-    assert type(inputs.integral_counts(2.0, _annotation("gfx_film", "length"))) is int
-    planes = inputs.integral_counts([4.0, 8.0], _annotation("gfx_sweep", "planes"))
-    assert planes == [4, 8] and all(type(v) is int for v in planes), planes
-    sizes = inputs.integral_counts([[8.0, 16.0]], _annotation("gfx_sweep", "sizes"))
-    assert sizes == [[8, 16]] and all(type(v) is int for v in sizes[0]), (
-        "a list of lists of counts, at every depth: `range(8.0)` downstream is a TypeError")
-    out = s.gfx_film(trigger="0x70001e", length=2.0, value=1)
-    assert out["code"] == "no_session", out
-
-
-def test_every_body_behind_a_tool_receives_an_integral_float_as_the_int_it_equals(
-        monkeypatch: pytest.MonkeyPatch) -> None:
-    """The wrapper hands the body the int; a fractional float is left for its judge."""
-    seen: dict[str, Any] = {}
-    for tool in ("step", "screen_view"):
-        monkeypatch.setitem(mame_mcp.BOUNDARY.summaries, tool, lambda args, reply: "the body ran")
-    monkeypatch.setattr(s, "stopped", lambda what: (None, None))
-    monkeypatch.setattr(advance, "step", lambda ses, scratch, count, mode, cpu: seen.update(
-        count=count) or menvelope.envelope({}))
-    monkeypatch.setattr(mscreen, "screen_view", lambda *a, **k: seen.update(point=a[4]) or (
-        menvelope.envelope({})))
-    s.step(count=2.0)
-    assert seen["count"] == 2 and type(seen["count"]) is int, seen
-    s.screen_view(mode="pixel", point=[3.0, 4.0])
-    assert seen["point"] == [3, 4] and all(type(v) is int for v in seen["point"]), seen
-    assert inputs.integral_counts(2.5, "int") == 2.5
-    assert inputs.integral_counts(True, "int") is True
-    assert inputs.integral_counts([1.0, "x"], "list[int] | None") == [1, "x"]
-    assert inputs.integral_counts(3.0, "float") == 3.0 and type(
-        inputs.integral_counts(3.0, "float")) is float
 
 
 def test_every_default_a_check_holds_is_its_tools() -> None:

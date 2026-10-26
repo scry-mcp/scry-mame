@@ -476,9 +476,9 @@ def test_a_path_that_is_not_absolute_is_refused_by_its_shape(path: str, said: st
 
 
 def test_a_file_that_is_not_there_is_refused(tmp_path: Path) -> None:
-    with pytest.raises(mstate.Invalid, match=r"no such manifest"):
+    with pytest.raises(mstate.Invalid, match=r"no manifest at"):
         mm.read(str(tmp_path / "nonexistent" / "gfx.yaml"))
-    with pytest.raises(mstate.Invalid, match=r"no such manifest"):
+    with pytest.raises(mstate.Invalid, match=r"no manifest at"):
         mm.read(str(tmp_path))
 
 

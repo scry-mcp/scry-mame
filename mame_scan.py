@@ -33,11 +33,10 @@ import mame_space as mspace
 import mame_state as st
 from mame_state import STATE
 
-CELL_BYTES = (1, 2, 4)
-_TESTS: dict[str, Callable[[int, int], bool]] = {
-    "=": op.eq, "!": op.ne, ">": op.gt, ">=": op.ge, "<": op.lt, "<=": op.le}
-#: Compared unsigned; `!` is "not equal".
-OPERATORS = tuple(_TESTS)
+CELL_BYTES = judges.SCAN_CELL_BYTES
+_TESTS: dict[str, Callable[[int, int], bool]] = dict(zip(
+    judges.SCAN_OPERATORS, (op.eq, op.ne, op.gt, op.ge, op.lt, op.le), strict=True))
+OPERATORS = judges.SCAN_OPERATORS
 #: A V30's whole space, the widest range a bench's work RAM needs.
 SCAN_BYTES_MAX = 0x100000
 

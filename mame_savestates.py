@@ -7,7 +7,6 @@ the console, and a load is compared afterwards with what the save recorded.
 from __future__ import annotations
 
 import os
-import re
 import struct
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -33,8 +32,6 @@ STATE_HEADER = 32
 STATE_NAME_AT, STATE_NAME_END, STATE_SIGNATURE_AT = 0x0A, 0x1C, 0x1C
 #: MAME's error.log words when it holds a save or a load (`can_save`).
 HELD_BY_TIMERS = "Failed save state attempt due to anonymous timers"
-STATE_NAME_MAX = 64
-STATE_NAME = re.compile(rf"[A-Za-z0-9_-]{{1,{STATE_NAME_MAX}}}")
 
 
 def _state_dir() -> Path:
@@ -84,11 +81,7 @@ def state_list() -> dict[str, Any]:
 
 
 def check_state_name(name: str, **_: Any) -> None:
-    """Refuse a name that is not a single console parameter and a safe file name."""
-    if not STATE_NAME.fullmatch(name):
-        raise st.Invalid("bad_argument",
-            f"name={name!r}: letters, digits, `_` and `-` only, up to 64, because it becomes "
-            "a file name the console takes as one parameter")
+    state_files.check_state_name(name, "a file name the console takes as one parameter")
 
 
 def _header(path: Path) -> bytes:

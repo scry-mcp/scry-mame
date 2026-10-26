@@ -56,29 +56,8 @@ def idle(name: str, goes_with: str, why: str) -> NoReturn:
 
 
 
-def _count(value: object) -> bool:
-    """An integer, never a bool, or an integral float (a schema makes `6.0` the int `6`)."""
-    if isinstance(value, bool):
-        return False
-    return isinstance(value, int) or (isinstance(value, float) and value.is_integer())
-
-
-def integral_counts(value: object, annotation: str) -> object:
-    """`value` with integral floats made ints where `annotation` declares a count."""
-    parts = sorted(p.strip() for p in steps.unannotated(annotation).split("|"))
-    kind = next((p for p in parts if p != "None"), "") if len(parts) <= 2 else ""
-
-    def convert(v: object, kind: str) -> object:
-        if kind == "int":
-            return int(v) if isinstance(v, float) and v.is_integer() else v
-        if kind.startswith("list[") and kind.endswith("]") and isinstance(v, list):
-            return [convert(x, kind[5:-1]) for x in v]
-        return v
-    return convert(value, kind)
-
-
 def is_natural(value: object, lo: int = 0, hi: int | None = None) -> bool:
-    return _count(value) and value >= lo and (hi is None or value <= hi)  # type: ignore[operator]
+    return judges.whole(value, lo, hi)
 
 
 def is_naturals(value: object, n: int | None = None, lo: int = 0) -> bool:
@@ -278,7 +257,7 @@ def stored_place(text: str, table: Mapping[str, int]) -> int | None:
 
 def count(name: str, value: int, hi: int | None = None, tail: str = "", lo: int = 1) -> None:
     """The one judge of a count held to `lo`..`hi` (no ceiling when None)."""
-    if not _count(value):
+    if isinstance(value, bool) or not isinstance(value, int):
         raise Invalid("bad_argument", f"{name} is a count; got {value!r}")
     if hi is not None and not lo <= value <= hi:
         raise Invalid("bad_argument", f"{name}={value!r} is outside {lo}..{hi}{tail}")
@@ -307,12 +286,7 @@ def no_such(thing: str, path: str, **fields: Any) -> NoReturn:
     raise Invalid("bad_argument", f"no such {thing}: {path}", **fields)
 
 
-def input_file(name: str, value: str, thing: str, **fields: Any) -> Path:
-    """An input file argument: `absolute`, then a file (`exists()` would accept a directory)."""
-    path = absolute(name, value, **fields)
-    if not path.is_file():
-        no_such(thing, str(path), **fields)
-    return path
+input_file = judges.existing_file
 
 
 PATH_CHARS = "no comma, semicolon, quote, whitespace, bracket or control character"

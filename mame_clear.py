@@ -7,6 +7,7 @@ from collections.abc import Callable
 from typing import Any, Literal, NamedTuple
 
 from scry_core import prose
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_arming as arming
@@ -68,28 +69,7 @@ def one_declaration(thing: str, other: str, clear_kind: ClearKind | None, cpu: s
 
 def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "regpoint"]
                 ) -> None:
-    """A clear names one `ref` or `all=True`; an empty `ref` never means everything."""
-    if all_ and ref.strip():
-        both = f"`all` clears every declaration of this kind and takes no `ref`; got ref={ref!r}"
-        if family == "breakpoint":
-            raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"breakpoint\", "
-                                             "all=True)` alone")
-        if family == "watch":
-            raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"watch\", "
-                                             "all=True)` alone")
-        raise st.Invalid("bad_argument", f"{both}: `declaration_clear(kind=\"regpoint\", "
-                                         "all=True)` alone")
-    if not all_ and not ref.strip():
-        empty = (f"ref={ref!r} names nothing, and an empty ref never means every declaration: "
-                 "the `ref` its declaring reply carried, or all=True to clear every one")
-        if family == "breakpoint":
-            raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"breakpoint\", "
-                                             "all=True)`)")
-        if family == "watch":
-            raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"watch\", "
-                                             "all=True)`)")
-        raise st.Invalid("bad_argument", f"{empty} (`declaration_clear(kind=\"regpoint\", "
-                                         "all=True)`)")
+    vocab.check_clear_scope(ref, all_, family)
 
 
 def kept_fields(clear_kind: ClearKind, ref: str) -> dict[str, Any]:

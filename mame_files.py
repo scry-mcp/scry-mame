@@ -90,15 +90,7 @@ def not_utf8(path: str, e: UnicodeDecodeError, **fields: Any) -> st.Invalid:
     return st.Invalid("bad_argument", f"{path} is not UTF-8 text: {e}", **fields)
 
 
-def read_text(name: str, path: str, thing: str, **fields: Any) -> str:
-    """A caller's text file, read whole; a fault in it is refused, never raised."""
-    file = inputs.input_file(name, path, thing, **fields)
-    try:
-        return file.read_text(encoding="utf-8")
-    except UnicodeDecodeError as e:
-        raise not_utf8(path, e, **fields) from None
-    except OSError as e:
-        raise unreadable(thing, path, e, **fields) from None
+read_text = judges.read_text
 
 
 def check_memdump(length: int, dest: str, ref: str = "", **_: Any) -> Path:
@@ -391,15 +383,10 @@ def log_wait(ses: gs.Session, scratch: Path, alive: Callable[[], bool],
                                    "channel": channel,
                                    **got.fields(), "waited_s": st.spent_s(got.waited_s)})
     if got.ending == "STOPPED":
-        reason = ("the machine is STOPPED at the debugger" if parked else
-                  "the machine STOPPED as the bound expired" if got.at_bound else
-                  "the machine STOPPED during the wait")
         return menvelope.invalid("wait_stopped",
-                                 f"{reason}: a stopped machine logs nothing, so the wait for "
-                                 f"/{pattern}/ cannot end. "
-                                 f"{prose.counted(got.arrived_during, 'line')} arrived during "
-                                 f"{got.waited_s} s of it and none matched: `resume` lets it "
-                                 "run, then `log_wait` again",
+                                 core_wait.stopped_message(pattern, got.arrived_during,
+                                                           got.waited_s, parked=parked,
+                                                           at_bound=got.at_bound),
                                  pattern=pattern, last_stop=STATE.as_of())
     if got.ending == "GONE":
         ses.latch("the emulator exited during a wait")

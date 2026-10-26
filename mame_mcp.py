@@ -39,7 +39,7 @@ def refusal(name: str, arguments: dict[str, Any], cause: ValidationError) -> dic
 # What answers while the machine runs is named in every refusal and in the `instructions`, from
 # this one list. A fold answers by some of its methods only.
 _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
-    roster.by_method(sequence.RUNNING_OK_OPS - set(media_tools.TOOLS), sequence.RUNNING_METHODS),
+    roster.by_method(sequence.GATE.ops - set(media_tools.TOOLS), sequence.GATE.methods),
     sequence.NOT_STEPS, {"start", "rom_check"})
 
 #: The tools by family, in the order the instructions list them; the media file tools answer in
@@ -127,11 +127,7 @@ def _invoke(fn: Callable[..., Any], called: inspect.BoundArguments) -> dict[str,
     Widening that to `Exception` would turn every genuine bug into "I examined nothing"."""
     latched_before = STATE.broken
     try:
-        # Counts and `NumberArg`s are read as ints here, as `perform` reads a step's.
-        for name, value in called.arguments.items():
-            ann = called.signature.parameters[name].annotation
-            if isinstance(ann, str):
-                called.arguments[name] = inputs.integral_counts(value, ann)
+        # `NumberArg`s are read as ints here, as `perform` reads a step's.
         called.arguments.update(inputs.numbers_read(fn, dict(called.arguments)))
         reply: dict[str, Any] = fn(*called.args, **called.kwargs)
         return reply

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from scry_core import narrowing, prose
+from scry_core import narrowing, prose, session_block
 from scry_core import progress as mprogress
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -60,7 +60,7 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
     ended = STATE.kill(progress)
     if ended["ended_by"] == "none":
         reply = menvelope.envelope({"closed": False, **ended,
-                                    "note": "there was no session to close"})
+                                    "note": session_block.NO_SESSION_CLOSE_NOTE})
     else:
         clean = ended["ended_by"] == "quit" and ended.get("exit_code") == 0
         words = tails if detail or not clean else narrowing.omission(list(tails), CLOSE_HOW)

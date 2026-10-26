@@ -68,6 +68,7 @@ from scry_core import (  # noqa: E402
     recording,
     reference,
     reply_schema,  # noqa: E402
+    signalled_end,
 )
 from scry_core import presence as scry_presence  # noqa: E402
 from scry_core import sequence_account as account  # noqa: E402
@@ -513,13 +514,9 @@ def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref:
 
     `delete`: the comment at `ref`. Reply: `deleted`, `declarations`, `cpu`, `note`.
 
-    `save`: every comment to `dest`, an absolute or `~`-led path, replacing a comment file
-    there (rows only it held in `dropped_comments`); any other file is refused. Reply: `path`,
-    `comments_total`, `dropped_comments`, `dropped_total`, `truncated`, `note`.
+    {COMMENT_SAVE}
 
-    `load`: the comment file at `path`, all or nothing, the file winning. Reply: `path`,
-    `parsed`, `added`, `replaced_comments`, `replaced_total`, `truncated`, `unchanged`,
-    `comments_total`, `declarations`, `note`.
+    {COMMENT_LOAD}
 
     `add`, `delete` and `load` need the machine stopped. Refused: an argument the method
     does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), an
@@ -881,9 +878,7 @@ def screen_signature(crop: list[int] | None = None,
 @tool("Which mapped screen is this", summary=summaries.map_find, on_cancel="none",
       replay=("matched", "screen", "pc", "frame"))
 def map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
-    """Which mapped screen the machine shows. Reply: `matched`; matched, `screen`, `layer`, `kind`,
-    `size`, `controls` (`name`, `rect`, `centre`); else `screens_mapped`, `screens_tried`. None
-    mapped: `needs_call`.
+    """{MAP_FIND}
 
     Reference: REFERENCE.md, Screen maps.
     """
@@ -904,11 +899,9 @@ def map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str 
     places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `match`,
     `controls`, `replaced`, `shadows_file`.
 
-    `load`: `path` (`<application>{MAP_SUFFIX}`, absolute or `~`-led) as the file layer. Reply:
-    `path`, `application`, `screens`, `controls`.
+    {MAP_LOAD}
 
-    `save`: both layers as one map to `dest`, refused there without `overwrite`, made the file
-    layer. Reply: `path`, `application`, `screens`, `controls`, `promoted`.
+    {MAP_SAVE}
 
     Refused: an argument the method does not take; a misshapen name, crop, control or file
     (`bad_argument`); nothing mapped to save (`needs_call`).
@@ -1595,6 +1588,7 @@ def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
 
 strict.strict_arguments(mcp)
 reply_schema.declare(mcp, mame_replies.MODELS)
+sequence.GATE.check_folds(folds.METHODS)
 
 #: What the reference pages are generated from (`python -m scry_core.reference server:REFERENCE`)
 #: and held to (`tests/test_reference_pages.py`).
@@ -1603,8 +1597,13 @@ REFERENCE = reference.Registry(server=mcp, models=mame_replies.MODELS, roster=RO
                                root=Path(__file__).resolve().parent)
 
 
+#: The end on a signal: the machine killed, which removes its scratch too, the process left.
+END = signalled_end.SignalledEnd(st.LOCK, lambda: STATE.kill(), lambda: None, "mame server")
+
+
 def main() -> None:
     process_name.set_title(launch.PROCESS_NAME)
+    END.install()
     idle.IDLE.watch(st.LOCK, STATE.machine_alive, msession.close)
     try:
         mcp.run()

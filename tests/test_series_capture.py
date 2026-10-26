@@ -188,7 +188,7 @@ def test_a_frame_lost_to_frameskip_is_listed_never_filled(console: _Console,
     ({"verdict": "OTHER_STOP"}, "stopped with verdict OTHER_STOP", "cut_by_other_stop"),
     ({"errors": 2}, "raised 2 time", "unexpected_answer"),
     ({"kept": [], "lost": "101,103,105"}, "every wanted frame was skipped", "no_progress"),
-    ({"kept": [101, 105]}, r"1 wanted frame\(s\) came out of the run neither kept nor lost "
+    ({"kept": [101, 105]}, r"1 wanted frame came out of the run neither kept nor lost "
      r"\(first \[103\]\)", "unexpected_answer"),
 ])
 def test_a_series_that_cannot_be_trusted_is_refused_and_leaves_nothing(

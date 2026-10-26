@@ -143,9 +143,9 @@ def test_gfx_drafts_dest_takes_the_same_rule(here: Path) -> None:
 
 def test_a_missing_input_file_is_no_such_whichever_tool_reads_it(here: Path) -> None:
     gone = here / "absent.yaml"
-    manifest = refused("no such manifest", s.gfx_load(path=str(gone)))
+    manifest = refused("no manifest at", s.gfx_load(path=str(gone)))
     assert "still_loaded" in manifest, manifest
-    types = refused("no such types file", s.start(**_common(here), symbols=str(here / "game.map"),
+    types = refused("no types file at", s.start(**_common(here), symbols=str(here / "game.map"),
                                                   types=str(here / "absent.txt")))
     assert types["code"] == "bad_argument", types
 
@@ -172,7 +172,7 @@ def test_a_refused_input_file_leaves_a_persistent_state_dir_untouched(
         here: Path, bad: dict[str, str]) -> None:
     """`state_dir` is never deleted, so every input is judged before `cfg/` is made."""
     fresh = here / "fresh-state"
-    refused("must be an absolute path|no such|OUTSIDE|no `symbols` file",
+    refused("must be an absolute path|no such|no symbol file at|OUTSIDE|no `symbols` file",
             s.start(**_common(here), state_dir=str(fresh), **bad))
     assert not fresh.exists(), sorted(p.name for p in fresh.iterdir())
 
@@ -492,7 +492,7 @@ def test_a_types_file_nobody_may_read_is_refused_naming_it(here: Path) -> None:
     locked.chmod(0)
     if os.access(locked, os.R_OK):
         pytest.skip("this user reads a mode-0 file (root), so nothing is unreadable")
-    out = refused("cannot read the types file", s.start(
+    out = refused("cannot be read", s.start(
         **_common(here), symbols=str(here / "game.map"), types=str(locked)))
     assert str(locked) in out["message"], out
 
@@ -534,7 +534,7 @@ def test_the_manifest_and_the_types_file_say_not_utf8_in_one_sentence(here: Path
             (types, s.start(**_common(here), symbols=str(here / "game.map"), types=str(types))),
             (manifest, s.gfx_load(path=str(manifest)))]:
         said = refused("not UTF-8 text", out)["message"]
-        assert said.startswith(f"{bad} is not UTF-8 text"), said
+        assert f"{bad} is not UTF-8 text" in said, said
 
 
 def test_a_types_line_the_grammar_reader_chokes_on_is_the_arguments_refusal(here: Path) -> None:

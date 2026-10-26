@@ -7,7 +7,6 @@ the first step that answers INVALID, with the steps that ran as the account.
 from __future__ import annotations
 
 import functools
-import inspect
 import re
 import subprocess
 import time
@@ -15,7 +14,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import media_tools, prose, sequence
+from scry_core import media_tools, prose, roster, sequence
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import sequence_account as account
@@ -77,28 +76,15 @@ RUNNING_METHODS: dict[str, tuple[str, ...]] = {
     "comment_write": ("save",), "scan": ("clear",), "map_write": ("load", "save")}
 
 
-def _needs_stop(op: str) -> Callable[[dict[str, Any]], bool]:
-    """A fold's methods outside `RUNNING_METHODS` need a stop."""
-    return lambda a: a.get("method") not in RUNNING_METHODS[op]
-
-
-# Gestures that need a stop: a film's arming reads the screen, and a fold's other methods.
-_STOPPED_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
-    "gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")), bool(a.get("clear"))),
-    **{op: _needs_stop(op) for op in RUNNING_METHODS}}
-
-
-#: The registers as the last stop surveyed them read no cpu, so they answer while running.
-_RUNNING_GESTURE: dict[str, Callable[[dict[str, Any]], bool]] = {
-    "registers": lambda a: a.get("from_last_stop") is True}
+#: A film's arming reads the screen, so it needs a stop.
+GATE = roster.RunningGate(
+    ops=frozenset(RUNNING_OK_OPS), methods=RUNNING_METHODS,
+    needs_stop={"gfx_film": lambda a: mfilm.arms(str(a.get("trigger", "")),
+                                                 bool(a.get("clear")))})
 
 
 def answers_running(op: str, args: dict[str, Any]) -> bool:
-    """Whether this step answers on a running machine, so the sequence need not wait for a stop."""
-    if (runs := _RUNNING_GESTURE.get(op)) is not None and runs(args):
-        return True
-    needs_stop = _STOPPED_GESTURE.get(op)
-    return op in RUNNING_OK_OPS and not (needs_stop is not None and needs_stop(args))
+    return GATE.answers(op, args)
 
 
 STOP_POLL_S = 0.1
@@ -230,13 +216,6 @@ def validate_settle(settle_seconds: float) -> None:
     vocab.check_wait(settle_seconds, name="settle_seconds", zero_means="never wait")
 
 
-def _as_wrapped(params: dict[str, inspect.Parameter], args: dict[str, Any]) -> dict[str, Any]:
-    """A step's arguments as the tool wrapper passes them (`inputs.integral_counts`)."""
-    return {n: inputs.integral_counts(v, params[n].annotation)
-            if n in params and isinstance(params[n].annotation, str) else v
-            for n, v in args.items()}
-
-
 def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
     """Check every step's op, argument names and values before any runs, collecting every
     refusal (`step`, `op`, `code`, `message`): a bad third step must not follow a released first."""
@@ -246,7 +225,7 @@ def preflight(steps: list[Any], ops: Ops) -> list[dict[str, Any]]:
         if op is None or op not in ops:
             refused.append(sequence.not_a_step(i, step, "the step names no `op`"))
             continue
-        refusal, args = step_judge.judge(ops[op], step, prepare=_as_wrapped)
+        refusal, args = step_judge.judge(ops[op], step)
         if refusal is not None:
             refused.append({"step": i, "op": op, **refusal})
             continue
