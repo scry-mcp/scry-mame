@@ -21,7 +21,7 @@ from itertools import count
 from pathlib import Path
 from typing import Any, cast
 
-from scry_core import live_host, live_pool
+from scry_core import live_host, live_pool, prose
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -98,7 +98,7 @@ def finish(name: str) -> None:
     _close_run()
     RUN.finished = True
     print()
-    print(f"{len(failures)} check(s) failed")
+    print(f"{prose.counted(len(failures), 'check')} failed")
     for label in failures:
         print(f"  FAIL  {label}")
     RUN.leave(kept=bool(failures))

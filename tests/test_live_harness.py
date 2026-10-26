@@ -781,7 +781,7 @@ def test_an_emulator_that_outlived_the_run_fails_it_by_name_beside_the_verdict(
     assert _ended(h) == h.EXIT_FAIL
     out = capsys.readouterr().out
     assert order == ["kill", "reap"]
-    assert "FAIL  2 emulator(s) outlived the run" in out and "pid 41 state U" in out
+    assert "FAIL  2 emulators outlived the run" in out and "pid 41 state U" in out
     assert out.rstrip().endswith("==> TEST FAILED")
     assert os.environ[h.live_host.LEDGER_VAR] == str(tmp_path / "scratch" /
                                                      h.live_host.LEDGER_NAME)
