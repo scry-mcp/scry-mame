@@ -247,6 +247,21 @@ def test_the_captured_table_reads_as_the_probe_held_it() -> None:
     assert v6 == [owner.TcpRow(owner.TCP_LISTEN, p6, 0, pid)]
 
 
+def test_on_windows_a_family_whose_table_will_not_read_leaves_the_other_its_answer(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """A host with IPv6 removed answers no IPv6 table; the gdbstub's IPv4 listener still proves."""
+    def tables(family: int) -> bytes:
+        if family == socket.AF_INET6:
+            raise owner.StubUnproved("`GetExtendedTcpTable` answered 50")
+        return _captured_table("v4")
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(owner, "_tcp_table", tables)
+    assert owner.listeners(CAPTURED["listen4"]) == {CAPTURED["pid"]}
+    monkeypatch.setattr(owner, "_tcp_table", lambda family: tables(socket.AF_INET6))
+    with pytest.raises(owner.StubUnproved, match="answered 50"):
+        owner.listeners(CAPTURED["listen4"])
+
+
 @pytest.mark.usefixtures("on_windows")
 def test_on_windows_the_table_names_the_listener_and_the_far_end_of_a_connection() -> None:
     pid, p4, p6, near = (CAPTURED[k] for k in ("pid", "listen4", "listen6", "client_local"))

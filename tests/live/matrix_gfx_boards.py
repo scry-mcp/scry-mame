@@ -9,6 +9,7 @@ from typing import Any
 from gfx_layouts import BYTES_8X8, CIRCUS_CHAR, GRID_FB, GRID_SPRITE, WITCH_TILE
 from live_harness import (
     Board,
+    blocked,
     boards_cover,
     call,
     cell,
@@ -182,6 +183,16 @@ def _d_circus(t: list[str]) -> None:
     call("close")
 
 
+def _no_case(label: str, film: dict[str, Any]) -> bool:
+    """A build whose every picture was its frame's rendering, none skipped, gives the refusal
+    no case: MAME 0.289's Windows release is one."""
+    if ok(film) and film.get("refused") == 0 and not film.get("lost") and film.get("kept"):
+        blocked(label, f"every frame's picture was its rendering and none was skipped on this "
+                f"build, so nothing could be refused: {said(film, 80)}")
+        return True
+    return False
+
+
 def _d_circus_bare(t: list[str]) -> None:
     # THE BARE SCREEN, where the film's check runs: on circus the picture read at the next
     # notifier is no frame's rendering on some frames, and on every one skipping at level 6, so
@@ -192,22 +203,24 @@ def _d_circus_bare(t: list[str]) -> None:
     run_frames(16)
     film = call("gfx_film")
     whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
-    cell(t[23], ok(film) and (armed.get("film") or {}).get("checked") is True
-         and film.get("kept", 0) > 0 and film.get("refused", 0) > 0
-         and film.get("kept", 0) + film.get("refused", 0) == 8 and film.get("lost") == {}
-         and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
-         said(film))
+    if not _no_case(t[23], film):
+        cell(t[23], ok(film) and (armed.get("film") or {}).get("checked") is True
+             and film.get("kept", 0) > 0 and film.get("refused", 0) > 0
+             and film.get("kept", 0) + film.get("refused", 0) == 8 and film.get("lost") == {}
+             and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
+             said(film))
     call("gfx_film", clear=True)
     call("lua", script="manager.machine.video.frameskip = 6")
     armed = call("gfx_film", trigger="0x3000", keep=4, frames=8)
     run_frames(14)
     film = call("gfx_film")
     whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
-    cell(t[24], ok(film) and (armed.get("film") or {}).get("checked") is True
-         and film.get("kept") == 0 and film.get("refused") == 4
-         and film.get("lost") == {"skipped": 4}
-         and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
-         said(film))
+    if not _no_case(t[24], film):
+        cell(t[24], ok(film) and (armed.get("film") or {}).get("checked") is True
+             and film.get("kept") == 0 and film.get("refused") == 4
+             and film.get("lost") == {"skipped": 4}
+             and all(", read at frame " in w and "MAME's rendering" in w for w in whys),
+             said(film))
     call("close")
 
 
@@ -272,6 +285,12 @@ def _d_topgunnr(t: list[str]) -> None:
     run by frames is refused before anything is released, the one by milliseconds runs on the
     emulated clock, and the screen readers have no screen to read."""
     started = free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000")
+    if isinstance(started.get("frame_symbol"), str):
+        # MAME 0.289's release gives the board a vector screen, and so a frame counter.
+        blocked(t[9], f"this build's topgunnr has a frame counter ({said(started, 60)}): the "
+                "board without one is not here to be tested")
+        call("close")
+        return
     by_frames = call("run_for", frames=30, seconds=10.0)
     after = call("status")
     timed = call("run_for", milliseconds=200, seconds=10.0)

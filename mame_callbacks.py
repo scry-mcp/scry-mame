@@ -18,6 +18,8 @@ OPENED = "opened"
 # Logged once per run of failures: the dump on disk is then an older one.
 DUMP_FAILED = "MCP_DUMP_FAILED"
 
+# Windows' `rename` refuses an existing target: `replace` takes it away first, so a reader meets
+# the dump whole or absent, never the first one for ever.
 # No varargs in `guarded`: a tap is the hot path. The first error is cut to printable ASCII on
 # one line so the `e` line reads back whole.
 LUA = f"""local function fault(t, err)
@@ -27,6 +29,12 @@ LUA = f"""local function fault(t, err)
                                {FIRST_ERROR_MAX_CHARS})
   end
   t.dirty = true
+end
+local function replace(tmp, path)
+  if not os.rename(tmp, path) then
+    os.remove(path)
+    assert(os.rename(tmp, path))
+  end
 end
 local function guarded(t, f)
   return function(a, b, c)

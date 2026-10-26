@@ -191,3 +191,20 @@ def test_every_dumper_that_writes_after_its_open_opens_through_the_guard() -> No
         body = text.split(begin, 1)[1].split(end, 1)[0]
         opens = body.count("io.open(")
         assert opens and opens == body.count("{callbacks.OPENED}(it, io.open("), name
+
+
+def test_a_dump_replaces_its_file_where_rename_will_not_overwrite(tmp_path: Path) -> None:
+    """Windows' `rename` refuses an existing target, so every dump after the first stayed unread;
+    `replace` takes the old one away first and raises, counted, when it still cannot."""
+    from session_doubles import run_host_lua
+
+    path = (tmp_path / "dump.txt").as_posix()
+    windows = ('local real = os.rename\nos.rename = function(a, b)\n'
+               '  local f = io.open(b, "rb")\n'
+               '  if f ~= nil then f:close() return nil, "exists" end\n'
+               '  return real(a, b)\nend\n')
+    writes = "".join(f'do local f = io.open("{path}.tmp", "w") f:write("{n}") f:close() end\n'
+                     f'replace("{path}.tmp", "{path}")\n' for n in ("one", "two"))
+    run_host_lua(windows + callbacks.LUA + writes)
+    assert (tmp_path / "dump.txt").read_text() == "two"
+    assert not (tmp_path / "dump.txt.tmp").exists()

@@ -417,7 +417,7 @@ local function put(path, data)
   return true
 end
 local function publish(path, text)
-  if put(path .. ".tmp", text) then os.rename(path .. ".tmp", path) end
+  if put(path .. ".tmp", text) then replace(path .. ".tmp", path) end
 end
 t.frame = frame
 t.dump = function(fr)

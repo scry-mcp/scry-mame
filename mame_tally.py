@@ -92,7 +92,7 @@ def install_script(tally_id: str, addr: int, width: int, path: Path,
     if it.first_error ~= nil then f:write("e ", it.first_error, "\\n") end
     f:write("end\\n")
     f:close()
-    os.rename(it.path .. ".tmp", it.path)
+    replace(it.path .. ".tmp", it.path)
     it.dirty = false
     it.dumped_frame = fr
   end

@@ -129,7 +129,21 @@ def _tcp_table(family: int) -> bytes:
 
 
 def _windows_rows() -> list[TcpRow]:
-    return [r for family in _ROWS for r in tcp_rows(_tcp_table(family), family)]
+    """Both families' rows; a table that will not read (no IPv6) leaves the other its answer."""
+    rows: list[TcpRow] = []
+    refused: StubUnproved | None = None
+    read = 0
+    for family in _ROWS:
+        try:
+            table = _tcp_table(family)
+        except StubUnproved as e:
+            refused = e
+            continue
+        rows += tcp_rows(table, family)
+        read += 1
+    if read == 0 and refused is not None:
+        raise refused
+    return rows
 
 
 def bind_probe(port: int) -> int | None:

@@ -82,7 +82,7 @@ def test_the_tap_sits_on_the_triggers_word_keeps_its_lanes_and_reads_the_block_i
     assert '"rows", "overflow_rows", "pending", "npending", "errors", "first_error",' in script, (
         "a rerun carries the rows and the errors it had, and never doubles nor zeroes them")
     assert 'io.open(it.rows_path, "a")' in script, "the rows file only grows"
-    assert "os.rename(it.head" in script, "the header is whole or absent"
+    assert "replace(it.head" in script, "the header is whole or absent"
     assert "MCP_TALLY installed tally_id=%s" in script, "the count watch's reader answers it"
     assert len(script) < transport.SCRIPT_MAX
     plain = capture.install_script(COUNTER_ID, 0x2031FE, capture.TapSource("space", "", 0x2031FC),

@@ -160,7 +160,7 @@ if T.dump == nil then
     if it.first_error ~= nil then f:write("e ", it.first_error, "\\n") end
     f:write("end\\n")
     f:close()
-    os.rename(it.head .. ".tmp", it.head)
+    replace(it.head .. ".tmp", it.head)
     it.dirty, it.dumped_frame = false, fr
   end
   T.settle = function(it, fr)

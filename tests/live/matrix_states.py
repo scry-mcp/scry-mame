@@ -158,7 +158,8 @@ def _q_circus_refused_rewind(t: list[str]) -> None:
 
 
 def _q_topgunnr(t: list[str]) -> None:
-    free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000")
+    started = free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000")
+    counted = isinstance(started.get("frame_symbol"), str)
     call("run_for", milliseconds=200, seconds=10.0)
     first = fresh_state()
     call("state_write", method="save", name=first)
@@ -181,6 +182,12 @@ def _q_topgunnr(t: list[str]) -> None:
         STATE.states.pop(names[1], None)
     else:
         blocked(t[5], "five saves 50 ms apart all read the first one's block")
+        call("close")
+        return
+    if counted:
+        # MAME 0.289's release gives the board a frame counter, and the swap is then refused by
+        # its frame and pc, before any register is compared.
+        blocked(t[5], f"this build's topgunnr has a frame counter ({said(started, 60)})")
         call("close")
         return
     folder = Path(str(call("state_list").get("state_dir")))

@@ -193,7 +193,7 @@ if blk == nil then error("no {src.kind} named " .. {transport.lua_string(src.tag
     if it.first_error ~= nil then f:write("e ", it.first_error, "\\n") end
     f:write("end\\n")
     f:close()
-    os.rename(it.head .. ".tmp", it.head)
+    replace(it.head .. ".tmp", it.head)
     it.dirty = false
     it.dumped_frame = fr
   end
