@@ -9,13 +9,10 @@ from __future__ import annotations
 import os
 import re
 import shutil
-import struct
-import sys
 import time
-from array import array
 from collections.abc import Callable, Iterator
 from pathlib import Path
-from typing import Any, Literal, NamedTuple, TypeVar, overload
+from typing import Any, Literal, TypeVar, overload
 
 from scry_core import judges, log_marks, prose
 from scry_core import log_wait as core_wait
@@ -40,9 +37,6 @@ PNG_TRAILER = b"IEND\xaeB`\x82"
 
 # The WAV MAME's mixer writes (`util::wav_open`): a 44-byte header, 16-bit PCM, the RIFF and data
 # sizes written only when the file is closed. Chunks are an even byte count so no sample splits.
-WAV_HEADER_BYTES = 44
-WAV_HEADER = struct.Struct("<4sI4s4sIHHIIHH4sI")
-WAV_CHUNK_BYTES = 1 << 20
 
 
 Waited = TypeVar("Waited")
@@ -433,68 +427,6 @@ def _complete_png(path: Path) -> bool:
         fh.seek(max(0, size - 12))
         tail = fh.read()
     return head == PNG_SIGNATURE and PNG_TRAILER in tail
-
-
-class Wav(NamedTuple):
-    """A finished WAV's header; `samples` is frames per channel."""
-    channels: int
-    sample_rate: int
-    data_bytes: int
-    samples: int
-
-
-def _wav_fields(path: Path) -> tuple[int, tuple[Any, ...]] | None:
-    """The file's size and its unpacked header, or None."""
-    try:
-        size = path.stat().st_size
-        with open(path, "rb") as fh:
-            head = fh.read(WAV_HEADER_BYTES)
-    except OSError:
-        return None
-    return (size, WAV_HEADER.unpack(head)) if len(head) == WAV_HEADER_BYTES else None
-
-
-def wav_header(path: Path) -> Wav | None:
-    """The header of a finished 16-bit PCM WAV, or None: a file still open reads 0 in both sizes."""
-    got = _wav_fields(path)
-    if got is None:
-        return None
-    size, (riff, riff_size, wave, fmt, fmt_size, fmt_tag, channels, rate, byte_rate, align,
-           bits, data, data_size) = got
-    if (riff, wave, fmt, data) != (b"RIFF", b"WAVE", b"fmt ", b"data"):
-        return None
-    if fmt_size != 16 or fmt_tag != 1 or bits != 16 or channels < 1 or rate <= 0:
-        return None
-    if align != 2 * channels or byte_rate != rate * align:
-        return None
-    if riff_size != size - 8 or data_size != size - WAV_HEADER_BYTES or data_size % align:
-        return None
-    return Wav(channels, rate, data_size, data_size // align)
-
-
-def wav_without_channel(path: Path) -> bool:
-    """A WAV header naming zero channels: what MAME writes for a machine with no speaker."""
-    got = _wav_fields(path)
-    if got is None:
-        return False
-    riff, _, wave, _, _, _, channels, *_ = got[1]
-    return (riff, wave, channels) == (b"RIFF", b"WAVE", 0)
-
-
-def wav_levels(path: Path) -> tuple[int, int]:
-    """The lowest and highest sample over every channel: equal is one constant level, silence."""
-    lo = hi = None
-    with open(path, "rb") as fh:
-        fh.seek(WAV_HEADER_BYTES)
-        while chunk := fh.read(WAV_CHUNK_BYTES):
-            samples = array("h")
-            samples.frombytes(chunk[: len(chunk) // 2 * 2])
-            if sys.byteorder == "big":
-                samples.byteswap()
-            if samples:
-                lo = min(samples) if lo is None else min(lo, min(samples))
-                hi = max(samples) if hi is None else max(hi, max(samples))
-    return (lo or 0, hi or 0)
 
 
 def file_lines(path: Path) -> Iterator[str]:

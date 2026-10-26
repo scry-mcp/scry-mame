@@ -32,7 +32,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from scry_core import judges
+from scry_core import bus_writes, judges
 from scry_core import value_format as vf
 from scry_core.reply_contract import unavailable
 
@@ -283,7 +283,7 @@ def lane(data: int, mask: int, data_width: int, endianness: str, trigger: int,
     """The `width` bytes at `trigger` in one bus write; None if uncovered or across the bus word."""
     if mspace.crosses(trigger, width, data_width):
         return None
-    shift = mspace.lane_shift(trigger % (data_width // 8), width, data_width, endianness)
+    shift = bus_writes.lane_shift(trigger % (data_width // 8), width, data_width, endianness)
     full = (1 << 8 * width) - 1
     return None if (mask >> shift) & full != full else (data >> shift) & full
 

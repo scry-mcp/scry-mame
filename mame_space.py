@@ -12,13 +12,6 @@ PROGRAM, IO = "program", "io"
 SPACES = (PROGRAM, IO)
 
 
-def lane_shift(at: int, width: int, data_width: int, endianness: str) -> int:
-    """Right shift of a bus write's data for `width` bytes at `at`; big-endian puts the lowest
-    address in the high lane."""
-    nb = data_width // 8
-    return (nb - width - at) * 8 if endianness == "big" else at * 8
-
-
 def crosses(addr: int, width: int, data_width: int) -> bool:
     """Whether the range crosses a bus word, so no single write carries it."""
     nb = data_width // 8

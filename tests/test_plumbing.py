@@ -10,13 +10,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import bus_writes
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import gdb_session as g  # noqa: E402
 import mame_advance as advance  # noqa: E402
 import mame_files as files  # noqa: E402
-import mame_space as mspace  # noqa: E402
 import mame_state as mstate  # noqa: E402
 
 
@@ -114,6 +114,6 @@ def test_every_lane_of_a_bus_word_is_found_where_its_bytes_are(
     data = int.from_bytes(word, "big" if endianness == "big" else "little")
     for width in range(1, nb + 1):
         for at in range(nb - width + 1):
-            shift = mspace.lane_shift(at, width, data_width, endianness)
+            shift = bus_writes.lane_shift(at, width, data_width, endianness)
             want = int.from_bytes(word[at:at + width], "big" if endianness == "big" else "little")
             assert (data >> shift) & ((1 << 8 * width) - 1) == want, (width, at)

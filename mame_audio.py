@@ -12,11 +12,10 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
-from scry_core import prose
+from scry_core import prose, wav
 from scry_core import vocabulary as vocab
 
 import gdb_session as gs
-import mame_files as files
 import mame_inputs as inputs
 import mame_lua as mlua
 import mame_recording as mrec
@@ -127,10 +126,10 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
                 note="the recording is still OPEN: the run stopped before its last frame, "
                      "and the script closes it when the machine reaches it")
         # Closed before the end mark is logged, so a file unreadable now never will be.
-        wav = files.wav_header(path)
-        if wav is None:
+        head = wav.header(path)
+        if head is None:
             why = (": this machine has no speaker, so MAME wrote a WAV with no channel"
-                   if files.wav_without_channel(path) else "")
+                   if wav.without_channel(path) else "")
             raise _refused(path, f"{path} is not a finished WAV (missing, or a header that "
                            f"disagrees with the file){why}")
         spanned = int(end["frame"]) - int(begin["frame"])
@@ -142,21 +141,21 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
         if abs(emulated - frames * period) > SPAN_TOLERANCE_S:
             raise _refused(path, f"the span is not {frames} frame periods: {emulated:.9f} s "
                            f"emulated against {frames} x {period:.9f} s")
-        if wav.samples == 0:
+        if head.samples == 0:
             raise _refused(path, "the span held no mixer update: MAME mixes "
                            f"{MIXER_UPDATE_HZ} times per emulated second; ask for more frames",
                            bytes=path.stat().st_size)
-        expected = emulated * wav.sample_rate
-        update = -(-wav.sample_rate // MIXER_UPDATE_HZ)   # one update's samples, rounded up
-        if abs(wav.samples - expected) > update + 1:
+        expected = emulated * head.sample_rate
+        update = -(-head.sample_rate // MIXER_UPDATE_HZ)   # one update's samples, rounded up
+        if abs(head.samples - expected) > update + 1:
             raise _refused(path, "the file does not hold the span it was bounded by: "
-                           f"{prose.counted(wav.samples, 'sample')} where {emulated:.9f} s at "
-                           f"{wav.sample_rate} Hz is {expected:.0f}")
-        lo, hi = files.wav_levels(path)
+                           f"{prose.counted(head.samples, 'sample')} where {emulated:.9f} s at "
+                           f"{head.sample_rate} Hz is {expected:.0f}")
+        lo, hi = wav.levels(path)
         STATE.captures.append(("wav", str(path)))
         return mlua.with_fields(
-            ran, **own, ended=True, bytes=path.stat().st_size, channels=wav.channels,
-            sample_rate_hz=wav.sample_rate, samples=wav.samples,
+            ran, **own, ended=True, bytes=path.stat().st_size, channels=head.channels,
+            sample_rate_hz=head.sample_rate, samples=head.samples,
             emulated_s=st.measured_s(emulated), sample_min=lo, sample_max=hi,
             # the mixer stops AT the end frame; the span's end is inclusive, as `record`'s
             frame_end=int(end["frame"]) - 1)

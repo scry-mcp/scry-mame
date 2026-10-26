@@ -148,25 +148,6 @@ def test_the_two_overflow_counts_are_read_from_their_own_fields() -> None:
     assert dump["pcs"] == [(0x40E, 490), (0x1234, 10)] and dump["total"] == 500
 
 
-@pytest.mark.parametrize(
-    ("event", "landed"),
-    [
-        ((0x2031FE, 0x0001, 0xFFFF, 16, "big"), [(0x2031FE, 0x00), (0x2031FF, 0x01)]),
-        ((0x20351C, 0xD8D8, 0xFF00, 16, "big"), [(0x20351C, 0xD8)]),
-        ((0x20351C, 0xD8D8, 0x00FF, 16, "big"), [(0x20351D, 0xD8)]),
-        ((0x1000, 0xBEEF, 0x00FF, 16, "little"), [(0x1000, 0xEF)]),
-        ((0x1000, 0x11223344, 0xFFFFFFFF, 32, "big"),
-         [(0x1000, 0x11), (0x1001, 0x22), (0x1002, 0x33), (0x1003, 0x44)]),
-        ((0x1000, 0x5A, 0xFF, 8, "big"), [(0x1000, 0x5A)]),
-    ],
-)
-def test_the_lanes_a_bus_write_lands_are_decoded_by_mask_and_byte_order(
-    event: tuple[int, int, int, int, str], landed: list[tuple[int, int]]
-) -> None:
-    """A byte write on the 16-bit big-endian bus lands the HIGH lane at the even address."""
-    assert tally.lanes(*event) == landed
-
-
 def test_the_value_table_decodes_a_whole_write_in_the_watch_format_and_marks_partial(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

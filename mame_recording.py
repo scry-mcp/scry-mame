@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from scry_core import avi
+from scry_core import avi, wav
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
@@ -261,10 +261,10 @@ def captures() -> dict[str, Any]:
             entry["avi_frames"] = (frames if frames is not None else gone if not entry["present"]
                                    else unavailable(NOT_FINISHED_WHY))
         if kind == "wav":
-            wav = files.wav_header(path) if entry["present"] else None
+            head = wav.header(path) if entry["present"] else None
             unread = gone if not entry["present"] else unavailable(NOT_FINISHED_WHY)
-            entry["samples"] = wav.samples if wav else unread
-            entry["channels"] = wav.channels if wav else unread
-            entry["sample_rate_hz"] = wav.sample_rate if wav else unread
+            entry["samples"] = head.samples if head else unread
+            entry["channels"] = head.channels if head else unread
+            entry["sample_rate_hz"] = head.sample_rate if head else unread
         out.append(entry)
     return menvelope.envelope({"captures": out})

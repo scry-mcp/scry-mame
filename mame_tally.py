@@ -27,8 +27,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scry_core import prose
-from scry_core import value_format as vf
+from scry_core import bus_writes, prose
 
 import mame_callbacks as callbacks
 import mame_declarations as dec
@@ -184,38 +183,11 @@ def parse_dump(text: str) -> dict[str, Any] | None:
             "cpu": head.group(11), **errors}
 
 
-def lanes(offset: int, data: int, mask: int, data_width: int,
-          endianness: str) -> list[tuple[int, int]]:
-    """The bytes a bus write landed, as (address, byte) in address order."""
-    out: list[tuple[int, int]] = []
-    for i in range(data_width // 8):
-        shift = mspace.lane_shift(i, 1, data_width, endianness)
-        if (mask >> shift) & 0xFF:
-            out.append((offset + i, (data >> shift) & 0xFF))
-    return out
-
-
 def _value_rows(dump: dict[str, Any], addr: int, width: int, fmt: str,
                 shown: int) -> list[dict[str, Any]]:
-    """The value table, most written first; `value` only when one write covers the range
-    whole, in the byte order the dump names, else the row is `partial`."""
-    rows: list[dict[str, Any]] = []
-    ranked = sorted(dump["values"], key=lambda r: (-r[3], r[0], r[1]))
-    for offset, data, mask, count in ranked[:shown]:
-        landed = lanes(offset, data, mask, dump["data_width"], dump["endianness"])
-        inside = [(a, b) for a, b in landed if addr <= a < addr + width]
-        row: dict[str, Any] = {"at": st.hex_addr(inside[0][0] if inside else offset),
-                               "raw_hex": bytes(b for _a, b in inside).hex(), "count": count}
-        if [a for a, _b in inside] == list(range(addr, addr + width)):
-            try:
-                row["value"] = vf.parse(fmt).decode(bytes(b for _a, b in inside),
-                                                    dump["endianness"], width)
-            except vf.FormatError:
-                row["partial"] = True
-        else:
-            row["partial"] = True
-        rows.append(row)
-    return rows
+    """The value table in the byte order the dump names (`bus_writes.value_rows`)."""
+    return bus_writes.value_rows(dump["values"], addr, width, fmt, dump["data_width"],
+                                 dump["endianness"], shown, st.hex_addr)
 
 
 def _writer_rows(dump: dict[str, Any], shown: int) -> list[dict[str, Any]]:

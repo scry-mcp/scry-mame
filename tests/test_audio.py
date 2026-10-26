@@ -17,6 +17,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from scry_core import wav
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -25,7 +26,6 @@ from session_doubles import refused, run_host_lua  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
 import mame_audio as maudio  # noqa: E402
-import mame_files as mfiles  # noqa: E402
 import mame_lua as lua  # noqa: E402
 import mame_recording as mrec
 import mame_state as mstate  # noqa: E402
@@ -53,7 +53,7 @@ def _with_sizes(data: bytes) -> bytes:
     """`data` with its RIFF and data sizes made to agree with its length."""
     out = bytearray(data)
     struct.pack_into("<I", out, 4, len(out) - 8)
-    struct.pack_into("<I", out, 40, len(out) - mfiles.WAV_HEADER_BYTES)
+    struct.pack_into("<I", out, 40, len(out) - wav.HEADER_BYTES)
     return bytes(out)
 
 
@@ -72,28 +72,28 @@ def test_the_reader_agrees_with_stdlib_wave_on_every_real_file(tmp_path: Path, n
     """`wave` from the standard library is the known answer for the header."""
     path = tmp_path / f"{name}.wav"
     path.write_bytes(_wav(name))
-    got = mfiles.wav_header(path)
+    got = wav.header(path)
     with wave.open(str(path)) as w:
         want = (w.getnchannels(), w.getframerate(), w.getnframes())
     assert got is not None and (got.channels, got.sample_rate, got.samples) == want
-    assert got.data_bytes == path.stat().st_size - mfiles.WAV_HEADER_BYTES
+    assert got.data_bytes == path.stat().st_size - wav.HEADER_BYTES
     with wave.open(str(path)) as w:
         every = array("h", w.readframes(w.getnframes()))
-    assert mfiles.wav_levels(path) == ((min(every), max(every)) if every else (0, 0))
+    assert wav.levels(path) == ((min(every), max(every)) if every else (0, 0))
 
 
 def test_the_levels_of_a_tone_differ_and_those_of_a_held_level_do_not(tmp_path: Path) -> None:
     tone = tmp_path / "tone.wav"
     tone.write_bytes(_wav("v30-ay-tone"))
-    lo, hi = mfiles.wav_levels(tone)
+    lo, hi = wav.levels(tone)
     assert lo < hi, (lo, hi)
     # every sample of the same file set to one level: a DAC at rest
     held = bytearray(tone.read_bytes())
-    held[mfiles.WAV_HEADER_BYTES:] = struct.pack("<h", -1234) * (
-        (len(held) - mfiles.WAV_HEADER_BYTES) // 2)
+    held[wav.HEADER_BYTES:] = struct.pack("<h", -1234) * (
+        (len(held) - wav.HEADER_BYTES) // 2)
     flat = tmp_path / "flat.wav"
     flat.write_bytes(bytes(held))
-    assert mfiles.wav_levels(flat) == (-1234, -1234)
+    assert wav.levels(flat) == (-1234, -1234)
 
 
 def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyPatch,
@@ -101,35 +101,35 @@ def test_the_levels_are_read_across_chunk_boundaries(monkeypatch: pytest.MonkeyP
     """The extremes found are the whole file's, whatever chunk holds them."""
     path = tmp_path / "tone.wav"
     path.write_bytes(_wav("v30-ay-tone"))
-    whole = mfiles.wav_levels(path)
-    monkeypatch.setattr(mfiles, "WAV_CHUNK_BYTES", 6)
-    assert mfiles.wav_levels(path) == whole
+    whole = wav.levels(path)
+    monkeypatch.setattr(wav, "CHUNK_BYTES", 6)
+    assert wav.levels(path) == whole
 
 
 def test_the_levels_of_a_file_longer_than_one_chunk_are_its_own(tmp_path: Path) -> None:
     """A file longer than one chunk reads the levels stdlib `wave` reads."""
-    tone = _wav("v30-ay-tone")[mfiles.WAV_HEADER_BYTES:]
-    data = tone * (mfiles.WAV_CHUNK_BYTES // len(tone) + 2)
+    tone = _wav("v30-ay-tone")[wav.HEADER_BYTES:]
+    data = tone * (wav.CHUNK_BYTES // len(tone) + 2)
     path = tmp_path / "long.wav"
-    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
-    assert path.stat().st_size > mfiles.WAV_CHUNK_BYTES + mfiles.WAV_HEADER_BYTES
+    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:wav.HEADER_BYTES] + data))
+    assert path.stat().st_size > wav.CHUNK_BYTES + wav.HEADER_BYTES
     with wave.open(str(path)) as w:
         every = array("h", w.readframes(w.getnframes()))
-    assert mfiles.wav_levels(path) == (min(every), max(every))
+    assert wav.levels(path) == (min(every), max(every))
 
 
 @pytest.mark.parametrize("at", ["first", "last", "second chunk"])
 def test_a_lone_outlier_is_found_wherever_it_lies(monkeypatch: pytest.MonkeyPatch,
                                                   tmp_path: Path, at: str) -> None:
     """One sample out of silence is seen at the first, last and second-chunk positions."""
-    monkeypatch.setattr(mfiles, "WAV_CHUNK_BYTES", 64)
+    monkeypatch.setattr(wav, "CHUNK_BYTES", 64)
     n = 100
     index = {"first": 0, "last": n - 1, "second chunk": 32}[at]
     data = bytearray(2 * n)
     struct.pack_into("<h", data, 2 * index, -777)
     path = tmp_path / "x.wav"
-    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:mfiles.WAV_HEADER_BYTES] + data))
-    assert mfiles.wav_levels(path) == (-777, 0)
+    path.write_bytes(_with_sizes(_wav("v30-ay-tone")[:wav.HEADER_BYTES] + data))
+    assert wav.levels(path) == (-777, 0)
 
 
 def _edit(data: bytes, at: int, fmt: str, value: int) -> bytes:
@@ -164,7 +164,7 @@ REFUSED_HEADERS = {
     "RIFF size": _edit(AY, 4, "<I", len(AY)),
     "RIFF size short": _edit(AY, 4, "<I", len(AY) - 10),
     "data size": _edit(AY, 40, "<I", len(AY) - 46),
-    "data size long": _edit(AY, 40, "<I", len(AY) - mfiles.WAV_HEADER_BYTES + 2),
+    "data size long": _edit(AY, 40, "<I", len(AY) - wav.HEADER_BYTES + 2),
     "half a sample": _with_sizes(AY + b"\x00"),
     "half a stereo frame": _with_sizes(STEREO + b"\x00\x00"),
     "short header": AY[:43],
@@ -177,19 +177,19 @@ def test_the_reader_refuses_a_header_that_disagrees_with_itself_or_the_file(
 ) -> None:
     path = tmp_path / "x.wav"
     path.write_bytes(REFUSED_HEADERS[why])
-    assert mfiles.wav_header(path) is None, why
+    assert wav.header(path) is None, why
 
 
 def test_the_reader_refuses_an_unfinished_file_and_a_missing_one(tmp_path: Path) -> None:
     """MAME writes both sizes at close: a file still open reads 0 there whatever it holds."""
     path = tmp_path / "open.wav"
     path.write_bytes(_wav("v30-unfinished"))
-    head = path.read_bytes()[:mfiles.WAV_HEADER_BYTES]
-    assert path.stat().st_size > mfiles.WAV_HEADER_BYTES
+    head = path.read_bytes()[:wav.HEADER_BYTES]
+    assert path.stat().st_size > wav.HEADER_BYTES
     assert struct.unpack_from("<I", head, 4) == struct.unpack_from("<I", head, 40) == (0,), (
         "the fixture is what it says: both sizes still 0")
-    assert mfiles.wav_header(path) is None
-    assert mfiles.wav_header(tmp_path / "never.wav") is None
+    assert wav.header(path) is None
+    assert wav.header(tmp_path / "never.wav") is None
 
 
 def test_a_header_naming_no_channel_is_told_apart_from_a_file_that_is_no_wav(
@@ -197,17 +197,17 @@ def test_a_header_naming_no_channel_is_told_apart_from_a_file_that_is_no_wav(
 ) -> None:
     path = tmp_path / "x.wav"
     path.write_bytes(_no_speaker(_wav("v30-closed-empty")))
-    assert mfiles.wav_header(path) is None and mfiles.wav_without_channel(path)
-    path.write_bytes(bytes(mfiles.WAV_HEADER_BYTES))
-    assert not mfiles.wav_without_channel(path), "zeros are not a WAV, with a channel or none"
+    assert wav.header(path) is None and wav.without_channel(path)
+    path.write_bytes(bytes(wav.HEADER_BYTES))
+    assert not wav.without_channel(path), "zeros are not a WAV, with a channel or none"
     path.write_bytes(b"RIFX" + _no_speaker(_wav("v30-closed-empty"))[4:])
-    assert not mfiles.wav_without_channel(path), "no RIFF magic, no WAV"
+    assert not wav.without_channel(path), "no RIFF magic, no WAV"
     no_wave = _no_speaker(_wav("v30-closed-empty"))
     path.write_bytes(no_wave[:8] + b"WAVX" + no_wave[12:])
-    assert not mfiles.wav_without_channel(path), "no WAVE magic, no WAV"
+    assert not wav.without_channel(path), "no WAVE magic, no WAV"
     path.write_bytes(_wav("v30-closed-empty"))
-    assert not mfiles.wav_without_channel(path)
-    assert not mfiles.wav_without_channel(tmp_path / "never.wav")
+    assert not wav.without_channel(path)
+    assert not wav.without_channel(tmp_path / "never.wav")
 
 
 # ------------------------------------------------------------------------------- the tool
@@ -261,8 +261,8 @@ def test_a_silent_recording_is_answered_and_said_never_refused(
     """A DAC at rest holds a level, zero or not: either is silence, reported as such."""
     ses = _channel(monkeypatch, tmp_path)
     held = bytearray(AY)
-    held[mfiles.WAV_HEADER_BYTES:] = struct.pack("<h", level) * (
-        (len(AY) - mfiles.WAV_HEADER_BYTES) // 2)
+    held[wav.HEADER_BYTES:] = struct.pack("<h", level) * (
+        (len(AY) - wav.HEADER_BYTES) // 2)
     _put(ses, 1, ses.scratch / "snap" / "audio-1.wav", bytes(held), _marks("v30-ay-tone", 1))
     out = s.audio_record(frames=30)
     assert out["status"] == "ok" and out["sample_min"] == out["sample_max"] == level, out
@@ -511,7 +511,7 @@ def test_the_script_raising_and_a_script_never_evaluated_are_said(
 
 def _samples(data: bytes, n: int, rate: int = 48000) -> bytes:
     """`data` cut to its first `n` samples (mono) at `rate`, its header made to agree."""
-    out = bytearray(data[:mfiles.WAV_HEADER_BYTES + 2 * n])
+    out = bytearray(data[:wav.HEADER_BYTES + 2 * n])
     struct.pack_into("<I", out, 24, rate)
     struct.pack_into("<I", out, 28, rate * 2)
     return _with_sizes(bytes(out))
@@ -767,7 +767,7 @@ function release() _G._mame_mcp_audio_release() end
 
 def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list[str]:
     """Mixer, `before`, the recording script for `frames` frames, then `after`; one event a line."""
-    header = _wav("v30-unfinished")[:mfiles.WAV_HEADER_BYTES]
+    header = _wav("v30-unfinished")[:wav.HEADER_BYTES]
     chunk = (MIXER_LUA % {"header": _lua_bytes(header)} + before + "\n"
              + maudio.AUDIO_LUA % {"path": transport.lua_string(str(tmp_path / "ours.wav")),
                                    "frames": frames, "mark": "MAME_MCP_AUDIO#1"}
