@@ -617,7 +617,8 @@ def test_an_expr_watch_is_declared_by_its_mode_and_its_reply_says_what_was_store
     out = s.watch_add(ref="beamy", mode="expr")
     assert out["status"] == "ok" and (out["ref"], out["by"], out["mode"]) == ("beamy", "expr",
                                                                               "expr"), out
-    assert (out["stored"], out["already_stored"], out["armed"]) == (True, False, False), out
+    assert (out["stored"], out.get("already_stored", False), out["armed"]) == (
+        True, False, False), out
     assert s.watch_add(ref="beamy", mode="expr")["already_stored"] is True
     assert s.watch_add(ref="beamy", mode="expr", by="symbol")["code"] == "bad_argument"
 

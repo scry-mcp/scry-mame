@@ -331,7 +331,8 @@ def test_a_null_pointer_row_carries_its_pointer_block_and_the_list_and_survey_go
     ses = _pointing(monkeypatch, tmp_path)
     ses.memory[ENGINE] = bytes(4)
     out = s.watch_add(ref="_g_engine->sync_delta", mode="change")
-    assert (out["stored"], out["already_stored"], out["armed"]) == (True, False, False), out
+    assert (out["stored"], out.get("already_stored", False), out["armed"]) == (
+        True, False, False), out
     assert out["state"] == "null_pointer" and "null" in out["note"], out
     assert s.watch_add(ref="_g_engine->sync_delta", mode="change")["already_stored"] is True
     s.watch_add(ref="frame_lo", mode="show", length=2)

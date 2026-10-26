@@ -118,9 +118,9 @@ def _r_alienar(cells: list[str]) -> None:
              inipath=no_joystick_ini(), boot_seconds=START_WAIT_S)
     message = str(r.get("message"))
     if sys.platform == "win32" and refused(r, "session_broken") and "3221225477" in message:
-        # MAME's own fault: 0.289 on Windows dies of an access violation where macOS prints the
-        # gdbstub's refusal, so the line this cell quotes is never written there.
-        blocked(cells[ALIENAR], f"MAME exits 0xC0000005 on Windows before it can refuse: "
+        # MAME on Windows exits with an access violation (3221225477 is 0xC0000005) where macOS
+        # prints the gdbstub's refusal, so the line this cell quotes is never written there.
+        blocked(cells[ALIENAR], f"MAME exits 0xC0000005 on Windows with no refusal written: "
                 f"{said(r, 120)}")
         return
     cell(cells[ALIENAR], refused(r, "no_channel") and "start_retries" not in r

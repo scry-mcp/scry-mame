@@ -129,20 +129,17 @@ def _tcp_table(family: int) -> bytes:
 
 
 def _windows_rows() -> list[TcpRow]:
-    """Both families' rows; a table that will not read (no IPv6) leaves the other its answer."""
+    """Both families' rows; an IPv6 table that will not read (IPv6 removed) is skipped, never
+    the IPv4 one the gdbstub listens in."""
     rows: list[TcpRow] = []
-    refused: StubUnproved | None = None
-    read = 0
     for family in _ROWS:
         try:
             table = _tcp_table(family)
-        except StubUnproved as e:
-            refused = e
+        except StubUnproved:
+            if family != socket.AF_INET6:
+                raise
             continue
         rows += tcp_rows(table, family)
-        read += 1
-    if read == 0 and refused is not None:
-        raise refused
     return rows
 
 

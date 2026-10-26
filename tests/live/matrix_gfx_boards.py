@@ -3,6 +3,7 @@
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -183,12 +184,16 @@ def _d_circus(t: list[str]) -> None:
     call("close")
 
 
-def _no_case(label: str, film: dict[str, Any]) -> bool:
-    """A build whose every picture was its frame's rendering, none skipped, gives the refusal
-    no case: MAME 0.289's Windows release is one."""
-    if ok(film) and film.get("refused") == 0 and not film.get("lost") and film.get("kept"):
-        blocked(label, f"every frame's picture was its rendering and none was skipped on this "
-                f"build, so nothing could be refused: {said(film, 80)}")
+def _no_case(label: str, armed: dict[str, Any], film: dict[str, Any],
+             lost: dict[str, int]) -> bool:
+    """On Windows the picture read at the next notifier is the frame's rendering, so a checked
+    film keeps every drawn frame and the refusal has no case; the lost frames still have to be
+    the ones these cells expect."""
+    if (sys.platform == "win32" and ok(film) and (armed.get("film") or {}).get("checked") is True
+            and film.get("refused") == 0 and film.get("kept", 0) > 0
+            and film.get("lost") == lost):
+        blocked(label, f"no frame's picture differed from its rendering on this build, so "
+                f"none could be refused: {said(film, 80)}")
         return True
     return False
 
@@ -203,7 +208,7 @@ def _d_circus_bare(t: list[str]) -> None:
     run_frames(16)
     film = call("gfx_film")
     whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
-    if not _no_case(t[23], film):
+    if not _no_case(t[23], armed, film, {}):
         cell(t[23], ok(film) and (armed.get("film") or {}).get("checked") is True
              and film.get("kept", 0) > 0 and film.get("refused", 0) > 0
              and film.get("kept", 0) + film.get("refused", 0) == 8 and film.get("lost") == {}
@@ -215,7 +220,7 @@ def _d_circus_bare(t: list[str]) -> None:
     run_frames(14)
     film = call("gfx_film")
     whys = [str(r.get("why", "")) for r in film.get("refused_frames") or []]
-    if not _no_case(t[24], film):
+    if not _no_case(t[24], armed, film, {"skipped": 4}):
         cell(t[24], ok(film) and (armed.get("film") or {}).get("checked") is True
              and film.get("kept") == 0 and film.get("refused") == 4
              and film.get("lost") == {"skipped": 4}
@@ -286,7 +291,7 @@ def _d_topgunnr(t: list[str]) -> None:
     emulated clock, and the screen readers have no screen to read."""
     started = free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000")
     if isinstance(started.get("frame_symbol"), str):
-        # MAME 0.289's release gives the board a vector screen, and so a frame counter.
+        # Some MAME builds define a frame counter on this board; the stock Windows release does.
         blocked(t[9], f"this build's topgunnr has a frame counter ({said(started, 60)}): the "
                 "board without one is not here to be tested")
         call("close")

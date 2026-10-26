@@ -74,7 +74,7 @@ def test_the_same_ref_declared_after_a_stop_elsewhere_is_a_second_declaration_th
     s.breakpoint_at(ref="0x542")
     ses.visible_cpu = ":subcpu"
     again = s.breakpoint_at(ref="0x542")
-    assert again["cpu"] == ":subcpu" and not again["already_stored"], again
+    assert again["cpu"] == ":subcpu" and not again.get("already_stored"), again
     assert len(ses.bplist_rows) == 2
     same = s.breakpoint_at(ref="0x542", cpu="maincpu")
     assert same["cpu"] == ":maincpu" and same["already_stored"], same
@@ -166,7 +166,7 @@ def test_a_read_watch_named_on_another_cpu_is_that_cpus_and_read_through_its_thr
     assert [(w["ref"], w["cpu"]) for w in s.declaration_list("watch")["watches"]] == [("0x2031fc",
                                                                                        ":subcpu")]
     main = s.watch_add(ref="0x2031fc", mode="show", length=4, cpu="maincpu")
-    assert main["status"] == "ok" and not main["already_stored"], main
+    assert main["status"] == "ok" and not main.get("already_stored"), main
 
 
 def test_a_count_watch_binds_its_tap_to_the_cpu_named_when_it_is_composed(
@@ -586,7 +586,7 @@ def test_a_watch_declared_again_after_a_stop_elsewhere_is_the_visible_cpus(
     ses.visible_cpu = ":subcpu"
     ses.commands.clear()
     again = s.watch_add(ref="0x2031fc", mode="change", length=4)
-    assert again["cpu"] == ":subcpu" and not again["already_stored"], again
+    assert again["cpu"] == ":subcpu" and not again.get("already_stored"), again
     assert "map 0x2031fc::subcpu" in ses.commands, ses.commands
 
 

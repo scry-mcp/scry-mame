@@ -195,7 +195,7 @@ def test_every_dumper_that_writes_after_its_open_opens_through_the_guard() -> No
 
 def test_a_dump_replaces_its_file_where_rename_will_not_overwrite(tmp_path: Path) -> None:
     """Windows' `rename` refuses an existing target, so every dump after the first stayed unread;
-    `replace` takes the old one away first and raises, counted, when it still cannot."""
+    `replace` takes the old one away first and raises when it still cannot."""
     from session_doubles import run_host_lua
 
     path = (tmp_path / "dump.txt").as_posix()
@@ -208,3 +208,6 @@ def test_a_dump_replaces_its_file_where_rename_will_not_overwrite(tmp_path: Path
     run_host_lua(windows + callbacks.LUA + writes)
     assert (tmp_path / "dump.txt").read_text() == "two"
     assert not (tmp_path / "dump.txt.tmp").exists()
+    stuck = 'os.rename = function() return nil, "denied" end\n'
+    said = run_host_lua(callbacks.LUA + stuck + f'print(pcall(replace, "{path}.tmp", "{path}"))\n')
+    assert said[0].startswith("false") and "denied" in said[0], said

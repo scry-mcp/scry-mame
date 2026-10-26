@@ -261,7 +261,7 @@ def test_breakpoint_at_stores_a_declaration_by_name_and_lists_it_against_bplist(
     ses = _watching(monkeypatch, tmp_path)
     out = s.breakpoint_at(ref="frame_lo")
     assert out["armed"] is True and out["addr"] == "0x002031fc" and out["by"] == "symbol"
-    assert out["stored"] is True and out["already_stored"] is False and out["state"] == "armed"
+    assert out["stored"] is True and "already_stored" not in out and out["state"] == "armed"
     assert out["entry"] == "1 @ 2031FC", "the debugger's row, read back"
     assert out["summary"] == "breakpoint_at frame_lo: armed at 0x002031fc"
     again = s.breakpoint_at(ref="frame_lo")
@@ -758,7 +758,7 @@ def test_an_address_inside_a_pointer_ref_matches_in_any_spelling_too(
     ses.memory[0xBEEF] = (0x2100).to_bytes(4, "big")
     assert s.watch_add(ref="[beef]", mode="show", length=2)["status"] == "ok"
     literal = s.watch_add(ref="[0xBEEF]", mode="show", length=2)
-    assert literal["status"] == "ok" and literal["already_stored"] is False, literal
+    assert literal["status"] == "ok" and "already_stored" not in literal, literal
 
 
 def test_a_regpoint_is_an_expression_held_by_its_text_and_nothing_else() -> None:

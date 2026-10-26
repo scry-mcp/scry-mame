@@ -298,7 +298,7 @@ def test_regpoint_add_evaluates_stores_arms_and_reads_the_list_back(
     ses = _running(monkeypatch, tmp_path)
     out = s.regpoint_add(condition=" d1==7fff ")
     assert out["status"] == "ok", out
-    assert {k: out[k] for k in ("ref", "by", "condition", "stored", "already_stored",
+    assert {k: out.get(k, False) for k in ("ref", "by", "condition", "stored", "already_stored",
                                 "while_running", "armed", "state", "entry", "index",
                                 "cpu")} == {
         "ref": "d1==7fff", "by": "expr", "condition": "d1==7fff", "stored": True,
@@ -430,7 +430,7 @@ def test_a_row_already_listed_under_the_condition_is_adopted_and_nothing_is_sent
     ses.rplist_rows = [(3, "d1==7fff", True)]
     ses.rp_next_index = 4
     out = s.regpoint_add(condition="d1==7fff")
-    assert out["armed"] is True and out["index"] == 3 and out["already_stored"] is False, out
+    assert out["armed"] is True and out["index"] == 3 and "already_stored" not in out, out
     assert not any(c.startswith("rpset") for c in ses.commands)
     again = s.regpoint_add(condition="d1==7fff")
     assert again["already_stored"] is True and again["index"] == 3

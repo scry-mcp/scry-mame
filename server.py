@@ -1565,8 +1565,8 @@ def state_list() -> dict[str, Any]:
                                                              folds.STATE_METHODS))
 def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
                 name: str) -> dict[str, Any]:
-    """Save or load a savestate `name` (`[A-Za-z0-9_-]`, 1..{STATE_NAME_MAX} characters) through
-    the debugger console. Needs the machine stopped.
+    """Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..{STATE_NAME_MAX}
+    characters) through the debugger console. Needs the machine stopped.
 
     `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
     `errorlog`, `held`, `stop_seq`.
@@ -1608,7 +1608,8 @@ def main() -> None:
     try:
         mcp.run()
     finally:
-        STATE.kill()
+        with st.LOCK:    # a signalled end may be killing it too
+            STATE.kill()
 
 
 if __name__ == "__main__":

@@ -90,8 +90,6 @@ def not_utf8(path: str, e: UnicodeDecodeError, **fields: Any) -> st.Invalid:
     return st.Invalid("bad_argument", f"{path} is not UTF-8 text: {e}", **fields)
 
 
-read_text = judges.read_text
-
 
 def check_memdump(length: int, dest: str, ref: str = "", **_: Any) -> Path:
     """`memdump`'s machine-independent half, handing back the `Path` it built. The path is judged

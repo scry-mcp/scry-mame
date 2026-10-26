@@ -98,7 +98,7 @@ def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_du
     assert "if not T.periodic then" in script and script.count("emu.register_periodic") == 1
     assert '"2031fc_4", 0x2031fc, 0x2031ff' in script
     assert 'execution_state ~= "stop" then return' in script, "dumps only at a stop"
-    assert "replace(" in script, "the dump is whole or absent, never half-written"
+    assert 'replace(it.path .. ".tmp", it.path)' in script, "whole or absent, never half-written"
     assert len(script) < transport.SCRIPT_MAX, "one console line"
 
 

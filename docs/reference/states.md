@@ -64,8 +64,8 @@ A `.sta` from an earlier session carries `frame` and `pc` unavailable, as `state
 state_write(method, name)
 ```
 
-Save or load a savestate `name` (`[A-Za-z0-9_-]`, 1..64 characters) through
-the debugger console. Needs the machine stopped.
+Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..64
+characters) through the debugger console. Needs the machine stopped.
 
 `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
 `errorlog`, `held`, `stop_seq`.

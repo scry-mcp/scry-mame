@@ -1127,7 +1127,7 @@ def test_a_watch_redeclared_under_one_ref_with_another_shape_is_refused(
     s.watch_add(ref="frame_lo", mode="change", length=4, fmt="i32"))
     assert ses.watchpoints == [(0x2031FC, 4, False)] and len(arming.store().declarations()) == 1
     again = s.watch_add(ref="frame_lo", mode="change", length=4)
-    assert again["already_stored"] is True, "the same shape adopts"
+    assert again.get("already_stored", False) is True, "the same shape adopts"
 
 
 def test_two_refs_on_one_address_do_not_share_a_watchpoint_in_silence(
@@ -1687,16 +1687,17 @@ def test_watch_add_replies_say_stored_armed_and_state_for_every_placement(
 ) -> None:
     ses = _watching(monkeypatch, tmp_path)
     unresolved = s.watch_add(ref="scene_id", mode="show", length=2)
-    assert (unresolved["stored"], unresolved["already_stored"], unresolved["armed"]) == (
+    assert (unresolved["stored"], unresolved.get("already_stored", False), unresolved["armed"]) == (
         True, False, False), unresolved
     assert unresolved["state"] == "unresolved" and "not a symbol in this build" in (
         unresolved["note"]), unresolved
     assert s.watch_add(ref="scene_id", mode="show", length=2)["already_stored"] is True
     read = s.watch_add(ref="frame_lo", mode="show", length=4)
-    assert (read["stored"], read["already_stored"], read["state"]) == (True, False, "evaluated")
+    assert (read["stored"], read.get("already_stored", False), read["state"]) == (
+        True, False, "evaluated")
     s.watch_add(ref="0x2031fc", mode="change", length=4)
     again = s.watch_add(ref="0x2031FC", mode="change", length=4)
-    assert again["ref"] == "0x2031fc" and again["already_stored"] is True, again
+    assert again["ref"] == "0x2031fc" and again.get("already_stored", False) is True, again
     assert len([d for d in arming.store().declarations() if d.kind == "watch"]) == 3
     out = refused("unmapped", s.watch_add(ref="copy_in_rom", mode="change", length=2))
     assert (out["code"], out["ref"], out["addr"]) == ("bad_argument", "copy_in_rom", "0x00000400")

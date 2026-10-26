@@ -262,6 +262,19 @@ def test_on_windows_a_family_whose_table_will_not_read_leaves_the_other_its_answ
         owner.listeners(CAPTURED["listen4"])
 
 
+def test_on_windows_an_ipv4_table_that_will_not_read_is_never_excused(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """The gdbstub listens on 127.0.0.1, so without the IPv4 table nothing is proved."""
+    def tables(family: int) -> bytes:
+        if family == socket.AF_INET:
+            raise owner.StubUnproved("`GetExtendedTcpTable` answered 122")
+        return _captured_table("v6")
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(owner, "_tcp_table", tables)
+    with pytest.raises(owner.StubUnproved, match="answered 122"):
+        owner.listeners(CAPTURED["listen4"])
+
+
 @pytest.mark.usefixtures("on_windows")
 def test_on_windows_the_table_names_the_listener_and_the_far_end_of_a_connection() -> None:
     pid, p4, p6, near = (CAPTURED[k] for k in ("pid", "listen4", "listen6", "client_local"))

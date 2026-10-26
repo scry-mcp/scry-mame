@@ -1,5 +1,4 @@
-"""What MAME judges as the DOSBox-X server does, through scry-core: each was a copy that
-answered differently, and the stricter answer is the one both keep."""
+"""What MAME judges through scry-core's shared judges, as the DOSBox-X server does."""
 
 from __future__ import annotations
 
@@ -19,11 +18,11 @@ import mame_symbols as symbols  # noqa: E402
 import mame_watches as watches  # noqa: E402
 
 
-@pytest.mark.parametrize("name", ["-x", "_save"], ids=["a leading dash", "a leading underscore"])
-def test_a_state_name_starts_with_a_letter_or_a_digit(name: str) -> None:
+def test_a_state_name_never_starts_with_a_dash() -> None:
     """It is one console parameter, and a leading dash reads as an option."""
-    with pytest.raises(Invalid, match="starting with a letter or a digit"):
-        savestates.check_state_name(name)
+    with pytest.raises(Invalid, match="never starting with `-`"):
+        savestates.check_state_name("-x")
+    savestates.check_state_name("_save")
 
 
 def test_a_types_file_an_editor_marked_with_a_bom_reads_its_first_name(tmp_path: Path) -> None:

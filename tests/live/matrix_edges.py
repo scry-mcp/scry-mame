@@ -134,7 +134,7 @@ def _lua_of(n: int) -> str:
     return head + "x" * (n - len(head))
 
 
-NAME_MAX = 64  # a state name: letters, digits, `_` and `-`, up to 64
+NAME_MAX = 64  # a state name: letters, digits, `_` and `-`, never `-` first, up to 64
 MAX_NAME = "s" * NAME_MAX
 # A WAIT IS EXEMPT FROM B1 ONLY WHERE THE CALL RETURNS AT ONCE, so a published maximum is proved
 # without being waited out; `run_case` FAILS the cell if it took longer than the ceiling, so each

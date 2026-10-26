@@ -87,7 +87,7 @@ class AudioRecordReply(MameRecordingRun, total=False):
 
 class BreakpointAtReply(MameEnvelope, total=False):
     addr: str
-    already_stored: bool
+    already_stored: Annotated[bool, OmitEmpty]
     armed: bool
     by: str
     command_chars: int
@@ -733,7 +733,7 @@ class RegistersReply(MameEnvelope, total=False):
 
 
 class RegpointAddReply(MameEnvelope, total=False):
-    already_stored: bool
+    already_stored: Annotated[bool, OmitEmpty]
     armed: bool
     by: str
     command_chars: int
@@ -1087,7 +1087,7 @@ class TraceReply(MameEnvelope, total=False):
 
 class WatchAddReply(MameEnvelope, total=False):
     addr: str
-    already_stored: bool
+    already_stored: Annotated[bool, OmitEmpty]
     armed: bool
     by: str
     call: str

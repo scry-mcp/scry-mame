@@ -185,8 +185,8 @@ def _q_topgunnr(t: list[str]) -> None:
         call("close")
         return
     if counted:
-        # MAME 0.289's release gives the board a frame counter, and the swap is then refused by
-        # its frame and pc, before any register is compared.
+        # Some MAME builds define a frame counter on this board, and a swap is then judged by the
+        # frame before the registers this cell is about.
         blocked(t[5], f"this build's topgunnr has a frame counter ({said(started, 60)})")
         call("close")
         return

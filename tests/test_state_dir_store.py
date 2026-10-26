@@ -45,7 +45,7 @@ def test_a_state_dir_session_never_opens_the_project_store(
         assert out["declarations"]["persistent"] is True and out["declarations"]["held"] == 0
         assert out["declarations"]["rearm"]["rearmed"] == [], "nothing inherited from the project"
         bp = s.breakpoint_at(ref="irq_vblank")
-        assert bp["status"] == "ok" and bp["already_stored"] is False, bp
+        assert bp["status"] == "ok" and "already_stored" not in bp, bp
         listed = s.declaration_list("breakpoint")["breakpoints"]
         assert [(r["ref"], r["inherited"]) for r in listed] == [("irq_vblank", False)]
         stored = json.loads((own / "declarations.json").read_text())

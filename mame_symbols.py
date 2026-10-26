@@ -105,7 +105,7 @@ def _one(name: str, path: str, bases: dict[str, str], types: str) -> gs.SymbolTa
 
 def read_types(path: str) -> dict[str, str]:
     """A `types` file read for `start`; a refusal names the file and line."""
-    text = files.read_text("types", path, "types file")
+    text = judges.read_text("types", path, "types file")
     try:
         return vf.read_types(text, path)
     except vf.FormatError as e:
