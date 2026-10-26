@@ -35,9 +35,6 @@ FILE_POLL_S = 0.02
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PNG_TRAILER = b"IEND\xaeB`\x82"
 
-# The WAV MAME's mixer writes (`util::wav_open`): a 44-byte header, 16-bit PCM, the RIFF and data
-# sizes written only when the file is closed. Chunks are an even byte count so no sample splits.
-
 
 Waited = TypeVar("Waited")
 
