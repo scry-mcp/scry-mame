@@ -231,7 +231,7 @@ def test_every_value_a_board_boots_on_comes_from_the_benchs_identity(
     assert alt_boot == {
         "binary": str(alt / "upstream/altmame"), "system": "altset",
         "rompath": str(alt / "run/mame_roms"), "reference_rom": str(alt / "disasm/alt.bin"),
-        "reference_addr": "0x0"}
+        "reference_addr": "0x0", "inipath": boards.NO_JOYSTICK_INI}
     assert boards.board_dir("v30") == tmp_path / "v30dir"
     assert boards.opened("v30") == ["v30dir/upstream/v30mame", "v30dir/run/mame_roms/v30set.zip",
                                     "v30dir/build/Game_V30.bin", "v30dir/build/game_v30.map"]
@@ -431,6 +431,18 @@ def _imported(module: str, tmp_path: Path, **env: str) -> subprocess.CompletedPr
     return subprocess.run([sys.executable, "-c", f"import {module}"], cwd=LIVE,
                           env={**clean, "TMPDIR": str(tmp_path), **env}, capture_output=True,
                           text=True, check=False)
+
+
+def test_every_start_built_from_the_bench_names_no_joystick_provider(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A debug MAME aborts at boot while a game controller is connected, which the owner of
+    the bench may be using: every start the bench builds reads an ini that turns joysticks off."""
+    h = _harness(monkeypatch, tmp_path)
+    alt = sys.modules["bench_boards"].M68K_DUAL_ALT_BOOT
+    for ini in (h.BOOT.get("inipath"), alt.get("inipath"), h.no_joystick_ini()):
+        text = (Path(str(ini)) / "mame.ini").read_text() if ini else ""
+        assert "joystickprovider none" in text, ini
 
 
 def test_importing_the_harness_makes_no_directory(tmp_path: Path) -> None:

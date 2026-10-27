@@ -21,6 +21,7 @@ from live_harness import (
     BOOT,
     FREE_BINARY,
     FREE_ROMS,
+    NO_JOYSTICK_INI,
     begin,
     check,
     finish,
@@ -1357,7 +1358,7 @@ with zipfile.ZipFile(BENCH_ZIP) as z:
     circus_image.write_bytes(z.read("9004a.1a"))
 r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
-            boot_seconds=30.0, presence=False)
+            boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
 check("circus starts for the bench", r.get("status") == "ok", str(r.get("summary")))
 ports = s.lua("for tag, port in pairs(manager.machine.ioport.ports) do "
               "for name in pairs(port.fields) do print(tag .. '|' .. name) end end",
@@ -1417,7 +1418,7 @@ print("\n== screen maps: circus's attract screen, found by its map, and not once
 CIRCUS_MAP = Path(__file__).parent / "circus.scry-map.json"
 r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
-            boot_seconds=30.0, presence=False)
+            boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
 check("circus starts for its map", r.get("status") == "ok", str(r.get("summary")))
 loaded = s.map_write("load", path=str(CIRCUS_MAP))
 check("map_write load reads circus's map: one screen, one place",

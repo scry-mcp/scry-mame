@@ -35,6 +35,7 @@ from bench_boards import (  # noqa: E402  # isort: skip
     M68K_DUAL_BINARY,
     M68K_DUAL_ROMS,
     M68K_DUAL_SYSTEM,
+    NO_JOYSTICK_INI as NO_JOYSTICK_INI,
     REFERENCE_ROM,
     SYMBOLS,
     args_missing,
@@ -61,7 +62,8 @@ def invalid(message: str) -> None:
 
 
 BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_ROMS,
-            reference_rom=REFERENCE_ROM, reference_addr="0x0", boot_seconds=25.0, presence=False)
+            reference_rom=REFERENCE_ROM, reference_addr="0x0", boot_seconds=25.0, presence=False,
+            inipath=NO_JOYSTICK_INI)
 
 # Unset leaves each `start` its default; 1 or 0 forces every one behind or in front.
 BACKGROUND_VAR = "MAME_BACKGROUND"
@@ -397,12 +399,13 @@ def free_image(system: str, members: list[str], dest: Path, held: Path | None = 
 
 
 def no_joystick_ini(extra: str = "") -> str:
-    """An ini directory naming no joystick provider: a debug build may abort at boot with a
-    controller connected (`mame_boot_failures.SDL3_JOYSTICK_NOTE`). `extra` lines follow it."""
-    ini = Path(fresh("-ini")) if extra else scratch() / "ini-no-joystick"
-    if not ini.is_dir():
-        ini.mkdir()
-        (ini / "mame.ini").write_text("joystickprovider none\n" + extra)
+    """An ini directory naming no joystick provider (`NO_JOYSTICK_INI`); `extra` lines follow it
+    in one of the run's own."""
+    if not extra:
+        return NO_JOYSTICK_INI
+    ini = Path(fresh("-ini"))
+    ini.mkdir()
+    (ini / "mame.ini").write_text("joystickprovider none\n" + extra)
     return str(ini)
 
 

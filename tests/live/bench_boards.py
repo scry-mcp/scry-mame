@@ -144,11 +144,15 @@ SUB_SYMBOLS = board_path("m68k-dual", "sub_symbols")
 MANIFEST = str(board_dir("m68k-dual") / GFX_MANIFEST)
 BLIT_HANDLER = value("m68k-dual", "blit_handler")
 
+#: An ini that turns joysticks off: a debug MAME aborts at boot while a game controller is
+#: connected (`mame_boot_failures.SDL3_JOYSTICK_NOTE`), and the bench's owner may be using one.
+NO_JOYSTICK_INI = str(Path(__file__).resolve().parent / "fixtures" / "ini-no-joystick")
+
 M68K_DUAL_ALT_BOOT = dict(binary=board_path("m68k-dual-alt", "binary"),
                      system=value("m68k-dual-alt", "system"),
                      rompath=str(board_dir("m68k-dual-alt") / ROMPATH),
                      reference_rom=board_path("m68k-dual-alt", "reference_rom"),
-                     reference_addr="0x0")
+                     reference_addr="0x0", inipath=NO_JOYSTICK_INI)
 
 
 def args_missing(args: dict[str, object]) -> str:
