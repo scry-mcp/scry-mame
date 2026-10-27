@@ -2,7 +2,7 @@
 a thread per cpu. Calls naming the second cpu are made with the first visible and judged against
 MAME's own reading of the second.
 
-    MAME_MULTICPU_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_multicpu.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_multicpu.py
 """
 
 from __future__ import annotations
@@ -10,16 +10,16 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from live_harness import (
-    MULTICPU_BINARY,
+    BINARY,
     Board,
     blocked,
     boards_cover,
     call,
     cell,
     console_pc,
+    free_boards_missing,
     free_boot,
     make_visible,
-    multicpu_missing,
     ok,
     pc_of,
     refused,
@@ -95,7 +95,7 @@ def _registers_cell(label: str, cpu: str, first: str) -> int | None:
 
 
 def _s_victory(t: list[str]) -> None:
-    free_boot("victory", ["vic3.j2"], "0x0", binary=MULTICPU_BINARY)
+    free_boot("victory", ["vic3.j2"], "0x0", binary=BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)
     seen = _described(threads)
@@ -149,7 +149,7 @@ def _s_victory_breakpoint(label: str) -> None:
 
 def _s_hardhat(t: list[str]) -> None:
     """Two alike descriptions: only the registers cell tells the two cpus apart."""
-    free_boot("hardhat", ["hhl-2.11a"], "0xa000", binary=MULTICPU_BINARY)
+    free_boot("hardhat", ["hhl-2.11a"], "0xa000", binary=BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)
     seen = _described(threads)
@@ -162,7 +162,7 @@ def _s_hardhat(t: list[str]) -> None:
 
 def _s_topgunnr(t: list[str]) -> None:
     """A second cpu with no description: its registers are refused naming it."""
-    free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000", binary=MULTICPU_BINARY)
+    free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000", binary=BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)
     seen = _described(threads)
@@ -179,7 +179,7 @@ def _s_topgunnr(t: list[str]) -> None:
 
 
 def _missing(system: str) -> Callable[[], str]:
-    return lambda: multicpu_missing() or zips_missing(system)
+    return lambda: free_boards_missing() or zips_missing(system)
 
 
 S_BOARDS = (Board(_s_victory, (0, 1, 2, 3, 4), _missing("victory")),

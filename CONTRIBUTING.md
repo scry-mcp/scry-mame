@@ -71,9 +71,9 @@ the server, the running contract and the throttle flight included.
 uv run python tests/live/live_check.py
 ```
 
-Its checks are mostly on the `m68k-dual` board; the rest run the demos on the free sets with a
-stock MAME, and a host without either leaves something unexamined, which is INVALID and not a
-pass. The tracked live code names boards only by label.
+Its checks are mostly on the `m68k-dual` board; the rest run the demos on the free sets with the
+MAME `MAME_BINARY` names, and a host without either leaves something unexamined, which is INVALID
+and not a pass. The tracked live code names boards only by label.
 
 `tests/live/live_matrix.py` is the matrix around those checks (every tool, every machine state,
 every argument edge, every pair of tools that share state), one printed line per cell:
@@ -87,14 +87,15 @@ block disagreeing with the machine, and BLOCKED when it could not run, with the 
 lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run (all, unset);
 `MAME_LIVE_JOBS` runs each letter as a process of its own, that many at once (unset, half the
 host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
-the parent so its watch spans every job. The free boards and the multi-cpu build each section
-needs are named by `free_boards_missing` and `multicpu_missing`; unset, those cells are BLOCKED.
+the parent so its watch spans every job. The boards run on the MAME `MAME_BINARY` names, built
+with every driver, and the free boards read their sets from `MAME_TEST_ROMS`; unset, those cells
+are BLOCKED naming the variable.
 
 ## The bench the live tier reads
 
-The boards run on a bench: copies of their binaries, ROMs and symbol files pinned by hash in the
-bench's own `bench.json`, with an `identity.json` beside it that says which set, binary and files
-each board's label stands for (its keys: `IDENTITY_KEYS` in `tests/live/bench_boards.py`). A live
+The private boards run on a bench: copies of their ROMs and symbol files, and of the binary of a
+board that runs its own, pinned by hash in the bench's own `bench.json`, with an `identity.json`
+beside it that says which set and files each board's label stands for (its keys: `IDENTITY_KEYS` in `tests/live/bench_boards.py`). A live
 run reads no other repository, so a session editing a checkout cannot change what it measures.
 
 Neither file is tracked, because both name the programs the copies came from. The bench is the

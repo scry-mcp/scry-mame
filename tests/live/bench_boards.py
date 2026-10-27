@@ -22,9 +22,14 @@ IDENTITY_KEYS: dict[str, tuple[str, ...]] = {
     "m68k-dual": ("dir", "system", "binary", "reference_rom", "symbols", "sub_rom",
                   "sub_symbols", "blit_handler"),
     "m68k-dual-alt": ("dir", "system", "binary", "reference_rom"),
-    "v30": ("dir", "system", "binary", "rom_segment"),
-    "v30-alt": ("dir", "system", "binary", "reference_rom"),
+    "v30": ("dir", "system", "rom_segment"),
+    "v30-alt": ("dir", "system", "reference_rom"),
 }
+
+#: The one MAME the free boards and the games' boards run on, the build the games are developed
+#: on; a board with a `binary` key runs its own.
+BINARY = os.environ.get("MAME_BINARY", "")
+GAME_BOARDS = ("v30", "v30-alt")
 
 PATH_KEYS = frozenset({"binary", "reference_rom", "symbols", "sub_rom", "sub_symbols"})
 
@@ -124,10 +129,16 @@ def _unpinned(label: str) -> str:
         "name a file it pins")
 
 
+def binary_missing() -> str:
+    """Why `BINARY` cannot run here, or empty."""
+    return "" if BINARY and Path(BINARY).is_file() else (
+        "set MAME_BINARY to the MAME the boards run on, its plugins beside it")
+
+
 def board_missing(label: str) -> str:
     """Why the board `label` cannot run here, or empty."""
     return (identity_missing(label) or bench_missing(f"{value(label, 'dir')}/")
-            or _unpinned(label))
+            or _unpinned(label) or (binary_missing() if label in GAME_BOARDS else ""))
 
 
 def m68k_dual_missing() -> str:

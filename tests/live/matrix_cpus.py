@@ -4,7 +4,7 @@ An x86 PC is a segment and an offset, so pangofun is read as `EIP` against `prin
 
 `live_matrix.py` registers this section; run alone, it is the same machinery over it only:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_cpus.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_cpus.py
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from live_harness import (
-    FREE_BINARY,
+    BINARY,
     FREE_ROMS,
     PC_STEPS_MAX,
     START_WAIT_S,
@@ -113,7 +113,7 @@ def _set_missing(system: str) -> Callable[[], str]:
 def _r_alienar(cells: list[str]) -> None:
     folder = Path(fresh("-image"))
     folder.mkdir()
-    r = call("start", binary=FREE_BINARY, system="alienar", rompath=FREE_ROMS,
+    r = call("start", binary=BINARY, system="alienar", rompath=FREE_ROMS,
              reference_rom=free_image("alienar", ["aarom01"], folder), reference_addr="0x0",
              inipath=no_joystick_ini(), boot_seconds=START_WAIT_S)
     message = str(r.get("message"))

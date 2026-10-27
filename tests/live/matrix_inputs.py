@@ -8,7 +8,7 @@ the same place, read through the same tool, or the row the call must leave alone
 `live_matrix.py` registers this section before H; run alone, it is the same machinery over this
 section only:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_inputs.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_inputs.py
 
 v30-alt (its copy on the bench) carries the io port cell, the one board here with an io space.
 """

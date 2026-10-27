@@ -1130,7 +1130,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
   "while_running": false,
   "addr": "0x00008299",
   "stored": true,
-  "already_stored": false,
   "armed": true,
   "state": "armed",
   "index": 1,
@@ -1650,11 +1649,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 ```json
 {
-  "summary": "state_write save: four_credits, 16868 bytes at frame 314",
+  "summary": "state_write save: four_credits, 16860 bytes at frame 314",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
-  "bytes": 16868,
+  "bytes": 16860,
   "frame": 314,
   "pc": "0x00002b38",
   "errorlog": {

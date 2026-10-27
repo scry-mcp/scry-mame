@@ -18,8 +18,8 @@ from typing import Any
 
 from bench_boards import M68K_DUAL_SYSTEM, MANIFEST, REFERENCE_ROM, SYMBOLS, m68k_dual_missing
 from live_harness import (
+    BINARY,
     BOOT,
-    FREE_BINARY,
     FREE_ROMS,
     NO_JOYSTICK_INI,
     begin,
@@ -1319,7 +1319,7 @@ check("the contract session closes", s.close().get("closed") is True)
 # the stock MAME through links there: the transcript then reads `./tmp/...` on any host and
 # matches its block line for line.
 links = ROOT / "tmp"
-for link, target in ((links / "bin" / "mame", Path(FREE_BINARY).resolve()),
+for link, target in ((links / "bin" / "mame", Path(BINARY).resolve()),
                      *((links / "roms" / f"{name}.zip", z) for name, z in ZIPS.items())):
     link.parent.mkdir(parents=True, exist_ok=True)
     if link.is_symlink():
@@ -1356,7 +1356,7 @@ bench = live_tmp("mame-live-replay-")
 circus_image = bench / "circus.bin"
 with zipfile.ZipFile(BENCH_ZIP) as z:
     circus_image.write_bytes(z.read("9004a.1a"))
-r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
             boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
 check("circus starts for the bench", r.get("status") == "ok", str(r.get("summary")))
@@ -1393,7 +1393,7 @@ check("a second export over the first is refused without overwrite",
       again.get("status") == "INVALID" and "overwrite" in str(again.get("message")),
       str(again.get("message"))[:80])
 s.close()
-replay = [sys.executable, "-m", "scry_core.replay", str(document), "--binary", FREE_BINARY,
+replay = [sys.executable, "-m", "scry_core.replay", str(document), "--binary", BINARY,
           "--rompath", str(Path(FREE_ROMS).resolve())]
 for n in (1, 2):
     played = subprocess.run([*replay, "--transcript", str(bench / f"replay-{n}" / "t.md")],
@@ -1406,7 +1406,7 @@ field = next(iter(edited["steps"][at]["recorded"]))
 edited["steps"][at]["recorded"][field] = "edited"
 (bench / "edited.json").write_text(json.dumps(edited))
 played = subprocess.run([sys.executable, "-m", "scry_core.replay", str(bench / "edited.json"),
-                         "--binary", FREE_BINARY, "--rompath", str(Path(FREE_ROMS).resolve()),
+                         "--binary", BINARY, "--rompath", str(Path(FREE_ROMS).resolve()),
                          "--transcript", str(bench / "edited" / "t.md")],
                         cwd=ROOT, capture_output=True, text=True, timeout=600)
 check("the edited document diverges at that step and field (exit 1)",
@@ -1416,7 +1416,7 @@ check("the edited document diverges at that step and field (exit 1)",
 
 print("\n== screen maps: circus's attract screen, found by its map, and not once it changed")
 CIRCUS_MAP = Path(__file__).parent / "circus.scry-map.json"
-r = s.start(binary=FREE_BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
             boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
 check("circus starts for its map", r.get("status") == "ok", str(r.get("summary")))

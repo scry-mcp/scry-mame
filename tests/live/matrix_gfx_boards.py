@@ -34,7 +34,7 @@ from matrix_pairs import (  # noqa: E402
 # session (circus's videoram names the char, gridlee's spriteram the sprite), and each negative is
 # a board whose screen has no pens to give (starfire, direct colour; witchgme, a palette device
 # its screen does not use; topgunnr, vector). The boards are the free sets of mamedev.org, which
-# m68k-dual's binary does not carry, so the section runs a stock MAME named by MAME_STOCK_BINARY
+# m68k-dual's binary does not carry, so the section runs the MAME named by MAME_BINARY
 # (its `plugins` directory beside it) over the zips in MAME_TEST_ROMS; without both, every cell is
 # BLOCKED with that reason.
 

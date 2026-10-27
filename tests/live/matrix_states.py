@@ -1,6 +1,6 @@
 """Section Q of the live matrix: saved states. Run alone:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_states.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_states.py
 
 topgunnr's main cpu sits in a short loop, so a run can bring it back to the saved block and then
 no load is proved: the cells that need the block to have moved say BLOCKED, not judge nothing.

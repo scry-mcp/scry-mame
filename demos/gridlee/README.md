@@ -1206,7 +1206,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "raw_hex": "03"
         },
         "stored": true,
-        "already_stored": false,
         "armed": true,
         "state": "armed",
         "index": 1,
@@ -1246,7 +1245,6 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
           "raw_hex": "03"
         },
         "stored": true,
-        "already_stored": false,
         "armed": true,
         "state": "armed",
         "index": 2,
@@ -1887,11 +1885,11 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 
 ```json
 {
-  "summary": "state_write save: four_credits, 10850 bytes at frame 702",
+  "summary": "state_write save: four_credits, 10845 bytes at frame 702",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",
-  "bytes": 10850,
+  "bytes": 10845,
   "frame": 702,
   "pc": "0x0000ae19",
   "errorlog": {
@@ -2578,7 +2576,7 @@ Also attached: image/png.
   "output": "State load attempted.  Please refer to window message popup for results.",
   "mark": {
     "emulator": 13358,
-    "process": 10400
+    "process": 10434
   },
   "cause": "stateload four_credits",
   "stop_seq": 17,

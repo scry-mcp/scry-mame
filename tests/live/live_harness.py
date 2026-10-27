@@ -32,6 +32,7 @@ import server as s  # noqa: E402
 from mame_state import STATE  # noqa: E402
 
 from bench_boards import (  # noqa: E402  # isort: skip
+    BINARY as BINARY,
     M68K_DUAL_BINARY,
     M68K_DUAL_ROMS,
     M68K_DUAL_SYSTEM,
@@ -39,6 +40,7 @@ from bench_boards import (  # noqa: E402  # isort: skip
     REFERENCE_ROM,
     SYMBOLS,
     args_missing,
+    binary_missing,
     m68k_dual_missing,
 )
 
@@ -113,7 +115,7 @@ def _canary_argv() -> list[str] | None:
         return mame_binary.canary_argv(str(BOOT["binary"]), str(BOOT["system"]),
                                        str(BOOT["rompath"]))
     if not free_boards_missing():
-        return mame_binary.canary_argv(FREE_BINARY, "circus", FREE_ROMS,
+        return mame_binary.canary_argv(BINARY, "circus", FREE_ROMS,
                                        "-joystickprovider", "none")
     return None
 
@@ -381,10 +383,7 @@ def ensure_closed() -> None:
 atexit.register(lambda: STATE.kill())
 
 
-FREE_BINARY = os.environ.get("MAME_STOCK_BINARY", "")
 FREE_ROMS = os.environ.get("MAME_TEST_ROMS", "")
-# The stock gdbstub serves its first cpu alone; this build serves a thread per cpu.
-MULTICPU_BINARY = os.environ.get("MAME_MULTICPU_BINARY", "")
 
 
 def free_image(system: str, members: list[str], dest: Path, held: Path | None = None) -> str:
@@ -423,7 +422,7 @@ def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
 
 
 def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
-              binary: str = FREE_BINARY, **launch: Any) -> dict[str, Any]:
+              binary: str = BINARY, **launch: Any) -> dict[str, Any]:
     folder = Path(fresh("-image"))
     folder.mkdir()
     image = free_image(system, members, folder)
@@ -437,20 +436,11 @@ def circus_boot(ini_extra: str = "", **launch: Any) -> dict[str, Any]:
     return free_boot("circus", ["9004a.1a"], "0x1000", ini_extra, **launch)
 
 
-def _boards_missing(binary: str, variable: str, what: str, boards: str) -> str:
-    if binary and FREE_ROMS and Path(binary).is_file() and Path(FREE_ROMS).is_dir():
-        return ""
-    return (f"set {variable} ({what}, its plugins beside it) and MAME_TEST_ROMS (the sets' "
-            f"zips) to run {boards}")
-
-
 def free_boards_missing() -> str:
-    return _boards_missing(FREE_BINARY, "MAME_STOCK_BINARY", "a stock MAME", "the free boards")
-
-
-def multicpu_missing() -> str:
-    return _boards_missing(MULTICPU_BINARY, "MAME_MULTICPU_BINARY",
-                           "a MAME whose gdbstub serves a thread per cpu", "the multi-cpu boards")
+    if why := binary_missing():
+        return f"{why}, to run the free boards"
+    return "" if FREE_ROMS and Path(FREE_ROMS).is_dir() else (
+        "set MAME_TEST_ROMS (the sets' zips) to run the free boards")
 
 
 # Kept in its own folder: MAME wants a dump of its PAL that the set lacks, and runs once a file of
@@ -475,7 +465,7 @@ def pangofun_boot() -> dict[str, Any]:
     (rompath / "pangofun" / PANGOFUN_PAL_NAME).write_bytes(bytes(PANGOFUN_PAL_BYTES))
     # The 64 KB bios ends at 4 GB, and the i386 family resets 16 bytes below the top.
     return require_booted("pangofun", call(
-        "start", binary=FREE_BINARY, system="pangofun", rompath=str(rompath),
+        "start", binary=BINARY, system="pangofun", rompath=str(rompath),
         reference_rom=free_image("pangofun", ["bios.bin"], rompath, held),
         reference_addr="0xfffffff0", reference_base="0xffff0000", inipath=no_joystick_ini(),
         boot_seconds=START_WAIT_S))

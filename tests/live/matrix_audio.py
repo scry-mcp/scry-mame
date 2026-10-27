@@ -2,7 +2,7 @@
 
 Run alone, it is the same machinery over this section only:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_audio.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_audio.py
 """
 
 import hashlib

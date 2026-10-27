@@ -13,8 +13,7 @@ from pathlib import Path
 
 import bench_boards
 from live_harness import (
-    FREE_BINARY,
-    MULTICPU_BINARY,
+    BINARY,
     blocked,
     call,
     cell,
@@ -35,14 +34,15 @@ X_CONTROL = [
 X_VERDICT_TITLE = "the focus gate: what the watch saw while the sections ran"
 X_VERDICT = ["no MAME this run launched came to the front and no Space moved while the sections "
              "ran"]
-BENCH_BOARDS = ("m68k-dual", "m68k-dual-alt", "v30", "v30-alt")
+# the boards that run a binary of their own; the rest run BINARY
+BENCH_BOARDS = ("m68k-dual", "m68k-dual-alt")
 
 _WATCH: list[focus_watch.FocusWatch] = []
 _SINCE: list[int] = []
 
 
 def _names() -> set[str]:
-    binaries = [FREE_BINARY, MULTICPU_BINARY]
+    binaries = [BINARY]
     binaries += [bench_boards.board_path(board, "binary") for board in BENCH_BOARDS
                  if not bench_boards.board_missing(board)]
     return {Path(b).name for b in binaries if b}

@@ -3,7 +3,7 @@
 A board that cannot run on this host has its cells BLOCKED with the reason, never passed.
 Run alone, it is the same machinery over this section only:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_acceptance.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_acceptance.py
 """
 
 import json
@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from bench_boards import (
+    BINARY,
     M68K_DUAL_SYSTEM,
     MANIFEST,
     ROMPATH,
@@ -235,13 +236,14 @@ def _h_m68k_dual(t: list[str]) -> None:
     call("close")
 
 
-# Per V30 board: label, then start's arguments; paths are relative to the board's bench directory.
+# Per V30 board: label, then start's arguments; paths are relative to the board's bench directory,
+# and the binary is the one MAME (absolute, so the join leaves it as it is).
 
-V30 = ("v30", {"binary": value("v30", "binary"), "system": value("v30", "system"),
+V30 = ("v30", {"binary": BINARY, "system": value("v30", "system"),
                   "rompath": ROMPATH, "inipath": "run", "reference_rom": V30_REFERENCE_ROM,
                   "reference_addr": "0x30000", "reference_base": "0x0"})
 V30_BOOT_SYMBOLS = (V30_SYMBOLS, {"DATA": "0x400", value("v30", "rom_segment"): "rom"})
-V30_ALT = ("v30-alt", {"binary": value("v30-alt", "binary"), "system": value("v30-alt", "system"),
+V30_ALT = ("v30-alt", {"binary": BINARY, "system": value("v30-alt", "system"),
                       "rompath": ROMPATH, "inipath": "run",
                       "reference_rom": value("v30-alt", "reference_rom"),
                       "reference_addr": "0xFFFF0", "reference_base": "0x20000"})

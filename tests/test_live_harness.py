@@ -28,10 +28,8 @@ IDENTITY: dict[str, dict[str, str]] = {
                   "blit_handler": "dual_state::blit_w"},
     "m68k-dual-alt": {"dir": "alt", "system": "altset", "binary": "upstream/altmame",
                       "reference_rom": "disasm/alt.bin"},
-    "v30": {"dir": "v30dir", "system": "v30set", "binary": "upstream/v30mame",
-            "rom_segment": "SEG_ROM"},
-    "v30-alt": {"dir": "v30altdir", "system": "v30altset", "binary": "upstream/v30altmame",
-                "reference_rom": "build/v30alt.bin"},
+    "v30": {"dir": "v30dir", "system": "v30set", "rom_segment": "SEG_ROM"},
+    "v30-alt": {"dir": "v30altdir", "system": "v30altset", "reference_rom": "build/v30alt.bin"},
 }
 
 
@@ -233,10 +231,9 @@ def test_every_value_a_board_boots_on_comes_from_the_benchs_identity(
         "rompath": str(alt / "run/mame_roms"), "reference_rom": str(alt / "disasm/alt.bin"),
         "reference_addr": "0x0", "inipath": boards.NO_JOYSTICK_INI}
     assert boards.board_dir("v30") == tmp_path / "v30dir"
-    assert boards.opened("v30") == ["v30dir/upstream/v30mame", "v30dir/run/mame_roms/v30set.zip",
+    assert boards.opened("v30") == ["v30dir/run/mame_roms/v30set.zip",
                                     "v30dir/build/Game_V30.bin", "v30dir/build/game_v30.map"]
-    assert boards.opened("v30-alt") == ["v30altdir/upstream/v30altmame",
-                                        "v30altdir/build/v30alt.bin",
+    assert boards.opened("v30-alt") == ["v30altdir/build/v30alt.bin",
                                         "v30altdir/run/mame_roms/v30altset.zip"]
 
 
@@ -286,6 +283,30 @@ def test_an_identity_that_cannot_name_a_board_blocks_it_with_the_remedy(
     assert re.match(why, boards.m68k_dual_missing()), boards.m68k_dual_missing()
     with pytest.raises(h.Blocked, match=why):
         h.call("start", **h.BOOT)
+
+
+@pytest.mark.parametrize("label", ["v30", "v30-alt"])
+def test_a_game_board_runs_on_mame_binary_and_is_blocked_without_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, label: str,
+) -> None:
+    """The games' boards carry no binary of their own: they run on the one MAME, and without it
+    they are BLOCKED naming MAME_BINARY, never started on some other build."""
+    mame = tmp_path / "shared" / "mame"
+    mame.parent.mkdir()
+    mame.write_bytes(b"")
+    for held, why in ((None, "set MAME_BINARY"), (str(tmp_path / "absent"), "set MAME_BINARY"),
+                      (str(mame), "")):
+        if held is None:
+            monkeypatch.delenv("MAME_BINARY", raising=False)
+        else:
+            monkeypatch.setenv("MAME_BINARY", held)
+        _harness(monkeypatch, tmp_path)
+        boards = sys.modules["bench_boards"]
+        monkeypatch.setattr(boards, "bench_missing", lambda prefix: "")
+        monkeypatch.setattr(boards, "_unpinned", lambda board: "")
+        binary, missing = boards.BINARY, boards.board_missing(label)
+        assert binary == (held or "")
+        assert missing.startswith(why) if why else missing == ""
 
 
 @pytest.mark.parametrize(("label", "key"), [(lb, k) for lb, ks in IDENTITY.items() for k in ks])
@@ -914,7 +935,7 @@ def test_the_focus_gate_names_a_held_boards_binary_and_skips_one_the_bench_lacks
     monkeypatch.setattr(x.bench_boards, "board_missing",
                         lambda board: "" if board == "m68k-dual-alt" else "copies ABSENT")
     names = x._names()
-    assert "altmame" in names and "dualmame" not in names and "v30mame" not in names
+    assert "altmame" in names and "dualmame" not in names
 
 
 def test_a_bench_defect_reaching_the_focus_gates_names_is_raised_never_dropped(

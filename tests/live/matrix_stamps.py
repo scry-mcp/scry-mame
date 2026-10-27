@@ -5,7 +5,7 @@ one ahead and must miss. The order is checked on the latch's reads by the sound 
 
 Run alone:
 
-    MAME_STOCK_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_stamps.py
+    MAME_BINARY=... MAME_TEST_ROMS=... uv run python tests/live/matrix_stamps.py
 """
 
 from __future__ import annotations
