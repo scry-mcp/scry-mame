@@ -311,6 +311,11 @@ history(limit=8)
 ```
 <!-- demo-flow:end gridlee -->
 
+[`demos/lineup/`](demos/lineup/) plays the arcade *LineUp* with the same script the DOSBox-X server
+plays its PC port with: the routines and variables named off each build's own symbol map, every
+screen recognised off one map signed by palette index, and the stage's music held, sample for
+sample, to the board's own recording. It needs the game's romset, which is not distributed here.
+
 ## The tools
 
 The tools by family, each with its arguments, its reply and a real example, are in the index
