@@ -17,8 +17,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from scry_core import (
+    frame_window,  # noqa: E402
+    sequence_account,  # noqa: E402
+)
 from scry_core import progress as mprogress  # noqa: E402
-from scry_core import sequence_account  # noqa: E402
 from scry_core import steps as step_judge  # noqa: E402
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable  # noqa: E402
@@ -1234,12 +1237,12 @@ def test_until_frame_is_bounded_in_time_and_reports_its_progress(
                              until_frame=target)
     assert out["status"] == "ok", out.get("message")
     assert any(m.startswith(f"perform until frame {target}: frame ") for m in said), said
-    monkeypatch.setattr(sequence, "UNTIL_SECONDS_MAX", 0.0)
+    monkeypatch.setattr(frame_window, "UNTIL_SECONDS_MAX", 0.0)
     out = s.perform(steps=[FRAME_STEP], summaries=True, until_frame=ses.frame + 5)
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
     assert "until_frame" in out and "frame_reached" in out
     start = ses.frame
-    monkeypatch.setattr(sequence, "UNTIL_SECONDS_MAX", 0.3)
+    monkeypatch.setattr(frame_window, "UNTIL_SECONDS_MAX", 0.3)
     run_for = s.run_for
 
     def slow(**kw: Any) -> dict[str, Any]:
@@ -1295,7 +1298,7 @@ def test_until_frame_is_bounded_and_says_where_it_stopped(
 """
     _cut_by_the_watch(monkeypatch, tmp_path)
     ses: Any = mstate.STATE.ses
-    monkeypatch.setattr(sequence, "UNTIL_STEPS_MAX", 3)
+    monkeypatch.setattr(frame_window, "UNTIL_STEPS_MAX", 3)
     out = s.perform(steps=_runs(1), summaries=True, until_frame=ses.frame + 1)
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
     assert out["steps_total"] == 3 and out["stops"]["surveyed"] == 3

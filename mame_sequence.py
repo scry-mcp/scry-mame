@@ -6,7 +6,6 @@ the first step that answers INVALID, with the steps that ran as the account.
 
 from __future__ import annotations
 
-import functools
 import re
 import subprocess
 import time
@@ -14,14 +13,14 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import media_tools, prose, roster, sequence
+from scry_core import frame_window, media_tools, roster, sequence
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import sequence_account as account
 from scry_core import steps as step_judge
 from scry_core import value_format as vf
 from scry_core import vocabulary as vocab
-from scry_core.reply_contract import or_unavailable, unavailable
+from scry_core.reply_contract import unavailable
 
 import gdb_session as gs
 import mame_advance as advance
@@ -88,13 +87,6 @@ def answers_running(op: str, args: dict[str, Any]) -> bool:
 
 
 STOP_POLL_S = 0.1
-# `run_for` walks through a watch's stop and carries on at the next step; `run_to` and `step`
-# end at the first one.
-UNTIL_OP = "run_for"
-# A frame counter that never arrives must end somewhere, in steps and in time: the whole cycle
-# holds the server's one lock.
-UNTIL_STEPS_MAX = 5000
-UNTIL_SECONDS_MAX = vocab.WAIT_MAX_S
 
 
 # Each entry is the operation's own `check_*`, the function the tool calls alone, so a batch
@@ -162,11 +154,7 @@ def check_perform(settle_seconds: float = 30.0, summaries: bool = False, until_f
     of steps."""
     validate_settle(settle_seconds)
     account.check_summaries(summaries)
-    inputs.natural("until_frame", until_frame, " is a frame number, 0 for none")
-    if until_frame and not summaries:
-        raise st.Invalid("bad_argument",
-                         "until_frame needs summaries=True: a window of frames is hundreds of "
-                         "steps, and their full replies would not fit one reply")
+    frame_window.check_arguments(until_frame, summaries)
 
 
 def check_until(steps: list[Any], until_frame: int) -> None:
@@ -174,18 +162,9 @@ def check_until(steps: list[Any], until_frame: int) -> None:
     if not until_frame:
         return
     advance.refuse_frameless("until_frame")
-    if not any(isinstance(s, dict) and s.get("op") == UNTIL_OP for s in steps):
-        raise st.Invalid("bad_argument",
-                         f"until_frame repeats the list until a stop reaches the frame, so the "
-                         f"list needs a `{UNTIL_OP}` step (`frames: 1` walks a window one frame "
-                         f"at a time)")
-    here = st.last_stop_frame()
     ses = STATE.ses
-    # Running: the frame is not known yet, and `_Window.after` judges the first stop instead.
-    if here is not None and here >= until_frame and not (ses is not None and ses.running):
-        raise st.Invalid("bad_argument",
-                         f"until_frame={until_frame} is not ahead of the machine, which stands at "
-                         f"frame {here}: the frame is absolute, the one the window ends at")
+    frame_window.check_until(steps, until_frame, st.last_stop_frame(),
+                             ses is not None and bool(ses.running))
 
 
 def check_drive(act: Any = None, expect: str = "", seconds: float | None = None,
@@ -309,11 +288,6 @@ def _alive_after(error: gs.SessionError) -> bool:
 
 #: `drive`'s look when the act was refused before anything ran.
 NOTHING_LOOKED_WHY = "the act was refused before anything ran, so the log was not looked at"
-
-
-def _reached(frame: int | None) -> int | dict[str, Any]:
-    """`until_frame`'s `frame_reached`, or why there is none."""
-    return or_unavailable(frame, "no stop of the list read a frame")
 
 
 def _account(ran: dict[str, Any]) -> dict[str, Any]:
@@ -598,72 +572,6 @@ class _Mame(sequence.SequenceMachine):
         self.asked = shown if isinstance(shown, str) else self.asked
 
 
-class _Window(sequence.Cycle):
-    """A list repeated until a stop reply carries a `frame` at or past `until_frame`.
-
-    The steps a window takes are its frames plus the stops inside it, which no caller can size
-    beforehand. The run ends right after the first step whose stop reads the frame, even
-    mid-list; `UNTIL_STEPS_MAX` and `UNTIL_SECONDS_MAX` bound it, and a stop with no frame ends
-    it, since nothing then says whether the window is over."""
-
-    def __init__(self, ses: Any, until_frame: int, progress: mprogress.Progress) -> None:
-        self.limit = UNTIL_STEPS_MAX
-        self.until = until_frame
-        # Known only on a stopped machine: on a running one the first stop starts the window.
-        self.blind = bool(ses.running)
-        self.start = None if self.blind else st.last_stop_frame()
-        self.reached: int | None = None
-        self.clock = mprogress.Ticker(UNTIL_SECONDS_MAX, progress)
-        self.last_line: Callable[[], None] = _no_line
-
-    def expired(self) -> bool:
-        return self.clock.expired()
-
-    def after(self, reply: dict[str, Any], steps_completed: int,
-              step: str) -> sequence.Stop | bool:
-        if not account.stops_in(reply):
-            return False
-        frame = _frame_of(reply)
-        if frame is None:
-            return sequence.Stop("unexpected_answer",
-                                 f"{step} stopped with no frame read, so "
-                                 f"nothing says whether frame {self.until} was reached: the "
-                                 "list ends here")
-        if self.blind and self.reached is None and frame >= self.until:
-            self.reached = frame
-            return sequence.Stop("bad_argument",
-                                 f"the machine was running when the list began and its first "
-                                 f"stop already reads frame {frame}, at or past "
-                                 f"until_frame={self.until}: nothing of the window was walked")
-        self.reached = frame
-        template = "perform until frame {until}: frame {frame}, {steps}"
-        said = {"until": self.until, "frame": frame,
-                "steps": prose.counted(steps_completed, "step")}
-        if frame >= self.until:
-            if self.start is not None:
-                self.last_line = functools.partial(self.clock.finish, self.until - self.start,
-                                                   template, **said)
-            return True
-        if self.start is None:
-            self.clock.tick(template, **said)
-        else:
-            self.clock.report(frame - self.start, self.until - self.start, template, **said)
-        return False
-
-    def short(self, steps_completed: int) -> sequence.Stop | None:
-        if self.reached is not None and self.reached >= self.until:
-            return None
-        return sequence.Stop(None, "", {
-            "verdict": contract.TIMEOUT,
-            "note": f"until_frame={self.until} was not reached in "
-                    f"{prose.counted(steps_completed, 'step')} and {self.clock.elapsed():.0f} s "
-                    f"(the bounds are {UNTIL_STEPS_MAX} steps and {UNTIL_SECONDS_MAX:g} s): "
-                    f"the last frame read was {self.reached}"})
-
-    def fields(self) -> dict[str, Any]:
-        return {"until_frame": self.until, "frame_reached": _reached(self.reached)}
-
-
 def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, ops: Ops,
               progress: mprogress.Progress = mprogress.no_progress, tail_wait: bool = True,
               summaries: bool = False, until_frame: int = 0,
@@ -673,8 +581,8 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
     full account (`ran`, `failed_at`, `failed`, `steps_completed`, the tail, `verdict`).
 
     On several cpus the reply adds `visible_cpu` and `visible_cpu_kept` (`_keep_visible`); with
-    `until_frame` the list repeats (`_Window`). `shape_judged` and `machine_judged` say the
-    caller already judged the list, so each judge runs once a call."""
+    `until_frame` the list repeats (`frame_window.Window`). `shape_judged` and `machine_judged`
+    say the caller already judged the list, so each judge runs once a call."""
     refusal = ((None if shape_judged else refuse_steps(steps, ops))
                or (None if machine_judged else refuse_machine(ses, steps)))
     if refusal is not None:
@@ -682,7 +590,8 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
     several = len(cpus.cpu_list(ses)) > 1
     was = cpus.visible_cpu(ses) if several and not ses.running else None
     machine = _Mame(ses, scratch, summaries)
-    window = _Window(ses, until_frame, progress) if until_frame else None
+    window = (frame_window.Window(until_frame, st.last_stop_frame(), bool(ses.running),
+                                  progress) if until_frame else None)
     ended = sequence.run(machine, steps, ops, settle_seconds, progress, name, tail_wait, window)
     fields = {**ended.fields, "held": ended.held}
     if several:
@@ -694,16 +603,6 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
         window.last_line()
     return (menvelope.invalid(ended.code, ended.message, **fields) if ended.code
             else menvelope.envelope(fields))
-
-
-def _frame_of(reply: dict[str, Any]) -> int | None:
-    """The newest frame a reply's stops carry."""
-    known = [f for s in account.stops_in(reply) if isinstance(f := s.get("frame"), int)]
-    return max(known) if known else None
-
-
-def _no_line() -> None:
-    """The last line of a list that has none to send."""
 
 
 # A stop moves the visible cpu as MAME does; the list puts back the one it keeps (the one it

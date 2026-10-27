@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 
 import pytest
+from scry_core import frame_window  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -115,7 +116,7 @@ def test_perform_until_frame_answers_target_or_timeout(
     ses = _frames_and_the_watch(monkeypatch, tmp_path)
     out = s.perform(steps=[FRAME_STEP], summaries=True, until_frame=ses.frame + 2)
     assert out["status"] == "ok" and out["verdict"] == "TARGET", out
-    monkeypatch.setattr(sequence, "UNTIL_SECONDS_MAX", 0.0)
+    monkeypatch.setattr(frame_window, "UNTIL_SECONDS_MAX", 0.0)
     out = s.perform(steps=[FRAME_STEP], summaries=True, until_frame=ses.frame + 5)
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
     assert "code" not in out and "frame_reached" in out, out

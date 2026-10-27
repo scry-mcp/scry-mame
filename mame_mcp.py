@@ -7,7 +7,16 @@ from collections.abc import Callable
 from typing import Any
 
 from pydantic import ValidationError
-from scry_core import boundary, cancel, envelope, media_tools, presence, recording, roster
+from scry_core import (
+    boundary,
+    cancel,
+    envelope,
+    frame_window,
+    media_tools,
+    presence,
+    recording,
+    roster,
+)
 from scry_core import strict_arguments as strict
 
 import gdb_session as gs
@@ -180,7 +189,7 @@ def _machine() -> recording.Machine:
 _LISTS = {kind: ("declaration_list", key) for kind, key in dec.COUNT_KEYS.items()}
 
 
-RECORDER = recording.Recorder("mame", "server.py", sequence.UNTIL_STEPS_MAX, _machine,
+RECORDER = recording.Recorder("mame", "server.py", frame_window.UNTIL_STEPS_MAX, _machine,
                               lambda: STATE.ses is not None and STATE.machine_alive(),
                               declarations=lambda: arming.store().declarations(),
                               kinds=_LISTS,

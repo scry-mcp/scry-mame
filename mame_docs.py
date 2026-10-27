@@ -4,6 +4,7 @@ from __future__ import annotations
 from scry_core import comment_file as core_comments
 from scry_core import (
     docs,
+    frame_window,
     judges,
     log_marks,
     picture,
@@ -48,7 +49,7 @@ DOC_VALUES: dict[str, str] = {
     # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
     **core_comments.DOC_VALUES,
-    "RECORD_MAX": str(sequence.UNTIL_STEPS_MAX),
+    "RECORD_MAX": str(frame_window.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(mscreen.PENS_MAX),
     "GFX_PLANES_MAX": str(ml.PLANES_MAX), "GFX_TILES_MAX": str(mgfx.VIEW_TILES_MAX),
@@ -69,7 +70,7 @@ DOC_VALUES: dict[str, str] = {
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX),
     "STATE_NAME_MAX": str(state_files.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
-    "UNTIL_STEPS_MAX": str(sequence.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),
+    "UNTIL_STEPS_MAX": str(frame_window.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),
     "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
     "TEMPS": str(lexer.TEMPS), "SCAN_BYTES_MAX": f"{mscan.SCAN_BYTES_MAX:#x}",
     "HITS_DEFAULT": str(judges.HITS_DEFAULT),
