@@ -59,27 +59,33 @@ _NOT_SERVED = re.compile(
 
 # A stub serving a thread per cpu (patches/0004) lives on without a cpu it cannot describe; the
 # session reads thread 1, the first cpu, so that one unserved refuses `target.xml` every launch.
-_UNSERVED_LIVE = re.compile(r"gdbstub: cpuname (\S+ \(\S+\)) not found in gdb stub descriptions, "
+_UNSERVED_LIVE = re.compile(r"gdbstub: cpuname (\S+) \((\S+)\) not found in gdb stub descriptions, "
                             r"so its registers are not served$", re.MULTILINE)
 _WAY_OUT = "what serves this board is a build whose stub describes that cpu"
 
 
-def unserved_first_cpu(error: BaseException, stdout_tail: str) -> re.Match[str] | None:
-    """MAME's line for the first cpu when a live stub refused `target.xml` for want of it."""
-    if not isinstance(error, gs.Refused) or error.phase != "target.xml":
-        return None
-    return _UNSERVED_LIVE.search(stdout_tail)
+def unserved_line(error: BaseException, stdout_tail: str) -> bool:
+    """Whether a live stub refused `target.xml` and said it serves some cpu no registers."""
+    return (isinstance(error, gs.Refused) and error.phase == "target.xml"
+            and _UNSERVED_LIVE.search(stdout_tail) is not None)
 
 
-def unserved_refusal(error: BaseException, after_s: float, **live: Any) -> st.Invalid:
-    """`no_channel` for a stub `unserved_first_cpu` read; `live` is the live MAME's fields."""
-    m = unserved_first_cpu(error, str(live.get("stdout_tail", "")))
-    assert m is not None and isinstance(error, gs.Refused), "called once unserved_first_cpu matched"
+def unserved_first_cpu(stdout_tail: str, first_cpu: str) -> re.Match[str] | None:
+    """MAME's line for `first_cpu` (a tag), the cpu the session's thread 1 is; a line naming
+    another cpu is no reason for thread 1's `target.xml` to fail."""
+    return next((m for m in _UNSERVED_LIVE.finditer(stdout_tail) if m.group(2) == first_cpu),
+                None)
+
+
+def unserved_refusal(error: gs.SessionError, after_s: float, line: re.Match[str],
+                     **live: Any) -> st.Invalid:
+    """`no_channel` for the first cpu's line `unserved_first_cpu` found; `live` is the live
+    MAME's fields."""
     return st.Invalid("no_channel",
-                      f"this MAME's gdbstub serves no registers for the first cpu, {m.group(1)}, "
-                      f"and said so: `{m.group(0)}`; it refused `target.xml` after "
-                      f"{after_s:.1f} s, as it will on every launch. Not launched again: "
-                      f"{_WAY_OUT}", phase=error.phase, reply=error.reply,
+                      f"this MAME's gdbstub serves no registers for the first cpu, "
+                      f"{line.group(1)} ({line.group(2)}), and said so: `{line.group(0)}`; it "
+                      f"refused `target.xml` after {after_s:.1f} s, as it will on every launch. "
+                      f"Not launched again: {_WAY_OUT}", phase=error.phase, reply=error.reply,
                       after_s=st.spent_s(after_s), **live)
 
 

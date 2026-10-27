@@ -87,8 +87,8 @@ block disagreeing with the machine, and BLOCKED when it could not run, with the 
 lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run (all, unset);
 `MAME_LIVE_JOBS` runs each letter as a process of its own, that many at once (unset, half the
 host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
-the parent so its watch spans every job. The boards run on the MAME `MAME_BINARY` names, built
-with every driver, and the free boards read their sets from `MAME_TEST_ROMS`; unset, those cells
+the parent so its watch spans every job. The free boards and the games' boards run on the MAME
+`MAME_BINARY` names, built with every driver, and the free boards read their sets from `MAME_TEST_ROMS`; unset, those cells
 are BLOCKED naming the variable.
 
 ## The bench the live tier reads

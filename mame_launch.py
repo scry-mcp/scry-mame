@@ -800,9 +800,12 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
             if (died := _exit_code(e, progress)) is not None:
                 raise failures.death_refusal(died, clock.elapsed(),
                                              stdout_tail(STATE.scratch)) from None
-            if failures.unserved_first_cpu(e, stdout_tail(STATE.scratch)):
-                raise failures.unserved_refusal(e, clock.elapsed(),
-                                                **_alive_fields(judged)) from None
+            tail = stdout_tail(STATE.scratch)
+            if isinstance(e, gs.Refused) and failures.unserved_line(e, tail):
+                first = next((row["tag"] for row in collect(judged)[0]["cpus"]), "")
+                if (line := failures.unserved_first_cpu(tail, first)) is not None:
+                    raise failures.unserved_refusal(e, clock.elapsed(), line,
+                                                    **_alive_fields(judged)) from None
             if isinstance(e, failures.NOT_READY_ERRORS):
                 raise failures.StubNotReady(e, clock.elapsed(),
                                             **_alive_fields(judged, keep=last_launch)) from None

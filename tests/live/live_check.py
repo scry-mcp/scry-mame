@@ -46,8 +46,8 @@ import server as s  # isort: skip
 
 #   uv run python tests/live/live_check.py
 # Every check here but the last ones is on m68k-dual, and those run the demos on the free sets
-# on the stock MAME: a host without either leaves something unexamined, so it is INVALID, not a
-# pass.
+# on the MAME MAME_BINARY names: a host without either leaves something unexamined, so it is
+# INVALID, not a pass.
 ROOT = Path(__file__).resolve().parents[2]
 #: Every demo directory, found rather than listed, so a new one is run and required too.
 DEMOS = tuple(sorted(d.name for d in (ROOT / "demos").iterdir() if (d / "demo.py").is_file()))
@@ -1316,8 +1316,8 @@ s.debug(command="observe maincpu")
 check("the contract session closes", s.close().get("closed") is True)
 
 # The README blocks show paths under the repository's own `tmp/`, so each run reaches its ROM and
-# the stock MAME through links there: the transcript then reads `./tmp/...` on any host and
-# matches its block line for line.
+# the MAME MAME_BINARY names through links there: the transcript then reads `./tmp/...` on any
+# host and matches its block line for line.
 links = ROOT / "tmp"
 for link, target in ((links / "bin" / "mame", Path(BINARY).resolve()),
                      *((links / "roms" / f"{name}.zip", z) for name, z in ZIPS.items())):
