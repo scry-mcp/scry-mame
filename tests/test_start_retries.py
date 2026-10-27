@@ -39,8 +39,9 @@ ABORTED = -signal.SIGABRT
 IMAGE = bytes(range(256)) * 64
 
 # Knobs: DEATHS launches die by SIGSEGV (after LATE s); EXIT is a plain exit code; HANG never
-# boots; ABORT/FATAL print their line then die by SIGABRT/SIGSEGV; the banner prints BANNER_AFTER s
-# after boot (never when None); the first LOST launches end as MAME does on a taken port, exit 3.
+# boots; ABORT/FATAL print their line then die by SIGABRT/SIGSEGV; SAID is a line a live MAME
+# prints; the banner prints BANNER_AFTER s after boot (never when None); the first LOST launches
+# end as MAME does on a taken port, exit 3.
 DOUBLE = """import os, signal, sys, time
 from pathlib import Path
 args = sys.argv[1:]
@@ -76,6 +77,8 @@ if %(fatal)r:
 if n <= %(deaths)d:
     time.sleep(%(late)r)
     os.kill(os.getpid(), signal.SIGSEGV)
+if %(said)r:
+    print(%(said)r, flush=True)
 (here / "booted").touch()
 %(banner)s
 time.sleep(60)
@@ -84,12 +87,12 @@ time.sleep(60)
 
 def _double(tmp_path: Path, deaths: int = 0, exit_code: str = "", hang: bool = False,
             late: float = 0, abort: str = "", fatal: str = "",
-            banner_after: float | None = 0, lost: int = 0) -> Path:
+            banner_after: float | None = 0, lost: int = 0, said: str = "") -> Path:
     if sys.platform == "win32" and (deaths or abort or fatal):
         pytest.skip("a death by signal is POSIX's: Windows ends a process with an exit code")
     binary = host_program.write(tmp_path / "segv-mame", DOUBLE % {
         "deaths": deaths, "exit": exit_code, "hang": hang, "late": late, "abort": abort,
-        "fatal": fatal, "lost": lost, "banner": "" if banner_after is None else
+        "fatal": fatal, "lost": lost, "said": said, "banner": "" if banner_after is None else
         f"time.sleep({banner_after!r})\nsys.stdout.write({BANNER_LINE!r})\nsys.stdout.flush()"})
     console = tmp_path / "plugins" / "console"
     console.mkdir(parents=True, exist_ok=True)
@@ -179,9 +182,45 @@ def test_a_first_cpu_the_stub_cannot_serve_is_refused_at_once_naming_it(
     assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
     assert f"`Fatal error: {NOT_SERVED}`" in out["message"], out["message"]
     assert "the first cpu, mc6809e," in out["message"], out["message"]
-    assert "patches/0004-gdbstub-one-thread-per-cpu.patch" in out["message"], "the way out"
+    assert "a build whose stub describes that cpu" in out["message"], "the way out"
+    assert "0004" not in out["message"], "0004 serves no first cpu its stub cannot describe"
     assert out["exit_code"] == -11 and isinstance(out["after_s"], float), out
     assert out["session"]["alive"] is False, "the failed start owns nothing"
+
+
+# The line a gdbstub serving a thread per cpu prints for a cpu it cannot describe; it lives on.
+UNSERVED = ("gdbstub: cpuname mc6809e (:maincpu) not found in gdb stub descriptions, so its "
+            "registers are not served")
+
+
+def test_a_live_stub_that_cannot_describe_the_first_cpu_is_refused_at_once_naming_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A stub that lives on without the first cpu refuses `target.xml` on every launch, so the
+    start is `no_channel` at once, quoting MAME's line, never relaunched as a stub not ready."""
+    refused = _phased(gs.Refused("the stub refused `qXfer:features:read:target.xml:0,400`: E01"),
+                      "target.xml", "E01")
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, said=UNSERVED),
+                 handshake=_not_ready(tmp_path, refused, launch.START_RETRIES_MAX + 1))
+    assert out["status"] == "INVALID" and out["code"] == "no_channel", out
+    assert _launches(tmp_path) == 1 and out.get("start_retries", []) == [], out
+    assert f"`{UNSERVED}`" in out["message"] and "mc6809e (:maincpu)" in out["message"], out
+    assert "a build whose stub describes that cpu" in out["message"], out["message"]
+    assert out["session"]["alive"] is False, "the failed start owns nothing"
+
+
+def test_a_refused_target_xml_without_the_unserved_line_is_still_a_stub_not_ready(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    refused = _phased(gs.Refused("the stub refused `qXfer:features:read:target.xml:0,400`: E01"),
+                      "target.xml", "E01")
+    out = _start(monkeypatch, tmp_path, _double(tmp_path),
+                 handshake=_not_ready(tmp_path, refused, 1))
+    try:
+        assert out["status"] == "ok", out
+        assert [d["kind"] for d in out.get("start_retries", [])] == ["stub_not_ready"], out
+    finally:
+        s.close()
 
 
 @pytest.mark.parametrize(("tail", "code"), [

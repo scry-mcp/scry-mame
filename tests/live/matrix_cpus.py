@@ -70,7 +70,7 @@ R_PC_BOARDS = (PcBoard("circus", ["9004a.1a"], "0x1000", "m6502"),
 R_CELLS = [
     *[f"{b.system}: registers reads the {b.arch}'s PC as the console's print curpc at the same "
       "stop" for b in R_PC_BOARDS],
-    "alienar: start refuses the mc6809e the stock stub has no description of, no_channel, "
+    "alienar: start refuses the mc6809e the stub has no description of, no_channel, "
     "quoting MAME's line, launched once",
     "pangofun: registers reads the i486's EIP as the console's print eip at the same stop",
 ]
@@ -124,8 +124,8 @@ def _r_alienar(cells: list[str]) -> None:
                 f"{said(r, 120)}")
         return
     cell(cells[ALIENAR], refused(r, "no_channel") and "start_retries" not in r
-         and "`Fatal error: gdbstub: cpuname mc6809e not found in gdb stub descriptions`"
-         in message, said(r, 300))
+         and "gdbstub: cpuname mc6809e (:maincpu) not found in gdb stub descriptions" in message,
+         said(r, 300))
 
 
 def _r_pangofun(cells: list[str]) -> None:

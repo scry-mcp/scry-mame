@@ -57,6 +57,32 @@ _NOT_SERVED = re.compile(
     r"Fatal error: gdbstub: cpuname (\S+) not found in gdb stub descriptions$", re.MULTILINE)
 
 
+# A stub serving a thread per cpu (patches/0004) lives on without a cpu it cannot describe; the
+# session reads thread 1, the first cpu, so that one unserved refuses `target.xml` every launch.
+_UNSERVED_LIVE = re.compile(r"gdbstub: cpuname (\S+ \(\S+\)) not found in gdb stub descriptions, "
+                            r"so its registers are not served$", re.MULTILINE)
+_WAY_OUT = "what serves this board is a build whose stub describes that cpu"
+
+
+def unserved_first_cpu(error: BaseException, stdout_tail: str) -> re.Match[str] | None:
+    """MAME's line for the first cpu when a live stub refused `target.xml` for want of it."""
+    if not isinstance(error, gs.Refused) or error.phase != "target.xml":
+        return None
+    return _UNSERVED_LIVE.search(stdout_tail)
+
+
+def unserved_refusal(error: BaseException, after_s: float, **live: Any) -> st.Invalid:
+    """`no_channel` for a stub `unserved_first_cpu` read; `live` is the live MAME's fields."""
+    m = unserved_first_cpu(error, str(live.get("stdout_tail", "")))
+    assert m is not None and isinstance(error, gs.Refused), "called once unserved_first_cpu matched"
+    return st.Invalid("no_channel",
+                      f"this MAME's gdbstub serves no registers for the first cpu, {m.group(1)}, "
+                      f"and said so: `{m.group(0)}`; it refused `target.xml` after "
+                      f"{after_s:.1f} s, as it will on every launch. Not launched again: "
+                      f"{_WAY_OUT}", phase=error.phase, reply=error.reply,
+                      after_s=st.spent_s(after_s), **live)
+
+
 def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invalid:
     """`no_channel` when the stub has no description of the first cpu (every launch meets it
     again), else `DiedBeforeStub`."""
@@ -66,10 +92,7 @@ def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invali
         return st.Invalid("no_channel",
                           f"this MAME's gdbstub has no description of the first cpu, "
                           f"{m.group(1)}, and said so: `{m.group(0)}`; MAME then {ended} after "
-                          f"{after_s:.1f} s. Not launched again: what serves this board is a "
-                          "build whose stub describes that cpu, or one carrying "
-                          "`patches/0004-gdbstub-one-thread-per-cpu.patch`, whose stub leaves an "
-                          "undescribed cpu's registers unserved instead of ending MAME",
+                          f"{after_s:.1f} s. Not launched again: {_WAY_OUT}",
                           exit_code=exit_code, after_s=st.spent_s(after_s),
                           stdout_tail=stdout_tail)
     return DiedBeforeStub(exit_code, after_s, stdout_tail)
