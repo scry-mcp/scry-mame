@@ -57,6 +57,21 @@ def test_a_screen_mapped_from_the_one_in_front_is_found_again_off_one_capture(
     assert mstate.STATE.maps.found.stop == found["stop_seq"], "dated at the stop it reports"
 
 
+def test_a_screen_signed_by_index_asks_the_capture_for_its_pens(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    added = _ok(s.map_write("add", screen="board", match=[STRIP], cells="index"))
+    assert added["cells"] == "index"
+    asked = ses.stdin.getvalue()
+    assert b", true)" in asked and b", false)" not in asked, "the pens were not asked for"
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    found = _ok(s.map_find())
+    assert (found["matched"], found["screen"]) == (True, "board")
+    assert b", false)" not in ses.stdin.getvalue(), "an index map read without its pens"
+
+
 def test_another_board_matches_nothing_and_says_what_it_tried(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

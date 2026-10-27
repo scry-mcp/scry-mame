@@ -23,6 +23,7 @@ from live_harness import (
     FREE_ROMS,
     NO_JOYSTICK_INI,
     begin,
+    blocked,
     check,
     finish,
     free_boards_missing,
@@ -47,11 +48,15 @@ import server as s  # isort: skip
 #   uv run python tests/live/live_check.py
 # Every check here but the last ones is on m68k-dual, and those run the demos on the free sets
 # on the MAME MAME_BINARY names: a host without either leaves something unexamined, so it is
-# INVALID, not a pass.
+# INVALID, not a pass. A game's own demo (GAME_ROMS) is BLOCKED by name instead, since no free
+# set can stand in for it.
 ROOT = Path(__file__).resolve().parents[2]
+#: The demos of games no free set holds, each with the variable naming the directory its romset
+#: and symbol map are in: run when it is set, BLOCKED with that reason when not.
+GAME_ROMS = {"lineup": "LINEUP_MAME_ROMS"}
 #: Every demo directory, found rather than listed, so a new one is run and required too.
 DEMOS = tuple(sorted(d.name for d in (ROOT / "demos").iterdir() if (d / "demo.py").is_file()))
-ZIPS = {name: Path(FREE_ROMS).resolve() / f"{name}.zip" for name in DEMOS}
+ZIPS = {name: Path(FREE_ROMS).resolve() / f"{name}.zip" for name in DEMOS if name not in GAME_ROMS}
 #: The board the bench at the end records and replays, beside the demos' own.
 BENCH_ZIP = Path(FREE_ROMS).resolve() / "circus.zip"
 if why := m68k_dual_missing() or free_boards_missing() or ", ".join(
@@ -1329,9 +1334,16 @@ for name in DEMOS:
     print(f"\n== the {name} demo: it still passes, and its README still shows what the server "
           "answers")
     demo_dir = ROOT / "demos" / name
+    rompath = links / "roms"
+    if name in GAME_ROMS:
+        if not os.environ.get(GAME_ROMS[name]):
+            blocked(f"the {name} demo", f"set {GAME_ROMS[name]} to the directory holding the "
+                    f"game's romset and its symbol map: no free set carries {name}")
+            continue
+        rompath = Path(os.environ[GAME_ROMS[name]]).expanduser().resolve()
     try:
         ran = subprocess.run(
-            [sys.executable, str(demo_dir / "demo.py"), "--rompath", str(links / "roms")],
+            [sys.executable, str(demo_dir / "demo.py"), "--rompath", str(rompath)],
             cwd=ROOT, env={**os.environ, "MAME_BINARY": str(links / "bin" / "mame")},
             capture_output=True, text=True, timeout=DEMO_TIMEOUT_S)
         code, out, err = ran.returncode, ran.stdout, ran.stderr

@@ -1,6 +1,6 @@
 # The Files tools
 
-**The signature** is BLAKE2b with an 8-byte digest, 16 lowercase hex characters, over `scry-sig/1|pixel|<w>x<h>|` (the crop's size) and the crop's pixels row by row as RGB. A pixel is its resolved colour, never its pen, so a palette change is a new signature and two screens that look the same have one.
+**The signature** is BLAKE2b with an 8-byte digest, 16 lowercase hex characters, over `scry-sig/1|pixel|<w>x<h>|` (the crop's size) and the crop's pixels row by row as RGB. A pixel is its resolved colour, never its pen, so a palette change is a new signature and two screens that look the same have one; only a screen map can be told to sign pens ([Screen maps](screen.md)).
 
 **A crop** is `[x, y, width, height]`; one that leaves the picture is refused with its size, never padded, since a padded crop compares pixels nobody drew.
 

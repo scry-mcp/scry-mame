@@ -12,7 +12,7 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
 
 **Discovering a board nobody has described** is a chain: `gfx_sweep` draws a block under candidate layouts, `gfx_locate` checks one against the screen, `gfx_draft` writes a manifest from what the session proved. Nothing in the chain ranks its candidates: a heuristic that looks like proof is worse than an honest list. Every `gfx_locate` answer, sweep and choice is kept as the session's EVIDENCE (gone at `close` and at `start`), and `gfx_draft` derives from that record alone.
 
-**Screen maps.** A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.scry-map.json`, kept in the application's own repository beside the program, in the format `scry-map/1`:
+**Screen maps.** A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.scry-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-map/1`:
 
 ```json
 {"format": "scry-map/1", "application": "circus",
@@ -21,7 +21,7 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
               "controls": [{"name": "high_score", "rect": [40, 112, 184, 8]}]}]}
 ```
 
-Everything is in the screen's pixels. A screen is known by the signatures of regions that stay still on it, never by the whole screen, whose signature a sprite or a counter changes from one stop to the next.
+Everything is in the screen's pixels. A screen is known by the signatures of regions that stay still on it, never by the whole screen, whose signature a sprite or a counter changes from one stop to the next. A screen may instead say `"cells": "index"` (`map_write(method="add", cells="index")`): its regions are then signed by the palette index each pixel was drawn with, not by the colour it shows, so one map knows a program on two machines whose palettes resolve one index to different colours. That needs a screen drawn through a palette: on any other it is refused `no_channel`. A screen that says nothing is signed in colour. Capturing the pens costs MAME more than capturing the colours, so they are asked for only when such a screen is mapped.
 
 **Two layers.** `map_write(method="load")` fills the FILE layer, which a `start` keeps. `map_write(method="add")` fills the SESSION layer, which a `start` empties, since its screens were read off another run. `map_find` tries the session first, then the file; `map_write(method="save")` writes the two as one file, the session winning, and that file becomes the file layer.
 

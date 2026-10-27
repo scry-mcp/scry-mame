@@ -10,7 +10,8 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import progress as mprogress
-from scry_core import screen_map
+from scry_core import raster, screen_map
+from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_envelope as menvelope
@@ -31,8 +32,9 @@ def check_save_map(dest: object = "", overwrite: object = False, **_: Any) -> No
 
 
 def check_add_map(screen: object = "", match: object = None, controls: object = None,
-                  **_: Any) -> None:
-    screen_map.check_add(screen, match, controls)
+                  cells: object = "", **_: Any) -> None:
+    vocab.one_of("cells", cells, screen_map.CELLS_WORDS)
+    screen_map.check_add(screen, match, controls, cells)
 
 
 def load_map(path: str) -> dict[str, Any]:
@@ -48,12 +50,13 @@ def save_map(dest: str, overwrite: bool) -> dict[str, Any]:
 
 
 def add_map(ses: gs.Session, scratch: Path, screen: str, match: list[list[int]],
-            controls: list[dict[str, Any]] | None,
+            controls: list[dict[str, Any]] | None, cells: str = "rgb",
             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of `map_write(method="add")`: the screen in front, signed off one capture."""
-    check_add_map(screen, match, controls)
+    check_add_map(screen, match, controls, cells)
     common: dict[str, Any] = {}
-    fields = STATE.maps.add(screen, match, controls, _reader(ses, scratch, common, progress))
+    fields = STATE.maps.add(screen, match, controls, _reader(ses, scratch, common, progress),
+                            cells)
     return running.stop_reply(ses, scratch, f"map_write add: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
@@ -74,9 +77,11 @@ def map_find(ses: gs.Session, scratch: Path,
 
 def _reader(ses: gs.Session, scratch: Path, common: dict[str, Any],
             progress: mprogress.Progress) -> screen_map.Read:
-    """`screen_signature`'s capture as the one read a map is matched against."""
-    def read() -> screen_map.Grid:
-        cap, said = mscreen.capture(ses, scratch, False, mlua.EVAL_WAIT_S, progress)
+    """`screen_signature`'s capture as the one read a map is matched against, with the pens
+    `screen_view` recovers when a screen signed by index asks for them."""
+    def read(indices: bool = False) -> screen_map.Grid:
+        cap, said = mscreen.capture(ses, scratch, indices, mlua.EVAL_WAIT_S, progress)
         common.update(said)
-        return screen_map.Grid("pixel", cap.width, cap.height, mpalette.rgb_bytes(cap.colours))
+        return screen_map.Grid("pixel", cap.width, cap.height, mpalette.rgb_bytes(cap.colours),
+                               None if cap.indices is None else raster.index_cells(cap.indices))
     return read

@@ -363,5 +363,6 @@
   {"id": "M200", "prompt": "Start MAME from /opt/wheels/mamed, system wheelfir, ROMs in /opt/wheels/roms, reference image /opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.", "tool": "start",
    "args": {"binary": "/opt/wheels/mamed", "system": "wheelfir", "rompath": "/opt/wheels/roms",
             "reference_rom": "/opt/wheels/roms/wheelfir.bin", "view": "Shifter-R"},
-   "grammar": ["Shifter-R"]}
+   "grammar": ["Shifter-R"]},
+  {"id": "M201", "prompt": "The machine is stopped on the play screen of a game whose PC port draws the same pixels through a palette of other colours. Map this screen as play, known by the strip at x 0, y 0, 320 wide and 8 high, signed so that one map knows it on both machines.", "tool": "map_write", "args": {"method": "add", "screen": "play", "match": [[0, 0, 320, 8]], "cells": "index"}, "grammar": ["add", "index"]}
 ]}

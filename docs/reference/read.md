@@ -556,8 +556,8 @@ map_find()
 ```
 
 Which mapped screen the machine shows. Reply: `matched`; matched, `screen`, `layer`, `kind`,
-`size`, `controls` (`name`, `rect`, `centre`); else `screens_mapped`, `screens_tried`. None
-mapped: `needs_call`.
+`size`, `controls` (`name`, `rect`, `centre`); else `screens_mapped`, `screens_tried`,
+`screens_unjudged` (signed by index on a screen with no palette). None mapped: `needs_call`.
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -587,6 +587,7 @@ Takes no argument.
 | `screen` | string |
 | `screens_mapped` | integer |
 | `screens_tried` | integer |
+| `screens_unjudged` | integer |
 | `size` | array |
 
 Example, from a live run:
@@ -657,9 +658,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end map_find -->
 
-It captures the screen once for all the mapped screens, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen.
-
-It captures the screen once for all the mapped screens, session layer first and then the file's, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen. A screen matches when its size and every region's signature are the screen's.
+It captures the screen once for all the mapped screens, session layer first and then the file's, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen. A screen matches when its size and every region's signature are the screen's, each region signed in colour or, on a screen that says `"cells": "index"`, by palette index; the capture recovers the pens only when such a screen is mapped.
 
 <!-- scry-reference:begin map_write -->
 ## `map_write`
@@ -667,7 +666,7 @@ It captures the screen once for all the mapped screens, session layer first and 
 *Write the screen map*
 
 ```text
-map_write(method, screen="", match=null, controls=null, path="", dest="", overwrite=null)
+map_write(method, screen="", match=null, controls=null, cells="", path="", dest="", overwrite=null)
 ```
 
 The screen map: an application's screens, each known by the signatures of its stable
@@ -675,8 +674,10 @@ regions, and their controls, in a session layer and a file layer.
 
 `add`: the screen shown now as `screen` in the session layer, one capture signing each
 `match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
-places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `match`,
-`controls`, `replaced`, `shadows_file`.
+places to read; needs the machine stopped. `cells` `index` (a pixel screen; default
+`rgb`) signs the palette indices drawn, not the colours shown, so one map knows a program
+shown through two palettes; a screen with no palette refuses it (`no_channel`). Reply: `screen`, `kind`, `size`,
+`cells`, `match`, `controls`, `replaced`, `shadows_file`.
 
 `load`: `path` (`<application>.scry-map.json`, absolute or `~`-led) as the file layer. Reply:
 `path`, `application`, `screens`, `controls`.
@@ -695,6 +696,7 @@ Reference: REFERENCE.md, Screen maps.
 | `screen` | string | `""` |
 | `match` | array of array of integer or null | `null` |
 | `controls` | array of object or null | `null` |
+| `cells` | one of `""`, `"rgb"`, `"index"` | `""` |
 | `path` | string | `""` |
 | `dest` | string | `""` |
 | `overwrite` | boolean or null | `null` |
@@ -713,6 +715,7 @@ Reference: REFERENCE.md, Screen maps.
 | `thread_errors` | integer |
 | `application` | string |
 | `call` | string |
+| `cells` | string |
 | `controls` | integer |
 | `evaluated_by` | string |
 | `kind` | string |

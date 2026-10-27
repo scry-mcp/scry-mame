@@ -580,6 +580,7 @@ class MapFindReply(MameConsoleAccount, total=False):
     screen: str
     screens_mapped: int
     screens_tried: int
+    screens_unjudged: int
     size: list[Any]
 
 
@@ -1175,6 +1176,7 @@ class DeclarationListReply(MameEnvelope, total=False):
 class MapWriteReply(MameConsoleAccount, total=False):
     application: str
     call: str
+    cells: str
     controls: int
     evaluated_by: str
     kind: str

@@ -112,8 +112,9 @@ COMMENT = {
 
 
 def _add_map(screen: str, match: list[list[int]], controls: list[dict[str, Any]] | None = None,
-             *, progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    return mmaps.add_map(*stopped("a screen map"), screen, match, controls, progress)
+             cells: str = "rgb", *,
+             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
+    return mmaps.add_map(*stopped("a screen map"), screen, match, controls, cells, progress)
 
 
 def _load_map(path: str) -> dict[str, Any]:

@@ -68,6 +68,7 @@ from scry_core import (  # noqa: E402
     recording,
     reference,
     reply_schema,  # noqa: E402
+    screen_map,
     signalled_end,
 )
 from scry_core import presence as scry_presence  # noqa: E402
@@ -889,6 +890,7 @@ def map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
       on_cancel="none", replay={"add": "step", "load": "step", "save": "drop"})
 def map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str = "",
               match: list[list[int]] | None = None, controls: list[dict[str, Any]] | None = None,
+              cells: Annotated[str, vocab.enum(screen_map.CELLS_WORDS)] = "",
               path: str = "", dest: str = "", overwrite: bool | None = None,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen map: an application's screens, each known by the signatures of its stable
@@ -896,8 +898,8 @@ def map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str 
 
     `add`: the screen shown now as `screen` in the session layer, one capture signing each
     `match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
-    places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `match`,
-    `controls`, `replaced`, `shadows_file`.
+    places to read; needs the machine stopped. {MAP_CELLS} Reply: `screen`, `kind`, `size`,
+    `cells`, `match`, `controls`, `replaced`, `shadows_file`.
 
     {MAP_LOAD}
 

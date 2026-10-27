@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import judges, media_tools, placement
+from scry_core import judges, media_tools, placement, screen_map
 from scry_core import vocabulary as vocab
 from scry_core.host_program import absolute as _abs
 
@@ -64,6 +64,7 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("start", "display", lambda: placement.DISPLAY_OPTIONS),
     ("comment_write", "method", lambda: tuple(folds.COMMENT)),
     ("map_write", "method", lambda: tuple(folds.MAP)),
+    ("map_write", "cells", lambda: screen_map.CELLS_WORDS),
     ("scan", "method", lambda: tuple(folds.SCAN)),
     ("state_write", "method", lambda: tuple(folds.STATE_METHODS)),
     ("image_compare", "method", lambda: tuple(media_tools.IMAGE_METHODS)),
@@ -182,7 +183,8 @@ NEEDS: dict[str, dict[str, Any]] = {
     "start": {"binary": _abs("nowhere", "mame"), "system": "x", "rompath": _abs("nowhere"),
               "reference_rom": _abs("nowhere", "x.bin")},
     "gfx_locate": {"layouts": ["8x8"], "patch": [0, 0, 8, 8], "tag": "gfx"},
-    "gfx_sweep": {"tag": "gfx"}}
+    "gfx_sweep": {"tag": "gfx"},
+    "map_write": {"method": "add", "screen": "a", "match": [[0, 0, 1, 1]]}}
 
 NEEDS_BY_ARG: dict[tuple[str, str], dict[str, Any]] = {("scan", "operator"): {"method": "filter"}}
 
