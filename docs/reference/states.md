@@ -10,10 +10,6 @@ So `state_write(method="save")`, `state_write(method="load")` and a `statesave` 
 
 **A recording repeats from one saved state only on a driver whose game logic does not run while the screen is drawn.** A driver that does its logic from `screen_update` depends on when the screen was last drawn, which is not part of the saved state, so `state_write(method="load")` then `record` can give two different recordings. A recording compared as a regression check is made on a driver whose logic does not draw, or against a tolerance.
 
-
-
-
-
 <!-- scry-reference:begin state_list -->
 ## `state_list`
 

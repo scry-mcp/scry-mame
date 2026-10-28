@@ -2,8 +2,6 @@
 
 A comment is a declaration too: a text at a place, shown in MAME's own disassembly. The shared contract and the comment file's format are in [REFERENCE.md, Declarations](../../REFERENCE.md#declarations).
 
-
-
 **A rebuild can bring several comments to one place.** All are kept; the pane shows the first the store holds that it can show, and each other is `unarmable` (a `stale` one is `stale`, never fed). An add, load or delete there reaches the one its ref spells, else the one the pane shows. A `stale` comment of the other kind is outside the one-per-place rule: only its own spelling replaces or deletes it. A replacing add keeps the first `ref` and `by`, so a comment made by symbol keeps following it.
 
 **The pane is a VIEW of the store.** MAME binds no comment call to Lua, so each comment is fed through the console's `comadd`, which names no cpu: another cpu's is fed by making it visible and putting the visible one back, and each is read back off one `dasm` line ending ` // <text>`. A text the console cannot carry replacing one the pane showed clears the old one; a `comadd` answered with text, or a cpu the stub cannot show, leaves the old text.
@@ -76,13 +74,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end comment_list -->
 
-
-
 MAME also keys a comment by a CRC of the instruction bytes under it, so code that moves in RAM hides its comment in the pane while the store keeps it, and a delete over bytes that changed since leaves MAME holding it, hidden, until `close`.
-
-
-
-
 
 Two rows a rebuild put at one place are both loaded, so what `comment_write(method="save")` writes of such a store reads back. The first file row at a place the store comments replaces the store's row and any other comes in beside it (a `stale` row of the other kind excepted).
 

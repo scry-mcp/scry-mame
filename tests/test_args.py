@@ -380,6 +380,11 @@ def test_the_instructions_say_a_wrong_type_is_the_schemas_refusal() -> None:
     assert "wrong TYPE" in (s.mcp.instructions or ""), "the sentence is missing"
 
 
+def test_the_instructions_close_with_the_in_development_notice() -> None:
+    from scry_core.envelope import IN_DEVELOPMENT
+    assert (s.mcp.instructions or "").endswith("\n\n" + IN_DEVELOPMENT)
+
+
 # Case-insensitive: docstrings capitalise the word or not.
 _CLAIMS_RUNNING = re.compile(r"(answers?|works|safe)[^.]{0,40}\brunning machine", re.IGNORECASE)
 

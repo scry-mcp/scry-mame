@@ -151,7 +151,7 @@ The reader refuses what another YAML reader could type differently (`no`, `012`,
 
 `palette_ports`: `palette`, `index_port`, `data_port` (in the `space` of `cpu`: `program` or `io`), `order` of `r`, `g`, `b`, `component_bits` (1 to 8), `auto_increment`, `pen_base`, `pen_count` (a power of two up to 1024, 256 by default, at most 256 for a byte index); two on one palette may not set the same pens. `protocol`: `ramdac` (default); `latch` (needs `index_flag_mask`, `index_port` optional); `sequence` (needs `index_port`); the packed two may set `components_bit_reversed`.
 
-`ramdacs`, the former name of `palette_ports`, is still read as it, and `note` says so. `draft` is set when the first line is `gfx_draft`'s DRAFT marker; deleting it confirms the draft. Every entry carries a `status` (`proved`, `declared`, `human`) and a `source`. The reply also carries `sha256` and `systems`. A misspelt key is reported by its full path (`commands.blit.fields.dest_x.parts[1].maks`), and YAML outside the subset names its line. A manifest is judged whole so a half-loaded one never answers a later capture; a refusal keeps the previous load.
+A `ramdacs` key is read as `palette_ports`, and `note` says so. `draft` is set when the first line is `gfx_draft`'s DRAFT marker; deleting it confirms the draft. Every entry carries a `status` (`proved`, `declared`, `human`) and a `source`. The reply also carries `sha256` and `systems`. A misspelt key is reported by its full path (`commands.blit.fields.dest_x.parts[1].maks`), and YAML outside the subset names its line. A manifest is judged whole so a half-loaded one never answers a later capture; a refusal keeps the previous load.
 
 <!-- scry-reference:begin gfx_film -->
 ## `gfx_film`

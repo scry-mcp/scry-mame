@@ -61,11 +61,13 @@ Give this to an MCP client with this server connected:
 | Family | Calls |
 |---|---|
 | Session | `start` (checked against the ROM), `close` |
-| Measure | `run_for` by emulated milliseconds and by frames, with its frame and cycle survey |
-| Memory | `scan(method="start")` and `scan(method="filter")`; `watch_add` (through `perform`) and `declaration_clear(kind="watch")`; `read_memory` |
-| Debug | each watch's stop naming its writer, `disassemble` (the coin routine), the START's trail in `history`, `registers` |
-| Control | `input` (the coin slot and the START button; the watches stop the START while it is still held) |
-| Automate | `perform` (coin, run, filter in one call; both watches in one), `state_write(method="save")`, `state_write(method="load")` (verified) |
+| Advance | `run_for` by emulated milliseconds and by frames, with its frame and cycle survey |
+| Scan | `scan(method="start")` and `scan(method="filter")` |
+| Declarations | `watch_add` (through `perform`), each watch's stop naming its writer, `declaration_clear(kind="watch")` |
+| Read | `read_memory`, `disassemble` (the coin routine), the START's trail in `history`, `registers` |
+| Lua | `input` (the coin slot and the START button; the watches stop the START while it is still held) |
+| Lists | `perform` (coin, run, filter in one call; both watches in one) |
+| States | `state_write(method="save")`, `state_write(method="load")` (verified) |
 | Screen | `screen_view` |
 
 ## The transcript

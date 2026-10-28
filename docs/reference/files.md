@@ -8,23 +8,7 @@
 
 **The file tools** touch no machine, so they answer with it running or with none, and they are scry-core's, the same body and text on both servers. Every series and golden comparison carries its control, because a result that cannot come out the other way is no result: a series whose frames never change says nothing about another (`control_silent`), two series with no frame in common compare nothing, a region whose measure never moves was missed, and goldens whose names meet no file examined nothing.
 
-
-
-
-
-
-
-
-
-
-
-
-
 Channels are compared one by one, never through a mixdown: a channel in antiphase cancels, and two swapped channels average to one sound.
-
-
-
-
 
 <!-- scry-reference:begin image_compare -->
 ## `image_compare`

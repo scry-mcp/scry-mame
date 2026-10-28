@@ -60,11 +60,13 @@ Give this to an MCP client with this server connected:
 | Family | Calls |
 |---|---|
 | Session | `start` (checked against the ROM), `close` |
-| Measure | `run_for` by emulated milliseconds, with its frame and cycle survey |
-| Memory | `scan(method="start")` and `scan(method="filter")` to find the credits; `watch_add` and `declaration_clear(kind="watch")`; `read_memory` |
-| Debug | the watch's stop naming the writer, `disassemble`, `history`, `registers` |
-| Control | `input` (the coin slot, held four frames) |
-| Automate | `perform` (coin, run, filter in one call), `state_write(method="save")`, `state_write(method="load")` (verified) |
+| Advance | `run_for` by emulated milliseconds, with its frame and cycle survey |
+| Scan | `scan(method="start")` and `scan(method="filter")` to find the credits |
+| Declarations | `watch_add`, whose stop names the writer, and `declaration_clear(kind="watch")` |
+| Read | `read_memory`, `disassemble`, `history`, `registers` |
+| Lua | `input` (the coin slot, held four frames) |
+| Lists | `perform` (coin, run, filter in one call) |
+| States | `state_write(method="save")`, `state_write(method="load")` (verified) |
 | Screen | `screen_view` |
 
 ## The transcript

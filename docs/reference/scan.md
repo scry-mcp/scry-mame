@@ -1,11 +1,6 @@
 # The Scan tools
 
-
-
-It reads through handlers, where MAME's own cheat engine sees only direct RAM. The scan is bound to one cpu because a scan bound to none would read whichever is visible at each filter.
-
-
-
+`scan` reads memory through the cpu's handlers, where MAME's own cheat engine sees only direct RAM. The scan is bound to one cpu because a scan bound to none would read whichever is visible at each filter.
 
 <!-- scry-reference:begin scan -->
 ## `scan`

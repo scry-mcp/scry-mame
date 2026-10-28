@@ -1147,7 +1147,7 @@ every figure. Refused with no evidence.
 
 `dest`: an absolute `.yaml` in an existing directory (empty: the scratch); an earlier draft
 there is replaced, anything else is refused. `choose` `{"candidate": "s1c3", "chosen_by":
-"&lt;who>"}` records a person's pick first.
+"<who>"}` records a person's pick first.
 
 Reply: `manifest` and `report` (each `path`, `sha256`), `formats` (name to status),
 `asset_names`, `command_fields`, `evidence`, `not_proved` (first 8),

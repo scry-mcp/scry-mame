@@ -2,7 +2,7 @@ debugger-fatal-exit-live-cpu: a fatal error under the debugger ends MAME with it
 version: 1
 base: 9c28def3407cf3386d5c6bea932312741acb7992
 
-This is the fleet's canonical copy of a change to MAME's debugger, proposed upstream as
+This is the fleet's canonical copy of a change to MAME's debugger, merged upstream as
 mamedev/mame#16363. A MAME repository vendors it as patches/0005-debugger-fatal-exit-live-cpu.patch
 and applies it after its own patches.
 

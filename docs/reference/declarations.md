@@ -327,11 +327,7 @@ The block is read where its values live: the memory share of the one address-map
 
 **Through a pointer**, because the field a C program writes lives in a heap struct reached through a global pointer. The pointer is read at its declared width (`ptr16{...}`, `ptr32{...}`) or else the stack pointer's, the one register as wide as a pointer on every cpu. On a board relocated by `bases`, a pointer read through a symbol of a relocated class is an offset in that class's segment, placed under its base as `disassemble` places a direct operand; a type names the class when it carries one (`ptr16@CODE`), which a routine's address kept in DATA needs. It is re-resolved at every stop: a change watch moves with it (`moved`), a null pointer is `null_pointer`, never a watch at zero.
 
-
-
 `since_last_stop` is set at a STOP only: a `declaration_list(kind="watch")` between two stops consumes nothing, and a total that fell is a `reset`. `values` and `writers` are cumulative since the install; a write that found its table full is counted in `overflow_values` or `overflow_pcs` and never named. A stop's survey row of a capture lists no rows, which would drown every reply.
-
-
 
 **A count or capture removal is SENT** and applied when the console next reads a line. It is never resent, because the id is the RANGE and a resend could carry away a tap declared since; a removal the console did not carry out repeats on every reply under `session.tallies_not_removed`. Declaring the range again installs over the old tap and CARRIES ITS COUNTS; over a removal that ran, it counts from nothing.
 

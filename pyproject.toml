@@ -1,7 +1,8 @@
 [project]
 name = "scry-mame"
 version = "0.1.0"
-description = "Persistent debug session against MAME's gdbstub, and its MCP server"
+description = "Point an MCP client at an arcade board and ask the machine questions, live"
+readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -12,7 +13,7 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.67.1",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.68.1",
 ]
 
 [dependency-groups]
