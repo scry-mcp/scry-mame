@@ -2,7 +2,7 @@ gdbstub-one-thread-per-cpu: the gdbstub serves one GDB thread per CPU
 version: 2
 base: 9c28def3407cf3386d5c6bea932312741acb7992
 
-This is the fleet's canonical copy of a change to MAME's gdbstub, to be proposed upstream. A MAME
+This is the canonical copy of a change to MAME's gdbstub, to be proposed upstream. A MAME
 repository vendors it as patches/0004-gdbstub-one-thread-per-cpu.patch and applies it after its
 own patches.
 

@@ -382,7 +382,8 @@ def test_the_instructions_say_a_wrong_type_is_the_schemas_refusal() -> None:
 
 def test_the_instructions_close_with_the_in_development_notice() -> None:
     from scry_core.envelope import IN_DEVELOPMENT
-    assert (s.mcp.instructions or "").endswith("\n\n" + IN_DEVELOPMENT)
+    text = s.mcp.instructions or ""
+    assert text.endswith("\n\n" + IN_DEVELOPMENT) and text.count(IN_DEVELOPMENT) == 1
 
 
 # Case-insensitive: docstrings capitalise the word or not.

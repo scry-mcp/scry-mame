@@ -2,7 +2,7 @@ lua-thread-context-race: thread_context::start and its worker no longer race on 
 version: 3
 base: 9c28def3407cf3386d5c6bea932312741acb7992
 
-This is the fleet's canonical copy of a change proposed upstream to MAME. A MAME repository
+This is the canonical copy of a change proposed upstream to MAME. A MAME repository
 vendors it as patches/0003-lua-thread-context-race.patch and applies it after its own patches.
 
 What it fixes: `thread_context::start` (src/frontend/mame/luaengine.cpp) hands the loaded chunk
