@@ -992,7 +992,9 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                 "machine": {name: len(STATE.machine_map[name]) for name in machine.SECTIONS},
             "declarations": judged.declarations,
             "start_retries": list(retries),
+            "recommended_release": binaries.RELEASE,
         })
+        st.add_note(started, binaries.release_note(binary_facts["version"]))
         idle.IDLE.clear_note()
     except Exception:
         STATE.kill(progress, grace=False)

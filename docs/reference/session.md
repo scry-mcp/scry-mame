@@ -24,7 +24,8 @@ Refused before any spawn: a live session, an unknown cpu, a class with no base, 
 beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
 image. A mismatch: `readback_refused`, closed.
 
-Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`.
+Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
+`recommended_release` (0.289); another release boots with a `note` saying so.
 
 Reference: REFERENCE.md, The session.
 
@@ -81,6 +82,7 @@ Reference: REFERENCE.md, The session.
 | `phase` | string |
 | `pid` | integer |
 | `presence` | boolean |
+| `recommended_release` | string |
 | `registers` | array |
 | `reply` | string |
 | `rom_check` | string |

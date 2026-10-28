@@ -125,6 +125,38 @@ def test_start_asks_the_version_with_the_launch_s_environment(
         s.close()
 
 
+@pytest.mark.parametrize(("said", "note"), [
+    (f"{binaries.RELEASE} (mame0289)", None),
+    (f"{binaries.RELEASE} (unknown)", None),
+    ("0.290 (mame0290)", "MAME 0.290 is not"),
+    (f"{binaries.RELEASE}0 (a later build)", f"MAME {binaries.RELEASE}0 is not"),
+    ("a build that names no release", "names no MAME release"),
+])
+def test_start_warns_on_a_release_other_than_the_one_it_is_tested_on(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch, said: str, note: str | None) -> None:
+    """Another release boots, with a note naming it and the recommended one."""
+    out = _start(monkeypatch, tmp_path, binary=str(build(tmp_path, name="fake-mame",
+                                                         version=f"print({said!r})")))
+    try:
+        assert out["status"] == "ok" and out["recommended_release"] == binaries.RELEASE, out
+        if note is None:
+            assert binaries.RELEASE_NOTE_MARK not in out.get("note", ""), out
+        else:
+            assert note in out["note"] and binaries.RELEASE_NOTE_MARK in out["note"], out
+    finally:
+        s.close()
+
+
+def test_start_warns_when_the_release_could_not_be_read(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    slow = build(tmp_path, name="fake-mame", version="time.sleep(5)")
+    out = _start(monkeypatch, tmp_path, binary=str(slow), boot_seconds=0.4)
+    try:
+        assert out["status"] == "ok" and "could not be read" in out["note"], out
+    finally:
+        s.close()
+
+
 def test_start_bounds_a_hanging_version_call_by_its_own_constant(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(binaries, "VERSION_TIMEOUT_S", 0.3)

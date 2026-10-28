@@ -959,6 +959,7 @@ class StartReply(MameEnvelope, total=False):
     phase: str
     pid: int
     presence: bool
+    recommended_release: str
     registers: list[Any]
     reply: str
     rom_check: str

@@ -16,6 +16,7 @@ from scry_core import (
 from scry_core import vocabulary as vocab
 
 import mame_advance as advance
+import mame_binary as binaries
 import mame_blits as mblits
 import mame_draft as mdraft
 import mame_film as mfilm
@@ -44,7 +45,7 @@ DEST_FILE = f"absolute or `~`-led, in a directory that exists, with {inputs.PATH
 
 # A ceiling typed into prose drifts from the one the code refuses at.
 DOC_VALUES: dict[str, str] = {
-    "NEEDS_STOPPED": NEEDS_STOPPED,
+    "NEEDS_STOPPED": NEEDS_STOPPED, "MAME_RELEASE": binaries.RELEASE,
     "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
     # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,

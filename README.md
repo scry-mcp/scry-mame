@@ -42,8 +42,10 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
 
 You need git, Python 3.11 or newer, [uv](https://docs.astral.sh/uv/), and a MAME built with the
 gdbstub (`-debugger gdbstub`) and its `console` plugin. `start` runs the MAME its `binary`
-argument names, else `MAME_BINARY`, else the `mame` on your `PATH`. A board on a NEC
-V20/V30/V33 needs a MAME from mamedev/mame#16131 on, where the stub learned their registers.
+argument names, else `MAME_BINARY`, else the `mame` on your `PATH`. The server is tested on one
+MAME release, which `start` names in `recommended_release`; another release boots with a `note`
+saying so, and what it lacks is refused with its reason. A board on a NEC V20/V30/V33 needs a
+MAME from mamedev/mame#16131 on, where the stub learned their registers.
 
 ```sh
 git clone https://github.com/scry-mcp/scry-mame
