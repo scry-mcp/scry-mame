@@ -1,0 +1,31 @@
+{
+ "task": {
+  "id": "M202",
+  "prompt": "The screen map is loaded. Run to its hiscores screen, counting the control at FrameTick on the way.",
+  "tool": "run_to",
+  "args": {
+   "screen": "hiscores",
+   "control": "FrameTick"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M202: {\"tool\": \"run_to\", \"args\": {\"screen\": \"hiscores\", \"control\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M202: {\"tool\": \"run_to\", \"args\": {\"screen\": \"hiscores\", \"control\": \"FrameTick\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M202: {\"tool\": \"run_to\", \"args\": {\"screen\": \"hiscores\", \"control\": \"FrameTick\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

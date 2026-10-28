@@ -905,7 +905,7 @@ def test_the_advance_family_refuses_its_malformed_arguments_and_a_cold_control(
         return lines
 
     monkeypatch.setattr(read, "dasm_lines", no_listing)
-    again = s.run_to(ref="0x4a2", seconds=0.05)
+    again = s.run_to(ref="0x4a2", control="0x25a4", seconds=0.05)
     assert again["code"] == "control_silent"
     assert again["control_dasm"][0]["dasm"]["available"] is False, "the survey's own shape"
 

@@ -85,7 +85,7 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "gfx_load", "gfx_blits",
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
         "screen_signature", "drive", "series_capture",
-        "image_compare", "audio_compare", "map_find", "map_write",
+        "image_compare", "audio_compare", "screen_map_find", "screen_map_write",
         "read_memory", "read_block", "record", "audio_record", "registers", "regpoint_add",
         "reset", "resume", "run_for", "trace", "comment_list", "comment_write",
         "run_to",

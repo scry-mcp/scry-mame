@@ -372,7 +372,7 @@ def test_run_to_arms_only_the_target_and_reads_the_control_off_its_temp(
         ses.temps[0] += 30                # the control fires while the machine runs
 
     ses.go = go  # type: ignore[method-assign]
-    out = s.run_to(ref="0x4a0", seconds=2.0)
+    out = s.run_to(ref="0x4a0", control="0x25a4", seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "TARGET"
     assert out["control_hits"] == 30
     assert out["controls"] == [{"ref": "0x25a4", "cpu": ":maincpu", "hits_in_run": 30}]
@@ -450,11 +450,13 @@ def test_a_stop_found_by_a_call_that_escapes_is_not_reported_by_the_next_one(
     assert out["session"]["alive"] is True and "stopped_on_its_own" not in out, out
 
 
-def test_run_to_with_no_control_declared_is_refused_before_the_machine_moves(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+@pytest.mark.parametrize("control", ["", "   "])
+def test_run_to_with_an_empty_control_is_refused_before_the_machine_moves(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, control: str,
 ) -> None:
     ses = _controlled(monkeypatch, tmp_path)
-    refused("no control", s.run_to(ref="0x4a0", seconds=2.0))
+    s.breakpoint_at(ref="0x25a4", role="control")        # declared, and still not enough
+    refused("needs a control", s.run_to(ref="0x4a0", control=control, seconds=2.0))
     assert ses.armed == [] and not ses.running
 
 
@@ -465,7 +467,7 @@ def test_run_to_that_times_out_with_a_silent_control_is_invalid_and_a_hot_one_me
     ses = _controlled(monkeypatch, tmp_path, pcs=[0xF2034, 0x1000])
     s.breakpoint_at(ref="0x25a4", role="control")
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
-    out = s.run_to(ref="0x4a0", seconds=0.05)
+    out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "INVALID" and out["code"] == "control_silent"
     assert out["control_hits"] == 0 and "control_dasm" in out and ses.interrupted == 1
     ses.stop_count, ses.interrupted = 0, 0
@@ -476,7 +478,7 @@ def test_run_to_that_times_out_with_a_silent_control_is_invalid_and_a_hot_one_me
         ses.temps[0] = 50                 # the control counts while the machine runs
 
     ses.go = go  # type: ignore[method-assign]
-    out = s.run_to(ref="0x4a0", seconds=0.05)
+    out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "ok" and out["verdict"] == "TIMEOUT" and out["control_hits"] == 50
 
 
@@ -485,7 +487,7 @@ def test_a_control_and_a_target_at_one_address_are_refused(
 ) -> None:
     _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", role="control")
-    refused("same address", s.run_to(ref="0x4a0", seconds=1.0))
+    refused("same address", s.run_to(ref="0x4a0", control="0x4a0", seconds=1.0))
 
 
 # ------------------------------------------------------------------ across sessions
@@ -505,9 +507,9 @@ def test_a_control_declaration_re_arms_through_the_console_at_the_next_start(
 
 
 def test_the_tool_surface_knows_the_role(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """`run_to`'s `control` is optional now, and `breakpoint_at` takes a `role`."""
+    """`run_to`'s `control` is required, and `breakpoint_at` takes a `role`."""
     import inspect
-    assert inspect.signature(s.run_to).parameters["control"].default == ""
+    assert inspect.signature(s.run_to).parameters["control"].default is inspect.Parameter.empty
     assert inspect.signature(s.breakpoint_at).parameters["role"].default == "stop"
     _controlled(monkeypatch, tmp_path)
     assert "role" in (s.breakpoint_at(ref="0x4a0"))

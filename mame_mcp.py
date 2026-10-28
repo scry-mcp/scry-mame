@@ -60,7 +60,7 @@ ROSTER = roster.Roster(families=(
     ("Declarations", ("breakpoint_at", "regpoint_add", "watch_add", "declaration_list",
                       "declaration_clear")),
     ("Read", ("read_memory", "read_block", "registers", "disassemble", "find", "history",
-              "memdump", "map_find", "map_write")),
+              "memdump", "screen_map_find", "screen_map_write")),
     ("Screen", ("palette", "screen_view", "screen_signature", "gfx_view", "gfx_locate",
                   "gfx_sweep", "gfx_draft", "gfx_blits", "gfx_blit_source")),
     ("Film", ("gfx_load", "gfx_film", "palette_log")),

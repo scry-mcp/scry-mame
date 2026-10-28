@@ -19,7 +19,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, NoReturn
 
-from scry_core import png, prose
+from scry_core import pens, png, prose
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
 
@@ -168,19 +168,8 @@ def palette(ses: gs.Session, scratch: Path, name: str, first: int, count: int, s
                               **st.merged(fields, common))
 
 
-def pen_runs(pens: list[int]) -> list[str]:
-    """Sorted pens as `0xa-0xf` runs: a list of every pen of a large palette would bury the
-    answer in the reply."""
-    out: list[str] = []
-    start = prev = None
-    for p in [*pens, None]:
-        if p is not None and prev is not None and p == prev + 1:
-            prev = p
-            continue
-        if start is not None and prev is not None:
-            out.append(f"{start:#x}" if start == prev else f"{start:#x}-{prev:#x}")
-        start = prev = p
-    return out
+#: Unused or written pens said as runs, alike on both servers.
+pen_runs = pens.runs
 
 
 def label_width(entries: int) -> int:

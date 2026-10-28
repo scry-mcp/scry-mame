@@ -68,7 +68,7 @@ def _registered() -> set[str]:
 
 #: Media file tools have scry-core's bodies, so no `args.check` call site exists here for them.
 MEDIA = set(media_tools.TOOLS)
-FOLDS: dict[str, Any] = {"comment_write": folds.COMMENT, "map_write": folds.MAP,
+FOLDS: dict[str, Any] = {"comment_write": folds.COMMENT, "screen_map_write": folds.MAP,
                          "scan": folds.SCAN, "state_write": folds.STATE_METHODS}
 
 
@@ -180,8 +180,9 @@ METHOD_OWNERS: dict[tuple[str, str], Callable[..., Any]] = {
     ("comment_write", "delete"): comments.check_delete_comment,
     ("comment_write", "save"): comments.check_save_comments,
     ("comment_write", "load"): comments.check_load_comments,
-    ("map_write", "add"): mmaps.check_add_map, ("map_write", "load"): mmaps.check_load_map,
-    ("map_write", "save"): mmaps.check_save_map,
+    ("screen_map_write", "add"): mmaps.check_add_map,
+    ("screen_map_write", "load"): mmaps.check_load_map,
+    ("screen_map_write", "save"): mmaps.check_save_map,
     ("scan", "start"): mscan.check_start_scan, ("scan", "filter"): mscan.check_filter_scan,
     ("state_write", "save"): savestates.check_state_name,
     ("state_write", "load"): savestates.check_state_name,
@@ -254,8 +255,8 @@ def test_every_module_body_asks_its_own_check() -> None:
         ("comment_write", "delete"): comments.delete_comment,
         ("comment_write", "save"): comments.save_comments,
         ("comment_write", "load"): comments.load_comments,
-        ("map_write", "add"): mmaps.add_map, ("map_write", "load"): mmaps.load_map,
-        ("map_write", "save"): mmaps.save_map,
+        ("screen_map_write", "add"): mmaps.add_map, ("screen_map_write", "load"): mmaps.load_map,
+        ("screen_map_write", "save"): mmaps.save_map,
         ("scan", "start"): mscan.start_scan, ("scan", "filter"): mscan.filter_scan,
         ("state_write", "save"): savestates.save_state,
         ("state_write", "load"): savestates.load_state,
@@ -362,7 +363,7 @@ def test_a_segmented_ref_is_refused_before_the_machine_and_stored_nowhere() -> N
     calls: tuple[Callable[[], dict[str, Any]], ...] = (
                  lambda: s.breakpoint_at(ref="12345:0010"),
                  lambda: s.watch_add(ref="12345:0010", mode="show", length=2),
-                 lambda: s.run_to(ref="12345:0010"),
+                 lambda: s.run_to(ref="12345:0010", control="0x25a4"),
                  lambda: s.read_memory(ref="12345:0010", length=4),
                  lambda: s.write(ref="12345:0010", data_hex="00"),
                  lambda: s.find(ref="12345:0010", length=4, data_hex="00"))

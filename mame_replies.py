@@ -840,6 +840,7 @@ class RunToReply(MameEnvelope, total=False):
     ref: str
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
+    screen: dict[str, Any]
     state: str
     stop_seq: int
     stored: bool
@@ -1182,6 +1183,7 @@ class MapWriteReply(MameConsoleAccount, total=False):
     kind: str
     lines_ahead: int
     match: list[Any]
+    mode: str
     path: str
     pc_before: str
     promoted: list[Any]
@@ -1241,7 +1243,7 @@ MODELS: dict[str, type] = {
     "comment_write": CommentWriteReply,
     "declaration_clear": DeclarationClearReply,
     "declaration_list": DeclarationListReply,
-    "map_write": MapWriteReply,
+    "screen_map_write": MapWriteReply,
     "scan": ScanReply,
     "state_write": StateWriteReply,
     "audio_record": AudioRecordReply,
@@ -1269,7 +1271,7 @@ MODELS: dict[str, type] = {
     "log_wait": LogWaitReply,
     "lua": LuaReply,
     "machine_map": MachineMapReply,
-    "map_find": MapFindReply,
+    "screen_map_find": MapFindReply,
     "memdump": MemdumpReply,
     "palette": PaletteReply,
     "palette_log": PaletteLogReply,

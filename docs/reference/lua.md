@@ -1,6 +1,6 @@
 # The Lua tools
 
-`debug` goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script (`input`, `record`, `audio_record`, `throttle`, `screen_signature`, `map_write(method="add")`, `map_find`) go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The contract they share:
+`debug` goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script (`input`, `record`, `audio_record`, `throttle`, `screen_signature`, `screen_map_write(method="add")`, `screen_map_find`) go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The contract they share:
 
 - **The console is a plugin** and `start` names its directory on the command line, because MAME's own default looks in its working directory and two builds given the same command line can boot and die respectively. A binary with the plugin in neither place `start` looks is refused before anything is spawned, because without it `-console` is fatal.
 - **The console evaluates when its periodic hook runs**: once per frame while the machine runs, once per stop, and on a newer stub once per console command. So a line sent to a stopped machine waits in the pipe until the next step, frame or console command.

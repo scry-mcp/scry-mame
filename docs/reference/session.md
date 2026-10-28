@@ -345,7 +345,9 @@ with no session it answers `closed: false`.
 
 Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
 `cfg` (`installed_path`, `changed`), `average_speed`, `note`; `stdout_tail` and
-`errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
+`errorlog_tail` when the end was not a clean `quit`, or with `detail=True`. `session` is the
+block as it is after the close (`alive` and `running` false); a console doubt or a throttle
+found not applied still rides there.
 
 Reference: REFERENCE.md, The session.
 
@@ -405,7 +407,7 @@ Example, from a live run:
 
 **`cfg`** carries `available: false` with its `why` when a file could not be read back, and is unavailable when no cfg was given; the repo's file is never touched. **`average_speed`** is `percent` with the two deltas, or `available: false` with its `why`, and absent on a broken session.
 
-**The `session` block describes the state before closing**, so `altered` is the truth about the session that ended; a throttle found not applied rides there too, which is why `alive: true` can sit beside `closed: true`.
+**The `session` block describes the state after closing**: `alive` and `running` are false and `altered` is false, as with no session at all; a console doubt (its tallies) or a throttle found not applied is carried over, because it stays true of what the session reported.
 
 **Also in the reply**: `console_pending_before`, `console_drained`, `exit_code` (unavailable with its `why` when SIGKILLed and still not reaped), and `omitted` naming the tails with `how` when they are left out.
 

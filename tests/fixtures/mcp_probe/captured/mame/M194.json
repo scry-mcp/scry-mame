@@ -1,11 +1,11 @@
 {
  "task": {
   "id": "M194",
-  "prompt": "Write this session's screen maps to /tmp/maps/circus.scry-map.json, replacing the file that is there.",
-  "tool": "map_write",
+  "prompt": "Write this session's screen maps to /tmp/maps/circus.screen-map.json, replacing the file that is there.",
+  "tool": "screen_map_write",
   "args": {
    "method": "save",
-   "dest": "/tmp/maps/circus.scry-map.json",
+   "dest": "/tmp/maps/circus.screen-map.json",
    "overwrite": true
   },
   "grammar": [
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\":\"map_write\",\"args\":{\"method\":\"save\",\"dest\":\"/tmp/maps/circus.scry-map.json\",\"overwrite\":true}}"
+    "M194: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"save\",\"dest\":\"/tmp/maps/circus.screen-map.json\",\"overwrite\":true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M194: {\"tool\": \"map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.scry-map.json\", \"overwrite\": true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   }

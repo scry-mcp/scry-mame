@@ -554,7 +554,7 @@ def test_a_silent_controls_listing_is_decoded_on_the_controls_own_cpu(
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
     s.breakpoint_at(ref="0x25a4", role="control")
     ses.visible_cpu = ":subcpu"
-    out = s.run_to(ref="0x4a0", cpu="maincpu", seconds=0.05)
+    out = s.run_to(ref="0x4a0", control="0x25a4", cpu="maincpu", seconds=0.05)
     assert out["code"] == "control_silent", out
     assert any(c.startswith("dasm ") and c.endswith(",1,:maincpu") and "0x25a4" in c
                for c in ses.commands), [c for c in ses.commands if c.startswith("dasm")]

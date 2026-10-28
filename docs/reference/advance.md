@@ -26,26 +26,33 @@ What a running or a broken session does to every tool is in [REFERENCE.md, Advan
 *Run to a place, with a control*
 
 ```text
-run_to(ref, control="", seconds=30.0, disarm_watches=false, condition="", cpu="")
+run_to(ref="", control, screen="", seconds=30.0, disarm_watches=false, condition="", cpu="")
 ```
 
 Run to `ref` and stop, with a control counting meanwhile.
 
-`ref` is armed on `cpu` (the visible one when empty). `control`: a ref declared as a control
-on that cpu (`breakpoint_at(role="control")`); a new one is declared. `condition`: stop only
+`ref` is armed on `cpu` (the visible one when empty). `control` is required: a place known to
+run, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does the
+same ahead of time), and the cpu's other declared controls count too. `condition`: stop only
 when it holds, bare numbers hex (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an
-unresolved ref, no control on the cpu, an over-long `condition`.
+unresolved ref, an empty or unresolved control, an over-long `condition`.
+
+`screen`: a mapped screen's name instead of `ref` (exactly one), run to its `anchor`, the
+`control` still required; a `verified` map judges it there (`stale_map` when it no longer
+holds), a `consolidated` one takes it as shown. Reply: `screen` (`screen`, `layer`, `mode`,
+`judged`). Refused: an unmapped screen (`unknown_ref`), one with no `anchor` (`needs_call`).
 
 Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each
 `ref`, `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`). INVALID has no
-`verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`.
+`verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
 | argument | type | default |
 |---|---|---|
-| `ref` | string | required |
-| `control` | string | `""` |
+| `ref` | string | `""` |
+| `control` | string | required |
+| `screen` | string | `""` |
 | `seconds` | number (> 0, <= 600.0) | `30.0` |
 | `disarm_watches` | boolean | `false` |
 | `condition` | string | `""` |
@@ -74,6 +81,7 @@ Reference: REFERENCE.md, Advancing the machine.
 | `ref` | string |
 | `regpoint_hit` | object |
 | `regs` | object |
+| `screen` | object |
 | `state` | string |
 | `stop_seq` | integer |
 | `stored` | boolean |

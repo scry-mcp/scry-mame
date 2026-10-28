@@ -82,7 +82,7 @@ class State:
         self.start_seq = 0
         # A cancelled call's record rides on the next closing reply. Not in `_reset`.
         self.cancelled: cancel.Cancelled | None = None
-        # Outlives a session: the file layer of `map_write(method="load")`.
+        # Outlives a session: the file layer of `screen_map_write(method="load")`.
         self.maps = screen_map.Maps()
         self._reset()
 

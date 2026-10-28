@@ -37,10 +37,12 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import judges, picture, png, prose
+from scry_core import pens as mpens
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
+from scry_core.pens import INDEX_MODES, MODES, PENS_MAX, POINT_RINGS
 from scry_core.raster import signature as raster_signature
-from scry_core.reply_contract import or_unavailable, unavailable
+from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
 import mame_chunk as chunk
@@ -54,23 +56,7 @@ import mame_state as st
 import mame_transport as transport
 from mame_state import STATE
 
-MODES = ("render", "isolate", "histogram", "pixel")
-INDEX_MODES = ("isolate", "histogram", "pixel")
-PENS_MAX = 64
 ENCODABLE_PENS = 1 << 24
-# AN ISOLATED VIEW draws the pens asked for in ONE saturated hue and every other pen grey by its
-# luminance, squeezed into a band with neither black nor white in it: a dimmed dark pen sank
-# into a screen gone dark round it, and a hue over greys stands out whatever the pen's colour.
-# Magenta is the hue a game's own palette is least likely to be spending.
-ISOLATE_COLOUR = (255, 0, 255)
-GREY_LOW, GREY_HIGH = 0x30, 0xB0
-LUMA_WEIGHTS = (299, 587, 114)     # BT.601's luma, in thousandths: they sum to 1000
-# THE PIXEL QUESTION'S PICTURE: a crop this many pixels a side round the point, kept inside the
-# screen, the point ringed white then black just outside its own pixel, which a ring never covers.
-# At the screen's edge the point is at the crop's too, so the picture carries a border as wide as
-# the rings reach, outside the screen, and every pixel picture has the same frame.
-PIXEL_CROP = 48
-POINT_RINGS = ((255, 255, 255), (0, 0, 0))
 
 # The capture, as a function the graphics chunks share: it prints its own refusal lines and
 # answers nil, or the screen's tag, size and frame after writing the file at `path`.
@@ -392,12 +378,10 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
         assert cap.indices is not None
         pen = cap.indices[y * cap.width + x]
         r, g, b = cap.rgb(pen)
-        fields.update(x=x, y=y, pen=pen, color=f"#{r:02x}{g:02x}{b:02x}",
+        fields.update(x=x, y=y, pen=pen, color=mpens.hex_colour((r, g, b)),
                       **mramdac.set_by(scratch, cap.palette, pen, cap.pens[pen]))
-        cx, cy = (min(max(v - PIXEL_CROP // 2, 0), max(side - PIXEL_CROP, 0))
-                  for v, side in ((x, cap.width), (y, cap.height)))
-        cw, ch = min(PIXEL_CROP, cap.width), min(PIXEL_CROP, cap.height)
-        fields.update(crop=[cx, cy, cw, ch], point_in_crop=[x - cx, y - cy])
+        cx, cy, cw, ch = crop = mpens.pixel_crop(x, y, cap.width, cap.height)
+        fields.update(crop=crop, point_in_crop=[x - cx, y - cy])
         rings: list[picture.Ring] = [(x - cx, y - cy, 1, 1, rgb, gap)
                                      for gap, rgb in enumerate(POINT_RINGS, 1)]
         fields["image"] = st.publish(colour_crop(cap, cx, cy, cw, ch), scale, dest_path,
@@ -422,13 +406,7 @@ def screen_view(ses: gs.Session, scratch: Path, mode: str, pens: list[int] | Non
     selected = set(pens or ())
     if mode == "isolate":
         assert area is not None
-        hits = [(i % w + x0, i // w + y0) for i, v in enumerate(area) if v in selected]
-        fields["pixels"] = len(hits)
-        fields["bbox"] = ([min(x for x, _ in hits), min(y for _, y in hits),
-                           max(x for x, _ in hits), max(y for _, y in hits)] if hits
-                          else unavailable("no pixel holds the pens asked for"))
-        fields["pens"] = sorted(selected)
-        fields["isolate_color"] = "#{:02x}{:02x}{:02x}".format(*ISOLATE_COLOUR)
+        fields.update(mpens.isolation(area, w, x0, y0, selected))
     shown = raster(cap, area, x0, y0, w, h, selected if mode == "isolate" else None)
     fields["image"] = st.publish(shown, scale, dest_path, scratch, "screen", attach=attach)
     return running.stop_reply(ses, scratch, f"screen_view: {common['evaluated_by']}",
@@ -455,18 +433,14 @@ def on_screen(width: int, height: int, x: int, y: int, w: int, h: int, name: str
 def raster(cap: Capture, area: list[int] | None, x0: int, y0: int, w: int, h: int,
             isolate: set[int] | None) -> png.Raster:
     """The crop as a picture: indexed when the screen's pens fit a PLTE (each PNG index is the
-    pen), RGB otherwise; `isolate` draws the set in `ISOLATE_COLOUR` and every other pen grey."""
+    pen), RGB otherwise; `isolate` draws the set in its hue and every other pen grey."""
     table = mpalette.rgb_bytes(cap.pens)        # every pen's RGB in one pass, read by slice
 
     def shown(pen: int) -> tuple[int, int, int]:
         r, g, b = table[3 * pen:3 * pen + 3]
         if isolate is None:
             return r, g, b
-        if pen in isolate:
-            return ISOLATE_COLOUR
-        luma = sum(w * v for w, v in zip(LUMA_WEIGHTS, (r, g, b), strict=True))
-        grey = GREY_LOW + luma * (GREY_HIGH - GREY_LOW) // (255 * sum(LUMA_WEIGHTS))
-        return (grey, grey, grey)
+        return mpens.isolated((r, g, b), pen in isolate)
 
     if area is not None and len(cap.pens) <= png.PLTE_MAX:
         return png.Raster(w, h, bytes(area), tuple(shown(p) for p in range(len(cap.pens))))

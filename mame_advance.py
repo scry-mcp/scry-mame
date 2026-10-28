@@ -8,7 +8,7 @@ from collections.abc import Callable, Hashable, Iterator
 from pathlib import Path
 from typing import Any, TypeVar
 
-from scry_core import cancel, prose
+from scry_core import cancel, prose, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
@@ -72,14 +72,19 @@ def wait_for_rest(readings: list[Reading], read_counter: Callable[[], Reading], 
             time.sleep(FRAME_POLL_S)
 
 def check_run_to(ref: str = "", seconds: float = 30.0, condition: str = "",
-                 control: str = "", **_: Any) -> None:
-    """`run_to`'s machine-independent half: the ref, the bound, the shapes of a condition and a
-    `control`, judged before a control is armed. Address equality needs the table, below."""
-    if not ref or not ref.strip():
-        raise st.Invalid("bad_argument", "run_to needs a ref: a symbol or a `0x` address")
-    inputs.check_ref(ref)
-    if control.strip():
-        inputs.check_ref(control, "control")
+                 control: str = "", screen: str = "", **_: Any) -> None:
+    """`run_to`'s machine-independent half: the ref or the screen, the bound, the shapes of a
+    condition and a `control`, judged before a control is armed. Address equality needs the
+    table, below."""
+    screen_map.check_run_to(ref, screen)
+    if ref.strip():
+        inputs.check_ref(ref)
+    if not control or not control.strip():
+        raise st.Invalid("bad_argument",
+                         "run_to needs a control: a place known to run, which proves the target "
+                         "COULD have fired (declare it here or with `breakpoint_at(ref, "
+                         "role=\"control\")`)")
+    inputs.check_ref(control, "control")
     vocab.check_wait(seconds)
     if condition.strip():
         conditions.check_condition(condition)
@@ -126,45 +131,35 @@ def check_step(count: int = 1, mode: str = "into", **_: Any) -> None:
 # The control is a declaration with `role="control"`: a console row whose condition
 # `(++tempN)==0` counts every hit and never halts. MAME counts, not the stub: a hot control would
 # starve the progress tick with a round trip per firing. `run_to` reads the counts on the
-# target's cpu before and after; a run that names a `control` declares it first.
+# target's cpu before and after; a `control` not declared yet is declared first.
 def run_to(ses: gs.Session, scratch: Path, ref: str, control: str, seconds: float,
            progress: mprogress.Progress = mprogress.no_progress, disarm_watches: bool = False,
            condition: str = "", cpu: str = "") -> dict[str, Any]:
     """The body of the `run_to` tool, with the armed watches held for the pass on request: the
     target armed on `cpu`, or on the visible cpu when none is named."""
-    check_run_to(ref, seconds, condition)
+    check_run_to(ref, seconds, condition, control)
     on = cpus.chosen(ses, cpu)
     a_target = STATE.resolve(ref, on)
     if condition.strip():
         ses.console_packet(breakpoints.bp_command(
             a_target, conditions.console_condition(condition, on), on))
-    if control.strip():
-        try:
-            a_control = STATE.resolve(control, on)
-        except inputs.BareHex:
-            raise
-        except st.Invalid:
-            return _control_unresolved(control, on)
-        if a_control == a_target:
-            raise st.Invalid("bad_argument",
-                             "the control cannot be the same address as the target")
-        declared = breakpoints.breakpoint_at(ses, control, "auto", role="control", cpu=on or "")
-        if declared.get("status") != "ok":
-            return declared
-        if not declared.get("armed"):
-            return menvelope.invalid("bad_argument",
-                                     f"the control {control} is declared but not armed "
-                                     f"({declared.get('state')}): a control counts only once it "
-                                     "resolves to an address in this build", control=control)
-    if not counting(on):
-        where = f" on {on}, the target's cpu" if on else ""
-        elsewhere = sorted({c or "an unknown cpu" for _ref, c in STATE.controls})
-        listed = f" (the controls declared are on {', '.join(elsewhere)})" if elsewhere else ""
-        named = f", cpu=\"{on}\"" if on else ""
+    try:
+        a_control = STATE.resolve(control, on)
+    except inputs.BareHex:
+        raise
+    except st.Invalid:
+        return _control_unresolved(control, on)
+    if a_control == a_target:
         raise st.Invalid("bad_argument",
-                         f"no control is declared{where}{listed}: `run_to` measures nothing "
-                         "without one. Declare a routine known to be hot with `breakpoint_at("
-                         f"ref, role=\"control\"{named})`, or name it here as `control`")
+                         "the control cannot be the same address as the target")
+    declared = breakpoints.breakpoint_at(ses, control, "auto", role="control", cpu=on or "")
+    if declared.get("status") != "ok":
+        return declared
+    if not declared.get("armed"):
+        return menvelope.invalid("bad_argument",
+                                 f"the control {control} is declared but not armed "
+                                 f"({declared.get('state')}): a control counts only once it "
+                                 "resolves to an address in this build", control=control)
     return _with_watches_disarmed(ses, disarm_watches,
                     lambda: _run_to(ses, scratch, ref, seconds, on, progress, condition))
 

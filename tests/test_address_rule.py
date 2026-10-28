@@ -258,7 +258,7 @@ def test_run_to_lets_the_bare_hex_refusal_of_its_control_through(
 ) -> None:
     _controlled(monkeypatch, tmp_path)
     _suggests(s.run_to(ref="0x4a0", control="25a4", seconds=2.0), "0x25a4")
-    _suggests(s.run_to(ref="4a0", seconds=2.0), "0x4a0")
+    _suggests(s.run_to(ref="4a0", control="0x25a4", seconds=2.0), "0x4a0")
     assert _rows("breakpoint") == [], "no control declared"
 
 

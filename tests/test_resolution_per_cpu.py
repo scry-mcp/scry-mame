@@ -111,7 +111,7 @@ def test_run_to_takes_its_target_from_the_named_cpus_table(
     ses = _two_programs(monkeypatch, tmp_path)
     s.breakpoint_at(ref="sub_only", role="control", cpu="subcpu")
     ses.stops_after_polls = 1
-    s.run_to(ref="irq_vblank", cpu="subcpu", seconds=1.0)
+    s.run_to(ref="irq_vblank", control="sub_only", cpu="subcpu", seconds=1.0)
     assert "bp 0x542::subcpu" in ses.commands, ses.commands
 
 

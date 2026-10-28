@@ -44,7 +44,7 @@ Give this to an MCP client with this server connected:
 
 > Start `lineup` with the romset directory (as an absolute path), its symbols from `lineup.map`
 > there with DATA based at `0x400` and `LUP_JUKEBOX` read in place, checked against the image its
-> two ROM halves make at `0x30000`. Load the screen map `scry_core/games/lineup.scry-map.json` from
+> two ROM halves make at `0x30000`. Load the screen map `scry_core/games/lineup.screen-map.json` from
 > scry-core. Run to `Draw_High_Scores_Screen`
 > counting `Check_Money25`, run a second and a half and tell me which screen it is and what
 > `Credits` holds. Drop a coin, run a second, name the screen and read `Credits` again. Press
@@ -206,23 +206,24 @@ Give this to an MCP client with this server connected:
 
 </details>
 
-**2. `map_write`**: OK map: 4 screens and 10 controls loaded
+**2. `screen_map_write`**: OK map: 4 screens and 10 controls loaded
 
 <details><summary>call and reply</summary>
 
 ```json
 {
   "method": "load",
-  "path": "./tmp/demos/lineup/lineup.scry-map.json"
+  "path": "./tmp/demos/lineup/lineup.screen-map.json"
 }
 ```
 
 ```json
 {
-  "summary": "map_write load: 4 screens, 10 controls of lineup",
+  "summary": "screen_map_write load: 4 screens, 10 controls of lineup",
   "status": "ok",
-  "path": "./tmp/demos/lineup/lineup.scry-map.json",
+  "path": "./tmp/demos/lineup/lineup.screen-map.json",
   "application": "lineup",
+  "mode": "verified",
   "screens": 4,
   "controls": 10,
   "session": {
@@ -457,7 +458,7 @@ Give this to an MCP client with this server connected:
 
 </details>
 
-**5. `map_find`**: OK is hiscores: the hiscores screen, its controls table, credits
+**5. `screen_map_find`**: OK is hiscores: the hiscores screen, its controls table, credits
 
 <details><summary>call and reply</summary>
 
@@ -467,7 +468,7 @@ Give this to an MCP client with this server connected:
 
 ```json
 {
-  "summary": "map_find: hiscores (file), 2 controls",
+  "summary": "screen_map_find: hiscores (file), 2 controls",
   "status": "ok",
   "matched": true,
   "screen": "hiscores",
@@ -511,7 +512,7 @@ Give this to an MCP client with this server connected:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#1",
   "pc_before": "0x000315c4",
-  "cause": "map_find: one step",
+  "cause": "screen_map_find: one step",
   "stop_seq": 4,
   "pc": "0x000315c5",
   "cpu": ":maincpu",
@@ -855,7 +856,7 @@ Give this to an MCP client with this server connected:
 
 </details>
 
-**9. `map_find`**: OK is insert: the insert screen, its controls banner, credits
+**9. `screen_map_find`**: OK is insert: the insert screen, its controls banner, credits
 
 <details><summary>call and reply</summary>
 
@@ -865,7 +866,7 @@ Give this to an MCP client with this server connected:
 
 ```json
 {
-  "summary": "map_find: insert (file), 2 controls",
+  "summary": "screen_map_find: insert (file), 2 controls",
   "status": "ok",
   "matched": true,
   "screen": "insert",
@@ -909,7 +910,7 @@ Give this to an MCP client with this server connected:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#3",
   "pc_before": "0x0003143e",
-  "cause": "map_find: one step",
+  "cause": "screen_map_find: one step",
   "stop_seq": 7,
   "pc": "0x000300e9",
   "cpu": ":maincpu",
@@ -1349,7 +1350,7 @@ Give this to an MCP client with this server connected:
 
 </details>
 
-**14. `map_find`**: OK is level: the level screen, its controls p1_well, p2_well, credits
+**14. `screen_map_find`**: OK is level: the level screen, its controls p1_well, p2_well, credits
 
 <details><summary>call and reply</summary>
 
@@ -1359,7 +1360,7 @@ Give this to an MCP client with this server connected:
 
 ```json
 {
-  "summary": "map_find: level (file), 3 controls",
+  "summary": "screen_map_find: level (file), 3 controls",
   "status": "ok",
   "matched": true,
   "screen": "level",
@@ -1416,7 +1417,7 @@ Give this to an MCP client with this server connected:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#5",
   "pc_before": "0x00034b9e",
-  "cause": "map_find: one step",
+  "cause": "screen_map_find: one step",
   "stop_seq": 11,
   "pc": "0x00034ba0",
   "cpu": ":maincpu",
@@ -1672,7 +1673,7 @@ Give this to an MCP client with this server connected:
 
 </details>
 
-**18. `map_find`**: OK is play: the play screen, its controls p1_well, p2_well, credits
+**18. `screen_map_find`**: OK is play: the play screen, its controls p1_well, p2_well, credits
 
 <details><summary>call and reply</summary>
 
@@ -1682,7 +1683,7 @@ Give this to an MCP client with this server connected:
 
 ```json
 {
-  "summary": "map_find: play (file), 3 controls",
+  "summary": "screen_map_find: play (file), 3 controls",
   "status": "ok",
   "matched": true,
   "screen": "play",
@@ -1739,7 +1740,7 @@ Give this to an MCP client with this server connected:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#6",
   "pc_before": "0x0003063a",
-  "cause": "map_find: one step",
+  "cause": "screen_map_find: one step",
   "stop_seq": 13,
   "pc": "0x0003063b",
   "cpu": ":maincpu",
@@ -3031,15 +3032,9 @@ Give this to an MCP client with this server connected:
   "console_pending_before": 0,
   "console_drained": 0,
   "session": {
-    "alive": true,
+    "alive": false,
     "running": false,
-    "altered": false,
-    "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "altered": false
   }
 }
 ```

@@ -28,11 +28,11 @@ CLOSE_HOW = ("close(detail=True) keeps the channels' last words on a clean quit 
 
 def close(progress: mprogress.Progress = mprogress.no_progress,
           detail: bool = False) -> dict[str, Any]:
-    """The body of the `close` tool; its `session` block is the state BEFORE the kill.
+    """The body of the `close` tool; its `session` block is the state AFTER the kill.
 
     The last words come back unless the end was a clean `quit` with exit code 0, or with `detail`.
     """
-    # Counted first so the session block reports the console as the log shows it.
+    # Counted first so the console tallies carried out below are the log's.
     if STATE.scratch is not None:
         transport.count_unread(STATE.scratch)
     before = menvelope.session_block(whole=True)
@@ -81,9 +81,13 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
                 f"exit ({why}): MAME's Lua collector has torn one of those down on the way out "
                 "(SIGSEGV in `lua_engine::close`), so a non-zero exit code here has that as its "
                 "likely cause")
-    # `mame_mcp.tool` keeps this block and puts it last (`close` registers `session_before`).
-    reply["session"] = ({**before, "throttles_not_applied": not_applied} if not_applied
-                        else before)
+    # What the kill resets is read after it, so the block is a no-session one; what it cannot
+    # reset (a doubt about the session's reports) rides along.
+    carried = {k: v for k, v in before.items() if k == "console" and any(v.values())}
+    if not_applied:
+        carried["throttles_not_applied"] = not_applied
+    after = menvelope.session_block(whole=True)
+    reply["session"] = {**{k: after[k] for k in ("alive", "running", "altered")}, **carried}
     return reply
 
 

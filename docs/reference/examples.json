@@ -1855,11 +1855,11 @@
    }
   }
  },
- "map_find": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): map_find @ stopped",
+ "screen_map_find": {
+  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_map_find @ stopped",
   "call": {},
   "reply": {
-   "summary": "map_find: probe (session), 0 controls",
+   "summary": "screen_map_find: probe (session), 0 controls",
    "status": "ok",
    "matched": true,
    "screen": "probe",
@@ -1876,7 +1876,7 @@
    "console_reruns": 0,
    "call": "MAME_MCP_LUA_END#5",
    "pc_before": "0x000025e0",
-   "cause": "map_find: one step",
+   "cause": "screen_map_find: one step",
    "stop_seq": 6,
    "pc": "0x000025e8",
    "cpu": ":maincpu",
@@ -1917,8 +1917,8 @@
    }
   }
  },
- "map_write": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): map_write add @ stopped",
+ "screen_map_write": {
+  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_map_write add @ stopped",
   "call": {
    "method": "add",
    "screen": "probe",
@@ -1932,7 +1932,7 @@
    ]
   },
   "reply": {
-   "summary": "map_write add: probe (pixel 336x252), 1 region, 0 controls",
+   "summary": "screen_map_write add: probe (pixel 336x252), 1 region, 0 controls",
    "status": "ok",
    "screen": "probe",
    "kind": "pixel",
@@ -1960,7 +1960,7 @@
    "console_reruns": 0,
    "call": "MAME_MCP_LUA_END#4",
    "pc_before": "0x000025dc",
-   "cause": "map_write add: one step",
+   "cause": "screen_map_write add: one step",
    "stop_seq": 5,
    "pc": "0x000025e0",
    "cpu": ":maincpu",

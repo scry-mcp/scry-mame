@@ -2186,16 +2186,9 @@ Also attached: image/png.
   "console_pending_before": 0,
   "console_drained": 0,
   "session": {
-    "alive": true,
+    "alive": false,
     "running": false,
-    "altered": true,
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
-    "altering_writes": 1,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "altered": false
   }
 }
 ```

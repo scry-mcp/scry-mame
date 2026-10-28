@@ -28,7 +28,8 @@ STILL_TOOLS = frozenset({
     "cpu_info", "declaration_clear", "declaration_list", "disassemble", "find",
     "gfx_blit_source", "gfx_blits", "gfx_draft", "gfx_film", "gfx_load", "gfx_locate",
     "gfx_sweep", "gfx_view", "history", "image_compare", "log", "log_wait", "machine_map",
-    "map_find", "map_write", "memdump", "palette", "palette_log", "perform_export", "read_block",
+    "screen_map_find", "screen_map_write", "memdump", "palette", "palette_log", "perform_export",
+    "read_block",
     "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
     "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add"})
 

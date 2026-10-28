@@ -602,7 +602,7 @@ MACHINE_DEPENDENT: dict[str, Any] = {
     "read_memory": lambda: s.read_memory(ref="no_such_symbol", length=4),
     "disassemble": lambda: s.disassemble(ref="no_such_symbol", length=4),
     "memdump": lambda: s.memdump(ref="no_such_symbol", length=4, dest=_tmp("probe.bin")),
-    "run_to": lambda: s.run_to(ref="no_such_symbol"),
+    "run_to": lambda: s.run_to(ref="no_such_symbol", control="0x25a4"),
     "symbols_find": lambda: s.symbols_find(name="no_such_symbol"),
 }
 

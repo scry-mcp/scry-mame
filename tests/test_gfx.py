@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import png_read  # noqa: E402
 from lua_support import _channel, _ChannelSession  # noqa: E402
+from scry_core import pens as scry_pens  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core import png, raster  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
@@ -313,7 +314,7 @@ def test_isolate_shows_the_pens_asked_for_and_where_they_are(
         return ((c >> 16) & 255, (c >> 8) & 255, c & 255)
 
     x, y = hits[0]
-    assert pic.at(x, y) == mscreen.ISOLATE_COLOUR, "a selected pen in the one contrast colour"
+    assert pic.at(x, y) == scry_pens.ISOLATE_COLOUR, "a selected pen in the one contrast colour"
     grey = pic.at(0, 0)
     assert isinstance(grey, tuple) and grey[0] == grey[1] == grey[2] != colour(0, 0)[0], (
         "every other pen grey")
@@ -335,10 +336,10 @@ def test_isolate_makes_a_dark_pen_stand_out_on_an_indexed_screen(
     size = 336 * 252 * 4
     idx = bytes(raw[size + i] for i in range(0, size, 4))
     assert pic.indexed and pic.pixels == idx, "the index is still the pen"
-    assert pic.palette[221] == mscreen.ISOLATE_COLOUR
+    assert pic.palette[221] == scry_pens.ISOLATE_COLOUR
     others = [c for pen, c in enumerate(pic.palette) if pen != 221]
     assert all(r == g == b for r, g, b in others), "every other pen is a grey"
-    assert all(mscreen.GREY_LOW <= r <= mscreen.GREY_HIGH for r, _, _ in others), (
+    assert all(scry_pens.GREY_LOW <= r <= scry_pens.GREY_HIGH for r, _, _ in others), (
         "no grey is black or white, so nothing competes with the contrast colour")
     assert len({r for r, _, _ in others}) > 1, "the greys keep the pens' shapes apart"
 
@@ -381,7 +382,7 @@ def test_pixel_shows_where_the_point_is_on_a_crop_round_it(
     assert out["crop"] == crop and out["point_in_crop"] == at
     pic = _png(out)
     b = out["image"]["border"]
-    assert b == len(mscreen.POINT_RINGS)
+    assert b == len(scry_pens.POINT_RINGS)
     assert not pic.indexed and (pic.width, pic.height) == (48 * 4 + 2 * b, 48 * 4 + 2 * b)
     px, py = at
     colour = _screen_rgb("gridlee-screen", 256, *point)
@@ -511,7 +512,7 @@ def test_a_short_capture_is_refused(monkeypatch: pytest.MonkeyPatch, tmp_path: P
     ({"pens": [1]}, "`pens` goes with mode `isolate`"),
     ({"mode": "isolate"}, "`pens` goes with mode `isolate`"),
     ({"mode": "isolate", "pens": []}, "pens="),
-    ({"mode": "isolate", "pens": [1] * (mscreen.PENS_MAX + 1)}, "pens="),
+    ({"mode": "isolate", "pens": [1] * (scry_pens.PENS_MAX + 1)}, "pens="),
     ({"mode": "pixel"}, "`point` goes with mode `pixel`"),
     ({"point": [1, 1]}, "`point` goes with mode `pixel`"),
     ({"mode": "pixel", "point": [1]}, "point="),
@@ -1226,7 +1227,7 @@ def test_the_rings_round_a_point_are_whole_even_at_the_screens_edge(
     pic = _png(out)
     border = out["image"].get("border", 0)
     px, py = (border + v * 4 for v in out["point_in_crop"])
-    for gap, rgb in enumerate(mscreen.POINT_RINGS, 1):
+    for gap, rgb in enumerate(scry_pens.POINT_RINGS, 1):
         sides = [(px - gap, py), (px + 3 + gap, py), (px, py - gap), (px, py + 3 + gap)]
         for x, y in sides:
             assert 0 <= x < pic.width and 0 <= y < pic.height, ("off the picture", x, y)

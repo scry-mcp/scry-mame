@@ -368,6 +368,17 @@ def test_a_clean_close_names_the_last_words_it_left_out(
     assert closed["omitted"] == ["stdout_tail", "errorlog_tail"]
     assert closed["how"] == msession.CLOSE_HOW and "detail=True" in closed["how"]
     assert closed["summary"].endswith(", last words left out (see `omitted`)"), closed["summary"]
+    assert closed["session"] == {"alive": False, "running": False, "altered": False}, closed
+
+
+def test_close_reports_the_session_as_it_is_after_closing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _closing(monkeypatch, tmp_path, exits=False)
+    mstate.STATE.console_writes = 3
+    closed = s.close()
+    assert closed["closed"] is True
+    assert closed["session"]["alive"] is False and closed["session"]["running"] is False, closed
 
 
 def test_a_quit_that_exits_nonzero_keeps_the_last_words_unasked(
@@ -417,7 +428,7 @@ def test_close_asks_mame_to_quit_before_it_kills() -> None:
     proc = _ExitingProcess(ses.events, exits=True)
     mstate.STATE.ses, mstate.STATE.proc = ses, proc  # type: ignore[assignment]
     closed = s.close()
-    assert closed["closed"] is True and closed["session"]["alive"] is True, "as it was BEFORE"
+    assert closed["closed"] is True and closed["session"]["alive"] is False, "as it is AFTER"
     assert closed["ended_by"] == "quit" and closed["exit_code"] == 0 and "reap_failed" not in closed
     assert list(closed)[0] == "summary" and closed["summary"].startswith("close: quit, exit code 0")
     assert ses.events == ["quit", "wait", "close"], ses.events
@@ -917,10 +928,8 @@ def test_close_reports_a_process_that_had_already_died_and_the_session_as_it_was
     closed = s.close()
     assert closed["closed"] is True and closed["ended_by"] == "died" and closed["exit_code"] == -11
     assert ses.events == ["close"], "no quit is sent to a process that is gone"
-    assert closed["session"] == {"alive": False, "running": False, "altered": True,
-                                 "altering_writes": 3,
-                                 "console": {"thread_errors": 2, "reruns": 1, "lost": 1},
-                                 "note": closed["session"]["note"]}
+    assert closed["session"] == {"alive": False, "running": False, "altered": False,
+                                 "console": {"thread_errors": 2, "reruns": 1, "lost": 1}}
     assert closed["summary"] == "close: the emulator had already exited, exit code -11"
     assert mstate.STATE.console_writes == 0
     ses2 = _RecordingSession(quit_raises=True)
@@ -928,8 +937,8 @@ def test_close_reports_a_process_that_had_already_died_and_the_session_as_it_was
     mstate.STATE.ses, mstate.STATE.proc = ses2, proc  # type: ignore[assignment]
     ses2.writes = 1
     closed = s.close()
-    assert closed["ended_by"] == "quit" and closed["session"]["alive"] is True
-    assert closed["session"]["altered"] is True and closed["session"]["altering_writes"] == 1
+    assert closed["ended_by"] == "quit" and closed["session"]["alive"] is False
+    assert closed["session"]["altered"] is False
 
 
 @pytest.mark.parametrize("presence", [True, False])
@@ -1116,7 +1125,7 @@ def test_close_counts_the_deaths_and_reruns_no_lua_call_read(
     mstate.STATE.scratch = scratch
     monkeypatch.setattr(transport, "drain", lambda ses_, scratch_: (0, 0))
     closed = s.close()
-    assert closed["session"]["console"] == {"thread_errors": 0, "reruns": 0, "lost": 0}
+    assert "console" not in closed["session"], closed["session"]
     scratch.mkdir()
     (scratch / "stdout.log").write_bytes(
         b"boot\n" + transport.THREAD_ERROR + b" x\n"

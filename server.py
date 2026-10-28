@@ -216,7 +216,9 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
 
     Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
     `cfg` (`installed_path`, `changed`), `average_speed`, `note`; `stdout_tail` and
-    `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
+    `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`. `session` is the
+    block as it is after the close (`alive` and `running` false); a console doubt or a throttle
+    found not applied still rides there.
 
     Reference: REFERENCE.md, The session.
     """
@@ -285,24 +287,32 @@ def rom_check(
 # ----------------------------------------------------------------------------- advance
 
 @tool("Run to a place, with a control", summary=summaries.run_to, on_cancel="stop")
-def run_to(ref: str, control: str = "",
+def run_to(ref: str = "", *, control: str, screen: str = "",
            seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
            disarm_watches: bool = False, condition: str = "", cpu: str = "",
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run to `ref` and stop, with a control counting meanwhile.
 
-    `ref` is armed on `cpu` (the visible one when empty). `control`: a ref declared as a control
-    on that cpu (`breakpoint_at(role="control")`); a new one is declared. `condition`: stop only
+    `ref` is armed on `cpu` (the visible one when empty). `control` is required: a place known to
+    run, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does the
+    same ahead of time), and the cpu's other declared controls count too. `condition`: stop only
     when it holds, bare numbers hex (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an
-    unresolved ref, no control on the cpu, an over-long `condition`.
+    unresolved ref, an empty or unresolved control, an over-long `condition`.
+
+    {MAP_RUN_TO}
 
     Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each
     `ref`, `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`). INVALID has no
-    `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`.
+    `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
     Reference: REFERENCE.md, Advancing the machine.
     """
-    args.check("run_to", ref=ref, seconds=seconds, condition=condition, control=control)
+    args.check("run_to", ref=ref, seconds=seconds, condition=condition, control=control,
+               screen=screen)
+    if screen:
+        return mmaps.run_to_screen(*stopped("a run to a screen"), screen, control, seconds,
+                                   bridge(ctx), condition=condition,
+                                   disarm_watches=disarm_watches, cpu=cpu)
     return advance.run_to(*stopped("a run to a place"), ref, control, seconds, bridge(ctx),
                           condition=condition, disarm_watches=disarm_watches, cpu=cpu)
 
@@ -876,22 +886,23 @@ def screen_signature(crop: list[int] | None = None,
 
 
 
-@tool("Which mapped screen is this", summary=summaries.map_find, on_cancel="none",
+@tool("Which mapped screen is this", summary=summaries.screen_map_find, on_cancel="none",
       replay=("matched", "screen", "pc", "frame"))
-def map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+def screen_map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """{MAP_FIND}
 
     Reference: REFERENCE.md, Screen maps.
     """
-    return mmaps.map_find(*stopped("a screen map"), bridge(ctx))
+    return mmaps.screen_map_find(*stopped("a screen map"), bridge(ctx))
 
 
-@tool("Write the screen map", summary=methods.fold_line("map_write", folds.MAP),
+@tool("Write the screen map", summary=methods.fold_line("screen_map_write", folds.MAP),
       on_cancel="none", replay={"add": "step", "load": "step", "save": "drop"})
-def map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str = "",
+def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str = "",
               match: list[list[int]] | None = None, controls: list[dict[str, Any]] | None = None,
               cells: Annotated[str, vocab.enum(screen_map.CELLS_WORDS)] = "",
-              path: str = "", dest: str = "", overwrite: bool | None = None,
+              path: str = "", scale: int | None = None, margin: list[int] | None = None,
+              dest: str = "", overwrite: bool | None = None,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen map: an application's screens, each known by the signatures of its stable
     regions, and their controls, in a session layer and a file layer.
@@ -905,12 +916,12 @@ def map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str 
 
     {MAP_SAVE}
 
-    Refused: an argument the method does not take; a misshapen name, crop, control or file
-    (`bad_argument`); nothing mapped to save (`needs_call`).
+    Refused: an argument the method does not take; a misshapen name, crop, control, view or
+    file (`bad_argument`); nothing mapped to save (`needs_call`).
 
     Reference: REFERENCE.md, Screen maps.
     """
-    args.check("map_write", **_given(locals()))
+    args.check("screen_map_write", **_given(locals()))
     return methods.dispatch(folds.MAP, _given(locals()), {"progress": bridge(ctx)})
 
 
@@ -989,8 +1000,9 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
     height]` narrows all but `pixel`.
 
     Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
-    `screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`; `histogram`, `unused`;
-    `pixel`: `pen`, `color`, `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
+    `screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`, `pens`, `isolate_color`;
+    `histogram`: `histogram`, `pens_used`, `unused`; `pixel`: `x`, `y`, `pen`, `color`,
+    `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
     screen. `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back.
     `bad_argument`: off the screen.
 
@@ -1398,9 +1410,9 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     """Write the session's calls since `start` to `dest` as a `perform` document.
 
     Kept: moving calls and checks (`read_memory`, `read_block`, `registers`,
-    `screen_signature`, `map_find`, `image_compare(method="golden")`), each held to its `recorded`
-    reply. Other calls drop; the first no replay can place, or past {RECORD_MAX}, cuts the
-    rest.
+    `screen_signature`, `screen_map_find`, `image_compare(method="golden")`), each held to its
+    `recorded` reply. Other calls drop; the first no replay can place, or past {RECORD_MAX}, cuts
+    the rest.
 
     `dest` (`.json`) is refused if present unless `overwrite`. Reply: `path`, `steps`,
     `checks`, `dropped`, `dropped_total`, `cut`, `replay`; `no_recording` if empty.

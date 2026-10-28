@@ -13,6 +13,7 @@ from scry_core import (
     series,
     state_files,
 )
+from scry_core import pens as scry_pens
 from scry_core import vocabulary as vocab
 
 import mame_advance as advance
@@ -28,7 +29,6 @@ import mame_locate as mlocate
 import mame_ramdac as mramdac
 import mame_read as read
 import mame_scan as mscan
-import mame_screen as mscreen
 import mame_sequence as sequence
 import mame_state as st
 import mame_sweep as msweep
@@ -52,7 +52,7 @@ DOC_VALUES: dict[str, str] = {
     **core_comments.DOC_VALUES,
     "RECORD_MAX": str(frame_window.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
-    "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(mscreen.PENS_MAX),
+    "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(scry_pens.PENS_MAX),
     "GFX_PLANES_MAX": str(ml.PLANES_MAX), "GFX_TILES_MAX": str(mgfx.VIEW_TILES_MAX),
     "GFX_COLUMNS_MAX": str(mgfx.COLUMNS_MAX), "LOCATE_LAYOUTS_MAX": str(mlocate.LAYOUTS_MAX),
     "LOCATE_TILES_MAX": str(mlocate.SEARCH_TILES_MAX),

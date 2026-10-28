@@ -126,26 +126,27 @@ def test_run_to_is_refused_only_by_a_control_on_its_own_cpu_and_declares_its_con
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x4a0", role="control")
-    refused("same address as a control", s.run_to(ref="0x4a0", seconds=0.05))
+    refused("same address as a control", s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05))
     ses.stops_after_polls = 1
     ses.pcs = [0xF2034, 0x4A0]
     out = s.run_to(ref="0x4a0", control="0x25a4", cpu="subcpu", seconds=1.0)
     assert out.get("code") != "bad_argument", out
     assert ("0x25a4", SUB) in mstate.STATE.controls, "the control is the target's cpu's"
-    assert "bp 0x25a4::subcpu,(++temp1)==0" in ses.commands, ses.commands
+    assert any(c.startswith("bp 0x25a4::subcpu,(++temp") for c in ses.commands), ses.commands
 
 
-def test_a_control_on_another_cpu_does_not_let_a_run_to_start(
+def test_a_control_on_another_cpu_is_not_the_one_a_run_to_counts(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A control on :maincpu says nothing about whether :subcpu ran: the run is refused before
-    anything is armed, naming the cpu that lacks a control and where the ones declared are."""
+    """A control on :maincpu says nothing about whether :subcpu ran: the control a run names is
+    declared on the target's own cpu, and only that cpu's count."""
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")
-    out = refused(r"no control is declared on :subcpu.*:maincpu",
-                  s.run_to(ref="0x542", cpu="subcpu", seconds=0.05))
-    assert out["code"] == "bad_argument", out
-    assert not any(c.startswith("bp 0x542") for c in ses.commands) and not ses.running
+    ses.stops_after_polls = 1
+    ses.pcs = [0xF2034, 0x542]
+    out = s.run_to(ref="0x542", control="0x25a4", cpu="subcpu", seconds=1.0)
+    assert {("0x25a4", MAIN), ("0x25a4", SUB)} <= set(mstate.STATE.controls)
+    assert [c["cpu"] for c in out["controls"]] == [SUB], out["controls"]
 
 
 def test_a_control_declared_on_another_cpu_is_named_as_such_when_run_to_cannot_resolve_it(
@@ -197,13 +198,13 @@ def test_a_targets_silence_is_measured_by_the_controls_on_its_cpu_alone(
         ses.temps[0] = ses.temps.get(0, 0) + 30               # only the main cpu's fires
 
     monkeypatch.setattr(ses, "go", go)
-    out = s.run_to(ref="0x542", cpu="subcpu", seconds=0.05)
+    out = s.run_to(ref="0x542", control="0x4a0", cpu="subcpu", seconds=0.05)
     assert out["code"] == "control_silent" and out["control_hits"] == 0, out
     assert out["controls"] == [{"ref": "0x4a0", "cpu": SUB, "hits_in_run": 0}], out["controls"]
     assert [(d["ref"], d["cpu"]) for d in out["control_dasm"]] == [("0x4a0", SUB)]
     assert "(0x4a0)" in out["message"], out["message"]
     ses.stop_count, ses.interrupted = 0, 0
-    out = s.run_to(ref="0x1000", seconds=0.05)                     # :maincpu's target
+    out = s.run_to(ref="0x1000", control="0x25a4", seconds=0.05)     # :maincpu's target
     assert out["verdict"] == "TIMEOUT" and out["control_hits"] == 30, out
     assert out["controls"] == [{"ref": "0x25a4", "cpu": MAIN, "hits_in_run": 30}], out["controls"]
 

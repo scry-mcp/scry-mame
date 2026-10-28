@@ -494,18 +494,18 @@ def c5_advancing() -> None:
     cell(C5[0], r.get("verdict") == "TARGET" and "0x4a0" in str(r.get("controls")), said(r))
     call("declaration_clear", kind="breakpoint", all=True)
     call("breakpoint_at", ref="irq_vblank", role="control")
-    r = call("run_to", ref="0x4a0", seconds=10.0)
+    r = call("run_to", ref="0x4a0", control="irq_vblank", seconds=10.0)
     cell(C5[1], r.get("verdict") == "TARGET", said(r))
     # The vblank handler adds one to the long at 0x2031fc every frame once the boot settles
     # (read off the machine, frame by frame), so a value three frames ahead is a condition that
     # holds within the bound.
     n = int(call("read_memory", ref="0x2031fc", length=4).get("hex", "0"), 16)
     cond = f"d@0x2031fc=={n + 3:#x}"
-    r = call("run_to", ref="0x4a0", seconds=10.0, condition=cond)
+    r = call("run_to", ref="0x4a0", control="irq_vblank", seconds=10.0, condition=cond)
     cell(C5[2], r.get("verdict") == "TARGET" and r.get("condition") == cond, said(r))
     after = int(call("read_memory", ref="0x2031fc", length=4).get("hex", "0"), 16)
     cell(C5[3], after == n + 3, f"{n} -> {after}")
-    r = call("run_to", ref="exception_handler", seconds=3.0)
+    r = call("run_to", ref="exception_handler", control="irq_vblank", seconds=3.0)
     cell(C5[4], r.get("verdict") == "TIMEOUT" and r.get("control_hits", 0) > 0,
          f"{said(r)} hits={r.get('control_hits')}")
     st_ = call("status")
@@ -552,10 +552,10 @@ def c5_advancing() -> None:
     call("watch_add", ref="0x2031fc", mode="change", length=4)
     # From the handler's second instruction, BEFORE its write to the watched long at 0x40e:
     # from anywhere past it the target comes first and the watch has nothing to cut.
-    call("run_to", ref="0x404", seconds=5.0, disarm_watches=True)
-    r = call("run_to", ref="0x4a0", seconds=5.0)
+    call("run_to", ref="0x404", control="irq_vblank", seconds=5.0, disarm_watches=True)
+    r = call("run_to", ref="0x4a0", control="irq_vblank", seconds=5.0)
     cell(C5[14], r.get("verdict") == "OTHER_STOP" or refused(r, "cut_by_other_stop"), said(r))
-    r = call("run_to", ref="0x4a0", seconds=5.0, disarm_watches=True)
+    r = call("run_to", ref="0x4a0", control="irq_vblank", seconds=5.0, disarm_watches=True)
     cell(C5[15], r.get("verdict") == "TARGET" and "0x2031fc" in str(r.get("disarmed_watches")),
          f"{said(r)} disarmed={r.get('disarmed_watches')}")
     w = by_ref(call("declaration_list", kind="watch").get("watches")).get("0x2031fc", {})
@@ -665,7 +665,7 @@ def c7_watch_modes() -> None:
     r = call("run_for", frames=2, seconds=10.0)
     cell(C7[-3], r.get("verdict") == "OTHER_STOP"
          and r.get("watch_hit", {}).get("writer_pc") is not None, said(r))
-    r = call("run_to", ref="0x4a0", seconds=5.0)
+    r = call("run_to", ref="0x4a0", control="irq_vblank", seconds=5.0)
     cell(C7[-2], r.get("verdict") == "OTHER_STOP" or refused(r, "cut_by_other_stop"), said(r))
     r = call("step")
     w = by_ref(r.get("watches")).get("0x2031fc", {})
@@ -772,7 +772,8 @@ def c9_reset() -> None:
     rw = by_ref(r.get("watches")).get("0x203200", {})
     cell(C9[3], rw.get("state") == "evaluated" and rw.get("reading", {}).get("available") is True,
          str(rw))
-    r = call("run_to", ref="exception_handler", seconds=3.0, disarm_watches=True)
+    r = call("run_to", ref="exception_handler", control="irq_vblank", seconds=3.0,
+             disarm_watches=True)
     cell(C9[4], r.get("verdict") == "TIMEOUT" and r.get("control_hits", 0) > 0, said(r))
     r = call("run_for", frames=5, seconds=10.0, disarm_watches=True)
     t = by_ref(r.get("watches")).get("0x20351c", {})
@@ -814,7 +815,7 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
     media = _media_files()
     maps = Path(fresh("-maps"))
     maps.mkdir()
-    screen_map = str(maps / "batch.scry-map.json")
+    screen_map = str(maps / "batch.screen-map.json")
     return [
         {"op": "series_capture", "first": frame_now + 1, "last": frame_now + 2,
          "seconds": 10.0},
@@ -845,9 +846,9 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "comment_write", "method": "delete", "ref": "irq_vblank"},
         {"op": "debug", "command": "print pc"},
         {"op": "lua", "script": "print(1)", "read_only": True}, {"op": "screen_signature"},
-        {"op": "map_write", "method": "add", "screen": "batch", "match": [[0, 0, 8, 8]]},
-            {"op": "map_find"},
-        {"op": "map_write", "method": "save", "dest": screen_map}, {"op": "map_write",
+        {"op": "screen_map_write", "method": "add", "screen": "batch", "match": [[0, 0, 8, 8]]},
+            {"op": "screen_map_find"},
+        {"op": "screen_map_write", "method": "save", "dest": screen_map}, {"op": "screen_map_write",
                                                                     "method": "load",
                                                                     "path": screen_map},
         {"op": "palette", "count": 4}, {"op": "screen_view", "mode": "histogram"},

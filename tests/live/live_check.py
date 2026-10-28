@@ -241,9 +241,9 @@ if sub_rows:
 check("and the typed row goes with its own bpclear",
       "foreign" not in s.declaration_list("breakpoint"))
 
-print("\n== run_to(): no control declared is a refusal, before the machine moves")
-r = s.run_to(ref="irq_vblank", seconds=5.0)
-check("refused without a control", r.get("status") == "INVALID" and "no control" in
+print("\n== run_to(): an empty control is a refusal, before the machine moves")
+r = s.run_to(ref="irq_vblank", control="", seconds=5.0)
+check("refused without a control", r.get("status") == "INVALID" and "needs a control" in
       str(r.get("message")), str(r.get("message"))[:60])
 
 print("\n== run_to(): a target that DOES run")
@@ -307,7 +307,7 @@ r = s.breakpoint_at(ref="irq_vblank", role="control")
 check("a control declares through the console with its temp",
       r.get("armed") is True and str(r.get("temp")).startswith("temp")
       and "(++" in str(r.get("entry")), str(r.get("entry")))
-r = s.run_to(ref="exception_handler", seconds=12.0)
+r = s.run_to(ref="exception_handler", control="irq_vblank", seconds=12.0)
 check("not reported as TARGET", r.get("verdict") != "TARGET", str(r.get("verdict")))
 check(
     "control counted, so the negative MEANS something",
@@ -807,7 +807,7 @@ print("\n== perform: a goldens run in ONE call, and run_for by frames")
 snap_dir = live_tmp("mame-live-goldens-")
 r = s.perform(steps=[
     {"op": "breakpoint_at", "ref": "irq_vblank", "role": "control"},
-    {"op": "run_to", "ref": "0x4a0", "seconds": 20.0},
+    {"op": "run_to", "ref": "0x4a0", "control": "irq_vblank", "seconds": 20.0},
     {"op": "snapshot", "dest": str(snap_dir / "scene_a.png")},
     {"op": "run_for", "frames": 60, "seconds": 30.0},
     {"op": "snapshot", "dest": str(snap_dir / "scene_b.png")},
@@ -853,7 +853,8 @@ check("summaries=True cuts each earlier stop to its line, its status and where a
       str([step["reply"].get("summary") for step in brief_ran[:2]]))
 check("and the last step keeps its whole reply",
       "regs" in brief_ran[-1]["reply"] if brief_ran else False)
-bad = s.perform(steps=[{"op": "run_to", "ref": "0x4a0"}, {"op": "warp_core"}])
+bad = s.perform(steps=[{"op": "run_to", "ref": "0x4a0", "control": "irq_vblank"},
+                       {"op": "warp_core"}])
 check("a batch with a bad step is refused whole, nothing run",
       bad.get("status") == "INVALID" and bad.get("steps_completed") == 0 and bad.get("ran") == [],
       str(bad.get("message"))[:80])
@@ -1200,7 +1201,7 @@ ran = s.lua("print(1)")
 t2 = s.throttle(on=False)
 check("the per-call console trio rides on `lua` and not on `throttle`",
       all(k in ran for k in PER_CALL) and not any(k in t1 or k in t2 for k in PER_CALL),
-      f"throttle keys {sorted(t1)}")
+      f"lua keys {sorted(ran)}, throttle keys {sorted(t1)}")
 check("a throttle tag's number is the console's session sequence, not a throttle count",
       t2.get("tag") != "MAME_MCP_THROTTLE#2", f"{t1.get('tag')} then {t2.get('tag')}")
 saved = s.state_write("save", name="contract")
@@ -1379,7 +1380,7 @@ coin = next((ln.split("|", 1) for ln in str(ports.get("output", "")).splitlines(
              if ln.endswith("|Coin 1")), None)
 check("circus has a Coin 1 field to press", coin is not None, str(ports.get("output"))[:200])
 s.breakpoint_at(ref="0x80", role="control")   # a `brk` the game never reaches
-landed = s.run_to(ref="0x12f7", seconds=30.0)  # the main loop, every frame
+landed = s.run_to(ref="0x12f7", control="0x80", seconds=30.0)  # the main loop, every frame
 read = s.read_memory(ref="0x0", length=8)
 if coin is not None:
     s.input(port=coin[0], field=coin[1], frames=4, seconds=30.0)
@@ -1427,47 +1428,68 @@ check("the edited document diverges at that step and field (exit 1)",
       f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
 
 print("\n== screen maps: circus's attract screen, found by its map, and not once it changed")
-CIRCUS_MAP = Path(__file__).parent / "circus.scry-map.json"
+CIRCUS_MAP = Path(__file__).parent / "circus.screen-map.json"
 r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
             boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
 check("circus starts for its map", r.get("status") == "ok", str(r.get("summary")))
-loaded = s.map_write("load", path=str(CIRCUS_MAP))
-check("map_write load reads circus's map: one screen, one place",
+loaded = s.screen_map_write("load", path=str(CIRCUS_MAP))
+check("screen_map_write load reads circus's map: one screen, one place",
       (loaded.get("application"), loaded.get("screens"), loaded.get("controls"))
       == ("circus", 1, 1), str(loaded.get("summary")))
 s.run_for(frames=200, seconds=30.0)
-found = s.map_find()
-check("map_find names the attract screen off one capture, from the file layer",
+found = s.screen_map_find()
+check("screen_map_find names the attract screen off one capture, from the file layer",
       (found.get("matched"), found.get("screen"), found.get("layer")) == (True, "attract", "file")
       and [c.get("name") for c in found.get("controls", [])] == ["high_score"],
       str(found.get("summary")))
 # A second region of another crop, so the find signs two crops off its one capture, and a session
 # screen that matches beside the file's: the session layer is tried first.
-added = s.map_write("add", screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
-first = s.map_find()
+added = s.screen_map_write("add", screen="header", match=[[0, 0, 248, 8], [0, 0, 120, 8]])
+first = s.screen_map_find()
 check("with both layers matching, the session's screen is the one named",
       (first.get("screen"), first.get("layer")) == ("header", "session"), str(first.get("summary")))
-saved = s.map_write("save", dest=str(live_tmp("mame-live-maps-") / "circus.scry-map.json"))
-check("map_write add maps the screen in front; map_write save writes both layers, the session's "
-      "promoted",
+saved = s.screen_map_write("save",
+                           dest=str(live_tmp("mame-live-maps-") / "circus.screen-map.json"))
+check("screen_map_write add maps the screen in front; screen_map_write save writes both layers, "
+      "the session's promoted",
       added.get("status") == "ok" and saved.get("screens") == 2
       and saved.get("promoted") == ["header"], f"{added.get('summary')} / {saved.get('summary')}")
 # THE CONTROL FIRST: a frame with nothing written still matches, so the negative below is the
 # write's doing and not one frame's worth of attract animation inside a region.
 s.run_for(frames=1, seconds=30.0)
-still = s.map_find()
+still = s.screen_map_find()
 check("one frame later, with nothing written, the attract screen still matches",
       (still.get("matched"), still.get("screen")) == (True, "attract"), str(still.get("summary")))
+# A RUN TO A SCREEN BY NAME: the attract anchored at the main loop, which runs every frame.
+anchored = json.loads(CIRCUS_MAP.read_text())
+anchored["screens"][0]["anchor"] = "0x12f7"
+for mode in ("verified", "consolidated"):
+    folder = live_tmp(f"mame-live-anchor-{mode}-")
+    (folder / "circus.screen-map.json").write_text(json.dumps({**anchored, "mode": mode}))
+    s.screen_map_write("load", path=str(folder / "circus.screen-map.json"))
+    went = s.run_to(screen="attract", control="0x80", seconds=30.0)
+    check(f"run_to(screen=) reaches the attract at its anchor on a {mode} map, judged only "
+          "when verified",
+          went.get("verdict") == "TARGET" and went.get("screen", {}).get("judged")
+          is (mode == "verified"), str(went.get("summary")))
+s.screen_map_write("load", path=str(saved.get("path")))     # both screens again, for the negative
 # THE NEGATIVE: one tile of the header changed in video RAM (0x4000, a tile a byte, 32 a row),
 # drawn by the next frame, and neither screen the map holds is that screen any more.
 tile = int(str(s.read_memory(ref="0x4002", length=1).get("hex")), 16)
 s.write(ref="0x4002", data_hex=f"{(tile + 1) & 0xFF:02x}")
 s.run_for(frames=1, seconds=30.0)
-changed = s.map_find()
+changed = s.screen_map_find()
 check("a screen whose region changed matches no screen of the map",
       changed.get("status") == "ok" and changed.get("matched") is False
       and changed.get("screens_tried") == 2, str(changed.get("summary")))
+stale_dir = live_tmp("mame-live-anchor-stale-")
+(stale_dir / "circus.screen-map.json").write_text(json.dumps({**anchored, "mode": "verified"}))
+s.screen_map_write("load", path=str(stale_dir / "circus.screen-map.json"))
+stale = s.run_to(screen="attract", control="0x80", seconds=30.0)
+check("a verified screen whose region changed is refused stale at its anchor",
+      stale.get("status") == "INVALID" and stale.get("code") == "stale_map",
+      str(stale.get("summary")))
 s.close()
 
 finish("LIVE CHECK")

@@ -196,10 +196,10 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin")},
     "snapshot": dict,
     "screen_signature": dict,
-    "map_write load": lambda: {"path": "/nonexistent/m.scry-map.json"},
-    "map_write add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
-    "map_find": dict,
-    "map_write save": lambda: {"dest": fresh(".scry-map.json"), "overwrite": True},
+    "screen_map_write load": lambda: {"path": "/nonexistent/m.screen-map.json"},
+    "screen_map_write add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
+    "screen_map_find": dict,
+    "screen_map_write save": lambda: {"dest": fresh(".screen-map.json"), "overwrite": True},
     "series_capture": _series_ahead,
     **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
@@ -287,9 +287,9 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "snapshot": lambda r: r.get("bytes", 0) > 0,
     "screen_signature": lambda r: isinstance(r.get("signature"), str)
     and len(r["signature"]) == 16,
-    "map_write add": lambda r: r.get("kind") == "pixel"
+    "screen_map_write add": lambda r: r.get("kind") == "pixel"
     and len(str(r["match"][0]["signature"])) == 16,
-    "map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
+    "screen_map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
     "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
     "screen_view": lambda r: sum(n for _, n in r.get("histogram", []))
@@ -378,10 +378,10 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     if tool in MEDIA_ABSENT:
         good = refused(r, "bad_argument") and "no file at" in str(r.get("message"))
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
-    elif tool in ("map_write load", "map_write save"):
+    elif tool in ("screen_map_write load", "screen_map_write save"):
         # a load of a missing file is refused by name; a save needs a map first
         good = (refused(r, "bad_argument") and "no map file" in str(r.get("message"))
-                if tool == "map_write load" else
+                if tool == "screen_map_write load" else
                 refused(r, "needs_call") if state == "none" else
                 ok(r) and Path(str(r.get("path"))).is_file())
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
@@ -407,7 +407,9 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
             good = ok(r) and r.get("already") is True
         else:
             good = ok(r) and STOPPED_SAYS[tool](r)
-        agrees = session_is(r, True, tool == "resume")
+        # `close` reports the session after it, which is over
+        agrees = (session_is(r, False, False) if tool == "close"
+                  else session_is(r, True, tool == "resume"))
     else:
         if tool == "start":
             good = refused(r, "session_live")
@@ -422,8 +424,8 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
         else:
             good = (refused(r, "not_stopped") and isinstance(r.get("last_stop"), dict)
                     and "answers_while_running" in r)
-        # `close` describes the session as it was before it
-        agrees = session_is(r, True, tool != "stop")
+        agrees = (session_is(r, False, False) if tool == "close"
+                  else session_is(r, True, tool != "stop"))
     detail = said(r) if good else f"{r.get('code', '')} {said(r)}"
     if good and not agrees:
         detail = f"session block disagrees: {r.get('session')}"
@@ -468,7 +470,8 @@ STOPPED_ORDER = [
     "declaration_list watch", "declaration_clear watch", "regpoint_add",
     "declaration_list regpoint", "declaration_clear regpoint", "comment_write add", "comment_list",
     "comment_write save", "comment_write load", "comment_write delete", "debug", "lua",
-    "screen_signature", "map_write add", "map_find", "map_write save", "map_write load",
+    "screen_signature", "screen_map_write add", "screen_map_find", "screen_map_write save",
+    "screen_map_write load",
     "image_compare image", "image_compare series", "image_compare region", "image_compare golden",
     "audio_compare measure", "audio_compare diff", "palette", "screen_view", "gfx_view",
     "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",

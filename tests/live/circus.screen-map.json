@@ -1,6 +1,7 @@
 {
- "format": "scry-map/1",
+ "format": "scry-screen-map/1",
  "application": "circus",
+ "mode": "verified",
  "screens": [
   {
    "name": "attract",

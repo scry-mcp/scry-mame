@@ -80,14 +80,14 @@ DECLARED = {
     "image_compare": {"image": "drop", "series": "drop", "region": "drop",
                       "golden": ("matched", "differing_total", "missing_total", "extra_total",
                                  "differing", "missing", "extra")},
-    "map_write": {"add": "step", "load": "step", "save": "drop"},
+    "screen_map_write": {"add": "step", "load": "step", "save": "drop"},
     "resume": "wall", "stop": "wall",
     **dict.fromkeys(("throttle", "snapshot", "memdump", "comment_write", "palette",
                      "screen_view", "gfx_view", "gfx_locate", "gfx_sweep", "gfx_draft",
                      "gfx_load", "gfx_blits", "gfx_blit_source", "gfx_film", "palette_log",
                      "scan", "audio_compare"), "drop"),
     # A replay knows the map an identification was made against, and holds the find to it.
-    "map_find": ("matched", "screen", "pc", "frame"),
+    "screen_map_find": ("matched", "screen", "pc", "frame"),
     # The readers dropped by default, named so a reader that turns into a step is seen.
     **dict.fromkeys(("declaration_list", "captures", "comment_list", "cpu_info", "disassemble",
                      "find", "history", "log", "log_wait", "machine_map", "rom_check",

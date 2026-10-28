@@ -68,11 +68,11 @@ NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export"}
 RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot", "state_list",
                   "captures", "breakpoint_at", "declaration_list", "declaration_clear", "watch_add",
                   "regpoint_add", "comment_list", "comment_write", "symbols_find", "throttle",
-                  "machine_map", "gfx_load", "palette_log", "gfx_film", "scan", "map_write",
+                  "machine_map", "gfx_load", "palette_log", "gfx_film", "scan", "screen_map_write",
                   *media_tools.TOOLS}
 #: The methods of a fold that answer on a running machine; its others need a stop.
 RUNNING_METHODS: dict[str, tuple[str, ...]] = {
-    "comment_write": ("save",), "scan": ("clear",), "map_write": ("load", "save")}
+    "comment_write": ("save",), "scan": ("clear",), "screen_map_write": ("load", "save")}
 
 
 #: A film's arming reads the screen, so it needs a stop.
@@ -144,7 +144,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
 MACHINE_JUDGES = frozenset({
     "comment_list",
     "state_list", "captures", "stop", "status", "reset", "cpu_info",
-    "map_find",
+    "screen_map_find",
 })
 
 def check_perform(settle_seconds: float = 30.0, summaries: bool = False, until_frame: int = 0,

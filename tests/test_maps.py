@@ -41,20 +41,45 @@ def test_a_screen_mapped_from_the_one_in_front_is_found_again_off_one_capture(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    added = _ok(s.map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    added = _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
     assert (added["kind"], added["size"], added["controls"]) == ("pixel", [256, 240], 1)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     assert added["match"][0]["signature"] == _ok(s.screen_signature(crop=STRIP))["signature"]
     before = mstate.STATE.lua_seq
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    found = _ok(s.map_find())
+    found = _ok(s.screen_map_find())
     assert (found["matched"], found["screen"], found["layer"]) == (True, "board", "session")
     assert found["controls"] == [{"name": "score", "rect": [8, 0, 64, 8], "centre": [40, 4]}]
     assert mstate.STATE.lua_seq == before + 1, "one Lua chunk for the whole identification"
-    assert found["summary"] == "map_find: board (session), 1 control"
+    assert found["summary"] == "screen_map_find: board (session), 1 control"
     assert found["session"]["altered"] is False
     assert mstate.STATE.maps.found is not None
     assert mstate.STATE.maps.found.stop == found["stop_seq"], "dated at the stop it reports"
+
+
+def test_a_run_to_a_verified_screen_reports_the_stop_its_capture_left(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The capture that judges the screen steps the machine, so the reply and the
+    identification are dated at the stop after it, never at the anchor's."""
+    import mame_advance as advance
+    import mame_maps as mmaps
+    import mame_running as running
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    added = mstate.STATE.maps.session["board"]
+    mstate.STATE.maps.session["board"] = screen_map.Screen(
+        added.name, added.kind, added.size, added.match, added.controls, added.cells, "Board")
+    arrival = {"status": "ok", "verdict": "TARGET", "stop_seq": -1, "pc": "0x0000dead"}
+    monkeypatch.setattr(advance, "run_to", lambda *a, **k: dict(arrival))
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    got = mmaps.run_to_screen(*running.stopped("a run to a screen"), "board", "Tick", 30.0)
+    assert got["status"] == "ok" and got["screen"]["judged"] is True, got
+    assert got["stop_seq"] != -1 and got["pc"] != "0x0000dead", "the stop after the capture"
+    assert "evaluated_by" in got
+    assert mstate.STATE.maps.found is not None
+    assert mstate.STATE.maps.found.stop == got["stop_seq"]
 
 
 def test_a_screen_signed_by_index_asks_the_capture_for_its_pens(
@@ -62,12 +87,12 @@ def test_a_screen_signed_by_index_asks_the_capture_for_its_pens(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    added = _ok(s.map_write("add", screen="board", match=[STRIP], cells="index"))
+    added = _ok(s.screen_map_write("add", screen="board", match=[STRIP], cells="index"))
     assert added["cells"] == "index"
     asked = ses.stdin.getvalue()
     assert b", true)" in asked and b", false)" not in asked, "the pens were not asked for"
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    found = _ok(s.map_find())
+    found = _ok(s.screen_map_find())
     assert (found["matched"], found["screen"]) == (True, "board")
     assert b", false)" not in ses.stdin.getvalue(), "an index map read without its pens"
 
@@ -77,9 +102,9 @@ def test_another_board_matches_nothing_and_says_what_it_tried(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    _ok(s.map_write("add", screen="board", match=[STRIP]))
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP]))
     _serve(ses, "screen-circus", screen="circus-screen")
-    found = _ok(s.map_find())
+    found = _ok(s.screen_map_find())
     assert found["matched"] is False and "screen" not in found
     assert (found["size"], found["screens_tried"], found["screens_mapped"]) == ([248, 256], 0, 1)
 
@@ -89,26 +114,26 @@ def test_saved_screens_become_the_file_layer_and_load_back(
 ) -> None:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
-    _ok(s.map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
-    path = tmp_path / "gridlee.scry-map.json"
-    saved = _ok(s.map_write("save", dest=str(path)))
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    path = tmp_path / "gridlee.screen-map.json"
+    saved = _ok(s.screen_map_write("save", dest=str(path)))
     assert saved["promoted"] == ["board"] and json.loads(path.read_text())["application"] == (
         "gridlee")
-    refused("there", s.map_write("save", dest=str(path)))
+    refused("there", s.screen_map_write("save", dest=str(path)))
     mstate.STATE.maps = screen_map.Maps()
-    loaded = _ok(s.map_write("load", path=str(path)))
+    loaded = _ok(s.screen_map_write("load", path=str(path)))
     assert (loaded["application"], loaded["screens"], loaded["controls"]) == ("gridlee", 1, 1)
 
 
 @pytest.mark.parametrize(("call", "code"), [
-    (lambda p: s.map_write("save", dest=str(p / "x.scry-map.json")), "needs_call"),
-    (lambda p: s.map_write("load", path=str(p / "no.scry-map.json")), "bad_argument"),
-    (lambda p: s.map_write("load", path="relative.scry-map.json"), "bad_argument"),
-    (lambda p: s.map_write("save", dest=str(p / "x.json")), "bad_argument"),
-    (lambda p: s.map_write("save", dest=str(p / "x.scry-map.json"), overwrite="yes"),
+    (lambda p: s.screen_map_write("save", dest=str(p / "x.screen-map.json")), "needs_call"),
+    (lambda p: s.screen_map_write("load", path=str(p / "no.screen-map.json")), "bad_argument"),
+    (lambda p: s.screen_map_write("load", path="relative.screen-map.json"), "bad_argument"),
+    (lambda p: s.screen_map_write("save", dest=str(p / "x.json")), "bad_argument"),
+    (lambda p: s.screen_map_write("save", dest=str(p / "x.screen-map.json"), overwrite="yes"),
      "bad_argument"),
-    (lambda p: s.map_write("add", screen="", match=[STRIP]), "bad_argument"),
-    (lambda p: s.map_write("add", screen="s", match=[]), "bad_argument"),
+    (lambda p: s.screen_map_write("add", screen="", match=[STRIP]), "bad_argument"),
+    (lambda p: s.screen_map_write("add", screen="s", match=[]), "bad_argument"),
 ], ids=["save with nothing mapped", "a file that is not there", "a relative path",
         "a name without the map suffix", "an overwrite that is no yes or no",
         "an empty screen name", "no region"])
@@ -121,7 +146,7 @@ def test_what_the_map_tools_refuse_before_the_machine(tmp_path: Path, call: Any,
 def test_a_misshapen_control_is_refused_before_the_capture(monkeypatch: pytest.MonkeyPatch,
                                                            tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    got = s.map_write("add", screen="board", match=[STRIP], controls=[{"name": "score"}])
+    got = s.screen_map_write("add", screen="board", match=[STRIP], controls=[{"name": "score"}])
     assert got["code"] == "bad_argument" and "has no `rect`" in got["message"], got
     assert "mcp_capture(" not in ses.stdin.getvalue().decode(), "no capture for a refusal"
 
@@ -129,8 +154,9 @@ def test_a_misshapen_control_is_refused_before_the_capture(monkeypatch: pytest.M
 def test_find_with_nothing_mapped_asks_for_a_map(monkeypatch: pytest.MonkeyPatch,
                                                  tmp_path: Path) -> None:
     ses = _channel(monkeypatch, tmp_path)
-    got = s.map_find()
-    assert got["code"] == "needs_call" and "`map_write` a map (`load`)" in got["message"], got
+    got = s.screen_map_find()
+    assert got["code"] == "needs_call", got
+    assert "`screen_map_write` a map (`load`)" in got["message"], got
     assert "mcp_capture(" not in ses.stdin.getvalue().decode(), "no capture for nothing mapped"
 
 
@@ -154,15 +180,14 @@ def test_a_start_empties_the_session_layer_and_keeps_the_file(
 
 
 def test_an_export_keeps_the_map_and_holds_an_identification_to_what_it_matched() -> None:
-    """A capture here steps the machine, so `map_write(method="add")` and `map_find` move it and an
-    export keeps
-    them whatever they were declared; what the declaration decides is that
-    `map_write(method="load")` is a step
-    too (or the replayed find would know no map), `map_find` a check of what it matched and
-    where, and `map_write(method="save")` dropped (a replay would find its file there)."""
+    """A capture here steps the machine, so `screen_map_write(method="add")` and `screen_map_find`
+    move it and an export keeps them whatever they were declared; what the declaration decides
+    is that `screen_map_write(method="load")` is a step too (or the replayed find would know no
+    map), `screen_map_find` a check of what it matched and where, and
+    `screen_map_write(method="save")` dropped (a replay would find its file there)."""
     import mame_mcp
-    kinds = {m: mame_mcp.RECORDER.kind("map_write", {"method": m}).export_as
+    kinds = {m: mame_mcp.RECORDER.kind("screen_map_write", {"method": m}).export_as
              for m in ("load", "add", "save")}
     assert kinds == {"load": "step", "add": "step", "save": "drop"}
-    found = mame_mcp.RECORDER.kind("map_find", {}).export_as
+    found = mame_mcp.RECORDER.kind("screen_map_find", {}).export_as
     assert found == ("matched", "screen", "pc", "frame")

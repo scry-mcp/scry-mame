@@ -25,7 +25,8 @@ from live_harness import (
 )
 
 import mame_ramdac as mramdac  # isort: skip
-import mame_screen as mscreen  # isort: skip
+from scry_core import pens as scry_pens  # noqa: E402
+
 import mame_watches as mwatches  # isort: skip
 from mame_state import REPLY_BUDGET_CHARS  # isort: skip
 from matrix_pairs import (  # noqa: E402
@@ -213,14 +214,14 @@ def _e_views(t: list[str], pens: Any, first: dict[str, Any] | None, frame: Any) 
     pic = _png(str(iso.get("image", {}).get("path")))
     greys = [c for i, c in enumerate(pic.palette) if i != pen]
     cell(t[9], ok(iso) and pic.indexed and bytes(pic.pixels) == bytes(pens.pixels)
-         and pic.palette[pen] == mscreen.ISOLATE_COLOUR and all(r == g == b for r, g, b in greys),
+         and pic.palette[pen] == scry_pens.ISOLATE_COLOUR and all(r == g == b for r, g, b in greys),
          f"pen {pen}: {said(iso, 80)}")
     px = call("screen_view", mode="pixel", point=[46, 160], scale=4)
     view = _png(str(px.get("image", {}).get("path")))
     ax, ay = px.get("point_in_crop", [0, 0])
     colour = tuple(int(str(px.get("color", "#000000"))[i:i + 2], 16) for i in (1, 3, 5))
     b = px.get("image", {}).get("border", 0)
-    cell(t[10], ok(px) and px.get("pen") == pen and b == len(mscreen.POINT_RINGS)
+    cell(t[10], ok(px) and px.get("pen") == pen and b == len(scry_pens.POINT_RINGS)
          and view.at(b + ax * 4 + 1, b + ay * 4 + 1) == colour
          and view.at(b + ax * 4 - 1, b + ay * 4) == (255, 255, 255),
          f"{px.get('crop')} {said(px, 80)}")

@@ -27,21 +27,8 @@ import mame_callbacks as callbacks
 #: A tool's summary: the call's arguments (defaults applied) and its reply, to one line.
 Summary = Callable[[dict[str, Any], dict[str, Any]], str]
 
-# Bytes a read's summary line shows whole; past it the line says how many it left out, never a
-# cut inside a byte that reads as a shorter value.
-HEX_BYTES_SHOWN = 64
-
-
-#: A refusal's line, and the cut of its prose, are scry-core's, alike on both servers.
-clipped, refusal = prose.clipped, prose.refusal
-
-
-def hex_clipped(hex_text: str) -> str:
-    """A read's bytes for its summary line: whole up to the ceiling, else the first
-    `HEX_BYTES_SHOWN` and the count of the rest, which sit in `hex`."""
-    shown = hex_text[:HEX_BYTES_SHOWN * 2]
-    rest = (len(hex_text) - len(shown)) // 2
-    return shown + (f"... ({rest} more bytes in `hex`)" if rest else "")
+#: A refusal's line, the cut of its prose and of a read's bytes: scry-core's, alike on both.
+clipped, refusal, hex_clipped = prose.clipped, prose.refusal, prose.hex_clipped
 
 
 def _on_off(value: object) -> str:
@@ -118,7 +105,8 @@ def rom_check(args: dict[str, Any], reply: dict[str, Any]) -> str:
 # ------------------------------------------------------------------------------ advance
 
 def run_to(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return f"run_to {args['ref']}: {reply['verdict']}, control counted {reply['control_hits']}"
+    return (f"run_to {screen_map.run_to_named(args, reply)}: {reply['verdict']}, control counted "
+            f"{reply['control_hits']}")
 
 
 def run_for(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -485,7 +473,7 @@ def screen_signature(args: dict[str, Any], reply: dict[str, Any]) -> str:
 
 
 # The screen maps' lines are scry-core's, alike on both servers.
-map_find = screen_map.find_line
+screen_map_find = screen_map.find_line
 
 
 def log(args: dict[str, Any], reply: dict[str, Any]) -> str:

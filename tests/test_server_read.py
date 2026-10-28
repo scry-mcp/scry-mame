@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import prose
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -50,7 +51,6 @@ import mame_mcp  # noqa: E402
 import mame_read as read  # noqa: E402
 import mame_running as running  # noqa: E402
 import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
 import server as s  # noqa: E402
 
 
@@ -243,7 +243,7 @@ def test_a_read_summary_carries_its_bytes_whole_to_a_ceiling_and_counts_the_rest
     _console(monkeypatch, tmp_path, _ConsoleSession(image))
     short = s.read_memory("0x2", length=2)
     assert short["summary"] == "read_memory 0x2: 2 bytes at 0x00000002: 0203", short["summary"]
-    cap = summaries.HEX_BYTES_SHOWN
+    cap = prose.HEX_BYTES_SHOWN
     long = s.read_memory("0x0", length=cap + 3)
     assert long["summary"].endswith(image[:cap].hex() + "... (3 more bytes in `hex`)"), (
         long["summary"])

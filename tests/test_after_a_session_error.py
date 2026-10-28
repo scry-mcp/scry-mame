@@ -264,7 +264,7 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
 # a broken one's included.
 #: A map's file methods read and write map files only, as the media file tools read theirs; its
 #: `add` reads the screen, and is walked below.
-MAP_FILE_TOOLS = {"map_write"}
+MAP_FILE_TOOLS = {"screen_map_write"}
 _STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS, *MAP_FILE_TOOLS}
 
 
@@ -299,15 +299,15 @@ def test_a_media_file_tool_answers_on_a_broken_session(
 
 
 @pytest.mark.parametrize(("method", "args", "code"), [
-    ("load", {"path": _abs("nonexistent", "x.scry-map.json")}, "bad_argument"),
-    ("save", _ARGS["map_write"], "needs_call"),
+    ("load", {"path": _abs("nonexistent", "x.screen-map.json")}, "bad_argument"),
+    ("save", _ARGS["screen_map_write"], "needs_call"),
     ("add", {"screen": "s", "match": [[0, 0, 1, 1]]}, "session_broken")])
 def test_a_map_file_method_answers_on_a_broken_session_and_add_does_not(
     method: str, args: dict[str, Any], code: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     ses.broken = NOT_A_STOP
-    out = s.map_write(**{**args, "method": method})
+    out = s.screen_map_write(**{**args, "method": method})
     assert out["status"] == "INVALID" and out["code"] == code, (method, out)
 
 
@@ -1209,13 +1209,13 @@ def test_the_bodies_judge_their_own_arguments_whoever_calls_them(
     with pytest.raises(mstate.Invalid, match="seconds=0 is not a bound"):
         advance.run_for(reg, tmp_path, 10, seconds=0)
     with pytest.raises(mstate.Invalid, match="a comma or a newline"):
-        advance.run_to(reg, tmp_path, "4a0", "", 1.0, condition="d0==1,d1")
+        advance.run_to(reg, tmp_path, "4a0", "0x25a4", 1.0, condition="d0==1,d1")
     with pytest.raises(mstate.Invalid, match="mode is one of"):
         advance.step(reg, tmp_path, 1, "out")
     assert reg.commands == [], "nothing reached the console"
-    with pytest.raises(mstate.Invalid, match="run_to needs a ref"):
+    with pytest.raises(mstate.Invalid, match="run_to needs a `ref`"):
         advance.check_run_to()
-    with pytest.raises(mstate.Invalid, match="run_to needs a ref"):
+    with pytest.raises(mstate.Invalid, match="run_to needs a `ref`"):
         advance.check_run_to(ref="   ")
 
 

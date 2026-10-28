@@ -117,8 +117,8 @@ def _add_map(screen: str, match: list[list[int]], controls: list[dict[str, Any]]
     return mmaps.add_map(*stopped("a screen map"), screen, match, controls, cells, progress)
 
 
-def _load_map(path: str) -> dict[str, Any]:
-    return mmaps.load_map(path)
+def _load_map(path: str, scale: int = 1, margin: list[int] | None = None) -> dict[str, Any]:
+    return mmaps.load_map(path, scale, margin)
 
 
 def _save_map(dest: str, overwrite: bool = False) -> dict[str, Any]:
@@ -167,7 +167,7 @@ STATE_METHODS = {
 }
 
 #: Each `method` fold's method names, which the running gate is held to.
-METHODS = {"comment_write": tuple(COMMENT), "map_write": tuple(MAP), "scan": tuple(SCAN),
+METHODS = {"comment_write": tuple(COMMENT), "screen_map_write": tuple(MAP), "scan": tuple(SCAN),
            "state_write": tuple(STATE_METHODS)}
 
 #: Each fold's pre-gate judge, as the batch's table holds it.
@@ -175,7 +175,7 @@ CHECKS = {
     "declaration_list": check_list_declarations,
     "declaration_clear": check_clear_declarations,
     "comment_write": methods.fold_check(COMMENT),
-    "map_write": methods.fold_check(MAP),
+    "screen_map_write": methods.fold_check(MAP),
     "scan": methods.fold_check(SCAN),
     "state_write": methods.fold_check(STATE_METHODS),
 }

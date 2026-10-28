@@ -1,11 +1,11 @@
 {
  "task": {
   "id": "M191",
-  "prompt": "Load the screen map /tmp/maps/circus.scry-map.json.",
-  "tool": "map_write",
+  "prompt": "Load the screen map /tmp/maps/circus.screen-map.json.",
+  "tool": "screen_map_write",
   "args": {
    "method": "load",
-   "path": "/tmp/maps/circus.scry-map.json"
+   "path": "/tmp/maps/circus.screen-map.json"
   },
   "grammar": [
    "load"
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\":\"map_write\",\"args\":{\"method\":\"load\",\"path\":\"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"load\",\"path\":\"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M191: {\"tool\": \"map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.scry-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   }

@@ -546,18 +546,19 @@ Example, from a live run:
 
 The dump is written by MAME's own console `save`, so the bytes never cross the socket; the first-bytes comparison is the known-answer control. A range that wraps would hang `save`, which is why every refusal comes before it and leaves no file. The control reads the same cpu through its own thread of the gdbstub's thread patch; a build without it reads only its first cpu and another is refused.
 
-<!-- scry-reference:begin map_find -->
-## `map_find`
+<!-- scry-reference:begin screen_map_find -->
+## `screen_map_find`
 
 *Which mapped screen is this*
 
 ```text
-map_find()
+screen_map_find()
 ```
 
 Which mapped screen the machine shows. Reply: `matched`; matched, `screen`, `layer`, `kind`,
-`size`, `controls` (`name`, `rect`, `centre`); else `screens_mapped`, `screens_tried`,
-`screens_unjudged` (signed by index on a screen with no palette). None mapped: `needs_call`.
+`size`, `controls` (`name`, `rect`, `centre`), in the program's units; else the machine's
+`kind` and `size`, `screens_mapped`, `screens_tried`, `screens_unjudged` (signed by index on a
+screen with no palette), or `view_fits: false`. None mapped: `needs_call`.
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -598,7 +599,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "map_find: probe (session), 0 controls",
+  "summary": "screen_map_find: probe (session), 0 controls",
   "status": "ok",
   "matched": true,
   "screen": "probe",
@@ -615,7 +616,7 @@ Example, from a live run:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#5",
   "pc_before": "0x000025e0",
-  "cause": "map_find: one step",
+  "cause": "screen_map_find: one step",
   "stop_seq": 6,
   "pc": "0x000025e8",
   "cpu": ":maincpu",
@@ -656,17 +657,17 @@ Example, from a live run:
   }
 }
 ```
-<!-- scry-reference:end map_find -->
+<!-- scry-reference:end screen_map_find -->
 
 It captures the screen once for all the mapped screens, session layer first and then the file's, with the size compared before any signature: each capture is a Lua chunk, and a map of many screens must not cost one per screen. A screen matches when its size and every region's signature are the screen's, each region signed in colour or, on a screen that says `"cells": "index"`, by palette index; the capture recovers the pens only when such a screen is mapped.
 
-<!-- scry-reference:begin map_write -->
-## `map_write`
+<!-- scry-reference:begin screen_map_write -->
+## `screen_map_write`
 
 *Write the screen map*
 
 ```text
-map_write(method, screen="", match=null, controls=null, cells="", path="", dest="", overwrite=null)
+screen_map_write(method, screen="", match=null, controls=null, cells="", path="", scale=null, margin=null, dest="", overwrite=null)
 ```
 
 The screen map: an application's screens, each known by the signatures of its stable
@@ -679,14 +680,17 @@ places to read; needs the machine stopped. `cells` `index` (a pixel screen; defa
 shown through two palettes; a screen with no palette refuses it (`no_channel`). Reply: `screen`, `kind`, `size`,
 `cells`, `match`, `controls`, `replaced`, `shadows_file`.
 
-`load`: `path` (`<application>.scry-map.json`, absolute or `~`-led) as the file layer. Reply:
-`path`, `application`, `screens`, `controls`.
+`load`: `path` (`<application>.screen-map.json`, absolute or `~`-led) as the file layer, held by the
+server; nothing is written to disk. `scale` (1..8) and `margin` [x, y] (machine pixels on
+each side) say how the program's picture sits on this machine's screen; maps and `add`'s
+crops are in the program's units. Reply: `path`, `application`, `mode`, `screens`, `controls`.
 
 `save`: both layers as one map to `dest`, refused there without `overwrite`, made the file
-layer. Reply: `path`, `application`, `screens`, `controls`, `promoted`.
+layer, in the loaded map's `mode` (`verified` when none was loaded). Reply: `path`,
+`application`, `mode`, `screens`, `controls`, `promoted`.
 
-Refused: an argument the method does not take; a misshapen name, crop, control or file
-(`bad_argument`); nothing mapped to save (`needs_call`).
+Refused: an argument the method does not take; a misshapen name, crop, control, view or
+file (`bad_argument`); nothing mapped to save (`needs_call`).
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -698,6 +702,8 @@ Reference: REFERENCE.md, Screen maps.
 | `controls` | array of object or null | `null` |
 | `cells` | one of `""`, `"rgb"`, `"index"` | `""` |
 | `path` | string | `""` |
+| `scale` | integer or null | `null` |
+| `margin` | array of integer or null | `null` |
 | `dest` | string | `""` |
 | `overwrite` | boolean or null | `null` |
 
@@ -721,6 +727,7 @@ Reference: REFERENCE.md, Screen maps.
 | `kind` | string |
 | `lines_ahead` | integer |
 | `match` | array |
+| `mode` | string |
 | `path` | string |
 | `pc_before` | string |
 | `promoted` | array |
@@ -750,7 +757,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "map_write add: probe (pixel 336x252), 1 region, 0 controls",
+  "summary": "screen_map_write add: probe (pixel 336x252), 1 region, 0 controls",
   "status": "ok",
   "screen": "probe",
   "kind": "pixel",
@@ -778,7 +785,7 @@ Example, from a live run:
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#4",
   "pc_before": "0x000025dc",
-  "cause": "map_write add: one step",
+  "cause": "screen_map_write add: one step",
   "stop_seq": 5,
   "pc": "0x000025e0",
   "cpu": ":maincpu",
@@ -819,4 +826,4 @@ Example, from a live run:
   }
 }
 ```
-<!-- scry-reference:end map_write -->
+<!-- scry-reference:end screen_map_write -->

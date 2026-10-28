@@ -18,6 +18,7 @@ from scry_core.host_program import absolute as _abs
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import test_envelope_seam  # noqa: E402
+from scry_core import pens as scry_pens  # noqa: E402
 
 import mame_advance as advance  # noqa: E402
 import mame_arming as arming  # noqa: E402
@@ -31,7 +32,6 @@ import mame_layout as ml  # noqa: E402
 import mame_locate as mlocate  # noqa: E402
 import mame_machine as mmachine  # noqa: E402
 import mame_scan as mscan  # noqa: E402
-import mame_screen as mscreen  # noqa: E402
 import mame_space as mspace  # noqa: E402
 import mame_state as mstate  # noqa: E402
 import mame_state as st  # noqa: E402
@@ -56,14 +56,14 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("watch_add", "trigger_type", lambda: dec.TRIGGER_TYPES),
     ("scan", "cell_bytes", lambda: mscan.CELL_BYTES),
     ("scan", "operator", lambda: mscan.OPERATORS),
-    ("screen_view", "mode", lambda: mscreen.MODES),
+    ("screen_view", "mode", lambda: scry_pens.MODES),
     ("gfx_film", "space", lambda: mspace.SPACES),
     ("gfx_film", "length", lambda: mfilm.LENGTHS),
     ("log", "channel", lambda: mfiles.LOG_CHANNELS),
     ("log_wait", "channel", lambda: mfiles.LOG_CHANNELS),
     ("comment_write", "method", lambda: tuple(folds.COMMENT)),
-    ("map_write", "method", lambda: tuple(folds.MAP)),
-    ("map_write", "cells", lambda: screen_map.CELLS_WORDS),
+    ("screen_map_write", "method", lambda: tuple(folds.MAP)),
+    ("screen_map_write", "cells", lambda: screen_map.CELLS_WORDS),
     ("scan", "method", lambda: tuple(folds.SCAN)),
     ("state_write", "method", lambda: tuple(folds.STATE_METHODS)),
     ("image_compare", "method", lambda: tuple(media_tools.IMAGE_METHODS)),
@@ -183,7 +183,7 @@ NEEDS: dict[str, dict[str, Any]] = {
               "reference_rom": _abs("nowhere", "x.bin")},
     "gfx_locate": {"layouts": ["8x8"], "patch": [0, 0, 8, 8], "tag": "gfx"},
     "gfx_sweep": {"tag": "gfx"},
-    "map_write": {"method": "add", "screen": "a", "match": [[0, 0, 1, 1]]}}
+    "screen_map_write": {"method": "add", "screen": "a", "match": [[0, 0, 1, 1]]}}
 
 NEEDS_BY_ARG: dict[tuple[str, str], dict[str, Any]] = {("scan", "operator"): {"method": "filter"}}
 

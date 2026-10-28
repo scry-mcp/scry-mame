@@ -12,20 +12,24 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
 
 **Discovering a board nobody has described** is a chain: `gfx_sweep` draws a block under candidate layouts, `gfx_locate` checks one against the screen, `gfx_draft` writes a manifest from what the session proved. Nothing in the chain ranks its candidates: a heuristic that looks like proof is worse than an honest list. Every `gfx_locate` answer, sweep and choice is kept as the session's EVIDENCE (gone at `close` and at `start`), and `gfx_draft` derives from that record alone.
 
-**Screen maps.** A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.scry-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-map/1`:
+**Screen maps.** A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.screen-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-screen-map/1`:
 
 ```json
-{"format": "scry-map/1", "application": "circus",
+{"format": "scry-screen-map/1", "application": "circus", "mode": "verified",
  "screens": [{"name": "attract", "kind": "pixel", "size": [248, 256],
               "match": [{"crop": [0, 0, 248, 8], "signature": "<16 hex>"}],
               "controls": [{"name": "high_score", "rect": [40, 112, 184, 8]}]}]}
 ```
 
-Everything is in the screen's pixels. A screen is known by the signatures of regions that stay still on it, never by the whole screen, whose signature a sprite or a counter changes from one stop to the next. A screen may instead say `"cells": "index"` (`map_write(method="add", cells="index")`): its regions are then signed by the palette index each pixel was drawn with, not by the colour it shows, so one map knows a program on two machines whose palettes resolve one index to different colours. That needs a screen drawn through a palette: on any other it is refused `no_channel`. A screen that says nothing is signed in colour. Capturing the pens costs MAME more than capturing the colours, so they are asked for only when such a screen is mapped.
+Everything is in the program's pixels. A screen is known by the signatures of regions that stay still on it, never by the whole screen, whose signature a sprite or a counter changes from one stop to the next. A screen may instead say `"cells": "index"` (`screen_map_write(method="add", cells="index")`): its regions are then signed by the palette index each pixel was drawn with, not by the colour it shows, so one map knows a program on two machines whose palettes resolve one index to different colours. That needs a screen drawn through a palette: on any other it is refused `no_channel`. A screen that says nothing is signed in colour. Capturing the pens costs MAME more than capturing the colours, so they are asked for only when such a screen is mapped.
 
-**Two layers.** `map_write(method="load")` fills the FILE layer, which a `start` keeps. `map_write(method="add")` fills the SESSION layer, which a `start` empties, since its screens were read off another run. `map_find` tries the session first, then the file; `map_write(method="save")` writes the two as one file, the session winning, and that file becomes the file layer.
+**Who answers for a map.** `mode` is required. A `verified` map belongs to something still moving (a driver being fixed, a game being written), so every way into a screen judges its signatures and a stale map is caught by the server: `run_to(screen=)` runs to the screen's `anchor` and refuses `stale_map` when the screen there no longer matches, leaving the machine at the anchor. A `consolidated` map belongs to a finished program whose authors keep it current: every screen names its `anchor`, the place after which it is whole, and `run_to(screen=)` takes the screen as shown there without a capture, so its controls can be named at once. `screen_map_find` judges the signatures on either mode, when asked.
 
-**In an export**, `map_write(method="load")` and `map_write(method="add")` are steps, so a replay knows the map an identification was made against; `map_find` is a check holding to what it matched (`matched`, `screen`) and where (`pc`, `frame`); `map_write(method="save")` is dropped, since a replay would find its file there.
+**A board that shows the picture larger.** A map is in the program's own pixels. A machine that draws the same program enlarged, a port that doubles it with a border, is described at `load` by an integer `scale` and a `margin` [x, y] in its own pixels on each side, so its screen is the program's size times the scale plus twice the margin. A capture is sampled back into the program's pixels before it is signed, and a control's centre is aimed in the machine's. A capture of a size the view does not fit answers `view_fits: false`.
+
+**Two layers.** `screen_map_write(method="load")` fills the FILE layer, which a `start` keeps. `screen_map_write(method="add")` fills the SESSION layer, which a `start` empties, since its screens were read off another run. `screen_map_find` tries the session first, then the file; `screen_map_write(method="save")` writes the two as one file, the session winning, and that file becomes the file layer.
+
+**In an export**, `screen_map_write(method="load")` and `screen_map_write(method="add")` are steps, so a replay knows the map an identification was made against; `screen_map_find` is a check holding to what it matched (`matched`, `screen`) and where (`pc`, `frame`); `screen_map_write(method="save")` is dropped, since a replay would find its file there.
 
 <!-- scry-reference:begin palette -->
 ## `palette`
@@ -190,8 +194,9 @@ The screen as the pens it holds: each pixel's palette index, recovered exactly.
 height]` narrows all but `pixel`.
 
 Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
-`screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`; `histogram`, `unused`;
-`pixel`: `pen`, `color`, `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
+`screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`, `pens`, `isolate_color`;
+`histogram`: `histogram`, `pens_used`, `unused`; `pixel`: `x`, `y`, `pen`, `color`,
+`set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
 screen. `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back.
 `bad_argument`: off the screen.
 

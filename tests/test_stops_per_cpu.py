@@ -277,12 +277,12 @@ def test_a_run_to_a_named_cpu_arms_its_target_there_and_is_reached_only_there(
 
     monkeypatch.setattr(ses, "_stop", stops_on_the_sub)
     ses.stops_after_polls = 1
-    out = s.run_to(ref="0x542", cpu="subcpu", seconds=2.0)
+    out = s.run_to(ref="0x542", control="0x25a4", cpu="subcpu", seconds=2.0)
     assert out["verdict"] == "TARGET" and out["cpu"] == ":subcpu", out
     assert any(c.startswith("bp 0x542::subcpu") for c in ses.commands), ses.commands
     monkeypatch.setattr(ses, "_stop", real)
     ses.visible_cpu, ses.stops_after_polls = ":maincpu", 1
-    out = s.run_to(ref="0x542", cpu="subcpu", seconds=2.0)
+    out = s.run_to(ref="0x542", control="0x25a4", cpu="subcpu", seconds=2.0)
     assert out["code"] == "cut_by_other_stop" and out["cpu"] == ":maincpu", out
 
 
@@ -360,7 +360,7 @@ def test_a_run_to_whose_stop_cpu_cannot_be_read_falls_back_to_the_address(
     monkeypatch.setattr("mame_cpus.visible_cpu",
                         lambda s_: None if ses.visible_cpu == ":nocpu" else ses.visible_cpu)
     ses.stops_after_polls = 1
-    out = s.run_to(ref="0x542", cpu="subcpu", seconds=2.0)
+    out = s.run_to(ref="0x542", control="0x25a4", cpu="subcpu", seconds=2.0)
     assert out["verdict"] == "TARGET", out
 
 

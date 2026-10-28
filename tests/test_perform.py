@@ -307,9 +307,9 @@ def test_perform_goldens_shape_runs_to_markers_and_snapshots_in_one_call(
         {"path": dest or "snap.png", "bytes": 7}))
     out = s.perform(steps=[
         {"op": "breakpoint_at", "ref": "0x600", "role": "control"},
-        {"op": "run_to", "ref": "0x4a0", "seconds": 2.0},
+        {"op": "run_to", "ref": "0x4a0", "control": "0x600", "seconds": 2.0},
         {"op": "snapshot", "dest": str(tmp_path / "scene1.png")},
-        {"op": "run_to", "ref": "0x25a4", "seconds": 2.0},
+        {"op": "run_to", "ref": "0x25a4", "control": "0x600", "seconds": 2.0},
         {"op": "snapshot", "dest": str(tmp_path / "scene2.png")},
     ], settle_seconds=2.0)
     assert out["status"] == "ok" and out["steps_completed"] == 5, out
@@ -335,8 +335,10 @@ _NEVER_WRITTEN = str(Path(tempfile.gettempdir()) / "mame-perform-check")
     ("log_wait", {"pattern": ".", "channel": "emulator", "seconds": 0},
      {"pattern": ".", "channel": "emulator", "seconds": 3}),
     ("log_wait", {"pattern": "[", "channel": "emulator"}, {"pattern": "x", "channel": "all"}),
-    ("run_to", {"ref": ""}, {"ref": "0x4a0"}),
-    ("run_to", {"ref": "0x4a0", "seconds": 0}, {"ref": "0x4a0", "seconds": 1}),
+    ("run_to", {"ref": "", "control": "0x25a4"}, {"ref": "0x4a0", "control": "0x25a4"}),
+    ("run_to", {"ref": "0x4a0", "control": ""}, {"ref": "0x4a0", "control": "0x25a4"}),
+    ("run_to", {"ref": "0x4a0", "control": "0x25a4", "seconds": 0},
+     {"ref": "0x4a0", "control": "0x25a4", "seconds": 1}),
     ("run_for", {"milliseconds": 10, "frames": 2}, {"frames": 2}),
     ("run_for", {"frames": 2, "seconds": 0}, {"milliseconds": 10}),
     ("step", {"count": 0}, {"count": 3}),
@@ -1330,7 +1332,7 @@ def test_a_list_is_refused_whole_for_an_optional_scalar_or_a_clash_a_step_would_
     assert [(r["step"], r["code"]) for r in refused] == [(1, "bad_argument"), (2, "bad_argument")]
     assert "control is a string; got 5" in refused[0]["message"]
     assert "`cpu` names a live read" in refused[1]["message"]
-    assert sequence.preflight([{"op": "run_to", "ref": "0x4a0", "control": ""}],
+    assert sequence.preflight([{"op": "run_to", "ref": "0x4a0", "control": "0x25a4"}],
                               s._step_ops()) == []
 
 
