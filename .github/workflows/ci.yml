@@ -1,0 +1,49 @@
+# The unit tiers on GitHub's Linux runners; the live tiers need an emulator and a display, and run
+# on the maintainers' macOS and Windows hosts. Started by hand until the repositories are public.
+name: CI
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  battery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        timeout-minutes: 5
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        timeout-minutes: 5
+        with:
+          node-version: "24"
+      # The duplication baseline was written by this jscpd; another release counts clones differently.
+      - run: npm install --global jscpd@5.2.1 && jscpd --version
+        timeout-minutes: 5
+      # The Lua doubles run MAME's Lua through a host interpreter, and the stub owner reads lsof.
+      - name: lua and lsof
+        timeout-minutes: 5
+        run: |
+          for _ in 1 2 3; do
+            sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4 lsof && break
+            sleep 10
+          done
+          sudo ln -sf "$(command -v lua5.4)" /usr/local/bin/lua
+          lua -v && command -v lsof
+      - run: uv sync --frozen
+        timeout-minutes: 5
+      - run: uv run ruff check .
+      - run: uv run mypy --strict .
+      - run: uv run mypy --strict --platform win32 .
+      # The coverage floor counts every platform branch of the tree as macOS runs it, so it is
+      # judged there; here the suite judges behaviour.
+      - run: uv run pytest -q --no-cov
+      - run: bash .githooks/pre-commit.test.sh
+      - run: uv run python -m scry_core.hook

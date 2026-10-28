@@ -32,6 +32,11 @@ On Windows the battery is the same, with `uv run pytest -q --no-cov`: the floor 
 only, because Windows skips by design the cases that need what it lacks (a FIFO, a mode bit, a
 symlink), and the floor counts the whole tree.
 
+`.github/workflows/ci.yml` runs this battery on GitHub's Linux runners, with `--no-cov` since the
+floor is macOS's, plus the pre-commit's checks; the live tier stays on macOS and Windows, where an
+emulator and a display are. The suite needs a `lua` on the `PATH` (the Lua doubles run MAME's Lua
+through it) and, on Linux, `lsof` (the stub owner reads it); the workflow installs both.
+
 A change to a tool's arguments, reply model or description changes its reference page, and
 `tests/test_reference_pages.py` goes red naming the tool, the page and the line. Regenerate the pages from the
 code, and the examples only from a live run's transcript (each `--mark` spells a directory of
