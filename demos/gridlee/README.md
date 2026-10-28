@@ -29,9 +29,8 @@ uv run python demos/gridlee/demo.py --rompath ~/roms
 
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
-- `--shared` is for a run somebody watches: the server asks the placement helper named by
-  `WINDOW_APP` for a window sized to be seen (the [`start` page](../../docs/reference/session.md#start), *`display` and window placement*) and refuses to
-  start without one. Left out, MAME runs in a small window behind your work.
+- `--shared` is for a run somebody watches: MAME opens in front, in a window scaled to be seen.
+  Left out, it runs in a small window behind your work.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below and `screen.png` from a run where every step
   passed.
@@ -181,6 +180,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
       "unarmable": []
     }
   },
+  "recommended_release": "0.289",
   "session": {
     "alive": true,
     "running": false,

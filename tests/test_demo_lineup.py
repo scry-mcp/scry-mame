@@ -48,7 +48,7 @@ def test_the_board_starts_on_the_image_its_halves_make_with_the_romsets_map(
     assert Path(args["symbols"]).parent == run.dir
     assert (args["reference_addr"], args["bases"]) == ("0x30000", demo.BASES)
     assert (Path(args["inipath"]) / "mame.ini").read_text() == "joystickprovider none\n"
-    assert (args["shared"], args["display"]) == (True, "secondary")
+    assert args["shared"] is True and "display" not in args
 
 
 def test_the_binding_fires_every_action_the_script_declares() -> None:

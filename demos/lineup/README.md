@@ -30,9 +30,7 @@ uv run python demos/lineup/demo.py --rompath /path/to/romset
 
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
-- The window opens away from your work on the secondary display; `--shared` opens it on the main
-  one, for a run somebody watches. Either way the placement helper named by `WINDOW_APP` sizes it
-  (the [`start` page](../../docs/reference/session.md#start), *`display` and window placement*).
+- The window opens in front, scaled to be seen.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below and `screen.png` from a run where every step passed.
 
@@ -77,7 +75,6 @@ Give this to an MCP client with this server connected:
   "inipath": "./tmp/demos/lineup/lineup-ini",
   "state_dir": "./tmp/demos/lineup/lineup-states",
   "shared": true,
-  "display": "secondary",
   "boot_seconds": 60,
   "rompath": "<host>"
 }
@@ -153,7 +150,6 @@ Give this to an MCP client with this server connected:
   "pc": "0x000ffff0",
   "frame": 0,
   "frame_symbol": "frame",
-  "display": "secondary",
   "view": "native",
   "views": [
     "Screen 0 Standard (4:3)",
@@ -193,6 +189,7 @@ Give this to an MCP client with this server connected:
       "unarmable": []
     }
   },
+  "recommended_release": "0.289",
   "session": {
     "alive": true,
     "running": false,

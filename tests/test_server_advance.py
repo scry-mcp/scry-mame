@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scry_core import host_program, log_marks, placement
+from scry_core import log_marks
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -697,14 +697,14 @@ def test_a_throttle_frame_flies_unthrottled_and_hands_the_harness_the_frame(
         assert "dofile" not in Path(out["boot_lua_path"]).read_text()
     finally:
         s.close()
-    out = s.start(**_boot_args(tmp_path, image), boot_lua=str(mine))
+    out = s.start(**_boot_args(tmp_path, image), boot_lua=str(mine), shared=True)
     try:
         composed = Path(out["boot_lua_path"])
         assert composed.parent == mstate.STATE.scratch
         text = composed.read_text()
         assert text.rstrip().endswith(f"dofile({transport.lua_string(str(mine.resolve()))})")
         assert launch.THROTTLE_MARK not in text, "no throttle frame, no throttle harness"
-        assert "-nothrottle" not in _StubProcess.last_argv
+        assert "-nothrottle" not in _StubProcess.last_argv, "a watched run is at real speed"
     finally:
         s.close()
     _never_spawns(monkeypatch, tmp_path)
@@ -986,23 +986,6 @@ def test_run_to_over_a_declared_breakpoint_leaves_the_declaration_armed(
     listed = {b["ref"]: b for b in s.declaration_list("breakpoint")["breakpoints"]}
     assert listed["0x4a0"]["state"] == "armed" and listed["0x4a0"]["role"] == "stop"
     assert listed["0x600"]["role"] == "control" and listed["0x600"]["hits_since_armed"] == 1
-
-
-def test_a_window_helper_that_hangs_is_bounded_and_one_that_prints_nothing_is_named(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
-) -> None:
-    """`subprocess.run` on the helper had no bound."""
-    slow = host_program.write(tmp_path / "slow", "import time\ntime.sleep(5)\n")
-    monkeypatch.setenv("WINDOW_APP", str(slow))
-    with monkeypatch.context() as tight:
-        tight.setattr(placement, "HELPER_TIMEOUT_S", 0.2)
-        with pytest.raises(mstate.Invalid, match="did not answer within") as e:
-            launch.window_flags(shared=True, display="main")
-    assert "not at" not in str(e.value)
-    mute = host_program.write(tmp_path / "mute", "import sys\nsys.exit(3)\n")
-    monkeypatch.setenv("WINDOW_APP", str(mute))
-    with pytest.raises(mstate.Invalid, match="exit code 3 and printed 'nothing'"):
-        launch.window_flags(shared=True, display="main")
 
 
 def test_run_to_refused_at_the_readback_removes_only_what_was_listed_and_says_if_it_could_not(

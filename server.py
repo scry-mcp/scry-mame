@@ -63,7 +63,6 @@ from scry_core import (  # noqa: E402
     log_marks,
     media_tools,
     methods,
-    placement,  # noqa: E402
     process_name,
     recording,
     reference,
@@ -153,7 +152,6 @@ def start(
     env: dict[str, str] | None = None,
     bases: dict[str, str] | dict[str, dict[str, str]] | None = None,
     reference_base: str = "0x0",
-    display: Annotated[str, vocab.enum(placement.DISPLAY_OPTIONS)] = "",
     stub_port: Annotated[int, vocab.bounds(0, launch.PORT_MAX)] = 0,
     state_dir: str = "",
     throttle_from_frame: int = 0,
@@ -169,8 +167,9 @@ def start(
     Paths are absolute: `rompath`, `inipath`, `state_dir` directories, the rest files. The
     check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-    `shared=True`: somebody watches (big window, real speed), on `display`. `background`:
-    behind, the caller's focus kept, watched or not. `throttle_from_frame`: flat out until it.
+    `shared=True`: somebody watches (a window scaled to be seen, real speed).
+    `background`: behind, the caller's focus kept; independent of `shared`, whose default it
+    follows. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
 
     Refused before any spawn: a live session, an unknown cpu, a class with no base, `bases`
@@ -184,10 +183,10 @@ def start(
     """
     args.check("start", binary=binary, rompath=rompath, reference_rom=reference_rom,
                symbols=symbols, inipath=inipath, boot_lua=boot_lua, state_dir=state_dir,
-               cfg=cfg, types=types, display=display, view=view)
+               cfg=cfg, types=types, view=view)
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
                         inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
-                        display, stub_port, state_dir, throttle_from_frame, types, cfg,
+                        stub_port, state_dir, throttle_from_frame, types, cfg,
                         background=background, presence=presence, view=view,
                         progress=bridge(ctx))
 

@@ -946,7 +946,6 @@ class StartReply(MameEnvelope, total=False):
     debugger: dict[str, Any]
     declarations: dict[str, Any]
     dial_attempts: list[Any]
-    display: Annotated[str, OmitEmpty]
     env: Annotated[dict[str, Any], OmitEmpty]
     error: str
     errorlog_path: str

@@ -40,10 +40,6 @@ INPUTS = {action: Press("input", {"port": ":P1", "field": field, "frames": 4})
                                 ("UP", "P1 Up"))}
 
 
-def display(run: Run) -> str:
-    return "main" if run.options.get("shared") else "secondary"
-
-
 def precheck(run: Run) -> str:
     """Why the demo cannot run, or ""; an unresolvable binary is left to `start`."""
     relative = [f"--{k} {v}" for k, v in run.options.items()
@@ -85,7 +81,7 @@ def boot(run: Run) -> dict[str, Any]:
     states.mkdir()
     return {"system": SYSTEM, "reference_rom": reference, "reference_addr": REFERENCE_ADDR,
             "reference_base": "0x0", "symbols": symbols, "bases": BASES, "inipath": ini,
-            "state_dir": states, "shared": True, "display": display(run), "boot_seconds": 60}
+            "state_dir": states, "shared": True, "boot_seconds": 60}
 
 
 def started(reply: Reply, run: Run) -> str:
@@ -103,7 +99,7 @@ DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, str(ROOT / "server.py")],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
     capture=lambda run: run.dir / "screen.png",
-    offers=frozenset({"rompath", "shared"}), reads=frozenset({"shared"}), precheck=precheck,
+    offers=frozenset({"rompath"}), precheck=precheck,
     volatile=free_set.VOLATILE, host_args=free_set.HOST_ARGS)
 
 

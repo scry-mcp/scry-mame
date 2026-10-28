@@ -394,8 +394,8 @@ def listxml(asked: Asked, binary: str, system: str, seconds: float) -> Listed:
         proc.kill()
         out, err = proc.communicate()
         return _no_xml(), _without_xml(binary, system,
-            f"had not answered {seconds:g} s after the boot began, which is longer than the "
-            "whole machine took to come up, so it was killed")
+            f"had not answered within {seconds:g} s, the whole boot's wait, so it was "
+            "killed")
     said = (err or out).decode("utf-8", "replace").strip()
     if proc.returncode == ABSENT_SYSTEM_RC and ABSENT_SYSTEM_TEXT in said:
         raise st.Invalid("bad_argument",

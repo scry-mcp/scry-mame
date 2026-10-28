@@ -916,7 +916,7 @@ check("the store reports itself", r.get("declarations", {}).get("persistent") is
 s.declaration_clear("breakpoint", all=True)
 s.declaration_clear("watch", all=True)
 check("start reports what it handed over", r.get("throttle_from_frame") == 300
-      and r.get("env", {}).get("MAME_MCP_THROTTLE_FRAME") == "300" and r.get("display") == ""
+      and r.get("env", {}).get("MAME_MCP_THROTTLE_FRAME") == "300" and "display" not in r
       and "-nothrottle" in r.get("flags", []), str(r.get("flags")))
 t0 = time.time()
 s.resume()

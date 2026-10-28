@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import judges, media_tools, placement, screen_map
+from scry_core import judges, media_tools, screen_map
 from scry_core import vocabulary as vocab
 from scry_core.host_program import absolute as _abs
 
@@ -61,7 +61,6 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("gfx_film", "length", lambda: mfilm.LENGTHS),
     ("log", "channel", lambda: mfiles.LOG_CHANNELS),
     ("log_wait", "channel", lambda: mfiles.LOG_CHANNELS),
-    ("start", "display", lambda: placement.DISPLAY_OPTIONS),
     ("comment_write", "method", lambda: tuple(folds.COMMENT)),
     ("map_write", "method", lambda: tuple(folds.MAP)),
     ("map_write", "cells", lambda: screen_map.CELLS_WORDS),
@@ -227,17 +226,6 @@ def test_a_list_judge_accepts_every_item_its_schema_publishes(tool: str, arg: st
     import mame_args as margs
     beside = {"planes": [1]} if arg == "sizes" else {}
     margs.check(tool, **NEEDS.get(tool, {}), **beside, **{arg: PUBLISHED_ITEMS[(tool, arg)]})
-
-
-def test_a_display_outside_its_words_is_refused_before_the_quick_run_is() -> None:
-    """A bad display is judged before `shared` and before any file is looked for."""
-    with pytest.raises(st.Invalid, match=r"^display is one of \('', 'main', 'secondary'\); "
-                                         r"got 'tv'$"):
-        launch.judge(binary=_abs("nowhere", "mame"), system="x", rompath=_abs("nowhere"),
-                     reference_rom=_abs("nowhere", "x.bin"), symbols="", reference_addr="0x0",
-                     inipath="", wait=8.0, shared=False, boot_lua="", env=None, bases=None,
-                     reference_base="0x0", display="tv", port=0, state_dir="",
-                     throttle_from_frame=0)
 
 
 @pytest.mark.parametrize(("tool", "arg"), list(BAD_ITEM), ids=[f"{t}.{a}" for t, a in BAD_ITEM])

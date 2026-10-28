@@ -8,7 +8,7 @@ A session is one MAME under the debugger, parked STOPPED by `start` and ended by
 *Start a MAME session*
 
 ```text
-start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", display="", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
+start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
 ```
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -16,8 +16,9 @@ Start MAME with its gdbstub, parked STOPPED and checked against the reference im
 Paths are absolute: `rompath`, `inipath`, `state_dir` directories, the rest files. The
 check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-`shared=True`: somebody watches (big window, real speed), on `display`. `background`:
-behind, the caller's focus kept, watched or not. `throttle_from_frame`: flat out until it.
+`shared=True`: somebody watches (a window scaled to be seen, real speed).
+`background`: behind, the caller's focus kept; independent of `shared`, whose default it
+follows. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
 
 Refused before any spawn: a live session, an unknown cpu, a class with no base, `bases`
@@ -44,7 +45,6 @@ Reference: REFERENCE.md, The session.
 | `env` | object or null | `null` |
 | `bases` | object or null | `null` |
 | `reference_base` | string | `"0x0"` |
-| `display` | one of `""`, `"main"`, `"secondary"` | `""` |
 | `stub_port` | integer (>= 0, <= 65535) | `0` |
 | `state_dir` | string | `""` |
 | `throttle_from_frame` | integer | `0` |
@@ -69,7 +69,6 @@ Reference: REFERENCE.md, The session.
 | `debugger` | object |
 | `declarations` | object |
 | `dial_attempts` | array |
-| `display` | string |
 | `env` | object |
 | `error` | string |
 | `errorlog_path` | string |
@@ -239,13 +238,13 @@ Example, from a live run:
 
 **`cfg` installs the project's `.cfg` where MAME reads it, and proves MAME read it.** Without it a live session plays on MAME's generic defaults with nothing saying so. MAME prints a parse error as an OSD warning on stderr and never in `error.log`, which only `logerror` writes, so the check reads stderr; a session booted on the defaults is closed and the start is INVALID. The project's file is never touched, and `cfg.changed` on `close` says whether MAME rewrote the copy, which a caller deciding to commit a cfg wants to know.
 
-**`display` and window placement.** Left empty, `display` is `WINDOW_SHARED_DISPLAY`, else the secondary; on a run nobody watches it is refused, since the helper would ignore it on a stderr no caller sees. Placement comes from the helper `WINDOW_APP` names, so no project re-derives it; its absence degrades to a small window. Never `-video none` by hand: on macOS it takes over the display.
+**The window, and the host's own arguments.** A watched run (`shared=True`) opens MAME's window at the largest integer scale of the machine's first screen (as `-listxml` lists it, turned for a vertical board) that fits 1800x960: it fits a 1080p display, and an integer scale never blurs a pixel. With no size listed, MAME picks one. A run nobody watches gets a small window and `-nothrottle`. `SCRY_EMULATOR_ARGS` in the server's environment holds the host's own MAME arguments, one token a line so a value may hold a space, and they go after the server's on every start, watched or not, since both open a window; they win where both name an option, so which display the window opens on (`-screen0 screen1`) is the host's to say, never the caller's. Nothing here checks them: MAME refuses an option it does not know, and that refusal is `start`'s, as for any flag. Never `-video none` by hand: on macOS it takes over the display.
 
 **Flying to a late scene: `throttle_from_frame=N`.** MAME's debugger console has no throttle command and the stub speaks nothing but the debugger; what CAN switch the throttle is Lua, and the one Lua a launch can run is the autoboot script. So `start` writes a boot harness and adds `-nothrottle`, and the harness lifts the throttle on arrival at the frame, logging `MAME_MCP throttled from frame N` so `log_wait` proves it. It is decided at launch, at a FRAME; the live switch is `throttle`.
 
 **The arrival is where a real-speed measurement begins.** `close` reports `average_speed` over the last run window, which opens at `resume`, so a fly-then-play run would blend the fast ramp with real-speed play. `log_wait` on the mark proves the fly is done AND resets the window to that instant.
 
-**A system the binary does not carry refuses `start`, in MAME's own words.** The `-listxml` question is put before the boot and collected after it, in the seconds the boot already spends waiting for the gdbstub, so it costs nothing; the refusal therefore arrives after the spawn, and the guard kills the emulator and deletes the scratch. A `-listxml` that fails for any OTHER reason leaves the start working with the sections only it backs empty and the reason in the `note`: a debug session must not be blocked on an inventory. `machine` in the reply is counts alone, the rows are in `machine_map`.
+**A system the binary does not carry refuses `start`, in MAME's own words.** The `-listxml` question is put before the boot and collected after it, in the seconds the boot already spends waiting for the gdbstub, so it costs nothing; the refusal therefore arrives after the spawn, and the guard kills the emulator and deletes the scratch. A watched start and a `symbols` mapping wait for it before the spawn instead, since the window's size and the cpus come from it. A `-listxml` that fails for any OTHER reason leaves the start working with the sections only it backs empty and the reason in the `note`: a debug session must not be blocked on an inventory. `machine` in the reply is counts alone, the rows are in `machine_map`.
 
 **`background` is a placement choice, not a mode.** `true` starts the window behind and keeps the caller's focus, `false` in front; left out it follows `shared`, because a watched session is the one somebody looks at.
 
@@ -255,9 +254,9 @@ Example, from a live run:
 
 **`state_dir` empty is disposable.** The scratch goes with the session; a named directory is kept.
 
-**The reply also carries what reached the driver** (`binary_origin`, `env`, `display`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
+**The reply also carries what reached the driver** (`binary_origin`, `env`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
 
-**Also refused**: a stranger on your `stub_port` is `host_failed`; an unknown `system` is refused after the spawn. `symbols` is a YAML or the linker's five-column map; `bases` maps each non-CODE class of a map to a `0x` base or to `rom`; `types` is a file of `name: format` lines; with several cpus `symbols` is `{cpu: path}`, `bases` `{cpu: {class: base}}`, `types` `{cpu: file}`. `shared=True` means somebody watches (big window, real speed), and `display` (`main` or `secondary`) needs it.
+**Also refused**: a stranger on your `stub_port` is `host_failed`; an unknown `system` is refused after the spawn, or before it on a watched start or a `symbols` mapping. `symbols` is a YAML or the linker's five-column map; `bases` maps each non-CODE class of a map to a `0x` base or to `rom`; `types` is a file of `name: format` lines; with several cpus `symbols` is `{cpu: path}`, `bases` `{cpu: {class: base}}`, `types` `{cpu: file}`. `shared=True` means somebody watches (a window scaled to be seen, real speed).
 
 <!-- scry-reference:begin status -->
 ## `status`

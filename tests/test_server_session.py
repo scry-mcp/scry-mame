@@ -17,7 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scry_core import host_program
+from scry_core import host_args
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from server_support import (  # noqa: E402
@@ -37,7 +37,6 @@ from server_support import (  # noqa: E402
     _install,
     _never_spawns,
     _query_that_outlives_the_boot,
-    _recording_helper,
     _RecordingSession,
     _RegisterSession,
     _running,
@@ -68,89 +67,63 @@ import mame_stub_owner as owner  # noqa: E402
 import mame_write as mwrite  # noqa: E402
 import server as s  # noqa: E402
 
+UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
-def test_starts_fine_without_the_window_helper(
+
+@pytest.mark.parametrize("screens, flags", [
+    # The largest integer scale within 1800x960, so the window fits a 1080p display.
+    ([{"tag": ":screen", "width": 320, "height": 240}],
+     ["-window", "-nomaximize", "-resolution", "1280x960"]),
+    ([{"tag": ":screen", "width": 256, "height": 224}],
+     ["-window", "-nomaximize", "-resolution", "1024x896"]),
+    ([{"tag": ":screen", "width": 640, "height": 480}],
+     ["-window", "-nomaximize", "-resolution", "1280x960"]),
+    ([{"tag": ":screen", "width": 864, "height": 224}],
+     ["-window", "-nomaximize", "-resolution", "1728x448"]),
+    # A vertical board's window is as tall as its rotated screen.
+    ([{"tag": ":screen", "width": 256, "height": 224, "rotation": 90}],
+     ["-window", "-nomaximize", "-resolution", "672x768"]),
+    ([{"tag": ":screen", "width": 2000, "height": 1200}],
+     ["-window", "-nomaximize", "-resolution", "2000x1200"]),
+    # No size `-listxml` could give: MAME sizes the window itself.
+    ([], ["-window", "-nomaximize"]),
+    ([{"tag": ":screen"}], ["-window", "-nomaximize"]),
+    ([{"tag": ":screen", "width": 0, "height": 240}], ["-window", "-nomaximize"]),
+    ([{"tag": ":screen", "width": 320, "height": 0}], ["-window", "-nomaximize"]),
+])
+def test_a_watched_window_is_scaled_from_the_machine_s_screen(
+    monkeypatch: pytest.MonkeyPatch, screens: list[dict[str, Any]], flags: list[str]
+) -> None:
+    monkeypatch.delenv(host_args.VARIABLE, raising=False)
+    assert launch.window_flags(True, screens) == flags
+
+
+def test_an_unwatched_window_is_small_and_flat_out(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv(host_args.VARIABLE, raising=False)
+    assert launch.window_flags(False, [{"tag": ":screen", "width": 320, "height": 240}]) \
+        == UNWATCHED
+
+
+@pytest.mark.parametrize("shared", [False, True])
+def test_the_host_s_arguments_come_after_the_server_s(
+    monkeypatch: pytest.MonkeyPatch, shared: bool
+) -> None:
+    """After, so the host's placement wins where both name an option."""
+    monkeypatch.setenv(host_args.VARIABLE, "-screen0\nscreen1\n")
+    flags = launch.window_flags(shared, [])
+    assert flags[-2:] == ["-screen0", "screen1"], flags
+    assert flags[:-2] == (["-window", "-nomaximize"] if shared else UNWATCHED), flags
+
+
+def test_the_host_s_arguments_end_the_command_so_a_dangling_option_takes_nothing_of_ours(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """A missing OPTIONAL helper must not take the start down, which a raise would."""
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "does-not-exist"))
-    flags = launch.window_flags(shared=False)
-    assert "-window" in flags and "-nomaximize" in flags
-
-
-def test_a_shared_session_without_the_helper_fails(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """And here NO geometry is invented: without knowing where the screen is, the window is lost."""
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "does-not-exist"))
-    with pytest.raises(mstate.Invalid, match="geometry"):
-        launch.window_flags(shared=True)
-
-
-def test_a_helper_that_is_there_but_not_executable_does_not_take_start_down(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """THE THIRD STATE, and `exists()` could not see it."""
-    fake = tmp_path / "place-window"
-    fake.write_text("place-window.sh")
-    fake.chmod(0o644)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    flags = launch.window_flags(shared=False)
-    assert "-window" in flags and "-nomaximize" in flags
-
-
-def test_a_shared_session_refuses_on_a_helper_that_is_not_executable(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """And the shared path still refuses rather than inventing a size, for the same reason."""
-    fake = tmp_path / "place-window"
-    fake.write_text("place-window.sh")
-    fake.chmod(0o644)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    with pytest.raises(mstate.Invalid, match="geometry"):
-        launch.window_flags(shared=True)
-
-
-def test_a_helper_that_cannot_be_executed_at_all_is_caught_rather_than_raised(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The state the exec bit cannot rule out."""
-    fake = tmp_path / "place-window"
-    fake.write_text("#!/nonexistent/interpreter\necho hi\n")
-    fake.chmod(0o755)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    flags = launch.window_flags(shared=False)
-    assert "-window" in flags and "-nomaximize" in flags
-
-
-def test_with_no_window_app_no_helper_is_looked_for_anywhere(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """`WINDOW_APP` is the only route to a window helper."""
-    planted = tmp_path / "place-window.sh"
-    planted.write_text('#!/bin/sh\nprintf -- "-window\\n-planted\\n"\n')
-    planted.chmod(0o755)
-    monkeypatch.delenv("WINDOW_APP", raising=False)
-    monkeypatch.setattr(launch, "WINDOW_HELPER", planted, raising=False)
-    ran: list[list[str]] = []
-    real_run = subprocess.run
-
-    def recorded(cmd: list[str], **kw: Any) -> subprocess.CompletedProcess[str]:
-        ran.append(cmd)
-        return real_run(cmd, **kw)
-
-    # BY BEHAVIOUR, not by a name: whatever a default might be called, running it is the tell.
-    monkeypatch.setattr(subprocess, "run", recorded)
-    assert launch.window_flags(shared=False) == ["-window", "-nomaximize", "-resolution", "320x240"]
-    assert ran == [], f"a helper ran with WINDOW_APP unset: {ran}"
-    monkeypatch.setenv("WINDOW_APP", "   ")
-    with pytest.raises(mstate.Invalid, match="WINDOW_APP is not set"):
-        launch.window_flags(shared=True)
-    monkeypatch.delenv("WINDOW_APP")
-    with pytest.raises(mstate.Invalid) as refused:
-        launch.window_flags(shared=True)
-    assert refused.value.code == "host_failed", refused.value.code
-    assert "WINDOW_APP is not set" in str(refused.value), str(refused.value)
+    """A bare `-screen0` before `-debug` would take `-debug` for its value: no debugger."""
+    monkeypatch.setenv(host_args.VARIABLE, "-screen0")
+    flags = launch.window_flags(True, [])
+    cmd = launch.build_command("/opt/mame", "sys", "/roms", 1234, flags, str(tmp_path),
+                               inipath="/ini", boot_lua="/boot.lua")
+    assert cmd[-1] == "-screen0" and cmd.index("-debug") < cmd.index("-window"), cmd
 
 
 def test_the_tools_are_serialized() -> None:
@@ -305,54 +278,6 @@ def test_the_command_line_carries_the_mark_and_its_directories(tmp_path: Path) -
     assert launch.SCRATCH_PREFIX == "mame-mcp-", "the mark is a contract other repos exclude on"
 
 
-def test_a_display_on_a_quick_run_is_refused(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The helper ignores `--display` without `--shared`, out loud on stderr."""
-    _never_spawns(monkeypatch, tmp_path)
-    binary = fake_mame(tmp_path)
-    rom = tmp_path / "ref.bin"
-    rom.write_bytes(bytes(64))
-    refused("nobody watches",
-    s.start(
-        binary=str(binary), system="none", rompath=str(tmp_path), reference_rom=str(rom),
-        display="main",
-    ))
-
-
-def test_an_unknown_display_is_refused_before_the_helper_is_asked(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The helper exits 1 on a bad value."""
-    _never_spawns(monkeypatch, tmp_path)
-    binary = fake_mame(tmp_path)
-    rom = tmp_path / "ref.bin"
-    rom.write_bytes(bytes(64))
-    e = refused("tv",
-    s.start(
-        binary=str(binary), system="none", rompath=str(tmp_path), reference_rom=str(rom),
-        shared=True, display="tv",
-    ))
-    assert "main" in e["message"] and "secondary" in e["message"]
-
-
-def test_a_shared_session_hands_the_display_to_the_helper(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The one place the display reaches the helper, spelled as the helper spells it."""
-    fake, log = _recording_helper(tmp_path)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    flags = launch.window_flags(shared=True, display="main")
-    assert flags == ["-window", "-nomaximize"]
-    assert log.read_text().split() == ["mame", "--shared", "--display", "main"]
-    # The control: a quick run asks for nothing but the tool, and a shared one with no display
-    # leaves the choice to the helper (the secondary, by default and not by law).
-    launch.window_flags(shared=False)
-    assert log.read_text().split() == ["mame"]
-    launch.window_flags(shared=True)
-    assert log.read_text().split() == ["mame", "--shared"]
-
-
 def test_a_taken_port_is_refused_before_the_emulator_exists(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -397,38 +322,24 @@ def test_a_given_port_and_the_pid_are_used_and_reported(
         s.close()
 
 
-def test_a_shared_start_hands_the_display_to_the_helper_and_uses_its_flags(
+def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_adds_the_host_s(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """At the level of `start`, not of `_window_flags`."""
+    """At the level of `start`: the screen `-listxml` lists reaches the argv, the host's last."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
-    fake, log = _recording_helper(tmp_path)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    s.start(**_boot_args(tmp_path, image), shared=True, display="main")
+    args = _boot_args(tmp_path, image)
+    xml = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"
+    rewrite_mame(args["binary"], prints_file(xml))
+    monkeypatch.setenv(host_args.VARIABLE, "-screen0\nscreen1")
+    out = s.start(**{**args, "system": "m68k-dual"}, shared=True)
     try:
-        assert log.read_text().split() == ["mame", "--shared", "--display", "main"]
-        assert "-nomaximize" in _StubProcess.last_argv, "the helper's flags reached MAME"
+        argv = _StubProcess.last_argv
+        assert argv[argv.index("-resolution") + 1] == "1008x756", "336x252 at 3x"
+        assert out["flags"] == ["-window", "-nomaximize", "-resolution", "1008x756",
+                                "-screen0", "screen1"], out["flags"]
     finally:
         s.close()
-
-
-def test_an_unknown_display_never_reaches_the_helper(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """The order pinned on purpose: the helper's log does not exist after the refusal."""
-    _never_spawns(monkeypatch, tmp_path)
-    fake, log = _recording_helper(tmp_path)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    binary = fake_mame(tmp_path)
-    rom = tmp_path / "ref.bin"
-    rom.write_bytes(bytes(64))
-    refused("tv",
-    s.start(
-        binary=str(binary), system="none", rompath=str(tmp_path), reference_rom=str(rom),
-        shared=True, display="tv",
-    ))
-    assert not log.exists(), "the helper was asked about a value already known to be wrong"
 
 
 @pytest.mark.parametrize("port", [-1, 65536, 70000])
@@ -730,20 +641,15 @@ def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_clos
 
 
 
-def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
+def test_start_reports_the_env_and_the_flags_it_handed_over(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A watched run has to say which variant it is."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
-    fake, log = _recording_helper(tmp_path)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
-    monkeypatch.setenv("WINDOW_SHARED_DISPLAY", "main")
     out = s.start(**_boot_args(tmp_path, image), shared=True, env={"M68K_DUAL_SWITCH": "on"})
     try:
-        assert out.get("display", "") == "main" and out.get("env", {}) == {"M68K_DUAL_SWITCH": "on"}
-        assert log.read_text().split() == ["mame", "--shared", "--display", "main"], (
-            "the exported answer reaches the helper explicitly, so the reply and the helper agree")
+        assert out.get("env", {}) == {"M68K_DUAL_SWITCH": "on"} and "display" not in out
         assert out["flags"] == ["-window", "-nomaximize"] and out.get("throttle_from_frame", 0) == 0
         assert _StubProcess.last_kwargs.get("env", {})["M68K_DUAL_SWITCH"] == "on"
         assert Path(out["boot_lua_path"]).parent == mstate.STATE.scratch, (
@@ -751,21 +657,11 @@ def test_start_reports_the_env_the_display_and_the_flags_it_handed_over(
         assert isinstance(out["frame"], int) or out["frame"]["available"] is False
     finally:
         s.close()
-    monkeypatch.delenv("WINDOW_SHARED_DISPLAY")
-    out = s.start(**_boot_args(tmp_path, image), shared=True)
-    try:
-        assert out.get("display", "") == "secondary", "the helper's default, said out loud"
-    finally:
-        s.close()
     out = s.start(**_boot_args(tmp_path, image))
     try:
-        assert "display" not in out and "env" not in out, "a quick run has no display to report"
+        assert "env" not in out, "a quick run was given no environment"
     finally:
         s.close()
-    monkeypatch.setenv("WINDOW_SHARED_DISPLAY", "tv")
-    _never_spawns(monkeypatch, tmp_path)
-    refused("WINDOW_SHARED_DISPLAY",
-    s.start(**_boot_args(tmp_path, image), shared=True))
 
 
 @pytest.mark.parametrize("inherited", [False, True])
@@ -783,8 +679,6 @@ def test_start_launches_behind_by_who_watches_unless_background_says_otherwise(
     not, a launch behind proves it was added and one in front that it was removed."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
-    fake, _log = _recording_helper(tmp_path)
-    monkeypatch.setenv("WINDOW_APP", str(fake))
     if inherited:
         monkeypatch.setenv("SDL_MAC_BACKGROUND_APP", "1")
     else:
@@ -826,7 +720,6 @@ def test_when_the_boot_fails_the_query_holds_the_cause_and_it_outranks_the_sympt
     rewrite_mame(args["binary"], "if '-listxml' in sys.argv:\n"
                  "    sys.stderr.write(f\"No matching machines found for '{sys.argv[1]}'\\n\")\n"
                  "    sys.exit(5)")
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     out = refused("does not carry",
                   s.start(**{**args, "system": "notthisone", "boot_seconds": 0.6}))
     assert "No matching machines found for 'notthisone'" in out["message"]
@@ -1001,21 +894,6 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     assert stale == {}, f"fields a killed session left behind: {stale}"
 
 
-def test_a_window_helper_that_ran_and_failed_is_reported_with_its_own_words(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
-) -> None:
-    """The helper's stderr was captured and dropped."""
-    helper = host_program.write(tmp_path / "place-window", "import sys\n"
-                                "sys.stderr.write('display-topology: no such display\\n')\n"
-                                "sys.exit(1)\n")
-    monkeypatch.setenv("WINDOW_APP", str(helper))
-    with pytest.raises(mstate.Invalid) as e:
-        launch.window_flags(shared=True, display="main")
-    assert "not at" not in str(e.value)
-    assert "exit code 1" in str(e.value) and "no such display" in str(e.value)
-    assert "-window" in launch.window_flags(shared=False)
-
-
 def test_start_refuses_while_a_session_is_live(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
@@ -1080,7 +958,7 @@ def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> N
     for asked in (True, False):
         with pytest.raises(Stop):
             launch.start("mame", "sys", "/r", "/r/x.bin", "", "0x0", "", 1.0, False, "", None,
-                         None, "0x0", "", 0, "", presence=asked)
+                         None, "0x0", 0, "", presence=asked)
     assert seen == [True, False]
 
 
@@ -1280,12 +1158,11 @@ def test_the_top_of_the_tcp_range_is_a_port(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """65535 is the last port and was refused as if it were one past it."""
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     monkeypatch.setattr(launch, "port_is_free", lambda p: True)
     args = _boot_args(tmp_path, bytes(16))
     judged = launch.judge(**args, symbols="", reference_addr="0x0", inipath="", wait=1.0,
                           shared=False, boot_lua="", env=None, bases=None, reference_base="0x0",
-                          display="", port=65535, state_dir="", throttle_from_frame=0,
+                          port=65535, state_dir="", throttle_from_frame=0,
                           background=None)
     machine.listxml(judged.listxml, judged.binary, judged.system, judged.wait)
     assert judged.port == 65535
@@ -1382,11 +1259,10 @@ def test_judge_carries_presence_to_the_boot(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: bool
 ) -> None:
     """What `start` was asked of the presence reaches the boot that composes the drawer."""
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     args = _boot_args(tmp_path, bytes(16))
     judged = launch.judge(**args, symbols="", reference_addr="0x0", inipath="", wait=1.0,
                           shared=False, boot_lua="", env=None, bases=None, reference_base="0x0",
-                          display="", port=0, state_dir="", throttle_from_frame=0,
+                          port=0, state_dir="", throttle_from_frame=0,
                           background=None, presence=asked)
     machine.listxml(judged.listxml, judged.binary, judged.system, judged.wait)
     assert judged.presence is asked

@@ -15,7 +15,6 @@ from scry_core.host_program import absolute as _abs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scry_core import host_program  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core.host_program import temporary as _tmp  # noqa: E402
 from session_doubles import (  # noqa: E402
@@ -69,7 +68,6 @@ def _never_spawns(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Whatever `start` does past its checks, it may not reach the emulator in these cases."""
     import subprocess
 
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
 
     def boom(*a: object, **k: object) -> None:
         raise AssertionError("start SPAWNED the emulator on an input it should have refused")
@@ -124,7 +122,6 @@ def _stub_boot(
     ses.handshake = lambda timeout=None: None  # type: ignore[method-assign]
     ses._layouts[1] = g.Layout({}, 0, "", [])
     ses.current_pc = lambda: at  # type: ignore[method-assign]
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     real_popen = subprocess.Popen
 
     def popen(*a: Any, **k: Any) -> Any:
@@ -198,16 +195,6 @@ class _DroppingWire:
             return self.answers.pop(0)
         raise TimeoutError
 
-
-
-def _recording_helper(tmp_path: Path) -> tuple[Path, Path]:
-    """A `place-window` double that records its argv and prints a plausible flag list."""
-    log = tmp_path / "argv.log"
-    fake = host_program.write(tmp_path / "place-window", (
-        f"import pathlib, sys\npathlib.Path({str(log)!r}).write_text("
-        "''.join(a + '\\n' for a in sys.argv[1:]))\n"
-        "sys.stdout.buffer.write(b'-window\\n-nomaximize\\n')\n"))
-    return fake, log
 
 
 class _RecordingSession(SessionFields):
@@ -893,7 +880,6 @@ def _query_that_outlives_the_boot(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
     args = _boot_args(tmp_path, bytes(range(64)))
     rewrite_mame(args["binary"], "if sys.argv[1:2] == ['-version']:\n"
                  "    print('0.0 (a slow query)')\n    sys.exit(0)\ntime.sleep(30)")
-    monkeypatch.setenv("WINDOW_APP", str(tmp_path / "no-helper"))
     held: list[Any] = []
     real_ask = machine.ask_listxml
 

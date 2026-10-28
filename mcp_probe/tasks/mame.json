@@ -1,5 +1,5 @@
 {"tasks": [
-  {"id": "M01", "prompt": "Start MAME from the binary /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms. The reference image is /opt/fury/roms/fury.bin: its 16 bytes must match at hex address 1F4A0, and the image's first byte sits at hex 1F000. Load the symbols from the linker map /opt/fury/fury.map, placing its DATA class at hex 3600 and its BSS class at hex 4800. Somebody will watch the run on the secondary display.",
+  {"id": "M01", "prompt": "Start MAME from the binary /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms. The reference image is /opt/fury/roms/fury.bin: its 16 bytes must match at hex address 1F4A0, and the image's first byte sits at hex 1F000. Load the symbols from the linker map /opt/fury/fury.map, placing its DATA class at hex 3600 and its BSS class at hex 4800. Somebody will watch the run.",
    "tool": "start",
    "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms",
             "reference_rom": "/opt/fury/roms/fury.bin",
@@ -7,8 +7,7 @@
             "reference_base": {"any_of": ["0x1F000", "0x1f000"]},
             "symbols": "/opt/fury/fury.map",
             "bases": {"DATA": {"any_of": ["0x3600"]}, "BSS": {"any_of": ["0x4800"]}},
-            "shared": true, "display": "secondary"},
-   "grammar": ["secondary"]},
+            "shared": true}},
   {"id": "M02", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in /opt/fury/ini. Run the boot Lua harness /opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in /opt/fury/states, use the cfg file /opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file /opt/fury/fury.types (no symbol file).",
    "tool": "start",
    "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms",
@@ -315,8 +314,8 @@
    "expect": "CANNOT", "about": "start"},
   {"id": "M165", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Nobody is going to watch it, but this once I want its window brought to the front when it launches.",
    "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "background": false}},
-  {"id": "M166", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it on the main display, but launch it without taking my focus away from the app I am typing in.",
-   "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "shared": true, "display": "main", "background": true}, "grammar": ["main"]},
+  {"id": "M166", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
+   "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "shared": true, "background": true}},
   {"id": "M167", "prompt": "On the cpu tagged audiocpu, add one row every time the sound latch at hex address 6000 is READ, with the value read, without ever stopping the machine.",
    "tool": "watch_add", "args": {"any_of": [
      {"ref": "0x6000", "mode": "capture", "trigger_type": "r",

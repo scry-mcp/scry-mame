@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, judges, live_host, log_marks, placement
+from scry_core import guardian, host_args, judges, live_host, log_marks
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -120,21 +120,25 @@ def reference_rom_file(reference_rom: str) -> Path:
     return ref
 
 
-def window_flags(shared: bool, display: str = "") -> list[str]:
-    """The placement helper's window flags, else a default when nobody is watching.
+#: A watched window's bound: it fits a 1080p display with its title bar and the host's menus.
+WATCHED_MAX_PX = (1800, 960)
 
-    A watched run is refused without the helper: inventing a size is how windows end up
-    off-screen."""
-    placed = placement.ask("mame", shared, display)
-    if placed.flags:
-        return placed.flags
-    why = placed.why or "the helper printed no flags"
-    if shared:
-        raise st.Invalid("host_failed",
-            f"a shared session needs the screen geometry, and {why}. Fix that, or start "
-            "without `shared`: inventing a size here is how windows end up off-screen."
-        )
-    return ["-window", "-nomaximize", "-resolution", "320x240"]
+
+def window_flags(shared: bool, screens: list[dict[str, Any]]) -> list[str]:
+    """The window's flags, then the host's own (`host_args`), so its placement wins.
+
+    Watched: the first screen at the largest integer scale within `WATCHED_MAX_PX`, since an
+    integer scale is the one that never blurs a pixel; with no size known, MAME's own."""
+    flags = ["-window", "-nomaximize"]
+    if not shared:
+        flags += ["-resolution", "320x240", "-nothrottle"]
+    elif screens and screens[0].get("width", 0) > 0 and screens[0].get("height", 0) > 0:
+        w, h = screens[0]["width"], screens[0]["height"]
+        if screens[0].get("rotation") in (90, 270):
+            w, h = h, w
+        scale = max(1, min(WATCHED_MAX_PX[0] // w, WATCHED_MAX_PX[1] // h))
+        flags += ["-resolution", f"{w * scale}x{h * scale}"]
+    return flags + host_args.emulator_args()
 
 
 def port_is_free(port: int) -> bool:
@@ -187,7 +191,7 @@ def build_command(
     # `-log` sends `logerror` to `error.log` in the scratch. `-debuglog` sends the console's
     # output to `debug.log`, the one place a watchpoint stop names the value and the writer's pc.
     cmd = [binary, system, "-rompath", rompath, "-skip_gameinfo", "-log", "-debuglog",
-           *flags, "-debug", "-debugger", DEBUGGER, "-debugger_port", str(port),
+           "-debug", "-debugger", DEBUGGER, "-debugger_port", str(port),
            "-snapshot_directory", str(Path(scratch) / "snap"),
            # A running MAME cannot switch its capture view; `native` is the screen alone.
            "-snapview", view or "native",
@@ -208,7 +212,8 @@ def build_command(
         cmd += ["-inipath", inipath]
     if boot_lua:
         cmd += ["-autoboot_script", boot_lua, "-autoboot_delay", "0"]
-    return cmd
+    # Last: an option of the host's left without its value takes nothing of ours, `-debug` least.
+    return cmd + flags
 
 
 def cfg_report() -> dict[str, Any]:
@@ -314,7 +319,6 @@ class Judged:
 
     flags: list[str]
     port: int
-    display: str
     tables: syms.Loaded
     store: dec.DeclarationStore
     declarations: dict[str, Any]
@@ -477,10 +481,10 @@ PORT_MAX = 65535
 
 def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
                 symbols: syms.Given = "", inipath: str = "", boot_lua: str = "",
-                state_dir: str = "", cfg: str = "", types: syms.Types = "", display: str = "",
-                view: str = "", **_: Any) -> None:
-    """`start`'s machine-independent half: the shape of every path, in `judge`'s reading order,
-    and `display`'s word. Whether files exist is the host's."""
+                state_dir: str = "", cfg: str = "", types: syms.Types = "", view: str = "",
+                **_: Any) -> None:
+    """`start`'s machine-independent half: the shape of every path, in `judge`'s reading order.
+    Whether files exist is the host's."""
     if binary:          # empty climbs `mame_binary`'s ladder, which judges what it lands on
         inputs.absolute("binary", binary)
     inputs.absolute("reference_rom", reference_rom)
@@ -494,7 +498,6 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
         inputs.absolute(name, path)
     if state_dir:
         inputs.absolute("state_dir", state_dir)
-    vocab.one_of("display", display, placement.DISPLAY_OPTIONS)
     check_view(view)
 
 
@@ -516,7 +519,7 @@ def check_view(view: str) -> None:
 def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           symbols: syms.Given, reference_addr: str, inipath: str, wait: float, shared: bool,
           boot_lua: str, env: dict[str, str] | None, bases: syms.Bases | None,
-          reference_base: str, display: str, port: int, state_dir: str,
+          reference_base: str, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
           binary_origin: str = binaries.ARGUMENT, view: str = "") -> Judged:
@@ -526,8 +529,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     Path shapes first (`check_start`), then arguments in reading order; `state_dir` is written
     last."""
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
-                inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
-                display=display)
+                inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types)
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
@@ -544,10 +546,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     # whole `boot_seconds`.
     if not (roms := inputs.absolute("rompath", rompath)).is_dir():
         inputs.no_such("ROM directory", str(roms))
-    placement.check_display(shared, display)
     inputs.natural("throttle_from_frame", throttle_from_frame,
                    " is not a frame number: an integer, never negative, and 0 is off")
-    display = placement.shared_display(shared, display)
     behind = judge_background(background, shared, env)
     vocab.check_wait(wait, "boot_seconds")
     inputs.natural("stub_port", port, f" is not a TCP port (0 picks a free one, else "
@@ -565,15 +565,17 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
         inputs.input_file("boot_lua", boot_lua, "boot harness")
     syms.check_files(symbols, types)
     state = judge_state_dir(state_dir) if state_dir else None
-    flags = window_flags(shared, display)
-    if throttle_from_frame and "-nothrottle" not in flags:
-        flags.append("-nothrottle")
     # A mapping names cpus, so the list is waited for here: a cpu it lacks is refused with
-    # nothing spawned, and the store is keyed by the first cpu's file.
+    # nothing spawned, and the store is keyed by the first cpu's file. A watched window is
+    # sized from the screen it lists.
     listed: machine.Listed | None = None
     tags: list[str] = []
-    if syms.is_mapping(symbols):
+    if shared or syms.is_mapping(symbols):
         listed = machine.listxml(machine.ask_listxml(binary, system), binary, system, wait)
+    flags = window_flags(shared, listed[0]["screens"] if listed is not None else [])
+    if throttle_from_frame and "-nothrottle" not in flags:
+        flags.append("-nothrottle")
+    if listed is not None and syms.is_mapping(symbols):
         tags = [row["tag"] for row in listed[0]["cpus"]]
         if not tags:
             raise st.Invalid("bad_argument",
@@ -609,7 +611,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
         except OSError as e:
             raise st.Invalid("host_failed", cannot_hold(state_dir, str(e))) from None
     asked = machine.ask_listxml(binary, system) if listed is None else (None, "")
-    return Judged(flags, port, display, loaded, store, declarations, ref, ref_addr, ref_base,
+    return Judged(flags, port, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
                   throttle_from_frame, asked, cfg_source, listed, background=behind,
                   presence=presence, picked=picked, view=view)
@@ -841,7 +843,7 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
 def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: syms.Given,
           reference_addr: str, inipath: str, wait: float, shared: bool, boot_lua: str,
           env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
-          display: str, port: int, state_dir: str,
+          port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, *, presence: bool, view: str = "",
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
@@ -858,7 +860,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
             try:
                 return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
-                               display, port, state_dir, throttle_from_frame, types, cfg,
+                               port, state_dir, throttle_from_frame, types, cfg,
                                background, presence, retries, progress, view)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
@@ -878,7 +880,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
 def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols: syms.Given,
             reference_addr: str, inipath: str, wait: float, shared: bool, boot_lua: str,
             env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
-            display: str, port: int, state_dir: str, throttle_from_frame: int,
+            port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress,
             view: str = "") -> dict[str, Any]:
@@ -897,7 +899,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     judged = judge(binary=binary, system=system, rompath=rompath, reference_rom=reference_rom,
                    symbols=symbols, reference_addr=reference_addr, inipath=inipath, wait=wait,
                    shared=shared, boot_lua=boot_lua, env=env, bases=bases,
-                   reference_base=reference_base, display=display, port=port,
+                   reference_base=reference_base, port=port,
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
                    cfg=cfg, background=background, presence=presence,
                    binary_origin=resolved.origin, view=view)
@@ -981,7 +983,6 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "frame": st.frame_shown(park["frame"]),
             **read.frame_fields(),
             "env": given,
-            "display": judged.display,
             "view": STATE.view,
             "views": views_shown(STATE.machine_map),
             "background": judged.background,
