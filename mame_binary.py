@@ -1,4 +1,5 @@
-"""MAME resolution: scry-core's binary ladder with this server's rungs, plus the boot canary."""
+"""MAME resolution: scry-core's binary ladder with this server's rungs, the boot canary, and the
+release this server recommends."""
 
 from __future__ import annotations
 
@@ -21,24 +22,24 @@ def canary_argv(binary: str, system: str, rompath: str, *extra: str) -> list[str
     return [binary, system, "-rompath", rompath, *extra, "-video", "none", "-sound", "none",
             "-seconds_to_run", "1", "-nothrottle", "-skip_gameinfo"]
 
-#: The MAME release this server is tested on; another boots with a note naming both.
+
+#: The MAME release this server is tested on, and so recommends; another boots with a note.
 RELEASE = "0.289"
-RELEASE_NOTE_MARK = f"the release this server is tested on is {RELEASE}"
 _RELEASE = re.compile(r"(\d+\.\d+)(?![\d.])")
+_SAID_SHOWN = 80
 
 
 def release_note(said: str | dict[str, Any]) -> str | None:
-    """Why the build may not be the tested release, or None when it is.
+    """Why the build may not be the recommended release, or None when it is.
 
-    Only a refusal stops a start: a later MAME usually works, and a capability it lacks is
-    refused where the launch meets it, with MAME's own words."""
+    A note and never a refusal: nothing here knows which tools another release breaks."""
     if isinstance(said, dict):
         what = f"this build's release could not be read ({said.get('why', 'no reason given')})"
     elif (found := _RELEASE.match(said)) is None:
-        what = f"this build names no MAME release (`-version` said {said!r})"
+        what = f"`-version` named no release ({said[:_SAID_SHOWN]!r})"
     elif found.group(1) == RELEASE:
         return None
     else:
-        what = f"MAME {found.group(1)} is not the release this server is tested on"
-    return (f"{what}; {RELEASE_NOTE_MARK}: a tool may refuse or answer differently on "
-            "another, and each refusal names what was missing")
+        what = f"this is MAME {found.group(1)}"
+    return (f"{what}, and this server is tested on MAME {RELEASE}, the release it recommends: "
+            "on another a tool may refuse, or answer differently")

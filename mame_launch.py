@@ -989,7 +989,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "throttle_from_frame": throttle_from_frame,
             "boot_lua_path": harness,
             "presence": STATE.presence_shown(),
-                "machine": {name: len(STATE.machine_map[name]) for name in machine.SECTIONS},
+            "machine": {name: len(STATE.machine_map[name]) for name in machine.SECTIONS},
             "declarations": judged.declarations,
             "start_retries": list(retries),
             "recommended_release": binaries.RELEASE,

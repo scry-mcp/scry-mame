@@ -44,7 +44,7 @@ You need git, Python 3.11 or newer, [uv](https://docs.astral.sh/uv/), and a MAME
 gdbstub (`-debugger gdbstub`) and its `console` plugin. `start` runs the MAME its `binary`
 argument names, else `MAME_BINARY`, else the `mame` on your `PATH`. The server is tested on one
 MAME release, which `start` names in `recommended_release`; another release boots with a `note`
-saying so, and what it lacks is refused with its reason. A board on a NEC V20/V30/V33 needs a
+saying so. A board on a NEC V20/V30/V33 needs a
 MAME from mamedev/mame#16131 on, where the stub learned their registers.
 
 ```sh
@@ -75,7 +75,8 @@ the debugger (merged upstream as mamedev/mame#16363, so a MAME from it on carrie
 macOS and Windows: the server and its tests run on both. On Windows the server
 proves which process serves MAME's gdbstub from the system's own TCP table instead of `lsof`, and
 a MAME outlives no server: it runs in a job object the server holds, which Windows closes, ending
-MAME, however the server ends. Linux is not supported: nothing here has run on it.
+MAME, however the server ends. Linux runs the unit tests (`.github/workflows/ci.yml`) and nothing else: no emulator has run under
+the server there.
 
 ## See it run
 

@@ -16,6 +16,9 @@ jobs:
   battery:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # Every `uv run` refuses a lock that no longer matches pyproject.toml instead of re-resolving.
+    env:
+      UV_LOCKED: "1"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
@@ -35,15 +38,15 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4 lsof && break
             sleep 10
           done
-          sudo ln -sf "$(command -v lua5.4)" /usr/local/bin/lua
-          lua -v && command -v lsof
-      - run: uv sync --frozen
+          command -v lua5.4 lsof || { echo "apt-get could not install lua5.4 and lsof"; exit 1; }
+          sudo ln -sf "$(command -v lua5.4)" /usr/local/bin/lua && lua -v
+      - run: uv sync
         timeout-minutes: 5
       - run: uv run ruff check .
       - run: uv run mypy --strict .
       - run: uv run mypy --strict --platform win32 .
       # The coverage floor counts every platform branch of the tree as macOS runs it, so it is
       # judged there; here the suite judges behaviour.
-      - run: uv run pytest -q --no-cov
+      - run: uv run pytest -q --no-cov -rs
       - run: bash .githooks/pre-commit.test.sh
       - run: uv run python -m scry_core.hook

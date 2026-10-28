@@ -227,7 +227,7 @@ Example, from a live run:
 
 **The machine runs under the debugger, and `start` and `status` say so in `debugger`.** A capture at one of this session's stops and an autoboot golden at the same frame count can land a frame apart in a scene that changes every frame; the `note` lets that be read as the method and not as a regression.
 
-**Which MAME runs is resolved for each launch, and said.** The first rung holding a value (`binary`, `MAME_BINARY`, the PATH's `mame`) is taken, and one naming no executable is refused, never passed over for the next: a caller who named a build and got another would be measuring the wrong emulator.
+**Which MAME runs is resolved for each launch, and said.** The first rung holding a value (`binary`, `MAME_BINARY`, the PATH's `mame`) is taken, and one naming no executable is refused, never passed over for the next: a caller who named a build and got another would be measuring the wrong emulator. The build's `version` is its own first line of `-version`, and `recommended_release` the release this server is tested on: another boots with a `note` saying so, never a refusal, because which tools another release breaks is not known until one of them meets it.
 
 **Every input file has to be a FILE, and a directory is refused at the argument**, because `exists()` answers yes to a folder and what refuses it would arrive out of the spawn, naming a path and not the argument. A file that is there and wrong is the caller's argument too, never a failure of the tool.
 

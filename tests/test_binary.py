@@ -125,14 +125,18 @@ def test_start_asks_the_version_with_the_launch_s_environment(
         s.close()
 
 
+TESTED = f"tested on MAME {binaries.RELEASE}"
+
+
 @pytest.mark.parametrize(("said", "note"), [
     (f"{binaries.RELEASE} (mame0289)", None),
     (f"{binaries.RELEASE} (unknown)", None),
-    ("0.290 (mame0290)", "MAME 0.290 is not"),
-    (f"{binaries.RELEASE}0 (a later build)", f"MAME {binaries.RELEASE}0 is not"),
-    ("a build that names no release", "names no MAME release"),
+    ("0.290 (mame0290)", "this is MAME 0.290,"),
+    (f"{binaries.RELEASE}0 (a later build)", f"this is MAME {binaries.RELEASE}0,"),
+    ("a build that names no release", "named no release ('a build that names no release')"),
+    ("x" * 200, f"named no release ('{'x' * 80}')"),
 ])
-def test_start_warns_on_a_release_other_than_the_one_it_is_tested_on(
+def test_start_notes_a_release_other_than_the_one_it_recommends(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch, said: str, note: str | None) -> None:
     """Another release boots, with a note naming it and the recommended one."""
     out = _start(monkeypatch, tmp_path, binary=str(build(tmp_path, name="fake-mame",
@@ -140,19 +144,20 @@ def test_start_warns_on_a_release_other_than_the_one_it_is_tested_on(
     try:
         assert out["status"] == "ok" and out["recommended_release"] == binaries.RELEASE, out
         if note is None:
-            assert binaries.RELEASE_NOTE_MARK not in out.get("note", ""), out
+            assert TESTED not in out.get("note", ""), out
         else:
-            assert note in out["note"] and binaries.RELEASE_NOTE_MARK in out["note"], out
+            assert note in out["note"] and TESTED in out["note"], out
     finally:
         s.close()
 
 
-def test_start_warns_when_the_release_could_not_be_read(
+def test_start_notes_a_release_it_could_not_read(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     slow = build(tmp_path, name="fake-mame", version="time.sleep(5)")
     out = _start(monkeypatch, tmp_path, binary=str(slow), boot_seconds=0.4)
     try:
-        assert out["status"] == "ok" and "could not be read" in out["note"], out
+        assert out["status"] == "ok", out
+        assert "release could not be read (" in out["note"] and TESTED in out["note"], out
     finally:
         s.close()
 
