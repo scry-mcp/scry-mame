@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/scry-logo.png" alt="Scry" width="480"></p>
+
 # scry-mame
 
 **Point an MCP client at an arcade board and ask the machine questions, live.** One MAME stays
