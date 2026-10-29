@@ -820,11 +820,12 @@ class RunToReply(MameEnvelope, total=False):
     condition: str
     control: str
     control_dasm: list[Any]
-    control_hits: Required[int]
+    control_hits: Annotated[int, When("a run to a ref or an anchor")]
     control_on: list[Any]
-    controls: Required[list[Any]]
+    controls: Annotated[list[Any], When("a run to a ref or an anchor")]
     cpu: str | dict[str, Any]
     following: list[str]
+    frames: Annotated[int, When("a screen with no anchor")]
     instruction: StopInstruction
     disarmed_watches: list[Any]
     errorlog: dict[str, Any]

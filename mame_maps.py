@@ -23,6 +23,10 @@ import mame_screen as mscreen
 import mame_state as st
 from mame_state import STATE
 
+#: What a `run_for` stop carries that a `run_to` reply has no field for.
+RUN_FOR_ONLY = frozenset({"polls", "reads", "emulated_before_s", "emulated_after_s",
+                          "frame_before", "frame_after", "cycles"})
+
 
 def check_load_map(path: object = "", scale: object = 1, margin: object = None,
                    **_: Any) -> None:
@@ -81,12 +85,27 @@ def screen_map_find(ses: gs.Session, scratch: Path,
 def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, seconds: float,
                   progress: mprogress.Progress = mprogress.no_progress,
                   **run: Any) -> dict[str, Any]:
-    """`run_to(screen=)`: a run to the screen's anchor, the arrival judged as its map says."""
-    reply = advance.run_to(ses, scratch, STATE.maps.anchor(screen), control, seconds, progress,
-                           **run)
+    """`run_to(screen=)`: a run to the screen's anchor, the arrival judged as its map says; a
+    screen with no anchor is run to a frame at a time until the map names it."""
     common: dict[str, Any] = {}
-    out = screen_map.at_anchor(STATE.maps, screen, reply, _reader(ses, scratch, common, progress),
-                               reply.get("stop_seq"))
+    reader = _reader(ses, scratch, common, progress)
+    if not STATE.maps.is_anchored(screen):
+        if control:
+            raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run "
+                             "to a frame at a time and a `control` has nothing to count: leave "
+                             "it out")
+        out = screen_map.run_until(
+            STATE.maps, screen,
+            lambda: advance.run_for(ses, scratch, 0, seconds, progress, frames=1),
+            reader, seconds)
+        if out.get("status") == "ok":
+            out = {k: v for k, v in out.items() if k not in RUN_FOR_ONLY}
+    else:
+        if not control:
+            raise advance.no_control()
+        reply = advance.run_to(ses, scratch, STATE.maps.anchor(screen), control, seconds,
+                               progress, **run)
+        out = screen_map.at_anchor(STATE.maps, screen, reply, reader, reply.get("stop_seq"))
     if not common:
         return out              # nothing was captured, so the machine is where the run left it
     # The capture that judged the screen stepped the machine: the stop is the one after it.

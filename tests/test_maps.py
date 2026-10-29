@@ -191,3 +191,45 @@ def test_an_export_keeps_the_map_and_holds_an_identification_to_what_it_matched(
     assert kinds == {"load": "step", "add": "step", "save": "drop"}
     found = mame_mcp.RECORDER.kind("screen_map_find", {}).export_as
     assert found == ("matched", "screen", "pc", "frame")
+
+
+def _one_frame(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    """`run_for(frames=1)` as one frame stop, counted."""
+    import mame_advance as advance
+    ran: list[dict[str, Any]] = []
+
+    def frame(ses: Any, scratch: Any, milliseconds: int, seconds: float, progress: Any = None,
+              disarm_watches: bool = False, frames: int = 0, route: Any = None) -> dict[str, Any]:
+        ran.append({"frames": frames})
+        return {"status": "ok", "verdict": "ELAPSED", "stop_seq": 100 + len(ran),
+                "pc": "0x0000beef", "frame_before": len(ran), "frame_after": len(ran) + 1,
+                "polls": 1}
+    monkeypatch.setattr(advance, "run_for", frame)
+    return ran
+
+
+def test_a_run_to_a_screen_with_no_anchor_runs_frames_until_the_map_names_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    import mame_maps as mmaps
+    import mame_running as running
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    ran = _one_frame(monkeypatch)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    got = mmaps.run_to_screen(*running.stopped("a run to a screen"), "board", "", 30.0)
+    assert got["status"] == "ok" and got["verdict"] == "TARGET", got
+    assert got["frames"] == len(ran) == 1 and got["screen"]["judged"] is True, got
+    assert "polls" not in got and "frame_before" not in got, got
+
+
+def test_a_control_with_a_screen_that_has_no_anchor_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP]))
+    got = s.run_to(screen="board", control="Tick")
+    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
+    assert "no anchor" in got["message"], got["message"]

@@ -26,33 +26,35 @@ What a running or a broken session does to every tool is in [REFERENCE.md, Advan
 *Run to a place, with a control*
 
 ```text
-run_to(ref="", control, screen="", seconds=30.0, disarm_watches=false, condition="", cpu="")
+run_to(ref="", control="", screen="", seconds=30.0, disarm_watches=false, condition="", cpu="")
 ```
 
 Run to `ref` and stop, with a control counting meanwhile.
 
-`ref` is armed on `cpu` (the visible one when empty). `control` is required: a place known to
-run, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does the
-same ahead of time), and the cpu's other declared controls count too. `condition`: stop only
-when it holds, bare numbers hex (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an
-unresolved ref, an empty or unresolved control, an over-long `condition`.
+`ref` is armed on `cpu` (the visible one when empty). `control` is required with a `ref` or an
+anchored screen: a place known to run, declared as a control on that cpu if it is new
+(`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
+controls count too. `condition`: stop only when it holds, bare numbers hex
+(`w@DemoLen==0x25`). Needs a stopped machine. Refused: an unresolved ref, an empty or
+unresolved control, an over-long `condition`.
 
-`screen`: a mapped screen's name instead of `ref` (exactly one), run to its `anchor`, the
-`control` still required; a `verified` map judges it there (`stale_map` when it no longer
-holds), a `consolidated` one takes it as shown. Reply: `screen` (`screen`, `layer`, `mode`,
-`judged`). Refused: an unmapped screen (`unknown_ref`), one with no `anchor` (`needs_call`).
+`screen`: a mapped screen's name instead of `ref` (exactly one). With an `anchor`, run to it (`control`
+required): a `verified` map judges it there (`stale_map` when it no longer holds), a
+`consolidated` one takes it as shown. With none, a frame at a time until the map names it,
+within `seconds`; no `control`. Reply: `screen` (`screen`, `layer`, `mode`, `judged`),
+`frames` run. Refused: an unmapped screen (`unknown_ref`).
 
 Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
-`cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following`
-when the listing runs on). INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`,
-`not_settled`, `stale_map`.
+`cpu`, `hits_in_run`; a run to a ref or an anchor), `frames` (a screen with no anchor), the
+stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
+INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
 | argument | type | default |
 |---|---|---|
 | `ref` | string | `""` |
-| `control` | string | required |
+| `control` | string | `""` |
 | `screen` | string | `""` |
 | `seconds` | number (> 0, <= 600.0) | `30.0` |
 | `disarm_watches` | boolean | `false` |
@@ -72,6 +74,7 @@ Reference: REFERENCE.md, Advancing the machine.
 | `controls` | array |
 | `cpu` | string or object |
 | `following` | array of string |
+| `frames` | integer |
 | `instruction` | StopInstruction |
 | `disarmed_watches` | array |
 | `errorlog` | object |

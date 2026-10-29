@@ -507,9 +507,11 @@ def test_a_control_declaration_re_arms_through_the_console_at_the_next_start(
 
 
 def test_the_tool_surface_knows_the_role(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """`run_to`'s `control` is required, and `breakpoint_at` takes a `role`."""
+    """`run_to`'s `control` is required with a ref, and `breakpoint_at` takes a `role`."""
     import inspect
-    assert inspect.signature(s.run_to).parameters["control"].default is inspect.Parameter.empty
+    refused_without = s.run_to(ref="0x4a0")
+    assert refused_without["status"] == "INVALID" and "needs a control" in refused_without[
+        "message"], refused_without
     assert inspect.signature(s.breakpoint_at).parameters["role"].default == "stop"
     _controlled(monkeypatch, tmp_path)
     assert "role" in (s.breakpoint_at(ref="0x4a0"))

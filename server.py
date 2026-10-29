@@ -287,24 +287,25 @@ def rom_check(
 # ----------------------------------------------------------------------------- advance
 
 @tool("Run to a place, with a control", summary=summaries.run_to, on_cancel="stop")
-def run_to(ref: str = "", *, control: str, screen: str = "",
+def run_to(ref: str = "", *, control: str = "", screen: str = "",
            seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
            disarm_watches: bool = False, condition: str = "", cpu: str = "",
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run to `ref` and stop, with a control counting meanwhile.
 
-    `ref` is armed on `cpu` (the visible one when empty). `control` is required: a place known to
-    run, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does the
-    same ahead of time), and the cpu's other declared controls count too. `condition`: stop only
-    when it holds, bare numbers hex (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an
-    unresolved ref, an empty or unresolved control, an over-long `condition`.
+    `ref` is armed on `cpu` (the visible one when empty). `control` is required with a `ref` or an
+    anchored screen: a place known to run, declared as a control on that cpu if it is new
+    (`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
+    controls count too. `condition`: stop only when it holds, bare numbers hex
+    (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an unresolved ref, an empty or
+    unresolved control, an over-long `condition`.
 
     {MAP_RUN_TO}
 
     Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
-    `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following`
-    when the listing runs on). INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`,
-    `not_settled`, `stale_map`.
+    `cpu`, `hits_in_run`; a run to a ref or an anchor), `frames` (a screen with no anchor), the
+    stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
+    INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
     Reference: REFERENCE.md, Advancing the machine.
     """
