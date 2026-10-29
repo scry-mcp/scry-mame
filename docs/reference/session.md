@@ -342,10 +342,10 @@ grace period. The scratch is deleted; a `state_dir` stays. Works on a running ma
 with no session it answers `closed: false`.
 
 Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
-`cfg` (`installed_path`, `changed`), `average_speed` (after a run), `note`; `stdout_tail` and
-`errorlog_tail` when the end was not a clean `quit`, or with `detail=True`. `session` is the
-block as it is after the close (`alive` and `running` false); a console doubt or a throttle
-found not applied still rides there.
+`cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
+`stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
+`session` is the block as it is after the close (`alive` and `running` false); a console doubt
+or a throttle found not applied still rides there.
 
 Reference: REFERENCE.md, The session.
 

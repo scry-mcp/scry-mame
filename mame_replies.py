@@ -113,7 +113,7 @@ class CapturesReply(MameEnvelope, total=False):
 
 
 class CloseReply(MameEnvelope, total=False):
-    average_speed: Annotated[dict[str, Any], When("after a run")]
+    average_speed: Annotated[dict[str, Any], When("while a `resume` run was open")]
     cfg: Required[dict[str, Any]]
     closed: Required[bool]
     console_drained: int
