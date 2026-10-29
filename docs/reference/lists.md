@@ -129,10 +129,7 @@ Example, from a live run:
           "altered": true,
           "read_only_claims": 1,
           "note": "1 raw `lua` call was declared read_only BY THE CALLER and are not counted as writes. Nothing verified that claim: a Lua string can read a byte or rewrite RAM and the text does not say which, so `altered` here rests on the caller's word for  ... (349 characters)",
-          "omitted": [
-            "altering_writes",
-            "console"
-          ],
+          "omitted": ["altering_writes", "console"],
           "how": "call `status`"
         }
       }
@@ -273,19 +270,11 @@ Example, from a live run:
             "symbol": "BOOT_INIT",
             "delta": 26
           },
-          "following": [
-            "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-            "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-            "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-            "002610: 1039 0020 351C      move.b  $20351c.l, D0"
-          ],
+          "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
           "errorlog": {
             "lines_total": 2,
             "truncated": false,
-            "lines": [
-              "[luaengine] MAME_MCP_THROTTLE#24 throttled=false frame=30",
-              ""
-            ],
+            "lines": ["[luaengine] MAME_MCP_THROTTLE#24 throttled=false frame=30", ""],
             "mark": 66675
           },
           "session": {
@@ -294,10 +283,7 @@ Example, from a live run:
             "altered": true,
             "read_only_claims": 1,
             "note": "1 raw `lua` call was declared read_only BY THE CALLER and are not counted as writes. Nothing verified that claim: a Lua string can read a byte or rewrite RAM and the text does not say which, so `altered` here rests on the caller's word for  ... (349 characters)",
-            "omitted": [
-              "altering_writes",
-              "console"
-            ],
+            "omitted": ["altering_writes", "console"],
             "how": "call `status`"
           }
         }

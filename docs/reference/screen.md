@@ -109,15 +109,7 @@ Example, from a live run:
   "shadows": false,
   "highlights": false,
   "indirect_entries": 0,
-  "colors": [
-    "#000000",
-    "#ff0000",
-    "#00ff00",
-    "#ffff00",
-    "#0000ff",
-    "#ff00ff",
-    "... 250 more"
-  ],
+  "colors": ["#000000", "#ff0000", "#00ff00", "#ffff00", "#0000ff", "#ff00ff", "... 250 more"],
   "image": {
     "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/palette-1.png",
     "bytes": 47843,
@@ -166,13 +158,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 18
   },
-  "following": [
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l"
-  ],
+  "following": ["0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -288,22 +274,12 @@ Example, from a live run:
   "palette": ":palette",
   "entries": 256,
   "screen_indexed": true,
-  "crop": [
-    0,
-    0,
-    336,
-    252
-  ],
+  "crop": [0, 0, 336, 252],
   "histogram": [
-    [
-      0,
-      84672
-    ]
+    [0, 84672]
   ],
   "pens_used": 1,
-  "unused": [
-    "0x1-0xff"
-  ],
+  "unused": ["0x1-0xff"],
   "evaluated_by": "one step",
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -342,13 +318,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 24
   },
-  "following": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
-  ],
+  "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -431,12 +401,7 @@ Example, from a live run:
   "kind": "pixel",
   "width": 336,
   "height": 252,
-  "crop": [
-    0,
-    0,
-    336,
-    252
-  ],
+  "crop": [0, 0, 336, 252],
   "screen": ":screen",
   "frame_screen": 0,
   "evaluated_by": "one step",
@@ -477,14 +442,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 0
   },
-  "following": [
-    "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
-  ],
+  "following": ["0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l", "0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -589,9 +547,7 @@ Example, from a live run:
     "width": 8,
     "height": 8,
     "planes": 1,
-    "planeoffset": [
-      0
-    ],
+    "planeoffset": [0],
     "xoffset": "{ STEP8(0,1) }",
     "yoffset": "{ STEP8(0,8) }",
     "charincrement": "8*8"
@@ -611,27 +567,9 @@ Example, from a live run:
     "width": 8,
     "height": 8,
     "planes": 1,
-    "planeoffset": [
-      0
-    ],
-    "xoffset": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      "... 2 more"
-    ],
-    "yoffset": [
-      0,
-      8,
-      16,
-      24,
-      32,
-      40,
-      "... 2 more"
-    ],
+    "planeoffset": [0],
+    "xoffset": [0, 1, 2, 3, 4, 5, "... 2 more"],
+    "yoffset": [0, 8, 16, 24, 32, 40, "... 2 more"],
     "charincrement": 64
   },
   "kind": "region",
@@ -696,12 +634,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 26
   },
-  "following": [
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
-  ],
+  "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -817,20 +750,13 @@ Example, from a live run:
       "width": 8,
       "height": 8,
       "planes": 1,
-      "planeoffset": [
-        0
-      ],
+      "planeoffset": [0],
       "xoffset": "{ STEP8(0,1) }",
       "yoffset": "{ STEP8(0,8) }",
       "charincrement": "8*8"
     }
   ],
-  "patch": [
-    0,
-    0,
-    8,
-    8
-  ],
+  "patch": [0, 0, 8, 8],
   "tag": "maincpu",
   "count": 64
 }
@@ -840,12 +766,7 @@ Example, from a live run:
 {
   "summary": "gfx_locate region :maincpu for patch [0, 0, 8, 8]: no match",
   "status": "ok",
-  "patch": [
-    0,
-    0,
-    8,
-    8
-  ],
+  "patch": [0, 0, 8, 8],
   "screen": ":screen",
   "frame_screen": 0,
   "palette": ":palette",
@@ -859,12 +780,7 @@ Example, from a live run:
     "available": false,
     "why": "no `transparent`: every pixel compared"
   },
-  "flips": [
-    "none",
-    "x",
-    "y",
-    "xy"
-  ],
+  "flips": ["none", "x", "y", "xy"],
   "candidates": [
     {
       "layout": {
@@ -872,33 +788,12 @@ Example, from a live run:
         "width": 8,
         "height": 8,
         "planes": 1,
-        "planeoffset": [
-          0
-        ],
-        "xoffset": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          "... 2 more"
-        ],
-        "yoffset": [
-          0,
-          8,
-          16,
-          24,
-          32,
-          40,
-          "... 2 more"
-        ],
+        "planeoffset": [0],
+        "xoffset": [0, 1, 2, 3, 4, 5, "... 2 more"],
+        "yoffset": [0, 8, 16, 24, 32, 40, "... 2 more"],
         "charincrement": 64
       },
-      "tiles_searched": [
-        0,
-        64
-      ],
+      "tiles_searched": [0, 64],
       "windows": 0,
       "windows_uniform": 1,
       "windows_mixed_bank": 0,
@@ -962,13 +857,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 24
   },
-  "following": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
-  ],
+  "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -1072,9 +961,7 @@ Example, from a live run:
 ```json
 {
   "tag": "maincpu",
-  "planes": [
-    1
-  ],
+  "planes": [1],
   "count": 8
 }
 ```
@@ -1153,12 +1040,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 26
   },
-  "following": [
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
-  ],
+  "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -1396,15 +1278,7 @@ Example, from a live run:
     }
   ],
   "note": "a plane drawn in pages: `by_plane` and each listed blit name the `page`, and which page the screen shows is not in the rows",
-  "not_proved": [
-    "dest_x",
-    "scroll_y",
-    "source_dir_y",
-    "source_x",
-    "source_y",
-    "planes.sprites",
-    "... 1 more"
-  ],
+  "not_proved": ["dest_x", "scroll_y", "source_dir_y", "source_x", "source_y", "planes.sprites", "... 1 more"],
   "image": {
     "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/blits-1.png",
     "bytes": 2312,
@@ -1453,12 +1327,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 464
   },
-  "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-  ],
+  "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -1481,15 +1350,7 @@ Example, from a live run:
       "since_last_stop": 0
     }
   ],
-  "omitted": [
-    "addr",
-    "by",
-    "fmt",
-    "frame_as_of",
-    "install_resent",
-    "installed",
-    "... 12 more"
-  ],
+  "omitted": ["addr", "by", "fmt", "frame_as_of", "install_resent", "installed", "... 12 more"],
   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```
@@ -1630,12 +1491,7 @@ Example, from a live run:
     "dir_y": 1
   },
   "margin": 0,
-  "box": [
-    0,
-    0,
-    2,
-    1
-  ],
+  "box": [0, 0, 2, 1],
   "wrap": true,
   "destination": {
     "x": 0,
@@ -1646,14 +1502,7 @@ Example, from a live run:
     "dir_y": 1
   },
   "note": "shown unscaled: the rectangle is the destination walk's size from the source origin; a scaled blit reads another extent, which is the project's scale law and is not applied here",
-  "not_proved": [
-    "dest_x",
-    "source_dir_y",
-    "source_x",
-    "source_y",
-    "planes.sprites",
-    "planes.background"
-  ],
+  "not_proved": ["dest_x", "source_dir_y", "source_x", "source_y", "planes.sprites", "planes.background"],
   "reads_source": true,
   "image": {
     "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/source-1.png",
@@ -1703,12 +1552,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 464
   },
-  "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-  ],
+  "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -1731,15 +1575,7 @@ Example, from a live run:
       "since_last_stop": 0
     }
   ],
-  "omitted": [
-    "addr",
-    "by",
-    "fmt",
-    "frame_as_of",
-    "install_resent",
-    "installed",
-    "... 12 more"
-  ],
+  "omitted": ["addr", "by", "fmt", "frame_as_of", "install_resent", "installed", "... 12 more"],
   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```

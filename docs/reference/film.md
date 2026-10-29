@@ -64,12 +64,7 @@ Example, from a live run:
   "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
   "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
   "draft": false,
-  "systems": [
-    "radendur",
-    "wheelfir",
-    "pwball",
-    "kongball"
-  ],
+  "systems": ["radendur", "wheelfir", "pwball", "kongball"],
   "formats": {
     "page_512x512x8": "declared"
   },
@@ -87,26 +82,9 @@ Example, from a live run:
       "trigger_addr": "0x0070001e",
       "fires_with": "0xffff",
       "asset": "pages",
-      "roles": [
-        "dest_dir_x",
-        "dest_dir_y",
-        "dest_x",
-        "dest_x_end",
-        "dest_y",
-        "dest_y_end",
-        "... 7 more"
-      ],
-      "flags": [
-        "dest_y_half",
-        "scroll_x",
-        "scroll_y",
-        "visible_page",
-        "writes_index_0"
-      ],
-      "planes": [
-        "sprites",
-        "background"
-      ]
+      "roles": ["dest_dir_x", "dest_dir_y", "dest_x", "dest_x_end", "dest_y", "dest_y_end", "... 7 more"],
+      "flags": ["dest_y_half", "scroll_x", "scroll_y", "visible_page", "writes_index_0"],
+      "planes": ["sprites", "background"]
     }
   },
   "palette_ports": {
@@ -123,10 +101,7 @@ Example, from a live run:
       "order": "rgb",
       "component_bits": 8,
       "components_bit_reversed": false,
-      "pen_range": [
-        0,
-        255
-      ]
+      "pen_range": [0, 255]
     }
   },
   "status_counts": {
@@ -342,12 +317,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 464
   },
-  "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-  ],
+  "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -475,10 +445,7 @@ Example, from a live run:
   "data_port": "0x00720003",
   "order": "rgb",
   "component_bits": 8,
-  "pen_range": [
-    0,
-    255
-  ],
+  "pen_range": [0, 255],
   "armed_now": true,
   "tally_id": "ramdac_720001_1_720003",
   "installed": false,
@@ -486,9 +453,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "call": "MAME_MCP_LUA_END#15",
   "note": "the tap is installed when the console next reads a line (a step, the next frame emulated, or a debugger command on a stub that refreshes after one) and counts from there; the survey of the stop after that reads it back",
-  "not_proved": [
-    "palette_ports.ramdac"
-  ]
+  "not_proved": ["palette_ports.ramdac"]
 }
 ```
 <!-- scry-reference:end palette_log -->

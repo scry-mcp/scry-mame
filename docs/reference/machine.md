@@ -146,20 +146,14 @@ Example, from a live run:
       "name": "Motorola MC68000",
       "clock_hz": 16000000,
       "type": "m68000",
-      "spaces": [
-        "cpu_space",
-        "program"
-      ]
+      "spaces": ["cpu_space", "program"]
     },
     {
       "cpu": ":subcpu",
       "name": "Motorola MC68000",
       "clock_hz": 16000000,
       "type": "m68000",
-      "spaces": [
-        "cpu_space",
-        "program"
-      ]
+      "spaces": ["cpu_space", "program"]
     }
   ],
   "spaces": [
@@ -303,34 +297,16 @@ Example, from a live run:
   },
   "truncated": false,
   "sources": {
-    "cpus": [
-      "live",
-      "-listxml"
-    ],
-    "spaces": [
-      "live"
-    ],
-    "address_map": [
-      "live"
-    ],
-    "regions": [
-      "live"
-    ],
-    "shares": [
-      "live"
-    ],
-    "screens": [
-      "live",
-      "-listxml"
-    ],
-    "symbol_coverage": [
-      "symbols"
-    ]
+    "cpus": ["live", "-listxml"],
+    "spaces": ["live"],
+    "address_map": ["live"],
+    "regions": ["live"],
+    "shares": ["live"],
+    "screens": ["live", "-listxml"],
+    "symbol_coverage": ["symbols"]
   },
   "note": "the address map is the map of the machine's EXECUTING devices, which is what MAME gives a debugger: a device that only exposes an address space of its own is not in it, though its shares and regions are; the map reported is the STATICALLY C ... (844 characters)",
-  "omitted": [
-    "rom_files"
-  ],
+  "omitted": ["rom_files"],
   "how": "sections=[...] names the sections to answer",
   "frame_symbol": "frame",
   "cpu": {
@@ -481,9 +457,7 @@ Example, from a live run:
   "channel": "emulator",
   "lines_total": 1,
   "truncated": false,
-  "lines": [
-    "Soft reset"
-  ]
+  "lines": ["Soft reset"]
 }
 ```
 <!-- scry-reference:end log -->

@@ -450,9 +450,7 @@ Example, from a live run:
   "summary": "declaration_clear breakpoint all: 1 cleared, 1 disarmed",
   "status": "ok",
   "declarations_cleared": 1,
-  "disarmed": [
-    "1 @ 0025A4"
-  ],
+  "disarmed": ["1 @ 0025A4"],
   "while_running": false
 }
 ```

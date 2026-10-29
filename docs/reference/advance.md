@@ -146,25 +146,11 @@ Example, from a live run:
     "symbol": "IRQ_VBLANK",
     "delta": 0
   },
-  "following": [
-    "000404: 48E7 F000           movem.l D0-D3, -(A7)",
-    "000408: 5279 0020 3200      addq.w  #1, $203200.l",
-    "00040E: 52B9 0020 31FC      addq.l  #1, $2031fc.l",
-    "000414: 33FC 0001 0020 91E8 move.w  #$1, $2091e8.l",
-    "00041C: 4A79 0020 91EE      tst.w   $2091ee.l"
-  ],
+  "following": ["000404: 48E7 F000           movem.l D0-D3, -(A7)", "000408: 5279 0020 3200      addq.w  #1, $203200.l", "00040E: 52B9 0020 31FC      addq.l  #1, $2031fc.l", "000414: 33FC 0001 0020 91E8 move.w  #$1, $2091e8.l", "00041C: 4A79 0020 91EE      tst.w   $2091ee.l"],
   "errorlog": {
     "lines_total": 768,
     "truncated": true,
-    "lines": [
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & FF00",
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & 00FF",
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & FF00",
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & 00FF",
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & FF00",
-      "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & 00FF",
-      "... 2 more"
-    ],
+    "lines": ["[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & FF00", "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & 00FF", "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & FF00", "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & 00FF", "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & FF00", "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & 00FF", "... 2 more"],
     "mark": 14,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=400)` reads the newest 400"
   }
@@ -291,12 +277,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 464
   },
-  "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-  ],
+  "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -319,15 +300,7 @@ Example, from a live run:
       "since_last_stop": 7
     }
   ],
-  "omitted": [
-    "addr",
-    "by",
-    "fmt",
-    "frame_as_of",
-    "install_resent",
-    "installed",
-    "... 12 more"
-  ],
+  "omitted": ["addr", "by", "fmt", "frame_as_of", "install_resent", "installed", "... 12 more"],
   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
 }
 ```
@@ -435,15 +408,7 @@ Example, from a live run:
     "symbol": "MODE_CLEAR_BLITS",
     "delta": 408
   },
-  "following": [
-    "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
-    "0029F6: 4E75      rts",
-    "0029F8: 0000 0796 ori.b   #$96, D0",
-    "0029FC: 0000 4854 ori.b   #$54, D0",
-    "002A00: 0000 4860 ori.b   #$60, D0",
-    "002A04: 0000 48C4 ori.b   #$c4, D0",
-    "... 2 more"
-  ],
+  "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -675,15 +640,7 @@ Example, from a live run:
     "symbol": "MODE_CLEAR_BLITS",
     "delta": 408
   },
-  "following": [
-    "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
-    "0029F6: 4E75      rts",
-    "0029F8: 0000 0796 ori.b   #$96, D0",
-    "0029FC: 0000 4854 ori.b   #$54, D0",
-    "002A00: 0000 4860 ori.b   #$60, D0",
-    "002A04: 0000 48C4 ori.b   #$c4, D0",
-    "... 2 more"
-  ],
+  "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -838,9 +795,7 @@ Example, from a live run:
 
 ```json
 {
-  "at_frames": [
-    14
-  ],
+  "at_frames": [14],
   "seconds": 10.0
 }
 ```
@@ -888,12 +843,7 @@ Example, from a live run:
     "symbol": "MODE_CLEAR_BLITS",
     "delta": 304
   },
-  "following": [
-    "00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-  ],
+  "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -905,12 +855,7 @@ Example, from a live run:
   "first": 14,
   "last": 14,
   "distinct": 1,
-  "crop": [
-    0,
-    0,
-    336,
-    252
-  ],
+  "crop": [0, 0, 336, 252],
   "lost": [],
   "frames_asked": 1,
   "kept_after_close": false,

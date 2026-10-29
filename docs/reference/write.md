@@ -234,19 +234,11 @@ Example, from a live run:
     "symbol": "RESET",
     "delta": 0
   },
-  "following": [
-    "0F2038: 33FC 0000 0020 351C      move.w  #$0, $20351c.l",
-    "0F2040: 4EB8 25DC                jsr     $25dc.w",
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"
-  ],
+  "following": ["0F2038: 33FC 0000 0020 351C      move.w  #$0, $20351c.l", "0F2040: 4EB8 25DC                jsr     $25dc.w", "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"],
   "errorlog": {
     "lines_total": 1,
     "truncated": false,
-    "lines": [
-      "Soft reset"
-    ],
+    "lines": ["Soft reset"],
     "mark": 66664
   }
 }

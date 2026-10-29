@@ -148,31 +148,14 @@ Example, from a live run:
   "symbols_by_cpu": {
     ":maincpu": 64
   },
-  "registers": [
-    "D0",
-    "D1",
-    "D2",
-    "D3",
-    "D4",
-    "D5",
-    "... 12 more"
-  ],
+  "registers": ["D0", "D1", "D2", "D3", "D4", "D5", "... 12 more"],
   "pc": "0x000f2034",
   "frame": 0,
   "frame_symbol": "frame",
   "view": "native",
-  "views": [
-    "Screen 0 Standard (4:3)",
-    "Cocktail"
-  ],
+  "views": ["Screen 0 Standard (4:3)", "Cocktail"],
   "background": true,
-  "flags": [
-    "-window",
-    "-nomaximize",
-    "-resolution",
-    "320x240",
-    "-nothrottle"
-  ],
+  "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"],
   "boot_lua_path": "$TMPDIR/mame-mcp-qwnd_9kr/boot.lua",
   "presence": false,
   "machine": {
@@ -473,10 +456,7 @@ Example, from a live run:
   "via": "stub",
   "machine_ran": false,
   "frame": 0,
-  "unchanged": [
-    ":maincpu",
-    ":subcpu"
-  ]
+  "unchanged": [":maincpu", ":subcpu"]
 }
 ```
 <!-- scry-reference:end focus -->

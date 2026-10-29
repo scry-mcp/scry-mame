@@ -107,53 +107,22 @@ Example, from a live run:
   "summary": "image_compare region: changed_pixels, 9 transitions over 12 frames",
   "status": "ok",
   "measure": "changed_pixels",
-  "crop": [
-    0,
-    0,
-    336,
-    252
-  ],
+  "crop": [0, 0, 336, 252],
   "frames": 12,
   "start": {
     "available": false,
     "why": "`changed_pixels` counts a change from the frame before, and the first frame has none"
   },
   "transitions": [
-    [
-      24,
-      14790
-    ],
-    [
-      25,
-      23888
-    ],
-    [
-      26,
-      30995
-    ],
-    [
-      27,
-      39139
-    ],
-    [
-      28,
-      31816
-    ],
-    [
-      29,
-      16125
-    ],
+    [24, 14790],
+    [25, 23888],
+    [26, 30995],
+    [27, 39139],
+    [28, 31816],
+    [29, 16125],
     "... 3 more"
   ],
-  "gaps": [
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    "... 2 more"
-  ],
+  "gaps": [1, 1, 1, 1, 1, 1, "... 2 more"],
   "transitions_total": 9,
   "path": "$TMPDIR/mame-mcp-jg2kthn4/series/series-1/track-1.json",
   "manifest": "$TMPDIR/mame-mcp-jg2kthn4/series/series-1/manifest.json"
@@ -237,10 +206,7 @@ Example, from a live run:
   "sample_rate_hz": 48000,
   "channels": 1,
   "bits": 16,
-  "window": [
-    0.0,
-    0.6
-  ],
+  "window": [0.0, 0.6],
   "measures": [
     {
       "channel": 0,

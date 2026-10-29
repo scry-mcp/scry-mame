@@ -181,12 +181,7 @@ Example, from a live run:
     "symbol": "RESET",
     "delta": 4
   },
-  "following": [
-    "0F2040: 4EB8 25DC                jsr     $25dc.w",
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"
-  ],
+  "following": ["0F2040: 4EB8 25DC                jsr     $25dc.w", "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -342,15 +337,9 @@ Example, from a live run:
   "status": "ok",
   "addr": "0x00000400",
   "length": 8,
-  "lines": [
-    "000400: 46FC 2700 move    #$2700, SR",
-    "000404: 48E7 F000 movem.l D0-D3, -(A7)"
-  ],
+  "lines": ["000400: 46FC 2700 move    #$2700, SR", "000404: 48E7 F000 movem.l D0-D3, -(A7)"],
   "cpu": ":maincpu",
-  "flow": [
-    "sequential",
-    "sequential"
-  ],
+  "flow": ["sequential", "sequential"],
   "flow_source": "mnemonic_table:m68000"
 }
 ```
@@ -422,15 +411,7 @@ Example, from a live run:
     "length": 1024,
     "source": "ref+length"
   },
-  "hits": [
-    "0x000000e0",
-    "0x000000e1",
-    "0x000000e4",
-    "0x000000e5",
-    "0x000000e8",
-    "0x000000e9",
-    "... 394 more"
-  ],
+  "hits": ["0x000000e0", "0x000000e1", "0x000000e4", "0x000000e5", "0x000000e8", "0x000000e9", "... 394 more"],
   "hits_total": 510,
   "truncated": true,
   "cpu": ":maincpu"
@@ -483,10 +464,7 @@ Example, from a live run:
   "summary": "history: 2 instructions of 4 asked",
   "status": "ok",
   "asked": 4,
-  "lines": [
-    "0F2034: move    #$2700, SR",
-    "0F2038: move.w  #$0, $20351c.l"
-  ],
+  "lines": ["0F2034: move    #$2700, SR", "0F2038: move.w  #$0, $20351c.l"],
   "cpu": ":maincpu"
 }
 ```
@@ -614,10 +592,7 @@ Example, from a live run:
   "screen": "probe",
   "layer": "session",
   "kind": "pixel",
-  "size": [
-    336,
-    252
-  ],
+  "size": [336, 252],
   "controls": [],
   "evaluated_by": "one step",
   "lines_ahead": 0,
@@ -657,13 +632,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 12
   },
-  "following": [
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l"
-  ],
+  "following": ["0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
@@ -761,12 +730,7 @@ Example, from a live run:
   "method": "add",
   "screen": "probe",
   "match": [
-    [
-      0,
-      0,
-      8,
-      8
-    ]
+    [0, 0, 8, 8]
   ]
 }
 ```
@@ -777,19 +741,11 @@ Example, from a live run:
   "status": "ok",
   "screen": "probe",
   "kind": "pixel",
-  "size": [
-    336,
-    252
-  ],
+  "size": [336, 252],
   "cells": "rgb",
   "match": [
     {
-      "crop": [
-        0,
-        0,
-        8,
-        8
-      ],
+      "crop": [0, 0, 8, 8],
       "signature": "d275923c4035816a"
     }
   ],
@@ -834,13 +790,7 @@ Example, from a live run:
     "symbol": "BOOT_INIT",
     "delta": 4
   },
-  "following": [
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
-  ],
+  "following": ["0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,

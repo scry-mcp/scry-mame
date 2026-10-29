@@ -162,24 +162,11 @@ Example, from a live run:
     "symbol": "PALETTE_RANGE_TABLE",
     "delta": 49610
   },
-  "following": [
-    "0E2CE2: 3001           move.w  D1, D0",
-    "0E2CE4: 9079 0020 10C6 sub.w   $2010c6.l, D0",
-    "0E2CEA: C1C3           muls.w  D3, D0",
-    "0E2CEC: 48C0           ext.l   D0",
-    "0E2CEE: 81C1           divs.w  D1, D0",
-    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
-    "... 3 more"
-  ],
+  "following": ["0E2CE2: 3001           move.w  D1, D0", "0E2CE4: 9079 0020 10C6 sub.w   $2010c6.l, D0", "0E2CEA: C1C3           muls.w  D3, D0", "0E2CEC: 48C0           ext.l   D0", "0E2CEE: 81C1           divs.w  D1, D0", "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)", "... 3 more"],
   "errorlog": {
     "lines_total": 4,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#21 set name=\"Coin 1\" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=17",
-      "",
-      "[luaengine] MAME_MCP_INPUT#21 release frame=18 port_held=0000dbff",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#21 set name=\"Coin 1\" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=17", "", "[luaengine] MAME_MCP_INPUT#21 release frame=18 port_held=0000dbff", ""],
     "mark": 66062
   }
 }
@@ -324,26 +311,11 @@ Example, from a live run:
     "symbol": "PALETTE_RANGE_TABLE",
     "delta": 49630
   },
-  "following": [
-    "0E2CF4: 5242           addq.w  #1, D2",
-    "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
-    "0E2CFA: 6FD4           ble     $e2cd0",
-    "0E2CFC: 5379 0020 10C6 subq.w  #1, $2010c6.l",
-    "0E2D02: 2079 0020 7990 movea.l $207990.l, A0",
-    "0E2D08: 30BC 0001      move.w  #$1, (A0)",
-    "... 1 more"
-  ],
+  "following": ["0E2CF4: 5242           addq.w  #1, D2", "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2", "0E2CFA: 6FD4           ble     $e2cd0", "0E2CFC: 5379 0020 10C6 subq.w  #1, $2010c6.l", "0E2D02: 2079 0020 7990 movea.l $207990.l, A0", "0E2D08: 30BC 0001      move.w  #$1, (A0)", "... 1 more"],
   "errorlog": {
     "lines_total": 6,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_RECORD#22 armed frame=19 vblank=true",
-      "",
-      "[luaengine] MAME_MCP_RECORD#22 begin frame=20 recording=true",
-      "",
-      "[luaengine] MAME_MCP_RECORD#22 end frame=21",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_RECORD#22 armed frame=19 vblank=true", "", "[luaengine] MAME_MCP_RECORD#22 begin frame=20 recording=true", "", "[luaengine] MAME_MCP_RECORD#22 end frame=21", ""],
     "mark": 66249
   },
   "view": "native"
@@ -499,26 +471,11 @@ Example, from a live run:
     "symbol": "PALETTE_RANGE_TABLE",
     "delta": 49624
   },
-  "following": [
-    "0E2CEC: 48C0           ext.l   D0",
-    "0E2CEE: 81C1           divs.w  D1, D0",
-    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
-    "0E2CF4: 5242           addq.w  #1, D2",
-    "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
-    "0E2CFA: 6FD4           ble     $e2cd0",
-    "... 3 more"
-  ],
+  "following": ["0E2CEC: 48C0           ext.l   D0", "0E2CEE: 81C1           divs.w  D1, D0", "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)", "0E2CF4: 5242           addq.w  #1, D2", "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2", "0E2CFA: 6FD4           ble     $e2cd0", "... 3 more"],
   "errorlog": {
     "lines_total": 6,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_AUDIO#23 armed frame=24 vblank=true",
-      "",
-      "[luaengine] MAME_MCP_AUDIO#23 begin frame=25 ok=true recording=true time=0.51916800000000007 period=0.019968000000000003",
-      "",
-      "[luaengine] MAME_MCP_AUDIO#23 end frame=27 time=0.55910400000000005",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_AUDIO#23 armed frame=24 vblank=true", "", "[luaengine] MAME_MCP_AUDIO#23 begin frame=25 ok=true recording=true time=0.51916800000000007 period=0.019968000000000003", "", "[luaengine] MAME_MCP_AUDIO#23 end frame=27 time=0.55910400000000005", ""],
     "mark": 66415
   }
 }
@@ -639,12 +596,7 @@ Example, from a live run:
     "symbol": "RESET",
     "delta": 12
   },
-  "following": [
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l",
-    "0F205C: 23FC 0000 4942 0020 2EA8 move.l  #$4942, $202ea8.l"
-  ],
+  "following": ["0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l", "0F205C: 23FC 0000 4942 0020 2EA8 move.l  #$4942, $202ea8.l"],
   "errorlog": {
     "lines_total": 0,
     "truncated": false,
