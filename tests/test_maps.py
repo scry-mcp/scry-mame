@@ -71,7 +71,8 @@ def test_a_run_to_a_verified_screen_reports_the_stop_its_capture_left(
     added = mstate.STATE.maps.session["board"]
     mstate.STATE.maps.session["board"] = screen_map.Screen(
         added.name, added.kind, added.size, added.match, added.controls, added.cells, "Board")
-    arrival = {"status": "ok", "verdict": "TARGET", "stop_seq": -1, "pc": "0x0000dead"}
+    arrival = {"status": "ok", "verdict": "TARGET", "stop_seq": -1, "pc": "0x0000dead",
+               "cause": "run_to's target Board"}
     monkeypatch.setattr(advance, "run_to", lambda *a, **k: dict(arrival))
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     got = mmaps.run_to_screen(*running.stopped("a run to a screen"), "board", "Tick", 30.0)
@@ -203,7 +204,7 @@ def _one_frame(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
         ran.append({"frames": frames})
         return {"status": "ok", "verdict": "ELAPSED", "stop_seq": 100 + len(ran),
                 "pc": "0x0000beef", "frame_before": len(ran), "frame_after": len(ran) + 1,
-                "polls": 1}
+                "polls": 1, "cause": "the frame a run_for ran to"}
     monkeypatch.setattr(advance, "run_for", frame)
     return ran
 

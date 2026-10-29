@@ -68,10 +68,7 @@ Give this to an MCP client with this server connected:
   "reference_addr": "0x30000",
   "reference_base": "0x0",
   "symbols": "./tmp/demos/lineup/lineup.map",
-  "bases": {
-    "DATA": "0x400",
-    "LUP_JUKEBOX": "rom"
-  },
+  "bases": {"DATA": "0x400", "LUP_JUKEBOX": "rom"},
   "inipath": "./tmp/demos/lineup/lineup-ini",
   "state_dir": "./tmp/demos/lineup/lineup-states",
   "shared": true,
@@ -92,10 +89,7 @@ Give this to an MCP client with this server connected:
   "stub_port": "<volatile>",
   "scratch_dir": "<volatile>",
   "state_dir": "./tmp/demos/lineup/lineup-states",
-  "cfg": {
-    "available": false,
-    "why": "no cfg was given, so MAME runs on its defaults"
-  },
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture with a live golden"
@@ -105,89 +99,27 @@ Give this to an MCP client with this server connected:
   "rom_check": "OK",
   "symbols_total": 306,
   "symbols_format": "tsv",
-  "symbols_by_class": {
-    "DATA": 44,
-    "CODE": 201,
-    "LUP_JUKEBOX": 61
-  },
-  "symbols_by_cpu": {
-    ":maincpu": 306
-  },
-  "registers": [
-    "EAX",
-    "ECX",
-    "EDX",
-    "EBX",
-    "ESP",
-    "EBP",
-    "ESI",
-    "EDI",
-    "EIP",
-    "EFLAGS",
-    "CS",
-    "SS",
-    "DS",
-    "ES",
-    "FS",
-    "GS",
-    "ST0",
-    "ST1",
-    "ST2",
-    "ST3",
-    "ST4",
-    "ST5",
-    "ST6",
-    "ST7",
-    "FCTRL",
-    "FSTAT",
-    "FTAG",
-    "FISEG",
-    "FIOFF",
-    "FOSEG",
-    "FOOFF",
-    "FOP"
-  ],
+  "symbols_by_class": {"DATA": 44, "CODE": 201, "LUP_JUKEBOX": 61},
+  "symbols_by_cpu": {":maincpu": 306},
+  "registers": ["EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI", "EIP", "EFLAGS", "CS", "SS", "DS", "ES", "FS", "GS", "ST0", "ST1", "ST2", "ST3", "ST4", "ST5", "ST6", "ST7", "FCTRL", "FSTAT", "FTAG", "FISEG", "FIOFF", "FOSEG", "FOOFF", "FOP"],
   "pc": "0x000ffff0",
   "frame": 0,
   "frame_symbol": "frame",
   "view": "native",
-  "views": [
-    "Screen 0 Standard (4:3)",
-    "Screen 0 Pixel Aspect (8:5)",
-    "Cocktail"
-  ],
+  "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
   "background": false,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
-  "machine": {
-    "cpus": 1,
-    "spaces": 2,
-    "address_map": 7,
-    "regions": 2,
-    "shares": 0,
-    "screens": 1,
-    "rom_files": 3
-  },
+  "machine": {"cpus": 1, "spaces": 2, "address_map": 7, "regions": 2, "shares": 0, "screens": 1, "rom_files": 3},
   "declarations": {
     "persistent": true,
     "path": "./tmp/demos/lineup/lineup-states/declarations.json",
     "key": "lineup ./tmp/demos/lineup/lineup.map",
     "held": 0,
     "fingerprint": "0ced5df101772f64",
-    "rearm": {
-      "rearmed": [],
-      "stale": [],
-      "unresolved": [],
-      "unarmable": [],
-      "evaluated": []
-    },
-    "comments": {
-      "rearmed": [],
-      "stale": [],
-      "unresolved": [],
-      "unarmable": []
-    }
+    "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
+    "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
   "session": {
@@ -195,11 +127,7 @@ Give this to an MCP client with this server connected:
     "running": false,
     "altered": false,
     "altering_writes": 0,
-    "console": {
-      "thread_errors": 0,
-      "reruns": 0,
-      "lost": 0
-    }
+    "console": {"thread_errors": 0, "reruns": 0, "lost": 0}
   }
 }
 ```
@@ -230,10 +158,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -260,11 +185,7 @@ Give this to an MCP client with this server connected:
   "verdict": "TARGET",
   "control_hits": 250,
   "controls": [
-    {
-      "ref": "Check_Money25",
-      "cpu": ":maincpu",
-      "hits_in_run": 250
-    }
+    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 250}
   ],
   "cause": "target Draw_High_Scores_Screen",
   "stop_seq": 2,
@@ -305,35 +226,18 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "317E7: 1E       push    ds0",
-    "317E8: E8 21 FE call    3160Ch",
-    "317EB: B8 01 00 mov     aw,1h",
-    "317EE: E8 29 73 call    38B1Ah",
-    "317F1: E8 50 36 call    34E44h",
-    "317F4: E8 8F FF call    31786h",
-    "317F7: 1F       pop     ds0",
-    "317F8: C3       ret     ",
-    "317F9: 1E       push    ds0",
-    "317FA: E8 0F FE call    3160Ch",
-    "317FD: B8 00 00 mov     aw,0h",
-    "31800: E8 17 73 call    38B1Ah",
-    "31803: E8 80 FF call    31786h",
-    "31806: 1F       pop     ds0"
-  ],
+  "instruction": {
+    "address": "317E7",
+    "bytes": "1E",
+    "text": "push    ds0",
+    "symbol": "DRAW_HIGH_SCORES_SCREEN",
+    "delta": 0
+  },
+  "following": ["317E8: E8 21 FE call    3160Ch", "317EB: B8 01 00 mov     aw,1h", "317EE: E8 29 73 call    38B1Ah", "317F1: E8 50 36 call    34E44h", "317F4: E8 8F FF call    31786h", "317F7: 1F       pop     ds0", "317F8: C3       ret     ", "317F9: 1E       push    ds0", "317FA: E8 0F FE call    3160Ch", "317FD: B8 00 00 mov     aw,0h", "31800: E8 17 73 call    38B1Ah", "31803: E8 80 FF call    31786h", "31806: 1F       pop     ds0"],
   "errorlog": {
     "lines_total": 235,
     "truncated": true,
-    "lines": [
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"
-    ],
+    "lines": ["[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 14,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=235)` reads them all"
   },
@@ -341,10 +245,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -413,33 +314,12 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "315C4: 59                pop     cw",
-    "315C5: 81 C7 A8 00       add     iy,0A8h",
-    "315C9: E2 F2             dbnz    315BDh",
-    "315CB: 5E                pop     ix",
-    "315CC: 1F                pop     ds0",
-    "315CD: C3                ret     ",
-    "315CE: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h",
-    "315D4: 75 06             bne     315DCh",
-    "315D6: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h",
-    "315DC: 8B 1E BA 8D       mov     bw,[8DBAh]",
-    "315E0: D1 E3             shl     bw,1",
-    "315E2: D1 E3             shl     bw,1"
-  ],
+  "instruction": {"address": "315C4", "bytes": "59", "text": "pop     cw", "symbol": "DEL_INSERT_COINS", "delta": 23},
+  "following": ["315C5: 81 C7 A8 00       add     iy,0A8h", "315C9: E2 F2             dbnz    315BDh", "315CB: 5E                pop     ix", "315CC: 1F                pop     ds0", "315CD: C3                ret     ", "315CE: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315D4: 75 06             bne     315DCh", "315D6: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315DC: 8B 1E BA 8D       mov     bw,[8DBAh]", "315E0: D1 E3             shl     bw,1", "315E2: D1 E3             shl     bw,1"],
   "errorlog": {
     "lines_total": 67,
     "truncated": true,
-    "lines": [
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"
-    ],
+    "lines": ["[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 18344,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=18344, limit=67)` reads them all"
   },
@@ -447,10 +327,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -474,37 +351,10 @@ Give this to an MCP client with this server connected:
   "screen": "hiscores",
   "layer": "file",
   "kind": "pixel",
-  "size": [
-    320,
-    200
-  ],
+  "size": [320, 200],
   "controls": [
-    {
-      "name": "table",
-      "rect": [
-        64,
-        30,
-        192,
-        145
-      ],
-      "centre": [
-        160,
-        102
-      ]
-    },
-    {
-      "name": "credits",
-      "rect": [
-        230,
-        186,
-        76,
-        12
-      ],
-      "centre": [
-        268,
-        192
-      ]
-    }
+    {"name": "table", "rect": [64, 30, 192, 145], "centre": [160, 102]},
+    {"name": "credits", "rect": [230, 186, 76, 12], "centre": [268, 192]}
   ],
   "evaluated_by": "one step",
   "lines_ahead": 0,
@@ -551,34 +401,20 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "315C5: 81 C7 A8 00       add     iy,0A8h",
-    "315C9: E2 F2             dbnz    315BDh",
-    "315CB: 5E                pop     ix",
-    "315CC: 1F                pop     ds0",
-    "315CD: C3                ret     ",
-    "315CE: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h",
-    "315D4: 75 06             bne     315DCh",
-    "315D6: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h",
-    "315DC: 8B 1E BA 8D       mov     bw,[8DBAh]",
-    "315E0: D1 E3             shl     bw,1",
-    "315E2: D1 E3             shl     bw,1",
-    "315E4: 81 C3 4C 3C       add     bw,3C4Ch"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 23570
+  "instruction": {
+    "address": "315C5",
+    "bytes": "81C7A800",
+    "text": "add     iy,0A8h",
+    "symbol": "DEL_INSERT_COINS",
+    "delta": 24
   },
+  "following": ["315C9: E2 F2             dbnz    315BDh", "315CB: 5E                pop     ix", "315CC: 1F                pop     ds0", "315CD: C3                ret     ", "315CE: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315D4: 75 06             bne     315DCh", "315D6: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315DC: 8B 1E BA 8D       mov     bw,[8DBAh]", "315E0: D1 E3             shl     bw,1", "315E2: D1 E3             shl     bw,1", "315E4: 81 C3 4C 3C       add     bw,3C4Ch"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 23570},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -609,10 +445,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -639,6 +472,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 328,
   "frame_after": 333,
+  "emulated_before_s": 6.574082,
+  "emulated_after_s": 6.669314,
   "cycles": 761861,
   "polls": 5,
   "lines_ahead": 0,
@@ -698,52 +533,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 8,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000001 port_before=000000ff frame=328",
-      "",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[luaengine] MAME_MCP_INPUT#2 release frame=332 port_held=000000fe",
-      "",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000001 port_before=000000ff frame=328", "", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#2 release frame=332 port_held=000000fe", "", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 23570
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -812,32 +614,12 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "3143E: C3                ret     ",
-    "3143F: B8 40 00          mov     aw,40h",
-    "31442: 8E D8             mov     ds0,aw",
-    "31444: B8 00 10          mov     aw,1000h",
-    "31447: 8E C0             mov     ds1,aw",
-    "31449: 83 3E 4E 8D 00    cmp     word ptr [8D4Eh],0h",
-    "3144E: 74 09             be      31459h",
-    "31450: F7 06 A0 82 01 00 test    word ptr [82A0h],1h",
-    "31456: 74 10             be      31468h",
-    "31458: C3                ret     ",
-    "31459: F7 06 A0 82 01 00 test    word ptr [82A0h],1h"
-  ],
+  "instruction": {"address": "3143E", "bytes": "C3", "text": "ret", "symbol": "CHECK_MONEY25", "delta": 74},
+  "following": ["3143F: B8 40 00          mov     aw,40h", "31442: 8E D8             mov     ds0,aw", "31444: B8 00 10          mov     aw,1000h", "31447: 8E C0             mov     ds1,aw", "31449: 83 3E 4E 8D 00    cmp     word ptr [8D4Eh],0h", "3144E: 74 09             be      31459h", "31450: F7 06 A0 82 01 00 test    word ptr [82A0h],1h", "31456: 74 10             be      31468h", "31458: C3                ret     ", "31459: F7 06 A0 82 01 00 test    word ptr [82A0h],1h"],
   "errorlog": {
     "lines_total": 51,
     "truncated": true,
-    "lines": [
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"
-    ],
+    "lines": ["[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 24069,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=24069, limit=51)` reads them all"
   },
@@ -845,10 +627,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -872,37 +651,10 @@ Give this to an MCP client with this server connected:
   "screen": "insert",
   "layer": "file",
   "kind": "pixel",
-  "size": [
-    320,
-    200
-  ],
+  "size": [320, 200],
   "controls": [
-    {
-      "name": "banner",
-      "rect": [
-        0,
-        6,
-        320,
-        22
-      ],
-      "centre": [
-        160,
-        17
-      ]
-    },
-    {
-      "name": "credits",
-      "rect": [
-        230,
-        186,
-        76,
-        12
-      ],
-      "centre": [
-        268,
-        192
-      ]
-    }
+    {"name": "banner", "rect": [0, 6, 320, 22], "centre": [160, 17]},
+    {"name": "credits", "rect": [230, 186, 76, 12], "centre": [268, 192]}
   ],
   "evaluated_by": "one step",
   "lines_ahead": 0,
@@ -949,33 +701,20 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300E9: E8 53 13       call    3143Fh",
-    "300EC: 83 3E 46 8D 01 cmp     word ptr [8D46h],1h",
-    "300F1: 75 02          bne     300F5h",
-    "300F3: EB 6E          br      30163h",
-    "300F5: E8 3D 03       call    30435h",
-    "300F8: BE 00 80       mov     ix,8000h",
-    "300FB: F7 04 01 00    test    word ptr [ix],1h",
-    "300FF: 74 0F          be      30110h",
-    "30101: F7 04 3C 00    test    word ptr [ix],3Ch",
-    "30105: 75 09          bne     30110h",
-    "30107: E8 3D 0C       call    30D47h"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28047
+  "instruction": {
+    "address": "300E9",
+    "bytes": "E85313",
+    "text": "call    3143Fh",
+    "symbol": "NEW_IRQ_VIDEO",
+    "delta": 60
   },
+  "following": ["300EC: 83 3E 46 8D 01 cmp     word ptr [8D46h],1h", "300F1: 75 02          bne     300F5h", "300F3: EB 6E          br      30163h", "300F5: E8 3D 03       call    30435h", "300F8: BE 00 80       mov     ix,8000h", "300FB: F7 04 01 00    test    word ptr [ix],1h", "300FF: 74 0F          be      30110h", "30101: F7 04 3C 00    test    word ptr [ix],3Ch", "30105: 75 09          bne     30110h", "30107: E8 3D 0C       call    30D47h"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28047},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1006,10 +745,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1036,6 +772,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 383,
   "frame_after": 388,
+  "emulated_before_s": 7.669318,
+  "emulated_after_s": 7.767553,
   "cycles": 785886,
   "polls": 5,
   "lines_ahead": 0,
@@ -1095,49 +833,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 5,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#4 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000002 port_before=000000ff frame=383",
-      "",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[luaengine] MAME_MCP_INPUT#4 release frame=387 port_held=000000fd",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#4 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000002 port_before=000000ff frame=383", "", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#4 release frame=387 port_held=000000fd", ""],
     "mark": 28047
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1164,11 +872,7 @@ Give this to an MCP client with this server connected:
   "verdict": "TARGET",
   "control_hits": 180,
   "controls": [
-    {
-      "ref": "Check_Money25",
-      "cpu": ":maincpu",
-      "hits_in_run": 180
-    }
+    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 180}
   ],
   "cause": "target Level_Write",
   "stop_seq": 9,
@@ -1209,37 +913,25 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "343B8: BB 88 34    mov     bw,3488h",
-    "343BB: 8B 7C 34    mov     iy,[ix+34h]",
-    "343BE: E8 8E 07    call    34B4Fh",
-    "343C1: 8B 44 2E    mov     aw,[ix+2Eh]",
-    "343C4: 3D 04 00    cmp     aw,4h",
-    "343C7: 72 05       bc      343CEh",
-    "343C9: 2D 03 00    sub     aw,3h",
-    "343CC: EB F6       br      343C4h",
-    "343CE: B9 01 00    mov     cw,1h",
-    "343D1: 8B 7C 34    mov     iy,[ix+34h]",
-    "343D4: 81 C7 24 1E add     iy,1E24h"
-  ],
+  "instruction": {
+    "address": "343B8",
+    "bytes": "BB8834",
+    "text": "mov     bw,3488h",
+    "symbol": "LEVEL_WRITE",
+    "delta": 0
+  },
+  "following": ["343BB: 8B 7C 34    mov     iy,[ix+34h]", "343BE: E8 8E 07    call    34B4Fh", "343C1: 8B 44 2E    mov     aw,[ix+2Eh]", "343C4: 3D 04 00    cmp     aw,4h", "343C7: 72 05       bc      343CEh", "343C9: 2D 03 00    sub     aw,3h", "343CC: EB F6       br      343C4h", "343CE: B9 01 00    mov     cw,1h", "343D1: 8B 7C 34    mov     iy,[ix+34h]", "343D4: 81 C7 24 1E add     iy,1E24h"],
   "errorlog": {
     "lines_total": 3,
     "truncated": false,
-    "lines": [
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF",
-      "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"
-    ],
+    "lines": ["[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 28320
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1308,41 +1000,20 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "34B9E: B0 83       mov     al,83h",
-    "34BA0: AA          stmb    ",
-    "34BA1: E2 FB       dbnz    34B9Eh",
-    "34BA3: 5F          pop     iy",
-    "34BA4: 81 C7 40 01 add     iy,140h",
-    "34BA8: 4A          dec     dw",
-    "34BA9: 75 F0       bne     34B9Bh",
-    "34BAB: 5E          pop     ix",
-    "34BAC: 1F          pop     ds0",
-    "34BAD: 07          pop     ds1",
-    "34BAE: C3          ret     ",
-    "34BAF: 1E          push    ds0",
-    "34BB0: 56          push    ix",
-    "34BB1: 50          push    aw",
-    "34BB2: BA A2 81    mov     dw,81A2h",
-    "34BB5: 8E DA       mov     ds0,dw",
-    "34BB7: 8B D9       mov     bw,cw",
-    "34BB9: D1 E3       shl     bw,1",
-    "34BBB: 81 C3 60 49 add     bw,4960h"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28554
+  "instruction": {
+    "address": "34B9E",
+    "bytes": "B083",
+    "text": "mov     al,83h",
+    "symbol": "DEL_BRUSH_GAME",
+    "delta": 20
   },
+  "following": ["34BA0: AA          stmb    ", "34BA1: E2 FB       dbnz    34B9Eh", "34BA3: 5F          pop     iy", "34BA4: 81 C7 40 01 add     iy,140h", "34BA8: 4A          dec     dw", "34BA9: 75 F0       bne     34B9Bh", "34BAB: 5E          pop     ix", "34BAC: 1F          pop     ds0", "34BAD: 07          pop     ds1", "34BAE: C3          ret     ", "34BAF: 1E          push    ds0", "34BB0: 56          push    ix", "34BB1: 50          push    aw", "34BB2: BA A2 81    mov     dw,81A2h", "34BB5: 8E DA       mov     ds0,dw", "34BB7: 8B D9       mov     bw,cw", "34BB9: D1 E3       shl     bw,1", "34BBB: 81 C3 60 49 add     bw,4960h"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1366,50 +1037,11 @@ Give this to an MCP client with this server connected:
   "screen": "level",
   "layer": "file",
   "kind": "pixel",
-  "size": [
-    320,
-    200
-  ],
+  "size": [320, 200],
   "controls": [
-    {
-      "name": "p1_well",
-      "rect": [
-        15,
-        0,
-        98,
-        194
-      ],
-      "centre": [
-        64,
-        97
-      ]
-    },
-    {
-      "name": "p2_well",
-      "rect": [
-        207,
-        0,
-        98,
-        194
-      ],
-      "centre": [
-        256,
-        97
-      ]
-    },
-    {
-      "name": "credits",
-      "rect": [
-        152,
-        190,
-        16,
-        10
-      ],
-      "centre": [
-        160,
-        195
-      ]
-    }
+    {"name": "p1_well", "rect": [15, 0, 98, 194], "centre": [64, 97]},
+    {"name": "p2_well", "rect": [207, 0, 98, 194], "centre": [256, 97]},
+    {"name": "credits", "rect": [152, 190, 16, 10], "centre": [160, 195]}
   ],
   "evaluated_by": "one step",
   "lines_ahead": 0,
@@ -1456,41 +1088,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "34BA0: AA          stmb    ",
-    "34BA1: E2 FB       dbnz    34B9Eh",
-    "34BA3: 5F          pop     iy",
-    "34BA4: 81 C7 40 01 add     iy,140h",
-    "34BA8: 4A          dec     dw",
-    "34BA9: 75 F0       bne     34B9Bh",
-    "34BAB: 5E          pop     ix",
-    "34BAC: 1F          pop     ds0",
-    "34BAD: 07          pop     ds1",
-    "34BAE: C3          ret     ",
-    "34BAF: 1E          push    ds0",
-    "34BB0: 56          push    ix",
-    "34BB1: 50          push    aw",
-    "34BB2: BA A2 81    mov     dw,81A2h",
-    "34BB5: 8E DA       mov     ds0,dw",
-    "34BB7: 8B D9       mov     bw,cw",
-    "34BB9: D1 E3       shl     bw,1",
-    "34BBB: 81 C3 60 49 add     bw,4960h",
-    "34BBF: 33 D2       xor     dw,dw"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28554
-  },
+  "instruction": {"address": "34BA0", "bytes": "AA", "text": "stmb", "symbol": "DEL_BRUSH_GAME", "delta": 22},
+  "following": ["34BA1: E2 FB       dbnz    34B9Eh", "34BA3: 5F          pop     iy", "34BA4: 81 C7 40 01 add     iy,140h", "34BA8: 4A          dec     dw", "34BA9: 75 F0       bne     34B9Bh", "34BAB: 5E          pop     ix", "34BAC: 1F          pop     ds0", "34BAD: 07          pop     ds1", "34BAE: C3          ret     ", "34BAF: 1E          push    ds0", "34BB0: 56          push    ix", "34BB1: 50          push    aw", "34BB2: BA A2 81    mov     dw,81A2h", "34BB5: 8E DA       mov     ds0,dw", "34BB7: 8B D9       mov     bw,cw", "34BB9: D1 E3       shl     bw,1", "34BBB: 81 C3 60 49 add     bw,4960h", "34BBF: 33 D2       xor     dw,dw"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1521,10 +1126,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1555,10 +1157,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1627,45 +1226,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "3063A: A5          movbkw  ",
-    "3063B: A5          movbkw  ",
-    "3063C: A5          movbkw  ",
-    "3063D: 81 C7 30 01 add     iy,130h",
-    "30641: A5          movbkw  ",
-    "30642: A5          movbkw  ",
-    "30643: A5          movbkw  ",
-    "30644: A5          movbkw  ",
-    "30645: A5          movbkw  ",
-    "30646: A5          movbkw  ",
-    "30647: A5          movbkw  ",
-    "30648: A5          movbkw  ",
-    "30649: 81 C7 30 01 add     iy,130h",
-    "3064D: A5          movbkw  ",
-    "3064E: A5          movbkw  ",
-    "3064F: A5          movbkw  ",
-    "30650: A5          movbkw  ",
-    "30651: A5          movbkw  ",
-    "30652: A5          movbkw  ",
-    "30653: A5          movbkw  ",
-    "30654: A5          movbkw  ",
-    "30655: 81 C7 30 01 add     iy,130h",
-    "30659: A5          movbkw  "
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28554
-  },
+  "instruction": {"address": "3063A", "bytes": "A5", "text": "movbkw", "symbol": "DRAW_BLOCK", "delta": 127},
+  "following": ["3063B: A5          movbkw  ", "3063C: A5          movbkw  ", "3063D: 81 C7 30 01 add     iy,130h", "30641: A5          movbkw  ", "30642: A5          movbkw  ", "30643: A5          movbkw  ", "30644: A5          movbkw  ", "30645: A5          movbkw  ", "30646: A5          movbkw  ", "30647: A5          movbkw  ", "30648: A5          movbkw  ", "30649: 81 C7 30 01 add     iy,130h", "3064D: A5          movbkw  ", "3064E: A5          movbkw  ", "3064F: A5          movbkw  ", "30650: A5          movbkw  ", "30651: A5          movbkw  ", "30652: A5          movbkw  ", "30653: A5          movbkw  ", "30654: A5          movbkw  ", "30655: 81 C7 30 01 add     iy,130h", "30659: A5          movbkw  "],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1689,50 +1257,11 @@ Give this to an MCP client with this server connected:
   "screen": "play",
   "layer": "file",
   "kind": "pixel",
-  "size": [
-    320,
-    200
-  ],
+  "size": [320, 200],
   "controls": [
-    {
-      "name": "p1_well",
-      "rect": [
-        15,
-        0,
-        98,
-        194
-      ],
-      "centre": [
-        64,
-        97
-      ]
-    },
-    {
-      "name": "p2_well",
-      "rect": [
-        207,
-        0,
-        98,
-        194
-      ],
-      "centre": [
-        256,
-        97
-      ]
-    },
-    {
-      "name": "credits",
-      "rect": [
-        152,
-        190,
-        16,
-        10
-      ],
-      "centre": [
-        160,
-        195
-      ]
-    }
+    {"name": "p1_well", "rect": [15, 0, 98, 194], "centre": [64, 97]},
+    {"name": "p2_well", "rect": [207, 0, 98, 194], "centre": [256, 97]},
+    {"name": "credits", "rect": [152, 190, 16, 10], "centre": [160, 195]}
   ],
   "evaluated_by": "one step",
   "lines_ahead": 0,
@@ -1779,45 +1308,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "3063B: A5          movbkw  ",
-    "3063C: A5          movbkw  ",
-    "3063D: 81 C7 30 01 add     iy,130h",
-    "30641: A5          movbkw  ",
-    "30642: A5          movbkw  ",
-    "30643: A5          movbkw  ",
-    "30644: A5          movbkw  ",
-    "30645: A5          movbkw  ",
-    "30646: A5          movbkw  ",
-    "30647: A5          movbkw  ",
-    "30648: A5          movbkw  ",
-    "30649: 81 C7 30 01 add     iy,130h",
-    "3064D: A5          movbkw  ",
-    "3064E: A5          movbkw  ",
-    "3064F: A5          movbkw  ",
-    "30650: A5          movbkw  ",
-    "30651: A5          movbkw  ",
-    "30652: A5          movbkw  ",
-    "30653: A5          movbkw  ",
-    "30654: A5          movbkw  ",
-    "30655: 81 C7 30 01 add     iy,130h",
-    "30659: A5          movbkw  ",
-    "3065A: A5          movbkw  "
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28554
-  },
+  "instruction": {"address": "3063B", "bytes": "A5", "text": "movbkw", "symbol": "DRAW_BLOCK", "delta": 128},
+  "following": ["3063C: A5          movbkw  ", "3063D: 81 C7 30 01 add     iy,130h", "30641: A5          movbkw  ", "30642: A5          movbkw  ", "30643: A5          movbkw  ", "30644: A5          movbkw  ", "30645: A5          movbkw  ", "30646: A5          movbkw  ", "30647: A5          movbkw  ", "30648: A5          movbkw  ", "30649: 81 C7 30 01 add     iy,130h", "3064D: A5          movbkw  ", "3064E: A5          movbkw  ", "3064F: A5          movbkw  ", "30650: A5          movbkw  ", "30651: A5          movbkw  ", "30652: A5          movbkw  ", "30653: A5          movbkw  ", "30654: A5          movbkw  ", "30655: 81 C7 30 01 add     iy,130h", "30659: A5          movbkw  ", "3065A: A5          movbkw  "],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1848,10 +1346,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -1878,6 +1373,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 727,
   "frame_after": 732,
+  "emulated_before_s": 14.542639,
+  "emulated_after_s": 14.636546,
   "cycles": 751256,
   "polls": 5,
   "lines_ahead": 0,
@@ -1937,48 +1434,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 4,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#7 set name=\"P1 Right\" player=0 mask=00000020 defvalue=00000020 port_before=000000ff frame=727",
-      "",
-      "[luaengine] MAME_MCP_INPUT#7 release frame=731 port_held=000000df",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#7 set name=\"P1 Right\" player=0 mask=00000020 defvalue=00000020 port_before=000000ff frame=727", "", "[luaengine] MAME_MCP_INPUT#7 release frame=731 port_held=000000df", ""],
     "mark": 28554
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2047,36 +1515,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "353A9: 5A          pop     dw",
-    "353AA: 5B          pop     bw",
-    "353AB: 8A 45 09    mov     al,[iy+9h]",
-    "353AE: 02 45 2A    add     al,[iy+2Ah]",
-    "353B1: 24 0F       and     al,0Fh",
-    "353B3: 88 07       mov     [bw],al",
-    "353B5: 8B 45 0A    mov     aw,[iy+0Ah]",
-    "353B8: 03 45 2B    add     aw,[iy+2Bh]",
-    "353BB: 8B EA       mov     bp,dw",
-    "353BD: 3E 89 46 00 mov     ds0:[bp+0h],aw",
-    "353C1: 83 C2 02    add     dw,2h",
-    "353C4: 83 C7 2E    add     iy,2Eh",
-    "353C7: 58          pop     aw",
-    "353C8: FE C0       inc     al"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28743
-  },
+  "instruction": {"address": "353A9", "bytes": "5A", "text": "pop     dw", "symbol": "PLAY_MUS", "delta": 517},
+  "following": ["353AA: 5B          pop     bw", "353AB: 8A 45 09    mov     al,[iy+9h]", "353AE: 02 45 2A    add     al,[iy+2Ah]", "353B1: 24 0F       and     al,0Fh", "353B3: 88 07       mov     [bw],al", "353B5: 8B 45 0A    mov     aw,[iy+0Ah]", "353B8: 03 45 2B    add     aw,[iy+2Bh]", "353BB: 8B EA       mov     bp,dw", "353BD: 3E 89 46 00 mov     ds0:[bp+0h],aw", "353C1: 83 C2 02    add     dw,2h", "353C4: 83 C7 2E    add     iy,2Eh", "353C7: 58          pop     aw", "353C8: FE C0       inc     al"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28743},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2107,10 +1553,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2137,6 +1580,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 742,
   "frame_after": 747,
+  "emulated_before_s": 14.836546,
+  "emulated_after_s": 14.936065,
   "cycles": 796154,
   "polls": 5,
   "lines_ahead": 0,
@@ -2196,48 +1641,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 4,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#8 set name=\"P1 Button 2\" player=0 mask=00000080 defvalue=00000080 port_before=000000ff frame=742",
-      "",
-      "[luaengine] MAME_MCP_INPUT#8 release frame=746 port_held=0000007f",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#8 set name=\"P1 Button 2\" player=0 mask=00000080 defvalue=00000080 port_before=000000ff frame=742", "", "[luaengine] MAME_MCP_INPUT#8 release frame=746 port_held=0000007f", ""],
     "mark": 28743
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2306,36 +1722,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "353A9: 5A          pop     dw",
-    "353AA: 5B          pop     bw",
-    "353AB: 8A 45 09    mov     al,[iy+9h]",
-    "353AE: 02 45 2A    add     al,[iy+2Ah]",
-    "353B1: 24 0F       and     al,0Fh",
-    "353B3: 88 07       mov     [bw],al",
-    "353B5: 8B 45 0A    mov     aw,[iy+0Ah]",
-    "353B8: 03 45 2B    add     aw,[iy+2Bh]",
-    "353BB: 8B EA       mov     bp,dw",
-    "353BD: 3E 89 46 00 mov     ds0:[bp+0h],aw",
-    "353C1: 83 C2 02    add     dw,2h",
-    "353C4: 83 C7 2E    add     iy,2Eh",
-    "353C7: 58          pop     aw",
-    "353C8: FE C0       inc     al"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 28935
-  },
+  "instruction": {"address": "353A9", "bytes": "5A", "text": "pop     dw", "symbol": "PLAY_MUS", "delta": 517},
+  "following": ["353AA: 5B          pop     bw", "353AB: 8A 45 09    mov     al,[iy+9h]", "353AE: 02 45 2A    add     al,[iy+2Ah]", "353B1: 24 0F       and     al,0Fh", "353B3: 88 07       mov     [bw],al", "353B5: 8B 45 0A    mov     aw,[iy+0Ah]", "353B8: 03 45 2B    add     aw,[iy+2Bh]", "353BB: 8B EA       mov     bp,dw", "353BD: 3E 89 46 00 mov     ds0:[bp+0h],aw", "353C1: 83 C2 02    add     dw,2h", "353C4: 83 C7 2E    add     iy,2Eh", "353C7: 58          pop     aw", "353C8: FE C0       inc     al"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28935},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2366,10 +1760,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2396,6 +1787,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 757,
   "frame_after": 762,
+  "emulated_before_s": 15.136066,
+  "emulated_after_s": 15.235586,
   "cycles": 796163,
   "polls": 5,
   "lines_ahead": 0,
@@ -2455,48 +1848,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 4,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_INPUT#9 set name=\"P1 Up\" player=0 mask=00000004 defvalue=00000004 port_before=000000ff frame=757",
-      "",
-      "[luaengine] MAME_MCP_INPUT#9 release frame=761 port_held=000000fb",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_INPUT#9 set name=\"P1 Up\" player=0 mask=00000004 defvalue=00000004 port_before=000000ff frame=757", "", "[luaengine] MAME_MCP_INPUT#9 release frame=761 port_held=000000fb", ""],
     "mark": 28935
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2565,47 +1929,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "30643: A5          movbkw  ",
-    "30644: A5          movbkw  ",
-    "30645: A5          movbkw  ",
-    "30646: A5          movbkw  ",
-    "30647: A5          movbkw  ",
-    "30648: A5          movbkw  ",
-    "30649: 81 C7 30 01 add     iy,130h",
-    "3064D: A5          movbkw  ",
-    "3064E: A5          movbkw  ",
-    "3064F: A5          movbkw  ",
-    "30650: A5          movbkw  ",
-    "30651: A5          movbkw  ",
-    "30652: A5          movbkw  ",
-    "30653: A5          movbkw  ",
-    "30654: A5          movbkw  ",
-    "30655: 81 C7 30 01 add     iy,130h",
-    "30659: A5          movbkw  ",
-    "3065A: A5          movbkw  ",
-    "3065B: A5          movbkw  ",
-    "3065C: A5          movbkw  ",
-    "3065D: A5          movbkw  ",
-    "3065E: A5          movbkw  ",
-    "3065F: A5          movbkw  ",
-    "30660: A5          movbkw  ",
-    "30661: 81 C7 30 01 add     iy,130h"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 29121
-  },
+  "instruction": {"address": "30643", "bytes": "A5", "text": "movbkw", "symbol": "DRAW_BLOCK", "delta": 136},
+  "following": ["30644: A5          movbkw  ", "30645: A5          movbkw  ", "30646: A5          movbkw  ", "30647: A5          movbkw  ", "30648: A5          movbkw  ", "30649: 81 C7 30 01 add     iy,130h", "3064D: A5          movbkw  ", "3064E: A5          movbkw  ", "3064F: A5          movbkw  ", "30650: A5          movbkw  ", "30651: A5          movbkw  ", "30652: A5          movbkw  ", "30653: A5          movbkw  ", "30654: A5          movbkw  ", "30655: 81 C7 30 01 add     iy,130h", "30659: A5          movbkw  ", "3065A: A5          movbkw  ", "3065B: A5          movbkw  ", "3065C: A5          movbkw  ", "3065D: A5          movbkw  ", "3065E: A5          movbkw  ", "3065F: A5          movbkw  ", "30660: A5          movbkw  ", "30661: 81 C7 30 01 add     iy,130h"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 29121},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2636,10 +1967,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2665,6 +1993,8 @@ Give this to an MCP client with this server connected:
   "verdict": "ELAPSED",
   "frame_before": 767,
   "frame_after": 872,
+  "emulated_before_s": 15.335587,
+  "emulated_after_s": 17.432066,
   "cycles": 16771827,
   "polls": 105,
   "lines_ahead": 0,
@@ -2723,50 +2053,19 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AD: 55             push    bp",
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy"
-  ],
+  "instruction": {"address": "300AD", "bytes": "55", "text": "push    bp", "symbol": "NEW_IRQ_VIDEO", "delta": 0},
+  "following": ["300AE: 50             push    aw", "300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy"],
   "errorlog": {
     "lines_total": 6,
     "truncated": false,
-    "lines": [
-      "[luaengine] MAME_MCP_AUDIO#10 armed frame=767 vblank=true",
-      "",
-      "[luaengine] MAME_MCP_AUDIO#10 begin frame=768 ok=true recording=true time=15.355392 period=0.019968000000000003",
-      "",
-      "[luaengine] MAME_MCP_AUDIO#10 end frame=869 time=17.372160000000001",
-      ""
-    ],
+    "lines": ["[luaengine] MAME_MCP_AUDIO#10 armed frame=767 vblank=true", "", "[luaengine] MAME_MCP_AUDIO#10 begin frame=768 ok=true recording=true time=15.355392 period=0.019968000000000003", "", "[luaengine] MAME_MCP_AUDIO#10 end frame=869 time=17.372160000000001", ""],
     "mark": 29121
   },
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2792,23 +2091,14 @@ Give this to an MCP client with this server connected:
   "sample_rate_hz": 48000,
   "channels": 1,
   "bits": 16,
-  "window": [
-    0.0,
-    2.02
-  ],
+  "window": [0.0, 2.02],
   "measures": [
     {
       "channel": 0,
       "peak_dbfs": -8.27,
       "rms_dbfs": -40.98,
       "silent": false,
-      "silence_spans": {
-        "count": 1,
-        "first": [
-          0.1512,
-          2.02
-        ]
-      },
+      "silence_spans": {"count": 1, "first": [0.1512, 2.02]},
       "onset_s": 0.0,
       "clipping_run": 0,
       "clipped": false
@@ -2820,10 +2110,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2864,10 +2151,7 @@ Give this to an MCP client with this server connected:
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -2898,12 +2182,7 @@ Give this to an MCP client with this server connected:
   "palette": ":palette",
   "entries": 256,
   "screen_indexed": true,
-  "crop": [
-    0,
-    0,
-    320,
-    200
-  ],
+  "crop": [0, 0, 320, 200],
   "image": {
     "path": "./tmp/demos/lineup/screen.png",
     "bytes": 15472,
@@ -2960,43 +2239,14 @@ Give this to an MCP client with this server connected:
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "dasm": [
-    "300AE: 50             push    aw",
-    "300AF: 53             push    bw",
-    "300B0: 51             push    cw",
-    "300B1: 52             push    dw",
-    "300B2: 56             push    ix",
-    "300B3: 57             push    iy",
-    "300B4: 1E             push    ds0",
-    "300B5: 06             push    ds1",
-    "300B6: 9C             push    psw",
-    "300B7: B8 40 00       mov     aw,40h",
-    "300BA: 8E D8          mov     ds0,aw",
-    "300BC: B8 00 10       mov     aw,1000h",
-    "300BF: 8E C0          mov     ds1,aw",
-    "300C1: FC             clr1    dir",
-    "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h",
-    "300C7: 75 0B          bne     300D4h",
-    "300C9: 9D             pop     psw",
-    "300CA: 07             pop     ds1",
-    "300CB: 1F             pop     ds0",
-    "300CC: 5F             pop     iy",
-    "300CD: 5E             pop     ix"
-  ],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 29362
-  },
+  "instruction": {"address": "300AE", "bytes": "50", "text": "push    aw", "symbol": "NEW_IRQ_VIDEO", "delta": 1},
+  "following": ["300AF: 53             push    bw", "300B0: 51             push    cw", "300B1: 52             push    dw", "300B2: 56             push    ix", "300B3: 57             push    iy", "300B4: 1E             push    ds0", "300B5: 06             push    ds1", "300B6: 9C             push    psw", "300B7: B8 40 00       mov     aw,40h", "300BA: 8E D8          mov     ds0,aw", "300BC: B8 00 10       mov     aw,1000h", "300BF: 8E C0          mov     ds1,aw", "300C1: FC             clr1    dir", "300C2: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C7: 75 0B          bne     300D4h", "300C9: 9D             pop     psw", "300CA: 07             pop     ds1", "300CB: 1F             pop     ds0", "300CC: 5F             pop     iy", "300CD: 5E             pop     ix"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 29362},
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
-    "omitted": [
-      "altering_writes",
-      "console"
-    ],
+    "omitted": ["altering_writes", "console"],
     "how": "call `status`"
   }
 }
@@ -3017,25 +2267,15 @@ Give this to an MCP client with this server connected:
   "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
   "status": "ok",
   "closed": true,
-  "omitted": [
-    "stdout_tail",
-    "errorlog_tail"
-  ],
+  "omitted": ["stdout_tail", "errorlog_tail"],
   "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
   "ended_by": "quit",
   "exit_code": 0,
   "state_written": true,
-  "cfg": {
-    "available": false,
-    "why": "no cfg was given, so MAME runs on its defaults"
-  },
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,
   "console_drained": 0,
-  "session": {
-    "alive": false,
-    "running": false,
-    "altered": false
-  }
+  "session": {"alive": false, "running": false, "altered": false}
 }
 ```
 

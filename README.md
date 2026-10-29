@@ -139,11 +139,7 @@ input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
     "truncated": false,
     "writer_pc": "0x00001e48",
     "writes": [
-      {
-        "wrote": "0x04",
-        "to": "0x00008299",
-        "pc": "0x00001e48"
-      }
+      {"wrote": "0x04", "to": "0x00008299", "pc": "0x00001e48"}
     ],
     "values_from": "bus",
     "before": {
@@ -151,9 +147,7 @@ input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
       "why": "the first write logged since the watch was armed: no earlier write to compare"
     },
     "after": 4,
-    "lines": [
-      "Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)"
-    ]
+    "lines": ["Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)"]
   }
 }
 ```
@@ -162,15 +156,7 @@ input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
 disassemble(ref="0x1e40", length=16)
 -> {
   "summary": "disassemble 0x1e40: 9 lines at 0x00001e40",
-  "lines": [
-    "1E40: 2F       cpl",
-    "1E41: E6 03    and  $03",
-    "1E43: 28 BF    jr   z,$1E04",
-    "1E45: 21 99 82 ld   hl,$8299",
-    "1E48: 34       inc  (hl)",
-    "1E49: 21 AF 82 ld   hl,$82AF",
-    "... 3 more"
-  ]
+  "lines": ["1E40: 2F       cpl", "1E41: E6 03    and  $03", "1E43: 28 BF    jr   z,$1E04", "1E45: 21 99 82 ld   hl,$8299", "1E48: 34       inc  (hl)", "1E49: 21 AF 82 ld   hl,$82AF", "... 3 more"]
 }
 ```
 
@@ -238,18 +224,12 @@ run_for(milliseconds=500, seconds=300)
     "truncated": false,
     "writer_pc": "0x0000b583",
     "writes": [
-      {
-        "wrote": "0x04",
-        "to": "0x0000042b",
-        "pc": "0x0000b583"
-      }
+      {"wrote": "0x04", "to": "0x0000042b", "pc": "0x0000b583"}
     ],
     "values_from": "memory",
     "before": 3,
     "after": 4,
-    "lines": [
-      "Stopped at watchpoint 1 writing 04 to 042B (PC=B583)"
-    ]
+    "lines": ["Stopped at watchpoint 1 writing 04 to 042B (PC=B583)"]
   }
 }
 ```
@@ -267,18 +247,12 @@ run_for(milliseconds=500, seconds=300)
     "truncated": false,
     "writer_pc": "0x0000b58c",
     "writes": [
-      {
-        "wrote": "0x04",
-        "to": "0x0000042c",
-        "pc": "0x0000b58c"
-      }
+      {"wrote": "0x04", "to": "0x0000042c", "pc": "0x0000b58c"}
     ],
     "values_from": "memory",
     "before": 3,
     "after": 4,
-    "lines": [
-      "Stopped at watchpoint 2 writing 04 to 042C (PC=B58C)"
-    ]
+    "lines": ["Stopped at watchpoint 2 writing 04 to 042C (PC=B58C)"]
   }
 }
 ```
@@ -303,15 +277,7 @@ input(port=":IN1", field="1 Player Start", frames=4, seconds=300)
 history(limit=8)
 -> {
   "summary": "history: 8 instructions of 8 asked",
-  "lines": [
-    "D68D: RTS",
-    "C5AD: JSR    $D676",
-    "D676: DEC    $042B",
-    "D679: LDA    #$99",
-    "D67B: ADDA   $042C",
-    "D67E: DAA",
-    "... 2 more"
-  ]
+  "lines": ["D68D: RTS", "C5AD: JSR    $D676", "D676: DEC    $042B", "D679: LDA    #$99", "D67B: ADDA   $042C", "D67E: DAA", "... 2 more"]
 }
 ```
 <!-- demo-flow:end gridlee -->

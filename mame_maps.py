@@ -113,7 +113,7 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
     if not common:
         return out              # nothing was captured, so the machine is where the run left it
     # The capture that judged the screen stepped the machine: the stop is the one after it.
-    kept = {k: v for k, v in out.items() if k not in ("summary", "session")}
+    kept = {k: v for k, v in out.items() if k not in ("summary", "session", "cause")}
     refreshed = running.stop_reply(ses, scratch, f"run_to screen: {common['evaluated_by']}",
                                    **{**kept, **common})
     if STATE.maps.found is not None:
