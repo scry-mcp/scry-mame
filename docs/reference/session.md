@@ -13,8 +13,9 @@ start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath=
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
-Paths are absolute: `rompath`, `inipath`, `state_dir` directories, the rest files. The
-check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first byte).
+Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, the rest
+files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
+byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
 `shared=True`: somebody watches (a window scaled to be seen, real speed).
 `background`: behind, the caller's focus kept; independent of `shared`, whose default it
@@ -218,7 +219,7 @@ Example, from a live run:
 
 **`env` is for `boot_lua` only, and `boot_lua` is never Lua text.** A harness that calls `manager.machine:exit()` would end the machine under the session.
 
-**`state_dir` empty is disposable.** The scratch goes with the session; a named directory is kept.
+**`state_dir` empty is disposable.** States, `cfg/` and `nvram/` go under the session's scratch (`status` names it as `scratch_dir`; its `state_dir` stays empty) and leave with it at `close`; a named directory is kept. Nothing is written into the project's tree either way.
 
 **The reply also carries what reached the driver** (`binary_origin`, `env`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
 

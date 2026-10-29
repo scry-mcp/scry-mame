@@ -61,7 +61,7 @@ def test_the_machine_around_a_call_is_the_last_stop_as_an_advance_spells_it(
     ses = _running(monkeypatch, tmp_path)
     got = mame_mcp._machine()
     stop = mstate.STATE.last_stop
-    assert got == recording.Machine(running=False, seq=stop["seq"],
+    assert got == recording.Machine(running=False, seq=stop["seq"], frame=stop["frame"],
                                     stop={"pc": stop["pc"], "frame": stop["frame"]})
     ses.running = True
     assert mame_mcp._machine() == recording.Machine(running=True, seq=stop["seq"])
@@ -110,7 +110,7 @@ def test_a_board_with_no_frame_counter_is_read_as_its_stop_says_it(
     _running(monkeypatch, tmp_path)
     monkeypatch.setitem(mstate.STATE.last_stop, "frame", None)
     got = mame_mcp._machine()
-    assert got.stop["frame"] == mstate.frame_shown(None)
+    assert got.stop["frame"] == mstate.frame_shown(None) and got.frame is None
 
 
 

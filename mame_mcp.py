@@ -181,7 +181,7 @@ def _machine() -> recording.Machine:
     moving = ses is not None and bool(ses.running)
     if moving or not stop:
         return recording.Machine(running=moving, seq=stop.get("seq"))
-    return recording.Machine(running=False, seq=stop.get("seq"),
+    return recording.Machine(running=False, seq=stop.get("seq"), frame=stop["frame"],
                              stop={"pc": stop["pc"], "frame": st.frame_shown(stop["frame"])})
 
 

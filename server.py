@@ -164,8 +164,9 @@ def start(
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
-    Paths are absolute: `rompath`, `inipath`, `state_dir` directories, the rest files. The
-    check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first byte).
+    Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, the rest
+    files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
+    byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window scaled to be seen, real speed).
     `background`: behind, the caller's focus kept; independent of `shared`, whose default it
