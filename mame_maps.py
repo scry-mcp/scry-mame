@@ -94,9 +94,13 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
             raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run "
                              "to a frame at a time and a `control` has nothing to count: leave "
                              "it out")
+        if applied := [k for k in ("condition", "disarm_watches", "cpu") if run.get(k)]:
+            raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run to "
+                             f"a frame at a time, and {', '.join(applied)} has nothing to apply "
+                             "to: leave it out")
         out = screen_map.run_until(
             STATE.maps, screen,
-            lambda: advance.run_for(ses, scratch, 0, seconds, progress, frames=1),
+            lambda left: advance.run_for(ses, scratch, 0, left, progress, frames=1),
             reader, seconds)
         if out.get("status") == "ok":
             out = {k: v for k, v in out.items() if k not in RUN_FOR_ONLY}

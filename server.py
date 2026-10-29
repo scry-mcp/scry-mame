@@ -286,7 +286,7 @@ def rom_check(
 
 # ----------------------------------------------------------------------------- advance
 
-@tool("Run to a place, with a control", summary=summaries.run_to, on_cancel="stop")
+@tool("Run to a place or a mapped screen", summary=summaries.run_to, on_cancel="stop")
 def run_to(ref: str = "", *, control: str = "", screen: str = "",
            seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
            disarm_watches: bool = False, condition: str = "", cpu: str = "",
@@ -303,7 +303,8 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
     {MAP_RUN_TO}
 
     Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
-    `cpu`, `hits_in_run`; a run to a ref or an anchor), `frames` (a screen with no anchor), the
+    `cpu`, `hits_in_run`; a run to a ref or an anchor), `target_disarmed` (the target was left
+    armed or the interrupt went unanswered), `frames` (a screen with no anchor), the
     stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
     INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 

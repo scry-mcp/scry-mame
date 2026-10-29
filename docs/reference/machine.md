@@ -47,36 +47,19 @@ Example, from a live run:
       "visible": true,
       "ignored": false,
       "suspended": false,
-      "pc": {
-        "reg": "PC",
-        "value": "0x000f2034"
-      },
-      "declarations": {
-        "breakpoints": 0,
-        "watches": 0,
-        "regpoints": 0
-      }
+      "pc": {"reg": "PC", "value": "0x000f2034"},
+      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
     },
     {
       "cpu": ":subcpu",
       "visible": false,
       "ignored": false,
       "suspended": false,
-      "pc": {
-        "reg": "PC",
-        "value": "0x00000000"
-      },
-      "declarations": {
-        "breakpoints": 0,
-        "watches": 0,
-        "regpoints": 0
-      }
+      "pc": {"reg": "PC", "value": "0x00000000"},
+      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
     }
   ],
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
 ```
 <!-- scry-reference:end cpu_info -->
@@ -191,89 +174,23 @@ Example, from a live run:
     }
   ],
   "address_map": [
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 1,
-      "start": "0x00fffff3",
-      "end": "0x00fffff3"
-    },
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 2,
-      "start": "0x00fffff5",
-      "end": "0x00fffff5"
-    },
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 3,
-      "start": "0x00fffff7",
-      "end": "0x00fffff7"
-    },
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 4,
-      "start": "0x00fffff9",
-      "end": "0x00fffff9"
-    },
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 5,
-      "start": "0x00fffffb",
-      "end": "0x00fffffb"
-    },
-    {
-      "cpu": ":maincpu",
-      "space": "cpu_space",
-      "index": 6,
-      "start": "0x00fffffd",
-      "end": "0x00fffffd"
-    },
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 1, "start": "0x00fffff3", "end": "0x00fffff3"},
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 2, "start": "0x00fffff5", "end": "0x00fffff5"},
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 3, "start": "0x00fffff7", "end": "0x00fffff7"},
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 4, "start": "0x00fffff9", "end": "0x00fffff9"},
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 5, "start": "0x00fffffb", "end": "0x00fffffb"},
+    {"cpu": ":maincpu", "space": "cpu_space", "index": 6, "start": "0x00fffffd", "end": "0x00fffffd"},
     "... 26 more"
   ],
   "regions": [
-    {
-      "tag": ":gfx1",
-      "size": 16777216,
-      "bytewidth": 1,
-      "endianness": "little"
-    },
-    {
-      "tag": ":maincpu",
-      "size": 1048576,
-      "bytewidth": 2,
-      "endianness": "big"
-    },
-    {
-      "tag": ":plds",
-      "size": 741,
-      "bytewidth": 1,
-      "endianness": "little"
-    },
-    {
-      "tag": ":subcpu",
-      "size": 1048576,
-      "bytewidth": 2,
-      "endianness": "big"
-    }
+    {"tag": ":gfx1", "size": 16777216, "bytewidth": 1, "endianness": "little"},
+    {"tag": ":maincpu", "size": 1048576, "bytewidth": 2, "endianness": "big"},
+    {"tag": ":plds", "size": 741, "bytewidth": 1, "endianness": "little"},
+    {"tag": ":subcpu", "size": 1048576, "bytewidth": 2, "endianness": "big"}
   ],
   "shares": [
-    {
-      "tag": ":blitram",
-      "size": 32,
-      "bytewidth": 2,
-      "endianness": "big"
-    },
-    {
-      "tag": ":mainram",
-      "size": 65536,
-      "bytewidth": 2,
-      "endianness": "big"
-    }
+    {"tag": ":blitram", "size": 32, "bytewidth": 2, "endianness": "big"},
+    {"tag": ":mainram", "size": 65536, "bytewidth": 2, "endianness": "big"}
   ],
   "screens": [
     {
@@ -309,10 +226,7 @@ Example, from a live run:
   "omitted": ["rom_files"],
   "how": "sections=[...] names the sections to answer",
   "frame_symbol": "frame",
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
 ```
 <!-- scry-reference:end machine_map -->
@@ -384,11 +298,7 @@ Example, from a live run:
   "cpu": ":maincpu",
   "symbols_total": 1,
   "symbols": [
-    {
-      "name": "IRQ_VBLANK",
-      "addr": "0x00000400",
-      "memory": "rom"
-    }
+    {"name": "IRQ_VBLANK", "addr": "0x00000400", "memory": "rom"}
   ],
   "truncated": false
 }

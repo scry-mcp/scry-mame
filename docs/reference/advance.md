@@ -23,7 +23,7 @@ What a running or a broken session does to every tool is in [REFERENCE.md, Advan
 <!-- scry-reference:begin run_to -->
 ## `run_to`
 
-*Run to a place, with a control*
+*Run to a place or a mapped screen*
 
 ```text
 run_to(ref="", control="", screen="", seconds=30.0, disarm_watches=false, condition="", cpu="")
@@ -40,12 +40,13 @@ unresolved control, an over-long `condition`.
 
 `screen`: a mapped screen's name instead of `ref` (exactly one). With an `anchor`, run to it (`control`
 required): a `verified` map judges it there (`stale_map` when it no longer holds), a
-`consolidated` one takes it as shown. With none, a frame at a time until the map names it,
-within `seconds`; no `control`. Reply: `screen` (`screen`, `layer`, `mode`, `judged`),
-`frames` run. Refused: an unmapped screen (`unknown_ref`).
+`consolidated` one takes it as shown. With none, a retrace (a frame, on MAME) at a time until the map names it,
+within `seconds`; a `control` is refused there (`bad_argument`). Reply: `screen` (`screen`, `layer`,
+`mode`, `judged`), `frames` run. Refused: an unmapped screen (`unknown_ref`).
 
 Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
-`cpu`, `hits_in_run`; a run to a ref or an anchor), `frames` (a screen with no anchor), the
+`cpu`, `hits_in_run`; a run to a ref or an anchor), `target_disarmed` (the target was left
+armed or the interrupt went unanswered), `frames` (a screen with no anchor), the
 stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
 INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
@@ -64,12 +65,20 @@ Reference: REFERENCE.md, Advancing the machine.
 | reply field | type |
 |---|---|
 | `addr` | string |
+| `call` | string |
+| `evaluated_by` | string |
+| `lines_ahead` | integer |
+| `pc_before` | string |
+| `reader_steps` | integer |
+| `resent` | integer |
+| `thread_errors` | integer |
 | `armed` | boolean |
 | `command_chars` | integer |
 | `condition` | string |
 | `control` | string |
 | `control_dasm` | array |
 | `control_hits` | integer |
+| `console_reruns` | integer |
 | `control_on` | array |
 | `controls` | array |
 | `cpu` | string or object |
@@ -111,11 +120,7 @@ Example, from a live run:
   "verdict": "TARGET",
   "control_hits": 0,
   "controls": [
-    {
-      "ref": "0x4a0",
-      "cpu": ":maincpu",
-      "hits_in_run": 0
-    }
+    {"ref": "0x4a0", "cpu": ":maincpu", "hits_in_run": 0}
   ],
   "cause": "target irq_vblank",
   "stop_seq": 16,
@@ -161,7 +166,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end run_to -->
 
-**Why a control is always armed.** Several different mistakes leave a MAME breakpoint silent, and each looks exactly like "that routine is never called"; the control counting beside the target tells them apart. Both rows are read back from `bplist` before the machine moves, since a row the console took and does not list would come back TIMEOUT beside a control that fired.
+**Why a control is armed for a place.** (A screen with no anchor is run to a frame at a time, which needs none.) Several different mistakes leave a MAME breakpoint silent, and each looks exactly like "that routine is never called"; the control counting beside the target tells them apart. Both rows are read back from `bplist` before the machine moves, since a row the console took and does not list would come back TIMEOUT beside a control that fired.
 
 **Whose stop is the target's.** A stop at the target's address is `TARGET` only when it is the target cpu's. A control on another cpu runs another program and fires while the target's cpu is held in reset, so it cannot say that cpu ran; naming one is `unknown_ref` with the `breakpoint_at(..., cpu=)` that would fix it.
 
@@ -173,7 +178,7 @@ Example, from a live run:
 
 **Unanswered interrupt at the bound.** `run_to` starts with the stub's own `c`, so an interrupt at the bound that is NOT ANSWERED is `not_settled` with no `cause` (no stop was read) and `target_disarmed` saying whether the temporary breakpoint's removal was confirmed; the session stays RUNNING and `stop` waits for the packet the run still owes. A removal the stub REFUSES after the stop is an answer, not a break: the stop is still the measurement, and the `note` names the `debug("bpclear 0x<row>")` that removes the row (`declaration_clear(kind="breakpoint")` clears declarations, and the target was never one).
 
-Why it is not a plain run: a control is required because a silent breakpoint has several causes that all look like "never called", and a TIMEOUT with silent controls is INVALID for the same reason. Both rows are read back from `bplist` before the machine moves. A stop at the target's address is `TARGET` only when it is the target cpu's; a control on another cpu is `unknown_ref`, naming the `breakpoint_at(..., cpu=)` that would fix it. `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
+Why it is not a plain run: a control is required with a `ref` or an anchored screen because a silent breakpoint has several causes that all look like "never called", and a TIMEOUT with silent controls is INVALID for the same reason. Both rows are read back from `bplist` before the machine moves. A stop at the target's address is `TARGET` only when it is the target cpu's; a control on another cpu is `unknown_ref`, naming the `breakpoint_at(..., cpu=)` that would fix it. `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
 
 <!-- scry-reference:begin run_for -->
 ## `run_for`
@@ -281,12 +286,7 @@ Example, from a live run:
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14},
   "watches": [
     {
       "ref": "0x700000",
@@ -295,10 +295,7 @@ Example, from a live run:
       "total": 7,
       "callback_errors": {
         "count": 0,
-        "first": {
-          "available": false,
-          "why": "no callback raised"
-        }
+        "first": {"available": false, "why": "no callback raised"}
       },
       "since_last_stop": 7
     }
@@ -373,11 +370,7 @@ Example, from a live run:
   "mode": "into",
   "instructions_completed": 1,
   "others": {
-    ":subcpu": {
-      "reg": "PC",
-      "before": "0x00000542",
-      "after": "0x00000542"
-    }
+    ":subcpu": {"reg": "PC", "before": "0x00000542", "after": "0x00000542"}
   },
   "cause": "step 1",
   "stop_seq": 22,
@@ -412,12 +405,7 @@ Example, from a live run:
     "delta": 408
   },
   "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062}
 }
 ```
 <!-- scry-reference:end step -->
@@ -644,12 +632,7 @@ Example, from a live run:
     "delta": 408
   },
   "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
   "stopped_on_its_own": {
     "stop_seq": 20,
     "pc": "0x00002986",
@@ -847,12 +830,7 @@ Example, from a live run:
     "delta": 304
   },
   "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
   "manifest": "$TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
   "count": 1,
   "first": 14,

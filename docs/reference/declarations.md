@@ -280,11 +280,7 @@ Example, from a live run:
   "stored": true,
   "armed": false,
   "state": "evaluated",
-  "reading": {
-    "available": true,
-    "value": 0,
-    "raw_hex": "0000"
-  }
+  "reading": {"available": true, "value": 0, "raw_hex": "0000"}
 }
 ```
 <!-- scry-reference:end watch_add -->
@@ -391,10 +387,7 @@ Example, from a live run:
       "entry": "1 @ 0025A4"
     }
   ],
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
 ```
 <!-- scry-reference:end declaration_list -->

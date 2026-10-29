@@ -182,12 +182,7 @@ Example, from a live run:
     "delta": 4
   },
   "following": ["0F2040: 4EB8 25DC                jsr     $25dc.w", "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end read_block -->
@@ -406,11 +401,7 @@ Example, from a live run:
   "status": "ok",
   "addr": "0x00000000",
   "length": 1024,
-  "span": {
-    "from": "0x00000000",
-    "length": 1024,
-    "source": "ref+length"
-  },
+  "span": {"from": "0x00000000", "length": 1024, "source": "ref+length"},
   "hits": ["0x000000e0", "0x000000e1", "0x000000e4", "0x000000e5", "0x000000e8", "0x000000e9", "... 394 more"],
   "hits_total": 510,
   "truncated": true,
@@ -633,12 +624,7 @@ Example, from a live run:
     "delta": 12
   },
   "following": ["0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end screen_map_find -->
@@ -746,10 +732,7 @@ Example, from a live run:
   "size": [336, 252],
   "cells": "rgb",
   "match": [
-    {
-      "crop": [0, 0, 8, 8],
-      "signature": "d275923c4035816a"
-    }
+    {"crop": [0, 0, 8, 8], "signature": "d275923c4035816a"}
   ],
   "controls": 0,
   "replaced": false,
@@ -793,12 +776,7 @@ Example, from a live run:
     "delta": 4
   },
   "following": ["0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end screen_map_write -->

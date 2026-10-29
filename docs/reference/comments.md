@@ -66,10 +66,7 @@ Example, from a live run:
     "persistent": true,
     "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
   },
-  "cpu": {
-    "available": false,
-    "why": "no cpu was named, so the rows are every cpu's"
-  }
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
 ```
 <!-- scry-reference:end comment_list -->

@@ -12,7 +12,7 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
 
 **Discovering a board nobody has described** is a chain: `gfx_sweep` draws a block under candidate layouts, `gfx_locate` checks one against the screen, `gfx_draft` writes a manifest from what the session proved. Nothing in the chain ranks its candidates: a heuristic that looks like proof is worse than an honest list. Every `gfx_locate` answer, sweep and choice is kept as the session's EVIDENCE (gone at `close` and at `start`), and `gfx_draft` derives from that record alone.
 
-**Screen maps.** A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.screen-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-screen-map/1`:
+**Screen maps.** (A map may carry a `pointer` declaration, for a server that moves a mouse; this server has none, so it keeps the declaration, writes it back on `save` and uses it for nothing.) A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.screen-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-screen-map/1`:
 
 ```json
 {"format": "scry-screen-map/1", "application": "circus", "mode": "verified",
@@ -159,12 +159,7 @@ Example, from a live run:
     "delta": 18
   },
   "following": ["0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end palette -->
@@ -311,20 +306,9 @@ Example, from a live run:
     "PS": "0x2700",
     "PC": "0x000025f4"
   },
-  "instruction": {
-    "address": "0025F4",
-    "bytes": "4218",
-    "text": "clr.b   (A0)+",
-    "symbol": "BOOT_INIT",
-    "delta": 24
-  },
+  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "BOOT_INIT", "delta": 24},
   "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end screen_view -->
@@ -443,12 +427,7 @@ Example, from a live run:
     "delta": 0
   },
   "following": ["0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l", "0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end screen_signature -->
@@ -635,12 +614,7 @@ Example, from a live run:
     "delta": 26
   },
   "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end gfx_view -->
@@ -776,10 +750,7 @@ Example, from a live run:
   "bytewidth": 2,
   "endianness": "big",
   "offset": 0,
-  "transparent": {
-    "available": false,
-    "why": "no `transparent`: every pixel compared"
-  },
+  "transparent": {"available": false, "why": "no `transparent`: every pixel compared"},
   "flips": ["none", "x", "y", "xy"],
   "candidates": [
     {
@@ -807,18 +778,10 @@ Example, from a live run:
   "matches": [],
   "ambiguous": false,
   "ambiguous_windows": 0,
-  "pen_map": {
-    "tried": true,
-    "matches": 0
-  },
-  "nearest": {
-    "available": false,
-    "why": "no window came close enough to name (the note says why)"
-  },
+  "pen_map": {"tried": true, "matches": 0},
+  "nearest": {"available": false, "why": "no window came close enough to name (the note says why)"},
   "note": "no nearest candidate: every window was of one pen or of two banks; the pen map read none of them as a tile",
-  "evidence": {
-    "locate": 1
-  },
+  "evidence": {"locate": 1},
   "evaluated_by": "one step",
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -850,20 +813,9 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025f4"
   },
-  "instruction": {
-    "address": "0025F4",
-    "bytes": "4218",
-    "text": "clr.b   (A0)+",
-    "symbol": "BOOT_INIT",
-    "delta": 24
-  },
+  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "BOOT_INIT", "delta": 24},
   "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end gfx_locate -->
@@ -983,12 +935,7 @@ Example, from a live run:
   "real_colors": false,
   "cell_scale": 4,
   "candidates": [
-    {
-      "id": "s1c1",
-      "what": "1bpp 8x8 rows",
-      "tiles_available": 131072,
-      "shown": 8
-    }
+    {"id": "s1c1", "what": "1bpp 8x8 rows", "tiles_available": 131072, "shown": 8}
   ],
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
@@ -1041,12 +988,7 @@ Example, from a live run:
     "delta": 26
   },
   "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end gfx_sweep -->
@@ -1118,12 +1060,7 @@ Example, from a live run:
   "formats": {},
   "asset_names": [],
   "command_fields": {},
-  "evidence": {
-    "locates": 1,
-    "sweeps": 1,
-    "choices": 0,
-    "correlations": 0
-  },
+  "evidence": {"locates": 1, "sweeps": 1, "choices": 0, "correlations": 0},
   "not_proved": [],
   "confirm": "the owner confirms the draft by deleting its first line; `gfx_load` loads it before that and says `draft: true`"
 }
@@ -1249,33 +1186,16 @@ Example, from a live run:
   "overflow_rows": 0,
   "callback_errors": {
     "count": 0,
-    "first": {
-      "available": false,
-      "why": "no callback raised"
-    }
+    "first": {"available": false, "why": "no callback raised"}
   },
-  "frames_with_blits": {
-    "first": 4,
-    "last": 8,
-    "count": 3
-  },
+  "frames_with_blits": {"first": 4, "last": 8, "count": 3},
   "blits_in_frame": 1,
   "legend": [
-    {
-      "pc": "0x00002738",
-      "symbol": "BOOT_INIT+0x15c",
-      "color": "#ff4040",
-      "blits": 1
-    }
+    {"pc": "0x00002738", "symbol": "BOOT_INIT+0x15c", "color": "#ff4040", "blits": 1}
   ],
   "colors_repeat": false,
   "by_plane": [
-    {
-      "plane": "sprites",
-      "page": 0,
-      "blits": 1,
-      "on_screen": 1
-    }
+    {"plane": "sprites", "page": 0, "blits": 1, "on_screen": 1}
   ],
   "note": "a plane drawn in pages: `by_plane` and each listed blit name the `page`, and which page the screen shows is not in the rows",
   "not_proved": ["dest_x", "scroll_y", "source_dir_y", "source_x", "source_y", "planes.sprites", "... 1 more"],
@@ -1328,12 +1248,7 @@ Example, from a live run:
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14},
   "watches": [
     {
       "ref": "0x700000",
@@ -1342,10 +1257,7 @@ Example, from a live run:
       "total": 7,
       "callback_errors": {
         "count": 0,
-        "first": {
-          "available": false,
-          "why": "no callback raised"
-        }
+        "first": {"available": false, "why": "no callback raised"}
       },
       "since_last_stop": 0
     }
@@ -1471,36 +1383,18 @@ Example, from a live run:
   "blit_symbol": "BOOT_INIT+0x15c",
   "callback_errors": {
     "count": 0,
-    "first": {
-      "available": false,
-      "why": "no callback raised"
-    }
+    "first": {"available": false, "why": "no callback raised"}
   },
   "asset": "pages",
   "tag": ":gfx1",
   "format": "page_512x512x8",
   "palette": ":palette",
   "pen_base": 0,
-  "rect": {
-    "tile": 0,
-    "x": 22,
-    "y": 11,
-    "width": 2,
-    "height": 1,
-    "dir_x": 1,
-    "dir_y": 1
-  },
+  "rect": {"tile": 0, "x": 22, "y": 11, "width": 2, "height": 1, "dir_x": 1, "dir_y": 1},
   "margin": 0,
   "box": [0, 0, 2, 1],
   "wrap": true,
-  "destination": {
-    "x": 0,
-    "y": 0,
-    "width": 2,
-    "height": 1,
-    "dir_x": 1,
-    "dir_y": 1
-  },
+  "destination": {"x": 0, "y": 0, "width": 2, "height": 1, "dir_x": 1, "dir_y": 1},
   "note": "shown unscaled: the rectangle is the destination walk's size from the source origin; a scaled blit reads another extent, which is the project's scale law and is not applied here",
   "not_proved": ["dest_x", "source_dir_y", "source_x", "source_y", "planes.sprites", "planes.background"],
   "reads_source": true,
@@ -1553,12 +1447,7 @@ Example, from a live run:
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14},
   "watches": [
     {
       "ref": "0x700000",
@@ -1567,10 +1456,7 @@ Example, from a live run:
       "total": 7,
       "callback_errors": {
         "count": 0,
-        "first": {
-          "available": false,
-          "why": "no callback raised"
-        }
+        "first": {"available": false, "why": "no callback raised"}
       },
       "since_last_stop": 0
     }

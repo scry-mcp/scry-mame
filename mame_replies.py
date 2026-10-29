@@ -815,12 +815,20 @@ class RunForReply(MameEnvelope, total=False):
 
 class RunToReply(MameEnvelope, total=False):
     addr: str
+    call: Annotated[str, When("a run to a screen")]
+    evaluated_by: Annotated[str, When("a run to a screen")]
+    lines_ahead: Annotated[int, When("a run to a screen")]
+    pc_before: Annotated[str, When("a run to a screen")]
+    reader_steps: Annotated[int, OmitEmpty]
+    resent: Annotated[int, OmitEmpty]
+    thread_errors: int
     armed: bool
     command_chars: int
     condition: str
     control: str
     control_dasm: list[Any]
     control_hits: Annotated[int, When("a run to a ref or an anchor")]
+    console_reruns: int
     control_on: list[Any]
     controls: Annotated[list[Any], When("a run to a ref or an anchor")]
     cpu: str | dict[str, Any]
@@ -840,7 +848,8 @@ class RunToReply(MameEnvelope, total=False):
     state: str
     stop_seq: int
     stored: bool
-    target_disarmed: bool
+    target_disarmed: Annotated[
+        bool, When("the target was left armed or the interrupt went unanswered")]
     verdict: Required[str]
     watch_hit: dict[str, Any]
     watches: list[Any]

@@ -233,3 +233,32 @@ def test_a_control_with_a_screen_that_has_no_anchor_is_refused(
     got = s.run_to(screen="board", control="Tick")
     assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
     assert "no anchor" in got["message"], got["message"]
+
+
+def test_the_tool_summary_of_a_run_to_an_anchorless_screen_counts_frames_not_controls(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    _one_frame(monkeypatch)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    got = _ok(s.run_to(screen="board"))
+    assert got["verdict"] == "TARGET" and got["frames"] == 1, got
+    assert got["summary"] == "run_to screen board (judged): TARGET after 1 frame", got["summary"]
+
+
+@pytest.mark.parametrize("kw, word", [
+    ({"condition": "w@X==1"}, "condition"),
+    ({"disarm_watches": True}, "disarm_watches"),
+    ({"cpu": ":sub"}, "cpu"),
+])
+def test_arguments_a_frame_by_frame_run_cannot_apply_are_refused_by_name(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, kw: dict[str, Any], word: str,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP]))
+    got = s.run_to(screen="board", **kw)
+    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
+    assert word in got["message"] and "no anchor" in got["message"], got["message"]

@@ -126,12 +126,7 @@ Example, from a live run:
   "bytes": 111781,
   "frame": 30,
   "pc": "0x000e2cea",
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66664
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66664}
 }
 ```
 <!-- scry-reference:end state_write -->

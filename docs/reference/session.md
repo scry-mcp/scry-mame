@@ -131,10 +131,7 @@ Example, from a live run:
   "stub_port": 58076,
   "scratch_dir": "$TMPDIR/mame-mcp-qwnd_9kr",
   "state_dir": "",
-  "cfg": {
-    "available": false,
-    "why": "no cfg was given, so MAME runs on its defaults"
-  },
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
@@ -145,9 +142,7 @@ Example, from a live run:
   "symbols_total": 64,
   "symbols_format": "yaml",
   "symbols_by_class": {},
-  "symbols_by_cpu": {
-    ":maincpu": 64
-  },
+  "symbols_by_cpu": {":maincpu": 64},
   "registers": ["D0", "D1", "D2", "D3", "D4", "D5", "... 12 more"],
   "pc": "0x000f2034",
   "frame": 0,
@@ -173,19 +168,8 @@ Example, from a live run:
     "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
-    "rearm": {
-      "rearmed": [],
-      "stale": [],
-      "unresolved": [],
-      "unarmable": [],
-      "evaluated": []
-    },
-    "comments": {
-      "rearmed": [],
-      "stale": [],
-      "unresolved": [],
-      "unarmable": []
-    }
+    "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
+    "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289"
 }
@@ -360,18 +344,9 @@ Example, from a live run:
   "status": "ok",
   "closed": false,
   "ended_by": "none",
-  "exit_code": {
-    "available": false,
-    "why": "no session was running"
-  },
-  "state_written": {
-    "available": false,
-    "why": "no session was running"
-  },
-  "cfg": {
-    "available": false,
-    "why": "no cfg was given, so MAME runs on its defaults"
-  },
+  "exit_code": {"available": false, "why": "no session was running"},
+  "state_written": {"available": false, "why": "no session was running"},
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "note": "there was no session to close"
 }
 ```

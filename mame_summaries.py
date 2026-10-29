@@ -105,8 +105,10 @@ def rom_check(args: dict[str, Any], reply: dict[str, Any]) -> str:
 # ------------------------------------------------------------------------------ advance
 
 def run_to(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    return (f"run_to {screen_map.run_to_named(args, reply)}: {reply['verdict']}, control counted "
-            f"{reply['control_hits']}")
+    named = f"run_to {screen_map.run_to_named(args, reply)}: {reply['verdict']}"
+    if "frames" in reply:
+        return f"{named} after {prose.counted(reply['frames'], 'frame')}"
+    return f"{named}, control counted {reply['control_hits']}"
 
 
 def run_for(args: dict[str, Any], reply: dict[str, Any]) -> str:

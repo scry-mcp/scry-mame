@@ -63,9 +63,7 @@ Example, from a live run:
 ```json
 {
   "steps": [
-    {
-      "op": "registers"
-    }
+    {"op": "registers"}
   ],
   "settle_seconds": 2.0
 }
@@ -136,17 +134,10 @@ Example, from a live run:
     }
   ],
   "steps_completed": 1,
-  "failed_at": {
-    "available": false,
-    "why": "no step failed"
-  },
+  "failed_at": {"available": false, "why": "no step failed"},
   "held": 0,
   "visible_cpu": ":maincpu",
-  "visible_cpu_kept": {
-    "before": ":maincpu",
-    "after": ":maincpu",
-    "restored": false
-  }
+  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false}
 }
 ```
 <!-- scry-reference:end perform -->
@@ -209,11 +200,7 @@ Example, from a live run:
 ```json
 {
   "act": [
-    {
-      "op": "run_for",
-      "frames": 1,
-      "seconds": 10.0
-    }
+    {"op": "run_for", "frames": 1, "seconds": 10.0}
   ],
   "settle_seconds": 2.0
 }
@@ -290,17 +277,10 @@ Example, from a live run:
       }
     ],
     "steps_completed": 1,
-    "failed_at": {
-      "available": false,
-      "why": "no step failed"
-    },
+    "failed_at": {"available": false, "why": "no step failed"},
     "held": 0,
     "visible_cpu": ":maincpu",
-    "visible_cpu_kept": {
-      "before": ":maincpu",
-      "after": ":maincpu",
-      "restored": false
-    }
+    "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false}
   },
   "verify": {
     "checked": false,
@@ -377,43 +357,16 @@ Example, from a live run:
   "steps": 43,
   "checks": 7,
   "dropped": [
-    {
-      "call": 2,
-      "op": "machine_map",
-      "why": "a read the export does not check"
-    },
-    {
-      "call": 3,
-      "op": "cpu_info",
-      "why": "a read the export does not check"
-    },
-    {
-      "call": 4,
-      "op": "symbols_find",
-      "why": "a read the export does not check"
-    },
-    {
-      "call": 8,
-      "op": "disassemble",
-      "why": "a read the export does not check"
-    },
-    {
-      "call": 9,
-      "op": "find",
-      "why": "a read the export does not check"
-    },
-    {
-      "call": 10,
-      "op": "history",
-      "why": "a read the export does not check"
-    },
+    {"call": 2, "op": "machine_map", "why": "a read the export does not check"},
+    {"call": 3, "op": "cpu_info", "why": "a read the export does not check"},
+    {"call": 4, "op": "symbols_find", "why": "a read the export does not check"},
+    {"call": 8, "op": "disassemble", "why": "a read the export does not check"},
+    {"call": 9, "op": "find", "why": "a read the export does not check"},
+    {"call": 10, "op": "history", "why": "a read the export does not check"},
     "... 34 more"
   ],
   "dropped_total": 41,
-  "cut": {
-    "available": false,
-    "why": "the recording kept every call a replay takes"
-  },
+  "cut": {"available": false, "why": "the recording kept every call a replay takes"},
   "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json"
 }
 ```

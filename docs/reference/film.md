@@ -57,23 +57,14 @@ Example, from a live run:
   "summary": "gfx_load ~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
   "status": "ok",
   "loaded": true,
-  "replaced_path": {
-    "available": false,
-    "why": "no manifest was loaded in this session before this one"
-  },
+  "replaced_path": {"available": false, "why": "no manifest was loaded in this session before this one"},
   "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
   "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
   "draft": false,
   "systems": ["radendur", "wheelfir", "pwball", "kongball"],
-  "formats": {
-    "page_512x512x8": "declared"
-  },
+  "formats": {"page_512x512x8": "declared"},
   "assets": {
-    "pages": {
-      "format": "page_512x512x8",
-      "tag": "gfx1",
-      "palette": "palette"
-    }
+    "pages": {"format": "page_512x512x8", "tag": "gfx1", "palette": "palette"}
   },
   "commands": {
     "blit": {
@@ -94,21 +85,14 @@ Example, from a live run:
       "protocol": "ramdac",
       "index_port": "0x00720001",
       "data_port": "0x00720003",
-      "index_flag_mask": {
-        "available": false,
-        "why": "only a latch's index word carries a flag"
-      },
+      "index_flag_mask": {"available": false, "why": "only a latch's index word carries a flag"},
       "order": "rgb",
       "component_bits": 8,
       "components_bit_reversed": false,
       "pen_range": [0, 255]
     }
   },
-  "status_counts": {
-    "proved": 14,
-    "declared": 11,
-    "human": 0
-  }
+  "status_counts": {"proved": 14, "declared": 11, "human": 0}
 }
 ```
 <!-- scry-reference:end gfx_load -->
@@ -252,21 +236,12 @@ Example, from a live run:
     "length": 2,
     "value": "0xffff",
     "changed": false,
-    "pc": {
-      "available": false,
-      "why": "no `pc` was given"
-    },
-    "pc_addr": {
-      "available": false,
-      "why": "no `pc` was given"
-    },
+    "pc": {"available": false, "why": "no `pc` was given"},
+    "pc_addr": {"available": false, "why": "no `pc` was given"},
     "cpu": ":maincpu",
     "frames": 4,
     "keep": 2,
-    "crop": {
-      "available": false,
-      "why": "no `crop`: the whole screen"
-    },
+    "crop": {"available": false, "why": "no `crop`: the whole screen"},
     "film_dir": "$TMPDIR/mame-mcp-qwnd_9kr/film-1",
     "screen": ":screen",
     "checked": true,
@@ -318,12 +293,7 @@ Example, from a live run:
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end gfx_film -->

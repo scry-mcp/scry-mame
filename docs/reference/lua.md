@@ -597,12 +597,7 @@ Example, from a live run:
     "delta": 12
   },
   "following": ["0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l", "0F205C: 23FC 0000 4942 0020 2EA8 move.l  #$4942, $202ea8.l"],
-  "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-  }
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end lua -->
