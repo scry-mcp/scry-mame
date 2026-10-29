@@ -108,67 +108,74 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
-  "system": "radendur",
-  "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
-  "reference_addr": "0x0",
-  "boot_seconds": 25.0,
-  "presence": false,
+  "binary": "~/.local/state/mame-builds/scry/mame",
+  "system": "circus",
+  "rompath": "/path/to/mame-test-roms",
+  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/f1-image/circus.ref",
+  "reference_addr": "0x1000",
+  "reference_base": "0x1000",
   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-  "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
+  "boot_seconds": 30.0,
+  "view": "Color Overlay",
+  "presence": false
 }
 ```
 
 ```json
 {
-  "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
+  "summary": "start circus on ~/.local/state/mame-builds/scry/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
   "status": "ok",
-  "system": "radendur",
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "system": "circus",
+  "binary": "~/.local/state/mame-builds/scry/mame",
   "binary_origin": "argument",
-  "version": "0.289 (unknown)",
-  "pid": 8765,
-  "stub_port": 63701,
-  "scratch_dir": "$TMPDIR/mame-mcp-nfbv0wdj",
+  "version": "<volatile>",
+  "pid": "<volatile>",
+  "stub_port": "<volatile>",
+  "scratch_dir": "$TMPDIR/mame-mcp-<run>",
   "state_dir": "",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-nfbv0wdj/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-nfbv0wdj/stdout.log",
+  "errorlog_path": "$TMPDIR/mame-mcp-<run>/error.log",
+  "stdout_path": "$TMPDIR/mame-mcp-<run>/stdout.log",
   "rom_check": "OK",
-  "symbols_total": 64,
-  "symbols_format": "yaml",
+  "symbols_total": 0,
+  "symbols_format": "none",
   "symbols_by_class": {},
-  "symbols_by_cpu": {":maincpu": 64},
-  "registers": ["D0", "D1", "D2", "D3", "D4", "D5", "... 12 more"],
-  "pc": "0x000f2034",
+  "symbols_by_cpu": {},
+  "registers": ["A", "X", "Y", "P", "SP", "PC"],
+  "pc": "0x00001000",
   "frame": 0,
   "frame_symbol": "frame",
-  "view": "native",
-  "views": ["Screen 0 Standard (4:3)", "Cocktail"],
+  "view": "Color Overlay",
+  "views": ["Color Overlay", "Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (31:32)", "Cocktail"],
   "background": true,
   "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle", "-screen0", "... 1 more"],
-  "boot_lua_path": "$TMPDIR/mame-mcp-nfbv0wdj/boot.lua",
+  "boot_lua_path": "$TMPDIR/mame-mcp-<run>/boot.lua",
   "presence": false,
   "machine": {
-    "cpus": 2,
-    "spaces": 4,
-    "address_map": 32,
+    "cpus": 1,
+    "spaces": 1,
+    "address_map": 10,
     "regions": 4,
     "shares": 2,
     "screens": 1,
-    "rom_files": 22
+    "rom_files": 15
   },
   "declarations": {
-    "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json",
-    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+    "persistent": false,
+    "path": {
+      "available": false,
+      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
+    },
+    "key": {
+      "available": false,
+      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
+    },
     "held": 0,
-    "fingerprint": "07549ca6b6e1c4ed",
+    "fingerprint": "cbc781678431dfe1",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
@@ -478,18 +485,19 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
-  "reference_addr": "0x0"
+  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/f3-image/circus.ref",
+  "reference_addr": "0x1000",
+  "reference_base": "0x1000"
 }
 ```
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.266 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.174 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001266,
+  "query_s": 0.001174,
   "cpu": ":maincpu"
 }
 ```

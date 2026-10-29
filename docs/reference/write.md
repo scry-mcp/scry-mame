@@ -63,7 +63,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end write -->
 
-**`region=True` goes through the console with no guest step**: `saver` copies the span to a file in the scratch, the bytes are patched into it, and `loadr` loads it back raw (a Lua region write would cost a step on a stopped machine). The patch is made in the cpu's byte order and swapped to the region's. Neither command's word is taken for the span: `saver` says it succeeded even when it clamped at the region's end, and `loadr` loads no more than its file holds, so a short or missing file is refused and nothing is loaded. A capture reading the block that region backs would show the table change with nothing saying why, so `captures_reading_it` names each one the write reached.
+**`region=True` goes through the console with no guest step**: `saver` copies the span to a file in the scratch, the bytes are patched into it, and `loadr` loads it back raw (a Lua region write would cost a step on a stopped machine). The patch is made in the cpu's byte order and swapped to the region's. Neither command's word is taken for the span: `saver` says it succeeded even when it clamped at the region's end, and `loadr` loads no more than its file holds, so a short or missing file is refused and nothing is loaded.
 
 A failed re-read of the watches the write touched, or of the readback, is `readback_refused` when the stub ANSWERED (the channel kept its place) and `session_broken` otherwise.
 
@@ -303,7 +303,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end debug -->
 
-**What counts as a write.** Beyond the words named above, each word is classified off MAME's own command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` (a file of console commands) and an ACTION, found by the parameter each command takes it in: the third of a `bp` or `ep`, the second of an `rp`, the fifth of a `wp`, the fourth of a `trace`/`traceover`.
+**What counts as a write.** Beyond the words named above, each word is classified off MAME's own command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` (a file of console commands) and an ACTION, found by the parameter each command takes it in: the third of a `bp` or `ep`, the second of an `rp`, the fifth of a `wp`, the fourth of a `trace`/`traceover`. A bare `suspend`, `resume`, `ignore` or `observe` only lists.
 
 - `//` and `/*` are the comment pane's `comadd` and `commit`; a comment's text is never evaluated, and a `comadd` typed here is neither stored nor listed.
 - A comparison is never an assignment (`print {d1==7fff}` is a read), and an assignment is looked for outside quoted strings only.
@@ -314,10 +314,4 @@ Example, from a live run:
 
 **The console has no exit code, so its own error answers are read.** An `ok` over a refused line would let a `perform` go on to the next step. So the shapes the console was captured printing make the reply INVALID `bad_argument`, matched anchored at a line's start (a shape not captured is not matched): `Error in expression`, `Invalid breakpoint number`, `Invalid registerpoint number`, `Invalid watchpoint type`, `Error opening file`, and the parse errors `unknown command`, `ambiguous command`, `unbalanced parentheses`, `unbalanced quotes`, `not enough parameters for command`, `too many parameters for command`, `error in assignment expression`.
 
-The two families differ in what ran. A parse error stops the line there, so the commands after it never ran and are left out of its writes, release and cpu setters (a `g` behind a refused command leaves the machine stopped). An error printed while a command ran leaves the rest running, and the command stays counted as a write, because the console evaluates parameters in order and `print d0=5,zzz` writes D0 before it refuses `zzz`. An error the answer cannot pin on one command names the whole line. A bare comparison typed as a command (`print d1==1234`) is an assignment expression to the console's parser and is refused; braced it answers.
-
-**What counts as a write.** Each word is classified off MAME's command table on the cautious side; `suspend` and `resume` naming a cpu count, as do `source` and an action, found by the parameter each command takes it in. A bare `suspend`, `resume`, `ignore` or `observe` only lists.
-
-**Why the console's errors are read.** It has no exit code, and an `ok` over a refused line would let a `perform` go on to the next step. A parse error leaves the commands after it unexecuted (`not_run`); an error printed while a command ran leaves the rest running and the command counted as a write.
-
-**Why an oversized packet is refused.** The stub drops such a packet unanswered and the wait would blame the wrong thing.
+The two families differ in what ran. A parse error stops the line there, so the commands after it never ran (`not_run`) and are left out of its writes, release and cpu setters (a `g` behind a refused command leaves the machine stopped). An error printed while a command ran leaves the rest running, and the command stays counted as a write, because the console evaluates parameters in order and `print d0=5,zzz` writes D0 before it refuses `zzz`. An error the answer cannot pin on one command names the whole line. A bare comparison typed as a command (`print d1==1234`) is an assignment expression to the console's parser and is refused; braced it answers.

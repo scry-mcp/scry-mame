@@ -6,8 +6,9 @@ The [README](README.md) is the front door. This page holds the contract several 
 
 <!-- scry-reference:begin index -->
 - [Session](docs/reference/session.md): [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`close`](docs/reference/session.md#close), [`focus`](docs/reference/session.md#focus), [`rom_check`](docs/reference/session.md#rom_check)
-- [Machine](docs/reference/machine.md): [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`symbols_find`](docs/reference/machine.md#symbols_find), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
-- [Advance](docs/reference/advance.md): [`run_to`](docs/reference/advance.md#run_to), [`run_for`](docs/reference/advance.md#run_for), [`step`](docs/reference/advance.md#step), [`resume`](docs/reference/advance.md#resume), [`stop`](docs/reference/advance.md#stop), [`trace`](docs/reference/advance.md#trace), [`series_capture`](docs/reference/advance.md#series_capture)
+- [Machine](docs/reference/machine.md): [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
+- [Names](docs/reference/names.md): [`symbols_find`](docs/reference/names.md#symbols_find)
+- [Advance](docs/reference/advance.md): [`run_to`](docs/reference/advance.md#run_to), [`run_for`](docs/reference/advance.md#run_for), [`step`](docs/reference/advance.md#step), [`resume`](docs/reference/advance.md#resume), [`stop`](docs/reference/advance.md#stop), [`trace`](docs/reference/advance.md#trace)
 - [Declarations](docs/reference/declarations.md): [`breakpoint_at`](docs/reference/declarations.md#breakpoint_at), [`regpoint_add`](docs/reference/declarations.md#regpoint_add), [`watch_add`](docs/reference/declarations.md#watch_add), [`declaration_list`](docs/reference/declarations.md#declaration_list), [`declaration_clear`](docs/reference/declarations.md#declaration_clear)
 - [Read](docs/reference/read.md): [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
 - [Screen](docs/reference/screen.md): [`palette`](docs/reference/screen.md#palette), [`screen_view`](docs/reference/screen.md#screen_view), [`screen_signature`](docs/reference/screen.md#screen_signature), [`gfx_view`](docs/reference/screen.md#gfx_view), [`gfx_locate`](docs/reference/screen.md#gfx_locate), [`gfx_sweep`](docs/reference/screen.md#gfx_sweep), [`gfx_draft`](docs/reference/screen.md#gfx_draft), [`gfx_blits`](docs/reference/screen.md#gfx_blits), [`gfx_blit_source`](docs/reference/screen.md#gfx_blit_source)
@@ -15,9 +16,10 @@ The [README](README.md) is the front door. This page holds the contract several 
 - [Scan](docs/reference/scan.md): [`scan`](docs/reference/scan.md#scan)
 - [Write](docs/reference/write.md): [`write`](docs/reference/write.md#write), [`set_register`](docs/reference/write.md#set_register), [`reset`](docs/reference/write.md#reset), [`debug`](docs/reference/write.md#debug)
 - [Comments](docs/reference/comments.md): [`comment_list`](docs/reference/comments.md#comment_list), [`comment_write`](docs/reference/comments.md#comment_write)
-- [Lua](docs/reference/lua.md): [`input`](docs/reference/lua.md#input), [`record`](docs/reference/lua.md#record), [`audio_record`](docs/reference/lua.md#audio_record), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
+- [Lua](docs/reference/lua.md): [`input`](docs/reference/lua.md#input), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
 - [States](docs/reference/states.md): [`state_list`](docs/reference/states.md#state_list), [`state_write`](docs/reference/states.md#state_write)
-- [Files](docs/reference/files.md): [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare), [`snapshot`](docs/reference/files.md#snapshot), [`captures`](docs/reference/files.md#captures)
+- [Captures](docs/reference/captures.md): [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
+- [Files](docs/reference/files.md): [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
 - [Lists](docs/reference/lists.md): [`perform`](docs/reference/lists.md#perform), [`drive`](docs/reference/lists.md#drive), [`perform_export`](docs/reference/lists.md#perform_export)
 <!-- scry-reference:end index -->
 
@@ -124,7 +126,7 @@ A ref is read once, so a clear reaches only declarations of its own kind: a name
 
 **A type file** (`types`) or a `type:` beside a symbol names what a symbol IS, so a watch on it needs no format and a pointer says what it points at.
 
-The tools: [Machine](docs/reference/machine.md) (`symbols_find`), [Declarations](docs/reference/declarations.md), [Read](docs/reference/read.md).
+The tools: [Names](docs/reference/names.md), [Declarations](docs/reference/declarations.md), [Read](docs/reference/read.md).
 
 ## Declarations
 
@@ -238,9 +240,9 @@ A run another stop cuts short leaves the notifier armed (field held, recording o
 
 A chunk that answered with no mark at all is refused as lost marks. A wrapper whose run did not settle is `not_settled`, its message saying the notifier may still be armed, never the wrapper's fields: the machine may still be running, so nothing read off it is a state of the wrapper. A wrapper refused once its run began has moved the machine, and says so in `frame_before` and `frame_after`. Marks carry the call's own number so a stale one is never attributed to a later call.
 
-The tools: [Lua](docs/reference/lua.md) (`input`, `record`, `audio_record`, `throttle`), and `screen_signature` on [Screen](docs/reference/screen.md).
+The tools: [Lua](docs/reference/lua.md) (`input`, `throttle`), [Captures](docs/reference/captures.md) (`record`, `audio_record`), and `screen_signature` on [Screen](docs/reference/screen.md).
 
-`snapshot` and `captures` ([Files](docs/reference/files.md)) are the screen's other half: the still as a complete, hashed PNG, and every file `record`, `audio_record`, `trace`, `snapshot` and the graphics tools checked and handed back this session, re-read, answering while the machine runs.
+`snapshot` and `captures` ([Captures](docs/reference/captures.md)) are the screen's other half: the still as a complete, hashed PNG, and every file `record`, `audio_record`, `trace`, `snapshot` and the graphics tools checked and handed back this session, re-read, answering while the machine runs.
 
 ### Graphics
 
@@ -254,13 +256,13 @@ The tools that answer about pictures and sound follow one order, so a reply is t
 
 The signature, crop and series formats and the rules of the file tools are on [Files](docs/reference/files.md).
 
-The tools: [Files](docs/reference/files.md); [Screen](docs/reference/screen.md); [Advance](docs/reference/advance.md); [Lua](docs/reference/lua.md).
+The tools: [Captures](docs/reference/captures.md); [Files](docs/reference/files.md); [Screen](docs/reference/screen.md).
 
 ## Screen maps
 
 A screen map names an application's screens and their controls in a file, so a caller asks "which screen is this" and gets a name; its format and its two layers are on [Screen](docs/reference/screen.md).
 
-The tools: [Read](docs/reference/read.md) (`screen_map_write(method="add")`, `screen_map_find`); [Files](docs/reference/files.md) (`screen_map_write(method="load")`, `screen_map_write(method="save")`).
+The tools: [Read](docs/reference/read.md) (`screen_map_write` with its three methods, `screen_map_find`).
 
 ## Saved states
 
@@ -272,4 +274,4 @@ The tools: [States](docs/reference/states.md).
 
 `debug` goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The console's shared contract is on [Lua](docs/reference/lua.md).
 
-The tools: [Write](docs/reference/write.md) (`debug`); [Lua](docs/reference/lua.md) (`lua`, `input`, `record`, `audio_record`, `throttle`).
+The tools: [Write](docs/reference/write.md) (`debug`); [Lua](docs/reference/lua.md) (`lua`, `input`, `throttle`).

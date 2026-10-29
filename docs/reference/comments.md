@@ -51,8 +51,8 @@ Example, from a live run:
       "ref": "irq_vblank",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-29T16:20:43+00:00",
-      "origin": "2026-10-29T16:20:42+00:00#8708.1",
+      "created_at": "<volatile>",
+      "origin": "<volatile>",
       "inherited": false,
       "age_s": 0,
       "text": "matrix A",
@@ -64,7 +64,7 @@ Example, from a live run:
   "truncated": false,
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
   },
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
@@ -157,8 +157,8 @@ Example, from a live run:
     "ref": "irq_vblank",
     "by": "symbol",
     "cpu": ":maincpu",
-    "created_at": "2026-10-29T16:20:43+00:00",
-    "origin": "2026-10-29T16:20:42+00:00#8708.1",
+    "created_at": "<volatile>",
+    "origin": "<volatile>",
     "inherited": false,
     "age_s": 0,
     "text": "matrix A",
@@ -168,7 +168,7 @@ Example, from a live run:
   "replaced_comments": [],
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
   },
   "cpu": ":maincpu"
 }

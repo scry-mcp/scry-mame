@@ -59,8 +59,10 @@ finding about it is a finding about the tool's code.
   carrying a reference section, or a reference opening with a pitch, is the pattern.
 - The front door stays under 16 KB, the generated demo flows included: a section that needs more
   is reference and belongs on a reference page. A flow that grows past it shows fewer steps.
-- This server's front door and `REFERENCE.md` carry the same section headings in the same order as
-  scry-dosbox-x's; a section one has and the other lacks is a finding.
+- This server's front door and `REFERENCE.md` carry the same second-level headings in the same order as
+  scry-dosbox-x's. A section about something only one emulator has is allowed, by name: DOSBox-X's
+  hardware, guest files and debugger channel; MAME's console. Any other section one has and the
+  other lacks is a finding.
 - The front door closes with the credits line, verbatim, its links resolving; it is attribution
   the project ships, not a leak, and a front door without it is the finding:
 

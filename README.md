@@ -74,11 +74,11 @@ the debugger (merged upstream as mamedev/mame#16363, so a MAME from it on carrie
 
 ## Platforms
 
-macOS and Windows: the server and its tests run on both. On Windows the server
-proves which process serves MAME's gdbstub from the system's own TCP table instead of `lsof`, and
-a MAME outlives no server: it runs in a job object the server holds, which Windows closes, ending
-MAME, however the server ends. Linux runs the unit tests (`.github/workflows/ci.yml`) and nothing
-else: the server supports macOS and Windows only.
+macOS and Windows: the server and its tests run on both. On Windows the server proves which
+process serves MAME's gdbstub from the system's own TCP table instead of `lsof`, and a MAME
+outlives no server: it runs in a job object the server holds, which Windows closes, ending MAME,
+however the server ends. Linux runs the unit tests (`.github/workflows/ci.yml`) and nothing else:
+the server supports macOS and Windows only.
 
 ## See it run
 

@@ -150,7 +150,7 @@ Example, from a live run:
 
 **`until_frame=F` is a window of frames whose length the program finds.** Every stop a watch makes inside the window takes a step without moving the frame, so the steps a window needs are its frames plus its stops, and the stops are the thing being measured; a list sized by guessing ends short with a smaller count that looks clean. The window is the frames before F: the call ends right after the first step whose stop reads F, even mid-list. It needs a `run_for` step, because `run_for` carries on past a watch's stop where `run_to` and `step` end at the first. A frame already reached is refused, and a stop with no frame ends the list INVALID `unexpected_answer`, since nothing says whether the window is over.
 
-Before a console op the list waits up to `settle_seconds` for the machine to stop, and only running-ok ops go on while it runs. `visible_cpu` and `visible_cpu_kept` report the cpu the list put back. A list that alternates cpus restores the cpu visible before its first step, or the one the last `focus` read back, through the stub's `Hc`, which runs nothing; the restore holds while the machine is stopped, and a release makes the cpu it last stopped on visible again. A wait that ran out ends the list `TIMEOUT`, and so does a step whose own wait missed (a `log_wait` that timed out), because later steps were built on what it waited for. `until_frame` needs a `run_for` step because `run_for` carries on past a watch's stop where `run_to` and `step` end at the first; a frame already reached is refused, and a stop with no frame ends the list INVALID `unexpected_answer`, since nothing says whether the window is over. Its window is the frames before F plus the stops a watch makes inside it, which only the program finds, so a list sized by guessing ends short with a smaller count that looks clean; the call ends right after the first step whose stop reads F, even mid-list. `stops` and `ran_path` exist because a count assembled from a table cut to fit the reply comes out wrong and clean. `summaries` is an argument of the call, never of a step. A step is any tool, with `op` plus its own arguments; the whole list is checked before the first step for ops, argument names, types, the values the tools refuse alone, each step's `cpu` and a bare hex ref whose table is known, and what only a step can judge refuses at that step. `recorded` is the field-to-value pairs a replay holds a reply to, and `perform_export` writes them. A step's reply row carries the `cpu` it names.
+Before a console op the list waits up to `settle_seconds` for the machine to stop, and only running-ok ops go on while it runs. `visible_cpu` and `visible_cpu_kept` report the cpu the list put back. `summaries` is an argument of the call, never of a step. A step is any tool, with `op` plus its own arguments; the whole list is checked before the first step for ops, argument names, types, the values the tools refuse alone, each step's `cpu` and a bare hex ref whose table is known, and what only a step can judge refuses at that step. `recorded` is the field-to-value pairs a replay holds a reply to, and `perform_export` writes them. A step's reply row carries the `cpu` it names.
 
 <!-- scry-reference:begin drive -->
 ## `drive`
@@ -345,15 +345,15 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json"
+  "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json",
+  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
   "steps": 43,
   "checks": 7,
   "dropped": [
@@ -367,7 +367,7 @@ Example, from a live run:
   ],
   "dropped_total": 41,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
-  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->
@@ -378,4 +378,4 @@ Whatever ends a run, the clock or a breakpoint, stops the cpu at a place inside 
 
 **The document** carries the `start`'s arguments as given, host paths included (`--binary` and `--rompath` replace them). `needs.states` lists the saved states it loads and does not save, checked against `state_list` before anything plays; `needs.declarations` the breakpoints, watches and registerpoints held as the recorded `start` began, which the replay's lists are held to.
 
-A `resume` ends the document because whatever ends a run, the clock or a breakpoint, stops the cpu inside a frame at a place no replayed advance reaches, and every later stop inherits the shift. Cut calls are the first one no replay can place: a `resume`, a wall-clock bound that ended a run, a call with no reply, a refusal after the machine moved, a machine found elsewhere than the call before left it, a step that wrote a file the session named. A reader that steps the guest is kept as a step. Dropped: a refused call, any other read, a call that changes nothing in the emulated machine; an `image_compare(method="golden")` over files dropped calls wrote is dropped too. The replay is `uv run python -m scry_core.replay <dest>`, from this server's repository, and exits 0 when every step held; the reply's `replay` is that command line. `dropped` shows the last 40 rows. `cut` is unavailable when nothing was cut. `no_recording` also covers a `start` that was cancelled.
+Cut calls are the first one no replay can place: a `resume`, a wall-clock bound that ended a run, a call with no reply, a refusal after the machine moved, a machine found elsewhere than the call before left it, a step that wrote a file the session named. A reader that steps the guest is kept as a step. Dropped: a refused call, any other read, a call that changes nothing in the emulated machine. The replay is `uv run python -m scry_core.replay <dest>`, from this server's repository, and exits 0 when every step held; the reply's `replay` is that command line. `dropped` shows the last 40 rows. `cut` is unavailable when nothing was cut. `no_recording` also covers a `start` that was cancelled.

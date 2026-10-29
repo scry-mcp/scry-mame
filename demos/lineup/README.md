@@ -14,7 +14,7 @@ game counted, starts a game, runs to the routine that writes its level, and play
 the next colour, a shot, each read back off the player's own variables. Each screen it arrives at
 is recognised off a map signed in palette indices, because the board's 5-bit palette and the PC's
 6-bit DAC show the same pixels in slightly different colours. Then it records two seconds of the
-stage's music off the AY-3-8910 and holds it, sample for sample, to `music.wav` beside this file.
+stage's music off the AY-3-8910 and holds it, sample for sample, to [`music.wav`](music.wav) beside this file.
 
 ## The romset
 

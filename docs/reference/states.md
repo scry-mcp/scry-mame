@@ -41,10 +41,18 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
+  "summary": "state_list: 1 state in $TMPDIR/mame-mcp-<run>/sta/circus",
   "status": "ok",
-  "state_dir": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
-  "states": []
+  "state_dir": "$TMPDIR/mame-mcp-<run>/sta/circus",
+  "states": [
+    {
+      "name": "kept",
+      "path": "$TMPDIR/mame-mcp-<run>/sta/circus/kept.sta",
+      "bytes": 1074,
+      "frame": 0,
+      "pc": "0x00001000"
+    }
+  ]
 }
 ```
 <!-- scry-reference:end state_list -->
@@ -113,20 +121,20 @@ Example, from a live run:
 ```json
 {
   "method": "save",
-  "name": "m11"
+  "name": "kept"
 }
 ```
 
 ```json
 {
-  "summary": "state_write save: m11, 111781 bytes at frame 30",
+  "summary": "state_write save: kept, 1074 bytes at frame 0",
   "status": "ok",
-  "name": "m11",
-  "path": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur/m11.sta",
-  "bytes": 111781,
-  "frame": 30,
-  "pc": "0x000e2cea",
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66664}
+  "name": "kept",
+  "path": "$TMPDIR/mame-mcp-<run>/sta/circus/kept.sta",
+  "bytes": 1074,
+  "frame": 0,
+  "pc": "0x00001000",
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 246}
 }
 ```
 <!-- scry-reference:end state_write -->

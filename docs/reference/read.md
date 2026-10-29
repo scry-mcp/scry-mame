@@ -187,8 +187,6 @@ Example, from a live run:
 ```
 <!-- scry-reference:end read_block -->
 
-By `tag`, the spelling tried second is the full one (`:blitram`), because MAME names a share bare and a region either way.
-
 A share is a block a map entry writes through a handler and reads nowhere, so `read_memory` there answers zeros; a region is a ROM no cpu's space maps, `gfx1` say. The call alters nothing. It goes through MAME's Lua console and costs what `lua` costs, so the read is of the state after the instruction at the stop's pc; to see the block as a write there found it, stop one instruction earlier. Past the block's end MAME answers zeros in silence, which is why the call refuses. A `tag` is tried bare first, then in its full spelling (`:blitram`), because MAME names a share bare and a region either way. A tag with whitespace is `bad_argument`. Offset is an integer or a `0x` string; with `ref` it is the address's distance into the block.
 
 <!-- scry-reference:begin registers -->
@@ -340,8 +338,6 @@ Example, from a live run:
 ```
 <!-- scry-reference:end disassemble -->
 
-`flow` is read off the mnemonic by a table per cpu type, because MAME computes the same distinction and no channel hands it on.
-
 `flow` is read off the mnemonic by a table per cpu type, because MAME's console drops its own step flags; `flow_source` is `mnemonic_table:<type>`, or `none` with a `note` when no table exists or the opcode-less listing did not come out. A word MAME cannot decode is marked by MAME (`dc.w ...; ILLEGAL`). A line MAME holds a comment for ends ` // <text>`. A register-relative operand's address is the register's at run time, so it cannot be resolved. A console that wrote no listing, or an empty one, is `status: INVALID` with `message`.
 
 <!-- scry-reference:begin find -->
@@ -409,8 +405,6 @@ Example, from a live run:
 }
 ```
 <!-- scry-reference:end find -->
-
-`span` says over which bytes a zero was found. There is no whole-address-space sweep, because the space's extent is not something the symbol table says.
 
 The console takes each byte as a parameter of its own, which bounds the pattern. `span` says over which bytes a zero was found. A hit is where the pattern starts, so one running past the window's end is counted. A linker map carries no sizes, so a class's span ends at its last symbol's start; a note on `span` says so. There is no whole-address-space sweep because the extent of the space is not something the symbol table says.
 
@@ -502,17 +496,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }

@@ -90,7 +90,7 @@ MAME's debugger skips the breakpoints of the instruction a stop lands on when th
 
 **It is evaluated once (`print {<condition>}`) before arming**, because the console arms a condition its evaluator refuses and that row never fires. `print` reads the visible cpu's symbols, so the row's cpu is shown through the stub and the visible one put back, which runs nothing. When the stub refuses the put-back the call refuses before storing and `visible_cpu` names the cpu left visible; `start`'s re-arm has no caller to answer, arms by cpu name and says so in its `rearm` `note`. At `start` a condition the console cannot evaluate is `unresolved` for a name this build lacks and `unarmable` otherwise, kept either way.
 
-A control counts its hits through a conditioned console breakpoint that never halts, so it costs a run nothing. A `seg:off` is refused because addresses are linear on MAME's cpus. The condition is evaluated once before arming because the console arms a condition its evaluator refuses and that row never fires (`limit_chars` names the packet limit a too-long one hits). A name absent from this build is stored `unresolved` rather than refused; a row `bplist` does not list after the arm is `readback_refused` with the declaration kept (`armed: false`, `state: gone`); `note` is set when a cpu is ignored; `condition` and `condition_typed` carry the condition as the console reads it and as typed; `cpu` is the cpu it armed on.
+A `seg:off` is refused because addresses are linear on MAME's cpus. The condition is evaluated once before arming because the console arms a condition its evaluator refuses and that row never fires (`limit_chars` names the packet limit a too-long one hits). A name absent from this build is stored `unresolved` rather than refused; a row `bplist` does not list after the arm is `readback_refused` with the declaration kept (`armed: false`, `state: gone`); `note` is set when a cpu is ignored; `condition` and `condition_typed` carry the condition as the console reads it and as typed; `cpu` is the cpu it armed on.
 
 <!-- scry-reference:begin regpoint_add -->
 ## `regpoint_add`
@@ -377,8 +377,8 @@ Example, from a live run:
       "ref": "exception_handler",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-29T16:20:43+00:00",
-      "origin": "2026-10-29T16:20:42+00:00#8708.1",
+      "created_at": "<volatile>",
+      "origin": "<volatile>",
       "inherited": false,
       "age_s": 0,
       "role": "stop",

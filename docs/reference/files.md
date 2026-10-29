@@ -96,36 +96,18 @@ Example, from a live run:
 
 ```json
 {
-  "method": "region",
-  "manifest": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/manifest.json",
-  "measure": "changed_pixels"
+  "method": "image",
+  "a": "/nonexistent/a.png",
+  "b": "/nonexistent/b.png"
 }
 ```
 
 ```json
 {
-  "summary": "image_compare region: changed_pixels, 9 transitions over 12 frames",
-  "status": "ok",
-  "measure": "changed_pixels",
-  "crop": [0, 0, 336, 252],
-  "frames": 12,
-  "start": {
-    "available": false,
-    "why": "`changed_pixels` counts a change from the frame before, and the first frame has none"
-  },
-  "transitions": [
-    [24, 14790],
-    [25, 23888],
-    [26, 30995],
-    [27, 39139],
-    [28, 31816],
-    [29, 16125],
-    "... 3 more"
-  ],
-  "gaps": [1, 1, 1, 1, 1, 1, "... 2 more"],
-  "transitions_total": 9,
-  "path": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/track-1.json",
-  "manifest": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/manifest.json"
+  "summary": "image_compare: INVALID (bad_argument), a: no file at /nonexistent/a.png",
+  "status": "INVALID",
+  "code": "bad_argument",
+  "message": "a: no file at /nonexistent/a.png"
 }
 ```
 <!-- scry-reference:end image_compare -->
@@ -196,7 +178,7 @@ Example, from a live run:
 ```json
 {
   "method": "measure",
-  "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 
@@ -224,105 +206,9 @@ Example, from a live run:
     }
   ],
   "pcm_sha256": "9c808cd852605b03eea32b76138f7c9f518c7f2f29e3b9ca76530161be7301fb",
-  "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 <!-- scry-reference:end audio_compare -->
 
 Replies echo `path`, `a`, `b` and `window`. The sound itself never comes back, which is why every result is a number.
-
-<!-- scry-reference:begin snapshot -->
-## `snapshot`
-
-*Snapshot the screen to a PNG*
-
-```text
-snapshot(dest="")
-```
-
-Save a PNG of the screen now, through `view`, in the scratch or moved to `dest`, which must
-be a new absolute or `~`-led path in an existing directory. Works while running.
-
-Reply: `path`, `bytes`, `sha256`, `view`. An incomplete PNG is `INVALID`.
-
-Reference: REFERENCE.md, Input and the screen.
-
-| argument | type | default |
-|---|---|---|
-| `dest` | string | `""` |
-
-| reply field | type |
-|---|---|
-| `bytes` | integer |
-| `path` | string |
-| `sha256` | string |
-| `view` | string or object |
-
-Example, from a live run:
-
-```json
-{}
-```
-
-```json
-{
-  "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
-  "status": "ok",
-  "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
-  "bytes": 441,
-  "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
-  "view": "native"
-}
-```
-<!-- scry-reference:end snapshot -->
-
-The console's `snap` treats even an absolute path as relative to the snapshot directory, which is why the tool snaps under its own name and moves the file.
-
-A `dest` is refused with a comma, semicolon, quote, whitespace, bracket or control character, because the console command line cannot carry them; the check runs before the console is touched, so a refused path costs no snapshot. The file's `sha256` is the hash a golden's `checksums.sha256` compares. A scratch snapshot dies with `close`, so give a `dest` to keep one. A semantic frame is `run_to` the point where the drawer finishes, then `snapshot`.
-
-<!-- scry-reference:begin captures -->
-## `captures`
-
-*List this session's captures*
-
-```text
-captures()
-```
-
-List the files `record`, `audio_record`, `trace`, `snapshot` and the graphics tools made
-this session, re-read now; works while running.
-
-Reply: `captures` (`kind`, `path`, `present`, `bytes`, `avi_frames`, `samples`, `channels`,
-`sample_rate_hz`).
-
-Reference: REFERENCE.md, Input and the screen.
-
-Takes no argument.
-
-| reply field | type |
-|---|---|
-| `captures` | array |
-
-Example, from a live run:
-
-```json
-{}
-```
-
-```json
-{
-  "summary": "captures: 1 file, 1 png",
-  "status": "ok",
-  "captures": [
-    {
-      "kind": "png",
-      "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
-      "present": true,
-      "bytes": 441
-    }
-  ]
-}
-```
-<!-- scry-reference:end captures -->
-
-`kind` is the extension (`avi`, `wav`, `png`, `trace`) or `image`. The `trace` set file is not listed, and a recording its call answered still open or not begun is not listed either, its path being in that reply. `avi_frames` is the frame count the AVI header declares; `samples`, `channels` and `sample_rate_hz` are a WAV's. Each is unavailable once the file no longer reads as finished, and a file gone since stays listed with `present: false` rather than dropped.

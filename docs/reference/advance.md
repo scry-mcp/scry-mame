@@ -178,7 +178,7 @@ Example, from a live run:
 
 **Unanswered interrupt at the bound.** `run_to` starts with the stub's own `c`, so an interrupt at the bound that is NOT ANSWERED is `not_settled` with no `cause` (no stop was read) and `target_disarmed` saying whether the temporary breakpoint's removal was confirmed; the session stays RUNNING and `stop` waits for the packet the run still owes. A removal the stub REFUSES after the stop is an answer, not a break: the stop is still the measurement, and the `note` names the `debug("bpclear 0x<row>")` that removes the row (`declaration_clear(kind="breakpoint")` clears declarations, and the target was never one).
 
-Why it is not a plain run: a control is required with a `ref` or an anchored screen because a silent breakpoint has several causes that all look like "never called", and a TIMEOUT with silent controls is INVALID for the same reason. Both rows are read back from `bplist` before the machine moves. A stop at the target's address is `TARGET` only when it is the target cpu's; a control on another cpu is `unknown_ref`, naming the `breakpoint_at(..., cpu=)` that would fix it. `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
+Reply details: `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
 
 <!-- scry-reference:begin run_for -->
 ## `run_for`
@@ -522,7 +522,7 @@ Example, from a live run:
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-29T16:20:46+00:00"
+    "wall_at": "<volatile>"
   }
 }
 ```
@@ -643,9 +643,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-<run>/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-<run>/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,
@@ -714,139 +714,3 @@ Example, from a live run:
 **The caps** bound how much one window can produce; a longer window is consecutive calls.
 
 `set_path` is a JSON line per executed address, ascending (`addr`, `symbol` when placed, `count` under `noloop`); `symbols` rows carry `symbol`, `addr`, `addresses`, `first`, `last` and `instructions` under `noloop`. An empty `dest` lands in the scratch. Refusals before anything is armed: an existing `dest` or `<dest>.set.jsonl`, a cpu with no disassembler (`no_channel`). `readback_refused`: a trace with no instruction line, or a tracer that could not be closed (`trace.closed: false`, unavailable when the session broke). An INVALID run carries `trace` (`path`, `bytes`, `closed`) and no set file.
-
-<!-- scry-reference:begin series_capture -->
-## `series_capture`
-
-*Capture a series of frames*
-
-```text
-series_capture(at_frames=null, first=null, last=null, step=1, crop=null, dest="", seconds=60.0)
-```
-
-Screen frames kept inside MAME as PNGs and a manifest, for `image_compare`. Stops two frames
-past the last.
-
-Frames by `run_for`'s counter, all ahead: `at_frames` or `first`, `last`, `step`, at most
-1000. `crop` is `[x, y, width, height]`. `dest`: a new absolute or `~`-led
-directory, kept after `close`. Needs a stopped machine.
-
-Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
-`run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
-
-Reference: REFERENCE.md, Media files.
-
-| argument | type | default |
-|---|---|---|
-| `at_frames` | array of integer or null | `null` |
-| `first` | integer or null | `null` |
-| `last` | integer or null | `null` |
-| `step` | integer | `1` |
-| `crop` | array of integer or null | `null` |
-| `dest` | string | `""` |
-| `seconds` | number (> 0, <= 600.0) | `60.0` |
-
-| reply field | type |
-|---|---|
-| `console_reruns` | integer |
-| `cpu` | string |
-| `following` | array of string |
-| `instruction` | StopInstruction |
-| `errorlog` | object |
-| `frame` | integer |
-| `pc` | string |
-| `regs` | object |
-| `resent` | integer |
-| `stop_seq` | integer |
-| `thread_errors` | integer |
-| `emulated_after_s` | number or object |
-| `emulated_before_s` | number or object |
-| `count` | integer |
-| `crop` | array |
-| `cycles` | integer |
-| `distinct` | integer |
-| `first` | integer |
-| `frame_after` | integer |
-| `frame_before` | integer |
-| `frame_source` | string |
-| `frames_asked` | integer |
-| `kept_after_close` | boolean |
-| `last` | integer |
-| `lost` | array |
-| `manifest` | string |
-| `polls` | integer |
-| `verdict` | string |
-
-Example, from a live run:
-
-```json
-{
-  "at_frames": [14],
-  "seconds": 10.0
-}
-```
-
-```json
-{
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
-  "status": "ok",
-  "verdict": "ELAPSED",
-  "frame_before": 12,
-  "frame_after": 16,
-  "emulated_before_s": 0.259585,
-  "emulated_after_s": 0.339456,
-  "cycles": 1277930,
-  "polls": 4,
-  "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 19,
-  "pc": "0x00002986",
-  "cpu": ":maincpu",
-  "frame": 16,
-  "regs": {
-    "D0": "0x00005845",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000002ff",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fe4",
-    "SP": "0x00200fa4",
-    "PS": "0x2108",
-    "PC": "0x00002986"
-  },
-  "instruction": {
-    "address": "002986",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $2986",
-    "symbol": "MODE_CLEAR_BLITS",
-    "delta": 304
-  },
-  "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
-  "manifest": "$TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
-  "count": 1,
-  "first": 14,
-  "last": 14,
-  "distinct": 1,
-  "crop": [0, 0, 336, 252],
-  "lost": [],
-  "frames_asked": 1,
-  "kept_after_close": false,
-  "frame_source": "frame_number",
-  "thread_errors": 0,
-  "console_reruns": 0
-}
-```
-<!-- scry-reference:end series_capture -->
-
-**On an indexed screen a series frame is an RGB PNG and a film frame an indexed one**, on purpose: the film's index is the pen, which a colour PNG would lose, and a series is for comparing what the screen showed. So the same frame from the two never has the same bytes and a golden of one never matches the other by `image_compare(method="golden")`; `image_compare(method="image")` reads the colours a picture shows, so it compares them.
-
-Each frame is MAME's own rendering, read by a frame notifier one frame late as `gfx_film` reads its frames. Its PNG is RGB where `gfx_film`'s may be indexed; compare the two with `image_compare(method="image")`. A reply carries `verdict`, the run's counters and the survey as `run_for` reports them.
