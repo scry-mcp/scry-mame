@@ -55,6 +55,12 @@ uv run python -m scry_core.reference server:REFERENCE --write \
     --examples <transcript.jsonl ...> --mark '/tmp/<the run>=$TMPDIR'
 ```
 
+A green live run deletes its scratch, transcript included: hard-link `transcript.jsonl` while it
+runs. A clock reading, pid, port or scratch directory name in a reply is hidden by the generator.
+`--skip '<regex>'` leaves out the cells whose call, reply, section or label match it, so a tool
+whose first cell ran on a board a stranger cannot have takes its next cell as its example; a tool
+with no other cell keeps none.
+
 The commit itself runs scry-core's pre-commit (`python -m scry_core.hook --help` says what it checks): enable it once per clone with
 
 ```sh
