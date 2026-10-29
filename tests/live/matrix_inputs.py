@@ -39,8 +39,8 @@ from live_harness import (
 )
 from matrix_acceptance import V30_ALT, v30_boot
 
-import mame_declarations as dec  # isort: skip -- found through the path the harness sets
-import mame_symbols as syms  # isort: skip -- found through the path the harness sets
+from scry_mame import declarations as dec  # isort: skip -- found through the path the harness sets
+from scry_mame import symbols as syms  # isort: skip -- found through the path the harness sets
 
 O_TITLE = "inputs: an address only with 0x, one reading per ref, the store's old rows kept"
 O_CELLS = [f"O{n} {text}" for n, text in enumerate([

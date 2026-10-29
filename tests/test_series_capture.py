@@ -5,25 +5,21 @@ decoder. The notifier's own Lua runs on the live tier (section Y), against a rea
 from __future__ import annotations
 
 import json
-import sys
 from array import array
 from pathlib import Path
 from typing import Any, cast
 
 import pytest
 from scry_core import png
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import blank_session  # noqa: E402
 
-import mame_advance as madvance  # noqa: E402
-import mame_chunk as mchunk  # noqa: E402
-import mame_read as mread  # noqa: E402
-import mame_screen as mscreen  # noqa: E402
-import mame_series as mseries  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import advance as madvance  # noqa: E402
+from scry_mame import chunk as mchunk  # noqa: E402
+from scry_mame import read as mread  # noqa: E402
+from scry_mame import screen as mscreen  # noqa: E402
+from scry_mame import series as mseries  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 W, H = 4, 2
 

@@ -2,21 +2,19 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
 from server_support import _running  # noqa: E402
 from session_doubles import captured, wplist_answer  # noqa: E402
 
-import mame_console as console  # noqa: E402
-import mame_lexer as lexer  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    console,  # noqa: E402
+    lexer,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 # (capture, the line sent, the command the console refused, the head of its error)
 REFUSED = [

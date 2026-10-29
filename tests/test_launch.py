@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 import threading
 from pathlib import Path
 
@@ -8,15 +7,14 @@ import pytest
 from scry_core import host_program
 from scry_core.host_program import POSIX_NAMES
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-
-import mame_files as files  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_machine as machine  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_symbols as syms  # noqa: E402
-import mame_transport as transport  # noqa: E402
+from scry_mame import (
+    files,  # noqa: E402
+    launch,  # noqa: E402
+    machine,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import symbols as syms  # noqa: E402
 
 
 def test_a_types_file_that_cannot_be_read_is_refused_naming_it(tmp_path: Path) -> None:

@@ -4,16 +4,12 @@ import dataclasses
 import json
 import os
 import re
-import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
 from scry_core import declaration_rows
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _never_spawns, _stub_boot  # noqa: E402
 from session_doubles import (
     add_symbol,
@@ -30,16 +26,18 @@ from session_doubles import (
 )
 from test_watches import _watching  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_symbols as syms  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import symbols as syms  # noqa: E402
 
 BPLIST_NONE = "No breakpoints currently installed\n\n"
 

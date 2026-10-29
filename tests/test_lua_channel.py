@@ -13,9 +13,6 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import (  # noqa: E402
     AVI_HEAD,
     CONSOLE,
@@ -40,16 +37,18 @@ from lua_support import (  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import blank_session, refused  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_files as mfiles  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_lua as lua  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_write as mwrite  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    launch,  # noqa: E402
+    lua,  # noqa: E402
+    summaries,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import files as mfiles  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import write as mwrite  # noqa: E402
 
 
 def test_a_script_becomes_one_chunk_under_pcall_with_its_sentinel() -> None:

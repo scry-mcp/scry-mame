@@ -9,7 +9,6 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scry_core import value_format as vf  # noqa: E402
@@ -17,14 +16,16 @@ from server_support import _running  # noqa: E402
 from session_doubles import captured, refused, use_table, visible_in  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_cpus as cpus  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tally as tally  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    cpus,  # noqa: E402
+    tally,  # noqa: E402
+    transport,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_a_breakpoint_named_on_the_sub_cpu_lands_there_and_moves_no_visible_cpu(
@@ -479,8 +480,7 @@ def test_a_registerpoint_names_only_the_visible_cpu(
 def test_the_gather_reads_each_cpus_register_names_off_its_own_state() -> None:
     from test_machine import M68K_DUAL
 
-    import mame_cpus as cpus
-    import mame_machine as machine
+    from scry_mame import cpus, machine
 
     regs = machine.parse(M68K_DUAL)[cpus.CPU_REGISTERS]
     assert sorted(regs) == [":maincpu", ":subcpu"]
@@ -491,7 +491,7 @@ def test_a_condition_is_judged_against_the_registers_of_the_cpu_it_arms_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A symbol spelled like the sub cpu's register is ambiguous there only."""
-    import mame_cpus as cpus
+    from scry_mame import cpus
 
     _running(monkeypatch, tmp_path)
     use_table(monkeypatch, table={"IX": 0x2000})
@@ -548,7 +548,7 @@ def test_a_silent_controls_listing_is_decoded_on_the_controls_own_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The control's listing is decoded on the control's cpu, which need not be the visible one."""
-    import mame_advance as advance
+    from scry_mame import advance
 
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)

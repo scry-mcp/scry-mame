@@ -8,7 +8,6 @@ import json
 import os
 import re
 import struct
-import sys
 import time
 import wave
 from array import array
@@ -17,21 +16,20 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from scry_core import wav
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel  # noqa: E402
+from scry_core import wav
 from session_doubles import refused, run_host_lua  # noqa: E402
 
-import mame_advance as advance  # noqa: E402
-import mame_audio as maudio  # noqa: E402
-import mame_lua as lua  # noqa: E402
-import mame_recording as mrec
-import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    lua,  # noqa: E402
+    summaries,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import audio as maudio  # noqa: E402
+from scry_mame import recording as mrec
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 #: How the one refusal of a relative path begins (scry-core's judge).
 R_ABS = "must be an absolute path"
@@ -682,7 +680,7 @@ def test_the_spent_bound_after_an_answer_carries_the_consoles_account(
     # the bound's clock only, the lua module's own view of `time`: the global stays real
     clock = SimpleNamespace(**{k: getattr(time, k) for k in dir(time) if not k.startswith("_")})
     clock.monotonic = lambda: now["t"]
-    monkeypatch.setattr("mame_lua.time", clock)
+    monkeypatch.setattr("scry_mame.lua.time", clock)
     out = refused("the script answered at the step", s.audio_record(frames=30, seconds=5.0))
     assert out["code"] == "wait_expired" and out.keys() >= {"thread_errors", "console_reruns"}, out
 

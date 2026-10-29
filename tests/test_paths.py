@@ -1,4 +1,4 @@
-"""Every path argument is judged by one rule (`mame_inputs.absolute`), whichever tool takes it.
+"""Every path argument is judged by one rule (`inputs.absolute`), whichever tool takes it.
 
 The server runs MAME from a scratch directory, so the relative paths these cases use exist from
 the test's working directory on purpose: only the absolute rule refuses them.
@@ -24,13 +24,13 @@ from scry_core import host_program
 from server_support import _never_spawns
 from session_doubles import fake_mame, refused
 
-import mame_binary as mbinary
-import mame_files as files
-import mame_launch as mlaunch
-import mame_machine as mmachine
-import mame_state as mstate
-import mame_symbols as syms
-import server as s
+from scry_mame import binary as mbinary
+from scry_mame import files
+from scry_mame import launch as mlaunch
+from scry_mame import machine as mmachine
+from scry_mame import server as s
+from scry_mame import state as mstate
+from scry_mame import symbols as syms
 
 R_ABS = "must be an absolute path"
 

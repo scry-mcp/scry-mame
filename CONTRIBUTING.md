@@ -6,8 +6,9 @@ change.
 
 ## Where the code lives
 
-`server.py` holds the tools and `mame_mcp.py` the MCP boundary (the server object, its
-`instructions`, the roster of tools by family). Each `mame_*.py` holds one concern, and its
+`src/scry_mame/server.py` holds the tools and `src/scry_mame/mcp.py` the MCP boundary (the server
+object, its `instructions`, the roster of tools by family). Every other module in `src/scry_mame/`
+holds one concern, and its
 docstring opens with what it holds and why: read that before changing it. What both Scry servers
 share (the reply contract, the reference generator, the demo runner, the probe, the live bench)
 is the scry-core package, pinned by tag in `pyproject.toml`. `demos/` holds the demos on free sets and `patches/` the MAME patches the README names. `tests/` holds the
@@ -50,8 +51,8 @@ code, and the examples only from a live run's transcript (each `--mark` spells a
 the run's host, as the committed examples do):
 
 ```sh
-uv run python -m scry_core.reference server:REFERENCE --write
-uv run python -m scry_core.reference server:REFERENCE --write \
+uv run python -m scry_core.reference scry_mame.server:REFERENCE --write
+uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
     --examples <transcript.jsonl ...> --mark '/tmp/<the run>=$TMPDIR'
 ```
 

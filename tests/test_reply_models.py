@@ -3,17 +3,12 @@
 from __future__ import annotations
 
 import asyncio
-import sys
-from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-
 from scry_core import reply_schema  # noqa: E402
 
-import mame_replies as replies  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import replies  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 
 def test_every_tool_publishes_each_field_as_its_value_or_unavailable() -> None:

@@ -1,4 +1,4 @@
-"""`mame_read.placer`: one sort per table, then a bisection per address, answering exactly what
+"""`read.placer`: one sort per table, then a bisection per address, answering exactly what
 the old rule did (the highest symbol at or below, ties to the greatest name), because a trace
 places every executed address and a table scan per address is the cost that would dominate."""
 
@@ -11,9 +11,9 @@ from pathlib import Path
 
 import pytest
 
-import gdb_session as gs
-import mame_read as read
-from mame_state import STATE
+from scry_mame import gdb_session as gs
+from scry_mame import read
+from scry_mame.state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "trace"
 TRACES = ("m68k-dual-maincpu-2f.trace.gz", "m68k-dual-subcpu-2f.trace", "v30-alt-2f.trace.gz",

@@ -2,15 +2,11 @@
 line, and what a writer writes. Every expected text is written here from the format's own
 definition, never read back from the writer."""
 
-import sys
-from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import gdb_session as gs  # noqa: E402
-import mame_comment_file as cf  # noqa: E402
+from scry_mame import comment_file as cf  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
 
 HEAD = "# comments v1: ref\tcpu\tcreated_at\ttext\n"
 STAMP = "2026-10-02T00:30:00+00:00"

@@ -40,10 +40,10 @@ from live_harness import (
 from scry_core import presence as scry_presence
 from scry_core import window_capture
 
-import mame_presence as mpresence  # isort: skip -- found through the path the harness sets
-import mame_state as mstate  # isort: skip
-import mame_transport as transport  # isort: skip
-from mame_state import STATE  # isort: skip
+from scry_mame import presence as mpresence  # isort: skip -- found through the path the harness sets
+from scry_mame import state as mstate  # isort: skip
+from scry_mame import transport  # isort: skip
+from scry_mame.state import STATE  # isort: skip
 
 Z_TITLE = "the presence edge, drawn over the window and never in the evidence"
 Z_CELLS = [

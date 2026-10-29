@@ -3,22 +3,18 @@
 from __future__ import annotations
 
 import asyncio
-import sys
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import cancel
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 
-import mame_mcp  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import running  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 @pytest.fixture

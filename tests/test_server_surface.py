@@ -4,15 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import json
-import sys
 import tomllib
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core.reply_contract import unavailable  # noqa: E402
 from server_support import (  # noqa: E402
     _running,
@@ -22,15 +18,17 @@ from session_doubles import (  # noqa: E402
     published,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    read,  # noqa: E402
+    running,  # noqa: E402
+    summaries,  # noqa: E402
+)
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_the_server_declares_instructions_and_they_name_what_a_caller_needs() -> None:

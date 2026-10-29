@@ -7,14 +7,10 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import reply_contract as contract  # noqa: E402
 from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import IDENTITY_KEYS, captured, ref_cpu, refs, refused, use_table  # noqa: E402
@@ -22,17 +18,19 @@ from test_controls import _cond, _controlled, _limit, _refusing  # noqa: E402
 from test_tally import _tallying  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_clear as mclear  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_regpoints as regpoints  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    regpoints,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import clear as mclear  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 BP_HEADER = "Device ':maincpu' breakpoints:\n"
 WP_HEADER = "Device ':maincpu' program space watchpoints:\n"

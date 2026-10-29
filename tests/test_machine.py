@@ -11,15 +11,17 @@ import pytest
 from scry_core import host_program
 from session_doubles import run_host_lua, use_table  # noqa: E402
 
-import mame_cpus as cpus
-import mame_envelope as menvelope
-import mame_machine as machine
-import mame_read as read
-import mame_state as st
-import mame_summaries as summaries
-import mame_transport as transport
-import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
-from mame_state import STATE
+from scry_mame import (
+    cpus,
+    machine,
+    read,
+    server,  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+    summaries,
+    transport,
+)
+from scry_mame import envelope as menvelope
+from scry_mame import state as st
+from scry_mame.state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "machine"
 M68K_DUAL = (FIXTURES / "m68k-dual.txt").read_text(encoding="utf-8")
@@ -660,7 +662,7 @@ def test_a_populated_symbol_section_names_the_channel_that_backs_it(
     # `symbols` is `start`'s own argument name; a rename of either goes red here.
     import inspect
 
-    import server as srv
+    from scry_mame import server as srv
     assert machine.SYMBOL_SOURCE in inspect.signature(srv.start).parameters
 
 
@@ -668,7 +670,7 @@ def test_the_summary_says_what_the_board_is_and_never_just_ok(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """Under `perform(summaries=True)` the summary is all a step keeps."""
-    import mame_mcp
+    from scry_mame import mcp as mame_mcp
     _cached(monkeypatch, tmp_path)
     reply = machine.machine_map(sections=EVERY)
     line = mame_mcp.BOUNDARY.line("machine_map", {}, reply)
@@ -823,7 +825,7 @@ def test_the_inventory_carries_the_set_s_views_and_the_one_snapshots_take() -> N
 
 def test_start_says_which_view_its_captures_take() -> None:
     """`native` if none asked, else the view MAME took, else unavailable with a reason."""
-    from mame_launch import view_shown, views_shown
+    from scry_mame.launch import view_shown, views_shown
 
     taken = {machine.VIEWS: ["Shifter-R Overlay"], machine.SNAPVIEW: "Shifter-R Overlay"}
     assert view_shown("", taken) == "native"

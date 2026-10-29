@@ -8,32 +8,30 @@ from __future__ import annotations
 
 import re
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any, cast
 
 import pytest
 from scry_core import media_tools
-from scry_core.host_program import absolute as _abs
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core.host_program import absolute as _abs
 from server_support import _install, _RegisterSession, _running  # noqa: E402
 from session_doubles import captured, documented, refused  # noqa: E402
 from test_gdb_session import _wired  # noqa: E402
 from test_reply_contract import _ARGS, _tools  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    files,  # noqa: E402
+    read,  # noqa: E402
+    running,  # noqa: E402
+    transport,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 NOT_A_STOP = ("the stub sent 'OK' while the machine ran, which is not a stop reply: the "
               "session cannot be trusted")
@@ -1119,7 +1117,7 @@ def test_the_descriptions_say_what_each_changed_reply_carries() -> None:
 
 
 def test_the_instructions_and_the_reference_say_any_tool_latches() -> None:
-    """A session error no tool answered latches wherever it surfaces (`mame_mcp.tool`
+    """A session error no tool answered latches wherever it surfaces (`mcp.tool`
     wrapper), so the contract names no short list of tools that latch: such a list reads as
     "the others never do", which is false."""
     latching = "`session_broken` LATCHES until `close`"

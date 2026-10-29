@@ -1,11 +1,8 @@
 """STATE is fresh for every test."""
 
-import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import mame_state as mstate  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_a_test_that_writes_state_without_monkeypatch() -> None:

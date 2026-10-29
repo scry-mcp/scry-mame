@@ -3,17 +3,13 @@
 import asyncio
 import dataclasses
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 from scry_core import host_program
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-
-import gdb_session as g  # noqa: E402
-import mame_state as mstate  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 # `map` answers captured from a live m68k-dual session: RAM, ROM, write-only latch.
 MAP_RAM = ("   Read: 200000 logical program == 200000 physical program -> memory@200000\n"
@@ -30,7 +26,7 @@ MAP_LATCH = ("   Read: 740000 logical program == 740000 physical program -> unma
 
 def published(tool: str) -> str:
     # Imported here: `conftest.py` imports this module for every test.
-    import server as s
+    from scry_mame import server as s
     found = [t for t in asyncio.run(s.mcp.list_tools()) if t.name == tool]
     assert len(found) == 1, f"the server registers no tool named {tool}"
     return " ".join((found[0].description or "").split())
@@ -38,7 +34,7 @@ def published(tool: str) -> str:
 
 def documented(tool: str) -> str:
     """What a reader finds for `tool` past its description: its family page and REFERENCE.md."""
-    import mame_mcp
+    from scry_mame import mcp as mame_mcp
     root = Path(__file__).resolve().parent.parent
     family = next(f for f, tools in mame_mcp.ROSTER.families if tool in tools)
     pages = (root / "docs" / "reference" / f"{family.lower()}.md", root / "REFERENCE.md")
@@ -89,9 +85,9 @@ def identities(out: dict[str, Any]) -> list[dict[str, Any]]:
 
 def checked_rearms(monkeypatch: Any) -> None:
     """Wrap `start`'s re-arm halves so every account a test drives goes through `identities`."""
-    import mame_comments
-    import mame_rearm
-    import mame_regpoints
+    from scry_mame import comments as mame_comments
+    from scry_mame import rearm as mame_rearm
+    from scry_mame import regpoints as mame_regpoints
 
     rearm = mame_rearm.rearm_breakpoints_and_watches
     regpoints, comments = mame_regpoints.rearm, mame_comments.rearm

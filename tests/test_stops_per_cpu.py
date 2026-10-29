@@ -8,17 +8,18 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _install, _RegisterSession, _running  # noqa: E402
 from session_doubles import bp_records, refused  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 class _TwoCpuFrames(_RegisterSession):
@@ -357,7 +358,7 @@ def test_a_run_to_whose_stop_cpu_cannot_be_read_falls_back_to_the_address(
         ses.visible_cpu = ":nocpu"                    # `cpulist` then marks no known cpu
 
     monkeypatch.setattr(ses, "_stop", stops_unmarked)
-    monkeypatch.setattr("mame_cpus.visible_cpu",
+    monkeypatch.setattr("scry_mame.cpus.visible_cpu",
                         lambda s_: None if ses.visible_cpu == ":nocpu" else ses.visible_cpu)
     ses.stops_after_polls = 1
     out = s.run_to(ref="0x542", control="0x25a4", cpu="subcpu", seconds=2.0)
@@ -371,7 +372,7 @@ def test_a_run_by_frames_on_a_board_of_one_cpu_or_with_none_visible_shows_nothin
     ses = _frames(monkeypatch, tmp_path, _THREADS, ":subcpu")
     for tags, visible in (([":maincpu"], ":maincpu"), ([":maincpu", ":subcpu"], None)):
         monkeypatch.setattr(mstate.STATE, "cpus", tags)
-        monkeypatch.setattr("mame_cpus.visible_cpu", lambda s_, v=visible: v)
+        monkeypatch.setattr("scry_mame.cpus.visible_cpu", lambda s_, v=visible: v)
         ses.visible_cpu = ":maincpu"                  # the double's `gvblank` lands
         ses.commands.clear()
         out = s.run_for(frames=1, seconds=2.0)
@@ -460,7 +461,7 @@ def test_a_run_by_frames_refused_with_the_watches_disarmed_disarms_nothing(
         disarmed.append("x")
         return []
 
-    monkeypatch.setattr("mame_watches.disarm_for_pass", disarm)
+    monkeypatch.setattr("scry_mame.watches.disarm_for_pass", disarm)
     refused("milliseconds", s.run_for(frames=1, seconds=2.0, disarm_watches=True))
     assert disarmed == [], "nothing was disarmed for a run that was refused"
 

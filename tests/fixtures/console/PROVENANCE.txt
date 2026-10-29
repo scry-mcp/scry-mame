@@ -36,7 +36,7 @@ dasm.v30.startdemo.txt       `disassemble(ref="startdemo", length=48)`: the regi
                              `[ix]`) and an immediate (`0CA35h`), beside the one direct
                              operand of the listing (`byte ptr [0CA34h]`).
 
-Captured live through `mame_read.dasm_lines`, the same range written twice, WITH the opcode
+Captured live through `scry_mame.read.dasm_lines`, the same range written twice, WITH the opcode
 bytes (`dasm dasm.txt,<addr>,<len>`) and WITHOUT them (`dasm dasm.bare.txt,<addr>,<len>,0`), the
 machine parked at `start`, each file copied verbatim out of the scratch:
 
@@ -270,7 +270,7 @@ dasm.sub.txt          the file `dasm dasm-sub.txt,0x542,0x8,1,:subcpu` wrote
 Captured live through the `debug` TOOL (its `output`, the exact text `Session.monitor` returned),
 same m68k-dual board (patched build), the machine parked at the debugger on a fresh
 start with no row of anybody's, by a scratch script that sent each line once, the controls
-first and last. These are the console's OWN ERROR ANSWERS, the shapes `mame_console` reads as a
+first and last. These are the console's OWN ERROR ANSWERS, the shapes `scry_mame.console` reads as a
 refusal (its module docstring says how the two families differ); a shape not captured here is
 not matched.
 

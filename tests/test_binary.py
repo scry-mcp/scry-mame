@@ -11,8 +11,8 @@ from scry_core.host_program import absolute as _abs
 from server_support import _running, _stub_boot, _StubProcess
 from session_doubles import fake_mame, refused
 
-import mame_binary as binaries
-import server as s
+from scry_mame import binary as binaries
+from scry_mame import server as s
 
 VERSION = "0.0 (a stub build)"
 

@@ -1,5 +1,5 @@
 """Section W of the live matrix: a watch stopping on a landing that ticked the frame counter
-(`mame_advance._run_for_frames`). Alone: `uv run python tests/live/matrix_watch_tick.py`.
+(`advance._run_for_frames`). Alone: `uv run python tests/live/matrix_watch_tick.py`.
 """
 
 from typing import Any

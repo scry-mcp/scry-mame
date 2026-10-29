@@ -6,7 +6,7 @@ from collections import Counter
 from itertools import count
 from pathlib import Path
 
-import mame_files as files  # isort: skip -- found through the path the harness or the tests set
+from scry_mame import files  # isort: skip -- found through the path the harness or the tests set
 
 
 def slug(label: str) -> str:

@@ -4,19 +4,15 @@ import dataclasses
 import json
 import re
 import socket
-import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import reading_session  # noqa: E402
 
-import gdb_session as g  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
 
 
 @pytest.mark.parametrize("body", ["0* ", "00ff*\"00", "*", "<reg name=\"a*\"/>"])
@@ -262,7 +258,7 @@ def test_the_port_probe_does_not_consume_the_gdbstub_connection() -> None:
     """Regression."""
     import socket as _s
 
-    from mame_launch import port_is_free
+    from scry_mame.launch import port_is_free
 
     with _s.socket() as listener:
         listener.bind(("127.0.0.1", 0))
@@ -284,7 +280,7 @@ def test_the_port_probe_sees_a_session_the_stub_is_still_serving() -> None:
     """MAME's shape after it accepts."""
     import socket as _s
 
-    from mame_launch import port_is_free
+    from scry_mame.launch import port_is_free
 
     listener = _s.socket()
     listener.setsockopt(_s.SOL_SOCKET, _s.SO_REUSEADDR, 1)
@@ -306,7 +302,7 @@ def test_the_port_probe_sees_a_session_the_stub_is_still_serving() -> None:
 
 def test_the_boot_harness_reaches_the_mame_command_line() -> None:
     """The missing flag, and why it is tested here instead of by looking at the process."""
-    from mame_launch import build_command
+    from scry_mame.launch import build_command
 
     cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
                         "/scratch/mame-mcp-t", boot_lua="/tmp/harness.lua")
@@ -318,7 +314,7 @@ def test_the_boot_harness_reaches_the_mame_command_line() -> None:
 
 def test_without_a_harness_no_autoboot_slips_through() -> None:
     """The negative case."""
-    from mame_launch import build_command
+    from scry_mame.launch import build_command
 
     cmd = build_command("/bin/mame", "m68k-dual", "/roms", 23946, ["-window"],
                         "/scratch/mame-mcp-t")
@@ -329,7 +325,7 @@ def test_without_a_harness_no_autoboot_slips_through() -> None:
 
 def test_the_gdbstub_and_its_port_always_go() -> None:
     """What makes the session EXIST must not depend on any optional parameter."""
-    from mame_launch import build_command
+    from scry_mame.launch import build_command
 
     cmd = build_command(
         "/bin/mame", "m68k-dual", "/roms", 23947, ["-window"], "/scratch/mame-mcp-t", inipath="/ini"
@@ -1712,7 +1708,7 @@ def test_a_packet_is_labelled_by_its_console_words_else_as_sent(packet: str, lab
 
 def test_every_capture_is_taken_through_the_screen_alone_unless_a_view_is_named() -> None:
     """`-snapview` always reaches the command line."""
-    from mame_launch import build_command
+    from scry_mame.launch import build_command
 
     plain = build_command("/bin/mame", "gridlee", "/roms", 23946, [], "/scratch/mame-mcp-t")
     named = build_command("/bin/mame", "gridlee", "/roms", 23946, [], "/scratch/mame-mcp-t",

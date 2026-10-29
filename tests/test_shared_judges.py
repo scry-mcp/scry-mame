@@ -2,20 +2,19 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
 from scry_core.reply_contract import Invalid
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_regpoints as regpoints  # noqa: E402
-import mame_savestates as savestates  # noqa: E402
-import mame_symbols as symbols  # noqa: E402
-import mame_watches as watches  # noqa: E402
+from scry_mame import (
+    breakpoints,  # noqa: E402
+    inputs,  # noqa: E402
+    regpoints,  # noqa: E402
+    savestates,  # noqa: E402
+    symbols,  # noqa: E402
+    watches,  # noqa: E402
+)
 
 
 def test_a_state_name_never_starts_with_a_dash() -> None:
@@ -52,8 +51,8 @@ def test_a_blank_ref_beside_all_is_refused_never_read_as_all(check: object) -> N
 
 def test_a_comment_row_from_no_session_names_the_comments_own_remedy() -> None:
     """A comment is adopted by commenting it again, never by declaring it."""
-    import mame_arming as arming
-    import mame_declarations as dec
+    from scry_mame import arming
+    from scry_mame import declarations as dec
 
     row = arming.decl_row(dec.Declaration("comment", "symbol", "fade", cpu="maincpu",
                                           text="t"))
@@ -65,7 +64,7 @@ def test_a_comment_row_from_no_session_names_the_comments_own_remedy() -> None:
 def test_close_and_status_with_no_session_say_so_in_the_words_both_servers_use() -> None:
     from scry_core import session_block
 
-    import server as s
+    from scry_mame import server as s
 
     closed = s.close()
     assert closed["summary"] == session_block.NO_SESSION_CLOSE, closed

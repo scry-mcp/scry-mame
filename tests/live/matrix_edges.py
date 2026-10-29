@@ -28,13 +28,12 @@ from live_harness import (
 )
 from map_edges import program_edges
 
-import mame_breakpoints as breakpoints
-import mame_conditions as conditions
+from scry_mame import breakpoints, conditions
 
-import mame_cpus as cpus  # isort: skip
-import mame_declarations as dec  # isort: skip
-import mame_read as read  # isort: skip
-from mame_state import STATE  # isort: skip
+from scry_mame import cpus  # isort: skip
+from scry_mame import declarations as dec  # isort: skip
+from scry_mame import read  # isort: skip
+from scry_mame.state import STATE  # isort: skip
 from matrix_tools_by_state import (  # noqa: E402
     STOPPED_SAYS,
     Judge,

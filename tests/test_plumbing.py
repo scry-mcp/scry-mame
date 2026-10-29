@@ -5,19 +5,17 @@ caller goes through, so each is pinned here directly rather than only through it
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import bus_writes
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_state as mstate  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    files,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_a_latch_keeps_the_first_reason() -> None:
@@ -77,7 +75,7 @@ def test_the_wait_for_rest_sleeps_on_the_side_it_is_told(
     """After an interrupt the gap comes BEFORE each read; otherwise after it. Three equal reads
     end the wait, and every read stays in `readings`."""
     events: list[str] = []
-    monkeypatch.setattr("mame_advance.time.sleep", lambda s: events.append("sleep"))
+    monkeypatch.setattr("scry_mame.advance.time.sleep", lambda s: events.append("sleep"))
     values = iter([1, 2, 2, 2])
 
     def read() -> int:

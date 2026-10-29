@@ -8,7 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 SERVER_DIR = Path(__file__).resolve().parent.parent
-MODULES = sorted(p.stem for p in SERVER_DIR.glob("*.py"))
+MODULES = sorted(f"scry_mame.{p.stem}" for p in (SERVER_DIR / "src" / "scry_mame").glob("*.py")
+                 if p.stem != "__init__")
 CHILD_TIMEOUT_S = 60.0
 
 
@@ -26,8 +27,8 @@ def _import_alone(module: str) -> tuple[str, int | None, str]:
 
 def test_the_list_is_the_server() -> None:
     # An empty glob would make the next test examine nothing.
-    assert {"server", "mame_running", "mame_iotaps", "mame_capture", "mame_lua",
-            "mame_advance", "mame_focus"} <= set(MODULES)
+    assert {"scry_mame.server", "scry_mame.running", "scry_mame.iotaps", "scry_mame.capture",
+            "scry_mame.lua", "scry_mame.advance", "scry_mame.focus"} <= set(MODULES)
 
 
 def test_every_module_imports_first() -> None:

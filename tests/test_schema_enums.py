@@ -11,36 +11,35 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import test_envelope_seam  # noqa: E402
 from scry_core import media_tools, screen_map
+from scry_core import pens as scry_pens  # noqa: E402
 from scry_core import scan_vocabulary as words
 from scry_core import vocabulary as vocab
 from scry_core.host_program import absolute as _abs
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    folds,  # noqa: E402
+    launch,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import files as mfiles  # noqa: E402
+from scry_mame import film as mfilm  # noqa: E402
+from scry_mame import layout as ml  # noqa: E402
+from scry_mame import locate as mlocate  # noqa: E402
+from scry_mame import machine as mmachine  # noqa: E402
+from scry_mame import scan as mscan  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import space as mspace  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import state as st  # noqa: E402
+from scry_mame import sweep as msweep  # noqa: E402
 
-import test_envelope_seam  # noqa: E402
-from scry_core import pens as scry_pens  # noqa: E402
-
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_files as mfiles  # noqa: E402
-import mame_film as mfilm  # noqa: E402
-import mame_folds as folds  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_layout as ml  # noqa: E402
-import mame_locate as mlocate  # noqa: E402
-import mame_machine as mmachine  # noqa: E402
-import mame_scan as mscan  # noqa: E402
-import mame_space as mspace  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_state as st  # noqa: E402
-import mame_sweep as msweep  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
-
-PACKAGE = Path(__file__).resolve().parent.parent
+PACKAGE = Path(msweep.__file__).resolve().parent
 
 from scry_core.vocabulary import Words  # noqa: E402
 
@@ -133,7 +132,8 @@ def test_no_argument_publishes_an_enum_no_judge_holds() -> None:
 def _judged(path: Path) -> list[tuple[int, str, Words]]:
     """Every `vocab.one_of("name", value, options)` in `path`: line, argument name, options."""
     tree = ast.parse(path.read_text())
-    namespace = vars(sys.modules[path.stem]) if path.stem in sys.modules else {}
+    module = sys.modules.get(f"scry_mame.{path.stem}")
+    namespace = vars(module) if module else {}
     found = []
     for node in ast.walk(tree):
         if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
@@ -150,7 +150,8 @@ def test_every_closed_vocabulary_the_server_judges_is_published(tmp_path: Path) 
     planted = tmp_path / "planted.py"
     planted.write_text('vocab.one_of("x", x, ("a", "b"))\nchunk.one_of("y", y, "ys", "", [])\n')
     assert _judged(planted) == [(1, "x", ("a", "b"))], "the control did not fire"
-    sources = sorted(PACKAGE.glob("mame_*.py"))
+    sources = sorted(p for p in PACKAGE.glob("*.py")
+                     if p.name not in {"__init__.py", "server.py", "gdb_session.py"})
     found = {(name, words) for src in sources for _, name, words in _judged(src)}
     published = {(arg, judged()) for _tool, arg, judged in CLOSED if arg != "method"}
     assert found == published, f"judged and not published: {found - published}; " \
@@ -224,7 +225,7 @@ PUBLISHED_ITEMS: dict[tuple[str, str], Any] = {
                          ids=[f"{t}.{a}" for t, a in PUBLISHED_ITEMS])
 def test_a_list_judge_accepts_every_item_its_schema_publishes(tool: str, arg: str) -> None:
     """A list of only the published items is never refused."""
-    import mame_args as margs
+    from scry_mame import args as margs
     beside = {"planes": [1]} if arg == "sizes" else {}
     margs.check(tool, **NEEDS.get(tool, {}), **beside, **{arg: PUBLISHED_ITEMS[(tool, arg)]})
 
@@ -252,10 +253,10 @@ def test_a_sequence_step_still_judges_a_closed_arguments_type(
     assert f"{arg} is {said}; got {wrong!r}" in out.get("message", ""), out
 
 
-import mame_blits as mblits  # noqa: E402
-import mame_gfx as mgfx  # noqa: E402
-import mame_ramdac as mramdac  # noqa: E402
-import mame_read as mread  # noqa: E402
+from scry_mame import blits as mblits  # noqa: E402
+from scry_mame import gfx as mgfx  # noqa: E402
+from scry_mame import ramdac as mramdac  # noqa: E402
+from scry_mame import read as mread  # noqa: E402
 
 RANGES: list[tuple[str, str, int, int]] = [
     ("read_memory", "length", 1, mread.READ_MAX),

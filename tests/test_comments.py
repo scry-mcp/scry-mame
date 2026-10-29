@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -20,9 +19,6 @@ import pytest
 from scry_core import host_program
 from scry_core.host_program import MODE_BITS
 from scry_core.host_program import absolute as _abs
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _install  # noqa: E402
 from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
@@ -32,15 +28,17 @@ from session_doubles import (  # noqa: E402
     use_table,
 )
 
-import gdb_session as gs  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_comment_file as cf  # noqa: E402
-import mame_comments as comments  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    comments,  # noqa: E402
+    launch,  # noqa: E402
+    summaries,  # noqa: E402
+)
+from scry_mame import comment_file as cf  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 #: How the one refusal of a relative path begins (scry-core's judge).
 R_ABS = "must be an absolute path"

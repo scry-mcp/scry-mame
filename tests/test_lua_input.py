@@ -2,13 +2,9 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import (  # noqa: E402
     CONSOLE,
     _captured,
@@ -17,8 +13,8 @@ from lua_support import (  # noqa: E402
 )
 from session_doubles import refused  # noqa: E402
 
-import mame_lua as lua  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import lua  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 
 def test_inputs_value_comes_back_as_the_32_bit_value_the_port_took(

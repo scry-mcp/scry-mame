@@ -32,7 +32,7 @@ from live_harness import (
     zips_missing,
 )
 
-import mame_capture as mcapture  # isort: skip -- found through the path the harness sets
+from scry_mame import capture as mcapture  # isort: skip -- found through the path the harness sets
 
 T_TITLE = "a capture row's line and time, and a capture of reads on a second cpu"
 LATCH_W, LATCH_R, AUDIO = "0xc800", "0x6000", ":audiocpu"

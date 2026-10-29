@@ -4,19 +4,16 @@ start with `D`."""
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+from scry_mame import (
+    breakpoints,  # noqa: E402
+    conditions,  # noqa: E402
+    server,  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+    watches,  # noqa: E402
+)
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 @pytest.mark.parametrize("addr", [0xD0, 0xA7, 0xDE, 0x400])
@@ -67,15 +64,15 @@ def test_a_0x_ref_resolves_to_its_address(ref: str, addr: int) -> None:
 
 
 def test_a_write_is_held_to_the_read_ceiling_at_the_edge_and_one_past_it() -> None:
-    import mame_read as read
-    import mame_write as mwrite
+    from scry_mame import read
+    from scry_mame import write as mwrite
     assert len(mwrite.check_write("00" * read.READ_MAX, ref="0x400")) == read.READ_MAX
     with pytest.raises(mstate.Invalid, match=r"byte count of data_hex=1025 is outside 1\.\.1024"):
         mwrite.check_write("00" * (read.READ_MAX + 1), ref="0x400")
 
 
 def test_an_empty_list_of_steps_is_refused_before_anything() -> None:
-    import server as s
+    from scry_mame import server as s
     out = s.perform(steps=[])
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
     assert "non-empty" in out["message"]
@@ -86,7 +83,7 @@ def test_the_frame_counter_is_asked_by_the_name_the_console_gave_at_start_never_
     monkeypatch: pytest.MonkeyPatch, symbol: str | None,
 ) -> None:
     """The console names the counter by its screen devices, not by the map's screen list."""
-    import mame_read as read
+    from scry_mame import read
     monkeypatch.setattr(mstate.STATE, "machine_map", {"screens": [{"tag": ":vector"}]})
     monkeypatch.setattr(mstate.STATE, "frame_symbol", symbol)
     assert read.frame_symbol() == symbol
@@ -105,8 +102,8 @@ def test_a_project_name_that_only_resembles_one_is_not_the_consoles(name: str) -
 
 def test_an_ignore_list_the_console_wrapped_is_read_whole() -> None:
     """`ignore` answers one line that the console's text buffer wraps at its column."""
-    import gdb_session as gs
-    import mame_cpus as cpus
+    from scry_mame import cpus
+    from scry_mame import gdb_session as gs
     tags = [f":cpu{i:02d}_with_a_long_tag_name" for i in range(12)]
     rest, pieces = "Currently ignoring device " + ", ".join(f"'{t}'" for t in tags), []
     while len(rest) > gs.CONSOLE_WRAP_COLS:

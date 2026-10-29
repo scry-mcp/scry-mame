@@ -12,9 +12,6 @@ from typing import Any
 
 import pytest
 from scry_core import host_program
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import (  # noqa: E402
     CFG_OK,
     FIXTURES,
@@ -41,15 +38,17 @@ from session_doubles import (  # noqa: E402
     use_table,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_docs as mdocs  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_inputs as inputs
-import mame_launch as launch
-import mame_read as read  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import docs as mdocs  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import (
+    files,  # noqa: E402
+    inputs,
+    launch,
+    read,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_altered_counts_both_paths(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -145,7 +144,7 @@ def test_a_directory_where_a_file_is_due_is_refused_naming_the_argument(
 ) -> None:
     """Each of the five path arguments refuses a DIRECTORY, at the argument and before
     anything is spawned. The reason `is_file()` is the check and not `exists()` lives with the
-    check, in `mame_launch.judge`, and for `binary` in the ladder (`mame_binary`), which says
+    check, in `launch.judge`, and for `binary` in the ladder (`binary`), which says
     why the path it was given is no executable; what this pins is that every one asks it."""
     _never_spawns(monkeypatch, tmp_path)
     folder = tmp_path / "a-directory-not-a-file"

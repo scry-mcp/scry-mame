@@ -6,7 +6,6 @@ from __future__ import annotations
 import dataclasses
 import re
 import subprocess
-import sys
 import tempfile
 import time
 from pathlib import Path
@@ -14,9 +13,6 @@ from types import SimpleNamespace
 from typing import Any, cast
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import (
     frame_window,  # noqa: E402
     sequence_account,  # noqa: E402
@@ -29,16 +25,18 @@ from server_support import _running  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_lua as mlua  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    read,  # noqa: E402
+    running,  # noqa: E402
+    sequence,  # noqa: E402
+)
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import lua as mlua  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_the_tool_is_registered_and_the_vocabulary_is_every_tool_but_the_lifecycle() -> None:
@@ -302,7 +300,7 @@ def test_perform_goldens_shape_runs_to_markers_and_snapshots_in_one_call(
         ses.temps[0] = ses.temps.get(0, 0) + 5
 
     ses.go = go  # type: ignore[method-assign]
-    import mame_files as files
+    from scry_mame import files
     monkeypatch.setattr(files, "snapshot", lambda ses_, scratch, dest: menvelope.envelope(
         {"path": dest or "snap.png", "bytes": 7, "sha256": "0" * 64}))
     out = s.perform(steps=[
@@ -985,7 +983,7 @@ def test_a_stop_numbered_after_the_last_surveyed_one_is_unaccounted(
 
 def test_one_watch_is_one_key_whoever_wrote_and_whatever_value() -> None:
     """`by_cause` keys a watch's stops by the watch, with the writer's pc taken off."""
-    import mame_watches as watches
+    from scry_mame import watches
     lines = [watches._STOP_LINE.search(FOREIGN_LINE.format(value=v, pc=pc))
              for v, pc in (("0038", 0x40E), ("0039", 0x25F4))]
     hows = [watches._foreign_cause(m) for m in lines if m is not None]
@@ -1397,7 +1395,7 @@ def test_a_film_arming_step_waits_for_a_stop_and_its_read_does_not(
 def test_a_list_sends_the_last_stops_registers_to_a_running_machine_at_once() -> None:
     """`registers(from_last_stop=True)` reads no cpu, so a list sends it without waiting for a
     stop."""
-    from mame_sequence import answers_running
+    from scry_mame.sequence import answers_running
     assert answers_running("registers", {"from_last_stop": True})
     assert not answers_running("registers", {})
     assert not answers_running("registers", {"from_last_stop": False})

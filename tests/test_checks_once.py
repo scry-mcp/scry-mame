@@ -11,21 +11,15 @@ from scry_core import steps
 from scry_core import vocabulary as vocab
 from session_doubles import refused
 
-import mame_advance as advance
-import mame_blits as mblits
-import mame_conditions as conditions
-import mame_envelope as menvelope
-import mame_files as files
-import mame_film as mfilm
-import mame_inputs as inputs
-import mame_locate as mlocate
-import mame_mcp
-import mame_running as running
-import mame_screen as mscreen
-import mame_sequence as sequence
-import mame_state as mstate
-import mame_watches as watches
-import server as s
+from scry_mame import advance, conditions, files, inputs, running, sequence, watches
+from scry_mame import blits as mblits
+from scry_mame import envelope as menvelope
+from scry_mame import film as mfilm
+from scry_mame import locate as mlocate
+from scry_mame import mcp as mame_mcp
+from scry_mame import screen as mscreen
+from scry_mame import server as s
+from scry_mame import state as mstate
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "live"))
 from gfx_layouts import CIRCUS_CHAR  # noqa: E402
@@ -293,7 +287,7 @@ def test_an_annotation_is_read_as_the_type_its_schema_half_wraps(
 
 def test_every_default_a_check_holds_is_its_tools() -> None:
     """Where a check and its tool both hold a default, they hold the same one."""
-    import mame_args as margs
+    from scry_mame import args as margs
 
     compared, drifted = 0, []
     for tool, check in margs.BY_TOOL.items():

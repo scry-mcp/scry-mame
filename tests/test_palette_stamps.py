@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from session_doubles import run_host_lua  # noqa: E402
 from test_ramdac import LOG_ID, _ramdac  # noqa: E402
 
-import mame_capture as capture  # noqa: E402
-import mame_ramdac as mr  # noqa: E402
-import mame_ramdac_lua as rlua  # noqa: E402
+from scry_mame import capture  # noqa: E402
+from scry_mame import ramdac as mr  # noqa: E402
+from scry_mame import ramdac_lua as rlua  # noqa: E402
 
 PIXEL_S = 1 / 6_000_000
 SCAN_S = 384 * PIXEL_S

@@ -1,4 +1,4 @@
-"""`trace` (`mame_trace`), judged against files MAME's own tracer wrote.
+"""`trace` (`trace`), judged against files MAME's own tracer wrote.
 
 The doubles are captures: `fixtures/trace/` holds trace files a live session wrote
 (`PROVENANCE.txt`), and the console's answers the fake gives are the ones that session read
@@ -24,15 +24,17 @@ import pytest
 from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import SessionFields, use_table
 
-import gdb_session as gs
-import mame_advance as advance
-import mame_cpus as cpus
-import mame_envelope as menvelope
-import mame_mcp
-import mame_running as running
-import mame_state as mstate
-import mame_trace as mtrace
-import server  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+from scry_mame import (
+    advance,
+    cpus,
+    running,
+    server,  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
+)
+from scry_mame import envelope as menvelope
+from scry_mame import gdb_session as gs
+from scry_mame import mcp as mame_mcp
+from scry_mame import state as mstate
+from scry_mame import trace as mtrace
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "trace"
 TAG = ":maincpu"

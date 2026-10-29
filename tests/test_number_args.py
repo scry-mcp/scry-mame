@@ -4,34 +4,32 @@ from __future__ import annotations
 
 import asyncio
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import test_envelope_seam  # noqa: E402
 from test_gfx_layout import CIRCUS_CHARLAYOUT  # noqa: E402
 
-import mame_block as block  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_film as mfilm  # noqa: E402
-import mame_folds as folds  # noqa: E402
-import mame_gfx as mgfx  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_locate as mlocate  # noqa: E402
-import mame_lua as mlua  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_palette as mpalette  # noqa: E402
-import mame_ramdac as mramdac  # noqa: E402
-import mame_scan as mscan  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_sweep as msweep  # noqa: E402
-import mame_write as mwrite  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    block,  # noqa: E402
+    folds,  # noqa: E402
+    inputs,  # noqa: E402
+    sequence,  # noqa: E402
+)
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import film as mfilm  # noqa: E402
+from scry_mame import gfx as mgfx  # noqa: E402
+from scry_mame import locate as mlocate  # noqa: E402
+from scry_mame import lua as mlua  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import palette as mpalette  # noqa: E402
+from scry_mame import ramdac as mramdac  # noqa: E402
+from scry_mame import scan as mscan  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import sweep as msweep  # noqa: E402
+from scry_mame import write as mwrite  # noqa: E402
 
 
 @pytest.mark.parametrize("given,want", [

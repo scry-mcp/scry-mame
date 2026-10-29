@@ -25,27 +25,24 @@ from array import array
 from pathlib import Path
 from typing import Any, cast
 
-import pytest
-from mcp.types import CallToolResult
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import png_read  # noqa: E402
+import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
+from mcp.types import CallToolResult
 from scry_core import pens as scry_pens  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core import png, raster  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
-import mame_chunk as mchunk  # noqa: E402
-import mame_gfx as gfx  # noqa: E402
-import mame_layout as ml  # noqa: E402
-import mame_locate as mlocate  # noqa: E402
-import mame_palette as mpalette  # noqa: E402
-import mame_screen as mscreen  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import chunk as mchunk  # noqa: E402
+from scry_mame import gfx  # noqa: E402
+from scry_mame import layout as ml  # noqa: E402
+from scry_mame import locate as mlocate  # noqa: E402
+from scry_mame import palette as mpalette  # noqa: E402
+from scry_mame import screen as mscreen  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "live"))
 from gfx_layouts import BYTES_8X8, CIRCUS_CHAR, GRID_FB, GRID_SPRITE, WITCH_TILE  # noqa: E402
@@ -1169,7 +1166,7 @@ def test_a_chunk_that_fails_in_any_way_leaves_no_file_behind(
 ) -> None:
     """The dump or the capture the chunk wrote is removed whatever went wrong after it, not only
     on a refusal: nothing else ever removes a block of up to `BLOCK_BYTES_MAX` bytes."""
-    import mame_chunk
+    from scry_mame import chunk as mame_chunk
 
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "gfx-circus", block="circus-gfx1", screen="circus-screen")

@@ -11,23 +11,19 @@ a different fingerprint leaves the raw addresses stale (a name re-resolves as al
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _stub_boot  # noqa: E402
 from session_doubles import refs  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_symbols as syms  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import arming  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import symbols as syms  # noqa: E402
 
 
 def test_a_declaration_carries_the_fingerprint_it_was_made_against() -> None:

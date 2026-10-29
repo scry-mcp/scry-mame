@@ -2,18 +2,14 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import demo, replay
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 
-import server as s  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 
 def _read(recorded: dict[str, Any]) -> dict[str, Any]:
@@ -73,7 +69,7 @@ def test_a_recorded_that_is_not_a_mapping_is_refused_before_any_step_runs(
 
 def test_the_lists_a_replay_reads_are_this_servers_own_tools() -> None:
     """Each list tool a replay reads back is one this server registers."""
-    import mame_mcp
+    from scry_mame import mcp as mame_mcp
 
     served = {t.name for t in s.mcp._tool_manager.list_tools()}
     assert set(mame_mcp.RECORDER.lists.values()) <= served
@@ -85,7 +81,7 @@ def test_the_declarations_the_recorder_reads_are_the_refs_the_list_tools_answer(
     """The recorder's stored declarations equal what each list tool answers."""
     from test_watches import _watching
 
-    import mame_mcp
+    from scry_mame import mcp as mame_mcp
 
     _watching(monkeypatch, tmp_path)
     assert s.breakpoint_at(ref="0x4a0")["status"] == "ok"

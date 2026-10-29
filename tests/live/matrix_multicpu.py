@@ -32,7 +32,7 @@ from live_harness import (
     zips_missing,
 )
 
-from mame_state import STATE  # isort: skip -- found through the path the harness sets
+from scry_mame.state import STATE  # isort: skip -- found through the path the harness sets
 
 S_TITLE = "a second cpu named by cpu=, on the build that serves a thread per cpu"
 SOUNDBD = ":soundbd:audiocpu"

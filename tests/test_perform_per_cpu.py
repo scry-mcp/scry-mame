@@ -5,19 +5,15 @@ leaves the visible cpu where it found it unless a step asked for another.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running, _RunningSession  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import sequence  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MAIN, SUB = ":maincpu", ":subcpu"
 
@@ -257,7 +253,7 @@ def test_a_list_begun_on_a_running_machine_has_no_cpu_to_keep(
 def test_a_visible_cpu_unread_after_the_list_is_not_put_back_and_says_why(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_cpus as cpus
+    from scry_mame import cpus
 
     ses = _patched(monkeypatch, tmp_path)
     reads = iter([MAIN, None])

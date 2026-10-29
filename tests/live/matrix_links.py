@@ -32,7 +32,7 @@ from matrix_removals import (
 )
 from reader_fault import reader_fault, reader_fault_counts
 
-import mame_transport as transport
+from scry_mame import transport
 
 # A bool is an `int` to Python, and a client's schema refuses it before any tool runs, so only a
 # direct call (what `call` makes) reaches the server's guard. Queued installs still to run are

@@ -17,7 +17,7 @@ from scry_core import live_host
 from scry_core.demo import Demo, Reply, Run, Step, StepFailed, main
 from scry_core.reply_contract import Invalid
 
-import mame_binary  # isort: skip -- the repository root, which each demo puts on the path
+from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
 
 __all__ = ["RUN_S", "Demo", "Reply", "Run", "Step", "demo", "expect", "main"]
 
@@ -143,7 +143,7 @@ def demo(system: str, demo_file: str, steps: Sequence[Step]) -> Demo:
     """The demo of `system` whose `demo.py` is `demo_file`."""
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
-    return Demo(name=system, root=root, server=[sys.executable, str(root / "server.py")],
+    return Demo(name=system, root=root, server=[sys.executable, "-m", "scry_mame.server"],
                 readme=here / "README.md", front=root / "README.md", steps=steps,
                 capture=lambda run: run.dir / "screen.png",
                 offers=frozenset({"rompath", "shared"}), precheck=precheck(system),

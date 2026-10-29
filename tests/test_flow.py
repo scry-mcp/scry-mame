@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-import mame_flow as flow
+from scry_mame import flow
 
 FIXTURES = Path(__file__).parent / "fixtures" / "console"
 

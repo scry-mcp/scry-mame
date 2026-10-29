@@ -7,7 +7,6 @@ bounded wait makes (`scry_core.cancel.check`), raised here at the poll a case ch
 from __future__ import annotations
 
 import asyncio
-import sys
 import threading
 from collections.abc import Iterator
 from pathlib import Path
@@ -16,14 +15,11 @@ from typing import Any
 import pytest
 from scry_core import cancel
 from scry_core import progress as mprogress
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 
-import mame_mcp  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _cancel_at(monkeypatch: pytest.MonkeyPatch, poll: int) -> None:
@@ -152,7 +148,7 @@ def test_a_console_run_cancelled_in_flight_is_stopped_and_proved_at_rest(
     it is in flight: cancelled there, it is still moving, so its end has to stop it."""
     from server_support import _AliveProcess, _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=50)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
@@ -359,7 +355,7 @@ def test_a_step_over_cancelled_while_it_waits_for_rest_is_stopped_as_its_own(
     bounded wait that polls), it ends as its bound does, stopped."""
     from server_support import _AliveProcess, _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=50)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
@@ -381,7 +377,7 @@ def test_a_run_for_cancelled_at_its_last_line_has_already_recorded_its_landing(
     or the machine rests where no record says it is."""
     from server_support import _AliveProcess, _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _RegisterSession(bits=32, frame=10, stop_after=4)
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "proc", _AliveProcess())
@@ -404,8 +400,8 @@ def test_until_frame_lands_the_list_before_its_last_line_a_cancel_can_meet(
     put back) comes before it, as `run_for`'s does, so a cancel met there leaves nothing undone."""
     from test_perform import FRAME_STEP, _frames_and_the_watch
 
-    import mame_cpus as mcpus
-    import mame_sequence as sequence
+    from scry_mame import cpus as mcpus
+    from scry_mame import sequence
     ses = _frames_and_the_watch(monkeypatch, tmp_path)
     start = ses.frame
     monkeypatch.setitem(mstate.STATE.last_stop, "frame", start)

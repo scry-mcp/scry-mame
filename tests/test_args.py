@@ -1,4 +1,4 @@
-"""Structural checks that `mame_args` routes every tool to the one judge its module also calls."""
+"""Structural checks that `args` routes every tool to the one judge its module also calls."""
 
 from __future__ import annotations
 
@@ -7,57 +7,55 @@ import asyncio
 import inspect
 import pathlib
 import re
-import sys
 import tempfile
 from collections.abc import Callable
 from typing import Any
 
 import pytest
 from scry_core import media_tools, roster
+from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core.host_program import absolute as _abs
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-
-from scry_core import strict_arguments as strict  # noqa: E402
-
-import mame_advance as advance  # noqa: E402
-import mame_args as args  # noqa: E402
-import mame_audio as maudio  # noqa: E402
-import mame_blits as mblits  # noqa: E402
-import mame_block as block  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_comments as comments  # noqa: E402
-import mame_docs as mdocs  # noqa: E402
-import mame_draft as mdraft  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_film as mfilm  # noqa: E402
-import mame_focus as mfocus  # noqa: E402
-import mame_folds as folds  # noqa: E402
-import mame_gfx as mgfx  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_locate as mlocate  # noqa: E402
-import mame_lua as mlua  # noqa: E402
-import mame_machine as machine  # noqa: E402
-import mame_manifest as manifest  # noqa: E402
-import mame_maps as mmaps  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_palette as mpalette  # noqa: E402
-import mame_ramdac as mramdac  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_recording as mrec
-import mame_regpoints as regpoints  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_savestates as savestates  # noqa: E402
-import mame_scan as mscan  # noqa: E402
-import mame_screen as mscreen  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_series as mseries  # noqa: E402
-import mame_state as st  # noqa: E402
-import mame_sweep as msweep  # noqa: E402
-import mame_trace as mtrace  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import mame_write as mwrite  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    args,  # noqa: E402
+    block,  # noqa: E402
+    breakpoints,  # noqa: E402
+    comments,  # noqa: E402
+    files,  # noqa: E402
+    folds,  # noqa: E402
+    launch,  # noqa: E402
+    machine,  # noqa: E402
+    manifest,  # noqa: E402
+    read,  # noqa: E402
+    regpoints,  # noqa: E402
+    running,  # noqa: E402
+    savestates,  # noqa: E402
+    sequence,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import audio as maudio  # noqa: E402
+from scry_mame import blits as mblits  # noqa: E402
+from scry_mame import docs as mdocs  # noqa: E402
+from scry_mame import draft as mdraft  # noqa: E402
+from scry_mame import film as mfilm  # noqa: E402
+from scry_mame import focus as mfocus  # noqa: E402
+from scry_mame import gfx as mgfx  # noqa: E402
+from scry_mame import locate as mlocate  # noqa: E402
+from scry_mame import lua as mlua  # noqa: E402
+from scry_mame import maps as mmaps  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import palette as mpalette  # noqa: E402
+from scry_mame import ramdac as mramdac  # noqa: E402
+from scry_mame import recording as mrec
+from scry_mame import scan as mscan  # noqa: E402
+from scry_mame import screen as mscreen  # noqa: E402
+from scry_mame import series as mseries  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as st  # noqa: E402
+from scry_mame import sweep as msweep  # noqa: E402
+from scry_mame import trace as mtrace  # noqa: E402
+from scry_mame import write as mwrite  # noqa: E402
 
 SERVER = pathlib.Path(s.__file__)
 
@@ -95,7 +93,7 @@ def test_every_registered_tool_is_either_checked_or_named_as_unchecked() -> None
     """Red both ways: a tool with no entry, and an entry for a tool that is gone."""
     registered = _registered()
     assert not sorted(registered - args.KNOWN), (
-        f"no entry in mame_args, not even a deliberate none: {sorted(registered - args.KNOWN)}")
+        f"no entry in args, not even a deliberate none: {sorted(registered - args.KNOWN)}")
     assert not sorted(args.KNOWN - registered), (
         f"mame_args names tools this server does not register: {sorted(args.KNOWN - registered)}")
 

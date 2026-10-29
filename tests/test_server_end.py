@@ -4,17 +4,13 @@
 from __future__ import annotations
 
 import signal
-import sys
-from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import signalled_end
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_state as st  # noqa: E402
-import server  # noqa: E402
+from scry_mame import server  # noqa: E402
+from scry_mame import state as st  # noqa: E402
 
 
 def _killed(kills: list[bool]) -> dict[str, Any]:

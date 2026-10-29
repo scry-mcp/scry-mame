@@ -14,9 +14,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import host_args
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -52,20 +49,22 @@ from session_doubles import (  # noqa: E402
     use_table,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_inputs as inputs
-import mame_launch as launch
-import mame_machine as machine  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_scan as mscan  # noqa: E402
-import mame_session as msession
-import mame_state as mstate  # noqa: E402
-import mame_stub_owner as owner  # noqa: E402
-import mame_write as mwrite  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import (
+    files,  # noqa: E402
+    inputs,
+    launch,
+    machine,  # noqa: E402
+    read,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import scan as mscan  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import session as msession
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import stub_owner as owner  # noqa: E402
+from scry_mame import write as mwrite  # noqa: E402
 
 UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
@@ -960,7 +959,7 @@ def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> N
         raise Stop
     from types import SimpleNamespace
     monkeypatch.setattr(launch, "judge", judge)
-    import mame_binary
+    from scry_mame import binary as mame_binary
     monkeypatch.setattr(mame_binary, "resolve", lambda b: SimpleNamespace(path=b,
                                                                           origin="argument"))
     monkeypatch.setattr(mstate.STATE, "ses", None)
@@ -1069,7 +1068,7 @@ def test_close_reports_the_console_pipe_as_it_found_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """Three shapes of the drain's account."""
-    import mame_transport as transport
+    from scry_mame import transport
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}pipe"
     scratch.mkdir()
@@ -1115,7 +1114,7 @@ def test_close_counts_the_deaths_and_reruns_no_lua_call_read(
     on every reply, `close`'s included. `close` reads what nobody did: the deaths by position
     and the reruns in the unconsumed tail, and its session block says so. A log with none of
     either stays at zeros (the control)."""
-    import mame_transport as transport
+    from scry_mame import transport
 
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}unread"
     scratch.mkdir()

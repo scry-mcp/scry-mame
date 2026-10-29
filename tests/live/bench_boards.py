@@ -156,7 +156,7 @@ MANIFEST = str(board_dir("m68k-dual") / GFX_MANIFEST)
 BLIT_HANDLER = value("m68k-dual", "blit_handler")
 
 #: An ini that turns joysticks off: a debug MAME aborts at boot while a game controller is
-#: connected (`mame_boot_failures.SDL3_JOYSTICK_NOTE`), and the bench's owner may be using one.
+#: connected (`boot_failures.SDL3_JOYSTICK_NOTE`), and the bench's owner may be using one.
 NO_JOYSTICK_INI = str(Path(__file__).resolve().parent / "fixtures" / "ini-no-joystick")
 
 M68K_DUAL_ALT_BOOT = dict(binary=board_path("m68k-dual-alt", "binary"),

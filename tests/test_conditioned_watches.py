@@ -6,25 +6,23 @@ The console's answers are captured (`fixtures/console/PROVENANCE.txt`).
 from __future__ import annotations
 
 import re
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import captured, refs, refused, use_table  # noqa: E402
 from test_watches import _watching, _WatchSession  # noqa: E402
 
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_map as mmap  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import map as mmap  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 COND = "(wpdata&3)!=0"
 ARM = f"wp 0x2031fc::maincpu,0x4,w,{COND}"

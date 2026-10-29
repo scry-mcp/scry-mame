@@ -1,7 +1,6 @@
-"""The idle bound (`mame_idle`), with its clock given, and its wiring into the server: the
+"""The idle bound (`idle`), with its clock given, and its wiring into the server: the
 wrapper restarts the clock, `main` starts the watch, a start clears the note."""
 
-import sys
 import threading
 import time
 from pathlib import Path
@@ -9,15 +8,12 @@ from typing import Any
 
 import pytest
 from scry_core import boundary
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _stub_boot  # noqa: E402
 
-import mame_idle as idle  # noqa: E402
-import mame_session as msession  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import idle  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import session as msession  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 LATE = idle.IDLE_CLOSE_S + 1
 

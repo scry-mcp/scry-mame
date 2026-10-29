@@ -6,7 +6,7 @@ from typing import Any
 from live_harness import blocked, call, cell, ok, said
 from reader_fault import reader_fault, reader_fault_counts
 
-# Present in a removal line and absent from an install line (`mame_tap.remove_script`).
+# Present in a removal line and absent from an install line (`tap.remove_script`).
 REMOVAL_LINE = "T.items[id] = nil"
 
 K_REMOVALS = [

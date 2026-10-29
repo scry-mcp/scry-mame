@@ -10,15 +10,11 @@ to be proved against.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any, cast
 
-import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import png_read  # noqa: E402
+import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core.host_program import MODE_BITS  # noqa: E402
@@ -26,14 +22,16 @@ from session_doubles import refused  # noqa: E402
 from test_film import _read_label  # noqa: E402
 from test_gfx import _mark, _png, _serve  # noqa: E402
 
-import mame_evidence as evidence  # noqa: E402
-import mame_font as font  # noqa: E402
-import mame_layout as ml  # noqa: E402
-import mame_sheet as msheet  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_sweep as msweep  # noqa: E402
-import mame_yaml  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    evidence,  # noqa: E402
+    font,  # noqa: E402
+)
+from scry_mame import layout as ml  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import sheet as msheet  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import sweep as msweep  # noqa: E402
+from scry_mame import yaml as mame_yaml  # noqa: E402
 
 
 def _swept(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any
@@ -204,7 +202,7 @@ def test_a_choice_is_recorded_once_and_not_by_a_draft_that_failed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A retry after a failed draft, or the same pick made twice, is still ONE person's pick."""
-    import mame_manifest as mm
+    from scry_mame import manifest as mm
 
     _swept(monkeypatch, tmp_path)
     real = mm.parse
@@ -401,7 +399,7 @@ def test_a_sweep_id_through_a_ref_with_its_count_is_searched(monkeypatch: pytest
 
 def _sweep_reads(monkeypatch: pytest.MonkeyPatch) -> list[tuple[Any, ...]]:
     """What each call hands to the one evaluation that reads the block and the pens."""
-    import mame_gfx as gfx
+    from scry_mame import gfx
     seen: list[tuple[Any, ...]] = []
     real = gfx.read_with_pens
 

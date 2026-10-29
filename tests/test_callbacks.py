@@ -1,17 +1,14 @@
-"""The census callbacks' guard (`mame_callbacks`): its text pinned, plus a structural check of
+"""The census callbacks' guard (`callbacks`): its text pinned, plus a structural check of
 every family's install script. Its behaviour in MAME is proven live."""
 
 from __future__ import annotations
 
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_callbacks as callbacks  # noqa: E402
+from scry_mame import callbacks  # noqa: E402
 
 _TAP = r"\w+:install_write_tap\((?:[^,()]+(?:\([^()]*\))?,){3}\s*guarded\(t, function"
 _NOTIFIER = r"emu\.add_machine_\w+_notifier\(guarded\(t, function"
@@ -81,11 +78,10 @@ def test_the_clause_is_said_only_for_a_count_above_zero() -> None:
 def test_every_dumper_writes_the_count_last_on_its_head_and_the_message_right_before_end(
 ) -> None:
     """The writer's half of the format the parsers read."""
-    import mame_capture as capture
-    import mame_film as mfilm
-    import mame_manifest as mm
-    import mame_ramdac_lua as rlua
-    import mame_tally as tally
+    from scry_mame import capture, tally
+    from scry_mame import film as mfilm
+    from scry_mame import manifest as mm
+    from scry_mame import ramdac_lua as rlua
 
     ramdac = mm.PalettePort("x", "palette", "", 1, 3, ("r", "g", "b"), 6, True, 256, "declared",
                             "s")
@@ -109,10 +105,10 @@ def test_every_dumper_writes_the_count_last_on_its_head_and_the_message_right_be
 
 
 @pytest.mark.parametrize(("name", "module", "parser", "count"), [
-    ("tally-raised.txt", "mame_tally", "parse_dump", 678),
-    ("capture-raised.txt", "mame_capture", "parse_capture_header", 4),
-    ("film-raised.txt", "mame_film", "parse_film_header", 678),
-    ("ramdac-raised.txt", "mame_ramdac", "parse_dump", 3072),
+    ("tally-raised.txt", "scry_mame.tally", "parse_dump", 678),
+    ("capture-raised.txt", "scry_mame.capture", "parse_capture_header", 4),
+    ("film-raised.txt", "scry_mame.film", "parse_film_header", 678),
+    ("ramdac-raised.txt", "scry_mame.ramdac", "parse_dump", 3072),
 ])
 def test_a_dump_s_error_count_is_read_by_its_name_wherever_the_head_puts_it(
         name: str, module: str, parser: str, count: int) -> None:
@@ -177,9 +173,9 @@ def test_every_dumper_that_writes_after_its_open_opens_through_the_guard() -> No
     composes its text before opening, so nothing can raise between."""
     import inspect
 
-    import mame_capture
-    import mame_ramdac_lua
-    import mame_tally
+    from scry_mame import capture as mame_capture
+    from scry_mame import ramdac_lua as mame_ramdac_lua
+    from scry_mame import tally as mame_tally
     bodies = {
         "tally": (inspect.getsource(mame_tally), "local function dump(it, fr)", "dump_at_stops("),
         "capture": (inspect.getsource(mame_capture), "local function dump(it, fr)",

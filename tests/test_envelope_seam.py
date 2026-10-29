@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import pathlib
 import sys
 import threading
 import time
@@ -14,10 +13,8 @@ import pytest
 from mcp.server.mcpserver.exceptions import UnexpectedToolError
 from pydantic import TypeAdapter, ValidationError
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
-
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _call(name: str, args: dict[str, Any]) -> tuple[Any, dict[str, Any]]:

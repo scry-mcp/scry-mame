@@ -4,22 +4,18 @@ from __future__ import annotations
 
 import asyncio
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import mame_envelope as menvelope  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import sequence  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 @pytest.fixture

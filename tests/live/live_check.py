@@ -40,10 +40,10 @@ from scry_core.demo import stale as demo_stale
 
 from gfx_layouts import BYTES_8X8  # isort: skip -- beside the harness
 
-import mame_clear as mclear  # isort: skip
-import mame_lists as mlists  # isort: skip
-import mame_machine as machine  # isort: skip
-import server as s  # isort: skip
+from scry_mame import clear as mclear  # isort: skip
+from scry_mame import lists as mlists  # isort: skip
+from scry_mame import machine  # isort: skip
+from scry_mame import server as s  # isort: skip
 
 #   uv run python tests/live/live_check.py
 # Every check here but the last ones is on m68k-dual, and those run the demos on the free sets

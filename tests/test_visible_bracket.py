@@ -7,20 +7,21 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _RunningSession  # noqa: E402
 from test_resolution_per_cpu import MAIN, SUB, _two_programs  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_cpus as cpus  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    conditions,  # noqa: E402
+    cpus,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _refuses_the_put_back(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _RunningSession:

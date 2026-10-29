@@ -4,26 +4,23 @@ from __future__ import annotations
 
 import ast
 import re
-import sys
 import tempfile
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import media_tools
+from scry_core import reply_contract as contract  # noqa: E402
 from scry_core.host_program import absolute as _abs
 from scry_core.reply_contract import unavailable  # noqa: E402
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-from scry_core import reply_contract as contract  # noqa: E402
 from session_doubles import SessionFields, use_table  # noqa: E402
 
-import mame_envelope as menvelope  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+import scry_mame
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
-PACKAGE = Path(__file__).resolve().parent.parent
+PACKAGE = Path(scry_mame.__file__).resolve().parent
 SOURCES = sorted(PACKAGE.glob("*.py"))
 
 
@@ -239,9 +236,9 @@ def test_no_refusal_code_is_chosen_by_matching_its_own_prose(tmp_path: Path) -> 
     assert not found, f"a refusal's code is chosen by matching prose at {found}"
 
 
-_FAMILY_MODULES = ["mame_arming.py", "mame_breakpoints.py", "mame_watches.py", "mame_rearm.py",
-                   "mame_regpoints.py", "mame_declarations.py", "mame_tally.py",
-                   "mame_lists.py", "mame_conditions.py", "mame_clear.py"]
+_FAMILY_MODULES = ["arming.py", "breakpoints.py", "watches.py", "rearm.py",
+                   "regpoints.py", "declarations.py", "tally.py",
+                   "lists.py", "conditions.py", "clear.py"]
 
 
 def _literal_text(node: ast.expr) -> str | None:

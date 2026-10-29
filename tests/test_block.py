@@ -9,19 +9,15 @@ the parser has one branch per prefix and a branch no test reaches is one that ca
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel  # noqa: E402
 from session_doubles import refused, use_table  # noqa: E402
 
-import mame_block as block  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import block  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 _LINE = (b"MAME_MCP_BLOCK kind=share tag=:blitram size=32 bytewidth=2 endian=big start=- "
          b"offset=4 hex=00120034\n")
@@ -150,7 +146,6 @@ def test_the_script_is_one_chunk_with_the_shapes_the_parser_knows() -> None:
     filled = block.BLOCK_LUA % {"tag": '"x"', "addr": "nil", "offset": 0, "length": 1,
                                 "space": "manager.machine.debugger.visible_cpu"}
     assert "%(" not in filled and "%%" not in filled, "a placeholder or a doubled per cent leaked"
-    # Both spellings of a tag are tried, in order: as given, then with the colon.
     assert 'ipairs({name, ":" .. name})' in filled
     # A region entry's own offset counts; a share's does not (a share has none).
     assert "hit.region_offset or 0" in filled

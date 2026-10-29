@@ -5,21 +5,17 @@ when another cpu's table is added; and the fingerprint names the cpu for any but
 The machine's cpus are `-listxml`'s, CAPTURED from m68k-dual (`fixtures/machine/`).
 """
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _never_spawns, _stub_boot  # noqa: E402
 from session_doubles import prints_file, refused, rewrite_mame  # noqa: E402
 
-import mame_declarations as dec  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_symbols as syms  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import symbols as syms  # noqa: E402
 
 M68K_DUAL = [":maincpu", ":subcpu"]
 LISTXML = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"

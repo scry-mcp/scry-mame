@@ -36,11 +36,11 @@ from live_harness import (
     unavailable_why,
 )
 
-import mame_cpus as cpus  # isort: skip
-import mame_film as mfilm  # isort: skip
-import mame_savestates as msavestates  # isort: skip
-import server as s  # isort: skip
-from mame_state import STATE  # isort: skip
+from scry_mame import cpus  # isort: skip
+from scry_mame import film as mfilm  # isort: skip
+from scry_mame import savestates as msavestates  # isort: skip
+from scry_mame import server as s  # isort: skip
+from scry_mame.state import STATE  # isort: skip
 
 STATES = ("none", "stopped", "running", "closed")
 _saved: list[str] = []

@@ -6,17 +6,15 @@ the four parsers share, and the refusal a port's watch gives when nothing sizes 
 from __future__ import annotations
 
 import re
-import sys
-from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_callbacks as callbacks  # noqa: E402
-import mame_iotaps as iotaps  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tap as mtap  # noqa: E402
+from scry_mame import (
+    callbacks,  # noqa: E402
+    iotaps,  # noqa: E402
+)
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import tap as mtap  # noqa: E402
 
 
 def test_the_prelude_is_the_guard_then_the_registry_made_once() -> None:

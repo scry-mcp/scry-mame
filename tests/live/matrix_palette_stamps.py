@@ -27,8 +27,8 @@ from live_harness import (
 )
 from matrix_stamps import brackets, lines_at_stops
 
-import mame_capture as mcapture  # isort: skip -- found through the path the harness sets
-import mame_ramdac as mramdac  # isort: skip
+from scry_mame import capture as mcapture  # isort: skip -- found through the path the harness sets
+from scry_mame import ramdac as mramdac  # isort: skip
 
 U_TITLE = "a palette_log row's line and time, on m68k-dual's RAMDAC"
 RAMDAC = "ramdac"

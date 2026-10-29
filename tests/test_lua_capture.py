@@ -4,14 +4,10 @@ from __future__ import annotations
 
 import inspect
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import (  # noqa: E402
     AVI_HEAD,
     R_ABS,
@@ -25,14 +21,16 @@ from lua_support import (  # noqa: E402
 )
 from session_doubles import blank_session, documented, refused  # noqa: E402
 
-import mame_files as mfiles  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_lua as lua  # noqa: E402
-import mame_recording as mrec
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import files as mfiles  # noqa: E402
+from scry_mame import (
+    launch,  # noqa: E402
+    lua,  # noqa: E402
+    running,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import recording as mrec
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_the_fixtures_reset_is_derived_from_state_and_not_from_a_list(

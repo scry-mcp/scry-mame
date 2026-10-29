@@ -1,23 +1,20 @@
-"""`mame_presence`: which tools drive, held against the registry; the drawer chunk the boot script
+"""`presence`: which tools drive, held against the registry; the drawer chunk the boot script
 carries only when presence is on, drawing on the UI container from the one look; the state file
 replaced whole; and what `start` and `status` say of it."""
 
 from __future__ import annotations
 
 import asyncio
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import presence
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_launch as launch  # noqa: E402
-import mame_presence as mpresence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import launch  # noqa: E402
+from scry_mame import presence as mpresence  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_every_registered_tool_is_declared_driving_or_still_and_no_other() -> None:
@@ -136,7 +133,7 @@ def _session(monkeypatch: Any, scratch: Path, ses: _Console) -> mpresence.FileAd
 def made(scratch: Path, pending: Any = None) -> mpresence.FileAdapter:
     """The adapter `start` makes, over the server's lock and session; `pending` stands in for
     the console's queue."""
-    import mame_transport as transport
+    from scry_mame import transport
     return mpresence.FileAdapter(scratch, mstate.LOCK, mstate.STATE.repaintable,
                                  pending or transport.pending_lines)
 
@@ -249,7 +246,7 @@ def test_a_repaint_that_runs_out_is_the_presence_s_failure_and_never_breaks_the_
         monkeypatch: Any, tmp_path: Path) -> None:
     """The repaint is a display path: a console that does not answer it fails the presence, and
     the session stays whole (its answer is collected by the next request)."""
-    import gdb_session as gs
+    from scry_mame import gdb_session as gs
 
     class _Silent(_Console):
         def monitor_owed(self, command: str, timeout: float = 10.0) -> None:

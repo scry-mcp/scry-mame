@@ -4,24 +4,22 @@ is judged against its own cpu's build, and a store written before a declaration 
 every row as the first cpu's.
 """
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from session_doubles import add_symbol, refs, refused  # noqa: E402
 from test_symbols_per_cpu import _m68k_dual_boot, _two_tables  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MAIN, SUB = ":maincpu", ":subcpu"
 
@@ -186,7 +184,7 @@ def test_a_targets_silence_is_measured_by_the_controls_on_its_cpu_alone(
 ) -> None:
     """The main cpu's control fires over the run and the sub cpu's does not: a run to a sub
     target counts the sub's alone, so its silence is `control_silent`, never a TIMEOUT."""
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _running(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")                 # :maincpu, temp0
     s.breakpoint_at(ref="0x4a0", role="control", cpu="subcpu")    # :subcpu, temp1
@@ -212,7 +210,7 @@ def test_a_targets_silence_is_measured_by_the_controls_on_its_cpu_alone(
 def test_a_control_or_a_target_of_unknown_cpu_falls_back_to_every_control(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    import mame_advance as advance
+    from scry_mame import advance
     held: dict[dec.Owner, dict[str, int]] = {("25a4", MAIN): {}, ("4a0", SUB): {},
                                              ("600", None): {}}
     monkeypatch.setattr(mstate.STATE, "controls", held)
@@ -309,7 +307,7 @@ def test_a_range_held_by_a_declaration_of_unknown_cpu_is_held_on_every_cpu() -> 
 def test_bases_or_types_naming_one_cpu_twice_are_refused(tmp_path: Path) -> None:
     from test_symbols_per_cpu import M68K_DUAL, _two_tables
 
-    import mame_symbols as syms
+    from scry_mame import symbols as syms
 
     main, _sub = _two_tables(tmp_path)
     typed = tmp_path / "t.types"

@@ -11,23 +11,21 @@ unchanged: it is a field, not a tool.
 
 from __future__ import annotations
 
-import sys
 import threading
 import time
 from pathlib import Path
 
 import pytest
 from scry_core import vocabulary as vocab
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _console, _ConsoleSession, _running  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
-import mame_files as files  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    files,  # noqa: E402
+    read,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 class _DeadProcess:
@@ -175,7 +173,7 @@ def test_the_mark_mame_writes_at_the_start_of_error_log_is_not_part_of_its_first
 
 
 def test_label_counts_skip_an_empty_line() -> None:
-    import mame_files as files
+    from scry_mame import files
     assert files.label_counts(["", "[process] RE_DAC x", "   "]) == {"RE_DAC": 1}
 
 

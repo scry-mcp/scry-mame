@@ -1180,7 +1180,7 @@ wheels = [
 [[package]]
 name = "scry-core"
 version = "0.77.4"
-source = { git = "https://github.com/scry-mcp/scry-core?rev=v0.78.3#da7b8aa4d166840e488cc6c79ddb4ff62adffe02" }
+source = { git = "https://github.com/scry-mcp/scry-core?rev=v0.79.1#4847772adeb3591de91bef4a4099a2bb7c8651a0" }
 dependencies = [
     { name = "mcp" },
     { name = "pydantic" },
@@ -1208,7 +1208,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "mcp", specifier = ">=2.1.0,<3" },
-    { name = "scry-core", git = "https://github.com/scry-mcp/scry-core?rev=v0.78.3" },
+    { name = "scry-core", git = "https://github.com/scry-mcp/scry-core?rev=v0.79.1" },
 ]
 
 [package.metadata.requires-dev]

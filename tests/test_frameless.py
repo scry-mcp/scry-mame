@@ -15,7 +15,6 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lua_support import _channel  # noqa: E402
@@ -30,15 +29,17 @@ from server_support import (  # noqa: E402
 )
 from session_doubles import refused  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_lua as mlua  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_savestates as savestates  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_summaries as summaries  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    read,  # noqa: E402
+    running,  # noqa: E402
+    savestates,  # noqa: E402
+    summaries,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import lua as mlua  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 NO_FRAME = (FIXTURES / "print-frame-no-screen.txt").read_text()
 NO_FRAME0 = (FIXTURES / "print-frame0-no-screen.txt").read_text()

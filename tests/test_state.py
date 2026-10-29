@@ -1,18 +1,14 @@
-"""`mame_state`'s arithmetic and bookkeeping, held on a clock this file moves by hand.
+"""`state`'s arithmetic and bookkeeping, held on a clock this file moves by hand.
 """
 
 import os
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-
-import mame_files as files  # noqa: E402
-import mame_state as mstate  # noqa: E402
+from scry_mame import files  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 class _Clock:
@@ -28,7 +24,7 @@ class _Clock:
 @pytest.fixture
 def clock(monkeypatch: pytest.MonkeyPatch) -> _Clock:
     c = _Clock()
-    monkeypatch.setattr("mame_state.time.monotonic", c)
+    monkeypatch.setattr("scry_mame.state.time.monotonic", c)
     return c
 
 

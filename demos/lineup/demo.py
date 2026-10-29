@@ -20,7 +20,7 @@ from scry_core.reply_contract import Invalid
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
 from demos import free_set  # noqa: E402
 
-import mame_binary  # noqa: E402  isort: skip -- the repository root, put on the path above
+from scry_mame import binary as mame_binary  # noqa: E402  isort: skip -- the repository root, put on the path above
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -96,7 +96,7 @@ BINDING = Binding(
     inputs=INPUTS, rate_hz=RATE_HZ, sound=HERE / "music.wav")
 
 DEMO = Demo(
-    name="lineup", root=ROOT, server=[sys.executable, str(ROOT / "server.py")],
+    name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
     capture=lambda run: run.dir / "screen.png",
     offers=frozenset({"rompath"}), precheck=precheck,

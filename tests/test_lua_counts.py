@@ -3,13 +3,9 @@
 from __future__ import annotations
 
 import re
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import (  # noqa: E402
     AVI_HEAD,
     PROMPT,
@@ -23,10 +19,12 @@ from lua_support import (  # noqa: E402
 )
 from session_doubles import blank_session, refused  # noqa: E402
 
-import mame_lua as lua  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    lua,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 @pytest.mark.parametrize("tool,captured,event", [

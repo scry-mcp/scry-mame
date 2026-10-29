@@ -3,8 +3,8 @@
 from pathlib import Path
 from types import ModuleType
 
-import mame_mcp
-import server
+from scry_mame import mcp as mame_mcp
+from scry_mame import server
 
 ROOT = Path(__file__).resolve().parent.parent
 CAPTURED = ("mame",)

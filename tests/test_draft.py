@@ -5,7 +5,7 @@ THE KNOWN ANSWER IS CAPTURED from the blind run on `circus` in attract (a stock 
 RAM `0x00..0x3f` on every write to the port `0x2000` (`circus-clown-rows.txt.gz`, as the capture's
 tap wrote it, in rows of six fields that `with_stamps` completes with a line and a time the
 correlation never reads) and the `gfx_locate` answers over the whole screen for `gfx2`'s 16x16
-candidates (`circus-clown-locates.json.gz`, as `mame_evidence.record_locate` keeps them). On those
+candidates (`circus-clown-locates.json.gz`, as `evidence.record_locate` keeps them). On those
 frames exactly one reading held: the clown's x is `240 - byte 10` and its y `239 - byte 11`, the
 row of frame F-1 drawing the picture of frame F; no byte of the block holds its tile. The driver,
 read only after the draft existed, draws it at `256 - clown_y - 16` and `256 - clown_x - 16 - 1`.
@@ -18,26 +18,22 @@ import gzip
 import json
 import random
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core.host_program import MODE_BITS  # noqa: E402
 from session_doubles import refused, with_stamps  # noqa: E402
 
-import mame_blits as mblits  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_correlate as corr  # noqa: E402
-import mame_draft as mdraft  # noqa: E402
-import mame_manifest as mm  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_yaml  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import blits as mblits  # noqa: E402
+from scry_mame import capture  # noqa: E402
+from scry_mame import correlate as corr  # noqa: E402
+from scry_mame import draft as mdraft  # noqa: E402
+from scry_mame import manifest as mm  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import yaml as mame_yaml  # noqa: E402
 
 FIX = Path(__file__).parent / "fixtures" / "gfx"
 DRAFT_FIX = Path(__file__).parent / "fixtures" / "draft"
@@ -641,8 +637,7 @@ def test_a_file_that_cannot_be_read_where_a_file_goes_is_refused(
 def test_two_ranges_of_a_cpus_space_are_two_sources() -> None:
     """A block read through `ref` is named by its address and its cpu, not only by the space:
     two ranges, or one range on two cpus, are different blocks to the draft."""
-    import mame_evidence as evidence
-    import mame_gfx as gfx
+    from scry_mame import evidence, gfx
     space = gfx.Block("space", "program", 0x100, 1, "big", b"")
     keys = {evidence.SourceKey.of(evidence.source_of(gfx.source_fields(space, 0, addr, cpu)))
             for addr, cpu in ((0x1000, ":maincpu"), (0x8000, ":maincpu"), (0x1000, ":sub"))}
@@ -661,8 +656,7 @@ def test_the_evidence_key_is_read_from_the_fields_a_graphics_reply_carries(
     """The key is built from a reply's `source_fields`: a share or a region read by `tag` names
     its kind, tag and offset, a range read by `ref` its address and cpu as well. A field the key
     names and no reply carries would be the empty string on every key, telling no block apart."""
-    import mame_evidence as evidence
-    import mame_gfx as gfx
+    from scry_mame import evidence, gfx
     assert evidence.SourceKey._fields == evidence.SOURCE_FIELDS
     fields = gfx.source_fields(gfx.Block(kind, tag, 0x100, 1, "big", b""), 0, addr, ":maincpu")
     carried = evidence.SOURCE_FIELDS if addr is not None else evidence.SOURCE_FIELDS[:3]
@@ -1048,7 +1042,7 @@ def _sweeps(counts: list[int]) -> None:
 
 def test_a_sweep_id_names_a_candidate_of_its_own_sweep(monkeypatch: pytest.MonkeyPatch,
                                                        tmp_path: Path) -> None:
-    import mame_evidence as evidence
+    from scry_mame import evidence
     _channel(monkeypatch, tmp_path)
     _sweeps([2, 3])
     found = evidence.find_candidate("s1c2")
@@ -1063,7 +1057,7 @@ def test_a_sweep_id_names_a_candidate_of_its_own_sweep(monkeypatch: pytest.Monke
 def test_a_refused_sweep_id_lists_what_is_held_and_says_when_it_is_more(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, held: int, more: bool,
 ) -> None:
-    import mame_evidence as evidence
+    from scry_mame import evidence
     _channel(monkeypatch, tmp_path)
     _sweeps([held])
     with pytest.raises(mstate.Invalid) as err:
@@ -1072,7 +1066,7 @@ def test_a_refused_sweep_id_lists_what_is_held_and_says_when_it_is_more(
 
 
 def test_the_evidence_keeps_which_candidates_searched_their_whole_block() -> None:
-    import mame_evidence as evidence
+    from scry_mame import evidence
     fields = {"frame_screen": 1, "palette": ":palette", "kind": "region", "tag": ":gfx1",
               "offset": 0, "patch": [0, 0, 8, 8], "transparent": None, "flips": ["none"],
               "candidates": [{"layout": {"name": "a"}, "tiles_searched": [0, 256],
@@ -1085,7 +1079,7 @@ def test_the_evidence_keeps_which_candidates_searched_their_whole_block() -> Non
 
 def test_the_evidence_keeps_the_pixels_each_match_compared() -> None:
     """A uniqueness proof is only as strong as what its match compared, so the record keeps it."""
-    import mame_evidence as evidence
+    from scry_mame import evidence
     fields = {"frame_screen": 1, "palette": ":palette", "kind": "region", "tag": ":gfx1",
               "offset": 0, "patch": [0, 0, 8, 8], "transparent": 0, "flips": ["none"],
               "candidates": [{"layout": {"name": "a"}, "tiles_searched": [0, 16],
@@ -1098,7 +1092,7 @@ def test_the_evidence_keeps_the_pixels_each_match_compared() -> None:
 
 
 def test_a_source_names_no_address_and_no_offset_it_was_not_read_at() -> None:
-    import mame_evidence as evidence
+    from scry_mame import evidence
     assert evidence.SourceKey.of({"kind": "space", "tag": "program"}) == ("space", "program", 0,
                                                                           "", "")
 
@@ -1306,7 +1300,7 @@ def test_two_layouts_of_one_size_both_proved_are_named_in_the_order_they_matched
 ) -> None:
     """Each told apart where only it matched: the first to match takes the plain name, whatever
     their offsets would sort as."""
-    import mame_evidence as evidence
+    from scry_mame import evidence
     clown, rival, _ = _layouts()
     both = [clown, rival]
     first, second = sorted(both, key=evidence.layout_key, reverse=True)

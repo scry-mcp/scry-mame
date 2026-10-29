@@ -1,7 +1,7 @@
 """Section P of the live matrix: a session's two ends and its own declarations store.
 
 The emulator stops three ways, each proved by its process being gone: an ordered `close`, the
-server's death (`scry_core.guardian`), and the idle bound (`mame_idle`). Each cell carries its
+server's death (`scry_core.guardian`), and the idle bound (`idle`). Each cell carries its
 control: the foreign listener, the SIGKILL with the guardian withheld, the MAME seen alive before
 the stop. A `state_dir` session runs over a project store seeded with another session's row,
 which it must neither inherit nor touch.
@@ -37,14 +37,14 @@ from live_harness import (
 )
 from scry_core import guardian
 
-import mame_declarations as dec  # isort: skip -- found through the path the harness sets
-import mame_idle as idle  # isort: skip
-import mame_launch as launch  # isort: skip
-import mame_session as msession  # isort: skip
-import mame_stub_owner as stub_owner  # isort: skip
+from scry_mame import declarations as dec  # isort: skip -- found through the path the harness sets
+from scry_mame import idle  # isort: skip
+from scry_mame import launch  # isort: skip
+from scry_mame import session as msession  # isort: skip
+from scry_mame import stub_owner  # isort: skip
 
-import mame_state as mstate  # isort: skip
-from mame_state import STATE  # isort: skip
+from scry_mame import state as mstate  # isort: skip
+from scry_mame.state import STATE  # isort: skip
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from process_probes import alive, gone_within, listener, parent_of  # noqa: E402
@@ -71,7 +71,7 @@ sys.path.insert(0, sys.argv[1])
 from scry_core import guardian
 if sys.argv[3] == "bare":
     guardian.spawn = lambda *a, **k: None
-import server as s
+from scry_mame import server as s
 r = s.start(**json.loads(sys.argv[2]))
 print(json.dumps({"status": r["status"], "pid": r.get("pid"), "said": r.get("summary")}),
       flush=True)

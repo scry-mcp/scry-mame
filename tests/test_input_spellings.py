@@ -3,17 +3,12 @@
 from __future__ import annotations
 
 import asyncio
-import sys
-from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import test_envelope_seam  # noqa: E402
 
-import server as s  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 KINDS = ("breakpoint", "regpoint", "watch")
 
@@ -166,8 +161,8 @@ def test_a_line_too_long_for_a_packet_still_waits_for_the_session() -> None:
 
 
 def test_an_empty_palette_over_several_devices_is_ambiguous_and_over_none_is_no_channel() -> None:
-    import mame_palette as mpalette
-    import mame_state as mstate
+    from scry_mame import palette as mpalette
+    from scry_mame import state as mstate
     with pytest.raises(mstate.Invalid) as several:
         mpalette.parse_pens("MAME_MCP_GFX_PENS_NONE name=- palettes=:pal1,:pal2", "", 0, 4, {})
     assert several.value.code == "ambiguous_ref" and "`palette`" in str(several.value)

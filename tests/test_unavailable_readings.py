@@ -1,25 +1,20 @@
 """A DATUM THAT COULD NOT BE READ IS `{"available": false, "why": ...}` in the place its value
 would have taken, never a null beside a sibling: a reader finds the reason where it looked for
 the value, and an inapplicable reading differs from an unreadable one only in its `why`.
-These are the cases no other file pins.
 """
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from test_ramdac import _armed, _loaded  # noqa: E402
 from test_watches import STOP_LINE, _watching  # noqa: E402
 
-import mame_ramdac as mramdac  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import ramdac as mramdac  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_a_change_watch_with_no_earlier_reading_says_why_it_has_no_before(

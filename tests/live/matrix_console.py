@@ -14,7 +14,7 @@ from typing import Any
 from bench_boards import SUB_SYMBOLS, SYMBOLS
 from live_harness import boot, call, cell, live_tmp, ok, run_sections, said, section
 
-from mame_state import STATE  # isort: skip -- found through the path the harness sets
+from scry_mame.state import STATE  # isort: skip -- found through the path the harness sets
 
 MAIN, SUB = ":maincpu", ":subcpu"
 

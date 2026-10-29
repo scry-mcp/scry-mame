@@ -2,21 +2,17 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import refs, refused, use_table  # noqa: E402
 from test_watches import _watching, _WatchSession  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 ENGINE = 0x2031FC          # the global pointer `_G_ENGINE`
 HEAP = 0x210000            # where it points now
@@ -201,7 +197,7 @@ def test_a_pointer_watch_comes_back_at_the_next_start(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The re-arm chases the pointer against the table this start loaded."""
-    import mame_rearm as rearming
+    from scry_mame import rearm as rearming
     ses = _pointing(monkeypatch, tmp_path)
     s.watch_add(ref="_g_engine->sync_delta", mode="change")
     ses.wplist_rows.clear()                           # the rows a fresh emulator lacks

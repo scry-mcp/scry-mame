@@ -5,24 +5,22 @@ from __future__ import annotations
 import io
 import re
 import subprocess
-import sys
 import time
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _install, _RegisterSession  # noqa: E402
 from session_doubles import blank_session  # noqa: E402
 
-import mame_envelope as menvelope  # noqa: E402
-import mame_files as mfiles  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import files as mfiles  # noqa: E402
+from scry_mame import (
+    launch,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 R_ABS = "must be an absolute path"
 

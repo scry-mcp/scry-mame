@@ -35,7 +35,7 @@ from live_harness import (
 )
 from scry_core import host_program
 
-from mame_state import STATE  # isort: skip -- found through the path the harness sets
+from scry_mame.state import STATE  # isort: skip -- found through the path the harness sets
 
 Q_TITLE = "saved states: what is not a state, a load proved by the registers, a stale counter"
 Q_CELLS = [

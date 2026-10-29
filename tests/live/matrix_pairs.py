@@ -44,15 +44,15 @@ from evidence import (  # isort: skip -- it imports the server's files, so after
     sentinel_order,
 )
 
-import mame_transport as transport
+from scry_mame import transport
 
-import mame_callbacks as callbacks  # isort: skip
-import mame_capture as mcapture  # isort: skip
-import mame_watches as mwatches  # isort: skip
-import server as s  # isort: skip
+from scry_mame import callbacks  # isort: skip
+from scry_mame import capture as mcapture  # isort: skip
+from scry_mame import watches as mwatches  # isort: skip
+from scry_mame import server as s  # isort: skip
 from scry_core import png, series  # isort: skip
 from scry_core import value_format as vf  # isort: skip
-from mame_state import STATE  # isort: skip
+from scry_mame.state import STATE  # isort: skip
 from matrix_edges import (  # noqa: E402
     SEEN_ACT,
     by_ref,
@@ -68,7 +68,7 @@ from matrix_tools_by_state import (  # noqa: E402
 
 # A FAULT PLANTED FROM THE HARNESS, never from the server: one Lua chunk that reaches the tap's
 # item in the server's registry and makes the tap's own body raise at its next write, the way a
-# body with a bug would; uncaught, it reads as a tap that saw nothing (`mame_callbacks` says why).
+# body with a bug would; uncaught, it reads as a tap that saw nothing (`callbacks` says why).
 # `plant` is Lua over the item `t`; `said` is a Lua expression printed at the same instant, a
 # baseline the cell reads back.
 FAULT = "planted fault"
@@ -95,7 +95,7 @@ def raised(w: dict[str, Any]) -> tuple[int, str]:
 
 # A DUMPER FAULTED FROM THE HARNESS: the item's `endianness`, which only its dumper reads, and
 # only once its `.tmp` is open (the head's last line), is made to raise when formatted, so the
-# dump fails half-way through a write, as a dumper with a bug would. `mame_callbacks`'s guard
+# dump fails half-way through a write, as a dumper with a bug would. `callbacks`'s guard
 # then closes the file, logs `MCP_DUMP_FAILED <id>` once per run of failures, and the dump on
 # disk stays the last one finished, which a later stop reads as superseded.
 DUMPER_FAULT = ('t.endianness = setmetatable({}, {__tostring = function() error("' + FAULT

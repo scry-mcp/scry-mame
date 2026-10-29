@@ -33,7 +33,7 @@ from live_harness import (
 from matrix_acceptance import V30, v30_boot
 from scry_core import traffic
 
-from mame_transport import lua_string
+from scry_mame.transport import lua_string
 
 # Written here, not imported from the server, so a server change turns the cells red. MAME mixes
 # in updates of a fiftieth of a second (`STREAMS_UPDATE_FREQUENCY`); the span is exact on the

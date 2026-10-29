@@ -3,16 +3,12 @@
 from __future__ import annotations
 
 import re
-import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import log_marks
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
@@ -46,21 +42,23 @@ from session_doubles import (  # noqa: E402
     use_table,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_block as block  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_launch as launch
-import mame_lists as mlists  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_stub_owner as owner  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    block,  # noqa: E402
+    conditions,  # noqa: E402
+    files,  # noqa: E402
+    launch,
+    read,  # noqa: E402
+    running,  # noqa: E402
+    transport,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import stub_owner as owner  # noqa: E402
 
 
 def test_a_timeout_leaves_the_machine_stopped() -> None:
@@ -1047,7 +1045,7 @@ def test_resume_then_close_reports_the_speed_the_host_held_over_the_run(
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     wall = [100.0]
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: wall[0])
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: wall[0])
     ses.emu_clock = 5.0
     r = s.resume()
     assert "verdict" not in r and "running" not in r and ses.running, r
@@ -1065,7 +1063,7 @@ def test_a_stop_found_by_a_later_contact_ends_the_run_and_carries_its_speed(
     """The window a `resume` opened closes at the stop that ends the run, whoever finds it."""
     ses = _running(monkeypatch, tmp_path)
     wall = [100.0]
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: wall[0])
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: wall[0])
     ses.emu_clock = 5.0
     assert s.resume()["session"]["running"] is True
     ses.stops_after_polls = 1
@@ -1112,7 +1110,7 @@ def test_a_release_whose_clock_cannot_be_read_opens_no_window_and_the_stop_still
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     wall = [100.0]
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: wall[0])
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: wall[0])
     monkeypatch.setattr(ses, "emulated_seconds", lambda: None)
     assert s.resume()["session"]["running"] is True
     monkeypatch.setattr(ses, "emulated_seconds", lambda: 6.0)
@@ -1146,7 +1144,7 @@ def test_a_stop_of_a_run_the_console_started_is_proved_on_the_counter_and_says_s
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "ses", ses)
     monkeypatch.setattr(mstate.STATE, "console_run", True)
-    monkeypatch.setattr("mame_running.time.sleep", lambda gap_s: None)
+    monkeypatch.setattr("scry_mame.running.time.sleep", lambda gap_s: None)
     ses.running = ses.emulating = True
     out = s.stop()
     assert "running" not in out and out["status"] == "ok" and out["interrupted"] is True, out
@@ -1172,7 +1170,7 @@ def test_the_throttle_lift_resets_the_speed_window_to_the_real_speed_start(
     (tmp_path / "error.log").write_text("boot\nMAME_MCP throttled from frame 900\n", newline="")
     mstate.STATE.run_release = {"emulated": 0.0, "wall": 100.0}   # the ramp's start
     ses.emu_clock = 15.0                                          # emulated at the lift
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: 200.0)
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: 200.0)
     out = s.log(channel="emulator", pattern="throttled from frame")
     assert out["status"] == "ok" and out["lines_total"] == 1, out
     assert mstate.STATE.run_release == {"emulated": 15.0, "wall": 200.0}, mstate.STATE.run_release
@@ -1340,7 +1338,7 @@ def test_the_account_of_a_stop_found_later_has_every_field_and_the_name_of_where
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: 100.0)   # no span, so no speed
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: 100.0)   # no span, so no speed
     s.breakpoint_at(ref="0x4a0")
     ses.pcs = [0xF2034, 0x4A0]
     s.resume()
@@ -1364,7 +1362,7 @@ def test_a_console_run_found_at_rest_carries_the_speed_of_the_window_it_ends(
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     wall = [100.0]
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: wall[0])
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: wall[0])
     monkeypatch.setattr(running, "frame_at_rest", lambda ses_, reads=3, gap_s=0.1: True)
     ses.emu_clock = 5.0
     assert s.resume()["session"]["running"] is True

@@ -8,25 +8,23 @@ only, so everything here also holds that the declaration store never sees one.
 from __future__ import annotations
 
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import io_board, refused, use_table  # noqa: E402
 from test_tally import _sent, _tallying  # noqa: E402
 from test_watches import _WatchSession  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_cpus as mcpus  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tally as tally  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    capture,  # noqa: E402
+    tally,  # noqa: E402
+)
+from scry_mame import cpus as mcpus  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 BLOCK_MAP = {"cpus": [{"tag": ":maincpu", "spaces": ["io", "program"]}],
              "address_map": [{"cpu": ":maincpu", "space": "program", "start": "0x2031f0",
@@ -396,7 +394,7 @@ def test_an_io_tap_lists_its_stamp_and_age_from_the_declarations_clock(
 
 
 def test_a_cpu_s_two_spaces_answer_each_its_own_bus_width(monkeypatch: pytest.MonkeyPatch) -> None:
-    import mame_cpus as cpus
+    from scry_mame import cpus
     monkeypatch.setattr(mstate.STATE, "machine_map", {"spaces": [
         {"cpu": ":maincpu", "space": "program", "data_width_bits": 8},
         {"cpu": ":maincpu", "space": "io", "data_width_bits": 16}]})
@@ -410,7 +408,7 @@ def test_a_32_bit_io_bus_is_judged_by_its_own_words(
 ) -> None:
     """The same arithmetic as the program space's, over an io bus four bytes wide: a range inside
     one word or of whole words is taken, one that covers a word in part is refused."""
-    import mame_watches as watches
+    from scry_mame import watches
     _io_board(monkeypatch, tmp_path)
     _io_bus(monkeypatch, 32)
     why, _note = watches.bus_word_split(port, length, ":maincpu", "io")

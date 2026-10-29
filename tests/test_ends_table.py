@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 from scry_core import ends_table
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_mcp  # noqa: E402
-import server  # noqa: E402,F401  (registers the tools)
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server  # noqa: E402,F401  (registers the tools)
 
 ROOT = Path(__file__).resolve().parent.parent
 

@@ -5,13 +5,9 @@ reads the reply a caller reads and asserts the new key present and the old one g
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from session_doubles import IDENTITY_KEYS, ref_cpu  # noqa: E402
 from test_address_rule import _stale_raw_and_unshowable_symbol  # noqa: E402
@@ -19,9 +15,9 @@ from test_comments import MAIN  # noqa: E402
 from test_tally import _survey, _tallying  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import mame_recording as mrec
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import recording as mrec
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_the_comments_re_arm_lists_rows_as_the_declarations_re_arm_does(
@@ -107,7 +103,7 @@ def test_drive_carries_the_tag_and_the_account_under_its_act(
 
 
 def test_a_superseded_tap_says_so_in_its_summary() -> None:
-    import mame_summaries as summaries
+    from scry_mame import summaries
     reply = {"palette_port": ":ramdac", "frame_as_of": 7, "writes_total": 2,
              "pens_written": ["0x01"],
              "rows_kept": 2, "overflow_rows": 0}

@@ -1,4 +1,4 @@
-"""The palette write log (`mame_ramdac`, `palette_log`) and the pixel query it answers.
+"""The palette write log (`ramdac`, `palette_log`) and the pixel query it answers.
 
 The m68k-dual fixtures are captured: the board's BT478 declared as `palette_ports.ramdac` (index
 `0x720001`, data `0x720003`, r g b, 8 bits), armed inside the palette upload (frame 898) and read
@@ -12,26 +12,22 @@ import dataclasses
 import gzip
 import json
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from session_doubles import documented, published, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 from test_gfx import _serve  # noqa: E402
 
-import mame_callbacks as mcallbacks
-import mame_manifest as mm  # noqa: E402
-import mame_ramdac as mr  # noqa: E402
-import mame_ramdac_lua as rlua  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import callbacks as mcallbacks
+from scry_mame import manifest as mm  # noqa: E402
+from scry_mame import ramdac as mr  # noqa: E402
+from scry_mame import ramdac_lua as rlua  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import transport  # noqa: E402
 
 FIX = Path(__file__).parent / "fixtures" / "gfx"
 MANIFEST = FIX / "manifest-blitter.yaml"

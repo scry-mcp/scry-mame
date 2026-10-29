@@ -2,15 +2,11 @@
 
 from __future__ import annotations
 
-import sys
 import threading
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import (  # noqa: E402
     CONSOLE,
     _captured,
@@ -23,12 +19,14 @@ from lua_support import (  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
-import mame_envelope as menvelope  # noqa: E402
-import mame_lua as lua  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import (
+    lua,  # noqa: E402
+    running,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_throttle_is_pending_on_a_stopped_machine_and_applied_on_a_running_one(

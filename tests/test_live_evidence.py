@@ -5,7 +5,7 @@ import importlib.util
 from pathlib import Path
 from types import ModuleType
 
-import mame_files as files
+from scry_mame import files
 
 
 def _evidence() -> ModuleType:

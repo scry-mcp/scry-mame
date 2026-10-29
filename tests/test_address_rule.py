@@ -8,14 +8,10 @@ store already holds keep the reading they were written under.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from session_doubles import refused, use_table  # noqa: E402
 from test_capture import _capturing  # noqa: E402
@@ -24,11 +20,13 @@ from test_controls import _controlled  # noqa: E402
 from test_film import _session as _film_session  # noqa: E402
 from test_iotaps import _io_board  # noqa: E402
 
-import mame_comments as comments  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    comments,  # noqa: E402
+    inputs,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _rows(kind: str) -> list[tuple[str, str]]:
@@ -388,7 +386,7 @@ def test_a_clear_naming_no_cpu_reads_a_name_of_any_cpus_table(
 ) -> None:
     """`beef` is a name of the sub cpu alone: a clear naming no cpu reads it as that name, and
     the main cpu's raw row at 0xbeef stays."""
-    import gdb_session as g
+    from scry_mame import gdb_session as g
     _controlled(monkeypatch, tmp_path)
     monkeypatch.setitem(mstate.STATE.tables, ":subcpu",
                         g.SymbolTable({"BEEF": 0x640}, {}, "yaml"))
@@ -426,7 +424,7 @@ def test_the_preflight_leaves_a_port_to_the_io_space_rule(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A trigger in the io space is a port, read by the io space's own rule when the step runs."""
-    from mame_sequence import _ref_args
+    from scry_mame.sequence import _ref_args
     assert _ref_args({"op": "gfx_film", "trigger": "0x1e", "space": "io", "pc": "0x400"}) == [
         ("pc", "0x400", False)]
     assert _ref_args({"op": "watch_add", "ref": "0x1c", "mode": "count", "space": "io"}) == []
@@ -483,7 +481,7 @@ def test_an_address_argument_is_written_0x(call: Any, name: str) -> None:
 
 
 def test_a_bases_value_is_written_0x(tmp_path: Path) -> None:
-    import mame_symbols as symbols
+    from scry_mame import symbols
     with pytest.raises(mstate.Invalid, match=r"bases\['DATA'\] is '400'; an address is written "
                                              r"0x400"):
         symbols._parse_bases({"DATA": "400"})
@@ -721,7 +719,7 @@ def test_perform_reads_a_pointer_base_as_the_tool_does_never_by_a_held_name(
 def test_perform_reads_an_earlier_steps_name_only_on_the_cpu_it_was_declared_on(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import gdb_session as g
+    from scry_mame import gdb_session as g
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: MAIN, 2: ":subcpu"}
     monkeypatch.setitem(mstate.STATE.tables, ":subcpu", g.SymbolTable({}, {}, "yaml"))
@@ -850,7 +848,7 @@ def test_perform_leaves_a_step_after_a_focus_to_the_table_of_the_cpu_it_focused(
 ) -> None:
     """`fade` is a name of the sub cpu alone: after a `focus` on it, the step is read against
     the sub's table when it runs, never refused against the main's before the list starts."""
-    import gdb_session as g
+    from scry_mame import gdb_session as g
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: MAIN, 2: ":subcpu"}
     monkeypatch.setitem(mstate.STATE.tables, ":subcpu", g.SymbolTable({"FADE": 0x900}, {}, "yaml"))
@@ -884,8 +882,8 @@ def _state_in_three_views(ses: Any, ref: str) -> tuple[Any, Any, Any]:
     """`ref`'s state as `declaration_list(kind="watch")` lists it, as a stop's survey carries it,
     and the word
     `start`'s re-arm files it under."""
-    import mame_rearm as rearming
-    import mame_watches as watches
+    from scry_mame import rearm as rearming
+    from scry_mame import watches
     listed = next(w for w in s.declaration_list("watch")["watches"] if w["ref"] == ref)
     surveyed = next(w for w in watches.evaluate_watches(ses) if w["ref"] == ref)
     account = rearming.rearm_breakpoints_and_watches(ses)
@@ -930,7 +928,7 @@ def test_the_three_views_take_a_rows_resolution_word_from_one_owner(
     declaration and resolution give (`watches.resolved_state`), so a word changed there is
     changed in every view: a show watch that resolves, made `unresolved` by that function alone,
     is `unresolved` in all three, and each of them asked it."""
-    import mame_watches as watches
+    from scry_mame import watches
     ses = _capturing(monkeypatch, tmp_path)
     assert mstate.STATE.store is not None
     mstate.STATE.store.add(dec.Declaration("watch", "address", "0x2031fc", width=2, fmt="u16",

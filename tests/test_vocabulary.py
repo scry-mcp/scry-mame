@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
 from scry_core.reply_contract import unavailable  # noqa: E402
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_mcp  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server  # noqa: E402,F401 -- registers the tools whose summaries are read here
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server  # noqa: E402,F401 -- registers the tools whose summaries are read here
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_notes_join_the_parts_said_in_order_and_once() -> None:
@@ -50,8 +45,8 @@ def test_merged_fields_refuse_any_other_key_said_twice() -> None:
 
 def test_a_refusal_read_off_an_answer_keeps_its_own_note_beside_the_consoles() -> None:
     """`console_said` joins the console's note to the refusal's own; the refusal's fields win."""
-    import mame_lua as mlua
-    import mame_transport as transport
+    from scry_mame import lua as mlua
+    from scry_mame import transport
 
     answer = transport.Answer("", True, "nil", thread_errors=1)
     with pytest.raises(mstate.Invalid) as e, mlua.console_said(answer, 0):
@@ -64,7 +59,7 @@ def test_a_refusal_read_off_an_answer_keeps_its_own_note_beside_the_consoles() -
 
 def test_a_captured_block_its_format_cannot_decode_is_unavailable_with_why() -> None:
     """The row keeps its bytes; the decoded `block` says why it is not there."""
-    import mame_capture as capture
+    from scry_mame import capture
 
     row = capture.row_fields(capture.Row(1, 7, 0, 0, 0x400, 0x12, 0xFF, b"\x01"), "u32", 4, 16,
                              "big", None)
@@ -83,7 +78,7 @@ def test_a_span_is_spelled_to_the_tenth_and_a_measured_time_to_the_microsecond()
 def test_the_sessions_note_counts_its_read_only_claims_in_their_number(
         monkeypatch: pytest.MonkeyPatch, claims: int, said: str) -> None:
     """The verb agrees with the count (`prose.agrees`), at one and at more."""
-    import mame_envelope as menvelope
+    from scry_mame import envelope as menvelope
 
     monkeypatch.setattr(mstate.STATE, "ses", None)
     monkeypatch.setattr(mstate.STATE, "lua_read_only_claims", claims)

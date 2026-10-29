@@ -1,14 +1,11 @@
 import subprocess
 import sys
-from pathlib import Path
 
 import pytest
 from scry_core import guardian
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_launch as launch  # noqa: E402
-import mame_state as mstate  # noqa: E402
+from scry_mame import launch  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def test_kill_stops_the_guardian_only_once_the_mame_is_ended(

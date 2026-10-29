@@ -9,21 +9,17 @@ to `start`) reads as that type with no format named at all.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _stub_boot  # noqa: E402
 from session_doubles import add_symbol, refused, use_table  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_symbols as syms  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import symbols as syms  # noqa: E402
 
 
 def test_a_sized_format_needs_no_width_and_decodes_to_its_shape(
@@ -128,6 +124,6 @@ def test_a_types_file_types_symbols_at_start_and_is_refused_when_it_lies(
 
 
 def test_a_watch_with_no_format_at_all_is_refused_by_the_model() -> None:
-    import mame_declarations as dec
+    from scry_mame import declarations as dec
     with pytest.raises(dec.DeclarationError, match="needs a format"):
         dec.Declaration("watch", "symbol", "x", width=2, watch_mode="show")

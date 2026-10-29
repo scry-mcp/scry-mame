@@ -4,16 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import re
-import sys
-from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import documented  # noqa: E402
 
-import server as s  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 
 def _texts() -> dict[str, str]:

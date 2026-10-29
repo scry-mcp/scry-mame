@@ -10,17 +10,16 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _console, _ConsoleSession, _running, _RunningSession  # noqa: E402
 from session_doubles import captured, refused, visible_in, wplist_add  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_cpus as cpus  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import cpus  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _sub_visible(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _RunningSession:

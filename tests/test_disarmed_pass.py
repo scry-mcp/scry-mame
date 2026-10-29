@@ -12,17 +12,18 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from test_pointer_watches import ENGINE, HEAP2, _pointing  # noqa: E402
 from test_watches import _watching, _WatchSession  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _to_target(monkeypatch: pytest.MonkeyPatch, ses: _WatchSession) -> None:

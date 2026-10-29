@@ -1,4 +1,4 @@
-"""How MAME's snapshot differs from the screen (`mame_mismatch`), judged on m68k-dual's arming
+"""How MAME's snapshot differs from the screen (`mismatch`), judged on m68k-dual's arming
 capture (`fixtures/film/arm-m68k-dual.*`, whose snapshot IS its bare screen) with controlled
 edits of the snapshot's words, so every case starts from a known equality and changes one
 thing. A screen in direct colour, which has no pens, is a small one of its own.
@@ -7,17 +7,14 @@ thing. A screen in direct colour, which has no pens, is a small one of its own.
 from __future__ import annotations
 
 import gzip
-import sys
 from array import array
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_mismatch as mm  # noqa: E402
-import mame_screen as mscreen  # noqa: E402
+from scry_mame import mismatch as mm  # noqa: E402
+from scry_mame import screen as mscreen  # noqa: E402
 
 FIX = Path(__file__).parent / "fixtures" / "film"
 W, H = 336, 252

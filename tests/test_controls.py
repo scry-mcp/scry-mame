@@ -9,16 +9,12 @@ breakpoint whose condition counts and never comes true, `bp <addr>,(++temp0)==0`
 from __future__ import annotations
 
 import dataclasses
-import sys
 from collections.abc import Callable
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _RegisterSession, _running, _RunningSession  # noqa: E402
 from session_doubles import (
     bp_records,
@@ -35,19 +31,21 @@ from session_doubles import (
 )
 from test_watches import WPLIST_ONE  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_console as mconsole  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_read  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    conditions,  # noqa: E402
+    inputs,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import console as mconsole  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import read as mame_read  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 # CAPTURED from a real console (`fixtures/console/PROVENANCE.txt`): the action row of
 # `bplist.action.txt`, armed with the action in braces as the documentation writes it, and
@@ -463,7 +461,7 @@ def test_run_to_with_an_empty_control_is_refused_before_the_machine_moves(
 def test_run_to_that_times_out_with_a_silent_control_is_invalid_and_a_hot_one_measures(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _controlled(monkeypatch, tmp_path, pcs=[0xF2034, 0x1000])
     s.breakpoint_at(ref="0x25a4", role="control")
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
@@ -666,7 +664,7 @@ def test_two_controls_on_one_address_in_the_store_leave_the_second_unarmable(
 def test_control_counts_refuses_a_short_or_non_numeric_answer(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import gdb_session as g
+    from scry_mame import gdb_session as g
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")
     s.breakpoint_at(ref="0x4a0", role="control")
@@ -1272,7 +1270,7 @@ def test_a_g_typed_through_debug_marks_the_machine_running_and_the_stop_is_prove
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """Readers refuse after a console `g`; `stop` returns via `halt` and the counter's rest."""
-    import mame_running as running
+    from scry_mame import running
 
     ses = _controlled(monkeypatch, tmp_path)
     at_rest = [False, False, True]     # the first two looks find the counter moving
@@ -1301,7 +1299,7 @@ def test_a_g_typed_through_debug_marks_the_machine_running_and_the_stop_is_prove
 def test_frame_at_rest_reads_the_counter_three_times() -> None:
     from server_support import _RegisterSession
 
-    import mame_running as running
+    from scry_mame import running
 
     ses = _RegisterSession(bits=32, frame=10)
     ses.frame_answers = ["10", "11", "12"]
@@ -1344,7 +1342,7 @@ def test_a_console_run_that_never_rests_is_not_settled_and_the_counter_read_can_
 ) -> None:
     from server_support import _RegisterSession
 
-    import mame_running as running
+    from scry_mame import running
 
     ses = _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(running, "CONSOLE_HALT_SETTLE_S", 0.3)
@@ -1416,7 +1414,7 @@ def test_a_reader_never_releases(command: str) -> None:
 
 
 class _LineSession:
-    """Just what `mame_write.debug` touches of a session, answering every line alike."""
+    """Just what `write.debug` touches of a session, answering every line alike."""
 
     running = False
     threads: dict[int, str] = {}         # a stub without threads: no `?` is asked
@@ -1462,7 +1460,7 @@ def test_debug_reads_every_command_of_a_line_for_a_release_a_clear_and_a_focus(
 ) -> None:
     """Each family's records are forgotten once per line in order; `focus`, `ignore`, `observe`
     (any prefix) re-read the cpu state; a `;` inside quotes splits nothing."""
-    import mame_write as mwrite
+    from scry_mame import write as mwrite
 
     calls: list[str] = []
 
@@ -1500,7 +1498,7 @@ def test_a_debug_line_that_assigns_a_controls_temp_names_the_control(
     now: list[str], armed: list[str],
 ) -> None:
     """Writing a temp is no guest write, but a control counts in one: the note names the counts."""
-    import mame_write as mwrite
+    from scry_mame import write as mwrite
 
     monkeypatch.setattr(mstate.STATE, "controls", {
         ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1", "missed": 0},
@@ -1521,7 +1519,7 @@ def test_a_debug_line_that_assigns_a_controls_temp_names_the_control(
 def test_a_debug_line_that_releases_and_assigns_a_counter_says_both(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_write as mwrite
+    from scry_mame import write as mwrite
 
     monkeypatch.setattr(mstate.STATE, "controls", {
         ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1", "missed": 0}})
@@ -1539,8 +1537,7 @@ def test_a_settle_proof_whose_console_answers_nothing_is_not_a_rest(
     """A console that cannot answer proves nothing, so each proof of rest says not-at-rest."""
     from server_support import _RegisterSession
 
-    import mame_advance as advance
-    import mame_running as running
+    from scry_mame import advance, running
 
     monkeypatch.setattr(running, "CONSOLE_HALT_SETTLE_S", 0.2)
     reg = _RegisterSession(bits=32, frame=10)
@@ -1579,7 +1576,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """An interrupt on a control's address is the `cause` if its row exists, else `interrupt`."""
-    import mame_running as running
+    from scry_mame import running
 
     ses = _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "IRQ_VBLANK", 0x400)))
@@ -1615,7 +1612,7 @@ def _never_lands(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     """A double whose `gvblank` releases the machine and whose frame counter never settles."""
     from server_support import _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
 
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
@@ -1657,7 +1654,7 @@ def test_a_run_by_frames_that_emulated_nothing_leaves_the_session_saying_running
     readings prove nothing; `stop` interrupts it, which does, and the readers serve."""
     from server_support import _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
 
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     reg.frozen = True                      # a `gvblank` that moves no frame
@@ -1680,7 +1677,7 @@ def test_a_run_by_milliseconds_that_never_came_to_rest_leaves_the_session_saying
     """`not_settled` from `_run_for`: the bound interrupt did not land, so the readers refuse."""
     from server_support import _install, _RegisterSession
 
-    import mame_advance as advance
+    from scry_mame import advance
 
     reg = _RegisterSession(bits=32, frame=10, stop_after=None)
     _install(monkeypatch, reg, tmp_path)

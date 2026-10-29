@@ -1,4 +1,4 @@
-"""A watch that CAPTURES (`mame_capture`): the whole block recorded at each write to a trigger.
+"""A watch that CAPTURES (`capture`): the whole block recorded at each write to a trigger.
 
 Known answers are CAPTURED on m68k-dual (`fixtures/capture/PROVENANCE.txt`), each beside a
 control that counted the trigger's writes over the same pass.
@@ -8,14 +8,10 @@ from __future__ import annotations
 
 import json
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import refs, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
@@ -28,15 +24,17 @@ from test_tally import (  # noqa: E402
 )
 from test_watches import _WatchSession  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    capture,  # noqa: E402
+    inputs,  # noqa: E402
+    transport,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures" / "capture"
 COUNTER_ID = "2031fc_4_t2031fe"

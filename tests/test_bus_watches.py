@@ -2,19 +2,15 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import MAP_LATCH, MAP_RAM, MAP_ROM  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import mame_map as mmap  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import map as mmap  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 LATCH_HIT_1 = "Stopped at watchpoint 1 writing FFFF to 740000 (PC=00000528)\n"
 LATCH_HIT_2 = "Stopped at watchpoint 1 writing A0A0 to 740000 (PC=00203176)\n"

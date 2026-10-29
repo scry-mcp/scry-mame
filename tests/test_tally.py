@@ -1,4 +1,4 @@
-"""A watch that COUNTS (`mame_tally`): write tap, install, periodic dump, survey.
+"""A watch that COUNTS (`tally`): write tap, install, periodic dump, survey.
 
 The dump is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`, m68k-dual's vblank handler). The
 dumps with two writers and an overflow are hand-written in the captured shape, because the
@@ -9,35 +9,33 @@ from __future__ import annotations
 
 import io
 import re
-import sys
 import time
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import blank_session, refs, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 from test_watches import _watching, _WatchSession  # noqa: E402
 
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_callbacks as mcallbacks
-import mame_cpus as cpus  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_space as mspace  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tally as tally  # noqa: E402
-import mame_tap as mtap  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    cpus,  # noqa: E402
+    running,  # noqa: E402
+    tally,  # noqa: E402
+    transport,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import callbacks as mcallbacks
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import space as mspace  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import tap as mtap  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures"
 DUMP = (FIXTURES / "tally-2031fc_4.txt").read_text()
@@ -1363,7 +1361,7 @@ def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pend
 
 def _dump_failed_line(tally_id: str) -> str:
     """The captured `error.log` line of a raised dumper (`fixtures/callbacks`), under `tally_id`."""
-    import mame_callbacks as callbacks
+    from scry_mame import callbacks
     line = (FIXTURES / "callbacks" / "dump-failed.errorlog.txt").read_text()
     assert f"{callbacks.DUMP_FAILED} 70001e_2 " in line, "the capture is the guard's own line"
     return line.replace(" 70001e_2 ", f" {tally_id} ")
@@ -1428,7 +1426,7 @@ def test_the_install_note_and_throttle_say_when_the_console_reads_in_one_spellin
     """The install note, `throttle`'s `applies` and description share `transport.CONSOLE_READS`."""
     import asyncio
 
-    import mame_transport as transport
+    from scry_mame import transport
     _tallying(monkeypatch, tmp_path)
     out = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert f"({transport.CONSOLE_READS})" in out["note"], out["note"]

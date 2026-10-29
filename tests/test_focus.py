@@ -16,17 +16,16 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import ignored_in, refused, visible_in  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_cpus as cpus  # noqa: E402
-import mame_focus as mfocus  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import cpus  # noqa: E402
+from scry_mame import focus as mfocus  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 _THREADS = {1: ":maincpu", 2: ":subcpu"}
 
@@ -178,7 +177,7 @@ def test_the_visible_cpu_is_read_once_the_run_left_the_ignored_cpus(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The wait ends on the first reading of a cpu the debugger observes, and runs out as None
-    when none comes (`mame_focus.settled_visible` says why it is needed)."""
+    when none comes (`focus.settled_visible` says why it is needed)."""
     ses = _running(monkeypatch, tmp_path)
     readings = iter([":maincpu", ":maincpu", ":subcpu"])
     monkeypatch.setattr(cpus, "visible_cpu", lambda ses: next(readings))

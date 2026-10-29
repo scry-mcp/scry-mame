@@ -13,14 +13,10 @@ the one exception says so where it stands, an answer that is no list at all.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _install, _RegisterSession, _running, _RunningSession  # noqa: E402
 from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
@@ -32,18 +28,20 @@ from session_doubles import (  # noqa: E402
     use_table,
 )
 
-import gdb_session as gs  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_clear as mclear  # noqa: E402
-import mame_console as mconsole  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_regpoints as regpoints  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    regpoints,  # noqa: E402
+    sequence,  # noqa: E402
+)
+from scry_mame import clear as mclear  # noqa: E402
+from scry_mame import console as mconsole  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 # ------------------------------------------------------------------ the list, as captured
 
@@ -1044,7 +1042,7 @@ def test_a_registerpoint_is_cleared_by_its_condition_in_either_spelling_of_a_num
     pytest.param("d1==#" + "1" * 4400, "d1==#" + "1" * 4400, True, id="decimal-past-a-u64"),
 ])
 def test_only_numbers_fold_and_a_name_never_does(a: str, b: str, same: bool) -> None:
-    import mame_inputs as inputs
+    from scry_mame import inputs
     assert (inputs.match_key(a, "expr") == inputs.match_key(b, "expr")) is same
 
 

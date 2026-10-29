@@ -2,23 +2,19 @@
 
 import hashlib
 import json
-import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _boot_args, _never_spawns  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_declarations import _armable_boot  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import arming  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 SEEDED_AT = "2026-01-01T00:00:00+00:00"
 

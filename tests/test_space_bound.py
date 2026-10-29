@@ -1,19 +1,15 @@
 """A range past the end of a cpu's program space, judged once (`read.space_bound`) for
 `read_memory`, `write`, `find` and `memdump`."""
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _console, _ConsoleSession, _masked  # noqa: E402
 from session_doubles import captured, refused  # noqa: E402
 
-import mame_read as read  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import read  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MASK = 0x3FFF
 

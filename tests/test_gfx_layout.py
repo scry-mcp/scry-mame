@@ -8,17 +8,14 @@ own macros expand to (`digfx.h`), worked by hand from their definitions.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_gfx as gfx  # noqa: E402
-import mame_layout as ml  # noqa: E402
-import mame_region as region  # noqa: E402
-import mame_state as mstate  # noqa: E402
+from scry_mame import (
+    gfx,  # noqa: E402
+    region,  # noqa: E402
+)
+from scry_mame import layout as ml  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 CIRCUS_CHARLAYOUT = {"width": 8, "height": 8, "planes": 1, "planeoffset": "{ 0 }",
                      "xoffset": "{ 0, 1, 2, 3, 4, 5, 6, 7 }",

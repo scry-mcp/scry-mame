@@ -26,28 +26,26 @@ import gzip
 import hashlib
 import json
 import re
-import sys
 from pathlib import Path
 from typing import Any, cast
 
-import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import png_read  # noqa: E402
+import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import png as mpng  # noqa: E402
 from session_doubles import add_symbol, refused, with_stamps  # noqa: E402
 from test_gfx import _mark, _png  # noqa: E402
 
-import mame_blits as mblits  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_layout as ml  # noqa: E402
-import mame_manifest as mm  # noqa: E402
-import mame_read  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import blits as mblits  # noqa: E402
+from scry_mame import (
+    capture,  # noqa: E402
+    inputs,  # noqa: E402
+)
+from scry_mame import layout as ml  # noqa: E402
+from scry_mame import manifest as mm  # noqa: E402
+from scry_mame import read as mame_read  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 FIX = Path(__file__).parent / "fixtures" / "gfx"
 MANIFEST = FIX / "manifest-blitter.yaml"
@@ -982,7 +980,7 @@ def test_a_source_with_no_known_stop_frame_needs_its_frame(monkeypatch: pytest.M
 def test_a_rectangle_past_the_pixels_one_call_decodes_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_gfx as gfx
+    from scry_mame import gfx
     rows = _row(1, 10, 0x1FD2, _source_words(2, 3, 1, 100, 50, 103, 54))
     ses = _sourcing(monkeypatch, tmp_path, rows)
     monkeypatch.setattr(gfx, "TILE_PIXELS_MAX", 19)
@@ -1277,7 +1275,7 @@ def test_the_block_is_read_whole_with_the_assets_pens_at_its_depth(
 ) -> None:
     """One evaluation: the asset's whole block (no span), and 256 pens from its base for an
     8-bit format, under the call's progress and name; the layout resolves with its account."""
-    import mame_gfx as gfx
+    from scry_mame import gfx
     rows = _row(1, 10, 0x1FD2, _source_words(2, 3, 1, 100, 50, 103, 54))
     ses = _sourcing(monkeypatch, tmp_path, rows)
     seen: dict[str, tuple[Any, ...]] = {}
@@ -1387,7 +1385,7 @@ def test_planes_drawn_in_one_frame_are_listed_by_name_paged_or_not(
 
 def test_the_screen_is_captured_under_the_calls_progress(monkeypatch: pytest.MonkeyPatch,
                                                          tmp_path: Path) -> None:
-    import mame_screen
+    from scry_mame import screen as mame_screen
     seen: list[tuple[Any, ...]] = []
     real = mame_screen.capture
 
@@ -1429,7 +1427,7 @@ def test_a_capture_whose_install_has_not_answered_is_read_from_this_sessions_con
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """The install's answer sits in the scratch's console log: reading the rows records it."""
-    import mame_files
+    from scry_mame import files as mame_files
     ses = _m68k_dual(monkeypatch, tmp_path)
     rec = mstate.STATE.tallies[OWNER]
     rec.update(installed=None, seq=9999, mark=0, line="the install line", error=None)
@@ -1442,7 +1440,7 @@ def test_a_capture_whose_install_has_not_answered_is_read_from_this_sessions_con
 def test_a_source_whose_capture_install_has_not_answered_reads_this_sessions_console(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_files
+    from scry_mame import files as mame_files
     ses = _sourcing(monkeypatch, tmp_path,
                     _row(1, 10, 0x1FD2, _source_words(2, 3, 1, 100, 50, 103, 54)))
     rec = mstate.STATE.tallies[OWNER]

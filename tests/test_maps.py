@@ -5,21 +5,17 @@ machine is asked anything."""
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel  # noqa: E402
 from scry_core import screen_map  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_gfx import _serve  # noqa: E402
 
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 #: A strip of gridlee's captured framebuffer, and a place on it.
 STRIP = [0, 0, 256, 8]
@@ -62,9 +58,8 @@ def test_a_run_to_a_verified_screen_reports_the_stop_its_capture_left(
 ) -> None:
     """The capture that judges the screen steps the machine, so the reply and the
     identification are dated at the stop after it, never at the anchor's."""
-    import mame_advance as advance
-    import mame_maps as mmaps
-    import mame_running as running
+    from scry_mame import advance, running
+    from scry_mame import maps as mmaps
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
@@ -216,7 +211,7 @@ def test_an_export_keeps_the_map_and_holds_an_identification_to_what_it_matched(
     is that `screen_map_write(method="load")` is a step too (or the replayed find would know no
     map), `screen_map_find` a check of what it matched and where, and
     `screen_map_write(method="save")` dropped (a replay would find its file there)."""
-    import mame_mcp
+    from scry_mame import mcp as mame_mcp
     kinds = {m: mame_mcp.RECORDER.kind("screen_map_write", {"method": m}).export_as
              for m in ("load", "add", "save")}
     assert kinds == {"load": "step", "add": "step", "save": "drop"}
@@ -226,7 +221,7 @@ def test_an_export_keeps_the_map_and_holds_an_identification_to_what_it_matched(
 
 def _one_frame(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
     """`run_for(frames=1)` as one frame stop, counted."""
-    import mame_advance as advance
+    from scry_mame import advance
     ran: list[dict[str, Any]] = []
 
     def frame(ses: Any, scratch: Any, milliseconds: int, seconds: float, progress: Any = None,
@@ -242,8 +237,8 @@ def _one_frame(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
 def test_a_run_to_a_screen_with_no_anchor_runs_frames_until_the_map_names_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_maps as mmaps
-    import mame_running as running
+    from scry_mame import maps as mmaps
+    from scry_mame import running
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
@@ -282,7 +277,7 @@ def test_the_tool_summary_of_a_run_to_an_anchorless_screen_counts_frames_not_con
 def test_a_run_to_an_anchored_screen_hands_the_run_its_condition_watches_and_cpu(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_advance as advance
+    from scry_mame import advance
     _consolidated_board(monkeypatch, tmp_path)
     given: list[tuple[Any, ...]] = []
 

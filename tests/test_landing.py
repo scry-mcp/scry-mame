@@ -9,15 +9,16 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _install, _RegisterSession  # noqa: E402
 
-import mame_advance as advance  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    breakpoints,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 HANDLER = 0x564                 # where every frame stop of the double lands
 NEXT = 0x568

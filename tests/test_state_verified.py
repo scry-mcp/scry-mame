@@ -16,16 +16,15 @@ from typing import Any, cast
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_savestates as savestates  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import savestates  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 _A = {"D0": "00000001", "D1": "00000002", "PC": "00000400"}
 

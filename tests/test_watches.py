@@ -1,14 +1,10 @@
 """The watch family: typed watchpoint, list, clear, control and the stored declarations."""
 
-import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any, cast
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import (
     MAP_LATCH,
@@ -30,19 +26,21 @@ from session_doubles import (
 from test_gdb_session import _wired  # noqa: E402
 from test_machine import M68K_DUAL, _cached  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_map as mmap  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    inputs,  # noqa: E402
+    read,  # noqa: E402
+    running,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import map as mmap  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 # Captured from a live m68k-dual session, never authored (`map`'s are in `session_doubles`).
 WPLIST_ONE = "Device ':maincpu' program space watchpoints:\n    1 @ 2031FC-2031FF write\n\n"
@@ -786,7 +784,7 @@ def test_the_watch_tools_refuse_with_no_machine_unless_the_argument_says_otherwi
 
 def test_the_command_line_carries_the_debug_log() -> None:
     """The console's own line about a watch stop reaches a file only with `-debuglog`."""
-    import mame_launch as launch
+    from scry_mame import launch
     cmd = launch.build_command("/bin/mame", "x", "/roms", 1, [], "/scratch/mame-mcp-t")
     assert "-debuglog" in cmd
 
@@ -1320,7 +1318,7 @@ def test_run_to_names_a_watch_stop_at_its_own_target_as_another_stop(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A change watch stopping at the target's own address is attributed to the watch."""
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
@@ -1345,7 +1343,7 @@ def test_a_run_cut_by_a_watch_before_the_control_fired_does_not_call_the_control
 ) -> None:
     """A watch stopping the run before the control had its chance is named a cut, not
     `control_silent`."""
-    import mame_advance as advance
+    from scry_mame import advance
     ses = _watching(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="change", length=4)
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
@@ -1601,7 +1599,7 @@ def test_a_watch_hit_lists_at_most_the_shared_ceiling_of_writes_and_says_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A latch written many times a frame is capped at the list ceiling, keeping the LAST writes."""
-    from mame_read import LOG_LIMIT_MAX
+    from scry_mame.read import LOG_LIMIT_MAX
     assert watches.WRITES_MAX == LOG_LIMIT_MAX, "one ceiling for every list this server hands back"
     ses = _watching(monkeypatch, tmp_path)
     ses.memory[0x2031FC] = bytes.fromhex("00000037")

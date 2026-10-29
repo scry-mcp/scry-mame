@@ -35,7 +35,7 @@ from live_harness import (
     section,
 )
 
-import mame_trace as mtrace  # isort: skip -- found through the path the harness sets
+from scry_mame import trace as mtrace  # isort: skip -- found through the path the harness sets
 
 # m68k-dual's known answers, written here and not read from the server: the vblank handler, hot
 # every frame, and the exception handler, silent on a healthy boot; and the 68000's program

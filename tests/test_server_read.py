@@ -4,16 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import inspect
-import sys
 import time
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scry_core import prose
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import (  # noqa: E402
     _PNG,
     FIXTURES,
@@ -40,18 +36,20 @@ from session_doubles import (  # noqa: E402
     use_table,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_console as mconsole  # noqa: E402
-import mame_envelope as menvelope  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_inputs as inputs
-import mame_launch as launch
-import mame_mcp  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    conditions,  # noqa: E402
+    files,  # noqa: E402
+    inputs,
+    launch,
+    read,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import console as mconsole  # noqa: E402
+from scry_mame import envelope as menvelope  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 @pytest.mark.parametrize(
@@ -128,7 +126,7 @@ def test_every_assignment_mame_parses_assigns_for_both_consumers(operator: str) 
     ids=lambda v: str(v),
 )
 def test_a_write_to_a_debugger_temp_alone_is_not_a_write(command: str, mutates: bool) -> None:
-    """`mame_lexer.without_temp_writes` says why a temp alone is not a write."""
+    """`lexer.without_temp_writes` says why a temp alone is not a write."""
     assert mconsole.mutates(command) is mutates, command
 
 
@@ -974,7 +972,7 @@ def test_renaming_a_log_channel_reaches_every_consumer_through_the_constant(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """THE CONSTANT EXISTED AND ALMOST NOBODY DRANK FROM IT."""
-    import mame_transport as transport
+    from scry_mame import transport
     monkeypatch.setitem(files.LOG_FILES, "emulator", "renamed-emulator.log")
     monkeypatch.setitem(files.LOG_FILES, "process", "renamed-process.log")
     (tmp_path / "renamed-emulator.log").write_text("DRIVER: a line\n", encoding="utf-8", newline="")
@@ -1211,7 +1209,7 @@ def test_a_console_run_found_at_rest_is_named_where_it_is_and_is_no_longer_a_con
     ("1C", True), ("99", False)])
 def test_a_pointer_offset_that_reads_two_ways_is_written_0x(offset: str, accepted: bool) -> None:
     """`[PTR]+10` reads as 0x10 (sixteen bytes) in the shared grammar and as ten in decimal."""
-    import mame_inputs as minputs
+    from scry_mame import inputs as minputs
     if accepted:
         minputs.check_pointer_offset(f"[PTR]+{offset}")
     else:
@@ -1228,7 +1226,7 @@ def test_watch_add_refuses_a_pointer_offset_that_reads_two_ways_before_any_sessi
 
 def test_each_mark_reads_its_own_channel_and_a_missing_file_is_zero(tmp_path: Path) -> None:
     """The stdout mark is the process channel's, `error.log`'s the emulator's."""
-    import mame_transport as transport
+    from scry_mame import transport
     assert files.log_mark(tmp_path) == 0 and transport.stdout_mark(tmp_path) == 0
     files.log_path(tmp_path, "process").write_bytes(b"x" * 7)
     assert transport.stdout_mark(tmp_path) == 7 == files.log_mark(tmp_path, "process")

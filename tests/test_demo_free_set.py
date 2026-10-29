@@ -141,7 +141,7 @@ def test_a_demo_is_declared_where_every_free_set_demo_keeps_its_files(tmp_path: 
     demo_file = tmp_path / "repo" / "demos" / "someset" / "demo.py"
     declared = free_set.demo("someset", str(demo_file), [])
     assert declared.root == tmp_path / "repo"
-    assert declared.server[1] == str(tmp_path / "repo" / "server.py")
+    assert declared.server[1:] == ["-m", "scry_mame.server"]
     assert declared.readme == demo_file.parent / "README.md"
     assert declared.capture is not None
     assert declared.capture(Run(dir=tmp_path)) == tmp_path / "screen.png"

@@ -9,20 +9,21 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _running  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_clear as mclear  # noqa: E402
-import mame_lists as mlists  # noqa: E402
-import mame_read as mread  # noqa: E402
-import mame_regpoints as regpoints  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tally as tally  # noqa: E402
-import mame_tap as mtap  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    regpoints,  # noqa: E402
+    tally,  # noqa: E402
+)
+from scry_mame import clear as mclear  # noqa: E402
+from scry_mame import lists as mlists  # noqa: E402
+from scry_mame import read as mread  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import tap as mtap  # noqa: E402
 
 
 def _stops_after(monkeypatch: pytest.MonkeyPatch, ses: Any, module: Any, name: str) -> None:

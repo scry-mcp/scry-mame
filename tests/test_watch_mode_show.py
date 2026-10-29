@@ -2,20 +2,18 @@
 
 import asyncio
 import json
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import test_envelope_seam  # noqa: E402
 
-import mame_declarations as dec  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_state as st  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import (
+    read,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as st  # noqa: E402
 
 KEY = "x /nowhere/x.map"
 # Modes the rename leaves alone sit beside the renamed ones, so a migration rewriting all shows.

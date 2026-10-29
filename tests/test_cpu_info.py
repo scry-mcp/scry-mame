@@ -12,7 +12,6 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from server_support import _running  # noqa: E402
@@ -21,13 +20,15 @@ from test_iotaps import BLOCK_MAP  # noqa: E402
 from test_stops_per_cpu import _LAYOUT, _THREADS, _two_cpus  # noqa: E402
 from test_tally import _tallying  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_cpu_info as mcpu_info  # noqa: E402
-import mame_cpus as cpus  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import cpu_info as mcpu_info  # noqa: E402
+from scry_mame import (
+    cpus,  # noqa: E402
+    sequence,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MAIN, SUB = ":maincpu", ":subcpu"
 NONE_DECLARED = {"breakpoints": 0, "watches": 0, "regpoints": 0}

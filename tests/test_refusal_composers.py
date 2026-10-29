@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-import mame_block as block  # noqa: E402
-import mame_clear as mclear  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
+from scry_mame import (
+    block,  # noqa: E402
+    inputs,  # noqa: E402
+)
+from scry_mame import clear as mclear  # noqa: E402
 
 
 def test_a_ref_that_is_neither_a_symbol_nor_an_address_names_the_call_that_settles_it() -> None:
@@ -56,8 +53,8 @@ def test_a_ref_that_matches_nothing_says_what_is_held_there() -> None:
 
 def test_a_cpu_a_stub_without_threads_cannot_show_names_the_console_way() -> None:
     """Without a thread patch the refusal names `focus`, the console way."""
-    import mame_cpus as cpus
-    import mame_state as mstate
+    from scry_mame import cpus
+    from scry_mame import state as mstate
 
     class NoThreads:
         threads: dict[int, str] = {}
@@ -72,7 +69,7 @@ def test_a_cpu_a_stub_without_threads_cannot_show_names_the_console_way() -> Non
 
 def test_the_table_a_refusal_names_is_the_one_the_lookup_read() -> None:
     """The build's table when one serves every cpu, else the named or first cpu's."""
-    import mame_state as mstate
+    from scry_mame import state as mstate
 
     one = mstate.State()
     one.tables = {None: object()}  # type: ignore[dict-item]

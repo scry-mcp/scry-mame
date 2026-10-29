@@ -1,8 +1,8 @@
 """What every live script shares: the board, the run's own declaration store, the ledger of
 checks and cells, and the verdict that closes the run.
 
-Importing it puts the server's directory on the path; call `isolate_state(prefix)` before the
-first `start`.
+Importing it puts the repository root on the path, for `demos`; call `isolate_state(prefix)`
+before the first `start`.
 """
 
 import atexit
@@ -27,9 +27,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from evidence import keep  # noqa: E402
 
-import mame_binary  # noqa: E402
-import server as s  # noqa: E402
-from mame_state import STATE  # noqa: E402
+from scry_mame import binary as mame_binary  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame.state import STATE  # noqa: E402
 
 from bench_boards import (  # noqa: E402  # isort: skip
     BINARY as BINARY,

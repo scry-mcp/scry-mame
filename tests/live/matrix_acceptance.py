@@ -50,8 +50,8 @@ from live_harness import (
     unavailable_why,
 )
 
-import mame_lexer as lexer  # isort: skip -- found through the path the harness sets
-import mame_ramdac as mramdac  # isort: skip
+from scry_mame import lexer  # isort: skip -- found through the path the harness sets
+from scry_mame import ramdac as mramdac  # isort: skip
 
 V30_PENS = (1, 17, 100, 200, 255)
 V30_ALT_PENS = (16, 17, 512, 1022)

@@ -7,24 +7,22 @@ MAME's `vpos()`, which rounds to the nearest pixel, so a line's last half pixel 
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from session_doubles import refused, run_host_lua  # noqa: E402
 from test_capture import COUNTER_ID, INSTALLED, _capturing  # noqa: E402
 from test_tally import _answer, _sent  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_callbacks as callbacks  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    callbacks,  # noqa: E402
+    capture,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 PIXEL_S = 1 / 6_000_000
 SCAN_S = 384 * PIXEL_S
@@ -237,7 +235,7 @@ def test_a_read_capture_of_a_port_or_with_no_read_side_is_refused(
     _capturing(monkeypatch, tmp_path)
     refused("taps a program address", s.watch_add(ref="0x6", mode="capture", trigger_type="r",
                                                   space="io"))
-    import mame_map as mmap
+    from scry_mame import map as mmap
     plain = mmap.write_side
     monkeypatch.setattr(mmap, "write_side", lambda *a, **k: (*plain(*a, **k)[:2], None))
     out = refused("named no `Read:` side",

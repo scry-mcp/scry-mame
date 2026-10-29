@@ -4,18 +4,14 @@ from __future__ import annotations
 
 import io
 import re
-import sys
 import tempfile
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core.host_program import absolute as _abs
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core.host_program import absolute as _abs
 from scry_core.host_program import temporary as _tmp  # noqa: E402
 from session_doubles import (  # noqa: E402
     MAP_RAM,
@@ -30,15 +26,17 @@ from session_doubles import (  # noqa: E402
     use_table,  # noqa: E402
 )
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_launch as launch
-import mame_machine as machine  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    files,  # noqa: E402
+    launch,
+    machine,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 
 def _wait_emulator(ses: Any, scratch: Path, alive: Any, on_stop: Any, pattern: str,
@@ -959,7 +957,7 @@ def _window(monkeypatch: pytest.MonkeyPatch, wall_s: float, emulated_s: float) -
     ses = _RegisterSession(bits=32)
     ses.emu_clock = 1.0 + emulated_s
     monkeypatch.setattr(mstate.STATE, "run_release", {"emulated": 1.0, "wall": 0.0})
-    monkeypatch.setattr("mame_running.time.monotonic", lambda: wall_s)
+    monkeypatch.setattr("scry_mame.running.time.monotonic", lambda: wall_s)
     return ses
 
 

@@ -2,23 +2,21 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from server_support import FIXTURES  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_cycles as cycles  # noqa: E402
-import mame_running as running  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    cycles,  # noqa: E402
+    running,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 CAPTURE = (FIXTURES / "totalcycles-after-load.txt").read_text()
 
@@ -344,7 +342,7 @@ def test_a_rewind_mame_refused_leaves_the_next_runs_cycles_counted(
 
 
 def test_a_line_of_a_refused_rewind_and_another_stale_command_stays_marked() -> None:
-    import mame_console as console
+    from scry_mame import console
     refused_answer = (FIXTURES / "rewind.refused.txt").read_text()
     assert console.refused_rewind(["rewind"], refused_answer)
     assert not console.refused_rewind(["stateload c1", "rewind"], refused_answer)

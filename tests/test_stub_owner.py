@@ -11,13 +11,10 @@ import time
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from process_probes import heard, listener  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_stub_owner as owner  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import stub_owner as owner  # noqa: E402
 
 NOT_A_PID = 2**22 + 7  # above macOS's pid ceiling: a pid no process can hold
 #: The cases about `lsof` itself, which Windows replaces with its TCP table.

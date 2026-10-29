@@ -14,18 +14,15 @@ import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from scry_core.host_program import POSIX_NAMES  # noqa: E402
 from session_doubles import MAP_LATCH, MAP_ROM, captured  # noqa: E402
 from test_machine import M68K_DUAL, _cached  # noqa: E402
 from test_watches import _rom_under_write, _WatchSession  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_capture as capture  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import capture  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 _REGION_CMD = re.compile(r"^(saver|loadr) ([^,]+),0x([0-9a-f]+),0x([0-9a-f]+),(\S+)$")
 _SIZE = 0x100000
@@ -167,7 +164,7 @@ def test_a_region_kept_in_the_hosts_own_order_is_loaded_as_it_is(
 def test_an_unaligned_region_write_is_widened_to_whole_words_and_keeps_its_neighbours(
     ref: str, data: str, span: str, word: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Widened to the words it touches (`mame_region.write`), each neighbour put back."""
+    """Widened to the words it touches (`region.write`), each neighbour put back."""
     ses, regions = _regions(monkeypatch, tmp_path)
     out = s.write(ref=ref, data_hex=data, region=True)
     assert out["verified"] is True and out["region_offset"] == 0x7B9, out

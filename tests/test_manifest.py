@@ -16,18 +16,15 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core.host_program import absolute as _abs
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from lua_support import _channel  # noqa: E402
+from scry_core.host_program import absolute as _abs
 from session_doubles import blank_session, refused  # noqa: E402
 from test_gfx import _png, _serve  # noqa: E402
 
-import mame_manifest as mm  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_yaml  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import manifest as mm  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import yaml as mame_yaml  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "live"))
 from gfx_layouts import CIRCUS_CHAR  # noqa: E402
@@ -665,8 +662,8 @@ def test_a_name_is_judged_by_its_shape_before_the_gate_and_resolved_after(
     """Which formats exist is the loaded manifest's, which is the session's: before the gate a
     name passes on its shape alone (the batch's preflight and the probe ask exactly this), and a
     name that shares another candidate's is still two candidates with one name."""
-    import mame_gfx as gfx
-    import mame_locate as mlocate
+    from scry_mame import gfx
+    from scry_mame import locate as mlocate
     blank_session(monkeypatch)
     assert gfx.check_gfx_view(layout="page8", palette="none", tag="gfx1") == (None, None)
     assert mlocate.check_gfx_locate(layouts=["page8"], patch=[0, 0, 8, 8], tag="gfx1") == []
@@ -990,7 +987,7 @@ def test_a_manifests_own_format_wins_over_a_sweep_id_of_the_same_spelling(
 
 
 def test_a_malformed_candidate_is_refused_naming_its_place() -> None:
-    import mame_locate as mlocate
+    from scry_mame import locate as mlocate
     with pytest.raises(mstate.Invalid, match=r"layouts\[1\]"):
         mlocate.candidates([CIRCUS_CHAR, {"width": 8}], resolve=False)
 

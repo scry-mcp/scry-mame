@@ -5,25 +5,23 @@ its row is armed on.
 """
 
 import re
-import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_inputs as inputs  # noqa: E402
-import mame_machine as machine  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tally as tally  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    conditions,  # noqa: E402
+    inputs,  # noqa: E402
+    machine,  # noqa: E402
+    tally,  # noqa: E402
+)
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MAIN, SUB = ":maincpu", ":subcpu"
 

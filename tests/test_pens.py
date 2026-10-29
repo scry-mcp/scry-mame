@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 from array import array
 
-import mame_palette as mpal
+from scry_mame import palette as mpal
 
 
 def test_one_pen_to_rgb_reads_every_word_as_the_shifts_would() -> None:

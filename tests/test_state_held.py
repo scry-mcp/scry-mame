@@ -1,4 +1,4 @@
-"""A save or a load MAME held (`mame_savestates.complete_held`) is completed by one step."""
+"""A save or a load MAME held (`savestates.complete_held`) is completed by one step."""
 
 from __future__ import annotations
 
@@ -8,17 +8,16 @@ from typing import cast
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from session_doubles import captured  # noqa: E402
 from test_state_verified import _BlockSession, _board, _moved  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_files as mfiles  # noqa: E402
-import mame_savestates as savestates  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import files as mfiles  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import savestates  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 HELD_LOG = captured("statesave.held.errorlog.txt")
 ATTEMPTED = {"statesave": "State save attempted.  Please refer to window message popup for "

@@ -18,7 +18,7 @@ from live_harness import (
     section,
 )
 
-import mame_capture as mcapture  # isort: skip
+from scry_mame import capture as mcapture  # isort: skip
 from matrix_edges import (  # noqa: E402
     by_ref,
 )

@@ -13,20 +13,17 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.78.3",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.79.1",
 ]
 
 [dependency-groups]
 dev = ["mypy>=1.11", "pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
 
 [project.scripts]
-scry-mame = "server:main"
+scry-mame = "scry_mame.server:main"
 
 [tool.hatch.build.targets.wheel]
-# A GLOB, not a list of names: a hand-kept list is a whitelist that goes short the day a module
-# is added, and the wheel then dies at import on somebody else's machine while every test here
-# stays green. Anchored to the package root, so the tests do not ship.
-include = ["/*.py"]
+packages = ["src/scry_mame"]
 
 [tool.hatch.metadata]
 # `scry-core` is pinned by its git tag, a direct reference hatchling refuses unless told.
@@ -58,6 +55,7 @@ warn_return_any = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 # A TIER THAT LAUNCHES EMULATORS MAY NOT BE REACHED BY ACCIDENT: a stranger running `pytest` from
 # a clone would otherwise launch an emulator per case. Opting in is explicit (`pytest -m live`),
 # and a command-line `-m` beats this one.

@@ -2,26 +2,24 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _install, _RegisterSession, _running  # noqa: E402
 from session_doubles import bp_records, refused  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import gdb_session as g  # noqa: E402
-import mame_advance as advance  # noqa: E402
-import mame_arming as arming  # noqa: E402
-import mame_breakpoints as breakpoints  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_read as read  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    advance,  # noqa: E402
+    arming,  # noqa: E402
+    breakpoints,  # noqa: E402
+    read,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as g  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
 
 
 def test_an_expr_watch_carries_no_width_no_format_and_no_address() -> None:
@@ -147,7 +145,7 @@ def test_run_for_reports_the_cycles_the_run_took(
 def test_expression_refs_and_evaluation_answer_empty_with_no_store_or_no_expressions(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    import mame_state as mstate
+    from scry_mame import state as mstate
     ses = _running(monkeypatch, tmp_path)
     assert watches.expression_refs() == [] and watches.evaluate_expressions(ses) == {}  # type: ignore[arg-type]
     assert watches.evaluate_watches(ses) == []  # type: ignore[arg-type]
@@ -271,7 +269,7 @@ def test_run_for_frames_stops_at_a_breakpoint_this_server_armed_between_two_vbla
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
-    import mame_state as mstate
+    from scry_mame import state as mstate
     row = 0x4A0
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "IRQ_VBLANK", row)))
     real = reg.monitor
@@ -418,7 +416,7 @@ def test_a_stop_on_a_row_this_server_armed_keeps_its_name_beside_a_foreign_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A row this server armed keeps its name beside a foreign line."""
-    import mame_state as mstate
+    from scry_mame import state as mstate
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "irq_vblank", 0x400)))
     _foreign_breakpoint_on_the_vblank(
         monkeypatch, tmp_path, _first_stop_through("3D") + "Stopped at breakpoint 2\n",
@@ -459,7 +457,7 @@ def test_a_breakpoint_line_of_a_row_this_server_armed_is_named_as_its_own(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """An armed row's line is named as its own; a line whose row left the list names nothing."""
-    import mame_state as mstate
+    from scry_mame import state as mstate
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "irq_vblank", 0x400)))
     _foreign_breakpoint_on_the_vblank(monkeypatch, tmp_path, _first_stop_through("3D"),
                                       ["    1 @ 000400"])
@@ -476,7 +474,7 @@ def test_a_cut_frame_run_reports_no_cycles_when_the_console_stops_answering_them
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """Unreadable cycles on a cut run are unavailable, never a guess."""
-    import mame_state as mstate
+    from scry_mame import state as mstate
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
@@ -518,7 +516,7 @@ def test_a_frame_run_landing_on_a_control_row_every_vblank_runs_to_its_frames(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A control row counts and never halts, so the run goes to its frames."""
-    import mame_state as mstate
+    from scry_mame import state as mstate
     reg = _RegisterSession(bits=32, frame=10, stop_after=1)
     _install(monkeypatch, reg, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)

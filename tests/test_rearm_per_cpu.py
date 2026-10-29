@@ -4,25 +4,23 @@ every entry of the account names its ref and its cpu. A registerpoint re-arms on
 the visible one, since `rpset` names no other.
 """
 
-import sys
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from session_doubles import bplist_add, place_row, prints_file, ref_cpu, rewrite_mame, visible_in  # noqa: E402
 from test_watches import _watching  # noqa: E402
 
-import mame_arming as arming  # noqa: E402
-import mame_conditions as conditions  # noqa: E402
-import mame_declarations as dec  # noqa: E402
-import mame_rearm as rearming  # noqa: E402
-import mame_regpoints as regpoints  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_watches as watches  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    arming,  # noqa: E402
+    conditions,  # noqa: E402
+    regpoints,  # noqa: E402
+    watches,  # noqa: E402
+)
+from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import rearm as rearming  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
 
 MAIN, SUB = ":maincpu", ":subcpu"
 
@@ -143,7 +141,7 @@ def test_a_registerpoint_re_armed_with_the_visible_cpu_unread_uses_its_own_cpus_
         return real(condition, cpu)
 
     monkeypatch.setattr(conditions, "console_condition", spy)
-    import mame_cpus as cpus
+    from scry_mame import cpus
 
     monkeypatch.setattr(cpus, "visible_cpu", lambda ses_: None)
     regpoints.rearm(ses, {"rearmed": [], "unresolved": [], "unarmable": []})  # type: ignore[arg-type]
@@ -164,8 +162,7 @@ def test_start_judges_a_stored_condition_against_the_registers_its_own_cpu_lists
     from test_machine import M68K_DUAL
     from test_symbols_per_cpu import LISTXML, _yaml
 
-    import mame_launch as launch
-    import mame_machine as machine
+    from scry_mame import launch, machine
 
     sub_regs = "REGS :subcpu A0,A1,A2,A3,A4,A5,A6,CURFLAGS,CURPC,D0,D1,D2,D3,D4,D5,D6,D7,IR,PC,"
     assert M68K_DUAL.count(sub_regs) == 1, "the line the variant replaces"

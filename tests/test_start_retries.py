@@ -17,20 +17,19 @@ from typing import Any
 import pytest
 from pydantic import BaseModel, ValidationError
 from scry_core import host_program
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import BANNER_LINE, _ExitingProcess, _RecordingSession, _stub_boot  # noqa: E402
 from test_gdb_session import _Wire  # noqa: E402
 
-import gdb_session as gs  # noqa: E402
-import mame_boot_failures as failures  # noqa: E402
-import mame_files as files  # noqa: E402
-import mame_launch as launch  # noqa: E402
-import mame_mcp  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_stub_owner as owner  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import boot_failures as failures  # noqa: E402
+from scry_mame import (
+    files,  # noqa: E402
+    launch,  # noqa: E402
+)
+from scry_mame import gdb_session as gs  # noqa: E402
+from scry_mame import mcp as mame_mcp  # noqa: E402
+from scry_mame import server as s  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import stub_owner as owner  # noqa: E402
 
 # Kept before `_stub_boot` replaces the module's name with its double.
 REAL_SESSION = gs.Session

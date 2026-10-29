@@ -1,4 +1,4 @@
-"""The value scan (`mame_scan`), judged against MAME's own engine.
+"""The value scan (`scan`), judged against MAME's own engine.
 
 The known answer is never computed by the code under test. `fixtures/scan/` holds what a live
 session captured (`PROVENANCE.txt`): the scanned range dumped at successive stops of v30
@@ -23,10 +23,10 @@ from scry_core import scan_vocabulary as words
 from server_support import _console, _ConsoleSession, _masked
 from session_doubles import captured, published
 
-import gdb_session as gs
-import mame_scan as mscan
-import mame_state as mstate
-import server as s
+from scry_mame import gdb_session as gs
+from scry_mame import scan as mscan
+from scry_mame import server as s
+from scry_mame import state as mstate
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "scan"
 BOARDS: dict[str, tuple[int, Literal["little", "big"]]] = {

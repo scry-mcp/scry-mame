@@ -9,22 +9,20 @@ A survey's `cause` is prose that never repeats the verdict, and `close` says how
 
 from __future__ import annotations
 
-import sys
 import threading
 import time
 from pathlib import Path
 
 import pytest
 from scry_core import frame_window  # noqa: E402
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from server_support import _running  # noqa: E402
 from test_perform import FRAME_STEP, _frames_and_the_watch  # noqa: E402
 
-import mame_running as running  # noqa: E402
-import mame_sequence as sequence  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import (
+    running,  # noqa: E402
+    sequence,  # noqa: E402
+)
+from scry_mame import server as s  # noqa: E402
 
 
 def test_log_wait_answers_target_when_the_line_comes_and_timeout_when_the_bound_runs_out(

@@ -46,8 +46,8 @@ def test_every_task_is_captured_and_judged_as_it_was() -> None:
 
 
 def test_the_probe_reads_the_server_the_suite_imports() -> None:
-    import mame_mcp
-    import server
+    from scry_mame import mcp as mame_mcp
+    from scry_mame import server
 
     assert REPO.modules["mame"] is server and REPO.checks["mame"] is mame_mcp.probe_check
 

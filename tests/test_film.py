@@ -1,4 +1,4 @@
-"""The conditioned film (`mame_film`, `gfx_film`): arming it, reading what it wrote, and the sheet,
+"""The conditioned film (`film`, `gfx_film`): arming it, reading what it wrote, and the sheet,
 the per-frame files, the listing and the animation it answers with.
 
 THE m68k-dual CASE IS CAPTURED, on its own build through this server: stopped at frame
@@ -24,25 +24,24 @@ from array import array
 from pathlib import Path
 from typing import Any
 
-import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 import png_read  # noqa: E402
+import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import picture  # noqa: E402
 from session_doubles import MAP_ROM, io_board, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 
-import mame_callbacks as mcallbacks
-import mame_film as mf  # noqa: E402
-import mame_font as font  # noqa: E402
-import mame_screen as mscreen
-import mame_sheet as msheet  # noqa: E402
-import mame_state as mstate  # noqa: E402
-import mame_tap as mtap  # noqa: E402
-import mame_transport as transport  # noqa: E402
-import server as s  # noqa: E402
+from scry_mame import callbacks as mcallbacks
+from scry_mame import film as mf  # noqa: E402
+from scry_mame import (
+    font,  # noqa: E402
+    transport,  # noqa: E402
+)
+from scry_mame import screen as mscreen
+from scry_mame import server as s  # noqa: E402
+from scry_mame import sheet as msheet  # noqa: E402
+from scry_mame import state as mstate  # noqa: E402
+from scry_mame import tap as mtap  # noqa: E402
 
 FIX = Path(__file__).parent / "fixtures" / "film"
 MAP_BLIT = ("   Read: 70001E logical program == 70001E physical program -> unmapped\n"

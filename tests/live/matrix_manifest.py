@@ -24,11 +24,11 @@ from live_harness import (
     unavailable_why,
 )
 
-import mame_ramdac as mramdac  # isort: skip
+from scry_mame import ramdac as mramdac  # isort: skip
 from scry_core import pens as scry_pens  # noqa: E402
 
-import mame_watches as mwatches  # isort: skip
-from mame_state import REPLY_BUDGET_CHARS  # isort: skip
+from scry_mame import watches as mwatches  # isort: skip
+from scry_mame.state import REPLY_BUDGET_CHARS  # isort: skip
 from matrix_pairs import (  # noqa: E402
     FAULT,
     plant_fault,
