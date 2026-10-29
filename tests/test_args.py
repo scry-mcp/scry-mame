@@ -413,6 +413,7 @@ def test_the_instructions_families_are_the_registered_tools_and_the_running_ones
     """The roster names every registered tool once, and the instructions carry its running line."""
     registered = [t.name for t in strict.registered(s.mcp)]
     assert mame_mcp.ROSTER.unlisted(registered) == []
+    assert mame_mcp.ROSTER.misfiled(roster.SHARED_FAMILIES) == []
     assert mame_mcp.ROSTER.running_sentence() in (s.mcp.instructions or "")
     named = mame_mcp.ROSTER.answering_named() - {"registers(from_last_stop=True)"}
     answering = (roster.by_method(sequence.RUNNING_OK_OPS, sequence.RUNNING_METHODS)

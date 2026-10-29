@@ -55,8 +55,9 @@ _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
 #: any state, so their family answers whole.
 ROSTER = roster.Roster(families=(
     ("Session", ("start", "status", "close", "focus", "rom_check")),
-    ("Machine", ("cpu_info", "machine_map", "symbols_find", "log", "log_wait")),
-    ("Advance", ("run_to", "run_for", "step", "resume", "stop", "trace", "series_capture")),
+    ("Machine", ("cpu_info", "machine_map", "log", "log_wait")),
+    ("Names", ("symbols_find",)),
+    ("Advance", ("run_to", "run_for", "step", "resume", "stop", "trace")),
     ("Declarations", ("breakpoint_at", "regpoint_add", "watch_add", "declaration_list",
                       "declaration_clear")),
     ("Read", ("read_memory", "read_block", "registers", "disassemble", "find", "history",
@@ -67,9 +68,10 @@ ROSTER = roster.Roster(families=(
     ("Scan", ("scan",)),
     ("Write", ("write", "set_register", "reset", "debug")),
     ("Comments", ("comment_list", "comment_write")),
-    ("Lua", ("input", "record", "audio_record", "lua", "throttle")),
+    ("Lua", ("input", "lua", "throttle")),
     ("States", ("state_list", "state_write")),
-    ("Files", (*media_tools.TOOLS, "snapshot", "captures")),
+    ("Captures", ("series_capture", "record", "audio_record", "snapshot", "captures")),
+    ("Files", tuple(media_tools.TOOLS)),
     ("Lists", ("perform", "drive", "perform_export")),
 ), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
 

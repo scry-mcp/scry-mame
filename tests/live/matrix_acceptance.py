@@ -1,4 +1,4 @@
-"""Section H of the live matrix: contracts at the edges of boards other than m68k-dual.
+"""Section H of the live matrix: contracts at the edges of single boards.
 
 A board that cannot run on this host has its cells BLOCKED with the reason, never passed.
 Run alone, it is the same machinery over this section only:
@@ -34,6 +34,7 @@ from live_harness import (
     cell,
     circus_boot,
     free_boards_missing,
+    free_image,
     fresh,
     fresh_state,
     ok,
@@ -55,7 +56,7 @@ import mame_ramdac as mramdac  # isort: skip
 V30_PENS = (1, 17, 100, 200, 255)
 V30_ALT_PENS = (16, 17, 512, 1022)
 
-H_TITLE = "contracts at the edges of boards other than m68k-dual, each on the board exposing it"
+H_TITLE = "contracts at the edges of single boards, each on the board exposing it"
 H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "circus: write(region=True) at 0x11f0 patches the ROM region :maincpu, reads the bytes back, "
     "and is restored",
@@ -93,6 +94,7 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "word fragments; a count there is refused naming one per word, and declared back, the one at "
     "0xe2 tallies its half and the one at 0xe4, which nothing handles, the other half, where the "
     "aligned 0xe0 one tallies the dword whole",
+    "circus: rom_check against the reference image answers OK for the 16 bytes it compared",
 ], start=1)]
 
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
@@ -212,6 +214,12 @@ def _h_circus(t: list[str]) -> None:
     r = call("gfx_load", path=MANIFEST)
     cell(t[11], refused(r, "bad_argument") and M68K_DUAL_SYSTEM in (r.get("systems") or [])
          and "circus" in str(r.get("message")), said(r))
+
+    folder = Path(fresh("-image"))
+    folder.mkdir()
+    r = call("rom_check", reference_rom=free_image("circus", ["9004a.1a"], folder),
+             reference_addr="0x1000", reference_base="0x1000")
+    cell(t[22], ok(r) and r.get("rom_check") == "OK", said(r))
     call("close")
 
 
@@ -417,7 +425,7 @@ def _h_pangofun(t: list[str]) -> None:
 
 
 H_BOARDS = (
-    Board(_h_circus, tuple(range(12)), free_boards_missing),
+    Board(_h_circus, (*range(12), 22), free_boards_missing),
     Board(_h_m68k_dual, (12,), m68k_dual_missing),
     Board(_h_v30, (13, 14, 15), lambda: board_missing("v30")),
     Board(_h_v30_alt, (16, 17, 18, 19, 20),
