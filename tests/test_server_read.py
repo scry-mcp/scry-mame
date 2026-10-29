@@ -622,6 +622,51 @@ def test_disassemble_reads_the_file_the_console_wrote(
     s.disassemble("0x0", length=read.READ_MAX + 1))
 
 
+def test_a_stop_instruction_is_read_off_the_first_listing_line() -> None:
+    """The stop's `instruction` splits address, opcode bytes and text, whatever the cpu."""
+    got = read.stop_instruction("000404: 48E7 F000 movem.l D0-D3, -(A7)", 0x404, None)
+    assert got["address"] == "000404" and got["bytes"] == "48E7F000", got
+    assert got["text"] == "movem.l D0-D3, -(A7)", got
+    x86 = read.stop_instruction("F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h // x",
+                                0xF5BC7, None)
+    assert x86["bytes"] == "833E14C001" and x86["text"].startswith("cmp     word ptr"), x86
+
+
+def test_a_stop_instruction_tells_a_68000_abcd_from_an_opcode_word() -> None:
+    """`abcd` has no size suffix, so it reads like a hex word; an operand pair gives it away."""
+    mnemonic = read.stop_instruction("0010: C300 abcd D1, D0", 0x10, None)
+    assert (mnemonic["bytes"], mnemonic["text"]) == ("C300", "abcd D1, D0"), mnemonic
+    word = read.stop_instruction("0020: 0680 0000 ABCD addi.l #$1, D0", 0x20, None)
+    assert (word["bytes"], word["text"]) == ("06800000ABCD", "addi.l #$1, D0"), word
+
+
+def test_a_stop_instruction_drops_the_listing_s_padding_and_keeps_the_comment_apart() -> None:
+    padded = read.stop_instruction("30000: FA                di      ", 0x30000, None)
+    assert padded["text"] == "di" and "comment" not in padded, padded
+    noted = read.stop_instruction("000400: 46FC 2700 move    #$2700, SR // the reset", 0x400, None)
+    assert (noted["text"], noted["comment"]) == ("move    #$2700, SR", "the reset"), noted
+
+
+def test_a_stop_instruction_reads_opcode_words_of_eight_digits() -> None:
+    got = read.stop_instruction("0100: E1A00000 mov     r0, r0", 0x100, None)
+    assert (got["bytes"], got["text"]) == ("E1A00000", "mov     r0, r0"), got
+
+
+def test_a_stop_instruction_without_opcode_bytes_says_they_are_unavailable() -> None:
+    got = read.stop_instruction("4a0: move.l d0,d1", 0x4A0, None)
+    assert got["text"] == "move.l d0,d1" and got["bytes"]["available"] is False, got
+
+
+def test_a_stop_instruction_names_the_symbol_that_places_it(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(read, "nearest_symbol", lambda addr, cpu=None: (0x400, "Main"))
+    got = read.stop_instruction("000404: 4E71 nop", 0x404, None)
+    assert (got["symbol"], got["delta"]) == ("Main", 4), got
+    monkeypatch.setattr(read, "nearest_symbol", lambda addr, cpu=None: None)
+    none = read.stop_instruction("000404: 4E71 nop", 0x404, None)
+    assert none["symbol"]["available"] is False and none["delta"]["available"] is False, none
+
+
 def test_an_operand_quoted_in_a_comment_is_not_resolved() -> None:
     """A note quoting where a value lives is not an operand of the line it sits on."""
     lines = ["F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h // the copy at [0E849h]",

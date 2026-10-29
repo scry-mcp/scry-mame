@@ -470,7 +470,7 @@ check("a bound that expires leaves it running",
       r.get("verdict") == "TIMEOUT" and r["session"]["running"])
 r = s.stop()
 check("stop interrupts and surveys",
-      r.get("interrupted") is True and isinstance(r.get("dasm"), list)
+      r.get("interrupted") is True and isinstance(r.get("instruction"), dict)
       and isinstance(r.get("frame"), int), f"pc={r.get('pc')} frame={r.get('frame')}")
 r = s.run_for(milliseconds=100)
 check("run_for carries the survey", r.get("verdict") == "ELAPSED" and "errorlog" in r

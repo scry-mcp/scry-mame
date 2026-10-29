@@ -41,9 +41,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-7jiu71hs/sta/radendur",
+  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
   "status": "ok",
-  "state_dir": "$TMPDIR/mame-mcp-7jiu71hs/sta/radendur",
+  "state_dir": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
   "states": []
 }
 ```
@@ -64,13 +64,13 @@ Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..64
 characters) through the debugger console. Needs the machine stopped.
 
 `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
-`errorlog`, `held`, `stop_seq`.
+`errorlog`, `held`, `stop_seq` (held for a timer).
 
-`load`: restore it, altering the session; the header, the ROM and the stop are checked
-first. Reply: `name`, `path`, `rom_check`, `verified` (true, or INVALID `readback_refused`
-with `differs`), `saved`, `output`, `mark`, `held`, `taps_across`, and the stop survey
-(`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `dasm`, `errorlog`, `watches`,
-`watch_hit`, `regpoint_hit`).
+`load`: restore it, altering the session; the header, the ROM and the stop are checked first.
+Reply: `name`, `path`, `rom_check`, `verified` (true, or INVALID `readback_refused` with
+`differs`), `saved`, `output`, `mark`, `held`, `taps_across` (a tap was live), and the stop
+survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `instruction`, `following`,
+`errorlog`, `watches`, `watch_hit`, `regpoint_hit`).
 
 Refused: a name of another shape; `load` of a `.sta` that is no regular file
 (`unknown_ref`).
@@ -86,14 +86,14 @@ Reference: REFERENCE.md, Saved states.
 |---|---|
 | `bytes` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `differs` | object |
 | `errorlog` | object |
 | `frame` | integer or object |
 | `held` | string |
 | `mark` | object |
 | `name` | string |
-| `note` | string |
 | `output` | string |
 | `path` | string |
 | `pc` | string |
@@ -122,7 +122,7 @@ Example, from a live run:
   "summary": "state_write save: m11, 111781 bytes at frame 30",
   "status": "ok",
   "name": "m11",
-  "path": "$TMPDIR/mame-mcp-7jiu71hs/sta/radendur/m11.sta",
+  "path": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur/m11.sta",
   "bytes": 111781,
   "frame": 30,
   "pc": "0x000e2cea",

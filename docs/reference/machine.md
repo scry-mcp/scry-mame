@@ -121,7 +121,6 @@ Reference: REFERENCE.md, Reading and writing.
 | `cpu` | string or object |
 | `cpus` | array |
 | `frame_symbol` | string or object |
-| `note` | string |
 | `regions` | array |
 | `rom_files` | array |
 | `screens` | array |
@@ -388,7 +387,6 @@ Reference: REFERENCE.md, Names for addresses.
 | `linear` | string |
 | `memory` | string |
 | `name` | string |
-| `note` | string |
 | `query` | string |
 | `symbols` | array |
 | `symbols_total` | integer |
@@ -442,8 +440,8 @@ all; never empty). Works while running.
 `since_mark` reads only what follows that log byte position.
 
 Reply: `pattern`, `channel`, `lines` (the newest `limit`, 1..400, oldest first),
-`lines_total`, `truncated`, `counts`, `labels`. A bad `limit`, regex or `since_mark` is
-refused.
+`lines_total`, `truncated`, `counts` (on channel `all`), `labels`. A bad `limit`, regex or
+`since_mark` is refused.
 
 Reference: REFERENCE.md, The log.
 
@@ -530,7 +528,6 @@ Reference: REFERENCE.md, The log.
 | `lines_before` | integer |
 | `lines_examined` | integer |
 | `lines_total` | integer |
-| `note` | string |
 | `pattern` | string |
 | `verdict` | string |
 | `waited_s` | number |

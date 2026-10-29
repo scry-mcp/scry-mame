@@ -42,9 +42,10 @@ unresolved ref, an empty or unresolved control, an over-long `condition`.
 holds), a `consolidated` one takes it as shown. Reply: `screen` (`screen`, `layer`, `mode`,
 `judged`). Refused: an unmapped screen (`unknown_ref`), one with no `anchor` (`needs_call`).
 
-Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each
-`ref`, `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`). INVALID has no
-`verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
+Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
+`cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following`
+when the listing runs on). INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`,
+`not_settled`, `stale_map`.
 
 Reference: REFERENCE.md, Advancing the machine.
 
@@ -70,13 +71,13 @@ Reference: REFERENCE.md, Advancing the machine.
 | `control_on` | array |
 | `controls` | array |
 | `cpu` | string or object |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `disarmed_watches` | array |
 | `errorlog` | object |
 | `frame` | integer |
 | `limit_chars` | integer |
 | `not_rearmed` | array |
-| `note` | string |
 | `pc` | string |
 | `ref` | string |
 | `regpoint_hit` | object |
@@ -138,8 +139,14 @@ Example, from a live run:
     "PS": "0x2300",
     "PC": "0x00000400"
   },
-  "dasm": [
-    "000400: 46FC 2700           move    #$2700, SR",
+  "instruction": {
+    "address": "000400",
+    "bytes": "46FC2700",
+    "text": "move    #$2700, SR",
+    "symbol": "IRQ_VBLANK",
+    "delta": 0
+  },
+  "following": [
     "000404: 48E7 F000           movem.l D0-D3, -(A7)",
     "000408: 5279 0020 3200      addq.w  #1, $203200.l",
     "00040E: 52B9 0020 31FC      addq.l  #1, $2031fc.l",
@@ -211,7 +218,8 @@ Reference: REFERENCE.md, Advancing the machine.
 | `command_chars` | integer |
 | `cpu` | string or object |
 | `cycles` | integer or object |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `disarmed_watches` | array |
 | `emulated_after_s` | number or object |
 | `emulated_before_s` | number |
@@ -221,7 +229,6 @@ Reference: REFERENCE.md, Advancing the machine.
 | `frame_before` | integer or object |
 | `limit_chars` | integer |
 | `not_rearmed` | array |
-| `note` | string |
 | `pc` | string |
 | `polls` | integer |
 | `reads` | integer |
@@ -248,6 +255,8 @@ Example, from a live run:
   "verdict": "ELAPSED",
   "frame_before": 0,
   "frame_after": 8,
+  "emulated_before_s": 0.019968,
+  "emulated_after_s": 0.179712,
   "cycles": 2555906,
   "polls": 9,
   "cause": "the `gvblank` stop of the last frame asked",
@@ -275,8 +284,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000027ac"
   },
-  "dasm": [
-    "0027AC: 51C8 FFFE           dbra    D0, $27ac",
+  "instruction": {
+    "address": "0027AC",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $27ac",
+    "symbol": "BOOT_INIT",
+    "delta": 464
+  },
+  "following": [
     "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
     "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
     "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
@@ -352,13 +367,13 @@ Reference: REFERENCE.md, Advancing the machine.
 |---|---|
 | `command_chars` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer or object |
 | `instructions_completed` | integer |
 | `limit_chars` | integer |
 | `mode` | string |
-| `note` | string |
 | `others` | object |
 | `pc` | string |
 | `regpoint_hit` | object |
@@ -413,14 +428,21 @@ Example, from a live run:
     "PS": "0x2108",
     "PC": "0x000029ee"
   },
-  "dasm": [
-    "0029EE: 51C8 FFFE dbra    D0, $29ee",
+  "instruction": {
+    "address": "0029EE",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $29ee",
+    "symbol": "MODE_CLEAR_BLITS",
+    "delta": 408
+  },
+  "following": [
     "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
     "0029F6: 4E75      rts",
     "0029F8: 0000 0796 ori.b   #$96, D0",
     "0029FC: 0000 4854 ori.b   #$54, D0",
     "002A00: 0000 4860 ori.b   #$60, D0",
-    "... 3 more"
+    "002A04: 0000 48C4 ori.b   #$c4, D0",
+    "... 2 more"
   ],
   "errorlog": {
     "lines_total": 0,
@@ -461,10 +483,10 @@ Reference: REFERENCE.md, Advancing the machine.
 |---|---|
 | `average_speed` | object |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
-| `note` | string |
 | `pc` | string |
 | `regpoint_hit` | object |
 | `regs` | object |
@@ -513,11 +535,11 @@ Takes no argument.
 |---|---|
 | `average_speed` | object |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer or object |
 | `interrupted` | boolean |
-| `note` | string |
 | `pc` | string |
 | `regpoint_hit` | object |
 | `regs` | object |
@@ -544,7 +566,7 @@ Example, from a live run:
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-26T11:03:26+00:00"
+    "wall_at": "2026-10-29T04:42:25+00:00"
   }
 }
 ```
@@ -583,9 +605,12 @@ Reference: REFERENCE.md, Advancing the machine.
 
 | reply field | type |
 |---|---|
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
 | `cpu` | string or object |
 | `cycles` | integer |
-| `dasm` | array |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `frame_after` | integer |
@@ -614,6 +639,8 @@ Example, from a live run:
   "verdict": "ELAPSED",
   "frame_before": 16,
   "frame_after": 17,
+  "emulated_before_s": 0.339457,
+  "emulated_after_s": 0.359424,
   "cycles": 319482,
   "polls": 1,
   "cause": "the `gvblank` stop of the last frame asked",
@@ -641,14 +668,21 @@ Example, from a live run:
     "PS": "0x2108",
     "PC": "0x000029ee"
   },
-  "dasm": [
-    "0029EE: 51C8 FFFE dbra    D0, $29ee",
+  "instruction": {
+    "address": "0029EE",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $29ee",
+    "symbol": "MODE_CLEAR_BLITS",
+    "delta": 408
+  },
+  "following": [
     "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
     "0029F6: 4E75      rts",
     "0029F8: 0000 0796 ori.b   #$96, D0",
     "0029FC: 0000 4854 ori.b   #$54, D0",
     "002A00: 0000 4860 ori.b   #$60, D0",
-    "... 3 more"
+    "002A04: 0000 48C4 ori.b   #$c4, D0",
+    "... 2 more"
   ],
   "errorlog": {
     "lines_total": 0,
@@ -666,9 +700,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-7jiu71hs/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,
@@ -773,7 +807,8 @@ Reference: REFERENCE.md, Media files.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -781,6 +816,8 @@ Reference: REFERENCE.md, Media files.
 | `resent` | integer |
 | `stop_seq` | integer |
 | `thread_errors` | integer |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
 | `count` | integer |
 | `crop` | array |
 | `cycles` | integer |
@@ -810,11 +847,13 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-7jiu71hs/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
   "frame_after": 16,
+  "emulated_before_s": 0.259585,
+  "emulated_after_s": 0.339456,
   "cycles": 1277930,
   "polls": 4,
   "cause": "the `gvblank` stop of the last frame asked",
@@ -842,8 +881,14 @@ Example, from a live run:
     "PS": "0x2108",
     "PC": "0x00002986"
   },
-  "dasm": [
-    "002986: 51C8 FFFE           dbra    D0, $2986",
+  "instruction": {
+    "address": "002986",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $2986",
+    "symbol": "MODE_CLEAR_BLITS",
+    "delta": 304
+  },
+  "following": [
     "00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
     "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
     "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
@@ -855,7 +900,7 @@ Example, from a live run:
     "lines": [],
     "mark": 66062
   },
-  "manifest": "$TMPDIR/mame-mcp-7jiu71hs/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,

@@ -209,6 +209,7 @@ def test_run_for_frames_advances_the_frame_counter_by_exactly_that_many(
     assert reg.commands.count("gvblank") == 3
     assert out["cycles"] == 3 * reg.cycles_per_frame
     assert out["summary"] == "run_for 3 frames: ELAPSED, frame 10 to 13", out["summary"]
+    assert {"emulated_before_s", "emulated_after_s"} <= out.keys(), "by frames too: the clock"
     refused("exactly one", s.run_for(milliseconds=100, frames=3))
     refused("exactly one", s.run_for())
     refused("frames", s.run_for(frames=-1))
@@ -578,6 +579,19 @@ def test_the_aligning_vblank_is_outside_the_cycles_a_frame_run_reports(
     assert out["polls"] == 2, "two `gvblank`s went out and the reply says so"
     assert out["cycles"] == reg.cycles_per_frame, (
         "one frame was asked for, so one frame's worth of clock is the span")
+
+
+def test_the_aligning_vblank_is_outside_the_emulated_span_a_frame_run_reports(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """`emulated_after_s` less `emulated_before_s` is the frames asked for, as `cycles` is."""
+    reg = _misaligned(monkeypatch, tmp_path)
+    monkeypatch.setattr(reg, "emulated_seconds", lambda: reg.commands.count("gvblank") / 60,
+                        raising=False)
+    out = s.run_for(frames=1, seconds=5.0)
+    assert out["polls"] == 2, out
+    span = out["emulated_after_s"] - out["emulated_before_s"]
+    assert span == pytest.approx(1 / 60, abs=1e-5), out
 
 
 def test_a_frame_run_from_an_aligned_stop_reports_the_same_per_frame_cycles(

@@ -215,7 +215,7 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
     with no session it answers `closed: false`.
 
     Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
-    `cfg` (`installed_path`, `changed`), `average_speed`, `note`; `stdout_tail` and
+    `cfg` (`installed_path`, `changed`), `average_speed` (after a run), `note`; `stdout_tail` and
     `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`. `session` is the
     block as it is after the close (`alive` and `running` false); a console doubt or a throttle
     found not applied still rides there.
@@ -301,9 +301,10 @@ def run_to(ref: str = "", *, control: str, screen: str = "",
 
     {MAP_RUN_TO}
 
-    Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each
-    `ref`, `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`). INVALID has no
-    `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
+    Reply: `verdict` (`TARGET`, `TIMEOUT`, `OTHER_STOP`), `control_hits`, `controls` (each `ref`,
+    `cpu`, `hits_in_run`), the stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following`
+    when the listing runs on). INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`,
+    `not_settled`, `stale_map`.
 
     Reference: REFERENCE.md, Advancing the machine.
     """
@@ -422,7 +423,8 @@ def breakpoint_at(ref: str,
     unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
     role; a control past the {TEMPS} temps.
 
-    Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp`, `addr`, `entry`.
+    Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr`,
+    `entry` (once `ref` resolves).
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -459,7 +461,8 @@ def declaration_clear(kind: Annotated[str, vocab.enum(folds.KINDS)], ref: str = 
     Refused: an empty `ref` without `all`; a `ref` matching none (`unknown_ref`, naming the
     refs held); `space` for a kind other than `watch`.
 
-    Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed`, `note`.
+    Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing an io
+    tap), `note`.
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -567,8 +570,8 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
     Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
     declared another way; an unknown pointer base or `cpu`.
 
-    Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading`, and each
-    mode's own fields.
+    Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading` (on a stopped
+    machine), and each mode's own fields.
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -682,7 +685,8 @@ def registers(from_last_stop: bool = False, cpu: str = "") -> dict[str, Any]:
     machine, and is refused before any stop and beside `cpu`.
 
     Reply: `regs` (name to hex string), `register_bits` (name to declared width), `cpu`,
-    `superseded`. A cpu with no register map or an unknown byte order is `no_channel`.
+    `superseded` (with `from_last_stop`). A cpu with no register map or an unknown byte order is
+    `no_channel`.
 
     Reference: REFERENCE.md, Reading and writing.
     """
@@ -823,10 +827,10 @@ def reset() -> dict[str, Any]:
     """Soft reset, applied, without relaunching. Modifies the machine; needs it stopped. A hard
     reset is `close` then `start`.
 
-    Reply: `kind`, `pc`, `boot_pc`, `verified` (the two agree), `frame_at_reset`,
-    `taps_across`, and the stop's survey (`cause`, `stop_seq`, `cpu`, `regs`, `frame`, `dasm`,
-    `errorlog`, `watches`, `watch_hit`, `regpoint_hit`). The frame counter does not restart:
-    subtract `frame_at_reset` before comparing with a cold boot.
+    Reply: `kind`, `pc`, `boot_pc`, `verified` (the two agree), `frame_at_reset`, `taps_across` (a
+    tap was live), and the stop's survey (`cause`, `stop_seq`, `cpu`, `regs`, `frame`,
+    `instruction`, `following`, `errorlog`, `watches`, `watch_hit`, `regpoint_hit`). The frame
+    counter does not restart: subtract `frame_at_reset` before comparing with a cold boot.
 
     Reference: REFERENCE.md, Reading and writing.
     """
@@ -973,9 +977,9 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
 
     `palette` is the device tag (empty: the only one).
 
-    Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha`,
-    `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such device,
-    several, none. `bad_argument`: past the last pen.
+    Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
+    opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such
+    device, several, none. `bad_argument`: past the last pen.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1000,11 +1004,11 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
     height]` narrows all but `pixel`.
 
     Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
-    `screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`, `pens`, `isolate_color`;
-    `histogram`: `histogram`, `pens_used`, `unused`; `pixel`: `x`, `y`, `pen`, `color`,
-    `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
-    screen. `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back.
-    `bad_argument`: off the screen.
+    `screen_indexed`, `crop`, `image` (not for mode histogram); `isolate`: `pixels`, `bbox`,
+    `pens`, `isolate_color`; mode histogram: `histogram`, `pens_used`, `unused`; `pixel`: `x`,
+    `y`, `pen`, `color`, `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no screen.
+    `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back. `bad_argument`:
+    off the screen.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1067,9 +1071,9 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
     {NUMBER_ARG}).
 
     Reply: `candidates`, `matched`, `matches_total`, `matches` (first {LOCATE_MATCHES_SHOWN}:
-    `layout`, `window`, `tile`, `flip`, `base`, `shape`), `ambiguous`, `pen_map`, `nearest`,
-    `evidence`. `bad_argument`: a patch off the screen or without a whole tile, past a bound;
-    else `gfx_view`'s.
+    `layout`, `window`, `tile`, `flip`, `base`, `shape`), `ambiguous`, `pen_map`, `nearest`
+    (nothing matched), `evidence`. `bad_argument`: a patch off the screen or without a whole tile,
+    past a bound; else `gfx_view`'s.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1126,7 +1130,7 @@ def gfx_draft(dest: str = "", choose: dict[str, Any] | None = None) -> dict[str,
 
     Reply: `manifest` and `report` (each `path`, `sha256`), `formats` (name to status),
     `asset_names`, `command_fields`, `evidence`, `not_proved` (first {DRAFT_NOT_PROVED_SHOWN}),
-    `chose`, `confirm`.
+    `chose` (with `choose`), `confirm`.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1165,7 +1169,8 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
     drawn order; `detail` lists all, {ROWS_SHOWN} a page from `first`.
 
     Reply: `frame_blit`, `rows_cut`, `blits_in_frame`, `legend`, `by_plane`, `covering`,
-    `topmost`, `listed`, `next_first`, `blits`, `not_proved`, `image`. `bad_argument`: no
+    `topmost` (with `area`), `listed`, `blits` (with `area` or `detail`), `next_first` (more
+    blits remain), `not_proved`, `image`. `bad_argument`: no
     manifest, capture or rows; a frame without blits or past the rows kept. `unknown_ref`: no
     such command.
 
@@ -1195,8 +1200,8 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
 
     Reply: `frame_blit`, `index`, `blit_pc`, `asset`, `format`, `palette`, `rect` (`tile`, `x`,
     `y`, `width`, `height`), `margin`, `box`, `wrap`, `not_proved`, `reads_source`, `image`,
-    `data`. `bad_argument`: `gfx_blits`'s, no `asset`, a tile or rectangle past its bounds, a pc
-    that fired none or several. `unknown_ref`: an unknown symbol.
+    `data` (with `margin` above 0). `bad_argument`: `gfx_blits`'s, no `asset`, a tile or rectangle
+    past its bounds, a pc that fired none or several. `unknown_ref`: an unknown symbol.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1218,8 +1223,9 @@ def palette_log(palette_port: str, pen: inputs.NumberArg | None = None,
     that pen alone, `limit` the newest rows. Answers while running. Rows are capped at
     {PALETTE_LOG_ROWS_MAX}, the rest counted.
 
-    Reply: `palette_port`, `protocol`, `armed_now`, `installed`, `state`, `writes_total`,
-    `unsynced_writes`, `desyncs`, `rows_path`. Without `pen`: `setters` (each `pc`, `symbol`,
+    Reply: `palette_port`, `protocol`, `armed_now`, `installed` (unless `clear`), `state`
+    (once armed), `writes_total`, `unsynced_writes`, `desyncs`, `rows_path` (once the log has
+    dumped). Without `pen`: `setters` (each `pc`, `symbol`,
     `written_by`; the first {PALETTE_LOG_SETTERS_MAX}). With `pen`: `pen_state`, `rows`.
     `needs_call`: no manifest, entry or armed log; `bad_argument`: a pen it does not set.
 
@@ -1250,8 +1256,9 @@ def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)
 
     Read (no `trigger`; works while running): a contact sheet from `first`. `clear=True` clears.
 
-    Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept`,
-    `cells` (each `frame`, `pc`, `path`), `next_first`, `image`. `bad_argument`: film armed
+    Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept` (once
+    the film has dumped), `cells` (each `frame`, `pc`, `path`), `image` (once frames are kept),
+    `next_first` (more kept frames remain). `bad_argument`: film armed
     already, none to read.
 
     Reference: REFERENCE.md, Input and the screen.
@@ -1278,8 +1285,8 @@ def log(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS)],
     `since_mark` reads only what follows that log byte position.
 
     Reply: `pattern`, `channel`, `lines` (the newest `limit`, 1..{LIST_MAX}, oldest first),
-    `lines_total`, `truncated`, `counts`, `labels`. A bad `limit`, regex or `since_mark` is
-    refused.
+    `lines_total`, `truncated`, `counts` (on channel `all`), `labels`. A bad `limit`, regex or
+    `since_mark` is refused.
 
     Reference: REFERENCE.md, The log.
     """
@@ -1387,7 +1394,8 @@ def perform(steps: list[dict[str, Any]],
     `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
     Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
-    `verdict` (`TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`.
+    `verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`
+    (with `until_frame`).
 
     Reference: REFERENCE.md, Sequences in one call.
     """
@@ -1433,8 +1441,8 @@ def debug(command: str) -> dict[str, Any]:
     error answer, is `bad_argument`.
 
     Reply: `command`, `mutates`, `output`, `clipped`, `note`; past {OUTPUT_MAX} characters the
-    text goes to a file (`output_chars`, `output_path`); `visible_cpu`, `ignored`; on refusal
-    `command_chars`, `limit_chars`, `refused`, `refused_total`, `not_run`.
+    text goes to a file (`output_chars`, `output_path`); `visible_cpu`, `ignored` (a line that
+    sets cpus); on refusal `command_chars`, `limit_chars`, `refused`, `refused_total`, `not_run`.
 
     Reference: REFERENCE.md, The console.
     """
@@ -1455,8 +1463,8 @@ def lua(script: str,
     {PIPE_STEPS_MAX} lines ahead in the pipe is refused. A chunk that fails to load or raises
     is INVALID with the console's `error:`; `reader_died` means the script never ran.
 
-    Reply: `output`, `clipped`, `output_path`, `evaluated_by`, `pc_before`, `lines_ahead`,
-    `console_reruns`, `note`, the stop survey.
+    Reply: `output`, `clipped`, `output_path` (past {OUTPUT_MAX} characters), `evaluated_by`,
+    `pc_before`, `lines_ahead`, `console_reruns`, `note`, the stop survey.
 
     Reference: REFERENCE.md, The console.
     """
@@ -1475,9 +1483,9 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     leaves `altered` as it was; an edge-detecting game needs a release between presses: call
     twice.
 
-    Reply: `verdict`, `frame_before`, `frame_after`, `port_before`, `frame_set`, `released`,
-    `frame_released`, `active` (read back at release), `name`, `mask`, `note`, the stop
-    survey.
+    Reply, once answered: `verdict`, `frame_before`, `frame_after`, `port_before`, `frame_set`,
+    `released`, `frame_released`, `active` (read back at release), `name`, `mask`, `note`, the
+    stop survey. Without an answer, `pending`.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1498,8 +1506,8 @@ def record(frames: int, dest: str = "",
     The AVI is checked before its path is given; zero frames is INVALID. A run cut short
     leaves the recording open (`ended: false`).
 
-    Reply: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`, `note`, the
-    stop survey.
+    Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
+    `note`, the stop survey. Without an answer, `pending`.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1519,8 +1527,9 @@ def audio_record(frames: int, dest: str = "",
     The WAV is checked before its path is given; a span with no mixer update, no speaker, or a
     mixer already recording is INVALID. Silence is reported, never refused.
 
-    Reply: `verdict`, `path`, `began`, `ended`, `bytes`, `channels`, `sample_rate_hz`,
-    `samples`, `emulated_s`, `sample_min`, `sample_max`, `note`, the stop survey.
+    Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `channels`,
+    `sample_rate_hz`, `samples`, `emulated_s`, `sample_min`, `sample_max`, `note`, the stop
+    survey. Without an answer, `pending`.
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1583,13 +1592,13 @@ def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
     characters) through the debugger console. Needs the machine stopped.
 
     `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
-    `errorlog`, `held`, `stop_seq`.
+    `errorlog`, `held`, `stop_seq` (held for a timer).
 
-    `load`: restore it, altering the session; the header, the ROM and the stop are checked
-    first. Reply: `name`, `path`, `rom_check`, `verified` (true, or INVALID `readback_refused`
-    with `differs`), `saved`, `output`, `mark`, `held`, `taps_across`, and the stop survey
-    (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `dasm`, `errorlog`, `watches`,
-    `watch_hit`, `regpoint_hit`).
+    `load`: restore it, altering the session; the header, the ROM and the stop are checked first.
+    Reply: `name`, `path`, `rom_check`, `verified` (true, or INVALID `readback_refused` with
+    `differs`), `saved`, `output`, `mark`, `held`, `taps_across` (a tap was live), and the stop
+    survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `instruction`, `following`,
+    `errorlog`, `watches`, `watch_hit`, `regpoint_hit`).
 
     Refused: a name of another shape; `load` of a `.sta` that is no regular file
     (`unknown_ref`).

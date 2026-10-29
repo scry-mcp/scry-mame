@@ -53,7 +53,6 @@ Reference: REFERENCE.md, Reading and writing.
 | `hits_total` | integer |
 | `iterations` | integer |
 | `length` | integer |
-| `note` | string |
 | `operator` | string |
 | `space` | string |
 | `truncated` | boolean |

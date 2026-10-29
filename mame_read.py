@@ -210,6 +210,38 @@ def dasm_lines(ses: gs.Session, scratch: Path, addr: int, length: int,
     return lines
 
 
+# `<addr>: <opcode bytes>  <text>`: the bytes are runs of 2, 4 or 8 hex digits, one width a line.
+_LISTED = re.compile(r"^([0-9A-Fa-f]+): +((?:[0-9A-Fa-f]{8}(?: [0-9A-Fa-f]{8})*"
+                     r"|[0-9A-Fa-f]{4}(?: [0-9A-Fa-f]{4})*"
+                     r"|[0-9A-Fa-f]{2}(?: [0-9A-Fa-f]{2})*)) +(\S.*)$")
+# A 68000's `abcd` has no size suffix, so it reads as one more opcode word; its operands tell.
+_ABCD_OPERANDS = re.compile(r"^(?:[Dd]\d|-\([Aa]\d\)),")
+
+
+def stop_instruction(line: str, pc: int, cpu: str | None) -> dict[str, Any]:
+    """The stop's `instruction` off the first line of an opcode listing: where it is, its bytes
+    (unavailable when the line carries none), its text, and the symbol that places `pc`."""
+    listed = _LISTED.match(line)
+    if listed is None:
+        bare = _LISTED_AT.match(line)
+        address, rest = (bare.group(1), line[bare.end():].strip()) if bare else ("", line)
+        raw, text = None, rest
+    else:
+        address, raw, text = listed.group(1), listed.group(2).split(" "), listed.group(3)
+        if raw[-1].lower() == "abcd" and len(raw) > 1 and _ABCD_OPERANDS.match(text):
+            text = f"{raw.pop()} {text}"
+    text, _, comment = text.partition(" // ")
+    placed = nearest_symbol(pc, cpu)
+    nothing = unavailable("no symbol table places this address")
+    return {"address": address,
+            "bytes": "".join(raw).upper() if raw else unavailable(
+                "the listing carries no opcode bytes"),
+            "text": text.rstrip(),
+            "symbol": placed[1] if placed else nothing,
+            "delta": pc - placed[0] if placed else nothing,
+            **({"comment": comment.strip()} if comment.strip() else {})}
+
+
 def check_disassemble(length: int = 16, ref: str = "", **_: Any) -> None:
     inputs.check_ref(ref)
     inputs.count("length", length, READ_MAX, " bytes")

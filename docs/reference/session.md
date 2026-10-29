@@ -76,7 +76,6 @@ Reference: REFERENCE.md, The session.
 | `frame` | integer or object |
 | `frame_symbol` | string or object |
 | `machine` | object |
-| `note` | string |
 | `pc` | string |
 | `phase` | string |
 | `pid` | integer |
@@ -114,6 +113,7 @@ Example, from a live run:
   "reference_addr": "0x0",
   "boot_seconds": 25.0,
   "presence": false,
+  "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
   "background": true,
   "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
@@ -127,9 +127,9 @@ Example, from a live run:
   "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "0.289 (unknown)",
-  "pid": 26150,
-  "stub_port": 61630,
-  "scratch_dir": "$TMPDIR/mame-mcp-7jiu71hs",
+  "pid": 2557,
+  "stub_port": 58076,
+  "scratch_dir": "$TMPDIR/mame-mcp-qwnd_9kr",
   "state_dir": "",
   "cfg": {
     "available": false,
@@ -139,8 +139,8 @@ Example, from a live run:
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-7jiu71hs/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-7jiu71hs/stdout.log",
+  "errorlog_path": "$TMPDIR/mame-mcp-qwnd_9kr/error.log",
+  "stdout_path": "$TMPDIR/mame-mcp-qwnd_9kr/stdout.log",
   "rom_check": "OK",
   "symbols_total": 64,
   "symbols_format": "yaml",
@@ -171,11 +171,9 @@ Example, from a live run:
     "-nomaximize",
     "-resolution",
     "320x240",
-    "-nothrottle",
-    "-screen0",
-    "... 1 more"
+    "-nothrottle"
   ],
-  "boot_lua_path": "$TMPDIR/mame-mcp-7jiu71hs/boot.lua",
+  "boot_lua_path": "$TMPDIR/mame-mcp-qwnd_9kr/boot.lua",
   "presence": false,
   "machine": {
     "cpus": 2,
@@ -188,7 +186,7 @@ Example, from a live run:
   },
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json",
+    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json",
     "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
@@ -205,7 +203,8 @@ Example, from a live run:
       "unresolved": [],
       "unarmable": []
     }
-  }
+  },
+  "recommended_release": "0.289"
 }
 ```
 <!-- scry-reference:end start -->
@@ -291,7 +290,6 @@ Takes no argument.
 | `fingerprints` | object |
 | `frame_symbol` | string or object |
 | `in_debugger` | object |
-| `note` | string |
 | `pc` | string or object |
 | `pid` | integer |
 | `presence` | boolean |
@@ -344,7 +342,7 @@ grace period. The scratch is deleted; a `state_dir` stays. Works on a running ma
 with no session it answers `closed: false`.
 
 Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
-`cfg` (`installed_path`, `changed`), `average_speed`, `note`; `stdout_tail` and
+`cfg` (`installed_path`, `changed`), `average_speed` (after a run), `note`; `stdout_tail` and
 `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`. `session` is the
 block as it is after the close (`alive` and `running` false); a console doubt or a throttle
 found not applied still rides there.
@@ -364,7 +362,6 @@ Reference: REFERENCE.md, The session.
 | `console_pending_before` | integer |
 | `ended_by` | string |
 | `errorlog_tail` | string |
-| `note` | string |
 | `state_written` | boolean or object |
 | `stdout_tail` | string |
 
@@ -442,7 +439,8 @@ Reference: REFERENCE.md, The session.
 | reply field | type |
 |---|---|
 | `cpu` | string |
-| `dasm` | array |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer or object |
 | `ignored` | array |
@@ -530,11 +528,11 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.205 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.277 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001205,
+  "query_s": 0.001277,
   "cpu": ":maincpu"
 }
 ```

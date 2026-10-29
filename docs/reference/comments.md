@@ -51,8 +51,8 @@ Example, from a live run:
       "ref": "irq_vblank",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-26T11:03:23+00:00",
-      "origin": "2026-10-26T11:03:22+00:00#25981.1",
+      "created_at": "2026-10-29T04:42:22+00:00",
+      "origin": "2026-10-29T04:42:22+00:00#2542.1",
       "inherited": false,
       "age_s": 0,
       "text": "matrix A",
@@ -64,7 +64,7 @@ Example, from a live run:
   "truncated": false,
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
   },
   "cpu": {
     "available": false,
@@ -133,7 +133,6 @@ Reference: REFERENCE.md, Declarations.
 | `dropped_comments` | array |
 | `dropped_total` | integer |
 | `held_in_memory` | boolean |
-| `note` | string |
 | `parsed` | integer |
 | `path` | string |
 | `replaced_comments` | array |
@@ -160,8 +159,8 @@ Example, from a live run:
     "ref": "irq_vblank",
     "by": "symbol",
     "cpu": ":maincpu",
-    "created_at": "2026-10-26T11:03:23+00:00",
-    "origin": "2026-10-26T11:03:22+00:00#25981.1",
+    "created_at": "2026-10-29T04:42:22+00:00",
+    "origin": "2026-10-29T04:42:22+00:00#2542.1",
     "inherited": false,
     "age_s": 0,
     "text": "matrix A",
@@ -171,7 +170,7 @@ Example, from a live run:
   "replaced_comments": [],
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/mame-live-matrix-state-2mv15wq5/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
   },
   "cpu": ":maincpu"
 }

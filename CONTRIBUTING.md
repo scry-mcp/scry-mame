@@ -38,6 +38,12 @@ symlink), and the floor counts the whole tree.
 emulator and a display are. The suite needs a `lua` on the `PATH` (the Lua doubles run MAME's Lua
 through it) and, on Linux, `lsof` (the stub owner reads it); the workflow installs both.
 
+A tool's reply model is its contract. A field every `ok` reply of the tool carries is `Required[...]`
+in the model; one that comes only under a condition is `Annotated[T, When("words")]`, and the
+tool's `Reply:` sentence says those words beside the field; a datum that could not be read is
+`unavailable(why)` and never absent. The battery refuses an `ok` reply that lacks a required field,
+and `tests/test_reply_models.py` refuses a promised field whose condition the sentence does not say.
+
 A change to a tool's arguments, reply model or description changes its reference page, and
 `tests/test_reference_pages.py` goes red naming the tool, the page and the line. Regenerate the pages from the
 code, and the examples only from a live run's transcript (each `--mark` spells a directory of

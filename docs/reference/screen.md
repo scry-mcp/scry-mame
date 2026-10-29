@@ -45,9 +45,9 @@ route to the colours of a write-only RAMDAC.
 
 `palette` is the device tag (empty: the only one).
 
-Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha`,
-`indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such device,
-several, none. `bad_argument`: past the last pen.
+Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
+opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such
+device, several, none. `bad_argument`: past the last pen.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -64,7 +64,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -118,7 +119,7 @@ Example, from a live run:
     "... 250 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/palette-1.png",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -158,8 +159,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000025ee"
   },
-  "dasm": [
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
+  "instruction": {
+    "address": "0025EE",
+    "bytes": "203C0000E927",
+    "text": "move.l  #$e927, D0",
+    "symbol": "BOOT_INIT",
+    "delta": 18
+  },
+  "following": [
     "0025F4: 4218                clr.b   (A0)+",
     "0025F6: 51C8 FFFC           dbra    D0, $25f4",
     "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
@@ -194,11 +201,11 @@ The screen as the pens it holds: each pixel's palette index, recovered exactly.
 height]` narrows all but `pixel`.
 
 Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
-`screen_indexed`, `crop`, `image`; `isolate`: `pixels`, `bbox`, `pens`, `isolate_color`;
-`histogram`: `histogram`, `pens_used`, `unused`; `pixel`: `x`, `y`, `pen`, `color`,
-`set_by`, `point_in_crop`. `no_channel`: no pens to read, or no
-screen. `ambiguous_ref`: several screens. `readback_refused`: a pen did not read back.
-`bad_argument`: off the screen.
+`screen_indexed`, `crop`, `image` (not for mode histogram); `isolate`: `pixels`, `bbox`,
+`pens`, `isolate_color`; mode histogram: `histogram`, `pens_used`, `unused`; `pixel`: `x`,
+`y`, `pen`, `color`, `set_by`, `point_in_crop`. `no_channel`: no pens to read, or no screen.
+`ambiguous_ref`: several screens. `readback_refused`: a pen did not read back. `bad_argument`:
+off the screen.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -217,7 +224,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -238,7 +246,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `isolate_color` | string |
 | `lines_ahead` | integer |
 | `mode` | string |
-| `note` | string |
 | `palette` | string or object |
 | `pc_before` | string |
 | `pen` | integer |
@@ -328,8 +335,14 @@ Example, from a live run:
     "PS": "0x2700",
     "PC": "0x000025f4"
   },
-  "dasm": [
-    "0025F4: 4218                clr.b   (A0)+",
+  "instruction": {
+    "address": "0025F4",
+    "bytes": "4218",
+    "text": "clr.b   (A0)+",
+    "symbol": "BOOT_INIT",
+    "delta": 24
+  },
+  "following": [
     "0025F6: 51C8 FFFC           dbra    D0, $25f4",
     "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
     "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
@@ -382,7 +395,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -456,14 +470,20 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025dc"
   },
-  "dasm": [
-    "0025DC: 48E7 FFFC           movem.l D0-D7/A0-A5, -(A7)",
+  "instruction": {
+    "address": "0025DC",
+    "bytes": "48E7FFFC",
+    "text": "movem.l D0-D7/A0-A5, -(A7)",
+    "symbol": "BOOT_INIT",
+    "delta": 0
+  },
+  "following": [
     "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
     "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
     "0025EE: 203C 0000 E927      move.l  #$e927, D0",
     "0025F4: 4218                clr.b   (A0)+",
     "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "... 1 more"
+    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
   ],
   "errorlog": {
     "lines_total": 0,
@@ -523,7 +543,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -546,7 +567,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `kind` | string |
 | `layout` | object |
 | `lines_ahead` | integer |
-| `note` | string |
 | `offset` | integer |
 | `palette` | string |
 | `palettes` | array |
@@ -629,7 +649,7 @@ Example, from a live run:
   "real_colors": false,
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/gfx-1.png",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -669,8 +689,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025f6"
   },
-  "dasm": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
+  "instruction": {
+    "address": "0025F6",
+    "bytes": "51C8FFFC",
+    "text": "dbra    D0, $25f4",
+    "symbol": "BOOT_INIT",
+    "delta": 26
+  },
+  "following": [
     "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
     "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
     "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
@@ -712,9 +738,9 @@ four). `transparent` leaves a pixel value out. Source as `gfx_view` (`offset`:
 an integer or a `0x` string).
 
 Reply: `candidates`, `matched`, `matches_total`, `matches` (first 32:
-`layout`, `window`, `tile`, `flip`, `base`, `shape`), `ambiguous`, `pen_map`, `nearest`,
-`evidence`. `bad_argument`: a patch off the screen or without a whole tile, past a bound;
-else `gfx_view`'s.
+`layout`, `window`, `tile`, `flip`, `base`, `shape`), `ambiguous`, `pen_map`, `nearest`
+(nothing matched), `evidence`. `bad_argument`: a patch off the screen or without a whole tile,
+past a bound; else `gfx_view`'s.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -736,7 +762,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -763,7 +790,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `matches` | array |
 | `matches_total` | integer |
 | `nearest` | object |
-| `note` | string |
 | `offset` | integer |
 | `palette` | string |
 | `patch` | array |
@@ -929,8 +955,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025f4"
   },
-  "dasm": [
-    "0025F4: 4218                clr.b   (A0)+",
+  "instruction": {
+    "address": "0025F4",
+    "bytes": "4218",
+    "text": "clr.b   (A0)+",
+    "symbol": "BOOT_INIT",
+    "delta": 24
+  },
+  "following": [
     "0025F6: 51C8 FFFC           dbra    D0, $25f4",
     "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
     "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
@@ -999,7 +1031,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -1021,7 +1054,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `kind` | string |
 | `lines_ahead` | integer |
 | `next` | string |
-| `note` | string |
 | `offset` | integer |
 | `palette` | string |
 | `palettes` | array |
@@ -1074,7 +1106,7 @@ Example, from a live run:
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/sweep-1.png",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1114,8 +1146,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025f6"
   },
-  "dasm": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
+  "instruction": {
+    "address": "0025F6",
+    "bytes": "51C8FFFC",
+    "text": "dbra    D0, $25f4",
+    "symbol": "BOOT_INIT",
+    "delta": 26
+  },
+  "following": [
     "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
     "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
     "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
@@ -1151,7 +1189,7 @@ there is replaced, anything else is refused. `choose` `{"candidate": "s1c3", "ch
 
 Reply: `manifest` and `report` (each `path`, `sha256`), `formats` (name to status),
 `asset_names`, `command_fields`, `evidence`, `not_proved` (first 8),
-`chose`, `confirm`.
+`chose` (with `choose`), `confirm`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1179,21 +1217,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml"
+  "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.yaml",
+    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
   },
   "report": {
-    "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f9.report.json",
-    "sha256": "c1af08a2d0809e8a44bc7694150cbcf58c4a3256f33f4591870c685c9fd7bac9"
+    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.report.json",
+    "sha256": "beebf3947722ddddb5b02d97ee8b4c55d60c4560cd9778473bd8e29666875d34"
   },
   "formats": {},
   "asset_names": [],
@@ -1237,7 +1275,8 @@ blits. A summary by default; `area` `[x, y, width, height]` lists the blits cove
 drawn order; `detail` lists all, 24 a page from `first`.
 
 Reply: `frame_blit`, `rows_cut`, `blits_in_frame`, `legend`, `by_plane`, `covering`,
-`topmost`, `listed`, `next_first`, `blits`, `not_proved`, `image`. `bad_argument`: no
+`topmost` (with `area`), `listed`, `blits` (with `area` or `detail`), `next_first` (more
+blits remain), `not_proved`, `image`. `bad_argument`: no
 manifest, capture or rows; a frame without blits or past the rows kept. `unknown_ref`: no
 such command.
 
@@ -1258,7 +1297,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -1290,7 +1330,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `listed_of` | integer |
 | `next_first` | integer |
 | `not_proved` | array |
-| `note` | string |
 | `overflow_rows` | integer |
 | `pc_before` | string |
 | `reader_steps` | integer |
@@ -1323,7 +1362,7 @@ Example, from a live run:
   "frame_screen": 8,
   "width": 336,
   "height": 252,
-  "rows_path": "$TMPDIR/mame-mcp-7jiu71hs/capture-700000_32_t70001e.rows",
+  "rows_path": "$TMPDIR/mame-mcp-qwnd_9kr/capture-700000_32_t70001e.rows",
   "rows_kept": 7,
   "overflow_rows": 0,
   "callback_errors": {
@@ -1367,7 +1406,7 @@ Example, from a live run:
     "... 1 more"
   ],
   "image": {
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/blits-1.png",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -1407,8 +1446,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000027ac"
   },
-  "dasm": [
-    "0027AC: 51C8 FFFE           dbra    D0, $27ac",
+  "instruction": {
+    "address": "0027AC",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $27ac",
+    "symbol": "BOOT_INIT",
+    "delta": 464
+  },
+  "following": [
     "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
     "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
     "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
@@ -1479,8 +1524,8 @@ that view, `data` the exact indexed PNG.
 
 Reply: `frame_blit`, `index`, `blit_pc`, `asset`, `format`, `palette`, `rect` (`tile`, `x`,
 `y`, `width`, `height`), `margin`, `box`, `wrap`, `not_proved`, `reads_source`, `image`,
-`data`. `bad_argument`: `gfx_blits`'s, no `asset`, a tile or rectangle past its bounds, a pc
-that fired none or several. `unknown_ref`: an unknown symbol.
+`data` (with `margin` above 0). `bad_argument`: `gfx_blits`'s, no `asset`, a tile or rectangle
+past its bounds, a pc that fired none or several. `unknown_ref`: an unknown symbol.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -1499,7 +1544,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -1528,7 +1574,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `margin` | integer |
 | `n` | integer |
 | `not_proved` | array |
-| `note` | string |
 | `palette` | string |
 | `palettes` | array |
 | `pc_before` | string |
@@ -1611,7 +1656,7 @@ Example, from a live run:
   ],
   "reads_source": true,
   "image": {
-    "path": "$TMPDIR/mame-mcp-7jiu71hs/gfx/source-1.png",
+    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,
@@ -1651,8 +1696,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000027ac"
   },
-  "dasm": [
-    "0027AC: 51C8 FFFE           dbra    D0, $27ac",
+  "instruction": {
+    "address": "0027AC",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $27ac",
+    "symbol": "BOOT_INIT",
+    "delta": 464
+  },
+  "following": [
     "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
     "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
     "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",

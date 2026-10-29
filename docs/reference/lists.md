@@ -19,7 +19,8 @@ must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing ru
 `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
 Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
-`verdict` (`TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`.
+`verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`
+(with `until_frame`).
 
 Reference: REFERENCE.md, Sequences in one call.
 
@@ -36,22 +37,21 @@ Reference: REFERENCE.md, Sequences in one call.
 |---|---|
 | `errors` | array |
 | `failed` | object |
-| `failed_at` | integer or object |
 | `field` | string |
 | `got` | any |
-| `held` | integer |
-| `note` | string |
-| `ran` | array |
 | `ran_path` | string or object |
 | `recorded` | any |
 | `replies_path` | string or object |
-| `steps_completed` | integer |
 | `steps_total` | integer |
 | `still_running` | boolean |
 | `stopped` | object |
 | `stops` | object |
 | `truncated` | boolean |
 | `verdict` | string |
+| `failed_at` | integer or object |
+| `held` | integer |
+| `ran` | array |
+| `steps_completed` | integer |
 | `frame_reached` | integer or object |
 | `operations` | array |
 | `until_frame` | integer |
@@ -237,6 +237,8 @@ Example, from a live run:
           "verdict": "ELAPSED",
           "frame_before": 30,
           "frame_after": 31,
+          "emulated_before_s": 0.619011,
+          "emulated_after_s": 0.638976,
           "cycles": 319450,
           "polls": 1,
           "cause": "the `gvblank` stop of the last frame asked",
@@ -264,8 +266,14 @@ Example, from a live run:
             "PS": "0x2704",
             "PC": "0x000025f6"
           },
-          "dasm": [
-            "0025F6: 51C8 FFFC           dbra    D0, $25f4",
+          "instruction": {
+            "address": "0025F6",
+            "bytes": "51C8FFFC",
+            "text": "dbra    D0, $25f4",
+            "symbol": "BOOT_INIT",
+            "delta": 26
+          },
+          "following": [
             "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
             "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
             "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
@@ -371,15 +379,15 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json"
+  "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json",
+  "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json",
   "steps": 43,
   "checks": 7,
   "dropped": [
@@ -420,7 +428,7 @@ Example, from a live run:
     "available": false,
     "why": "the recording kept every call a replay takes"
   },
-  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->

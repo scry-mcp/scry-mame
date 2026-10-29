@@ -304,7 +304,7 @@ def test_perform_goldens_shape_runs_to_markers_and_snapshots_in_one_call(
     ses.go = go  # type: ignore[method-assign]
     import mame_files as files
     monkeypatch.setattr(files, "snapshot", lambda ses_, scratch, dest: menvelope.envelope(
-        {"path": dest or "snap.png", "bytes": 7}))
+        {"path": dest or "snap.png", "bytes": 7, "sha256": "0" * 64}))
     out = s.perform(steps=[
         {"op": "breakpoint_at", "ref": "0x600", "role": "control"},
         {"op": "run_to", "ref": "0x4a0", "control": "0x600", "seconds": 2.0},

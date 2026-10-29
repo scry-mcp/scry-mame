@@ -140,11 +140,13 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
                     frame = read.frame(ses)
                 except gs.SessionError:
                     frame = None
-    dasm: list[str] | dict[str, Any]
+    instruction: dict[str, Any]
+    following: list[str] = []
     try:
-        dasm = read.dasm_lines(ses, scratch, pc, DASM_BYTES)
+        listing = read.dasm_lines(ses, scratch, pc, DASM_BYTES)
+        instruction, following = read.stop_instruction(listing[0], pc, cpu), listing[1:]
     except gs.SessionError as e:
-        dasm = unavailable(str(e))
+        instruction = unavailable(str(e))
     from_mark = STATE.errorlog_mark
     since, STATE.errorlog_mark = files.errorlog_since(scratch, from_mark)
     # Judged off the lines in hand: a pending throttle proves itself by its tag in this log.
@@ -155,7 +157,8 @@ def survey(ses: gs.Session, scratch: Path) -> dict[str, Any]:
         "cpu": cpu,
         "frame": frame,
         "regs": regs,
-        "dasm": dasm,
+        "instruction": instruction,
+        **({"following": following} if following else {}),
         "errorlog": errorlog_block(since, from_mark),
     }
     # Named before the watches are evaluated, which moves `before` on. A typed breakpoint or

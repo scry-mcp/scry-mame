@@ -35,7 +35,6 @@ Reference: REFERENCE.md, Reading and writing.
 | `bytes_written` | integer |
 | `captures_reading_it` | array |
 | `cpu` | string or object |
-| `note` | string |
 | `readback` | string |
 | `region` | string |
 | `region_offset` | integer |
@@ -151,10 +150,10 @@ reset()
 Soft reset, applied, without relaunching. Modifies the machine; needs it stopped. A hard
 reset is `close` then `start`.
 
-Reply: `kind`, `pc`, `boot_pc`, `verified` (the two agree), `frame_at_reset`,
-`taps_across`, and the stop's survey (`cause`, `stop_seq`, `cpu`, `regs`, `frame`, `dasm`,
-`errorlog`, `watches`, `watch_hit`, `regpoint_hit`). The frame counter does not restart:
-subtract `frame_at_reset` before comparing with a cold boot.
+Reply: `kind`, `pc`, `boot_pc`, `verified` (the two agree), `frame_at_reset`, `taps_across` (a
+tap was live), and the stop's survey (`cause`, `stop_seq`, `cpu`, `regs`, `frame`,
+`instruction`, `following`, `errorlog`, `watches`, `watch_hit`, `regpoint_hit`). The frame
+counter does not restart: subtract `frame_at_reset` before comparing with a cold boot.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -164,7 +163,8 @@ Takes no argument.
 |---|---|
 | `boot_pc` | string or object |
 | `cpu` | string |
-| `dasm` | array |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `frame_at_reset` | integer |
@@ -227,8 +227,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000f2034"
   },
-  "dasm": [
-    "0F2034: 46FC 2700                move    #$2700, SR",
+  "instruction": {
+    "address": "0F2034",
+    "bytes": "46FC2700",
+    "text": "move    #$2700, SR",
+    "symbol": "RESET",
+    "delta": 0
+  },
+  "following": [
     "0F2038: 33FC 0000 0020 351C      move.w  #$0, $20351c.l",
     "0F2040: 4EB8 25DC                jsr     $25dc.w",
     "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
@@ -271,8 +277,8 @@ and `next` mark the session RUNNING until `stop`. A too long packet, or the cons
 error answer, is `bad_argument`.
 
 Reply: `command`, `mutates`, `output`, `clipped`, `note`; past 4000 characters the
-text goes to a file (`output_chars`, `output_path`); `visible_cpu`, `ignored`; on refusal
-`command_chars`, `limit_chars`, `refused`, `refused_total`, `not_run`.
+text goes to a file (`output_chars`, `output_path`); `visible_cpu`, `ignored` (a line that
+sets cpus); on refusal `command_chars`, `limit_chars`, `refused`, `refused_total`, `not_run`.
 
 Reference: REFERENCE.md, The console.
 
@@ -289,7 +295,6 @@ Reference: REFERENCE.md, The console.
 | `limit_chars` | integer |
 | `mutates` | boolean |
 | `not_run` | array |
-| `note` | string |
 | `output` | string |
 | `output_chars` | integer |
 | `output_path` | string |

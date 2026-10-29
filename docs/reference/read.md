@@ -88,7 +88,8 @@ Reference: REFERENCE.md, Reading and writing.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -173,8 +174,14 @@ Example, from a live run:
     "PS": "0x2700",
     "PC": "0x000f2038"
   },
-  "dasm": [
-    "0F2038: 33FC 0000 0020 351C      move.w  #$0, $20351c.l",
+  "instruction": {
+    "address": "0F2038",
+    "bytes": "33FC00000020351C",
+    "text": "move.w  #$0, $20351c.l",
+    "symbol": "RESET",
+    "delta": 4
+  },
+  "following": [
     "0F2040: 4EB8 25DC                jsr     $25dc.w",
     "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
     "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
@@ -208,7 +215,8 @@ Every register of `cpu` (`subcpu`; the visible one when empty), by the gdbstub's
 machine, and is refused before any stop and beside `cpu`.
 
 Reply: `regs` (name to hex string), `register_bits` (name to declared width), `cpu`,
-`superseded`. A cpu with no register map or an unknown byte order is `no_channel`.
+`superseded` (with `from_last_stop`). A cpu with no register map or an unknown byte order is
+`no_channel`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -317,7 +325,6 @@ Reference: REFERENCE.md, Reading and writing.
 | `flow_source` | string |
 | `length` | integer |
 | `lines` | array |
-| `note` | string |
 | `resolved` | array |
 
 Example, from a live run:
@@ -462,7 +469,6 @@ Reference: REFERENCE.md, Reading and writing.
 | `asked` | integer |
 | `cpu` | string or object |
 | `lines` | array |
-| `note` | string |
 
 Example, from a live run:
 
@@ -527,17 +533,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "$TMPDIR/mame-live-matrix-1cb8a1950410/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }
@@ -555,10 +561,11 @@ The dump is written by MAME's own console `save`, so the bytes never cross the s
 screen_map_find()
 ```
 
-Which mapped screen the machine shows. Reply: `matched`; matched, `screen`, `layer`, `kind`,
-`size`, `controls` (`name`, `rect`, `centre`), in the program's units; else the machine's
-`kind` and `size`, `screens_mapped`, `screens_tried`, `screens_unjudged` (signed by index on a
-screen with no palette), or `view_fits: false`. None mapped: `needs_call`.
+Which mapped screen the machine shows. Reply: `matched`, `kind` and `size`; when matched,
+`screen`, `layer`, `controls` (`name`, `rect`, `centre`), in the program's units; when not,
+`screens_mapped` and, if the view fits the map, `screens_tried` and `screens_unjudged`
+(signed by index on a screen with no palette), else `view_fits` false. None mapped:
+`needs_call`.
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -568,7 +575,8 @@ Takes no argument.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -590,6 +598,7 @@ Takes no argument.
 | `screens_tried` | integer |
 | `screens_unjudged` | integer |
 | `size` | array |
+| `view_fits` | boolean |
 
 Example, from a live run:
 
@@ -641,8 +650,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000025e8"
   },
-  "dasm": [
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
+  "instruction": {
+    "address": "0025E8",
+    "bytes": "41F900201000",
+    "text": "lea     $201000.l, A0",
+    "symbol": "BOOT_INIT",
+    "delta": 12
+  },
+  "following": [
     "0025EE: 203C 0000 E927      move.l  #$e927, D0",
     "0025F4: 4218                clr.b   (A0)+",
     "0025F6: 51C8 FFFC           dbra    D0, $25f4",
@@ -711,7 +726,8 @@ Reference: REFERENCE.md, Screen maps.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -765,6 +781,7 @@ Example, from a live run:
     336,
     252
   ],
+  "cells": "rgb",
   "match": [
     {
       "crop": [
@@ -810,8 +827,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025e0"
   },
-  "dasm": [
-    "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
+  "instruction": {
+    "address": "0025E0",
+    "bytes": "33FCFFFF00720004",
+    "text": "move.w  #$ffff, $720004.l",
+    "symbol": "BOOT_INIT",
+    "delta": 4
+  },
+  "following": [
     "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
     "0025EE: 203C 0000 E927      move.l  #$e927, D0",
     "0025F4: 4218                clr.b   (A0)+",

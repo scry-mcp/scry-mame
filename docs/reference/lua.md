@@ -28,9 +28,9 @@ A non-zero `value` activates a digital field. `seconds` bounds the whole call. A
 leaves `altered` as it was; an edge-detecting game needs a release between presses: call
 twice.
 
-Reply: `verdict`, `frame_before`, `frame_after`, `port_before`, `frame_set`, `released`,
-`frame_released`, `active` (read back at release), `name`, `mask`, `note`, the stop
-survey.
+Reply, once answered: `verdict`, `frame_before`, `frame_after`, `port_before`, `frame_set`,
+`released`, `frame_released`, `active` (read back at release), `name`, `mask`, `note`, the
+stop survey. Without an answer, `pending`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -46,7 +46,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -54,6 +55,8 @@ Reference: REFERENCE.md, Input and the screen.
 | `resent` | integer |
 | `stop_seq` | integer |
 | `thread_errors` | integer |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
 | `active` | boolean or object |
 | `cycles` | integer |
 | `defvalue` | string |
@@ -70,7 +73,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `mask` | string |
 | `mode` | string |
 | `name` | string |
-| `note` | string |
 | `pending` | boolean |
 | `player` | integer |
 | `polls` | integer |
@@ -106,6 +108,8 @@ Example, from a live run:
   "verdict": "ELAPSED",
   "frame_before": 17,
   "frame_after": 19,
+  "emulated_before_s": 0.359425,
+  "emulated_after_s": 0.39936,
   "cycles": 638966,
   "polls": 2,
   "lines_ahead": 0,
@@ -151,14 +155,21 @@ Example, from a live run:
     "PS": "0x2100",
     "PC": "0x000e2cdc"
   },
-  "dasm": [
-    "0E2CDC: 3239 0020 10C8 move.w  $2010c8.l, D1",
+  "instruction": {
+    "address": "0E2CDC",
+    "bytes": "3239002010C8",
+    "text": "move.w  $2010c8.l, D1",
+    "symbol": "PALETTE_RANGE_TABLE",
+    "delta": 49610
+  },
+  "following": [
     "0E2CE2: 3001           move.w  D1, D0",
     "0E2CE4: 9079 0020 10C6 sub.w   $2010c6.l, D0",
     "0E2CEA: C1C3           muls.w  D3, D0",
     "0E2CEC: 48C0           ext.l   D0",
     "0E2CEE: 81C1           divs.w  D1, D0",
-    "... 4 more"
+    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
+    "... 3 more"
   ],
   "errorlog": {
     "lines_total": 4,
@@ -195,8 +206,8 @@ Needs the machine STOPPED (else `not_stopped`).
 The AVI is checked before its path is given; zero frames is INVALID. A run cut short
 leaves the recording open (`ended: false`).
 
-Reply: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`, `note`, the
-stop survey.
+Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
+`note`, the stop survey. Without an answer, `pending`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -210,7 +221,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -218,6 +230,8 @@ Reference: REFERENCE.md, Input and the screen.
 | `resent` | integer |
 | `stop_seq` | integer |
 | `thread_errors` | integer |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
 | `ended` | boolean |
 | `frame_after` | integer |
 | `frame_before` | integer |
@@ -229,7 +243,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `instructions_completed` | integer |
 | `lines_ahead` | integer |
 | `mode` | string |
-| `note` | string |
 | `path` | string |
 | `pending` | boolean |
 | `polls` | integer |
@@ -258,17 +271,19 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-7jiu71hs/snap/record-2.avi",
+  "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-qwnd_9kr/snap/record-2.avi",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 19,
   "frame_after": 24,
+  "emulated_before_s": 0.39936,
+  "emulated_after_s": 0.499207,
   "cycles": 1597548,
   "polls": 5,
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/record-2.avi",
+  "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/record-2.avi",
   "frames": 2,
   "began": true,
   "frame_begin": 20,
@@ -302,14 +317,21 @@ Example, from a live run:
     "PS": "0x2100",
     "PC": "0x000e2cf0"
   },
-  "dasm": [
-    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
+  "instruction": {
+    "address": "0E2CF0",
+    "bytes": "11809800",
+    "text": "move.b  D0, (A0,A1.l)",
+    "symbol": "PALETTE_RANGE_TABLE",
+    "delta": 49630
+  },
+  "following": [
     "0E2CF4: 5242           addq.w  #1, D2",
     "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
     "0E2CFA: 6FD4           ble     $e2cd0",
     "0E2CFC: 5379 0020 10C6 subq.w  #1, $2010c6.l",
     "0E2D02: 2079 0020 7990 movea.l $207990.l, A0",
-    "... 2 more"
+    "0E2D08: 30BC 0001      move.w  #$1, (A0)",
+    "... 1 more"
   ],
   "errorlog": {
     "lines_total": 6,
@@ -349,8 +371,9 @@ Needs the machine STOPPED (else `not_stopped`).
 The WAV is checked before its path is given; a span with no mixer update, no speaker, or a
 mixer already recording is INVALID. Silence is reported, never refused.
 
-Reply: `verdict`, `path`, `began`, `ended`, `bytes`, `channels`, `sample_rate_hz`,
-`samples`, `emulated_s`, `sample_min`, `sample_max`, `note`, the stop survey.
+Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `channels`,
+`sample_rate_hz`, `samples`, `emulated_s`, `sample_min`, `sample_max`, `note`, the stop
+survey. Without an answer, `pending`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -364,7 +387,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -372,6 +396,8 @@ Reference: REFERENCE.md, Input and the screen.
 | `resent` | integer |
 | `stop_seq` | integer |
 | `thread_errors` | integer |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
 | `ended` | boolean |
 | `frame_after` | integer |
 | `frame_before` | integer |
@@ -383,7 +409,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `instructions_completed` | integer |
 | `lines_ahead` | integer |
 | `mode` | string |
-| `note` | string |
 | `path` | string |
 | `pending` | boolean |
 | `polls` | integer |
@@ -416,17 +441,19 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-7jiu71hs/snap/audio-3.wav",
+  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-qwnd_9kr/snap/audio-3.wav",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 24,
   "frame_after": 30,
+  "emulated_before_s": 0.499207,
+  "emulated_after_s": 0.619008,
   "cycles": 1916822,
   "polls": 6,
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "$TMPDIR/mame-mcp-7jiu71hs/snap/audio-3.wav",
+  "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/audio-3.wav",
   "frames": 2,
   "began": true,
   "frame_begin": 25,
@@ -465,14 +492,21 @@ Example, from a live run:
     "PS": "0x2100",
     "PC": "0x000e2cea"
   },
-  "dasm": [
-    "0E2CEA: C1C3           muls.w  D3, D0",
+  "instruction": {
+    "address": "0E2CEA",
+    "bytes": "C1C3",
+    "text": "muls.w  D3, D0",
+    "symbol": "PALETTE_RANGE_TABLE",
+    "delta": 49624
+  },
+  "following": [
     "0E2CEC: 48C0           ext.l   D0",
     "0E2CEE: 81C1           divs.w  D1, D0",
     "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
     "0E2CF4: 5242           addq.w  #1, D2",
     "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
-    "... 4 more"
+    "0E2CFA: 6FD4           ble     $e2cd0",
+    "... 3 more"
   ],
   "errorlog": {
     "lines_total": 6,
@@ -511,8 +545,8 @@ Evaluate a Lua `script` on MAME's Lua console; prefer the typed wrappers. Needs 
 8 lines ahead in the pipe is refused. A chunk that fails to load or raises
 is INVALID with the console's `error:`; `reader_died` means the script never ran.
 
-Reply: `output`, `clipped`, `output_path`, `evaluated_by`, `pc_before`, `lines_ahead`,
-`console_reruns`, `note`, the stop survey.
+Reply: `output`, `clipped`, `output_path` (past 4000 characters), `evaluated_by`,
+`pc_before`, `lines_ahead`, `console_reruns`, `note`, the stop survey.
 
 Reference: REFERENCE.md, The console.
 
@@ -526,7 +560,8 @@ Reference: REFERENCE.md, The console.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -538,7 +573,6 @@ Reference: REFERENCE.md, The console.
 | `clipped` | boolean |
 | `evaluated_by` | string |
 | `lines_ahead` | integer |
-| `note` | string |
 | `output` | string |
 | `output_chars` | integer |
 | `output_path` | string |
@@ -598,8 +632,14 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000f2040"
   },
-  "dasm": [
-    "0F2040: 4EB8 25DC                jsr     $25dc.w",
+  "instruction": {
+    "address": "0F2040",
+    "bytes": "4EB825DC",
+    "text": "jsr     $25dc.w",
+    "symbol": "RESET",
+    "delta": 12
+  },
+  "following": [
     "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
     "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
     "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l",

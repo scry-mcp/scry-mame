@@ -54,6 +54,7 @@ While a session holds the window, an orange edge says so: dim from `start` to `c
 | `message` | string |
 | `omitted` | array of string |
 | `how` | string |
+| `note` | string |
 | `cancelled` | object |
 | `session` | object |
 | `answers_while_running` | array |
@@ -65,7 +66,7 @@ While a session holds the window, an orange edge says so: dim from `start` to `c
 | `stopped_on_its_own` | object |
 <!-- scry-reference:end envelope -->
 
-**Every tool publishes its reply's field names** as its `outputSchema`, with `status` required and no constraint on any value, since any datum may come back as `unavailable(why)`.
+**Every tool publishes its reply as its `outputSchema`**: each field is its value or `unavailable(why)`, `status` is required, and the fields an `ok` reply always carries are required of it (unless its `omitted` names them). A field that comes only under a condition says which in the tool's `Reply:` sentence.
 
 Every reply opens with a one-line `summary` and closes with a `session` block composed after the tool's work, so it says what the machine is doing after the call (`close`'s alone describes the state before it). Alarms ride on every reply (`altered`, `broken`, `console` once a count is not zero, `throttles_not_applied`, `tallies_not_removed`, a `note`); what only counts rides on `start`, `status` and `close`.
 

@@ -196,7 +196,8 @@ def test_the_record_survives_the_close_that_kills_and_rides_on_its_reply(
         waiting_tool["none"]()
     def kill(*a: Any, **k: Any) -> dict[str, Any]:
         mstate.STATE._reset()
-        return {"ended_by": "quit", "exit_code": 0}
+        return {"ended_by": "quit", "exit_code": 0, "state_written": True,
+                "cfg": {"installed_path": "cfg/x.cfg", "changed": False}}
     monkeypatch.setattr(mstate.STATE, "kill", kill)
     out = s.close()
     assert out.get("cancelled", {}).get("tool") == "wait_none", list(out)

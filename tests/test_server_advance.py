@@ -232,7 +232,7 @@ def test_run_for_is_invalid_when_the_counter_did_not_move_or_went_backwards(
     out = s.run_for(milliseconds=1)
     assert out["status"] == "INVALID" and "shorter than one frame" in out["message"]
     assert out["code"] == "no_progress"
-    assert "pc" in out and "regs" in out and "dasm" in out, out
+    assert "pc" in out and "regs" in out and "instruction" in out, out
     back = _RegisterSession(bits=32, frame=10, stop_after=0)
     back.frame_answers = ["64", "3", "3", "3", "3"]
     _install(monkeypatch, back, tmp_path)
@@ -446,7 +446,8 @@ def test_resume_with_a_bound_waits_for_the_stop_and_returns_the_survey(
     assert out["cause"] == "stopped at no breakpoint this server armed"
     assert out["pc"] == "0x000004a0" and out["frame"] == 160
     assert out["regs"] == {"D0": "0x00001234", "PC": "0x000f2034"}
-    assert out["dasm"] == ["4a0: move.l d0,d1", "4a0+2: rts"]
+    assert out["instruction"]["text"] == "move.l d0,d1" and out["instruction"]["address"] == "4a0"
+    assert out["following"] == ["4a0+2: rts"]
     assert out["errorlog"] == {"lines_total": 0, "truncated": False, "lines": [], "mark": 0}
     assert out["summary"] == ("resume: OTHER_STOP at pc 0x000004a0 (stopped at no breakpoint "
                               "this server armed)")
@@ -798,7 +799,7 @@ def test_run_for_refuses_to_survey_a_machine_that_did_not_settle_after_the_inter
     out = s.run_for(milliseconds=1000, seconds=0.05)
     assert out["status"] == "INVALID" and "did not come to rest" in out["message"]
     assert out["code"] == "not_settled"
-    assert ses.interrupted and "dasm" not in out, "a moving machine is not surveyed"
+    assert ses.interrupted and "instruction" not in out, "a moving machine is not surveyed"
 
 
 def test_a_stop_found_by_a_call_that_then_refused_is_not_carried_to_the_next_reply(
@@ -834,12 +835,13 @@ def test_the_survey_says_when_the_console_gave_no_listing(
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(advance, "FRAME_POLL_S", 0.0)
     out = s.run_for(milliseconds=100)
-    assert out["dasm"]["available"] is False and "wrote no file" in out["dasm"]["why"]
+    assert out["instruction"]["available"] is False and "wrote no file" in out["instruction"]["why"]
     assert out["frame"] == 13 and out["errorlog"]["lines_total"] == 0
     run = _running(monkeypatch, tmp_path)
     stepped = s.step(count=2)
     assert stepped["cause"] == "step 2" and stepped["pc"] == "0x000025a4" and run.stop_count == 2
-    assert stepped["dasm"] == ["25a4: move.l d0,d1", "25a4+2: rts"]
+    assert stepped["instruction"]["text"] == "move.l d0,d1"
+    assert stepped["following"] == ["25a4+2: rts"]
 
 
 def test_the_tools_carry_the_clients_context_to_their_waits(tmp_path: Path) -> None:
@@ -923,7 +925,7 @@ def test_a_run_to_that_comes_back_invalid_still_records_the_stop_it_made(
     monkeypatch.setattr(advance, "RUN_POLL_S", 0.0)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=0.05)
     assert out["status"] == "INVALID" and out["cause"] == "interrupt at the bound"
-    assert out["pc"] == "0x00003000" and "regs" in out and "dasm" in out
+    assert out["pc"] == "0x00003000" and "regs" in out and "instruction" in out
     seq = mstate.STATE.last_stop["seq"]
     nxt = s.status()
     assert "stopped_on_its_own" not in nxt and mstate.STATE.last_stop["seq"] == seq

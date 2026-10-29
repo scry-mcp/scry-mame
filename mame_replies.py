@@ -1,17 +1,18 @@
 """THE REPLY MODELS, one per tool: the fields each tool's reply names beside the envelope
-every reply carries, published as its `outputSchema` (names only) and held to every reply
-the battery builds (`scry_core.reply_schema`). Named from the replies the battery and the
-live runs built, so a branch none of them reached is unnamed until one does: a field a
-reply grows is named here in the same change. The file tools' models are the core's
-(`scry_core.media_replies`)."""
+every reply carries, published as its `outputSchema` (each field its value or `unavailable`,
+the always-present ones required) and held to every reply the battery builds
+(`scry_core.reply_schema`). Named from the replies the battery and the live runs built, so a
+branch none of them reached is unnamed until one does: a field a reply grows is named here in
+the same change. The file tools' models are the core's (`scry_core.media_replies`)."""
 
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, Required
 
 from scry_core import media_replies
 from scry_core import sequence_account as account
-from scry_core.reply_contract import OmitEmpty
+from scry_core.instruction import StopInstruction
+from scry_core.reply_contract import OmitEmpty, When
 from scry_core.reply_schema import ReplyEnvelope
 
 
@@ -36,7 +37,8 @@ class MameConsoleAccount(MameEnvelope, total=False):
 
     console_reruns: int
     cpu: str
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int
     pc: str
@@ -48,7 +50,9 @@ class MameConsoleAccount(MameEnvelope, total=False):
 
 #: What `record` and `audio_record` share: the frame window a recording ran over.
 class MameRecordingRun(MameConsoleAccount, total=False):
-    ended: bool
+    emulated_after_s: float | dict[str, Any]
+    emulated_before_s: float | dict[str, Any]
+    ended: Annotated[bool, When("once answered")]
     frame_after: int
     frame_before: int
     frame_begin: int | dict[str, Any]
@@ -59,9 +63,8 @@ class MameRecordingRun(MameConsoleAccount, total=False):
     instructions_completed: int
     lines_ahead: int
     mode: str
-    note: str
-    path: str
-    pending: bool
+    path: Annotated[str, When("once answered")]
+    pending: Annotated[bool, When("without an answer")]
     polls: int
     reader_steps: Annotated[int, OmitEmpty]
     recording_after: bool | dict[str, Any]
@@ -69,239 +72,234 @@ class MameRecordingRun(MameConsoleAccount, total=False):
 
 
 class AudioRecordReply(MameRecordingRun, total=False):
-    began: bool
-    bytes: int | dict[str, Any]
-    channels: int | dict[str, Any]
+    began: Annotated[bool, When("once answered")]
+    bytes: Annotated[int | dict[str, Any], When("once answered")]
+    channels: Annotated[int | dict[str, Any], When("once answered")]
     cycles: int
     drain_steps: Annotated[int, OmitEmpty]
-    emulated_s: float | dict[str, Any]
-    sample_max: int | dict[str, Any]
-    sample_min: int | dict[str, Any]
-    sample_rate_hz: int | dict[str, Any]
-    samples: int | dict[str, Any]
+    emulated_s: Annotated[float | dict[str, Any], When("once answered")]
+    sample_max: Annotated[int | dict[str, Any], When("once answered")]
+    sample_min: Annotated[int | dict[str, Any], When("once answered")]
+    sample_rate_hz: Annotated[int | dict[str, Any], When("once answered")]
+    samples: Annotated[int | dict[str, Any], When("once answered")]
     tagged_lines: list[Any]
-    verdict: str
+    verdict: Annotated[str, When("once answered")]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
 
 class BreakpointAtReply(MameEnvelope, total=False):
-    addr: str
+    addr: Annotated[str, When("once `ref` resolves")]
     already_stored: Annotated[bool, OmitEmpty]
-    armed: bool
+    armed: Required[bool]
     by: str
     command_chars: int
     condition: str
     condition_typed: str
     cpu: str
-    entry: str
+    entry: Annotated[str, When("once `ref` resolves")]
     limit_chars: int
-    note: str
     ref: str
     role: str
-    state: str
-    stored: bool
-    temp: str
+    state: Required[str]
+    stored: Required[bool]
+    temp: Annotated[str, When("a control")]
     visible_cpu: str
     while_running: bool
 
 
 class CapturesReply(MameEnvelope, total=False):
-    captures: list[Any]
+    captures: Required[list[Any]]
 
 
 class CloseReply(MameEnvelope, total=False):
-    average_speed: dict[str, Any]
-    cfg: dict[str, Any]
-    closed: bool
+    average_speed: Annotated[dict[str, Any], When("after a run")]
+    cfg: Required[dict[str, Any]]
+    closed: Required[bool]
     console_drained: int
     console_pending_before: int
-    ended_by: str
-    errorlog_tail: str
-    note: str
-    state_written: bool | dict[str, Any]
-    stdout_tail: str
+    ended_by: Required[str]
+    errorlog_tail: Annotated[str, When("not a clean")]
+    state_written: Required[bool | dict[str, Any]]
+    stdout_tail: Annotated[str, When("not a clean")]
 
 
 class CommentListReply(MameEnvelope, total=False):
-    comments: list[Any]
-    comments_total: int
+    comments: Required[list[Any]]
+    comments_total: Required[int]
     cpu: str | dict[str, Any]
-    declarations: dict[str, Any]
-    truncated: bool
+    declarations: Required[dict[str, Any]]
+    truncated: Required[bool]
 
 
 class CpuInfoReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
-    cpus: list[Any]
+    cpus: Required[list[Any]]
 
 
 class DebugReply(MameEnvelope, total=False):
-    clipped: bool
+    clipped: Required[bool]
     command: str
-    command_chars: int
-    ignored: list[Any] | dict[str, Any]
-    limit_chars: int
-    mutates: bool
-    not_run: list[Any]
-    note: str
-    output: str
+    command_chars: Annotated[int, When("on refusal")]
+    ignored: Annotated[list[Any] | dict[str, Any], When("a line that sets cpus")]
+    limit_chars: Annotated[int, When("on refusal")]
+    mutates: Required[bool]
+    not_run: Annotated[list[Any], When("on refusal")]
+    output: Required[str]
     output_chars: int
     output_path: str
-    refused: list[Any]
-    refused_total: int
-    visible_cpu: str | dict[str, Any]
+    refused: Annotated[list[Any], When("on refusal")]
+    refused_total: Annotated[int, When("on refusal")]
+    visible_cpu: Annotated[str | dict[str, Any], When("a line that sets cpus")]
 
 
 class DisassembleReply(MameEnvelope, total=False):
-    addr: str
+    addr: Required[str]
     cpu: str | dict[str, Any]
-    flow: list[Any]
-    flow_source: str
+    flow: Required[list[Any]]
+    flow_source: Required[str]
     length: int
-    lines: list[Any]
-    note: str
-    resolved: list[Any]
+    lines: Required[list[Any]]
+    resolved: Annotated[list[Any], When("relocated board")]
 
 
 class DriveReply(MameEnvelope, total=False):
     act: dict[str, Any]
-    looked: dict[str, Any]
+    looked: Required[dict[str, Any]]
     operations: list[Any]
-    verify: dict[str, Any]
+    verify: Required[dict[str, Any]]
 
 
 class FindReply(MameEnvelope, total=False):
-    addr: str
+    addr: Required[str]
     cpu: str | dict[str, Any]
-    hits: list[Any]
-    hits_total: int
+    hits: Required[list[Any]]
+    hits_total: Required[int]
     length: int
-    span: dict[str, Any]
+    span: Required[dict[str, Any]]
     symbol_class: str
-    truncated: bool
+    truncated: Required[bool]
 
 
 class FocusReply(MameEnvelope, total=False):
     cause: str
     cpu: str
-    dasm: list[Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
-    frame: int | dict[str, Any]
-    ignored: list[Any]
-    machine_ran: bool
+    frame: Annotated[int | dict[str, Any], When("stub")]
+    ignored: Annotated[list[Any], When("console")]
+    machine_ran: Required[bool]
     pc: str
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
-    unchanged: list[Any]
-    unread: list[Any]
-    via: str
-    was: str | dict[str, Any]
+    unchanged: Annotated[list[Any], When("stub")]
+    unread: Annotated[list[Any], When("stub")]
+    via: Required[str]
+    was: Required[str | dict[str, Any]]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
 
 class GfxBlitSourceReply(MameConsoleAccount, total=False):
-    asset: str
-    blit_pc: str
+    asset: Required[str]
+    blit_pc: Required[str]
     blit_symbol: str
     blits_in_frame: int
-    box: list[Any]
+    box: Required[list[Any]]
     call: str
     callback_errors: dict[str, Any]
-    data: dict[str, Any]
+    data: Annotated[dict[str, Any], When("with `margin` above 0")]
     destination: dict[str, Any]
     draw_command: str
     entries: int
     evaluated_by: str
-    format: str
-    frame_blit: int
-    image: dict[str, Any]
+    format: Required[str]
+    frame_blit: Required[int]
+    image: Required[dict[str, Any]]
     index: int
     indexes: list[Any]
     lines_ahead: int
     margin: int
     n: int
-    not_proved: list[Any]
-    note: str
-    palette: str
+    not_proved: Required[list[Any]]
+    palette: Required[str]
     palettes: list[Any]
     pc_before: str
     pen_base: int
     reader_steps: Annotated[int, OmitEmpty]
-    reads_source: bool
-    rect: dict[str, Any]
+    reads_source: Required[bool]
+    rect: Required[dict[str, Any]]
     source_tile: int
     tag: str
     tile_height: int
     tile_width: int
     tiles_available: int
     watches: list[Any]
-    wrap: bool
+    wrap: Required[bool]
 
 
 class GfxBlitsReply(MameConsoleAccount, total=False):
     area: list[Any]
-    blits: list[Any]
-    blits_in_frame: int
-    by_plane: list[Any]
+    blits: Annotated[list[Any], When("with `area` or `detail`")]
+    blits_in_frame: Required[int]
+    by_plane: Required[list[Any]]
     call: str
     callback_errors: dict[str, Any]
     colors_repeat: bool
     commands: list[Any]
-    covering: int
+    covering: Annotated[int, When("with `area`")]
     declare: str
     draw_command: str
     evaluated_by: str
-    frame_blit: int
+    frame_blit: Required[int]
     frame_complete: bool
     frame_screen: int
     frames_with_blits: dict[str, Any]
     height: int
-    image: dict[str, Any]
-    legend: list[Any]
+    image: Required[dict[str, Any]]
+    legend: Required[list[Any]]
     lines_ahead: int
-    listed: dict[str, Any]
+    listed: Annotated[dict[str, Any], When("with `area` or `detail`")]
     listed_of: int
-    next_first: int
-    not_proved: list[Any]
-    note: str
+    next_first: Annotated[int, When("more blits remain")]
+    not_proved: Required[list[Any]]
     overflow_rows: int
     pc_before: str
     reader_steps: Annotated[int, OmitEmpty]
-    rows_cut: bool
+    rows_cut: Required[bool]
     rows_kept: int
     rows_path: str
     screen: str
     tally_id: str
-    topmost: dict[str, Any]
+    topmost: Annotated[dict[str, Any], When("with `area`")]
     watches: list[Any]
     width: int
 
 
 class GfxDraftReply(MameEnvelope, total=False):
-    asset_names: list[Any]
-    chose: dict[str, Any]
-    command_fields: dict[str, Any]
-    confirm: str
+    asset_names: Required[list[Any]]
+    chose: Annotated[dict[str, Any], When("with `choose`")]
+    command_fields: Required[dict[str, Any]]
+    confirm: Required[str]
     draft: str
-    evidence: dict[str, Any]
-    formats: dict[str, Any]
-    manifest: dict[str, Any]
+    evidence: Required[dict[str, Any]]
+    formats: Required[dict[str, Any]]
+    manifest: Required[dict[str, Any]]
     marker: str
-    not_proved: list[Any]
+    not_proved: Required[list[Any]]
     not_proved_more: int
-    report: dict[str, Any]
+    report: Required[dict[str, Any]]
 
 
 class GfxFilmReply(MameConsoleAccount, total=False):
     animation: dict[str, Any]
-    armed_now: bool
+    armed_now: Annotated[bool, When("arm")]
     baseline_value: str | dict[str, Any]
     call: str
     callback_errors: dict[str, Any]
-    cells: list[Any]
+    cells: Annotated[list[Any], When("once frames are kept")]
     cleared: bool
     cost: dict[str, Any]
     cpus_with_io: list[Any]
@@ -309,25 +307,24 @@ class GfxFilmReply(MameConsoleAccount, total=False):
     dropped_total: int
     evaluated_by: str
     files_kept: str
-    film: dict[str, Any]
+    film: Annotated[dict[str, Any], When("arm", "read")]
     frame_as_of: int
     frame_baseline: int | dict[str, Any]
     height: int
-    image: dict[str, Any]
+    image: Annotated[dict[str, Any], When("once frames are kept")]
     install_call: str
     install_lines_ahead: int
     install_resent: Annotated[int, OmitEmpty]
     installed: bool
-    judged: int
+    judged: Annotated[int, When("once the film has dumped")]
     judged_frames: list[Any] | dict[str, Any]
-    kept: int
+    kept: Annotated[int, When("once the film has dumped")]
     lines_ahead: int
     listed: dict[str, Any]
     listing_path: str
     lost: dict[str, Any]
-    met: int
-    next_first: int
-    note: str
+    met: Annotated[int, When("once the film has dumped")]
+    next_first: Annotated[int, When("more kept frames remain")]
     nothing_kept: str
     pc_before: str
     pending: bool
@@ -336,7 +333,7 @@ class GfxFilmReply(MameConsoleAccount, total=False):
     refused: int
     refused_frames: list[Any]
     removal: str
-    state: str
+    state: Annotated[str, When("read")]
     superseded: bool
     tally_id: str
     trigger_maps_to: str
@@ -346,17 +343,16 @@ class GfxFilmReply(MameConsoleAccount, total=False):
 
 
 class GfxLoadReply(MameEnvelope, total=False):
-    assets: dict[str, Any]
-    commands: dict[str, Any]
-    draft: bool
-    formats: dict[str, Any]
-    loaded: bool
-    note: str
-    palette_ports: dict[str, Any]
+    assets: Required[dict[str, Any]]
+    commands: Required[dict[str, Any]]
+    draft: Required[bool]
+    formats: Required[dict[str, Any]]
+    loaded: Required[bool]
+    palette_ports: Required[dict[str, Any]]
     path: str
-    replaced_path: str | dict[str, Any]
+    replaced_path: Required[str | dict[str, Any]]
     sha256: str
-    status_counts: dict[str, Any]
+    status_counts: Required[dict[str, Any]]
     still_loaded: str | dict[str, Any]
     system: str
     systems: list[Any]
@@ -365,29 +361,28 @@ class GfxLoadReply(MameEnvelope, total=False):
 class GfxLocateReply(MameConsoleAccount, total=False):
     addr: str
     addr_cpu: str
-    ambiguous: bool
+    ambiguous: Required[bool]
     ambiguous_windows: int
     bytewidth: int
     call: str
-    candidates: list[Any]
+    candidates: Required[list[Any]]
     endianness: str
     evaluated_by: str
-    evidence: dict[str, Any]
+    evidence: Required[dict[str, Any]]
     flips: list[Any]
     frame_screen: int
     height: int
     kind: str
     lines_ahead: int
-    matched: bool
-    matches: list[Any]
-    matches_total: int
-    nearest: dict[str, Any]
-    note: str
+    matched: Required[bool]
+    matches: Required[list[Any]]
+    matches_total: Required[int]
+    nearest: Annotated[dict[str, Any], When("nothing matched")]
     offset: int
     palette: str
     patch: list[Any]
     pc_before: str
-    pen_map: dict[str, Any]
+    pen_map: Required[dict[str, Any]]
     pending: bool
     reader_steps: Annotated[int, OmitEmpty]
     screen: str
@@ -407,17 +402,16 @@ class GfxSweepReply(MameConsoleAccount, total=False):
     addr_cpu: str
     bytewidth: int
     call: str
-    candidates: int | list[Any]
-    cell_scale: int
+    candidates: Required[int | list[Any]]
+    cell_scale: Required[int]
     count: int
     endianness: str
     entries: int
     evaluated_by: str
-    image: dict[str, Any]
+    image: Required[dict[str, Any]]
     kind: str
     lines_ahead: int
-    next: str
-    note: str
+    next: Required[str]
     offset: int
     palette: str
     palettes: list[Any]
@@ -428,7 +422,7 @@ class GfxSweepReply(MameConsoleAccount, total=False):
     real_colors: bool
     seen_bytes: int
     size: int
-    sweep: int
+    sweep: Required[int]
     tag: str
 
 
@@ -444,11 +438,10 @@ class GfxViewReply(MameConsoleAccount, total=False):
     evaluated_by: str
     first: int
     formats: list[Any]
-    image: dict[str, Any]
+    image: Required[dict[str, Any]]
     kind: str
     layout: dict[str, Any]
     lines_ahead: int
-    note: str
     offset: int
     palette: str
     palettes: list[Any]
@@ -456,91 +449,92 @@ class GfxViewReply(MameConsoleAccount, total=False):
     pen_base: int
     pending: bool
     reader_steps: Annotated[int, OmitEmpty]
-    real_colors: bool
+    real_colors: Required[bool]
     seen_bytes: int
     size: int
     tag: str
     tags: dict[str, Any]
-    tiles_available: int
+    tiles_available: Required[int]
 
 
 class HistoryReply(MameEnvelope, total=False):
-    asked: int
+    asked: Required[int]
     cpu: str | dict[str, Any]
-    lines: list[Any]
-    note: str
+    lines: Required[list[Any]]
 
 
 class InputReply(MameConsoleAccount, total=False):
-    active: bool | dict[str, Any]
+    emulated_after_s: float | dict[str, Any]
+    emulated_before_s: float | dict[str, Any]
+    active: Annotated[bool | dict[str, Any], When("once answered")]
     cycles: int
     defvalue: str
     drain_steps: Annotated[int, OmitEmpty]
     field: str
-    frame_after: int
-    frame_before: int
+    frame_after: Annotated[int, When("once answered")]
+    frame_before: Annotated[int, When("once answered")]
     frame_release_planned: int
-    frame_released: int
-    frame_set: int
+    frame_released: Annotated[int, When("once answered")]
+    frame_set: Annotated[int, When("once answered")]
     frames: int
     instructions_completed: int
     lines_ahead: int
-    mask: str
+    mask: Annotated[str, When("once answered")]
     mode: str
-    name: str
-    note: str
-    pending: bool
+    name: Annotated[str, When("once answered")]
+    pending: Annotated[bool, When("without an answer")]
     player: int
     polls: int
     port: str
-    port_before: str
+    port_before: Annotated[str, When("once answered")]
     port_held: str | dict[str, Any]
     reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
-    released: bool
+    released: Annotated[bool, When("once answered")]
     route: str
     seen_bytes: int
     tagged_lines: list[Any]
     value: str
-    verdict: str
+    verdict: Annotated[str, When("once answered")]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
 
 class LogReply(MameEnvelope, total=False):
     channel: str
-    counts: dict[str, Any]
+    counts: Annotated[dict[str, Any], When("on channel `all`")]
     labels: dict[str, Any]
-    lines: list[Any]
-    lines_total: int
+    lines: Required[list[Any]]
+    lines_total: Required[int]
     pattern: str
-    truncated: bool
+    truncated: Required[bool]
 
 
 class LogWaitReply(MameEnvelope, total=False):
-    already: bool
-    arrived_during: int
+    already: Annotated[bool, When("`verdict` `TARGET`")]
+    arrived_during: Required[int]
     channel: str
-    line: str
-    lines_before: int
-    lines_examined: int
-    lines_total: int
-    note: str
+    line: Annotated[str, When("`verdict` `TARGET`")]
+    lines_before: Annotated[int, When("`verdict` `TARGET`")]
+    lines_examined: Required[int]
+    lines_total: Annotated[int, When("`verdict` `TARGET`")]
     pattern: str
-    verdict: str
-    waited_s: float
+    verdict: Required[str]
+    waited_s: Required[float]
 
 
 class LuaReply(MameConsoleAccount, total=False):
     call: str
-    clipped: bool
-    evaluated_by: str
-    lines_ahead: int
-    note: str
-    output: str
+    # Every Lua run counts its reruns. A TypedDict cannot make a key required that its base
+    # leaves optional, and the base serves tools that do not count them.
+    console_reruns: Required[int]  # type: ignore[misc]
+    clipped: Required[bool]
+    evaluated_by: Required[str]
+    lines_ahead: Required[int]
+    output: Required[str]
     output_chars: int
-    output_path: str
-    pc_before: str
+    output_path: Annotated[str, When("past 4000 characters")]
+    pc_before: Required[str]
     pending: bool
     reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
@@ -551,70 +545,70 @@ class LuaReply(MameConsoleAccount, total=False):
 
 
 class MachineMapReply(MameEnvelope, total=False):
-    address_map: list[Any]
-    counts: dict[str, Any]
+    address_map: Annotated[list[Any], When("no source backs")]
+    counts: Annotated[dict[str, Any], When("no source backs")]
     cpu: str | dict[str, Any]
-    cpus: list[Any]
-    frame_symbol: str | dict[str, Any]
-    note: str
-    regions: list[Any]
-    rom_files: list[Any]
-    screens: list[Any]
-    shares: list[Any]
-    sources: dict[str, Any]
-    spaces: list[Any]
-    symbol_coverage: list[Any]
-    truncated: bool
+    cpus: Annotated[list[Any], When("no source backs")]
+    frame_symbol: Annotated[str | dict[str, Any], When("no source backs")]
+    regions: Annotated[list[Any], When("no source backs")]
+    rom_files: Annotated[list[Any], When("no source backs")]
+    screens: Annotated[list[Any], When("no source backs")]
+    shares: Annotated[list[Any], When("no source backs")]
+    sources: Annotated[dict[str, Any], When("no source backs")]
+    spaces: Annotated[list[Any], When("no source backs")]
+    symbol_coverage: Annotated[list[Any], When("no source backs")]
+    truncated: Annotated[bool, When("no source backs")]
 
 
 class MapFindReply(MameConsoleAccount, total=False):
     call: str
-    controls: list[Any]
+    controls: Annotated[list[Any], When("when matched")]
     evaluated_by: str
-    kind: str
-    layer: str
+    kind: Required[str]
+    layer: Annotated[str, When("when matched")]
     lines_ahead: int
-    matched: bool
+    matched: Required[bool]
     pc_before: str
     reader_steps: Annotated[int, OmitEmpty]
-    screen: str
-    screens_mapped: int
-    screens_tried: int
-    screens_unjudged: int
-    size: list[Any]
+    screen: Annotated[str, When("when matched")]
+    screens_mapped: Annotated[int, When("when not")]
+    screens_tried: Annotated[int, When("if the view fits")]
+    screens_unjudged: Annotated[int, When("if the view fits")]
+    size: Required[list[Any]]
+    view_fits: Annotated[bool, When("else")]
 
 
 class MemdumpReply(MameEnvelope, total=False):
-    addr: str
-    bytes: int
+    addr: Required[str]
+    bytes: Required[int]
     cpu: str | dict[str, Any]
     length: int
-    path: str
+    path: Required[str]
 
 
 class PaletteReply(MameConsoleAccount, total=False):
-    alpha: list[Any]
+    alpha: Annotated[list[Any], When("not fully opaque")]
     call: str
-    colors: list[Any]
+    colors: Required[list[Any]]
     count: int
-    entries: int
+    entries: Required[int]
     evaluated_by: str
     first: int
     highlights: bool
-    image: dict[str, Any]
-    indirect_entries: int
+    image: Required[dict[str, Any]]
+    indirect_entries: Required[int]
     lines_ahead: int
     palette: str
     palettes: list[Any]
     pc_before: str
     reader_steps: Annotated[int, OmitEmpty]
     shadows: bool
-    truncated: bool
+    truncated: Required[bool]
 
 
 class PaletteLogReply(MameEnvelope, total=False):
     across: list[Any]
-    armed_now: bool
+    armed_now: Annotated[bool, When("unless `clear`")]
     call: str
     callback_errors: dict[str, Any]
     cleared: bool
@@ -622,15 +616,14 @@ class PaletteLogReply(MameEnvelope, total=False):
     cpu: str
     cpus_with_io: list[Any]
     data_port: str
-    desyncs: int
+    desyncs: Annotated[int, When("once the log has dumped")]
     frame_as_of: int
     index_port: str
     index_writes: int
     install_resent: Annotated[int, OmitEmpty]
-    installed: bool
+    installed: Annotated[bool, When("unless `clear`")]
     lines_ahead: int
     not_proved: list[Any]
-    note: str
     order: str
     overflow_rows: int
     palette: str
@@ -641,29 +634,31 @@ class PaletteLogReply(MameEnvelope, total=False):
     pen_state: dict[str, Any]
     pending: bool
     pens_written: list[Any]
-    protocol: str
+    protocol: Required[str]
     removal: str
     rows: list[Any]
     rows_cut: bool
     rows_kept: int
     rows_max: int
-    rows_path: str
+    rows_path: Annotated[str, When("once the log has dumped")]
     sees_reset_and_load: bool
     setters: list[Any]
     setters_path: str | dict[str, Any]
     setters_total: int
     space: str
-    state: str
+    state: Annotated[str, When("once armed")]
     superseded: bool
     synced_at_start: bool
     tally_id: str
     unsynced_writes: Annotated[int, OmitEmpty]
     why: str
-    writes_total: int
+    writes_total: Annotated[int, When("once the log has dumped")]
 
 
-class PerformReply(MameEnvelope, account.SequenceFields, total=False):
-    frame_reached: int | dict[str, Any]
+class PerformReply(MameEnvelope, account.SequenceFields, account.SequenceRun, total=False):
+    failed: Annotated[dict[str, Any], When("`step_failed`")]
+    verdict: Annotated[str, When("once the list waited")]
+    frame_reached: Annotated[int | dict[str, Any], When("with `until_frame`")]
     operations: list[Any]
     until_frame: int
     visible_cpu: str | dict[str, Any]
@@ -671,24 +666,24 @@ class PerformReply(MameEnvelope, account.SequenceFields, total=False):
 
 
 class PerformExportReply(MameEnvelope, total=False):
-    checks: int
-    cut: dict[str, Any]
-    dropped: list[Any]
-    dropped_total: int
-    path: str
-    replay: str
-    steps: int
+    checks: Required[int]
+    cut: Required[dict[str, Any]]
+    dropped: Required[list[Any]]
+    dropped_total: Required[int]
+    path: Required[str]
+    replay: Required[str]
+    steps: Required[int]
 
 
 class ReadBlockReply(MameConsoleAccount, total=False):
-    addr: str
-    addr_cpu: str
-    bytewidth: int
+    addr: Annotated[str, When("with `ref`")]
+    addr_cpu: Annotated[str, When("with `ref`")]
+    bytewidth: Required[int]
     call: str
-    endianness: str
+    endianness: Required[str]
     evaluated_by: str
-    hex: str
-    kind: str
+    hex: Required[str]
+    kind: Required[str]
     length: int
     lines_ahead: int
     map_entry: dict[str, Any]
@@ -698,8 +693,8 @@ class ReadBlockReply(MameConsoleAccount, total=False):
     reader_steps: Annotated[int, OmitEmpty]
     regpoint_hit: dict[str, Any]
     seen_bytes: int
-    size: int
-    start: str
+    size: Required[int]
+    start: Annotated[str, When("with `ref`")]
     tag: str
     tags: dict[str, Any]
     watch_hit: dict[str, Any]
@@ -707,63 +702,63 @@ class ReadBlockReply(MameConsoleAccount, total=False):
 
 
 class ReadMemoryReply(MameEnvelope, total=False):
-    addr: str
+    addr: Required[str]
     cpu: str | dict[str, Any]
-    hex: str
+    hex: Required[str]
     length: int
 
 
 class RecordReply(MameRecordingRun, total=False):
-    avi_frames: int | dict[str, Any]
-    began: bool
-    bytes: int | dict[str, Any]
+    avi_frames: Annotated[int | dict[str, Any], When("once answered")]
+    began: Annotated[bool, When("once answered")]
+    bytes: Annotated[int | dict[str, Any], When("once answered")]
     cycles: int | dict[str, Any]
     drain_steps: Annotated[int, OmitEmpty]
     tagged_lines: list[Any]
-    verdict: str
-    view: str | dict[str, Any]
+    verdict: Annotated[str, When("once answered")]
+    view: Required[str | dict[str, Any]]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
 
 class RegistersReply(MameEnvelope, total=False):
     cpu: str
-    register_bits: dict[str, Any]
-    regs: dict[str, Any]
-    superseded: bool
+    register_bits: Required[dict[str, Any]]
+    regs: Required[dict[str, Any]]
+    superseded: Annotated[bool, When("with `from_last_stop`")]
 
 
 class RegpointAddReply(MameEnvelope, total=False):
     already_stored: Annotated[bool, OmitEmpty]
-    armed: bool
+    armed: Required[bool]
     by: str
     command_chars: int
     condition: str
     cpu: str | dict[str, Any]
-    entry: str
+    entry: Required[str]
     index: int
     limit_chars: int
-    note: str
-    ref: str
-    state: str
-    stored: bool
-    while_running: bool
+    ref: Required[str]
+    state: Required[str]
+    stored: Required[bool]
+    while_running: Required[bool]
 
 
 class ResetReply(MameEnvelope, total=False):
-    boot_pc: str | dict[str, Any]
+    boot_pc: Required[str | dict[str, Any]]
     cpu: str
-    dasm: list[Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int
-    frame_at_reset: int
-    kind: str
-    pc: str
+    frame_at_reset: Required[int]
+    kind: Required[str]
+    pc: Required[str]
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
-    taps_across: list[Any]
-    verified: bool
+    taps_across: Annotated[list[Any], When("a tap was live")]
+    verified: Required[bool]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
@@ -771,49 +766,49 @@ class ResetReply(MameEnvelope, total=False):
 class ResumeReply(MameEnvelope, total=False):
     average_speed: dict[str, Any]
     cpu: str
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int
-    note: str
     pc: str
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
-    verdict: str
-    waited_s: float
+    verdict: Annotated[str, When("with a bound")]
+    waited_s: Annotated[float, When("with a bound")]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
 
 class RomCheckReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
-    deterministic: bool
-    query_s: float
-    rom_check: str
+    deterministic: Required[bool]
+    query_s: Required[float]
+    rom_check: Required[str]
 
 
 class RunForReply(MameEnvelope, total=False):
     command_chars: int
     cpu: str | dict[str, Any]
-    cycles: int | dict[str, Any]
-    dasm: list[Any] | dict[str, Any]
+    cycles: Required[int | dict[str, Any]]
+    following: list[str]
+    instruction: StopInstruction
     disarmed_watches: list[Any]
-    emulated_after_s: float | dict[str, Any]
-    emulated_before_s: float
+    emulated_after_s: Required[float | dict[str, Any]]
+    emulated_before_s: Required[float]
     errorlog: dict[str, Any]
     frame: int | dict[str, Any]
-    frame_after: int | dict[str, Any]
-    frame_before: int | dict[str, Any]
+    frame_after: Required[int | dict[str, Any]]
+    frame_before: Required[int | dict[str, Any]]
     limit_chars: int
     not_rearmed: list[Any]
-    note: str
     pc: str
-    polls: int
-    reads: int
+    polls: Annotated[int, When("by frames")]
+    reads: Annotated[int, When("by milliseconds")]
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
     stop_seq: int
-    verdict: str
+    verdict: Required[str]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
@@ -825,17 +820,17 @@ class RunToReply(MameEnvelope, total=False):
     condition: str
     control: str
     control_dasm: list[Any]
-    control_hits: int
+    control_hits: Required[int]
     control_on: list[Any]
-    controls: list[Any]
+    controls: Required[list[Any]]
     cpu: str | dict[str, Any]
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     disarmed_watches: list[Any]
     errorlog: dict[str, Any]
     frame: int
     limit_chars: int
     not_rearmed: list[Any]
-    note: str
     pc: str
     ref: str
     regpoint_hit: dict[str, Any]
@@ -845,7 +840,7 @@ class RunToReply(MameEnvelope, total=False):
     stop_seq: int
     stored: bool
     target_disarmed: bool
-    verdict: str
+    verdict: Required[str]
     watch_hit: dict[str, Any]
     watches: list[Any]
 
@@ -855,14 +850,14 @@ class ScreenSignatureReply(MameConsoleAccount, total=False):
     crop: list[Any]
     evaluated_by: str
     frame_screen: int
-    height: int
+    height: Required[int]
     kind: str
     lines_ahead: int
     pc_before: str
     reader_steps: Annotated[int, OmitEmpty]
     screen: str
-    signature: str
-    width: int
+    signature: Required[str]
+    width: Required[int]
 
 
 class ScreenViewReply(MameConsoleAccount, total=False):
@@ -870,17 +865,16 @@ class ScreenViewReply(MameConsoleAccount, total=False):
     call: str
     color: str
     crop: list[Any]
-    entries: int
+    entries: Required[int]
     evaluated_by: str
-    frame_screen: int
-    height: int
-    histogram: list[Any]
-    image: dict[str, Any]
+    frame_screen: Required[int]
+    height: Required[int]
+    histogram: Annotated[list[Any], When("mode histogram")]
+    image: Annotated[dict[str, Any], When("not for mode histogram")]
     isolate_color: str
     lines_ahead: int
     mode: str
-    note: str
-    palette: str | dict[str, Any]
+    palette: Required[str | dict[str, Any]]
     pc_before: str
     pen: int
     pens: list[Any]
@@ -891,49 +885,51 @@ class ScreenViewReply(MameConsoleAccount, total=False):
     reader_steps: Annotated[int, OmitEmpty]
     rows_cut: bool
     same_color_write: dict[str, Any]
-    screen: str
-    screen_indexed: bool
+    screen: Required[str]
+    screen_indexed: Required[bool]
     screen_type: str
     screens: list[Any]
     set_by: dict[str, Any]
     unused: list[Any]
     watches: list[Any]
-    width: int
+    width: Required[int]
     x: int
     y: int
 
 
 class SeriesCaptureReply(MameConsoleAccount, total=False):
-    count: int
+    emulated_after_s: float | dict[str, Any]
+    emulated_before_s: float | dict[str, Any]
+    count: Required[int]
     crop: list[Any]
     cycles: int
-    distinct: int
+    distinct: Required[int]
     first: int
     frame_after: int
     frame_before: int
     frame_source: str
     frames_asked: int
-    kept_after_close: bool
+    kept_after_close: Required[bool]
     last: int
-    lost: list[Any]
-    manifest: str
+    lost: Required[list[Any]]
+    manifest: Required[str]
     polls: int
     verdict: str
 
 
 class SetRegisterReply(MameEnvelope, total=False):
     cpu: str
-    readback: str
-    register: str
+    readback: Required[str]
+    register: Required[str]
     value: str
-    verified: bool
+    verified: Required[bool]
 
 
 class SnapshotReply(MameEnvelope, total=False):
-    bytes: int
-    path: str
-    sha256: str
-    view: str | dict[str, Any]
+    bytes: Required[int]
+    path: Required[str]
+    sha256: Required[str]
+    view: Required[str | dict[str, Any]]
 
 
 class StartReply(MameEnvelope, total=False):
@@ -951,18 +947,17 @@ class StartReply(MameEnvelope, total=False):
     error: str
     errorlog_path: str
     flags: list[Any]
-    frame: int | dict[str, Any]
+    frame: Required[int | dict[str, Any]]
     frame_symbol: str | dict[str, Any]
     machine: dict[str, Any]
-    note: str
-    pc: str
+    pc: Required[str]
     phase: str
-    pid: int
+    pid: Required[int]
     presence: bool
-    recommended_release: str
+    recommended_release: Required[str]
     registers: list[Any]
     reply: str
-    rom_check: str
+    rom_check: Required[str]
     scratch_dir: str
     start_retries: Annotated[list[Any], OmitEmpty]
     state_dir: str
@@ -983,44 +978,45 @@ class StartReply(MameEnvelope, total=False):
 
 
 class StateListReply(MameEnvelope, total=False):
-    state_dir: str
-    states: list[Any]
+    state_dir: Required[str]
+    states: Required[list[Any]]
 
 
 class StatusReply(MameEnvelope, total=False):
     cfg: dict[str, Any]
-    console_pending: int
-    debugger: dict[str, Any]
-    errorlog_path: str
-    fingerprint: str
+    console_pending: Annotated[int, When("alive")]
+    debugger: Annotated[dict[str, Any], When("alive")]
+    errorlog_path: Annotated[str, When("alive")]
+    fingerprint: Annotated[str, When("alive")]
     fingerprints: dict[str, Any]
     frame_symbol: str | dict[str, Any]
-    in_debugger: dict[str, Any]
-    note: str
-    pc: str | dict[str, Any]
-    pid: int
-    presence: bool
-    scratch_dir: str
-    state_dir: str
+    in_debugger: Annotated[dict[str, Any], When("alive")]
+    pc: Annotated[str | dict[str, Any], When("alive")]
+    pid: Annotated[int, When("alive")]
+    presence: Annotated[bool, When("alive")]
+    scratch_dir: Annotated[str, When("alive")]
+    state_dir: Annotated[str, When("alive")]
     stdout_path: str
-    stub_port: int
-    system: str
-    tallies_pending_removal: list[Any]
+    stub_port: Annotated[int, When("alive")]
+    system: Annotated[str, When("alive")]
+    tallies_pending_removal: Annotated[list[Any], When("alive")]
     threads: dict[str, Any]
     throttles_pending: Annotated[list[Any], OmitEmpty]
+    last_stop: Annotated[dict[str, Any], When("alive")]
+    broken: Annotated[str, When("can no longer be trusted")]
 
 
 class StepReply(MameEnvelope, total=False):
     command_chars: int
     cpu: str
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int | dict[str, Any]
-    instructions_completed: int
+    instructions_completed: Required[int]
     limit_chars: int
     mode: str
-    note: str
-    others: dict[str, Any]
+    others: Annotated[dict[str, Any], When("a thread per cpu")]
     pc: str
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
@@ -1032,11 +1028,11 @@ class StepReply(MameEnvelope, total=False):
 class StopReply(MameEnvelope, total=False):
     average_speed: dict[str, Any]
     cpu: str
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int | dict[str, Any]
-    interrupted: bool
-    note: str
+    interrupted: Required[bool]
     pc: str
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
@@ -1046,17 +1042,16 @@ class StopReply(MameEnvelope, total=False):
 
 
 class SymbolsFindReply(MameEnvelope, total=False):
-    addr: str
+    addr: Annotated[str, When("by address")]
     cpu: str
-    delta: int
+    delta: Annotated[int, When("by address")]
     linear: str
-    memory: str
+    memory: Annotated[str, When("by address")]
     name: str
-    note: str
-    query: str
-    symbols: list[Any]
-    symbols_total: int
-    truncated: bool
+    query: Annotated[str, When("by name")]
+    symbols: Annotated[list[Any], When("by name")]
+    symbols_total: Annotated[int, When("by name")]
+    truncated: Annotated[bool, When("by name")]
 
 
 class ThrottleReply(MameEnvelope, total=False):
@@ -1064,16 +1059,19 @@ class ThrottleReply(MameEnvelope, total=False):
     confirmed_by: str
     frame: int
     on: bool
-    pending: bool
-    tag: str
+    pending: Required[bool]
+    tag: Required[str]
     tagged_lines: list[Any]
     waited_s: float
 
 
 class TraceReply(MameEnvelope, total=False):
+    emulated_after_s: float | dict[str, Any]
+    emulated_before_s: float | dict[str, Any]
     cpu: str | dict[str, Any]
     cycles: int
-    dasm: list[Any]
+    following: list[str]
+    instruction: StopInstruction
     errorlog: dict[str, Any]
     frame: int
     frame_after: int
@@ -1083,14 +1081,14 @@ class TraceReply(MameEnvelope, total=False):
     polls: int
     regs: dict[str, Any]
     stop_seq: int
-    trace: dict[str, Any]
+    trace: Required[dict[str, Any]]
     verdict: str
 
 
 class WatchAddReply(MameEnvelope, total=False):
     addr: str
     already_stored: Annotated[bool, OmitEmpty]
-    armed: bool
+    armed: Required[bool]
     by: str
     call: str
     condition: str
@@ -1105,16 +1103,15 @@ class WatchAddReply(MameEnvelope, total=False):
     lines_ahead: int
     mine: bool
     mode: str
-    note: str
     pending: bool
     pointer: dict[str, Any]
     read_maps_to: str
-    reading: dict[str, Any]
+    reading: Annotated[dict[str, Any], When("on a stopped machine")]
     ref: str
     source: dict[str, Any]
     space: str
-    state: str
-    stored: bool
+    state: Required[str]
+    stored: Required[bool]
     tally_id: str
     trigger: str
     trigger_addr: str
@@ -1127,113 +1124,109 @@ class WatchAddReply(MameEnvelope, total=False):
 
 
 class WriteReply(MameEnvelope, total=False):
-    addr: str
-    bytes_written: int
-    captures_reading_it: list[Any]
+    addr: Required[str]
+    bytes_written: Required[int]
+    captures_reading_it: Annotated[list[Any], When("with `region`")]
     cpu: str | dict[str, Any]
-    note: str
-    readback: str
+    readback: Required[str]
     region: str
-    region_offset: int
-    target: str
-    verified: bool
+    region_offset: Annotated[int, When("with `region`")]
+    target: Annotated[str, When("on ROM")]
+    verified: Required[bool]
 
 
 class CommentWriteReply(MameEnvelope, total=False):
-    added: int
-    comment: dict[str, Any]
-    comments_total: int
+    added: Annotated[int, When("`load`")]
+    comment: Annotated[dict[str, Any], When("`add`")]
+    comments_total: Annotated[int, When("`save`", "`load`")]
     cpu: str
-    declarations: dict[str, Any]
-    deleted: dict[str, Any]
-    dropped_comments: list[Any]
-    dropped_total: int
+    declarations: Annotated[dict[str, Any], When("`add`", "`delete`", "`load`")]
+    deleted: Annotated[dict[str, Any], When("`delete`")]
+    dropped_comments: Annotated[list[Any], When("`save`")]
+    dropped_total: Annotated[int, When("`save`")]
     held_in_memory: bool
-    note: str
-    parsed: int
+    parsed: Annotated[int, When("`load`")]
     path: str
-    replaced_comments: list[Any]
-    replaced_total: int
-    truncated: bool
-    unchanged: int
+    replaced_comments: Annotated[list[Any], When("`add`", "`load`")]
+    replaced_total: Annotated[int, When("`load`")]
+    truncated: Annotated[bool, When("`save`", "`load`")]
+    unchanged: Annotated[int, When("`load`")]
 
 
 class DeclarationClearReply(MameEnvelope, total=False):
-    declarations_cleared: int
-    disarmed: list[Any]
-    note: str
-    tallies_removed: list[Any]
-    while_running: bool
+    declarations_cleared: Required[int]
+    disarmed: Required[list[Any]]
+    tallies_removed: Annotated[list[Any], When("removing an io tap")]
+    while_running: Required[bool]
 
 
 class DeclarationListReply(MameEnvelope, total=False):
-    breakpoints: list[Any]
+    breakpoints: Annotated[list[Any], When("each kind asked")]
     cpu: str | dict[str, Any]
     foreign: Annotated[dict[str, Any], OmitEmpty]
-    regpoints: list[Any]
-    watches: list[Any]
+    regpoints: Annotated[list[Any], When("each kind asked")]
+    watches: Annotated[list[Any], When("each kind asked")]
 
 
 class MapWriteReply(MameConsoleAccount, total=False):
-    application: str
+    application: Annotated[str, When("`load`", "`save`")]
     call: str
     cells: str
     controls: int
     evaluated_by: str
-    kind: str
+    kind: Annotated[str, When("`add`")]
     lines_ahead: int
     match: list[Any]
-    mode: str
+    mode: Annotated[str, When("`load`", "`save`")]
     path: str
     pc_before: str
-    promoted: list[Any]
+    promoted: Annotated[list[Any], When("`save`")]
     reader_steps: Annotated[int, OmitEmpty]
-    replaced: bool
+    replaced: Annotated[bool, When("`add`")]
     screen: str
-    screens: int
-    shadows_file: bool
-    size: list[Any]
+    screens: Annotated[int, When("`load`", "`save`")]
+    shadows_file: Annotated[bool, When("`add`")]
+    size: Annotated[list[Any], When("`add`")]
 
 
 class ScanReply(MameEnvelope, total=False):
-    addr: str
+    addr: Annotated[str, When("`start`")]
     cell_bytes: int
-    cleared: bool
-    closed: bool
+    cleared: Annotated[bool, When("`clear`")]
+    closed: Annotated[bool, When("`filter`")]
     cpu: str
-    hits: list[Any]
-    hits_total: int
-    iterations: int
+    hits: Annotated[list[Any], When("`filter`")]
+    hits_total: Annotated[int, When("`start`", "`filter`")]
+    iterations: Annotated[int, When("`filter`")]
     length: int
-    note: str
     operator: str
-    space: str
-    truncated: bool
+    space: Annotated[str, When("`start`", "`filter`")]
+    truncated: Annotated[bool, When("`filter`")]
     value: str | dict[str, Any]
 
 
 class StateWriteReply(MameEnvelope, total=False):
-    bytes: int
+    bytes: Annotated[int, When("`save`")]
     cpu: str
-    dasm: list[Any] | dict[str, Any]
+    following: list[str]
+    instruction: StopInstruction
     differs: dict[str, Any]
-    errorlog: dict[str, Any]
-    frame: int | dict[str, Any]
-    held: str
-    mark: dict[str, Any]
+    errorlog: Required[dict[str, Any]]
+    frame: Required[int | dict[str, Any]]
+    held: Annotated[str, When("held for a timer")]
+    mark: Annotated[dict[str, Any], When("`load`")]
     name: str
-    note: str
-    output: str
-    path: str
-    pc: str
+    output: Annotated[str, When("`load`")]
+    path: Required[str]
+    pc: Required[str]
     regpoint_hit: dict[str, Any]
     regs: dict[str, Any]
-    rom_check: str | dict[str, Any]
-    saved: dict[str, Any]
-    stop_seq: int
+    rom_check: Annotated[str | dict[str, Any], When("`load`")]
+    saved: Annotated[dict[str, Any], When("`load`")]
+    stop_seq: Annotated[int, When("`load`", "held")]
     system: str
-    taps_across: list[Any]
-    verified: bool | dict[str, Any]
+    taps_across: Annotated[list[Any], When("a tap was live")]
+    verified: Annotated[bool | dict[str, Any], When("`load`")]
     watch_hit: dict[str, Any]
     watches: list[Any]
 

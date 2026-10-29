@@ -23,7 +23,8 @@ Refused: a `seg:off`; a `condition` the console refuses or too long (`command_ch
 unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
 role; a control past the 10 temps.
 
-Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp`, `addr`, `entry`.
+Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr`,
+`entry` (once `ref` resolves).
 
 Reference: REFERENCE.md, Declarations.
 
@@ -47,7 +48,6 @@ Reference: REFERENCE.md, Declarations.
 | `cpu` | string |
 | `entry` | string |
 | `limit_chars` | integer |
-| `note` | string |
 | `ref` | string |
 | `role` | string |
 | `state` | string |
@@ -132,7 +132,6 @@ Reference: REFERENCE.md, Declarations.
 | `entry` | string |
 | `index` | integer |
 | `limit_chars` | integer |
-| `note` | string |
 | `ref` | string |
 | `state` | string |
 | `stored` | boolean |
@@ -200,8 +199,8 @@ stored).
 Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
 declared another way; an unknown pointer base or `cpu`.
 
-Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading`, and each
-mode's own fields.
+Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading` (on a stopped
+machine), and each mode's own fields.
 
 Reference: REFERENCE.md, Declarations.
 
@@ -237,7 +236,6 @@ Reference: REFERENCE.md, Declarations.
 | `lines_ahead` | integer |
 | `mine` | boolean |
 | `mode` | string |
-| `note` | string |
 | `pending` | boolean |
 | `pointer` | object |
 | `read_maps_to` | string |
@@ -383,8 +381,8 @@ Example, from a live run:
       "ref": "exception_handler",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-26T11:03:23+00:00",
-      "origin": "2026-10-26T11:03:22+00:00#25981.1",
+      "created_at": "2026-10-29T04:42:22+00:00",
+      "origin": "2026-10-29T04:42:22+00:00#2542.1",
       "inherited": false,
       "age_s": 0,
       "role": "stop",
@@ -418,7 +416,8 @@ running machine.
 Refused: an empty `ref` without `all`; a `ref` matching none (`unknown_ref`, naming the
 refs held); `space` for a kind other than `watch`.
 
-Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed`, `note`.
+Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing an io
+tap), `note`.
 
 Reference: REFERENCE.md, Declarations.
 
@@ -434,7 +433,6 @@ Reference: REFERENCE.md, Declarations.
 |---|---|
 | `declarations_cleared` | integer |
 | `disarmed` | array |
-| `note` | string |
 | `tallies_removed` | array |
 | `while_running` | boolean |
 

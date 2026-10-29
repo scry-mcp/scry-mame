@@ -35,7 +35,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `draft` | boolean |
 | `formats` | object |
 | `loaded` | boolean |
-| `note` | string |
 | `palette_ports` | object |
 | `path` | string |
 | `replaced_path` | string or object |
@@ -171,8 +170,9 @@ unlike the one before. Judges `frames` (max 216000), keeps `keep` pictures (max
 
 Read (no `trigger`; works while running): a contact sheet from `first`. `clear=True` clears.
 
-Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept`,
-`cells` (each `frame`, `pc`, `path`), `next_first`, `image`. `bad_argument`: film armed
+Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept` (once
+the film has dumped), `cells` (each `frame`, `pc`, `path`), `image` (once frames are kept),
+`next_first` (more kept frames remain). `bad_argument`: film armed
 already, none to read.
 
 Reference: REFERENCE.md, Input and the screen.
@@ -198,7 +198,8 @@ Reference: REFERENCE.md, Input and the screen.
 |---|---|
 | `console_reruns` | integer |
 | `cpu` | string |
-| `dasm` | array or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
 | `errorlog` | object |
 | `frame` | integer |
 | `pc` | string |
@@ -237,7 +238,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `lost` | object |
 | `met` | integer |
 | `next_first` | integer |
-| `note` | string |
 | `nothing_kept` | string |
 | `pc_before` | string |
 | `pending` | boolean |
@@ -292,7 +292,7 @@ Example, from a live run:
       "available": false,
       "why": "no `crop`: the whole screen"
     },
-    "film_dir": "$TMPDIR/mame-mcp-7jiu71hs/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-qwnd_9kr/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"
@@ -335,8 +335,14 @@ Example, from a live run:
     "PS": "0x2708",
     "PC": "0x000027ac"
   },
-  "dasm": [
-    "0027AC: 51C8 FFFE           dbra    D0, $27ac",
+  "instruction": {
+    "address": "0027AC",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $27ac",
+    "symbol": "BOOT_INIT",
+    "delta": 464
+  },
+  "following": [
     "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
     "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
     "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
@@ -382,8 +388,9 @@ ports of the loaded manifest's `palette_port`, placed on its pen by the device's
 that pen alone, `limit` the newest rows. Answers while running. Rows are capped at
 100000, the rest counted.
 
-Reply: `palette_port`, `protocol`, `armed_now`, `installed`, `state`, `writes_total`,
-`unsynced_writes`, `desyncs`, `rows_path`. Without `pen`: `setters` (each `pc`, `symbol`,
+Reply: `palette_port`, `protocol`, `armed_now`, `installed` (unless `clear`), `state`
+(once armed), `writes_total`, `unsynced_writes`, `desyncs`, `rows_path` (once the log has
+dumped). Without `pen`: `setters` (each `pc`, `symbol`,
 `written_by`; the first 32). With `pen`: `pen_state`, `rows`.
 `needs_call`: no manifest, entry or armed log; `bad_argument`: a pen it does not set.
 
@@ -416,7 +423,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `installed` | boolean |
 | `lines_ahead` | integer |
 | `not_proved` | array |
-| `note` | string |
 | `order` | string |
 | `overflow_rows` | integer |
 | `palette` | string |

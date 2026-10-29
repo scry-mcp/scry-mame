@@ -319,7 +319,9 @@ def test_the_isolate_pens_written_0x_reach_the_body_as_the_ints_they_spell(
                         lambda args, reply: "the body ran")
     monkeypatch.setattr(s, "stopped", lambda what: (None, None))
     monkeypatch.setattr(mscreen, "screen_view", lambda *a, **k: seen.update(pens=a[3]) or (
-        menvelope.envelope({})))
+        menvelope.envelope({"mode": "isolate", "screen": ":screen", "width": 1, "height": 1,
+                            "frame_screen": 0, "entries": 1, "screen_indexed": True,
+                            "palette": ":palette"})))
     s.screen_view(mode="isolate", pens=["0x31", 50])
     assert seen["pens"] == [0x31, 50] and all(type(v) is int for v in seen["pens"]), seen
 
