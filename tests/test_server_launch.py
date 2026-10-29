@@ -67,11 +67,12 @@ def test_altered_counts_both_paths(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_startup_leaves_no_state_in_the_servers_directory() -> None:
     """MAME writes `cfg/` and `nvram/` into its cwd, and that cwd was the SHARED tool's own."""
-    here = Path(s.__file__).resolve().parent
-    for leftover in ("cfg", "nvram"):
-        assert not (here / leftover).exists(), (
-            f"{leftover}/ inside the server: one project's state in a shared tool"
-        )
+    package = Path(s.__file__).resolve().parent
+    for here in (package, package.parents[1]):
+        for leftover in ("cfg", "nvram"):
+            assert not (here / leftover).exists(), (
+                f"{leftover}/ inside the server: one project's state in a shared tool"
+            )
 
 
 def test_every_tool_this_server_promises_is_actually_registered() -> None:

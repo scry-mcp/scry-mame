@@ -95,7 +95,7 @@ def test_every_registered_tool_is_either_checked_or_named_as_unchecked() -> None
     assert not sorted(registered - args.KNOWN), (
         f"no entry in args, not even a deliberate none: {sorted(registered - args.KNOWN)}")
     assert not sorted(args.KNOWN - registered), (
-        f"mame_args names tools this server does not register: {sorted(args.KNOWN - registered)}")
+        f"args names tools this server does not register: {sorted(args.KNOWN - registered)}")
 
 
 def test_every_checked_tool_actually_asks_its_check() -> None:

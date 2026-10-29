@@ -294,7 +294,7 @@ def test_captures_says_a_recording_its_call_left_unfinished_is_not_listed() -> N
     """A recording its call answered open or not begun is finished, or released, by a later run that
     reads no file, so `captures` never lists it"""
     here = Path(__file__).resolve().parent.parent
-    texts = {"server": documented("captures"), "mame_recording": mrec.captures.__doc__ or "",
+    texts = {"server": documented("captures"), "recording": mrec.captures.__doc__ or "",
              "REFERENCE": (here / "REFERENCE.md").read_text()}
     for name, text in texts.items():
         flat = " ".join(text.split()).lower()

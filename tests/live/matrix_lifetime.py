@@ -61,18 +61,16 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
     "an ordered close ends MAME by its own quit: exit 0, its pid gone, and status not alive",
 ], start=1)]
 
-MAME_DIR = Path(launch.__file__).resolve().parent
 WITHIN_S = 5 * guardian.POLL_S
 
 # `bare` withholds the guardian: the control.
 SERVER = """
 import json, sys, time
-sys.path.insert(0, sys.argv[1])
 from scry_core import guardian
-if sys.argv[3] == "bare":
+if sys.argv[2] == "bare":
     guardian.spawn = lambda *a, **k: None
 from scry_mame import server as s
-r = s.start(**json.loads(sys.argv[2]))
+r = s.start(**json.loads(sys.argv[1]))
 print(json.dumps({"status": r["status"], "pid": r.get("pid"), "said": r.get("summary")}),
       flush=True)
 time.sleep(600)
@@ -118,7 +116,7 @@ def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
     """SIGKILL a child server in `mode`: MAME's pid, was it the server's child, was it gone."""
     # A SIGKILLed server leaves its scratch behind, so it must land in this run's tmp.
     server = subprocess.Popen(
-        [sys.executable, "-c", SERVER, str(MAME_DIR), json.dumps(BOOT), mode],
+        [sys.executable, "-c", SERVER, json.dumps(BOOT), mode],
         stdout=subprocess.PIPE, text=True,
         env={**os.environ, "TMPDIR": f"{live_tmp('mame-live-sigkill-')}{os.sep}"})
     assert server.stdout is not None
