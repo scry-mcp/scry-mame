@@ -915,6 +915,19 @@ def test_a_port_taken_is_mames_own_line_and_an_exit_code(exit_code: int, tail: s
     assert died.relaunch(port_picked=True) is (taken or exit_code < 0)
 
 
+@pytest.mark.parametrize("exit_code, ended", [(-11, "died by signal 11"),
+                                              (7, "exited with code 7")])
+def test_a_death_before_the_stub_says_how_the_process_ended_in_one_voice(
+    exit_code: int, ended: str
+) -> None:
+    """A signal death is a signal and an exit code is a code, in the refusal and in the line that
+    names the fatal gdbstub error alike."""
+    died = failures.DiedBeforeStub(exit_code, 1.0, "")
+    assert ended in str(died) and ended in died.what, died
+    fatal = failures.death_refusal(exit_code, 1.0, NOT_SERVED)
+    assert ended in str(fatal), fatal
+
+
 def test_a_real_launch_is_watched_by_a_guardian_that_ends_with_the_refused_start(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

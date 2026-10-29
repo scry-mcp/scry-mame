@@ -111,6 +111,7 @@ def _set_missing(system: str) -> Callable[[], str]:
 
 
 def _r_alienar(cells: list[str]) -> None:
+    """A stub with no mc6809e description; a build with one turns this red."""
     folder = Path(fresh("-image"))
     folder.mkdir()
     r = call("start", binary=BINARY, system="alienar", rompath=FREE_ROMS,

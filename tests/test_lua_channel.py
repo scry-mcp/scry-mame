@@ -664,7 +664,7 @@ def test_a_call_whose_emulator_died_while_it_waited_says_so_instead_of_pending(
     monkeypatch.setattr(transport, "READER_WAIT_S", 0.05)
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=1))
     ses.reader_late = 20
-    out = refused("exited with code -11", s.lua("print(1)", seconds=5.0, read_only=True))
+    out = refused("died by signal 11", s.lua("print(1)", seconds=5.0, read_only=True))
     assert out["code"] == "session_broken" and out["exit_code"] == -11, out
     assert "pending" not in out["message"], out
     assert "was stepped 1 time for it" in out["message"], out
@@ -689,7 +689,7 @@ def test_every_console_wait_says_the_emulator_died_rather_than_calling_it_pendin
 
     # `input` and `record` go through `_answer_or_none`, which is where the swallow was.
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=0))
-    out = refused("exited with code -11", s.input(port=":P1", field="Coin 1", frames=4,
+    out = refused("died by signal 11", s.input(port=":P1", field="Coin 1", frames=4,
                                                   seconds=1.0))
     assert out["code"] == "session_broken" and out["exit_code"] == -11, out
     assert "pending" not in out["message"], out
@@ -697,7 +697,7 @@ def test_every_console_wait_says_the_emulator_died_rather_than_calling_it_pendin
     ses.running = True
     monkeypatch.setattr(ses, "poll_stop", lambda timeout=0.0: False)
     monkeypatch.setattr(mstate.STATE, "proc", _DiesMidWait(ses.stdin, after=0))
-    out = refused("exited with code -11", s.throttle(on=False, seconds=1.0))
+    out = refused("died by signal 11", s.throttle(on=False, seconds=1.0))
     assert out["code"] == "session_broken" and out["exit_code"] == -11, out
     assert "still pending" not in out["message"], out
 

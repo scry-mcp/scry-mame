@@ -6,6 +6,7 @@ import re
 import signal
 from typing import Any
 
+from scry_core import prose
 from scry_core import reply_contract as contract
 
 import gdb_session as gs
@@ -93,8 +94,7 @@ def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invali
     """`no_channel` when the stub has no description of the first cpu (every launch meets it
     again), else `DiedBeforeStub`."""
     if m := _NOT_SERVED.search(stdout_tail):
-        ended = (f"died by signal {-exit_code}" if exit_code < 0
-                 else f"exited with code {exit_code}")
+        ended = prose.ended_by(exit_code)
         return st.Invalid("no_channel",
                           f"this MAME's gdbstub has no description of the first cpu, "
                           f"{m.group(1)}, and said so: `{m.group(0)}`; MAME then {ended} after "
@@ -119,12 +119,11 @@ class DiedBeforeStub(LaunchFailed):
                 if self.asserted and SDL3_JOYSTICK_MARK in stdout_tail else {})
         own: dict[str, Any] = {"exit_code": exit_code, "after_s": st.spent_s(after_s),
                                "stdout_tail": stdout_tail}
-        ended = (f"died by signal {-exit_code}" if exit_code < 0
-                 else f"exited with code {exit_code}")
+        ended = prose.ended_by(exit_code)
         what = (f"MAME {ended}: another process held its gdbstub port"
                 if self.port_taken() else f"MAME {ended} before its gdbstub answered")
-        super().__init__(f"MAME exited with code {exit_code} after {after_s:.1f} s, before its "
-                         "gdbstub answered: its own words are in `stdout_tail`", what,
+        super().__init__(f"MAME {ended} after {after_s:.1f} s, before its gdbstub answered: its "
+                         "own words are in `stdout_tail`", what,
                          {"kind": "died", **own}, **own, **note)
 
     def relaunch(self, port_picked: bool) -> bool:

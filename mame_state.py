@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 
-from scry_core import boundary, cancel, guardian, picture, presence, screen_map
+from scry_core import boundary, cancel, guardian, picture, presence, prose, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -227,7 +227,7 @@ class State:
         if code is not None:
             # A machine that died is not "no machine": `close` reads its last words first.
             raise Invalid("session_broken",
-                          f"MAME exited with code {code} under this session: `close` collects "
+                          f"MAME {prose.ended_by(code)} under this session: `close` collects "
                           "its exit code and the last lines of each channel before the scratch "
                           "is deleted, then `start` a new one", exit_code=code)
         return self.ses

@@ -27,7 +27,7 @@ IDENTITY_KEYS: dict[str, tuple[str, ...]] = {
 }
 
 #: The one MAME the free boards and the games' boards run on, the build the games are developed
-#: on; a board with a `binary` key runs its own.
+#: on; the two m68k-dual labels name a `binary` of their own and run outside it.
 BINARY = os.environ.get("MAME_BINARY", "")
 GAME_BOARDS = ("v30", "v30-alt")
 

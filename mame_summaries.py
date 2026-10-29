@@ -88,7 +88,7 @@ def status(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # `alive` and `running` are the session block's, added after this.
     if "system" not in reply:
         return (session_block.NO_SESSION_STATUS if "exit_code" not in reply
-                else f"status: MAME exited with code {reply['exit_code']}, `close` it")
+                else f"status: MAME {prose.ended_by(reply['exit_code'])}, `close` it")
     last = (reply.get("last_stop") or {}).get("pc")
     if reply.get("broken"):
         return f"status: {reply['system']} alive, BROKEN, last stop at pc {last}"

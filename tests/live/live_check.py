@@ -1083,11 +1083,11 @@ check("captures lists the WAV audio_record wrote, with its samples",
       str(r.get("summary") or r.get("message"))[:90])
 
 print("\n== throttle(): pending on a stopped machine, applied on a running one")
-r = s.throttle(on=False)
-check("stopped: pending, with this call's own mark to wait for", r.get("pending") is True
-      and str(r.get("tag")).startswith("MAME_MCP_THROTTLE#"), str(r.get("tag")))
+pending = s.throttle(on=False)
+check("stopped: pending, with this call's own mark to wait for", pending.get("pending") is True
+      and str(pending.get("tag")).startswith("MAME_MCP_THROTTLE#"), str(pending.get("tag")))
 s.resume()
-r = s.log_wait(pattern=f"{r.get('mark')} throttled=false", channel="emulator", seconds=5.0)
+r = s.log_wait(pattern=f"{pending.get('tag')} throttled=false", channel="emulator", seconds=5.0)
 check("the pending switch applied on the first frame of the run", "line" in r,
       str(r.get("line") or r.get("message"))[:80])
 r = s.throttle(on=True)
@@ -1180,6 +1180,7 @@ print("\n== the published contract: each sentence a stranger reads, against a re
 # below sees only what this section declared.
 isolate_state("mame-live-contract-state-")
 PER_CALL = ("thread_errors", "console_reruns", "resent")
+ALWAYS_PER_CALL = PER_CALL[:2]  # `resent` rides only when the line was sent again
 r = s.start(**BOOT, symbols=SYMBOLS)
 check("the contract session starts", r.get("status") == "ok", str(r.get("code")))
 first, second = s.run_for(frames=1, seconds=30.0), s.run_for(frames=1, seconds=30.0)
@@ -1200,10 +1201,13 @@ t1 = s.throttle(on=True)
 ran = s.lua("print(1)")
 t2 = s.throttle(on=False)
 check("the per-call console trio rides on `lua` and not on `throttle`",
-      all(k in ran for k in PER_CALL) and not any(k in t1 or k in t2 for k in PER_CALL),
+      ran.get("status") == t1.get("status") == t2.get("status") == "ok"
+      and all(k in ran for k in ALWAYS_PER_CALL) and not any(k in t1 or k in t2 for k in PER_CALL),
       f"lua keys {sorted(ran)}, throttle keys {sorted(t1)}")
 check("a throttle tag's number is the console's session sequence, not a throttle count",
-      t2.get("tag") != "MAME_MCP_THROTTLE#2", f"{t1.get('tag')} then {t2.get('tag')}")
+      str(t2.get("tag")).startswith("MAME_MCP_THROTTLE#")
+      and t2.get("tag") != "MAME_MCP_THROTTLE#2",
+      f"{t1.get('tag')} then {t2.get('tag')}")
 saved = s.state_write("save", name="contract")
 loaded = s.state_write("load", name="contract")
 check("state_write save and state_write load carry no per-call trio",

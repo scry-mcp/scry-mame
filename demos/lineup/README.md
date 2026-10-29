@@ -20,7 +20,8 @@ stage's music off the AY-3-8910 and holds it, sample for sample, to [`music.wav`
 
 LineUp is not distributed with this repository. The demo needs its romset, `lineup.zip`, with the
 linker's symbol map beside it, `lineup.map`, in one directory, and a MAME whose driver list
-includes `lineup`.
+includes `lineup`. The game's own repository builds both from its source and stages them together
+(`make stage-rom`); that repository is not public yet, so there is no link to it here.
 
 ## Run it
 

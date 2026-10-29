@@ -234,7 +234,7 @@ def emulator_gone() -> int | None:
 
 def died_waiting(code: int, waiting_for: str, tail: str = "", **fields: Any) -> st.Invalid:
     """The refusal when MAME went while a loop waited, instead of "still pending" words."""
-    said = (f"MAME exited with code {code} while this call waited for {waiting_for}: it is "
+    said = (f"MAME {prose.ended_by(code)} while this call waited for {waiting_for}: it is "
             "gone, and no answer can come from it")
     return st.Invalid("session_broken", f"{said}. {tail}" if tail else said,
                       exit_code=code, **fields)

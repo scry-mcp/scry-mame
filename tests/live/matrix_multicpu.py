@@ -161,7 +161,8 @@ def _s_hardhat(t: list[str]) -> None:
 
 
 def _s_topgunnr(t: list[str]) -> None:
-    """A second cpu with no description: its registers are refused naming it."""
+    """A second cpu with no description: its registers are refused naming it. Encodes a stub that
+    refuses the mc6809 and the 68705: a build that describes them turns these red."""
     free_boot("topgunnr", ["tgl-2.9r", "tgl-2.10r"], "0x804000", binary=BINARY)
     assert STATE.ses is not None
     threads, endian = dict(STATE.ses.threads), dict(STATE.ses.endianness)

@@ -220,12 +220,13 @@ def cell(label: str, condition: bool, detail: str = "") -> None:
 
 
 def blocked(label: str, reason: str) -> None:
-    sec = CURRENT[0]
+    """A BLOCKED row; outside a section (`live_check.py` runs none) it is the row and the tally."""
     row("BLOCKED", label, reason)
-    sec.judged[label] = "BLOCKED"
     BLOCKED.append((label, reason))
     TALLY["BLOCKED"] += 1
-    _record(label, "BLOCKED")
+    if CURRENT:
+        CURRENT[0].judged[label] = "BLOCKED"
+        _record(label, "BLOCKED")
 
 
 def folded(name: str, kw: dict[str, Any]) -> tuple[str, dict[str, Any]]:

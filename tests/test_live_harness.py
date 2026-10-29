@@ -551,6 +551,19 @@ def test_a_run_in_one_process_blocks_what_a_section_left_and_passes_on_no_fail(
                                "c2": "never reached: the section ended without judging it"}
 
 
+def test_a_blocked_row_outside_any_section_is_a_row_and_a_tally_not_a_crash(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    """`live_check.py` runs no sections, and its game demos are BLOCKED by name when a game's
+    romset is not named."""
+    h = _harness(monkeypatch, tmp_path)
+    assert not h.CURRENT
+    h.blocked("the game demo", "set GAME_ROMS to the directory")
+    assert "BLOCKED" in capsys.readouterr().out
+    assert h.BLOCKED == [("the game demo", "set GAME_ROMS to the directory")]
+    assert h.TALLY["BLOCKED"] == 1
+
+
 def test_a_run_that_is_a_job_declares_every_cell_it_planned(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     summary = tmp_path / "summary.json"
