@@ -667,7 +667,8 @@ shown through two palettes; a screen with no palette refuses it (`no_channel`). 
 `load`: `path` (`<application>.screen-map.json`, absolute or `~`-led) as the file layer, held by the
 server; nothing is written to disk. `scale` (1..8) and `margin` [x, y] (machine pixels on
 each side) say how the program's picture sits on this machine's screen; maps and `add`'s
-crops are in the program's units. Reply: `path`, `application`, `mode`, `screens`, `controls`.
+crops are in the program's units. Reply: `path`, `application`, `mode`, `screens`, `controls`, `pointer`
+(a map that declares the program's pointer).
 
 `save`: both layers as one map to `dest`, refused there without `overwrite`, made the file
 layer, in the loaded map's `mode` (`verified` when none was loaded). Reply: `path`,
@@ -715,6 +716,7 @@ Reference: REFERENCE.md, Screen maps.
 | `mode` | string |
 | `path` | string |
 | `pc_before` | string |
+| `pointer` | object |
 | `promoted` | array |
 | `reader_steps` | integer |
 | `replaced` | boolean |

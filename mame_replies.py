@@ -1181,6 +1181,7 @@ class MapWriteReply(MameConsoleAccount, total=False):
     mode: Annotated[str, When("`load`", "`save`")]
     path: str
     pc_before: str
+    pointer: Annotated[dict[str, Any], When("a map that declares the program's pointer")]
     promoted: Annotated[list[Any], When("`save`")]
     reader_steps: Annotated[int, OmitEmpty]
     replaced: Annotated[bool, When("`add`")]
