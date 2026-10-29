@@ -70,15 +70,18 @@ def refuse_console_path(path: Path) -> None:
                          f"{broken!r}, which a path handed to the console may not hold")
 
 
-def unreadable(thing: str, path: str, e: OSError, **fields: Any) -> st.Invalid:
-    """The refusal of a caller's file the server cannot read."""
-    return st.Invalid("bad_argument", f"cannot read the {thing} {path}: {e.strerror or e}",
+def unreadable(name: str, path: str, e: OSError, **fields: Any) -> st.Invalid:
+    """The refusal of the file argument `name` the server cannot read, shaped like
+    `judges.read_text`'s (the OS's reason, without its errno)."""
+    return st.Invalid("bad_argument", f"{name}: {path} cannot be read: {e.strerror or e}",
                       **fields)
 
 
-def not_utf8(path: str, e: UnicodeDecodeError, **fields: Any) -> st.Invalid:
-    """The refusal of a caller's file that is not UTF-8 text."""
-    return st.Invalid("bad_argument", f"{path} is not UTF-8 text: {e}", **fields)
+def not_utf8(name: str, path: str, e: UnicodeDecodeError, **fields: Any) -> st.Invalid:
+    """The refusal of the file argument `name` that is not UTF-8 text, shaped like
+    `judges.read_text`'s."""
+    return st.Invalid("bad_argument", f"{name}: {path} is not UTF-8 text: byte {e.start} "
+                      f"({e.object[e.start:e.start + 1]!r}) {e.reason}", **fields)
 
 
 

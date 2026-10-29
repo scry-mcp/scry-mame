@@ -522,7 +522,8 @@ def test_a_symbol_file_nobody_may_read_is_the_arguments_refusal(here: Path) -> N
     locked.chmod(0)
     if os.access(locked, os.R_OK):
         pytest.skip("this user reads a mode-0 file (root), so nothing is unreadable")
-    out = refused("cannot read the symbol file", s.start(**_common(here), symbols=str(locked)))
+    out = refused("symbols: .*locked.map cannot be read",
+                  s.start(**_common(here), symbols=str(locked)))
     assert out["code"] == "bad_argument", out
 
 

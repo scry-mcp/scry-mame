@@ -29,7 +29,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, assert_never
 
-from scry_core import prose
+from scry_core import declaration_rows, prose
 from scry_core import value_format as vf
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -1139,7 +1139,7 @@ def check_clear_watches(ref: str = "", all: bool = False, space: str = mspace.PR
                       **_: Any) -> None:
     """`declaration_clear(kind="watch")`'s machine-independent half: one `ref` or `all=True`, a port
     named by `space` and never by a suffix, a `ref` judged by the shape `watch_add` judged."""
-    mclear.check_clear(ref, all, "watch")
+    declaration_rows.check_clear_scope(ref, all, "watch")
     vocab.one_of("space", space, mspace.SPACES)
     if all:
         if space != mspace.PROGRAM:

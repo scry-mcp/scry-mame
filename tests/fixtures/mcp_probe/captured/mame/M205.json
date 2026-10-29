@@ -1,0 +1,43 @@
+{
+ "task": {
+  "id": "M205",
+  "prompt": "The screen map loaded is consolidated, and the machine is stopped on the attract screen, which is whole once DrawAttract has run. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, entered by that routine.",
+  "tool": "screen_map_write",
+  "args": {
+   "method": "add",
+   "screen": "attract",
+   "match": [
+    [
+     0,
+     0,
+     248,
+     12
+    ]
+   ],
+   "anchor": "DrawAttract"
+  },
+  "grammar": [
+   "add"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

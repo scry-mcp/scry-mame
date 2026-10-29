@@ -502,17 +502,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }
@@ -533,7 +533,7 @@ screen_map_find()
 Which mapped screen the machine shows. Reply: `matched`, `kind` and `size`; when matched,
 `screen`, `layer`, `controls` (`name`, `rect`, `centre`), in the program's units; when not,
 `screens_mapped` and, if the view fits the map, `screens_tried` and `screens_unjudged`
-(signed by index on a screen with no palette), else `view_fits` false. None mapped:
+(signed by index on a screen whose pens cannot be read), else `view_fits` false. None mapped:
 `needs_call`.
 
 Reference: REFERENCE.md, Screen maps.
@@ -637,7 +637,7 @@ It captures the screen once for all the mapped screens, session layer first and 
 *Write the screen map*
 
 ```text
-screen_map_write(method, screen="", match=null, controls=null, cells="", path="", scale=null, margin=null, dest="", overwrite=null)
+screen_map_write(method, screen="", match=null, controls=null, cells="", anchor="", path="", scale=null, margin=null, dest="", overwrite=null)
 ```
 
 The screen map: an application's screens, each known by the signatures of its stable
@@ -645,10 +645,16 @@ regions, and their controls, in a session layer and a file layer.
 
 `add`: the screen shown now as `screen` in the session layer, one capture signing each
 `match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
-places to read; needs the machine stopped. `cells` `index` (a pixel screen; default
+places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `cells`,
+`match`, `controls`, `replaced`, `shadows_file`, `anchor` (when given).
+
+`add`'s `cells` `index` (a pixel screen; default
 `rgb`) signs the palette indices drawn, not the colours shown, so one map knows a program
-shown through two palettes; a screen with no palette refuses it (`no_channel`). Reply: `screen`, `kind`, `size`,
-`cells`, `match`, `controls`, `replaced`, `shadows_file`.
+shown through two palettes; a screen with no palette refuses it (`no_channel`).
+
+`add`'s `anchor` (a symbol or an address, as `run_to`'s `ref`) is the place after which the screen is whole,
+what `run_to(screen=)` runs to: a consolidated map refuses an `add` without one (`bad_argument`),
+since it enters its screens by theirs.
 
 `load`: `path` (`<application>.screen-map.json`, absolute or `~`-led) as the file layer, held by the
 server; nothing is written to disk. `scale` (1..8) and `margin` [x, y] (machine pixels on
@@ -661,7 +667,8 @@ layer, in the loaded map's `mode` (`verified` when none was loaded). Reply: `pat
 `application`, `mode`, `screens`, `controls`, `promoted`.
 
 Refused: an argument the method does not take; a misshapen name, crop, control, view or
-file (`bad_argument`); nothing mapped to save (`needs_call`).
+file; an `add` without an `anchor` to a consolidated map, and a save of one holding a screen
+with none (`bad_argument`); nothing mapped to save (`needs_call`).
 
 Reference: REFERENCE.md, Screen maps.
 
@@ -672,6 +679,7 @@ Reference: REFERENCE.md, Screen maps.
 | `match` | array of array of integer or null | `null` |
 | `controls` | array of object or null | `null` |
 | `cells` | one of `""`, `"rgb"`, `"index"` | `""` |
+| `anchor` | string | `""` |
 | `path` | string | `""` |
 | `scale` | integer or null | `null` |
 | `margin` | array of integer or null | `null` |
@@ -691,6 +699,7 @@ Reference: REFERENCE.md, Screen maps.
 | `resent` | integer |
 | `stop_seq` | integer |
 | `thread_errors` | integer |
+| `anchor` | string |
 | `application` | string |
 | `call` | string |
 | `cells` | string |

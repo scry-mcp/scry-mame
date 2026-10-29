@@ -120,7 +120,7 @@ class CloseReply(MameEnvelope, total=False):
     console_pending_before: int
     ended_by: Required[str]
     errorlog_tail: Annotated[str, When("not a clean")]
-    state_written: Required[bool | dict[str, Any]]
+    cfg_written: Required[bool | dict[str, Any]]
     stdout_tail: Annotated[str, When("not a clean")]
 
 
@@ -1179,6 +1179,7 @@ class DeclarationListReply(MameEnvelope, total=False):
 
 
 class MapWriteReply(MameConsoleAccount, total=False):
+    anchor: Annotated[str, When("`add`, given one")]
     application: Annotated[str, When("`load`", "`save`")]
     call: str
     cells: str

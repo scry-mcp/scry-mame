@@ -25,7 +25,7 @@ def canary_argv(binary: str, system: str, rompath: str, *extra: str) -> list[str
 
 #: The MAME release this server is tested on, and so recommends; another boots with a note.
 RELEASE = "0.289"
-_RELEASE = re.compile(r"(\d+\.\d+)(?![\d.])")
+_RELEASE = re.compile(r"(?<![\d.])(\d+\.\d+)(?:\.\d+)?(?![\d.])")
 _SAID_SHOWN = 80
 
 
@@ -35,7 +35,7 @@ def release_note(said: str | dict[str, Any]) -> str | None:
     A note and never a refusal: nothing here knows which tools another release breaks."""
     if isinstance(said, dict):
         what = f"this build's release could not be read ({said.get('why', 'no reason given')})"
-    elif (found := _RELEASE.match(said)) is None:
+    elif (found := _RELEASE.search(said)) is None:
         what = f"`-version` named no release ({said[:_SAID_SHOWN]!r})"
     elif found.group(1) == RELEASE:
         return None

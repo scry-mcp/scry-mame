@@ -126,6 +126,36 @@ def test_saved_screens_become_the_file_layer_and_load_back(
     assert (loaded["application"], loaded["screens"], loaded["controls"]) == ("gridlee", 1, 1)
 
 
+def _consolidated_board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
+    """The gridlee board mapped, saved as a consolidated map that enters it by `DrawBoard`, and
+    loaded back; the session it was read on."""
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP]))
+    path = tmp_path / "gridlee.screen-map.json"
+    _ok(s.screen_map_write("save", dest=str(path)))
+    doc = json.loads(path.read_text())
+    doc["mode"], doc["screens"][0]["anchor"] = "consolidated", "DrawBoard"
+    path.write_text(json.dumps(doc))
+    mstate.STATE.maps = screen_map.Maps()
+    _ok(s.screen_map_write("load", path=str(path)))
+    return ses
+
+
+def test_a_screen_added_to_a_consolidated_map_names_its_anchor_and_saves(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _consolidated_board(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    said = refused("anchor", s.screen_map_write("add", screen="score", match=[STRIP]))
+    assert said["code"] == "bad_argument" and "consolidated" in said["message"], said
+    added = _ok(s.screen_map_write("add", screen="score", match=[STRIP], anchor="DrawScore"))
+    assert added["anchor"] == "DrawScore"
+    (tmp_path / "out").mkdir()
+    saved = _ok(s.screen_map_write("save", dest=str(tmp_path / "out" / "gridlee.screen-map.json")))
+    assert saved["promoted"] == ["score"] and saved["mode"] == "consolidated"
+
+
 @pytest.mark.parametrize(("call", "code"), [
     (lambda p: s.screen_map_write("save", dest=str(p / "x.screen-map.json")), "needs_call"),
     (lambda p: s.screen_map_write("load", path=str(p / "no.screen-map.json")), "bad_argument"),
@@ -247,6 +277,26 @@ def test_the_tool_summary_of_a_run_to_an_anchorless_screen_counts_frames_not_con
     got = _ok(s.run_to(screen="board"))
     assert got["verdict"] == "TARGET" and got["frames"] == 1, got
     assert got["summary"] == "run_to screen board (judged): TARGET after 1 frame", got["summary"]
+
+
+def test_a_run_to_an_anchored_screen_hands_the_run_its_condition_watches_and_cpu(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    import mame_advance as advance
+    _consolidated_board(monkeypatch, tmp_path)
+    given: list[tuple[Any, ...]] = []
+
+    def run(ses_: Any, scratch: Any, ref: str, control: str, seconds: float, progress: Any = None,
+            **kw: Any) -> dict[str, Any]:
+        given.append((ref, control, kw))
+        return {"status": "ok", "verdict": "TARGET", "stop_seq": 9, "control_hits": 1}
+    monkeypatch.setattr(advance, "run_to", run)
+    got = _ok(s.run_to(screen="board", control="Tick", condition="w@X==1", disarm_watches=True,
+                       cpu=":sub"))
+    assert given == [("DrawBoard", "Tick", {"condition": "w@X==1", "disarm_watches": True,
+                                            "cpu": ":sub"})], given
+    assert got["screen"] == {"screen": "board", "layer": "file", "mode": "consolidated",
+                             "judged": False}, got
 
 
 @pytest.mark.parametrize("kw, word", [

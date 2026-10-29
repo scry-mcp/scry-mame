@@ -51,8 +51,8 @@ Example, from a live run:
       "ref": "irq_vblank",
       "by": "symbol",
       "cpu": ":maincpu",
-      "created_at": "2026-10-29T04:42:22+00:00",
-      "origin": "2026-10-29T04:42:22+00:00#2542.1",
+      "created_at": "2026-10-29T16:20:43+00:00",
+      "origin": "2026-10-29T16:20:42+00:00#8708.1",
       "inherited": false,
       "age_s": 0,
       "text": "matrix A",
@@ -64,7 +64,7 @@ Example, from a live run:
   "truncated": false,
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
   },
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
@@ -105,8 +105,9 @@ running machine. Reply: `path`, `comments_total`, `dropped_comments`, `dropped_t
 `comments_total`, `declarations`, `note`.
 
 `add`, `delete` and `load` need the machine stopped. Refused: an argument the method
-does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), an
-unwritable store (`host_failed`, `held_in_memory`).
+does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), a `save`
+`dest` that is the declaration store's file (compared without regard to case, on any
+volume), an unwritable store (`host_failed`, `held_in_memory`).
 
 Reference: REFERENCE.md, Declarations.
 
@@ -156,8 +157,8 @@ Example, from a live run:
     "ref": "irq_vblank",
     "by": "symbol",
     "cpu": ":maincpu",
-    "created_at": "2026-10-29T04:42:22+00:00",
-    "origin": "2026-10-29T04:42:22+00:00#2542.1",
+    "created_at": "2026-10-29T16:20:43+00:00",
+    "origin": "2026-10-29T16:20:42+00:00#8708.1",
     "inherited": false,
     "age_s": 0,
     "text": "matrix A",
@@ -167,7 +168,7 @@ Example, from a live run:
   "replaced_comments": [],
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
   },
   "cpu": ":maincpu"
 }

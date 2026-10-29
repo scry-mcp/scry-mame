@@ -1,5 +1,5 @@
-"""Clearing a declaration: the rows a ref owns, the console command that removes each, and the
-refusals and records around a clear, shared by breakpoints, watches and registerpoints."""
+"""Clearing a declaration: the rows a ref owns, the command that removes each, and the records
+around a clear, shared by breakpoints, watches and registerpoints."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from collections.abc import Callable
 from typing import Any, Literal, NamedTuple
 
 from scry_core import prose
-from scry_core import vocabulary as vocab
 
 import gdb_session as gs
 import mame_arming as arming
@@ -65,11 +64,6 @@ def one_declaration(thing: str, other: str, clear_kind: ClearKind | None, cpu: s
     on = (f', cpu="{cpu}"' if cpu else "") + (f', space="{space}"' if space else "")
     return (f"{rule}, so `declaration_clear(kind=\"{clear_kind}\", ref={other!r}{on})` frees "
             "it, or use that ref")
-
-
-def check_clear(ref: str, all_: bool, family: Literal["breakpoint", "watch", "regpoint"]
-                ) -> None:
-    vocab.check_clear_scope(ref, all_, family)
 
 
 def kept_fields(clear_kind: ClearKind, ref: str) -> dict[str, Any]:

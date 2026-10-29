@@ -7,8 +7,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from scry_core import declaration_rows, judges, methods, screen_map
+from scry_core import declaration_rows, methods, screen_map
 from scry_core import progress as mprogress
+from scry_core import scan_vocabulary as words
 from scry_core import vocabulary as vocab
 from scry_core.methods import Method
 
@@ -112,9 +113,10 @@ COMMENT = {
 
 
 def _add_map(screen: str, match: list[list[int]], controls: list[dict[str, Any]] | None = None,
-             cells: str = "rgb", *,
+             cells: str = "rgb", anchor: str = "", *,
              progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    return mmaps.add_map(*stopped("a screen map"), screen, match, controls, cells, progress)
+    return mmaps.add_map(*stopped("a screen map"), screen, match, controls, cells, anchor,
+                         progress)
 
 
 def _load_map(path: str, scale: int = 1, margin: list[int] | None = None) -> dict[str, Any]:
@@ -137,7 +139,7 @@ def _start_scan(ref: str, length: int, cell_bytes: int = 1, cpu: str = "") -> di
 
 
 def _filter_scan(operator: str = "=", value: int | None = None,
-                 limit: int = judges.HITS_DEFAULT) -> dict[str, Any]:
+                 limit: int = words.HITS_DEFAULT) -> dict[str, Any]:
     return mscan.filter_scan(*stopped("a value scan"), operator, value, limit)
 
 

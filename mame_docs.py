@@ -5,7 +5,6 @@ from scry_core import comment_file as core_comments
 from scry_core import (
     docs,
     frame_window,
-    judges,
     log_marks,
     picture,
     recording,
@@ -14,6 +13,9 @@ from scry_core import (
     state_files,
 )
 from scry_core import pens as scry_pens
+from scry_core import (
+    scan_vocabulary as words,
+)
 from scry_core import vocabulary as vocab
 
 import mame_advance as advance
@@ -74,7 +76,7 @@ DOC_VALUES: dict[str, str] = {
     "UNTIL_STEPS_MAX": str(frame_window.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),
     "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
     "TEMPS": str(lexer.TEMPS), "SCAN_BYTES_MAX": f"{mscan.SCAN_BYTES_MAX:#x}",
-    "HITS_DEFAULT": str(judges.HITS_DEFAULT),
+    "HITS_DEFAULT": str(words.HITS_DEFAULT),
     "TRACE_FRAMES_MAX": str(mtrace.FRAMES_MAX), "TRACE_MS_MAX": str(mtrace.MILLISECONDS_MAX),
     "NOLOOP_FRAMES_MAX": str(mtrace.NOLOOP_FRAMES_MAX),
     "NOLOOP_MS_MAX": str(mtrace.NOLOOP_MILLISECONDS_MAX),

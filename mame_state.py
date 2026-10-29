@@ -329,10 +329,10 @@ class State:
         (already exited), `none`.
         """
         ended: dict[str, Any] = {"ended_by": "none", "exit_code": None,
-                                 "state_written": None}
+                                 "cfg_written": None}
         if self.proc is not None and self.proc.poll() is not None:
             ended = {"ended_by": "died", "exit_code": self.proc.poll(),
-                     "state_written": None}
+                     "cfg_written": None}
         elif self.proc is not None:
             marker = self._cfg_marker()
             polite = grace and not self.broken
@@ -344,11 +344,11 @@ class State:
             if code is not None:
                 written = self._cfg_written(marker)
                 ended = {"ended_by": "exited" if written is False else "quit", "exit_code": code,
-                         "state_written": written}
+                         "cfg_written": written}
             else:
                 self.proc.kill()
                 ended["ended_by"] = "killed"
-                ended["state_written"] = False
+                ended["cfg_written"] = False
                 ended["exit_code"] = wait_exit(self.proc, REAP_GRACE_S, progress,
                                                "close: waiting for the SIGKILLed MAME to be reaped")
                 if ended["exit_code"] is None:
@@ -368,8 +368,8 @@ class State:
             ended["cfg"] = unavailable(NO_CFG_WHY)
         if ended["exit_code"] is None:
             ended["exit_code"] = unavailable("no session was running")
-        if ended["state_written"] is None:
-            ended["state_written"] = unavailable(
+        if ended["cfg_written"] is None:
+            ended["cfg_written"] = unavailable(
                 "no session was running" if ended["ended_by"] == "none" else
                 "MAME had already exited, so this close saw no write" if ended["ended_by"] == "died"
                 else "there was no cfg file to read MAME's write from")

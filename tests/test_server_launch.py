@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import io
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -104,7 +105,7 @@ def test_a_missing_rom_directory_is_refused_before_the_emulator_is_spawned(
     binary = fake_mame(tmp_path)
     rom = tmp_path / "ref.bin"
     rom.write_bytes(b"\x00" * 16)
-    refused("no such ROM directory",
+    refused("rompath: no ROM directory at",
     s.start(binary=str(binary), system="none", rompath=str(tmp_path / "run" / "mame_roms"),
             reference_rom=str(rom), boot_seconds=0.2))
     assert mstate.STATE.proc is None, "a refused start spawned something"
@@ -848,7 +849,7 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     mstate.STATE.ses, mstate.STATE.proc = ses, _Writing(ses.events, exits=True)  # type: ignore[assignment]
     mstate.STATE.scratch, mstate.STATE.system = scratch, "m68k-dual"
     closed = s.close()
-    assert closed["ended_by"] == "quit" and closed["state_written"] is True, closed
+    assert closed["ended_by"] == "quit" and closed["cfg_written"] is True, closed
     assert closed["summary"].startswith("close: quit, exit code 0")
     (scratch / "cfg").mkdir(parents=True)
     cfg.write_text("<mameconfig/>")
@@ -857,12 +858,12 @@ def test_close_proves_the_clean_exit_by_the_cfg_mame_writes_on_its_way_out(
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
     mstate.STATE.scratch, mstate.STATE.system = scratch, "m68k-dual"
     closed = s.close()
-    assert closed["ended_by"] == "exited" and closed["state_written"] is False, closed
+    assert closed["ended_by"] == "exited" and closed["cfg_written"] is False, closed
     assert closed["summary"] == "close: exited without writing its state, exit code 0"
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]
     closed = s.close()
-    assert closed["ended_by"] == "quit" and closed["state_written"]["available"] is False, closed
+    assert closed["ended_by"] == "quit" and closed["cfg_written"]["available"] is False, closed
 
 
 def test_a_cfg_that_cannot_be_read_back_says_which_file_and_why(
@@ -912,6 +913,6 @@ def test_judge_cfg_refuses_a_wrong_root_an_unreadable_file_and_a_cut_off_documen
             pytest.skip("this account reads a file with no permission bits (root?)")
         with pytest.raises(mstate.Invalid) as e:
             launch.judge_cfg(str(unreadable), "m68k")
-        assert e.value.code == "bad_argument" and "cannot read the cfg" in str(e.value)
+        assert e.value.code == "bad_argument" and re.search(r"cfg: .* cannot be read", str(e.value))
     finally:
         unreadable.chmod(0o644)

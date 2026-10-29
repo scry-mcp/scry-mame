@@ -1177,6 +1177,19 @@ def test_the_top_of_the_tcp_range_is_a_port(
     assert judged.port == 65535
 
 
+def test_judge_refuses_a_view_that_would_read_as_an_option(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The refusals of the caller's input are `judge`'s, whoever calls it."""
+    monkeypatch.setattr(launch, "port_is_free", lambda p: True)
+    args = _boot_args(tmp_path, bytes(16))
+    with pytest.raises(mstate.Invalid, match="view='-video' starts with `-`"):
+        launch.judge(**args, symbols="", reference_addr="0x0", inipath="", wait=1.0,
+                     shared=False, boot_lua="", env=None, bases=None, reference_base="0x0",
+                     port=65535, state_dir="", throttle_from_frame=0, background=None,
+                     view="-video")
+
+
 def test_check_ref_refuses_a_value_that_is_not_a_string_in_the_envelope() -> None:
     with pytest.raises(mstate.Invalid) as e:
         inputs.check_ref(5)

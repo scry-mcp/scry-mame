@@ -529,7 +529,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     Path shapes first (`check_start`), then arguments in reading order; `state_dir` is written
     last."""
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
-                inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types)
+                inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
+                view=view)
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
@@ -545,7 +546,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     # Reaching MAME, a missing ROM directory looks like a stub that never answers, after the
     # whole `boot_seconds`.
     if not (roms := inputs.absolute("rompath", rompath)).is_dir():
-        inputs.no_such("ROM directory", str(roms))
+        inputs.no_such("rompath", "ROM directory", str(roms))
     inputs.natural("throttle_from_frame", throttle_from_frame,
                    " is not a frame number: an integer, never negative, and 0 is off")
     behind = judge_background(background, shared, env)

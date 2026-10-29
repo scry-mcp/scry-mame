@@ -3,7 +3,7 @@
   "from": "[L] audio_record: the mixer's WAV, bounded by frames, checked against its own header: L12 v30 S3: audio_compare measure hears the pinned tone (an onset, not silent) and calls the AY pinned at volume 0 silent",
   "call": {
    "method": "measure",
-   "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/L/f4.wav"
+   "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/L/f4.wav"
   },
   "reply": {
    "summary": "audio_compare measure: ch0 peak -8.55 dBFS, onset 0.0001 s",
@@ -34,7 +34,7 @@
     }
    ],
    "pcm_sha256": "9c808cd852605b03eea32b76138f7c9f518c7f2f29e3b9ca76530161be7301fb",
-   "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/L/f4.wav"
+   "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/L/f4.wav"
   }
  },
  "audio_record": {
@@ -44,7 +44,7 @@
    "seconds": 10.0
   },
   "reply": {
-   "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-qwnd_9kr/snap/audio-3.wav",
+   "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-nfbv0wdj/snap/audio-3.wav",
    "status": "ok",
    "verdict": "ELAPSED",
    "frame_before": 24,
@@ -56,7 +56,7 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/audio-3.wav",
+   "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/audio-3.wav",
    "frames": 2,
    "began": true,
    "frame_begin": 25,
@@ -155,7 +155,7 @@
    "captures": [
     {
      "kind": "png",
-     "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/snapshot-1.png",
+     "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
      "present": true,
      "bytes": 441
     }
@@ -174,7 +174,7 @@
     "available": false,
     "why": "no session was running"
    },
-   "state_written": {
+   "cfg_written": {
     "available": false,
     "why": "no session was running"
    },
@@ -196,8 +196,8 @@
      "ref": "irq_vblank",
      "by": "symbol",
      "cpu": ":maincpu",
-     "created_at": "2026-10-29T04:42:22+00:00",
-     "origin": "2026-10-29T04:42:22+00:00#2542.1",
+     "created_at": "2026-10-29T16:20:43+00:00",
+     "origin": "2026-10-29T16:20:42+00:00#8708.1",
      "inherited": false,
      "age_s": 0,
      "text": "matrix A",
@@ -209,7 +209,7 @@
    "truncated": false,
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
    },
    "cpu": {
     "available": false,
@@ -232,8 +232,8 @@
     "ref": "irq_vblank",
     "by": "symbol",
     "cpu": ":maincpu",
-    "created_at": "2026-10-29T04:42:22+00:00",
-    "origin": "2026-10-29T04:42:22+00:00#2542.1",
+    "created_at": "2026-10-29T16:20:43+00:00",
+    "origin": "2026-10-29T16:20:42+00:00#8708.1",
     "inherited": false,
     "age_s": 0,
     "text": "matrix A",
@@ -243,7 +243,7 @@
    "replaced_comments": [],
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json"
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json"
    },
    "cpu": ":maincpu"
   }
@@ -335,8 +335,8 @@
      "ref": "exception_handler",
      "by": "symbol",
      "cpu": ":maincpu",
-     "created_at": "2026-10-29T04:42:22+00:00",
-     "origin": "2026-10-29T04:42:22+00:00#2542.1",
+     "created_at": "2026-10-29T16:20:43+00:00",
+     "origin": "2026-10-29T16:20:42+00:00#8708.1",
      "inherited": false,
      "age_s": 0,
      "role": "stop",
@@ -609,7 +609,7 @@
    ],
    "reads_source": true,
    "image": {
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/source-1.png",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,
@@ -712,7 +712,7 @@
    "frame_screen": 8,
    "width": 336,
    "height": 252,
-   "rows_path": "$TMPDIR/mame-mcp-qwnd_9kr/capture-700000_32_t70001e.rows",
+   "rows_path": "$TMPDIR/mame-mcp-nfbv0wdj/capture-700000_32_t70001e.rows",
    "rows_kept": 7,
    "overflow_rows": 0,
    "callback_errors": {
@@ -756,7 +756,7 @@
     "... 1 more"
    ],
    "image": {
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/blits-1.png",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -846,18 +846,18 @@
  "gfx_draft": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_draft @ stopped",
   "call": {
-   "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml"
+   "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f9.yaml"
   },
   "reply": {
-   "summary": "gfx_draft $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+   "summary": "gfx_draft $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
    "status": "ok",
    "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.yaml",
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
    },
    "report": {
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f9.report.json",
-    "sha256": "beebf3947722ddddb5b02d97ee8b4c55d60c4560cd9778473bd8e29666875d34"
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f9.report.json",
+    "sha256": "aa093887f2a62d82506d90f914f424e5db9d3c7f324a72450a4967017b451bf6"
    },
    "formats": {},
    "asset_names": [],
@@ -906,7 +906,7 @@
      "available": false,
      "why": "no `crop`: the whole screen"
     },
-    "film_dir": "$TMPDIR/mame-mcp-qwnd_9kr/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-nfbv0wdj/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"
@@ -1258,7 +1258,7 @@
    "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
    "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
    "image": {
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/sweep-1.png",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1383,7 +1383,7 @@
    "real_colors": false,
    "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
    "image": {
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/gfx-1.png",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -1464,7 +1464,7 @@
   "from": "[Y] the media layer: each scenario the hand way and the new way, over one answer: m68k-dual S1 new: series_capture and image_compare region find the same frames, with no picture",
   "call": {
    "method": "region",
-   "manifest": "$TMPDIR/mame-mcp-jg2kthn4/series/series-1/manifest.json",
+   "manifest": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/manifest.json",
    "measure": "changed_pixels"
   },
   "reply": {
@@ -1519,8 +1519,8 @@
     "... 2 more"
    ],
    "transitions_total": 9,
-   "path": "$TMPDIR/mame-mcp-jg2kthn4/series/series-1/track-1.json",
-   "manifest": "$TMPDIR/mame-mcp-jg2kthn4/series/series-1/manifest.json"
+   "path": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/track-1.json",
+   "manifest": "$TMPDIR/mame-mcp-hviwqw31/series/series-1/manifest.json"
   }
  },
  "input": {
@@ -1928,14 +1928,14 @@
   "call": {
    "ref": "0x0",
    "length": 16,
-   "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin"
+   "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin"
   },
   "reply": {
-   "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
+   "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
    "status": "ok",
    "addr": "0x00000000",
    "length": 16,
-   "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f10.bin",
+   "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f10.bin",
    "bytes": 16,
    "cpu": ":maincpu"
   }
@@ -1964,7 +1964,7 @@
     "... 250 more"
    ],
    "image": {
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/gfx/palette-1.png",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -2153,12 +2153,12 @@
  "perform_export": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): perform_export @ stopped",
   "call": {
-   "dest": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json"
+   "dest": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json"
   },
   "reply": {
-   "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json",
+   "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json",
    "status": "ok",
-   "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json",
+   "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json",
    "steps": 43,
    "checks": 7,
    "dropped": [
@@ -2199,7 +2199,7 @@
     "available": false,
     "why": "the recording kept every call a replay takes"
    },
-   "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/f12.json"
+   "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/f12.json"
   }
  },
  "read_block": {
@@ -2294,7 +2294,7 @@
    "seconds": 10.0
   },
   "reply": {
-   "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-qwnd_9kr/snap/record-2.avi",
+   "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-nfbv0wdj/snap/record-2.avi",
    "status": "ok",
    "verdict": "ELAPSED",
    "frame_before": 19,
@@ -2306,7 +2306,7 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/record-2.avi",
+   "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/record-2.avi",
    "frames": 2,
    "began": true,
    "frame_begin": 20,
@@ -2525,11 +2525,11 @@
    "reference_addr": "0x0"
   },
   "reply": {
-   "summary": "rom_check :maincpu: OK, 1.277 ms per query",
+   "summary": "rom_check :maincpu: OK, 1.266 ms per query",
    "status": "ok",
    "rom_check": "OK",
    "deterministic": true,
-   "query_s": 0.001277,
+   "query_s": 0.001266,
    "cpu": ":maincpu"
   }
  },
@@ -3039,7 +3039,7 @@
    "seconds": 10.0
   },
   "reply": {
-   "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
+   "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
    "status": "ok",
    "verdict": "ELAPSED",
    "frame_before": 12,
@@ -3092,7 +3092,7 @@
     "lines": [],
     "mark": 66062
    },
-   "manifest": "$TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
+   "manifest": "$TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
    "count": 1,
    "first": 14,
    "last": 14,
@@ -3131,9 +3131,9 @@
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): snapshot @ stopped",
   "call": {},
   "reply": {
-   "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-qwnd_9kr/snap/snapshot-1.png",
+   "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
    "status": "ok",
-   "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/snapshot-1.png",
+   "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/snapshot-1.png",
    "bytes": 441,
    "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
    "view": "native"
@@ -3150,7 +3150,6 @@
    "boot_seconds": 25.0,
    "presence": false,
    "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-   "background": true,
    "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
   },
   "reply": {
@@ -3160,9 +3159,9 @@
    "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
    "binary_origin": "argument",
    "version": "0.289 (unknown)",
-   "pid": 2557,
-   "stub_port": 58076,
-   "scratch_dir": "$TMPDIR/mame-mcp-qwnd_9kr",
+   "pid": 8765,
+   "stub_port": 63701,
+   "scratch_dir": "$TMPDIR/mame-mcp-nfbv0wdj",
    "state_dir": "",
    "cfg": {
     "available": false,
@@ -3172,8 +3171,8 @@
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
    },
-   "errorlog_path": "$TMPDIR/mame-mcp-qwnd_9kr/error.log",
-   "stdout_path": "$TMPDIR/mame-mcp-qwnd_9kr/stdout.log",
+   "errorlog_path": "$TMPDIR/mame-mcp-nfbv0wdj/error.log",
+   "stdout_path": "$TMPDIR/mame-mcp-nfbv0wdj/stdout.log",
    "rom_check": "OK",
    "symbols_total": 64,
    "symbols_format": "yaml",
@@ -3204,9 +3203,11 @@
     "-nomaximize",
     "-resolution",
     "320x240",
-    "-nothrottle"
+    "-nothrottle",
+    "-screen0",
+    "... 1 more"
    ],
-   "boot_lua_path": "$TMPDIR/mame-mcp-qwnd_9kr/boot.lua",
+   "boot_lua_path": "$TMPDIR/mame-mcp-nfbv0wdj/boot.lua",
    "presence": false,
    "machine": {
     "cpus": 2,
@@ -3219,7 +3220,7 @@
    },
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json",
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json",
     "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
@@ -3244,9 +3245,9 @@
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): state_list @ stopped",
   "call": {},
   "reply": {
-   "summary": "state_list: 0 states in $TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
+   "summary": "state_list: 0 states in $TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
    "status": "ok",
-   "state_dir": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
+   "state_dir": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
    "states": []
   }
  },
@@ -3260,7 +3261,7 @@
    "summary": "state_write save: m11, 111781 bytes at frame 30",
    "status": "ok",
    "name": "m11",
-   "path": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur/m11.sta",
+   "path": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur/m11.sta",
    "bytes": 111781,
    "frame": 30,
    "pc": "0x000e2cea",
@@ -3361,7 +3362,7 @@
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-29T04:42:25+00:00"
+    "wall_at": "2026-10-29T16:20:46+00:00"
    }
   }
  },
@@ -3475,9 +3476,9 @@
    },
    "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,

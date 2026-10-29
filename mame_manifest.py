@@ -679,13 +679,13 @@ def read(path: str) -> Manifest:
     try:
         data = file.read_bytes()
     except OSError as e:
-        raise files.unreadable("manifest", str(file), e, **still) from None
+        raise files.unreadable("path", str(file), e, **still) from None
     try:
         text = data.decode("utf-8")
         man = parse(mame_yaml.loads(text), str(file), hashlib.sha256(data).hexdigest())
         return dataclasses.replace(man, draft=text.splitlines()[:1] == [DRAFT_MARKER])
     except UnicodeDecodeError as e:
-        raise files.not_utf8(str(file), e, **still) from None
+        raise files.not_utf8("path", str(file), e, **still) from None
     except (mame_yaml.YamlError, ManifestError) as e:
         raise st.Invalid("bad_argument", f"{file}: {e}; nothing was loaded from it",
                          **still) from None

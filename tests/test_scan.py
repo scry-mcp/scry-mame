@@ -19,7 +19,7 @@ from types import SimpleNamespace
 from typing import Any, Literal
 
 import pytest
-from scry_core import judges
+from scry_core import scan_vocabulary as words
 from server_support import _console, _ConsoleSession, _masked
 from session_doubles import captured, published
 
@@ -250,7 +250,7 @@ def test_word_cells_decode_in_the_cpus_order_and_may_start_odd(board: Any) -> No
 def test_the_listing_is_whole_up_to_its_limit_and_the_first_ones_past_it(board: Any) -> None:
     """At `limit` and one past it, at the default and at the ceiling: past it the FIRST `limit`
     hits are shown with `truncated`, never an empty list; one past the ceiling is refused."""
-    for limit in (judges.HITS_DEFAULT, judges.HITS_MAX):
+    for limit in (words.HITS_DEFAULT, words.HITS_MAX):
         for moved in (limit, limit + 1):
             ses = board("v30", bytes(0x1000))
             s.scan("start", ref="0x0", length=0x1000)
@@ -262,15 +262,15 @@ def test_the_listing_is_whole_up_to_its_limit_and_the_first_ones_past_it(board: 
             assert out["hits"] == [{"addr": f"{i:#010x}", "value": "0x01"}
                                    for i in range(limit)]
             s.scan("clear")
-    refused = s.scan("filter", operator=">", limit=judges.HITS_MAX + 1)
+    refused = s.scan("filter", operator=">", limit=words.HITS_MAX + 1)
     assert refused["status"] == "INVALID" and refused["code"] == "bad_argument", refused
     s.scan("clear")
     ses = board("v30", bytes(0x1000))
     s.scan("start", ref="0x0", length=0x1000)
-    for i in range(judges.HITS_DEFAULT + 1):
+    for i in range(words.HITS_DEFAULT + 1):
         ses.memory[i] = 1
     asked = s.scan("filter", operator=">")                      # no `limit`: the default's
-    assert (asked["truncated"], len(asked["hits"])) == (True, judges.HITS_DEFAULT), asked
+    assert (asked["truncated"], len(asked["hits"])) == (True, words.HITS_DEFAULT), asked
 
 
 def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(

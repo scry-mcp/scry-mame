@@ -327,11 +327,11 @@ def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
     try:
         text = path.read_bytes().decode("utf-8")
     except UnicodeDecodeError as e:
-        raise st.Invalid("bad_argument", f"dest={dest!r} exists and is not UTF-8 text ({e}): "
-                                         "`comment_write(method=\"save\")` replaces only a comment "
-                                         "file") from None
+        raise st.Invalid("bad_argument", f"{files.not_utf8('dest', str(path), e)}: "
+                         "`comment_write(method=\"save\")` replaces only a comment "
+                         "file") from None
     except OSError as e:
-        raise files.unreadable("file at dest", dest, e) from None
+        raise files.unreadable("dest", dest, e) from None
     if text.replace("\r\n", "\n").split("\n")[0] != cf.HEADER:
         raise st.Invalid("bad_argument",
                          f"dest={dest!r} exists and is not a comment file (its first line is "
@@ -369,9 +369,10 @@ def save_comments(dest: str) -> dict[str, Any]:
     stores = {os.path.realpath(p).casefold()
               for p in (arming.store().path, dec.default_path()) if p is not None}
     if os.path.realpath(path).casefold() in stores:
-        raise st.Invalid("bad_argument", f"dest={dest!r} is the declaration store's own file, "
-                                         "which the server reads at every `start`: give the "
-                                         "comment file another path")
+        raise st.Invalid("bad_argument", f"dest={dest!r} is the declaration store's own file "
+                                         "(compared without regard to case), which the server "
+                                         "reads at every `start`: give the comment file another "
+                                         "path")
     old = _old_rows(path, dest)
     rows = [cf.Row(d.ref, d.cpu or "", str(d.created_at), d.text) for d in pane.comments()]
     try:
@@ -434,9 +435,9 @@ def load_comments(ses: gs.Session, scratch: Path, path: str) -> dict[str, Any]:
         # Bytes: a text read would turn a lone CR into a line break before the format refuses it.
         text = read.read_bytes().decode("utf-8")
     except UnicodeDecodeError as e:
-        raise files.not_utf8(path, e) from None
+        raise files.not_utf8("path", str(read), e) from None
     except OSError as e:
-        raise files.unreadable("comment file", path, e) from None
+        raise files.unreadable("path", str(read), e) from None
     try:
         rows = cf.parse(text, path)
     except cf.CommentFileError as e:

@@ -1,7 +1,7 @@
 """Section X of the live matrix: no MAME this run launched came to the front, no Space moved.
 
-Registered first (control) and last (verdict); a failed control or an unsampled run is
-BLOCKED, never a FAIL. The control takes the owner's focus and Space for a few seconds.
+Registered first (control) and last (verdict). The start in front and the Space move take
+the owner's desk, so they run only with SCRY_FOCUS_CONTROL=1.
 
     uv run python tests/live/matrix_focus.py      # the control alone; its verdict is BLOCKED
 """

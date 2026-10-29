@@ -131,6 +131,9 @@ TESTED = f"tested on MAME {binaries.RELEASE}"
 @pytest.mark.parametrize(("said", "note"), [
     (f"{binaries.RELEASE} (mame0289)", None),
     (f"{binaries.RELEASE} (unknown)", None),
+    (f"{binaries.RELEASE}.1 (a point release)", None),
+    (f"MAME {binaries.RELEASE} (mame0289)", None),
+    ("MAME 0.290.1", "this is MAME 0.290,"),
     ("0.290 (mame0290)", "this is MAME 0.290,"),
     (f"{binaries.RELEASE}0 (a later build)", f"this is MAME {binaries.RELEASE}0,"),
     ("a build that names no release", "named no release ('a build that names no release')"),

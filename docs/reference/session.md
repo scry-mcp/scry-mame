@@ -22,9 +22,10 @@ byte).
 follows. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
 
-Refused before any spawn: a live session, an unknown cpu, a class with no base, `bases`
+Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
 beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
-image. A mismatch: `readback_refused`, closed.
+image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
+A mismatch: `readback_refused`, closed.
 
 Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
 `recommended_release` (0.289); another release boots with a `note` saying so.
@@ -115,7 +116,6 @@ Example, from a live run:
   "boot_seconds": 25.0,
   "presence": false,
   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-  "background": true,
   "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
 ```
@@ -128,17 +128,17 @@ Example, from a live run:
   "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "0.289 (unknown)",
-  "pid": 2557,
-  "stub_port": 58076,
-  "scratch_dir": "$TMPDIR/mame-mcp-qwnd_9kr",
+  "pid": 8765,
+  "stub_port": 63701,
+  "scratch_dir": "$TMPDIR/mame-mcp-nfbv0wdj",
   "state_dir": "",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-qwnd_9kr/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-qwnd_9kr/stdout.log",
+  "errorlog_path": "$TMPDIR/mame-mcp-nfbv0wdj/error.log",
+  "stdout_path": "$TMPDIR/mame-mcp-nfbv0wdj/stdout.log",
   "rom_check": "OK",
   "symbols_total": 64,
   "symbols_format": "yaml",
@@ -151,8 +151,8 @@ Example, from a live run:
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Cocktail"],
   "background": true,
-  "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"],
-  "boot_lua_path": "$TMPDIR/mame-mcp-qwnd_9kr/boot.lua",
+  "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle", "-screen0", "... 1 more"],
+  "boot_lua_path": "$TMPDIR/mame-mcp-nfbv0wdj/boot.lua",
   "presence": false,
   "machine": {
     "cpus": 2,
@@ -165,7 +165,7 @@ Example, from a live run:
   },
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-5322d43c2c7c/jobs-scratch/A/mame-live-matrix-state-ugoh19_6/mame-debug/declarations.json",
+    "path": "$TMPDIR/mame-live-matrix-cce0ee570094/jobs-scratch/A/mame-live-matrix-state-og793lbk/mame-debug/declarations.json",
     "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
@@ -309,7 +309,8 @@ End the session: MAME is asked to `quit` and killed only if it has not gone with
 grace period. The scratch is deleted; a `state_dir` stays. Works on a running machine;
 with no session it answers `closed: false`.
 
-Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
+Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_written`
+(MAME wrote its cfg as it quit),
 `cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
 `stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
 `session` is the block as it is after the close (`alive` and `running` false); a console doubt
@@ -330,7 +331,7 @@ Reference: REFERENCE.md, The session.
 | `console_pending_before` | integer |
 | `ended_by` | string |
 | `errorlog_tail` | string |
-| `state_written` | boolean or object |
+| `cfg_written` | boolean or object |
 | `stdout_tail` | string |
 
 Example, from a live run:
@@ -346,7 +347,7 @@ Example, from a live run:
   "closed": false,
   "ended_by": "none",
   "exit_code": {"available": false, "why": "no session was running"},
-  "state_written": {"available": false, "why": "no session was running"},
+  "cfg_written": {"available": false, "why": "no session was running"},
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "note": "there was no session to close"
 }
@@ -484,11 +485,11 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.277 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.266 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001277,
+  "query_s": 0.001266,
   "cpu": ":maincpu"
 }
 ```

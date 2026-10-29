@@ -91,7 +91,7 @@ def _one(name: str, path: str, bases: dict[str, str], types: str) -> gs.SymbolTa
     try:
         table = gs.symbols(path, parsed)
     except OSError as e:
-        raise files.unreadable("symbol file", path, e) from None
+        raise files.unreadable(name, path, e) from None
     except ValueError as e:
         raise st.Invalid("bad_argument", f"{name}: {e}") from None
     if types:

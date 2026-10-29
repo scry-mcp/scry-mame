@@ -7,6 +7,7 @@ import dataclasses
 import re
 from typing import Any
 
+from scry_core import declaration_rows
 from scry_core import value_format as vf
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable
@@ -387,7 +388,7 @@ def list_breakpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
 
 def check_clear_breakpoints(ref: str = "", all: bool = False, **_: Any) -> None:
     """`declaration_clear(kind="breakpoint")`'s machine-independent half."""
-    mclear.check_clear(ref, all, "breakpoint")
+    declaration_rows.check_clear_scope(ref, all, "breakpoint")
     if ref.strip():
         inputs.check_ref(ref)
 

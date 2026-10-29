@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from scry_core import declaration_rows
 from scry_core.reply_contract import or_unavailable
 
 import gdb_session as gs
@@ -228,7 +229,7 @@ def list_regpoints(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
 
 def check_clear_regpoints(ref: str = "", all: bool = False, **_: Any) -> None:
     """`declaration_clear(kind="regpoint")`'s machine-independent half."""
-    mclear.check_clear(ref, all, "regpoint")
+    declaration_rows.check_clear_scope(ref, all, "regpoint")
 
 
 def clear_regpoints(ses: gs.Session, ref: str, cpu: str = "", all_: bool = False

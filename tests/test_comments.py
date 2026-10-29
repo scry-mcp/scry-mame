@@ -848,7 +848,8 @@ def test_save_refuses_its_own_format_with_a_row_it_cannot_read(
     assert out["code"] == "bad_argument" and dest.read_text() == HEAD + "only one column\n"
     latin = tmp_path / "latin.tsv"
     latin.write_bytes(HEAD.encode() + b"x\t:maincpu\t2026-10-02T00:30:00+00:00\t\xe9\n")
-    refused("not UTF-8", s.comment_write("save", dest=str(latin)))
+    refused(r"^dest: .*latin\.tsv is not UTF-8 text: byte \d+ \(b'.*'\) "
+            r".*replaces only a comment file", s.comment_write("save", dest=str(latin)))
 
 
 @MODE_BITS
@@ -959,6 +960,18 @@ def test_load_refuses_a_file_that_is_not_utf8(monkeypatch: pytest.MonkeyPatch,
     src.write_bytes(HEAD.encode() + b"x\t:maincpu\t2026-10-02T00:30:00+00:00\t\xe9\n")
     out = refused("not UTF-8", s.comment_write("load", path=str(src)))
     assert out["code"] == "bad_argument" and held() == []
+
+
+def test_a_refusal_of_a_load_names_the_path_it_resolved_not_the_one_typed(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _pane(monkeypatch, tmp_path)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
+    (tmp_path / "latin.tsv").write_bytes(
+        HEAD.encode() + b"x\t:maincpu\t2026-10-02T00:30:00+00:00\t\xe9\n")
+    out = s.comment_write("load", path="~/latin.tsv")
+    assert out["code"] == "bad_argument" and (
+        f"path: {tmp_path / 'latin.tsv'} is not UTF-8") in out["message"], out
 
 
 def test_a_save_the_disk_refuses_answers_host_failed_and_leaves_no_temporary(

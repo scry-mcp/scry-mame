@@ -39,9 +39,9 @@ def check_save_map(dest: object = "", overwrite: object = False, **_: Any) -> No
 
 
 def check_add_map(screen: object = "", match: object = None, controls: object = None,
-                  cells: object = "", **_: Any) -> None:
+                  cells: object = "", anchor: object = "", **_: Any) -> None:
     vocab.one_of("cells", cells, screen_map.CELLS_WORDS)
-    screen_map.check_add(screen, match, controls, cells)
+    screen_map.check_add(screen, match, controls, cells, anchor)
 
 
 def load_map(path: str, scale: int = 1, margin: list[int] | None = None) -> dict[str, Any]:
@@ -57,13 +57,13 @@ def save_map(dest: str, overwrite: bool) -> dict[str, Any]:
 
 
 def add_map(ses: gs.Session, scratch: Path, screen: str, match: list[list[int]],
-            controls: list[dict[str, Any]] | None, cells: str = "rgb",
+            controls: list[dict[str, Any]] | None, cells: str = "rgb", anchor: str = "",
             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of `screen_map_write(method="add")`: the screen in front, signed off one capture."""
-    check_add_map(screen, match, controls, cells)
+    check_add_map(screen, match, controls, cells, anchor)
     common: dict[str, Any] = {}
     fields = STATE.maps.add(screen, match, controls, _reader(ses, scratch, common, progress),
-                            cells)
+                            cells, anchor)
     return running.stop_reply(ses, scratch, f"screen_map_write add: {common['evaluated_by']}",
                               **st.merged(fields, common))
 
@@ -90,10 +90,7 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
     common: dict[str, Any] = {}
     reader = _reader(ses, scratch, common, progress)
     if not STATE.maps.is_anchored(screen):
-        if control:
-            raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run "
-                             "to a frame at a time and a `control` has nothing to count: leave "
-                             "it out")
+        screen_map.check_frame_run(screen, control)
         if applied := [k for k in ("condition", "disarm_watches", "cpu") if run.get(k)]:
             raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run to "
                              f"a frame at a time, and {', '.join(applied)} has nothing to apply "

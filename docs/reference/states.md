@@ -41,9 +41,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
+  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
   "status": "ok",
-  "state_dir": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur",
+  "state_dir": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur",
   "states": []
 }
 ```
@@ -122,7 +122,7 @@ Example, from a live run:
   "summary": "state_write save: m11, 111781 bytes at frame 30",
   "status": "ok",
   "name": "m11",
-  "path": "$TMPDIR/mame-mcp-qwnd_9kr/sta/radendur/m11.sta",
+  "path": "$TMPDIR/mame-mcp-nfbv0wdj/sta/radendur/m11.sta",
   "bytes": 111781,
   "frame": 30,
   "pc": "0x000e2cea",

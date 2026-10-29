@@ -282,8 +282,10 @@ def absolute(name: str, value: str, **fields: Any) -> Path:
     return judges.absolute(name, value, **fields)
 
 
-def no_such(thing: str, path: str, **fields: Any) -> NoReturn:
-    raise Invalid("bad_argument", f"no such {thing}: {path}", **fields)
+def no_such(name: str, thing: str, path: str, **fields: Any) -> NoReturn:
+    """The refusal of the path argument `name` where no `thing` is, in `judges.existing_file`'s
+    words."""
+    raise Invalid("bad_argument", f"{name}: no {thing} at {path}", **fields)
 
 
 input_file = judges.existing_file

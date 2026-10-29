@@ -59,7 +59,6 @@ from pydantic import Field
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from scry_core import (  # noqa: E402
-    judges,
     log_marks,
     media_tools,
     methods,
@@ -71,6 +70,9 @@ from scry_core import (  # noqa: E402
     signalled_end,
 )
 from scry_core import presence as scry_presence  # noqa: E402
+from scry_core import (
+    scan_vocabulary as words,
+)
 from scry_core import sequence_account as account  # noqa: E402
 from scry_core import steps as core_steps  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
@@ -173,9 +175,10 @@ def start(
     follows. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
 
-    Refused before any spawn: a live session, an unknown cpu, a class with no base, `bases`
+    Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
     beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
-    image. A mismatch: `readback_refused`, closed.
+    image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
+    A mismatch: `readback_refused`, closed.
 
     Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
     `recommended_release` ({MAME_RELEASE}); another release boots with a `note` saying so.
@@ -209,13 +212,14 @@ def status() -> dict[str, Any]:
     return msession.status()
 
 
-@tool("Close the MAME session", summary=summaries.close, session_before=True, on_cancel="kill")
+@tool("Close the MAME session", summary=summaries.close, body_session=True, on_cancel="kill")
 def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """End the session: MAME is asked to `quit` and killed only if it has not gone within the
     grace period. The scratch is deleted; a `state_dir` stays. Works on a running machine;
     with no session it answers `closed: false`.
 
-    Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `state_written`,
+    Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_written`
+    (MAME wrote its cfg as it quit),
     `cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
     `stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
     `session` is the block as it is after the close (`alive` and `running` false); a console doubt
@@ -536,8 +540,9 @@ def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref:
     {COMMENT_LOAD}
 
     `add`, `delete` and `load` need the machine stopped. Refused: an argument the method
-    does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), an
-    unwritable store (`host_failed`, `held_in_memory`).
+    does not take, a misshapen `ref` or `text`, an unknown `ref` (`unknown_ref`), a `save`
+    `dest` that is the declaration store's file (compared without regard to case, on any
+    volume), an unwritable store (`host_failed`, `held_in_memory`).
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -743,7 +748,7 @@ def scan(method: Annotated[str, vocab.enum(tuple(folds.SCAN))], ref: str = "",
          cell_bytes: Annotated[int, vocab.enum(mscan.CELL_BYTES)] | None = None, cpu: str = "",
          operator: Annotated[str, vocab.enum(mscan.OPERATORS)] | None = None,
          value: inputs.NumberArg | None = None,
-         limit: Annotated[int, vocab.bounds(1, judges.HITS_MAX)] | None = None
+         limit: Annotated[int, vocab.bounds(1, words.HITS_MAX)] | None = None
          ) -> dict[str, Any]:
     """Value scan: find a variable no map names, in one cpu's program space only, no io
     ports. One scan at a time; it outlives runs, writes, `reset` and state loads; `close`
@@ -908,23 +913,28 @@ def screen_map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
 def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str = "",
               match: list[list[int]] | None = None, controls: list[dict[str, Any]] | None = None,
               cells: Annotated[str, vocab.enum(screen_map.CELLS_WORDS)] = "",
-              path: str = "", scale: int | None = None, margin: list[int] | None = None,
-              dest: str = "", overwrite: bool | None = None,
+              anchor: str = "", path: str = "", scale: int | None = None,
+              margin: list[int] | None = None, dest: str = "", overwrite: bool | None = None,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """The screen map: an application's screens, each known by the signatures of its stable
     regions, and their controls, in a session layer and a file layer.
 
     `add`: the screen shown now as `screen` in the session layer, one capture signing each
     `match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
-    places to read; needs the machine stopped. {MAP_CELLS} Reply: `screen`, `kind`, `size`,
-    `cells`, `match`, `controls`, `replaced`, `shadows_file`.
+    places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `cells`,
+    `match`, `controls`, `replaced`, `shadows_file`, `anchor` (when given).
+
+    {MAP_CELLS}
+
+    {MAP_ANCHOR}
 
     {MAP_LOAD}
 
     {MAP_SAVE}
 
     Refused: an argument the method does not take; a misshapen name, crop, control, view or
-    file (`bad_argument`); nothing mapped to save (`needs_call`).
+    file; an `add` without an `anchor` to a consolidated map, and a save of one holding a screen
+    with none (`bad_argument`); nothing mapped to save (`needs_call`).
 
     Reference: REFERENCE.md, Screen maps.
     """

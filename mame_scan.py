@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from scry_core import judges, prose
+from scry_core import scan_vocabulary as words
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -33,10 +34,10 @@ import mame_space as mspace
 import mame_state as st
 from mame_state import STATE
 
-CELL_BYTES = judges.SCAN_CELL_BYTES
+CELL_BYTES = words.CELL_BYTES
 _TESTS: dict[str, Callable[[int, int], bool]] = dict(zip(
-    judges.SCAN_OPERATORS, (op.eq, op.ne, op.gt, op.ge, op.lt, op.le), strict=True))
-OPERATORS = judges.SCAN_OPERATORS
+    words.OPERATORS, (op.eq, op.ne, op.gt, op.ge, op.lt, op.le), strict=True))
+OPERATORS = words.OPERATORS
 #: A V30's whole space, the widest range a bench's work RAM needs.
 SCAN_BYTES_MAX = 0x100000
 
@@ -97,12 +98,12 @@ def check_start_scan(ref: str = "", length: int = 0, cell_bytes: int = 1, **_: A
 
 
 def check_filter_scan(operator: str = "=", value: int | None = None,
-                      limit: int = judges.HITS_DEFAULT, **_: Any) -> None:
+                      limit: int = words.HITS_DEFAULT, **_: Any) -> None:
     """`scan(method="filter")`'s machine-independent half; the value's width is judged later."""
     vocab.one_of("operator", operator, OPERATORS)
     if value is not None:
         inputs.natural("value", value, " is not a whole number from 0: a scan compares unsigned")
-    inputs.natural("limit", limit, f" is outside 1..{judges.HITS_MAX}", 1, judges.HITS_MAX)
+    inputs.natural("limit", limit, f" is outside 1..{words.HITS_MAX}", 1, words.HITS_MAX)
 
 
 def _cells_at(ses: gs.Session, scratch: Path, scan: Scan) -> array[int] | dict[str, Any]:
@@ -164,7 +165,7 @@ def start_scan(ses: gs.Session, scratch: Path, ref: str, length: int, cell_bytes
 
 
 def filter_scan(ses: gs.Session, scratch: Path, operator: str,
-                value: int | None, limit: int = judges.HITS_DEFAULT) -> dict[str, Any]:
+                value: int | None, limit: int = words.HITS_DEFAULT) -> dict[str, Any]:
     """The body of the `scan(method="filter")` tool: survivors against `value` or opening value."""
     check_filter_scan(operator=operator, value=value, limit=limit)
     scan = STATE.scan

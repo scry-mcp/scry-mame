@@ -522,7 +522,7 @@ Example, from a live run:
     "frame": 31,
     "cause": "the `gvblank` stop of the last frame asked",
     "since_s": 0.0,
-    "wall_at": "2026-10-29T04:42:25+00:00"
+    "wall_at": "2026-10-29T16:20:46+00:00"
   }
 }
 ```
@@ -643,9 +643,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace",
+    "path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-qwnd_9kr/snap/trace-1.trace.set.jsonl",
+    "set_path": "$TMPDIR/mame-mcp-nfbv0wdj/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,
@@ -788,7 +788,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
@@ -831,7 +831,7 @@ Example, from a live run:
   },
   "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
-  "manifest": "$TMPDIR/mame-mcp-qwnd_9kr/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-nfbv0wdj/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,

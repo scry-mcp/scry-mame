@@ -99,10 +99,15 @@ block disagreeing with the machine, and BLOCKED when it could not run, with the 
 lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run (all, unset);
 `MAME_LIVE_JOBS` runs each letter as a process of its own, that many at once (unset, half the
 host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
-the parent so its watch spans every job. The free boards and the games' boards run on the MAME
+the parent so its watch spans every job. The focus gate's start in front and its Space move take
+the desk of whoever is working, so they run only with `SCRY_FOCUS_CONTROL=1` on an idle machine;
+unset, those cells are BLOCKED naming the variable and the verdict says it is unproven. The free boards and the games' boards run on the MAME
 `MAME_BINARY` names, built with every driver, and the free boards read their sets from `MAME_TEST_ROMS`; unset, those cells
 are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map from
-`LINEUP_MAME_ROMS`, and is BLOCKED the same way without it.
+`LINEUP_MAME_ROMS`, and is BLOCKED the same way without it. The cells that open a watched
+window open it as `start` does, and the host's own arguments (*The window, and the host's own
+arguments*, on [`start`'s page](docs/reference/session.md#start)) place it, so a host can keep
+those runs off the display somebody works on.
 
 ## The bench the live tier reads
 

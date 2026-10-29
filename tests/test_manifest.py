@@ -487,7 +487,7 @@ def test_a_file_that_cannot_be_read_is_refused(tmp_path: Path) -> None:
     locked = tmp_path / "locked.yaml"
     locked.write_text("systems: []\n")
     locked.chmod(0)
-    with pytest.raises(mstate.Invalid, match=r"cannot read the manifest"):
+    with pytest.raises(mstate.Invalid, match=r"path: .*locked.yaml cannot be read"):
         mm.read(str(locked))
 
 

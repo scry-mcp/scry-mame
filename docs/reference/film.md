@@ -242,7 +242,7 @@ Example, from a live run:
     "frames": 4,
     "keep": 2,
     "crop": {"available": false, "why": "no `crop`: the whole screen"},
-    "film_dir": "$TMPDIR/mame-mcp-qwnd_9kr/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-nfbv0wdj/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"
