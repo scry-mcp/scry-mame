@@ -85,7 +85,7 @@ def boot(run: Run) -> dict[str, Any]:
 
 
 def started(reply: Reply, run: Run) -> str:
-    free_set.expect(reply["rom_check"] == "OK", f"rom_check {reply['rom_check']}")
+    free_set.booted(reply)
     return f"{reply['system']} on MAME, rom_check OK, {reply['symbols_total']} symbols"
 
 

@@ -123,6 +123,8 @@ def test_the_shared_checks_pass_on_a_right_answer_and_name_a_wrong_one(tmp_path:
         assert check(reply, run) == said
     wrongs = [
         (free_set.started, _reply(rom_check="MISMATCH")),
+        (free_set.started, _reply(rom_check="OK", system="x", pc="0x0",
+                                  version={"available": False, "why": "did not return in 5 s"})),
         (free_set.ran, _reply(verdict="TIMEOUT")),
         (free_set.ran, _reply(verdict="ELAPSED", frame_before=2, frame_after=2)),
         (free_set.scanned("0x0", 4), _reply(hits_total=3)),

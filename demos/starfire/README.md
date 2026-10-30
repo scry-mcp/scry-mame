@@ -1673,7 +1673,7 @@ Also attached: image/png.
   "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
   "ended_by": "quit",
   "exit_code": 0,
-  "state_written": true,
+  "cfg_written": true,
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,
   "console_drained": 0,

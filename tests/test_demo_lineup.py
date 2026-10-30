@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from scry_core.demo import Run
+from scry_core.demo import Reply, Run, StepFailed
 from scry_core.games import lineup
 
 from demos.lineup import demo
@@ -49,6 +49,15 @@ def test_the_board_starts_on_the_image_its_halves_make_with_the_romsets_map(
     assert (args["reference_addr"], args["bases"]) == ("0x30000", demo.BASES)
     assert (Path(args["inipath"]) / "mame.ini").read_text() == "joystickprovider none\n"
     assert args["shared"] is True and "display" not in args
+
+
+def test_a_start_whose_release_could_not_be_read_is_not_a_demo_start() -> None:
+    run = Run(dir=Path("/x"))
+    right = Reply({"rom_check": "OK", "system": "lineup", "symbols_total": 3, "version": "0.289"})
+    assert demo.started(right, run) == "lineup on MAME, rom_check OK, 3 symbols"
+    slow = Reply({**right, "version": {"available": False, "why": "did not return in 5 s"}})
+    with pytest.raises(StepFailed):
+        demo.started(slow, run)
 
 
 def test_the_binding_fires_every_action_the_script_declares() -> None:

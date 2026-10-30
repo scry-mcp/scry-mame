@@ -94,8 +94,15 @@ def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
     return args
 
 
-def started(reply: Reply, run: Run) -> str:
+def booted(reply: Reply) -> None:
+    """A start a README may be written from: the ROM matched and the build's release was read."""
     expect(reply["rom_check"] == "OK", f"rom_check {reply['rom_check']}")
+    expect(isinstance(reply["version"], str),
+           f"the build's release was not read: {reply['version']}")
+
+
+def started(reply: Reply, run: Run) -> str:
+    booted(reply)
     return f"{reply['system']} on MAME {reply['version']}, rom_check OK, pc {reply['pc']}"
 
 
