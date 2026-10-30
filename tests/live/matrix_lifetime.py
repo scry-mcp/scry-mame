@@ -65,14 +65,14 @@ WITHIN_S = 5 * guardian.POLL_S
 
 # `bare` withholds the guardian: the control.
 SERVER = """
-import json, sys, time
+import json, os, sys, time
 from scry_core import guardian
 if sys.argv[2] == "bare":
     guardian.spawn = lambda *a, **k: None
 from scry_mame import server as s
 r = s.start(**json.loads(sys.argv[1]))
-print(json.dumps({"status": r["status"], "pid": r.get("pid"), "said": r.get("summary")}),
-      flush=True)
+print(json.dumps({"status": r["status"], "pid": r.get("pid"), "server": os.getpid(),
+                  "said": r.get("summary")}), flush=True)
 time.sleep(600)
 """
 
@@ -113,7 +113,8 @@ def _p_foreign(t: list[str]) -> None:
 
 
 def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
-    """SIGKILL a child server in `mode`: MAME's pid, was it the server's child, was it gone."""
+    """SIGKILL a child server in `mode`: MAME's pid, was it the server's child, was it gone.
+    The server names its own pid: a venv's `python.exe` on Windows is a launcher above it."""
     # A SIGKILLed server leaves its scratch behind, so it must land in this run's tmp.
     server = subprocess.Popen(
         [sys.executable, "-c", SERVER, json.dumps(BOOT), mode],
@@ -129,8 +130,10 @@ def _orphaned(mode: str) -> tuple[int | None, bool, bool]:
         server.kill()
         server.wait()
         return None, False, False
-    before = alive(mame) and parent_of(mame) == server.pid
-    server.kill()                       # SIGKILL, or TerminateProcess: no `finally` runs
+    host = started.get("server")
+    before = alive(mame) and parent_of(mame) == host
+    # SIGKILL, or TerminateProcess: no `finally` runs
+    os.kill(host if isinstance(host, int) else server.pid, guardian.KILL)
     server.wait()
     gone = gone_within(mame, WITHIN_S)
     if not gone:

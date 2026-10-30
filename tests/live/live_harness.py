@@ -25,6 +25,7 @@ from scry_core import live_host, live_pool, prose
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+import build_header  # noqa: E402
 from evidence import keep  # noqa: E402
 
 from scry_mame import binary as mame_binary  # noqa: E402
@@ -32,6 +33,7 @@ from scry_mame import server as s  # noqa: E402
 from scry_mame.state import STATE  # noqa: E402
 
 from bench_boards import (  # noqa: E402  # isort: skip
+    BENCH,
     BINARY as BINARY,
     M68K_DUAL_BINARY,
     M68K_DUAL_ROMS,
@@ -672,6 +674,9 @@ def run_sections(name: str) -> None:
     if len({sec.block for sec in pooled}) < 2:
         pooled = []              # one job is no pool: it runs here, its rows live
     print(f"transcript: {scratch() / TRANSCRIPT.name}")
+    if not summary:
+        for line in build_header.lines(BENCH.root, str(M68K_DUAL_BINARY), BINARY):
+            print(line)
     if not pooled and not summary:
         print("jobs: 1, every section in this process")
     planned = [label for sec in chosen for label in sec.labels]

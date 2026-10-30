@@ -105,8 +105,11 @@ DUMPER_FAULT = ('t.endianness = setmetatable({}, {__tostring = function() error(
 def open_files(pid: object) -> list[str] | None:
     """The paths `lsof` lists open in `pid`, resolved as `lsof` resolves them (`/var` is
     `/private/var` on this host), or None when it could not say."""
-    r = subprocess.run(["lsof", "-a", "-p", str(pid), "-F", "n"], capture_output=True,
-                       text=True, check=False)
+    try:
+        r = subprocess.run(["lsof", "-a", "-p", str(pid), "-F", "n"], capture_output=True,
+                           text=True, check=False)
+    except FileNotFoundError:       # Windows has no lsof
+        return None
     names = [ln[1:] for ln in r.stdout.splitlines() if ln.startswith("n")]
     return names if r.returncode == 0 and names else None
 

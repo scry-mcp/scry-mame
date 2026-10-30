@@ -71,6 +71,16 @@ def test_the_parser_reads_every_captured_file_as_a_known_count(name: str) -> Non
     assert p.loop_sum == loops
 
 
+@pytest.mark.parametrize("name", sorted(WIDTHS))
+def test_a_file_written_in_text_mode_on_windows_reads_as_its_lf_twin(name: str) -> None:
+    data = fixture(name)
+    mask, width = WIDTHS[name]
+    crlf = data.replace(b"\n", b"\r\n")
+    assert crlf != data
+    assert mtrace.parse(lines(crlf), width, mask, TAG) == mtrace.parse(lines(data), width, mask,
+                                                                       TAG)
+
+
 def mutated(old: bytes, new: bytes) -> bytes:
     data = fixture("v30-alt-2f.trace.gz")
     assert data.count(old) >= 1

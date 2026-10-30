@@ -35,6 +35,7 @@ from live_harness import (
     session_is,
     unavailable_why,
 )
+from scry_core.host_program import absolute
 
 from scry_mame import cpus  # isort: skip
 from scry_mame import film as mfilm  # isort: skip
@@ -100,15 +101,18 @@ def _series_ahead() -> dict[str, Any]:
     return {"at_frames": [now + 2], "seconds": 10.0}
 
 
+#: A path no host has: absolute on this one, so only its being absent is judged.
+_absent = functools.partial(absolute, "nonexistent")
+
 #: Media tools read files, never the machine: in every state a missing file is refused by name.
 MEDIA_ABSENT: dict[str, dict[str, Any]] = {
-    "image_compare image": {"a": "/nonexistent/a.png", "b": "/nonexistent/b.png"},
-    "image_compare series": {"a": "/nonexistent/a.json", "b": "/nonexistent/b.json"},
-    "image_compare region": {"manifest": "/nonexistent/m.json"},
-    "image_compare golden": {"manifest": "/nonexistent/m.json",
-                             "checksums": "/nonexistent/g.sha256"},
-    "audio_compare measure": {"path": "/nonexistent/s.wav"},
-    "audio_compare diff": {"a": "/nonexistent/a.wav", "b": "/nonexistent/b.wav"},
+    "image_compare image": {"a": _absent("a.png"), "b": _absent("b.png")},
+    "image_compare series": {"a": _absent("a.json"), "b": _absent("b.json")},
+    "image_compare region": {"manifest": _absent("m.json")},
+    "image_compare golden": {"manifest": _absent("m.json"),
+                             "checksums": _absent("g.sha256")},
+    "audio_compare measure": {"path": _absent("s.wav")},
+    "audio_compare diff": {"a": _absent("a.wav"), "b": _absent("b.wav")},
 }
 
 
@@ -196,7 +200,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "memdump": lambda: {"ref": "0x0", "length": 16, "dest": fresh(".bin")},
     "snapshot": dict,
     "screen_signature": dict,
-    "screen_map_write load": lambda: {"path": "/nonexistent/m.screen-map.json"},
+    "screen_map_write load": lambda: {"path": _absent("m.screen-map.json")},
     "screen_map_write add": lambda: {"screen": "probe", "match": [[0, 0, 8, 8]]},
     "screen_map_find": dict,
     "screen_map_write save": lambda: {"dest": fresh(".screen-map.json"), "overwrite": True},

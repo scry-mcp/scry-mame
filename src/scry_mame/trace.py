@@ -98,7 +98,7 @@ def parse(lines: Iterable[bytes], width: int | None, mask: int | None, cpu: str)
     pc of another width, or paged, is refused."""
     p = Parsed()
     for n, raw in enumerate(lines, 1):
-        line = raw[:-1] if raw.endswith(b"\n") else raw
+        line = raw.removesuffix(b"\n").removesuffix(b"\r")      # Windows writes text mode
         if not line:
             continue
         m = _INSTR.match(line)

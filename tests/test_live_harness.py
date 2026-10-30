@@ -391,16 +391,17 @@ def test_the_pin_check_on_a_manifest_that_is_not_one_is_a_reason_and_never_a_cra
     assert boards._unpinned("v30").startswith(f"bench {tmp_path / 'bench.json'} names no file")
 
 
-def _matrix_function(name: str) -> object:
-    """One function of `matrix_manifest.py`, compiled alone: the module boots boards on import."""
+def _matrix_function(name: str, module: str = "matrix_manifest", **names: object) -> object:
+    """One function of a matrix module, compiled alone (the module boots boards on import) with
+    `names` as its globals."""
     import ast
     from typing import Any
-    tree = ast.parse((LIVE / "matrix_manifest.py").read_text(encoding="utf-8"))
+    tree = ast.parse((LIVE / f"{module}.py").read_text(encoding="utf-8"))
     node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name)
-    space: dict[str, Any] = {"Any": Any}
+    space: dict[str, Any] = {"Any": Any, **names}
     # A name no file has: compiled under the matrix's own path, coverage would count the whole
     # matrix, which only a live run executes.
-    exec(compile(ast.Module(body=[node], type_ignores=[]), f"<matrix_manifest.{name}>", "exec"),
+    exec(compile(ast.Module(body=[node], type_ignores=[]), f"<{module}.{name}>", "exec"),
          space)
     return space[name]
 
@@ -958,3 +959,26 @@ def test_a_bench_defect_reaching_the_focus_gates_names_is_raised_never_dropped(
     monkeypatch.setattr(x, "BENCH_BOARDS", ("no-such-board",))
     with pytest.raises(KeyError, match="no-such-board"):
         x._names()
+
+
+def test_no_cell_names_its_missing_file_by_a_posix_literal() -> None:
+    """`/nonexistent/x` has no drive, so Windows refuses it as a relative path before the case
+    the cell judges; the matrix builds it with the host's own anchor."""
+    import ast
+
+    tree = ast.parse((LIVE / "matrix_tools_by_state.py").read_text(encoding="utf-8"))
+    literals = [n.value for n in ast.walk(tree)
+                if isinstance(n, ast.Constant) and isinstance(n.value, str)
+                and n.value.startswith("/nonexistent")]
+    assert tree.body and literals == []
+
+
+def test_open_files_says_it_could_not_when_the_host_has_no_lsof(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """A host without `lsof` (Windows) must reach the cell's BLOCKED path, not abort the section."""
+    def absent(*a: object, **k: object) -> None:
+        raise FileNotFoundError(2, "The system cannot find the file specified")
+
+    monkeypatch.setattr(subprocess, "run", absent)
+    open_files = _matrix_function("open_files", "matrix_pairs", subprocess=subprocess)
+    assert callable(open_files) and open_files(123) is None
