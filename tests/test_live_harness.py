@@ -539,6 +539,39 @@ def _three(h: ModuleType) -> None:
     h.section("C", "forgets", ["c1", "c2"])(lambda: h.cell("c1", True))
 
 
+def _watch(h: ModuleType, *, beside: bool) -> None:
+    """A control section, an optional one beside it, and a verdict that spans their run."""
+    def control() -> None:
+        _launched(h)
+        h.cell("x-control", True)
+    h.section("X", "control", ["x-control"], alone=True)(control)
+    if beside:
+        h.section("A", "beside", ["a1"])(lambda: h.cell("a1", True))
+    h.section("X", "verdict", ["x-verdict"], alone=True, spans=True)(
+        lambda: h.blocked("x-verdict", "too little ran"))
+
+
+def test_a_verdict_with_no_section_beside_it_is_named_when_the_run_is_planned(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    _watch(h, beside=False)
+    assert _exit_of(h) == h.EXIT_PASS, "naming a cell it cannot judge does not refuse the run"
+    out = capsys.readouterr().out.splitlines()
+    planned = next(i for i, line in enumerate(out) if line.startswith("cells PLANNED"))
+    assert out[planned + 1].startswith("cannot be judged in this selection: x-verdict"), out
+    assert not [x for x in out if x.startswith("cannot be judged") and "a1" in x]
+
+
+def test_a_verdict_with_a_section_beside_it_is_not_named(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    _watch(h, beside=True)
+    _exit_of(h)
+    assert "cannot be judged" not in capsys.readouterr().out
+
+
 def test_a_run_in_one_process_blocks_what_a_section_left_and_passes_on_no_fail(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
         capsys: pytest.CaptureFixture[str]) -> None:
@@ -563,6 +596,33 @@ def test_a_blocked_row_outside_any_section_is_a_row_and_a_tally_not_a_crash(
     assert "BLOCKED" in capsys.readouterr().out
     assert h.BLOCKED == [("the game demo", "set GAME_ROMS to the directory")]
     assert h.TALLY["BLOCKED"] == 1
+
+
+def test_the_verdict_of_a_run_with_no_sections_lists_its_blocked_rows_after_the_failures(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    """`live_check.py` runs no sections: its game demos block by name, then `finish` speaks."""
+    h = _sections(monkeypatch, tmp_path)
+    _launched(h)
+    h.check("a thing that fails", False)
+    h.blocked("the game demo", "set GAME_ROMS to the directory")
+    with pytest.raises(SystemExit):
+        h.finish("LIVE CHECK")
+    out = capsys.readouterr().out.splitlines()
+    failed = next(i for i, line in enumerate(out) if line.startswith("1 check failed"))
+    listed = [i for i, line in enumerate(out) if "the game demo" in line and i > failed]
+    assert len(listed) == 1 and out[-1].startswith("==> LIVE CHECK FAILED"), out
+
+
+def test_a_matrix_run_prints_each_blocked_row_in_its_recap_once(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+        capsys: pytest.CaptureFixture[str]) -> None:
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    _three(h)
+    _exit_of(h)
+    out = capsys.readouterr().out.splitlines()
+    for why in ("stub hung", "never reached"):
+        assert len([x for x in out if x.startswith("  BLOCKED") and why in x]) == 2, out
 
 
 def test_a_run_that_is_a_job_declares_every_cell_it_planned(

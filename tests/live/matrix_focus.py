@@ -4,6 +4,8 @@ Registered first (control) and last (verdict). The start in front and the Space 
 the owner's desk, so they run only with SCRY_FOCUS_CONTROL=1.
 
     uv run python tests/live/matrix_focus.py      # the control alone; its verdict is BLOCKED
+
+Run alone, the verdict has no run to judge: the plan says so and the run goes on.
 """
 
 from __future__ import annotations
@@ -97,7 +99,7 @@ def register_x_control() -> None:
 
 
 def register_x_verdict() -> None:
-    section("X", X_VERDICT_TITLE, X_VERDICT, alone=True)(_verdict)
+    section("X", X_VERDICT_TITLE, X_VERDICT, alone=True, spans=True)(_verdict)
 
 
 if __name__ == "__main__":

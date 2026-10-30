@@ -100,6 +100,13 @@ def check(label: str, condition: bool, detail: str = "") -> None:
         failures.append(label)
 
 
+def list_blocked() -> None:
+    """Repeat the BLOCKED rows the verdict has not yet repeated, so it is read beside them."""
+    for label, reason in BLOCKED[LISTED[0]:]:
+        row("BLOCKED", label, reason)
+    LISTED[0] = len(BLOCKED)
+
+
 def finish(name: str) -> None:
     _close_run()
     RUN.finished = True
@@ -107,6 +114,7 @@ def finish(name: str) -> None:
     print(f"{prose.counted(len(failures), 'check')} failed")
     for label in failures:
         print(f"  FAIL  {label}")
+    list_blocked()
     RUN.leave(kept=bool(failures))
     print(f"==> {name} " + ("FAILED" if failures else "PASSED"))
     sys.exit(EXIT_FAIL if failures else EXIT_PASS)
@@ -170,12 +178,16 @@ class Section:
     judged: dict[str, str] = field(default_factory=dict)
     # Spans the run, so it never runs as a pooled job.
     alone: bool = False
+    # Its verdict judges what the other sections do.
+    spans: bool = False
 
 
 SECTIONS: list[Section] = []
 CURRENT: list[Section] = []
 PENDING: list[dict[str, Any]] = []
 BLOCKED: list[tuple[str, str]] = []
+#: How many of `BLOCKED` the verdict has already repeated.
+LISTED = [0]
 TALLY = {"OK": 0, "FAIL": 0, "BLOCKED": 0}
 #: The detail of every FAIL, for a pooled job's summary.
 FAIL_WHY: dict[str, str] = {}
@@ -184,11 +196,19 @@ EVIDENCE = SCRATCH / "evidence"
 KEPT: list[Path] = []
 
 
-def section(block: str, title: str, labels: list[str],
-            alone: bool = False) -> Callable[[Callable[[], None]], None]:
+def section(block: str, title: str, labels: list[str], alone: bool = False,
+            spans: bool = False) -> Callable[[Callable[[], None]], None]:
     def register(fn: Callable[[], None]) -> None:
-        SECTIONS.append(Section(block, title, labels, fn, alone=alone))
+        SECTIONS.append(Section(block, title, labels, fn, alone=alone, spans=spans))
     return register
+
+
+def cannot_be_judged(chosen: list[Section]) -> list[tuple[str, str]]:
+    """The cells a selection plans and can never judge: a `spans` section's, when no other block
+    is chosen beside it."""
+    return [(label, f"[{s.block}] judges what the other sections do, and none is chosen")
+            for s in chosen if s.spans and all(o.block == s.block for o in chosen)
+            for label in s.labels]
 
 
 def _record(label: str, verdict: str) -> None:
@@ -682,6 +702,8 @@ def run_sections(name: str) -> None:
     planned = [label for sec in chosen for label in sec.labels]
     dupes = sorted({x for x in planned if planned.count(x) > 1})
     print(f"cells PLANNED: {len(planned)} in {len(chosen)} sections")
+    for label, why in cannot_be_judged(chosen):
+        print(f"cannot be judged in this selection: {label}: {why}")
     if dupes:
         _invalid_run(f"the plan names these cells twice: {dupes}")
     t0 = time.monotonic()
@@ -723,8 +745,7 @@ def run_sections(name: str) -> None:
     if KEPT:
         print(f"evidence: {EVIDENCE}")
     print(f"elapsed: {time.monotonic() - t0:.0f} s")
-    for label, reason in BLOCKED:
-        row("BLOCKED", label, reason)
+    list_blocked()
     if own := [label for label, reason in BLOCKED if reason.startswith(B1_PREFIX)]:
         print(f"BLOCKED by this matrix's own wait ceiling, not by the host: {len(own)}: "
               f"{'; '.join(own)}")
