@@ -178,7 +178,7 @@ Example, from a live run:
     "address": "0F2038",
     "bytes": "33FC00000020351C",
     "text": "move.w  #$0, $20351c.l",
-    "symbol": "RESET",
+    "symbol": "reset",
     "delta": 4
   },
   "following": ["0F2040: 4EB8 25DC                jsr     $25dc.w", "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"],
@@ -614,7 +614,7 @@ Example, from a live run:
     "address": "0025E8",
     "bytes": "41F900201000",
     "text": "lea     $201000.l, A0",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 12
   },
   "following": ["0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l"],
@@ -689,24 +689,24 @@ Reference: REFERENCE.md, Screen maps.
 | `thread_errors` | integer |
 | `anchor` | string |
 | `application` | string |
-| `call` | string |
 | `cells` | string |
 | `controls` | integer |
-| `evaluated_by` | string |
 | `kind` | string |
-| `lines_ahead` | integer |
 | `match` | array |
 | `mode` | string |
 | `path` | string |
-| `pc_before` | string |
 | `pointer` | object |
 | `promoted` | array |
-| `reader_steps` | integer |
 | `replaced` | boolean |
 | `screen` | string |
 | `screens` | integer |
 | `shadows_file` | boolean |
 | `size` | array |
+| `call` | string |
+| `evaluated_by` | string |
+| `lines_ahead` | integer |
+| `pc_before` | string |
+| `reader_steps` | integer |
 
 Example, from a live run:
 
@@ -769,7 +769,7 @@ Example, from a live run:
     "address": "0025E0",
     "bytes": "33FCFFFF00720004",
     "text": "move.w  #$ffff, $720004.l",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 4
   },
   "following": ["0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],

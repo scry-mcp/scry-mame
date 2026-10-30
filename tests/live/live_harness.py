@@ -206,9 +206,8 @@ def section(block: str, title: str, labels: list[str], alone: bool = False,
 def cannot_be_judged(chosen: list[Section]) -> list[tuple[str, str]]:
     """The cells a selection plans and can never judge: a `spans` section's, when no other block
     is chosen beside it."""
-    return [(label, f"[{s.block}] judges what the other sections do, and none is chosen")
-            for s in chosen if s.spans and all(o.block == s.block for o in chosen)
-            for label in s.labels]
+    return live_pool.cannot_be_judged([(s.block, s.labels, any(o.block != s.block for o in chosen))
+                                       for s in chosen if s.spans])
 
 
 def _record(label: str, verdict: str) -> None:
@@ -703,7 +702,7 @@ def run_sections(name: str) -> None:
     dupes = sorted({x for x in planned if planned.count(x) > 1})
     print(f"cells PLANNED: {len(planned)} in {len(chosen)} sections")
     for label, why in cannot_be_judged(chosen):
-        print(f"cannot be judged in this selection: {label}: {why}")
+        print(live_pool.cannot_be_judged_line(label, why))
     if dupes:
         _invalid_run(f"the plan names these cells twice: {dupes}")
     t0 = time.monotonic()

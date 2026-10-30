@@ -15,7 +15,9 @@ spelling the map gave, up to `limit` 1..50; the name never reaches MAME's
 console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
 linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
-Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`).
+Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`). A name the
+file gives twice is listed here with every row, and refused by a tool that takes one address
+(`ambiguous_ref`, naming each): use the `0x` address of the one meant.
 
 Reply: by name, `query`, `symbols_total`, `symbols` (`name`, `addr`, `memory`), `truncated`;
 by address, `linear`, `name`, `addr`, `delta`, `memory`; and `cpu`, `note`.
@@ -58,7 +60,7 @@ Example, from a live run:
   "cpu": ":maincpu",
   "symbols_total": 1,
   "symbols": [
-    {"name": "IRQ_VBLANK", "addr": "0x00000400", "memory": "rom"}
+    {"name": "irq_vblank", "addr": "0x00000400", "memory": "rom"}
   ],
   "truncated": false
 }

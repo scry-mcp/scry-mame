@@ -1,6 +1,6 @@
 # The Lua tools
 
-`debug` goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script (`input`, `record`, `audio_record`, `throttle`, `screen_signature`, `screen_map_write(method="add")`, `screen_map_find`) go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The contract they share:
+[`debug`](write.md#debug) goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script (`input`, [`record`](captures.md#record), [`audio_record`](captures.md#audio_record), `throttle`, [`screen_signature`](screen.md#screen_signature), [`screen_map_write`](read.md#screen_map_write) with `method="add"`, [`screen_map_find`](read.md#screen_map_find)) go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The contract they share:
 
 - **The console is a plugin** and `start` names its directory on the command line, because MAME's own default looks in its working directory and two builds given the same command line can boot and die respectively. A binary with the plugin in neither place `start` looks is refused before anything is spawned, because without it `-console` is fatal.
 - **The console evaluates when its periodic hook runs**: once per frame while the machine runs, once per stop, and on a newer stub once per console command. So a line sent to a stopped machine waits in the pipe until the next step, frame or console command.
@@ -159,7 +159,7 @@ Example, from a live run:
     "address": "0E2CDC",
     "bytes": "3239002010C8",
     "text": "move.w  $2010c8.l, D1",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49610
   },
   "following": ["0E2CE2: 3001           move.w  D1, D0", "0E2CE4: 9079 0020 10C6 sub.w   $2010c6.l, D0", "0E2CEA: C1C3           muls.w  D3, D0", "0E2CEC: 48C0           ext.l   D0", "0E2CEE: 81C1           divs.w  D1, D0", "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)", "... 3 more"],
@@ -284,7 +284,7 @@ Example, from a live run:
     "address": "0F2040",
     "bytes": "4EB825DC",
     "text": "jsr     $25dc.w",
-    "symbol": "RESET",
+    "symbol": "reset",
     "delta": 12
   },
   "following": ["0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l", "0F204C: 4EB9 000F 24DE           jsr     $f24de.l", "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l", "0F205C: 23FC 0000 4942 0020 2EA8 move.l  #$4942, $202ea8.l"],

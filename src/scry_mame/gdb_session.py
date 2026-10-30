@@ -16,7 +16,9 @@ from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field, replace
 from typing import Literal, Protocol
 
+from scry_core import prose
 from scry_core import value_format as vf
+from scry_core.reply_contract import Invalid
 
 OTHER_DEVICE_FEATURE = "mame./"
 
@@ -829,6 +831,61 @@ def _span_add(spans: dict[str, tuple[int, int]], klass: str, addr: int) -> None:
     spans[klass] = (min(lo, addr), max(hi, addr))
 
 
+class AmbiguousRef(Invalid):
+    """A name the table gives twice, looked up as if it named one address."""
+
+
+class Names(dict[str, int]):
+    """A table's forward map, name (upper-case) to the address of its first row.
+
+    A name given twice is kept, with every row (`rows`, the file's order) and its addresses
+    (`ambiguous`); looking it up is refused, naming them, so no site guesses between two."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.rows: list[tuple[str, int]] = []
+        self.row_classes: list[str] = []
+        self.ambiguous: dict[str, list[int]] = {}
+
+    def add(self, key: str, addr: int, klass: str = "") -> None:
+        """Take one row; a repeat at the same address is the same symbol, not a second one."""
+        self.rows.append((key, addr))
+        self.row_classes.append(klass)
+        if key not in self:
+            super().__setitem__(key, addr)
+        elif addr not in (held := self.ambiguous.get(key, [super().__getitem__(key)])):
+            self.ambiguous[key] = [*held, addr]
+
+    def _refuse(self, key: str) -> AmbiguousRef:
+        return AmbiguousRef("ambiguous_ref", prose.ambiguous_name(
+            key, [f"{a:#x}" for a in self.ambiguous[key]], "this table"))
+
+    def __getitem__(self, key: str) -> int:
+        if key in self.ambiguous:
+            raise self._refuse(key)
+        return super().__getitem__(key)
+
+    def get(self, key: str, default: int | None = None) -> int | None:  # type: ignore[override]
+        if key in self.ambiguous:
+            raise self._refuse(key)
+        return super().get(key, default)
+
+
+def rows_in_class(table: dict[str, int], classes: dict[str, str],
+                  klass: str) -> list[tuple[int, str]]:
+    """`(address, name)` of every row of `klass`, in the file's order: a repeated name is placed
+    by each row's own class."""
+    if isinstance(table, Names):
+        return [(a, n) for (n, a), c in zip(table.rows, table.row_classes, strict=True)
+                if c == klass]
+    return [(a, n) for n, a in table.items() if classes.get(n) == klass]
+
+
+def rows_of(table: dict[str, int]) -> list[tuple[str, int]]:
+    """Every `(name, address)` of a table in the file's order: a repeated name once per row."""
+    return table.rows if isinstance(table, Names) else list(table.items())
+
+
 @dataclass(frozen=True)
 class SymbolTable:
     """What a symbol file loaded: the names, rows per class, and the shape (`"yaml"` or `"tsv"`)."""
@@ -881,7 +938,7 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
     so does zero symbols. `nombre:` is accepted as well as `name:`.
     """
     bases = {k.upper(): v for k, v in (bases or {}).items()}
-    table: dict[str, int] = {}
+    table = Names()
     types: dict[str, str] = {}
     by_class: dict[str, int] = {}
     class_span: dict[str, tuple[int, int]] = {}
@@ -890,19 +947,12 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
     saw_yaml = saw_tsv = False
     last_name: str | None = None
     unbased: dict[str, str] = {}
-    first_row: dict[str, int] = {}
     spelled: dict[str, str] = {}
     odd_tab_lines: list[tuple[int, int]] = []
     addr = None
 
-    def enter(key: str, name: str, lineno: int) -> None:
-        """Record `name` at `lineno`; a second row for one name would leave the last standing."""
-        if key in first_row:
-            raise ValueError(f"{path}:{lineno}: symbol {name!r} already appeared at line "
-                             f"{first_row[key]}; two rows for one name would leave the last "
-                             "one standing, in silence")
-        first_row[key] = lineno
-        spelled[key] = name
+    def enter(key: str, name: str) -> None:
+        spelled.setdefault(key, name)
 
     try:
         with open(path, encoding="utf-8") as fh:
@@ -931,17 +981,18 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
             elif segment_bases[klass] != seg:
                 segment_bases[klass] = None
             key = name.upper()
-            enter(key, name, lineno)
+            enter(key, name)
             if klass in bases:
                 base = bases[klass]
-                table[key] = linear if base is None else base + offset
+                at = linear if base is None else base + offset
             elif klass == "CODE":
-                table[key] = linear
+                at = linear
             else:
                 unbased.setdefault(klass, f"{path}:{lineno} ({name})")
                 continue
-            _span_add(class_span, klass, table[key])
-            classes[key] = klass
+            table.add(key, at, klass)
+            _span_add(class_span, klass, at)
+            classes.setdefault(key, klass)
             continue
         if len(fields) > 1:
             odd_tab_lines.append((lineno, len(fields)))
@@ -954,8 +1005,8 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
         m = re.search(r"^\s*(?:name|nombre):\s*(\S+)", line)
         if m and addr is not None:
             last_name = m.group(1).upper()
-            enter(last_name, m.group(1), lineno)
-            table[last_name] = addr
+            enter(last_name, m.group(1))
+            table.add(last_name, addr)
             addr = None
             continue
         # A `type:` types the `name:` before it; a spec the grammar refuses refuses the file.

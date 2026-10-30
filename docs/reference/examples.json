@@ -99,7 +99,7 @@
     "address": "0E2CEA",
     "bytes": "C1C3",
     "text": "muls.w  D3, D0",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49624
    },
    "following": [
@@ -433,7 +433,7 @@
         "address": "0025F6",
         "bytes": "51C8FFFC",
         "text": "dbra    D0, $25f4",
-        "symbol": "BOOT_INIT",
+        "symbol": "boot_init",
         "delta": 26
        },
        "following": [
@@ -560,7 +560,7 @@
    "index": 0,
    "n": 5,
    "blit_pc": "0x00002738",
-   "blit_symbol": "BOOT_INIT+0x15c",
+   "blit_symbol": "boot_init+0x15c",
    "callback_errors": {
     "count": 0,
     "first": {
@@ -653,7 +653,7 @@
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
    },
    "following": [
@@ -731,7 +731,7 @@
    "legend": [
     {
      "pc": "0x00002738",
-     "symbol": "BOOT_INIT+0x15c",
+     "symbol": "boot_init+0x15c",
      "color": "#ff4040",
      "blits": 1
     }
@@ -800,7 +800,7 @@
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
    },
    "following": [
@@ -857,7 +857,7 @@
    },
    "report": {
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.report.json",
-    "sha256": "05e46129177add5d19b0dc32165684cb25f14580d4e5d8af5d8bcaa338e31638"
+    "sha256": "b900db54508c35093d3001941faf6005e4a9c2e6c4bf1dfbb5d4d3c34e5ae403"
    },
    "formats": {},
    "asset_names": [],
@@ -1142,7 +1142,7 @@
     "address": "0025F4",
     "bytes": "4218",
     "text": "clr.b   (A0)+",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 24
    },
    "following": [
@@ -1239,7 +1239,7 @@
     "address": "0025F6",
     "bytes": "51C8FFFC",
     "text": "dbra    D0, $25f4",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 26
    },
    "following": [
@@ -1364,7 +1364,7 @@
     "address": "0025F6",
     "bytes": "51C8FFFC",
     "text": "dbra    D0, $25f4",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 26
    },
    "following": [
@@ -1398,17 +1398,66 @@
   }
  },
  "image_compare": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): image_compare image @ none",
+  "from": "[Y] the media layer: each scenario the hand way and the new way, over one answer: m68k-dual S1 new: series_capture and image_compare region find the same frames, with no picture",
   "call": {
-   "method": "image",
-   "a": "/nonexistent/a.png",
-   "b": "/nonexistent/b.png"
+   "method": "region",
+   "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
+   "measure": "changed_pixels"
   },
   "reply": {
-   "summary": "image_compare: INVALID (bad_argument), a: no file at /nonexistent/a.png",
-   "status": "INVALID",
-   "code": "bad_argument",
-   "message": "a: no file at /nonexistent/a.png"
+   "summary": "image_compare region: changed_pixels, 9 transitions over 12 frames",
+   "status": "ok",
+   "measure": "changed_pixels",
+   "crop": [
+    0,
+    0,
+    336,
+    252
+   ],
+   "frames": 12,
+   "start": {
+    "available": false,
+    "why": "`changed_pixels` counts a change from the frame before, and the first frame has none"
+   },
+   "transitions": [
+    [
+     24,
+     14790
+    ],
+    [
+     25,
+     23888
+    ],
+    [
+     26,
+     30995
+    ],
+    [
+     27,
+     39139
+    ],
+    [
+     28,
+     31816
+    ],
+    [
+     29,
+     16125
+    ],
+    "... 3 more"
+   ],
+   "gaps": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    "... 2 more"
+   ],
+   "transitions_total": 9,
+   "path": "$TMPDIR/mame-mcp-<run>/series/series-1/track-1.json",
+   "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json"
   }
  },
  "input": {
@@ -1476,7 +1525,7 @@
     "address": "0E2CDC",
     "bytes": "3239002010C8",
     "text": "move.w  $2010c8.l, D1",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49610
    },
    "following": [
@@ -1589,7 +1638,7 @@
     "address": "0F2040",
     "bytes": "4EB825DC",
     "text": "jsr     $25dc.w",
-    "symbol": "RESET",
+    "symbol": "reset",
     "delta": 12
    },
    "following": [
@@ -1896,7 +1945,7 @@
     "address": "0025EE",
     "bytes": "203C0000E927",
     "text": "move.l  #$e927, D0",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 18
    },
    "following": [
@@ -2143,7 +2192,7 @@
     "address": "0F2038",
     "bytes": "33FC00000020351C",
     "text": "move.w  #$0, $20351c.l",
-    "symbol": "RESET",
+    "symbol": "reset",
     "delta": 4
    },
    "following": [
@@ -2232,7 +2281,7 @@
     "address": "0E2CF0",
     "bytes": "11809800",
     "text": "move.b  D0, (A0,A1.l)",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49630
    },
    "following": [
@@ -2378,7 +2427,7 @@
     "address": "0F2034",
     "bytes": "46FC2700",
     "text": "move    #$2700, SR",
-    "symbol": "RESET",
+    "symbol": "reset",
     "delta": 0
    },
    "following": [
@@ -2409,16 +2458,16 @@
  "rom_check": {
   "from": "[H] contracts at the edges of single boards, each on the board exposing it: H23 circus: rom_check against the reference image answers OK for the 16 bytes it compared",
   "call": {
-   "reference_rom": "$TMPDIR/mame-live-matrix-<run>/f3-image/circus.ref",
+   "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/H/f3-image/circus.ref",
    "reference_addr": "0x1000",
    "reference_base": "0x1000"
   },
   "reply": {
-   "summary": "rom_check :maincpu: OK, 1.174 ms per query",
+   "summary": "rom_check :maincpu: OK, 1.196 ms per query",
    "status": "ok",
    "rom_check": "OK",
    "deterministic": true,
-   "query_s": 0.001174,
+   "query_s": 0.001196,
    "cpu": ":maincpu"
   }
  },
@@ -2467,7 +2516,7 @@
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
    },
    "following": [
@@ -2558,7 +2607,7 @@
     "address": "000400",
     "bytes": "46FC2700",
     "text": "move    #$2700, SR",
-    "symbol": "IRQ_VBLANK",
+    "symbol": "irq_vblank",
     "delta": 0
    },
    "following": [
@@ -2653,7 +2702,7 @@
     "address": "0025E8",
     "bytes": "41F900201000",
     "text": "lea     $201000.l, A0",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 12
    },
    "following": [
@@ -2744,7 +2793,7 @@
     "address": "0025E0",
     "bytes": "33FCFFFF00720004",
     "text": "move.w  #$ffff, $720004.l",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 4
    },
    "following": [
@@ -2815,7 +2864,7 @@
     "address": "0025DC",
     "bytes": "48E7FFFC",
     "text": "movem.l D0-D7/A0-A5, -(A7)",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 0
    },
    "following": [
@@ -2901,7 +2950,7 @@
     "address": "0025F4",
     "bytes": "4218",
     "text": "clr.b   (A0)+",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 24
    },
    "following": [
@@ -2966,7 +3015,7 @@
     "address": "002986",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $2986",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 304
    },
    "following": [
@@ -3031,9 +3080,9 @@
  "start": {
   "from": "[D] the graphics tools on free boards: known answers and negatives: circus: an indexed screen of two pens renders as an indexed PNG and alters nothing",
   "call": {
-   "binary": "~/.local/state/mame-builds/scry/mame",
+   "binary": "/path/to/mame",
    "system": "circus",
-   "rompath": "/path/to/mame-test-roms",
+   "rompath": "/path/to/roms",
    "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/f1-image/circus.ref",
    "reference_addr": "0x1000",
    "reference_base": "0x1000",
@@ -3043,16 +3092,16 @@
    "presence": false
   },
   "reply": {
-   "summary": "start circus on ~/.local/state/mame-builds/scry/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
+   "summary": "start circus on /path/to/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
    "status": "ok",
    "system": "circus",
-   "binary": "~/.local/state/mame-builds/scry/mame",
+   "binary": "/path/to/mame",
    "binary_origin": "argument",
    "version": "<volatile>",
    "pid": "<volatile>",
    "stub_port": "<volatile>",
    "scratch_dir": "$TMPDIR/mame-mcp-<run>",
-   "state_dir": "",
+   "state_dir": "$TMPDIR/mame-mcp-<run>",
    "cfg": {
     "available": false,
     "why": "no cfg was given, so MAME runs on its defaults"
@@ -3155,24 +3204,24 @@
   }
  },
  "state_write": {
-  "from": "[K] a link where a state goes, a bool given as a count, installs queued, resent and lost, removals lost and never resent: circus: state_list lists the saved state with its bytes",
+  "from": "[H] contracts at the edges of single boards, each on the board exposing it: H20 v30-alt: the first run after a state_write load has no cycles, and says why",
   "call": {
    "method": "save",
-   "name": "kept"
+   "name": "m7"
   },
   "reply": {
-   "summary": "state_write save: kept, 1074 bytes at frame 0",
+   "summary": "state_write save: m7, 70209 bytes at frame 600",
    "status": "ok",
-   "name": "kept",
-   "path": "$TMPDIR/mame-mcp-<run>/sta/circus/kept.sta",
-   "bytes": 1074,
-   "frame": 0,
-   "pc": "0x00001000",
+   "name": "m7",
+   "path": "$TMPDIR/mame-mcp-<run>/sta/speedf/m7.sta",
+   "bytes": 70209,
+   "frame": 600,
+   "pc": "0x000f5bc7",
    "errorlog": {
     "lines_total": 0,
     "truncated": false,
     "lines": [],
-    "mark": 246
+    "mark": 251
    }
   }
  },
@@ -3181,7 +3230,11 @@
   "call": {},
   "reply": {
    "summary": "status: no session",
-   "status": "ok"
+   "status": "ok",
+   "last_stop": {
+    "available": false,
+    "why": "this session has not stopped yet"
+   }
   }
  },
  "step": {
@@ -3230,7 +3283,7 @@
     "address": "0029EE",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $29ee",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 408
    },
    "following": [
@@ -3282,7 +3335,7 @@
    "symbols_total": 1,
    "symbols": [
     {
-     "name": "IRQ_VBLANK",
+     "name": "irq_vblank",
      "addr": "0x00000400",
      "memory": "rom"
     }
@@ -3351,7 +3404,7 @@
     "address": "0029EE",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $29ee",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 408
    },
    "following": [
@@ -3387,42 +3440,42 @@
     "unplaced": 0,
     "symbols": [
      {
-      "symbol": "IRQ_VBLANK",
+      "symbol": "irq_vblank",
       "addr": "0x00000400",
       "addresses": 25,
       "first": "0x00000400",
       "last": "0x00000502"
      },
      {
-      "symbol": "PAGE_BIT_COMPOSE_A",
+      "symbol": "page_bit_compose_a",
       "addr": "0x00000506",
       "addresses": 4,
       "first": "0x00000506",
       "last": "0x00000516"
      },
      {
-      "symbol": "ARM_LINE_COUNTER",
+      "symbol": "arm_line_counter",
       "addr": "0x00000520",
       "addresses": 18,
       "first": "0x00000520",
       "last": "0x0000059a"
      },
      {
-      "symbol": "MODE_CLEAR_BLITS",
+      "symbol": "mode_clear_blits",
       "addr": "0x00002856",
       "addresses": 15,
       "first": "0x00002986",
       "last": "0x000029ee"
      },
      {
-      "symbol": "SOUND_STREAMER_ROM",
+      "symbol": "sound_streamer_rom",
       "addr": "0x000f2446",
       "addresses": 116,
       "first": "0x000f2984",
       "last": "0x000f2df8"
      },
      {
-      "symbol": "IRQ5_STREAMER_RAM",
+      "symbol": "irq5_streamer_ram",
       "addr": "0x00203164",
       "addresses": 22,
       "first": "0x00203164",

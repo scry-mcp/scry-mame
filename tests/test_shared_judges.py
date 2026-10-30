@@ -69,4 +69,6 @@ def test_close_and_status_with_no_session_say_so_in_the_words_both_servers_use()
     closed = s.close()
     assert closed["summary"] == session_block.NO_SESSION_CLOSE, closed
     assert closed["note"] == session_block.NO_SESSION_CLOSE_NOTE, closed
-    assert s.status()["summary"] == session_block.NO_SESSION_STATUS
+    said = s.status()
+    assert said["summary"] == session_block.NO_SESSION_STATUS
+    assert "last_stop" in said and "presence" not in said, said

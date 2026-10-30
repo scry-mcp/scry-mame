@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from scry_core import declaration_rows
+from scry_core import declaration_rows, regpoint
 from scry_core.reply_contract import or_unavailable
 
 from scry_mame import arming, conditions, cpus, inputs
@@ -31,11 +31,6 @@ _RPLIST_HEADER = re.compile(r"^Device '(?P<cpu>[^']*)' registerpoints:$")
 _RPLIST_NONE = re.compile(r"^No registerpoints currently installed(?: for CPU \S+)?$")
 _RP_STOP_LINE = re.compile(r"Stopped at registerpoint ([0-9A-Fa-f]+)\b")
 _RPSET_TAKEN = re.compile(r"^Registerpoint ([0-9A-Fa-f]+) set$")
-STILL_ARMED = ("still armed: a registerpoint fires at every instruction while its condition "
-               "holds, so the next advance stops here again; "
-               "`declaration_clear(kind=\"regpoint\")` removes it")
-
-
 def parse_rplist(text: str) -> list[dict[str, Any]]:
     """The registerpoints `rplist` lists, each under the device header above it."""
     return [{"index": int(m.group(2), 16), "cpu": under["cpu"] or "",
@@ -333,8 +328,8 @@ def stop_cause(ses: gs.Session, since: list[str],
         decl = next((d for d in _declared() if d.owner == own), None)
         return (f"registerpoint {own[0]!r}" + (arming.inherited(decl) if decl is not None
                                               else ""),
-                {**dec.owner_fields(own), "condition": STATE.regpoints[own]["condition"],
-                 "index": index, "pc": pc, "note": STILL_ARMED})
+                regpoint.hit(**dec.owner_fields(own), condition=STATE.regpoints[own]["condition"],
+                             pc=pc, index=index))
     try:
         row = next((r for r in rp_held(ses) if r["index"] == index), None)
     except (gs.SessionError, st.Invalid) as e:

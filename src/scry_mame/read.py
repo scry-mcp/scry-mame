@@ -309,7 +309,10 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
     base is answered. Classes are bisected, not scanned."""
     by_class: dict[str, tuple[list[int], list[str]]] = {}
     for klass in bases:
-        members = sorted((a, n) for n, a in symbols.items() if classes.get(n) == klass)
+        first: dict[int, str] = {}
+        for at, name in gs.rows_in_class(symbols, classes, klass):
+            first.setdefault(at, name)
+        members = sorted(first.items())
         by_class[klass] = ([a for a, _n in members],
                            [(spelled or {}).get(n, n) for _a, n in members])
     out: list[dict[str, Any]] = []
@@ -384,7 +387,6 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     named = inputs.cpu_given(cpu)
     on = cpus.chosen(ses, cpu)
     class_of: str | None = None
-    # THE SPAN EXAMINED RIDES ON THE REPLY, with where it came from. A class's span is its
     # The span rides on the reply: it is the symbols' [min, max], not the segment, so zero hits
     # mean not among the class's symbols.
     span_reply: dict[str, Any]
@@ -404,7 +406,7 @@ def find(ses: gs.Session, data_hex: str, ref: str, length: int,
     space_bound(addr, length, on)
     items = ",".join(f"0x{b:02x}" for b in wanted)
     found: list[str] = []
-        # A hit belongs to the window it STARTS in (the console's rule).
+    # A hit belongs to the window it STARTS in (the console's rule).
     for start in range(addr, addr + length, FIND_WINDOW):
         width = min(FIND_WINDOW, addr + length - start)
         text = ses.monitor(f"find {start:#x}{f':{on}' if named else ''},{width:#x},{items}")
@@ -519,12 +521,16 @@ _PLACERS: dict[str | None, tuple[gs.SymbolTable, Placer]] = {}
 def placer(cpu: str | None = None) -> Placer:
     """`cpu`'s table as address -> (base, name) of the highest symbol at or below it.
 
-    Ties go to the greatest name. Sorted once and bisected: a trace places every address."""
+    Ties go to the first row of the file. Sorted once and bisected: a trace places every
+    address."""
     table = STATE.table(cpu)
     cached = _PLACERS.get(cpu)
     if cached is not None and cached[0] is table:
         return cached[1]
-    entries = [(a, table.shown(n)) for a, n in sorted((a, n) for n, a in table.table.items())]
+    first: dict[int, str] = {}
+    for name, at in gs.rows_of(table.table):
+        first.setdefault(at, name)
+    entries = [(a, table.shown(n)) for a, n in sorted(first.items())]
     addrs = [a for a, _ in entries]
 
     def place(addr: int) -> tuple[int, str] | None:
@@ -579,21 +585,23 @@ def symbols_find(name: str, linear: str, limit: int,
                                  "name up in", cpu=cpu)
     if name:
         key = name.strip().upper()     # MAME's expressions fold a symbol's case, so its table does
-        hits = ([key] if key in table else
-                sorted((n for n in table if n.startswith(key)), key=lambda n: table[n]))
+        rows = gs.rows_of(table)
+        hits = ([row for row in rows if row[0] == key] if key in table else
+                sorted((row for row in rows if row[0].startswith(key)), key=lambda row: row[1]))
         return menvelope.envelope({
             "query": name, "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY),
             "symbols_total": len(hits),
-            "symbols": [{"name": held.shown(n), "addr": st.hex_addr(table[n]),
-                         "memory": memory(table[n])} for n in hits[:limit]],
+            "symbols": [{"name": held.shown(n), "addr": st.hex_addr(a), "memory": memory(a)}
+                        for n, a in hits[:limit]],
             "truncated": len(hits) > limit, **note,
         })
     addr = inputs.hex_arg("linear", linear)
     placed = nearest_symbol(addr, cpu)
     if placed is None:
+        lowest = min(at for _, at in gs.rows_of(table))
         return menvelope.invalid("unknown_ref",
                                  f"{addr:#x} is below every symbol in the table (the lowest is "
-                                 f"{min(table.values()):#x}), so nothing contains it",
+                                 f"{lowest:#x}), so nothing contains it",
                                  linear=st.hex_addr(addr), cpu=cpu)
     base, best = placed
     return menvelope.envelope({"linear": st.hex_addr(addr),

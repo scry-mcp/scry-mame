@@ -446,7 +446,7 @@ def test_the_survey_reads_the_dump_as_of_this_stop_and_says_when_it_is_behind(
     assert item["since_last_stop"] == 102 and item["values_total"] == 52
     assert len(item["values"]) == mstate.ROWS_SHOWN  # type: ignore[arg-type]
     assert item["overflow_values"] == 0 and item["writers_total"] == 1
-    assert item["writers"] == [{"pc": "0x0000040e", "count": 102, "symbol": "IRQ_VBLANK+0xe"}]
+    assert item["writers"] == [{"pc": "0x0000040e", "count": 102, "symbol": "COPY_IN_ROM+0xe"}]
     assert item["values"][0] == {"at": "0x002031fc", "raw_hex": "0000", "count": 51,  # type: ignore[index]
                                  "partial": True}
     again = _survey(ses, 61)

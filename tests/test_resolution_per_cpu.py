@@ -129,6 +129,26 @@ def test_symbols_find_looks_in_the_named_cpus_table_and_says_which(
     assert s.symbols_find(name="sub_only")["cpu"] == SUB, "no cpu named: the visible one's"
 
 
+def test_a_name_the_table_gives_twice_is_refused_by_every_reader_and_found_with_both_rows(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _two_programs(monkeypatch, tmp_path)
+    names = g.Names()
+    for key, at in (("COUNT", 0x700), ("OTHER", 0x710), ("COUNT", 0x720)):
+        names.add(key, at)
+    monkeypatch.setitem(mstate.STATE.tables, MAIN, g.SymbolTable(names, {}, "yaml"))
+    for refusal in (s.read_memory(ref="count", length=2), s.disassemble(ref="count", length=4),
+                    s.breakpoint_at(ref="count"), s.write(ref="count", data_hex="01"),
+                    s.watch_add(ref="count", mode="change", length=2),
+                    s.run_to(ref="other", control="count", seconds=1.0)):
+        assert refusal["status"] == "INVALID" and refusal["code"] == "ambiguous_ref", refusal
+        assert "0x700, 0x720" in refusal["message"], refusal
+    found = s.symbols_find(name="count")
+    assert [row["addr"] for row in found["symbols"]] == ["0x00000700", "0x00000720"], found
+    assert found["symbols_total"] == 2
+    assert s.read_memory(ref="other", length=2)["addr"] == "0x00000710"
+
+
 def test_a_symbol_spelled_like_a_register_is_judged_against_its_own_cpus_registers(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

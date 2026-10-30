@@ -976,6 +976,10 @@ C12_TABLE = [
     "watch_add by symbol watches the table's address",
     "run_to by symbol stops at the table's address",
     "a YAML table carries no classes: symbol_coverage is an empty list",
+    "a name the table gives twice is refused as ambiguous, naming both addresses",
+    "symbols_find lists both rows of a name the table gives twice",
+    "two names at one address: the first row of the file places it",
+    "status after close has no overlay, and still answers the last stop",
 ]
 
 
@@ -1030,6 +1034,22 @@ def c12_symbols() -> None:
     r = call("run_to", ref="irq_vblank", control="0x4a0", seconds=10.0)
     cell(t[9], r.get("verdict") == "TARGET" and r.get("pc") == "0x00000400", said(r))
     cell(t[10], call("machine_map").get("symbol_coverage") == [], said(PENDING[-1]["reply"]))
+    call("close")
+    twice = Path(fresh(".yaml"))
+    twice.write_text("- addr: 0x400\n  name: irq_vblank\n- addr: 0x410\n  name: irq_vblank\n"
+                     "- addr: 0x420\n  name: first\n- addr: 0x420\n  name: second\n",
+                     encoding="utf-8")
+    boot(symbols=str(twice))
+    r = call("read_memory", ref="irq_vblank", length=2)
+    cell(t[11], refused(r, "ambiguous_ref") and "0x400, 0x410" in str(r.get("message")), said(r))
+    r = call("symbols_find", name="irq_vblank")
+    cell(t[12], ok(r) and r.get("symbols_total") == 2, said(r))
+    r = call("symbols_find", linear="0x424")
+    cell(t[13], ok(r) and r.get("name") == "first" and r.get("delta") == 4, said(r))
+    call("close")
+    r = call("status")
+    cell(t[14], ok(r) and r["session"]["alive"] is False and "presence" not in r
+         and "last_stop" in r, said(r))
 
 
 C13 = [

@@ -125,18 +125,18 @@ Reference: REFERENCE.md, Declarations.
 | `added` | integer |
 | `comment` | object |
 | `comments_total` | integer |
-| `cpu` | string |
 | `declarations` | object |
 | `deleted` | object |
 | `dropped_comments` | array |
 | `dropped_total` | integer |
-| `held_in_memory` | boolean |
 | `parsed` | integer |
 | `path` | string |
 | `replaced_comments` | array |
 | `replaced_total` | integer |
 | `truncated` | boolean |
 | `unchanged` | integer |
+| `cpu` | string |
+| `held_in_memory` | boolean |
 
 Example, from a live run:
 

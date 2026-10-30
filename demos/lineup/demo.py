@@ -86,7 +86,8 @@ def boot(run: Run) -> dict[str, Any]:
 
 def started(reply: Reply, run: Run) -> str:
     free_set.booted(reply)
-    return f"{reply['system']} on MAME, rom_check OK, {reply['symbols_total']} symbols"
+    return (f"{reply['system']} on MAME, rom_check OK, {reply['symbols_total']} symbols"
+            f"{free_set.retried(reply)}")
 
 
 BINDING = Binding(

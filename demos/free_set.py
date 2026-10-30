@@ -1,7 +1,7 @@
-"""What every demo on a free mamedev.org set shares.
+"""What the MAME demos share: the boot, the checks every step runs and the shape of a demo.
 
-The set is free for non-commercial use from mamedev.org only, so a demo says where to get it
-and never carries it.
+A demo on a free mamedev.org set says where to get it and never carries it: the set is free
+for non-commercial use from mamedev.org only. A game's own demo takes the rest.
 """
 
 from __future__ import annotations
@@ -101,9 +101,16 @@ def booted(reply: Reply) -> None:
            f"the build's release was not read: {reply['version']}")
 
 
+def retried(reply: Reply) -> str:
+    """What a start that needed retries adds to its line, so the README never hides it."""
+    n = len(reply.get("start_retries", []))
+    return f", after {n} start {'retry' if n == 1 else 'retries'}" if n else ""
+
+
 def started(reply: Reply, run: Run) -> str:
     booted(reply)
-    return f"{reply['system']} on MAME {reply['version']}, rom_check OK, pc {reply['pc']}"
+    return (f"{reply['system']} on MAME {reply['version']}, rom_check OK, pc {reply['pc']}"
+            f"{retried(reply)}")
 
 
 def ran(reply: Reply, run: Run) -> str:

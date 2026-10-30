@@ -60,12 +60,12 @@ While a session holds the window, an orange edge says so: dim from `start` to `c
 | `cancelled` | object |
 | `session` | object |
 | `answers_while_running` | array |
-| `broken` | string |
-| `cause` | string |
-| `cpu_tags` | array of string |
 | `exit_code` | integer or object |
 | `last_stop` | object |
 | `stopped_on_its_own` | object |
+| `broken` | string |
+| `cause` | string |
+| `cpu_tags` | array of string |
 <!-- scry-reference:end envelope -->
 
 **Every tool publishes its reply as its `outputSchema`**: each field is its value or `unavailable(why)`, `status` is required, and the fields an `ok` reply always carries are required of it (unless its `omitted` names them). A field that comes only under a condition says which in the tool's `Reply:` sentence.

@@ -11,7 +11,10 @@ object, its `instructions`, the roster of tools by family). Every other module i
 holds one concern, and its
 docstring opens with what it holds and why: read that before changing it. What both Scry servers
 share (the reply contract, the reference generator, the demo runner, the probe, the live bench)
-is the scry-core package, pinned by tag in `pyproject.toml`. `demos/` holds the demos on free sets and `patches/` the MAME patches the README names. `tests/` holds the
+is the scry-core package, pinned by tag in `pyproject.toml`; its README lists every module, among them `scry_core.process_tree` (ending a launched
+process with everything it started), `scry_core.regpoint` (the `regpoint_hit` of a registerpoint
+stop) and `scry_core.tool_replies` (the fields `screen_map_write`, `log_wait` and `comment_write`
+share). `demos/` holds the demos and `patches/` the MAME patches the README names. `tests/` holds the
 contract tests and `tests/live/` the tiers that drive a real emulator.
 
 ## The battery
@@ -90,9 +93,10 @@ the server, the running contract and the throttle flight included.
 uv run python tests/live/live_check.py
 ```
 
-Its checks are mostly on the `m68k-dual` board; the rest run the demos on the free sets with the
-MAME `MAME_BINARY` names, and a host without either leaves something unexamined, which is INVALID
-and not a pass. The tracked live code names boards only by label.
+Its checks run on boards this repository does not carry and on the demos' free sets, with the
+MAME `MAME_BINARY` names. A board that is not there is BLOCKED naming what is missing, and a host
+with nothing to run them on leaves everything unexamined, which is INVALID and not a pass. The
+tracked live code names boards only by label.
 
 `tests/live/live_matrix.py` is the matrix around those checks (every tool, every machine state,
 every argument edge, every pair of tools that share state), one printed line per cell:
@@ -115,25 +119,6 @@ are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map
 window open it as `start` does, and the host's own arguments (*The window, and the host's own
 arguments*, on [`start`'s page](docs/reference/session.md#start)) place it, so a host can keep
 those runs off the display somebody works on.
-
-## The bench the live tier reads
-
-The private boards run on a bench: copies of their ROMs and symbol files, and of the binary of a
-board that runs its own, pinned by hash in the bench's own `bench.json`, with an `identity.json`
-beside it that says which set and files each board's label stands for (its keys: `IDENTITY_KEYS` in `tests/live/bench_boards.py`). A live
-run reads no other repository, so a session editing a checkout cannot change what it measures.
-
-Neither file is tracked, because both name the programs the copies came from. The bench is the
-directory `MAME_LIVE_BENCH` names, else `.local/share/scry-bench/mame` under your home directory.
-
-```sh
-uv run python -m scry_core.live_bench fill --bench <bench> --from <source_repo>=<checkout>
-uv run python -m scry_core.live_bench check --bench <bench>
-```
-
-`fill` copies the files from their checkouts and `check` says whether they still match. A board
-whose identity is incomplete or whose copies are absent or wrong is BLOCKED naming what is wrong,
-and never runs on something else.
 
 ## What a live run guards
 

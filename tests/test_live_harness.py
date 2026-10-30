@@ -563,6 +563,21 @@ def test_a_verdict_with_no_section_beside_it_is_named_when_the_run_is_planned(
     assert not [x for x in out if x.startswith("cannot be judged") and "a1" in x]
 
 
+def test_the_real_focus_verdict_is_registered_as_one_that_spans_the_run(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Dropping `spans` from the real section X would leave a verdict that cannot be judged named
+    by no one, with every unit case green."""
+    h = _sections(monkeypatch, tmp_path, MAME_LIVE_JOBS="1")
+    monkeypatch.syspath_prepend(str(Path(__file__).parent / "live"))
+    monkeypatch.setattr(h, "SECTIONS", [])
+    focus = importlib.import_module("matrix_focus")
+    monkeypatch.setattr(focus, "section", h.section)
+    focus.register_x_verdict()
+    [verdict] = h.SECTIONS
+    assert verdict.block == "X" and verdict.spans
+    assert [label for label, _ in h.cannot_be_judged([verdict])] == verdict.labels
+
+
 def test_a_verdict_with_a_section_beside_it_is_not_named(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
         capsys: pytest.CaptureFixture[str]) -> None:

@@ -121,20 +121,20 @@ Example, from a live run:
 ```json
 {
   "method": "save",
-  "name": "kept"
+  "name": "m7"
 }
 ```
 
 ```json
 {
-  "summary": "state_write save: kept, 1074 bytes at frame 0",
+  "summary": "state_write save: m7, 70209 bytes at frame 600",
   "status": "ok",
-  "name": "kept",
-  "path": "$TMPDIR/mame-mcp-<run>/sta/circus/kept.sta",
-  "bytes": 1074,
-  "frame": 0,
-  "pc": "0x00001000",
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 246}
+  "name": "m7",
+  "path": "$TMPDIR/mame-mcp-<run>/sta/speedf/m7.sta",
+  "bytes": 70209,
+  "frame": 600,
+  "pc": "0x000f5bc7",
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 251}
 }
 ```
 <!-- scry-reference:end state_write -->

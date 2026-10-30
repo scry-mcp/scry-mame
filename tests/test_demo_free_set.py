@@ -1,5 +1,5 @@
-"""What the demos on free sets share (`demos/free_set.py`), without an emulator: where a demo
-refuses to start, and the reference image it takes out of the set's zip."""
+"""What the MAME demos share (`demos/free_set.py`), without an emulator: where a demo refuses to
+start, the reference image it takes out of a free set's zip, and the checks every demo runs."""
 
 from __future__ import annotations
 
@@ -107,6 +107,12 @@ def test_the_shared_checks_pass_on_a_right_answer_and_name_a_wrong_one(tmp_path:
     rights = [
         (free_set.started, _reply(rom_check="OK", system="x", version="v", pc="0x0"),
          "x on MAME v, rom_check OK, pc 0x0"),
+        (free_set.started, _reply(rom_check="OK", system="x", version="v", pc="0x0",
+                                  start_retries=[{"why": "a"}]),
+         "x on MAME v, rom_check OK, pc 0x0, after 1 start retry"),
+        (free_set.started, _reply(rom_check="OK", system="x", version="v", pc="0x0",
+                                  start_retries=[{"why": "a"}, {"why": "b"}]),
+         "x on MAME v, rom_check OK, pc 0x0, after 2 start retries"),
         (free_set.ran, _reply(verdict="ELAPSED", frame_before=1, frame_after=2, cycles=3),
          "ran to frame 2, 3 cycles"),
         (free_set.scanned("0x0", 4), _reply(hits_total=4), "4 candidate bytes in 0x0+0x4"),

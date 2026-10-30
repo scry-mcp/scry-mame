@@ -108,9 +108,9 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "~/.local/state/mame-builds/scry/mame",
+  "binary": "/path/to/mame",
   "system": "circus",
-  "rompath": "/path/to/mame-test-roms",
+  "rompath": "/path/to/roms",
   "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/f1-image/circus.ref",
   "reference_addr": "0x1000",
   "reference_base": "0x1000",
@@ -123,16 +123,16 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "start circus on ~/.local/state/mame-builds/scry/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
+  "summary": "start circus on /path/to/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
   "status": "ok",
   "system": "circus",
-  "binary": "~/.local/state/mame-builds/scry/mame",
+  "binary": "/path/to/mame",
   "binary_origin": "argument",
   "version": "<volatile>",
   "pid": "<volatile>",
   "stub_port": "<volatile>",
   "scratch_dir": "$TMPDIR/mame-mcp-<run>",
-  "state_dir": "",
+  "state_dir": "$TMPDIR/mame-mcp-<run>",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
@@ -244,12 +244,13 @@ status()
 Whether a machine is alive, and which one. Safe on a running machine; a stop it finds the
 machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-Reply: with no session, a `note` when there is one to give; a process that exited under it,
-`exit_code` and a `note`; with a session, `system`, `pid`, `stub_port`, `scratch_dir`,
-`state_dir`, `presence`, `debugger`, `fingerprint` (`fingerprints` per cpu),
-`errorlog_path`, `pc`, `in_debugger` (`breakpoints`, `watches`, `regpoints`: each `ref`,
-`cpu`), `console_pending`, `throttles_pending`, `tallies_pending_removal`. Also
-`last_stop` (`stop_seq`, `pc`, `cpu`, `cause`) and `broken` when the session can no longer
+Reply: `last_stop` (`stop_seq`, `pc`, `cpu`, `cause`, `since_s`, `wall_at`) with or without a
+session, the last stop of the one that ended when there is none now; with no session also a
+`note` when there is one to give, or, for a process that exited under it, `exit_code` and a
+`note`; with a session `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `presence`,
+`debugger`, `fingerprint` (`fingerprints` per cpu), `errorlog_path`, `pc`, `in_debugger`
+(`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
+`throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
 be trusted: `close`, then `start`.
 
 Reference: REFERENCE.md, The session.
@@ -287,7 +288,8 @@ Example, from a live run:
 ```json
 {
   "summary": "status: no session",
-  "status": "ok"
+  "status": "ok",
+  "last_stop": {"available": false, "why": "this session has not stopped yet"}
 }
 ```
 <!-- scry-reference:end status -->
@@ -486,7 +488,7 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/f3-image/circus.ref",
+  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/H/f3-image/circus.ref",
   "reference_addr": "0x1000",
   "reference_base": "0x1000"
 }
@@ -494,11 +496,11 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.174 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.196 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001174,
+  "query_s": 0.001196,
   "cpu": ":maincpu"
 }
 ```

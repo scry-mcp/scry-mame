@@ -1,0 +1,1605 @@
+**1. `start`**: OK start: starfire on MAME 0.289 (unknown), rom_check OK, pc 0x00000000
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "system": "starfire",
+  "reference_rom": "./tmp/demos/starfire/starfire.ref",
+  "reference_addr": "0x0",
+  "reference_base": "0x0",
+  "inipath": "./tmp/demos/starfire/starfire-ini",
+  "state_dir": "./tmp/demos/starfire/starfire-states",
+  "boot_seconds": 60,
+  "rompath": "<host>"
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "system": "starfire",
+  "binary": "<volatile>",
+  "binary_origin": "<volatile>",
+  "version": "0.289 (unknown)",
+  "pid": "<volatile>",
+  "stub_port": "<volatile>",
+  "scratch_dir": "<volatile>",
+  "state_dir": "./tmp/demos/starfire/starfire-states",
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
+  "debugger": {
+    "attached": "gdbstub",
+    "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture with a live golden"
+  },
+  "errorlog_path": "<volatile>",
+  "stdout_path": "<volatile>",
+  "rom_check": "OK",
+  "symbols_total": 0,
+  "symbols_format": "none",
+  "symbols_by_class": {},
+  "symbols_by_cpu": {},
+  "registers": ["AF", "BC", "DE", "HL", "AF'", "BC'", "DE'", "HL'", "IX", "IY", "SP", "PC", "IR"],
+  "pc": "0x00000000",
+  "frame": 0,
+  "frame_symbol": "frame",
+  "view": "native",
+  "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:7)", "Cocktail"],
+  "background": true,
+  "flags": "<volatile>",
+  "boot_lua_path": "<volatile>",
+  "presence": true,
+  "machine": {"cpus": 2, "spaces": 2, "address_map": 4, "regions": 2, "shares": 2, "screens": 1, "rom_files": 13},
+  "declarations": {
+    "persistent": false,
+    "path": {
+      "available": false,
+      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
+    },
+    "key": {
+      "available": false,
+      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
+    },
+    "held": 0,
+    "fingerprint": "81f576387e42acab",
+    "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
+    "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
+  },
+  "recommended_release": "0.289",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "altering_writes": 0,
+    "console": {"thread_errors": 0, "reruns": 0, "lost": 0}
+  }
+}
+```
+
+</details>
+
+**2. `run_for`**: OK attract: attract mode ran to frame 179, 7500001 cycles
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "milliseconds": 3000,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "run_for 3000 ms: ELAPSED, frame 0 to 179",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 0,
+  "frame_after": 179,
+  "emulated_before_s": 0.0,
+  "emulated_after_s": 3.0,
+  "cycles": 7500001,
+  "reads": "<volatile>",
+  "cause": "the console's `gtime` stop",
+  "stop_seq": 2,
+  "pc": "0x00002b40",
+  "cpu": ":maincpu",
+  "frame": 179,
+  "regs": {
+    "AF": "0x4f08",
+    "BC": "0x0602",
+    "DE": "0x34f7",
+    "HL": "0x0b4e",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8393",
+    "IY": "0x82af",
+    "SP": "0x8085",
+    "PC": "0x2b40",
+    "IR": "0x0004"
+  },
+  "instruction": {
+    "address": "2B40",
+    "bytes": "20FB",
+    "text": "jr   nz,$2B3D",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a", "2B58: 3A 8D 80 ld   a,($808D)", "2B5B: 32 00 A4 ld   ($A400),a", "2B5E: 01 1E 34 ld   bc,$341E"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1091},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**3. `scan`**: OK scan: 1024 candidate bytes in 0x8000+0x400
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "method": "start",
+  "ref": "0x8000",
+  "length": 1024
+}
+```
+
+```json
+{
+  "summary": "scan start: 0x8000, 1024 1-byte candidates on :maincpu",
+  "status": "ok",
+  "addr": "0x00008000",
+  "length": 1024,
+  "cell_bytes": 1,
+  "hits_total": 1024,
+  "cpu": ":maincpu",
+  "space": "program",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**4. `perform`**: OK coin 1: coin 1: 8 cells still hold 1
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "steps": [
+    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
+    {"op": "run_for", "milliseconds": 500, "seconds": 300},
+    {"op": "scan", "method": "filter", "operator": "=", "value": 1}
+  ],
+  "settle_seconds": 300
+}
+```
+
+```json
+{
+  "summary": "perform: 3 steps completed",
+  "status": "ok",
+  "ran": [
+    {
+      "op": "input",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 183",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 179,
+        "frame_after": 184,
+        "emulated_before_s": 3.008814,
+        "emulated_after_s": 3.092393,
+        "cycles": 208949,
+        "polls": 6,
+        "lines_ahead": 0,
+        "thread_errors": 0,
+        "console_reruns": 0,
+        "route": "ioport",
+        "port": ":SYSTEM",
+        "field": "Coin 1",
+        "value": "0x00000001",
+        "frames": 4,
+        "name": "Coin 1",
+        "player": 0,
+        "mask": "0x00000001",
+        "defvalue": "0x00000000",
+        "port_before": "0x000000f8",
+        "frame_set": 179,
+        "released": true,
+        "port_held": "0x000000f9",
+        "frame_released": 183,
+        "active": true,
+        "cause": "the `gvblank` stop of the last frame asked",
+        "stop_seq": 3,
+        "pc": "0x00000066",
+        "cpu": ":maincpu",
+        "frame": 184,
+        "regs": {
+          "AF": "0x2d54",
+          "BC": "0x0c00",
+          "DE": "0x4003",
+          "HL": "0x8263",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x820d",
+          "IY": "0x82af",
+          "SP": "0x807d",
+          "PC": "0x0066",
+          "IR": "0x001d"
+        },
+        "instruction": {
+          "address": "0066",
+          "bytes": "C36900",
+          "text": "jp   $0069",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+        "errorlog": {
+          "lines_total": 2,
+          "truncated": false,
+          "lines": ["[luaengine] MAME_MCP_INPUT#1 release frame=183 port_held=000000f9", ""],
+          "mark": 1211
+        },
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "run_for",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "run_for 500 ms: ELAPSED, frame 184 to 214",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 184,
+        "frame_after": 214,
+        "emulated_before_s": 3.092393,
+        "emulated_after_s": 3.592395,
+        "cycles": 1250005,
+        "reads": "<volatile>",
+        "cause": "the console's `gtime` stop",
+        "stop_seq": 4,
+        "pc": "0x00002b38",
+        "cpu": ":maincpu",
+        "frame": 214,
+        "regs": {
+          "AF": "0xb5b3",
+          "BC": "0x00c9",
+          "DE": "0xdbb5",
+          "HL": "0x0038",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x8255",
+          "IY": "0x82af",
+          "SP": "0x808d",
+          "PC": "0x2b38",
+          "IR": "0x0002"
+        },
+        "instruction": {
+          "address": "2B38",
+          "bytes": "18FE",
+          "text": "jr   $2B38",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+        "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1278},
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "scan",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "scan filter: = 0x01, 8 survivors",
+        "status": "ok",
+        "operator": "=",
+        "value": "0x01",
+        "iterations": 1,
+        "closed": false,
+        "hits": [
+          {"addr": "0x00008070", "value": "0x01"},
+          {"addr": "0x00008208", "value": "0x01"},
+          {"addr": "0x0000820f", "value": "0x01"},
+          {"addr": "0x0000823f", "value": "0x01"},
+          {"addr": "0x0000824b", "value": "0x01"},
+          {"addr": "0x00008298", "value": "0x01"},
+          {"addr": "0x00008299", "value": "0x01"},
+          {"addr": "0x00008398", "value": "0x01"}
+        ],
+        "hits_total": 8,
+        "truncated": false,
+        "cpu": ":maincpu",
+        "space": "program",
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    }
+  ],
+  "steps_completed": 3,
+  "failed_at": {"available": false, "why": "no step failed"},
+  "held": 0,
+  "visible_cpu": ":maincpu",
+  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**5. `perform`**: OK coin 2: coin 2: 2 cells still hold 2
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "steps": [
+    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
+    {"op": "run_for", "milliseconds": 500, "seconds": 300},
+    {"op": "scan", "method": "filter", "operator": "=", "value": 2}
+  ],
+  "settle_seconds": 300
+}
+```
+
+```json
+{
+  "summary": "perform: 3 steps completed",
+  "status": "ok",
+  "ran": [
+    {
+      "op": "input",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 218",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 214,
+        "frame_after": 219,
+        "emulated_before_s": 3.593859,
+        "emulated_after_s": 3.677437,
+        "cycles": 208946,
+        "polls": 6,
+        "lines_ahead": 0,
+        "thread_errors": 0,
+        "console_reruns": 0,
+        "route": "ioport",
+        "port": ":SYSTEM",
+        "field": "Coin 1",
+        "value": "0x00000001",
+        "frames": 4,
+        "name": "Coin 1",
+        "player": 0,
+        "mask": "0x00000001",
+        "defvalue": "0x00000000",
+        "port_before": "0x000000f8",
+        "frame_set": 214,
+        "released": true,
+        "port_held": "0x000000f9",
+        "frame_released": 218,
+        "active": true,
+        "cause": "the `gvblank` stop of the last frame asked",
+        "stop_seq": 5,
+        "pc": "0x00000066",
+        "cpu": ":maincpu",
+        "frame": 219,
+        "regs": {
+          "AF": "0xfda8",
+          "BC": "0x0b00",
+          "DE": "0xfd03",
+          "HL": "0x825e",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x8213",
+          "IY": "0x82af",
+          "SP": "0x807d",
+          "PC": "0x0066",
+          "IR": "0x0008"
+        },
+        "instruction": {
+          "address": "0066",
+          "bytes": "C36900",
+          "text": "jp   $0069",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+        "errorlog": {
+          "lines_total": 2,
+          "truncated": false,
+          "lines": ["[luaengine] MAME_MCP_INPUT#2 release frame=218 port_held=000000f9", ""],
+          "mark": 1398
+        },
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "run_for",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "run_for 500 ms: ELAPSED, frame 219 to 249",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 219,
+        "frame_after": 249,
+        "emulated_before_s": 3.677437,
+        "emulated_after_s": 4.177438,
+        "cycles": 1250003,
+        "reads": "<volatile>",
+        "cause": "the console's `gtime` stop",
+        "stop_seq": 6,
+        "pc": "0x00002b38",
+        "cpu": ":maincpu",
+        "frame": 249,
+        "regs": {
+          "AF": "0xb5b3",
+          "BC": "0x00c9",
+          "DE": "0xdbb5",
+          "HL": "0x0038",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x8255",
+          "IY": "0x82af",
+          "SP": "0x808d",
+          "PC": "0x2b38",
+          "IR": "0x0008"
+        },
+        "instruction": {
+          "address": "2B38",
+          "bytes": "18FE",
+          "text": "jr   $2B38",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+        "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1465},
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "scan",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "scan filter: = 0x02, 2 survivors",
+        "status": "ok",
+        "operator": "=",
+        "value": "0x02",
+        "iterations": 2,
+        "closed": false,
+        "hits": [
+          {"addr": "0x00008298", "value": "0x02"},
+          {"addr": "0x00008299", "value": "0x02"}
+        ],
+        "hits_total": 2,
+        "truncated": false,
+        "cpu": ":maincpu",
+        "space": "program",
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    }
+  ],
+  "steps_completed": 3,
+  "failed_at": {"available": false, "why": "no step failed"},
+  "held": 0,
+  "visible_cpu": ":maincpu",
+  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**6. `perform`**: OK coin 3: coin 3: one cell left, 0x00008299, holding 3
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "steps": [
+    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
+    {"op": "run_for", "milliseconds": 500, "seconds": 300},
+    {"op": "scan", "method": "filter", "operator": "=", "value": 3}
+  ],
+  "settle_seconds": 300
+}
+```
+
+```json
+{
+  "summary": "perform: 3 steps completed",
+  "status": "ok",
+  "ran": [
+    {
+      "op": "input",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 253",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 249,
+        "frame_after": 254,
+        "emulated_before_s": 4.178907,
+        "emulated_after_s": 4.262483,
+        "cycles": 208941,
+        "polls": 6,
+        "lines_ahead": 0,
+        "thread_errors": 0,
+        "console_reruns": 0,
+        "route": "ioport",
+        "port": ":SYSTEM",
+        "field": "Coin 1",
+        "value": "0x00000001",
+        "frames": 4,
+        "name": "Coin 1",
+        "player": 0,
+        "mask": "0x00000001",
+        "defvalue": "0x00000000",
+        "port_before": "0x000000f8",
+        "frame_set": 249,
+        "released": true,
+        "port_held": "0x000000f9",
+        "frame_released": 253,
+        "active": true,
+        "cause": "the `gvblank` stop of the last frame asked",
+        "stop_seq": 7,
+        "pc": "0x00000066",
+        "cpu": ":maincpu",
+        "frame": 254,
+        "regs": {
+          "AF": "0x4780",
+          "BC": "0x0c00",
+          "DE": "0x8003",
+          "HL": "0x8265",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x820d",
+          "IY": "0x82af",
+          "SP": "0x807b",
+          "PC": "0x0066",
+          "IR": "0x0018"
+        },
+        "instruction": {
+          "address": "0066",
+          "bytes": "C36900",
+          "text": "jp   $0069",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+        "errorlog": {
+          "lines_total": 2,
+          "truncated": false,
+          "lines": ["[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9", ""],
+          "mark": 1585
+        },
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "run_for",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "run_for 500 ms: ELAPSED, frame 254 to 284",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 254,
+        "frame_after": 284,
+        "emulated_before_s": 4.262483,
+        "emulated_after_s": 4.762487,
+        "cycles": 1250010,
+        "reads": "<volatile>",
+        "cause": "the console's `gtime` stop",
+        "stop_seq": 8,
+        "pc": "0x00002b38",
+        "cpu": ":maincpu",
+        "frame": 284,
+        "regs": {
+          "AF": "0xb5b3",
+          "BC": "0x00c9",
+          "DE": "0xdbb5",
+          "HL": "0x0038",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x8255",
+          "IY": "0x82af",
+          "SP": "0x808d",
+          "PC": "0x2b38",
+          "IR": "0x0039"
+        },
+        "instruction": {
+          "address": "2B38",
+          "bytes": "18FE",
+          "text": "jr   $2B38",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+        "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1652},
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "scan",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "scan filter: = 0x03, 1 survivor",
+        "status": "ok",
+        "operator": "=",
+        "value": "0x03",
+        "iterations": 3,
+        "closed": false,
+        "hits": [
+          {"addr": "0x00008299", "value": "0x03"}
+        ],
+        "hits_total": 1,
+        "truncated": false,
+        "cpu": ":maincpu",
+        "space": "program",
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    }
+  ],
+  "steps_completed": 3,
+  "failed_at": {"available": false, "why": "no step failed"},
+  "held": 0,
+  "visible_cpu": ":maincpu",
+  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**7. `watch_add`**: OK watch: a change watch armed at 0x00008299
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x8299",
+  "mode": "change",
+  "fmt": "u8"
+}
+```
+
+```json
+{
+  "summary": "watch_add 0x8299: change watch armed at 0x00008299, 1 byte",
+  "status": "ok",
+  "ref": "0x8299",
+  "by": "address",
+  "mode": "change",
+  "length": 1,
+  "fmt": "u8",
+  "cpu": ":maincpu",
+  "while_running": false,
+  "addr": "0x00008299",
+  "stored": true,
+  "armed": true,
+  "state": "armed",
+  "index": 1,
+  "entry": "1 @ 8299-8299 write",
+  "write_maps_to": "starfire_base_state::scratch_w",
+  "read_maps_to": "starfire_base_state::scratch_r",
+  "values_from": "bus",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**8. `input`**: OK coin 4: the fourth coin stopped the machine: Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":SYSTEM",
+  "field": "Coin 1",
+  "frames": 4,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "input :SYSTEM 'Coin 1': still HELD from frame 284, releases at 288",
+  "status": "ok",
+  "verdict": "OTHER_STOP",
+  "frame_before": 284,
+  "frame_after": 284,
+  "emulated_before_s": 4.764453,
+  "emulated_after_s": 4.764453,
+  "cycles": 0,
+  "polls": 2,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":SYSTEM",
+  "field": "Coin 1",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "Coin 1",
+  "player": 0,
+  "mask": "0x00000001",
+  "defvalue": "0x00000000",
+  "port_before": "0x000000f8",
+  "frame_set": 284,
+  "released": false,
+  "active": {
+    "available": false,
+    "why": "the field is still HELD: the port is read at its release, which the run has not reached"
+  },
+  "port_held": {
+    "available": false,
+    "why": "the field is still HELD: the port is read at its release, which the run has not reached"
+  },
+  "frame_release_planned": 288,
+  "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
+  "cause": "watch 0x8299: 0x00008299 written by pc 0x00001e48",
+  "stop_seq": 9,
+  "pc": "0x00001e49",
+  "cpu": ":maincpu",
+  "frame": 284,
+  "regs": {
+    "AF": "0x0200",
+    "BC": "0x0003",
+    "DE": "0x0015",
+    "HL": "0x8299",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x8073",
+    "PC": "0x1e49",
+    "IR": "0x0004"
+  },
+  "instruction": {
+    "address": "1E49",
+    "bytes": "21AF82",
+    "text": "ld   hl,$82AF",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["1E4C: 7E       ld   a,(hl)", "1E4D: B7       or   a", "1E4E: 28 09    jr   z,$1E59", "1E50: 36 00    ld   (hl),$00", "1E52: 06 04    ld   b,$04", "1E54: 2B       dec  hl", "1E55: 36 09    ld   (hl),$09", "1E57: 10 FB    djnz $1E54", "1E59: C3 33 22 jp   $2233", "1E5C: 21 B5 82 ld   hl,$82B5", "1E5F: 11 9D 82 ld   de,$829D", "1E62: 01 05 00 ld   bc,$0005", "1E65: ED B0    ldir", "1E67: 3A 00 98 ld   a,($9800)"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1772},
+  "watches": [
+    {
+      "ref": "0x8299",
+      "cpu": ":maincpu",
+      "state": "armed",
+      "reading": {"state": "bus", "last_wrote": 4, "read_maps_to": "starfire_base_state::scratch_r"}
+    }
+  ],
+  "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "watch_hit": {
+    "ref": "0x8299",
+    "addr": "0x00008299",
+    "cpu": ":maincpu",
+    "index": 1,
+    "writes_total": 1,
+    "truncated": false,
+    "writer_pc": "0x00001e48",
+    "writes": [
+      {"wrote": "0x04", "to": "0x00008299", "pc": "0x00001e48"}
+    ],
+    "values_from": "bus",
+    "before": {
+      "available": false,
+      "why": "the first write logged since the watch was armed: no earlier write to compare"
+    },
+    "after": 4,
+    "lines": ["Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)"]
+  },
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**9. `disassemble`**: OK writer: the writer: 1E48: 34 inc (hl)
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x1e40",
+  "length": 16
+}
+```
+
+```json
+{
+  "summary": "disassemble 0x1e40: 9 lines at 0x00001e40",
+  "status": "ok",
+  "addr": "0x00001e40",
+  "length": 16,
+  "lines": ["1E40: 2F       cpl", "1E41: E6 03    and  $03", "1E43: 28 BF    jr   z,$1E04", "1E45: 21 99 82 ld   hl,$8299", "1E48: 34       inc  (hl)", "1E49: 21 AF 82 ld   hl,$82AF", "1E4C: 7E       ld   a,(hl)", "1E4D: B7       or   a", "1E4E: 28 09    jr   z,$1E59"],
+  "cpu": ":maincpu",
+  "flow": ["unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"],
+  "flow_source": "none",
+  "note": "no mnemonic table for cpu type 'z80' (tables: m68000, v30), so no line is classified",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**10. `history`**: OK history: 12 instructions led there, ending 1E49: ld hl,$82AF
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "limit": 12
+}
+```
+
+```json
+{
+  "summary": "history: 12 instructions of 12 asked",
+  "status": "ok",
+  "asked": 12,
+  "lines": ["2640: ld   (hl),a", "2641: sub  $0A", "2643: ret  m", "1E3B: ld   hl,$8298", "1E3E: inc  (hl)", "1E3F: ld   a,(hl)", "1E40: cpl", "1E41: and  $03", "1E43: jr   z,$1E04", "1E45: ld   hl,$8299", "1E48: inc  (hl)", "1E49: ld   hl,$82AF"],
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**11. `registers`**: OK registers: HL 0x8299 points at the credits, A 0x02
+
+<details><summary>call and reply</summary>
+
+```json
+{}
+```
+
+```json
+{
+  "summary": "registers: 13 registers",
+  "status": "ok",
+  "regs": {
+    "AF": "0x0200",
+    "BC": "0x0003",
+    "DE": "0x0015",
+    "HL": "0x8299",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x8073",
+    "PC": "0x1e49",
+    "IR": "0x0004"
+  },
+  "register_bits": {
+    "AF": 16,
+    "BC": 16,
+    "DE": 16,
+    "HL": 16,
+    "AF'": 16,
+    "BC'": 16,
+    "DE'": 16,
+    "HL'": 16,
+    "IX": 16,
+    "IY": 16,
+    "SP": 16,
+    "PC": 16,
+    "IR": 16
+  },
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**12. `run_for`**: OK release: ran on to frame 314, the coin released
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "milliseconds": 500,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "run_for 500 ms: ELAPSED, frame 284 to 314",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 284,
+  "frame_after": 314,
+  "emulated_before_s": 4.764453,
+  "emulated_after_s": 5.264457,
+  "cycles": 1250009,
+  "reads": "<volatile>",
+  "cause": "the console's `gtime` stop",
+  "stop_seq": 10,
+  "pc": "0x00002b38",
+  "cpu": ":maincpu",
+  "frame": 314,
+  "regs": {
+    "AF": "0xb5b3",
+    "BC": "0x00c9",
+    "DE": "0xdbb5",
+    "HL": "0x0038",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x808d",
+    "PC": "0x2b38",
+    "IR": "0x0029"
+  },
+  "instruction": {
+    "address": "2B38",
+    "bytes": "18FE",
+    "text": "jr   $2B38",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+  "errorlog": {
+    "lines_total": 2,
+    "truncated": false,
+    "lines": ["[luaengine] MAME_MCP_INPUT#4 release frame=288 port_held=000000f9", ""],
+    "mark": 1772
+  },
+  "watches": [
+    {
+      "ref": "0x8299",
+      "cpu": ":maincpu",
+      "state": "armed",
+      "reading": {"state": "bus", "last_wrote": 4, "read_maps_to": "starfire_base_state::scratch_r"}
+    }
+  ],
+  "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
+  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**13. `declaration_clear`**: OK unwatch: the watch cleared
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "kind": "watch",
+  "ref": "0x8299"
+}
+```
+
+```json
+{
+  "summary": "declaration_clear watch 0x8299: 1 cleared, 1 disarmed",
+  "status": "ok",
+  "declarations_cleared": 1,
+  "disarmed": ["1 @ 8299-8299 write"],
+  "while_running": false,
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**14. `read_memory`**: OK credits: credits 4
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x8299",
+  "length": 1
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
+  "status": "ok",
+  "addr": "0x00008299",
+  "length": 1,
+  "hex": "04",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**15. `state_write`**: OK save: state four_credits saved at frame 314
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "method": "save",
+  "name": "four_credits"
+}
+```
+
+```json
+{
+  "summary": "state_write save: four_credits, 16860 bytes at frame 314",
+  "status": "ok",
+  "name": "four_credits",
+  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
+  "bytes": 16860,
+  "frame": 314,
+  "pc": "0x00002b38",
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1839},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**16. `perform`**: OK coin 5: a fifth coin, run to frame 349
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "steps": [
+    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
+    {"op": "run_for", "milliseconds": 500, "seconds": 300}
+  ],
+  "settle_seconds": 300
+}
+```
+
+```json
+{
+  "summary": "perform: 2 steps completed",
+  "status": "ok",
+  "ran": [
+    {
+      "op": "input",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 318",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 314,
+        "frame_after": 319,
+        "emulated_before_s": 5.265421,
+        "emulated_after_s": 5.348998,
+        "cycles": 208942,
+        "polls": 6,
+        "lines_ahead": 0,
+        "thread_errors": 0,
+        "console_reruns": 0,
+        "route": "ioport",
+        "port": ":SYSTEM",
+        "field": "Coin 1",
+        "value": "0x00000001",
+        "frames": 4,
+        "name": "Coin 1",
+        "player": 0,
+        "mask": "0x00000001",
+        "defvalue": "0x00000000",
+        "port_before": "0x000000f8",
+        "frame_set": 314,
+        "released": true,
+        "port_held": "0x000000f9",
+        "frame_released": 318,
+        "active": true,
+        "cause": "the `gvblank` stop of the last frame asked",
+        "stop_seq": 11,
+        "pc": "0x00000066",
+        "cpu": ":maincpu",
+        "frame": 319,
+        "regs": {
+          "AF": "0x6474",
+          "BC": "0x0c00",
+          "DE": "0x6405",
+          "HL": "0x825e",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x820d",
+          "IY": "0x82af",
+          "SP": "0x807b",
+          "PC": "0x0066",
+          "IR": "0x004d"
+        },
+        "instruction": {
+          "address": "0066",
+          "bytes": "C36900",
+          "text": "jp   $0069",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+        "errorlog": {
+          "lines_total": 2,
+          "truncated": false,
+          "lines": ["[luaengine] MAME_MCP_INPUT#5 release frame=318 port_held=000000f9", ""],
+          "mark": 1959
+        },
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    },
+    {
+      "op": "run_for",
+      "cpu": ":maincpu",
+      "reply": {
+        "summary": "run_for 500 ms: ELAPSED, frame 319 to 349",
+        "status": "ok",
+        "verdict": "ELAPSED",
+        "frame_before": 319,
+        "frame_after": 349,
+        "emulated_before_s": 5.348998,
+        "emulated_after_s": 5.849,
+        "cycles": 1250005,
+        "reads": "<volatile>",
+        "cause": "the console's `gtime` stop",
+        "stop_seq": 12,
+        "pc": "0x00002b38",
+        "cpu": ":maincpu",
+        "frame": 349,
+        "regs": {
+          "AF": "0xb5b3",
+          "BC": "0x00c9",
+          "DE": "0xdbb5",
+          "HL": "0x0038",
+          "AF'": "0x0000",
+          "BC'": "0x0000",
+          "DE'": "0x0000",
+          "HL'": "0x0000",
+          "IX": "0x8255",
+          "IY": "0x82af",
+          "SP": "0x808d",
+          "PC": "0x2b38",
+          "IR": "0x0044"
+        },
+        "instruction": {
+          "address": "2B38",
+          "bytes": "18FE",
+          "text": "jr   $2B38",
+          "symbol": {"available": false, "why": "no symbol table places this address"},
+          "delta": {"available": false, "why": "no symbol table places this address"}
+        },
+        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+        "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 2026},
+        "session": {
+          "alive": true,
+          "running": false,
+          "altered": false,
+          "omitted": ["altering_writes", "console"],
+          "how": "call `status`"
+        }
+      }
+    }
+  ],
+  "steps_completed": 2,
+  "failed_at": {"available": false, "why": "no step failed"},
+  "held": 0,
+  "visible_cpu": ":maincpu",
+  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**17. `read_memory`**: OK five: credits 5
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x8299",
+  "length": 1
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 05",
+  "status": "ok",
+  "addr": "0x00008299",
+  "length": 1,
+  "hex": "05",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**18. `state_write`**: OK load: state four_credits loaded and verified, frame 314
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "method": "load",
+  "name": "four_credits"
+}
+```
+
+```json
+{
+  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
+  "status": "ok",
+  "name": "four_credits",
+  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
+  "rom_check": "OK",
+  "verified": true,
+  "saved": {"frame": 314, "pc": "0x00002b38"},
+  "output": "State load attempted.  Please refer to window message popup for results.",
+  "mark": {"emulator": 2026, "process": 7879},
+  "cause": "stateload four_credits",
+  "stop_seq": 13,
+  "pc": "0x00002b38",
+  "cpu": ":maincpu",
+  "frame": 314,
+  "regs": {
+    "AF": "0xb5b3",
+    "BC": "0x00c9",
+    "DE": "0xdbb5",
+    "HL": "0x0038",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x808d",
+    "PC": "0x2b38",
+    "IR": "0x0029"
+  },
+  "instruction": {
+    "address": "2B38",
+    "bytes": "18FE",
+    "text": "jr   $2B38",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 2026},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**19. `read_memory`**: OK back to four: credits 4
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x8299",
+  "length": 1
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
+  "status": "ok",
+  "addr": "0x00008299",
+  "length": 1,
+  "hex": "04",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+</details>
+
+**20. `screen_view`**: OK screen: the screen, 256x224, sha256 da383ebf4687
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "mode": "render",
+  "dest": "./tmp/demos/starfire/screen.png",
+  "scale": 2
+}
+```
+
+```json
+{
+  "summary": "screen_view render :screen frame 314 from colours; 512x448 PNG x2, inline",
+  "status": "ok",
+  "mode": "render",
+  "screen": ":screen",
+  "width": 256,
+  "height": 224,
+  "frame_screen": 314,
+  "palette": {"available": false, "why": "the screen is direct colour: no palette device draws it"},
+  "entries": 0,
+  "screen_indexed": false,
+  "crop": [0, 0, 256, 224],
+  "image": {
+    "path": "./tmp/demos/starfire/screen.png",
+    "bytes": 5785,
+    "sha256": "da383ebf468777bed766f01ead2083ff136b25219a1596d99b4f6709594ae03b",
+    "width": 512,
+    "height": 448,
+    "scale": 2,
+    "indexed": false,
+    "inline": true
+  },
+  "evaluated_by": "one step",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "call": "MAME_MCP_LUA_END#6",
+  "pc_before": "0x00002b38",
+  "cause": "screen_view: one step",
+  "stop_seq": 14,
+  "pc": "0x00002b38",
+  "cpu": ":maincpu",
+  "frame": 314,
+  "regs": {
+    "AF": "0xb5b3",
+    "BC": "0x00c9",
+    "DE": "0xdbb5",
+    "HL": "0x0038",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x808d",
+    "PC": "0x2b38",
+    "IR": "0x002a"
+  },
+  "instruction": {
+    "address": "2B38",
+    "bytes": "18FE",
+    "text": "jr   $2B38",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 2026},
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "call `status`"
+  }
+}
+```
+
+Also attached: image/png.
+
+</details>
+
+**21. `close`**: OK close: closed: MAME quit on its own
+
+<details><summary>call and reply</summary>
+
+```json
+{}
+```
+
+```json
+{
+  "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
+  "status": "ok",
+  "closed": true,
+  "omitted": ["stdout_tail", "errorlog_tail"],
+  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
+  "ended_by": "quit",
+  "exit_code": 0,
+  "cfg_written": true,
+  "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
+  "console_pending_before": 0,
+  "console_drained": 0,
+  "session": {"alive": false, "running": false, "altered": false}
+}
+```
+
+</details>

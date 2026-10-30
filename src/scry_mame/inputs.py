@@ -252,6 +252,8 @@ def stored_place(text: str, table: Mapping[str, int]) -> int | None:
     key = text.strip()
     if is_address(key):
         return int(key, 16)
+    if key.upper() in getattr(table, "ambiguous", ()):
+        return None         # kept across a rebuild that repeated the name: waits, never guessed
     return table.get(key.upper())
 
 

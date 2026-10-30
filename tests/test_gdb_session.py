@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.reply_contract import Invalid
 from session_doubles import reading_session  # noqa: E402
 
 from scry_mame import gdb_session as g  # noqa: E402
@@ -53,6 +54,30 @@ def test_reads_the_projects_symbols(tmp_path: Path) -> None:
     assert t.table["OTHER_SYMBOL"] == 0x1234
     assert t.format == "yaml"
     assert t.by_class == {}, "a YAML file carries runtime addresses and no classes"
+
+
+def test_a_name_given_twice_loads_and_is_refused_as_ambiguous_when_looked_up(
+        tmp_path: Path) -> None:
+    y = tmp_path / "s.yaml"
+    y.write_text("- addr: 16\n  name: count\n- addr: 32\n  name: other\n- addr: 48\n"
+                 "  name: Count\n", encoding="utf-8")
+    t = g.symbols(str(y))
+    assert "COUNT" in t.table and len(t.table) == 2 and g.rows_of(t.table) == [
+        ("COUNT", 16), ("OTHER", 32), ("COUNT", 48)]
+    assert t.table["OTHER"] == 32 and t.shown("COUNT") == "count"
+    lookups: list[Callable[[], object]] = [lambda: t.table["COUNT"], lambda: t.table.get("COUNT")]
+    for lookup in lookups:
+        with pytest.raises(Invalid, match=r"'COUNT' names 2 symbols.*0x10.*0x30") as e:
+            lookup()
+        assert e.value.code == "ambiguous_ref"
+    assert t.table.get("MISSING") is None
+
+
+def test_a_repeated_row_at_the_same_address_is_one_symbol_and_not_an_ambiguity() -> None:
+    names = g.Names()
+    for key, at in (("FOO", 0x100), ("FOO", 0x100), ("BAR", 0x200), ("BAR", 0x300)):
+        names.add(key, at)
+    assert names["FOO"] == 0x100 and names.ambiguous == {"BAR": [0x200, 0x300]}
 
 
 def test_a_description_is_not_mistaken_for_a_name(tmp_path: Path) -> None:
@@ -107,19 +132,15 @@ def test_a_rows_class_and_name_are_normalised(tmp_path: Path) -> None:
     assert t.by_class == {"CODE": 1}
 
 
-def test_a_duplicate_name_in_a_map_is_refused_naming_both_lines(tmp_path: Path) -> None:
-    """Last-row-wins is a silent wrong address, the failure this reader exists to prevent."""
+def test_a_name_repeated_in_a_map_keeps_every_row_and_its_first_address(tmp_path: Path) -> None:
+    """A linker map repeats the statics of different modules: both rows stay for placing an
+    address, and the name is refused when looked up."""
     m = tmp_path / "game.map"
     m.write_text("count\tED000\t_TEXT\t0\tCODE\nCount\tED100\t_TEXT\t100\tCODE\n")
-    with pytest.raises(ValueError, match=r":2\b.*line 1"):
-        g.symbols(str(m))
-
-
-def test_a_duplicate_name_in_a_yaml_file_is_refused_naming_both_lines(tmp_path: Path) -> None:
-    y = tmp_path / "game.yaml"
-    y.write_text("- addr: 0x400\n  name: Count\n- addr: 0x500\n  name: count\n")
-    with pytest.raises(ValueError, match=r":4\b.*line 2"):
-        g.symbols(str(y))
+    t = g.symbols(str(m))
+    assert g.rows_of(t.table) == [("COUNT", 0xED000), ("COUNT", 0xED100)]
+    assert isinstance(t.table, g.Names) and t.table.ambiguous == {"COUNT": [0xED000, 0xED100]}
+    assert dict.__getitem__(t.table, "COUNT") == 0xED000
 
 
 def test_a_table_keeps_the_spelling_the_file_gave_beside_its_folded_key(tmp_path: Path) -> None:

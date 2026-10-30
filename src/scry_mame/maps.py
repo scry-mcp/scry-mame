@@ -93,11 +93,14 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
             raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run to "
                              f"a frame at a time, and {', '.join(applied)} has nothing to apply "
                              "to: leave it out")
+    def advanced(reply: dict[str, Any]) -> dict[str, Any]:
+        common.clear()          # only a read after the last advance moved the machine on
+        return reply
     out = screen_map.run_to_screen(
         STATE.maps, screen, control, seconds,
-        step=lambda left: advance.run_for(ses, scratch, 0, left, progress, frames=1),
-        run_to_anchor=lambda anchor: advance.run_to(ses, scratch, anchor, control, seconds,
-                                                    progress, **run),
+        step=lambda left: advanced(advance.run_for(ses, scratch, 0, left, progress, frames=1)),
+        run_to_anchor=lambda anchor: advanced(advance.run_to(ses, scratch, anchor, control,
+                                                             seconds, progress, **run)),
         read=_reader(ses, scratch, common, progress), stop_seq=lambda r: r.get("stop_seq"),
         run_for_only=RUN_FOR_ONLY, frame_run=refuse_inapplicable,
         declare=advance.NO_CONTROL_DECLARE)

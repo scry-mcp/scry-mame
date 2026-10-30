@@ -903,3 +903,17 @@ def test_the_rearm_leaves_comments_to_their_own_pass(monkeypatch: pytest.MonkeyP
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert out == {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [],
                    "evaluated": []} and sent == []
+
+
+def test_a_stored_declaration_on_a_repeated_name_waits_unresolved_and_does_not_refuse() -> None:
+    """A rebuild may repeat a name: what was kept across it waits as `unresolved`, so `start`
+    and the listings still answer, and no row is armed at a guessed address."""
+    from scry_mame import gdb_session as gs
+    names = gs.Names()
+    for key, at in (("FOO", 0x100), ("FOO", 0x200), ("BAR", 0x300)):
+        names.add(key, at)
+    kept = dec.Declaration("breakpoint", "symbol", "foo")
+    assert dec.resolve(kept, names, {}).state == "unresolved"
+    assert dec.resolve(dec.Declaration("breakpoint", "symbol", "bar"), names, {}).addr == 0x300
+    pointer = dec.Declaration("watch", "pointer", "foo->x", watch_mode="change", fmt="u8")
+    assert dec.resolve(pointer, names, {}).state == "unresolved"

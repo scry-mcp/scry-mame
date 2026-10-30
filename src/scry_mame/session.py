@@ -89,10 +89,10 @@ def status() -> dict[str, Any]:
     """The body of the `status` tool; a broken session is not asked, its latch is reported."""
     if STATE.ses is None or STATE.proc is None:
         why = idle.IDLE.note()
-        return menvelope.envelope({**({"note": why} if why else {})})
+        return menvelope.envelope({"last_stop": STATE.as_of(), **({"note": why} if why else {})})
     code = STATE.proc.poll()
     if code is not None:
-        return menvelope.envelope({"exit_code": code,
+        return menvelope.envelope({"exit_code": code, "last_stop": STATE.as_of(),
                                    "note": "MAME exited under this session: `close` collects the "
                                    "exit code and the last lines of each channel before the "
                                    "scratch is deleted"})

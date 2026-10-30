@@ -5,6 +5,7 @@ import sys
 import time
 
 from scry_core import host_program
+from scry_core.process_tree import pid_alive as alive
 
 # `accept` mode prints the first byte received, or `none`; `hold` mode never accepts.
 LISTENER = """
@@ -56,15 +57,6 @@ def _ps(field: str, pid: int) -> str | None:
     return done.stdout.strip() or None
 
 
-def alive(pid: int) -> bool:
-    """Whether `pid` runs, zombies excluded."""
-    if sys.platform == "win32":
-        return _win_alive(pid)
-    else:
-        stat = _ps("stat", pid)
-        return stat is not None and not stat.startswith("Z")
-
-
 def parent_of(pid: int) -> int | None:
     if sys.platform == "win32":
         return _win_parent(pid)
@@ -73,29 +65,7 @@ def parent_of(pid: int) -> int | None:
         return int(out) if out else None
 
 
-SYNCHRONIZE = 0x00100000
-WAIT_TIMEOUT = 0x102
 TH32CS_SNAPPROCESS = 0x2
-ERROR_ACCESS_DENIED = 5
-
-
-def _win_alive(pid: int) -> bool:
-    """A process object still unsignalled; one the user may not open exists all the same."""
-    if sys.platform == "win32":
-        import ctypes
-        from ctypes import wintypes
-
-        k32 = ctypes.WinDLL("kernel32", use_last_error=True)
-        k32.OpenProcess.restype = wintypes.HANDLE
-        handle = k32.OpenProcess(SYNCHRONIZE, False, pid)
-        if not handle:
-            return bool(ctypes.get_last_error() == ERROR_ACCESS_DENIED)
-        try:
-            return bool(k32.WaitForSingleObject(wintypes.HANDLE(handle), 0) == WAIT_TIMEOUT)
-        finally:
-            k32.CloseHandle(wintypes.HANDLE(handle))
-    else:
-        raise OSError("a Windows probe")
 
 
 def _win_parent(pid: int) -> int | None:
@@ -138,3 +108,5 @@ def gone_within(pid: int, seconds: float) -> bool:
             return True
         time.sleep(0.1)
     return False
+
+__all__ = ["alive", "gone_within", "heard", "listener", "parent_of"]

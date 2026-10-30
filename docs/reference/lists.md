@@ -252,7 +252,7 @@ Example, from a live run:
             "address": "0025F6",
             "bytes": "51C8FFFC",
             "text": "dbra    D0, $25f4",
-            "symbol": "BOOT_INIT",
+            "symbol": "boot_init",
             "delta": 26
           },
           "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
@@ -298,8 +298,6 @@ Example, from a live run:
 }
 ```
 <!-- scry-reference:end drive -->
-
-The channel is the emulator log because an arcade board has no guest port.
 
 An arcade board has no guest port, so the channel is the emulator log (`error.log`: what the driver and this server's scripts `logerror`). The log is marked before `act` runs, so only lines since the mark count. A chatty driver logs hundreds of lines per emulated second, hence the narrow `pattern`. With an `expect`, the act's tail does not wait for a stop because the verify is the wait, so a trailing `resume` is answered within `seconds`. `settle_seconds` and `summaries` are `perform`'s, with the same meaning. `act.verdict` `TIMEOUT` makes `verify` report `available: false`; with no `expect`, `verify` is `checked: false` with a `why`. `looked.emulator` also carries `lines_written`, `since_mark` and `pattern`. A still of the screen is `snapshot`, a number for it `screen_signature`; the look holds no screen. Refusals before anything ran also include `unknown_ref` with `cpu_tags` for a cpu. Reply `act` has `perform`'s tail, and with `summaries` its `steps_total`, `truncated`, `ran_path`, `replies_path` and `stops`.
 

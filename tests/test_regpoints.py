@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import regpoint
 from server_support import _install, _RegisterSession, _running, _RunningSession  # noqa: E402
 from session_doubles import (  # noqa: E402
     IDENTITY_KEYS,
@@ -275,7 +276,7 @@ def test_a_registerpoint_stop_whose_list_the_console_will_not_answer_is_still_a_
 # itself: it ARMS a condition its own evaluator refuses, so the condition is evaluated once
 # before anything is stored.
 
-_NOTE = regpoints.STILL_ARMED
+_NOTE = regpoint.STILL_ARMED
 _MAIN = {"spaces": [{"cpu": ":maincpu", "space": "program", "address_mask": "0x00ffffff"},
                     {"cpu": ":subcpu", "space": "program"}]}
 

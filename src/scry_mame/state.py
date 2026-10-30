@@ -291,7 +291,7 @@ class State:
         """`resolve` with a refusal naming the ref as `what`."""
         try:
             return self.resolve(text, cpu)
-        except inputs.BareHex:
+        except (inputs.BareHex, gs.AmbiguousRef):
             raise
         except Invalid:
             raise Invalid("unknown_ref", inputs.not_a_ref(f"the {what}", text,

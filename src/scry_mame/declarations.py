@@ -351,7 +351,7 @@ def resolve(decl: Declaration, symbols: dict[str, int],
         return Resolved(decl, "expr")
     if decl.by == "pointer":
         return _resolve_pointer(decl, symbols, types or {})
-    addr = symbols.get(decl.ref.strip().upper())
+    addr = inputs.stored_place(decl.ref, symbols)
     if addr is None:
         return Resolved(decl, "unresolved")
     return Resolved(decl, "resolved", addr)

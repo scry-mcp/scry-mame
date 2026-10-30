@@ -143,7 +143,7 @@ def run_to(ses: gs.Session, scratch: Path, ref: str, control: str, seconds: floa
             a_target, conditions.console_condition(condition, on), on))
     try:
         a_control = STATE.resolve(control, on)
-    except inputs.BareHex:
+    except (inputs.BareHex, gs.AmbiguousRef):
         raise
     except st.Invalid:
         return _control_unresolved(control, on)

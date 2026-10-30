@@ -680,6 +680,23 @@ def test_a_resolved_operand_names_its_symbol_as_the_map_spelled_it() -> None:
     assert [r["symbol"] for r in out] == ["in_Irq"], out
 
 
+def test_an_operand_is_named_by_the_first_row_at_its_address_and_by_a_repeated_names_own_class(
+) -> None:
+    from scry_mame import gdb_session as gs
+    lines = ["F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h"]
+    names = gs.Names()
+    for key, at, klass in (("TWIN_A", 0xC414, "DATA"), ("TWIN_B", 0xC414, "DATA"),
+                           ("DUP", 0xC400, "CODE"), ("DUP", 0xC410, "DATA")):
+        names.add(key, at, klass)
+    classes = {"TWIN_A": "DATA", "TWIN_B": "DATA", "DUP": "CODE"}
+    out = read.resolve_operands(lines, {"DATA": 0x400}, names, classes)
+    assert [r["symbol"] for r in out] == ["TWIN_A"], "the first row of the file wins a tie"
+    near = read.resolve_operands(["F5BC7: 83 3E 11 C0 01    cmp     word ptr [0C011h],1h"],
+                                 {"DATA": 0x400}, names, classes)
+    assert [r["symbol"] for r in near] == ["DUP"] and near[0]["delta"] == 1, (
+        "the DATA row of a name that is CODE elsewhere is placed in DATA")
+
+
 def test_disassemble_is_invalid_when_no_file_comes_out(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

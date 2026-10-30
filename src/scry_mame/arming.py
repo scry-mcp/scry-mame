@@ -86,14 +86,21 @@ def classify_call(ref: str, cpu: str | None, kind: str | None = None,
 
 
 def decide_by(ref: str, by: str, cpu: str | None, kind: str) -> str:
-    """`by` as given, or for `auto` decided once: pointer grammar, else the address rule."""
+    """`by` as given, or for `auto` decided once: pointer grammar, else the address rule. A name
+    the table gives twice is refused here, as typed; one kept across a rebuild waits unresolved."""
     if by not in ("auto", "pointer"):
+        if by == "symbol":
+            STATE.table(cpu).table.get(ref.strip().upper())
         return by
     if (pr := vf.parse_pointer(ref)) is not None:
         inputs.zero_x(pr.base, "base")
         classify_call(pr.base, cpu)
+        STATE.table(cpu).table.get(pr.base.strip().upper())
         return "pointer"
-    return by if by == "pointer" else classify_call(ref, cpu, kind)
+    chosen = by if by == "pointer" else classify_call(ref, cpu, kind)
+    if chosen == "symbol":
+        STATE.table(cpu).table.get(ref.strip().upper())
+    return chosen
 
 
 def resolve_decl(decl: dec.Declaration) -> dec.Resolved:

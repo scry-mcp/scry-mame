@@ -111,7 +111,7 @@ Example, from a live run:
     "address": "002986",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $2986",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 304
   },
   "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
@@ -267,7 +267,7 @@ Example, from a live run:
     "address": "0E2CF0",
     "bytes": "11809800",
     "text": "move.b  D0, (A0,A1.l)",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49630
   },
   "following": ["0E2CF4: 5242           addq.w  #1, D2", "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2", "0E2CFA: 6FD4           ble     $e2cd0", "0E2CFC: 5379 0020 10C6 subq.w  #1, $2010c6.l", "0E2D02: 2079 0020 7990 movea.l $207990.l, A0", "0E2D08: 30BC 0001      move.w  #$1, (A0)", "... 1 more"],
@@ -427,7 +427,7 @@ Example, from a live run:
     "address": "0E2CEA",
     "bytes": "C1C3",
     "text": "muls.w  D3, D0",
-    "symbol": "PALETTE_RANGE_TABLE",
+    "symbol": "palette_range_table",
     "delta": 49624
   },
   "following": ["0E2CEC: 48C0           ext.l   D0", "0E2CEE: 81C1           divs.w  D1, D0", "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)", "0E2CF4: 5242           addq.w  #1, D2", "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2", "0E2CFA: 6FD4           ble     $e2cd0", "... 3 more"],
@@ -443,7 +443,7 @@ Example, from a live run:
 
 It ends one notifier call later than `record`'s script, so the span between its marks is `frames` frame periods of emulated time. The mixer writes in updates of a fiftieth of an emulated second, so the sound begins up to one update before the first frame and ends up to one before the last. The header is checked because MAME's writer checks none of its writes and writes both sizes only at close, so an open file reads 0 in both. Silence is a fact about the game, not a refusal: a constant level is silence to the ear whether zero or not. An open recording gains nothing while the machine stands at the debugger, since no mixer update runs there. 2 is the fewest `frames` that always holds an update on a screen under 100 Hz.
 
-The mixer writes in whole updates, so the sound begins and ends up to one update off the frame edges. The check covers a header that agrees with the file, the counter moved by exactly `frames`, the span of `frames` frame periods and the samples that span holds at the header's rate, within one update. A constant level is silence whether zero or not, so it is a fact about the game. Cut short, the run leaves the recording open (`ended: false`, `frame_end_planned`) or not begun (`began: false`, `frame_begin_planned`). A script run twice is INVALID (`console_rerun`). The stop survey is the one every advancing wrapper returns.
+The check covers a header that agrees with the file, the counter moved by exactly `frames`, the span of `frames` frame periods and the samples that span holds at the header's rate, within one update. Cut short, the run leaves the recording open (`ended: false`, `frame_end_planned`) or not begun (`began: false`, `frame_begin_planned`). A script run twice is INVALID (`console_rerun`). The stop survey is the one every advancing wrapper returns.
 
 <!-- scry-reference:begin snapshot -->
 ## `snapshot`

@@ -9,26 +9,22 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Required
 
-from scry_core import media_replies
+from scry_core import media_replies, tool_replies
 from scry_core import sequence_account as account
 from scry_core.instruction import StopInstruction
 from scry_core.reply_contract import OmitEmpty, When
-from scry_core.reply_schema import ReplyEnvelope
+from scry_core.reply_schema import RunEnvelope
 
 
-class MameEnvelope(ReplyEnvelope, total=False):
+class MameEnvelope(RunEnvelope, total=False):
     """What this server's shared paths add to any reply: the stop a call met or
     applied, the refusal's context."""
 
-    answers_while_running: list[Any]
     broken: str
     cause: str
     #: The machine's cpus by tag: what a refusal of a cpu offers, and `status`'s list. A row
     #: per cpu is `cpus`, `cpu_info`'s and `machine_map`'s.
     cpu_tags: list[str]
-    exit_code: int | dict[str, Any]
-    last_stop: dict[str, Any]
-    stopped_on_its_own: dict[str, Any]
 
 
 class MameConsoleAccount(MameEnvelope, total=False):
@@ -108,8 +104,8 @@ class BreakpointAtReply(MameEnvelope, total=False):
     while_running: bool
 
 
-class CapturesReply(MameEnvelope, total=False):
-    captures: Required[list[Any]]
+class CapturesReply(MameEnvelope, media_replies.CapturesFields, total=False):
+    pass
 
 
 class CloseReply(MameEnvelope, total=False):
@@ -510,17 +506,8 @@ class LogReply(MameEnvelope, total=False):
     truncated: Required[bool]
 
 
-class LogWaitReply(MameEnvelope, total=False):
-    already: Annotated[bool, When("`verdict` `TARGET`")]
-    arrived_during: Required[int]
-    channel: str
-    line: Annotated[str, When("`verdict` `TARGET`")]
-    lines_before: Annotated[int, When("`verdict` `TARGET`")]
-    lines_examined: Required[int]
-    lines_total: Annotated[int, When("`verdict` `TARGET`")]
-    pattern: str
-    verdict: Required[str]
-    waited_s: Required[float]
+class LogWaitReply(MameEnvelope, tool_replies.LogWaitFields, total=False):
+    pass
 
 
 class LuaReply(MameConsoleAccount, total=False):
@@ -665,14 +652,8 @@ class PerformReply(MameEnvelope, account.SequenceFields, account.SequenceRun, to
     visible_cpu_kept: dict[str, Any]
 
 
-class PerformExportReply(MameEnvelope, total=False):
-    checks: Required[int]
-    cut: Required[dict[str, Any]]
-    dropped: Required[list[Any]]
-    dropped_total: Required[int]
-    path: Required[str]
-    replay: Required[str]
-    steps: Required[int]
+class PerformExportReply(MameEnvelope, media_replies.PerformExportFields, total=False):
+    pass
 
 
 class ReadBlockReply(MameConsoleAccount, total=False):
@@ -993,6 +974,7 @@ class StateListReply(MameEnvelope, total=False):
 
 
 class StatusReply(MameEnvelope, total=False):
+    last_stop: Annotated[dict[str, Any], When("with or without a session")]
     exit_code: Annotated[int | dict[str, Any], When("exited under it")]
     cfg: dict[str, Any]
     console_pending: Annotated[int, When("with a session")]
@@ -1013,7 +995,6 @@ class StatusReply(MameEnvelope, total=False):
     tallies_pending_removal: Annotated[list[Any], When("with a session")]
     threads: dict[str, Any]
     throttles_pending: Annotated[list[Any], OmitEmpty]
-    last_stop: Annotated[dict[str, Any], When("with a session")]
     broken: Annotated[str, When("can no longer be trusted")]
 
 
@@ -1146,22 +1127,9 @@ class WriteReply(MameEnvelope, total=False):
     verified: Required[bool]
 
 
-class CommentWriteReply(MameEnvelope, total=False):
-    added: Annotated[int, When("`load`")]
-    comment: Annotated[dict[str, Any], When("`add`")]
-    comments_total: Annotated[int, When("`save`", "`load`")]
+class CommentWriteReply(MameEnvelope, tool_replies.CommentWriteFields, total=False):
     cpu: str
-    declarations: Annotated[dict[str, Any], When("`add`", "`delete`", "`load`")]
-    deleted: Annotated[dict[str, Any], When("`delete`")]
-    dropped_comments: Annotated[list[Any], When("`save`")]
-    dropped_total: Annotated[int, When("`save`")]
     held_in_memory: bool
-    parsed: Annotated[int, When("`load`")]
-    path: str
-    replaced_comments: Annotated[list[Any], When("`add`", "`load`")]
-    replaced_total: Annotated[int, When("`load`")]
-    truncated: Annotated[bool, When("`save`", "`load`")]
-    unchanged: Annotated[int, When("`load`")]
 
 
 class DeclarationClearReply(MameEnvelope, total=False):
@@ -1179,27 +1147,12 @@ class DeclarationListReply(MameEnvelope, total=False):
     watches: Annotated[list[Any], When("each kind asked")]
 
 
-class MapWriteReply(MameConsoleAccount, total=False):
-    anchor: Annotated[str, When("`add`, given one")]
-    application: Annotated[str, When("`load`", "`save`")]
+class MapWriteReply(MameConsoleAccount, tool_replies.MapWriteFields, total=False):
     call: str
-    cells: str
-    controls: int
     evaluated_by: str
-    kind: Annotated[str, When("`add`")]
     lines_ahead: int
-    match: list[Any]
-    mode: Annotated[str, When("`load`", "`save`")]
-    path: str
     pc_before: str
-    pointer: Annotated[dict[str, Any], When("a map that declares the program's pointer")]
-    promoted: Annotated[list[Any], When("`save`")]
     reader_steps: Annotated[int, OmitEmpty]
-    replaced: Annotated[bool, When("`add`")]
-    screen: str
-    screens: Annotated[int, When("`load`", "`save`")]
-    shadows_file: Annotated[bool, When("`add`")]
-    size: Annotated[list[Any], When("`add`")]
 
 
 class ScanReply(MameEnvelope, total=False):

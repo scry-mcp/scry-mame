@@ -155,7 +155,7 @@ Example, from a live run:
     "address": "0025EE",
     "bytes": "203C0000E927",
     "text": "move.l  #$e927, D0",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 18
   },
   "following": ["0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l"],
@@ -306,7 +306,7 @@ Example, from a live run:
     "PS": "0x2700",
     "PC": "0x000025f4"
   },
-  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "BOOT_INIT", "delta": 24},
+  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "boot_init", "delta": 24},
   "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
@@ -423,7 +423,7 @@ Example, from a live run:
     "address": "0025DC",
     "bytes": "48E7FFFC",
     "text": "movem.l D0-D7/A0-A5, -(A7)",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 0
   },
   "following": ["0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l", "0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
@@ -610,7 +610,7 @@ Example, from a live run:
     "address": "0025F6",
     "bytes": "51C8FFFC",
     "text": "dbra    D0, $25f4",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 26
   },
   "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
@@ -813,7 +813,7 @@ Example, from a live run:
     "PS": "0x2704",
     "PC": "0x000025f4"
   },
-  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "BOOT_INIT", "delta": 24},
+  "instruction": {"address": "0025F4", "bytes": "4218", "text": "clr.b   (A0)+", "symbol": "boot_init", "delta": 24},
   "following": ["0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
@@ -984,7 +984,7 @@ Example, from a live run:
     "address": "0025F6",
     "bytes": "51C8FFFC",
     "text": "dbra    D0, $25f4",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 26
   },
   "following": ["0025FA: 4EB9 000F 24D0      jsr     $f24d0.l", "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l", "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l", "002610: 1039 0020 351C      move.b  $20351c.l, D0"],
@@ -1055,7 +1055,7 @@ Example, from a live run:
   },
   "report": {
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.report.json",
-    "sha256": "05e46129177add5d19b0dc32165684cb25f14580d4e5d8af5d8bcaa338e31638"
+    "sha256": "b900db54508c35093d3001941faf6005e4a9c2e6c4bf1dfbb5d4d3c34e5ae403"
   },
   "formats": {},
   "asset_names": [],
@@ -1191,7 +1191,7 @@ Example, from a live run:
   "frames_with_blits": {"first": 4, "last": 8, "count": 3},
   "blits_in_frame": 1,
   "legend": [
-    {"pc": "0x00002738", "symbol": "BOOT_INIT+0x15c", "color": "#ff4040", "blits": 1}
+    {"pc": "0x00002738", "symbol": "boot_init+0x15c", "color": "#ff4040", "blits": 1}
   ],
   "colors_repeat": false,
   "by_plane": [
@@ -1244,7 +1244,7 @@ Example, from a live run:
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
@@ -1380,7 +1380,7 @@ Example, from a live run:
   "index": 0,
   "n": 5,
   "blit_pc": "0x00002738",
-  "blit_symbol": "BOOT_INIT+0x15c",
+  "blit_symbol": "boot_init+0x15c",
   "callback_errors": {
     "count": 0,
     "first": {"available": false, "why": "no callback raised"}
@@ -1443,7 +1443,7 @@ Example, from a live run:
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],

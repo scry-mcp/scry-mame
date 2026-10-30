@@ -40,7 +40,7 @@ unresolved control, an over-long `condition`.
 
 `screen`: a mapped screen's name instead of `ref` (exactly one). With an `anchor`, run to it (`control`
 required): a `verified` map judges it there (`stale_map` when it no longer holds), a
-`consolidated` one takes it as shown. With none, a retrace (a frame, on MAME) at a time until the map names it,
+`consolidated` one takes it as shown. With none, a frame at a time until the map names it,
 within `seconds`; a `control` is refused there (`bad_argument`). Reply: `screen` (`screen`, `layer`,
 `mode`, `judged`), `frames` run. Refused: an unmapped screen (`unknown_ref`).
 
@@ -151,7 +151,7 @@ Example, from a live run:
     "address": "000400",
     "bytes": "46FC2700",
     "text": "move    #$2700, SR",
-    "symbol": "IRQ_VBLANK",
+    "symbol": "irq_vblank",
     "delta": 0
   },
   "following": ["000404: 48E7 F000           movem.l D0-D3, -(A7)", "000408: 5279 0020 3200      addq.w  #1, $203200.l", "00040E: 52B9 0020 31FC      addq.l  #1, $2031fc.l", "000414: 33FC 0001 0020 91E8 move.w  #$1, $2091e8.l", "00041C: 4A79 0020 91EE      tst.w   $2091ee.l"],
@@ -282,7 +282,7 @@ Example, from a live run:
     "address": "0027AC",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $27ac",
-    "symbol": "BOOT_INIT",
+    "symbol": "boot_init",
     "delta": 464
   },
   "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
@@ -401,7 +401,7 @@ Example, from a live run:
     "address": "0029EE",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $29ee",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 408
   },
   "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
@@ -628,7 +628,7 @@ Example, from a live run:
     "address": "0029EE",
     "bytes": "51C8FFFE",
     "text": "dbra    D0, $29ee",
-    "symbol": "MODE_CLEAR_BLITS",
+    "symbol": "mode_clear_blits",
     "delta": 408
   },
   "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
@@ -651,42 +651,42 @@ Example, from a live run:
     "unplaced": 0,
     "symbols": [
       {
-        "symbol": "IRQ_VBLANK",
+        "symbol": "irq_vblank",
         "addr": "0x00000400",
         "addresses": 25,
         "first": "0x00000400",
         "last": "0x00000502"
       },
       {
-        "symbol": "PAGE_BIT_COMPOSE_A",
+        "symbol": "page_bit_compose_a",
         "addr": "0x00000506",
         "addresses": 4,
         "first": "0x00000506",
         "last": "0x00000516"
       },
       {
-        "symbol": "ARM_LINE_COUNTER",
+        "symbol": "arm_line_counter",
         "addr": "0x00000520",
         "addresses": 18,
         "first": "0x00000520",
         "last": "0x0000059a"
       },
       {
-        "symbol": "MODE_CLEAR_BLITS",
+        "symbol": "mode_clear_blits",
         "addr": "0x00002856",
         "addresses": 15,
         "first": "0x00002986",
         "last": "0x000029ee"
       },
       {
-        "symbol": "SOUND_STREAMER_ROM",
+        "symbol": "sound_streamer_rom",
         "addr": "0x000f2446",
         "addresses": 116,
         "first": "0x000f2984",
         "last": "0x000f2df8"
       },
       {
-        "symbol": "IRQ5_STREAMER_RAM",
+        "symbol": "irq5_streamer_ram",
         "addr": "0x00203164",
         "addresses": 22,
         "first": "0x00203164",

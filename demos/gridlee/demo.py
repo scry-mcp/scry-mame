@@ -156,7 +156,11 @@ STEPS = [
     Step("coin 1", "perform", coin_and_filter(1), filtered(1)),
     Step("coin 2", "perform", coin_and_filter(2), filtered(2)),
     Step("coin 3", "perform", coin_and_filter(3), filtered(3),
-         shown=("summary",)),
+         shown=("summary",),
+         highlight=("A value scan narrows the candidates: after the first coin the bytes holding "
+                    "1, after the second those holding 2, and by the third three bytes remain. The "
+                    "scan cannot tell which of them is the credits, which is what the next steps "
+                    "are for.")),
     Step("watch", "perform", {"steps": [
         {"op": "watch_add", "ref": CREDITS_BIN, "mode": "change", "fmt": "u8"},
         {"op": "watch_add", "ref": CREDITS_BCD, "mode": "change", "fmt": "u8"}]}, watching,
@@ -168,7 +172,11 @@ STEPS = [
     Step("bcd", "run_for", SETTLE,
          wrote(CREDITS_BCD, COIN_BCD_PC, COIN_BCD_STOP, 4, "the BCD credits"),
          shown=("summary", "watch_hit")),
-    Step("writer", "disassemble", {"ref": "0xb583", "length": 12}, listed),
+    Step("writer", "disassemble", {"ref": "0xb583", "length": 12}, listed,
+         highlight=("`disassemble` at the address the watch stopped on shows the coin routine: "
+                    "`INC $042B`, then `ADDA $042C`, `DAA`, `STA $042C`. The game keeps its "
+                    "credits twice, in binary and in BCD, which is why the scan found three bytes "
+                    "and not one.")),
     Step("settle", "run_for", SETTLE, settled),
     Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04),
          shown=("summary", "hex")),
@@ -179,7 +187,10 @@ STEPS = [
     Step("start bcd", "run_for", {"frames": 1, "seconds": RUN_S},
          wrote(CREDITS_BCD, START_BCD_PC, START_BCD_STOP, 3, "then on the BCD credits")),
     Step("trail", "history", {"limit": TRAIL}, taken,
-         shown=("summary", "lines")),
+         shown=("summary", "lines"),
+         highlight=("`history` is the instructions the CPU ran up to the stop. After START it "
+                    "reads `DEC $042B`, then `LDA #$99`, `ADDA $042C`, `DAA`, `STA $042C`: the "
+                    "same two counters going down, the BCD one by adding 99.")),
     Step("registers", "registers", {}, regs),
     Step("unwatch", "declaration_clear", {"kind": "watch", "all": True}, cleared),
     Step("play", "run_for", {"milliseconds": 8000, "seconds": RUN_S},

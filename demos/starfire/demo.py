@@ -116,15 +116,24 @@ STEPS = [
     Step("coin 1", "perform", {"steps": coin_and_filter(1), "settle_seconds": RUN_S}, filtered(1)),
     Step("coin 2", "perform", {"steps": coin_and_filter(2), "settle_seconds": RUN_S}, filtered(2)),
     Step("coin 3", "perform", {"steps": coin_and_filter(3), "settle_seconds": RUN_S}, filtered(3),
-         shown=("summary",)),
+         shown=("summary",),
+         highlight=("A value scan narrows the first kilobyte of scratch RAM: after the first coin "
+                    "the cells holding 1, after the second those holding 2, and after the third "
+                    "one cell is left. That byte is the credits.")),
     Step("watch", "watch_add", {"ref": CREDITS, "mode": "change", "fmt": "u8"},
          lambda reply, run: f"a change watch armed at {reply['addr']}",
          shown=("summary", "entry", "write_maps_to")),
     Step("coin 4", "input", COIN, caught,
-         shown=("summary", "cause", "watch_hit")),
+         shown=("summary", "cause", "watch_hit"),
+         highlight=("A change watch on that byte stops the emulator on the instruction that writes "
+                    "it, and the reply is the stop itself: which watchpoint, the value written and "
+                    "the program counter. No polling, no guess about timing.")),
     Step("writer", "disassemble", {"ref": "0x1e40", "length": 16}, listed,
          shown=("summary", "lines")),
-    Step("history", "history", {"limit": 12}, trail),
+    Step("history", "history", {"limit": 12}, trail,
+         highlight=("`history` is the instructions the CPU ran up to the stop, the code that took "
+                    "the coin; `registers` then says what it was working on: HL points at the "
+                    "credits byte.")),
     Step("registers", "registers", {}, regs),
     Step("release", "run_for", {"milliseconds": SETTLE_MS, "seconds": RUN_S}, released),
     Step("unwatch", "declaration_clear", {"kind": "watch", "ref": CREDITS}, unwatched),

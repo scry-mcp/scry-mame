@@ -300,6 +300,9 @@ carries, names for addresses) and links each family's page, where every tool's b
 followed by why its contract is shaped that way. [CONTRIBUTING.md](CONTRIBUTING.md) is for
 changing the server: its battery, its live tier and what proves a change.
 
+What this server has in common with its sibling lives in [scry-core](https://github.com/scry-mcp/scry-core),
+pinned by tag; its README lists every module.
+
 ## Licence
 
 MIT. See `LICENSE`.

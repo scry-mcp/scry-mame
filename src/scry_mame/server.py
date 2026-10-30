@@ -194,12 +194,13 @@ def status() -> dict[str, Any]:
     """Whether a machine is alive, and which one. Safe on a running machine; a stop it finds the
     machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-    Reply: with no session, a `note` when there is one to give; a process that exited under it,
-    `exit_code` and a `note`; with a session, `system`, `pid`, `stub_port`, `scratch_dir`,
-    `state_dir`, `presence`, `debugger`, `fingerprint` (`fingerprints` per cpu),
-    `errorlog_path`, `pc`, `in_debugger` (`breakpoints`, `watches`, `regpoints`: each `ref`,
-    `cpu`), `console_pending`, `throttles_pending`, `tallies_pending_removal`. Also
-    `last_stop` (`stop_seq`, `pc`, `cpu`, `cause`) and `broken` when the session can no longer
+    Reply: `last_stop` (`stop_seq`, `pc`, `cpu`, `cause`, `since_s`, `wall_at`) with or without a
+    session, the last stop of the one that ended when there is none now; with no session also a
+    `note` when there is one to give, or, for a process that exited under it, `exit_code` and a
+    `note`; with a session `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `presence`,
+    `debugger`, `fingerprint` (`fingerprints` per cpu), `errorlog_path`, `pc`, `in_debugger`
+    (`breakpoints`, `watches`, `regpoints`: each `ref`, `cpu`), `console_pending`,
+    `throttles_pending`, `tallies_pending_removal`, and `broken` when the session can no longer
     be trusted: `close`, then `start`.
 
     Reference: REFERENCE.md, The session.
@@ -600,7 +601,9 @@ def symbols_find(name: str = "", linear: str = "",
     console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
     linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
-    Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`).
+    Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`). A name the
+    file gives twice is listed here with every row, and refused by a tool that takes one address
+    (`ambiguous_ref`, naming each): use the `0x` address of the one meant.
 
     Reply: by name, `query`, `symbols_total`, `symbols` (`name`, `addr`, `memory`), `truncated`;
     by address, `linear`, `name`, `addr`, `delta`, `memory`; and `cpu`, `note`.

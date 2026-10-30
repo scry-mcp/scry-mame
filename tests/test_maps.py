@@ -250,6 +250,38 @@ def test_a_run_to_a_screen_with_no_anchor_runs_frames_until_the_map_names_it(
     assert "polls" not in got and "frame_before" not in got, got
 
 
+def test_a_frame_run_ending_on_another_stop_after_a_read_is_not_surveyed_again(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The read that judged an earlier frame is not the last act: a frame that ended on a stop
+    of someone else's leaves the machine where it stopped, so nothing refreshes the reply."""
+    from scry_mame import advance, running
+    from scry_mame import maps as mmaps
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
+    replies = [{"status": "ok", "verdict": "ELAPSED", "stop_seq": 101, "pc": "0x0000beef"},
+               {"status": "ok", "verdict": "OTHER_STOP", "stop_seq": 102, "pc": "0x0000beef",
+                "cause": "somebody's breakpoint"}]
+    monkeypatch.setattr(advance, "run_for", lambda *a, **k: dict(replies.pop(0)))
+    real_find = screen_map.Maps.find
+
+    def unmatched(self: Any, read: Any, stop: Any) -> dict[str, Any]:
+        real_find(self, read, stop)
+        return {"matched": False}
+    monkeypatch.setattr(screen_map.Maps, "find", unmatched)
+    surveyed: list[Any] = []
+
+    def stop_reply(*a: Any, **k: Any) -> dict[str, Any]:
+        surveyed.append(k)
+        return {}
+    monkeypatch.setattr(running, "stop_reply", stop_reply)
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    got = mmaps.run_to_screen(*running.stopped("a run to a screen"), "board", "", 30.0)
+    assert surveyed == [], "no survey after a frame that was not read"
+    assert got["verdict"] == "OTHER_STOP" and not replies, got
+
+
 def test_a_control_with_a_screen_that_has_no_anchor_is_refused(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
