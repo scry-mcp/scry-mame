@@ -367,7 +367,7 @@ Example, from a live run:
 
 **The console's pipe is emptied before the exit is asked for**, because a chunk MAME's Lua state still holds at `quit` can take its collector down on the way out; the `note` names what could not be drained, so an ugly exit code has its likely cause beside it.
 
-**The five `ended_by` values** are `quit` (a clean exit that wrote its cfg), `exited` (it exited and wrote none), `killed` (SIGKILL after the grace period), `died` (it had already exited) and `none` (no session): `closed: true` would say the same about all of them.
+**The five `ended_by` values** are `quit` (a clean exit; `cfg_written` says whether it wrote its cfg, and is unavailable when there was no cfg file to read), `exited` (it exited and wrote none), `killed` (SIGKILL after the grace period), `died` (it had already exited) and `none` (no session): `closed: true` would say the same about all of them.
 
 **`cfg`** carries `available: false` with its `why` when a file could not be read back, and is unavailable when no cfg was given; the repo's file is never touched. **`average_speed`** is `percent` with the two deltas, or `available: false` with its `why`, and absent on a broken session.
 

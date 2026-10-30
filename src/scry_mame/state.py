@@ -324,8 +324,8 @@ class State:
              grace: bool = True) -> dict[str, Any]:
         """End the session: ask MAME to QUIT through its console, then kill (`grace=False`: now).
 
-        `ended_by`: `quit` (exited in grace and wrote its cfg), `exited` (no cfg), `killed`, `died`
-        (already exited), `none`.
+        `ended_by`: `quit` (exited in grace; `cfg_written` is unavailable with no cfg to read),
+        `exited` (it wrote none), `killed`, `died` (already exited), `none`.
         """
         ended: dict[str, Any] = {"ended_by": "none", "exit_code": None,
                                  "cfg_written": None}
