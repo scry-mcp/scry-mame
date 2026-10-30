@@ -316,7 +316,8 @@ def test_a_given_port_and_the_pid_are_used_and_reported(
         assert argv[argv.index("-debugger_port") + 1] == str(free), "the argv carries it too"
         st = s.status()
         assert st["stub_port"] == free and st["pid"] == _StubProcess.PID
-        assert st["scratch_dir"] == out["scratch_dir"] and st["state_dir"] == ""
+        assert st["scratch_dir"] == out["scratch_dir"]
+        assert st["state_dir"] == out["state_dir"] == out["scratch_dir"]
     finally:
         s.close()
 
@@ -858,7 +859,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "comment_feed": {("old", ":old"): {"state": "armed"}},
         "conditions_unresolved": {("regpoint", "d0==Old")},
         "machine_map": {"cpus": [{"tag": ":old"}]}, "cpus": [":old"], "frame_symbol": None,
-        "scratch": Path(tempfile.mkdtemp(prefix="mame-mcp-kill-test-")), "state_dir": "/x",
+        "scratch": Path(tempfile.mkdtemp(prefix="mame-mcp-kill-test-")), "named_state_dir": "/x",
         "cfg": {"source": Path("/x/a.cfg"), "installed": Path("/x/cfg/m68k.cfg")},
         "port": 23999, "snapshots": 3, "debug_dumps": 1, "batches": 4, "errorlog_mark": 5,
         "recordings": 2, "console_mark": 9, "lua_calls": 1, "lua_read_only_claims": 2,

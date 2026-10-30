@@ -165,7 +165,7 @@ check("an exact name answers its address", r.get("symbols_total") == 1
       and r.get("symbols", [{}])[0].get("addr") == "0x00000400", str(r.get("symbols")))
 r = s.symbols_find(linear="0x40e")
 check("an address is placed inside the nearest symbol below it",
-      r.get("name") == "IRQ_VBLANK" and r.get("delta") == 0xE, str(r.get("summary")))
+      r.get("name") == "irq_vblank" and r.get("delta") == 0xE, str(r.get("summary")))
 
 print("\n== the readers over the console, and the writes: one live call each")
 r = s.disassemble(ref="irq_vblank", length=8)
@@ -243,7 +243,7 @@ check("and the typed row goes with its own bpclear",
 
 print("\n== run_to(): an empty control is a refusal, before the machine moves")
 r = s.run_to(ref="irq_vblank", control="", seconds=5.0)
-check("refused without a control", r.get("status") == "INVALID" and "needs a control" in
+check("refused without a control", r.get("status") == "INVALID" and "no control is named" in
       str(r.get("message")), str(r.get("message"))[:60])
 
 print("\n== run_to(): a target that DOES run")

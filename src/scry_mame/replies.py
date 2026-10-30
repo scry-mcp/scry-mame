@@ -97,7 +97,7 @@ class BreakpointAtReply(MameEnvelope, total=False):
     condition: str
     condition_typed: str
     cpu: str
-    entry: Annotated[str, When("once `ref` resolves")]
+    entry: Annotated[str, When("once armed")]
     limit_chars: int
     ref: str
     role: str
@@ -993,26 +993,27 @@ class StateListReply(MameEnvelope, total=False):
 
 
 class StatusReply(MameEnvelope, total=False):
+    exit_code: Annotated[int | dict[str, Any], When("exited under it")]
     cfg: dict[str, Any]
-    console_pending: Annotated[int, When("alive")]
-    debugger: Annotated[dict[str, Any], When("alive")]
-    errorlog_path: Annotated[str, When("alive")]
-    fingerprint: Annotated[str, When("alive")]
+    console_pending: Annotated[int, When("with a session")]
+    debugger: Annotated[dict[str, Any], When("with a session")]
+    errorlog_path: Annotated[str, When("with a session")]
+    fingerprint: Annotated[str, When("with a session")]
     fingerprints: dict[str, Any]
     frame_symbol: str | dict[str, Any]
-    in_debugger: Annotated[dict[str, Any], When("alive")]
-    pc: Annotated[str | dict[str, Any], When("alive")]
-    pid: Annotated[int, When("alive")]
-    presence: Annotated[bool, When("alive")]
-    scratch_dir: Annotated[str, When("alive")]
-    state_dir: Annotated[str, When("alive")]
+    in_debugger: Annotated[dict[str, Any], When("with a session")]
+    pc: Annotated[str | dict[str, Any], When("with a session")]
+    pid: Annotated[int, When("with a session")]
+    presence: Annotated[bool, When("with a session")]
+    scratch_dir: Annotated[str, When("with a session")]
+    state_dir: Annotated[str, When("with a session")]
     stdout_path: str
-    stub_port: Annotated[int, When("alive")]
-    system: Annotated[str, When("alive")]
-    tallies_pending_removal: Annotated[list[Any], When("alive")]
+    stub_port: Annotated[int, When("with a session")]
+    system: Annotated[str, When("with a session")]
+    tallies_pending_removal: Annotated[list[Any], When("with a session")]
     threads: dict[str, Any]
     throttles_pending: Annotated[list[Any], OmitEmpty]
-    last_stop: Annotated[dict[str, Any], When("alive")]
+    last_stop: Annotated[dict[str, Any], When("with a session")]
     broken: Annotated[str, When("can no longer be trusted")]
 
 

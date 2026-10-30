@@ -23,8 +23,8 @@ Refused: a `seg:off`; a `condition` the console refuses or too long (`command_ch
 unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
 role; a control past the 10 temps.
 
-Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr`,
-`entry` (once `ref` resolves).
+Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr` (once
+`ref` resolves), `entry` (once armed).
 
 Reference: REFERENCE.md, Declarations.
 

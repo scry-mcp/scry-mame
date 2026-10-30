@@ -31,8 +31,8 @@ HELD_BY_TIMERS = "Failed save state attempt due to anonymous timers"
 
 
 def _state_dir() -> Path:
-    """Where this session's states live: `sta/<system>` under `state_dir` or the scratch."""
-    return Path(STATE.state_dir or str(STATE.scratch)) / "sta" / STATE.system
+    """Where this session's states live: `sta/<system>` under `state_dir`."""
+    return Path(STATE.state_dir) / "sta" / STATE.system
 
 
 def _state_file(name: str) -> Path:

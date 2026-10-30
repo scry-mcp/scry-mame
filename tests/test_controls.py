@@ -454,7 +454,7 @@ def test_run_to_with_an_empty_control_is_refused_before_the_machine_moves(
 ) -> None:
     ses = _controlled(monkeypatch, tmp_path)
     s.breakpoint_at(ref="0x25a4", role="control")        # declared, and still not enough
-    refused("needs a control", s.run_to(ref="0x4a0", control=control, seconds=2.0))
+    refused("no control is named", s.run_to(ref="0x4a0", control=control, seconds=2.0))
     assert ses.armed == [] and not ses.running
 
 
@@ -508,7 +508,7 @@ def test_the_tool_surface_knows_the_role(monkeypatch: pytest.MonkeyPatch, tmp_pa
     """`run_to`'s `control` is required with a ref, and `breakpoint_at` takes a `role`."""
     import inspect
     refused_without = s.run_to(ref="0x4a0")
-    assert refused_without["status"] == "INVALID" and "needs a control" in refused_without[
+    assert refused_without["status"] == "INVALID" and "no control is named" in refused_without[
         "message"], refused_without
     assert inspect.signature(s.breakpoint_at).parameters["role"].default == "stop"
     _controlled(monkeypatch, tmp_path)

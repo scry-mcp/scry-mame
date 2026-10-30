@@ -194,7 +194,8 @@ def status() -> dict[str, Any]:
     """Whether a machine is alive, and which one. Safe on a running machine; a stop it finds the
     machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-    Reply: with no machine, a `note`; alive, `system`, `pid`, `stub_port`, `scratch_dir`,
+    Reply: with no session, a `note` when there is one to give; a process that exited under it,
+    `exit_code` and a `note`; with a session, `system`, `pid`, `stub_port`, `scratch_dir`,
     `state_dir`, `presence`, `debugger`, `fingerprint` (`fingerprints` per cpu),
     `errorlog_path`, `pc`, `in_debugger` (`breakpoints`, `watches`, `regpoints`: each `ref`,
     `cpu`), `console_pending`, `throttles_pending`, `tallies_pending_removal`. Also
@@ -209,7 +210,7 @@ def status() -> dict[str, Any]:
 @tool("Close the MAME session", summary=summaries.close, body_session=True, on_cancel="kill")
 def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """End the session: MAME is asked to `quit` and killed only if it has not gone within the
-    grace period. The scratch is deleted; a `state_dir` stays. Works on a running machine;
+    grace period. The scratch is deleted; a named `state_dir` stays. Works on a running machine;
     with no session it answers `closed: false`.
 
     Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_written`
@@ -424,8 +425,8 @@ def breakpoint_at(ref: str,
     unknown cpu (`unknown_ref`); an address another declaration holds; one ref under the other
     role; a control past the {TEMPS} temps.
 
-    Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr`,
-    `entry` (once `ref` resolves).
+    Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr` (once
+    `ref` resolves), `entry` (once armed).
 
     Reference: REFERENCE.md, Declarations.
     """
@@ -594,8 +595,9 @@ def symbols_find(name: str = "", linear: str = "",
                  limit: Annotated[int, vocab.bounds(1, read.SYMBOLS_LIMIT_MAX)] = 10,
                  cpu: str = "") -> dict[str, Any]:
     """Look a symbol up in the table `start` loaded for `cpu`, else the visible cpu. One question
-    per call: `name` (exact, else prefix matches by address, case-insensitive, up to `limit`
-    1..{SYMBOLS_MAX}), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
+    per call: `name` (exact, else prefix matches by address, case ignored, each in the
+    spelling the map gave, up to `limit` 1..{SYMBOLS_MAX}; the name never reaches MAME's
+    console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
     linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
     Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`).
@@ -910,13 +912,9 @@ def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], scree
               anchor: str = "", path: str = "", scale: int | None = None,
               margin: list[int] | None = None, dest: str = "", overwrite: bool | None = None,
               ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
-    """The screen map: an application's screens, each known by the signatures of its stable
-    regions, and their controls, in a session layer and a file layer.
+    """{MAP_WRITE}
 
-    `add`: the screen shown now as `screen` in the session layer, one capture signing each
-    `match` crop ([x, y, width, height], 1..16), `controls` ([{"name", "rect"}]) naming its
-    places to read; needs the machine stopped. Reply: `screen`, `kind`, `size`, `cells`,
-    `match`, `controls`, `replaced`, `shadows_file`, `anchor` (when given).
+    {MAP_ADD}
 
     {MAP_CELLS}
 
@@ -926,9 +924,7 @@ def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], scree
 
     {MAP_SAVE}
 
-    Refused: an argument the method does not take; a misshapen name, crop, control, view or
-    file; an `add` without an `anchor` to a consolidated map, and a save of one holding a screen
-    with none (`bad_argument`); nothing mapped to save (`needs_call`).
+    {MAP_REFUSED}.
 
     Reference: REFERENCE.md, Screen maps.
     """
@@ -1394,15 +1390,13 @@ def perform(steps: list[dict[str, Any]],
     """Run this server's operations in order, stopping at the first failure.
 
     `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-    `drive`, `perform_export`. `until_frame=F` (with `summaries`, `run_for`) repeats the
-    list until a stop reads frame F, within {UNTIL_STEPS_MAX} steps and {WAIT_MAX_S} s;
-    `no_channel` if no frame counter. A step's `recorded`, `{field: value}` of its own reply,
+    `drive`, `perform_export`. {UNTIL_FRAME} A step's `recorded`, `{field: value}` of its own reply,
     must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
     `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
     Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
-    `verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`
-    (with `until_frame`).
+    `verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), else
+    `still_running`; `frame_reached` (with `until_frame`).
 
     Reference: REFERENCE.md, Sequences in one call.
     """
@@ -1492,7 +1486,7 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
 
     Reply, once answered: `verdict`, `frame_before`, `frame_after`, `port_before`, `frame_set`,
     `released`, `frame_released`, `active` (read back at release), `name`, `mask`, `note`, the
-    stop survey. Without an answer, `pending`.
+    stop survey. {PENDING}
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1514,7 +1508,7 @@ def record(frames: int, dest: str = "",
     leaves the recording open (`ended: false`).
 
     Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
-    `note`, the stop survey. Without an answer, `pending`.
+    `note`, the stop survey. {PENDING}
 
     Reference: REFERENCE.md, Input and the screen.
     """
@@ -1536,7 +1530,7 @@ def audio_record(frames: int, dest: str = "",
 
     Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `channels`,
     `sample_rate_hz`, `samples`, `emulated_s`, `sample_min`, `sample_max`, `note`, the stop
-    survey. Without an answer, `pending`.
+    survey. {PENDING}
 
     Reference: REFERENCE.md, Input and the screen.
     """

@@ -105,7 +105,7 @@ class State:
         self.conditions_unresolved: set[tuple[str, dec.Owner]] = set()
         self.console_writes: int = 0
         self.scratch: Path | None = None
-        self.state_dir: str = ""
+        self.named_state_dir: str = ""
         self.cfg: dict[str, Any] | None = None
         self.port: int = 0
         self.stdout_log: IO[bytes] | None = None
@@ -245,6 +245,11 @@ class State:
         return ses, self.scratch
 
     @property
+    def state_dir(self) -> str:
+        """The folder holding states, `cfg/` and `nvram/`: the one named, else the scratch."""
+        return self.named_state_dir or (str(self.scratch) if self.scratch else "")
+
+    @property
     def broken(self) -> str | None:
         """Why the session can no longer be trusted, None with no session."""
         return self.ses.broken if self.ses is not None else None
@@ -293,7 +298,7 @@ class State:
                                                           self.table_owner(cpu))) from None
 
     def _cfg_file(self) -> Path | None:
-        root = self.state_dir or self.scratch
+        root = self.state_dir
         if not root or not self.system:
             return None
         return Path(root) / "cfg" / f"{self.system}.cfg"

@@ -10,8 +10,9 @@ symbols_find(name="", linear="", limit=10, cpu="")
 ```
 
 Look a symbol up in the table `start` loaded for `cpu`, else the visible cpu. One question
-per call: `name` (exact, else prefix matches by address, case-insensitive, up to `limit`
-1..50), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
+per call: `name` (exact, else prefix matches by address, case ignored, each in the
+spelling the map gave, up to `limit` 1..50; the name never reaches MAME's
+console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
 linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
 Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`).

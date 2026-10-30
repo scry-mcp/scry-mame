@@ -80,12 +80,12 @@ def check_run_to(ref: str = "", seconds: float = 30.0, condition: str = "",
         conditions.check_condition(condition)
 
 
+NO_CONTROL_DECLARE = "declare it here or with `breakpoint_at(ref, role=\"control\")`"
+
+
 def no_control() -> st.Invalid:
     """The refusal of a `run_to` to a place with no `control`."""
-    return st.Invalid("bad_argument",
-                      "run_to needs a control: a place known to run, which proves the target "
-                      "COULD have fired (declare it here or with `breakpoint_at(ref, "
-                      "role=\"control\")`)")
+    return screen_map.no_control(NO_CONTROL_DECLARE)
 
 
 def check_run_for(milliseconds: int = 0, frames: int = 0, seconds: float = 30.0,

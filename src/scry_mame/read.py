@@ -258,7 +258,8 @@ def disassemble(ses: gs.Session, scratch: Path, ref: str, length: int,
     reply |= flows(ses, scratch, addr, length, on, lines)
     table = STATE.table(on)
     if table.bases:
-        reply["resolved"] = resolve_operands(lines, table.bases, table.table, table.classes)
+        reply["resolved"] = resolve_operands(lines, table.bases, table.table, table.classes,
+                                           table.spelled)
     return menvelope.envelope(reply)
 
 
@@ -297,7 +298,8 @@ def _unclassified(lines: list[str], note: str) -> dict[str, Any]:
 
 
 def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str, int],
-                     classes: dict[str, str]) -> list[dict[str, Any]]:
+                     classes: dict[str, str],
+                     spelled: dict[str, str] | None = None) -> list[dict[str, Any]]:
     """Every DIRECT memory operand, resolved under every class base.
 
     Per class: the linear address `read_memory` and `watch_add` take, and the nearest symbol of
@@ -308,7 +310,8 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
     by_class: dict[str, tuple[list[int], list[str]]] = {}
     for klass in bases:
         members = sorted((a, n) for n, a in symbols.items() if classes.get(n) == klass)
-        by_class[klass] = ([a for a, _n in members], [n for _a, n in members])
+        by_class[klass] = ([a for a, _n in members],
+                           [(spelled or {}).get(n, n) for _a, n in members])
     out: list[dict[str, Any]] = []
     for i, line in enumerate(lines):
         for m in _DIRECT_OPERAND.finditer(flow.without_comment(line)):
@@ -521,7 +524,7 @@ def placer(cpu: str | None = None) -> Placer:
     cached = _PLACERS.get(cpu)
     if cached is not None and cached[0] is table:
         return cached[1]
-    entries = sorted((a, n) for n, a in table.table.items())
+    entries = [(a, table.shown(n)) for a, n in sorted((a, n) for n, a in table.table.items())]
     addrs = [a for a, _ in entries]
 
     def place(addr: int) -> tuple[int, str] | None:
@@ -566,7 +569,8 @@ def symbols_find(name: str, linear: str, limit: int,
             {"note": "the machine is running, so the console's `map` could not be asked "
                      "which symbols are RAM: stop it and ask again"})
     check_symbols_find(name, linear, limit)
-    table = STATE.table(cpu).table
+    held = STATE.table(cpu)
+    table = held.table
     if not table:
         whose = f"{cpu}'s" if cpu is not None else "a"
         return menvelope.invalid("no_channel",
@@ -580,8 +584,8 @@ def symbols_find(name: str, linear: str, limit: int,
         return menvelope.envelope({
             "query": name, "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY),
             "symbols_total": len(hits),
-            "symbols": [{"name": n, "addr": st.hex_addr(table[n]), "memory": memory(table[n])}
-                        for n in hits[:limit]],
+            "symbols": [{"name": held.shown(n), "addr": st.hex_addr(table[n]),
+                         "memory": memory(table[n])} for n in hits[:limit]],
             "truncated": len(hits) > limit, **note,
         })
     addr = inputs.hex_arg("linear", linear)
@@ -593,7 +597,8 @@ def symbols_find(name: str, linear: str, limit: int,
                                  linear=st.hex_addr(addr), cpu=cpu)
     base, best = placed
     return menvelope.envelope({"linear": st.hex_addr(addr),
-                               "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY), "name": best,
+                               "cpu": or_unavailable(cpu, st.NO_CPU_READ_WHY),
+                               "name": best,
                                "addr": st.hex_addr(base), "delta": addr - base,
                                "memory": memory(base),
                                **note})

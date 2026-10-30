@@ -1013,6 +1013,16 @@ def test_a_change_watch_whose_bytes_cannot_be_read_at_arming_is_armed_and_unread
     assert mstate.STATE.armed_watches[("frame_lo", ":maincpu")]["last"] is None
 
 
+def test_symbols_find_answers_in_the_spelling_the_map_gave(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _watching(monkeypatch, tmp_path)
+    use_table(monkeypatch, table={"IRQ_VBLANK": 0x400}, spelled={"IRQ_VBLANK": "irq_Vblank"})
+    out = s.symbols_find(name="IRQ_VBLANK")
+    assert [r["name"] for r in out["symbols"]] == ["irq_Vblank"], out
+    assert s.symbols_find(linear="0x400")["name"] == "irq_Vblank"
+
+
 def test_symbols_find_answers_by_name_exact_then_prefix_and_by_address(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

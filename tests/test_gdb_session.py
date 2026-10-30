@@ -115,6 +115,22 @@ def test_a_duplicate_name_in_a_map_is_refused_naming_both_lines(tmp_path: Path) 
         g.symbols(str(m))
 
 
+def test_a_duplicate_name_in_a_yaml_file_is_refused_naming_both_lines(tmp_path: Path) -> None:
+    y = tmp_path / "game.yaml"
+    y.write_text("- addr: 0x400\n  name: Count\n- addr: 0x500\n  name: count\n")
+    with pytest.raises(ValueError, match=r":4\b.*line 2"):
+        g.symbols(str(y))
+
+
+def test_a_table_keeps_the_spelling_the_file_gave_beside_its_folded_key(tmp_path: Path) -> None:
+    m = tmp_path / "game.map"
+    m.write_text("irq_Vblank\tED000\t_TEXT\t0\tCODE\n")
+    y = tmp_path / "game.yaml"
+    y.write_text("- addr: 0x400\n  name: irq_Vblank\n")
+    for path in (m, y):
+        assert g.symbols(str(path)).spelled == {"IRQ_VBLANK": "irq_Vblank"}, path
+
+
 def test_a_base_for_a_class_no_row_carries_is_refused(tmp_path: Path) -> None:
     """A parameter honoured by nothing is refused, not ignored."""
     m = tmp_path / "game.map"

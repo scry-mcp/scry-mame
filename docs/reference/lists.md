@@ -12,15 +12,13 @@ perform(steps, settle_seconds=30.0, summaries=false, until_frame=0)
 Run this server's operations in order, stopping at the first failure.
 
 `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-`drive`, `perform_export`. `until_frame=F` (with `summaries`, `run_for`) repeats the
-list until a stop reads frame F, within 5000 steps and 600 s;
-`no_channel` if no frame counter. A step's `recorded`, `{field: value}` of its own reply,
+`drive`, `perform_export`. `until_frame=F` needs `summaries=True` (a window is hundreds of steps) and a `run_for` step, and repeats the list until a stop reads frame F, within 5000 steps and 600 s; `no_channel` if there is no frame counter. A step's `recorded`, `{field: value}` of its own reply,
 must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
 `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
 Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
-`verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), `frame_reached`
-(with `until_frame`).
+`verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), else
+`still_running`; `frame_reached` (with `until_frame`).
 
 Reference: REFERENCE.md, Sequences in one call.
 

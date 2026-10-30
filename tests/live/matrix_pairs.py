@@ -1020,7 +1020,7 @@ def c12_symbols() -> None:
     r = call("write", ref="main_ram", data_hex="00")
     cell(t[5], ok(r) and r.get("addr") == "0x00200000", said(r))
     r = call("symbols_find", linear="0x40e")
-    cell(t[6], ok(r) and r.get("name") == "IRQ_VBLANK" and r.get("delta") == 0xE, said(r))
+    cell(t[6], ok(r) and r.get("name") == "irq_vblank" and r.get("delta") == 0xE, said(r))
     r = call("breakpoint_at", ref="irq_vblank")
     cell(t[7], ok(r) and r.get("addr") == "0x00000400", said(r))
     call("declaration_clear", kind="breakpoint", all=True)

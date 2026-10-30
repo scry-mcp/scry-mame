@@ -910,7 +910,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     # kills the session, or the next call would measure on a lying one, or leave an orphaned
     # emulator. A start that did not start owns nothing, not even the directory.
     STATE.scratch = Path(tempfile.mkdtemp(prefix=SCRATCH_PREFIX))
-    STATE.state_dir = state_dir
+    STATE.named_state_dir = state_dir
     STATE.port = judged.port
     try:
         try:
@@ -975,7 +975,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "pid": STATE.proc.pid if STATE.proc else None,
             "stub_port": judged.port,
             "scratch_dir": str(STATE.scratch),
-            "state_dir": state_dir,
+            "state_dir": STATE.state_dir,
             "cfg": cfg_report(),
             "debugger": debugger_report(),
             **channels(),

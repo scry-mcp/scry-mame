@@ -226,7 +226,7 @@ Example, from a live run:
 
 **`env` is for `boot_lua` only, and `boot_lua` is never Lua text.** A harness that calls `manager.machine:exit()` would end the machine under the session.
 
-**`state_dir` empty is disposable.** States, `cfg/` and `nvram/` go under the session's scratch (`status` names it as `scratch_dir`; its `state_dir` stays empty) and leave with it at `close`; a named directory is kept. Nothing is written into the project's tree either way.
+**`state_dir` empty is disposable.** States, `cfg/` and `nvram/` go under the session's scratch (`start` and `status` name that folder as `state_dir`, the same as `scratch_dir`) and leave with it at `close`; a named directory is kept. Nothing is written into the project's tree either way.
 
 **The reply also carries what reached the driver** (`binary_origin`, `env`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
 
@@ -244,7 +244,8 @@ status()
 Whether a machine is alive, and which one. Safe on a running machine; a stop it finds the
 machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
-Reply: with no machine, a `note`; alive, `system`, `pid`, `stub_port`, `scratch_dir`,
+Reply: with no session, a `note` when there is one to give; a process that exited under it,
+`exit_code` and a `note`; with a session, `system`, `pid`, `stub_port`, `scratch_dir`,
 `state_dir`, `presence`, `debugger`, `fingerprint` (`fingerprints` per cpu),
 `errorlog_path`, `pc`, `in_debugger` (`breakpoints`, `watches`, `regpoints`: each `ref`,
 `cpu`), `console_pending`, `throttles_pending`, `tallies_pending_removal`. Also
@@ -313,7 +314,7 @@ close(detail=false)
 ```
 
 End the session: MAME is asked to `quit` and killed only if it has not gone within the
-grace period. The scratch is deleted; a `state_dir` stays. Works on a running machine;
+grace period. The scratch is deleted; a named `state_dir` stays. Works on a running machine;
 with no session it answers `closed: false`.
 
 Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_written`

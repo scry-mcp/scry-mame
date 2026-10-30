@@ -846,6 +846,12 @@ class SymbolTable:
     classes: dict[str, str] = field(default_factory=dict)
     # Segment base per class as the map says (`linear - offset`), for near pointers.
     segment_bases: dict[str, int] = field(default_factory=dict)
+    # Each folded key as the file spelled it, so a reply names a symbol as its map does.
+    spelled: dict[str, str] = field(default_factory=dict)
+
+    def shown(self, key: str) -> str:
+        """`key` as the file spelled it."""
+        return self.spelled.get(key, key)
 
 
 # The linker's map row: five TAB-separated fields, recognised by shape, never by its header.
@@ -885,8 +891,19 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
     last_name: str | None = None
     unbased: dict[str, str] = {}
     first_row: dict[str, int] = {}
+    spelled: dict[str, str] = {}
     odd_tab_lines: list[tuple[int, int]] = []
     addr = None
+
+    def enter(key: str, name: str, lineno: int) -> None:
+        """Record `name` at `lineno`; a second row for one name would leave the last standing."""
+        if key in first_row:
+            raise ValueError(f"{path}:{lineno}: symbol {name!r} already appeared at line "
+                             f"{first_row[key]}; two rows for one name would leave the last "
+                             "one standing, in silence")
+        first_row[key] = lineno
+        spelled[key] = name
+
     try:
         with open(path, encoding="utf-8") as fh:
             lines = fh.readlines()
@@ -914,13 +931,7 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
             elif segment_bases[klass] != seg:
                 segment_bases[klass] = None
             key = name.upper()
-            if key in first_row:
-                raise ValueError(
-                    f"{path}:{lineno}: symbol {name!r} already appeared at line "
-                    f"{first_row[key]}; two rows for one name would leave the last one "
-                    "standing, in silence"
-                )
-            first_row[key] = lineno
+            enter(key, name, lineno)
             if klass in bases:
                 base = bases[klass]
                 table[key] = linear if base is None else base + offset
@@ -943,6 +954,7 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
         m = re.search(r"^\s*(?:name|nombre):\s*(\S+)", line)
         if m and addr is not None:
             last_name = m.group(1).upper()
+            enter(last_name, m.group(1), lineno)
             table[last_name] = addr
             addr = None
             continue
@@ -982,7 +994,8 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
                            bases={k: v for k, v in bases.items() if v is not None},
                            classes=classes,
                            segment_bases={k: v for k, v in segment_bases.items()
-                                          if v is not None})
+                                          if v is not None},
+                           spelled=spelled)
     if bases and saw_yaml:
         raise ValueError(
             f"`bases` was given for {path}, which is a YAML symbol file: it already carries "
@@ -994,4 +1007,4 @@ def symbols(path: str, bases: dict[str, int | None] | None = None) -> SymbolTabl
             "map row was found. A table with nothing in it makes every lookup fall back to "
             "hex parsing, which is the failure this reader exists to prevent."
         )
-    return SymbolTable(table, {}, "yaml", types=types)
+    return SymbolTable(table, {}, "yaml", types=types, spelled=spelled)

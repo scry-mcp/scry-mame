@@ -30,7 +30,7 @@ RUN_FOR_ONLY = frozenset({"polls", "reads", "emulated_before_s", "emulated_after
 def check_load_map(path: object = "", scale: object = 1, margin: object = None,
                    **_: Any) -> None:
     screen_map.check_path("path", path)
-    screen_map.view(scale, margin)
+    screen_map.judged_view(scale, margin)
 
 
 def check_save_map(dest: object = "", overwrite: object = False, **_: Any) -> None:
@@ -87,25 +87,20 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
     """`run_to(screen=)`: a run to the screen's anchor, the arrival judged as its map says; a
     screen with no anchor is run to a frame at a time until the map names it."""
     common: dict[str, Any] = {}
-    reader = _reader(ses, scratch, common, progress)
-    if not STATE.maps.is_anchored(screen):
-        screen_map.check_frame_run(screen, control)
+
+    def refuse_inapplicable() -> None:
         if applied := [k for k in ("condition", "disarm_watches", "cpu") if run.get(k)]:
             raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run to "
                              f"a frame at a time, and {', '.join(applied)} has nothing to apply "
                              "to: leave it out")
-        out = screen_map.run_until(
-            STATE.maps, screen,
-            lambda left: advance.run_for(ses, scratch, 0, left, progress, frames=1),
-            reader, seconds)
-        if out.get("status") == "ok":
-            out = {k: v for k, v in out.items() if k not in RUN_FOR_ONLY}
-    else:
-        if not control:
-            raise advance.no_control()
-        reply = advance.run_to(ses, scratch, STATE.maps.anchor(screen), control, seconds,
-                               progress, **run)
-        out = screen_map.at_anchor(STATE.maps, screen, reply, reader, reply.get("stop_seq"))
+    out = screen_map.run_to_screen(
+        STATE.maps, screen, control, seconds,
+        step=lambda left: advance.run_for(ses, scratch, 0, left, progress, frames=1),
+        run_to_anchor=lambda anchor: advance.run_to(ses, scratch, anchor, control, seconds,
+                                                    progress, **run),
+        read=_reader(ses, scratch, common, progress), stop_seq=lambda r: r.get("stop_seq"),
+        run_for_only=RUN_FOR_ONLY, frame_run=refuse_inapplicable,
+        declare=advance.NO_CONTROL_DECLARE)
     if not common:
         return out              # nothing was captured, so the machine is where the run left it
     # The capture that judged the screen stepped the machine: the stop is the one after it.

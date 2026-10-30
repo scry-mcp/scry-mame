@@ -38,14 +38,16 @@ from scry_mame import write as mwrite
 NEEDS_STOPPED = "Needs the machine STOPPED (else `not_stopped`)"
 NUMBER_ARG = "an integer or a `0x` string"
 DEST_FILE = f"absolute or `~`-led, in a directory that exists, with {inputs.PATH_CHARS}"
+PENDING = "Without an answer, `pending`."
 
 # A ceiling typed into prose drifts from the one the code refuses at.
 DOC_VALUES: dict[str, str] = {
     "NEEDS_STOPPED": NEEDS_STOPPED, "MAME_RELEASE": binaries.RELEASE,
-    "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE,
+    "NUMBER_ARG": NUMBER_ARG, "DEST_FILE": DEST_FILE, "PENDING": PENDING,
+    "ADD_READ": "capture", "ADD_PLACES": "naming its places to read",
     # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
-    **core_comments.DOC_VALUES,
+    **core_comments.DOC_VALUES, **frame_window.DOC_VALUES,
     "RECORD_MAX": str(frame_window.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(scry_pens.PENS_MAX),
@@ -67,7 +69,7 @@ DOC_VALUES: dict[str, str] = {
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX),
     "STATE_NAME_MAX": str(state_files.STATE_NAME_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
-    "UNTIL_STEPS_MAX": str(frame_window.UNTIL_STEPS_MAX), "ROWS_SHOWN": str(st.ROWS_SHOWN),
+    "ROWS_SHOWN": str(st.ROWS_SHOWN),
     "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
     "TEMPS": str(lexer.TEMPS), "SCAN_BYTES_MAX": f"{mscan.SCAN_BYTES_MAX:#x}",
     "HITS_DEFAULT": str(words.HITS_DEFAULT),

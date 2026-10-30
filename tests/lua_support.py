@@ -222,7 +222,7 @@ def _channel(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _ChannelSession
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     monkeypatch.setattr(mstate.STATE, "system", "m68k")
-    monkeypatch.setattr(mstate.STATE, "state_dir", "")
+    monkeypatch.setattr(mstate.STATE, "named_state_dir", "")
     monkeypatch.setattr(mstate.STATE, "proc", _PipeProcess(ses.stdin, ses))
     return ses
 
