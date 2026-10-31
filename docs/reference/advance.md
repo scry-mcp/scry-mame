@@ -38,9 +38,9 @@ controls count too. `condition`: stop only when it holds, bare numbers hex
 (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an unresolved ref, an empty or
 unresolved control, an over-long `condition`.
 
-`screen`: a mapped screen's name instead of `ref` (exactly one). With an `anchor`, run to it (`control`
+`screen`: a mapped screen's name instead of `ref` (exactly one). If the screen names an `anchor` (set by `screen_map_write`), run to it (`control`
 required): a `verified` map judges it there (`stale_map` when it no longer holds), a
-`consolidated` one takes it as shown. With none, a frame at a time until the map names it,
+`consolidated` one takes it as shown. If it names none, a frame at a time until the map names it,
 within `seconds`; a `control` is refused there (`bad_argument`). Reply: `screen` (`screen`, `layer`,
 `mode`, `judged`), `frames` run. Refused: an unmapped screen (`unknown_ref`).
 
