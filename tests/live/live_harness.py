@@ -528,18 +528,18 @@ def console_pc(cpu: str = "", symbol: str = "curpc") -> int | None:
     None when `focus` was refused or ran the machine, or the answer is not a number."""
     before = visible_of(call("cpu_info")) if cpu else None
     if cpu:
-        shown = call("focus", cpu=cpu)
+        shown = call("cpu_focus", cpu=cpu)
         if not ok(shown) or shown.get("machine_ran") is not False:
             return None
     words = str(call("debug", command=f"print {symbol}").get("output", "")).split()
     if before is not None and before != cpu:
-        call("focus", cpu=before)
+        call("cpu_focus", cpu=before)
     return int(words[0], 16) if words and all(
         c in "0123456789abcdefABCDEF" for c in words[0]) else None
 
 
 def make_visible(cpu: str) -> bool:
-    return ok(call("focus", cpu=cpu)) and visible_of(call("cpu_info")) == cpu
+    return ok(call("cpu_focus", cpu=cpu)) and visible_of(call("cpu_info")) == cpu
 
 
 def zips_missing(*systems: str) -> str:

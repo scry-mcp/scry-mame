@@ -99,7 +99,7 @@ def test_a_condition_on_a_cpu_the_stub_cannot_show_is_refused_naming_focus(
     ses = _two_programs(monkeypatch, tmp_path)
     ses.threads = {}                                   # a build without the thread patch
     out = s.breakpoint_at(ref="0x4a0", condition="d0==1", cpu="subcpu")
-    assert out["status"] == "INVALID" and "`focus(cpu=" in out["message"], out
+    assert out["status"] == "INVALID" and "`cpu_focus(cpu=" in out["message"], out
     assert not any(c.startswith("bp ") for c in ses.commands), "nothing armed"
 
 

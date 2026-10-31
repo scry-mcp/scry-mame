@@ -77,7 +77,7 @@ R_CELLS = [
 def _pc_against_console(board: PcBoard, label: str) -> None:
     free_boot(board.system, board.members, board.addr)
     if board.focus:
-        shown = call("focus", cpu=board.focus)
+        shown = call("cpu_focus", cpu=board.focus)
         if not ok(shown) or shown.get("cpu") != board.focus:
             cell(label, False, said(shown, 200))
             call("close")

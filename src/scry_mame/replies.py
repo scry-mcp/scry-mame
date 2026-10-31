@@ -923,7 +923,19 @@ class SnapshotReply(MameEnvelope, total=False):
     view: Required[str | dict[str, Any]]
 
 
-class StartReply(MameEnvelope, total=False):
+class WindowRefused(MameEnvelope, total=False):
+    """What a `window_not_visible` refusal says of the window it looked for."""
+
+    activation: Annotated[str, When("`window_not_visible` after an activation")]
+    asked_display: Annotated[int, When("`window_not_visible`")]
+    seen: Annotated[dict[str, Any], When("`window_not_visible` with a window listed")]
+
+
+class WindowReply(WindowRefused, total=False):
+    window: Required[dict[str, Any]]
+
+
+class StartReply(WindowRefused, total=False):
     after_s: float
     alive: bool
     background: bool
@@ -966,6 +978,7 @@ class StartReply(MameEnvelope, total=False):
     version: str | dict[str, Any]
     view: str | dict[str, Any]
     views: list[Any] | dict[str, Any]
+    window: Annotated[dict[str, Any], When("with `shared`")]
 
 
 class StateListReply(MameEnvelope, total=False):
@@ -1215,7 +1228,8 @@ MODELS: dict[str, type] = {
     "disassemble": DisassembleReply,
     "drive": DriveReply,
     "find": FindReply,
-    "focus": FocusReply,
+    "cpu_focus": FocusReply,
+    "window": WindowReply,
     "gfx_blit_source": GfxBlitSourceReply,
     "gfx_blits": GfxBlitsReply,
     "gfx_draft": GfxDraftReply,

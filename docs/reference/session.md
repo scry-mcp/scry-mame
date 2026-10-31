@@ -8,7 +8,7 @@ A session is one MAME under the debugger, parked STOPPED by `start` and ended by
 *Start a MAME session*
 
 ```text
-start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
+start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, fullscreen=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
 ```
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -17,7 +17,11 @@ Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, th
 files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
 byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-`shared=True`: somebody watches (a window scaled to be seen, real speed).
+`shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
+display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
+display. Both need `shared=True` and are refused otherwise; a `display` past the host's count
+is refused naming the count. The server waits for the window to be listed on that display and
+answers `window`.
 `background`: behind, the caller's focus kept; independent of `shared`, whose default it
 follows. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
@@ -25,9 +29,11 @@ follows. `throttle_from_frame`: flat out until it.
 Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
 beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
 image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
-A mismatch: `readback_refused`, closed.
+A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
+`window_not_visible`, the session left live to `window` or `close`.
 
-Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
+Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
+`shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
 `recommended_release` (0.289); another release boots with a `note` saying so.
 
 Reference: REFERENCE.md, The session.
@@ -42,6 +48,8 @@ Reference: REFERENCE.md, The session.
 | `inipath` | string | `""` |
 | `boot_seconds` | number (> 0, <= 600.0) | `8.0` |
 | `shared` | boolean | `false` |
+| `display` | integer or null | `null` |
+| `fullscreen` | boolean or null | `null` |
 | `background` | boolean or null | `null` |
 | `boot_lua` | string | `""` |
 | `env` | object or null | `null` |
@@ -61,6 +69,9 @@ Reference: REFERENCE.md, The session.
 
 | reply field | type |
 |---|---|
+| `activation` | string |
+| `asked_display` | integer |
+| `seen` | object |
 | `after_s` | number |
 | `alive` | boolean |
 | `background` | boolean |
@@ -103,6 +114,7 @@ Reference: REFERENCE.md, The session.
 | `version` | string or object |
 | `view` | string or object |
 | `views` | array or object |
+| `window` | object |
 
 Example, from a live run:
 
@@ -212,7 +224,7 @@ Example, from a live run:
 
 **`cfg` installs the project's `.cfg` where MAME reads it, and proves MAME read it.** Without it a live session plays on MAME's generic defaults with nothing saying so. MAME prints a parse error as an OSD warning on stderr and never in `error.log`, which only `logerror` writes, so the check reads stderr; a session booted on the defaults is closed and the start is INVALID. The project's file is never touched, and `cfg.changed` on `close` says whether MAME rewrote the copy, which a caller deciding to commit a cfg wants to know.
 
-**The window, and the host's own arguments.** A watched run (`shared=True`) opens MAME's window at the largest integer scale of the machine's first screen (as `-listxml` lists it, turned for a vertical board) that fits 1800x960: it fits a 1080p display, and an integer scale never blurs a pixel. With no size listed, MAME picks one. A run nobody watches gets a small window and `-nothrottle`. `SCRY_EMULATOR_ARGS` in the server's environment holds the host's own MAME arguments, one token a line so a value may hold a space, and they go after the server's on every start, watched or not, since both open a window; they win where both name an option, so which display the window opens on (`-screen0 screen1`) is the host's to say, never the caller's. Nothing here checks them: MAME refuses an option it does not know, and that refusal is `start`'s, as for any flag. Never `-video none` by hand: on macOS it takes over the display.
+**The window.** A watched run (`shared=True`) opens MAME's window on the display `display` names (the OS's index, 0 the main display and the default), at the largest integer scale of the machine's first screen (as `-listxml` lists it, turned for a vertical board) that fits 1800x960: it fits a 1080p display, and an integer scale never blurs a pixel. With no size listed, MAME picks one. The server then waits for the window to be listed on that display and answers it as `window`; one that never appears is `window_not_visible`, with the session left live to `window` or `close`. `fullscreen` is refused on macOS, where MAME's `-nowindow` opens the largest window the display holds below the menu bar, never the display itself. A run nobody watches gets a small window and `-nothrottle`, which the server neither places nor proves: `window` refuses it as `no_channel`. Never `-video none` by hand: on macOS it takes over the display.
 
 **Flying to a late scene: `throttle_from_frame=N`.** MAME's debugger console has no throttle command and the stub speaks nothing but the debugger; what CAN switch the throttle is Lua, and the one Lua a launch can run is the autoboot script. So `start` writes a boot harness and adds `-nothrottle`, and the harness lifts the throttle on arrival at the frame, logging `MAME_MCP throttled from frame N` so `log_wait` proves it. It is decided at launch, at a FRAME; the live switch is `throttle`.
 
@@ -306,6 +318,60 @@ Example, from a live run:
 
 **Also in the reply**: `cfg`, `stdout_path`, `threads` and `frame_symbol` (the frame counter's name as `start` asked it), `last_stop`'s `frame`, `since_s` and `wall_at`, and `exit_code` with a `note` when MAME died under the session.
 
+<!-- scry-reference:begin window -->
+## `window`
+
+*The session's window*
+
+```text
+window(front=false)
+```
+
+Where the watched window is on the host, at any time, a running machine included. `front`
+brings it in front of whatever covers it and reads that back.
+
+Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, no other
+application's window covering its centre; `fullscreen`).
+
+Refused: no session (`no_session`), one that died (`session_broken`), a session started
+without `shared` (`no_channel`), a
+window not listed on the display it was asked for, or still covered after the activation
+(`window_not_visible`, naming what was seen).
+
+Reference: REFERENCE.md, The session.
+
+| argument | type | default |
+|---|---|---|
+| `front` | boolean | `false` |
+
+| reply field | type |
+|---|---|
+| `activation` | string |
+| `asked_display` | integer |
+| `seen` | object |
+| `window` | object |
+
+Example, from a live run:
+
+```json
+{}
+```
+
+```json
+{
+  "summary": "window: display 0, on screen, covered",
+  "status": "ok",
+  "window": {
+    "display": 0,
+    "bounds": {"x": 520, "y": 166, "width": 1008, "height": 788},
+    "onscreen": true,
+    "front": false,
+    "fullscreen": false
+  }
+}
+```
+<!-- scry-reference:end window -->
+
 <!-- scry-reference:begin close -->
 ## `close`
 
@@ -378,13 +444,18 @@ Example, from a live run:
 
 **Also in the reply**: `console_pending_before`, `console_drained`, `exit_code` (unavailable with its `why` when SIGKILLed and still not reaped), and `omitted` naming the tails with `how` when they are left out.
 
-<!-- scry-reference:begin focus -->
-## `focus`
+
+
+
+**On the patched stub the reply proves nothing ran**: `machine_ran: false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before and after (`unread`: one whose block the stub refuses). It is the stub's `Hc`, which ignores no cpu and releases nothing.
+
+<!-- scry-reference:begin cpu_focus -->
+## `cpu_focus`
 
 *Show another cpu*
 
 ```text
-focus(cpu)
+cpu_focus(cpu)
 ```
 
 Make `cpu` (`subcpu` or `:subcpu`) the debugger's visible cpu, read back off the console's
@@ -436,7 +507,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "focus: :maincpu visible, was :maincpu, nothing ran (stub)",
+  "summary": "cpu_focus: :maincpu visible, was :maincpu, nothing ran (stub)",
   "status": "ok",
   "cpu": ":maincpu",
   "was": ":maincpu",
@@ -446,11 +517,9 @@ Example, from a live run:
   "unchanged": [":maincpu", ":subcpu"]
 }
 ```
-<!-- scry-reference:end focus -->
+<!-- scry-reference:end cpu_focus -->
 
-**The cpu model is every tool's, and `focus` is its only direct handle.** No `cpu` acts on the visible cpu, which a stop moves to the cpu that stopped and a release back to it (`cpu_info`'s `visible`); `cpu` names another and the visible one stays (`step` alone shows the cpu it steps). A reply that touches a cpu names it. A declaration keeps its cpu, its `ref` resolving in that cpu's symbols. `rpset` names no cpu: a registerpoint is the visible cpu's. Another cpu's registers and memory need the thread patch.
-
-**On the patched stub the reply proves nothing ran**: `machine_ran: false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before and after (`unread`: one whose block the stub refuses). It is the stub's `Hc`, which ignores no cpu and releases nothing.
+**The cpu model is every tool's, and `cpu_focus` is its only direct handle.** No `cpu` acts on the visible cpu, which a stop moves to the cpu that stopped and a release back to it (`cpu_info`'s `visible`); `cpu` names another and the visible one stays (`step` alone shows the cpu it steps). A reply that touches a cpu names it. A declaration keeps its cpu, its `ref` resolving in that cpu's symbols. `rpset` names no cpu: a registerpoint is the visible cpu's. Another cpu's registers and memory need the thread patch.
 
 <!-- scry-reference:begin rom_check -->
 ## `rom_check`

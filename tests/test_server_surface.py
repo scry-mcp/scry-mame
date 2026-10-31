@@ -144,7 +144,7 @@ def test_the_live_interlock_is_declared_in_the_package() -> None:
     here = Path(__file__).resolve().parent.parent
     mine = tomllib.loads((here / "pyproject.toml").read_text(encoding="utf-8"))
     section = mine.get("tool", {}).get("pytest", {}).get("ini_options", {})
-    assert "-m 'not live'" in section.get("addopts", ""), (
+    assert "not live" in section.get("addopts", ""), (
         "this package does not deselect the live tier by itself")
     assert any(m.startswith("live:") for m in section.get("markers", [])), section
 

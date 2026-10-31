@@ -1,0 +1,18 @@
+{
+ "task": {
+  "id": "M209",
+  "prompt": "The MAME window is hidden behind another application. Bring it to the front.",
+  "tool": "window",
+  "args": {
+   "front": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "task": {
+  "id": "M207",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it over Moonlight, which streams only the main display.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "/opt/fury/roms",
+   "reference_rom": "/opt/fury/roms/fury.bin",
+   "shared": true
+  },
+  "allow": [
+   "display",
+   "fullscreen"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M207: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

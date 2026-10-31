@@ -147,7 +147,7 @@
   {"id": "M54", "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
    "expect": "CANNOT", "about": "read_memory"},
   {"id": "M56", "prompt": "Make the cpu tagged audiocpu the one the debugger shows, so the calls that name no cpu act on it.",
-   "tool": "focus", "args": {"cpu": {"any_of": ["audiocpu", ":audiocpu"]}}},
+   "tool": "cpu_focus", "args": {"cpu": {"any_of": ["audiocpu", ":audiocpu"]}}},
   {"id": "M57", "prompt": "Count the hits at hex address 201060 on the cpu tagged soundcpu, without ever halting there and without changing which cpu the debugger shows.",
    "tool": "breakpoint_at", "args": {"ref": {"any_of": ["0x201060"]}, "role": "control",
    "cpu": {"any_of": ["soundcpu", ":soundcpu"]}}, "allow": ["by"], "grammar": ["control"]},
@@ -367,5 +367,9 @@
   {"id": "M202", "prompt": "The screen map is loaded. Run to its hiscores screen, counting the control at FrameTick on the way.", "tool": "run_to", "args": {"screen": "hiscores", "control": "FrameTick"}},
   {"id": "M203", "prompt": "Load the screen map /tmp/maps/speedf.screen-map.json for a machine that shows the game's picture twice as large, with 40 rows of border above and below it.", "tool": "screen_map_write", "args": {"method": "load", "path": "/tmp/maps/speedf.screen-map.json", "scale": 2, "margin": [0, 40]}, "grammar": ["load"]},
   {"id": "M204", "prompt": "The screen map is loaded, and its screen named attract has no anchor. Run until the machine shows the attract screen, giving up after 20 seconds.", "tool": "run_to", "args": {"screen": "attract", "seconds": 20}},
-  {"id": "M205", "prompt": "The screen map loaded is consolidated, and the machine is stopped on the attract screen, which is whole once DrawAttract has run. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, entered by that routine.", "tool": "screen_map_write", "args": {"method": "add", "screen": "attract", "match": [[0, 0, 248, 12]], "anchor": "DrawAttract"}, "grammar": ["add"]}
+  {"id": "M205", "prompt": "The screen map loaded is consolidated, and the machine is stopped on the attract screen, which is whole once DrawAttract has run. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, entered by that routine.", "tool": "screen_map_write", "args": {"method": "add", "screen": "attract", "match": [[0, 0, 248, 12]], "anchor": "DrawAttract"}, "grammar": ["add"]},
+  {"id": "M206", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching on their second display (display 1).", "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "shared": true, "display": 1}},
+  {"id": "M207", "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it over Moonlight, which streams only the main display.", "tool": "start", "args": {"binary": "/opt/fury/mamed", "system": "spacefury", "rompath": "/opt/fury/roms", "reference_rom": "/opt/fury/roms/fury.bin", "shared": true}, "allow": ["display", "fullscreen"]},
+  {"id": "M208", "prompt": "Where is the MAME window right now: on which display, and is it on screen and in front?", "tool": "window"},
+  {"id": "M209", "prompt": "The MAME window is hidden behind another application. Bring it to the front.", "tool": "window", "args": {"front": true}}
 ]}

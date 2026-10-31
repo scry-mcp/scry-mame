@@ -140,7 +140,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end perform -->
 
-**The visible cpu.** A list that alternates cpus does not leave the visible cpu moved: at its end, failed or not, it puts back the cpu visible before the first step (or the one the last `focus` read back) through the stub's `Hc`, which runs nothing. The put-back holds while the machine is stopped; a release makes the cpu it last stopped on visible again.
+**The visible cpu.** A list that alternates cpus does not leave the visible cpu moved: at its end, failed or not, it puts back the cpu visible before the first step (or the one the last `cpu_focus` read back) through the stub's `Hc`, which runs nothing. The put-back holds while the machine is stopped; a release makes the cpu it last stopped on visible again.
 
 **Waiting.** A wait that ran out ends the list `TIMEOUT`, and so does a step whose own wait missed (a `log_wait` that timed out): the steps after it were built on what it waited for.
 

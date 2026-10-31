@@ -47,7 +47,7 @@ _ANSWERS_WHILE_RUNNING = roster.answers_while_running(
 #: The tools by family, in the order the instructions list them; the media file tools answer in
 #: any state, so their family answers whole.
 ROSTER = roster.Roster(families=(
-    ("Session", ("start", "status", "close", "focus", "rom_check")),
+    ("Session", ("start", "status", "window", "close", "cpu_focus", "rom_check")),
     ("Machine", ("cpu_info", "machine_map", "log", "log_wait")),
     ("Names", ("symbols_find",)),
     ("Advance", ("run_to", "run_for", "step", "resume", "stop", "trace")),

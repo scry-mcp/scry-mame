@@ -42,7 +42,7 @@ def test_the_patched_stub_shows_the_cpu_and_proves_nothing_ran(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     ses.commands.clear()
-    out = s.focus(cpu=spelling)
+    out = s.cpu_focus(cpu=spelling)
     assert out["status"] == "ok", out
     assert (out["cpu"], out["was"], out["via"], out["machine_ran"]) == (":subcpu", ":maincpu",
                                                                         "stub",
@@ -51,7 +51,7 @@ def test_the_patched_stub_shows_the_cpu_and_proves_nothing_ran(
     assert "unread" not in out and "ignored" not in out
     assert "Hc2" in ses.commands and not any(c.startswith("focus") for c in ses.commands), (
         "the stub's switch, never the console's focus, which ignores cpus")
-    assert out["summary"] == "focus: :subcpu visible, was :maincpu, nothing ran (stub)"
+    assert out["summary"] == "cpu_focus: :subcpu visible, was :maincpu, nothing ran (stub)"
     assert visible_in(s.cpu_info()) == ":subcpu"
 
 
@@ -74,7 +74,7 @@ def test_a_block_that_moved_across_the_switch_is_a_run(
 
     monkeypatch.setattr(ses, "register_block", moved)
     monkeypatch.setattr(ses, "make_visible", switch)
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["machine_ran"] is True and out["unchanged"] == [":subcpu"], out
 
 
@@ -88,7 +88,7 @@ def test_a_frame_that_moved_across_the_switch_is_a_run(
         _RunningSession.make_visible(ses, thread)
 
     monkeypatch.setattr(ses, "make_visible", switch)
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["machine_ran"] is True and out["frame"] == ses.frame, out
 
 
@@ -97,7 +97,7 @@ def test_a_cpu_whose_block_the_stub_refuses_is_unread_and_never_unchanged(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     ses.no_map = {2}
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["unread"] == [":subcpu"] and out["unchanged"] == [":maincpu"], out
     assert out["machine_ran"] is False, "an unread block is not evidence of a run"
 
@@ -107,7 +107,7 @@ def test_the_patched_stub_refuses_a_cpu_the_debugger_ignores_and_names_observe(
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
     ses.ignoring = [":subcpu"]
-    out = refused(r"ignores :subcpu.*`debug\(\"observe :subcpu\"\)`", s.focus(cpu="subcpu"))
+    out = refused(r"ignores :subcpu.*`debug\(\"observe :subcpu\"\)`", s.cpu_focus(cpu="subcpu"))
     assert out["code"] == "needs_call"
     assert visible_in(s.cpu_info()) == ":maincpu"
 
@@ -122,7 +122,7 @@ def test_a_refusal_of_hc_for_another_reason_is_the_stubs_answer(
 
     monkeypatch.setattr(ses, "make_visible", no)
     out = refused(r"refused `Hc2`.*not made visible; `cpu_info` says which cpu is",
-                  s.focus(cpu="subcpu"))
+                  s.cpu_focus(cpu="subcpu"))
     assert out["code"] == "unexpected_answer"
 
 
@@ -132,7 +132,7 @@ def test_a_cpu_read_back_other_than_the_one_asked_is_readback_refused(
     ses = _patched(monkeypatch, tmp_path)
     monkeypatch.setattr(ses, "make_visible", lambda thread: None)
     out = refused(r"`cpulist` shows :maincpu visible, not :subcpu: `cpu_info` says which cpu is "
-                  "visible now", s.focus(cpu="subcpu"))
+                  "visible now", s.cpu_focus(cpu="subcpu"))
     assert out["code"] == "readback_refused" and out["cpu"] == ":maincpu"
 
 
@@ -141,7 +141,7 @@ def test_without_threads_the_consoles_focus_runs_and_the_reply_surveys_the_stop(
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     ses.commands.clear()
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["status"] == "ok", out
     assert (out["cpu"], out["was"], out["via"], out["machine_ran"]) == (":subcpu", ":maincpu",
                                                                         "console",
@@ -158,7 +158,7 @@ def test_without_threads_focusing_the_visible_cpu_runs_nothing_and_surveys_nothi
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _running(monkeypatch, tmp_path)
-    out = s.focus(cpu="maincpu")
+    out = s.cpu_focus(cpu="maincpu")
     assert (out["cpu"], out["machine_ran"], out["ignored"]) == (":maincpu", False, [":subcpu"]), out
     assert "cause" not in out, "nothing ran, so no stop is surveyed"
 
@@ -168,7 +168,7 @@ def test_a_console_focus_that_reaches_no_observed_cpu_is_not_settled_and_left_ru
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     monkeypatch.setattr(mfocus, "settled_visible", lambda ses, ignored: None)
-    out = refused(r"no stop on a cpu it observes was read", s.focus(cpu="subcpu"))
+    out = refused(r"no stop on a cpu it observes was read", s.cpu_focus(cpu="subcpu"))
     assert out["code"] == "not_settled" and out["via"] == "console"
     assert ses.running and mstate.STATE.console_run
 
@@ -195,7 +195,7 @@ def test_a_console_focus_answered_otherwise_is_unexpected(
     real = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda c, timeout=10.0: (
         "Unable to find device ':subcpu'\n\n" if c.startswith("focus") else real(c)))
-    assert refused(r"answered \"Unable to find", s.focus(cpu="subcpu"))["code"] == (
+    assert refused(r"answered \"Unable to find", s.cpu_focus(cpu="subcpu"))["code"] == (
         "unexpected_answer")
 
 
@@ -203,7 +203,7 @@ def test_a_cpu_the_machine_lacks_is_unknown_ref_naming_its_cpus(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
-    out = refused(r"no cpu 'audiocpu' on this machine", s.focus(cpu="audiocpu"))
+    out = refused(r"no cpu 'audiocpu' on this machine", s.cpu_focus(cpu="audiocpu"))
     assert out["code"] == "unknown_ref" and out["cpu_tags"] == [":maincpu", ":subcpu"]
     assert not any(c.startswith("Hc") for c in ses.commands)
 
@@ -213,7 +213,7 @@ def test_the_inventory_start_gathered_names_the_cpus_before_the_console_does(
 ) -> None:
     _patched(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [{"tag": ":maincpu"}]})
-    out = refused(r"no cpu 'subcpu'", s.focus(cpu="subcpu"))
+    out = refused(r"no cpu 'subcpu'", s.cpu_focus(cpu="subcpu"))
     assert out["cpu_tags"] == [":maincpu"]
 
 
@@ -222,13 +222,13 @@ def test_an_empty_cpu_is_refused_before_the_machine_is_asked_for(
 ) -> None:
     monkeypatch.setattr(mstate.STATE, "ses", None)
     monkeypatch.setattr(mstate.STATE, "proc", None)
-    assert refused(r"cpu is empty", s.focus(cpu=" "))["code"] == "bad_argument"
+    assert refused(r"cpu is empty", s.cpu_focus(cpu=" "))["code"] == "bad_argument"
 
 
 def test_focus_needs_a_stopped_machine(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     ses = _patched(monkeypatch, tmp_path)
     s.resume()
-    assert s.focus(cpu="subcpu")["code"] == "not_stopped"
+    assert s.cpu_focus(cpu="subcpu")["code"] == "not_stopped"
     assert not any(c.startswith("Hc") for c in ses.commands)
 
 
@@ -398,7 +398,7 @@ def test_the_consoles_focus_waits_for_a_stop_on_a_cpu_it_observes(
     readings = iter([":maincpu", ":maincpu", ":maincpu", ":subcpu", ":subcpu"])
     monkeypatch.setattr(cpus, "visible_cpu", lambda ses: next(readings))
     monkeypatch.setattr(mfocus, "SETTLE_POLL_S", 0.0)
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["status"] == "ok" and out["cpu"] == ":subcpu" and out["machine_ran"] is True, out
 
 
@@ -420,7 +420,7 @@ def test_a_visible_cpu_unread_before_the_call_is_said_in_was(
     place rather than answering a null."""
     _patched(monkeypatch, tmp_path)
     monkeypatch.setattr(cpus, "visible_cpu", _first_none(cpus.visible_cpu))
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert out["status"] == "ok" and out["was"] == {"available": False,
                                                     "why": mfocus.NO_WAS_WHY}, out
 

@@ -828,7 +828,7 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "read_block", "tag": "maincpu", "length": 4}, {"op": "registers"},
         {"op": "disassemble", "ref": "0x400", "length": 4},
         {"op": "find", "ref": "0x0", "length": 64, "data_hex": "00"},
-        {"op": "history", "limit": 2}, {"op": "focus", "cpu": "maincpu"},
+        {"op": "history", "limit": 2}, {"op": "cpu_focus", "cpu": "maincpu"},
         {"op": "log", "pattern": ".", "channel": "emulator", "limit": 2},
         {"op": "snapshot"}, {"op": "captures"}, {"op": "state_list"},
         {"op": "breakpoint_at", "ref": "exception_handler"}, {"op": "declaration_list",

@@ -235,7 +235,7 @@ class Declaration:
             if self.cpu is not None:
                 raise DeclarationError(
                     f"an expr watch carries no cpu; got {self.cpu!r}: the console evaluates it "
-                    "on the visible cpu, which `focus` moves")
+                    "on the visible cpu, which `cpu_focus` moves")
             if self.width is not None or self.fmt is not None:
                 raise DeclarationError(
                     f"an expr watch carries no length and no format; got length={self.width!r} "

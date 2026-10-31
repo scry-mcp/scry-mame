@@ -180,7 +180,7 @@ def test_a_fresh_session_reads_the_emulator_log_from_its_first_byte(tmp_path: Pa
 _NONE_UNTIL_START = {"boot_pc", "cfg", "first_cpu", "guard", "manifest",
                      "proc",
                      "reference", "run_release", "scratch", "ses", "session_origin", "cancelled",
-                     "scan", "stale_counter", "state_signature", "stdout_log", "store"}
+                     "scan", "stale_counter", "state_signature", "stdout_log", "store", "window"}
 
 
 def test_a_fresh_state_holds_none_only_where_a_session_has_yet_to_put_something() -> None:

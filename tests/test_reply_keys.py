@@ -75,7 +75,7 @@ def test_perform_names_the_visible_cpu_as_debug_does_and_keeps_its_account_apart
     after the list; how the list kept it is `visible_cpu_kept`."""
     from test_perform_per_cpu import SUB, _patched
     _patched(monkeypatch, tmp_path)
-    out = s.perform(steps=[{"op": "focus", "cpu": "subcpu"}, {"op": "registers"}])
+    out = s.perform(steps=[{"op": "cpu_focus", "cpu": "subcpu"}, {"op": "registers"}])
     assert out["visible_cpu"] == SUB, out
     assert out["visible_cpu_kept"]["asked"] == SUB and out["visible_cpu_kept"]["after"] == SUB
 
@@ -97,7 +97,7 @@ def test_drive_carries_the_tag_and_the_account_under_its_act(
     """`drive` runs its act through `perform`'s machinery, so its `act` says the same two keys."""
     from test_perform_per_cpu import SUB, _patched
     _patched(monkeypatch, tmp_path)
-    out = s.drive(act=[{"op": "focus", "cpu": "subcpu"}, {"op": "registers"}])
+    out = s.drive(act=[{"op": "cpu_focus", "cpu": "subcpu"}, {"op": "registers"}])
     act = out["act"]
     assert act["visible_cpu"] == SUB and act["visible_cpu_kept"]["after"] == SUB, out
 

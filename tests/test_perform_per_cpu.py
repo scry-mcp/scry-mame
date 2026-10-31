@@ -60,7 +60,8 @@ def test_drive_refuses_a_cpu_the_machine_lacks_in_its_own_shape(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
-    out = s.drive(act=[{"op": "breakpoint_at", "ref": "0x4a0"}, {"op": "focus", "cpu": "audiocpu"}])
+    out = s.drive(act=[{"op": "breakpoint_at", "ref": "0x4a0"},
+                       {"op": "cpu_focus", "cpu": "audiocpu"}])
     assert out["code"] == "unknown_ref" and out["cpu_tags"] == [MAIN, SUB], out
     assert out["act"]["failed_at"] == 1 and out["verify"]["checked"] is False
     assert out["looked"]["emulator"]["available"] is False
@@ -105,7 +106,7 @@ def test_the_last_focus_step_is_the_cpu_the_list_keeps(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
-    out = s.perform(steps=[{"op": "focus", "cpu": "subcpu"}, {"op": "registers"}])
+    out = s.perform(steps=[{"op": "cpu_focus", "cpu": "subcpu"}, {"op": "registers"}])
     assert out["ran"][1]["cpu"] == SUB, out["ran"]
     assert out["visible_cpu_kept"] == {"before": MAIN, "asked": SUB, "after": SUB,
                                   "restored": False}, out["visible_cpu_kept"]
@@ -118,7 +119,7 @@ def test_the_last_focus_step_is_the_cpu_the_list_keeps(
 
     monkeypatch.setattr(ses, "_stop", stops_on_the_main)
     ses.visible_cpu, ses.stops_after_polls = MAIN, 1
-    out = s.perform(steps=[{"op": "focus", "cpu": "subcpu"},
+    out = s.perform(steps=[{"op": "cpu_focus", "cpu": "subcpu"},
                            {"op": "breakpoint_at", "ref": "0x4a0", "cpu": "maincpu"},
                            {"op": "resume"}])
     assert out["visible_cpu_kept"] == {"before": MAIN, "asked": SUB, "moved_to": MAIN, "after": SUB,
@@ -216,15 +217,15 @@ def test_a_debug_line_that_shows_a_cpu_is_the_cpu_kept_and_one_that_read_none_is
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _patched(monkeypatch, tmp_path)
-    ops = _ops(debug={"visible_cpu": SUB}, focus={"cpu": SUB})
+    ops = _ops(debug={"visible_cpu": SUB}, cpu_focus={"cpu": SUB})
     out = sequence.run_steps(ses, tmp_path, [{"op": "debug", "command": "focus subcpu"}], 1.0,
                              ops)  # type: ignore[arg-type]
     kept = out["visible_cpu_kept"]
     assert kept["asked"] == SUB and ses.visible_cpu == SUB, kept
     ses.visible_cpu = MAIN
     ops = _ops(debug={"visible_cpu": {"available": False, "why": "none read"}},
-               focus={"cpu": SUB})
-    out = sequence.run_steps(ses, tmp_path, [{"op": "focus", "cpu": "subcpu"},
+               cpu_focus={"cpu": SUB})
+    out = sequence.run_steps(ses, tmp_path, [{"op": "cpu_focus", "cpu": "subcpu"},
                                              {"op": "debug", "command": "ignore"}], 1.0,
                              ops)  # type: ignore[arg-type]
     assert out["visible_cpu_kept"]["asked"] == SUB, "an unread visible cpu does not undo the focus"

@@ -247,7 +247,7 @@ def test_focus_on_the_patched_stub_proves_nothing_ran_by_the_blocks_alone(
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     monkeypatch.setattr(mstate.STATE, "frame_symbol", None, raising=False)
     ses.commands.clear()
-    out = s.focus(cpu="subcpu")
+    out = s.cpu_focus(cpu="subcpu")
     assert (out["status"] == "ok" and out["machine_ran"] is False
             and out["frame"]["available"] is False), out
     assert not [c for c in ses.commands if c.startswith("print")], ses.commands

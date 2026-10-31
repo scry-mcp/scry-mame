@@ -105,7 +105,7 @@ Declare a registerpoint: the machine stops when `condition` comes true, wherever
 program ("who puts this value in this register"). Stored, re-armed at `start`.
 
 `condition`: console grammar, bare numbers hex (`d1==0x7fff`); compares, never assigns.
-`cpu`: only the visible one; another is refused naming `focus`.
+`cpu`: only the visible one; another is refused naming `cpu_focus`.
 
 Refused: a condition the console refuses (`bad_argument`) or too long (`command_chars`,
 `limit_chars`); one equal to another registerpoint's (`ambiguous_ref`); a debugger with no

@@ -25,7 +25,7 @@ SETTLE_S = 2.0
 SETTLE_POLL_S = 0.05
 
 
-#: `focus`'s `was` when the console marked no cpu visible before the call.
+#: `cpu_focus`'s `was` when the console marked no cpu visible before the call.
 NO_WAS_WHY = "`cpulist` marked no cpu visible before the call"
 NO_VISIBLE_AFTER_WHY = "`cpulist` marked no cpu visible after the call"
 
@@ -47,14 +47,15 @@ def settled_visible(ses: gs.Session, ignored: list[str]) -> str | None:
 
 
 def check_focus(cpu: str = "", **_: Any) -> None:
-    """`focus`'s machine-independent half: a cpu is named."""
+    """`cpu_focus`'s machine-independent half: a cpu is named."""
     if not inputs.cpu_given(cpu):
-        raise st.Invalid("bad_argument", "cpu is empty: `focus` takes the tag of the cpu to show "
-                                         "(`subcpu` or `:subcpu`), which `machine_map` lists")
+        raise st.Invalid("bad_argument", "cpu is empty: `cpu_focus` takes the tag of the cpu to "
+                                         "show (`subcpu` or `:subcpu`), which `machine_map` "
+                                         "lists")
 
 
 def focus(ses: gs.Session, scratch: Path, cpu: str) -> dict[str, Any]:
-    """The body of the `focus` tool."""
+    """The body of the `cpu_focus` tool."""
     check_focus(cpu)
     tag = cpus.named(ses, cpu)
     was = cpus.visible_cpu(ses)
@@ -80,7 +81,7 @@ def _by_stub(ses: gs.Session, tag: str, was: str | None, thread: int) -> dict[st
     refuses is named in `unread`, never counted as unchanged; no frame counter leaves `frame`
     unavailable."""
     frame_before, before = read.frame_or_none(ses), _blocks(ses)
-    cpus.make_visible(ses, tag, f"`focus` shows {tag}")
+    cpus.make_visible(ses, tag, f"`cpu_focus` shows {tag}")
     visible, frame_after, after = cpus.visible_cpu(ses), read.frame_or_none(ses), _blocks(ses)
     unread = sorted(t for t in before if before[t] is None or after.get(t) is None)
     unchanged = [t for t in before if t not in unread and before[t] == after[t]]

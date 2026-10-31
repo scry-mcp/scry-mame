@@ -63,13 +63,14 @@ Ops = dict[str, Callable[..., dict[str, Any]]]
 
 SEQUENCES = frozenset({"perform", "drive"})
 #: The tools that are no step of a sequence, named once; the other lists read off it.
-NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export"}
+NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export", "window"}
 
 # Ops that may run on a RUNNING machine; any other waits for the next stop. The server's
 # refusal names the same tools from here, because a second copy drifted.
-RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot", "state_list",
-                  "captures", "breakpoint_at", "declaration_list", "declaration_clear", "watch_add",
-                  "regpoint_add", "comment_list", "comment_write", "symbols_find", "throttle",
+RUNNING_OK_OPS = {"status", "cpu_info", "stop", "log", "log_wait", "snapshot",
+                  "state_list", "captures", "breakpoint_at", "declaration_list",
+                  "declaration_clear", "watch_add", "regpoint_add", "comment_list",
+                  "comment_write", "symbols_find", "throttle",
                   "machine_map", "gfx_load", "palette_log", "gfx_film", "scan", "screen_map_write",
                   *media_tools.TOOLS}
 #: The methods of a fold that answer on a running machine; its others need a stop.
@@ -124,7 +125,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "screen_signature": mscreen.check_screen_signature,
     "series_capture": mseries.check_series_capture,
     "lua": mlua.check_lua,
-    "focus": mfocus.check_focus,
+    "cpu_focus": mfocus.check_focus,
     "palette": mpalette.check_palette,
     "screen_view": mscreen.check_screen_view,
     "gfx_view": mgfx.check_gfx_view,
@@ -381,7 +382,7 @@ _REF_METHOD = {"comment_write": "add", "scan": "start"}
 #: Operations after which the visible cpu may differ from the one the list began on; a step
 #: naming no cpu past the first of them is judged when it runs.
 MOVES_VISIBLE = frozenset({
-    "focus", "step", "run_to", "run_for", "resume", "trace", "debug", "stop", "log_wait",
+    "cpu_focus", "step", "run_to", "run_for", "resume", "trace", "debug", "stop", "log_wait",
     "reset", "state_write", "lua", "input", "record", "audio_record", "screen_signature",
     "gfx_film", "series_capture"})
 _DECLARES = {"breakpoint_at": "breakpoint", "watch_add": "watch", "comment_write": "comment"}
@@ -568,7 +569,7 @@ class _Mame(sequence.SequenceMachine):
         return self.tail_stop()
 
     def noted(self, op: str, reply: dict[str, Any]) -> None:
-        shown = reply.get("cpu") if op == "focus" else (
+        shown = reply.get("cpu") if op == "cpu_focus" else (
             reply.get("visible_cpu") if op == "debug" else None)
         # An unread visible cpu leaves the last one asked.
         self.asked = shown if isinstance(shown, str) else self.asked
@@ -608,7 +609,7 @@ def run_steps(ses: Any, scratch: Any, steps: list[Any], settle_seconds: float, o
 
 
 # A stop moves the visible cpu as MAME does; the list puts back the one it keeps (the one it
-# found, or the last `focus` read back) with the stub's `Hc`, which runs nothing.
+# found, or the last `cpu_focus` read back) with the stub's `Hc`, which runs nothing.
 def _keep_visible(ses: Any, was: str | None, asked: str | None) -> dict[str, Any]:
     """`_kept_visible`'s account with each cpu it could not name said, never a null."""
     kept = _kept_visible(ses, was, asked)

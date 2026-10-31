@@ -44,7 +44,7 @@ def test_the_tool_is_registered_and_the_vocabulary_is_every_tool_but_the_lifecyc
     assert "perform" in names
     ops = set(s._step_ops())
     assert ops == names - {"start", "close", "rom_check", "perform", "drive",
-                           "perform_export"}, ops ^ names
+                           "perform_export", "window"}, ops ^ names
 
 
 def test_perform_runs_steps_in_order_and_stops_at_the_first_failure(

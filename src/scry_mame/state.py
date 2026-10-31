@@ -16,6 +16,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
 from scry_core import boundary, cancel, guardian, picture, presence, prose, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import window as core_window
 from scry_core.reply_contract import or_unavailable, unavailable
 
 from scry_mame import declarations as dec
@@ -97,6 +98,8 @@ class State:
         self.system: str = ""
         self.boot_pc: int | None = None
         self.view: str | dict[str, Any] = "native"
+        # The window a watched start asked for; None for a run nobody watches.
+        self.window: core_window.WindowRequest | None = None
         # Breakpoints armed here, by row index (MAME's counter spans cpus): `owner`, `addr`, `cpu`.
         self.breakpoints: dict[int, dict[str, Any]] = {}
         self.regpoints: dict[dec.Owner, dict[str, Any]] = {}

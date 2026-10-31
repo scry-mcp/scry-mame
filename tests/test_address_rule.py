@@ -793,7 +793,7 @@ def test_perform_reads_a_name_a_step_on_an_unknown_cpu_declares_by_name_on_any_l
     declares `by="symbol"` stands for that name on whichever cpu a later step names."""
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: MAIN, 2: ":subcpu"}
-    out = s.perform(steps=[{"op": "focus", "cpu": "maincpu"},
+    out = s.perform(steps=[{"op": "cpu_focus", "cpu": "maincpu"},
                            {"op": "breakpoint_at", "ref": "fade", "by": "symbol"},
                            {"op": "breakpoint_at", "ref": "fade", "cpu": "maincpu"}])
     assert "before anything ran" not in str(out.get("message")), out
@@ -866,7 +866,7 @@ def test_perform_leaves_a_step_after_a_focus_to_the_table_of_the_cpu_it_focused(
     ses = _running(monkeypatch, tmp_path)
     ses.threads = {1: MAIN, 2: ":subcpu"}
     monkeypatch.setitem(mstate.STATE.tables, ":subcpu", g.SymbolTable({"FADE": 0x900}, {}, "yaml"))
-    out = s.perform(steps=[{"op": "focus", "cpu": "subcpu"},
+    out = s.perform(steps=[{"op": "cpu_focus", "cpu": "subcpu"},
                            {"op": "breakpoint_at", "ref": "fade"}])
     assert "before anything ran" not in str(out.get("message")), out
     assert out["steps_completed"] >= 1, out

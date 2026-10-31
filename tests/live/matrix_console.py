@@ -73,7 +73,7 @@ def c16_console() -> None:
     # a run by frames stops on the main cpu; ignoring the sub cpu shown runs nothing
     call("run_for", frames=1, seconds=10.0)
     declared = (call("cpu_info", cpu=MAIN).get("cpus") or [{}])[0].get("declarations")
-    shown = call("focus", cpu=SUB)
+    shown = call("cpu_focus", cpu=SUB)
     ignored = call("debug", command=f"ignore {SUB}")
     out = call("breakpoint_at", ref="0x400", condition="d0==1", cpu=MAIN)
     visible = call("cpu_info", cpu=MAIN)

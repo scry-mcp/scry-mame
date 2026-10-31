@@ -150,7 +150,7 @@ def test_an_expr_watch_refuses_a_cpu_other_than_the_visible_one(
                   s.watch_add(ref="beamy", mode="expr", cpu="subcpu"))
     assert out["code"] == "bad_argument" and arming.store().declarations() == []
     assert not any(c.startswith("wp ") for c in ses.commands)
-    assert "`focus(cpu=...)` makes the one you name the visible one" in out["message"] and (
+    assert "`cpu_focus(cpu=...)` makes the one you name the visible one" in out["message"] and (
         'mode="change"' not in out["message"]), (
         "a change watch takes a symbol, not an expression: it is no remedy for one")
 
@@ -467,7 +467,7 @@ def test_a_registerpoint_names_only_the_visible_cpu(
 ) -> None:
     """`rpset` takes no cpu, so a registerpoint on another is refused naming `focus`."""
     ses = _running(monkeypatch, tmp_path)
-    out = refused(r"visible cpu, :maincpu, .*`focus\(cpu=':subcpu'\)` first",
+    out = refused(r"visible cpu, :maincpu, .*`cpu_focus\(cpu=':subcpu'\)` first",
                   s.regpoint_add(condition="d1==7fff", cpu="subcpu"))
     assert out["code"] == "needs_call" and not any(c.startswith("rpset") for c in ses.commands)
     assert s.regpoint_add(condition="d1==7fff", cpu="maincpu")["cpu"] == ":maincpu"

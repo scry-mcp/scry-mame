@@ -161,7 +161,7 @@ def make_visible(ses: gs.Session, tag: str, needs: str) -> None:
     if thread is None:
         raise st.Invalid("bad_argument", f"{needs}, and this build's stub cannot make {tag} "
                                          "visible without running (no thread patch): "
-                                         f"`focus(cpu=\"{tag}\")` makes it visible through the "
+                                         f"`cpu_focus(cpu=\"{tag}\")` makes it visible through the "
                                          "console, which runs the machine and ignores every "
                                          "other cpu until it is observed")
     try:
@@ -211,7 +211,7 @@ def _put_back(ses: gs.Session, visible: str | None, shown: str | None) -> str | 
         make_visible(ses, visible, f"{visible} is put back as the visible cpu")
     except (st.Invalid, gs.SessionError) as e:
         return (f"{visible} could not be made visible again ({e}), so {shown} is the visible cpu "
-                f"now: `focus(cpu={visible!r})` shows it again")
+                f"now: `cpu_focus(cpu={visible!r})` shows it again")
     return None
 
 

@@ -118,7 +118,7 @@ def judged_condition(ses: gs.Session, arm: str, condition: str,
         words.append(not_evaluated(ses, condition))
 
     needs = (f"the condition of a row on {cpu} is evaluated against the visible cpu, {visible}; "
-             f"`focus(cpu={cpu!r})` first")
+             f"`cpu_focus(cpu={cpu!r})` first")
     put_back = cpus.on_cpus(ses, visible, {cpu: [None]}, needs, evaluate)
     return ConditionVerdict(words[0], put_back)
 
@@ -131,7 +131,7 @@ def refuse_if_left_visible(judged: ConditionVerdict, condition: str, cpu: str | 
              else f"does not evaluate ({judged.refusal})")
     raise st.Invalid("unexpected_answer",
         f"`{condition}` {found} on {cpu}, and then {judged.left_visible}; nothing is stored: "
-        "`focus` the cpu you want visible, then declare it again", visible_cpu=cpu)
+        "`cpu_focus` the cpu you want visible, then declare it again", visible_cpu=cpu)
 
 
 def condition_fields(reply: dict[str, Any], typed: str, cond: str) -> None:

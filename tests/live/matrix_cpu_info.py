@@ -57,9 +57,9 @@ def _printed(expr: str) -> int:
 
 
 def _sub_cycles() -> int:
-    call("focus", cpu="subcpu")
+    call("cpu_focus", cpu="subcpu")
     cycles = _printed("totalcycles")
-    call("focus", cpu="maincpu")
+    call("cpu_focus", cpu="maincpu")
     return cycles
 
 
@@ -114,9 +114,9 @@ def block_i_cpu_info() -> None:
              and _pc_of(rows, tag) == _hex(regs[tag].get(_pc(rows, tag).get("reg", "")))
              for tag in (MAIN, SUB)}
     cell(t[2], all(equal.values()), f"{equal} {[r.get('PC') for r in regs.values()]}")
-    call("focus", cpu="subcpu")
+    call("cpu_focus", cpu="subcpu")
     curpc = _printed("curpc")
-    call("focus", cpu="maincpu")
+    call("cpu_focus", cpu="maincpu")
     cell(t[3], curpc >= 0 and _pc_of(rows, SUB) == curpc, f"{_pc_of(rows, SUB):#x} vs {curpc:#x}")
     st = call("status")
     cell(t[4], visible_of(first_info) == MAIN and _pc_of(rows, MAIN) == _hex(st.get("pc")),
@@ -126,9 +126,9 @@ def block_i_cpu_info() -> None:
     cell(t[5], _pc_of(now, MAIN) == _hex(stepped.get("pc")) >= 0
          and _pc_of(now, MAIN) != _pc_of(rows, MAIN),
          f"{_pc_of(rows, MAIN):#x} -> {_pc_of(now, MAIN):#x}, step pc {stepped.get('pc')}")
-    call("focus", cpu="subcpu")
+    call("cpu_focus", cpu="subcpu")
     shown = visible_of(call("cpu_info"))
-    call("focus", cpu="maincpu")
+    call("cpu_focus", cpu="maincpu")
     back = visible_of(call("cpu_info"))
     cell(t[6], shown == SUB and back == MAIN, f"{shown}, then {back}")
     # The live cpu first: ignoring or suspending the cpu MAME is live on would run the machine.

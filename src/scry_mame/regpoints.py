@@ -137,7 +137,7 @@ def _refuse_another_cpu(ses: gs.Session, cpu: str) -> None:
         raise st.Invalid("needs_call",
                          f"a registerpoint lives on the visible cpu, "
                          f"{visible or 'one `cpulist` did not mark'}, and `rpset` names "
-                         f"no other: `focus(cpu={tag!r})` first")
+                         f"no other: `cpu_focus(cpu={tag!r})` first")
 
 
 def regpoint_add(ses: gs.Session, condition: str, cpu: str = "") -> dict[str, Any]:
@@ -273,8 +273,8 @@ def rearm(ses: gs.Session, out: dict[str, Any]) -> None:
         if None not in (decl.cpu, visible) and decl.cpu != visible:
             out["unarmable"].append({**name, "why": (
                 f"a registerpoint arms on the visible cpu alone (`rpset` names no other), and "
-                f"{decl.cpu} is not visible now ({visible} is): `focus(cpu={decl.cpu!r})`, then "
-                "`regpoint_add` again")})
+                f"{decl.cpu} is not visible now ({visible} is): "
+                f"`cpu_focus(cpu={decl.cpu!r})`, then `regpoint_add` again")})
             continue
         try:
             cond = conditions.console_condition(decl.ref, decl.cpu or visible)

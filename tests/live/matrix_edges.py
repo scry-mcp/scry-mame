@@ -571,6 +571,21 @@ NO_SESSION_CASES: list[Case] = [
          {**BOOT, "shared": True, "background": True},
          is_ok(lambda r: r.get("flags", [])[:3] == ["-window", "-nomaximize", "-resolution"]),
          then="close"),
+    Case("start.display names the display the window opens on and the start proves it", "start",
+         {**BOOT, "shared": True, "display": 0, "background": True},
+         is_ok(lambda r: (r.get("window") or {}).get("display") == 0
+               and (r.get("window") or {}).get("onscreen") is True
+               and r.get("flags", [])[-2:] == ["-screen0", "screen0"]),
+         then="close"),
+    Case("start.display without shared", "start", {**BOOT, "display": 0},
+         refused_saying("shared=true")),
+    Case("start.display past the host's displays", "start",
+         {**BOOT, "shared": True, "display": FAR}, refused_saying("does not exist")),
+    Case("window answers the window the start proved", "window", {},
+         is_ok(lambda r: (r.get("window") or {}).get("display") == 0
+               and (r.get("window") or {}).get("onscreen") is True),
+         before=("start", {**BOOT, "shared": True, "display": 0, "background": True}),
+         then="close"),
     Case("start.throttle_from_frame negative", "start", {**BOOT, "throttle_from_frame": -1},
          is_refused("bad_argument")),
     Case("start.rompath relative", "start", {**BOOT, "rompath": "run/mame_roms"},

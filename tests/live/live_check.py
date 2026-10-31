@@ -1263,7 +1263,7 @@ s.declaration_clear("watch", all=True)
 check("both clears leave the debugger's lists empty",
       "foreign" not in s.declaration_list("breakpoint")
       and "foreign" not in s.declaration_list("watch"))
-s.focus(cpu="maincpu")
+s.cpu_focus(cpu="maincpu")
 
 # LAST, because a stop on the sub cpu leaves it the visible one for everything after it.
 print("\n== a stop on the sub cpu: its pc and its own registers, named once")
@@ -1287,22 +1287,22 @@ check("the main cpu's registers are read by naming it, at another pc (the contro
 check("cpu_info names the sub cpu visible", visible_of(s.cpu_info()) == ":subcpu")
 
 print("\n== focus: the stub's `Hc` shows another cpu, read back, and nothing runs")
-r = s.focus(cpu="maincpu")
+r = s.cpu_focus(cpu="maincpu")
 check("focus back to the main cpu goes through the stub and proves nothing ran",
       r.get("status") == "ok" and (r.get("cpu"), r.get("was"), r.get("via"), r.get("machine_ran"))
       == (":maincpu", ":subcpu", "stub", False) and r.get("unchanged") == [":maincpu", ":subcpu"],
       str(r.get("summary")))
 check("cpu_info reads the same visible cpu", visible_of(s.cpu_info()) == ":maincpu")
-r = s.focus(cpu="nosuchcpu")
+r = s.cpu_focus(cpu="nosuchcpu")
 check("a cpu the machine lacks is unknown_ref naming its cpus",
       r.get("code") == "unknown_ref" and r.get("cpu_tags") == [":maincpu", ":subcpu"], str(r))
-s.focus(cpu="subcpu")
+s.cpu_focus(cpu="subcpu")
 dump = live_tmp("mame-live-") / "sub-vectors.bin"
 r = s.memdump(ref="0x0", length=16, dest=str(dump))
 check("memdump with the sub cpu visible saves its memory and checks it through its thread",
       r.get("status") == "ok" and r.get("cpu") == ":subcpu" and dump.is_file(), str(r)[:160])
 # LIVE ON THE MAIN CPU: a stop there, so a typed `focus subcpu` ignores the cpu MAME runs.
-s.focus(cpu="maincpu")
+s.cpu_focus(cpu="maincpu")
 s.debug(command="bpclear")          # the sub cpu's typed row, which would cut the run first
 landed = s.run_to(ref="irq_vblank", control="0x4a0", seconds=10.0)
 check("a run to the vblank handler stops on the main cpu",
@@ -1317,7 +1317,7 @@ r = s.debug(command="observe maincpu")
 check("an observe typed through debug empties the ignored set",
       r.get("ignored") == [] and ignored_of(s.cpu_info()) == [], str(r)[:160])
 # LIVE ON THE SUB CPU, the main one visible through the stub: the same line runs nothing.
-s.focus(cpu="maincpu")
+s.cpu_focus(cpu="maincpu")
 r = s.debug(command="focus subcpu")
 check("a focus typed through debug that ignores a cpu MAME is not live on runs nothing",
       (r.get("visible_cpu"), r.get("ignored")) == (":maincpu", [":maincpu"])
@@ -1494,6 +1494,33 @@ stale = s.run_to(screen="attract", control="0x80", seconds=30.0)
 check("a verified screen whose region changed is refused stale at its anchor",
       stale.get("status") == "INVALID" and stale.get("code") == "stale_map",
       str(stale.get("summary")))
+s.close()
+
+print("\n== window: a watched start proves its window on the asked display; a headless one has "
+      "none placed")
+from scry_core import window as core_window  # noqa: E402
+
+host = core_window.host()
+circus_args = dict(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+                   reference_rom=str(circus_image), reference_addr="0x1000",
+                   reference_base="0x1000", boot_seconds=30.0, presence=False,
+                   inipath=NO_JOYSTICK_INI, background=True)
+r = s.start(**circus_args, shared=True, display=0)
+check("a watched start answers a window on the asked display, onscreen",
+      r.get("status") == "ok" and r.get("window", {}).get("display") == 0
+      and r.get("window", {}).get("onscreen") is True, str(r.get("summary")))
+listed = [w for w in host.windows() if w.pid == r.get("pid")]
+where = s.window()
+check("the host lists that window where `window` says",
+      where.get("status") == "ok" and (shown := core_window.main_window(r.get("pid"), listed))
+      is not None and shown.bounds
+      == tuple((where.get("window") or {}).get("bounds", {}).values()),
+      str(where.get("summary")))
+s.close()
+r = s.start(**circus_args)
+check("a headless start opens no window and `window` refuses it as no_channel",
+      r.get("status") == "ok" and s.window().get("code") == "no_channel"
+      and not [w for w in host.windows() if w.pid == r.get("pid")], str(r.get("summary")))
 s.close()
 
 finish("LIVE CHECK")

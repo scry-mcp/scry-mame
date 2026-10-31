@@ -77,10 +77,17 @@ def close(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"close: {when}, exit code {code}{left}"
 
 
-def focus(args: dict[str, Any], reply: dict[str, Any]) -> str:
+def window(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    seen = reply.get("window") or {}
+    return (f"window: display {seen.get('display')}, "
+            f"{'on screen' if seen.get('onscreen') else 'off screen'}, "
+            f"{'in front' if seen.get('front') else 'covered'}")
+
+
+def cpu_focus(args: dict[str, Any], reply: dict[str, Any]) -> str:
     moved = "ran" if reply["machine_ran"] else "nothing ran"
     now, was = (v if isinstance(v, str) else "unread" for v in (reply["cpu"], reply["was"]))
-    return f"focus: {now} visible, was {was}, {moved} ({reply['via']})"
+    return f"cpu_focus: {now} visible, was {was}, {moved} ({reply['via']})"
 
 
 def status(args: dict[str, Any], reply: dict[str, Any]) -> str:

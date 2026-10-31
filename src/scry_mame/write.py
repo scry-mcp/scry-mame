@@ -308,7 +308,7 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
                                          f"ran until {visible} executed")
             notes.append(f"the line ignored {live}, the cpu MAME was live on, so it ran until "
                          f"{visible} executed, and that stop is recorded (stop "
-                         f"{record['seq']}, `status`'s `last_stop`); `focus` shows a cpu "
+                         f"{record['seq']}, `status`'s `last_stop`); `cpu_focus` shows a cpu "
                          "without a run on a build whose stub serves a thread per cpu")
         elif visible in (ignored or []):
             notes.append(f"the visible cpu, {visible}, is ignored and was not live, so nothing "

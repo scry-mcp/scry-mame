@@ -14,9 +14,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import host_args
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core import window as core_window
 from server_support import (  # noqa: E402
     MACHINE_INDEPENDENT,
     _AlreadyDead,
@@ -69,6 +69,9 @@ from scry_mame import write as mwrite  # noqa: E402
 UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
 
+ASKED = core_window.WindowRequest(0, False)
+
+
 @pytest.mark.parametrize("screens, flags", [
     # The largest integer scale within 1800x960, so the window fits a 1080p display.
     ([{"tag": ":screen", "width": 320, "height": 240}],
@@ -90,39 +93,28 @@ UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
     ([{"tag": ":screen", "width": 0, "height": 240}], ["-window", "-nomaximize"]),
     ([{"tag": ":screen", "width": 320, "height": 0}], ["-window", "-nomaximize"]),
 ])
-def test_a_watched_window_is_scaled_from_the_machine_s_screen(
-    monkeypatch: pytest.MonkeyPatch, screens: list[dict[str, Any]], flags: list[str]
+def test_a_watched_window_is_scaled_from_the_machine_s_screen_and_named_a_display(
+    screens: list[dict[str, Any]], flags: list[str]
 ) -> None:
-    monkeypatch.delenv(host_args.VARIABLE, raising=False)
-    assert launch.window_flags(True, screens) == flags
+    assert launch.window_flags(ASKED, screens) == [*flags, "-screen0", "screen0"]
 
 
-def test_an_unwatched_window_is_small_and_flat_out(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv(host_args.VARIABLE, raising=False)
-    assert launch.window_flags(False, [{"tag": ":screen", "width": 320, "height": 240}]) \
+def test_an_unwatched_window_is_small_and_flat_out() -> None:
+    assert launch.window_flags(None, [{"tag": ":screen", "width": 320, "height": 240}]) \
         == UNWATCHED
 
 
-@pytest.mark.parametrize("shared", [False, True])
-def test_the_host_s_arguments_come_after_the_server_s(
-    monkeypatch: pytest.MonkeyPatch, shared: bool
+@pytest.mark.parametrize(("asked", "flags"), [
+    (core_window.WindowRequest(1, False), ["-screen0", "screen1"]),
+    (core_window.WindowRequest(1, True), ["-nowindow", "-screen0", "screen1"]),
+    (core_window.WindowRequest(0, True), ["-nowindow", "-screen0", "screen0"]),
+])
+def test_the_display_asked_is_the_one_mame_is_told_and_fullscreen_drops_the_window(
+    asked: core_window.WindowRequest, flags: list[str]
 ) -> None:
-    """After, so the host's placement wins where both name an option."""
-    monkeypatch.setenv(host_args.VARIABLE, "-screen0\nscreen1\n")
-    flags = launch.window_flags(shared, [])
-    assert flags[-2:] == ["-screen0", "screen1"], flags
-    assert flags[:-2] == (["-window", "-nomaximize"] if shared else UNWATCHED), flags
-
-
-def test_the_host_s_arguments_end_the_command_so_a_dangling_option_takes_nothing_of_ours(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """A bare `-screen0` before `-debug` would take `-debug` for its value: no debugger."""
-    monkeypatch.setenv(host_args.VARIABLE, "-screen0")
-    flags = launch.window_flags(True, [])
-    cmd = launch.build_command("/opt/mame", "sys", "/roms", 1234, flags, str(tmp_path),
-                               inipath="/ini", boot_lua="/boot.lua")
-    assert cmd[-1] == "-screen0" and cmd.index("-debug") < cmd.index("-window"), cmd
+    got = launch.window_flags(asked, [])
+    assert got[-len(flags):] == flags, got
+    assert ("-window" in got) is not asked.fullscreen, got
 
 
 def test_the_tools_are_serialized() -> None:
@@ -322,22 +314,22 @@ def test_a_given_port_and_the_pid_are_used_and_reported(
         s.close()
 
 
-def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_adds_the_host_s(
+def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_names_the_display(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """At the level of `start`: the screen `-listxml` lists reaches the argv, the host's last."""
+    """At the level of `start`: the screen `-listxml` lists and the display asked reach the argv."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
     xml = Path(__file__).parent / "fixtures" / "machine" / "listxml-m68k-dual.xml"
     rewrite_mame(args["binary"], prints_file(xml))
-    monkeypatch.setenv(host_args.VARIABLE, "-screen0\nscreen1")
-    out = s.start(**{**args, "system": "m68k-dual"}, shared=True)
+    out = s.start(**{**args, "system": "m68k-dual"}, shared=True, display=1)
     try:
         argv = _StubProcess.last_argv
         assert argv[argv.index("-resolution") + 1] == "1008x756", "336x252 at 3x"
         assert out["flags"] == ["-window", "-nomaximize", "-resolution", "1008x756",
                                 "-screen0", "screen1"], out["flags"]
+        assert out["window"]["display"] == 1 and out["window"]["onscreen"] is True, out
     finally:
         s.close()
 
@@ -682,7 +674,8 @@ def test_start_reports_the_env_and_the_flags_it_handed_over(
     out = s.start(**_boot_args(tmp_path, image), shared=True, env={"M68K_DUAL_SWITCH": "on"})
     try:
         assert out.get("env", {}) == {"M68K_DUAL_SWITCH": "on"} and "display" not in out
-        assert out["flags"] == ["-window", "-nomaximize"] and out.get("throttle_from_frame", 0) == 0
+        assert out["flags"] == ["-window", "-nomaximize", "-screen0", "screen0"]
+        assert out.get("throttle_from_frame", 0) == 0
         assert _StubProcess.last_kwargs.get("env", {})["M68K_DUAL_SWITCH"] == "on"
         assert Path(out["boot_lua_path"]).parent == mstate.STATE.scratch, (
             "the server writes the one boot script on every start, for the inventory")
@@ -901,6 +894,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "found_stop_last": {"stop_seq": 2}, "run_release": {"emulated": 1.0, "wall": 2.0},
         "throttle_seen": True, "store": dec.DeclarationStore("t", None),
         "session_origin": "s9", "fingerprints": {":old": "fp9"},
+        "window": core_window.WindowRequest(1, True),
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log, "wb"),  # noqa: SIM115 (kill closes it)

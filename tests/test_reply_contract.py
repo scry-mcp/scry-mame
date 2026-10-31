@@ -78,7 +78,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "audio_record": {"frames": 2},
     "throttle": {"on": True},
     "state_write": {"method": "load", "name": "a"},
-    "focus": {"cpu": "subcpu"},
+    "cpu_focus": {"cpu": "subcpu"},
     "gfx_view": {"layout": {"width": 8, "height": 8, "planes": 1, "planeoffset": [0],
                             "xoffset": "{ STEP8(0,1) }", "yoffset": "{ STEP8(0,8) }",
                             "charincrement": 64}, "palette": "none", "tag": "gfx1"},

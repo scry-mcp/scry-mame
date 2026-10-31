@@ -143,6 +143,8 @@ def start(
     inipath: str = "",
     boot_seconds: Annotated[float, vocab.WAIT_BOUNDS] = 8.0,
     shared: bool = False,
+    display: int | None = None,
+    fullscreen: bool | None = None,
     background: bool | None = None,
     boot_lua: str = "",
     env: dict[str, str] | None = None,
@@ -164,7 +166,11 @@ def start(
     files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
     byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-    `shared=True`: somebody watches (a window scaled to be seen, real speed).
+    `shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
+    display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
+    display. Both need `shared=True` and are refused otherwise; a `display` past the host's count
+    is refused naming the count. The server waits for the window to be listed on that display and
+    answers `window`.
     `background`: behind, the caller's focus kept; independent of `shared`, whose default it
     follows. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
@@ -172,9 +178,11 @@ def start(
     Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
     beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
     image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
-    A mismatch: `readback_refused`, closed.
+    A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
+    `window_not_visible`, the session left live to `window` or `close`.
 
-    Reply: `system`, `pid`, `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
+    Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
+    `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
     `recommended_release` ({MAME_RELEASE}); another release boots with a `note` saying so.
 
     Reference: REFERENCE.md, The session.
@@ -185,8 +193,8 @@ def start(
     return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
                         inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
                         stub_port, state_dir, throttle_from_frame, types, cfg,
-                        background=background, presence=presence, view=view,
-                        progress=bridge(ctx))
+                        background=background, presence=presence, view=view, display=display,
+                        fullscreen=fullscreen, progress=bridge(ctx))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -226,8 +234,26 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
     return msession.close(bridge(ctx), detail)
 
 
-@tool("Show another cpu", summary=summaries.focus)
-def focus(cpu: str) -> dict[str, Any]:
+@tool("The session's window", summary=summaries.window)
+def window(front: bool = False) -> dict[str, Any]:
+    """Where the watched window is on the host, at any time, a running machine included. `front`
+    brings it in front of whatever covers it and reads that back.
+
+    Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, no other
+    application's window covering its centre; `fullscreen`).
+
+    Refused: no session (`no_session`), one that died (`session_broken`), a session started
+    without `shared` (`no_channel`), a
+    window not listed on the display it was asked for, or still covered after the activation
+    (`window_not_visible`, naming what was seen).
+
+    Reference: REFERENCE.md, The session.
+    """
+    return msession.window(front)
+
+
+@tool("Show another cpu", summary=summaries.cpu_focus)
+def cpu_focus(cpu: str) -> dict[str, Any]:
     """Make `cpu` (`subcpu` or `:subcpu`) the debugger's visible cpu, read back off the console's
     `cpulist`. {NEEDS_STOPPED}.
 
@@ -243,8 +269,8 @@ def focus(cpu: str) -> dict[str, Any]:
 
     Reference: REFERENCE.md, The session.
     """
-    args.check("focus", cpu=cpu)
-    return mfocus.focus(*stopped("a focus"), cpu)
+    args.check("cpu_focus", cpu=cpu)
+    return mfocus.focus(*stopped("a cpu_focus"), cpu)
 
 
 @tool("What the debugger sees of each cpu", summary=summaries.cpu_info, read_only=True)
@@ -484,7 +510,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     program ("who puts this value in this register"). Stored, re-armed at `start`.
 
     `condition`: console grammar, bare numbers hex (`d1==0x7fff`); compares, never assigns.
-    `cpu`: only the visible one; another is refused naming `focus`.
+    `cpu`: only the visible one; another is refused naming `cpu_focus`.
 
     Refused: a condition the console refuses (`bad_argument`) or too long (`command_chars`,
     `limit_chars`); one equal to another registerpoint's (`ambiguous_ref`); a debugger with no

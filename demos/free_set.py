@@ -28,7 +28,7 @@ VOLATILE = {
     "stdout_tail": "the emulator's console as `close` found it, which echoes the session's "
                    "temporary paths",
     "reads": "how often a timed run polled the emulated clock, paced by wall time",
-    "flags": "the window's flags, which end with the host's own arguments",
+    "flags": "the window's flags, which name this host's display",
     "binary": "where the host installed MAME",
     "binary_origin": "how the host's MAME was found",
 }

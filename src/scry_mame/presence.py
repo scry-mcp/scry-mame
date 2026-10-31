@@ -17,12 +17,12 @@ from scry_core import boundary, presence
 STATE_FILE = "presence.state"
 
 #: Calls that can move the guest or change what it holds, or cannot be told from one (`lua`,
-#: `debug`, `focus`): presence is `acting`. Every other tool is in `STILL_TOOLS`; both are
+#: `debug`, `cpu_focus`): presence is `acting`. Every other tool is in `STILL_TOOLS`; both are
 #: written out so a new tool must be placed (the suite holds them against the registry).
 DRIVING_TOOLS = frozenset({
     "run_to", "run_for", "trace", "step", "resume", "stop", "series_capture", "input", "record",
     "audio_record", "reset", "state_write", "throttle", "drive", "perform", "lua", "debug",
-    "focus", "write", "set_register"})
+    "cpu_focus", "write", "set_register"})
 STILL_TOOLS = frozenset({
     "audio_compare", "breakpoint_at", "captures", "close", "comment_list", "comment_write",
     "cpu_info", "declaration_clear", "declaration_list", "disassemble", "find",
@@ -31,7 +31,8 @@ STILL_TOOLS = frozenset({
     "screen_map_find", "screen_map_write", "memdump", "palette", "palette_log", "perform_export",
     "read_block",
     "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
-    "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add"})
+    "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add",
+    "window"})
 
 # A drawer that raises writes why beside the state file, where `status` reads it.
 DRAWER = """-- Written by the mame MCP server for ONE session: the presence edge.

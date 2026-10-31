@@ -90,7 +90,7 @@ def test_a_registerpoint_re_arms_only_when_its_cpu_is_the_visible_one(
     assert ref_cpu(out["rearmed"]) == [("d2==1", MAIN)], out
     assert len(out["unarmable"]) == 1, out
     why = out["unarmable"][0]
-    assert isinstance(why, dict) and why["cpu"] == SUB and "focus(cpu=':subcpu')" in why["why"]
+    assert isinstance(why, dict) and why["cpu"] == SUB and "cpu_focus(cpu=':subcpu')" in why["why"]
     assert not any(c.startswith("rpset {d1") for c in ses.commands)
 
 

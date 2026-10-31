@@ -2,6 +2,21 @@
 
 What a client of the server notices.
 
+## Unreleased
+
+It needs the scry-core that serves `scry_core.window`, not the 0.80.0 this release was cut on.
+
+- `start` takes `display` (the OS's index, the main display when omitted) and `fullscreen`, and a
+  watched start answers `window`, proved in the host's window list; a window that never appears on
+  the asked display is `window_not_visible`. `SCRY_EMULATOR_ARGS` is gone. `fullscreen` is refused on
+  macOS, where MAME has no full screen to prove.
+- A new tool, `window`, answers where the window is at any time, and with `front=true` brings it
+  in front of what covers it.
+- `focus` is now `cpu_focus`: it moved the debugger's visible cpu, never the window, and a caller
+  reading "focus" expected the window brought forward. The same name is the `op` of `perform` and
+  `drive`.
+- The cases that move the owner's Space carry the `window` marker and are out of every default run.
+
 ## 0.1.0
 
 First release. It needs scry-core 0.80.0.

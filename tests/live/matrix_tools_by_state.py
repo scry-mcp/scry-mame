@@ -182,7 +182,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "comment_write delete": lambda: {"ref": "irq_vblank", "cpu": "maincpu"},
     "symbols_find": lambda: {"name": "irq_vblank"},
     "machine_map": dict,
-    "cpu_info": dict,
+    "cpu_info": dict, "window": dict,
     "read_memory": lambda: {"ref": "0x400", "length": 8},
     "read_block": lambda: {"tag": "maincpu", "offset": 0x400, "length": 8},
     "registers": dict,
@@ -193,7 +193,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "scan start": lambda: {"ref": "0x200000", "length": 0x100},
     "scan filter": lambda: {"operator": "!"},
     "scan clear": dict,
-    "focus": lambda: {"cpu": "maincpu"},
+    "cpu_focus": lambda: {"cpu": "maincpu"},
     "write": lambda: {"ref": "0x200000", "data_hex": "00"},
     "set_register": lambda: {"name": "D0", "value": 0},
     "reset": dict,
@@ -237,7 +237,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
 }
 
 #: What answers on a running machine; everything else but the lifecycle refuses `not_stopped`.
-RUNNING_ANSWERS = {"status", "log", "log_wait", "snapshot", "symbols_find", "throttle",
+RUNNING_ANSWERS = {"status", "window", "log", "log_wait", "snapshot", "symbols_find", "throttle",
                    "breakpoint_at", "declaration_list breakpoint", "declaration_clear breakpoint",
                    "watch_add", "declaration_list watch", "declaration_clear watch", "regpoint_add",
                    "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
@@ -283,7 +283,7 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "disassemble": lambda r: bool(r.get("lines")),
     "find": lambda r: isinstance(r.get("hits_total"), int),
     "history": lambda r: bool(r.get("lines")),
-    "focus": lambda r: r.get("cpu") == ":maincpu" and r.get("machine_ran") is False,
+    "cpu_focus": lambda r: r.get("cpu") == ":maincpu" and r.get("machine_ran") is False,
     "write": lambda r: r.get("verified") is True,
     "set_register": lambda r: r.get("verified") is True,
     "reset": lambda r: r.get("kind") == "softreset",
@@ -409,6 +409,9 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
         elif tool == "log_wait":
             # `.` matches a line the log already holds, so it answers at once
             good = ok(r) and r.get("already") is True
+        elif tool == "window":
+            # the matrix starts unwatched: the server placed no window and proves none
+            good = refused(r, "no_channel") and "shared=true" in str(r.get("message"))
         else:
             good = ok(r) and STOPPED_SAYS[tool](r)
         # `close` reports the session after it, which is over
@@ -419,6 +422,8 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
             good = refused(r, "session_live")
         elif tool == "perform_export":
             good = refused(r, "no_recording") and "cut at call 1" in str(r.get("message"))
+        elif tool == "window":
+            good = refused(r, "no_channel") and "shared=true" in str(r.get("message"))
         elif tool in RUNNING_ANSWERS:
             good = ok(r) and RUNNING_SAYS[tool](r)
         elif tool in ("perform", "drive"):
@@ -467,9 +472,10 @@ def run_state(state: str, tools: list[str]) -> None:
 
 # Calls that leave the machine as found go first, then those that move it, transitions last.
 STOPPED_ORDER = [
-    "status", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory", "read_block",
-    "registers", "disassemble", "find", "history", "scan start", "scan filter", "scan clear",
-    "focus", "log", "snapshot", "captures", "state_list", "breakpoint_at",
+    "status", "window", "rom_check", "machine_map", "cpu_info", "symbols_find", "read_memory",
+    "read_block", "registers", "disassemble", "find", "history", "scan start", "scan filter",
+    "scan clear",
+    "cpu_focus", "log", "snapshot", "captures", "state_list", "breakpoint_at",
     "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
     "declaration_list watch", "declaration_clear watch", "regpoint_add",
     "declaration_list regpoint", "declaration_clear regpoint", "comment_write add", "comment_list",
@@ -486,7 +492,8 @@ STOPPED_ORDER = [
 ]
 RUNNING_ORDER = (
     [t for t in STOPPED_ORDER if t not in RUNNING_ANSWERS and t not in ("start", "resume")]
-    + ["status", "log", "log_wait", "snapshot", "symbols_find", "throttle", "breakpoint_at",
+    + ["status", "window", "log", "log_wait", "snapshot", "symbols_find", "throttle",
+       "breakpoint_at",
        "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
        "declaration_list watch", "declaration_clear watch",
        "regpoint_add", "declaration_list regpoint", "declaration_clear regpoint", "comment_list",
@@ -575,7 +582,7 @@ def _by_cpu(tag: str) -> dict[str, Callable[[], dict[str, Any]]]:
                                          "cpu": tag}),
         "step": lambda: {"count": 1, "cpu": tag},
         "trace": lambda: {"frames": 1, "seconds": 10.0, "cpu": tag},
-        "focus": lambda: {"cpu": tag},
+        "cpu_focus": lambda: {"cpu": tag},
         "gfx_view": lambda: {"layout": BYTES_8X8, "palette": "none", "ref": "0x400", "count": 2,
                              "cpu": tag},
         "gfx_locate": lambda: {"layouts": [BYTES_8X8], "patch": [0, 0, 8, 8], "ref": "0x400",
@@ -648,7 +655,7 @@ def _by_cpu_says(tag: str) -> dict[str, Judge]:
         "trace": lambda r: (r.get("verdict") == "ELAPSED"
                             and (r.get("trace") or {}).get("cpu") == tag
                             and r["trace"].get("addresses", 0) > 0),
-        "focus": lambda r: names(r) and r.get("machine_ran") is False,
+        "cpu_focus": lambda r: names(r) and r.get("machine_ran") is False,
         "gfx_view": lambda r: r.get("kind") == "space" and r.get("count") == 2
         and r.get("addr_cpu") == tag,
         "gfx_locate": lambda r: r.get("kind") == "space" and r.get("addr_cpu") == tag
@@ -676,7 +683,7 @@ BY_CPU_RUNNING: dict[str, Judge] = {
 BY_CPU_VISIBLE_ONLY: dict[str, Judge] = {"regpoint_add": RUNNING_SAYS["regpoint_add"]}
 
 #: MAME moves the visible cpu for these two.
-MOVES_VISIBLE = ("step", "focus")
+MOVES_VISIBLE = ("step", "cpu_focus")
 BY_CPU_ORDER = [
     "machine_map", "cpu_info", "symbols_find", "rom_check", "read_memory", "read_block",
     "registers", "disassemble", "find", "history", "breakpoint_at", "declaration_list breakpoint",
@@ -686,7 +693,7 @@ BY_CPU_ORDER = [
                 "write", "set_register",
     "memdump", "scan start", "gfx_view", "gfx_locate",
     # `step` stays last before `focus`: RELEASE_RESETS needs the sub's own stop
-    "gfx_sweep", "gfx_film", "perform", "drive", "run_to", "trace", "step", "focus",
+    "gfx_sweep", "gfx_film", "perform", "drive", "run_to", "trace", "step", "cpu_focus",
 ]
 BY_CPU_RUNNING_ORDER = [t for t in BY_CPU_ORDER if t not in ("perform", "drive")]
 BY_CPU_SURFACE = "the per-cpu section probes exactly the tools that take `cpu`"
@@ -718,7 +725,7 @@ def block_a_by_cpu() -> None:
             r = call(tool, **probes[tool]())
             good = says[tool](r) and (ok(r) or (tool in BY_CPU_VISIBLE_ONLY and tag == SUB))
             if tool in MOVES_VISIBLE:
-                call("focus", cpu="maincpu")
+                call("cpu_focus", cpu="maincpu")
             kept = cpus.visible_cpu(STATE.ses) == MAIN if STATE.ses is not None else False
             cell(_on(tag, "stopped", tool), good and kept and session_is(r, True, False),
                  said(r) if kept else f"the visible cpu moved: {said(r)}")
@@ -728,7 +735,7 @@ def block_a_by_cpu() -> None:
                 call("scan", method="clear")
         if tag == SUB:
             # the last stop was the sub's: the release makes it visible again
-            call("focus", cpu="maincpu")
+            call("cpu_focus", cpu="maincpu")
             call("resume")
             r = call("regpoint_add", condition="pc==0xfffffffe")
             cell(RELEASE_RESETS, ok(r) and r.get("cpu") == SUB, said(r))

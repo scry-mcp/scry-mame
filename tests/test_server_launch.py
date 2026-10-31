@@ -80,8 +80,8 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
     registered = sorted(t.name for t in s.mcp._tool_manager.list_tools())
     assert registered == sorted([
         "breakpoint_at", "declaration_clear", "declaration_list", "close", "debug", "disassemble",
-        "focus", "cpu_info", "input", "log", "log_wait", "lua", "find", "history", "machine_map",
-        "memdump",
+        "cpu_focus", "cpu_info", "input", "log", "log_wait", "lua", "find", "history",
+        "machine_map", "memdump",
         "perform", "perform_export", "palette", "screen_view", "gfx_view", "gfx_locate",
         "gfx_load", "gfx_blits",
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
@@ -93,7 +93,7 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "captures", "rom_check", "set_register", "snapshot", "start", "state_list", "state_write",
         "status",
         "step", "stop", "symbols_find", "throttle", "watch_add",
-        "write", "scan",
+        "write", "scan", "window",
     ]), f"the registered surface changed: {registered}"
 
 

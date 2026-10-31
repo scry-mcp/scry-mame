@@ -32,8 +32,8 @@ def tap_prelude(registry: str) -> str:
 
 
 def bound_cpu(cpu: str | None) -> str:
-    """The `dbg` and `cpu` locals; a named cpu is bound at composition, before a `focus` can move
-    the visible one."""
+    """The `dbg` and `cpu` locals; a named cpu is bound at composition, before a `cpu_focus` can
+    move the visible one."""
     expr = (f"manager.machine.devices[{transport.lua_string(cpu)}]" if cpu else
             'dbg and dbg.visible_cpu or manager.machine.devices[":maincpu"]')
     return f"local dbg = manager.machine.debugger\nlocal cpu = {expr}"

@@ -15,10 +15,11 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, host_args, judges, live_host, log_marks
+from scry_core import guardian, judges, live_host, log_marks
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
+from scry_core import window as core_window
 from scry_core.reply_contract import unavailable
 
 from scry_mame import binary as binaries
@@ -49,8 +50,9 @@ from scry_mame.state import STATE
 # kill by binary path and this server spawns the same binary. Changing it changes every one.
 SCRATCH_PREFIX = "mame-mcp-"
 
-BACKGROUND_VAR = live_host.BACKGROUND_VAR
 BOOT_POLL_S = 0.3
+#: Seconds a watched start waits for the emulator's window to be listed on the asked display.
+WINDOW_WAIT_S = 10.0
 # Printed when the debugger console is built. A stub without the thread patch caches an empty
 # target description if asked before the first stop, and its port accepts long before that, so
 # the handshake waits for this line. MAME's source does not order the line against the stop; an
@@ -126,21 +128,38 @@ def reference_rom_file(reference_rom: str) -> Path:
 WATCHED_MAX_PX = (1800, 960)
 
 
-def window_flags(shared: bool, screens: list[dict[str, Any]]) -> list[str]:
-    """The window's flags, then the host's own (`host_args`), so its placement wins.
+#: The platform whose MAME has no full screen: `-nowindow` opens the largest window the display's
+#: work area holds, below the menu bar, which is never the display's own bounds.
+NO_FULLSCREEN_ON = "darwin"
 
-    Watched: the first screen at the largest integer scale within `WATCHED_MAX_PX`, since an
+
+def refuse_fullscreen_that_cannot_show(asked: core_window.WindowRequest | None) -> None:
+    if asked is not None and asked.fullscreen and sys.platform == NO_FULLSCREEN_ON:
+        raise st.Invalid("bad_argument",
+                         "`fullscreen` cannot be proved on macOS: MAME's `-nowindow` opens the "
+                         "largest window the display holds below the menu bar, never the display "
+                         "itself. Start with `fullscreen=false`; the window is scaled to be seen")
+
+
+def window_flags(asked: core_window.WindowRequest | None,
+                 screens: list[dict[str, Any]]) -> list[str]:
+    """The window's flags: small and flat out for a run nobody watches; for a watched one the
+    display asked for, in a window or filling it.
+
+    A window: the first screen at the largest integer scale within `WATCHED_MAX_PX`, since an
     integer scale is the one that never blurs a pixel; with no size known, MAME's own."""
+    if asked is None:
+        return ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
+    if asked.fullscreen:
+        return ["-nowindow", "-screen0", f"screen{asked.display}"]
     flags = ["-window", "-nomaximize"]
-    if not shared:
-        flags += ["-resolution", "320x240", "-nothrottle"]
-    elif screens and screens[0].get("width", 0) > 0 and screens[0].get("height", 0) > 0:
+    if screens and screens[0].get("width", 0) > 0 and screens[0].get("height", 0) > 0:
         w, h = screens[0]["width"], screens[0]["height"]
         if screens[0].get("rotation") in (90, 270):
             w, h = h, w
         scale = max(1, min(WATCHED_MAX_PX[0] // w, WATCHED_MAX_PX[1] // h))
         flags += ["-resolution", f"{w * scale}x{h * scale}"]
-    return flags + host_args.emulator_args()
+    return [*flags, "-screen0", f"screen{asked.display}"]
 
 
 def port_is_free(port: int) -> bool:
@@ -214,7 +233,6 @@ def build_command(
         cmd += ["-inipath", inipath]
     if boot_lua:
         cmd += ["-autoboot_script", boot_lua, "-autoboot_delay", "0"]
-    # Last: an option of the host's left without its value takes nothing of ours, `-debug` least.
     return cmd + flags
 
 
@@ -251,11 +269,11 @@ def judge_background(background: bool | None, shared: bool, env: dict[str, str] 
 
     `env` carrying the hint is refused: two spellings of one switch let the reply name one while
     the process obeys the other."""
-    if env and BACKGROUND_VAR in env:
+    if env and core_window.BACKGROUND_VAR in env:
         raise st.Invalid("bad_argument",
-            f"`env` sets {BACKGROUND_VAR}, which is what `background` sets: pass "
+            f"`env` sets {core_window.BACKGROUND_VAR}, which is what `background` sets: pass "
             "`background=True` or `background=False` instead")
-    return not shared if background is None else background
+    return core_window.judge_background(background, shared)
 
 
 #: What the console's stdin holds unread, as a POSIX pipe does: lines queue there while the machine
@@ -281,16 +299,6 @@ def console_popen(cmd: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
         return proc
     else:
         return subprocess.Popen(cmd, stdin=subprocess.PIPE, **kwargs)
-
-
-def launch_environment(given: dict[str, str], background: bool) -> dict[str, str]:
-    """MAME's environment, with the background hint set or removed, never inherited."""
-    spawned = {**os.environ, **given}
-    if background:
-        spawned[BACKGROUND_VAR] = "1"
-    else:
-        spawned.pop(BACKGROUND_VAR, None)
-    return spawned
 
 
 def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
@@ -341,6 +349,7 @@ class Judged:
     listed: machine.Listed | None = None
     background: bool = False
     presence: bool = False
+    window: core_window.WindowRequest | None = None
     picked: bool = False          # the port is this server's pick
     view: str = ""                # empty is MAME's `native`
 
@@ -524,7 +533,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           reference_base: str, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
-          binary_origin: str = binaries.ARGUMENT, view: str = "") -> Judged:
+          binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
+          fullscreen: bool | None = None) -> Judged:
     """Every refusal of the caller's input, before the emulator exists: after the boot a bad
     path surfaces as a bare error naming no argument, with a machine possibly running.
 
@@ -533,6 +543,10 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
+    wanted = core_window.request(
+        display, fullscreen, shared=shared,
+        display_count=len(core_window.host().displays()) if shared else 0)
+    refuse_fullscreen_that_cannot_show(wanted)
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
@@ -575,7 +589,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     tags: list[str] = []
     if shared or syms.is_mapping(symbols):
         listed = machine.listxml(machine.ask_listxml(binary, system), binary, system, wait)
-    flags = window_flags(shared, listed[0]["screens"] if listed is not None else [])
+    flags = window_flags(wanted, listed[0]["screens"] if listed is not None else [])
     if throttle_from_frame and "-nothrottle" not in flags:
         flags.append("-nothrottle")
     if listed is not None and syms.is_mapping(symbols):
@@ -617,7 +631,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     return Judged(flags, port, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
                   throttle_from_frame, asked, cfg_source, listed, background=behind,
-                  presence=presence, picked=picked, view=view)
+                  presence=presence, window=wanted, picked=picked, view=view)
 
 
 VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
@@ -751,7 +765,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     # stdin is the Lua console's; unconnected it reads end-of-file and stops for good.
     STATE.proc = console_popen(
         cmd, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
-        env=launch_environment(given, judged.background), cwd=STATE.scratch,
+        env=core_window.launch_environment({**os.environ, **given}, judged.background),
+        cwd=STATE.scratch,
     )
     if (ledger := live_host.EmulatorLedger.from_environment()) is not None:
         ledger.record(STATE.proc.pid, cmd[0])
@@ -849,6 +864,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, *, presence: bool, view: str = "",
+          display: int | None = None, fullscreen: bool | None = None,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, relaunched whole up to `START_RETRIES_MAX` times
     for a `failures.LaunchFailed` that says so. Only its evidence survives, as `start_retries`."""
@@ -864,7 +880,8 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                 return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
                                port, state_dir, throttle_from_frame, types, cfg,
-                               background, presence, retries, progress, view)
+                               background, presence, retries, progress, view, display,
+                               fullscreen)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
@@ -886,7 +903,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress,
-            view: str = "") -> dict[str, Any]:
+            view: str = "", display: int | None = None,
+            fullscreen: bool | None = None) -> dict[str, Any]:
     """One launch: judge, boot under one guard, re-arm, park, reply."""
     # Ending a live session is the caller's act: a stray second `start` must not throw away a
     # session somebody is measuring on.
@@ -905,7 +923,8 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    reference_base=reference_base, port=port,
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
                    cfg=cfg, background=background, presence=presence,
-                   binary_origin=resolved.origin, view=view)
+                   binary_origin=resolved.origin, view=view, display=display,
+                   fullscreen=fullscreen)
     # From the scratch on, everything sits under one guard: a failed ROM check or any raise
     # kills the session, or the next call would measure on a lying one, or leave an orphaned
     # emulator. A start that did not start owns nothing, not even the directory.
@@ -918,7 +937,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             # environment, bounded by the boot's wait so a hanging build costs nothing.
             version = _VERSIONS.submit(
                 binaries.facts, resolved,
-                launch_environment(dict(judged.env), judged.background),
+                core_window.launch_environment({**os.environ, **judged.env}, judged.background),
                 min(binaries.VERSION_TIMEOUT_S, judged.wait))
             given, harness, _cmd = boot(judged, progress,
                                         last_launch=len(retries) == START_RETRIES_MAX)
@@ -956,6 +975,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         # conditions against its register names. A gap is a note, never a failed start.
         STATE.machine_map = machine.cache(STATE.scratch, listed)
         STATE.view = view_shown(judged.view, STATE.machine_map)
+        STATE.window = judged.window
         STATE.ses.know_endianness(cpus.program_endianness(STATE.ses, STATE.machine_map,
                                                           STATE.first_cpu))
         if judged.presence:
@@ -1003,4 +1023,16 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     except Exception:
         STATE.kill(progress, grace=False)
         raise
+    # A refusal here leaves the session live, as its message says: `window` and `close` still act.
+    if judged.window is not None:
+        assert STATE.proc is not None
+        seen = core_window.wait_visible(STATE.proc.pid, judged.window.display, WINDOW_WAIT_S,
+                                        core_window.host())
+        if judged.window.fullscreen and not seen.fullscreen:
+            raise st.Invalid("window_not_visible",
+                             "the window opened on the asked display but does not fill it, which "
+                             "`fullscreen` asked for: `close` and start again with "
+                             "`fullscreen=false`", asked_display=judged.window.display,
+                             seen=seen.block())
+        started["window"] = seen.block()
     return started

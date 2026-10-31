@@ -1,4 +1,4 @@
-"""`status`, `close` and `rom_check`: the session tools beside `start`."""
+"""`status`, `window`, `close` and `rom_check`: the session tools beside `start`."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ from typing import Any
 
 from scry_core import narrowing, prose, session_block
 from scry_core import progress as mprogress
+from scry_core import window as core_window
 from scry_core.reply_contract import or_unavailable, unavailable
 
 from scry_mame import cpus, idle, inputs, launch, read, running, transport
@@ -167,3 +168,19 @@ def rom_check(ses: gs.Session, reference_rom: str, reference_addr: str, referenc
         "query_s": st.measured_s(ses.cost_per_query(addr, times=50, thread=thread)),
         "cpu": or_unavailable(on, st.NO_CPU_READ_WHY),
     })
+
+
+def window(front: bool) -> dict[str, Any]:
+    """The body of the `window` tool: where the watched window is, brought forward on `front`."""
+    ses = STATE.alive()
+    st.refuse_broken(ses)
+    asked = STATE.window
+    if asked is None:
+        raise st.Invalid("no_channel", "this session was started without `shared=true`, so the "
+                         "server placed no window and proves none: close it and start again with "
+                         "`shared=true`")
+    assert STATE.proc is not None
+    host = core_window.host()
+    state = (core_window.bring_front(STATE.proc.pid, host, launch.WINDOW_WAIT_S) if front
+             else core_window.wait_visible(STATE.proc.pid, asked.display, 0.0, host))
+    return menvelope.envelope({"window": state.block()})

@@ -248,6 +248,25 @@
    "cpu": ":maincpu"
   }
  },
+ "cpu_focus": {
+  "from": "[A] states x tools: no session, stopped, running, after close (section 11): cpu_focus @ stopped",
+  "call": {
+   "cpu": "maincpu"
+  },
+  "reply": {
+   "summary": "cpu_focus: :maincpu visible, was :maincpu, nothing ran (stub)",
+   "status": "ok",
+   "cpu": ":maincpu",
+   "was": ":maincpu",
+   "via": "stub",
+   "machine_ran": false,
+   "frame": 0,
+   "unchanged": [
+    ":maincpu",
+    ":subcpu"
+   ]
+  }
+ },
  "cpu_info": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): cpu_info @ stopped",
   "call": {},
@@ -525,25 +544,6 @@
    "hits_total": 510,
    "truncated": true,
    "cpu": ":maincpu"
-  }
- },
- "focus": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): focus @ stopped",
-  "call": {
-   "cpu": "maincpu"
-  },
-  "reply": {
-   "summary": "focus: :maincpu visible, was :maincpu, nothing ran (stub)",
-   "status": "ok",
-   "cpu": ":maincpu",
-   "was": ":maincpu",
-   "via": "stub",
-   "machine_ran": false,
-   "frame": 0,
-   "unchanged": [
-    ":maincpu",
-    ":subcpu"
-   ]
   }
  },
  "gfx_blit_source": {
@@ -3515,6 +3515,26 @@
     "available": true,
     "value": 0,
     "raw_hex": "0000"
+   }
+  }
+ },
+ "window": {
+  "from": "[B] start's arguments at their edges, with no session: window answers the window the start proved",
+  "call": {},
+  "reply": {
+   "summary": "window: display 0, on screen, covered",
+   "status": "ok",
+   "window": {
+    "display": 0,
+    "bounds": {
+     "x": 520,
+     "y": 166,
+     "width": 1008,
+     "height": 788
+    },
+    "onscreen": true,
+    "front": false,
+    "fullscreen": false
    }
   }
  },

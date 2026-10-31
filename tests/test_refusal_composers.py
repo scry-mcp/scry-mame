@@ -62,9 +62,9 @@ def test_a_cpu_a_stub_without_threads_cannot_show_names_the_console_way() -> Non
     with pytest.raises(mstate.Invalid) as e:
         cpus.make_visible(NoThreads(), ":subcpu", "reading it needs it visible")  # type: ignore[arg-type]
     assert e.value.code == "bad_argument"
-    assert str(e.value).endswith("`focus(cpu=\":subcpu\")` makes it visible through the console, "
-                                 "which runs the machine and ignores every other cpu until it is "
-                                 "observed"), str(e.value)
+    assert str(e.value).endswith("`cpu_focus(cpu=\":subcpu\")` makes it visible through the "
+                                 "console, which runs the machine and ignores every other cpu "
+                                 "until it is observed"), str(e.value)
 
 
 def test_the_table_a_refusal_names_is_the_one_the_lookup_read() -> None:

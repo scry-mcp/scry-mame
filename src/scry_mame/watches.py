@@ -600,7 +600,7 @@ def _read_through(ses: gs.Session, on: str | None, what: str, reader: str | None
     alone."""
     if on is not None and reader is not None and on != reader:
         raise st.Invalid("bad_argument", f"{what} is read {how}: {reader}, not {on}; "
-                         "`focus(cpu=...)` makes the one you name the visible one")
+                         "`cpu_focus(cpu=...)` makes the one you name the visible one")
 
 
 def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
