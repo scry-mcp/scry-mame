@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import live_host
-from scry_core.demo import Demo, Reply, Run, Step, StepFailed, main
+from scry_core.demo import Demo, Reply, Run, Step, expect, main
 from scry_core.reply_contract import Invalid
 
 from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
@@ -36,11 +36,6 @@ VOLATILE = {
 HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
 
 START_VOLATILE = {"summary": "names where the host installed MAME"}
-
-
-def expect(holds: bool, why: str) -> None:
-    if not holds:
-        raise StepFailed(why)
 
 
 def url(system: str) -> str:
