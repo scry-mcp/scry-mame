@@ -195,7 +195,7 @@ def status() -> dict[str, Any]:
     machine reached on its own is recorded and reported in `stopped_on_its_own`.
 
     Reply: `last_stop` (`stop_seq`, `pc`, `cpu`, `cause`, `since_s`, `wall_at`) with or without a
-    session, the last stop of the one that ended when there is none now; with no session also a
+    session, unavailable once a session has ended; with no session also a
     `note` when there is one to give, or, for a process that exited under it, `exit_code` and a
     `note`; with a session `system`, `pid`, `stub_port`, `scratch_dir`, `state_dir`, `presence`,
     `debugger`, `fingerprint` (`fingerprints` per cpu), `errorlog_path`, `pc`, `in_debugger`

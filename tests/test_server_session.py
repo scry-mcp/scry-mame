@@ -637,6 +637,15 @@ def test_an_argument_the_machine_cannot_judge_is_refused_with_no_machine(name: s
             or (named == "ceiling" and "seconds" in got["message"]), (name, got["message"])
 
 
+def test_status_with_no_session_keeps_no_stop_of_the_one_that_ended(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(mstate.STATE, "last_stop", {"seq": 3, "pc": "0x10"})
+    mstate.STATE._reset()
+    out = s.status()
+    assert out["last_stop"] == {"available": False, "why": mstate.NO_STOP_YET_WHY}, out
+
+
 def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_close(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
@@ -648,6 +657,18 @@ def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_clos
     assert (out["status"] == "ok" and out["session"]["alive"] is False
             and out["exit_code"] == -11), out
     assert "`close` collects the exit code" in out["note"], out
+
+
+def test_status_of_a_machine_that_exited_carries_the_stop_it_last_made(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _running(monkeypatch, tmp_path)
+    monkeypatch.setattr(mstate.STATE, "ses", ses)
+    monkeypatch.setattr(mstate.STATE, "proc", _CrashedProcess())
+    monkeypatch.setattr(mstate.STATE, "last_stop", {
+        "seq": 3, "pc": "0x10", "frame": 7, "cause": "breakpoint", "when": time.monotonic(),
+        "wall_at": "2026-10-31T00:00:00Z"})
+    assert s.status()["last_stop"]["stop_seq"] == 3
 
 
 

@@ -13,6 +13,7 @@ from session_doubles import run_host_lua, use_table  # noqa: E402
 
 from scry_mame import (
     cpus,
+    gdb_session,
     machine,
     read,
     server,  # noqa: E402,F401 -- registers the tools and imports the boundary the shape guard wraps
@@ -639,13 +640,29 @@ def test_symbol_coverage_is_finds_own_span_and_nulls_a_base_it_cannot_disambigua
     _cached(monkeypatch, tmp_path)
     use_table(monkeypatch, class_span={"DATA": (0x400, 0x4FF), "CODE": (0x1000, 0x1FFF)})
     use_table(monkeypatch, bases={"DATA": 0x400})
-    use_table(monkeypatch, classes={"A": "DATA", "B": "DATA", "C": "CODE"})
+    use_table(monkeypatch, classes={"A": "DATA", "B": "DATA", "C": "CODE"},
+              table={"A": 0x400, "B": 0x410, "C": 0x1000})
     rows = {row["class"]: row for row in machine.machine_map()["symbol_coverage"]}
     assert set(rows) == {"CODE", "DATA"}
     assert rows["DATA"]["base"] == "0x00000400" and rows["DATA"]["symbols"] == 2
     assert rows["CODE"]["base"]["available"] is False, "the bases do not disambiguate CODE"
     assert rows["DATA"]["span"] == {"from": "0x00000400", "length": 0x100, **read.CLASS_SPAN}
     assert all(row["cpu"]["available"] is False for row in rows.values())
+
+
+def test_symbol_coverage_counts_a_class_by_its_rows_not_by_the_names_first_class(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A name in two classes counts in each, and one repeated within a class once per row."""
+    _cached(monkeypatch, tmp_path)
+    names = gdb_session.Names()
+    for key, addr, klass in (("N", 0x400, "DATA"), ("N", 0x1000, "CODE"),
+                             ("M", 0x410, "DATA"), ("M", 0x420, "DATA")):
+        names.add(key, addr, klass)
+    use_table(monkeypatch, table=names, classes={"N": "DATA", "M": "DATA"},
+              class_span={"DATA": (0x400, 0x4FF), "CODE": (0x1000, 0x1FFF)})
+    rows = {row["class"]: row for row in machine.machine_map()["symbol_coverage"]}
+    assert (rows["DATA"]["symbols"], rows["CODE"]["symbols"]) == (3, 1)
 
 
 def test_a_populated_symbol_section_names_the_channel_that_backs_it(

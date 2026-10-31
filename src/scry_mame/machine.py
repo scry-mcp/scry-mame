@@ -26,6 +26,7 @@ from scry_core.reply_contract import unavailable
 
 from scry_mame import cpus, inputs, read, transport
 from scry_mame import envelope as menvelope
+from scry_mame import gdb_session as gs
 from scry_mame import state as st
 from scry_mame.state import STATE
 
@@ -539,7 +540,7 @@ def symbol_coverage(only: str = "") -> list[dict[str, Any]]:
                 "class": klass,
                 "cpu": cpu or unavailable(UNNAMED_TABLE_WHY),
                 "span": {"from": st.hex_addr(lo), "length": hi - lo + 1, **read.CLASS_SPAN},
-                "symbols": sum(1 for k in table.classes.values() if k == klass),
+                "symbols": len(gs.rows_in_class(table.table, table.classes, klass)),
                 "base": (st.hex_addr(base) if base is not None
                          else unavailable(NO_BASE_WHY)),
             })

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import bisect
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
@@ -309,10 +309,8 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
     base is answered. Classes are bisected, not scanned."""
     by_class: dict[str, tuple[list[int], list[str]]] = {}
     for klass in bases:
-        first: dict[int, str] = {}
-        for at, name in gs.rows_in_class(symbols, classes, klass):
-            first.setdefault(at, name)
-        members = sorted(first.items())
+        members = sorted(_first_per_address(
+            (name, at) for at, name in gs.rows_in_class(symbols, classes, klass)).items())
         by_class[klass] = ([a for a, _n in members],
                            [(spelled or {}).get(n, n) for _a, n in members])
     out: list[dict[str, Any]] = []
@@ -518,6 +516,14 @@ Placer = Callable[[int], tuple[int, str] | None]
 _PLACERS: dict[str | None, tuple[gs.SymbolTable, Placer]] = {}
 
 
+def _first_per_address(rows: Iterable[tuple[str, int]]) -> dict[int, str]:
+    """`address -> name` of the first `(name, address)` row to hold each address."""
+    first: dict[int, str] = {}
+    for name, at in rows:
+        first.setdefault(at, name)
+    return first
+
+
 def placer(cpu: str | None = None) -> Placer:
     """`cpu`'s table as address -> (base, name) of the highest symbol at or below it.
 
@@ -527,9 +533,7 @@ def placer(cpu: str | None = None) -> Placer:
     cached = _PLACERS.get(cpu)
     if cached is not None and cached[0] is table:
         return cached[1]
-    first: dict[int, str] = {}
-    for name, at in gs.rows_of(table.table):
-        first.setdefault(at, name)
+    first = _first_per_address(gs.rows_of(table.table))
     entries = [(a, table.shown(n)) for a, n in sorted(first.items())]
     addrs = [a for a, _ in entries]
 
