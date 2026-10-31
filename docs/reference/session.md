@@ -336,8 +336,8 @@ application's window covering its centre; `fullscreen`).
 Refused: no session (`no_session`), one that died (`session_broken`), a session started
 without `shared` (`no_channel`), a window that never appears or, with `front`, is still
 covered after the activation (`window_not_visible`, naming what was seen; on a
-`background=true` session it says a background application cannot come to the front).
-Without `front` the window is answered wherever the owner put it.
+`background=true` session it names that as what may keep it behind). Without `front` the
+window is answered wherever the owner put it.
 
 Reference: REFERENCE.md, The session.
 

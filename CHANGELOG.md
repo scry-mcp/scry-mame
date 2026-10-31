@@ -12,8 +12,8 @@ It needs the scry-core that serves `scry_core.window`, not the 0.80.0 this relea
   macOS, where MAME has no full screen to prove.
 - A new tool, `window`, answers where the window is at any time, and with `front=true` brings it
   in front of what covers it. Without `front` it answers the window
-  wherever the owner put it, another display included. A `front` on a session started with
-  `background=true` says a background application cannot be brought to the front and what to do.
+  wherever the owner put it, another display included. A `front` that fails on a session
+  started with `background=true` names that as what may keep it behind and what to do.
 - `focus` is now `cpu_focus`: it moved the debugger's visible cpu, never the window, and a caller
   reading "focus" expected the window brought forward. The same name is the `op` of `perform` and
   `drive`.

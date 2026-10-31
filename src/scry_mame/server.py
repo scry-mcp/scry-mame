@@ -69,6 +69,7 @@ from scry_core import sequence_account as account  # noqa: E402
 from scry_core import steps as core_steps  # noqa: E402
 from scry_core import strict_arguments as strict  # noqa: E402
 from scry_core import vocabulary as vocab
+from scry_core import window as core_window  # noqa: E402
 from scry_core.progress import bridge  # noqa: E402
 
 from scry_mame import (
@@ -234,7 +235,7 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
     return msession.close(bridge(ctx), detail)
 
 
-@tool("The session's window", summary=summaries.window)
+@tool("The session's window", summary=core_window.summary)
 def window(front: bool = False) -> dict[str, Any]:
     """Where the watched window is on the host, at any time, a running machine included. `front`
     brings it in front of whatever covers it and reads that back.
@@ -245,8 +246,8 @@ def window(front: bool = False) -> dict[str, Any]:
     Refused: no session (`no_session`), one that died (`session_broken`), a session started
     without `shared` (`no_channel`), a window that never appears or, with `front`, is still
     covered after the activation (`window_not_visible`, naming what was seen; on a
-    `background=true` session it says a background application cannot come to the front).
-    Without `front` the window is answered wherever the owner put it.
+    `background=true` session it names that as what may keep it behind). Without `front` the
+    window is answered wherever the owner put it.
 
     Reference: REFERENCE.md, The session.
     """

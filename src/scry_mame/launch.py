@@ -51,8 +51,6 @@ from scry_mame.state import STATE
 SCRATCH_PREFIX = "mame-mcp-"
 
 BOOT_POLL_S = 0.3
-#: Seconds a watched start waits for the emulator's window to be listed on the asked display.
-WINDOW_WAIT_S = 10.0
 # Printed when the debugger console is built. A stub without the thread patch caches an empty
 # target description if asked before the first stop, and its port accepts long before that, so
 # the handshake waits for this line. MAME's source does not order the line against the stop; an
@@ -543,9 +541,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
-    wanted = core_window.request(
-        display, fullscreen, shared=shared,
-        display_count=len(core_window.host().displays()) if shared else 0)
+    wanted = core_window.requested(shared, display, fullscreen)
     refuse_fullscreen_that_cannot_show(wanted)
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
@@ -1027,13 +1023,5 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
     # A refusal here leaves the session live, as its message says: `window` and `close` still act.
     if judged.window is not None:
         assert STATE.proc is not None
-        seen = core_window.wait_visible(STATE.proc.pid, judged.window.display, WINDOW_WAIT_S,
-                                        core_window.host())
-        if judged.window.fullscreen and not seen.fullscreen:
-            raise st.Invalid("window_not_visible",
-                             "the window opened on the asked display but does not fill it, which "
-                             "`fullscreen` asked for: `close` and start again with "
-                             "`fullscreen=false`", asked_display=judged.window.display,
-                             seen=seen.block())
-        started["window"] = seen.block()
+        started["window"] = core_window.prove(STATE.proc.pid, judged.window).block()
     return started

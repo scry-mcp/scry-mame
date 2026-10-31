@@ -8,14 +8,40 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
+from scry_core import conformance
 from scry_core import window as core_window
 from server_support import _boot_args, _stub_boot, _StubProcess
-from window_double import Absent, Covered, Dragged, ObeyingHost, Stuck
+from window_double import asked as session_window
 
 from scry_mame import launch
 from scry_mame import server as s
 from scry_mame import state as mstate
 from scry_mame.state import STATE
+
+
+class _Subject:
+    def __init__(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        self.monkeypatch, self.tmp_path = monkeypatch, tmp_path
+        self.asked = session_window
+        self.shows_fullscreen = sys.platform != launch.NO_FULLSCREEN_ON
+
+    def start(self, **arguments: Any) -> dict[str, Any]:
+        return _start(self.monkeypatch, self.tmp_path, **arguments)
+
+    def window(self, front: bool = False) -> dict[str, Any]:
+        return cast(dict[str, Any], s.window(front=front))
+
+    def close(self) -> None:
+        s.close()
+
+    def has_session(self) -> bool:
+        return STATE.proc is not None
+
+
+class TestMameWindow(conformance.WindowContract):
+    @pytest.fixture
+    def subject(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _Subject:
+        return _Subject(monkeypatch, tmp_path)
 
 
 def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[str, Any]:
@@ -29,16 +55,13 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[s
     ({"display": 1}, ["-screen0", "screen1"]),
     ({"fullscreen": False}, ["-screen0", "screen0"]),
 ])
-def test_a_watched_start_asks_mame_for_the_display_and_proves_the_window(
+def test_a_watched_start_asks_mame_for_the_display(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: dict[str, Any],
         tail: list[str]) -> None:
     got = _start(monkeypatch, tmp_path, shared=True, **asked)
     try:
         assert got["status"] == "ok", got
         assert _StubProcess.last_argv[-len(tail):] == tail and got["flags"][-len(tail):] == tail
-        window = got["window"]
-        assert window["display"] == asked.get("display", 0) and window["onscreen"] is True, window
-        assert window["fullscreen"] is bool(asked.get("fullscreen")), window
     finally:
         s.close()
 
@@ -74,99 +97,6 @@ def test_a_start_nobody_watches_asks_for_no_display_and_says_nothing_of_a_window
         s.close()
 
 
-@pytest.mark.parametrize("asked", [{"display": 0}, {"fullscreen": True},
-                                   {"display": 1, "fullscreen": False}])
-def test_the_window_arguments_without_shared_are_refused_not_ignored(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: dict[str, Any]) -> None:
-    got = _start(monkeypatch, tmp_path, **asked)
-    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
-    assert "shared=true" in got["message"], got
-
-
-def test_a_display_past_the_host_s_count_is_refused_naming_the_count(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    got = _start(monkeypatch, tmp_path, shared=True, display=5)
-    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
-    assert "2 displays (0 to 1)" in got["message"], got
-    assert STATE.proc is None
-
-
-def test_a_window_mame_never_opened_refuses_the_start_and_leaves_the_session_to_close(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(core_window, "host", lambda _platform="": Absent())
-    monkeypatch.setattr(launch, "WINDOW_WAIT_S", 0.0)
-    got = _start(monkeypatch, tmp_path, shared=True)
-    try:
-        assert got["status"] == "INVALID" and got["code"] == "window_not_visible", got
-        assert STATE.proc is not None, "the caller closes it, as the message says"
-    finally:
-        s.close()
-
-
-def test_window_answers_where_the_window_is_and_with_front_brings_it_forward(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    _start(monkeypatch, tmp_path, shared=True, display=1)
-    try:
-        got = s.window()
-        assert got["status"] == "ok" and got["window"]["display"] == 1, got
-        forward = s.window(front=True)
-        assert forward["status"] == "ok" and forward["window"]["front"] is True, forward
-    finally:
-        s.close()
-
-
-def test_window_front_activates_a_covered_window_and_without_front_only_reports_it(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    host = Covered()
-    monkeypatch.setattr(core_window, "host", lambda _platform="": host)
-    _start(monkeypatch, tmp_path, shared=True, display=1)
-    try:
-        host.activations = 0
-        seen = s.window()
-        assert seen["window"]["onscreen"] is False and host.activations == 0, seen
-        forward = s.window(front=True)
-        assert forward["window"]["onscreen"] is True and host.activations == 1, forward
-    finally:
-        s.close()
-
-
-def test_window_answers_a_window_the_owner_dragged_to_another_display(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    _start(monkeypatch, tmp_path, shared=True, display=0)
-    try:
-        monkeypatch.setattr(core_window, "host", lambda _platform="": Dragged())
-        got = s.window()
-        assert got["status"] == "ok" and got["window"]["display"] == 1, got
-    finally:
-        s.close()
-
-
-def test_window_front_on_a_background_session_says_a_background_app_cannot_come_forward(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    monkeypatch.setattr(core_window, "host", lambda _platform="": Stuck())
-    monkeypatch.setattr(launch, "WINDOW_WAIT_S", 0.0)
-    _start(monkeypatch, tmp_path, shared=True, background=True)
-    try:
-        got = s.window(front=True)
-        assert got["status"] == "INVALID" and got["code"] == "window_not_visible", got
-        assert "background=true" in got["message"] and "background=false" in got["message"], got
-    finally:
-        s.close()
-
-
-def test_window_front_on_a_foreground_session_never_blames_the_background(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """THE CONTROL: the same stuck window, a session that was not launched behind."""
-    monkeypatch.setattr(core_window, "host", lambda _platform="": Stuck())
-    monkeypatch.setattr(launch, "WINDOW_WAIT_S", 0.0)
-    _start(monkeypatch, tmp_path, shared=True, background=False)
-    try:
-        got = s.window(front=True)
-        assert got["code"] == "window_not_visible" and "background" not in got["message"], got
-    finally:
-        s.close()
-
-
 def test_a_session_whose_mame_has_died_is_session_broken_not_a_missing_window(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _start(monkeypatch, tmp_path, shared=True)
@@ -175,34 +105,6 @@ def test_a_session_whose_mame_has_died_is_session_broken_not_a_missing_window(
         STATE.proc.kill()
         got = s.window()
         assert got["status"] == "INVALID" and got["code"] == "session_broken", got
-    finally:
-        s.close()
-
-
-def test_a_fullscreen_that_does_not_fill_the_display_is_refused_not_reported(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    class Bordered(ObeyingHost):
-        def windows(self) -> list[core_window.Seen]:
-            return [core_window.Seen(w.pid, w.number, (w.bounds[0], w.bounds[1] + 30,
-                                                       w.bounds[2], w.bounds[3] - 30), True)
-                    for w in super().windows()]
-    monkeypatch.setattr(core_window, "host", lambda _platform="": Bordered())
-    monkeypatch.setattr(launch, "NO_FULLSCREEN_ON", "a-platform-this-is-not")
-    got = _start(monkeypatch, tmp_path, shared=True, fullscreen=True)
-    assert got["status"] == "INVALID" and got["code"] == "window_not_visible", got
-    assert got["seen"]["fullscreen"] is False and "fullscreen" in got["message"], got
-    s.close()
-
-
-def test_window_refuses_without_a_session_and_for_a_headless_one(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    none = s.window()
-    assert none["status"] == "INVALID" and none["code"] == "no_session", none
-    _start(monkeypatch, tmp_path)
-    try:
-        headless = s.window()
-        assert headless["status"] == "INVALID" and headless["code"] == "no_channel", headless
-        assert "shared=true" in headless["message"], headless
     finally:
         s.close()
 
