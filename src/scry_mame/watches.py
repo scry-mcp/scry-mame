@@ -850,6 +850,11 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
         return ("bad_argument", str(e)), {}
     trigger = capture.trigger_addr(decl.trigger, STATE.table(owner[1]).table)
     if trigger is None:
+        key = decl.trigger.strip().upper()
+        twice = getattr(STATE.table(owner[1]).table, "ambiguous", {}).get(key)
+        if twice is not None:
+            return ("ambiguous_ref", prose.ambiguous_name(
+                key, [f"{a:#x}" for a in twice], "this table")), {}
         return ("unknown_ref", inputs.not_a_ref("the trigger", decl.trigger, owner[1])), {}
     refused, maps_to, trigger_read = mmap.write_side(ses, trigger, owner[1])
     reads = decl.trigger_type == "r"

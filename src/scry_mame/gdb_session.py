@@ -846,9 +846,13 @@ class Names(dict[str, int]):
         self.rows: list[tuple[str, int]] = []
         self.row_classes: list[str] = []
         self.ambiguous: dict[str, list[int]] = {}
+        self._seen: set[tuple[str, int]] = set()
 
     def add(self, key: str, addr: int, klass: str = "") -> None:
         """Take one row; a repeat at the same address is the same symbol, not a second one."""
+        if (key, addr) in self._seen:
+            return
+        self._seen.add((key, addr))
         self.rows.append((key, addr))
         self.row_classes.append(klass)
         if key not in self:

@@ -149,6 +149,20 @@ def test_a_name_the_table_gives_twice_is_refused_by_every_reader_and_found_with_
     assert s.read_memory(ref="other", length=2)["addr"] == "0x00000710"
 
 
+def test_a_row_repeated_at_the_same_address_is_one_symbol_in_every_listing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _two_programs(monkeypatch, tmp_path)
+    names = g.Names()
+    for key, at in (("COUNT", 0x700), ("COUNT", 0x700), ("OTHER", 0x710)):
+        names.add(key, at)
+    monkeypatch.setitem(mstate.STATE.tables, MAIN, g.SymbolTable(names, {}, "yaml"))
+    found = s.symbols_find(name="count")
+    assert [row["addr"] for row in found["symbols"]] == ["0x00000700"], found
+    assert found["symbols_total"] == 1
+    assert s.read_memory(ref="count", length=2)["addr"] == "0x00000700"
+
+
 def test_a_symbol_spelled_like_a_register_is_judged_against_its_own_cpus_registers(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:

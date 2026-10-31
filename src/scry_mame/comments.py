@@ -260,7 +260,13 @@ def _target(ref: str, on: str) -> dec.Declaration | None:
     """The comment `ref` names on `on`: its own spelling first (so `beef` finds the comment a file
     made by that name on a build lacking it), else the one at the place it resolves to."""
     held = [d for d in pane.comments() if d.cpu == on]
-    by = arming.decide_by(ref, "auto", on, "comment")
+    try:
+        by = arming.decide_by(ref, "auto", on, "comment")
+    except gs.AmbiguousRef:
+        kept = next((d for d in held if arming.store().matches(d, "symbol", ref)), None)
+        if kept is None:
+            raise
+        return kept
     own = next((d for d in held if arming.store().matches(d, by, ref)), None)
     if own is not None:
         return own

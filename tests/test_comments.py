@@ -716,6 +716,19 @@ def test_an_unresolved_name_spelled_like_hex_is_deleted_by_its_name(
     assert held() == []
 
 
+def test_a_comment_kept_by_a_name_that_became_ambiguous_is_still_deleted_by_that_name(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _pane(monkeypatch, tmp_path)
+    s.comment_write("add", ref="snd_reset", text="sub", cpu="subcpu")
+    names = gs.Names()
+    for at in (0x400, 0x900):
+        names.add("SND_RESET", at)
+    monkeypatch.setitem(mstate.STATE.tables, SUB, gs.SymbolTable(names, {}, "yaml"))
+    out = s.comment_write("delete", ref="snd_reset", cpu="subcpu")
+    assert out["status"] == "ok" and out["deleted"]["ref"] == "snd_reset", out
+    assert held() == []
+
+
 def test_load_brings_a_stale_comment_back_for_this_build_and_feeds_it(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     pane = _pane(monkeypatch, tmp_path)

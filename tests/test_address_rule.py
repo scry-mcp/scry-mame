@@ -25,6 +25,7 @@ from scry_mame import (
     inputs,  # noqa: E402
 )
 from scry_mame import declarations as dec  # noqa: E402
+from scry_mame import gdb_session as gs  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
@@ -409,6 +410,19 @@ def test_a_capture_trigger_is_read_by_the_address_rule(
     named = s.watch_add(ref="0x2031fc", mode="capture", length=2, trigger="fade")
     assert named["status"] == "ok" and named["trigger"] == "fade", named
     assert _rows("watch") == [("address", "0x2031fc")]
+
+
+def test_a_capture_trigger_the_table_gives_twice_is_refused_as_ambiguous(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _capturing(monkeypatch, tmp_path)
+    names = gs.Names()
+    for at in (0x2031FE, 0x2031FA):
+        names.add("FADE", at)
+    use_table(monkeypatch, table=names)
+    out = s.watch_add(ref="0x2031fc", mode="capture", length=2, trigger="fade")
+    assert out["status"] == "INVALID" and out["code"] == "ambiguous_ref", out
+    assert "0x2031fe, 0x2031fa" in out["message"], out
 
 
 def test_an_io_capture_block_naming_nothing_is_refused_by_name(
