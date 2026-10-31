@@ -10,7 +10,7 @@ from typing import Any, cast
 import pytest
 from scry_core import window as core_window
 from server_support import _boot_args, _stub_boot, _StubProcess
-from window_double import Absent, Covered, ObeyingHost
+from window_double import Absent, Covered, Dragged, ObeyingHost, Stuck
 
 from scry_mame import launch
 from scry_mame import server as s
@@ -126,6 +126,43 @@ def test_window_front_activates_a_covered_window_and_without_front_only_reports_
         assert seen["window"]["onscreen"] is False and host.activations == 0, seen
         forward = s.window(front=True)
         assert forward["window"]["onscreen"] is True and host.activations == 1, forward
+    finally:
+        s.close()
+
+
+def test_window_answers_a_window_the_owner_dragged_to_another_display(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _start(monkeypatch, tmp_path, shared=True, display=0)
+    try:
+        monkeypatch.setattr(core_window, "host", lambda _platform="": Dragged())
+        got = s.window()
+        assert got["status"] == "ok" and got["window"]["display"] == 1, got
+    finally:
+        s.close()
+
+
+def test_window_front_on_a_background_session_says_a_background_app_cannot_come_forward(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(core_window, "host", lambda _platform="": Stuck())
+    monkeypatch.setattr(launch, "WINDOW_WAIT_S", 0.0)
+    _start(monkeypatch, tmp_path, shared=True, background=True)
+    try:
+        got = s.window(front=True)
+        assert got["status"] == "INVALID" and got["code"] == "window_not_visible", got
+        assert "background=true" in got["message"] and "background=false" in got["message"], got
+    finally:
+        s.close()
+
+
+def test_window_front_on_a_foreground_session_never_blames_the_background(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """THE CONTROL: the same stuck window, a session that was not launched behind."""
+    monkeypatch.setattr(core_window, "host", lambda _platform="": Stuck())
+    monkeypatch.setattr(launch, "WINDOW_WAIT_S", 0.0)
+    _start(monkeypatch, tmp_path, shared=True, background=False)
+    try:
+        got = s.window(front=True)
+        assert got["code"] == "window_not_visible" and "background" not in got["message"], got
     finally:
         s.close()
 

@@ -100,6 +100,8 @@ class State:
         self.view: str | dict[str, Any] = "native"
         # The window a watched start asked for; None for a run nobody watches.
         self.window: core_window.WindowRequest | None = None
+        # Whether MAME was launched as a background application, which no activation brings forward.
+        self.background: bool = False
         # Breakpoints armed here, by row index (MAME's counter spans cpus): `owner`, `addr`, `cpu`.
         self.breakpoints: dict[int, dict[str, Any]] = {}
         self.regpoints: dict[dec.Owner, dict[str, Any]] = {}

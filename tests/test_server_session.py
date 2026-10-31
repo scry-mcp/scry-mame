@@ -895,6 +895,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "throttle_seen": True, "store": dec.DeclarationStore("t", None),
         "session_origin": "s9", "fingerprints": {":old": "fp9"},
         "window": core_window.WindowRequest(1, True),
+        "background": True,
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},
         "stdout_log": open(tmp_log, "wb"),  # noqa: SIM115 (kill closes it)

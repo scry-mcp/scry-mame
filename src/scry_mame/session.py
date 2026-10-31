@@ -174,13 +174,13 @@ def window(front: bool) -> dict[str, Any]:
     """The body of the `window` tool: where the watched window is, brought forward on `front`."""
     ses = STATE.alive()
     st.refuse_broken(ses)
-    asked = STATE.window
-    if asked is None:
+    if STATE.window is None:
         raise st.Invalid("no_channel", "this session was started without `shared=true`, so the "
                          "server placed no window and proves none: close it and start again with "
                          "`shared=true`")
     assert STATE.proc is not None
     host = core_window.host()
-    state = (core_window.bring_front(STATE.proc.pid, host, launch.WINDOW_WAIT_S) if front
-             else core_window.wait_visible(STATE.proc.pid, asked.display, 0.0, host))
+    state = (core_window.bring_front(STATE.proc.pid, host, launch.WINDOW_WAIT_S,
+                                     launched_behind=STATE.background) if front
+             else core_window.observe(STATE.proc.pid, host))
     return menvelope.envelope({"window": state.block()})

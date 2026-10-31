@@ -49,3 +49,19 @@ class Covered(ObeyingHost):
     def activate(self, window: Seen) -> str:
         self.activations += 1
         return ""
+
+
+class Dragged(ObeyingHost):
+    """The owner dragged the window to the other display after it opened."""
+
+    def windows(self) -> list[Seen]:
+        x, y, width, height = DISPLAYS[1].bounds
+        return [Seen(w.pid, w.number, (x + 100, y + 100, 640, 480), True)
+                for w in super().windows()]
+
+
+class Stuck(ObeyingHost):
+    """Listed but never shown, whatever is done to bring it forward."""
+
+    def windows(self) -> list[Seen]:
+        return [Seen(w.pid, w.number, w.bounds, False) for w in super().windows()]

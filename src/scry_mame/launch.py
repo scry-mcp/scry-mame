@@ -976,6 +976,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
         STATE.machine_map = machine.cache(STATE.scratch, listed)
         STATE.view = view_shown(judged.view, STATE.machine_map)
         STATE.window = judged.window
+        STATE.background = judged.background
         STATE.ses.know_endianness(cpus.program_endianness(STATE.ses, STATE.machine_map,
                                                           STATE.first_cpu))
         if judged.presence:
