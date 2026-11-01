@@ -69,7 +69,7 @@ from scry_mame import write as mwrite  # noqa: E402
 UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
 
-ASKED = core_window.WindowRequest(0, False)
+ASKED = core_window.WindowRequest(0, False, (0, 0))
 
 
 @pytest.mark.parametrize("screens, flags", [
@@ -105,9 +105,9 @@ def test_an_unwatched_window_is_small_and_flat_out() -> None:
 
 
 @pytest.mark.parametrize(("asked", "flags"), [
-    (core_window.WindowRequest(1, False), ["-screen0", "screen1"]),
-    (core_window.WindowRequest(1, True), ["-nowindow", "-screen0", "screen1"]),
-    (core_window.WindowRequest(0, True), ["-nowindow", "-screen0", "screen0"]),
+    (core_window.WindowRequest(1, False, (1920, 0)), ["-screen0", "screen1"]),
+    (core_window.WindowRequest(1, True, (1920, 0)), ["-nowindow", "-screen0", "screen1"]),
+    (core_window.WindowRequest(0, True, (0, 0)), ["-nowindow", "-screen0", "screen0"]),
 ])
 def test_the_display_asked_is_the_one_mame_is_told_and_fullscreen_drops_the_window(
     asked: core_window.WindowRequest, flags: list[str]
@@ -894,7 +894,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "found_stop_last": {"stop_seq": 2}, "run_release": {"emulated": 1.0, "wall": 2.0},
         "throttle_seen": True, "store": dec.DeclarationStore("t", None),
         "session_origin": "s9", "fingerprints": {":old": "fp9"},
-        "window": core_window.WindowRequest(1, True),
+        "window": core_window.WindowRequest(1, True, (1920, 0)),
         "background": True,
         "manifest": "the old session's manifest",
         "evidence": {"locates": [{"n": 1}], "sweeps": [], "choices": []},

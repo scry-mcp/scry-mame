@@ -126,17 +126,17 @@ def reference_rom_file(reference_rom: str) -> Path:
 WATCHED_MAX_PX = (1800, 960)
 
 
-#: The platform whose MAME has no full screen: `-nowindow` opens the largest window the display's
-#: work area holds, below the menu bar, which is never the display's own bounds.
-NO_FULLSCREEN_ON = "darwin"
+#: The platforms whose MAME has no full screen: `-nowindow` opens a window the display's work area
+#: holds, which is never the display's own bounds.
+NO_FULLSCREEN_ON = ("darwin", "win32")
 
 
 def refuse_fullscreen_that_cannot_show(asked: core_window.WindowRequest | None) -> None:
-    if asked is not None and asked.fullscreen and sys.platform == NO_FULLSCREEN_ON:
+    if asked is not None and asked.fullscreen and sys.platform in NO_FULLSCREEN_ON:
         raise st.Invalid("bad_argument",
-                         "`fullscreen` cannot be proved on macOS: MAME's `-nowindow` opens the "
-                         "largest window the display holds below the menu bar, never the display "
-                         "itself. Start with `fullscreen=false`; the window is scaled to be seen")
+                         "`fullscreen` cannot be proved on this host: MAME's `-nowindow` opens a "
+                         "window the display's work area holds, never the display itself. Start "
+                         "with `fullscreen=false`; the window is scaled to be seen")
 
 
 def window_flags(asked: core_window.WindowRequest | None,
