@@ -17,6 +17,7 @@ import pytest
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import window as core_window
+from scry_core import window_words
 from server_support import (  # noqa: E402
     MACHINE_INDEPENDENT,
     _AlreadyDead,
@@ -110,8 +111,9 @@ def test_an_unwatched_window_is_small_and_flat_out() -> None:
     (core_window.WindowRequest(0, True, (0, 0)), ["-nowindow", "-screen0", "screen0"]),
 ])
 def test_the_display_asked_is_the_one_mame_is_told_and_fullscreen_drops_the_window(
-    asked: core_window.WindowRequest, flags: list[str]
+    asked: core_window.WindowRequest, flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", ())
     got = launch.window_flags(asked, [])
     assert got[-len(flags):] == flags, got
     assert ("-window" in got) is not asked.fullscreen, got

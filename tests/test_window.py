@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
-from scry_core import conformance
+from scry_core import conformance, window_words
 from scry_core import window as core_window
 from scry_core.reply_contract import Invalid
 from server_support import _boot_args, _stub_boot, _StubProcess
@@ -24,7 +24,7 @@ class _Subject:
     def __init__(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         self.monkeypatch, self.tmp_path = monkeypatch, tmp_path
         self.asked = session_window
-        self.shows_fullscreen = sys.platform not in launch.NO_FULLSCREEN_ON
+        self.shows_fullscreen = sys.platform not in window_words.MAME_NO_FULLSCREEN_ON
 
     def start(self, **arguments: Any) -> dict[str, Any]:
         return _start(self.monkeypatch, self.tmp_path, **arguments)
@@ -77,12 +77,12 @@ def test_fullscreen_is_refused_by_name_where_mame_has_none_and_passes_through_el
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    monkeypatch.setattr(launch, "NO_FULLSCREEN_ON", (sys.platform,))
+    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", (sys.platform,))
     got = s.start(**args, shared=True, display=1, fullscreen=True)
     assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
     assert "fullscreen" in got["message"] and "-nowindow" in got["message"], got
     assert STATE.proc is None
-    monkeypatch.setattr(launch, "NO_FULLSCREEN_ON", ())
+    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", ())
     got = s.start(**args, shared=True, display=1, fullscreen=True)
     try:
         assert got["status"] == "ok", got
@@ -100,10 +100,10 @@ def test_fullscreen_is_refused_on_the_platforms_where_nowindow_was_measured_not_
     asked = core_window.WindowRequest(0, True, (0, 0))
     if refused:
         with pytest.raises(Invalid) as e:
-            launch.refuse_fullscreen_that_cannot_show(asked)
+            window_words.refuse_mame_fullscreen(asked)
         assert e.value.code == "bad_argument" and "-nowindow" in str(e.value)
     else:
-        launch.refuse_fullscreen_that_cannot_show(asked)
+        window_words.refuse_mame_fullscreen(asked)
 
 
 def test_a_start_nobody_watches_asks_for_no_display_and_says_nothing_of_a_window(

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, judges, live_host, log_marks
+from scry_core import guardian, judges, live_host, log_marks, window_words
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -126,19 +126,6 @@ def reference_rom_file(reference_rom: str) -> Path:
 WATCHED_MAX_PX = (1800, 960)
 
 
-#: The platforms whose MAME has no full screen: `-nowindow` opens a window the display's work area
-#: holds, which is never the display's own bounds.
-NO_FULLSCREEN_ON = ("darwin", "win32")
-
-
-def refuse_fullscreen_that_cannot_show(asked: core_window.WindowRequest | None) -> None:
-    if asked is not None and asked.fullscreen and sys.platform in NO_FULLSCREEN_ON:
-        raise st.Invalid("bad_argument",
-                         "`fullscreen` cannot be proved on this host: MAME's `-nowindow` opens a "
-                         "window the display's work area holds, never the display itself. Start "
-                         "with `fullscreen=false`; the window is scaled to be seen")
-
-
 def window_flags(asked: core_window.WindowRequest | None,
                  screens: list[dict[str, Any]]) -> list[str]:
     """The window's flags: small and flat out for a run nobody watches; for a watched one the
@@ -148,16 +135,15 @@ def window_flags(asked: core_window.WindowRequest | None,
     integer scale is the one that never blurs a pixel; with no size known, MAME's own."""
     if asked is None:
         return ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
-    if asked.fullscreen:
-        return ["-nowindow", "-screen0", f"screen{asked.display}"]
-    flags = ["-window", "-nomaximize"]
-    if screens and screens[0].get("width", 0) > 0 and screens[0].get("height", 0) > 0:
+    resolution = None
+    if not asked.fullscreen and screens and screens[0].get("width", 0) > 0 \
+            and screens[0].get("height", 0) > 0:
         w, h = screens[0]["width"], screens[0]["height"]
         if screens[0].get("rotation") in (90, 270):
             w, h = h, w
         scale = max(1, min(WATCHED_MAX_PX[0] // w, WATCHED_MAX_PX[1] // h))
-        flags += ["-resolution", f"{w * scale}x{h * scale}"]
-    return [*flags, "-screen0", f"screen{asked.display}"]
+        resolution = f"{w * scale}x{h * scale}"
+    return window_words.mame(asked, resolution)
 
 
 def port_is_free(port: int) -> bool:
@@ -542,7 +528,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
     wanted = core_window.requested(shared, display, fullscreen)
-    refuse_fullscreen_that_cannot_show(wanted)
+    if wanted is not None:
+        window_words.refuse_mame_fullscreen(wanted)
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
