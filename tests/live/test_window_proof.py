@@ -6,6 +6,7 @@ display 1, and those cases skip naming that."""
 from __future__ import annotations
 
 import os
+import sys
 import zipfile
 from collections.abc import Iterator
 from pathlib import Path
@@ -14,6 +15,7 @@ from typing import Any, cast
 import pytest
 from scry_core import window as core_window
 
+from scry_mame import launch
 from scry_mame import server as s
 
 BINARY = os.environ.get("MAME_BINARY", "")
@@ -62,6 +64,7 @@ def test_a_watched_start_is_listed_on_the_display_it_asked(tmp_path: Path, displ
     listed = _listed(got["pid"])
     x, y, w, h = shown[display].bounds
     assert listed is not None and listed.onscreen
+    assert block["fullscreen"] is False and listed.bounds != shown[display].bounds
     assert x <= listed.bounds[0] < x + w and y <= listed.bounds[1] < y + h, (listed, shown)
     said = cast(dict[str, Any], s.window())["window"]["bounds"]
     assert (said["x"], said["y"], said["width"], said["height"]) == listed.bounds
@@ -78,16 +81,19 @@ def test_an_unwatched_start_has_no_channel_for_window(tmp_path: Path) -> None:
 
 @pytest.mark.usefixtures("closing")
 def test_fullscreen_fills_the_display_or_is_refused_by_name(tmp_path: Path) -> None:
-    """Measured: on Windows `-nowindow` either fills the display, and `fullscreen` is proved, or
-    the start is refused; the test records which."""
+    """Where `-nowindow` was measured not to fill the display the start is refused naming it, up
+    front; elsewhere the window either fills the display or the start says it did not."""
     got = _start(tmp_path, shared=True, display=0, fullscreen=True)
     shown = _displays()[0].bounds
     pid = cast(dict[str, Any], s.status()).get("pid")
     listed = _listed(pid) if isinstance(pid, int) else None
     print(f"\nfullscreen start: status={got['status']} code={got.get('code')} display={shown} "
           f"window={listed.bounds if listed else None} seen={got.get('seen')}")
-    if got["status"] == "ok":
+    if sys.platform in launch.NO_FULLSCREEN_ON:
+        assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
+        assert "-nowindow" in got["message"] and listed is None, got
+    elif got["status"] == "ok":
         assert got["window"]["fullscreen"] is True and listed is not None
         assert listed.bounds == shown
     else:
-        assert got["code"] in {"bad_argument", "window_not_visible"}, got
+        assert got["code"] == "window_not_visible", got
