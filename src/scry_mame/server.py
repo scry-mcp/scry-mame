@@ -172,8 +172,8 @@ def start(
     display. Both need `shared=True` and are refused otherwise; a `display` past the host's count
     is refused naming the count. The server waits for the window to be listed on that display and
     answers `window`.
-    `background`: behind, the caller's focus kept; independent of `shared`, whose default it
-    follows. `throttle_from_frame`: flat out until it.
+    `background`: launch behind, keeping the caller's focus, or in front; it does not need
+    `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
 
     Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
