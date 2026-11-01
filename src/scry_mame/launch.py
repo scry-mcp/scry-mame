@@ -308,7 +308,7 @@ def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
 class Judged:
     """What `start` decided from its arguments before anything exists, plus the launch inputs.
 
-    `judge` refuses with nothing to clean up and takes its arguments by keyword: ten are strings,
+    `judge` refuses with nothing to clean up and takes its arguments by keyword: most are strings,
     and a swap would type-check."""
 
     flags: list[str]

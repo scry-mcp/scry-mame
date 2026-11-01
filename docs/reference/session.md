@@ -19,7 +19,8 @@ byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
 `shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
 display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
-display. Both need `shared=True` and are refused otherwise; a `display` past the host's count
+display, refused on macOS and Windows, where `-nowindow` does not fill it. Both need
+`shared=True` and are refused otherwise; a `display` past the host's count
 is refused naming the count. The server waits for the window to be listed on that display and
 answers `window`.
 `background`: launch behind, keeping the caller's focus, or in front; it does not need
@@ -445,11 +446,6 @@ Example, from a live run:
 
 **Also in the reply**: `console_pending_before`, `console_drained`, `exit_code` (unavailable with its `why` when SIGKILLed and still not reaped), and `omitted` naming the tails with `how` when they are left out.
 
-
-
-
-**On the patched stub the reply proves nothing ran**: `machine_ran: false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before and after (`unread`: one whose block the stub refuses). It is the stub's `Hc`, which ignores no cpu and releases nothing.
-
 <!-- scry-reference:begin cpu_focus -->
 ## `cpu_focus`
 
@@ -519,6 +515,8 @@ Example, from a live run:
 }
 ```
 <!-- scry-reference:end cpu_focus -->
+
+**On the patched stub the reply proves nothing ran**: `machine_ran: false`, the `frame`, and `unchanged`, the cpus whose whole register block read the same before and after (`unread`: one whose block the stub refuses). It is the stub's `Hc`, which ignores no cpu and releases nothing.
 
 **The cpu model is every tool's, and `cpu_focus` is its only direct handle.** No `cpu` acts on the visible cpu, which a stop moves to the cpu that stopped and a release back to it (`cpu_info`'s `visible`); `cpu` names another and the visible one stays (`step` alone shows the cpu it steps). A reply that touches a cpu names it. A declaration keeps its cpu, its `ref` resolving in that cpu's symbols. `rpset` names no cpu: a registerpoint is the visible cpu's. Another cpu's registers and memory need the thread patch.
 

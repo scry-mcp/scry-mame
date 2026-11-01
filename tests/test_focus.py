@@ -1,4 +1,4 @@
-"""`focus`: the visible cpu moved by the server, read back, and what the move did.
+"""`cpu_focus`: the visible cpu moved by the server, read back, and what the move did.
 
 The patched stub's `Hc` moves nothing, and the reply proves it on the frame counter and each
 cpu's whole register block. A stub without threads leaves only the console's `focus`, which

@@ -169,7 +169,8 @@ def start(
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
     display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
-    display. Both need `shared=True` and are refused otherwise; a `display` past the host's count
+    display, refused on macOS and Windows, where `-nowindow` does not fill it. Both need
+    `shared=True` and are refused otherwise; a `display` past the host's count
     is refused naming the count. The server waits for the window to be listed on that display and
     answers `window`.
     `background`: launch behind, keeping the caller's focus, or in front; it does not need
