@@ -31,14 +31,17 @@ class _Subject:
     def window(self, front: bool = False) -> dict[str, Any]:
         return cast(dict[str, Any], s.window(front=front))
 
-    def close(self) -> None:
-        s.close()
+    def close(self) -> dict[str, Any]:
+        return cast(dict[str, Any], s.close())
+
+    def status(self) -> dict[str, Any]:
+        return cast(dict[str, Any], s.status())
 
     def has_session(self) -> bool:
         return STATE.proc is not None
 
 
-class TestMameWindow(conformance.WindowContract):
+class TestMameWindow(conformance.SessionContract):
     @pytest.fixture
     def subject(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _Subject:
         return _Subject(monkeypatch, tmp_path)
