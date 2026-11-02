@@ -13,7 +13,6 @@ from __future__ import annotations
 import contextlib
 import hashlib
 import os
-import re
 import sys
 import time
 from collections.abc import Callable, Iterator
@@ -37,6 +36,7 @@ from live_harness import (
     section,
     zips_missing,
 )
+from presence_leak import leaking_drawer
 from scry_core import presence as scry_presence
 from scry_core import window_capture
 
@@ -330,14 +330,10 @@ def _z_leak(label: str) -> None:
     """The red of the stills: the production drawer moved onto the screen's container."""
     leak_state = scratch() / "z-leak.state"
     _put(leak_state, "off")
-    leaking, moved = re.subn(r"manager\.machine\.render\.ui_container",
-                             "manager.machine.screens[':screen'].container",
-                             mpresence.drawer(scratch()))
-    path_moved = leaking.count(f"{scratch() / mpresence.STATE_FILE}")
+    leaking, moved, path_moved = leaking_drawer(scratch(), leak_state)
     if moved != 1 or path_moved != 1:
         invalid(f"the leaking drawer could not be derived ({moved} containers, {path_moved} "
                 "paths moved): the production drawer changed shape")
-    leaking = leaking.replace(str(scratch() / mpresence.STATE_FILE), str(leak_state))
     harness = scratch() / "z-leak.lua"
     harness.write_text(leaking.replace("_G.scry_presence_frames", "_G.scry_leak_frames"))
     circus_boot(presence=False, boot_lua=str(harness))
