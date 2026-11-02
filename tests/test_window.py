@@ -8,9 +8,8 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
-from scry_core import conformance, window_words
+from scry_core import conformance, window_size
 from scry_core import window as core_window
-from scry_core.reply_contract import Invalid
 from server_support import _boot_args, _stub_boot, _StubProcess
 from window_double import asked as session_window
 
@@ -24,7 +23,7 @@ class _Subject:
     def __init__(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         self.monkeypatch, self.tmp_path = monkeypatch, tmp_path
         self.asked = session_window
-        self.shows_fullscreen = sys.platform not in window_words.MAME_NO_FULLSCREEN_ON
+        self.shows_fullscreen = sys.platform not in window_size.MAME_NO_FULLSCREEN_ON
 
     def start(self, **arguments: Any) -> dict[str, Any]:
         return _start(self.monkeypatch, self.tmp_path, **arguments)
@@ -77,12 +76,12 @@ def test_fullscreen_is_refused_by_name_where_mame_has_none_and_passes_through_el
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", (sys.platform,))
+    monkeypatch.setattr(window_size, "MAME_NO_FULLSCREEN_ON", (sys.platform,))
     got = s.start(**args, shared=True, display=1, fullscreen=True)
     assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
     assert "fullscreen" in got["message"] and "-nowindow" in got["message"], got
     assert STATE.proc is None
-    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", ())
+    monkeypatch.setattr(window_size, "MAME_NO_FULLSCREEN_ON", ())
     got = s.start(**args, shared=True, display=1, fullscreen=True)
     try:
         assert got["status"] == "ok", got
@@ -90,20 +89,6 @@ def test_fullscreen_is_refused_by_name_where_mame_has_none_and_passes_through_el
         assert got["window"]["fullscreen"] is True, got
     finally:
         s.close()
-
-
-@pytest.mark.parametrize(("platform", "refused"), [("darwin", True), ("win32", True),
-                                                    ("linux", False)])
-def test_fullscreen_is_refused_on_the_platforms_where_nowindow_was_measured_not_to_fill_it(
-        monkeypatch: pytest.MonkeyPatch, platform: str, refused: bool) -> None:
-    monkeypatch.setattr(sys, "platform", platform)
-    asked = core_window.WindowRequest(0, True, (0, 0))
-    if refused:
-        with pytest.raises(Invalid) as e:
-            window_words.refuse_mame_fullscreen(asked)
-        assert e.value.code == "bad_argument" and "-nowindow" in str(e.value)
-    else:
-        window_words.refuse_mame_fullscreen(asked)
 
 
 def test_a_start_nobody_watches_asks_for_no_display_and_says_nothing_of_a_window(
@@ -139,3 +124,27 @@ def test_the_background_judge_keeps_only_the_env_refusal_and_the_rest_is_core_s(
 def test_the_tool_that_moves_the_debugger_s_cpu_is_named_for_the_cpu() -> None:
     names = {t.name for t in s.mcp._tool_manager.list_tools()}
     assert "cpu_focus" in names and "focus" not in names, sorted(names)
+
+
+def test_a_stated_size_reaches_mame_as_its_resolution_and_the_window_judges_it(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(sys, "platform", "darwin")
+    got = _start(monkeypatch, tmp_path, shared=True, size="744x768")
+    try:
+        assert got["status"] == "ok", got
+        assert got["flags"][:4] == ["-window", "-nomaximize", "-resolution", "744x768"], got
+        seen = cast(dict[str, Any], s.window())
+        assert seen["size"]["asked"] == {"width": 744, "height": 768}, seen
+        assert seen["size"]["matches"] is True, seen
+    finally:
+        s.close()
+
+
+@pytest.mark.parametrize("arguments", [{"size": "744x768"}, {"shared": True, "size": "wide"},
+                                       {"shared": True, "size": "9999x9999"},
+                                       {"shared": True, "size": "744x768", "fullscreen": True}])
+def test_a_size_that_cannot_act_is_refused_before_mame_boots(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, arguments: dict[str, Any]) -> None:
+    got = _start(monkeypatch, tmp_path, **arguments)
+    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
+    assert STATE.proc is None

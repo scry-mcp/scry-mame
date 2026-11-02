@@ -1,0 +1,35 @@
+{
+ "task": {
+  "id": "M210",
+  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it in a window of exactly 1280 by 960.",
+  "tool": "start",
+  "args": {
+   "binary": "/opt/fury/mamed",
+   "system": "spacefury",
+   "rompath": "/opt/fury/roms",
+   "reference_rom": "/opt/fury/roms/fury.bin",
+   "shared": true,
+   "size": "1280x960"
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M210: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"size\": \"1280x960\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M210: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"binary\": \"/opt/fury/mamed\", \"shared\": true, \"size\": \"1280x960\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M210: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"size\": \"1280x960\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

@@ -9,13 +9,13 @@ import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, judges, live_host, log_marks, window_words
+from scry_core import guardian, judges, live_host, log_marks, window_size, window_words
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -122,28 +122,50 @@ def reference_rom_file(reference_rom: str) -> Path:
     return ref
 
 
-#: A watched window's bound: it fits a 1080p display with its title bar and the host's menus.
-WATCHED_MAX_PX = (1800, 960)
+def native_size(screens: list[dict[str, Any]]) -> tuple[int, int] | None:
+    """The first screen's size as the player sees it (a rotated board swaps its sides), or None
+    when `-listxml` gave none."""
+    if not screens or screens[0].get("width", 0) <= 0 or screens[0].get("height", 0) <= 0:
+        return None
+    w, h = screens[0]["width"], screens[0]["height"]
+    return (h, w) if screens[0].get("rotation") in (90, 270) else (w, h)
+
+
+def fitted_request(asked: core_window.WindowRequest | None,
+                   screens: list[dict[str, Any]]) -> core_window.WindowRequest | None:
+    """`asked` with the largest whole multiple of the screen whose window fits the display's usable
+    area as its size, marked as the server's own choice; unchanged where a size was stated, the
+    window fills the display, or the screen or the usable area is not known."""
+    native = native_size(screens)
+    if asked is None or asked.size is not None or asked.fullscreen:
+        return asked
+    if not native or not asked.usable:
+        return asked
+    return replace(asked, fitted=True, height_free=window_size.height_free("mame", sys.platform),
+                   size=window_size.integer_fit(native, asked.usable, asked.scale, sys.platform))
 
 
 def window_flags(asked: core_window.WindowRequest | None,
                  screens: list[dict[str, Any]]) -> list[str]:
     """The window's flags: small and flat out for a run nobody watches; for a watched one the
-    display asked for, in a window or filling it.
-
-    A window: the first screen at the largest integer scale within `WATCHED_MAX_PX`, since an
-    integer scale is the one that never blurs a pixel; with no size known, MAME's own."""
+    display asked for, in a window of the stated or fitted size, else MAME's own."""
     if asked is None:
         return ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
-    resolution = None
-    if not asked.fullscreen and screens and screens[0].get("width", 0) > 0 \
-            and screens[0].get("height", 0) > 0:
-        w, h = screens[0]["width"], screens[0]["height"]
-        if screens[0].get("rotation") in (90, 270):
-            w, h = h, w
-        scale = max(1, min(WATCHED_MAX_PX[0] // w, WATCHED_MAX_PX[1] // h))
-        resolution = f"{w * scale}x{h * scale}"
-    return window_words.mame(asked, resolution)
+    return window_words.mame(fitted_request(asked, screens) or asked)
+
+
+def scaled_note(asked: core_window.WindowRequest | None,
+                screens: list[dict[str, Any]]) -> str | None:
+    """Says so when a stated size is not a whole multiple of the screen: MAME then stretches the
+    picture by a fraction, and draws it at its view's aspect inside the window."""
+    native = native_size(screens)
+    if asked is None or asked.size is None or asked.fitted or native is None:
+        return None
+    if asked.size[0] % native[0] == 0 and asked.size[1] % native[1] == 0 \
+            and asked.size[0] // native[0] == asked.size[1] // native[1]:
+        return None
+    return (f"`size` {asked.size[0]}x{asked.size[1]} is not a whole multiple of this machine's "
+            f"{native[0]}x{native[1]} screen: MAME stretches the picture by a fraction")
 
 
 def port_is_free(port: int) -> bool:
@@ -334,6 +356,7 @@ class Judged:
     background: bool = False
     presence: bool = False
     window: core_window.WindowRequest | None = None
+    scaled: str | None = None     # a stated size MAME scales, said in the reply
     picked: bool = False          # the port is this server's pick
     view: str = ""                # empty is MAME's `native`
 
@@ -518,7 +541,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
           binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
-          fullscreen: bool | None = None) -> Judged:
+          fullscreen: bool | None = None, size: str | None = None) -> Judged:
     """Every refusal of the caller's input, before the emulator exists: after the boot a bad
     path surfaces as a bare error naming no argument, with a machine possibly running.
 
@@ -527,9 +550,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
-    wanted = core_window.requested(shared, display, fullscreen)
-    if wanted is not None:
-        window_words.refuse_mame_fullscreen(wanted)
+    wanted = core_window.requested(shared, display, fullscreen, size, emulator="mame")
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
@@ -614,7 +635,9 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     return Judged(flags, port, loaded, store, declarations, ref, ref_addr, ref_base,
                   binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
                   throttle_from_frame, asked, cfg_source, listed, background=behind,
-                  presence=presence, window=wanted, picked=picked, view=view)
+                  presence=presence, picked=picked, view=view,
+                  window=fitted_request(wanted, listed[0]["screens"] if listed is not None else []),
+                  scaled=scaled_note(wanted, listed[0]["screens"] if listed is not None else []))
 
 
 VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
@@ -847,7 +870,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, *, presence: bool, view: str = "",
-          display: int | None = None, fullscreen: bool | None = None,
+          display: int | None = None, fullscreen: bool | None = None, size: str | None = None,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, relaunched whole up to `START_RETRIES_MAX` times
     for a `failures.LaunchFailed` that says so. Only its evidence survives, as `start_retries`."""
@@ -864,7 +887,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
                                port, state_dir, throttle_from_frame, types, cfg,
                                background, presence, retries, progress, view, display,
-                               fullscreen)
+                               fullscreen, size)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
@@ -887,7 +910,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress,
             view: str = "", display: int | None = None,
-            fullscreen: bool | None = None) -> dict[str, Any]:
+            fullscreen: bool | None = None, size: str | None = None) -> dict[str, Any]:
     """One launch: judge, boot under one guard, re-arm, park, reply."""
     # Ending a live session is the caller's act: a stray second `start` must not throw away a
     # session somebody is measuring on.
@@ -907,7 +930,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
                    cfg=cfg, background=background, presence=presence,
                    binary_origin=resolved.origin, view=view, display=display,
-                   fullscreen=fullscreen)
+                   fullscreen=fullscreen, size=size)
     # From the scratch on, everything sits under one guard: a failed ROM check or any raise
     # kills the session, or the next call would measure on a lying one, or leave an orphaned
     # emulator. A start that did not start owns nothing, not even the directory.
@@ -1002,7 +1025,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "start_retries": list(retries),
             "recommended_release": binaries.RELEASE,
         })
-        st.add_note(started, binaries.release_note(binary_facts["version"]))
+        st.add_note(started, binaries.release_note(binary_facts["version"]), judged.scaled)
         idle.IDLE.clear_note()
     except Exception:
         STATE.kill(progress, grace=False)

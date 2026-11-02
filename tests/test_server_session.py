@@ -17,7 +17,7 @@ import pytest
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import window as core_window
-from scry_core import window_words
+from scry_core import window_size
 from server_support import (  # noqa: E402
     MACHINE_INDEPENDENT,
     _AlreadyDead,
@@ -70,11 +70,11 @@ from scry_mame import write as mwrite  # noqa: E402
 UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
 
-ASKED = core_window.WindowRequest(0, False, (0, 0))
+ASKED = core_window.WindowRequest(0, False, (0, 0), usable=(0, 0, 1920, 1080))
 
 
 @pytest.mark.parametrize("screens, flags", [
-    # The largest integer scale within 1800x960, so the window fits a 1080p display.
+    # The largest whole multiple whose window, title bar included, fits a 1080p usable area.
     ([{"tag": ":screen", "width": 320, "height": 240}],
      ["-window", "-nomaximize", "-resolution", "1280x960"]),
     ([{"tag": ":screen", "width": 256, "height": 224}],
@@ -85,7 +85,7 @@ ASKED = core_window.WindowRequest(0, False, (0, 0))
      ["-window", "-nomaximize", "-resolution", "1728x448"]),
     # A vertical board's window is as tall as its rotated screen.
     ([{"tag": ":screen", "width": 256, "height": 224, "rotation": 90}],
-     ["-window", "-nomaximize", "-resolution", "672x768"]),
+     ["-window", "-nomaximize", "-resolution", "896x1024"]),
     ([{"tag": ":screen", "width": 2000, "height": 1200}],
      ["-window", "-nomaximize", "-resolution", "2000x1200"]),
     # No size `-listxml` could give: MAME sizes the window itself.
@@ -95,8 +95,9 @@ ASKED = core_window.WindowRequest(0, False, (0, 0))
     ([{"tag": ":screen", "width": 320, "height": 0}], ["-window", "-nomaximize"]),
 ])
 def test_a_watched_window_is_scaled_from_the_machine_s_screen_and_named_a_display(
-    screens: list[dict[str, Any]], flags: list[str]
+    screens: list[dict[str, Any]], flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setattr(sys, "platform", "darwin")
     assert launch.window_flags(ASKED, screens) == [*flags, "-screen0", "screen0"]
 
 
@@ -113,7 +114,6 @@ def test_an_unwatched_window_is_small_and_flat_out() -> None:
 def test_the_display_asked_is_the_one_mame_is_told_and_fullscreen_drops_the_window(
     asked: core_window.WindowRequest, flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(window_words, "MAME_NO_FULLSCREEN_ON", ())
     got = launch.window_flags(asked, [])
     assert got[-len(flags):] == flags, got
     assert ("-window" in got) is not asked.fullscreen, got
@@ -328,9 +328,10 @@ def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_names_the_di
     out = s.start(**{**args, "system": "m68k-dual"}, shared=True, display=1)
     try:
         argv = _StubProcess.last_argv
-        assert argv[argv.index("-resolution") + 1] == "1008x756", "336x252 at 3x"
-        assert out["flags"] == ["-window", "-nomaximize", "-resolution", "1008x756",
-                                "-screen0", "screen1"], out["flags"]
+        shown = core_window.host().displays()[1]
+        fitted = window_size.integer_fit((336, 252), shown.work, shown.scale, sys.platform)
+        assert argv[argv.index("-resolution") + 1] == "x".join(map(str, fitted))
+        assert out["flags"][-2:] == ["-screen0", "screen1"], out["flags"]
         assert out["window"]["display"] == 1 and out["window"]["onscreen"] is True, out
     finally:
         s.close()
@@ -1306,3 +1307,42 @@ def test_judge_carries_presence_to_the_boot(
                           background=None, presence=asked)
     machine.listxml(judged.listxml, judged.binary, judged.system, judged.wait)
     assert judged.presence is asked
+
+
+SCREEN_320 = [{"tag": ":screen", "width": 320, "height": 240}]
+
+
+@pytest.mark.parametrize(("size", "screens", "said"), [
+    ((640, 960), SCREEN_320, True),                                          # unequal factors
+    ((1280, 960), SCREEN_320, False),                                        # 4 and 4
+    ((448, 512), [{"tag": ":screen", "width": 256, "height": 224, "rotation": 90}], False),
+    ((744, 768), [{"tag": ":screen", "width": 256, "height": 224}], True),
+    ((744, 768), [], False),                                                 # nothing to compare
+])
+def test_a_stated_size_that_is_not_a_whole_multiple_of_the_screen_is_said(
+        size: tuple[int, int], screens: list[dict[str, Any]], said: bool) -> None:
+    asked = core_window.WindowRequest(0, False, (0, 0), size=size)
+    got = launch.scaled_note(asked, screens)
+    assert (got is not None) is said, got
+    assert said is False or "whole multiple" in str(got)
+
+
+def test_a_size_the_server_chose_is_never_called_scaled() -> None:
+    chosen = core_window.WindowRequest(0, False, (0, 0), size=(700, 700), fitted=True)
+    assert launch.scaled_note(chosen, SCREEN_320) is None
+
+
+def test_the_fit_is_held_by_the_request_as_the_server_s_own_and_judged_by_none(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(sys, "platform", "darwin")
+    got = launch.fitted_request(ASKED, SCREEN_320)
+    assert got is not None and got.size == (1280, 960) and got.fitted is True
+    assert launch.fitted_request(got, SCREEN_320) == got, "fitting twice changes nothing"
+
+
+@pytest.mark.parametrize(("platform", "kept"), [("darwin", True), ("win32", False)])
+def test_the_fit_drops_nomaximize_on_windows_where_it_would_be_ignored(
+        monkeypatch: pytest.MonkeyPatch, platform: str, kept: bool) -> None:
+    monkeypatch.setattr(sys, "platform", platform)
+    flags = launch.window_flags(ASKED, SCREEN_320)
+    assert ("-nomaximize" in flags) is kept, flags

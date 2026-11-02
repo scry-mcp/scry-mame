@@ -8,7 +8,7 @@ A session is one MAME under the debugger, parked STOPPED by `start` and ended by
 *Start a MAME session*
 
 ```text
-start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, fullscreen=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
+start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, fullscreen=null, size=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
 ```
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -17,12 +17,16 @@ Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, th
 files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
 byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-`shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
+`shared=True`: somebody watches (a window of the largest whole multiple of the screen that
+fits the display's usable area, drawn at the view's aspect, real speed). `display`: the OS's
 display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
-display, refused on macOS and Windows, where `-nowindow` does not fill it. Both need
-`shared=True` and are refused otherwise; a `display` past the host's count
-is refused naming the count. The server waits for the window to be listed on that display and
-answers `window`.
+display, refused on macOS and Windows, where `-nowindow` does not fill it; `size`:
+`WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
+whole multiple of the screen is stretched by a fraction, and the reply's `note` says so). All
+three need `shared=True` and are refused otherwise; `size` is also refused beside `fullscreen`
+and when it, with its frame, exceeds the display's usable area, naming that size; a `display`
+past the host's count is refused naming the count. The server waits for the window to be
+listed on that display and answers `window`; a later `window` judges a stated size.
 `background`: launch behind, keeping the caller's focus, or in front; it does not need
 `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
@@ -51,6 +55,7 @@ Reference: REFERENCE.md, The session.
 | `shared` | boolean | `false` |
 | `display` | integer or null | `null` |
 | `fullscreen` | boolean or null | `null` |
+| `size` | string or null | `null` |
 | `background` | boolean or null | `null` |
 | `boot_lua` | string | `""` |
 | `env` | object or null | `null` |
@@ -225,7 +230,15 @@ Example, from a live run:
 
 **`cfg` installs the project's `.cfg` where MAME reads it, and proves MAME read it.** Without it a live session plays on MAME's generic defaults with nothing saying so. MAME prints a parse error as an OSD warning on stderr and never in `error.log`, which only `logerror` writes, so the check reads stderr; a session booted on the defaults is closed and the start is INVALID. The project's file is never touched, and `cfg.changed` on `close` says whether MAME rewrote the copy, which a caller deciding to commit a cfg wants to know.
 
-**The window.** A watched run (`shared=True`) opens MAME's window on the display `display` names (the OS's index, 0 the main display and the default), at the largest integer scale of the machine's first screen (as `-listxml` lists it, turned for a vertical board) that fits 1800x960: it fits a 1080p display, and an integer scale never blurs a pixel. With no size listed, MAME picks one. The server then waits for the window to be listed on that display and answers it as `window`; one that never appears is `window_not_visible`, with the session left live to `window` or `close`. `fullscreen` is refused on macOS and Windows, where MAME's `-nowindow` opens a window the display's work area holds, never the display itself. A run nobody watches gets a small window and `-nothrottle`, which the server neither places nor proves: `window` refuses it as `no_channel`. Never `-video none` by hand: on macOS it takes over the display.
+**The window.** Three situations, one combination of arguments each:
+
+| Situation | `start` | Window |
+|---|---|---|
+| No window to lose focus to | `shared=false` (the default) | MAME's own small window at scale 1, flat out, behind; never placed or proved, so `window` refuses it as `no_channel` |
+| A window nobody watches, kept behind | `shared=false`, `background=true` | the same, nothing takes the caller's focus |
+| A window somebody tests | `shared=true`, with `display` and `size` or `fullscreen` | placed on the display, in front, at real speed, proved in the host's window list |
+
+A watched run opens MAME's window on the display `display` names (the OS's index, 0 the main display and the default), at the largest whole multiple of the machine's first screen (as `-listxml` lists it, turned for a vertical board) whose window, frame included, fits the display's usable area, menu bar, Dock and taskbar excluded. MAME draws the picture at its view's aspect inside the window (`-keepaspect`), so a whole multiple is pixel-exact only where the view's aspect is the screen's own; with a 4:3 view over a screen of another shape the picture is letterboxed. With no size listed, MAME picks one. `size` (`WIDTHxHEIGHT` in the host's unit: points on macOS, real pixels on Windows) wins over the fit, is refused naming the display's usable size and the frame's share of it when it does not fit, and is refused beside `fullscreen`; a size that is not a whole multiple is stretched by a fraction, and the `note` says so. The server waits for the window to be listed on that display and answers it as `window`; one that never appears is `window_not_visible`, with the session left live to `window` or `close`. MAME sizes the window when it creates it, so a later `window` judges a stated size at any moment, a parked start included: it compares the window's client area on Windows and its outer rectangle on macOS (which has no client area, so a title bar's height is allowed on the height), and names the tolerance; the fit is the server's own choice and is not judged. Under `-nomaximize` the Windows OSD starts at the screen's native size and ignores `-resolution`, so a stated or fitted size drops `-nomaximize` there, and only the width is judged (the height is the view's aspect fit). `fullscreen` is refused on macOS and Windows, where MAME's `-nowindow` opens a window the display's work area holds, never the display itself, so on the hosts this server supports it has no accepting input today. Linux is out of scope. Never `-video none` by hand: on macOS it takes over the display.
 
 **Flying to a late scene: `throttle_from_frame=N`.** MAME's debugger console has no throttle command and the stub speaks nothing but the debugger; what CAN switch the throttle is Lua, and the one Lua a launch can run is the autoboot script. So `start` writes a boot harness and adds `-nothrottle`, and the harness lifts the throttle on arrival at the frame, logging `MAME_MCP throttled from frame N` so `log_wait` proves it. It is decided at launch, at a FRAME; the live switch is `throttle`.
 
@@ -332,7 +345,9 @@ Where the watched window is on the host, at any time, a running machine included
 brings it in front of whatever covers it and reads that back.
 
 Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, no other
-application's window covering its centre; `fullscreen`).
+application's window covering its centre; `fullscreen`); `size` when the session was started
+with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
+`outer`), `tolerance_px`, `height_free` and `matches`.
 
 Refused: no session (`no_session`), one that died (`session_broken`), a session started
 without `shared` (`no_channel`), a window that never appears or, with `front`, is still
@@ -351,6 +366,7 @@ Reference: REFERENCE.md, The session.
 | `activation` | string |
 | `asked_display` | integer |
 | `seen` | object |
+| `size` | object |
 | `window` | object |
 
 Example, from a live run:

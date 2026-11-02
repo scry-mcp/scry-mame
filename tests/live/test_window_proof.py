@@ -14,7 +14,7 @@ from typing import Any, cast
 
 import pytest
 from scry_core import window as core_window
-from scry_core import window_words
+from scry_core import window_size
 
 from scry_mame import server as s
 
@@ -89,7 +89,7 @@ def test_fullscreen_fills_the_display_or_is_refused_by_name(tmp_path: Path) -> N
     listed = _listed(pid) if isinstance(pid, int) else None
     print(f"\nfullscreen start: status={got['status']} code={got.get('code')} display={shown} "
           f"window={listed.bounds if listed else None} seen={got.get('seen')}")
-    if sys.platform in window_words.MAME_NO_FULLSCREEN_ON:
+    if sys.platform in window_size.MAME_NO_FULLSCREEN_ON:
         assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
         assert "-nowindow" in got["message"] and listed is None, got
     elif got["status"] == "ok":

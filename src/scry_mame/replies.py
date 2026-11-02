@@ -927,7 +927,7 @@ class WindowRefused(MameEnvelope, tool_replies.WindowRefusedFields, total=False)
     """What a `window_not_visible` refusal says of the window it looked for."""
 
 
-class WindowReply(WindowRefused, total=False):
+class WindowReply(WindowRefused, tool_replies.WindowSizeField, total=False):
     window: Required[dict[str, Any]]
 
 

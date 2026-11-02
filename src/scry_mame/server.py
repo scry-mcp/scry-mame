@@ -146,6 +146,7 @@ def start(
     shared: bool = False,
     display: int | None = None,
     fullscreen: bool | None = None,
+    size: str | None = None,
     background: bool | None = None,
     boot_lua: str = "",
     env: dict[str, str] | None = None,
@@ -167,12 +168,16 @@ def start(
     files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
     byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
-    `shared=True`: somebody watches (a window scaled to be seen, real speed). `display`: the OS's
+    `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
+    fits the display's usable area, drawn at the view's aspect, real speed). `display`: the OS's
     display index for that window, 0 (the main display) when omitted; `fullscreen`: it fills the
-    display, refused on macOS and Windows, where `-nowindow` does not fill it. Both need
-    `shared=True` and are refused otherwise; a `display` past the host's count
-    is refused naming the count. The server waits for the window to be listed on that display and
-    answers `window`.
+    display, refused on macOS and Windows, where `-nowindow` does not fill it; `size`:
+    `WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
+    whole multiple of the screen is stretched by a fraction, and the reply's `note` says so). All
+    three need `shared=True` and are refused otherwise; `size` is also refused beside `fullscreen`
+    and when it, with its frame, exceeds the display's usable area, naming that size; a `display`
+    past the host's count is refused naming the count. The server waits for the window to be
+    listed on that display and answers `window`; a later `window` judges a stated size.
     `background`: launch behind, keeping the caller's focus, or in front; it does not need
     `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
@@ -196,7 +201,7 @@ def start(
                         inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
                         stub_port, state_dir, throttle_from_frame, types, cfg,
                         background=background, presence=presence, view=view, display=display,
-                        fullscreen=fullscreen, progress=bridge(ctx))
+                        fullscreen=fullscreen, size=size, progress=bridge(ctx))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -242,7 +247,9 @@ def window(front: bool = False) -> dict[str, Any]:
     brings it in front of whatever covers it and reads that back.
 
     Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, no other
-    application's window covering its centre; `fullscreen`).
+    application's window covering its centre; `fullscreen`); `size` when the session was started
+    with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
+    `outer`), `tolerance_px`, `height_free` and `matches`.
 
     Refused: no session (`no_session`), one that died (`session_broken`), a session started
     without `shared` (`no_channel`), a window that never appears or, with `front`, is still
