@@ -86,6 +86,17 @@ def test_a_cancelled_wait_that_ends_stopped_stops_the_machine_and_the_next_reply
     assert "cancelled" not in s.status(), "the record rode on a second reply"
 
 
+@pytest.mark.parametrize(("running", "word"), [(False, "alive at pc"), (True, "RUNNING")])
+def test_the_status_summary_word_is_the_state_the_session_block_carries(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path, running: bool, word: str) -> None:
+    ses = _running(monkeypatch, tmp_path)
+    ses.running = running
+    out = s.status()
+    assert out["session"]["running"] is running, out
+    assert word in out["summary"], out["summary"]
+    assert ("RUNNING" in out["summary"]) is running, out["summary"]
+
+
 def test_a_cancelled_wait_that_ends_as_it_was_leaves_a_running_machine_running(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waiting_tool: dict[str, Any]) -> None:
     ses = _running(monkeypatch, tmp_path)

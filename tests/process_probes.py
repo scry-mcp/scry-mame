@@ -65,6 +65,14 @@ def parent_of(pid: int) -> int | None:
         return int(out) if out else None
 
 
+def children_named(parent: int, name: str) -> list[int]:
+    """The pids of `parent`'s children the process table lists under `name` (POSIX; `ps` rc 0)."""
+    table = subprocess.run(["ps", "-c", "-axo", "pid=,ppid=,comm="], capture_output=True,
+                           text=True, errors="replace", check=True).stdout.splitlines()
+    rows = [line.split(None, 2) for line in table]
+    return [int(r[0]) for r in rows if len(r) == 3 and r[1] == str(parent) and r[2] == name]
+
+
 TH32CS_SNAPPROCESS = 0x2
 
 

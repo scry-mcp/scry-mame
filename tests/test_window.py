@@ -69,18 +69,12 @@ def test_a_watched_start_asks_mame_for_the_display(
         s.close()
 
 
-def test_fullscreen_is_refused_by_name_where_mame_has_none_and_passes_through_elsewhere(
+def test_fullscreen_on_a_display_passes_through_to_mame_where_core_does_not_refuse_it(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """On macOS and Windows `-nowindow` opens a window the display's work area holds, never the
-    display."""
+    """Where core's rule refuses it (`MAME_NO_FULLSCREEN_ON`) is core's test, not this server's."""
     image = bytes(range(64))
     _stub_boot(monkeypatch, tmp_path, image, at=0)
     args = _boot_args(tmp_path, image)
-    monkeypatch.setattr(window_size, "MAME_NO_FULLSCREEN_ON", (sys.platform,))
-    got = s.start(**args, shared=True, display=1, fullscreen=True)
-    assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
-    assert "fullscreen" in got["message"] and "-nowindow" in got["message"], got
-    assert STATE.proc is None
     monkeypatch.setattr(window_size, "MAME_NO_FULLSCREEN_ON", ())
     got = s.start(**args, shared=True, display=1, fullscreen=True)
     try:

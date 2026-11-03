@@ -95,6 +95,8 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "0xe2 tallies its half and the one at 0xe4, which nothing handles, the other half, where the "
     "aligned 0xe0 one tallies the dword whole",
     "circus: rom_check against the reference image answers OK for the 16 bytes it compared",
+    "m68k-dual: a second resume after run_to is not stopped where run_to arrived, which the same "
+    "address armed by hand does",
 ], start=1)]
 
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
@@ -241,6 +243,19 @@ def _h_m68k_dual(t: list[str]) -> None:
          and len(every) == M68K_DUAL_SETTERS and every[:len(setters)] == setters,
          f"{len(setters)} listed, total {r.get('setters_total')}, file "
          f"{len(every) if isinstance(every, list) else None}")
+    # the vblank handler runs every frame, so a breakpoint left behind would stop the next release
+    arrived = call("run_to", ref="irq_vblank", control="0x4a0", seconds=WAIT_CEILING_S)
+    again = call("resume", seconds=2.0)
+    call("stop")
+    call("breakpoint_at", ref="irq_vblank")
+    held = call("resume", seconds=WAIT_CEILING_S)
+    cell(t[23], ok(arrived) and arrived.get("verdict") == "TARGET"
+         and ok(again) and again.get("verdict") == "TIMEOUT"
+         and ok(held) and held.get("verdict") == "OTHER_STOP"
+         and held.get("pc") == arrived.get("pc"),
+         f"run_to {arrived.get('verdict')} at {arrived.get('pc')}; second resume "
+         f"{again.get('verdict')}; the same address armed by hand: {held.get('verdict')} at "
+         f"{held.get('pc')}")
     call("close")
 
 
@@ -426,7 +441,7 @@ def _h_pangofun(t: list[str]) -> None:
 
 H_BOARDS = (
     Board(_h_circus, (*range(12), 22), free_boards_missing),
-    Board(_h_m68k_dual, (12,), m68k_dual_missing),
+    Board(_h_m68k_dual, (12, 23), m68k_dual_missing),
     Board(_h_v30, (13, 14, 15), lambda: board_missing("v30")),
     Board(_h_v30_alt, (16, 17, 18, 19, 20),
           lambda: board_missing("v30-alt")),

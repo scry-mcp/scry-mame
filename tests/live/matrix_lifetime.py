@@ -47,6 +47,7 @@ from scry_mame import state as mstate  # isort: skip
 from scry_mame.state import STATE  # isort: skip
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import process_probes  # noqa: E402
 from process_probes import alive, gone_within, listener, parent_of  # noqa: E402
 
 P_TITLE = "the session's ends and its own store"
@@ -58,7 +59,8 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
     "a state_dir session that declares and clears all leaves the project store's bytes unchanged",
     "a state_dir session's own file holds exactly its rows, none inherited from the project's",
     "a listed row carries age_s, which grows with the wall clock between two lists",
-    "an ordered close ends MAME by its own quit: exit 0, its pid gone, and status not alive",
+    "an ordered close, stopped, running or altered: exit 0, its pid and guardian gone, status "
+    "not alive",
 ], start=1)]
 
 WITHIN_S = 5 * guardian.POLL_S
@@ -165,19 +167,47 @@ def _p_idle(t: list[str]) -> None:
     clock.clear_note()
 
 
-def _p_quit(t: list[str]) -> None:
+def _put_in_state(state: str) -> bool:
+    """`boot` leaves the machine stopped; a running one is released, an altered one has a byte
+    written back over itself, which the session counts as an altering write. Whether the session
+    block then says so, which is what makes the state reached."""
+    if state == "running":
+        return call("resume").get("session", {}).get("running") is True
+    if state == "altered":
+        first = str(call("read_memory", ref="0x0", length=1).get("hex", ""))
+        return call("write", ref="0x0", data_hex=first).get("session", {}).get("altered") is True
+    return call("status").get("session", {}).get("running") is False
+
+
+def _guards() -> list[int]:
+    """The guardian processes beside this one; on Windows the guardian is a job, not a process,
+    so nothing is listed and the check is the pid's alone."""
+    return ([] if sys.platform == "win32"
+            else process_probes.children_named(os.getpid(), launch.GUARDIAN_NAME))
+
+
+def _quit_in(state: str) -> tuple[bool, str]:
     r = boot()
     if not ok(r):
         raise RuntimeError(f"m68k-dual did not boot: {said(r)}")
     pid = r.get("pid")
-    before = isinstance(pid, int) and alive(pid)
+    guards = _guards()
+    reached = _put_in_state(state)
+    before = (isinstance(pid, int) and alive(pid)
+              and (bool(guards) or sys.platform == "win32") and reached)
     shut = call("close")
     gone = isinstance(pid, int) and gone_within(pid, WITHIN_S)
     after = call("status").get("session", {}).get("alive")
-    cell(t[7], before and shut.get("ended_by") == "quit" and shut.get("exit_code") == 0 and gone
-         and after is False,
-         f"alive before {before}, how {shut.get('ended_by')}, exit {shut.get('exit_code')}, "
-         f"gone {gone}, status alive {after}")
+    unguarded = not [g for g in guards if alive(g)]
+    good = before and shut.get("exit_code") == 0 and gone and after is False and unguarded
+    return good, (f"{state}: state reached {reached}, alive and guarded before {before}, how "
+                  f"{shut.get('ended_by')}, exit {shut.get('exit_code')}, gone {gone}, status "
+                  f"alive {after}, guardian gone {unguarded}")
+
+
+def _p_quit(t: list[str]) -> None:
+    results = [_quit_in(state) for state in ("stopped", "running", "altered")]
+    cell(t[7], all(good for good, _ in results), "; ".join(why for _, why in results))
 
 
 # A stop on a routine a healthy boot never runs, so an inherited row is armed but never hit.
