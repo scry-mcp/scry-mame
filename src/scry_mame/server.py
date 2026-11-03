@@ -182,9 +182,10 @@ def start(
     `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
 
-    Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
-    beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
-    image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
+    Refused before MAME boots: a live session (`session_live`), an unknown cpu, a class with no
+    base, `bases` beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr`
+    outside the image (a `shared` start first asks MAME `-listxml`, whose time comes before that
+    refusal).
     A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
     `window_not_visible`, the session left live to `window` or `close`.
 

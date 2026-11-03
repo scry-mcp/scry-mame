@@ -1041,21 +1041,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml"
+  "dest": "$TMPDIR/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft $TMPDIR/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml",
+    "path": "$TMPDIR/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
   },
   "report": {
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.report.json",
-    "sha256": "b900db54508c35093d3001941faf6005e4a9c2e6c4bf1dfbb5d4d3c34e5ae403"
+    "path": "$TMPDIR/jobs-scratch/A/f9.report.json",
+    "sha256": "94f3962385ae9f21e0f87a9b67973b58c206e5984e1b9bf576f29591b1bf11b4"
   },
   "formats": {},
   "asset_names": [],

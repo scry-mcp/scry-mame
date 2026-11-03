@@ -65,6 +65,14 @@ two commands that fetch and check its ROM, then `uv run python demos/starfire/de
 `symbols` (the [`start` page](docs/reference/session.md#start) says what each takes). Everything
 about your project comes from you; the server names no game and carries no default of its own.
 
+To watch a machine, `start` takes `shared=true`, `display` (the OS's display index, 0 the main
+display), `fullscreen` and `size`, and proves the window is on the display you asked in the
+host's window list, refusing by name (`window_not_visible`) when it is not. Somebody watching
+through a stream (Moonlight) sees one display, so the window has to be on it; `fullscreen` is
+refused on macOS and Windows, where MAME's `-nowindow` does not fill the display, so there the
+window is sized with `size`. The three situations (headless, a window kept behind, a window
+somebody tests) are on [`start`'s page](docs/reference/session.md#start).
+
 Three patches under `patches/`, each naming the MAME commit it was made against, make a build
 better at this: `0003` closes a data race in the Lua console thread that can crash a boot
 (proposed upstream as mamedev/mame#16229; without it `start` relaunches such a boot and lists it

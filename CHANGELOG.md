@@ -6,6 +6,8 @@ What a client of the server notices.
 
 It needs the scry-core that serves `scry_core.window`, not an older one: the tag pinned in `pyproject.toml` is the floor.
 
+- `start`'s description names `session_live`, the code a second `start` gets while a session is up, and the README
+  says how to watch a machine.
 - `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default: a watched window
   is now the largest whole multiple of the machine's screen that fits the display's usable area
   (menu bar, Dock and taskbar excluded), not a fixed bound, and `window` judges a stated size and

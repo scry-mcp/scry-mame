@@ -31,9 +31,10 @@ listed on that display and answers `window`; a later `window` judges a stated si
 `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
 
-Refused before MAME boots: a live session, an unknown cpu, a class with no base, `bases`
-beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr` outside the
-image (a `shared` start first asks MAME `-listxml`, whose time comes before that refusal).
+Refused before MAME boots: a live session (`session_live`), an unknown cpu, a class with no
+base, `bases` beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr`
+outside the image (a `shared` start first asks MAME `-listxml`, whose time comes before that
+refusal).
 A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
 `window_not_visible`, the session left live to `window` or `close`.
 
@@ -126,25 +127,25 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "/path/to/mame",
-  "system": "circus",
-  "rompath": "/path/to/roms",
-  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/f1-image/circus.ref",
-  "reference_addr": "0x1000",
-  "reference_base": "0x1000",
+  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "system": "radendur",
+  "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
+  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_addr": "0x0",
+  "boot_seconds": 25.0,
+  "presence": false,
   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-  "boot_seconds": 30.0,
-  "view": "Color Overlay",
-  "presence": false
+  "background": true,
+  "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "start circus on /path/to/mame (argument): rom_check OK, 0 symbols, pc 0x00001000, machine: 1 cpu, 1 screen, 15 ROM files, 4 regions, 2 shares",
+  "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
   "status": "ok",
-  "system": "circus",
-  "binary": "/path/to/mame",
+  "system": "radendur",
+  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "<volatile>",
   "pid": "<volatile>",
@@ -159,41 +160,35 @@ Example, from a live run:
   "errorlog_path": "$TMPDIR/mame-mcp-<run>/error.log",
   "stdout_path": "$TMPDIR/mame-mcp-<run>/stdout.log",
   "rom_check": "OK",
-  "symbols_total": 0,
-  "symbols_format": "none",
+  "symbols_total": 64,
+  "symbols_format": "yaml",
   "symbols_by_class": {},
-  "symbols_by_cpu": {},
-  "registers": ["A", "X", "Y", "P", "SP", "PC"],
-  "pc": "0x00001000",
+  "symbols_by_cpu": {":maincpu": 64},
+  "registers": ["D0", "D1", "D2", "D3", "D4", "D5", "... 12 more"],
+  "pc": "0x000f2034",
   "frame": 0,
   "frame_symbol": "frame",
-  "view": "Color Overlay",
-  "views": ["Color Overlay", "Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (31:32)", "Cocktail"],
+  "view": "native",
+  "views": ["Screen 0 Standard (4:3)", "Cocktail"],
   "background": true,
-  "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle", "-screen0", "... 1 more"],
+  "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"],
   "boot_lua_path": "$TMPDIR/mame-mcp-<run>/boot.lua",
   "presence": false,
   "machine": {
-    "cpus": 1,
-    "spaces": 1,
-    "address_map": 10,
+    "cpus": 2,
+    "spaces": 4,
+    "address_map": 32,
     "regions": 4,
     "shares": 2,
     "screens": 1,
-    "rom_files": 15
+    "rom_files": 22
   },
   "declarations": {
-    "persistent": false,
-    "path": {
-      "available": false,
-      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
-    },
-    "key": {
-      "available": false,
-      "why": "no `symbols` file was given, so nothing can be re-resolved by name: declarations are by address and die with this session"
-    },
+    "persistent": true,
+    "path": "$TMPDIR/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
+    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
-    "fingerprint": "cbc781678431dfe1",
+    "fingerprint": "07549ca6b6e1c4ed",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
@@ -381,7 +376,7 @@ Example, from a live run:
   "status": "ok",
   "window": {
     "display": 0,
-    "bounds": {"x": 520, "y": 166, "width": 1008, "height": 788},
+    "bounds": {"x": 352, "y": 40, "width": 1344, "height": 1040},
     "onscreen": true,
     "front": false,
     "fullscreen": false
@@ -572,19 +567,18 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/H/f3-image/circus.ref",
-  "reference_addr": "0x1000",
-  "reference_base": "0x1000"
+  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_addr": "0x0"
 }
 ```
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.196 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.54 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001196,
+  "query_s": 0.00154,
   "cpu": ":maincpu"
 }
 ```

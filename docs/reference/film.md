@@ -48,38 +48,51 @@ Example, from a live run:
 
 ```json
 {
-  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/mame-live-draft-<run>/circus-gfx.yaml"
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_load $TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/mame-live-draft-<run>/circus-gfx.yaml: 1 format, 1 asset, 1 command, 0 palette ports; 8 proved, 0 declared, 0 human",
+  "summary": "gfx_load ~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
   "status": "ok",
   "loaded": true,
   "replaced_path": {"available": false, "why": "no manifest was loaded in this session before this one"},
-  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/D/mame-live-draft-<run>/circus-gfx.yaml",
-  "sha256": "9d1f316b97424e4737393c125dd8ac9c66fcef6171ff2f58ec5ec966fc50257c",
-  "draft": true,
-  "systems": ["circus"],
-  "formats": {"tiles_16x16x1": "proved"},
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
+  "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
+  "draft": false,
+  "systems": ["radendur", "wheelfir", "pwball", "kongball"],
+  "formats": {"page_512x512x8": "declared"},
   "assets": {
-    "gfx2": {"format": "tiles_16x16x1", "tag": "gfx2", "palette": "palette"}
+    "pages": {"format": "page_512x512x8", "tag": "gfx1", "palette": "palette"}
   },
   "commands": {
-    "write_2000": {
-      "block": "0x00000000",
-      "length": 64,
-      "trigger_addr": "0x00002000",
-      "fires_with": "any write",
-      "asset": "gfx2",
-      "roles": ["dest_x", "dest_y", "height", "width"],
-      "flags": [],
-      "planes": []
+    "blit": {
+      "block": "0x00700000",
+      "length": 32,
+      "trigger_addr": "0x0070001e",
+      "fires_with": "0xffff",
+      "asset": "pages",
+      "roles": ["dest_dir_x", "dest_dir_y", "dest_x", "dest_x_end", "dest_y", "dest_y_end", "... 7 more"],
+      "flags": ["dest_y_half", "scroll_x", "scroll_y", "visible_page", "writes_index_0"],
+      "planes": ["sprites", "background"]
     }
   },
-  "palette_ports": {},
-  "status_counts": {"proved": 8, "declared": 0, "human": 0}
+  "palette_ports": {
+    "ramdac": {
+      "palette": "palette",
+      "space": "program",
+      "protocol": "ramdac",
+      "index_port": "0x00720001",
+      "data_port": "0x00720003",
+      "index_flag_mask": {"available": false, "why": "only a latch's index word carries a flag"},
+      "order": "rgb",
+      "component_bits": 8,
+      "components_bit_reversed": false,
+      "pen_range": [0, 255]
+    }
+  },
+  "status_counts": {"proved": 14, "declared": 11, "human": 0}
 }
 ```
 <!-- scry-reference:end gfx_load -->
@@ -203,13 +216,20 @@ Reference: REFERENCE.md, Input and the screen.
 Example, from a live run:
 
 ```json
-{}
+{
+  "trigger": "0x70001e",
+  "length": 2,
+  "value": 65535,
+  "keep": 2,
+  "frames": 4
+}
 ```
 
 ```json
 {
-  "summary": "gfx_film on 0x70001e: judging, 0 judged, 0 met, 0 kept",
+  "summary": "gfx_film on 0x70001e: armed, installed when the console next reads a line",
   "status": "ok",
+  "armed_now": true,
   "film": {
     "trigger": "0x70001e",
     "trigger_addr": "0x0070001e",
@@ -227,32 +247,53 @@ Example, from a live run:
     "checked": true,
     "space": "program"
   },
+  "trigger_maps_to": "radendur_state::blit_w",
   "tally_id": "film",
-  "installed": true,
-  "pending": false,
+  "installed": false,
+  "pending": true,
+  "install_call": "MAME_MCP_LUA_END#17",
+  "install_lines_ahead": 0,
+  "note": "the film judges from the first whole frame after the install, which runs when the console next reads a line; read it with `gfx_film()`",
+  "evaluated_by": "one step",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "call": "MAME_MCP_LUA_END#16",
+  "pc_before": "0x000027ac",
+  "cause": "gfx_film: one step",
+  "stop_seq": 15,
+  "pc": "0x000027ac",
   "cpu": ":maincpu",
-  "state": "judging",
-  "frame_as_of": 8,
-  "superseded": false,
-  "callback_errors": {
-    "count": 0,
-    "first": {"available": false, "why": "no callback raised"}
+  "frame": 8,
+  "regs": {
+    "D0": "0x0103a922",
+    "D1": "0x00000000",
+    "D2": "0x00000000",
+    "D3": "0x00000000",
+    "D4": "0x00000000",
+    "D5": "0x00000000",
+    "D6": "0x00000000",
+    "D7": "0x00000000",
+    "A0": "0x00004842",
+    "A1": "0x000f27de",
+    "A2": "0x00720003",
+    "A3": "0x00000000",
+    "A4": "0x00000000",
+    "A5": "0x00000000",
+    "FP": "0x00000000",
+    "SP": "0x00200fc4",
+    "PS": "0x2708",
+    "PC": "0x000027ac"
   },
-  "judged": 0,
-  "judged_frames": {"available": false, "why": "no frame was judged yet"},
-  "met": 0,
-  "kept": 0,
-  "refused": 0,
-  "dropped_total": 0,
-  "dropped_frames": {"available": false, "why": "no frame was dropped"},
-  "lost": {},
-  "pending_picture": false,
-  "cost": {
-    "judge_s_per_frame": 0.0,
-    "picture_s_per_frame": 0.0,
-    "measured_by": "osd_ticks inside the frame notifier; the tap's cost per write is not in it"
+  "instruction": {
+    "address": "0027AC",
+    "bytes": "51C8FFFE",
+    "text": "dbra    D0, $27ac",
+    "symbol": "boot_init",
+    "delta": 464
   },
-  "listing_path": "$TMPDIR/mame-mcp-<run>/film-1/film.json"
+  "following": ["0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
 }
 ```
 <!-- scry-reference:end gfx_film -->

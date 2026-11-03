@@ -196,7 +196,7 @@ Example, from a live run:
 ```json
 {
   "method": "measure",
-  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/jobs-scratch/L/f4.wav"
 }
 ```
 
@@ -224,7 +224,7 @@ Example, from a live run:
     }
   ],
   "pcm_sha256": "9c808cd852605b03eea32b76138f7c9f518c7f2f29e3b9ca76530161be7301fb",
-  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+  "path": "$TMPDIR/jobs-scratch/L/f4.wav"
 }
 ```
 <!-- scry-reference:end audio_compare -->
