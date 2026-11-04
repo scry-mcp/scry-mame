@@ -326,12 +326,12 @@ def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
     return str(path)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class Judged:
     """What `start` decided from its arguments before anything exists, plus the launch inputs.
 
-    `judge` refuses with nothing to clean up and takes its arguments by keyword: most are strings,
-    and a swap would type-check."""
+    `judge` refuses with nothing to clean up. Built by keyword only: most fields are strings, and
+    a swap would type-check."""
 
     flags: list[str]
     port: int
@@ -593,7 +593,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     tags: list[str] = []
     if shared or syms.is_mapping(symbols):
         listed = machine.listxml(machine.ask_listxml(binary, system), binary, system, wait)
-    flags = window_flags(wanted, listed[0]["screens"] if listed is not None else [])
+    screens = listed[0]["screens"] if listed is not None else []
+    flags = window_flags(wanted, screens)
     if throttle_from_frame and "-nothrottle" not in flags:
         flags.append("-nothrottle")
     if listed is not None and syms.is_mapping(symbols):
@@ -632,12 +633,13 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
         except OSError as e:
             raise st.Invalid("host_failed", cannot_hold(state_dir, str(e))) from None
     asked = machine.ask_listxml(binary, system) if listed is None else (None, "")
-    return Judged(flags, port, loaded, store, declarations, ref, ref_addr, ref_base,
-                  binary, system, rompath, inipath, wait, boot_lua, dict(env or {}), state_dir,
-                  throttle_from_frame, asked, cfg_source, listed, background=behind,
+    return Judged(flags=flags, port=port, tables=loaded, store=store, declarations=declarations,
+                  ref=ref, ref_addr=ref_addr, ref_base=ref_base, binary=binary, system=system,
+                  rompath=rompath, inipath=inipath, wait=wait, boot_lua=boot_lua,
+                  env=dict(env or {}), state_dir=state_dir, throttle_from_frame=throttle_from_frame,
+                  listxml=asked, cfg=cfg_source, listed=listed, background=behind,
                   presence=presence, picked=picked, view=view,
-                  window=fitted_request(wanted, listed[0]["screens"] if listed is not None else []),
-                  scaled=scaled_note(wanted, listed[0]["screens"] if listed is not None else []))
+                  window=fitted_request(wanted, screens), scaled=scaled_note(wanted, screens))
 
 
 VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
@@ -791,7 +793,9 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
             break
         except owner.StubNotOurs as e:
             STATE.ses = None
-            raise failures.PortServed(e, judged.picked, **_alive_fields(judged)) from None
+            raise failures.PortServed(
+                e, judged.picked,
+                **_alive_fields(judged, keep=last_launch or not judged.picked)) from None
         except owner.StubUnproved as e:
             STATE.ses = None
             raise st.Invalid("host_failed", f"{e}. The launched MAME is killed",

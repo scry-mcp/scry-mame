@@ -10,7 +10,7 @@ from typing import Any, cast
 import pytest
 from scry_core import conformance, window_size
 from scry_core import window as core_window
-from server_support import _boot_args, _stub_boot, _StubProcess
+from server_support import _boot_args, _never_spawns, _stub_boot, _StubProcess
 from window_double import asked as session_window
 
 from scry_mame import launch
@@ -139,6 +139,9 @@ def test_a_stated_size_reaches_mame_as_its_resolution_and_the_window_judges_it(
                                        {"shared": True, "size": "744x768", "fullscreen": True}])
 def test_a_size_that_cannot_act_is_refused_before_mame_boots(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, arguments: dict[str, Any]) -> None:
-    got = _start(monkeypatch, tmp_path, **arguments)
+    image = bytes(range(64))
+    _stub_boot(monkeypatch, tmp_path, image, at=0)
+    _never_spawns(monkeypatch, tmp_path)
+    got = cast(dict[str, Any], s.start(**_boot_args(tmp_path, image), **arguments))
     assert got["status"] == "INVALID" and got["code"] == "bad_argument", got
     assert STATE.proc is None

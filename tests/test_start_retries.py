@@ -874,6 +874,8 @@ def test_a_stub_proved_to_be_another_process_on_its_own_pick_is_relaunched_on_an
         [served] = out.get("start_retries", [])
         assert served["kind"] == "port_served", served
         assert "port 4242 is served by pid 777" in served["error"], served
+        assert not list((tmp_path / "xdg-state" / "mame-debug" / "failed-starts").glob("*")), \
+            "a launch that was relaunched keeps no copy"
     finally:
         s.close()
 
