@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import os
 import subprocess
+import time
 from typing import Any
 
 import pytest
-from process_probes import alive, gone_within, parent_of
-from scry_core import host_program
+from process_probes import alive, children_named, gone_within, parent_of
+from scry_core import guardian, host_program
 
 
 def _sleeper() -> subprocess.Popen[bytes]:
@@ -42,3 +43,21 @@ def test_a_ps_that_fails_is_an_error_and_not_a_process_that_is_gone(
     monkeypatch.setattr(subprocess, "run", broken)
     with pytest.raises(OSError, match="rc=2"):
         probe(1)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="the guardian is a job there, not a process")
+def test_the_real_guardian_is_listed_under_its_name_though_the_host_cuts_it() -> None:
+    child = _sleeper()
+    guard = guardian.spawn(child, "scry-mame")
+    assert isinstance(guard, subprocess.Popen)
+    try:
+        deadline = time.monotonic() + 10.0
+        while not children_named(os.getpid(), guardian.name_of("scry-mame")) \
+                and time.monotonic() < deadline:
+            time.sleep(0.1)
+        assert children_named(os.getpid(), guardian.name_of("scry-mame")) == [guard.pid]
+        assert children_named(os.getpid(), "scry-other-guardian") == []
+    finally:
+        guardian.stop(guard)
+        child.kill()
+        child.wait()
