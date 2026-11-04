@@ -316,6 +316,8 @@ def test_a_given_port_and_the_pid_are_used_and_reported(
         s.close()
 
 
+@pytest.mark.skipif(sys.platform not in ("darwin", "win32"),
+                    reason="a window is sized on macOS and Windows hosts only")
 def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_names_the_display(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
