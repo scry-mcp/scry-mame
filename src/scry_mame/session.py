@@ -58,7 +58,7 @@ def close(progress: mprogress.Progress = mprogress.no_progress,
                                     "note": session_block.NO_SESSION_CLOSE_NOTE})
     else:
         clean = ended["ended_by"] == "quit" and ended.get("exit_code") == 0
-        words = tails if detail or not clean else narrowing.omission(list(tails), CLOSE_HOW)
+        words = narrowing.last_words(tails, clean=clean, detail=detail, how=CLOSE_HOW)
         reply = menvelope.envelope({"closed": True, **words, **ended})
     reply.update(speed)
     if ended["ended_by"] != "none":

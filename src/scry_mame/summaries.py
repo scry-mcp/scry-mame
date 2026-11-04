@@ -381,18 +381,12 @@ def snapshot(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"snapshot: {prose.counted(reply['bytes'], 'byte')} at {reply['path']}"
 
 
-def _picture(reply: dict[str, Any]) -> str:
-    """The picture's half of a graphics line: its size, its scale and whether it is attached."""
-    image = reply["image"]
-    shown = "inline" if image["inline"] else "not inlined"
-    return f"{image['width']}x{image['height']} PNG x{image['scale']}, {shown}"
-
 
 def palette(args: dict[str, Any], reply: dict[str, Any]) -> str:
     last = reply["first"] + reply["count"] - 1
     more = f" of {reply['entries']}" + (", more after" if last + 1 < reply["entries"] else "")
     return (f"palette {reply['palette']}: pens {reply['first']:#x}..{last:#x}{more}; "
-            f"{_picture(reply)}")
+            f"{prose.picture(reply)}")
 
 
 def screen_view(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -404,18 +398,18 @@ def screen_view(args: dict[str, Any], reply: dict[str, Any]) -> str:
             # THE WHY IS SAID: "no logged write" alone reads a log never armed, or one whose
             # callbacks raised, as a pen nobody wrote
             why = (by or {}).get("why") or "nothing says why"
-            return f"{pixel}; no logged write to it: {why}; {_picture(reply)}"
+            return f"{pixel}; no logged write to it: {why}; {prose.picture(reply)}"
         last = by["last"]
         agrees = ("" if by["agrees"] is True else ", NOT the colour it has now"
                   if by["agrees"] is False else ", incomplete")
         return (f"{pixel}; last set by a {last['written_by']} write at pc {last['pc']}, frame "
-                f"{last['frame']}{agrees}; {_picture(reply)}")
+                f"{last['frame']}{agrees}; {prose.picture(reply)}")
     if reply["mode"] == "histogram":
         return f"{head}: {reply['pens_used']} of {prose.counted(reply['entries'], 'pen')} used"
     shown = (f", {prose.counted(reply['pixels'], 'pixel')} of pens {reply['pens']}"
              if reply["mode"] == "isolate" else "")
     read = "indices" if reply["screen_indexed"] else "colours"
-    return f"{head} from {read}{shown}; {_picture(reply)}"
+    return f"{head} from {read}{shown}; {prose.picture(reply)}"
 
 
 def gfx_view(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -423,7 +417,7 @@ def gfx_view(args: dict[str, Any], reply: dict[str, Any]) -> str:
     last = reply["first"] + reply["count"] - 1
     return (f"gfx_view {reply['kind']} {reply['tag']}: tiles {reply['first']}..{last} of "
             f"{reply['tiles_available']}, {lay['width']}x{lay['height']}x{lay['planes']}, "
-            f"palette {reply['palette']}; {_picture(reply)}")
+            f"palette {reply['palette']}; {prose.picture(reply)}")
 
 
 def gfx_locate(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -447,7 +441,8 @@ def gfx_sweep(args: dict[str, Any], reply: dict[str, Any]) -> str:
     shown = sum(1 for c in cands if c["shown"])
     ids = f"{cands[0]['id']}..{cands[-1]['id']}" if len(cands) > 1 else cands[0]["id"]
     return (f"gfx_sweep {reply['kind']} {reply['tag']}: sweep {reply['sweep']}, "
-            f"{prose.counted(len(cands), 'candidate')} {ids}, {shown} drawn; {_picture(reply)}")
+            f"{prose.counted(len(cands), 'candidate')} {ids}, {shown} drawn; "
+            f"{prose.picture(reply)}")
 
 
 def gfx_draft(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -680,7 +675,7 @@ def gfx_film(args: dict[str, Any], reply: dict[str, Any]) -> str:
               f"{reply['kept']} kept")
     if "image" not in reply:
         return f"{head}: {counts}{_raised(reply)}"
-    return f"{head}: {counts}; {_picture(reply)}{_raised(reply)}"
+    return f"{head}: {counts}; {prose.picture(reply)}{_raised(reply)}"
 
 
 def gfx_blits(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -694,9 +689,9 @@ def gfx_blits(args: dict[str, Any], reply: dict[str, Any]) -> str:
         last = f", topmost #{top['index']} pc {top['pc']}" if "index" in top else ""
         return (f"{head}: {reply['covering']} of {prose.counted(reply['blits_in_frame'], 'blit')} "
                 f"{prose.agrees(reply['covering'], 'covers', 'cover')} {reply['area']}{last}"
-                f"{page}; {_picture(reply)}{_raised(reply)}")
+                f"{page}; {prose.picture(reply)}{_raised(reply)}")
     return (f"{head}: {prose.counted(reply['blits_in_frame'], 'blit')} by "
-            f"{prose.counted(len(reply['legend']), 'writer')}{page}; {_picture(reply)}"
+            f"{prose.counted(len(reply['legend']), 'writer')}{page}; {prose.picture(reply)}"
             f"{_raised(reply)}")
 
 
@@ -704,4 +699,4 @@ def gfx_blit_source(args: dict[str, Any], reply: dict[str, Any]) -> str:
     r = reply["rect"]
     return (f"gfx_blit_source {reply['draw_command']} frame {reply['frame_blit']} "
             f"#{reply['index']} pc {reply['blit_pc']}: {reply['asset']} tile {r['tile']} "
-            f"({r['x']}, {r['y']}) {r['width']}x{r['height']}; {_picture(reply)}")
+            f"({r['x']}, {r['y']}) {r['width']}x{r['height']}; {prose.picture(reply)}")

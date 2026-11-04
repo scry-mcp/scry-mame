@@ -9,7 +9,7 @@ import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -137,12 +137,11 @@ def fitted_request(asked: core_window.WindowRequest | None,
     area as its size, marked as the server's own choice; unchanged where a size was stated, the
     window fills the display, or the screen or the usable area is not known."""
     native = native_size(screens)
-    if asked is None or asked.size is not None or asked.fullscreen:
+    if asked is None or not native:
         return asked
-    if not native or not asked.usable:
-        return asked
-    return replace(asked, fitted=True, height_free=window_size.height_free("mame", sys.platform),
-                   size=window_size.integer_fit(native, asked.usable, asked.scale, sys.platform))
+    return core_window.fit_size(
+        asked, lambda usable, scale: window_size.integer_fit(native, usable, scale, sys.platform),
+        height_free=window_size.height_free("mame", sys.platform))
 
 
 def window_flags(asked: core_window.WindowRequest | None,
@@ -676,7 +675,7 @@ def channel_tail(scratch: Path | None, channel: str) -> str:
     log = files.log_path(scratch, channel) if scratch else None
     if log is None or not log.exists():
         return ""
-    return log.read_text(errors="replace")[-log_marks.TAIL_CHARS:]
+    return log_marks.tail(log)
 
 
 def _alive_fields(judged: Judged, keep: bool = True) -> dict[str, Any]:
