@@ -488,6 +488,7 @@ def test_close_with_no_session_says_so() -> None:
     mstate.STATE.ses = mstate.STATE.proc = None
     closed = s.close()
     assert closed["closed"] is False and closed["ended_by"] == "none"
+    assert closed["exit_code"]["available"] is False and "no session" in closed["exit_code"]["why"]
     assert "no session" in closed["note"]
     assert closed["summary"] == "close: no session"
 
