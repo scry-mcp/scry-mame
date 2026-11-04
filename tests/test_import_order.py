@@ -28,7 +28,7 @@ def _import_alone(module: str) -> tuple[str, int | None, str]:
 def test_the_list_is_the_server() -> None:
     # An empty glob would make the next test examine nothing.
     assert {"scry_mame.server", "scry_mame.running", "scry_mame.iotaps", "scry_mame.capture",
-            "scry_mame.lua", "scry_mame.advance", "scry_mame.focus"} <= set(MODULES)
+            "scry_mame.lua", "scry_mame.advance", "scry_mame.cpu_focus"} <= set(MODULES)
 
 
 def test_every_module_imports_first() -> None:

@@ -21,8 +21,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from server_support import _running, _RunningSession  # noqa: E402
 from session_doubles import ignored_in, refused, visible_in  # noqa: E402
 
+from scry_mame import cpu_focus as mfocus  # noqa: E402
 from scry_mame import cpus  # noqa: E402
-from scry_mame import focus as mfocus  # noqa: E402
 from scry_mame import gdb_session as gs  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402

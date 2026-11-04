@@ -40,10 +40,10 @@ from scry_mame import (
 )
 from scry_mame import audio as maudio
 from scry_mame import blits as mblits
+from scry_mame import cpu_focus as mfocus
 from scry_mame import draft as mdraft
 from scry_mame import envelope as menvelope
 from scry_mame import film as mfilm
-from scry_mame import focus as mfocus
 from scry_mame import gdb_session as gs
 from scry_mame import gfx as mgfx
 from scry_mame import locate as mlocate

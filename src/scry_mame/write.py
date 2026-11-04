@@ -24,9 +24,9 @@ from scry_mame import (
     watches,
 )
 from scry_mame import clear as mclear
+from scry_mame import cpu_focus as mfocus
 from scry_mame import declarations as dec
 from scry_mame import envelope as menvelope
-from scry_mame import focus as mfocus
 from scry_mame import gdb_session as gs
 from scry_mame import map as mmap
 from scry_mame import region as rom_region

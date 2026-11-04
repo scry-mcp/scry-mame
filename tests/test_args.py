@@ -36,10 +36,10 @@ from scry_mame import (
 )
 from scry_mame import audio as maudio  # noqa: E402
 from scry_mame import blits as mblits  # noqa: E402
+from scry_mame import cpu_focus as mfocus  # noqa: E402
 from scry_mame import docs as mdocs  # noqa: E402
 from scry_mame import draft as mdraft  # noqa: E402
 from scry_mame import film as mfilm  # noqa: E402
-from scry_mame import focus as mfocus  # noqa: E402
 from scry_mame import gfx as mgfx  # noqa: E402
 from scry_mame import locate as mlocate  # noqa: E402
 from scry_mame import lua as mlua  # noqa: E402

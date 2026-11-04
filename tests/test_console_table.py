@@ -9,7 +9,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from test_focus import _patched  # noqa: E402
+from test_cpu_focus import _patched  # noqa: E402
 
 from scry_mame import console  # noqa: E402
 from scry_mame import server as s  # noqa: E402
