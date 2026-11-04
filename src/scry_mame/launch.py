@@ -540,7 +540,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
           binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
-          fullscreen: bool | None = None, size: str | None = None) -> Judged:
+          size: str | None = None) -> Judged:
     """Every refusal of the caller's input, before the emulator exists: after the boot a bad
     path surfaces as a bare error naming no argument, with a machine possibly running.
 
@@ -549,7 +549,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
-    wanted = core_window.requested(shared, display, fullscreen, size, emulator="mame")
+    wanted = core_window.requested(shared, display, None, size, emulator="mame")
     # Inputs below use `is_file()`, never `exists()`: a directory with a file's name would
     # otherwise be refused at the spawn, naming no argument.
     if plugins_dir(binary) is None:
@@ -873,7 +873,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, *, presence: bool, view: str = "",
-          display: int | None = None, fullscreen: bool | None = None, size: str | None = None,
+          display: int | None = None, size: str | None = None,
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, relaunched whole up to `START_RETRIES_MAX` times
     for a `failures.LaunchFailed` that says so. Only its evidence survives, as `start_retries`."""
@@ -890,7 +890,7 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
                                inipath, wait, shared, boot_lua, env, bases, reference_base,
                                port, state_dir, throttle_from_frame, types, cfg,
                                background, presence, retries, progress, view, display,
-                               fullscreen, size)
+                               size)
             except failures.LaunchFailed as failed:
                 if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
                     raise
@@ -912,8 +912,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress,
-            view: str = "", display: int | None = None,
-            fullscreen: bool | None = None, size: str | None = None) -> dict[str, Any]:
+            view: str = "", display: int | None = None, size: str | None = None) -> dict[str, Any]:
     """One launch: judge, boot under one guard, re-arm, park, reply."""
     # Ending a live session is the caller's act: a stray second `start` must not throw away a
     # session somebody is measuring on.
@@ -933,7 +932,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
                    cfg=cfg, background=background, presence=presence,
                    binary_origin=resolved.origin, view=view, display=display,
-                   fullscreen=fullscreen, size=size)
+                   size=size)
     # From the scratch on, everything sits under one guard: a failed ROM check or any raise
     # kills the session, or the next call would measure on a lying one, or leave an orphaned
     # emulator. A start that did not start owns nothing, not even the directory.

@@ -1,4 +1,4 @@
-"""The window a watched start opens: asked for with `display` and `fullscreen`, proved in the host's
+"""The window a watched start opens: asked for with `display` and `size`, proved in the host's
 window list, answered by `window`; and the name of the tool that moves the debugger's cpu."""
 
 from __future__ import annotations
@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
-from scry_core import conformance, window_size
+from scry_core import conformance
 from scry_core import window as core_window
 from server_support import _boot_args, _never_spawns, _stub_boot, _StubProcess
 from window_double import asked as session_window
@@ -23,7 +23,8 @@ class _Subject:
     def __init__(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         self.monkeypatch, self.tmp_path = monkeypatch, tmp_path
         self.asked = session_window
-        self.shows_fullscreen = sys.platform not in window_size.MAME_NO_FULLSCREEN_ON
+        self.shows_fullscreen = False
+        self.takes_fullscreen = False
 
     def start(self, **arguments: Any) -> dict[str, Any]:
         return _start(self.monkeypatch, self.tmp_path, **arguments)
@@ -56,7 +57,6 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[s
 @pytest.mark.parametrize(("asked", "tail"), [
     ({}, ["-screen0", "screen0"]),
     ({"display": 1}, ["-screen0", "screen1"]),
-    ({"fullscreen": False}, ["-screen0", "screen0"]),
 ])
 def test_a_watched_start_asks_mame_for_the_display(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: dict[str, Any],
@@ -69,20 +69,9 @@ def test_a_watched_start_asks_mame_for_the_display(
         s.close()
 
 
-def test_fullscreen_on_a_display_passes_through_to_mame_where_core_does_not_refuse_it(
-        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Where core's rule refuses it (`MAME_NO_FULLSCREEN_ON`) is core's test, not this server's."""
-    image = bytes(range(64))
-    _stub_boot(monkeypatch, tmp_path, image, at=0)
-    args = _boot_args(tmp_path, image)
-    monkeypatch.setattr(window_size, "MAME_NO_FULLSCREEN_ON", ())
-    got = s.start(**args, shared=True, display=1, fullscreen=True)
-    try:
-        assert got["status"] == "ok", got
-        assert got["flags"] == ["-nowindow", "-screen0", "screen1"], got["flags"]
-        assert got["window"]["fullscreen"] is True, got
-    finally:
-        s.close()
+def test_start_takes_no_fullscreen_argument_because_no_supported_host_accepts_it() -> None:
+    import inspect
+    assert "fullscreen" not in inspect.signature(s.start).parameters
 
 
 def test_a_start_nobody_watches_asks_for_no_display_and_says_nothing_of_a_window(
@@ -135,8 +124,7 @@ def test_a_stated_size_reaches_mame_as_its_resolution_and_the_window_judges_it(
 
 
 @pytest.mark.parametrize("arguments", [{"size": "744x768"}, {"shared": True, "size": "wide"},
-                                       {"shared": True, "size": "9999x9999"},
-                                       {"shared": True, "size": "744x768", "fullscreen": True}])
+                                       {"shared": True, "size": "9999x9999"}])
 def test_a_size_that_cannot_act_is_refused_before_mame_boots(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, arguments: dict[str, Any]) -> None:
     image = bytes(range(64))

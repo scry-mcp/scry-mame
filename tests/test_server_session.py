@@ -108,15 +108,13 @@ def test_an_unwatched_window_is_small_and_flat_out() -> None:
 
 @pytest.mark.parametrize(("asked", "flags"), [
     (core_window.WindowRequest(1, False, (1920, 0)), ["-screen0", "screen1"]),
-    (core_window.WindowRequest(1, True, (1920, 0)), ["-nowindow", "-screen0", "screen1"]),
-    (core_window.WindowRequest(0, True, (0, 0)), ["-nowindow", "-screen0", "screen0"]),
 ])
-def test_the_display_asked_is_the_one_mame_is_told_and_fullscreen_drops_the_window(
+def test_the_display_asked_is_the_one_mame_is_told(
     asked: core_window.WindowRequest, flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     got = launch.window_flags(asked, [])
     assert got[-len(flags):] == flags, got
-    assert ("-window" in got) is not asked.fullscreen, got
+    assert "-window" in got, got
 
 
 def test_the_tools_are_serialized() -> None:
