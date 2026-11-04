@@ -639,7 +639,7 @@ def test_status_with_no_session_keeps_no_stop_of_the_one_that_ended(
     monkeypatch.setattr(mstate.STATE, "last_stop", {"seq": 3, "pc": "0x10"})
     mstate.STATE._reset()
     out = s.status()
-    assert out["last_stop"] == {"available": False, "why": mstate.NO_STOP_YET_WHY}, out
+    assert out["last_stop"] == {"available": False, "why": mstate.NO_SESSION_STOP_WHY}, out
 
 
 def test_status_on_a_machine_that_died_under_its_session_names_the_exit_and_close(

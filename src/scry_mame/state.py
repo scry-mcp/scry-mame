@@ -214,9 +214,9 @@ class State:
         """Drop the one-time account of a self-reached stop."""
         self.found_stop_last = {}
 
-    def as_of(self) -> dict[str, Any]:
+    def as_of(self, why: str = "") -> dict[str, Any]:
         if not self.last_stop:
-            return unavailable(NO_STOP_YET_WHY)
+            return unavailable(why or NO_STOP_YET_WHY)
         return {"stop_seq": self.last_stop["seq"], "pc": self.last_stop["pc"],
                 "cpu": or_unavailable(self.last_stop.get("cpu"), NO_CPU_READ_WHY),
                 "frame": frame_shown(self.last_stop["frame"]),
@@ -509,6 +509,7 @@ def add_note(reply: dict[str, Any], *parts: str | None) -> dict[str, Any]:
 
 
 NO_STOP_YET_WHY = "this session has not stopped yet"
+NO_SESSION_STOP_WHY = "no session is live, so there is no stop to report"
 
 NO_CFG_WHY = "no cfg was given, so MAME runs on its defaults"
 
