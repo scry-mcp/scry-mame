@@ -9,8 +9,12 @@ from pathlib import Path
 from scry_mame import files  # isort: skip -- found through the path the harness or the tests set
 
 
+#: Under Windows' 260-character path limit.
+SLUG_MAX = 60
+
+
 def slug(label: str) -> str:
-    return re.sub(r"[^A-Za-z0-9_]+", "-", label).strip("-") or "cell"
+    return re.sub(r"[^A-Za-z0-9_]+", "-", label).strip("-")[:SLUG_MAX].rstrip("-") or "cell"
 
 
 def keep(session_scratch: Path, dest: Path, label: str) -> Path | None:

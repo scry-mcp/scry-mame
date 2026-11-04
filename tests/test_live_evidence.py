@@ -60,6 +60,19 @@ def test_a_label_becomes_a_directory_name_that_cannot_leave_the_destination(
     assert evidence.slug("///") == "cell", "a label with nothing usable still names a directory"
 
 
+def test_a_long_label_keeps_a_directory_name_under_the_bound_and_still_apart(
+    tmp_path: Path,
+) -> None:
+    evidence = _evidence()
+    scratch = _session(tmp_path, process="x")
+    long = "a cell whose label runs on " + "and on " * 40
+    first = evidence.keep(scratch, tmp_path / "evidence", long + "first")
+    second = evidence.keep(scratch, tmp_path / "evidence", long + "second")
+    assert first is not None and second is not None
+    assert len(first.name) <= evidence.SLUG_MAX and len(second.name) <= evidence.SLUG_MAX + 2
+    assert first != second, "two long labels that start alike share a directory"
+
+
 def test_two_cells_whose_labels_slug_alike_do_not_share_a_directory(tmp_path: Path) -> None:
     evidence = _evidence()
     scratch = _session(tmp_path, process="first\n")
