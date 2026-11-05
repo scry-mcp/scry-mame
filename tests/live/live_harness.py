@@ -7,7 +7,6 @@ before the first `start`.
 
 import atexit
 import inspect
-import json
 import os
 import signal
 import sys
@@ -16,12 +15,12 @@ import time
 import traceback
 import zipfile
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import count
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
-from scry_core import live_host, live_pool, prose
+from scry_core import live_ledger, live_pool, prose
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -52,7 +51,23 @@ from scry_core.verdict import EXIT_PASS as EXIT_PASS  # noqa: E402
 
 SCRATCH_PREFIX = "mame-live-matrix-"
 SUMMARY_VAR = "MAME_LIVE_SUMMARY"
-RUN = live_host.LiveRun.for_process(SCRATCH_PREFIX, job=bool(os.environ.get(SUMMARY_VAR)))
+
+
+class _MameLedger(live_ledger.Ledger):
+    """The one ledger of a live run; what proves a FAIL here is the session's own scratch."""
+
+    def keep_evidence(self, label: str) -> None:
+        if STATE.scratch is None:
+            return
+        try:
+            if (kept := keep(STATE.scratch, self.evidence, label)) is not None:
+                self.kept.append(kept)
+        except OSError as exc:
+            print(f"  evidence NOT kept for {label}: {exc}")
+
+
+LEDGER = _MameLedger(SCRATCH_PREFIX, SUMMARY_VAR, unjudged="BLOCKED")
+RUN = LEDGER.host
 
 
 def _unfinished() -> None:
@@ -87,17 +102,13 @@ def isolate_state(prefix: str) -> str:
     return os.environ["XDG_STATE_HOME"]
 
 
-failures: list[str] = []
-
-
 def row(word: str, label: str, detail: str = "") -> None:
     print(f"  {word:<4}  {label}{'  ' + detail if detail else ''}")
 
 
 def check(label: str, condition: bool, detail: str = "") -> None:
-    row("OK" if condition else "FAIL", label, detail)
-    if not condition:
-        failures.append(label)
+    """One check with no section behind it, for a script that plans none."""
+    LEDGER.check(label, condition, detail)
 
 
 def list_blocked() -> None:
@@ -108,6 +119,7 @@ def list_blocked() -> None:
 
 
 def finish(name: str) -> None:
+    """A script that runs no section: close the run, repeat what failed, and speak its verdict."""
     _close_run()
     RUN.finished = True
     print()
@@ -165,89 +177,41 @@ WAIT_ARGS = ("seconds", "settle_seconds")
 B1_PREFIX = "B1: "
 
 
-class Blocked(Exception):
-    """A call the matrix refuses, or a run the host could not carry: the cell is BLOCKED."""
-
-
-@dataclass
-class Section:
-    block: str
-    title: str
-    labels: list[str]
-    run: Callable[[], None]
-    judged: dict[str, str] = field(default_factory=dict)
-    # Spans the run, so it never runs as a pooled job.
-    alone: bool = False
-    # Its verdict judges what the other sections do.
-    spans: bool = False
-
-
-SECTIONS: list[Section] = []
-CURRENT: list[Section] = []
-PENDING: list[dict[str, Any]] = []
-BLOCKED: list[tuple[str, str]] = []
+SECTIONS = LEDGER.sections
+PENDING = LEDGER.calls
+BLOCKED = LEDGER.blocked_why
+#: The detail of every FAIL, for a pooled job's summary.
+FAIL_WHY = LEDGER.reasons
 #: How many of `BLOCKED` the verdict has already repeated.
 LISTED = [0]
-TALLY = {"OK": 0, "FAIL": 0, "BLOCKED": 0}
-#: The detail of every FAIL, for a pooled job's summary.
-FAIL_WHY: dict[str, str] = {}
+TALLY = LEDGER.tally
 # A FAILED cell's session logs, copied out before `close` deletes its scratch.
-EVIDENCE = SCRATCH / "evidence"
-KEPT: list[Path] = []
+EVIDENCE = LEDGER.evidence
+KEPT = LEDGER.kept
+failures = LEDGER.failed
+Section = live_ledger.Section
+Cell = live_ledger.Cell
+Blocked = live_ledger.Blocked
 
 
 def section(block: str, title: str, labels: list[str], alone: bool = False,
-            spans: bool = False) -> Callable[[Callable[[], None]], None]:
-    def register(fn: Callable[[], None]) -> None:
-        SECTIONS.append(Section(block, title, labels, fn, alone=alone, spans=spans))
-    return register
+            spans: bool = False, opens: bool = False
+            ) -> Callable[[Callable[[], None]], Callable[[], None]]:
+    return LEDGER.section(block, title, [live_ledger.Cell(label) for label in labels],
+                          alone=alone, spans=spans, opens=opens)
 
 
-def cannot_be_judged(chosen: list[Section]) -> list[tuple[str, str]]:
-    """The cells a selection plans and can never judge: a `spans` section's, when no other block
-    is chosen beside it."""
-    return live_pool.cannot_be_judged([(s.block, s.labels, any(o.block != s.block for o in chosen))
-                                       for s in chosen if s.spans])
-
-
-def _record(label: str, verdict: str) -> None:
-    sec = CURRENT[0]
-    with (scratch() / TRANSCRIPT.name).open("a") as fh:
-        for rec in PENDING:
-            fh.write(json.dumps({"section": f"[{sec.block}] {sec.title}", "label": label,
-                                 "verdict": verdict, **rec}, default=str) + "\n")
-    PENDING.clear()
+cannot_be_judged = live_ledger.cannot_be_judged
 
 
 def cell(label: str, condition: bool, detail: str = "") -> None:
-    sec = CURRENT[0]
-    if label not in sec.labels or label in sec.judged:
-        label = f"UNPLANNED OR REPEATED: {label}"
-        condition = False
-    verdict = "OK" if condition else "FAIL"
-    if verdict == "FAIL":
-        FAIL_WHY[label] = detail
-    check(label, condition, detail)
-    sec.judged[label] = verdict
-    TALLY[verdict] += 1
-    if verdict == "FAIL" and STATE.scratch is not None:
-        # Raised, it would abort the section and BLOCK innocent cells.
-        try:
-            if (kept := keep(STATE.scratch, EVIDENCE, label)) is not None:
-                KEPT.append(kept)
-        except OSError as exc:
-            print(f"  evidence NOT kept for {label}: {exc}")
-    _record(label, verdict)
+    """The verdict of one planned cell; an unplanned or repeated label FAILs."""
+    LEDGER.judge(label, condition, detail)
 
 
 def blocked(label: str, reason: str) -> None:
     """A BLOCKED row; outside a section (`live_check.py` runs none) it is the row and the tally."""
-    row("BLOCKED", label, reason)
-    BLOCKED.append((label, reason))
-    TALLY["BLOCKED"] += 1
-    if CURRENT:
-        CURRENT[0].judged[label] = "BLOCKED"
-        _record(label, "BLOCKED")
+    LEDGER.block(label, reason)
 
 
 def folded(name: str, kw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -283,8 +247,7 @@ def call(tool: str, b1_exempt: str = "", **kw: Any) -> dict[str, Any]:
         reply: dict[str, Any] = fn(**kw)
     except Exception as e:  # noqa: BLE001 -- the reply IS the evidence of the exception
         reply = {"exception": f"{type(e).__name__}: {e}", "traceback": traceback.format_exc()}
-    PENDING.append({"tool": tool, "args": kw, "wall_s": round(time.monotonic() - t0, 3),
-                    "reply": reply})
+    LEDGER.record(tool, kw, time.monotonic() - t0, reply)
     return reply
 
 
@@ -564,7 +527,8 @@ def boards_cover(name: str, cells: list[str], boards: tuple[Board, ...]) -> None
 def run_boards(cells: list[str], boards: tuple[Board, ...]) -> None:
     """Run each board in turn and hold it to the cells it owns: BLOCKED when it cannot run here,
     FAILED when it does not boot."""
-    judged = CURRENT[0].judged
+    assert LEDGER.current is not None
+    judged = LEDGER.current.judged
     for board in boards:
         run, mine = board.run, [cells[i] for i in board.owned]
         if why := board.missing():
@@ -638,39 +602,6 @@ def _pool(pooled: list[Section], workers: int) -> live_pool.PoolResult:
     return live_pool.run_pool(jobs, workers, out, SUMMARY_VAR, on_done=ended)
 
 
-def _adopt(pooled: list[Section], result: live_pool.PoolResult) -> None:
-    for sec in pooled:
-        print(f"\n== [{sec.block}] {sec.title} (pooled)")
-        CURRENT[:] = [sec]
-        for label in sec.labels:
-            outcome, why = result.outcomes[label], result.reasons.get(label, "")
-            if outcome == "BLOCKED":
-                blocked(label, why)
-            else:
-                cell(label, outcome == "OK", why)
-    for r in result.results:
-        # A cell under an unplanned label fails the child by that name without reaching its
-        # summary, so an exit code the summary does not explain is a failure of its own.
-        declared_fail = any(v == "FAIL" for v in r.outcomes().values())
-        if (r.rc == 1 and not declared_fail) or r.rc not in (0, 1, 3, None):
-            cell(f"JOB {r.job.name} EXITED {r.rc}, WHICH ITS SUMMARY DOES NOT EXPLAIN", False,
-                 str(r.log))
-    with (scratch() / TRANSCRIPT.name).open("a") as out:
-        for r in result.results:
-            if r.summary is not None and Path(r.summary.transcript).is_file():
-                out.write(Path(r.summary.transcript).read_text())
-
-
-def _declare(path: Path, chosen: list[Section], elapsed_s: float) -> None:
-    outcomes: dict[str, live_pool.Outcome] = {
-        x: cast(live_pool.Outcome, sec.judged.get(x, "BLOCKED")) for sec in chosen
-        for x in sec.labels}
-    why = {**dict(BLOCKED), **FAIL_WHY}
-    reasons = {x: why.get(x, "") for x, v in outcomes.items() if v != "OK"}
-    live_pool.write_summary(path, live_pool.Summary(
-        tuple(outcomes), outcomes, reasons, str(scratch() / TRANSCRIPT.name), round(elapsed_s, 3)))
-
-
 def _invalid_run(why: str) -> None:
     _unfinished()
     print(f"INVALID: {why}")
@@ -681,78 +612,33 @@ def _leave(signum: int, _frame: object) -> None:
     raise SystemExit(128 + signum)
 
 
+def _kill_the_machine() -> None:
+    STATE.kill()
+
+
 def run_sections(name: str) -> None:
-    """Run the chosen sections in order, then the tally and `finish(name)`: exit 0 with no FAIL,
-    1 with any, 3 when nothing ran, a cell is planned twice or a pooled merge is not believable.
-    With more than one job (`MAME_LIVE_JOBS`) sections not `alone` run one job per letter."""
+    """Run the chosen sections in order, then the tally and the verdict `name` speaks for: exit 0
+    with no FAIL, 1 with any, 3 when nothing ran, a cell is planned twice or a pooled merge is not
+    believable. With more than one job (`MAME_LIVE_JOBS`) sections not `alone` run one job per
+    letter."""
     chosen = _chosen()
     summary = os.environ.get(SUMMARY_VAR, "")
     workers = _workers()
     begin()
-    pooled = ([sec for sec in chosen if not sec.alone] if workers > 1 and not summary else [])
-    if len({sec.block for sec in pooled}) < 2:
-        pooled = []              # one job is no pool: it runs here, its rows live
-    print(f"transcript: {scratch() / TRANSCRIPT.name}")
     if not summary:
         for line in build_header.lines(BENCH.root, str(M68K_DUAL_BINARY), BINARY):
             print(line)
-    if not pooled and not summary:
-        print("jobs: 1, every section in this process")
-    planned = [label for sec in chosen for label in sec.labels]
-    dupes = sorted({x for x in planned if planned.count(x) > 1})
-    print(f"cells PLANNED: {len(planned)} in {len(chosen)} sections")
-    for label, why in cannot_be_judged(chosen):
-        print(live_pool.cannot_be_judged_line(label, why))
-    if dupes:
-        _invalid_run(f"the plan names these cells twice: {dupes}")
-    t0 = time.monotonic()
-    invalid = ""
-    try:
-        for sec in chosen:
-            if pooled and sec is pooled[0]:
-                result = _pool(pooled, workers)
-                invalid = result.invalid
-                _adopt(pooled, result)
-            if sec in pooled:
-                continue
-            print(f"\n== [{sec.block}] {sec.title}")
-            CURRENT[:] = [sec]
-            # What one section declared must not re-arm in the next one's `start`.
-            isolate_state("mame-live-matrix-state-")
-            try:
-                sec.run()
-            except Exception as e:  # noqa: BLE001 -- the rest of the section is reported, not lost
-                reason = f"section aborted: {type(e).__name__}: {e}"
-                PENDING.append({"tool": "(matrix)", "args": {}, "wall_s": 0.0,
-                                "reply": {"exception": reason,
-                                          "traceback": traceback.format_exc()}})
-                for label in sec.labels:
-                    if label not in sec.judged:
-                        blocked(label, reason)
-            for label in sec.labels:
-                if label not in sec.judged:
-                    blocked(label, "never reached: the section ended without judging it")
-            try:
-                ensure_closed()
-            finally:
-                _record("(teardown)", "setup")
-    finally:
-        if summary:
-            _declare(Path(summary), chosen, time.monotonic() - t0)
-    run = TALLY["OK"] + TALLY["FAIL"]
-    print(f"\ntranscript: {scratch() / TRANSCRIPT.name}")
-    if KEPT:
-        print(f"evidence: {EVIDENCE}")
-    print(f"elapsed: {time.monotonic() - t0:.0f} s")
-    list_blocked()
-    if own := [label for label, reason in BLOCKED if reason.startswith(B1_PREFIX)]:
-        print(f"BLOCKED by this matrix's own wait ceiling, not by the host: {len(own)}: "
-              f"{'; '.join(own)}")
-    print(f"cells: PLANNED {len(planned)}  RUN {run}  OK {TALLY['OK']}  FAIL {TALLY['FAIL']}  "
-          f"BLOCKED {TALLY['BLOCKED']}")
-    if invalid:
-        _invalid_run(invalid)
-    if run == 0:
-        _invalid_run("no cell ran, so there is no verdict")
+        if workers <= 1:
+            print("jobs: 1, every section in this process", flush=True)
+    LEDGER.on_end = _kill_the_machine
+
+    def _isolate(_block: str) -> None:
+        # What one section declared must not re-arm in the next one's `start`.
+        isolate_state("mame-live-matrix-state-")
+
+    rc = LEDGER.run([sec.block for sec in chosen], dict(os.environ), ensure_closed, _isolate,
+                    pool=(lambda pooled: _pool(pooled, workers))
+                    if workers > 1 and not summary else None,
+                    summary=Path(summary) if summary else None, name=name)
     assert len(failures) == TALLY["FAIL"], "the harness and the tally disagree"
-    finish(name)
+    sys.exit(rc)

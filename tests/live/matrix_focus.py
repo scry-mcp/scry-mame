@@ -1,11 +1,9 @@
 """Section X of the live matrix: no MAME this run launched came to the front, no Space moved.
 
-Registered first (control) and last (verdict). The start in front and the Space move take
+The control opens the run and the verdict closes it. The start in front and the Space move take
 the owner's desk, so they run only with SCRY_FOCUS_CONTROL=1.
 
     uv run python tests/live/matrix_focus.py      # the control alone; its verdict is BLOCKED
-
-Run alone, the verdict has no run to judge: the plan says so and the run goes on.
 """
 
 from __future__ import annotations
@@ -16,16 +14,16 @@ from pathlib import Path
 import bench_boards
 from live_harness import (
     BINARY,
+    LEDGER,
     blocked,
     call,
-    cell,
     circus_boot,
     ensure_closed,
     free_boards_missing,
     fresh,
     section,
 )
-from scry_core import focus_gate, focus_watch
+from scry_core import focus_gate, focus_watch, live_focus
 
 X_TITLE = "the focus gate: the control, then the watch runs beside every section"
 X_CONTROL = [
@@ -71,31 +69,21 @@ def _control() -> None:
         for label in X_CONTROL:
             blocked(label, missing)
         return
-    c = focus_gate.control(watch, _names(), _hold)
-    for label, judged in zip(X_CONTROL, (c.front, c.behind, c.space), strict=True):
-        _cell(label, judged)
-    if c.since is not None:
-        _SINCE.append(c.since)
-
-
-def _cell(label: str, judged: focus_gate.Judged) -> None:
-    if judged.status == "BLOCKED":
-        blocked(label, judged.reason)
-    else:
-        cell(label, judged.status == "OK", judged.reason)
+    since = live_focus.control(LEDGER, watch, _names(), _hold, X_CONTROL)
+    if since is not None:
+        _SINCE.append(since)
 
 
 def _verdict() -> None:
     if not _WATCH:
         blocked(X_VERDICT[0], "the control section never started the watch")
         return
-    names = _names()
-    _cell(X_VERDICT[0], focus_gate.verdict(_WATCH.pop(), names, _SINCE[0] if _SINCE else None,
-                                           focus_watch.now_ms()))
+    live_focus.verdict(LEDGER, _WATCH.pop(), _names(), _SINCE[0] if _SINCE else None,
+                       X_VERDICT[0])
 
 
 def register_x_control() -> None:
-    section("X", X_TITLE, X_CONTROL, alone=True)(_control)
+    section("X", X_TITLE, X_CONTROL, alone=True, opens=True)(_control)
 
 
 def register_x_verdict() -> None:
