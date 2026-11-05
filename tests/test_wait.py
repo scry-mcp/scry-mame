@@ -130,6 +130,63 @@ def test_a_breakpoint_that_cuts_a_poll_refuses_the_wait_instead_of_timing_it_out
     assert fields.get("predicate") == "palette", fields
 
 
+def _poll_cut_by_its_bound(monkeypatch: pytest.MonkeyPatch, code: str) -> list[str]:
+    """`advance.run_for` refusing with `code`: the machine may be left RUNNING under a poll."""
+    def run_for(ses: Any, scratch: Path, milliseconds: int, seconds: float, progress: Any,
+                disarm_watches: bool = False, frames: int = 0,
+                route: dict[str, Any] | None = None) -> dict[str, Any]:
+        return {"status": "INVALID", "code": code, "message": "the poll's own bound ran out"}
+    monkeypatch.setattr(advance, "run_for", run_for)
+    asked: list[str] = []
+    return asked
+
+
+def _stopping(monkeypatch: pytest.MonkeyPatch, asked: list[str],
+              answer: dict[str, Any] | None = None) -> None:
+    """`running.stop` as the settle the loop takes after a cut poll, recording the call."""
+    def stop(ses: Any, scratch: Path) -> dict[str, Any]:
+        asked.append("stop")
+        return answer or {"status": "ok", "interrupted": True, "cause": "stop",
+                          "last_stop": {}}
+    monkeypatch.setattr("scry_mame.wait.running.stop", stop)
+
+
+def test_a_poll_the_bound_cuts_is_stopped_and_the_wait_answers_its_bound(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """Left as the run returned it, the caller gets `not_settled` on one attempt and a TIMEOUT
+    on the next, and in the first the machine is RUNNING under the next reader."""
+    _palette(monkeypatch, [["#101010"] * 256])
+    asked = _poll_cut_by_its_bound(monkeypatch, "not_settled")
+    _stopping(monkeypatch, asked)
+    r = wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30)
+    assert r["verdict"] == "TIMEOUT", r
+    assert asked == ["stop"], "the machine is brought to rest before the reply"
+    assert "the bound cut its last poll" in r["note"], r
+
+
+def test_a_machine_that_cannot_be_stopped_keeps_the_runs_own_refusal(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    _palette(monkeypatch, [["#101010"] * 256])
+    asked = _poll_cut_by_its_bound(monkeypatch, "not_settled")
+    _stopping(monkeypatch, asked, {"status": "INVALID", "code": "not_settled",
+                                   "message": "the machine did not come to rest"})
+    r = wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30)
+    assert (r["status"], r["code"]) == ("INVALID", "not_settled"), r
+    assert asked == ["stop"]
+
+
+def test_a_counter_that_did_not_move_is_no_verdict_about_the_screen(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """`no_progress` is the instrument's failure: a TIMEOUT would read as "the screen never
+    came", which nothing measured."""
+    _palette(monkeypatch, [["#101010"] * 256])
+    asked = _poll_cut_by_its_bound(monkeypatch, "no_progress")
+    _stopping(monkeypatch, asked)
+    r = wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30)
+    assert (r["status"], r["code"]) == ("INVALID", "no_progress"), r
+    assert asked == [], "nothing to settle: the refusal is not about a moving machine"
+
+
 def test_a_palette_that_never_goes_black_times_out_saying_what_it_examined(
         monkeypatch: pytest.MonkeyPatch) -> None:
     _steps(monkeypatch)
