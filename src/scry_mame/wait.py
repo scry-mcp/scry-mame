@@ -54,9 +54,17 @@ def screen_wait(ses: gs.Session, scratch: Path, text: str, screen: str, palette:
         last = advance.run_for(ses, scratch, 0, max(left, MIN_STEP_S), progress, frames=step)
         if last.get("status") != "ok":
             return last
-        polls += step
         if last.get("verdict") != contract.ELAPSED:
-            return _expired(name, asked, polls, every, seconds, began, last)
+            # A STOP THE WAIT DID NOT ASK FOR, with its bound unspent: the machine sits at that
+            # stop, so sealing a TIMEOUT beside its own cause would contradict itself. The twin
+            # server asks the caller to look at the stop: `wait_stopped`.
+            raise st.Invalid("wait_stopped",
+                f"a stop ended the poll before {asked} was judged: "
+                f"{last.get('cause') or 'a stop nothing declared'}. The machine is stopped there, "
+                f"and the wait did not reach its bound",
+                predicate=name, polls=polls,
+                **{k: v for k, v in last.items() if k not in ("status", "verdict", "polls")})
+        polls += step
         ran = judge()
         if ran is not None:
             return _answer(ran, predicate=name, polls=polls, every=every, already=False,

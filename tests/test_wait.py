@@ -109,6 +109,27 @@ def test_the_step_is_what_the_poll_asks_the_machine_to_run(
     assert asked == [5], "one poll of five frames"
 
 
+def test_a_breakpoint_that_cuts_a_poll_refuses_the_wait_instead_of_timing_it_out(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """A `TIMEOUT` beside `cause: breakpoint` contradicts itself, and the bound is not what
+    ended the poll: the twin server refuses the wait as `wait_stopped`."""
+    _palette(monkeypatch, [["#101010"] * 256])
+
+    def run_for(ses: Any, scratch: Path, milliseconds: int, seconds: float, progress: Any,
+                disarm_watches: bool = False, frames: int = 0,
+                route: dict[str, Any] | None = None) -> dict[str, Any]:
+        return {"status": "ok", "verdict": "OTHER_STOP", "cause": "breakpoint 0 at 1234",
+                "polls": 5, "frame_before": 10, "frame_after": 12}
+    monkeypatch.setattr(advance, "run_for", run_for)
+    with pytest.raises(Exception) as got:
+        wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30)
+    assert getattr(got.value, "code", None) == "wait_stopped", got.value
+    assert "breakpoint 0 at 1234" in str(got.value), str(got.value)
+    fields = getattr(got.value, "fields", {})
+    assert fields.get("polls") == 0, "the cut poll ran no full poll of this wait"
+    assert fields.get("predicate") == "palette", fields
+
+
 def test_a_palette_that_never_goes_black_times_out_saying_what_it_examined(
         monkeypatch: pytest.MonkeyPatch) -> None:
     _steps(monkeypatch)
