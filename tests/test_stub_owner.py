@@ -18,11 +18,16 @@ from scry_mame import stub_owner as owner  # noqa: E402
 
 NOT_A_PID = 2**22 + 7  # above macOS's pid ceiling: a pid no process can hold
 #: The cases about `lsof` itself, which Windows replaces with its TCP table.
-LSOF = pytest.mark.skipif(sys.platform == "win32", reason="Windows reads its TCP table")
+LSOF = pytest.mark.skipif(
+    sys.platform == "win32" or shutil.which("lsof") is None,
+    reason="this case needs `lsof`: Windows reads its TCP table instead, and a host "
+           "without it cannot prove which process serves a port")
 #: Cases about a connection queued and not accepted, which Windows already lists as the
 #: listener's.
-QUEUED_UNOWNED = pytest.mark.skipif(sys.platform == "win32",
-                                    reason="Windows owns a queued connection to its listener")
+QUEUED_UNOWNED = pytest.mark.skipif(
+    sys.platform == "win32" or shutil.which("lsof") is None,
+    reason="Windows owns a queued connection to its listener, and a host without `lsof` "
+           "cannot read the rows")
 #: Rows `GetExtendedTcpTable` returned on Windows (`fixtures/stub_owner/PROVENANCE.txt`).
 CAPTURED = json.loads((Path(__file__).parent / "fixtures" / "stub_owner" / "tcp_rows.json")
                       .read_text(encoding="utf-8"))
@@ -40,6 +45,7 @@ def _free_port() -> int:
         return port
 
 
+@LSOF
 def test_listeners_names_the_process_that_listens_and_nobody_on_a_free_port() -> None:
     proc, port = listener("hold")
     try:
@@ -50,6 +56,7 @@ def test_listeners_names_the_process_that_listens_and_nobody_on_a_free_port() ->
         proc.wait()
 
 
+@LSOF
 def test_another_pid_listening_is_refused_and_never_dialled() -> None:
     """Refused before the dial: it would take the other MAME's one connection."""
     proc, port = listener("accept", timeout_s=1.0)
@@ -90,6 +97,7 @@ def test_nothing_on_the_port_is_the_boot_under_way_and_asks_no_lsof(
     assert isinstance(e.value, OSError), "the boot's wait treats it as a refused dial"
 
 
+@LSOF
 def test_a_port_held_only_by_a_connection_is_not_yet_ours_listening() -> None:
     """A served session's port with its listener closed does not bind and has no listener."""
     lst = socket.socket()
@@ -108,6 +116,7 @@ def test_a_port_held_only_by_a_connection_is_not_yet_ours_listening() -> None:
         client.close()
 
 
+@LSOF
 def test_the_far_end_in_another_process_is_closed_with_nothing_sent(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -126,6 +135,7 @@ def test_the_far_end_in_another_process_is_closed_with_nothing_sent(
         proc.wait()
 
 
+@LSOF
 def test_the_far_end_in_our_process_passes_and_the_first_byte_goes_out() -> None:
     """Control of the case above: the same child named as ours gets the dial through."""
     proc, port = listener("accept")
