@@ -198,13 +198,15 @@ UNSERVED = ("gdbstub: cpuname mc6809e (:maincpu) not found in gdb stub descripti
             "registers are not served")
 
 
+@pytest.mark.parametrize("ending", ["", "\r"], ids=["line-feed", "carriage-return"])
 def test_a_live_stub_that_cannot_describe_the_first_cpu_is_refused_at_once_naming_it(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ending: str
 ) -> None:
     """A stub that lives on without the first cpu refuses `target.xml` on every launch, so the
-    start is `no_channel` at once, quoting MAME's line, never relaunched as a stub not ready."""
+    start is `no_channel` at once, quoting MAME's line, never relaunched as a stub not ready.
+    A Windows MAME writes that line with a carriage return before the newline."""
     out = _start(monkeypatch, tmp_path,
-                 _double(tmp_path, said=UNSERVED, cpus=("maincpu", "soundcpu")),
+                 _double(tmp_path, said=UNSERVED + ending, cpus=("maincpu", "soundcpu")),
                  handshake=_not_ready(tmp_path, _target_xml_refused(),
                                       launch.START_RETRIES_MAX + 1))
     assert out["status"] == "INVALID" and out["code"] == "no_channel", out
@@ -249,6 +251,8 @@ def test_a_refused_handshake_the_first_cpus_line_does_not_explain_is_a_stub_not_
      "descriptions\n", -11),
     # a build that exits instead of raising a signal
     (f"Fatal error: {NOT_SERVED}\n", 2),
+    # the same line as a Windows MAME writes it
+    (f"Fatal error: {NOT_SERVED}\r\n", 2),
 ])
 def test_the_unserved_cpu_is_read_wherever_its_line_lands_and_however_mame_ends(
     tail: str, code: int,

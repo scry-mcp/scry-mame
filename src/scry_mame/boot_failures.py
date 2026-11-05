@@ -54,14 +54,17 @@ SDL3_JOYSTICK_NOTE = ("a debug MAME built with SDL3 aborts at boot when a game c
 
 
 # Matched anywhere in a line: stdout shares the file and can leave a prompt with no newline.
+# A Windows MAME ends its lines with `\r\n` and `$` sits before the `\n` only, so the carriage
+# return is left out of the match by a lookahead: the line is quoted back to the caller whole.
 _NOT_SERVED = re.compile(
-    r"Fatal error: gdbstub: cpuname (\S+) not found in gdb stub descriptions$", re.MULTILINE)
+    r"Fatal error: gdbstub: cpuname (\S+) not found in gdb stub descriptions(?=\r?$)",
+    re.MULTILINE)
 
 
 # A stub serving a thread per cpu (patches/0004) lives on without a cpu it cannot describe; the
 # session reads thread 1, the first cpu, so that one unserved refuses `target.xml` every launch.
 _UNSERVED_LIVE = re.compile(r"gdbstub: cpuname (\S+) \((\S+)\) not found in gdb stub descriptions, "
-                            r"so its registers are not served$", re.MULTILINE)
+                            r"so its registers are not served(?=\r?$)", re.MULTILINE)
 _WAY_OUT = "what serves this board is a build whose stub describes that cpu"
 
 
