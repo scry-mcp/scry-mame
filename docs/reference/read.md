@@ -656,7 +656,7 @@ crops are in the program's units. Reply: `path`, `application`, `mode`, `screens
 layer, in the loaded map's `mode` (`verified` when none was loaded). Reply: `path`,
 `application`, `mode`, `screens`, `controls`, `promoted`.
 
-Refused: an argument the method does not take; a misshapen name, crop, control, view or file; an `add` without an `anchor` to a consolidated map, and a save of one holding a screen with none (`bad_argument`); nothing mapped to save (`needs_call`).
+Refused: an argument the method does not take; a misshapen name, crop, control, view or file; an `add` without an `anchor` to a consolidated map, and a save of one holding a screen with none (`bad_argument`); neither a screen nor a `pointer` to save (`needs_call`).
 
 Reference: REFERENCE.md, Screen maps.
 
