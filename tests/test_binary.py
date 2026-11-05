@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import plistlib
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import app_launch, guardian
 from scry_core.host_program import absolute as _abs
-from server_support import _running, _stub_boot, _StubProcess
+from server_support import BANNER_LINE, _running, _stub_boot, _StubProcess
 from session_doubles import fake_mame, refused
 
 from scry_mame import binary as binaries
+from scry_mame import launch as mame_launch
 from scry_mame import server as s
+from scry_mame import state as mstate
 
 VERSION = "0.0 (a stub build)"
 
@@ -196,3 +201,80 @@ def test_a_view_no_command_line_can_carry_is_refused_before_anything_starts(
                  view=view)
     refused(said, out)
     assert out["code"] == "bad_argument" and "view" in out["message"], out
+
+
+def _app_bundle(tmp_path: Path) -> Path:
+    """A `.app` whose executable is the fake MAME, its console plugin beside it."""
+    contents = tmp_path / "Probe.app" / "Contents"
+    fake_mame(contents / "MacOS")
+    (contents / "Info.plist").write_bytes(plistlib.dumps(
+        {"CFBundleExecutable": "fake-mame", "CFBundlePackageType": "APPL"}))
+    return tmp_path / "Probe.app"
+
+
+def _launched_by_open(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """`open` and the pid search doubled; the app writes the banner, as MAME's stdout does."""
+    seen: dict[str, Any] = {}
+
+    def run_open(cmd: list[str]) -> subprocess.CompletedProcess[str]:
+        seen["cmd"] = cmd
+        Path(cmd[cmd.index("-o") + 1]).write_bytes(BANNER_LINE.encode())
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(app_launch, "run_open", run_open)
+    monkeypatch.setattr(app_launch, "find_pid", lambda token, timeout: 4242)
+    return seen
+
+
+def test_a_bundle_launches_through_open_and_the_session_holds_the_apps_own_pid(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """`binary` naming a `.app` takes the app route: `open` with the channels, the app's pid."""
+    alive = {"v": True}
+    monkeypatch.setattr(app_launch.AppProcess, "poll", lambda self: None if alive["v"] else 0)
+    monkeypatch.setattr(app_launch.AppProcess, "wait",
+                        lambda self, timeout=None: (alive.update(v=False), 0)[1])
+    spawned: list[Any] = []
+    monkeypatch.setattr(guardian, "spawn",
+                        lambda child, server, deadline=0.0: spawned.append(child))
+    seen = _launched_by_open(monkeypatch)
+    bundle = _app_bundle(tmp_path)
+    out = _start(monkeypatch, tmp_path, binary=str(bundle))
+    try:
+        assert out["status"] == "ok", out
+        assert out["bundle"] == str(bundle), out
+        assert out["binary"] == str(bundle / "Contents" / "MacOS" / "fake-mame"), out
+        proc = mstate.STATE.proc
+        assert proc is not None and proc.pid == 4242
+        assert spawned == [proc], "the guardian watches the app's pid, as it watches a child"
+        cmd = seen["cmd"]
+        assert cmd[:4] == ["/usr/bin/open", "-n", "-a", str(bundle)], cmd
+        assert cmd[cmd.index("-i") + 1] == str(Path(out["scratch_dir"]) / mame_launch.CONSOLE_FIFO)
+        assert cmd[cmd.index("-o") + 1] == out["stdout_path"]
+        assert cmd[cmd.index("--stderr") + 1] == out["stdout_path"]
+        assert f"{app_launch.CWD_VAR}={out['scratch_dir']}" in cmd, "cwd for the launcher"
+        argv = cmd[cmd.index("--args") + 1:]
+        assert argv[:2] == ["m68k", "-rompath"], argv
+        assert "-debugger_port" in argv, argv
+        assert mstate.STATE.stdout_log is None, "the app writes the log `open` was given"
+    finally:
+        s.close()
+
+
+def test_a_plain_binary_goes_through_popen_and_never_through_open(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The control: the route is taken only by a session that asked for it."""
+
+    def boom(cmd: list[str]) -> Any:
+        raise AssertionError("open was called for a plain binary")
+
+    monkeypatch.setattr(app_launch, "run_open", boom)
+    mine = build(tmp_path, name="fake-mame")
+    out = _start(monkeypatch, tmp_path, binary=str(mine))
+    try:
+        assert out["status"] == "ok", out
+        assert "bundle" not in out, out
+        assert _StubProcess.last_argv[0] == str(mine)
+        proc = mstate.STATE.proc
+        assert proc is not None and proc.pid == _StubProcess.PID
+    finally:
+        s.close()

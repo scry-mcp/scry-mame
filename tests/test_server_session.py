@@ -982,7 +982,8 @@ def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> N
     monkeypatch.setattr(launch, "judge", judge)
     from scry_mame import binary as mame_binary
     monkeypatch.setattr(mame_binary, "resolve", lambda b: SimpleNamespace(path=b,
-                                                                          origin="argument"))
+                                                                          origin="argument",
+                                                                          bundle=None))
     monkeypatch.setattr(mstate.STATE, "ses", None)
     for asked in (True, False):
         with pytest.raises(Stop):

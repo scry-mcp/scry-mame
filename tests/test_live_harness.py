@@ -87,7 +87,7 @@ def test_mame_background_reaches_every_start_of_the_run_and_a_cells_own_value_wi
 
     def start(**kw: object) -> dict[str, object]:
         handed.append(kw)
-        return {"status": "ok"}
+        return {"summary": "start", "status": "ok", "session": {}}
 
     monkeypatch.setattr(h.s, "start", start)
     h.call("start", system="x")
@@ -1086,3 +1086,35 @@ def test_open_files_says_it_could_not_when_the_host_has_no_lsof(
     monkeypatch.setattr(subprocess, "run", absent)
     open_files = _matrix_function("open_files", "matrix_pairs", subprocess=subprocess)
     assert callable(open_files) and open_files(123) is None
+
+
+def test_a_free_board_boots_the_bundle_only_when_the_run_asks_for_the_app_route(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """`MAME_LIVE_BUNDLE` names the `.app` a free board starts; a board naming its own build
+    keeps it, and a run that does not ask for the route boots `MAME_BINARY` as before."""
+    monkeypatch.setenv("MAME_LIVE_BUNDLE", str(tmp_path.parent / "Probe.app"))
+    h = _harness(monkeypatch, tmp_path)
+    handed: list[dict[str, object]] = []
+
+    def start(**kw: object) -> dict[str, object]:
+        handed.append(kw)
+        return {"summary": "start", "status": "ok", "session": {}}
+
+    def stub(module: ModuleType) -> None:
+        monkeypatch.setattr(module.s, "start", start)
+        monkeypatch.setattr(module, "free_image", lambda *a, **k: tmp_path.parent / "img.bin")
+
+    stub(h)
+    h.free_boot("circus", ["9004a.1a"], "0x1000")
+    h.free_boot("circus", ["9004a.1a"], "0x1000", binary="/elsewhere/mame")
+    assert handed[0]["binary"] == str(tmp_path.parent / "Probe.app")
+    assert handed[1]["binary"] == "/elsewhere/mame"
+    # The control: a run that does not prove the app route is unchanged.
+    monkeypatch.delenv("MAME_LIVE_BUNDLE", raising=False)
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    h2 = _harness(monkeypatch, plain)
+    handed.clear()
+    stub(h2)
+    h2.free_boot("circus", ["9004a.1a"], "0x1000")
+    assert handed[0]["binary"] == h2.BINARY

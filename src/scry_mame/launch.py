@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import guardian, judges, live_host, log_marks, window_size, window_words
+from scry_core import app_launch, guardian, judges, live_host, log_marks, window_size, window_words
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -285,6 +285,9 @@ def judge_background(background: bool | None, shared: bool, env: dict[str, str] 
 #: is stopped, and a full pipe blocks the writer with no bound. Windows' default is far smaller.
 CONSOLE_PIPE_BYTES = 65536
 
+#: The console's stdin when the emulator runs as an app: a FIFO `open -i` connects to it.
+CONSOLE_FIFO = "console.fifo"
+
 
 def console_popen(cmd: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
     """`cmd` started with a writable stdin of `CONSOLE_PIPE_BYTES`."""
@@ -358,6 +361,8 @@ class Judged:
     scaled: str | None = None     # a stated size MAME scales, said in the reply
     picked: bool = False          # the port is this server's pick
     view: str = ""                # empty is MAME's `native`
+    #: The `.app` the caller named instead of an executable; empty goes through `Popen`.
+    bundle: str = ""
 
 
 def collect(judged: Judged) -> machine.Listed:
@@ -540,7 +545,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
           binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
-          size: str | None = None) -> Judged:
+          size: str | None = None, bundle: str = "") -> Judged:
     """Every refusal of the caller's input, before the emulator exists: after the boot a bad
     path surfaces as a bare error naming no argument, with a machine possibly running.
 
@@ -637,7 +642,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
                   rompath=rompath, inipath=inipath, wait=wait, boot_lua=boot_lua,
                   env=dict(env or {}), state_dir=state_dir, throttle_from_frame=throttle_from_frame,
                   listxml=asked, cfg=cfg_source, listed=listed, background=behind,
-                  presence=presence, picked=picked, view=view,
+                  presence=presence, picked=picked, view=view, bundle=bundle,
                   window=fitted_request(wanted, screens), scaled=scaled_note(wanted, screens))
 
 
@@ -695,14 +700,16 @@ def _no_answer(judged: Judged, cause: object, attempts: list[dict[str, Any]]) ->
                       dial_attempts=attempts, **_alive_fields(judged))
 
 
-def _exit_code(error: BaseException, progress: mprogress.Progress) -> int | None:
-    """MAME's exit code, or None while it runs; a closed channel gets `CLOSED_EXIT_WAIT_S`."""
+def _exit_code(error: BaseException, progress: mprogress.Progress) -> int | dict[str, Any] | None:
+    """MAME's exit code, or None while it runs; a closed channel gets `CLOSED_EXIT_WAIT_S`.
+
+    An app route answers `unavailable`: nothing here reaps the app it started."""
     assert STATE.proc is not None
     code = STATE.proc.poll()
     if code is None and isinstance(error, (gs.DialFailed, gs.ConnectionFailed)):
         code = st.wait_exit(STATE.proc, CLOSED_EXIT_WAIT_S, progress,
                             "start: MAME closed the gdbstub's connection")
-    return code
+    return app_launch.exit_status(STATE.proc, code) if code is not None else None
 
 
 FAILED_STARTS_KEPT = 20
@@ -766,21 +773,33 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
     cmd = build_command(judged.binary, judged.system, judged.rompath, judged.port, judged.flags,
                         str(STATE.scratch), judged.inipath, harness, judged.state_dir,
                         judged.view)
-    # One file: a driver's and the OSD's complaints would be lost sent to DEVNULL.
-    STATE.stdout_log = open(files.log_path(STATE.scratch, "process"),  # noqa: SIM115 (kill closes)
-                            "wb")
-    # stdin is the Lua console's; unconnected it reads end-of-file and stops for good.
-    STATE.proc = console_popen(
-        cmd, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
-        env=core_window.launch_environment({**os.environ, **given}, judged.background),
-        cwd=STATE.scratch,
-    )
+    STATE.stdout_log = None
+    if judged.bundle:
+        # `open` writes the process log itself and reads the console from the FIFO, so the same
+        # readers keep working; the pid is found by the port this session alone holds.
+        STATE.proc = app_launch.launch(
+            judged.bundle, cmd,
+            stdout=str(files.log_path(STATE.scratch, "process")),
+            stdin_fifo=str(STATE.scratch / CONSOLE_FIFO),
+            env=core_window.launch_environment(given, judged.background),
+            cwd=str(STATE.scratch),
+            token=f"-debugger_port {judged.port}")
+    else:
+        # One file: a driver's and the OSD's complaints would be lost sent to DEVNULL.
+        STATE.stdout_log = open(files.log_path(STATE.scratch, "process"),  # noqa: SIM115
+                                "wb")
+        # stdin is the Lua console's; unconnected it reads end-of-file and stops for good.
+        STATE.proc = console_popen(
+            cmd, stdout=STATE.stdout_log, stderr=subprocess.STDOUT,
+            env=core_window.launch_environment({**os.environ, **given}, judged.background),
+            cwd=STATE.scratch,
+        )
     if (ledger := live_host.EmulatorLedger.from_environment()) is not None:
         ledger.record(STATE.proc.pid, cmd[0])
     STATE.guard = guardian.spawn(STATE.proc, PROCESS_NAME)
     clock = mprogress.Ticker(judged.wait, progress)
     last: Exception | None = None
-    died: int | None = None
+    died: int | dict[str, Any] | None = None
     attempts: list[dict[str, Any]] = []
     proof = owner.StubOwner(STATE.proc.pid, judged.port,
                             time.monotonic() + max(clock.left(), gs.REQUEST_TIMEOUT_S),
@@ -932,7 +951,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
                    state_dir=state_dir, throttle_from_frame=throttle_from_frame, types=types,
                    cfg=cfg, background=background, presence=presence,
                    binary_origin=resolved.origin, view=view, display=display,
-                   size=size)
+                   size=size, bundle=resolved.bundle or "")
     # From the scratch on, everything sits under one guard: a failed ROM check or any raise
     # kills the session, or the next call would measure on a lying one, or leave an orphaned
     # emulator. A start that did not start owns nothing, not even the directory.
@@ -1004,6 +1023,7 @@ def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols:
             "pid": STATE.proc.pid if STATE.proc else None,
             "stub_port": judged.port,
             "scratch_dir": str(STATE.scratch),
+            **({"bundle": judged.bundle} if judged.bundle else {}),
             "state_dir": STATE.state_dir,
             "cfg": cfg_report(),
             "debugger": debugger_report(),

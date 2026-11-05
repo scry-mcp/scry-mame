@@ -46,6 +46,12 @@ def _stdin() -> Any:
         raise st.Invalid("no_channel",
             "this session holds no MAME process with a stdin pipe, so the Lua console cannot "
             "be reached: the channel exists only on a session this server started")
+    # An app route's FIFO keeps a reader after MAME dies, so its write cannot raise the way a
+    # child's pipe does; the pid is asked instead.
+    if not getattr(proc, "exit_code_known", True) and proc.poll() is not None:
+        raise st.Invalid("session_broken",
+            "MAME is gone, so nothing sent through the console reaches it any more. `close` it "
+            "to collect its last words, then `start` a new one")
     return proc.stdin
 
 

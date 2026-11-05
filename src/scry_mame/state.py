@@ -11,9 +11,9 @@ import subprocess
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, overload
+from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, Protocol, overload
 
-from scry_core import boundary, cancel, guardian, picture, presence, prose, screen_map
+from scry_core import app_launch, boundary, cancel, guardian, picture, presence, prose, screen_map
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import window as core_window
@@ -51,7 +51,13 @@ EXIT_POLL_S = 0.1
 NO_TABLE = gs.SymbolTable({}, {}, "none")
 
 
-def wait_exit(proc: subprocess.Popen[bytes], seconds: float, progress: mprogress.Progress,
+class Emulator(app_launch.Spawned, Protocol):
+    """The spawn handle plus the console this server writes into."""
+
+    stdin: IO[bytes] | None
+
+
+def wait_exit(proc: Emulator, seconds: float, progress: mprogress.Progress,
               what: str) -> int | None:
     """The exit code within `seconds`, or None; reports progress because `close` is watched."""
     clock = mprogress.Ticker(seconds, progress)
@@ -88,7 +94,7 @@ class State:
 
     def _reset(self) -> None:
         """Every per-session field at its pre-session value, shared by `__init__` and `kill`."""
-        self.proc: subprocess.Popen[bytes] | None = None
+        self.proc: Emulator | None = None
         self.guard: guardian.Guard | None = None
         self.presence = presence.Shown()
         self.ses: gs.Session | None = None
@@ -230,10 +236,13 @@ class State:
         code = self.proc.poll()
         if code is not None:
             # A machine that died is not "no machine": `close` reads its last words first.
+            status = app_launch.exit_status(self.proc, code)
+            how = (prose.ended_by(code) if isinstance(status, int)
+                   else "exited, its status unknown to this server")
             raise Invalid("session_broken",
-                          f"MAME {prose.ended_by(code)} under this session: `close` collects "
-                          "its exit code and the last lines of each channel before the scratch "
-                          "is deleted, then `start` a new one", exit_code=code)
+                          f"MAME {how} under this session: `close` collects its exit code and "
+                          "the last lines of each channel before the scratch is deleted, then "
+                          "`start` a new one", exit_code=status)
         return self.ses
 
     def presence_shown(self) -> bool | dict[str, Any]:
@@ -339,8 +348,10 @@ class State:
         """
         ended: dict[str, Any] = {"ended_by": "none", "exit_code": None,
                                  "cfg_written": None}
-        if self.proc is not None and self.proc.poll() is not None:
-            ended = {"ended_by": "died", "exit_code": self.proc.poll(),
+        dead = self.proc.poll() if self.proc is not None else None
+        if self.proc is not None and dead is not None:
+            ended = {"ended_by": "died",
+                     "exit_code": app_launch.exit_status(self.proc, dead),
                      "cfg_written": None}
         elif self.proc is not None:
             marker = self._cfg_marker()
@@ -352,15 +363,18 @@ class State:
                     if polite else None)
             if code is not None:
                 written = self._cfg_written(marker)
-                ended = {"ended_by": "exited" if written is False else "quit", "exit_code": code,
+                ended = {"ended_by": "exited" if written is False else "quit",
+                         "exit_code": app_launch.exit_status(self.proc, code),
                          "cfg_written": written}
             else:
                 self.proc.kill()
                 ended["ended_by"] = "killed"
                 ended["cfg_written"] = False
-                ended["exit_code"] = wait_exit(self.proc, REAP_GRACE_S, progress,
-                                               "close: waiting for the SIGKILLed MAME to be reaped")
-                if ended["exit_code"] is None:
+                waited = wait_exit(self.proc, REAP_GRACE_S, progress,
+                                   "close: waiting for the SIGKILLed MAME to be reaped")
+                if waited is not None:
+                    ended["exit_code"] = app_launch.exit_status(self.proc, waited)
+                if waited is None:
                     ended["exit_code"] = unavailable(
                         f"pid {self.proc.pid} was SIGKILLed and still not reaped "
                         f"{REAP_GRACE_S} s later: an emulator may still be on the machine")

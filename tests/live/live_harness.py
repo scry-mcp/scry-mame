@@ -84,7 +84,10 @@ BOOT = dict(binary=M68K_DUAL_BINARY, system=M68K_DUAL_SYSTEM, rompath=M68K_DUAL_
             reference_rom=REFERENCE_ROM, reference_addr="0x0", boot_seconds=25.0, presence=False,
             inipath=NO_JOYSTICK_INI)
 
-# Unset leaves each `start` its default; 1 or 0 forces every one behind or in front.
+#: The `.app` a session is launched as; `MAME_BINARY` stays the executable inside it.
+BUNDLE = os.environ.get("MAME_LIVE_BUNDLE", "")
+
+# Unset: each `start`'s default; 1 or 0 forces all behind or in front.
 BACKGROUND_VAR = "MAME_BACKGROUND"
 _background = os.environ.get(BACKGROUND_VAR, "")
 if _background not in ("", "0", "1"):
@@ -407,7 +410,8 @@ def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
 
 
 def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
-              binary: str = BINARY, **launch: Any) -> dict[str, Any]:
+              binary: str = "", **launch: Any) -> dict[str, Any]:
+    binary = binary or BUNDLE or BINARY
     folder = Path(fresh("-image"))
     folder.mkdir()
     image = free_image(system, members, folder)

@@ -938,6 +938,7 @@ class StartReply(WindowRefused, total=False):
     binary: str
     binary_origin: str
     boot_lua_path: str
+    bundle: str
     cfg: dict[str, Any]
     debugger: dict[str, Any]
     declarations: dict[str, Any]

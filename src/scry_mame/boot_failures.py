@@ -93,11 +93,13 @@ def unserved_refusal(error: gs.SessionError, after_s: float, line: re.Match[str]
                       after_s=st.spent_s(after_s), **live)
 
 
-def death_refusal(exit_code: int, after_s: float, stdout_tail: str) -> st.Invalid:
+def death_refusal(exit_code: int | dict[str, Any], after_s: float,
+                  stdout_tail: str) -> st.Invalid:
     """`no_channel` when the stub has no description of the first cpu (every launch meets it
     again), else `DiedBeforeStub`."""
     if m := _NOT_SERVED.search(stdout_tail):
-        ended = prose.ended_by(exit_code)
+        ended = (prose.ended_by(exit_code) if isinstance(exit_code, int)
+                 else "exited, its status unknown to this server")
         return st.Invalid("no_channel",
                           f"this MAME's gdbstub has no description of the first cpu, "
                           f"{m.group(1)}, and said so: `{m.group(0)}`; MAME then {ended} after "
@@ -114,15 +116,18 @@ class DiedBeforeStub(LaunchFailed):
     """A MAME that exited before its gdbstub answered. An exit code is MAME refusing the
     caller's input, so only a signal (not an assertion's abort) or `port_taken` relaunches."""
 
-    def __init__(self, exit_code: int, after_s: float, stdout_tail: str) -> None:
+    def __init__(self, exit_code: int | dict[str, Any], after_s: float,
+                 stdout_tail: str) -> None:
         self.exit_code = exit_code
         self.stdout_tail = stdout_tail
-        self.asserted = exit_code == -signal.SIGABRT and ASSERTION_MARK in stdout_tail
+        self.asserted = (exit_code == -signal.SIGABRT
+                         and ASSERTION_MARK in stdout_tail)
         note: dict[str, Any] = ({"note": SDL3_JOYSTICK_NOTE}
                 if self.asserted and SDL3_JOYSTICK_MARK in stdout_tail else {})
         own: dict[str, Any] = {"exit_code": exit_code, "after_s": st.spent_s(after_s),
                                "stdout_tail": stdout_tail}
-        ended = prose.ended_by(exit_code)
+        ended = (prose.ended_by(exit_code) if isinstance(exit_code, int)
+                 else "exited, its status unknown to this server")
         what = (f"MAME {ended}: another process held its gdbstub port"
                 if self.port_taken() else f"MAME {ended} before its gdbstub answered")
         super().__init__(f"MAME {ended} after {after_s:.1f} s, before its gdbstub answered: its "
@@ -130,11 +135,13 @@ class DiedBeforeStub(LaunchFailed):
                          {"kind": "died", **own}, **own, **note)
 
     def relaunch(self, port_picked: bool) -> bool:
-        return (self.exit_code < 0 and not self.asserted) or (port_picked and self.port_taken())
+        return (isinstance(self.exit_code, int) and self.exit_code < 0
+                and not self.asserted) or (port_picked and self.port_taken())
 
     def port_taken(self) -> bool:
         """MAME's own line that another process held its gdbstub port."""
-        return self.exit_code > 0 and _PORT_TAKEN.search(self.stdout_tail) is not None
+        return (isinstance(self.exit_code, int) and self.exit_code > 0
+                and _PORT_TAKEN.search(self.stdout_tail) is not None)
 
 
 # Handshake failures of a live process whose stub answered before it was ready.

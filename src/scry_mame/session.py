@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from scry_core import narrowing, prose, session_block
+from scry_core import app_launch, narrowing, prose, session_block
 from scry_core import progress as mprogress
 from scry_core import window as core_window
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -94,9 +94,11 @@ def status() -> dict[str, Any]:
                                    **({"note": why} if why else {})})
     code = STATE.proc.poll()
     if code is not None:
-        return menvelope.envelope({"exit_code": code, "last_stop": STATE.as_of(),
-                                   "note": "MAME exited under this session: `close` collects the "
-                                   "exit code and the last lines of each channel before the "
+        status = app_launch.exit_status(STATE.proc, code)
+        kept = "the exit code" if isinstance(status, int) else "what it left"
+        return menvelope.envelope({"exit_code": status, "last_stop": STATE.as_of(),
+                                   "note": f"MAME exited under this session: `close` collects "
+                                   f"{kept} and the last lines of each channel before the "
                                    "scratch is deleted"})
     ses, scratch = STATE.live()
     if not ses.broken:

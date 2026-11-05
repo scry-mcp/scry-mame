@@ -14,8 +14,11 @@ start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath=
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
 Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, the rest
-files. The check: `reference_rom`, `reference_addr`, `reference_base` (`0x`, the image's first
-byte).
+files. `binary` names a MAME executable or a `.app` bundle carrying one: the bundle is
+launched through `open`, which makes it an application the host captures as one, and the
+reply names it in `bundle`; its exit status is then not this server's to know, and `close`
+answers `unavailable` for it. The check: `reference_rom`, `reference_addr`, `reference_base`
+(`0x`, the image's first byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
 `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
 fits the display's usable area, drawn at the view's aspect, real speed). `display`: the OS's
@@ -83,6 +86,7 @@ Reference: REFERENCE.md, The session.
 | `binary` | string |
 | `binary_origin` | string |
 | `boot_lua_path` | string |
+| `bundle` | string |
 | `cfg` | object |
 | `debugger` | object |
 | `declarations` | object |

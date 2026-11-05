@@ -923,7 +923,7 @@ def _boot_judged(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, session: type,
         state_dir="", boot_lua="", env={}, throttle_from_frame=0, binary="mame",
         system="sys", rompath=str(tmp_path), port=port, flags=[], inipath="", wait=wait,
         ref=tmp_path / "ref.bin", ref_addr=0, ref_base=0, cfg=None, background=False,
-        presence=presence, view="")
+        presence=presence, view="", bundle="")
 
 
 def _boot_against(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
