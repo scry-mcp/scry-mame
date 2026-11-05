@@ -129,38 +129,38 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "binary": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/upstream/radendu",
   "system": "radendur",
-  "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "rompath": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/run/mame_roms",
+  "reference_rom": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/disasm/img/radendur_maincpu.bin",
   "reference_addr": "0x0",
   "boot_seconds": 25.0,
   "presence": false,
   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
   "background": true,
-  "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
+  "symbols": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
+  "summary": "start radendur on /Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
   "status": "ok",
   "system": "radendur",
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "binary": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "<volatile>",
   "pid": "<volatile>",
   "stub_port": "<volatile>",
-  "scratch_dir": "$TMPDIR/mame-mcp-<run>",
-  "state_dir": "$TMPDIR/mame-mcp-<run>",
+  "scratch_dir": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>",
+  "state_dir": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>",
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "debugger": {
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
   },
-  "errorlog_path": "$TMPDIR/mame-mcp-<run>/error.log",
-  "stdout_path": "$TMPDIR/mame-mcp-<run>/stdout.log",
+  "errorlog_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/error.log",
+  "stdout_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/stdout.log",
   "rom_check": "OK",
   "symbols_total": 64,
   "symbols_format": "yaml",
@@ -174,7 +174,7 @@ Example, from a live run:
   "views": ["Screen 0 Standard (4:3)", "Cocktail"],
   "background": true,
   "flags": ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"],
-  "boot_lua_path": "$TMPDIR/mame-mcp-<run>/boot.lua",
+  "boot_lua_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/boot.lua",
   "presence": false,
   "machine": {
     "cpus": 2,
@@ -187,8 +187,8 @@ Example, from a live run:
   },
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
-    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
+    "key": "radendur /Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
@@ -312,7 +312,7 @@ Example, from a live run:
 {
   "summary": "status: no session",
   "status": "ok",
-  "last_stop": {"available": false, "why": "this session has not stopped yet"}
+  "last_stop": {"available": false, "why": "no session is live, so there is no stop to report"}
 }
 ```
 <!-- scry-reference:end status -->
@@ -378,7 +378,7 @@ Example, from a live run:
   "status": "ok",
   "window": {
     "display": 0,
-    "bounds": {"x": 352, "y": 40, "width": 1344, "height": 1040},
+    "bounds": {"x": 520, "y": 166, "width": 1008, "height": 788},
     "onscreen": true,
     "front": false,
     "fullscreen": false
@@ -569,18 +569,18 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_rom": "/Users/Shared/scry-wait-20261105/bench-mame/m68k-dual/disasm/img/radendur_maincpu.bin",
   "reference_addr": "0x0"
 }
 ```
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.54 ms per query",
+  "summary": "rom_check :maincpu: OK, 3.7 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.00154,
+  "query_s": 0.0037,
   "cpu": ":maincpu"
 }
 ```

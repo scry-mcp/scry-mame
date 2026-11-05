@@ -88,6 +88,33 @@ def no_control() -> st.Invalid:
     return screen_map.no_control(NO_CONTROL_DECLARE)
 
 
+#: `screen_wait`'s predicates, named as its arguments name them: exactly one is asked for.
+PREDICATES = ("text", "screen", "palette")
+#: The one palette a caller waits on today: every DAC entry black, which is how a fade ends.
+PALETTES = ("black",)
+#: The largest sampling step `screen_wait` takes, in frames.
+SAMPLED_EVERY_MAX = 600
+
+
+def check_wait(text: object = "", screen: object = "", palette: object = "", every: object = 0,
+               seconds: float = 30.0, **_: Any) -> None:
+    """`screen_wait`'s machine-independent half: one predicate, its values, the sampling step."""
+    named = [n for n, v in (("text", text), ("screen", screen), ("palette", palette)) if v]
+    if len(named) != 1:
+        raise st.Invalid("bad_argument",
+                         "screen_wait runs on exactly one of `text`, `screen` or `palette`; got "
+                         f"{len(named)} of them. Each is a different read of the screen, and a "
+                         "frame has the budget of one")
+    if palette:
+        vocab.one_of("palette", palette, ("", *PALETTES))
+    if not isinstance(every, int) or isinstance(every, bool) \
+            or not 0 <= every <= SAMPLED_EVERY_MAX:
+        raise st.Invalid("bad_argument",
+                         f"every={every!r} is 0 to {SAMPLED_EVERY_MAX} frames: the step a wait "
+                         "reads the screen at")
+    vocab.check_wait(seconds)
+
+
 def check_run_for(milliseconds: int = 0, frames: int = 0, seconds: float = 30.0,
                   **_: Any) -> None:
     """`run_for`'s machine-independent half: two different mistakes, said apart."""

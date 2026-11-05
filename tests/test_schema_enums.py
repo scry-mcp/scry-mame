@@ -68,6 +68,7 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("state_write", "method", lambda: tuple(folds.STATE_METHODS)),
     ("image_compare", "method", lambda: tuple(media_tools.IMAGE_METHODS)),
     ("audio_compare", "method", lambda: tuple(media_tools.AUDIO_METHODS)),
+    ("screen_wait", "palette", lambda: ("", *advance.PALETTES)),
 ]
 
 #: Depth of the items (a list of lists is 2) and what each item publishes.

@@ -121,6 +121,7 @@ from scry_mame import space as mspace  # noqa: E402
 from scry_mame import state as st  # noqa: E402
 from scry_mame import sweep as msweep  # noqa: E402
 from scry_mame import trace as mtrace  # noqa: E402
+from scry_mame import wait as mwait  # noqa: E402
 from scry_mame import write as mwrite  # noqa: E402
 from scry_mame.mcp import RECORDER, ROSTER, tool  # noqa: E402
 from scry_mame.mcp import mcp as mcp  # noqa: E402  (the probe and the clients read `server.mcp`)
@@ -1535,6 +1536,39 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
     args.check("input", port=port, field=field, frames=frames, seconds=seconds)
     return mlua.input_field(*stopped("an input"), port, field, value, frames, seconds,
                             bridge(ctx))
+
+
+@tool("Wait for a mapped screen or a black palette", summary=summaries.screen_wait,
+      on_cancel="stop")
+def screen_wait(text: str = "", screen: str = "",
+                palette: Annotated[str, vocab.enum(("", *advance.PALETTES))] = "",
+                every: int = 0,
+                seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
+                ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
+    """Run the machine until ONE predicate holds, and stop there.
+
+    `screen`: the loaded map's screen is on the frame (`screen_map_write`; enters it). `palette`
+    ({PALETTES}: every DAC entry black, which is how a fade ends). Exactly one of the two, or
+    `bad_argument`; `text` is refused `no_channel`, because this server hands the screen as
+    pixels and a text mode's characters are DOSBox-X's to read.
+
+    `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
+    costs a console round trip is waited on in reasonable time, and a screen alive for fewer
+    than N is passed over. Needs a stopped machine. Already true: answered at once, the machine
+    not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
+    frame late and sometimes mid-draw, so the judge is the server's at the stop.
+
+    Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
+    screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
+    stop survey of `run_for`), the stop's own fields. Refused: `bad_argument`, `unknown_ref` (no
+    such mapped screen), `no_channel`.
+
+    Reference: REFERENCE.md, Input and the screen.
+    """
+    args.check("screen_wait", text=text, screen=screen, palette=palette, every=every,
+               seconds=seconds)
+    return mwait.screen_wait(*stopped("a screen wait"), text, screen, palette, every, seconds,
+                             bridge(ctx))
 
 
 @tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop")

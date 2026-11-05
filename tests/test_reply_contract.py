@@ -44,6 +44,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "rom_check": {"reference_rom": __file__},
     "run_to": {"ref": "0x4a0", "control": "0x4b0"},
     "run_for": {"milliseconds": 16},
+    "screen_wait": {"screen": "menu"},
     "trace": {"frames": 2},
     "series_capture": {"at_frames": [10 ** 6]},
     "image_compare": {"method": "image", "a": _abs("nonexistent", "a.png"),

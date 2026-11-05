@@ -64,7 +64,7 @@ Example, from a live run:
   "truncated": false,
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
   },
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
@@ -168,7 +168,7 @@ Example, from a live run:
   "replaced_comments": [],
   "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
   },
   "cpu": ":maincpu"
 }

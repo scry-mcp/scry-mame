@@ -643,9 +643,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-<run>/snap/trace-1.trace",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-<run>/snap/trace-1.trace.set.jsonl",
+    "set_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,

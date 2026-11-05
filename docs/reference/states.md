@@ -41,9 +41,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "state_list: 0 states in $TMPDIR/mame-mcp-<run>/sta/radendur",
+  "summary": "state_list: 0 states in /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/sta/radendur",
   "status": "ok",
-  "state_dir": "$TMPDIR/mame-mcp-<run>/sta/radendur",
+  "state_dir": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/sta/radendur",
   "states": []
 }
 ```
@@ -122,7 +122,7 @@ Example, from a live run:
   "summary": "state_write save: m11, 111781 bytes at frame 30",
   "status": "ok",
   "name": "m11",
-  "path": "$TMPDIR/mame-mcp-<run>/sta/radendur/m11.sta",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/sta/radendur/m11.sta",
   "bytes": 111781,
   "frame": 30,
   "pc": "0x000e2cea",

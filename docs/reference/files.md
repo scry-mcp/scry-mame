@@ -97,7 +97,7 @@ Example, from a live run:
 ```json
 {
   "method": "region",
-  "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
+  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json",
   "measure": "changed_pixels"
 }
 ```
@@ -124,8 +124,8 @@ Example, from a live run:
   ],
   "gaps": [1, 1, 1, 1, 1, 1, "... 2 more"],
   "transitions_total": 9,
-  "path": "$TMPDIR/mame-mcp-<run>/series/series-1/track-1.json",
-  "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json"
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/track-1.json",
+  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json"
 }
 ```
 <!-- scry-reference:end image_compare -->
@@ -196,13 +196,13 @@ Example, from a live run:
 ```json
 {
   "method": "measure",
-  "path": "$TMPDIR/jobs-scratch/L/f4.wav"
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 
 ```json
 {
-  "summary": "audio_compare measure: ch0 peak -8.55 dBFS, onset 0.0001 s",
+  "summary": "audio_compare measure: ch0 peak -8.55 dBFS, onset 0.0 s",
   "status": "ok",
   "sample_rate_hz": 48000,
   "channels": 1,
@@ -218,13 +218,13 @@ Example, from a live run:
         "count": 0,
         "first": {"available": false, "why": "no silence in the window"}
       },
-      "onset_s": 0.0001,
+      "onset_s": 0.0,
       "clipping_run": 0,
       "clipped": false
     }
   ],
-  "pcm_sha256": "9c808cd852605b03eea32b76138f7c9f518c7f2f29e3b9ca76530161be7301fb",
-  "path": "$TMPDIR/jobs-scratch/L/f4.wav"
+  "pcm_sha256": "78e4eaf1ae7707114ef29ad1549ab0a8ccb5a0f39daa96961f9d9a054d78b4c3",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 <!-- scry-reference:end audio_compare -->

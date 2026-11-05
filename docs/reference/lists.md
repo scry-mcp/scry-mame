@@ -341,15 +341,15 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/jobs-scratch/A/f12.json"
+  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to $TMPDIR/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "$TMPDIR/jobs-scratch/A/f12.json",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
   "steps": 43,
   "checks": 7,
   "dropped": [
@@ -363,7 +363,7 @@ Example, from a live run:
   ],
   "dropped_total": 41,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
-  "replay": "uv run python -m scry_core.replay $TMPDIR/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->

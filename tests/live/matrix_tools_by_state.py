@@ -207,6 +207,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
     "series_capture": _series_ahead,
     **{tool: functools.partial(dict, args) for tool, args in MEDIA_ABSENT.items()},
     "palette": dict,
+    "screen_wait": lambda: {"palette": "black", "seconds": 0.2},
     "screen_view": lambda: {"mode": "histogram"},
     "gfx_view": lambda: {"layout": BYTES_8X8, "palette": "none", "tag": "maincpu", "count": 16},
     "gfx_locate": lambda: {"layouts": [BYTES_8X8], "patch": [0, 0, 8, 8], "tag": "maincpu",
@@ -296,6 +297,8 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "screen_map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
     "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
+    "screen_wait": lambda r: r.get("verdict") == "TIMEOUT"
+    and r.get("predicate") == "palette" and isinstance(r.get("polls"), int),
     "screen_view": lambda r: sum(n for _, n in r.get("histogram", []))
     == r.get("width", 0) * r.get("height", 0) > 0,
     "gfx_view": lambda r: r.get("count") == 16 and r.get("real_colors") is False,

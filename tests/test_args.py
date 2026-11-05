@@ -55,6 +55,7 @@ from scry_mame import server as s  # noqa: E402
 from scry_mame import state as st  # noqa: E402
 from scry_mame import sweep as msweep  # noqa: E402
 from scry_mame import trace as mtrace  # noqa: E402
+from scry_mame import wait as mwait  # noqa: E402
 from scry_mame import write as mwrite  # noqa: E402
 
 SERVER = pathlib.Path(s.__file__)
@@ -144,6 +145,7 @@ OWNERS = {
     "symbols_find": read.check_symbols_find, "memdump": files.check_memdump,
     "snapshot": files.check_snapshot, "log": files.check_log,
     "log_wait": files.check_log_wait, "run_for": advance.check_run_for,
+    "screen_wait": advance.check_wait,
     "step": advance.check_step, "run_to": advance.check_run_to,
     "breakpoint_at": breakpoints.check_breakpoint_at, "watch_add": watches.check_watch_add,
     "regpoint_add": regpoints.check_regpoint_add,
@@ -230,6 +232,7 @@ def test_every_module_body_asks_its_own_check() -> None:
         "symbols_find": read.symbols_find, "memdump": files.memdump,
         "snapshot": files.snapshot, "log": files.log, "log_wait": files.log_wait,
         "run_for": advance.run_for, "step": advance.step, "run_to": advance.run_to,
+        "screen_wait": mwait.screen_wait,
         "resume": running.resume, "throttle": mlua.throttle,
         "breakpoint_at": breakpoints.breakpoint_at, "watch_add": watches.watch_add,
         "regpoint_add": regpoints.regpoint_add,

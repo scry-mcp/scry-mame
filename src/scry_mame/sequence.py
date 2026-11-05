@@ -101,6 +101,7 @@ BY_OP: dict[str, Callable[..., Any]] = {
     "log_wait": files.check_log_wait,
     "run_to": advance.check_run_to,
     "run_for": advance.check_run_for,
+    "screen_wait": advance.check_wait,
     "trace": mtrace.check_trace,
     "step": advance.check_step,
     "resume": running.check_resume,

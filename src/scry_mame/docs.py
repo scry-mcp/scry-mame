@@ -77,6 +77,7 @@ DOC_VALUES: dict[str, str] = {
     "NOLOOP_FRAMES_MAX": str(mtrace.NOLOOP_FRAMES_MAX),
     "NOLOOP_MS_MAX": str(mtrace.NOLOOP_MILLISECONDS_MAX),
     "TRACE_SYMBOLS_SHOWN": str(mtrace.SYMBOLS_SHOWN),
+    "PALETTES": ", ".join(f"`{p}`" for p in advance.PALETTES),
 }
 
 

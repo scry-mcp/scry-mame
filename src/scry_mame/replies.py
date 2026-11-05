@@ -836,6 +836,19 @@ class RunToReply(MameEnvelope, total=False):
     watches: list[Any]
 
 
+class ScreenWaitReply(RunForReply, total=False):
+    already: bool
+    entries: int
+    frames: Annotated[int, When("once answered")]
+    palette: str
+    polls: Annotated[int, When("once answered")]
+    predicate: Annotated[str, When("once answered")]
+    sampled_every: Annotated[int, When("once answered")]
+    screen: Annotated[dict[str, Any], When("a screen predicate")]
+    verdict: Required[str]
+    waited_s: Annotated[float, When("once answered")]
+
+
 class ScreenSignatureReply(MameConsoleAccount, total=False):
     call: str
     crop: list[Any]
@@ -1257,6 +1270,7 @@ MODELS: dict[str, type] = {
     "rom_check": RomCheckReply,
     "run_for": RunForReply,
     "run_to": RunToReply,
+    "screen_wait": ScreenWaitReply,
     "screen_signature": ScreenSignatureReply,
     "screen_view": ScreenViewReply,
     "series_capture": SeriesCaptureReply,

@@ -20,7 +20,8 @@ STATE_FILE = "presence.state"
 #: `debug`, `cpu_focus`): presence is `acting`. Every other tool is in `STILL_TOOLS`; both are
 #: written out so a new tool must be placed (the suite holds them against the registry).
 DRIVING_TOOLS = frozenset({
-    "run_to", "run_for", "trace", "step", "resume", "stop", "series_capture", "input", "record",
+    "run_to", "run_for", "screen_wait", "trace", "step", "resume", "stop", "series_capture",
+    "input", "record",
     "audio_record", "reset", "state_write", "throttle", "drive", "perform", "lua", "debug",
     "cpu_focus", "write", "set_register"})
 STILL_TOOLS = frozenset({

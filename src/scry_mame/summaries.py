@@ -111,6 +111,18 @@ def run_to(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"{named}, control counted {reply['control_hits']}"
 
 
+def screen_wait(args: dict[str, Any], reply: dict[str, Any]) -> str:
+    predicate = str(reply.get("predicate") or "screen")
+    asked = args.get(predicate) or ""
+    said = f"screen {asked!r}" if predicate == "screen" else f"a {asked} palette"
+    polls = prose.counted(int(reply.get("polls") or 0), "frame")
+    if reply.get("verdict") == contract.TIMEOUT:
+        return f"screen_wait {said}: TIMEOUT after {polls}"
+    if reply.get("already"):
+        return f"screen_wait {said}: already on screen"
+    return f"screen_wait {said}: found after {polls}"
+
+
 def run_for(args: dict[str, Any], reply: dict[str, Any]) -> str:
     # The unit that DECIDED the run, never the default of the other one: "0 ms" on a run asked
     # in frames read as a run that went nowhere.

@@ -1,0 +1,24 @@
+{
+ "task": {
+  "id": "M211",
+  "prompt": "The machine is stopped and its screen map is loaded. Let it run until the mapped screen called menu is on screen, checking every 5 frames, and stop there.",
+  "tool": "screen_wait",
+  "args": {
+   "screen": "menu",
+   "every": 5
+  },
+  "allow": [
+   "text",
+   "palette",
+   "seconds"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "M211: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"every\": 5}}"
+   ],
+   "right": true
+  }
+ ]
+}

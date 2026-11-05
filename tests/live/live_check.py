@@ -1040,6 +1040,22 @@ r = s.state_write("load", name="foreign")
 check("another system's state is refused before the console", r.get("system") == "pacman",
       str(r.get("message"))[:70])
 
+print("\n== screen_wait(): the palette predicate on a real board, and `text` named as absent")
+r = s.screen_wait(palette="black", seconds=0.2)
+check("a palette that is not black times out, saying what it examined",
+      r.get("status") == "ok" and r.get("verdict") == "TIMEOUT"
+      and r.get("predicate") == "palette" and isinstance(r.get("polls"), int)
+      and r.get("polls") >= 1, str(r.get("summary") or r.get("message"))[:100])
+print(f"        {r.get('summary')}")
+r = s.screen_wait(text="GAME OVER", seconds=1)
+check("a text wait is refused by name: this server hands the screen as pixels",
+      r.get("status") == "INVALID" and r.get("code") == "no_channel",
+      str(r.get("message"))[:100])
+r = s.screen_wait(screen="never-mapped", seconds=1)
+check("a screen no map holds is refused before a frame runs",
+      r.get("status") == "INVALID" and r.get("code") == "unknown_ref",
+      str(r.get("message"))[:100])
+
 print("\n== record(): an AVI bounded by the frame counter, checked by its header")
 r = s.record(frames=30)
 check("record produces a finished AVI declaring EXACTLY the frames asked for",

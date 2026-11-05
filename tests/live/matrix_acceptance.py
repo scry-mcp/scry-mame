@@ -97,6 +97,9 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "circus: rom_check against the reference image answers OK for the 16 bytes it compared",
     "m68k-dual: a second resume after run_to is not stopped where run_to arrived, which the same "
     "address armed by hand does",
+    "circus: screen_wait on a palette that is not black times out, naming the frames it examined",
+    "circus: screen_wait's text predicate is refused by name, and a screen no map holds is "
+    "refused before a frame runs",
 ], start=1)]
 
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
@@ -222,6 +225,16 @@ def _h_circus(t: list[str]) -> None:
     r = call("rom_check", reference_rom=free_image("circus", ["9004a.1a"], folder),
              reference_addr="0x1000", reference_base="0x1000")
     cell(t[22], ok(r) and r.get("rom_check") == "OK", said(r))
+
+    waited = call("screen_wait", palette="black", seconds=0.2)
+    polls = waited.get("polls")
+    cell(t[-2], ok(waited) and waited.get("verdict") == "TIMEOUT"
+         and waited.get("predicate") == "palette" and isinstance(polls, int) and polls >= 1,
+         said(waited))
+    by_text = call("screen_wait", text="GAME OVER", seconds=1)
+    no_map = call("screen_wait", screen="never-mapped", seconds=1)
+    cell(t[-1], refused(by_text, "no_channel") and refused(no_map, "unknown_ref"),
+         f"{said(by_text)}; {said(no_map)}")
     call("close")
 
 
@@ -440,7 +453,8 @@ def _h_pangofun(t: list[str]) -> None:
 
 
 H_BOARDS = (
-    Board(_h_circus, (*range(12), 22), free_boards_missing),
+    Board(_h_circus, (*range(12), 22, len(H_CELLS) - 2, len(H_CELLS) - 1),
+          free_boards_missing),
     Board(_h_m68k_dual, (12, 23), m68k_dual_missing),
     Board(_h_v30, (13, 14, 15), lambda: board_missing("v30")),
     Board(_h_v30_alt, (16, 17, 18, 19, 20),

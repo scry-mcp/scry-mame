@@ -111,7 +111,7 @@ Example, from a live run:
   "indirect_entries": 0,
   "colors": ["#000000", "#ff0000", "#00ff00", "#ffff00", "#0000ff", "#ff00ff", "... 250 more"],
   "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/palette-1.png",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -434,6 +434,122 @@ Example, from a live run:
 
 The signature is `scry-sig/1`: 16 hex characters of the crop's colours pixel by pixel, so a palette change is a new signature.
 
+<!-- scry-reference:begin screen_wait -->
+## `screen_wait`
+
+*Wait for a mapped screen or a black palette*
+
+```text
+screen_wait(text="", screen="", palette="", every=0, seconds=30.0)
+```
+
+Run the machine until ONE predicate holds, and stop there.
+
+`screen`: the loaded map's screen is on the frame (`screen_map_write`; enters it). `palette`
+(`black`: every DAC entry black, which is how a fade ends). Exactly one of the two, or
+`bad_argument`; `text` is refused `no_channel`, because this server hands the screen as
+pixels and a text mode's characters are DOSBox-X's to read.
+
+`every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
+costs a console round trip is waited on in reasonable time, and a screen alive for fewer
+than N is passed over. Needs a stopped machine. Already true: answered at once, the machine
+not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
+frame late and sometimes mid-draw, so the judge is the server's at the stop.
+
+Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
+screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
+stop survey of `run_for`), the stop's own fields. Refused: `bad_argument`, `unknown_ref` (no
+such mapped screen), `no_channel`.
+
+Reference: REFERENCE.md, Input and the screen.
+
+| argument | type | default |
+|---|---|---|
+| `text` | string | `""` |
+| `screen` | string | `""` |
+| `palette` | one of `""`, `"black"` | `""` |
+| `every` | integer | `0` |
+| `seconds` | number (> 0, <= 600.0) | `30.0` |
+
+| reply field | type |
+|---|---|
+| `command_chars` | integer |
+| `cpu` | string or object |
+| `cycles` | integer or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
+| `disarmed_watches` | array |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number |
+| `errorlog` | object |
+| `frame` | integer or object |
+| `frame_after` | integer or object |
+| `frame_before` | integer or object |
+| `limit_chars` | integer |
+| `not_rearmed` | array |
+| `pc` | string |
+| `polls` | integer |
+| `reads` | integer |
+| `regpoint_hit` | object |
+| `regs` | object |
+| `stop_seq` | integer |
+| `verdict` | string |
+| `watch_hit` | object |
+| `watches` | array |
+| `already` | boolean |
+| `entries` | integer |
+| `frames` | integer |
+| `palette` | string |
+| `predicate` | string |
+| `sampled_every` | integer |
+| `screen` | object |
+| `waited_s` | number |
+
+Example, from a live run:
+
+```json
+{
+  "palette": "black",
+  "seconds": 0.2
+}
+```
+
+```json
+{
+  "summary": "screen_wait a black palette: TIMEOUT after 1 frame",
+  "status": "ok",
+  "verdict": "TIMEOUT",
+  "frame_before": 61,
+  "frame_after": 62,
+  "emulated_before_s": 1.034394,
+  "emulated_after_s": 1.050055,
+  "cycles": 11050,
+  "polls": 1,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 7,
+  "pc": "0x000012e3",
+  "cpu": ":maincpu",
+  "frame": 62,
+  "regs": {"A": "0x84", "X": "0x03", "Y": "0x5e", "P": "0xb1", "SP": "0x01fb", "PC": "0x12e3"},
+  "instruction": {
+    "address": "12E3",
+    "bytes": "AD00C0",
+    "text": "lda $c000",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["12E6: 30 FB    bmi $12e3", "12E8: A5 0A    lda $0a", "12EA: 8D 00 30 sta $3000", "12ED: A5 0B    lda $0b", "12EF: 8D 00 20 sta $2000", "12F2: AD 00 D0 lda $d000", "... 6 more"],
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 246},
+  "predicate": "palette",
+  "already": false,
+  "sampled_every": 0,
+  "frames": 1,
+  "waited_s": 0.4,
+  "note": "a black palette was not found in 1 frame within 0.2 s"
+}
+```
+<!-- scry-reference:end screen_wait -->
+
 <!-- scry-reference:begin gfx_view -->
 ## `gfx_view`
 
@@ -566,7 +682,7 @@ Example, from a live run:
   "real_colors": false,
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/gfx-1.png",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -940,7 +1056,7 @@ Example, from a live run:
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/sweep-1.png",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1041,21 +1157,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "$TMPDIR/jobs-scratch/A/f9.yaml"
+  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft $TMPDIR/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "$TMPDIR/jobs-scratch/A/f9.yaml",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml",
     "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
   },
   "report": {
-    "path": "$TMPDIR/jobs-scratch/A/f9.report.json",
-    "sha256": "94f3962385ae9f21e0f87a9b67973b58c206e5984e1b9bf576f29591b1bf11b4"
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f9.report.json",
+    "sha256": "aa0193da19d27f61156a4591ac51b8ca4bfa4d0fdebbe2f3580bfe2117dda8a5"
   },
   "formats": {},
   "asset_names": [],
@@ -1181,7 +1297,7 @@ Example, from a live run:
   "frame_screen": 8,
   "width": 336,
   "height": 252,
-  "rows_path": "$TMPDIR/mame-mcp-<run>/capture-700000_32_t70001e.rows",
+  "rows_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/capture-700000_32_t70001e.rows",
   "rows_kept": 7,
   "overflow_rows": 0,
   "callback_errors": {
@@ -1200,7 +1316,7 @@ Example, from a live run:
   "note": "a plane drawn in pages: `by_plane` and each listed blit name the `page`, and which page the screen shows is not in the rows",
   "not_proved": ["dest_x", "scroll_y", "source_dir_y", "source_x", "source_y", "planes.sprites", "... 1 more"],
   "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/blits-1.png",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -1399,7 +1515,7 @@ Example, from a live run:
   "not_proved": ["dest_x", "source_dir_y", "source_x", "source_y", "planes.sprites", "planes.background"],
   "reads_source": true,
   "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/source-1.png",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,
