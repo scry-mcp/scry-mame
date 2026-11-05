@@ -1,6 +1,7 @@
 """Section B of the live matrix: every argument at its edge."""
 
 
+import sys
 from dataclasses import dataclass
 from typing import Any
 
@@ -560,6 +561,11 @@ def _tenth_control() -> tuple[Case, Case]:
                  {"ref": f"{0x400 + 2 * 10:#x}", "role": "control"}, is_refused()))
 
 
+#: A watched window's first flags. Windows ignores `-resolution` under `-nomaximize`, so a
+#: fitted window drops that flag there and states its size instead (`window_words.mame`).
+WATCHED_FLAGS = (["-window", "-resolution"] if sys.platform == "win32"
+                 else ["-window", "-nomaximize", "-resolution"])
+
 NO_SESSION_CASES: list[Case] = [
     Case("start.stub_port at max 65535", "start", {**BOOT, "stub_port": 65535},
          is_ok(lambda r: r.get("stub_port") == 65535), then="close"),
@@ -569,7 +575,7 @@ NO_SESSION_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("start.shared opens a window scaled from the machine's screen", "start",
          {**BOOT, "shared": True, "background": True},
-         is_ok(lambda r: r.get("flags", [])[:3] == ["-window", "-nomaximize", "-resolution"]),
+         is_ok(lambda r: r.get("flags", [])[:len(WATCHED_FLAGS)] == WATCHED_FLAGS),
          then="close"),
     Case("start.display names the display the window opens on and the start proves it", "start",
          {**BOOT, "shared": True, "display": 0, "background": True},
