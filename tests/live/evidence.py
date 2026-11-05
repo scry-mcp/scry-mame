@@ -71,5 +71,13 @@ def console_ran_the_throttle_first(lua: dict[str, object], throttle: dict[str, o
 def console_disagreement(stdout: bytes, console: dict[str, int]) -> dict[str, tuple[int, int]]:
     """Each `console` count the log contradicts, as (log, session)."""
     seen = console_in_log(stdout)
-    return {k: (seen[k], console.get(k, -1)) for k in ("thread_errors", "reruns")
-            if seen[k] != console.get(k, -1)}
+    return {k: (seen[k], console.get(k, 0)) for k in ("thread_errors", "reruns")
+            if seen[k] != console.get(k, 0)}
+
+
+def console_unjudgeable(stdout: bytes, console: dict[str, int]) -> str:
+    """Why the console's counts cannot be judged against `stdout`; empty when they can."""
+    if console_in_log(stdout)["sentinels"]:
+        return ""
+    return (f"no console sentinel in the process log, so no console call was examined: "
+            f"console={console} would be compared against nothing")

@@ -104,8 +104,9 @@ def test_counts_that_agree_with_the_log_pass_and_one_off_by_one_fails() -> None:
     assert disagreement(_KEPT, {"thread_errors": 0, "reruns": 1, "lost": 0}) == {
         "thread_errors": (1, 0)}
     assert disagreement(_KEPT, {"thread_errors": 1, "reruns": 2, "lost": 0}) == {"reruns": (1, 2)}
-    assert disagreement(_KEPT, {}) == {"thread_errors": (1, -1), "reruns": (1, -1)}, (
-        "a block that carries no count is a disagreement, never a pass")
+    assert disagreement(_KEPT, {}) == {"thread_errors": (1, 0), "reruns": (1, 0)}, (
+        "a block that carries no count is a block of zeros: the server omits a healthy "
+        "console's counts, and only a log with no sentinel proves nothing was examined")
 
 
 def test_a_log_with_no_sentinel_examined_nothing() -> None:
@@ -179,3 +180,18 @@ def test_c3s_predicate_answers_false_where_a_mark_or_its_end_is_missing() -> Non
     gone = _THROTTLE_THEN_LUA.replace(b"MAME_MCP_LUA_END#2\t", b"")
     assert 2 not in ev.sentinel_order(gone), "the case is built: lua's end is not in the log"
     assert ev.console_ran_the_throttle_first(lua, throttle, gone) is False
+
+
+def test_a_healthy_console_is_judged_against_its_log_not_blocked() -> None:
+    """The close reply omits a console with no failure (`carried` keeps it only when a count is
+    up), so an absent block is zero failures; the cell's own proof of work is the log."""
+    evidence = _evidence()
+    quiet = {"thread_errors": 0, "reruns": 0, "lost": 0}
+    assert evidence.console_unjudgeable(_KEPT, quiet) == ""
+    assert evidence.console_unjudgeable(_KEPT, {}) == ""
+    assert evidence.console_disagreement(_KEPT, {}) == {"thread_errors": (1, 0), "reruns": (1, 0)}
+
+
+def test_a_log_with_no_sentinel_is_what_makes_the_cell_unjudgeable() -> None:
+    why = _evidence().console_unjudgeable(b"no console here\n", {})
+    assert "no console sentinel" in why

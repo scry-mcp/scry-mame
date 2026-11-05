@@ -39,8 +39,8 @@ from live_harness import (
 
 from evidence import (  # isort: skip -- it imports the server's files, so after the harness
     console_disagreement,
-    console_in_log,
     console_ran_the_throttle_first,
+    console_unjudgeable,
     sentinel_order,
 )
 
@@ -384,8 +384,8 @@ def c3_console_sequence() -> None:
     # death after the last of them is on the log and in nobody's count yet.
     stdout = log.read_bytes() if log.is_file() else b""
     console = call("close").get("session", {}).get("console", {})
-    if not console or console_in_log(stdout)["sentinels"] == 0:
-        blocked(C3[5], f"nothing to compare: console={console}, sentinels in {log}: none")
+    if why := console_unjudgeable(stdout, console):
+        blocked(C3[5], why)
     else:
         off = console_disagreement(stdout, console)
         cell(C3[5], not off, f"{console}; the log, where it differs: {off}")
