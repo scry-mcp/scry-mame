@@ -285,7 +285,6 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
     # machine or the console refused the rewind.
     if not releases and not console.refused_rewind(ran_cmds, output):
         _mark_counter(ses, ran_cmds)
-    _restart_assigned(ran_cmds)
     notes.extend(_controls_assigned(ran_cmds))
     if any(console.sets_cpus(one) for one in ran_cmds) and not releases:
         ignored = cpus.ignored(ses)
@@ -329,14 +328,6 @@ def _assigned_now(commands: list[str]) -> set[int]:
     """The temps a line assigns as it runs, not in a row it arms for later."""
     return set().union(*(lexer.temps_assigned(one) for one in commands
                          if not console.evaluated_later(one)))
-
-
-def _restart_assigned(commands: list[str]) -> None:
-    """A control whose temp a line assigns now restarts from the written value."""
-    now = _assigned_now(commands)
-    for c in STATE.controls.values():
-        if c["temp"] in now:
-            c["missed"] = 0
 
 
 def _controls_assigned(commands: list[str]) -> list[str]:

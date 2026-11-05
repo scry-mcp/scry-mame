@@ -523,13 +523,11 @@ def test_a_frame_run_landing_on_a_control_row_every_vblank_runs_to_its_frames(
     row = 0x400
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "irq_vblank", row)))
     monkeypatch.setattr(mstate.STATE, "controls",
-                        {("irq_vblank", ":maincpu"): {"addr": row, "temp": 0, "index": "1",
-                                                      "missed": 0}})
+                        {("irq_vblank", ":maincpu"): {"addr": row, "temp": 0, "index": "1"}})
     reg.current_pc = lambda: row  # type: ignore[method-assign]
     out = s.run_for(frames=4, seconds=2.0)
     assert out["verdict"] == "ELAPSED" and out["frame_after"] == 14, out
     assert reg.commands.count("gvblank") == 4
-    assert mstate.STATE.controls[("irq_vblank", ":maincpu")]["missed"] == 3
 
 
 def _misaligned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,

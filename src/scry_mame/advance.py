@@ -482,15 +482,6 @@ def refuse_frameless(what: str, instead: str = "") -> None:
 FRAMES_END = "the `gvblank` stop of the last frame asked"
 
 
-def _landing_left(counted_on: str | None) -> int | None:
-    """The pc of a frame stop a previous run by frames ended at, if the machine still stands there
-    on `counted_on`: its breakpoints were skipped, so the first `gvblank` executes it unchecked."""
-    stop = STATE.last_stop or {}
-    if stop.get("cause") != FRAMES_END or not cpus.same_cpu(stop.get("cpu"), counted_on):
-        return None
-    return int(stop["pc"], 16)
-
-
 def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                     progress: mprogress.Progress, through: dict[str, Any]) -> dict[str, Any]:
     """The run by frames: `gvblank` until the frame counter has moved by `frames`, routed
@@ -507,11 +498,6 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
     sent = 0
     last = before
     log, peeked = scratch / "debug.log", STATE.debuglog_mark
-    # A frame stop takes effect at the hook of its instruction, skipping breakpoints, so the next
-    # `gvblank` executes it with a control on it never evaluated: counted at the release.
-    landing = _landing_left(counted_on)
-    if landing is not None and landing != ses.current_pc():
-        landing = None
     with _console_run(ses):
         while last < target:
             if clock.expired():
@@ -528,9 +514,6 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
             try:
                 ses.monitor("gvblank")
                 sent += 1
-                if landing is not None:
-                    breakpoints.count_landing(landing, counted_on)
-                    landing = None
                 while not clock.expired():
                     readings.append(read.frame(ses))
                     if len(readings) >= 2 and readings[-1] == readings[-2]:
@@ -562,7 +545,6 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
             # leaves a vblank stop, the console log read after EVERY landing. A stop row hit with
             # the tick is surveyed too; a control never counts.
             pc = ses.current_pc()
-            landing = pc
             lines, peeked = files.lines_since(log, peeked)
             if (last == landed_from or running.stop_logged_in(lines)
                     or (breakpoints.bp_owned_at(pc, None) is not None

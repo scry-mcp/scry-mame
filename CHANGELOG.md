@@ -6,6 +6,13 @@ What a client of the server notices.
 
 It needs the scry-core that serves `scry_core.window`, not an older one: the tag pinned in `pyproject.toml` is the floor.
 
+- `start` has no `fullscreen` argument: no supported host shows a full-screen window for MAME (`-nowindow` opens a
+  window the display's work area holds, never the display), so it could only be refused.
+- `status` with no session says `no session is live, so there is no stop to report` for `last_stop`, not that the
+  session has not stopped yet.
+- A control on the instruction a stop lands on is counted by MAME alone: the server no longer adds a hit of its own
+  for each landing of a run by frames. That is exact on a MAME that evaluates the landing (mamedev/mame#16435); on one
+  that does not, such a control misses the landing, as the `declare` page says.
 - `start`'s description names `session_live`, the code a second `start` gets while a session is up, and the README
   says how to watch a machine.
 - `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default: a watched window

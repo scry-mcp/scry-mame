@@ -166,7 +166,7 @@ class State:
         # Throttle switches unconfirmed, and those found not applied (latches; see `REFERENCE.md`).
         self.throttles_pending: list[dict[str, Any]] = []
         self.throttles_not_applied: list[dict[str, Any]] = []
-        # Controls armed, by owner: address, `temp` hit counter, `bplist` row, `missed` hits.
+        # Controls armed, by owner: address, `temp` hit counter, `bplist` row.
         self.controls: dict[dec.Owner, dict[str, Any]] = {}
         self.debuglog_mark: int = 0
         self.machine_map: dict[str, Any] = {}

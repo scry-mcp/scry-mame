@@ -177,14 +177,13 @@ def arm_control(ses: gs.Session, owner: dec.Owner, addr: int,
     None. The counter is zeroed first: a freed temp still holds its count."""
     cpu = owner[1]
     row, temp = _control_row(held, owner, addr)
-    missed = STATE.controls.get(owner, {}).get("missed", 0) if row is not None else 0
     if row is None:
         ses.monitor(f"temp{temp} = 0")
         ses.monitor(bp_command(addr, f"(++temp{temp})==0", cpu))
         row = mlists.armed_row(held, mlists.bp_held(ses), addr, cpu=cpu)
         if row is None:
             return None
-    STATE.controls[owner] = {"addr": addr, "temp": temp, "index": row["index"], "missed": missed}
+    STATE.controls[owner] = {"addr": addr, "temp": temp, "index": row["index"]}
     own_row(row, owner)
     return row
 
@@ -195,24 +194,15 @@ def control_at(owner: dec.Owner) -> tuple[int, str | None]:
     return record["addr"], STATE.breakpoints.get(record["index"], {}).get("cpu")
 
 
-def count_landing(pc: int, cpu: str | None) -> None:
-    """One hit for every control at `pc` on `cpu`: MAME's instruction hook skips breakpoints on
-    the instruction a frame stop (`gvblank`) lands on, so the next release never counts it."""
-    for owner, rec in STATE.controls.items():
-        at, on = control_at(owner)
-        if at == pc and cpus.same_cpu(on, cpu):
-            rec["missed"] += 1
-
-
 def control_counts(ses: gs.Session) -> dict[dec.Owner, int]:
-    """Every control's count by owner: its temp plus the landings `count_landing` missed.
+    """Every control's count by owner: its temp.
     Raises `ExpressionRefused` for a temp the console refuses, `SessionError` for a reply that
     is not a number per control."""
     if not STATE.controls:
         return {}
     refs = list(STATE.controls)
     values = read.print_values(ses, [f"temp{STATE.controls[r]['temp']}" for r in refs])
-    return {r: v + STATE.controls[r]["missed"] for r, v in zip(refs, values, strict=True)}
+    return dict(zip(refs, values, strict=True))
 
 
 def check_breakpoint_at(ref: str, by: str = "auto", role: str = "stop",

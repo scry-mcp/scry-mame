@@ -84,7 +84,7 @@ Example, from a live run:
 
 **A control costs a run nothing**: MAME counts its hits through a conditioned console breakpoint (`bp addr:cpu,(++tempN)==0`) that never halts.
 
-MAME's debugger skips the breakpoints of the instruction a stop lands on when the stop came from outside the instruction stream (end of a frame, a time, a step), and that instruction executes unchecked on release. A run by frames lands on such an instruction every frame, often the first of the vblank handler, so `run_for(frames=N)` counts each landing it releases for a control sitting there. Any other such release still misses it, so place a control off the stopped pc.
+MAME's debugger skips the breakpoints of the instruction a stop lands on when the stop came from outside the instruction stream (end of a frame, a time, a step), and that instruction executes unchecked on release, unless the MAME carries mamedev/mame#16435, which evaluates it. This server counts nothing of its own for such a landing: on a MAME without that patch a control sitting on the instruction a stop lands on misses that landing (a run by frames lands on one every frame, often the first of the vblank handler), so there place a control off the stopped pc.
 
 **A condition turns "run to the vblank until this variable reads X" from a great many round trips into one run.** A name spelled like a register of the row's cpu is refused as ambiguous. The condition is kept as typed for the reason the ref is kept by name: at `start` it re-resolves, so a variable the rebuild moved is compared where it now lives.
 

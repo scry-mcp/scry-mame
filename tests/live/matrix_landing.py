@@ -27,8 +27,8 @@ AT_HANDLER, AT_INSIDE = "MCPH", "MCPI"
 V_TITLE = "a control on the instruction a stop lands on"
 V = [
     "over a run by frames on m68k-dual-alt, a control on the handler a frame stop lands on counts "
-    "as many hits as a control on the next instruction, while MAME's own logging breakpoint "
-    "there logs fewer lines than one on the next instruction",
+    "as many hits as a control on the next instruction, and as MAME's own logging breakpoint "
+    "there logs: the landing is evaluated by MAME (mamedev/mame#16435), not added by the server",
 ]
 
 
@@ -49,7 +49,7 @@ def _v_m68k_dual_alt(_cells: list[str]) -> None:
     counts = (first, inside, logged_first, logged_inside)
     cell(V[0], all(ok(r) for r in (*controls, *raw)) and ok(run)
          and run.get("verdict") == "ELAPSED" and all(isinstance(c, int) for c in counts)
-         and 0 < logged_first < logged_inside == first == inside,
+         and 0 < logged_first == logged_inside == first == inside,
          f"run {run.get('verdict')} {said(run, 60)}; controls at {HANDLER} {first}, at {INSIDE} "
          f"{inside}; logged at {HANDLER} {logged_first}, at {INSIDE} {logged_inside}")
 

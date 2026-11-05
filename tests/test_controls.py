@@ -1501,8 +1501,8 @@ def test_a_debug_line_that_assigns_a_controls_temp_names_the_control(
     from scry_mame import write as mwrite
 
     monkeypatch.setattr(mstate.STATE, "controls", {
-        ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1", "missed": 0},
-        ("SUB_IRQ", ":subcpu"): {"addr": 0x500, "temp": 9, "index": "2", "missed": 0}})
+        ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1"},
+        ("SUB_IRQ", ":subcpu"): {"addr": 0x500, "temp": 9, "index": "2"}})
     out = mwrite.debug(_LineSession(), tmp_path, line)  # type: ignore[arg-type]
     assert out["mutates"] is mutates, out
     notes = str(out.get("note", "")).split("; ")
@@ -1522,7 +1522,7 @@ def test_a_debug_line_that_releases_and_assigns_a_counter_says_both(
     from scry_mame import write as mwrite
 
     monkeypatch.setattr(mstate.STATE, "controls", {
-        ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1", "missed": 0}})
+        ("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 3, "index": "1"}})
     monkeypatch.setattr(mstate.STATE, "console_run", False)
     out = mwrite.debug(_LineSession(), tmp_path, "temp3=0;g")  # type: ignore[arg-type]
     first, second = str(out["note"]).split("; ")
@@ -1581,8 +1581,7 @@ def test_a_stop_found_on_a_control_row_is_an_interrupt_and_never_the_controls_do
     ses = _controlled(monkeypatch, tmp_path)
     monkeypatch.setattr(mstate.STATE, "breakpoints", bp_records((1, "IRQ_VBLANK", 0x400)))
     monkeypatch.setattr(mstate.STATE, "controls",
-                        {("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 0, "index": "1",
-                                                      "missed": 0}})
+                        {("IRQ_VBLANK", ":maincpu"): {"addr": 0x400, "temp": 0, "index": "1"}})
     assert running.halts(0x400, ":maincpu") is False
     assert running.attribute(0x400, ":maincpu") == "stopped at no breakpoint this server armed"
     at_rest = [False, True]            # the counter moves under `g`, rests after the halt
