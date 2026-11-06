@@ -3624,6 +3624,14 @@
    "args": {
     "profile": "field-bench"
    }
+  },
+  {
+   "id": "M213",
+   "prompt": "Replay the session kept in /tmp/mcp-probe-session.json on this machine, in one call, and do not send the steps yourself.",
+   "tool": "perform",
+   "args": {
+    "path": "/tmp/mcp-probe-session.json"
+   }
   }
  ]
 }

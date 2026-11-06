@@ -6,13 +6,16 @@
 *Run a sequence of steps*
 
 ```text
-perform(steps, settle_seconds=30.0, summaries=false, until_frame=0)
+perform(steps=null, path="", settle_seconds=30.0, summaries=false, until_frame=0)
 ```
 
 Run this server's operations in order, stopping at the first failure.
 
 `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-`drive`, `perform_export`. `until_frame=F` needs `summaries=True` (a window is hundreds of steps) and a `run_for` step, and repeats the list until a stop reads frame F, within 5000 steps and 600 s; `no_channel` if there is no frame counter. A step's `recorded`, `{field: value}` of its own reply,
+`drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:
+`.scry/perform/<name>.json`, or a file `perform_export` wrote) whose steps are replayed; give
+`steps` or `path`, never both.
+`until_frame=F` needs `summaries=True` (a window is hundreds of steps) and a `run_for` step, and repeats the list until a stop reads frame F, within 5000 steps and 600 s; `no_channel` if there is no frame counter. A step's `recorded`, `{field: value}` of its own reply,
 must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
 `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
@@ -24,7 +27,8 @@ Reference: REFERENCE.md, Sequences in one call.
 
 | argument | type | default |
 |---|---|---|
-| `steps` | array of object | required |
+| `steps` | array of object or null | `null` |
+| `path` | string | `""` |
 | `settle_seconds` | number (>= 0, <= 600.0) | `30.0` |
 | `summaries` | boolean | `false` |
 | `until_frame` | integer | `0` |

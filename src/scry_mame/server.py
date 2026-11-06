@@ -1480,7 +1480,7 @@ def drive(act: list[dict[str, Any]], expect: str = "",
 
 
 @tool("Run a sequence of steps", summary=summaries.perform, on_cancel="stop")
-def perform(steps: list[dict[str, Any]],
+def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
             settle_seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 30.0,
             summaries: Annotated[bool, Field(description=SUMMARIES_ARGUMENT)] = False,
             until_frame: int = 0,
@@ -1488,7 +1488,10 @@ def perform(steps: list[dict[str, Any]],
     """Run this server's operations in order, stopping at the first failure.
 
     `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-    `drive`, `perform_export`. {UNTIL_FRAME} A step's `recorded`, `{field: value}` of its own reply,
+    `drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:
+    `.scry/perform/<name>.json`, or a file `perform_export` wrote) whose steps are replayed; give
+    `steps` or `path`, never both.
+    {UNTIL_FRAME} A step's `recorded`, `{field: value}` of its own reply,
     must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
     `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
@@ -1498,8 +1501,10 @@ def perform(steps: list[dict[str, Any]],
 
     Reference: REFERENCE.md, Sequences in one call.
     """
+    recording.check_perform_arguments(steps, path)
     args.check("perform", settle_seconds=settle_seconds, summaries=summaries,
                until_frame=until_frame)
+    steps = recording.steps_to_replay(steps, path)
     # THE WHOLE LIST, BEFORE THE MACHINE. Nothing in a step's op, argument names or values needs an
     # emulator to be wrong, so the list is checked before the machine is asked for, and a cold
     # server refuses it exactly as a warm one does.
@@ -1612,9 +1617,9 @@ def screen_wait(text: str = "", screen: str = "",
     `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
     costs a console round trip is waited on in reasonable time, and a screen alive for fewer
     than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
-    recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the machine
-    not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
-    frame late and sometimes mid-draw, so the judge is the server's at the stop.
+    recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the
+    machine not moved. The emulator's own frame notifier is not used: measured, it reads the
+    screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
     Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
     screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the

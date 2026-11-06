@@ -4,8 +4,14 @@ What a client of the server notices.
 
 ## Unreleased
 
-It needs the scry-core that serves `scry_core.window`, not an older one: the tag pinned in `pyproject.toml` is the floor.
+It needs the scry-core that serves `scry_core.window`, `recording.read_document` and
+`recording.steps_to_replay`, not an older one: the tag pinned in `pyproject.toml` is the
+floor.
 
+- `perform` takes `path`: a `perform` document (`.scry/perform/<name>.json`, or a file
+  `perform_export` wrote) whose steps are replayed on the session; `steps` and `path` are
+  refused together, and a document whose version this server does not read is refused by
+  name.
 - `start` has no `fullscreen` argument: no supported host shows a full-screen window for MAME (`-nowindow` opens a
   window the display's work area holds, never the display), so it could only be refused.
 - `status` with no session says `no session is live, so there is no stop to report` for `last_stop`, not that the
