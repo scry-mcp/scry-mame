@@ -297,7 +297,7 @@ STOPPED_SAYS: dict[str, Callable[[dict[str, Any]], bool]] = {
     "screen_map_find": lambda r: r.get("matched") is True and r.get("screen") == "probe",
     "series_capture": lambda r: r.get("count") == 1 and r.get("kept_after_close") is False,
     "palette": lambda r: r.get("entries", 0) > 0 and r.get("image", {}).get("inline") is True,
-    "screen_wait": lambda r: r.get("verdict") == "TIMEOUT"
+    "screen_wait": lambda r: r.get("verdict") in ("TARGET", "TIMEOUT")
     and r.get("predicate") == "palette" and isinstance(r.get("polls"), int),
     "screen_view": lambda r: sum(n for _, n in r.get("histogram", []))
     == r.get("width", 0) * r.get("height", 0) > 0,

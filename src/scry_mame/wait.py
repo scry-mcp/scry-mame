@@ -20,6 +20,7 @@ from scry_core import reply_contract as contract
 from scry_core.prose import counted
 
 from scry_mame import advance, maps, running
+from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
 from scry_mame import state as st
@@ -112,7 +113,8 @@ def _answer(hit: dict[str, Any], *, predicate: str, polls: int, every: int,
     own = {"verdict": contract.TARGET, "predicate": predicate, "already": already, "polls": polls,
            "sampled_every": every, "frames": polls,
            "waited_s": round(time.monotonic() - began, 1), **hit}
-    return {**(last or {}), **own}
+    # No poll behind it, so no stop reply to inherit `status` from.
+    return menvelope.envelope({**(last or {}), **own})
 
 
 def _expired(predicate: str, asked: str, polls: int, every: int, seconds: float,
@@ -127,4 +129,4 @@ def _expired(predicate: str, asked: str, polls: int, every: int, seconds: float,
                    f"{seconds:g} s{sampled}"
                    + (", and the bound cut its last poll, which was stopped here" if cut
                       else "")}
-    return {**(last or {}), **own}
+    return menvelope.envelope({**(last or {}), **own})

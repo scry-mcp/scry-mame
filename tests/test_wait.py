@@ -89,6 +89,8 @@ def test_a_palette_already_black_answers_at_once_and_the_machine_is_not_stepped(
     r = wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30)
     assert (r["verdict"], r["predicate"], r["already"]) == ("TARGET", "palette", True), r
     assert r["polls"] == 0 and asked == [], "already true: the machine is not stepped"
+    # No poll ran, so there is no stop reply to inherit `status` from: the answer carries it.
+    assert r["status"] == "ok", r
 
 
 def test_one_poll_after_the_opening_read_finds_it_and_counts_its_frames(
