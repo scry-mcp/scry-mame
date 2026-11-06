@@ -488,7 +488,8 @@ STOPPED_ORDER = [
     "image_compare image", "image_compare series", "image_compare region", "image_compare golden",
     "audio_compare measure", "audio_compare diff", "palette", "screen_view", "gfx_view",
     "gfx_locate", "gfx_sweep", "gfx_draft", "gfx_load", "gfx_blits", "gfx_blit_source",
-    "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "series_capture",
+    "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "screen_wait",
+    "series_capture",
     "trace", "step", "input", "record", "audio_record", "memdump", "state_write save",
     "state_write load", "reset", "throttle", "perform", "drive", "perform_export", "log_wait",
     "stop", "start", "resume", "close"

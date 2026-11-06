@@ -871,6 +871,7 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
         {"op": "watch_add", "ref": BLITTER, "mode": "capture", "length": 32,
          "trigger": BLIT_TRIGGER},
         {"op": "run_for", "frames": 8, "seconds": 10.0},
+        {"op": "screen_wait", "palette": "black", "seconds": 0.2},
         {"op": "gfx_blits", "draw_command": "blit"}, {"op": "gfx_blit_source",
                                                       "draw_command": "blit",
                                                   "index": 0},
