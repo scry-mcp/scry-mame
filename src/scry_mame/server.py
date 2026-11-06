@@ -44,6 +44,7 @@ project.
 
 from __future__ import annotations
 
+import inspect
 from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated, Any
@@ -51,6 +52,7 @@ from typing import Annotated, Any
 from mcp.server.mcpserver import Context
 from pydantic import Field
 from scry_core import (  # noqa: E402
+    given,
     log_marks,
     media_tools,
     methods,
@@ -137,9 +139,9 @@ def _given(values: dict[str, Any]) -> dict[str, Any]:
 
 @tool("Start a MAME session", summary=summaries.start, on_cancel="kill")
 def start(
-    system: str,
-    rompath: str,
-    reference_rom: str,
+    system: str = "",
+    rompath: str = "",
+    reference_rom: str = "",
     symbols: str | dict[str, str] = "",
     reference_addr: str = "0x0",
     inipath: str = "",
@@ -160,6 +162,7 @@ def start(
     binary: str = "",
     presence: Annotated[bool, Field(description=scry_presence.ARGUMENT)] = True,
     view: Annotated[str, Field(description=launch.VIEW_ARGUMENT)] = "",
+    profile: str = "",
     ctx: Context[Any, Any] | None = None,
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -184,27 +187,59 @@ def start(
     `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
     `boot_lua`: a harness file, not Lua text.
 
+    `profile`: a repository's run recipe (`.scry/start/<name>.json`) or a path to one. Its keys
+    are this tool's arguments and fill only what the call does not give; the reply's `profile`
+    block names it and what it filled. The store is looked for from the server's working
+    directory, then `rompath` and `binary`.
+
     Refused before MAME boots: a live session (`session_live`), an unknown cpu, a class with no
     base, `bases` beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr`
     outside the image (a `shared` start first asks MAME `-listxml`, whose time comes before that
-    refusal).
+    refusal), a `profile` that no directory above holds (the refusal names them).
     A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
     `window_not_visible`, the session left live to `window` or `close`.
 
     Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
     `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
-    `recommended_release` ({MAME_RELEASE}); another release boots with a `note` saying so.
+    `recommended_release` ({MAME_RELEASE}), and with a profile `profile` (`name`, `file`,
+    `supplied`); another release boots with a `note` saying so.
 
     Reference: REFERENCE.md, The session.
     """
-    args.check("start", binary=binary, rompath=rompath, reference_rom=reference_rom,
-               symbols=symbols, inipath=inipath, boot_lua=boot_lua, state_dir=state_dir,
-               cfg=cfg, types=types, view=view)
-    return launch.start(binary, system, rompath, reference_rom, symbols, reference_addr,
-                        inipath, boot_seconds, shared, boot_lua, env, bases, reference_base,
-                        stub_port, state_dir, throttle_from_frame, types, cfg,
-                        background=background, presence=presence, view=view, display=display,
-                        size=size, progress=bridge(ctx))
+    params = dict(locals())
+    params.pop("ctx")
+    block: dict[str, Any] | None = None
+    if profile:
+        params, block = launch.with_profile(profile, keys=_PROFILE_KEYS, arguments=params,
+                                            given=given.names() or ())
+    params.pop("profile")
+    args.check("start", binary=params["binary"], system=params["system"],
+               rompath=params["rompath"], reference_rom=params["reference_rom"],
+               symbols=params["symbols"], inipath=params["inipath"],
+               boot_lua=params["boot_lua"], state_dir=params["state_dir"], cfg=params["cfg"],
+               types=params["types"], view=params["view"], profile=profile)
+    reply = launch.start(binary=params["binary"], system=params["system"],
+                         rompath=params["rompath"], reference_rom=params["reference_rom"],
+                         symbols=params["symbols"], reference_addr=params["reference_addr"],
+                         inipath=params["inipath"], wait=params["boot_seconds"],
+                         shared=params["shared"], boot_lua=params["boot_lua"],
+                         env=params["env"], bases=params["bases"],
+                         reference_base=params["reference_base"], port=params["stub_port"],
+                         state_dir=params["state_dir"],
+                         throttle_from_frame=params["throttle_from_frame"],
+                         types=params["types"], cfg=params["cfg"],
+                         background=params["background"], presence=params["presence"],
+                         view=params["view"], display=params["display"], size=params["size"],
+                         progress=bridge(ctx))
+    if block is not None:
+        reply["profile"] = block
+    return reply
+
+
+#: What a profile may set: `start`'s own arguments, read off its signature so the two cannot
+#: drift apart. `profile` is not one of them, and `ctx` is the protocol's.
+_PROFILE_KEYS = tuple(name for name in inspect.signature(start).parameters
+                      if name not in ("ctx", "profile"))
 
 
 @tool("Session status", summary=summaries.status, read_only=True)

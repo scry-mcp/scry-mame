@@ -440,7 +440,7 @@ def test_rom_check_refuses_an_address_outside_the_image_before_the_machine(
     assert control["code"] == "no_session", control
 
 
-_START_OK = {"binary": _abs("b", "mame"), "rompath": _abs("r"),
+_START_OK = {"binary": _abs("b", "mame"), "system": "m68k", "rompath": _abs("r"),
              "reference_rom": _abs("r", "rom.bin")}
 
 
@@ -472,9 +472,11 @@ def test_starts_machine_independent_half_judges_every_path_by_its_name(
 def test_starts_path_shapes_are_judged_in_the_order_judge_reads_them() -> None:
     """With two paths wrong, the one `judge` reads first is named."""
     with pytest.raises(st.Invalid, match=r"^binary="):
-        launch.check_start(binary="mame", rompath=_abs("r"), reference_rom="rom.bin")
+        launch.check_start(binary="mame", system="m68k", rompath=_abs("r"),
+                           reference_rom="rom.bin")
     with pytest.raises(st.Invalid, match=r"^reference_rom="):
-        launch.check_start(binary=_abs("b", "mame"), rompath="roms", reference_rom="rom.bin")
+        launch.check_start(binary=_abs("b", "mame"), system="m68k", rompath="roms",
+                           reference_rom="rom.bin")
 
 
 def test_a_start_refused_for_the_shape_of_a_path_leaves_out_its_empty_start_retries() -> None:

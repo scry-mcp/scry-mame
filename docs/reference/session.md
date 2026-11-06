@@ -2,13 +2,15 @@
 
 A session is one MAME under the debugger, parked STOPPED by `start` and ended by `close`. The contract every family shares is in [REFERENCE.md, The session](../../REFERENCE.md).
 
+A repository may declare, in its own `.scry/`, the mechanical facts of how its program starts: the run recipe under `.scry/start/`, its screen maps under `.scry/maps/` and its `perform` scripts under `.scry/perform/`. What the program's trace means (which stop serves, a key's case, "up" against "sounding") stays in that repository's own rule, because only the repository holds the gate that keeps it true.
+
 <!-- scry-reference:begin start -->
 ## `start`
 
 *Start a MAME session*
 
 ```text
-start(system, rompath, reference_rom, symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="")
+start(system="", rompath="", reference_rom="", symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="", profile="")
 ```
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -33,24 +35,30 @@ listed on that display and answers `window`; a later `window` judges a stated si
 `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text.
 
+`profile`: a repository's run recipe (`.scry/start/<name>.json`) or a path to one. Its keys
+are this tool's arguments and fill only what the call does not give; the reply's `profile`
+block names it and what it filled. The store is looked for from the server's working
+directory, then `rompath` and `binary`.
+
 Refused before MAME boots: a live session (`session_live`), an unknown cpu, a class with no
 base, `bases` beside a YAML file, a bad `types` line, a busy `stub_port`, a `reference_addr`
 outside the image (a `shared` start first asks MAME `-listxml`, whose time comes before that
-refusal).
+refusal), a `profile` that no directory above holds (the refusal names them).
 A mismatch: `readback_refused`, closed. A window that never appears on the asked display:
 `window_not_visible`, the session left live to `window` or `close`.
 
 Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
 `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
-`recommended_release` (0.289); another release boots with a `note` saying so.
+`recommended_release` (0.289), and with a profile `profile` (`name`, `file`,
+`supplied`); another release boots with a `note` saying so.
 
 Reference: REFERENCE.md, The session.
 
 | argument | type | default |
 |---|---|---|
-| `system` | string | required |
-| `rompath` | string | required |
-| `reference_rom` | string | required |
+| `system` | string | `""` |
+| `rompath` | string | `""` |
+| `reference_rom` | string | `""` |
 | `symbols` | string or object | `""` |
 | `reference_addr` | string | `"0x0"` |
 | `inipath` | string | `""` |
@@ -71,6 +79,7 @@ Reference: REFERENCE.md, The session.
 | `binary` | string | `""` |
 | `presence` | boolean | `true` |
 | `view` | string | `""` |
+| `profile` | string | `""` |
 
 - `presence`: Draw an edge around the emulator's window while this session is open: dim while idle, bright while a call runs the machine. No capture of this server carries it.
 - `view`: What `snapshot` and `record` render through: empty, the emulated screen at its own size; else a layout view by prefix (`views` lists them, `view` says which was taken).
@@ -102,6 +111,7 @@ Reference: REFERENCE.md, The session.
 | `phase` | string |
 | `pid` | integer |
 | `presence` | boolean |
+| `profile` | object |
 | `recommended_release` | string |
 | `registers` | array |
 | `reply` | string |

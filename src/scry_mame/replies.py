@@ -967,6 +967,7 @@ class StartReply(WindowRefused, total=False):
     phase: str
     pid: Required[int]
     presence: bool
+    profile: dict[str, Any]
     recommended_release: Required[str]
     registers: list[Any]
     reply: str

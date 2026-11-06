@@ -61,6 +61,8 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
     "a listed row carries age_s, which grows with the wall clock between two lists",
     "an ordered close, stopped, running or altered: exit 0, its pid and guardian gone, status "
     "not alive",
+    "a start from a .scry/start profile boots the board, the call's own argument untouched and "
+    "the reply naming the file and what it filled",
 ], start=1)]
 
 WITHIN_S = 5 * guardian.POLL_S
@@ -294,6 +296,34 @@ def _p_age(t: list[str]) -> None:
          f"age_s {first} then {second}, {AGE_GAP_S} s apart")
 
 
+def _p_profile(t: list[str]) -> None:
+    """A store of this run's own, found from the process's directory as a session's is, with a
+    `boot_seconds` the call overrides: the caller's own argument is the one that boots."""
+    root = Path(fresh("-store"))
+    (root / ".scry" / "start").mkdir(parents=True)
+    (root / "roms").symlink_to(str(BOOT["rompath"]), target_is_directory=True)
+    entry = root / ".scry" / "start" / "probe-profile.json"
+    entry.write_text(json.dumps({
+        "format": "scry-start/1", "system": BOOT["system"], "rompath": "roms",
+        "reference_rom": BOOT["reference_rom"], "binary": BOOT["binary"],
+        "inipath": BOOT["inipath"], "boot_seconds": 20.0}), encoding="utf-8")
+    here = os.getcwd()
+    os.chdir(root)
+    try:
+        r = call("start", profile="probe-profile", boot_seconds=40.0)
+    finally:
+        os.chdir(here)
+    raw = r.get("profile")
+    shown: dict[str, Any] = raw if isinstance(raw, dict) else {}
+    shown_file = Path(str(shown.get("file", "")))
+    cell(t[8], ok(r) and shown_file.resolve() == entry.resolve()
+         and shown.get("supplied") == ["binary", "inipath", "reference_rom", "rompath",
+                                       "system"]
+         and r.get("system") == BOOT["system"] and STATE.machine_alive(),
+         f"{said(r, 90)} / profile {shown}")
+    call("close")
+
+
 P_BOARDS = (
     Board(_p_port, (0,), m68k_dual_missing),
     Board(_p_foreign, (1,), m68k_dual_missing),
@@ -302,6 +332,7 @@ P_BOARDS = (
     Board(_p_own_store, (4, 5), m68k_dual_missing),
     Board(_p_age, (6,), m68k_dual_missing),
     Board(_p_quit, (7,), m68k_dual_missing),
+    Board(_p_profile, (8,), m68k_dual_missing),
 )
 boards_cover("section P", P_CELLS, P_BOARDS)
 

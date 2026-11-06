@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Collection
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -15,7 +16,16 @@ from pathlib import Path
 from typing import Any
 from xml.parsers import expat
 
-from scry_core import app_launch, guardian, judges, live_host, log_marks, window_size, window_words
+from scry_core import (
+    app_launch,
+    guardian,
+    judges,
+    live_host,
+    log_marks,
+    project_store,
+    window_size,
+    window_words,
+)
 from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
@@ -500,17 +510,44 @@ def judge_state_dir(state_dir: str) -> Path:
 
 PORT_MAX = 65535
 
+#: `start`'s arguments that hold paths, which a profile resolves against its store's base.
+#: `inipath` is not one: it is a `;`-separated list, so a profile spells each `${root}` itself.
+START_PATHS = ("binary", "rompath", "reference_rom", "symbols", "boot_lua", "state_dir", "cfg",
+               "types")
+
+
+def with_profile(profile: str, *, keys: Collection[str], arguments: dict[str, Any],
+                 given: Collection[str]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """`arguments`, every one `start` takes, with the profile `profile` filling only the names
+    `given` does not carry; and the reply's `profile` block. The store is looked for from this
+    process's directory, then from `rompath` and `binary`, which name the run and not the
+    repository that declares it."""
+    starting: list[str] = [os.getcwd()]
+    starting += [part for part in str(arguments.get("rompath") or "").split(";") if part]
+    if binary := str(arguments.get("binary") or ""):
+        starting.append(str(Path(judges.expanded(binary)).parent))
+    found = project_store.applied(profile, starting=starting, keys=keys,
+                                  path_keys=START_PATHS, given=given, arguments=arguments)
+    return found.arguments, found.shown()
+
 
 def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
-                symbols: syms.Given = "", inipath: str = "", boot_lua: str = "",
-                state_dir: str = "", cfg: str = "", types: syms.Types = "", view: str = "",
-                **_: Any) -> None:
+                system: str = "", profile: str = "", symbols: syms.Given = "",
+                inipath: str = "", boot_lua: str = "", state_dir: str = "",
+                cfg: str = "", types: syms.Types = "", view: str = "", **_: Any) -> None:
     """`start`'s machine-independent half: the shape of every path, in `judge`'s reading order.
-    Whether files exist is the host's."""
+    Whether files exist is the host's. A call naming a `profile` may leave to it what it fills:
+    the tool reads the profile and gates the merged arguments, so only what both lack is empty."""
+    if not profile:
+        project_store.demanded({"system": system, "rompath": rompath,
+                                "reference_rom": reference_rom},
+                               ("system", "rompath", "reference_rom"), tool="start")
     if binary:          # empty climbs `binary`'s ladder, which judges what it lands on
         inputs.absolute("binary", binary)
-    inputs.absolute("reference_rom", reference_rom)
-    inputs.absolute("rompath", rompath)
+    if reference_rom:
+        inputs.absolute("reference_rom", reference_rom)
+    if rompath:
+        inputs.absolute("rompath", rompath)
     judge_inipath(inipath)
     if cfg:
         inputs.absolute("cfg", cfg)
@@ -551,7 +588,8 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
 
     Path shapes first (`check_start`), then arguments in reading order; `state_dir` is written
     last."""
-    check_start(binary=binary, rompath=rompath, reference_rom=reference_rom, symbols=symbols,
+    check_start(binary=binary, system=system, rompath=rompath, reference_rom=reference_rom,
+                symbols=symbols,
                 inipath=inipath, boot_lua=boot_lua, state_dir=state_dir, cfg=cfg, types=types,
                 view=view)
     wanted = core_window.requested(shared, display, None, size, emulator="mame")
@@ -649,6 +687,7 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
 VIEW_ARGUMENT = ("What `snapshot` and `record` render through: empty, the emulated screen at its "
                  "own size; else a layout view by prefix (`views` lists them, `view` says which "
                  "was taken).")
+
 
 
 _VERSIONS = ThreadPoolExecutor(max_workers=1, thread_name_prefix="mame-version")

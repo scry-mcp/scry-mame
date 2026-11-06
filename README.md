@@ -17,6 +17,9 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
 - **Hold a live machine open.** `start` boots your system with the debugger attached, proves the
   loaded ROM against your reference image, reads your symbol file and parks the machine
   stopped. Registers, memory, a disassembly, the driver's log, a screenshot: each is one call.
+- **Start from your repository's recipe.** `start(profile=...)` takes the arguments a
+  `.scry/start/` file declares, fills only what the call does not give, and names the file and
+  what it filled in the reply.
 - **Names, not addresses.** Load the linker's map or a YAML of names and say `Player1`, not
   `0x008400`; a class that lives in RAM is relocated the way the running board sees it.
 - **Stop where you mean to, with a control beside it.** `run_to` counts a control breakpoint at
