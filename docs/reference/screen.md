@@ -44,6 +44,8 @@ The pens of a palette device as the machine holds them now, as a table and a swa
 route to the colours of a write-only RAMDAC.
 
 `palette` is the device tag (empty: the only one).
+`scale`: the integer the swatch is enlarged by, 0 the largest that fits; `dest`: a new
+path it is written to, else the session's scratch; `seconds` bounds the read.
 
 Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
 opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such

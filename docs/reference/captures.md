@@ -14,7 +14,7 @@ past the last.
 
 Frames by `run_for`'s counter, all ahead: `at_frames` or `first`, `last`, `step`, at most
 1000. `crop` is `[x, y, width, height]`. `dest`: a new absolute or `~`-led
-directory, kept after `close`. Needs a stopped machine.
+directory, kept after `close`. Needs a stopped machine; `seconds` bounds the read.
 
 Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
 `run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
@@ -150,7 +150,7 @@ Needs the machine STOPPED (else `not_stopped`).
 
 `dest`: an absolute path not there yet; empty lands in the scratch. `frames` is 2 or more.
 The AVI is checked before its path is given; zero frames is INVALID. A run cut short
-leaves the recording open (`ended: false`).
+leaves the recording open (`ended: false`); `seconds` bounds the wait for it.
 
 Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
 `note`, the stop survey. Without an answer, `pending`.

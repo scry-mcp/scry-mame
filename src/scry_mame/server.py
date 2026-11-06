@@ -1021,7 +1021,7 @@ def series_capture(at_frames: list[int] | None = None, first: int | None = None,
 
     Frames by `run_for`'s counter, all ahead: `at_frames` or `first`, `last`, `step`, at most
     {SERIES_MAX}. `crop` is `[x, y, width, height]`. `dest`: a new absolute or `~`-led
-    directory, kept after `close`. Needs a stopped machine.
+    directory, kept after `close`. Needs a stopped machine; `seconds` bounds the read.
 
     Reply: `manifest`, `count`, `first`, `last`, `crop`, `distinct`, `lost`, `kept_after_close`,
     `run_for`'s fields. Refused: `bad_argument`, `cut_by_other_stop`.
@@ -1056,6 +1056,8 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
     route to the colours of a write-only RAMDAC.
 
     `palette` is the device tag (empty: the only one).
+    `scale`: the integer the swatch is enlarged by, 0 the largest that fits; `dest`: a new
+    path it is written to, else the session's scratch; `seconds` bounds the read.
 
     Reply: `palette`, `entries`, `first`, `count`, `truncated`, `colors`, `alpha` (not fully
     opaque), `indirect_entries`, `image`. `unknown_ref`, `ambiguous_ref`, `no_channel`: no such
@@ -1620,7 +1622,7 @@ def record(frames: int, dest: str = "",
 
     `dest`: an absolute path not there yet; empty lands in the scratch. `frames` is 2 or more.
     The AVI is checked before its path is given; zero frames is INVALID. A run cut short
-    leaves the recording open (`ended: false`).
+    leaves the recording open (`ended: false`); `seconds` bounds the wait for it.
 
     Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
     `note`, the stop survey. {PENDING}
