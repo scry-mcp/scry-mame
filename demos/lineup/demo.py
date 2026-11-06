@@ -25,6 +25,13 @@ from scry_mame import binary as mame_binary  # noqa: E402  isort: skip -- the re
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
+#: The game's own repository declares its screen map; `--cwd` is that checkout.
+SCREEN_MAP = Path(".scry/maps/lineup.screen-map.json")
+
+
+def at(run: Run) -> Path:
+    """The game's screen map, in the checkout `--cwd` names."""
+    return Path(str(run.options["cwd"])).expanduser() / SCREEN_MAP
 #: The CODE segment's base, ROM content that never changes at runtime: what `start` checks.
 REFERENCE_ADDR = "0x30000"
 #: DGROUP sits at paragraph 0x40 at runtime, so a DATA symbol lives at 0x400 plus its offset;
@@ -52,6 +59,13 @@ def precheck(run: Run) -> str:
     if missing:
         return (f"no {' or '.join(missing)} in --rompath ({rompath or 'not given'}): pass the "
                 "directory holding LineUp's romset and the symbol map beside it")
+    cwd = run.options.get("cwd")
+    if not cwd:
+        return (f"pass --cwd, the reader's checkout of the game: its {SCREEN_MAP.as_posix()} "
+                "is the map the script loads")
+    if not at(run).is_file():
+        return (f"no {SCREEN_MAP.as_posix()} under --cwd {cwd}: the game's own repository "
+                "declares it")
     try:
         binary = mame_binary.resolve(run.options.get("binary", "")).path
     except Invalid:
@@ -94,14 +108,16 @@ BINDING = Binding(
     platform="mame",
     boot=[Step("start", "start", boot, started, options=frozenset({"binary", "rompath"}),
                volatile=free_set.START_VOLATILE)],
-    inputs=INPUTS, rate_hz=RATE_HZ, sound=HERE / "music.wav")
+    inputs=INPUTS, rate_hz=RATE_HZ, sound=HERE / "music.wav",
+    map=at)
 
 DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
     capture=lambda run: run.dir / "screen.png",
-    offers=frozenset({"rompath"}), precheck=precheck,
-    volatile=free_set.VOLATILE, host_args=free_set.HOST_ARGS)
+    offers=frozenset({"rompath", "cwd"}), reads=frozenset({"cwd"}), precheck=precheck,
+    volatile=free_set.VOLATILE,
+    host_args={**free_set.HOST_ARGS, "cwd": "the reader's checkout of the game"})
 
 
 if __name__ == "__main__":

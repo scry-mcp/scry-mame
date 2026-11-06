@@ -4,10 +4,11 @@
 
 *LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board with an AY-3-8910, and its
 team later ported the same source to MS-DOS. This demo plays it on the board under MAME with the
-very script the DOSBox-X server plays the PC port with, `scry_core.games.lineup`: the same steps,
-the same symbols, the same screen map, the same checks. Only a short binding differs per machine:
-how it starts, which input is the coin, the screen's refresh, and the recording its sound is held
-to. A script that needs anything more is a place where the two servers disagree.
+script `scry_core.games.lineup`, whose symbols, screens and checks are the ones the PC port's
+repository declares for its own demo: the same game, the same map, the same steps. Only a short
+binding differs per machine: how it starts, which input is the coin, the screen's refresh, and the
+recording its sound is held to. A script that needs anything more is a place where the two servers
+disagree.
 
 It runs to the routine that draws the high scores by name, drops a coin and reads the credits the
 game counted, starts a game, runs to the routine that writes its level, and plays: one column right,
@@ -24,21 +25,26 @@ linker's symbol map beside it, `lineup.map`, in one directory, and a MAME whose 
 includes `lineup`. The game's own repository builds both from its source and stages them together
 (`make stage-rom`); that repository is not public yet, so there is no link to it here.
 
+That repository also declares the game's screen map, `.scry/maps/lineup.screen-map.json`, which the
+demo loads; a checkout of it is what `--cwd` names.
+
 ## Run it
 
 ```sh
-uv run python demos/lineup/demo.py --rompath /path/to/romset
+uv run python demos/lineup/demo.py --rompath /path/to/romset --cwd /path/to/game
 ```
 
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
+- `--cwd PATH` (absolute or `~`-led) is the game's own repository checkout, whose
+  `.scry/maps/lineup.screen-map.json` is the map the script loads.
 - The window opens in front, scaled to be seen.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below, `TRANSCRIPT.md` and `screen.png` from a run where every step passed.
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step failed,
 2 a usage error, 3 nothing was demonstrated (a missing romset, a relative path, a server that did
-not start).
+not start, a checkout without the game's map).
 
 ## The prompt
 
@@ -46,8 +52,8 @@ Give this to an MCP client with this server connected:
 
 > Start `lineup` with the romset directory (as an absolute path), its symbols from `lineup.map`
 > there with DATA based at `0x400` and `LUP_JUKEBOX` read in place, checked against the image its
-> two ROM halves make at `0x30000`. Load the screen map `scry_core/games/lineup.screen-map.json` from
-> scry-core. Run to `Draw_High_Scores_Screen`
+> two ROM halves make at `0x30000`. Load the game's screen map,
+> `.scry/maps/lineup.screen-map.json` in the `--cwd` checkout. Run to `Draw_High_Scores_Screen`
 > counting `Check_Money25`, run a second and a half and tell me which screen it is and what
 > `Credits` holds. Drop a coin, run a second, name the screen and read `Credits` again. Press
 > START, run to `Level_Write`, run 200 ms, name the screen and read `Credits` and `Stage_Act`.

@@ -1364,7 +1364,8 @@ for name in DEMOS:
         rompath = Path(os.environ[GAME_ROMS[name]]).expanduser().resolve()
     try:
         ran = subprocess.run(
-            [sys.executable, str(demo_dir / "demo.py"), "--rompath", str(rompath)],
+            [sys.executable, str(demo_dir / "demo.py"), "--rompath", str(rompath),
+             "--cwd", str(rompath.parents[1])],
             cwd=ROOT, env={**os.environ, "MAME_BINARY": str(links / "bin" / "mame")},
             capture_output=True, text=True, timeout=DEMO_TIMEOUT_S)
         code, out, err = ran.returncode, ran.stdout, ran.stderr

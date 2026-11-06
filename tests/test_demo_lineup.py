@@ -37,6 +37,38 @@ def test_a_romset_without_its_symbols_is_refused(tmp_path: Path) -> None:
         "no lineup.map in --rompath")
 
 
+def test_the_demo_takes_the_game_s_map_from_its_own_checkout(tmp_path: Path) -> None:
+    roms = _romset(tmp_path / "roms")
+    assert demo.precheck(Run(dir=tmp_path, options={"rompath": str(roms)})).startswith(
+        "pass --cwd")
+    bare = Run(dir=tmp_path, options={"rompath": str(roms), "cwd": str(tmp_path)})
+    assert demo.precheck(bare).startswith("no .scry/maps/lineup.screen-map.json under --cwd")
+
+
+def test_the_map_is_the_game_s_and_a_copy_of_it_goes_into_the_run(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(demo, "precheck", lambda run: "")
+    game = tmp_path / "game"
+    (game / demo.SCREEN_MAP).parent.mkdir(parents=True)
+    (game / demo.SCREEN_MAP).write_text("{}", encoding="utf-8")
+    run = Run(dir=tmp_path / "run", options={"cwd": str(game)})
+    run.dir.mkdir()
+    assert demo.at(run) == game / demo.SCREEN_MAP
+    step = next(s for s in lineup.steps(demo.BINDING) if s.name == "map")
+    assert callable(step.args)
+    args = step.args(run)
+    assert args == {"method": "load", "path": run.dir / demo.SCREEN_MAP.name}
+    assert (run.dir / demo.SCREEN_MAP.name).read_text() == "{}"
+
+
+def test_a_cwd_led_by_a_tilde_is_expanded(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    (tmp_path / demo.SCREEN_MAP).parent.mkdir(parents=True)
+    (tmp_path / demo.SCREEN_MAP).write_text("{}", encoding="utf-8")
+    run = Run(dir=tmp_path, options={"cwd": "~"})
+    assert demo.at(run) == tmp_path / demo.SCREEN_MAP
+
+
 def test_the_board_starts_on_the_image_its_halves_make_with_the_romsets_map(
         tmp_path: Path) -> None:
     roms = _romset(tmp_path / "roms")

@@ -12,7 +12,7 @@ An indexed PNG keeps each pixel's index, so the file is the data and a golden ca
 
 **Discovering a board nobody has described** is a chain: `gfx_sweep` draws a block under candidate layouts, `gfx_locate` checks one against the screen, `gfx_draft` writes a manifest from what the session proved. Nothing in the chain ranks its candidates: a heuristic that looks like proof is worse than an honest list. Every `gfx_locate` answer, sweep and choice is kept as the session's EVIDENCE (gone at `close` and at `start`), and `gfx_draft` derives from that record alone.
 
-**Screen maps.** (A map may carry a `pointer` declaration, for a server that moves a mouse; this server has none, so it keeps the declaration, writes it back on `save` and uses it for nothing.) A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.screen-map.json`, kept in the application's own repository beside the program (a game both servers run keeps one map, beside its script in scry-core), in the format `scry-screen-map/1`:
+**Screen maps.** (A map may carry a `pointer` declaration, for a server that moves a mouse; this server has none, so it keeps the declaration, writes it back on `save` and uses it for nothing.) A screen map names an application's screens and the controls on each, so a caller asks "which screen is this" and gets a name instead of a picture. It is a file, `<application>.screen-map.json`, kept in the application's own store, `.scry/maps/<application>.screen-map.json` (a game both servers run keeps one copy in each port's repository), in the format `scry-screen-map/1`:
 
 ```json
 {"format": "scry-screen-map/1", "application": "circus", "mode": "verified",
@@ -457,9 +457,9 @@ pixels and a text mode's characters are DOSBox-X's to read.
 `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
 costs a console round trip is waited on in reasonable time, and a screen alive for fewer
 than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
-recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the machine
-not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
-frame late and sometimes mid-draw, so the judge is the server's at the stop.
+recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the
+machine not moved. The emulator's own frame notifier is not used: measured, it reads the
+screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
 Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
 screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
