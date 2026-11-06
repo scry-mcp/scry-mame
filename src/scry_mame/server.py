@@ -324,8 +324,8 @@ def cpu_focus(cpu: str) -> dict[str, Any]:
 @tool("What the debugger sees of each cpu", summary=summaries.cpu_info, read_only=True)
 def cpu_info(cpu: str = "") -> dict[str, Any]:
     """What the debugger sees of each cpu now: visibility, ignored or suspended, program counter,
-    and the breakpoints, watches and registerpoints declared on it. Moves nothing; answers on a
-    running machine.
+    and how many breakpoints, watches and registerpoints are declared on it. Moves nothing;
+    answers on a running machine.
 
     Arguments: `cpu`, a tag in either spelling (`subcpu` or `:subcpu`), narrows the rows.
 
@@ -1081,7 +1081,9 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
 
     `mode`: `render`, `isolate` (`pens`, 1..{SCREEN_PENS_MAX}, in `isolate_color` over grey),
     `histogram` (pens used, no picture), `pixel` (`point` `[x, y]`). `crop` `[x, y, width,
-    height]` narrows all but `pixel`.
+    height]` narrows all but `pixel`. `scale`: the integer the picture is enlarged by, 0 the
+    largest that fits; `dest`: a new path it is written to, else the session's scratch;
+    `attach=false` writes it without attaching it to the reply; `seconds` bounds the read.
 
     Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
     `screen_indexed`, `crop`, `image` (not for mode histogram); `isolate`: `pixels`, `bbox`,

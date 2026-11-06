@@ -10,8 +10,8 @@ cpu_info(cpu="")
 ```
 
 What the debugger sees of each cpu now: visibility, ignored or suspended, program counter,
-and the breakpoints, watches and registerpoints declared on it. Moves nothing; answers on a
-running machine.
+and how many breakpoints, watches and registerpoints are declared on it. Moves nothing;
+answers on a running machine.
 
 Arguments: `cpu`, a tag in either spelling (`subcpu` or `:subcpu`), narrows the rows.
 
