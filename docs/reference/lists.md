@@ -224,7 +224,7 @@ Example, from a live run:
           "cycles": 319450,
           "polls": 1,
           "cause": "the `gvblank` stop of the last frame asked",
-          "stop_seq": 28,
+          "stop_seq": 29,
           "pc": "0x000025f6",
           "cpu": ":maincpu",
           "frame": 31,
@@ -259,7 +259,7 @@ Example, from a live run:
           "errorlog": {
             "lines_total": 2,
             "truncated": false,
-            "lines": ["[luaengine] MAME_MCP_THROTTLE#24 throttled=false frame=30", ""],
+            "lines": ["[luaengine] MAME_MCP_THROTTLE#25 throttled=false frame=30", ""],
             "mark": 66675
           },
           "session": {
@@ -341,16 +341,16 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
+  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 
 ```json
 {
-  "summary": "perform_export: 43 steps, 7 checks, 41 dropped to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
+  "summary": "perform_export: 44 steps, 7 checks, 41 dropped to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
   "status": "ok",
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
-  "steps": 43,
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
+  "steps": 44,
   "checks": 7,
   "dropped": [
     {"call": 2, "op": "machine_map", "why": "a read the export does not check"},
@@ -363,7 +363,7 @@ Example, from a live run:
   ],
   "dropped_total": 41,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
-  "replay": "uv run python -m scry_core.replay /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
+  "replay": "uv run python -m scry_core.replay /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
 }
 ```
 <!-- scry-reference:end perform_export -->

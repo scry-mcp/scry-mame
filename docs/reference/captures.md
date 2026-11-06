@@ -73,17 +73,17 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
   "frame_after": 16,
-  "emulated_before_s": 0.259585,
+  "emulated_before_s": 0.259586,
   "emulated_after_s": 0.339456,
-  "cycles": 1277930,
+  "cycles": 1277920,
   "polls": 4,
   "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 19,
+  "stop_seq": 20,
   "pc": "0x00002986",
   "cpu": ":maincpu",
   "frame": 16,
@@ -116,7 +116,7 @@ Example, from a live run:
   },
   "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
-  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json",
+  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,
@@ -217,7 +217,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "record: 2 frames, 666220 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/record-2.avi",
+  "summary": "record: 2 frames, 666220 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/record-2.avi",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 19,
@@ -229,7 +229,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/record-2.avi",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/record-2.avi",
   "frames": 2,
   "began": true,
   "frame_begin": 20,
@@ -239,7 +239,7 @@ Example, from a live run:
   "avi_frames": 2,
   "frame_end": 21,
   "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 24,
+  "stop_seq": 25,
   "pc": "0x000e2cf0",
   "cpu": ":maincpu",
   "frame": 24,
@@ -274,7 +274,7 @@ Example, from a live run:
   "errorlog": {
     "lines_total": 6,
     "truncated": false,
-    "lines": ["[luaengine] MAME_MCP_RECORD#22 armed frame=19 vblank=true", "", "[luaengine] MAME_MCP_RECORD#22 begin frame=20 recording=true", "", "[luaengine] MAME_MCP_RECORD#22 end frame=21", ""],
+    "lines": ["[luaengine] MAME_MCP_RECORD#23 armed frame=19 vblank=true", "", "[luaengine] MAME_MCP_RECORD#23 begin frame=20 recording=true", "", "[luaengine] MAME_MCP_RECORD#23 end frame=21", ""],
     "mark": 66249
   },
   "view": "native"
@@ -372,7 +372,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/audio-3.wav",
+  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/audio-3.wav",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 24,
@@ -384,7 +384,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/audio-3.wav",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/audio-3.wav",
   "frames": 2,
   "began": true,
   "frame_begin": 25,
@@ -399,7 +399,7 @@ Example, from a live run:
   "sample_max": -6589,
   "frame_end": 26,
   "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 25,
+  "stop_seq": 26,
   "pc": "0x000e2cea",
   "cpu": ":maincpu",
   "frame": 30,
@@ -434,7 +434,7 @@ Example, from a live run:
   "errorlog": {
     "lines_total": 6,
     "truncated": false,
-    "lines": ["[luaengine] MAME_MCP_AUDIO#23 armed frame=24 vblank=true", "", "[luaengine] MAME_MCP_AUDIO#23 begin frame=25 ok=true recording=true time=0.51916800000000007 period=0.019968000000000003", "", "[luaengine] MAME_MCP_AUDIO#23 end frame=27 time=0.55910400000000005", ""],
+    "lines": ["[luaengine] MAME_MCP_AUDIO#24 armed frame=24 vblank=true", "", "[luaengine] MAME_MCP_AUDIO#24 begin frame=25 ok=true recording=true time=0.51916800000000007 period=0.019968000000000003", "", "[luaengine] MAME_MCP_AUDIO#24 end frame=27 time=0.55910400000000005", ""],
     "mark": 66415
   }
 }
@@ -480,9 +480,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "snapshot: 441 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/snapshot-1.png",
+  "summary": "snapshot: 441 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
   "status": "ok",
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/snapshot-1.png",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
   "bytes": 441,
   "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
   "view": "native"
@@ -530,7 +530,7 @@ Example, from a live run:
   "captures": [
     {
       "kind": "png",
-      "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/snapshot-1.png",
+      "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
       "present": true,
       "bytes": 441
     }

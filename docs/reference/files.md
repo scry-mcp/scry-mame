@@ -97,7 +97,7 @@ Example, from a live run:
 ```json
 {
   "method": "region",
-  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json",
+  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json",
   "measure": "changed_pixels"
 }
 ```
@@ -124,8 +124,8 @@ Example, from a live run:
   ],
   "gaps": [1, 1, 1, 1, 1, 1, "... 2 more"],
   "transitions_total": 9,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/track-1.json",
-  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/series/series-1/manifest.json"
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/track-1.json",
+  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json"
 }
 ```
 <!-- scry-reference:end image_compare -->
@@ -196,7 +196,7 @@ Example, from a live run:
 ```json
 {
   "method": "measure",
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 
@@ -224,7 +224,7 @@ Example, from a live run:
     }
   ],
   "pcm_sha256": "78e4eaf1ae7707114ef29ad1549ab0a8ccb5a0f39daa96961f9d9a054d78b4c3",
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
 }
 ```
 <!-- scry-reference:end audio_compare -->

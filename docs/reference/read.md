@@ -496,17 +496,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
+  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
+  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }

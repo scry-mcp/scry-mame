@@ -131,7 +131,7 @@ Example, from a live run:
   "frame_released": 18,
   "active": true,
   "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 23,
+  "stop_seq": 24,
   "pc": "0x000e2cdc",
   "cpu": ":maincpu",
   "frame": 19,
@@ -166,7 +166,7 @@ Example, from a live run:
   "errorlog": {
     "lines_total": 4,
     "truncated": false,
-    "lines": ["[luaengine] MAME_MCP_INPUT#21 set name=\"Coin 1\" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=17", "", "[luaengine] MAME_MCP_INPUT#21 release frame=18 port_held=0000dbff", ""],
+    "lines": ["[luaengine] MAME_MCP_INPUT#22 set name=\"Coin 1\" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=17", "", "[luaengine] MAME_MCP_INPUT#22 release frame=18 port_held=0000dbff", ""],
     "mark": 66062
   }
 }
@@ -347,7 +347,7 @@ Example, from a live run:
   "on": false,
   "pending": true,
   "applies": "when the console next reads a line: a step, the next frame emulated, or a debugger command on a stub that refreshes after one",
-  "tag": "MAME_MCP_THROTTLE#24",
+  "tag": "MAME_MCP_THROTTLE#25",
   "confirmed_by": "its tag in the error log, read by the next stop's survey, by `status` and by `close`; `status` lists it in `throttles_pending` until then, and if the tag never comes, every reply after that says so in `session.throttles_not_applied`"
 }
 ```

@@ -373,7 +373,7 @@ Example, from a live run:
     ":subcpu": {"reg": "PC", "before": "0x00000542", "after": "0x00000542"}
   },
   "cause": "step 1",
-  "stop_seq": 22,
+  "stop_seq": 23,
   "pc": "0x000029ee",
   "cpu": ":maincpu",
   "frame": 17,
@@ -516,7 +516,7 @@ Example, from a live run:
   "interrupted": false,
   "note": "the machine was already stopped",
   "last_stop": {
-    "stop_seq": 28,
+    "stop_seq": 29,
     "pc": "0x000025f6",
     "cpu": ":maincpu",
     "frame": 31,
@@ -600,7 +600,7 @@ Example, from a live run:
   "cycles": 319482,
   "polls": 1,
   "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 21,
+  "stop_seq": 22,
   "pc": "0x000029ee",
   "cpu": ":maincpu",
   "frame": 17,
@@ -634,7 +634,7 @@ Example, from a live run:
   "following": ["0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5", "0029F6: 4E75      rts", "0029F8: 0000 0796 ori.b   #$96, D0", "0029FC: 0000 4854 ori.b   #$54, D0", "002A00: 0000 4860 ori.b   #$60, D0", "002A04: 0000 48C4 ori.b   #$c4, D0", "... 2 more"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
   "stopped_on_its_own": {
-    "stop_seq": 20,
+    "stop_seq": 21,
     "pc": "0x00002986",
     "cpu": ":maincpu",
     "frame": 16,
@@ -643,9 +643,9 @@ Example, from a live run:
   },
   "trace": {
     "cpu": ":maincpu",
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/trace-1.trace",
+    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/trace-1.trace",
     "bytes": 13781,
-    "set_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/tmp.NXrd3RMLlu/tmp/mame-mcp-<run>/snap/trace-1.trace.set.jsonl",
+    "set_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/trace-1.trace.set.jsonl",
     "instructions": 23491,
     "addresses": 201,
     "unplaced": 0,

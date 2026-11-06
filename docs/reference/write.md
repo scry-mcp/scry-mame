@@ -198,7 +198,7 @@ Example, from a live run:
     {"ref": "film", "cpu": ":maincpu"}
   ],
   "cause": "softreset",
-  "stop_seq": 27,
+  "stop_seq": 28,
   "cpu": ":maincpu",
   "frame": 30,
   "regs": {
