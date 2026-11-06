@@ -19,7 +19,7 @@ from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core.prose import counted
 
-from scry_mame import advance, maps
+from scry_mame import advance, maps, running
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
 from scry_mame import state as st
@@ -53,10 +53,25 @@ def screen_wait(ses: gs.Session, scratch: Path, text: str, screen: str, palette:
             return _expired(name, asked, polls, every, seconds, began, last)
         last = advance.run_for(ses, scratch, 0, max(left, MIN_STEP_S), progress, frames=step)
         if last.get("status") != "ok":
+            # A POLL ITS OWN BOUND CUT LEFT THE MACHINE POSSIBLY RUNNING: the run says so with
+            # `not_settled`, and handing that back leaves the next reader refusing `not_stopped`.
+            # Brought to rest here, the wait answers the bound it actually spent. A counter
+            # that did not move is no verdict about the screen, so it travels as it came.
+            if last.get("code") == "not_settled" \
+                    and running.stop(ses, scratch).get("status") == "ok":
+                return _expired(name, asked, polls, every, seconds, began, None, cut=True)
             return last
-        polls += step
         if last.get("verdict") != contract.ELAPSED:
-            return _expired(name, asked, polls, every, seconds, began, last)
+            # A STOP THE WAIT DID NOT ASK FOR, with its bound unspent: the machine sits at that
+            # stop, so sealing a TIMEOUT beside its own cause would contradict itself. The twin
+            # server asks the caller to look at the stop: `wait_stopped`.
+            raise st.Invalid("wait_stopped",
+                f"a stop ended the poll before {asked} was judged: "
+                f"{last.get('cause') or 'a stop nothing declared'}. The machine is stopped there, "
+                f"and the wait did not reach its bound",
+                predicate=name, polls=polls,
+                **{k: v for k, v in last.items() if k not in ("status", "verdict", "polls")})
+        polls += step
         ran = judge()
         if ran is not None:
             return _answer(ran, predicate=name, polls=polls, every=every, already=False,
@@ -101,13 +116,15 @@ def _answer(hit: dict[str, Any], *, predicate: str, polls: int, every: int,
 
 
 def _expired(predicate: str, asked: str, polls: int, every: int, seconds: float,
-             began: float, last: dict[str, Any] | None) -> dict[str, Any]:
-    """`TIMEOUT`: what was examined, and the step when it sampled."""
+             began: float, last: dict[str, Any] | None, cut: bool = False) -> dict[str, Any]:
+    """`TIMEOUT`: what was examined, the step when it sampled, and the poll the bound cut."""
     sampled = ("" if not every else
                f", judged every {every} frames, so a screen shorter than that is passed over")
     own = {"verdict": contract.TIMEOUT, "predicate": predicate, "already": False,
            "polls": polls, "sampled_every": every, "frames": polls,
            "waited_s": round(time.monotonic() - began, 1),
            "note": f"{asked} was not found in {counted(polls, 'frame')} within "
-                   f"{seconds:g} s{sampled}"}
+                   f"{seconds:g} s{sampled}"
+                   + (", and the bound cut its last poll, which was stopped here" if cut
+                      else "")}
     return {**(last or {}), **own}

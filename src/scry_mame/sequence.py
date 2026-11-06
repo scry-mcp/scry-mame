@@ -385,7 +385,7 @@ _REF_METHOD = {"comment_write": "add", "scan": "start"}
 MOVES_VISIBLE = frozenset({
     "cpu_focus", "step", "run_to", "run_for", "resume", "trace", "debug", "stop", "log_wait",
     "reset", "state_write", "lua", "input", "record", "audio_record", "screen_signature",
-    "gfx_film", "series_capture"})
+    "screen_wait", "gfx_film", "series_capture"})
 _DECLARES = {"breakpoint_at": "breakpoint", "watch_add": "watch", "comment_write": "comment"}
 
 

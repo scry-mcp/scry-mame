@@ -23,6 +23,7 @@ from test_iotaps import _io_board  # noqa: E402
 from scry_mame import (
     comments,  # noqa: E402
     inputs,  # noqa: E402
+    sequence,  # noqa: E402
 )
 from scry_mame import declarations as dec  # noqa: E402
 from scry_mame import gdb_session as gs  # noqa: E402
@@ -356,6 +357,20 @@ def test_the_preflight_leaves_a_step_after_one_that_can_stop_the_machine_to_its_
                            {"op": "breakpoint_at", "ref": "2600"}], settle_seconds=5.0)
     assert out["code"] == "step_failed" and out["failed_at"] == 2, out
     assert _rows("breakpoint") == [("address", "0x4a0")], "the steps before it ran"
+
+
+def test_a_screen_wait_moves_the_visible_cpu_for_the_steps_after_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """`screen_wait` runs frames through the first cpu (`route_frames`), so a ref after it
+    belongs to that cpu's table, not to the one the list began on."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.visible_cpu = ":subcpu"     # a board whose second cpu is in front when the list starts
+    later = {"op": "breakpoint_at", "ref": "2600"}
+    assert sequence.refuse_refs(ses, [{"op": "screen_wait", "palette": "black"}, later]) is None
+    # the control: without the wait in front of it the same ref is not of this cpu's table
+    refused = sequence.refuse_refs(ses, [later])
+    assert refused is not None and refused["code"] == "unknown_ref", refused
 
 
 def test_drive_refuses_bare_hex_before_anything_ran_and_names_one_step(

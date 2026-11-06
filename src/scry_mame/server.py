@@ -1560,8 +1560,11 @@ def screen_wait(text: str = "", screen: str = "",
 
     Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
     screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
-    stop survey of `run_for`), the stop's own fields. Refused: `bad_argument`, `unknown_ref` (no
-    such mapped screen), `no_channel`.
+    stop survey of `run_for`), the stop's own fields; a poll the bound itself cut is stopped
+    there first, so the machine is never left running under a wait that gave up. Refused:
+    `bad_argument`, `unknown_ref` (no such mapped screen), `no_channel`, and `wait_stopped` when
+    a stop nobody asked for ends a poll before the bound (its `cause` and the stop's fields ride
+    beside it).
 
     Reference: REFERENCE.md, Input and the screen.
     """
