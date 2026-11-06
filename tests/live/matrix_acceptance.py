@@ -12,11 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from bench_boards import (
-    BINARY,
     M68K_DUAL_SYSTEM,
     MANIFEST,
-    ROMPATH,
-    V30_REFERENCE_ROM,
     V30_SYMBOLS,
     board_dir,
     board_missing,
@@ -25,7 +22,6 @@ from bench_boards import (
 )
 from gfx_layouts import CIRCUS_CHAR
 from live_harness import (
-    START_WAIT_S,
     WAIT_CEILING_S,
     Board,
     boards_cover,
@@ -272,18 +268,11 @@ def _h_m68k_dual(t: list[str]) -> None:
     call("close")
 
 
-# Per V30 board: label, then start's arguments; paths are relative to the board's bench directory,
-# and the binary is the one MAME (absolute, so the join leaves it as it is).
-
-V30 = ("v30", {"binary": BINARY, "system": value("v30", "system"),
-                  "rompath": ROMPATH, "inipath": "run", "reference_rom": V30_REFERENCE_ROM,
-                  "reference_addr": "0x30000", "reference_base": "0x0"})
+# Per V30 board: its label, which names the recipe this repository declares under
+# `.scry/start/`; only the symbol table is the call's, since a table changes per cell.
+V30: tuple[str, dict[str, str]] = ("v30", {})
 V30_BOOT_SYMBOLS = (V30_SYMBOLS, {"DATA": "0x400", value("v30", "rom_segment"): "rom"})
-V30_ALT = ("v30-alt", {"binary": BINARY, "system": value("v30-alt", "system"),
-                      "rompath": ROMPATH, "inipath": "run",
-                      "reference_rom": value("v30-alt", "reference_rom"),
-                      "reference_addr": "0xFFFF0", "reference_base": "0x20000"})
-PATHS = ("binary", "rompath", "inipath", "reference_rom")
+V30_ALT: tuple[str, dict[str, str]] = ("v30-alt", {})
 
 # v30's score digit: 24x24 pixels, a byte a pixel as eight planes; ten digits from 0x81a20
 DIGIT_ROW_BITS = 24 * 8
@@ -296,12 +285,11 @@ V30_DIGIT: dict[str, Any] = {
 
 def v30_boot(board: tuple[str, dict[str, str]],
              symbols: tuple[str, dict[str, str]] | None = None) -> dict[str, Any]:
-    label, args = board
-    root = board_dir(label)
-    kw: dict[str, Any] = {k: str(root / v) if k in PATHS else v for k, v in args.items()}
+    label = board[0]
+    kw: dict[str, Any] = {}
     if symbols is not None:
-        kw.update(symbols=str(root / symbols[0]), bases=symbols[1])
-    return require_booted(label, call("start", boot_seconds=START_WAIT_S, **kw))
+        kw.update(symbols=str(board_dir(label) / symbols[0]), bases=symbols[1])
+    return require_booted(label, call("start", profile=label, **kw))
 
 
 def _h_v30(t: list[str]) -> None:

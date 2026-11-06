@@ -1,0 +1,12 @@
+{
+  "format": "scry-start/1",
+  "binary": "${env:MAME_LIVE_BENCH}/m68k-dual/upstream/radendu",
+  "system": "radendur",
+  "rompath": "${env:MAME_LIVE_BENCH}/m68k-dual/run/mame_roms",
+  "reference_rom": "${env:MAME_LIVE_BENCH}/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "symbols": "${env:MAME_LIVE_BENCH}/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+  "inipath": "${root}/tests/live/fixtures/ini-no-joystick",
+  "reference_addr": "0x0",
+  "boot_seconds": 25.0,
+  "presence": false
+}

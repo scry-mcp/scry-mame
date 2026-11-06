@@ -1,0 +1,11 @@
+{
+  "format": "scry-start/1",
+  "binary": "${env:MAME_BINARY}",
+  "system": "lineup",
+  "rompath": "${env:MAME_LIVE_BENCH}/v30/run/mame_roms",
+  "inipath": "${env:MAME_LIVE_BENCH}/v30/run",
+  "reference_rom": "${env:MAME_LIVE_BENCH}/v30/build/Game_V30.bin",
+  "reference_addr": "0x30000",
+  "reference_base": "0x0",
+  "boot_seconds": 30.0
+}

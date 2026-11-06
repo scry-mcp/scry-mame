@@ -39,7 +39,7 @@ from bench_boards import (  # noqa: E402  # isort: skip
     M68K_DUAL_SYSTEM,
     NO_JOYSTICK_INI as NO_JOYSTICK_INI,
     REFERENCE_ROM,
-    SYMBOLS,
+    SYMBOLS,  # noqa: F401
     args_missing,
     binary_missing,
     m68k_dual_missing,
@@ -351,11 +351,12 @@ def fresh_state() -> str:
     return f"m{next(_names)}"
 
 
-def boot(**extra: Any) -> dict[str, Any]:
-    kw: dict[str, Any] = {**BOOT, "symbols": SYMBOLS, **extra}
-    if kw["symbols"] is None:
-        kw.pop("symbols")
-    return call("start", **kw)
+def boot(profile: str = "m68k-dual", **extra: Any) -> dict[str, Any]:
+    if "symbols" in extra and extra["symbols"] is None:
+        extra["symbols"] = ""
+    if BACKGROUND is not None:
+        extra.setdefault("background", BACKGROUND)
+    return call("start", profile=profile, **extra)
 
 
 def ensure_closed() -> None:
@@ -410,15 +411,17 @@ def require_booted(system: str, r: dict[str, Any]) -> dict[str, Any]:
 
 
 def free_boot(system: str, members: list[str], addr: str, ini_extra: str = "",
-              binary: str = "", **launch: Any) -> dict[str, Any]:
-    binary = binary or BUNDLE or BINARY
+              binary: str = "", profile: str = "free", **launch: Any) -> dict[str, Any]:
     folder = Path(fresh("-image"))
     folder.mkdir()
     image = free_image(system, members, folder)
+    if binary or BUNDLE:
+        launch.setdefault("binary", binary or BUNDLE)
+    if ini_extra:
+        launch.setdefault("inipath", no_joystick_ini(ini_extra))
     return require_booted(system, call(
-        "start", binary=binary, system=system, rompath=FREE_ROMS, reference_rom=image,
-        reference_addr=addr, reference_base=addr, inipath=no_joystick_ini(ini_extra),
-        boot_seconds=START_WAIT_S, **launch))
+        "start", profile=profile, system=system, reference_rom=image,
+        reference_addr=addr, reference_base=addr, **launch))
 
 
 def circus_boot(ini_extra: str = "", **launch: Any) -> dict[str, Any]:
@@ -454,10 +457,10 @@ def pangofun_boot() -> dict[str, Any]:
     (rompath / "pangofun" / PANGOFUN_PAL_NAME).write_bytes(bytes(PANGOFUN_PAL_BYTES))
     # The 64 KB bios ends at 4 GB, and the i386 family resets 16 bytes below the top.
     return require_booted("pangofun", call(
-        "start", binary=BINARY, system="pangofun", rompath=str(rompath),
+        "start", profile="free", system="pangofun", rompath=str(rompath),
         reference_rom=free_image("pangofun", ["bios.bin"], rompath, held),
-        reference_addr="0xfffffff0", reference_base="0xffff0000", inipath=no_joystick_ini(),
-        boot_seconds=START_WAIT_S))
+        reference_addr="0xfffffff0", reference_base="0xffff0000",
+        inipath=no_joystick_ini()))
 
 
 # A PC such as 0x0000 reads the same reversed, so it would judge no byte order.

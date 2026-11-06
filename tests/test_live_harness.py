@@ -1117,4 +1117,6 @@ def test_a_free_board_boots_the_bundle_only_when_the_run_asks_for_the_app_route(
     handed.clear()
     stub(h2)
     h2.free_boot("circus", ["9004a.1a"], "0x1000")
-    assert handed[0]["binary"] == h2.BINARY
+    # No binary in the call: the `free` recipe names `MAME_BINARY`, and only the app route or
+    # a caller's own binary overrides it.
+    assert "binary" not in handed[0], handed[0]

@@ -63,6 +63,8 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
     "not alive",
     "a start from a .scry/start profile boots the board, the call's own argument untouched and "
     "the reply naming the file and what it filled",
+    "a start from this repository's own .scry/start/m68k-dual.json boots the board, the reply "
+    "naming that file and what it filled",
 ], start=1)]
 
 WITHIN_S = 5 * guardian.POLL_S
@@ -324,6 +326,24 @@ def _p_profile(t: list[str]) -> None:
     call("close")
 
 
+def _p_repo_profile(t: list[str]) -> None:
+    """The recipe this repository ships, read through the same call the matrix makes: the file
+    that boots is the one under `.scry/start`, not a copy of it made in this run."""
+    root = Path(__file__).resolve().parents[2]
+    entry = root / ".scry" / "start" / "m68k-dual.json"
+    r = boot(profile=str(entry))
+    raw = r.get("profile")
+    shown: dict[str, Any] = raw if isinstance(raw, dict) else {}
+    shown_file = Path(str(shown.get("file", "")))
+    # `presence` is the harness's own: `call` gives it to every start, so the recipe's value
+    # loses to it and the block does not list it. The other eight are the recipe's.
+    cell(t[9], ok(r) and shown_file.resolve() == entry.resolve()
+         and shown.get("supplied") == ["binary", "boot_seconds", "inipath", "reference_addr",
+                                       "reference_rom", "rompath", "symbols", "system"]
+         and r.get("system") == BOOT["system"], f"{said(r, 90)} / profile {shown}")
+    call("close")
+
+
 P_BOARDS = (
     Board(_p_port, (0,), m68k_dual_missing),
     Board(_p_foreign, (1,), m68k_dual_missing),
@@ -333,6 +353,7 @@ P_BOARDS = (
     Board(_p_age, (6,), m68k_dual_missing),
     Board(_p_quit, (7,), m68k_dual_missing),
     Board(_p_profile, (8,), m68k_dual_missing),
+    Board(_p_repo_profile, (9,), m68k_dual_missing),
 )
 boards_cover("section P", P_CELLS, P_BOARDS)
 

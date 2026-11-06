@@ -17,6 +17,7 @@ def _root() -> Path:
 
 BENCH = bench.Bench(_root())
 IDENTITY = BENCH.root / "identity.json"
+os.environ["MAME_LIVE_BENCH"] = str(BENCH.root)
 
 IDENTITY_KEYS: dict[str, tuple[str, ...]] = {
     "m68k-dual": ("dir", "system", "binary", "reference_rom", "symbols", "sub_rom",

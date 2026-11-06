@@ -1,0 +1,10 @@
+{
+  "format": "scry-start/1",
+  "binary": "${env:MAME_LIVE_BENCH}/m68k-dual-alt/upstream-scry/rltennis",
+  "system": "rltennis",
+  "rompath": "${env:MAME_LIVE_BENCH}/m68k-dual-alt/run/mame_roms",
+  "reference_rom": "${env:MAME_LIVE_BENCH}/m68k-dual-alt/disasm/img/rltennis_maincpu.bin",
+  "inipath": "${root}/tests/live/fixtures/ini-no-joystick",
+  "reference_addr": "0x0",
+  "boot_seconds": 25.0
+}

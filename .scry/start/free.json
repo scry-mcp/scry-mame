@@ -1,0 +1,7 @@
+{
+  "format": "scry-start/1",
+  "binary": "${env:MAME_BINARY}",
+  "rompath": "${env:MAME_TEST_ROMS}",
+  "inipath": "${root}/tests/live/fixtures/ini-no-joystick",
+  "boot_seconds": 30.0
+}
