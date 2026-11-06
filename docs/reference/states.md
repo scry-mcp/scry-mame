@@ -61,7 +61,8 @@ state_write(method, name)
 ```
 
 Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..64
-characters) through the debugger console. Needs the machine stopped.
+characters) through the debugger console. `method`: `save` or `load`, the only two it takes.
+Needs the machine stopped.
 
 `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
 `errorlog`, `held`, `stop_seq` (held for a timer).

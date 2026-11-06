@@ -299,6 +299,7 @@ Record the mixer's output for exactly `frames` frames to a WAV, then stop.
 Needs the machine STOPPED (else `not_stopped`).
 
 `dest`: an absolute path not there yet; empty lands in the scratch. `frames` is 2 or more.
+`seconds` bounds the wait for the recording to end.
 The WAV is checked before its path is given; a span with no mixer update, no speaker, or a
 mixer already recording is INVALID. Silence is reported, never refused.
 

@@ -185,7 +185,9 @@ def start(
     listed on that display and answers `window`; a later `window` judges a stated size.
     `background`: launch behind, keeping the caller's focus, or in front; it does not need
     `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
-    `boot_lua`: a harness file, not Lua text.
+    `boot_lua`: a harness file, not Lua text. `boot_seconds`: the wait for MAME's first prompt.
+    `env`: variables MAME's own process gets. `cfg`: a `.cfg` file the server installs as the
+    system's own before it boots, judged for what MAME would refuse in silence.
 
     `profile`: a repository's run recipe (`.scry/start/<name>.json`) or a path to one. Its keys
     are this tool's arguments and fill only what the call does not give; the reply's `profile`
@@ -372,8 +374,9 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
     anchored screen: a place known to run, declared as a control on that cpu if it is new
     (`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
     controls count too. `condition`: stop only when it holds, bare numbers hex
-    (`w@DemoLen==0x25`). Needs a stopped machine. Refused: an unresolved ref, an empty or
-    unresolved control, an over-long `condition`.
+    (`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of
+    them cuts it. Needs a stopped machine. Refused: an unresolved ref, an empty or unresolved
+    control, an over-long `condition`.
 
     {MAP_RUN_TO}
 
@@ -400,7 +403,8 @@ def run_for(milliseconds: int = 0, frames: int = 0,
             seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
             disarm_watches: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run for `milliseconds` of emulated time or `frames` of the frame counter (exactly one) and
-    wait until STOPPED. {NEEDS_STOPPED}.
+    wait until STOPPED. `disarm_watches=true` disarms the watches for this pass, so none of them
+    cuts it. {NEEDS_STOPPED}.
 
     Reply: `verdict` (`ELAPSED`, `TIMEOUT`, `OTHER_STOP`; a control never cuts), `frame_before`,
     `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles` (each unavailable with
@@ -954,7 +958,7 @@ def screen_signature(crop: list[int] | None = None,
                      seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
                      ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """One hex string for the screen, or its `crop` `[x, y, width, height]`: "same screen?" is two
-    strings compared; `series_capture` writes it too.
+    strings compared; `series_capture` writes it too. `seconds` bounds the read.
 
     Reply: `signature`, `width`, `height`. `bad_argument`: `crop` off the screen. `no_channel`,
     `ambiguous_ref`: no or several screens, or a vector one.
@@ -1119,8 +1123,11 @@ def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "",
     `RGN_FRAC(n,d)`, `+ - *`, hex, `STEPn(a,b)`.
 
     Source: `tag` with `offset` ({NUMBER_ARG}), or `ref` (tile 0; `count` required). `count` 0:
-    the block, at most {GFX_TILES_MAX}; `columns` 1..{GFX_COLUMNS_MAX}. `palette`: `none` or a
-    tag.
+    the block, at most {GFX_TILES_MAX}; `columns` 1..{GFX_COLUMNS_MAX}; `first` starts the tiles
+    at that index. `palette`: `none` or a tag. `pen_base`: the pen each pixel starts at.
+    `scale`: the integer the picture is enlarged by, 0 the largest that fits; `dest`: a new path
+    it is written to, else the scratch; `attach=false` writes it without attaching it; `cpu`:
+    whose address space, the visible one when empty; `seconds` bounds the read.
 
     Reply: `layout`, `tiles_available`, `palette`, `real_colors`, `image`. `bad_argument`: not a
     layout, tiles past the block, too few pens, over {GFX_PIXELS_MAX} pixels or {GFX_BLOCK_MAX}
@@ -1151,7 +1158,9 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
     id (`s1c3`).
 
     Tiles `first`.. (`count` 1..{LOCATE_TILES_MAX}, 0 all) are tried under `flips` (absent: all
-    four). `transparent` leaves a pixel value out. Source as `gfx_view` (`offset`:
+    four). `transparent` leaves a pixel value out. `cpu`: whose address space, the visible one
+    when empty; `seconds` bounds the capture read, not the search. Source as `gfx_view` (`tag`,
+    `ref`, `offset`:
     {NUMBER_ARG}).
 
     Reply: `candidates`, `matched`, `matches_total`, `matches` (first {LOCATE_MATCHES_SHOWN}:
@@ -1186,7 +1195,9 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
     The family: `planes` x `sizes` ([width, height], sides 8..{SWEEP_SIDE_MAX}) x pixel order x
     `packed`, `planar` or `split` (`tag` only); at most {SWEEP_MAX} candidates. `count`: tiles a
     cell shows (1..{SWEEP_COUNT_MAX}). Source: `tag` with `offset` ({NUMBER_ARG}), or `ref`.
-    `palette` as `gfx_view`.
+    `palette` as `gfx_view`. `pen_base`: the pen each pixel starts at; `dest`: a new path the
+    sheet is written to, else the scratch; `cpu`: whose address space, the visible one when
+    empty; `seconds` bounds the read.
 
     Reply: `sweep`, `count`, `cell_scale`, `candidates` (`id`, `what`, `tiles_available`,
     `shown`), `next`, `image`. `bad_argument`: too many candidates, no whole tile, a sheet past
@@ -1250,7 +1261,9 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
 
     A missing capture is refused, naming the `watch_add`. `frame` defaults to the newest with
     blits. A summary by default; `area` `[x, y, width, height]` lists the blits covering it in
-    drawn order; `detail` lists all, {ROWS_SHOWN} a page from `first`.
+    drawn order; `detail` lists all, {ROWS_SHOWN} a page from `first`. `scale`: the integer the
+    picture is enlarged by, 0 the largest that fits; `dest`: a new path it is written to, else
+    the scratch; `seconds` bounds the read.
 
     Reply: `frame_blit`, `rows_cut`, `blits_in_frame`, `legend`, `by_plane`, `covering`,
     `topmost` (with `area`), `listed`, `blits` (with `area` or `detail`), `next_first` (more
@@ -1279,8 +1292,10 @@ def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | No
     it lands on screen.
 
     The blit: `frame` (as `gfx_blits`) and `index`, or `pc` (the writer; refused when it fired
-    more than once). `margin` (0..{BLIT_MARGIN_MAX}) dims pixels round the rectangle: `image` is
-    that view, `data` the exact indexed PNG.
+    more than once). `draw_command` is the name of a `gfx_blits` capture. `margin`
+    (0..{BLIT_MARGIN_MAX}) dims pixels round the rectangle: `image` is that view, `data` the
+    exact indexed PNG. `dest`: a new path the picture is written to, else the scratch;
+    `seconds` bounds the read.
 
     Reply: `frame_blit`, `index`, `blit_pc`, `asset`, `format`, `palette`, `rect` (`tile`, `x`,
     `y`, `width`, `height`), `margin`, `box`, `wrap`, `not_proved`, `reads_source`, `image`,
@@ -1339,6 +1354,7 @@ def gfx_film(trigger: str = "", length: Annotated[int, vocab.enum(mfilm.LENGTHS)
     {FILM_KEEP_MAX}) cropped to `crop`, into a new absolute `film_dir`.
 
     Read (no `trigger`; works while running): a contact sheet from `first`. `clear=True` clears.
+    `seconds` bounds the read that arms the film, not the sheet's.
 
     Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept` (once
     the film has dumped), `cells` (each `frame`, `pc`, `path`), `image` (once frames are kept),
@@ -1437,6 +1453,7 @@ def drive(act: list[dict[str, Any]], expect: str = "",
 
     `expect` (regex) waits up to `seconds` (default {EXPECT_WAIT_S}, at most {WAIT_MAX_S})
     for a matching line, only while the machine runs; `seconds` without `expect` is refused.
+    `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
     `looked.emulator` is the last `limit` (1..{LIST_MAX}) lines matching `pattern`. A failed
     step is INVALID `step_failed`; a stopped machine lacking the line, `wait_stopped`; a bad
     `act` step or argument, `bad_argument` before anything ran. With no `expect`, `verify`
@@ -1541,7 +1558,8 @@ def lua(script: str,
     """Evaluate a Lua `script` on MAME's Lua console; prefer the typed wrappers. {NEEDS_STOPPED}.
 
     `script`: one chunk of at most {SCRIPT_MAX} characters; only what it `print`s comes back.
-    `read_only=True` declares it only reads, else the session is marked ALTERED. More than
+    `seconds` bounds the console's answer. `read_only=True` declares it only reads, else the
+    session is marked ALTERED. More than
     {PIPE_STEPS_MAX} lines ahead in the pipe is refused. A chunk that fails to load or raises
     is INVALID with the console's `error:`; `reader_died` means the script never ran.
 
@@ -1593,7 +1611,8 @@ def screen_wait(text: str = "", screen: str = "",
 
     `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
     costs a console round trip is waited on in reasonable time, and a screen alive for fewer
-    than N is passed over. Needs a stopped machine. Already true: answered at once, the machine
+    than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
+    recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the machine
     not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
     frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
@@ -1642,6 +1661,7 @@ def audio_record(frames: int, dest: str = "",
     {NEEDS_STOPPED}.
 
     `dest`: an absolute path not there yet; empty lands in the scratch. `frames` is 2 or more.
+    `seconds` bounds the wait for the recording to end.
     The WAV is checked before its path is given; a span with no mixer update, no speaker, or a
     mixer already recording is INVALID. Silence is reported, never refused.
 
@@ -1707,7 +1727,8 @@ def state_list() -> dict[str, Any]:
 def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
                 name: str) -> dict[str, Any]:
     """Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..{STATE_NAME_MAX}
-    characters) through the debugger console. Needs the machine stopped.
+    characters) through the debugger console. `method`: `save` or `load`, the only two it takes.
+    Needs the machine stopped.
 
     `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
     `errorlog`, `held`, `stop_seq` (held for a timer).

@@ -128,6 +128,7 @@ unlike the one before. Judges `frames` (max 216000), keeps `keep` pictures (max
 64) cropped to `crop`, into a new absolute `film_dir`.
 
 Read (no `trigger`; works while running): a contact sheet from `first`. `clear=True` clears.
+`seconds` bounds the read that arms the film, not the sheet's.
 
 Reply (arm): `film`, `armed_now`. Reply (read): `film`, `state`, `judged`, `met`, `kept` (once
 the film has dumped), `cells` (each `frame`, `pc`, `path`), `image` (once frames are kept),

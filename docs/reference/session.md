@@ -33,7 +33,9 @@ refused naming the count. The server waits for the window to be
 listed on that display and answers `window`; a later `window` judges a stated size.
 `background`: launch behind, keeping the caller's focus, or in front; it does not need
 `shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
-`boot_lua`: a harness file, not Lua text.
+`boot_lua`: a harness file, not Lua text. `boot_seconds`: the wait for MAME's first prompt.
+`env`: variables MAME's own process gets. `cfg`: a `.cfg` file the server installs as the
+system's own before it boots, judged for what MAME would refuse in silence.
 
 `profile`: a repository's run recipe (`.scry/start/<name>.json`) or a path to one. Its keys
 are this tool's arguments and fill only what the call does not give; the reply's `profile`

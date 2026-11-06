@@ -189,7 +189,8 @@ lua(script, seconds=5.0, read_only=false)
 Evaluate a Lua `script` on MAME's Lua console; prefer the typed wrappers. Needs the machine STOPPED (else `not_stopped`).
 
 `script`: one chunk of at most 16000 characters; only what it `print`s comes back.
-`read_only=True` declares it only reads, else the session is marked ALTERED. More than
+`seconds` bounds the console's answer. `read_only=True` declares it only reads, else the
+session is marked ALTERED. More than
 8 lines ahead in the pipe is refused. A chunk that fails to load or raises
 is INVALID with the console's `error:`; `reader_died` means the script never ran.
 

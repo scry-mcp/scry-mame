@@ -164,6 +164,7 @@ the mark.
 
 `expect` (regex) waits up to `seconds` (default 5, at most 600)
 for a matching line, only while the machine runs; `seconds` without `expect` is refused.
+`settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 `looked.emulator` is the last `limit` (1..400) lines matching `pattern`. A failed
 step is INVALID `step_failed`; a stopped machine lacking the line, `wait_stopped`; a bad
 `act` step or argument, `bad_argument` before anything ran. With no `expect`, `verify`

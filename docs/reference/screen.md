@@ -337,7 +337,7 @@ screen_signature(crop=null, seconds=5.0)
 ```
 
 One hex string for the screen, or its `crop` `[x, y, width, height]`: "same screen?" is two
-strings compared; `series_capture` writes it too.
+strings compared; `series_capture` writes it too. `seconds` bounds the read.
 
 Reply: `signature`, `width`, `height`. `bad_argument`: `crop` off the screen. `no_channel`,
 `ambiguous_ref`: no or several screens, or a vector one.
@@ -456,7 +456,8 @@ pixels and a text mode's characters are DOSBox-X's to read.
 
 `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
 costs a console round trip is waited on in reasonable time, and a screen alive for fewer
-than N is passed over. Needs a stopped machine. Already true: answered at once, the machine
+than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
+recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the machine
 not moved. The emulator's own frame notifier is not used: measured, it reads the screen a
 frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
@@ -554,8 +555,11 @@ Bytes as tiles in a format you state, as MAME's `gfx_layout`.
 `RGN_FRAC(n,d)`, `+ - *`, hex, `STEPn(a,b)`.
 
 Source: `tag` with `offset` (an integer or a `0x` string), or `ref` (tile 0; `count` required). `count` 0:
-the block, at most 1024; `columns` 1..64. `palette`: `none` or a
-tag.
+the block, at most 1024; `columns` 1..64; `first` starts the tiles
+at that index. `palette`: `none` or a tag. `pen_base`: the pen each pixel starts at.
+`scale`: the integer the picture is enlarged by, 0 the largest that fits; `dest`: a new path
+it is written to, else the scratch; `attach=false` writes it without attaching it; `cpu`:
+whose address space, the visible one when empty; `seconds` bounds the read.
 
 Reply: `layout`, `tiles_available`, `palette`, `real_colors`, `image`. `bad_argument`: not a
 layout, tiles past the block, too few pens, over 1048576 pixels or 67108864
@@ -745,7 +749,9 @@ of 1..8 (plural even for one), each a `gfx_view` layout or a `gfx_sweep`
 id (`s1c3`).
 
 Tiles `first`.. (`count` 1..65536, 0 all) are tried under `flips` (absent: all
-four). `transparent` leaves a pixel value out. Source as `gfx_view` (`offset`:
+four). `transparent` leaves a pixel value out. `cpu`: whose address space, the visible one
+when empty; `seconds` bounds the capture read, not the search. Source as `gfx_view` (`tag`,
+`ref`, `offset`:
 an integer or a `0x` string).
 
 Reply: `candidates`, `matched`, `matches_total`, `matches` (first 32:
@@ -949,7 +955,9 @@ cell labelled (`S1C3`); nothing is ranked.
 The family: `planes` x `sizes` ([width, height], sides 8..32) x pixel order x
 `packed`, `planar` or `split` (`tag` only); at most 16 candidates. `count`: tiles a
 cell shows (1..64). Source: `tag` with `offset` (an integer or a `0x` string), or `ref`.
-`palette` as `gfx_view`.
+`palette` as `gfx_view`. `pen_base`: the pen each pixel starts at; `dest`: a new path the
+sheet is written to, else the scratch; `cpu`: whose address space, the visible one when
+empty; `seconds` bounds the read.
 
 Reply: `sweep`, `count`, `cell_scale`, `candidates` (`id`, `what`, `tiles_available`,
 `shown`), `next`, `image`. `bad_argument`: too many candidates, no whole tile, a sheet past
@@ -1195,7 +1203,9 @@ as a box over the screen, one colour per writer pc.
 
 A missing capture is refused, naming the `watch_add`. `frame` defaults to the newest with
 blits. A summary by default; `area` `[x, y, width, height]` lists the blits covering it in
-drawn order; `detail` lists all, 24 a page from `first`.
+drawn order; `detail` lists all, 24 a page from `first`. `scale`: the integer the
+picture is enlarged by, 0 the largest that fits; `dest`: a new path it is written to, else
+the scratch; `seconds` bounds the read.
 
 Reply: `frame_blit`, `rows_cut`, `blits_in_frame`, `legend`, `by_plane`, `covering`,
 `topmost` (with `area`), `listed`, `blits` (with `area` or `detail`), `next_first` (more
@@ -1396,8 +1406,10 @@ palette. Always unscaled: no zoom or scale register is applied, so it never show
 it lands on screen.
 
 The blit: `frame` (as `gfx_blits`) and `index`, or `pc` (the writer; refused when it fired
-more than once). `margin` (0..16) dims pixels round the rectangle: `image` is
-that view, `data` the exact indexed PNG.
+more than once). `draw_command` is the name of a `gfx_blits` capture. `margin`
+(0..16) dims pixels round the rectangle: `image` is that view, `data` the
+exact indexed PNG. `dest`: a new path the picture is written to, else the scratch;
+`seconds` bounds the read.
 
 Reply: `frame_blit`, `index`, `blit_pc`, `asset`, `format`, `palette`, `rect` (`tile`, `x`,
 `y`, `width`, `height`), `margin`, `box`, `wrap`, `not_proved`, `reads_source`, `image`,
