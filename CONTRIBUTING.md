@@ -60,7 +60,12 @@ uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
 ```
 
 A green live run deletes its scratch, transcript included: hard-link `transcript.jsonl` while it
-runs. A clock reading, pid, port or scratch directory name in a reply is hidden by the generator.
+runs, and only one newer than the run's start, since the scratches of earlier failed runs keep
+their old transcripts under the same temp root. Mark the temp root as well as the run directory: a server's own scratch lives directly under
+`$TMPDIR`, so a `--mark` of the run directory alone leaves host paths in `examples.json`; add
+`--mark '<TMPDIR without its trailing slash>=$TMPDIR'` and grep `docs/reference` for `/Users/`,
+`/var/folders` and `/private/var` before the commit. A clock reading, pid, port or scratch
+directory name in a reply is hidden by the generator.
 `--skip '<regex>'` leaves out the cells whose call, reply, section or label match it, so a tool
 whose first cell ran on a board a stranger cannot have takes its next cell as its example; a tool
 with no other cell keeps none.
@@ -71,11 +76,27 @@ The commit itself runs scry-core's pre-commit (`python -m scry_core.hook --help`
 git config core.hooksPath .githooks
 ```
 
+Its prose check is a share of each file's bytes, so a change that only deletes code raises the
+share and can go red with no comment touched: run the hook after a sweep that deletes lines, and
+cut a clause in the file it names, never raise the ceiling.
+
 Every pytest run judges the coverage floor: `--cov` is in `addopts` and the floor is
 `fail_under` in `pyproject.toml`. A partial run goes red on that floor by construction, because
-the floor is the whole repository's, so for a single file add `--no-cov` and read it as a run
-that judged no floor. The live tier is not part of `pytest`: it is the two scripts below, so a clone runs no emulator
-by accident.
+the floor is the whole repository's. `addopts` ends in a bare `--cov`, which takes the next
+argument as its source, so `uv run pytest tests/test_x.py` runs the whole suite while looking like
+a one-file run, and a `--no-cov` after the path does not help: the path was already taken. Narrow
+a run with `-o addopts=""` naming the test files, or with `-k <module name>`, and read it as a run
+that judged no floor. `-o addopts=` also drops the `not live` and `not window` deselections, so it names
+test files and never a directory: `tests` would start a real emulator. The live tier is not part of `pytest`:
+it is the two scripts below, so a clone runs no emulator by accident.
+
+`uv run` syncs the environment before its command, so an editable install of a core checkout
+(`uv pip install -e ../scry-core`) is replaced by the pinned scry-core on the next plain `uv run`,
+and a battery, probe or live tier then judges the pinned core while looking like a run on the
+checkout. Print `scry_core.__file__` from the project's Python before and after a run, use
+`uv run --no-sync` (or `UV_NO_SYNC=1`) while the editable core is wanted, reinstall it after a
+full battery, and export `PYTHONPATH=<core checkout>/src` for a run that must keep the source
+winning while another command syncs the environment mid-run.
 
 The ruff and mypy configuration in `pyproject.toml` is scry-core's bar; mypy runs strict with no
 path list, so a new directory is covered without being added anywhere.
@@ -117,9 +138,18 @@ unset, those cells are BLOCKED naming the variable and the verdict says it is un
 are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map from
 `LINEUP_MAME_ROMS`, and is BLOCKED the same way without it. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
-[`start`'s page](docs/reference/session.md#start)). The cases that move the owner's Space carry
+[`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind
+for an unwatched run, `0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry
 the `window` marker and are out of every default run: `SCRY_FOCUS_CONTROL=1 uv run pytest
 -o addopts="" -m 'live and window' tests/live` runs them (scry-core's README, *On-demand tiers*).
+
+Two traps of the host, not of the code. MAME's console parses an unquoted path as an expression,
+so a `TMPDIR` whose path holds a `-` before a letter fails the `debug`, `source` and `trace` cells
+with `unknown symbol`: such a FAIL is the path first and the code second, and the run takes a
+`TMPDIR` without one. And a debug MAME build aborts at start on an SDL3 input assert while a game
+controller is connected: every live start passes an ini holding `joystickprovider none` as
+`inipath`, the tracked `tests/live/fixtures/ini-no-joystick` or a copy of it, and a start written
+by hand passes one too, or expects the abort.
 
 ## What a live run guards
 
@@ -152,4 +182,16 @@ uv run python -m scry_core.probe mame --servers mcp_probe/servers.py --tasks mcp
 uv run python -m scry_core.probe mame --servers mcp_probe/servers.py --tasks mcp_probe/tasks --runs 3
 ```
 
-`python -m scry_core.probe --help` says how a failure is told from the model's noise.
+`python -m scry_core.probe --help` says how a failure is told from the model's noise. A task the
+probe's model keeps getting wrong, where the server refuses the wrong call naming why, is accepted
+residual and reported with its numbers: a client retries on a refusal, and more description text
+for that task spends the cap the others need. Only a wrong call the server accepts with
+`status: ok` is a defect.
+
+The reference generator rewrites only the blocks between its markers, and the hand-written
+paragraphs after a block belong to that tool by position. A tool moved to another family page
+leaves them on the old page: take the text between its end marker and the next begin marker at
+HEAD, remove it from the old page (it occurs once) and put it after the same tool's end marker on
+the new page, then rerun the drift test. The `REFERENCE.md` prose that names the family and the
+demos' family tables need the same sweep; the family of each shared tool is
+`roster.SHARED_FAMILIES` in scry-core.
