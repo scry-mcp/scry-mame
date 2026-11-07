@@ -7,6 +7,7 @@ could not tell a signal from an exit code; only the gdbstub's side is stubbed. m
 crash report per self-SIGSEGV under `~/Library/Logs/DiagnosticReports`.
 """
 
+import os
 import signal
 import sys
 import time
@@ -757,9 +758,26 @@ def test_a_signal_death_during_the_last_poll_of_the_wait_is_still_a_death(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A death in the sleep where the wait runs out is read once more, not called a hang."""
-    # Polls at 0 and 1 s, death at 1.2 s, wait over at 1.5 s.
-    monkeypatch.setattr(launch, "BOOT_POLL_S", 1.0)
-    out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=1, late=1.2), wait=1.5)
+    # One poll at 0, then one sleep that outlasts the wait. The double would sleep a minute;
+    # it is killed inside that sleep, so the death lands there whatever the host's load, where
+    # a death timed by the clock can fall after the wait on a busy host.
+    monkeypatch.setattr(launch, "BOOT_POLL_S", 1.5)
+    real_sleep = time.sleep
+    killed: list[int] = []
+
+    def sleep(seconds: float) -> None:
+        proc = mstate.STATE.proc
+        if not killed and seconds == launch.BOOT_POLL_S and proc is not None:
+            killed.append(proc.pid)
+            while not (tmp_path / "launches").exists() and proc.poll() is None:  # counted
+                real_sleep(0.01)
+            os.kill(proc.pid, signal.SIGSEGV)
+            proc.wait(timeout=30)
+            monkeypatch.setattr(launch, "BOOT_POLL_S", 0.05)  # the relaunch polls as usual
+        real_sleep(seconds)
+
+    monkeypatch.setattr(time, "sleep", sleep)
+    out = _start(monkeypatch, tmp_path, _double(tmp_path, deaths=1, late=60), wait=1.5)
     try:
         assert out["status"] == "ok", out
         assert [d["exit_code"] for d in out.get("start_retries", [])] == [-11], out
