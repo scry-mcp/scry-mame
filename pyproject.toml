@@ -63,7 +63,8 @@ markers = ["live: drives a REAL emulator; deselected by default, opt in with `-m
            "window: opens a window and may switch the owner's Space; opt in with `-m window`"]
 # `--cov` IS HERE SO EVERY `pytest` JUDGES THE FLOOR: without the flag pytest-cov registers no
 # plugin, and a bare run exits 0 having measured nothing. A partial run goes red on the floor by
-# construction, because the floor is the whole repository's: pass `--no-cov` for one of those.
+# construction, because the floor is the whole repository's: a partial run is narrowed as
+# CONTRIBUTING.md says (a bare `--cov` takes the path after it as its source).
 addopts = "-m 'not live and not window' --cov"
 # The shape guard (scry-core's `reply_shapes` plugin) wraps these: the contract every envelope goes
 # through, and the MCP boundary whose `_summary` every reply crosses.

@@ -139,7 +139,8 @@ are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map
 `LINEUP_MAME_ROMS`, and is BLOCKED the same way without it. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
 [`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind
-for an unwatched run, `0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry
+(it steers placement, not the front, so an unwatched run still belongs where nobody is working),
+`0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry
 the `window` marker and are out of every default run: `SCRY_FOCUS_CONTROL=1 uv run pytest
 -o addopts="" -m 'live and window' tests/live` runs them (scry-core's README, *On-demand tiers*).
 
