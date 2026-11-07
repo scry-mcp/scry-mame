@@ -120,7 +120,7 @@ def test_every_tool_answers_the_contract_with_no_machine(
         assert reply["status"] == "ok" and "code" not in reply and "message" not in reply, reply
         return
     # start, the media tools and the export refuse their argument; a map save refuses the empty map
-    expected = {"screen_map_write": "needs_call"}.get(name)
+    expected = {"screen_map_write": "needs_call", "promote": "bad_argument"}.get(name)
     contract.check_refusal(name, reply, expected or ("bad_argument" if name in (
         "start", "perform_export") or name in media_tools.TOOLS else "no_session"))
 

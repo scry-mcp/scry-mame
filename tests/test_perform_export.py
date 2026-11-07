@@ -84,6 +84,8 @@ DECLARED = {
                      "scan", "audio_compare"), "drop"),
     # A replay knows the map an identification was made against, and holds the find to it.
     "screen_map_find": ("matched", "screen", "pc", "frame"),
+    # A promotion is an approval, and the replay of one would write a store.
+    "promote": "drop",
     # The readers dropped by default, named so a reader that turns into a step is seen.
     **dict.fromkeys(("declaration_list", "captures", "comment_list", "cpu_info", "disassemble",
                      "find", "history", "log", "log_wait", "machine_map", "rom_check",

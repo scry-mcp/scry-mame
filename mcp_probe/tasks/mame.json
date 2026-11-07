@@ -3632,6 +3632,28 @@
    "args": {
     "path": "/tmp/mcp-probe-session.json"
    }
+  },
+  {
+   "id": "M214",
+   "prompt": "Show me what this session has learned that could be written into the repository's store, without writing anything.",
+   "tool": "promote",
+   "args": {
+    "dry_run": true
+   }
+  },
+  {
+   "id": "M215",
+   "prompt": "Promote only the map candidate this session kept under the name lineup into the repository at /tmp/probe-repo, writing it there as bench-map, and nothing else.",
+   "tool": "promote",
+   "args": {
+    "entries": [
+     "maps/lineup"
+    ],
+    "names": {
+     "maps/lineup": "bench-map"
+    },
+    "root": "/tmp/probe-repo"
+   }
   }
  ]
 }

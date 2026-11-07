@@ -2202,6 +2202,54 @@
    "replay": "uv run python -m scry_core.replay /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
   }
  },
+ "promote": {
+  "from": "[P] the session's ends and its own store: P11 the recipe this boot ran and the map it learned are written into a store of the run's own only when the call approves them, and the map reads back from the file",
+  "call": {
+   "dry_run": true,
+   "root": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>"
+  },
+  "reply": {
+   "summary": "promote: 4 candidates in /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>/.scry",
+   "status": "ok",
+   "store": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>/.scry",
+   "candidates": [
+    {
+     "entry": "maps/radendur",
+     "kind": "maps",
+     "name": "radendur",
+     "file": ".scry/maps/radendur.screen-map.json",
+     "bytes": 333,
+     "change": "new"
+    },
+    {
+     "entry": "start/m68k-dual",
+     "kind": "start",
+     "name": "m68k-dual",
+     "file": ".scry/start/m68k-dual.json",
+     "bytes": 464,
+     "change": "new"
+    },
+    {
+     "entry": "start/probe-profile",
+     "kind": "start",
+     "name": "probe-profile",
+     "file": ".scry/start/probe-profile.json",
+     "bytes": 444,
+     "change": "new"
+    },
+    {
+     "entry": "start/radendur",
+     "kind": "start",
+     "name": "radendur",
+     "file": ".scry/start/radendur.json",
+     "bytes": 343,
+     "change": "new"
+    }
+   ],
+   "total_bytes": 1584,
+   "store_bytes": 1584
+  }
+ },
  "read_block": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): read_block @ stopped",
   "call": {

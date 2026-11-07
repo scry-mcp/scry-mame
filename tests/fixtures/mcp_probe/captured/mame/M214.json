@@ -1,0 +1,30 @@
+{
+ "task": {
+  "id": "M214",
+  "prompt": "Show me what this session has learned that could be written into the repository's store, without writing anything.",
+  "tool": "promote",
+  "args": {
+   "dry_run": true
+  }
+ },
+ "runs": [
+  {
+   "lines": [
+    "M214: {\"tool\": \"promote\", \"args\": {\"dry_run\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M214: {\"tool\": \"promote\", \"args\": {\"dry_run\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M214: {\"tool\": \"promote\", \"args\": {\"dry_run\": true}}"
+   ],
+   "right": true
+  }
+ ]
+}

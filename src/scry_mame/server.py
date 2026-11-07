@@ -112,6 +112,7 @@ from scry_mame import lua as mlua  # noqa: E402
 from scry_mame import map as mmap  # noqa: E402
 from scry_mame import maps as mmaps  # noqa: E402
 from scry_mame import palette as mpalette  # noqa: E402
+from scry_mame import promote as mpromote  # noqa: E402
 from scry_mame import ramdac as mramdac  # noqa: E402
 from scry_mame import recording as mrec
 from scry_mame import replies as mame_replies  # noqa: E402
@@ -203,8 +204,9 @@ def start(
 
     Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
     `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
-    `recommended_release` ({MAME_RELEASE}), and with a profile `profile` (`name`, `file`,
-    `supplied`); another release boots with a `note` saying so.
+    `recommended_release` ({MAME_RELEASE}), with a profile `profile` (`name`, `file`,
+    `supplied`), and `kept` when the recipe is complete and the draft holds it; another release
+    boots with a `note` saying so.
 
     Reference: REFERENCE.md, The session.
     """
@@ -234,6 +236,12 @@ def start(
                          view=params["view"], display=params["display"], size=params["size"],
                          progress=bridge(ctx))
     if block is not None:
+        STATE.drafts.loaded_entry("start", Path(str(block["file"])).stem)
+    else:
+        STATE.drafts.forget("start")
+    if mpromote.keep_start(params, defaults=_START_DEFAULTS):
+        reply["kept"] = mpromote.kept_line(STATE.drafts)
+    if block is not None:
         reply["profile"] = block
     return reply
 
@@ -242,6 +250,10 @@ def start(
 #: drift apart. `profile` is not one of them, and `ctx` is the protocol's.
 _PROFILE_KEYS = tuple(name for name in inspect.signature(start).parameters
                       if name not in ("ctx", "profile"))
+#: The same, with each argument's default: a recipe keeps what the call decided, not what the
+#: tool would have answered on its own.
+_START_DEFAULTS = {name: parameter.default
+                   for name, parameter in inspect.signature(start).parameters.items()}
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -274,11 +286,12 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
     `cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
     `stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
     `session` is the block as it is after the close (`alive` and `running` false); a console doubt
-    or a throttle found not applied still rides there.
+    or a throttle found not applied still rides there, and `draft` names the candidates the
+    session left waiting for `promote`.
 
     Reference: REFERENCE.md, The session.
     """
-    return msession.close(bridge(ctx), detail)
+    return mpromote.after_close(STATE.drafts, msession.close(bridge(ctx), detail))
 
 
 @tool("The session's window", summary=core_window.summary)
@@ -1010,7 +1023,8 @@ def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], scree
     Reference: REFERENCE.md, Screen maps.
     """
     args.check("screen_map_write", **_given(locals()))
-    return methods.dispatch(folds.MAP, _given(locals()), {"progress": bridge(ctx)})
+    reply = methods.dispatch(folds.MAP, _given(locals()), {"progress": bridge(ctx)})
+    return mpromote.after_map(method, reply)
 
 
 
@@ -1511,6 +1525,8 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     refusal = sequence.refuse_steps(steps, _step_ops())
     if refusal is not None:
         return refusal
+    if path:
+        STATE.drafts.loaded_entry("perform", Path(path).expanduser().stem)
     ses, scratch = contact()
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
     return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), bridge(ctx),
@@ -1527,11 +1543,23 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     the rest.
 
     `dest` (`.json`) is refused if present unless `overwrite`. Reply: `path`, `steps`,
-    `checks`, `dropped`, `dropped_total`, `cut`, `replay`; `no_recording` if empty.
+    `checks`, `dropped`, `dropped_total`, `cut`, `replay`, and `kept` when the document is kept
+    for `promote`; `no_recording` if empty.
 
     Reference: REFERENCE.md, From an investigation to a bench.
     """
-    return menvelope.envelope(recording.export(RECORDER, dest, overwrite))
+    return mpromote.after_export(STATE.drafts, menvelope.envelope(
+        recording.export(RECORDER, dest, overwrite)), mpromote.PROMOTE_PATHS)
+
+
+@tool("Promote what the session learned", summary=summaries.promote, replay="drop")
+def promote(dry_run: bool = False, entries: list[str] | None = None,
+            names: dict[str, str] | None = None, root: str = "") -> dict[str, Any]:
+    """{PROMOTE}
+
+    Reference: REFERENCE.md, The store.
+    """
+    return menvelope.envelope(mpromote.promote(dry_run, entries, names, root))
 
 
 @tool("Debugger console command", summary=summaries.debug)

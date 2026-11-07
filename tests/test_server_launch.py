@@ -82,7 +82,7 @@ def test_every_tool_this_server_promises_is_actually_registered() -> None:
         "breakpoint_at", "declaration_clear", "declaration_list", "close", "debug", "disassemble",
         "cpu_focus", "cpu_info", "input", "log", "log_wait", "lua", "find", "history",
         "machine_map", "memdump",
-        "perform", "perform_export", "palette", "screen_view", "gfx_view", "gfx_locate",
+        "perform", "perform_export", "promote", "palette", "screen_view", "gfx_view", "gfx_locate",
         "gfx_load", "gfx_blits",
         "gfx_blit_source", "palette_log", "gfx_film", "gfx_sweep", "gfx_draft",
         "screen_signature", "screen_wait", "drive", "series_capture",

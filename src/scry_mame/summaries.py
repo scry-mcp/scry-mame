@@ -19,6 +19,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
+from scry_core import promote as core_promote
 from scry_core import prose, screen_map, session_block
 from scry_core import reply_contract as contract
 
@@ -481,8 +482,9 @@ def screen_signature(args: dict[str, Any], reply: dict[str, Any]) -> str:
     return f"screen_signature {w}x{h} at [{x}, {y}]: {reply['signature']}"
 
 
-# The screen maps' lines are scry-core's, alike on both servers.
+# The screen maps' and the promotion's lines are scry-core's, alike on both servers.
 screen_map_find = screen_map.find_line
+promote = core_promote.promote_line
 
 
 def log(args: dict[str, Any], reply: dict[str, Any]) -> str:

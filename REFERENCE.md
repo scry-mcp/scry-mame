@@ -21,6 +21,7 @@ The [README](README.md) is the front door. This page holds the contract several 
 - [Captures](docs/reference/captures.md): [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
 - [Files](docs/reference/files.md): [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
 - [Lists](docs/reference/lists.md): [`perform`](docs/reference/lists.md#perform), [`drive`](docs/reference/lists.md#drive), [`perform_export`](docs/reference/lists.md#perform_export)
+- [Store](docs/reference/store.md): [`promote`](docs/reference/store.md#promote)
 <!-- scry-reference:end index -->
 
 ## The session
@@ -110,7 +111,7 @@ Every tool ends one of three ways, and one that declares no end ends `none`:
 |---|---|---|
 | `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `step`, `run_to`, `run_for`, `screen_wait`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
 | `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` when a session is up to be asked; a MAME still booting is killed at once | `start`, `close` |
-| `none` | the machine as the call found it | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write` |
+| `none` | the machine as the call found it | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write`, `promote` |
 
 ## Names for addresses
 

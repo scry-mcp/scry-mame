@@ -261,9 +261,11 @@ def test_a_shape_the_stub_never_sends_met_by_run_to_leaves_the_session_broken(
 # leaves `status`: answering; and so does `perform_export`, which writes what the session did,
 # a broken one's included.
 #: A map's file methods read and write map files only, as the media file tools read theirs; its
-#: `add` reads the screen, and is walked below.
+#: `add` reads the screen, and is walked below. `promote` writes the store and asks the session
+#: for nothing.
 MAP_FILE_TOOLS = {"screen_map_write"}
-_STILL_ANSWER = {"close", "status", "perform_export", *media_tools.TOOLS, *MAP_FILE_TOOLS}
+_STILL_ANSWER = {"close", "status", "perform_export", "promote", *media_tools.TOOLS,
+                 *MAP_FILE_TOOLS}
 
 
 @pytest.mark.parametrize("name", [t for t in _tools() if t not in _STILL_ANSWER])
@@ -294,6 +296,18 @@ def test_a_media_file_tool_answers_on_a_broken_session(
     out = getattr(s, name)(**_ARGS[name])
     assert out["status"] == "INVALID" and out["code"] == "bad_argument", (name, out)
     assert "no file at" in out["message"], (name, out)
+
+
+def test_promote_answers_on_a_broken_session_and_never_names_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """The exemption above, held: the draft is the server's, not the machine's."""
+    ses = _running(monkeypatch, tmp_path)
+    ses.broken = NOT_A_STOP
+    monkeypatch.chdir(tmp_path)
+    out = s.promote(dry_run=True)
+    assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
+    assert "session_broken" not in out["message"], out
 
 
 @pytest.mark.parametrize(("method", "args", "code"), [

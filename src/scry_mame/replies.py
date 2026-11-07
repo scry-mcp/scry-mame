@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Annotated, Any, Required
 
 from scry_core import media_replies, tool_replies
+from scry_core import promote as core_promote
 from scry_core import sequence_account as account
 from scry_core.instruction import StopInstruction
 from scry_core.reply_contract import OmitEmpty, When
@@ -109,6 +110,7 @@ class CapturesReply(MameEnvelope, media_replies.CapturesFields, total=False):
 
 
 class CloseReply(MameEnvelope, total=False):
+    draft: Annotated[list[str], OmitEmpty]
     average_speed: Annotated[dict[str, Any], When("while a `resume` run was open")]
     cfg: Required[dict[str, Any]]
     closed: Required[bool]
@@ -945,6 +947,7 @@ class WindowReply(WindowRefused, tool_replies.WindowSizeField, total=False):
 
 
 class StartReply(WindowRefused, total=False):
+    kept: Annotated[str, OmitEmpty]
     after_s: float
     alive: bool
     background: bool
@@ -1222,11 +1225,16 @@ class StateWriteReply(MameEnvelope, total=False):
 
 
 #: Each tool's reply model, by the tool's name.
+class PromoteReply(MameEnvelope, core_promote.PromoteFields, total=False):
+    """`promote`: the store, a review's candidates, an approval's writes, what is still kept."""
+
+
 MODELS: dict[str, type] = {
     "comment_write": CommentWriteReply,
     "declaration_clear": DeclarationClearReply,
     "declaration_list": DeclarationListReply,
     "screen_map_write": MapWriteReply,
+    "promote": PromoteReply,
     "scan": ScanReply,
     "state_write": StateWriteReply,
     "audio_record": AudioRecordReply,

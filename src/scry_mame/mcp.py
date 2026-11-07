@@ -66,6 +66,7 @@ ROSTER = roster.Roster(families=(
     ("Captures", ("series_capture", "record", "audio_record", "snapshot", "captures")),
     ("Files", tuple(media_tools.TOOLS)),
     ("Lists", ("perform", "drive", "perform_export")),
+    ("Store", ("promote",)),
 ), answering=(*_ANSWERS_WHILE_RUNNING, *media_tools.TOOLS))
 
 mcp = envelope.Envelope(

@@ -63,7 +63,8 @@ Ops = dict[str, Callable[..., dict[str, Any]]]
 
 SEQUENCES = frozenset({"perform", "drive"})
 #: The tools that are no step of a sequence, named once; the other lists read off it.
-NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export", "window"}
+NOT_STEPS = SEQUENCES | {"start", "close", "rom_check", "perform_export", "window",
+                         "promote"}
 
 # Ops that may run on a RUNNING machine; any other waits for the next stop. The server's
 # refusal names the same tools from here, because a second copy drifted.

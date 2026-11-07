@@ -51,8 +51,9 @@ A mismatch: `readback_refused`, closed. A window that never appears on the asked
 
 Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
 `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
-`recommended_release` (0.289), and with a profile `profile` (`name`, `file`,
-`supplied`); another release boots with a `note` saying so.
+`recommended_release` (0.289), with a profile `profile` (`name`, `file`,
+`supplied`), and `kept` when the recipe is complete and the draft holds it; another release
+boots with a `note` saying so.
 
 Reference: REFERENCE.md, The session.
 
@@ -91,6 +92,7 @@ Reference: REFERENCE.md, The session.
 | `activation` | string |
 | `asked_display` | integer |
 | `seen` | object |
+| `kept` | string |
 | `after_s` | number |
 | `alive` | boolean |
 | `background` | boolean |
@@ -417,7 +419,8 @@ Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_w
 `cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
 `stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
 `session` is the block as it is after the close (`alive` and `running` false); a console doubt
-or a throttle found not applied still rides there.
+or a throttle found not applied still rides there, and `draft` names the candidates the
+session left waiting for `promote`.
 
 Reference: REFERENCE.md, The session.
 
@@ -427,6 +430,7 @@ Reference: REFERENCE.md, The session.
 
 | reply field | type |
 |---|---|
+| `draft` | array of string |
 | `average_speed` | object |
 | `cfg` | object |
 | `closed` | boolean |

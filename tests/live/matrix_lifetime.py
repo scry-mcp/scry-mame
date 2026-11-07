@@ -16,7 +16,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from bench_boards import SYMBOLS, m68k_dual_missing
 from live_harness import (
@@ -65,6 +65,8 @@ P_CELLS = [f"P{n} {text}" for n, text in enumerate([
     "the reply naming the file and what it filled",
     "a start from this repository's own .scry/start/m68k-dual.json boots the board, the reply "
     "naming that file and what it filled",
+    "the recipe this boot ran and the map it learned are written into a store of the run's own "
+    "only when the call approves them, and the map reads back from the file",
 ], start=1)]
 
 WITHIN_S = 5 * guardian.POLL_S
@@ -344,6 +346,34 @@ def _p_repo_profile(t: list[str]) -> None:
     call("close")
 
 
+def _p_promote(t: list[str]) -> None:
+    """A store of this run's own: what the boot ran and the map it learned are reviewed, then
+    the two chosen are written and the map is read back from the file the promotion wrote."""
+    store = live_tmp("mame-live-promote-")
+    ini = store / "ini"
+    ini.mkdir()
+    for part in Path(str(BOOT["inipath"])).iterdir():
+        (ini / part.name).write_bytes(part.read_bytes())
+    r = call("start", **cast(dict[str, Any], {**BOOT, "inipath": str(ini)}))
+    added = call("screen_map_write", method="add", screen="learned", match=[[0, 0, 8, 8]])
+    reviewed = call("promote", dry_run=True, root=str(store))
+    found = {c.get("entry"): c.get("change") for c in reviewed.get("candidates", [])}
+    created = (store / ".scry").exists()
+    written = call("promote", entries=["maps/radendur", "start/radendur"], root=str(store))
+    read = call("screen_map_write", method="load",
+                path=str(store / ".scry" / "maps" / "radendur.screen-map.json"))
+    closed = call("close")
+    cell(t[10], ok(r) and ok(added) and ok(reviewed)
+         and found.get("maps/radendur") == "new" and found.get("start/radendur") == "new"
+         and not created and (store / ".scry").is_dir()
+         and ok(written) and sorted(w.get("entry") for w in written.get("written", []))
+         == ["maps/radendur", "start/radendur"]
+         and not {"maps/radendur", "start/radendur"} & set(written.get("draft", []))
+         and ok(read) and read.get("application") == "radendur"
+         and not {"maps/radendur", "start/radendur"} & set(closed.get("draft", [])),
+         f"{said(reviewed, 80)} / written {written.get('written')} / read {said(read, 60)}")
+
+
 P_BOARDS = (
     Board(_p_port, (0,), m68k_dual_missing),
     Board(_p_foreign, (1,), m68k_dual_missing),
@@ -354,6 +384,7 @@ P_BOARDS = (
     Board(_p_quit, (7,), m68k_dual_missing),
     Board(_p_profile, (8,), m68k_dual_missing),
     Board(_p_repo_profile, (9,), m68k_dual_missing),
+    Board(_p_promote, (10,), m68k_dual_missing),
 )
 boards_cover("section P", P_CELLS, P_BOARDS)
 

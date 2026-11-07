@@ -15,6 +15,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, Protocol, overload
 
 from scry_core import app_launch, boundary, cancel, guardian, picture, presence, prose, screen_map
 from scry_core import progress as mprogress
+from scry_core import promote as core_promote
 from scry_core import reply_contract as contract
 from scry_core import window as core_window
 from scry_core.reply_contract import or_unavailable, unavailable
@@ -88,7 +89,8 @@ class State:
         self.start_seq = 0
         # A cancelled call's record rides on the next closing reply. Not in `_reset`.
         self.cancelled: cancel.Cancelled | None = None
-        # Outlives a session: the file layer of `screen_map_write(method="load")`.
+        # Outlives a session: what `promote` would write, and the map's file layer.
+        self.drafts = core_promote.Drafts()
         self.maps = screen_map.Maps()
         self._reset()
 

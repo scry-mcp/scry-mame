@@ -8,6 +8,7 @@ and prove the honesty guarantees still fire after the rename.
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -1539,5 +1540,48 @@ check("a headless start opens no window and `window` refuses it as no_channel",
       r.get("status") == "ok" and s.window().get("code") == "no_channel"
       and not [w for w in host.windows() if w.pid == r.get("pid")], str(r.get("summary")))
 s.close()
+
+print("\n== promote: what the session learned, written into a store only when approved")
+store = live_tmp("mame-live-store-")
+shutil.copytree(NO_JOYSTICK_INI, store / "ini")
+(store / "circus.bin").write_bytes(circus_image.read_bytes())
+r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
+            reference_rom=str(store / "circus.bin"), reference_addr="0x1000",
+            reference_base="0x1000", boot_seconds=30.0, presence=False,
+            inipath=str(store / "ini"))
+# THE DRAFT IS THE SERVER'S AND OUTLIVES A SESSION: this run booted boards before, so the line
+# counts what it holds, not what this one call kept.
+check("a start keeps the recipe it ran and says so",
+      r.get("status") == "ok" and str(r.get("kept", "")).startswith("kept ")
+      and str(r.get("kept", "")).endswith("(promote to review)"), str(r.get("kept")))
+added = s.screen_map_write("add", screen="learned", match=[[0, 0, 8, 8]])
+check("a map learned from the screen joins the draft",
+      added.get("status") == "ok" and str(added.get("kept", "")).endswith("(promote to review)"),
+      str(added.get("kept")))
+reviewed = s.promote(dry_run=True, root=str(store))
+candidates = {c.get("entry"): c.get("change") for c in reviewed.get("candidates", [])}
+check("promote(dry_run) lists this session's two as new and writes no store",
+      reviewed.get("status") == "ok"
+      and candidates.get("start/circus") == "new" and candidates.get("maps/circus") == "new"
+      and not (store / ".scry").exists(),
+      f"{reviewed.get('summary')} / {sorted(candidates)}")
+written = s.promote(entries=["maps/circus", "start/circus"], root=str(store))
+chosen = sorted(w.get("entry") for w in written.get("written", []))
+check("promote(entries) writes the two chosen and keeps the rest",
+      written.get("status") == "ok" and chosen == ["maps/circus", "start/circus"]
+      and not {"maps/circus", "start/circus"} & set(written.get("draft", [])),
+      f"{written.get('summary')} / written {chosen}, kept {written.get('draft')}")
+recipe = json.loads((store / ".scry" / "start" / "circus.json").read_text())
+check("the recipe carries no path of this machine",
+      all(not str(v).startswith(("/", "C:", "~")) for v in recipe.values()
+          if isinstance(v, str)) and str(recipe.get("rompath", "")).startswith(
+              ("${root}", "${home}", "${env:")), str(recipe))
+read = s.screen_map_write("load", path=str(store / ".scry" / "maps" / "circus.screen-map.json"))
+check("the promoted map reads back from the file it wrote, both screens",
+      (read.get("application"), read.get("screens")) == ("circus", 2), str(read.get("summary")))
+closed = s.close()
+check("close names exactly what the promotion left unkept",
+      sorted(closed.get("draft", [])) == sorted(written.get("draft", [])),
+      f"closed with {closed.get('draft')}, the write kept {written.get('draft')}")
 
 finish("LIVE CHECK")

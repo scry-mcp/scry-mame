@@ -907,9 +907,10 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
     }
     fresh = mstate.State()
     # `cancelled` is the calls', not the session's: a cancel's record outlives the kill it made,
-    # for the next reply to say. `maps` is the server's: a map file loaded outlives a session.
+    # for the next reply to say. `maps` and `drafts` are the server's: a map file loaded and what
+    # a session learned outlive a session, until `promote` or the next session's start.
     untouched = sorted(set(vars(fresh)) - set(dirty) - {"ses", "proc", "start_seq", "cancelled",
-                                                        "maps"})
+                                                        "maps", "drafts"})
     assert untouched == [], f"fields this test does not dirty: {untouched}"
     for name, value in dirty.items():
         setattr(mstate.STATE, name, value)

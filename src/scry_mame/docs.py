@@ -13,6 +13,7 @@ from scry_core import (
     state_files,
 )
 from scry_core import pens as scry_pens
+from scry_core import promote as core_promote
 from scry_core import (
     scan_vocabulary as words,
 )
@@ -48,6 +49,7 @@ DOC_VALUES: dict[str, str] = {
     # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
     **core_comments.DOC_VALUES, **frame_window.DOC_VALUES,
+    **core_promote.DOC_VALUES,
     "RECORD_MAX": str(frame_window.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(scry_pens.PENS_MAX),

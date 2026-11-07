@@ -33,7 +33,7 @@ STILL_TOOLS = frozenset({
     "read_block",
     "read_memory", "registers", "regpoint_add", "rom_check", "scan", "screen_signature",
     "screen_view", "snapshot", "start", "state_list", "status", "symbols_find", "watch_add",
-    "window"})
+    "window", "promote"})
 
 # A drawer that raises writes why beside the state file, where `status` reads it.
 DRAWER = """-- Written by the mame MCP server for ONE session: the presence edge.
