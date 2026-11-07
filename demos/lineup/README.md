@@ -111,7 +111,7 @@ The run is 33 calls; these are the ones that show how it is done, and every call
   "stop_seq": 2,
   "pc": "0x000317ff",
   "cpu": ":maincpu",
-  "frame": 253,
+  "frame": 251,
   "regs": {
     "EAX": "0x0500",
     "ECX": "0x0000",
