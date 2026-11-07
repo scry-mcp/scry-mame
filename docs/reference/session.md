@@ -32,7 +32,8 @@ exceeds the display's usable area, naming that size; a `display` past the host's
 refused naming the count. The server waits for the window to be
 listed on that display and answers `window`; a later `window` judges a stated size.
 `background`: launch behind, keeping the caller's focus, or in front; it does not need
-`shared`, and omitted it is behind unless `shared`. `throttle_from_frame`: flat out until it.
+`shared`, and omitted it is behind unless `shared`; somebody watching without losing their
+focus is `shared=True` with `background=True`. `throttle_from_frame`: flat out until it.
 `boot_lua`: a harness file, not Lua text. `boot_seconds`: the wait for MAME's first prompt.
 `env`: variables MAME's own process gets. `cfg`: a `.cfg` file the server installs as the
 system's own before it boots, judged for what MAME would refuse in silence.

@@ -58,7 +58,7 @@
     "path": "./tmp/demos/lineup/lineup-states/declarations.json",
     "key": "lineup ./tmp/demos/lineup/lineup.map",
     "held": 0,
-    "fingerprint": "42964b38da01984b",
+    "fingerprint": "8670fcf45164056f",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
@@ -138,7 +138,7 @@
   ],
   "cause": "target Draw_High_Scores_Screen",
   "stop_seq": 2,
-  "pc": "0x000317fd",
+  "pc": "0x000317ff",
   "cpu": ":maincpu",
   "frame": 253,
   "regs": {
@@ -150,7 +150,7 @@
     "EBP": "0xbe31",
     "ESI": "0x6992",
     "EDI": "0xfb28",
-    "EIP": "0x000317fd",
+    "EIP": "0x000317ff",
     "EFLAGS": "0xf006",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -176,17 +176,17 @@
     "FOP": "0x00000000"
   },
   "instruction": {
-    "address": "317FD",
+    "address": "317FF",
     "bytes": "1E",
     "text": "push    ds0",
     "symbol": "Draw_High_Scores_Screen",
     "delta": 0
   },
-  "following": ["317FE: E8 21 FE call    31622h", "31801: B8 01 00 mov     aw,1h", "31804: E8 29 73 call    38B30h", "31807: E8 50 36 call    34E5Ah", "3180A: E8 8F FF call    3179Ch", "3180D: 1F       pop     ds0", "3180E: C3       ret     ", "3180F: 1E       push    ds0", "31810: E8 0F FE call    31622h", "31813: B8 00 00 mov     aw,0h", "31816: E8 17 73 call    38B30h", "31819: E8 80 FF call    3179Ch", "3181C: 1F       pop     ds0"],
+  "following": ["31800: E8 21 FE call    31624h", "31803: B8 01 00 mov     aw,1h", "31806: E8 29 73 call    38B32h", "31809: E8 50 36 call    34E5Ch", "3180C: E8 8F FF call    3179Eh", "3180F: 1F       pop     ds0", "31810: C3       ret     ", "31811: 1E       push    ds0", "31812: E8 0F FE call    31624h", "31815: B8 00 00 mov     aw,0h", "31818: E8 17 73 call    38B32h", "3181B: E8 80 FF call    3179Eh", "3181E: 1F       pop     ds0"],
   "errorlog": {
     "lines_total": 235,
     "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 14,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=235)` reads them all"
   },
@@ -226,7 +226,7 @@
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 3,
-  "pc": "0x000315da",
+  "pc": "0x000315dc",
   "cpu": ":maincpu",
   "frame": 328,
   "regs": {
@@ -238,7 +238,7 @@
     "EBP": "0xbe31",
     "ESI": "0x7200",
     "EDI": "0x1dac",
-    "EIP": "0x000315da",
+    "EIP": "0x000315dc",
     "EFLAGS": "0xf016",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -263,12 +263,12 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "315DA", "bytes": "59", "text": "pop     cw", "symbol": "Del_Insert_Coins", "delta": 23},
-  "following": ["315DB: 81 C7 A8 00       add     iy,0A8h", "315DF: E2 F2             dbnz    315D3h", "315E1: 5E                pop     ix", "315E2: 1F                pop     ds0", "315E3: C3                ret     ", "315E4: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315EA: 75 06             bne     315F2h", "315EC: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315F2: 8B 1E BA 8D       mov     bw,[8DBAh]", "315F6: D1 E3             shl     bw,1", "315F8: D1 E3             shl     bw,1"],
+  "instruction": {"address": "315DC", "bytes": "59", "text": "pop     cw", "symbol": "Del_Insert_Coins", "delta": 23},
+  "following": ["315DD: 81 C7 A8 00       add     iy,0A8h", "315E1: E2 F2             dbnz    315D5h", "315E3: 5E                pop     ix", "315E4: 1F                pop     ds0", "315E5: C3                ret     ", "315E6: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315EC: 75 06             bne     315F4h", "315EE: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315F4: 8B 1E BA 8D       mov     bw,[8DBAh]", "315F8: D1 E3             shl     bw,1", "315FA: D1 E3             shl     bw,1"],
   "errorlog": {
     "lines_total": 67,
     "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 18344,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=18344, limit=67)` reads them all"
   },
@@ -310,10 +310,10 @@
   "thread_errors": 0,
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#1",
-  "pc_before": "0x000315da",
+  "pc_before": "0x000315dc",
   "cause": "screen_map_find: one step",
   "stop_seq": 4,
-  "pc": "0x000315db",
+  "pc": "0x000315dd",
   "cpu": ":maincpu",
   "frame": 328,
   "regs": {
@@ -325,7 +325,7 @@
     "EBP": "0xbe31",
     "ESI": "0x7200",
     "EDI": "0x1dac",
-    "EIP": "0x000315db",
+    "EIP": "0x000315dd",
     "EFLAGS": "0xf016",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -351,13 +351,13 @@
     "FOP": "0x00000000"
   },
   "instruction": {
-    "address": "315DB",
+    "address": "315DD",
     "bytes": "81C7A800",
     "text": "add     iy,0A8h",
     "symbol": "Del_Insert_Coins",
     "delta": 24
   },
-  "following": ["315DF: E2 F2             dbnz    315D3h", "315E1: 5E                pop     ix", "315E2: 1F                pop     ds0", "315E3: C3                ret     ", "315E4: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315EA: 75 06             bne     315F2h", "315EC: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315F2: 8B 1E BA 8D       mov     bw,[8DBAh]", "315F6: D1 E3             shl     bw,1", "315F8: D1 E3             shl     bw,1", "315FA: 81 C3 62 3C       add     bw,3C62h"],
+  "following": ["315E1: E2 F2             dbnz    315D5h", "315E3: 5E                pop     ix", "315E4: 1F                pop     ds0", "315E5: C3                ret     ", "315E6: 81 3E BA 8D 67 01 cmp     word ptr [8DBAh],167h", "315EC: 75 06             bne     315F4h", "315EE: C7 06 BA 8D 00 00 mov     word ptr [8DBAh],0h", "315F4: 8B 1E BA 8D       mov     bw,[8DBAh]", "315F8: D1 E3             shl     bw,1", "315FA: D1 E3             shl     bw,1", "315FC: 81 C3 64 3C       add     bw,3C64h"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 23570},
   "session": {
     "alive": true,
@@ -452,7 +452,7 @@
     "EAX": "0x7000",
     "ECX": "0x0000",
     "EDX": "0x73ca",
-    "EBX": "0x05b8",
+    "EBX": "0x05ba",
     "ESP": "0x99d3",
     "EBP": "0xbe31",
     "ESI": "0x8db6",
@@ -487,7 +487,7 @@
   "errorlog": {
     "lines_total": 8,
     "truncated": false,
-    "lines": ["[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000001 port_before=000000ff frame=328", "", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#2 release frame=332 port_held=000000fe", "", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[luaengine] MAME_MCP_INPUT#2 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000001 port_before=000000ff frame=328", "", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#2 release frame=332 port_held=000000fe", "", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 23570
   },
   "session": {
@@ -526,7 +526,7 @@
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 6,
-  "pc": "0x00031454",
+  "pc": "0x00031456",
   "cpu": ":maincpu",
   "frame": 383,
   "regs": {
@@ -538,7 +538,7 @@
     "EBP": "0xbe31",
     "ESI": "0x87ac",
     "EDI": "0xbf99",
-    "EIP": "0x00031454",
+    "EIP": "0x00031456",
     "EFLAGS": "0xf046",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -563,12 +563,12 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "31454", "bytes": "C3", "text": "ret", "symbol": "Check_Money25", "delta": 74},
-  "following": ["31455: B8 40 00          mov     aw,40h", "31458: 8E D8             mov     ds0,aw", "3145A: B8 00 10          mov     aw,1000h", "3145D: 8E C0             mov     ds1,aw", "3145F: 83 3E 4E 8D 00    cmp     word ptr [8D4Eh],0h", "31464: 74 09             be      3146Fh", "31466: F7 06 A0 82 01 00 test    word ptr [82A0h],1h", "3146C: 74 10             be      3147Eh", "3146E: C3                ret     ", "3146F: F7 06 A0 82 01 00 test    word ptr [82A0h],1h"],
+  "instruction": {"address": "31456", "bytes": "C3", "text": "ret", "symbol": "Check_Money25", "delta": 74},
+  "following": ["31457: B8 40 00          mov     aw,40h", "3145A: 8E D8             mov     ds0,aw", "3145C: B8 00 10          mov     aw,1000h", "3145F: 8E C0             mov     ds1,aw", "31461: 83 3E 4E 8D 00    cmp     word ptr [8D4Eh],0h", "31466: 74 09             be      31471h", "31468: F7 06 A0 82 01 00 test    word ptr [82A0h],1h", "3146E: 74 10             be      31480h", "31470: C3                ret     ", "31471: F7 06 A0 82 01 00 test    word ptr [82A0h],1h"],
   "errorlog": {
     "lines_total": 51,
     "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 24069,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=24069, limit=51)` reads them all"
   },
@@ -610,7 +610,7 @@
   "thread_errors": 0,
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#3",
-  "pc_before": "0x00031454",
+  "pc_before": "0x00031456",
   "cause": "screen_map_find: one step",
   "stop_seq": 7,
   "pc": "0x000300e5",
@@ -652,12 +652,12 @@
   },
   "instruction": {
     "address": "300E5",
-    "bytes": "E86D13",
-    "text": "call    31455h",
+    "bytes": "E86F13",
+    "text": "call    31457h",
     "symbol": "New_IRQ_Video",
     "delta": 60
   },
-  "following": ["300E8: 83 3E 46 8D 01 cmp     word ptr [8D46h],1h", "300ED: 75 02          bne     300F1h", "300EF: EB 6E          br      3015Fh", "300F1: E8 3D 03       call    30431h", "300F4: BE 00 80       mov     ix,8000h", "300F7: F7 04 01 00    test    word ptr [ix],1h", "300FB: 74 0F          be      3010Ch", "300FD: F7 04 3C 00    test    word ptr [ix],3Ch", "30101: 75 09          bne     3010Ch", "30103: E8 57 0C       call    30D5Dh"],
+  "following": ["300E8: 83 3E 46 8D 01 cmp     word ptr [8D46h],1h", "300ED: 75 02          bne     300F1h", "300EF: EB 6E          br      3015Fh", "300F1: E8 3D 03       call    30431h", "300F4: BE 00 80       mov     ix,8000h", "300F7: F7 04 01 00    test    word ptr [ix],1h", "300FB: 74 0F          be      3010Ch", "300FD: F7 04 3C 00    test    word ptr [ix],3Ch", "30101: 75 09          bne     3010Ch", "30103: E8 59 0C       call    30D5Fh"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28047},
   "session": {
     "alive": true,
@@ -787,7 +787,7 @@
   "errorlog": {
     "lines_total": 5,
     "truncated": false,
-    "lines": ["[luaengine] MAME_MCP_INPUT#4 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000002 port_before=000000ff frame=383", "", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#4 release frame=387 port_held=000000fd", ""],
+    "lines": ["[luaengine] MAME_MCP_INPUT#4 set name=\"1 Player Start\" player=0 mask=00000002 defvalue=00000002 port_before=000000ff frame=383", "", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[luaengine] MAME_MCP_INPUT#4 release frame=387 port_held=000000fd", ""],
     "mark": 28047
   },
   "session": {
@@ -825,19 +825,19 @@
   ],
   "cause": "target Level_Write",
   "stop_seq": 9,
-  "pc": "0x000343ce",
+  "pc": "0x000343d0",
   "cpu": ":maincpu",
   "frame": 567,
   "regs": {
     "EAX": "0x1000",
     "ECX": "0x0000",
     "EDX": "0x0002",
-    "EBX": "0x43ce",
+    "EBX": "0x43d0",
     "ESP": "0x99d9",
     "EBP": "0xbe31",
     "ESI": "0x8000",
     "EDI": "0xfaa0",
-    "EIP": "0x000343ce",
+    "EIP": "0x000343d0",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -863,17 +863,17 @@
     "FOP": "0x00000000"
   },
   "instruction": {
-    "address": "343CE",
+    "address": "343D0",
     "bytes": "BB8834",
     "text": "mov     bw,3488h",
     "symbol": "Level_Write",
     "delta": 0
   },
-  "following": ["343D1: 8B 7C 34    mov     iy,[ix+34h]", "343D4: E8 8E 07    call    34B65h", "343D7: 8B 44 2E    mov     aw,[ix+2Eh]", "343DA: 3D 04 00    cmp     aw,4h", "343DD: 72 05       bc      343E4h", "343DF: 2D 03 00    sub     aw,3h", "343E2: EB F6       br      343DAh", "343E4: B9 01 00    mov     cw,1h", "343E7: 8B 7C 34    mov     iy,[ix+34h]", "343EA: 81 C7 24 1E add     iy,1E24h"],
+  "following": ["343D3: 8B 7C 34    mov     iy,[ix+34h]", "343D6: E8 8E 07    call    34B67h", "343D9: 8B 44 2E    mov     aw,[ix+2Eh]", "343DC: 3D 04 00    cmp     aw,4h", "343DF: 72 05       bc      343E6h", "343E1: 2D 03 00    sub     aw,3h", "343E4: EB F6       br      343DCh", "343E6: B9 01 00    mov     cw,1h", "343E9: 8B 7C 34    mov     iy,[ix+34h]", "343EC: 81 C7 24 1E add     iy,1E24h"],
   "errorlog": {
     "lines_total": 3,
     "truncated": false,
-    "lines": ["[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 28320
   },
   "session": {
@@ -906,25 +906,25 @@
   "verdict": "ELAPSED",
   "frame_before": 567,
   "frame_after": 577,
-  "emulated_before_s": 11.342749,
-  "emulated_after_s": 11.542749,
-  "cycles": 1600000,
+  "emulated_before_s": 11.342751,
+  "emulated_after_s": 11.542752,
+  "cycles": 1600009,
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 10,
-  "pc": "0x00034bb7",
+  "pc": "0x00034bb6",
   "cpu": ":maincpu",
   "frame": 577,
   "regs": {
     "EAX": "0x8183",
-    "ECX": "0x0060",
+    "ECX": "0x005f",
     "EDX": "0x001c",
     "EBX": "0x1680",
     "ESP": "0x99d1",
     "EBP": "0xbe31",
     "ESI": "0x1684",
     "EDI": "0x73d1",
-    "EIP": "0x00034bb7",
+    "EIP": "0x00034bb6",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -950,13 +950,13 @@
     "FOP": "0x00000000"
   },
   "instruction": {
-    "address": "34BB7",
-    "bytes": "E2FB",
-    "text": "dbnz    34BB4h",
+    "address": "34BB6",
+    "bytes": "B083",
+    "text": "mov     al,83h",
     "symbol": "Del_Brush_Game",
-    "delta": 23
+    "delta": 20
   },
-  "following": ["34BB9: 5F          pop     iy", "34BBA: 81 C7 40 01 add     iy,140h", "34BBE: 4A          dec     dw", "34BBF: 75 F0       bne     34BB1h", "34BC1: 5E          pop     ix", "34BC2: 1F          pop     ds0", "34BC3: 07          pop     ds1", "34BC4: C3          ret     ", "34BC5: 1E          push    ds0", "34BC6: 56          push    ix", "34BC7: 50          push    aw", "34BC8: BA A2 81    mov     dw,81A2h", "34BCB: 8E DA       mov     ds0,dw", "34BCD: 8B D9       mov     bw,cw", "34BCF: D1 E3       shl     bw,1", "34BD1: 81 C3 76 49 add     bw,4976h", "34BD5: 33 D2       xor     dw,dw"],
+  "following": ["34BB8: AA          stmb    ", "34BB9: E2 FB       dbnz    34BB6h", "34BBB: 5F          pop     iy", "34BBC: 81 C7 40 01 add     iy,140h", "34BC0: 4A          dec     dw", "34BC1: 75 F0       bne     34BB3h", "34BC3: 5E          pop     ix", "34BC4: 1F          pop     ds0", "34BC5: 07          pop     ds1", "34BC6: C3          ret     ", "34BC7: 1E          push    ds0", "34BC8: 56          push    ix", "34BC9: 50          push    aw", "34BCA: BA A2 81    mov     dw,81A2h", "34BCD: 8E DA       mov     ds0,dw", "34BCF: 8B D9       mov     bw,cw", "34BD1: D1 E3       shl     bw,1", "34BD3: 81 C3 78 49 add     bw,4978h"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
@@ -997,10 +997,10 @@
   "thread_errors": 0,
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#5",
-  "pc_before": "0x00034bb7",
+  "pc_before": "0x00034bb6",
   "cause": "screen_map_find: one step",
   "stop_seq": 11,
-  "pc": "0x00034bb4",
+  "pc": "0x00034bb8",
   "cpu": ":maincpu",
   "frame": 577,
   "regs": {
@@ -1012,7 +1012,7 @@
     "EBP": "0xbe31",
     "ESI": "0x1684",
     "EDI": "0x73d1",
-    "EIP": "0x00034bb4",
+    "EIP": "0x00034bb8",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1037,14 +1037,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {
-    "address": "34BB4",
-    "bytes": "B083",
-    "text": "mov     al,83h",
-    "symbol": "Del_Brush_Game",
-    "delta": 20
-  },
-  "following": ["34BB6: AA          stmb    ", "34BB7: E2 FB       dbnz    34BB4h", "34BB9: 5F          pop     iy", "34BBA: 81 C7 40 01 add     iy,140h", "34BBE: 4A          dec     dw", "34BBF: 75 F0       bne     34BB1h", "34BC1: 5E          pop     ix", "34BC2: 1F          pop     ds0", "34BC3: 07          pop     ds1", "34BC4: C3          ret     ", "34BC5: 1E          push    ds0", "34BC6: 56          push    ix", "34BC7: 50          push    aw", "34BC8: BA A2 81    mov     dw,81A2h", "34BCB: 8E DA       mov     ds0,dw", "34BCD: 8B D9       mov     bw,cw", "34BCF: D1 E3       shl     bw,1", "34BD1: 81 C3 76 49 add     bw,4976h"],
+  "instruction": {"address": "34BB8", "bytes": "AA", "text": "stmb", "symbol": "Del_Brush_Game", "delta": 22},
+  "following": ["34BB9: E2 FB       dbnz    34BB6h", "34BBB: 5F          pop     iy", "34BBC: 81 C7 40 01 add     iy,140h", "34BC0: 4A          dec     dw", "34BC1: 75 F0       bne     34BB3h", "34BC3: 5E          pop     ix", "34BC4: 1F          pop     ds0", "34BC5: 07          pop     ds1", "34BC6: C3          ret     ", "34BC7: 1E          push    ds0", "34BC8: 56          push    ix", "34BC9: 50          push    aw", "34BCA: BA A2 81    mov     dw,81A2h", "34BCD: 8E DA       mov     ds0,dw", "34BCF: 8B D9       mov     bw,cw", "34BD1: D1 E3       shl     bw,1", "34BD3: 81 C3 78 49 add     bw,4978h", "34BD7: 33 D2       xor     dw,dw"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
@@ -1138,13 +1132,13 @@
   "verdict": "ELAPSED",
   "frame_before": 577,
   "frame_after": 727,
-  "emulated_before_s": 11.542751,
-  "emulated_after_s": 14.542752,
-  "cycles": 24000015,
+  "emulated_before_s": 11.542753,
+  "emulated_after_s": 14.542754,
+  "cycles": 24000013,
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 12,
-  "pc": "0x00030650",
+  "pc": "0x00030653",
   "cpu": ":maincpu",
   "frame": 727,
   "regs": {
@@ -1154,9 +1148,9 @@
     "EBX": "0x80a6",
     "ESP": "0x99b7",
     "EBP": "0xbe31",
-    "ESI": "0x06aa",
-    "EDI": "0x20ea",
-    "EIP": "0x00030650",
+    "ESI": "0x06ac",
+    "EDI": "0x20ec",
+    "EIP": "0x00030653",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1181,8 +1175,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "30650", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 127},
-  "following": ["30651: A5          movbkw  ", "30652: A5          movbkw  ", "30653: 81 C7 30 01 add     iy,130h", "30657: A5          movbkw  ", "30658: A5          movbkw  ", "30659: A5          movbkw  ", "3065A: A5          movbkw  ", "3065B: A5          movbkw  ", "3065C: A5          movbkw  ", "3065D: A5          movbkw  ", "3065E: A5          movbkw  ", "3065F: 81 C7 30 01 add     iy,130h", "30663: A5          movbkw  ", "30664: A5          movbkw  ", "30665: A5          movbkw  ", "30666: A5          movbkw  ", "30667: A5          movbkw  ", "30668: A5          movbkw  ", "30669: A5          movbkw  ", "3066A: A5          movbkw  ", "3066B: 81 C7 30 01 add     iy,130h", "3066F: A5          movbkw  "],
+  "instruction": {"address": "30653", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 128},
+  "following": ["30654: A5          movbkw  ", "30655: 81 C7 30 01 add     iy,130h", "30659: A5          movbkw  ", "3065A: A5          movbkw  ", "3065B: A5          movbkw  ", "3065C: A5          movbkw  ", "3065D: A5          movbkw  ", "3065E: A5          movbkw  ", "3065F: A5          movbkw  ", "30660: A5          movbkw  ", "30661: 81 C7 30 01 add     iy,130h", "30665: A5          movbkw  ", "30666: A5          movbkw  ", "30667: A5          movbkw  ", "30668: A5          movbkw  ", "30669: A5          movbkw  ", "3066A: A5          movbkw  ", "3066B: A5          movbkw  ", "3066C: A5          movbkw  ", "3066D: 81 C7 30 01 add     iy,130h", "30671: A5          movbkw  ", "30672: A5          movbkw  "],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
@@ -1223,10 +1217,10 @@
   "thread_errors": 0,
   "console_reruns": 0,
   "call": "MAME_MCP_LUA_END#6",
-  "pc_before": "0x00030650",
+  "pc_before": "0x00030653",
   "cause": "screen_map_find: one step",
   "stop_seq": 13,
-  "pc": "0x00030651",
+  "pc": "0x00030654",
   "cpu": ":maincpu",
   "frame": 727,
   "regs": {
@@ -1236,9 +1230,9 @@
     "EBX": "0x80a6",
     "ESP": "0x99b7",
     "EBP": "0xbe31",
-    "ESI": "0x06ac",
-    "EDI": "0x20ec",
-    "EIP": "0x00030651",
+    "ESI": "0x06ae",
+    "EDI": "0x20ee",
+    "EIP": "0x00030654",
     "EFLAGS": "0xf002",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1263,8 +1257,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "30651", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 128},
-  "following": ["30652: A5          movbkw  ", "30653: 81 C7 30 01 add     iy,130h", "30657: A5          movbkw  ", "30658: A5          movbkw  ", "30659: A5          movbkw  ", "3065A: A5          movbkw  ", "3065B: A5          movbkw  ", "3065C: A5          movbkw  ", "3065D: A5          movbkw  ", "3065E: A5          movbkw  ", "3065F: 81 C7 30 01 add     iy,130h", "30663: A5          movbkw  ", "30664: A5          movbkw  ", "30665: A5          movbkw  ", "30666: A5          movbkw  ", "30667: A5          movbkw  ", "30668: A5          movbkw  ", "30669: A5          movbkw  ", "3066A: A5          movbkw  ", "3066B: 81 C7 30 01 add     iy,130h", "3066F: A5          movbkw  ", "30670: A5          movbkw  "],
+  "instruction": {"address": "30654", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 129},
+  "following": ["30655: 81 C7 30 01 add     iy,130h", "30659: A5          movbkw  ", "3065A: A5          movbkw  ", "3065B: A5          movbkw  ", "3065C: A5          movbkw  ", "3065D: A5          movbkw  ", "3065E: A5          movbkw  ", "3065F: A5          movbkw  ", "30660: A5          movbkw  ", "30661: 81 C7 30 01 add     iy,130h", "30665: A5          movbkw  ", "30666: A5          movbkw  ", "30667: A5          movbkw  ", "30668: A5          movbkw  ", "30669: A5          movbkw  ", "3066A: A5          movbkw  ", "3066B: A5          movbkw  ", "3066C: A5          movbkw  ", "3066D: 81 C7 30 01 add     iy,130h", "30671: A5          movbkw  ", "30672: A5          movbkw  ", "30673: A5          movbkw  "],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28554},
   "session": {
     "alive": true,
@@ -1328,9 +1322,9 @@
   "verdict": "ELAPSED",
   "frame_before": 727,
   "frame_after": 732,
-  "emulated_before_s": 14.542754,
+  "emulated_before_s": 14.542756,
   "emulated_after_s": 14.636546,
-  "cycles": 750334,
+  "cycles": 750318,
   "polls": 5,
   "lines_ahead": 0,
   "thread_errors": 0,
@@ -1433,7 +1427,7 @@
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 15,
-  "pc": "0x00035364",
+  "pc": "0x00035366",
   "cpu": ":maincpu",
   "frame": 742,
   "regs": {
@@ -1445,7 +1439,7 @@
     "EBP": "0xbe2d",
     "ESI": "0xbe67",
     "EDI": "0xbe67",
-    "EIP": "0x00035364",
+    "EIP": "0x00035366",
     "EFLAGS": "0xf046",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1470,8 +1464,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "35364", "bytes": "0AC0", "text": "or      al,al", "symbol": "PLAY_MUS", "delta": 426},
-  "following": ["35366: 74 09    be      35371h", "35368: FE C8    dec     al", "3536A: 88 44 10 mov     [ix+10h],al", "3536D: FE C1    inc     cl", "3536F: EB 40    br      353B1h", "35371: 8A 44 13 mov     al,[ix+13h]", "35374: 0A C0    or      al,al", "35376: 74 34    be      353ACh", "35378: FE C8    dec     al", "3537A: 88 44 13 mov     [ix+13h],al", "3537D: 8A 44 1D mov     al,[ix+1Dh]", "35380: 0A C0    or      al,al", "35382: 79 11    bp      35395h"],
+  "instruction": {"address": "35366", "bytes": "0AC0", "text": "or      al,al", "symbol": "PLAY_MUS", "delta": 426},
+  "following": ["35368: 74 09    be      35373h", "3536A: FE C8    dec     al", "3536C: 88 44 10 mov     [ix+10h],al", "3536F: FE C1    inc     cl", "35371: EB 40    br      353B3h", "35373: 8A 44 13 mov     al,[ix+13h]", "35376: 0A C0    or      al,al", "35378: 74 34    be      353AEh", "3537A: FE C8    dec     al", "3537C: 88 44 13 mov     [ix+13h],al", "3537F: 8A 44 1D mov     al,[ix+1Dh]", "35382: 0A C0    or      al,al", "35384: 79 11    bp      35397h"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28743},
   "session": {
     "alive": true,
@@ -1640,7 +1634,7 @@
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 17,
-  "pc": "0x0003535d",
+  "pc": "0x0003535f",
   "cpu": ":maincpu",
   "frame": 757,
   "regs": {
@@ -1652,7 +1646,7 @@
     "EBP": "0xbe2d",
     "ESI": "0xbe67",
     "EDI": "0xbe67",
-    "EIP": "0x0003535d",
+    "EIP": "0x0003535f",
     "EFLAGS": "0xf046",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1677,8 +1671,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "3535D", "bytes": "B603", "text": "mov     dh,3h", "symbol": "PLAY_MUS", "delta": 419},
-  "following": ["3535F: 32 C9    xor     cl,cl", "35361: 8A 44 10 mov     al,[ix+10h]", "35364: 0A C0    or      al,al", "35366: 74 09    be      35371h", "35368: FE C8    dec     al", "3536A: 88 44 10 mov     [ix+10h],al", "3536D: FE C1    inc     cl", "3536F: EB 40    br      353B1h", "35371: 8A 44 13 mov     al,[ix+13h]", "35374: 0A C0    or      al,al", "35376: 74 34    be      353ACh", "35378: FE C8    dec     al", "3537A: 88 44 13 mov     [ix+13h],al"],
+  "instruction": {"address": "3535F", "bytes": "B603", "text": "mov     dh,3h", "symbol": "PLAY_MUS", "delta": 419},
+  "following": ["35361: 32 C9    xor     cl,cl", "35363: 8A 44 10 mov     al,[ix+10h]", "35366: 0A C0    or      al,al", "35368: 74 09    be      35373h", "3536A: FE C8    dec     al", "3536C: 88 44 10 mov     [ix+10h],al", "3536F: FE C1    inc     cl", "35371: EB 40    br      353B3h", "35373: 8A 44 13 mov     al,[ix+13h]", "35376: 0A C0    or      al,al", "35378: 74 34    be      353AEh", "3537A: FE C8    dec     al", "3537C: 88 44 13 mov     [ix+13h],al"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 28935},
   "session": {
     "alive": true,
@@ -1847,7 +1841,7 @@
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 19,
-  "pc": "0x00030612",
+  "pc": "0x00030614",
   "cpu": ":maincpu",
   "frame": 767,
   "regs": {
@@ -1859,7 +1853,7 @@
     "EBP": "0xbe2d",
     "ESI": "0x0056",
     "EDI": "0xbaa6",
-    "EIP": "0x00030612",
+    "EIP": "0x00030614",
     "EFLAGS": "0xf086",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -1884,8 +1878,8 @@
     "FOOFF": "0x00000000",
     "FOP": "0x00000000"
   },
-  "instruction": {"address": "30612", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 65},
-  "following": ["30613: A5          movbkw  ", "30614: A5          movbkw  ", "30615: A5          movbkw  ", "30616: A5          movbkw  ", "30617: 81 C7 30 01 add     iy,130h", "3061B: A5          movbkw  ", "3061C: A5          movbkw  ", "3061D: A5          movbkw  ", "3061E: A5          movbkw  ", "3061F: A5          movbkw  ", "30620: A5          movbkw  ", "30621: A5          movbkw  ", "30622: A5          movbkw  ", "30623: 81 C7 30 01 add     iy,130h", "30627: A5          movbkw  ", "30628: A5          movbkw  ", "30629: A5          movbkw  ", "3062A: A5          movbkw  ", "3062B: A5          movbkw  ", "3062C: A5          movbkw  ", "3062D: A5          movbkw  ", "3062E: A5          movbkw  ", "3062F: 81 C7 30 01 add     iy,130h"],
+  "instruction": {"address": "30614", "bytes": "A5", "text": "movbkw", "symbol": "Draw_Block", "delta": 65},
+  "following": ["30615: A5          movbkw  ", "30616: A5          movbkw  ", "30617: A5          movbkw  ", "30618: A5          movbkw  ", "30619: 81 C7 30 01 add     iy,130h", "3061D: A5          movbkw  ", "3061E: A5          movbkw  ", "3061F: A5          movbkw  ", "30620: A5          movbkw  ", "30621: A5          movbkw  ", "30622: A5          movbkw  ", "30623: A5          movbkw  ", "30624: A5          movbkw  ", "30625: 81 C7 30 01 add     iy,130h", "30629: A5          movbkw  ", "3062A: A5          movbkw  ", "3062B: A5          movbkw  ", "3062C: A5          movbkw  ", "3062D: A5          movbkw  ", "3062E: A5          movbkw  ", "3062F: A5          movbkw  ", "30630: A5          movbkw  ", "30631: 81 C7 30 01 add     iy,130h"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 29121},
   "session": {
     "alive": true,
@@ -1967,7 +1961,7 @@
   "samples": 96960,
   "emulated_s": 2.016768,
   "sample_min": -12062,
-  "sample_max": -4865,
+  "sample_max": -5012,
   "frame_end": 868,
   "cause": "the `gvblank` stop of the last frame asked",
   "stop_seq": 20,
@@ -2041,7 +2035,7 @@
 
 ```json
 {
-  "summary": "audio_compare measure: ch0 peak -8.68 dBFS, onset 0.0 s",
+  "summary": "audio_compare measure: ch0 peak -8.68 dBFS, onset 0.0012 s",
   "status": "ok",
   "sample_rate_hz": 48000,
   "channels": 1,
@@ -2051,18 +2045,18 @@
     {
       "channel": 0,
       "peak_dbfs": -8.68,
-      "rms_dbfs": -35.66,
+      "rms_dbfs": -35.62,
       "silent": false,
       "silence_spans": {
         "count": 0,
         "first": {"available": false, "why": "no silence in the window"}
       },
-      "onset_s": 0.0,
+      "onset_s": 0.0012,
       "clipping_run": 0,
       "clipped": false
     }
   ],
-  "pcm_sha256": "ae86d5f2b26afcc5348eb4e50ef4fab6d84241d3f72a2328e330d09a77e205f3",
+  "pcm_sha256": "0b06251978588d13bc099156907b0cf233ddcab479424e4598bca70170af0984",
   "path": "<volatile>",
   "session": {
     "alive": true,
