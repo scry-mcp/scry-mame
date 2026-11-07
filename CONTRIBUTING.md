@@ -85,7 +85,7 @@ Every pytest run judges the coverage floor: `--cov` is in `addopts` and the floo
 the floor is the whole repository's. `addopts` ends in a bare `--cov`, which takes the next
 argument as its source, so `uv run pytest tests/test_x.py` runs the whole suite while looking like
 a one-file run, and a `--no-cov` after the path does not help: the path was already taken. Narrow
-a run with `-o addopts=""` naming the test files, or with `-k <module name>`, and read it as a run
+a run with `-o addopts=""` naming the test files, or with `-k <module name> --no-cov`, and read it as a run
 that judged no floor. `-o addopts=` also drops the `not live` and `not window` deselections, so it names
 test files and never a directory: `tests` would start a real emulator. The live tier is not part of `pytest`:
 it is the two scripts below, so a clone runs no emulator by accident.
