@@ -191,7 +191,8 @@ writes), `capture` (rows at `trigger`), `expr` (one debugger expression). `ref`:
 `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
 .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
 `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
-128 for show or capture, 1024 otherwise. `condition`: change only.
+128 for show or capture, 1024 otherwise. `condition`: change only, a
+debugger expression over `wpdata`, the value written (`wpdata==0x7f`).
 `trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
 `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
 stored).

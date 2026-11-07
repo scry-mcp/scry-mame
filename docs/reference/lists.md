@@ -9,7 +9,8 @@
 perform(steps=null, path="", settle_seconds=30.0, summaries=false, until_frame=0)
 ```
 
-Run this server's operations in order, stopping at the first failure.
+A sequence of this server's operations in one call, in order, stopping at the first
+failure; `drive` is this plus a wait for a line of the emulator log.
 
 `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
 `drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:
@@ -163,8 +164,9 @@ Before a console op the list waits up to `settle_seconds` for the machine to sto
 drive(act, expect="", seconds=null, pattern=".", limit=40, settle_seconds=30.0, summaries=false)
 ```
 
-Marks the emulator log, runs `act` (steps as in `perform`), then checks the log since
-the mark.
+A sequence that also waits for a line of the emulator log: marks the log, runs `act`
+(steps as in `perform`), then checks the log since the mark. With no line to wait for,
+`perform` is the call.
 
 `expect` (regex) waits up to `seconds` (default 5, at most 600)
 for a matching line, only while the machine runs; `seconds` without `expect` is refused.

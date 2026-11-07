@@ -26,6 +26,7 @@ def _romset(folder: Path, *, with_map: bool = True) -> Path:
 @pytest.mark.parametrize(("options", "said"), [
     ({}, "no lineup.zip or lineup.map in --rompath (not given)"),
     ({"rompath": "roms"}, "the server takes absolute paths only: --rompath roms"),
+    ({"rompath": "/r", "cwd": "game"}, "the server takes absolute paths only: --cwd game"),
 ])
 def test_the_demo_says_why_it_cannot_run(options: dict[str, str], said: str) -> None:
     assert demo.precheck(Run(dir=Path("/x"), options=options)).startswith(said)

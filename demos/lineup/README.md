@@ -109,7 +109,7 @@ The run is 33 calls; these are the ones that show how it is done, and every call
   ],
   "cause": "target Draw_High_Scores_Screen",
   "stop_seq": 2,
-  "pc": "0x000317e7",
+  "pc": "0x000317fd",
   "cpu": ":maincpu",
   "frame": 253,
   "regs": {
@@ -121,7 +121,7 @@ The run is 33 calls; these are the ones that show how it is done, and every call
     "EBP": "0xbe31",
     "ESI": "0x6992",
     "EDI": "0xfb28",
-    "EIP": "0x000317e7",
+    "EIP": "0x000317fd",
     "EFLAGS": "0xf006",
     "CS": "0x3000",
     "SS": "0x0040",
@@ -147,17 +147,17 @@ The run is 33 calls; these are the ones that show how it is done, and every call
     "FOP": "0x00000000"
   },
   "instruction": {
-    "address": "317E7",
+    "address": "317FD",
     "bytes": "1E",
     "text": "push    ds0",
     "symbol": "Draw_High_Scores_Screen",
     "delta": 0
   },
-  "following": ["317E8: E8 21 FE call    3160Ch", "317EB: B8 01 00 mov     aw,1h", "317EE: E8 29 73 call    38B1Ah", "317F1: E8 50 36 call    34E44h", "317F4: E8 8F FF call    31786h", "317F7: 1F       pop     ds0", "317F8: C3       ret     ", "317F9: 1E       push    ds0", "317FA: E8 0F FE call    3160Ch", "317FD: B8 00 00 mov     aw,0h", "31800: E8 17 73 call    38B1Ah", "31803: E8 80 FF call    31786h", "31806: 1F       pop     ds0"],
+  "following": ["317FE: E8 21 FE call    31622h", "31801: B8 01 00 mov     aw,1h", "31804: E8 29 73 call    38B30h", "31807: E8 50 36 call    34E5Ah", "3180A: E8 8F FF call    3179Ch", "3180D: 1F       pop     ds0", "3180E: C3       ret     ", "3180F: 1E       push    ds0", "31810: E8 0F FE call    31622h", "31813: B8 00 00 mov     aw,0h", "31816: E8 17 73 call    38B30h", "31819: E8 80 FF call    3179Ch", "3181C: 1F       pop     ds0"],
   "errorlog": {
     "lines_total": 235,
     "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (30514): unmapped io memory write to 000C = 0000 & FFFF"],
+    "lines": ["[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052A): unmapped io memory write to 000C = 0000 & FFFF"],
     "mark": 14,
     "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=235)` reads them all"
   },

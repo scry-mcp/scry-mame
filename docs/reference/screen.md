@@ -181,8 +181,9 @@ The screen as the pens it holds: each pixel's palette index, recovered exactly.
 
 `mode`: `render`, `isolate` (`pens`, 1..64, in `isolate_color` over grey),
 `histogram` (pens used, no picture), `pixel` (`point` `[x, y]`). `crop` `[x, y, width,
-height]` narrows all but `pixel`. `scale`: the integer the picture is enlarged by, 0 the
-largest that fits; `dest`: a new path it is written to, else the session's scratch;
+height]` narrows all but `pixel`. `scale`: the integer the picture is enlarged by, for
+every mode but histogram (enlarged four times is `scale=4`), 0 the largest that fits;
+`dest`: a new path it is written to, else the session's scratch;
 `attach=false` writes it without attaching it to the reply; `seconds` bounds the read.
 
 Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,

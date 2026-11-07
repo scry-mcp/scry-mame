@@ -2110,7 +2110,7 @@
   },
   {
    "id": "M114",
-   "prompt": "Which palette pen is the pixel at x 46, y 160 of the screen, and show me where on the screen it sits, enlarged 4 times.",
+   "prompt": "Which palette pen is the pixel at x 46, y 160 of the screen, and show me where on the screen it sits, at scale 4.",
    "tool": "screen_view",
    "args": {
     "mode": "pixel",

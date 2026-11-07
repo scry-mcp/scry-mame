@@ -657,7 +657,8 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
     `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
     .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
     `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
-    {WATCH_SHOW_MAX} for show or capture, {READ_MAX} otherwise. `condition`: change only.
+    {WATCH_SHOW_MAX} for show or capture, {READ_MAX} otherwise. `condition`: change only, a
+    debugger expression over `wpdata`, the value written (`wpdata==0x7f`).
     `trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
     `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
     stored).
@@ -1101,8 +1102,9 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
 
     `mode`: `render`, `isolate` (`pens`, 1..{SCREEN_PENS_MAX}, in `isolate_color` over grey),
     `histogram` (pens used, no picture), `pixel` (`point` `[x, y]`). `crop` `[x, y, width,
-    height]` narrows all but `pixel`. `scale`: the integer the picture is enlarged by, 0 the
-    largest that fits; `dest`: a new path it is written to, else the session's scratch;
+    height]` narrows all but `pixel`. `scale`: the integer the picture is enlarged by, for
+    every mode but histogram (enlarged four times is `scale=4`), 0 the largest that fits;
+    `dest`: a new path it is written to, else the session's scratch;
     `attach=false` writes it without attaching it to the reply; `seconds` bounds the read.
 
     Reply: `mode`, `screen`, `width`, `height`, `frame_screen`, `palette`, `entries`,
@@ -1462,8 +1464,9 @@ def drive(act: list[dict[str, Any]], expect: str = "",
           settle_seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 30.0,
           summaries: Annotated[bool, Field(description=SUMMARIES_ARGUMENT)] = False,
           ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
-    """Marks the emulator log, runs `act` (steps as in `perform`), then checks the log since
-    the mark.
+    """A sequence that also waits for a line of the emulator log: marks the log, runs `act`
+    (steps as in `perform`), then checks the log since the mark. With no line to wait for,
+    `perform` is the call.
 
     `expect` (regex) waits up to `seconds` (default {EXPECT_WAIT_S}, at most {WAIT_MAX_S})
     for a matching line, only while the machine runs; `seconds` without `expect` is refused.
@@ -1499,7 +1502,8 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
             summaries: Annotated[bool, Field(description=SUMMARIES_ARGUMENT)] = False,
             until_frame: int = 0,
             ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
-    """Run this server's operations in order, stopping at the first failure.
+    """A sequence of this server's operations in one call, in order, stopping at the first
+    failure; `drive` is this plus a wait for a line of the emulator log.
 
     `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
     `drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:

@@ -19,7 +19,8 @@ from scry_core.reply_contract import Invalid
 
 from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
 
-__all__ = ["RUN_S", "Demo", "Reply", "Run", "Step", "demo", "expect", "main"]
+__all__ = ["RUN_S", "Demo", "Reply", "Run", "Step", "absolute_only", "demo", "expect", "fresh_dirs",
+           "host_ready", "main"]
 
 #: Wall-clock bound on one timed run: a board can emulate well below real speed under the debugger.
 RUN_S = 300
@@ -42,25 +43,51 @@ def url(system: str) -> str:
     return f"https://www.mamedev.org/roms/{system}/{system}.zip"
 
 
+def absolute_only(run: Run) -> str:
+    """Why the host's paths cannot reach the server, or "": it takes absolute ones, and a
+    checkout (`cwd`) absolute or `~`-led."""
+    relative = [f"--{k} {v}" for k, v in run.options.items()
+                if k in ("rompath", "binary", "cwd") and not Path(str(v)).is_absolute()
+                and not (k == "cwd" and str(v).startswith("~"))]
+    return f"the server takes absolute paths only: {', '.join(relative)}" if relative else ""
+
+
+def host_ready(run: Run, system: str, rompath: str) -> str:
+    """The host's MAME starting `system` off `rompath`, as the canary says; "" when the binary
+    cannot be resolved, which is left to `start`."""
+    try:
+        binary = mame_binary.resolve(run.options.get("binary", "")).path
+    except Invalid:
+        return ""
+    return live_host.canary(mame_binary.canary_argv(binary, system, rompath,
+                                                    "-joystickprovider", "none"))
+
+
+def fresh_dirs(run: Run, system: str) -> tuple[Path, Path]:
+    """An ini that turns the joystick provider off (a debug build can abort at boot with a
+    controller connected) and an emptied state directory, since `state_write(method="save")`
+    never overwrites."""
+    ini = run.dir / f"{system}-ini"
+    ini.mkdir(exist_ok=True)
+    (ini / "mame.ini").write_text("joystickprovider none\n", encoding="ascii")
+    states = run.dir / f"{system}-states"
+    shutil.rmtree(states, ignore_errors=True)
+    states.mkdir()
+    return ini, states
+
+
 def precheck(system: str) -> Callable[[Run], str]:
     """Why the demo cannot run, or "". An unresolvable binary is left to `start`."""
     def check(run: Run) -> str:
-        relative = [f"--{k} {v}" for k, v in run.options.items()
-                    if k in ("rompath", "binary") and not Path(v).is_absolute()]
-        if relative:
-            return f"the server takes absolute paths only: {', '.join(relative)}"
+        if relative := absolute_only(run):
+            return relative
         rompath = run.options.get("rompath")
         if not rompath or not (Path(rompath) / f"{system}.zip").is_file():
             return (f"no {system}.zip in --rompath ({rompath or 'not given'}). Get it from "
                     f"{url(system)} (free for non-commercial use, from mamedev.org only), put "
                     f"it in a directory, check it with `mame -rompath <dir> -verifyroms "
                     f"{system}` and pass that directory as --rompath")
-        try:
-            binary = mame_binary.resolve(run.options.get("binary", "")).path
-        except Invalid:
-            return ""
-        return live_host.canary(mame_binary.canary_argv(binary, system, rompath,
-                                                        "-joystickprovider", "none"))
+        return host_ready(run, system, rompath)
     return check
 
 
@@ -77,12 +104,7 @@ def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
             image = z.read(members[0])
         reference = run.dir / f"{system}.ref"
         reference.write_bytes(image)
-        ini = run.dir / f"{system}-ini"
-        ini.mkdir(exist_ok=True)
-        (ini / "mame.ini").write_text("joystickprovider none\n", encoding="ascii")
-        states = run.dir / f"{system}-states"
-        shutil.rmtree(states, ignore_errors=True)
-        states.mkdir()
+        ini, states = fresh_dirs(run, system)
         return {"system": system, "reference_rom": reference, "reference_addr": addr,
                 "reference_base": addr, "inipath": ini, "state_dir": states,
                 "boot_seconds": 60}  # the wait for the debugger stub to answer at boot

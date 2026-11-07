@@ -54,7 +54,7 @@ from scry_mame import server as s  # isort: skip
 ROOT = Path(__file__).resolve().parents[2]
 #: The demos of games no free set holds, each with the variable naming the directory its romset
 #: and symbol map are in: run when it is set, BLOCKED with that reason when not.
-GAME_ROMS = {"lineup": "LINEUP_MAME_ROMS"}
+GAME_ROMS = {"lineup": "LINEUP_MAME_ROMS", "speedf": "SPEEDF_MAME_ROMS"}
 #: Every demo directory, found rather than listed, so a new one is run and required too.
 DEMOS = tuple(sorted(d.name for d in (ROOT / "demos").iterdir() if (d / "demo.py").is_file()))
 ZIPS = {name: Path(FREE_ROMS).resolve() / f"{name}.zip" for name in DEMOS if name not in GAME_ROMS}
