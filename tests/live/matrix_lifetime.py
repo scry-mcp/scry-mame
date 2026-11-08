@@ -349,6 +349,7 @@ def _p_repo_profile(t: list[str]) -> None:
 def _p_promote(t: list[str]) -> None:
     """A store of this run's own: what the boot ran and the map it learned are reviewed, then
     the two chosen are written and the map is read back from the file the promotion wrote."""
+    STATE.drafts.kept.clear()       # the earlier cells' recipes name this run's scratch
     store = live_tmp("mame-live-promote-")
     ini = store / "ini"
     ini.mkdir()

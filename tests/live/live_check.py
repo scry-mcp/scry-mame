@@ -615,6 +615,16 @@ check("the next stop no longer carries it, and the other tally went on counting"
       and b.get("total", 0) < at_next.get("0x20351c", {}).get("total", 0),
       str([(ref, w.get("total")) for ref, w in at_next.items()]))
 s.declaration_clear("watch", all=True)
+r = s.watch_add(ref="0x2031fc", mode="count", length=4, trigger_type="rw")
+check("a count of both accesses is accepted", r.get("status") == "ok",
+      str(r.get("summary") or r.get("message")))
+s.run_for(frames=60)
+both = {w.get("ref"): w for w in s.declaration_list("watch").get("watches", [])}.get(
+    "0x2031fc", {})
+check("the frame counter's reads and writes come back apart, each counted",
+      both.get("total", 0) >= 100 and both.get("reads", 0) > 0,
+      f"writes={both.get('total')} reads={both.get('reads')} error={both.get('error')}")
+s.declaration_clear("watch", all=True)
 
 print("\n== screen signature and the snapshot's hash ")
 r = s.snapshot()
