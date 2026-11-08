@@ -16,17 +16,20 @@ approved. `start` keeps the recipe it ran, a map's `add` keeps the map, a
 with a check), and a reply that keeps one says `kept N (promote to review)`. The
 identity is (kind, name): an entry a call loaded (`start(profile=)`,
 `screen_map_write` `load`, `perform(path=)`) names what is learned next, and a name
-the store already holds is an update. `dry_run=true` lists every candidate with its
+the store already holds is an update, which keeps the keys a run owns (`logfile`) as the
+store has them, and one that changes nothing is named in `unchanged`, not offered.
+`dry_run=true` lists every candidate with its
 file, its size and whether it is new or an update, an update with its diff; `entries`
 (`<kind>/<name>`, the kind one of `start`, `maps`, `perform`) writes only those,
 `names` renames one as it is written, and only
 that approved call creates `.scry/`. `root` names the repository the store is in or
-becomes; without it the nearest `.scry/` above this server's directory or the draft's
-paths is used, and a promotion that finds none is refused. Every path is written as a
-`project_store` placeholder; one that would leave them is refused, since a tracked
-file carries no path of this machine. Reply: `store`, `candidates` (a review), `written`
-and `draft` (an approval), `total_bytes`, `store_bytes`; `close` names what was left
-unkept. Refused: nothing kept (`needs_call`); an entry the draft does not hold; two
+becomes; without it the nearest `.scry/` above the draft's paths, then above this
+server's directory, is used, and a promotion that finds none is refused. Every path is
+written as a `project_store` placeholder; one that would leave them is refused, since a
+tracked file carries no path of this machine. Reply: `store`, `candidates` and
+`unchanged` (a review), `written` and `draft` (an approval), `total_bytes`,
+`store_bytes`; `close` names what was left unkept, which stays in the draft until the
+server ends. Refused: nothing kept (`needs_call`); an entry the draft does not hold; two
 entries written to one file; a candidate the caps cannot hold; an entry that is there
 and cannot be read as JSON.
 
@@ -42,6 +45,7 @@ Reference: REFERENCE.md, The store.
 | reply field | type |
 |---|---|
 | `candidates` | array |
+| `unchanged` | array of string |
 | `written` | array |
 | `draft` | array of string |
 | `total_bytes` | integer |

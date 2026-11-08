@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from scry_core import project_store
+from scry_core import given, project_store
 from scry_core import promote as core
 
 from scry_mame import launch
@@ -31,12 +31,19 @@ def keep_start(params: Mapping[str, Any], *, defaults: Mapping[str, Any]) -> boo
     system = str(params.get("system") or "")
     if not system:
         return False
+    if STATE.drafts.loaded_name("start") and _only_the_run(given.names()):
+        return False
     document: dict[str, Any] = {"format": project_store.FORMAT}
     document.update({name: value for name, value in params.items()
                      if name in defaults and name not in RUN_OWN
                      and value != defaults[name]})
     return STATE.drafts.keep("start", STATE.drafts.loaded_name("start") or system, document,
-                             needs=NEEDS, path_keys=PROMOTE_PATHS)
+                             needs=NEEDS, path_keys=PROMOTE_PATHS, own=sorted(RUN_OWN))
+
+
+def _only_the_run(names: frozenset[str] | None) -> bool:
+    """Whether the caller gave `start` nothing but the run's own (names unknown: never)."""
+    return names is not None and names <= RUN_OWN
 
 
 def after_map(method: str, reply: dict[str, Any]) -> dict[str, Any]:
@@ -57,8 +64,8 @@ def promote(dry_run: bool = False, entries: list[str] | None = None,
 
 
 def starting() -> list[str]:
-    """Where the store is looked for: this process's directory, then the draft's own paths."""
-    starts = [os.getcwd()]
+    """Where the store is looked for: the draft's own paths, then this process's directory."""
+    starts: list[str] = []
     for candidate in STATE.drafts.kept.values():
         if candidate.kind != "start":
             continue
@@ -66,7 +73,7 @@ def starting() -> list[str]:
         starts += [part for part in parts if part]
         if binary := str(candidate.document.get("binary") or ""):
             starts.append(str(Path(binary).parent))
-    return starts
+    return [*starts, os.getcwd()]
 
 
 def scratch() -> str:

@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import inspect
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import media_replies, screen_map, tool_replies
+from scry_core import given, media_replies, screen_map, tool_replies
 from scry_core import promote as core_promote
 
 from scry_mame import promote as mpromote
@@ -195,3 +196,26 @@ def test_the_store_is_looked_for_from_the_recipe_s_own_paths(tmp_path: Path) -> 
                         defaults=server._START_DEFAULTS)
     assert f"{tmp_path}/roms" in mpromote.starting()
     assert f"{tmp_path}/more" in mpromote.starting()
+
+
+def test_a_start_that_only_loads_its_profile_learned_nothing() -> None:
+    STATE.drafts.loaded_entry("start", "v30")
+    with given.remembered({"profile", "state_dir"}):
+        assert mpromote.keep_start({**START, "system": "lineup"},
+                                   defaults=server._START_DEFAULTS) is False
+    assert STATE.drafts.entries() == []
+    with given.remembered({"profile", "boot_seconds"}):
+        assert mpromote.keep_start({**START, "system": "lineup"},
+                                   defaults=server._START_DEFAULTS) is True
+
+
+def test_a_kept_start_leaves_the_run_s_own_keys_to_the_store() -> None:
+    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    assert set(STATE.drafts.kept["start", "lineup"].own) == set(mpromote.RUN_OWN)
+
+
+def test_the_recipe_s_paths_are_searched_before_this_process_s_directory(tmp_path: Path) -> None:
+    mpromote.keep_start({**START, "rompath": f"{tmp_path}/roms"},
+                        defaults=server._START_DEFAULTS)
+    starts = mpromote.starting()
+    assert starts[0] == f"{tmp_path}/roms" and starts[-1] == os.getcwd()
