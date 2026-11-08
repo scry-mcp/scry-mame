@@ -1518,3 +1518,11 @@ def test_a_capture_cannot_be_triggered_by_both() -> None:
     with pytest.raises(dec.DeclarationError, match="trigger type"):
         dec.Declaration(kind="watch", ref="0x10", width=2, watch_mode="capture", by="address",
                         trigger="0x20", trigger_type="rw")
+
+
+@pytest.mark.parametrize("access", ["w", "r", "rw"])
+def test_the_taps_lua_carries_no_python_template_left_unfilled(access: str) -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access=access)
+    assert "{BUCKETS_MAX}" not in script and "{{" not in script and "}}" not in script
+    if "w" in access:
+        assert f"t.nvalues < {tally.BUCKETS_MAX} then" in script

@@ -133,7 +133,7 @@ print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s first=%x last=%x
 
 def _taps(access: str) -> str:
     """The Lua that installs the tap or taps `access` names, each filtered by landing."""
-    writes = """sp:install_write_tap(lo, hi, "mcp_tally_" .. id,
+    writes = f"""sp:install_write_tap(lo, hi, "mcp_tally_" .. id,
 guarded(t, function(offset, data, mask)
   if not aligned and not lands(offset, mask) then return end
   t.total = t.total + 1
