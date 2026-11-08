@@ -1423,9 +1423,8 @@ def test_the_survey_says_truncated_only_past_what_it_shows_and_dates_the_watches
         running.survey(ses, tmp_path)  # type: ignore[arg-type]
 
 
-def test_a_conditional_target_the_console_does_not_list_is_refused_as_the_console_took_it(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
-) -> None:
+def _deaf_to_the_target(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """A running session whose console answers nothing to the `bp` of the target at 0x4a0."""
     ses = _running(monkeypatch, tmp_path)
     real_monitor = ses.monitor
 
@@ -1433,9 +1432,27 @@ def test_a_conditional_target_the_console_does_not_list_is_refused_as_the_consol
         return "" if command.startswith("bp 0x4a0:") else real_monitor(command, timeout)
 
     monkeypatch.setattr(ses, "monitor", deaf)
+
+
+def test_a_conditional_target_the_console_does_not_list_is_refused_as_the_console_took_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _deaf_to_the_target(monkeypatch, tmp_path)
     out = refused(r"the console took `bp 0x4a0::maincpu,.+` and its `bplist` does not list it",
                   s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0, condition="d0 == 1"))
     assert out["code"] == "readback_refused", out
+
+
+def test_a_condition_the_console_rejects_says_so_and_offers_the_bare_call(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    _deaf_to_the_target(monkeypatch, tmp_path)
+    out = refused(r"expression parser most likely rejected the condition.*without `condition`",
+                  s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0, condition="d0 == 1"))
+    assert out["code"] == "readback_refused", out
+    bare = refused(r"does not list it: nothing is armed there, and the run was not started",
+                   s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0))
+    assert "condition" not in bare["message"], bare
 
 
 def test_a_target_listed_without_its_condition_is_removed_before_the_refusal(

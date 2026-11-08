@@ -253,8 +253,8 @@ def _hits(before: dict[dec.Owner, int], after: dict[dec.Owner, int],
             for r in after if r in owners]
 
 
-def _target_not_listed(ses: gs.Session, armed_as: str,
-                       row: dict[str, Any] | None) -> dict[str, Any]:
+def _target_not_listed(ses: gs.Session, armed_as: str, row: dict[str, Any] | None,
+                       conditioned: bool = False) -> dict[str, Any]:
     """Refuse a target the console took and did not list as sent, before the machine moved; a
     row listed without its condition is removed first, or every later run would stop at it."""
     if row is not None:
@@ -263,7 +263,11 @@ def _target_not_listed(ses: gs.Session, armed_as: str,
                              f"the console took `{armed_as}` and its `bplist` "
                              + ("lists it without its condition, so that row was removed"
                                 if row is not None else "does not list it: nothing is armed there")
-                             + ", and the run was not started", control_hits=0)
+                             + ", and the run was not started"
+                             + ("; the console's expression parser most likely rejected the "
+                                "condition (a name or a syntax it does not take), and the same "
+                                "call without `condition` runs" if conditioned else ""),
+                             control_hits=0)
 
 
 def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | None,
@@ -298,7 +302,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
     # control, read as "the routine never ran".
     row = mlists.armed_row(held, mlists.bp_held(ses), a_target, cpu=on)
     if row is None or (cond and not row.get("condition")):
-        return _target_not_listed(ses, armed_as, row)
+        return _target_not_listed(ses, armed_as, row, bool(cond))
     clock = mprogress.Ticker(seconds, progress)
     verdict = contract.TIMEOUT
     broken: gs.SessionError | None = None
