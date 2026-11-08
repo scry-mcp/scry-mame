@@ -199,7 +199,8 @@ UNSERVED = ("gdbstub: cpuname mc6809e (:maincpu) not found in gdb stub descripti
             "registers are not served")
 
 
-@pytest.mark.parametrize("ending", ["", "\r"], ids=["line-feed", "carriage-return"])
+@pytest.mark.parametrize("ending", ["", *(() if os.name == "nt" else ("\r",))],
+                         ids=["line-feed", *(() if os.name == "nt" else ("carriage-return",))])
 def test_a_live_stub_that_cannot_describe_the_first_cpu_is_refused_at_once_naming_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ending: str
 ) -> None:

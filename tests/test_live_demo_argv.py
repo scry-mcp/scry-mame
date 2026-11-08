@@ -25,8 +25,9 @@ def test_the_argv_the_loop_builds_parses_under_the_demo_s_own_parser(name: str) 
     demo = demo_core.load(ROOT / "demos" / name / "demo.py")
     argv = _argv_module().demo_argv(demo, Path("/roms"), Path("/game"))  # type: ignore[attr-defined]
     parsed = demo_core._parser(demo).parse_args(argv)
-    assert parsed.rompath == "/roms"
-    assert (getattr(parsed, "cwd", None) == "/game") == ("cwd" in demo.offers)
+    assert Path(parsed.rompath) == Path("/roms")
+    given = getattr(parsed, "cwd", None)
+    assert (given is not None and Path(given) == Path("/game")) == ("cwd" in demo.offers)
 
 
 def test_at_least_one_demo_takes_the_game_s_checkout_and_one_does_not() -> None:

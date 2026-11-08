@@ -226,6 +226,7 @@ def _launched_by_open(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     return seen
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="an app bundle is macOS's")
 def test_a_bundle_launches_through_open_and_the_session_holds_the_apps_own_pid(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """`binary` naming a `.app` takes the app route: `open` with the channels, the app's pid."""

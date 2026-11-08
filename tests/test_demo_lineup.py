@@ -26,7 +26,8 @@ def _romset(folder: Path, *, with_map: bool = True) -> Path:
 @pytest.mark.parametrize(("options", "said"), [
     ({}, "no lineup.zip or lineup.map in --rompath (not given)"),
     ({"rompath": "roms"}, "the server takes absolute paths only: --rompath roms"),
-    ({"rompath": "/r", "cwd": "game"}, "the server takes absolute paths only: --cwd game"),
+    ({"rompath": str(Path.cwd()), "cwd": "game"},
+     "the server takes absolute paths only: --cwd game"),
 ])
 def test_the_demo_says_why_it_cannot_run(options: dict[str, str], said: str) -> None:
     assert demo.precheck(Run(dir=Path("/x"), options=options)).startswith(said)
@@ -64,6 +65,7 @@ def test_the_map_is_the_game_s_and_a_copy_of_it_goes_into_the_run(
 
 def test_a_cwd_led_by_a_tilde_is_expanded(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
     (tmp_path / demo.SCREEN_MAP).parent.mkdir(parents=True)
     (tmp_path / demo.SCREEN_MAP).write_text("{}", encoding="utf-8")
     run = Run(dir=tmp_path, options={"cwd": "~"})

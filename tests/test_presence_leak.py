@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 from pathlib import Path
 from types import ModuleType
 
@@ -21,7 +22,8 @@ def _module() -> ModuleType:
     return module
 
 
-@pytest.mark.parametrize("folder", ["scratch", "back\\slash", 'quo"te'])
+@pytest.mark.parametrize("folder", ["scratch", *(() if os.name == "nt" else ("back\\slash",
+                                                                              'quo"te'))])
 def test_the_leaking_drawer_moves_one_container_and_one_state_path_on_any_path(
         tmp_path: Path, folder: str) -> None:
     root = tmp_path / folder

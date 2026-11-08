@@ -401,8 +401,8 @@ def test_close_carries_the_tail_of_each_log_before_the_scratch_goes(
     """`close` deletes the scratch, and with it the only record of what MAME printed last."""
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}close"
     scratch.mkdir()
-    (scratch / "stdout.log").write_text("boot\n" + "x" * 20 + "\nSegmentation fault\n")
-    (scratch / "error.log").write_text("[luaengine] MAME_MCP_THROTTLE#1\n")
+    (scratch / "stdout.log").write_bytes(b"boot\n" + b"x" * 20 + b"\nSegmentation fault\n")
+    (scratch / "error.log").write_text("[luaengine] MAME_MCP_THROTTLE#1\n", newline="")
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     ses = _RecordingSession()
     mstate.STATE.ses, mstate.STATE.proc = ses, _ExitingProcess(ses.events, exits=True)  # type: ignore[assignment]

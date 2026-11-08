@@ -232,4 +232,4 @@ def test_a_map_learned_from_a_loaded_recipe_is_looked_for_in_that_recipe_s_store
 def test_a_perform_document_s_start_block_says_where_the_store_is() -> None:
     STATE.drafts.keep("perform", "x", {"start": {"rompath": "/game/roms", "binary": "/b/mame"},
                                        "steps": [{"op": "a", "recorded": {"v": 1}}]})
-    assert mpromote.starting()[:2] == ["/game/roms", "/b"]
+    assert mpromote.starting()[:2] == ["/game/roms", str(Path("/b"))]

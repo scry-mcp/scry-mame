@@ -72,6 +72,7 @@ def test_a_state_left_by_an_earlier_run_is_emptied(tmp_path: Path) -> None:
 
 def test_a_cwd_led_by_a_tilde_is_expanded(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
     assert demo.game(Run(dir=tmp_path, options={"cwd": "~"})) == tmp_path
 
 

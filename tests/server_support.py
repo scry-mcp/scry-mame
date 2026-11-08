@@ -217,7 +217,7 @@ def _closing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, exits: bool,
              code: int = 0) -> None:
     scratch = tmp_path / f"{launch.SCRATCH_PREFIX}tails"
     scratch.mkdir()
-    (scratch / "stdout.log").write_text("bye\n")
+    (scratch / "stdout.log").write_text("bye\n", newline="")
     (scratch / "error.log").write_text("[luaengine] routine\n")
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     ses = _RecordingSession()
