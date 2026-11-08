@@ -66,6 +66,7 @@
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
+  "kept": "kept 1 (promote to review)",
   "session": {
     "alive": true,
     "running": false,
@@ -1183,11 +1184,11 @@
 
 ```json
 {
-  "summary": "state_write save: four_credits, 16860 bytes at frame 314",
+  "summary": "state_write save: four_credits, 16848 bytes at frame 314",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
-  "bytes": 16860,
+  "bytes": 16848,
   "frame": 314,
   "pc": "0x00002b38",
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1839},
@@ -1598,6 +1599,7 @@ Also attached: image/png.
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,
   "console_drained": 0,
+  "draft": ["start/starfire"],
   "session": {"alive": false, "running": false, "altered": false}
 }
 ```

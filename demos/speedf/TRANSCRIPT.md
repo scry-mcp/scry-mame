@@ -1,4 +1,4 @@
-**1. `start`**: OK start: speedf on MAME from the game's own recipe (9 keys), rom_check OK, 223 symbols
+**1. `start`**: OK start: speedf on MAME from the game's own recipe (9 keys), rom_check OK, 225 symbols
 
 <details><summary>call and reply</summary>
 
@@ -31,10 +31,10 @@
   "errorlog_path": "<volatile>",
   "stdout_path": "<volatile>",
   "rom_check": "OK",
-  "symbols_total": 223,
+  "symbols_total": 225,
   "symbols_format": "tsv",
-  "symbols_by_class": {"CODE": 167, "DATA": 56},
-  "symbols_by_cpu": {":maincpu": 223},
+  "symbols_by_class": {"CODE": 167, "DATA": 58},
+  "symbols_by_cpu": {":maincpu": 225},
   "registers": ["EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI", "EIP", "EFLAGS", "CS", "SS", "DS", "ES", "FS", "GS", "ST0", "ST1", "ST2", "ST3", "ST4", "ST5", "ST6", "ST7", "FCTRL", "FSTAT", "FTAG", "FISEG", "FIOFF", "FOSEG", "FOOFF", "FOP"],
   "pc": "0x000ffff0",
   "frame": 0,
@@ -51,7 +51,7 @@
     "path": "./tmp/demos/speedf/speedf-states/declarations.json",
     "key": "<volatile>",
     "held": 0,
-    "fingerprint": "6b931583c3fb8832",
+    "fingerprint": "e08811564190b354",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
@@ -144,9 +144,9 @@
   "instruction": {"address": "F5E2F", "bytes": "06", "text": "push    ds1", "symbol": "startdemo", "delta": 0},
   "following": ["F5E30: 1E             push    ds0", "F5E31: 1E             push    ds0", "F5E32: 07             pop     ds1", "F5E33: 0E             push    ps", "F5E34: 1F             pop     ds0", "F5E35: 8B D8          mov     bw,aw", "F5E37: D1 E3          shl     bw,1", "F5E39: D1 E3          shl     bw,1", "F5E3B: 26 8B B7 45 CE mov     ix,ds1:[bw-31BBh]", "F5E40: BF 35 CA       mov     iy,0CA35h", "F5E43: 2E 8B 0C       mov     cw,ps:[ix]", "F5E46: 83 C1 04       add     cw,4h", "F5E49: F3 A4          rep     movbkb  ", "F5E4B: 26 8B B7 47 CE mov     ix,ds1:[bw-31B9h]"],
   "errorlog": {
-    "lines_total": 3,
+    "lines_total": 1,
     "truncated": false,
-    "lines": ["[:] 0fa039: spider_blitter_w unhandled RAM access 000f7006 0000 ff00", "[:oki] Requested to play sample 44 on non-stopped voice", "[:oki] Requested to play sample 45 on non-stopped voice"],
+    "lines": ["[:] 0fa039: spider_blitter_w unhandled RAM access 000f7006 0000 ff00"],
     "mark": 126
   },
   "session": {
@@ -223,7 +223,7 @@
 
 </details>
 
-**5. `run_for`**: OK plays: the demo plays: ran to frame 1103, 24000011 cycles
+**5. `run_for`**: OK plays: the demo plays: ran to frame 1103, 24000010 cycles
 
 <details><summary>call and reply</summary>
 
@@ -241,9 +241,9 @@
   "verdict": "ELAPSED",
   "frame_before": 923,
   "frame_after": 1103,
-  "emulated_before_s": 15.390289,
-  "emulated_after_s": 18.39029,
-  "cycles": 24000011,
+  "emulated_before_s": 15.390295,
+  "emulated_after_s": 18.390296,
+  "cycles": 24000010,
   "reads": "<volatile>",
   "cause": "the console's `gtime` stop",
   "stop_seq": 3,
@@ -292,12 +292,7 @@
     "delta": 37
   },
   "following": ["F5DB0: FF 06 2D C0    inc     word ptr [0C02Dh]", "F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h"],
-  "errorlog": {
-    "lines_total": 2,
-    "truncated": false,
-    "lines": ["[:oki] Requested to play invalid sample 12", "[:oki] Requested to play invalid sample 1d"],
-    "mark": 307
-  },
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 195},
   "session": {
     "alive": true,
     "running": false,
@@ -398,7 +393,7 @@
     "delta": 42
   },
   "following": ["F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h", "F5DCD: 1E             push    ds0", "F5DCE: 8B 7E 04       mov     iy,[bp+4h]"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 393},
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 195},
   "session": {
     "alive": true,
     "running": false,

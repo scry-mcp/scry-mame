@@ -74,6 +74,7 @@
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
+  "kept": "kept 1 (promote to review)",
   "session": {
     "alive": true,
     "running": false,
@@ -1308,11 +1309,11 @@
 
 ```json
 {
-  "summary": "state_write save: four_credits, 10845 bytes at frame 702",
+  "summary": "state_write save: four_credits, 10840 bytes at frame 702",
   "status": "ok",
   "name": "four_credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",
-  "bytes": 10845,
+  "bytes": 10840,
   "frame": 702,
   "pc": "0x0000ae19",
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 3179},
@@ -1928,6 +1929,7 @@ Also attached: image/png.
   "cfg": {"available": false, "why": "no cfg was given, so MAME runs on its defaults"},
   "console_pending_before": 0,
   "console_drained": 0,
+  "draft": ["start/gridlee"],
   "session": {"alive": false, "running": false, "altered": false}
 }
 ```
