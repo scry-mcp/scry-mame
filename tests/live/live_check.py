@@ -39,6 +39,7 @@ from live_harness import (
 from scry_core.demo import load
 from scry_core.demo import stale as demo_stale
 
+from demo_argv import demo_argv  # isort: skip -- beside the harness
 from gfx_layouts import BYTES_8X8  # isort: skip -- beside the harness
 
 from scry_mame import clear as mclear  # isort: skip
@@ -1365,8 +1366,8 @@ for name in DEMOS:
         rompath = Path(os.environ[GAME_ROMS[name]]).expanduser().resolve()
     try:
         ran = subprocess.run(
-            [sys.executable, str(demo_dir / "demo.py"), "--rompath", str(rompath),
-             "--cwd", str(rompath.parents[1])],
+            [sys.executable, str(demo_dir / "demo.py"),
+             *demo_argv(load(demo_dir / "demo.py"), rompath, rompath.parents[1])],
             cwd=ROOT, env={**os.environ, "MAME_BINARY": str(links / "bin" / "mame")},
             capture_output=True, text=True, timeout=DEMO_TIMEOUT_S)
         code, out, err = ran.returncode, ran.stdout, ran.stderr
@@ -1536,9 +1537,12 @@ check("the host lists that window where `window` says",
       str(where.get("summary")))
 s.close()
 r = s.start(**circus_args)
+refusal = s.window()
+mine = [w for w in host.windows() if w.pid == r.get("pid")]
 check("a headless start opens no window and `window` refuses it as no_channel",
-      r.get("status") == "ok" and s.window().get("code") == "no_channel"
-      and not [w for w in host.windows() if w.pid == r.get("pid")], str(r.get("summary")))
+      r.get("status") == "ok" and refusal.get("code") == "no_channel" and not mine,
+      f"start {r.get('status')}, window answered {refusal.get('code') or refusal.get('status')}, "
+      f"the host lists {len(mine)} window(s) of pid {r.get('pid')}")
 s.close()
 
 print("\n== promote: what the session learned, written into a store only when approved")

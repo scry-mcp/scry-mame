@@ -225,6 +225,7 @@ PROBES: dict[str, Callable[[], dict[str, Any]]] = {
                       "settle_seconds": 2.0},
     "perform": lambda: {"steps": [{"op": "registers"}], "settle_seconds": 2.0},
     "perform_export": lambda: {"dest": fresh(".json")},
+    "promote": dict,
     "debug": lambda: {"command": "print pc"},
     "lua": lambda: {"script": "print(1)", "read_only": True},
     "input": lambda: {"port": ":P1", "field": "Coin 1", "frames": 1, "seconds": 10.0},
@@ -385,6 +386,10 @@ def judge_a(tool: str, state: str, r: dict[str, Any]) -> tuple[bool, str]:
     if tool in MEDIA_ABSENT:
         good = refused(r, "bad_argument") and "no file at" in str(r.get("message"))
         agrees = session_is(r, state not in ("none", "closed"), state == "running")
+    elif tool == "promote":
+        # The draft and the store, never the machine: asked for nothing it refuses in any state.
+        good = refused(r, "bad_argument") and "entries" in str(r.get("message"))
+        agrees = session_is(r, state not in ("none", "closed"), state == "running")
     elif tool in ("screen_map_write load", "screen_map_write save"):
         # a load of a missing file is refused by name; a save needs a map first
         good = (refused(r, "bad_argument") and "no map file" in str(r.get("message"))
@@ -491,7 +496,8 @@ STOPPED_ORDER = [
     "palette_log", "gfx_film", "write", "set_register", "run_to", "run_for", "screen_wait",
     "series_capture",
     "trace", "step", "input", "record", "audio_record", "memdump", "state_write save",
-    "state_write load", "reset", "throttle", "perform", "drive", "perform_export", "log_wait",
+    "state_write load", "reset", "throttle", "perform", "drive", "perform_export", "promote",
+    "log_wait",
     "stop", "start", "resume", "close"
 ]
 RUNNING_ORDER = (
