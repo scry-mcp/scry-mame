@@ -12,6 +12,7 @@ import re
 import time
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from scry_core import value_format as vf  # noqa: E402
@@ -89,7 +90,7 @@ def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_du
     """A rerun of the install chunk must neither double nor zero a census, nor add a dumper."""
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc_4.txt"))
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
-    assert 'for _, k in ipairs({"total", "values", "nvalues", "pcs", "npcs",' in script
+    assert 'for _, k in ipairs({"total", "reads", "values", "nvalues", "pcs", "npcs",' in script
     assert '"overflow_pcs", "errors", "first_error", "seq"}}) do t[k] = old[k] end'.replace(
         "}}", "}") in script, "a rerun carries the errors too, never zeroing them"
     assert script.index("do t[k] = old[k] end") < script.index("T.items[id] = t")
@@ -1457,3 +1458,63 @@ def test_a_removal_the_console_refused_is_latched_by_the_next_stop_and_rides_eve
     assert [r["state"] for r in mstate.tallies_not_removed()] == ["refused"]
     block = menvelope.session_block()
     assert [r["state"] for r in block["tallies_not_removed"]] == ["refused"], block
+
+
+def test_a_count_of_reads_taps_the_reads_and_only_the_reads() -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access="r")
+    assert "install_read_tap(lo, hi," in script and "install_write_tap" not in script
+    assert "t.reads = t.reads + 1" in script
+    assert "if not aligned and not lands(offset, mask) then return end" in script
+
+
+def test_a_count_of_both_keeps_two_taps_under_the_one_a_removal_takes() -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access="rw")
+    assert "install_read_tap(lo, hi," in script and "install_write_tap(lo, hi," in script
+    assert "t.tap = {remove = function() wtap:remove() rtap:remove() end}" in script
+
+
+def test_a_count_of_writes_is_the_tap_it_always_was() -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"))
+    assert "t.tap = sp:install_write_tap(lo, hi," in script and "install_read_tap" not in script
+
+
+def test_a_rerun_of_the_install_carries_the_reads_too() -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access="rw")
+    assert '"reads"' in script.split("do t[k] = old[k] end")[0]
+    assert "reads = 0" in script
+
+
+def test_the_dump_says_its_reads_and_one_without_them_reads_none() -> None:
+    read = TWO_WRITERS.replace("total=500 ", "total=500 reads=77 ")
+    said = tally.parse_dump(read)
+    assert said is not None and said["reads"] == 77
+    parsed = tally.parse_dump(TWO_WRITERS)
+    assert parsed is not None and parsed["reads"] == 0 and parsed["data_width"] == 16
+    assert parsed["cpu"] == ":maincpu"
+    assert parsed["overflow_values"] == 7 and parsed["overflow_pcs"] == 3
+
+
+def test_the_dumper_writes_the_header_the_parser_reads() -> None:
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"))
+    assert "total=%d reads=%d values=%d" in script and "it.total, it.reads, it.nvalues" in script
+
+
+@pytest.mark.parametrize("access", ["r", "rw"])
+def test_a_count_takes_the_reads_as_its_trigger_type(access: str) -> None:
+    watches.check_watch_add("0x2031fc", "count", 4, trigger_type=access)
+    made = dec.Declaration(kind="watch", ref="0x2031fc", width=4, fmt="u32", watch_mode="count",
+                           by="address", trigger_type=access)
+    assert dec.Declaration.from_dict(made.to_dict()).trigger_type == access
+
+
+@pytest.mark.parametrize(("mode", "extra"), [("show", {}), ("change", {})])
+def test_only_a_count_or_a_capture_takes_a_trigger_type(mode: str, extra: dict[str, Any]) -> None:
+    with pytest.raises(dec.DeclarationError, match="trigger type"):
+        dec.Declaration(kind="watch", ref="0x10", width=2, watch_mode=mode, by="address",
+                        trigger_type="rw", **extra)
+
+
+def test_a_capture_cannot_be_triggered_by_both() -> None:
+    with pytest.raises(dec.DeclarationError, match="trigger type"):
+        dec.Declaration(kind="watch", ref="0x10", width=2, watch_mode="capture", by="address",
+                        trigger="0x20", trigger_type="rw")

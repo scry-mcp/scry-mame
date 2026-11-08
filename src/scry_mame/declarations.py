@@ -52,6 +52,8 @@ RETIRED_MODES = {"read": "show"}
 TAP_MODES = ("count", "capture")
 # `wpset`'s own words: `w` a write, `r` a read.
 TRIGGER_TYPES = ("w", "r")
+#: What a count tallies: writes, reads, or both apart.
+COUNT_ACCESSES = ("w", "r", "rw")
 # Values render in the target's byte order, which the session knows and this module does not.
 FORMATS = tuple(vf.SCALARS)
 FORMAT_WIDTH = {name: size for name, (_code, size) in vf.SCALARS.items()}
@@ -220,12 +222,13 @@ class Declaration:
                 f"a capture watch, and only it, carries a trigger; got trigger="
                 f"{self.trigger!r} on a {self.watch_mode} watch: "
                 "`watch_add(mode=\"capture\", trigger=...)`")
-        if self.trigger_type not in TRIGGER_TYPES or (
-                self.trigger_type != "w" and self.watch_mode != "capture"):
+        allowed = {"capture": TRIGGER_TYPES, "count": COUNT_ACCESSES}.get(self.watch_mode or "",
+                                                                          ("w",))
+        if self.trigger_type not in allowed:
             raise DeclarationError(
-                f"a trigger type is one of {TRIGGER_TYPES}, and only a capture takes one other "
-                f"than `w`; got trigger_type={self.trigger_type!r} on a {self.watch_mode} watch: "
-                "`watch_add(mode=\"capture\", trigger_type=...)`")
+                f"a trigger type here is one of {allowed}; got trigger_type="
+                f"{self.trigger_type!r} on a {self.watch_mode} watch: `watch_add(mode=\"capture\", "
+                "trigger_type=...)` or `watch_add(mode=\"count\", trigger_type=...)`")
         if (self.watch_mode == "expr") != (self.by == "expr"):
             raise DeclarationError(
                 "a watch of mode expr is declared by expr and nothing else is: got "

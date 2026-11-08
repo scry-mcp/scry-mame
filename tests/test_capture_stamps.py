@@ -169,7 +169,7 @@ def test_a_read_capture_s_trigger_is_its_ref_when_not_named(
     assert out["status"] == "ok" and out["trigger"] == "0x2031fe", out
     (held,) = arming.store().declarations()
     assert (held.trigger, held.trigger_type) == ("0x2031fe", "r")
-    refused("only a capture", s.watch_add(ref="0x2031fc", mode="count", length=2,
+    refused("only a capture", s.watch_add(ref="0x2031fc", mode="show", length=2,
                                           trigger_type="r"))
 
 
@@ -190,7 +190,7 @@ def test_a_block_on_a_read_trigger_is_refused_with_the_reason(
 def test_a_trigger_type_is_a_captures_alone(monkeypatch: pytest.MonkeyPatch,
                                             tmp_path: Path) -> None:
     _capturing(monkeypatch, tmp_path)
-    refused("only a capture", s.watch_add(ref="0x2031fe", mode="count", length=2,
+    refused("only a capture", s.watch_add(ref="0x2031fe", mode="show", length=2,
                                           trigger_type="r"))
 
 
@@ -203,8 +203,8 @@ def test_a_read_capture_declaration_round_trips_and_differs_from_the_write_one()
     assert read != write and write.trigger_type == "w"
     assert "trigger_type" not in write.to_dict(), (
         "a write capture's store row carries no trigger type")
-    with pytest.raises(dec.DeclarationError, match="only a capture"):
-        dec.Declaration("watch", "address", "0x6000", width=1, fmt="u8", watch_mode="count",
+    with pytest.raises(dec.DeclarationError, match="trigger type here"):
+        dec.Declaration("watch", "address", "0x6000", width=1, fmt="u8", watch_mode="show",
                         trigger_type="r")
 
 

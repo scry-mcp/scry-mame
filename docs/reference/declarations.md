@@ -187,14 +187,16 @@ watch_add(ref, mode, length=0, fmt="auto", by="auto", cpu="", condition="", trig
 Declare a watch at `ref`. Stored, re-armed at `start`.
 
 `mode`: `show` (read at each stop), `change` (a write stops the machine), `count` (tallies
-writes), `capture` (rows at `trigger`), `expr` (one debugger expression). `ref`: a symbol,
+writes, or with `trigger_type` `r` or `rw` the reads as `reads`, apart), `capture` (rows at
+`trigger`), `expr` (one debugger expression). `ref`: a symbol,
 `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
 .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
 `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
 128 for show or capture, 1024 otherwise. `condition`: change only, a
 debugger expression over `wpdata`, the value written (`wpdata==0x7f`).
-`trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
-`fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
+`trigger`: capture only; `trigger_type` `w` or `r` there; a capture of reads (`r`) takes no
+`length` or `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only
+(never
 stored).
 
 Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
@@ -216,7 +218,7 @@ Reference: REFERENCE.md, Declarations.
 | `condition` | string | `""` |
 | `trigger` | string | `""` |
 | `space` | one of `"program"`, `"io"` | `"program"` |
-| `trigger_type` | one of `"w"`, `"r"` | `"w"` |
+| `trigger_type` | one of `"w"`, `"r"`, `"rw"` | `"w"` |
 
 | reply field | type |
 |---|---|

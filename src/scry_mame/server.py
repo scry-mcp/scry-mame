@@ -237,7 +237,8 @@ def start(
                          view=params["view"], display=params["display"], size=params["size"],
                          progress=bridge(ctx))
     if block is not None:
-        STATE.drafts.loaded_entry("start", Path(str(block["file"])).stem)
+        STATE.drafts.loaded_entry("start", Path(str(block["file"])).stem,
+                                  source=str(block["file"]))
     else:
         STATE.drafts.forget("start")
     if mpromote.keep_start(params, defaults=_START_DEFAULTS):
@@ -649,19 +650,21 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
               by: Annotated[str, vocab.enum(watches.WATCH_BY)] = "auto",
               cpu: str = "", condition: str = "", trigger: str = "",
               space: Annotated[str, vocab.enum(mspace.SPACES)] = "program",
-              trigger_type: Annotated[str, vocab.enum(dec.TRIGGER_TYPES)] = "w",
+              trigger_type: Annotated[str, vocab.enum(dec.COUNT_ACCESSES)] = "w",
               ) -> dict[str, Any]:
     """Declare a watch at `ref`. Stored, re-armed at `start`.
 
     `mode`: `show` (read at each stop), `change` (a write stops the machine), `count` (tallies
-    writes), `capture` (rows at `trigger`), `expr` (one debugger expression). `ref`: a symbol,
+    writes, or with `trigger_type` `r` or `rw` the reads as `reads`, apart), `capture` (rows at
+    `trigger`), `expr` (one debugger expression). `ref`: a symbol,
     `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
     .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
     `length`: total bytes, needed unless `fmt` is sized or the symbol typed; at most
     {WATCH_SHOW_MAX} for show or capture, {READ_MAX} otherwise. `condition`: change only, a
     debugger expression over `wpdata`, the value written (`wpdata==0x7f`).
-    `trigger`, `trigger_type`: capture only; a capture of reads (`r`) takes no `length` or
-    `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only (never
+    `trigger`: capture only; `trigger_type` `w` or `r` there; a capture of reads (`r`) takes no
+    `length` or `fmt`. `space="io"`: a port tap, `count` or `capture` only, for this session only
+    (never
     stored).
 
     Refused: a change watch on an unmapped write; a count range splitting a bus word; a ref
@@ -1507,16 +1510,12 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     failure; `drive` is this plus a wait for a line of the emulator log.
 
     `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-    `drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:
-    `.scry/perform/<name>.json`, or a file `perform_export` wrote) whose steps are replayed; give
-    `steps` or `path`, never both.
+    `drive`, `perform_export`. {PERFORM_SOURCE}
     {UNTIL_FRAME} A step's `recorded`, `{field: value}` of its own reply,
     must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
     `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
-    Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
-    `verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), else
-    `still_running`; `frame_reached` (with `until_frame`).
+    {PERFORM_REPLY}
 
     Reference: REFERENCE.md, Sequences in one call.
     """
@@ -1531,7 +1530,8 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     if refusal is not None:
         return refusal
     if path:
-        STATE.drafts.loaded_entry("perform", Path(path).expanduser().stem)
+        STATE.drafts.loaded_entry("perform", Path(path).expanduser().stem,
+                                  source=str(Path(path).expanduser()))
     ses, scratch = contact()
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
     return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), bridge(ctx),
@@ -1547,9 +1547,7 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     `recorded` reply. Other calls drop; the first no replay can place, or past {RECORD_MAX}, cuts
     the rest.
 
-    `dest` (`.json`) is refused if present unless `overwrite`. Reply: `path`, `steps`,
-    `checks`, `dropped`, `dropped_total`, `cut`, `replay`, and `kept` when the document is kept
-    for `promote`; `no_recording` if empty.
+    {EXPORT_KEPT}
 
     Reference: REFERENCE.md, From an investigation to a bench.
     """

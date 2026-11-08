@@ -1,5 +1,5 @@
 """A watch that COUNTS: every write to a range over a pass, by value and by writer, never
-stopping for one.
+stopping for one; asked to (`access`), the reads too, as a bare total apart from the writes.
 
 A change watch stops at the first write; a census needs every value a register takes over a
 pass and from which pcs. `disarm_watches` disarms change watches, so a held pass counts nothing.
@@ -41,7 +41,8 @@ REGISTRY = "MCP_TALLY"
 BUCKETS_MAX = 256
 HEADER = "MCP_TALLY"
 _HEAD = re.compile(
-    rf"^{HEADER} (\S+) seq=(\d+) frame=(-?\d+) total=(\d+) values=(\d+) pcs=(\d+) "
+    rf"^{HEADER} (\S+) seq=(\d+) frame=(-?\d+) total=(\d+) (?:reads=(\d+) )?values=(\d+) "
+    r"pcs=(\d+) "
     r"overflow_values=(\d+) overflow_pcs=(\d+) data_width=(\d+) endianness=(\w+) cpu=(\S+)$")
 _VALUE = re.compile(r"^v ([0-9a-f]+) ([0-9a-f]+) ([0-9a-f]+) (\d+)$")
 _PC = re.compile(r"^p ([0-9a-f]+) (\d+)$")
@@ -60,7 +61,7 @@ def dump_path(scratch: Path, tally_id: str) -> Path:
 
 
 def install_script(tally_id: str, addr: int, width: int, path: Path,
-                   cpu: str | None = None, space: str = "program") -> str:
+                   cpu: str | None = None, space: str = "program", access: str = "w") -> str:
     """The one-chunk Lua that installs the tally over `width` bytes at `addr` on `cpu`.
 
     The tap covers the bus words the range touches (MAME refuses a tap not bus-aligned: "end
@@ -73,8 +74,8 @@ def install_script(tally_id: str, addr: int, width: int, path: Path,
     it.seq = it.seq + 1
     local f = {callbacks.OPENED}(it, io.open(it.path .. ".tmp", "w"))
     if f == nil then return end
-    f:write(string.format("{HEADER} %s seq=%d frame=%d total=%d values=%d pcs=%d ",
-      it.id, it.seq, fr, it.total, it.nvalues, it.npcs))
+    f:write(string.format("{HEADER} %s seq=%d frame=%d total=%d reads=%d values=%d pcs=%d ",
+      it.id, it.seq, fr, it.total, it.reads, it.nvalues, it.npcs))
     f:write(string.format("overflow_values=%d overflow_pcs=%d data_width=%d ",
       it.overflow_values, it.overflow_pcs, it.data_width))
     f:write(string.format("endianness=%s cpu=%s errors=%d\\n", it.endianness, it.cpu,
@@ -102,12 +103,12 @@ local path = {transport.lua_string(str(path))}
 local sp = cpu.spaces[{transport.lua_string(space)}]
 local curpc = cpu.state["CURPC"]
 {mtap.REMOVE_OLD_TAP}
-local t = {{id = id, path = path, total = 0, values = {{}}, nvalues = 0, pcs = {{}}, npcs = 0,
-  overflow_values = 0, overflow_pcs = 0, errors = 0, dirty = true, seq = 0,
+local t = {{id = id, path = path, total = 0, reads = 0, values = {{}}, nvalues = 0,
+  pcs = {{}}, npcs = 0, overflow_values = 0, overflow_pcs = 0, errors = 0, dirty = true, seq = 0,
   dumped_frame = {callbacks.NO_FRAME},
   data_width = sp.data_width, endianness = sp.endianness, cpu = cpu.tag}}
 if old ~= nil then
-  for _, k in ipairs({{"total", "values", "nvalues", "pcs", "npcs", "overflow_values",
+  for _, k in ipairs({{"total", "reads", "values", "nvalues", "pcs", "npcs", "overflow_values",
                        "overflow_pcs", "errors", "first_error", "seq"}}) do t[k] = old[k] end
 end
 if old == nil then os.remove(path) os.remove(path .. ".tmp") end
@@ -124,7 +125,16 @@ local function lands(offset, mask)
   end
   return false
 end
-t.tap = sp:install_write_tap(lo, hi, "mcp_tally_" .. id, guarded(t, function(offset, data, mask)
+{_taps(access)}T.items[id] = t
+{mtap.register_dumper_once(dumper)}
+print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s first=%x last=%x ", id, first, last)
+  .. string.format("data_width=%d endianness=%s cpu=%s", sp.data_width, sp.endianness, cpu.tag))"""
+
+
+def _taps(access: str) -> str:
+    """The Lua that installs the tap or taps `access` names, each filtered by landing."""
+    writes = """sp:install_write_tap(lo, hi, "mcp_tally_" .. id,
+guarded(t, function(offset, data, mask)
   if not aligned and not lands(offset, mask) then return end
   t.total = t.total + 1
   local at = t.values[offset]
@@ -140,22 +150,31 @@ t.tap = sp:install_write_tap(lo, hi, "mcp_tally_" .. id, guarded(t, function(off
   elseif t.npcs < {BUCKETS_MAX} then t.pcs[pc] = 1 t.npcs = t.npcs + 1
   else t.overflow_pcs = t.overflow_pcs + 1 end
   t.dirty = true
-end))
-T.items[id] = t
-{mtap.register_dumper_once(dumper)}
-print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s first=%x last=%x ", id, first, last)
-  .. string.format("data_width=%d endianness=%s cpu=%s", sp.data_width, sp.endianness, cpu.tag))"""
+end))"""
+    reads = """sp:install_read_tap(lo, hi, "mcp_tally_r_" .. id,
+guarded(t, function(offset, data, mask)
+  if not aligned and not lands(offset, mask) then return end
+  t.reads = t.reads + 1
+  t.dirty = true
+end))"""
+    if access == "r":
+        return f"t.tap = {reads}\n"
+    if access == "rw":
+        return (f"local wtap = {writes}\nlocal rtap = {reads}\n"
+                "t.tap = {remove = function() wtap:remove() rtap:remove() end}\n")
+    return f"t.tap = {writes}\n"
 
 
 def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int,
-                 space: str = "program") -> dict[str, Any]:
+                 space: str = "program", access: str = "w") -> dict[str, Any]:
     """Send the count watch's install for `owner` (`mtap.send_tap`)."""
     cpu = owner[1]
     tally_id = id_for(cpu, addr, width, space)
     path = dump_path(scratch, tally_id)
     return mtap.send_tap(scratch, owner, tally_id,
-                         install_script(tally_id, addr, width, path, cpu, space),
-                         REGISTRY, [path], addr=addr, width=width, path=path, space=space)
+                         install_script(tally_id, addr, width, path, cpu, space, access),
+                         REGISTRY, [path], addr=addr, width=width, path=path, space=space,
+                         access=access)
 
 
 def parse_dump(text: str) -> dict[str, Any] | None:
@@ -175,10 +194,10 @@ def parse_dump(text: str) -> dict[str, Any] | None:
         else:
             return None
     return {"id": head.group(1), "seq": int(head.group(2)), "frame": int(head.group(3)),
-            "total": int(head.group(4)), "values": values, "pcs": pcs,
-            "overflow_values": int(head.group(7)), "overflow_pcs": int(head.group(8)),
-            "data_width": int(head.group(9)), "endianness": head.group(10),
-            "cpu": head.group(11), **errors}
+            "total": int(head.group(4)), "reads": int(head.group(5) or 0), "values": values,
+            "pcs": pcs, "overflow_values": int(head.group(8)), "overflow_pcs": int(head.group(9)),
+            "data_width": int(head.group(10)), "endianness": head.group(11),
+            "cpu": head.group(12), **errors}
 
 
 def _value_rows(dump: dict[str, Any], addr: int, width: int, fmt: str,
@@ -209,6 +228,8 @@ def evaluate(scratch: Path, owner: dec.Owner, width: int, fmt: str,
                 values_total=len(dump["values"]), overflow_values=dump["overflow_values"],
                 writers=_writer_rows(dump, shown), writers_total=len(dump["pcs"]),
                 overflow_pcs=dump["overflow_pcs"])
+    if "r" in rec.get("access", "w"):
+        item["reads"] = dump["reads"]
     return item
 
 

@@ -644,12 +644,8 @@ class PaletteLogReply(MameEnvelope, total=False):
     writes_total: Annotated[int, When("once the log has dumped")]
 
 
-class PerformReply(MameEnvelope, account.SequenceFields, account.SequenceRun, total=False):
-    failed: Annotated[dict[str, Any], When("`step_failed`")]
-    verdict: Annotated[str, When("once the list waited")]
-    frame_reached: Annotated[int | dict[str, Any], When("with `until_frame`")]
-    operations: list[Any]
-    until_frame: int
+class PerformReply(MameEnvelope, account.SequenceFields, account.SequenceRun,
+                   account.PerformFields, total=False):
     visible_cpu: str | dict[str, Any]
     visible_cpu_kept: dict[str, Any]
 

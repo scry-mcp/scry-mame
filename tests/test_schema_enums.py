@@ -53,7 +53,7 @@ CLOSED: list[tuple[str, str, Callable[[], Words]]] = [
     ("declaration_clear", "space", lambda: mspace.SPACES),
     ("declaration_clear", "kind", lambda: folds.KINDS),
     ("declaration_list", "kind", lambda: ("", *folds.KINDS)),
-    ("watch_add", "trigger_type", lambda: dec.TRIGGER_TYPES),
+    ("watch_add", "trigger_type", lambda: dec.COUNT_ACCESSES),
     ("scan", "cell_bytes", lambda: mscan.CELL_BYTES),
     ("scan", "operator", lambda: mscan.OPERATORS),
     ("screen_view", "mode", lambda: scry_pens.MODES),

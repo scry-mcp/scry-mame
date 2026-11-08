@@ -16,15 +16,16 @@ approved. `start` keeps the recipe it ran, a map's `add` keeps the map, a
 with a check), and a reply that keeps one says `kept N (promote to review)`. The
 identity is (kind, name): an entry a call loaded (`start(profile=)`,
 `screen_map_write` `load`, `perform(path=)`) names what is learned next, and a name
-the store already holds is an update, which keeps the keys a run owns (`logfile`) as the
+the store already holds is an update, which keeps the keys a run owns as the
 store has them, and one that changes nothing is named in `unchanged`, not offered.
-`dry_run=true` lists every candidate with its
+`dry_run=true` lists every other candidate with its
 file, its size and whether it is new or an update, an update with its diff; `entries`
 (`<kind>/<name>`, the kind one of `start`, `maps`, `perform`) writes only those,
 `names` renames one as it is written, and only
 that approved call creates `.scry/`. `root` names the repository the store is in or
-becomes; without it the nearest `.scry/` above the draft's paths, then above this
-server's directory, is used, and a promotion that finds none is refused. Every path is
+becomes; without it the first `.scry/` found walking up from the file a loaded recipe
+came from, the draft's paths, then this server's directory, is used, and a promotion
+that finds none is refused. Every path is
 written as a `project_store` placeholder; one that would leave them is refused, since a
 tracked file carries no path of this machine. Reply: `store`, `candidates` and
 `unchanged` (a review), `written` and `draft` (an approval), `total_bytes`,

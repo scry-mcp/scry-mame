@@ -20,7 +20,7 @@ failure; `drive` is this plus a wait for a line of the emulator log.
 must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
 `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).
 
-Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (`step_failed`),
+Reply: `ran`, `steps_completed`, `held`, `failed_at`, `failed` (INVALID `step_failed`),
 `verdict` (once the list waited; `TARGET` adds `stopped`, `TIMEOUT` `note`), else
 `still_running`; `frame_reached` (with `until_frame`).
 

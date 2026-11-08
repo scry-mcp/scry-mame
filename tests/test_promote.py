@@ -219,3 +219,17 @@ def test_the_recipe_s_paths_are_searched_before_this_process_s_directory(tmp_pat
                         defaults=server._START_DEFAULTS)
     starts = mpromote.starting()
     assert starts[0] == f"{tmp_path}/roms" and starts[-1] == os.getcwd()
+
+
+def test_a_map_learned_from_a_loaded_recipe_is_looked_for_in_that_recipe_s_store(
+        tmp_path: Path) -> None:
+    source = f"{tmp_path}/game/.scry/start/v30.json"
+    STATE.drafts.loaded_entry("start", "v30", source=source)
+    STATE.drafts.keep("maps", "v30", {"format": "scry-screen-map/1", "screens": [screen()]})
+    assert mpromote.starting()[0] == source
+
+
+def test_a_perform_document_s_start_block_says_where_the_store_is() -> None:
+    STATE.drafts.keep("perform", "x", {"start": {"rompath": "/game/roms", "binary": "/b/mame"},
+                                       "steps": [{"op": "a", "recorded": {"v": 1}}]})
+    assert mpromote.starting()[:2] == ["/game/roms", "/b"]

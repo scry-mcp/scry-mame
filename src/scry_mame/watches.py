@@ -196,8 +196,16 @@ def check_watch_add(ref: str, mode: str, length: int = 0, fmt: str = "auto",
     """`watch_add`'s machine-independent half; resolving a pointer's base needs the table."""
     vocab.one_of("mode", mode, dec.WATCH_MODES)
     vocab.one_of("by", by, WATCH_BY)
-    vocab.one_of("trigger_type", trigger_type, dec.TRIGGER_TYPES)
-    if trigger_type == "r":
+    vocab.one_of("trigger_type", trigger_type, dec.COUNT_ACCESSES)
+    if mode == "count":
+        if trigger_type != "w" and space != mspace.PROGRAM:
+            raise st.Invalid("bad_argument", "a count of reads taps a program address; "
+                             "`space=\"io\"` counts a port's writes alone: `watch_add(ref=<port>, "
+                             "mode=\"count\", space=\"io\")`")
+    elif trigger_type == "rw":
+        raise st.Invalid("bad_argument", f"trigger_type=\"rw\" on a {mode} watch: only a count "
+                         "tallies both (`watch_add(mode=\"count\", trigger_type=\"rw\")`)")
+    elif trigger_type == "r":
         # a read's trigger is its ref: with no block, naming it once is enough
         check_read_capture(ref, mode, length, fmt, trigger, space)
         trigger = trigger or ref
@@ -244,7 +252,8 @@ def check_read_capture(ref: str, mode: str, length: int, fmt: str, trigger: str,
     the bus, which MAME does not survive. A port's `in` is not captured."""
     if mode != "capture":
         raise st.Invalid("bad_argument", f"trigger_type=\"r\" on a {mode} watch: only a "
-                                         "capture takes a trigger type (`watch_add(ref=<trigger>, "
+                                         "capture or a count takes a trigger type "
+                                         "(`watch_add(ref=<trigger>, "
                                          "mode=\"capture\", trigger=<trigger>, "
                                          "trigger_type=\"r\")`)")
     if space != mspace.PROGRAM:
@@ -609,7 +618,7 @@ def watch_add(ses: gs.Session, ref: str, mode: str, width: int, fmt: str,
     """The body of the `watch_add` tool."""
     running = arming.running_on_arrival(ses)
     check_watch_add(ref, mode, width, fmt, by, condition, trigger, trigger_type=trigger_type)
-    if trigger_type == "r":
+    if trigger_type == "r" and mode == "capture":
         # the read itself is the row: its byte at the trigger, the trigger defaulting to the ref
         width, fmt, trigger = 1, "u8", trigger or ref
     # an expr watch has no cpu: the console evaluates it on the visible one
@@ -804,9 +813,10 @@ def size_watch(mode: str, width: int, fmt: str, typed: str | None,
 
 
 def send_count(scratch: Path, owner: dec.Owner, addr: int, width: int, space: str,
-               unchecked: str | None, maps_to: str, read_maps_to: str | None) -> dict[str, Any]:
+               unchecked: str | None, maps_to: str, read_maps_to: str | None,
+               access: str = "w") -> dict[str, Any]:
     """A count watch's install sent, with the bus-word caveat and where an unmapped write goes."""
-    sent = tally.send_install(scratch, owner, addr, width, space)
+    sent = tally.send_install(scratch, owner, addr, width, space, access)
     st.add_note(sent, unchecked)
     sent["note"] = mmap.with_unmapped_note(sent["note"], maps_to, addr, space, read_maps_to)
     return sent
@@ -835,11 +845,12 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
         split, unchecked = bus_word_split(addr, width, owner[1])
         if split is not None:
             return ("bad_argument", split), {}
-        refused, maps_to, read_maps_to = _tally_write_side(ses, owner, addr, width)
+        refused, maps_to, read_maps_to = _tally_write_side(ses, owner, addr, width,
+                                                           "w" in decl.trigger_type)
         if refused is not None:
             return refused, {}
         sent = send_count(scratch, owner, addr, width, mspace.PROGRAM, unchecked, maps_to,
-                          read_maps_to)
+                          read_maps_to, decl.trigger_type)
         return None, {"write_maps_to": maps_to,
                       "read_maps_to": or_unavailable(read_maps_to,
                                                         mmap.NO_READ_SIDE_WHY), **sent}
@@ -891,11 +902,12 @@ def send_tap(ses: gs.Session, scratch: Path, decl: dec.Declaration, addr: int,
                   "source": src.fields(), **sent}
 
 
-def _tally_write_side(ses: gs.Session, owner: dec.Owner, addr: int, width: int
-                      ) -> tuple[arming.Refusal | None, str, str | None]:
-    """The write side of a range about to be tallied, and the one-tally-per-range rule."""
+def _tally_write_side(ses: gs.Session, owner: dec.Owner, addr: int, width: int,
+                      writes: bool = True) -> tuple[arming.Refusal | None, str, str | None]:
+    """The write side of a range about to be tallied, when writes are, and the one-tally-per-range
+    rule."""
     refused, maps_to, read_maps_to = mmap.write_side(ses, addr, owner[1])
-    if refused is not None:
+    if refused is not None and writes:
         return refused, maps_to, read_maps_to
     # a port's tally is in another space, so it holds no program range
     other = range_holder({r: rec for r, rec in STATE.tallies.items()
