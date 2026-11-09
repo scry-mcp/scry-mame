@@ -34,6 +34,78 @@
     "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M203: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/speedf.screen-map.json\", \"scale\": 2, \"margin\": [0, 40]}}"
+   ],
+   "right": true
   }
  ]
 }

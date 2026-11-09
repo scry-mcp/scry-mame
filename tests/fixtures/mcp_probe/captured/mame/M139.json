@@ -49,7 +49,7 @@
   },
   {
    "lines": [
-    "M139: {\"tool\":\"scan\",\"args\":{\"method\":\"clear\"}}"
+    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },

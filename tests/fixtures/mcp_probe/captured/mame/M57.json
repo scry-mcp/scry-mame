@@ -63,7 +63,7 @@
   },
   {
    "lines": [
-    "M57: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"0x201060\",\"role\":\"control\",\"cpu\":\"soundcpu\"}}"
+    "M57: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x201060\", \"role\": \"control\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

@@ -44,7 +44,7 @@
   },
   {
    "lines": [
-    "M117: {\"tool\":\"gfx_film\",\"args\":{}}"
+    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },

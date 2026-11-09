@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M33: {\"tool\":\"history\",\"args\":{\"limit\":120}}"
+    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },

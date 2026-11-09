@@ -57,7 +57,7 @@
   },
   {
    "lines": [
-    "M157: {\"tool\":\"set_register\",\"args\":{\"name\":\"D5\",\"value\":\"0x2f00\"}}"
+    "M157: {\"tool\": \"set_register\", \"args\": {\"name\": \"D5\", \"value\": \"0x2f00\"}}"
    ],
    "right": true
   },

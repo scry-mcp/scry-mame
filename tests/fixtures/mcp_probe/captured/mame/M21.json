@@ -49,7 +49,7 @@
   },
   {
    "lines": [
-    "M21: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"watch\"}}"
+    "M21: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\"}}"
    ],
    "right": true
   },

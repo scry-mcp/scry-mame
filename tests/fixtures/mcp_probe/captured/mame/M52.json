@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M52: {\"tool\":\"state_write\",\"args\":{\"method\":\"load\",\"name\":\"bossfight\"}}"
+    "M52: {\"tool\": \"state_write\", \"args\": {\"method\": \"load\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },

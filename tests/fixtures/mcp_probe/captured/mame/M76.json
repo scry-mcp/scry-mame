@@ -56,7 +56,7 @@
   },
   {
    "lines": [
-    "M76: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"ref\":\"SoundNmi\",\"cpu\":\"audiocpu\"}}"
+    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

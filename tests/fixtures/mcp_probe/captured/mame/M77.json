@@ -56,7 +56,7 @@
   },
   {
    "lines": [
-    "M77: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"ref\":\"VoiceCount\",\"cpu\":\"audiocpu\"}}"
+    "M77: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"VoiceCount\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

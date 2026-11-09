@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M101: {\"tool\":\"gfx_load\",\"args\":{\"path\":\"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },

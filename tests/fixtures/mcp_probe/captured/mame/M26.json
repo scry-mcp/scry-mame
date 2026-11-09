@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M26: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"PlayerX\",\"length\":6}}"
+    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },

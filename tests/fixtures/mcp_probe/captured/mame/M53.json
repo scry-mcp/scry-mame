@@ -8,37 +8,13 @@
  "runs": [
   {
    "lines": [
-    "M53: CANNOT A hard reset re-creates the machine, which requires close then start; reset only does a soft reset within the same process."
+    "M53: CANNOT A hard reset re-creates the machine only by close then start, which ends this session and its emulator process, so it cannot keep them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT reset is soft only and a hard reset ends this session (close, then start), so it cannot keep the same session and process."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M53: CANNOT A hard reset is `close` then `start`, and no single tool re-creates the machine while keeping the session."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M53: CANNOT A hard reset re-creates the machine through close then start, which ends this session and its emulator process, so it cannot keep them; the only reset here is the soft one."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M53: CANNOT reset is soft only and a hard reset is close then start, which ends this session rather than keeping it."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M53: CANNOT A hard reset is `close` then `start`, which ends this session; `reset` is only a soft reset and cannot re-create the machine."
+    "M53: CANNOT reset is only a soft reset, and the hard reset is close then start, which would end this session and its emulator process."
    ],
    "right": true
   },
@@ -50,49 +26,73 @@
   },
   {
    "lines": [
-    "M53: CANNOT Hard reset re-creates the machine only by close then start, which ends the session and its emulator process; reset is soft only."
+    "M53: CANNOT A hard reset re-creates the machine only by closing and starting it again, which ends this session and its emulator process."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT No tool here does a hard reset that keeps the session; reset is soft only, and a hard reset means close then start, which ends this session."
+    "M53: CANNOT reset is soft only, and a hard reset is close then start, which ends this session rather than keeping it."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT reset is soft only, and a hard reset means close then start, which ends this session."
+    "M53: CANNOT A hard reset is close then start, which ends this session; the reset tool only does a soft reset."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT A hard reset relaunches MAME, which means closing this session and starting a new one; there is no tool that re-creates the machine inside the same session and process."
+    "M53: CANNOT A hard reset re-creates the machine, which means `close` then `start`; `reset` is soft only and ends no session."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT A hard reset is close then start, which re-creates the session, so it cannot keep the same session and emulator process; reset is soft only."
+    "M53: CANNOT A hard reset re-creates the machine, which means close then start, and that ends this session rather than keeping it; reset is soft only."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT reset is soft only, and a hard reset requires close then start, which would end this session and its emulator process."
+    "M53: CANNOT reset is soft only and keeps the process; a hard reset is `close` then `start`, which ends this session."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT A hard reset re-creates the machine only by close then start, which ends this session and its emulator process, so no tool keeps the same session through it."
+    "M53: CANNOT A hard reset is `close` then `start`, which ends this session rather than keeping it."
    ],
    "right": true
   },
   {
    "lines": [
-    "M53: CANNOT A hard reset re-creates the machine by closing and restarting the emulator process, and this server offers only a soft reset that keeps the session."
+    "M53: CANNOT A hard reset re-creates the machine only through close then start, which ends this session, so no tool keeps it."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT No tool re-creates the machine in place; a hard reset is `close` then `start`, which ends this session and its emulator process."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT A hard reset re-creates the machine only by close then start, which ends this session rather than keeping it."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT reset is soft only, and a hard reset would mean closing this session and starting a new one (close, then start), which this single tool cannot do in place."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M53: CANNOT reset is soft only and a hard reset re-creates the machine, which means close then start, so the same session and process cannot be kept."
    ],
    "right": true
   }

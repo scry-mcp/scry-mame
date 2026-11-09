@@ -51,7 +51,7 @@
   },
   {
    "lines": [
-    "M194: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"save\",\"dest\":\"/tmp/maps/circus.screen-map.json\",\"overwrite\":true}}"
+    "M194: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/maps/circus.screen-map.json\", \"overwrite\": true}}"
    ],
    "right": true
   },

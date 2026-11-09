@@ -33,69 +33,9 @@
  "runs": [
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"fmt\": \"u8\", \"condition\": \"wpdata==25\"}}"
    ],
    "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"fmt\": \"u8\", \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700011\",\"mode\":\"change\",\"length\":1,\"condition\":\"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"value==0x25\"}}"
-   ],
-   "right": false
   },
   {
    "lines": [
@@ -105,6 +45,54 @@
   },
   {
    "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"fmt\": \"u8\", \"condition\": \"wpdata==25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\", \"length\": 1}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
@@ -112,6 +100,18 @@
   {
    "lines": [
     "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\", \"length\": 1}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
    ],
    "right": true
   },

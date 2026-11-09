@@ -52,7 +52,7 @@
   },
   {
    "lines": [
-    "M190: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\",\"limit\":5}}"
+    "M190: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\", \"limit\": 5}}"
    ],
    "right": true
   },

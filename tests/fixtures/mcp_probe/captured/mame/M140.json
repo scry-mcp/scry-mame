@@ -8,19 +8,7 @@
  "runs": [
   {
    "lines": [
-    "M140: CANNOT scan covers only one cpu's program space and never io ports, so it cannot search the io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT scan covers only one cpu's program space and never io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT Scan works only in one cpu's program space and never touches io ports."
+    "M140: CANNOT scan covers only one cpu's program space and never io ports, so it cannot search ports 0 to 255."
    ],
    "right": true
   },
@@ -32,67 +20,79 @@
   },
   {
    "lines": [
+    "M140: CANNOT scan covers one cpu's program space only and excludes io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT Value scans cover one cpu's program space only and never io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT a value scan covers one cpu's program space only and never reads io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The scan tool takes only program-space cells and never io ports, so it cannot search the io ports 0 to 255."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT scan searches one cpu's program space only and cannot read io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The scan reads only one cpu's program space and no io ports, so it cannot search the io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT a scan covers one cpu's program space only and never io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT scan covers only a cpu's program space and excludes io ports, so an io-port value search is not possible."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The scan reads only one cpu's program space and never io ports, so an io-port value search is refused by design."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The scan reads only one cpu's program space and refuses io ports, so an io-port value search is not possible."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M140: CANNOT The value scan runs over one cpu's program space only and never covers io ports."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M140: CANNOT scan covers only one cpu's program space and never io ports."
    ],
    "right": true
   },
   {
    "lines": [
-    "M140: CANNOT The scan covers only one cpu's program space and never io ports, so it cannot search ports 0 to 255."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT scan works only in one cpu's program space and never reads io ports, so an io port value search cannot be opened."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT A value scan runs only over one cpu's program space and cannot read io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT The scan tool works only in one cpu's program space and never reads io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT Scan covers only one cpu's program space and no io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT scan covers only one cpu's program space and excludes io ports, so it cannot search the io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT scan works only in one cpu's program space and never on io ports."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT scan covers only one cpu's program space and never io ports, so an io port value search is not possible."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT The scan works only on one cpu's program space and never on io ports, so it cannot search the io ports 0 to 255."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M140: CANNOT Scans cover one cpu's program space only and never io ports, so a value search over io ports 0 to 255 is not possible."
+    "M140: CANNOT the value scan covers only one cpu's program space and no io ports."
    ],
    "right": true
   }

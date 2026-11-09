@@ -52,12 +52,6 @@
   },
   {
    "lines": [
-    "M197: {\"tool\":\"log\",\"args\":{\"pattern\":\"PERF\",\"channel\":\"emulator\",\"limit\":20,\"since_mark\":48213}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M197: {\"tool\": \"log\", \"args\": {\"pattern\": \"PERF\", \"channel\": \"emulator\", \"limit\": 20, \"since_mark\": 48213}}"
    ],
    "right": true
@@ -65,6 +59,12 @@
   {
    "lines": [
     "M197: {\"tool\": \"log\", \"args\": {\"pattern\": \"PERF\", \"channel\": \"emulator\", \"limit\": 20, \"since_mark\": 48213}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M197: {\"tool\": \"log\", \"args\": {\"pattern\": \"PERF\", \"channel\": \"emulator\", \"since_mark\": 48213, \"limit\": 20}}"
    ],
    "right": true
   },

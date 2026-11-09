@@ -55,7 +55,7 @@
   },
   {
    "lines": [
-    "M65: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"watch\",\"cpu\":\"soundcpu\"}}"
+    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

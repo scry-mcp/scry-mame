@@ -39,67 +39,7 @@
  "runs": [
   {
    "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"binary\": \"/opt/fury/mamed\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\":\"start\",\"args\":{\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\",\"reference_addr\":\"0x1F4A0\",\"reference_base\":\"0x1F000\",\"symbols\":\"/opt/fury/fury.map\",\"bases\":{\"DATA\":\"0x3600\",\"BSS\":\"0x4800\"},\"shared\":true,\"binary\":\"/opt/fury/mamed\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\":\"start\",\"args\":{\"binary\":\"/opt/fury/mamed\",\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\",\"reference_addr\":\"0x1F4A0\",\"reference_base\":\"0x1F000\",\"symbols\":\"/opt/fury/fury.map\",\"bases\":{\"DATA\":\"0x3600\",\"BSS\":\"0x4800\"},\"shared\":true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"binary\": \"/opt/fury/mamed\", \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"binary\": \"/opt/fury/mamed\", \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true, \"binary\": \"/opt/fury/mamed\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true, \"binary\": \"/opt/fury/mamed\"}}"
    ],
    "right": true
   },
@@ -112,6 +52,66 @@
   {
    "lines": [
     "M01: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"binary\": \"/opt/fury/mamed\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M01: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"reference_addr\": \"0x1F4A0\", \"reference_base\": \"0x1F000\", \"symbols\": \"/opt/fury/fury.map\", \"bases\": {\"DATA\": \"0x3600\", \"BSS\": \"0x4800\"}, \"shared\": true}}"
    ],
    "right": true
   },

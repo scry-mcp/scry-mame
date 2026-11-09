@@ -61,7 +61,7 @@
   },
   {
    "lines": [
-    "M78: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"ref\":\"d3==40\",\"cpu\":\"audiocpu\"}}"
+    "M78: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d3==40\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

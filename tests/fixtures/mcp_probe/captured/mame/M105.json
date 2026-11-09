@@ -54,7 +54,7 @@
   },
   {
    "lines": [
-    "M105: {\"tool\":\"gfx_blit_source\",\"args\":{\"draw_command\":\"spritedraw\",\"frame\":902,\"pc\":\"0x1fd2\",\"dest\":\"/tmp/mcp-probe-src.png\",\"seconds\":7}}"
+    "M105: {\"tool\": \"gfx_blit_source\", \"args\": {\"draw_command\": \"spritedraw\", \"frame\": 902, \"pc\": \"0x1fd2\", \"dest\": \"/tmp/mcp-probe-src.png\", \"seconds\": 7}}"
    ],
    "right": true
   },

@@ -36,49 +36,49 @@
   },
   {
    "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"PlayerX\",\"by\":\"symbol\",\"condition\":\"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"role\": \"stop\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M13: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"PlayerX\", \"by\": \"symbol\", \"condition\": \"w@PlayerX!=0\"}}"
    ],
    "right": true
   },

@@ -53,25 +53,7 @@
   },
   {
    "lines": [
-    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"cpu\": \"audiocpu\", \"condition\": \"wpdata==0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M83: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"VoiceCount\",\"mode\":\"change\",\"condition\":\"wpdata==0\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   },
@@ -95,9 +77,27 @@
   },
   {
    "lines": [
-    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"value==0\", \"cpu\": \"audiocpu\"}}"
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
    ],
-   "right": false
+   "right": true
+  },
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M83: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"VoiceCount\", \"mode\": \"change\", \"condition\": \"wpdata==0\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
   },
   {
    "lines": [

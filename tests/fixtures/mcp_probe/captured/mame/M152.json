@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M152: {\"tool\":\"trace\",\"args\":{\"frames\":30,\"seconds\":25}}"
+    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },

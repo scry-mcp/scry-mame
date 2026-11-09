@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M147: {\"tool\":\"comment_write\",\"args\":{\"method\":\"load\",\"path\":\"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "M147: {\"tool\": \"comment_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },

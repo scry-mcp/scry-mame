@@ -61,7 +61,7 @@
   },
   {
    "lines": [
-    "M145: {\"tool\":\"comment_write\",\"args\":{\"method\":\"delete\",\"ref\":\"0x1F2C0\",\"cpu\":\"audiocpu\"}}"
+    "M145: {\"tool\": \"comment_write\", \"args\": {\"method\": \"delete\", \"ref\": \"0x1F2C0\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

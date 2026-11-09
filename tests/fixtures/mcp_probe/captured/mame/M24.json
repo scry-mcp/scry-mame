@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M24: {\"tool\":\"symbols_find\",\"args\":{\"name\":\"enemy_\",\"limit\":25}}"
+    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },

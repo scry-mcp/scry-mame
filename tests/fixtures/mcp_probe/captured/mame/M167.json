@@ -41,12 +41,6 @@
  "runs": [
   {
    "lines": [
-    "M167: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x6000\", \"role\": \"control\", \"cpu\": \"audiocpu\"}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
     "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
@@ -77,7 +71,13 @@
   },
   {
    "lines": [
-    "M167: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x6000\",\"mode\":\"capture\",\"trigger\":\"0x6000\",\"trigger_type\":\"r\",\"cpu\":\"audiocpu\"}}"
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
@@ -89,7 +89,7 @@
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

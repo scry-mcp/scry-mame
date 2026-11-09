@@ -57,7 +57,7 @@
   },
   {
    "lines": [
-    "M174: {\"tool\":\"image_compare\",\"args\":{\"method\":\"series\",\"a\":\"/tmp/run1/manifest.json\",\"b\":\"/tmp/run2/manifest.json\",\"crop\":[8,8,32,16]}}"
+    "M174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },

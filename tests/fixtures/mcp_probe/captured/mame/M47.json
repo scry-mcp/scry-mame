@@ -48,7 +48,7 @@
   },
   {
    "lines": [
-    "M47: {\"tool\":\"record\",\"args\":{\"frames\":150,\"dest\":\"/tmp/mcp-probe-run.avi\",\"seconds\":75}}"
+    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },

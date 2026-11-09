@@ -69,7 +69,7 @@
   },
   {
    "lines": [
-    "M192: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"add\",\"screen\":\"attract\",\"match\":[[0,0,248,12]],\"controls\":[{\"name\":\"credits\",\"rect\":[160,240,80,12]}]}}"
+    "M192: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"controls\": [{\"name\": \"credits\", \"rect\": [160, 240, 80, 12]}]}}"
    ],
    "right": true
   },

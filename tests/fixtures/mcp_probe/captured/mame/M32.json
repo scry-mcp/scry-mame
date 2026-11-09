@@ -22,18 +22,6 @@
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
    ],
    "right": true
@@ -52,13 +40,25 @@
   },
   {
    "lines": [
-    "M32: {\"tool\":\"find\",\"args\":{\"data_hex\":\"C9\",\"symbol_class\":\"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   },
@@ -76,7 +76,7 @@
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"c9\", \"symbol_class\": \"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   },
@@ -88,19 +88,19 @@
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M32: {\"tool\": \"find\", \"args\": {\"data_hex\": \"C9\", \"symbol_class\": \"VARS\"}}"
+    "M32: {\"tool\": \"find\", \"args\": {\"symbol_class\": \"VARS\", \"data_hex\": \"C9\"}}"
    ],
    "right": true
   }

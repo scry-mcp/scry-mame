@@ -35,18 +35,6 @@
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
@@ -65,19 +53,7 @@
   },
   {
    "lines": [
-    "M60: {\"tool\":\"find\",\"args\":{\"data_hex\":\"4E71\",\"ref\":\"0x2600\",\"length\":1536,\"cpu\":\"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
@@ -89,7 +65,7 @@
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4e71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
@@ -107,13 +83,37 @@
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   }

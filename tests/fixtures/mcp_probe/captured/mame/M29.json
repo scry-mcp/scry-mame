@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M29: {\"tool\":\"registers\",\"args\":{\"from_last_stop\":true}}"
+    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },

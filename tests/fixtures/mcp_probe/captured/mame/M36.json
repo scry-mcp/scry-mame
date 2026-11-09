@@ -44,7 +44,7 @@
   },
   {
    "lines": [
-    "M36: {\"tool\":\"reset\",\"args\":{}}"
+    "M36: {\"tool\": \"reset\", \"args\": {}}"
    ],
    "right": true
   },

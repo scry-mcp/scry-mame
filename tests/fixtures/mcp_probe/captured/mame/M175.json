@@ -43,73 +43,73 @@
   },
   {
    "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\":\"image_compare\",\"args\":{\"method\":\"region\",\"manifest\":\"/tmp/run1/manifest.json\",\"crop\":[100,20,24,8],\"measure\":\"match\",\"ref\":\"/tmp/ref/digit.png\",\"threshold\":0.95,\"limit\":10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"measure\": \"match\", \"crop\": [100, 20, 24, 8], \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M175: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [100, 20, 24, 8], \"measure\": \"match\", \"ref\": \"/tmp/ref/digit.png\", \"threshold\": 0.95, \"limit\": 10}}"
    ],
    "right": true
   }

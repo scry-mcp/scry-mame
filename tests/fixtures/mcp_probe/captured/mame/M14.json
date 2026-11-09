@@ -49,7 +49,7 @@
   },
   {
    "lines": [
-    "M14: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"breakpoint\"}}"
+    "M14: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\"}}"
    ],
    "right": true
   },

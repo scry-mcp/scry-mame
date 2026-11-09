@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M108: {\"tool\":\"palette_log\",\"args\":{\"palette_port\":\"bt478\",\"arm\":true}}"
+    "M108: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"bt478\", \"arm\": true}}"
    ],
    "right": true
   },

@@ -62,7 +62,7 @@
   },
   {
    "lines": [
-    "M136: {\"tool\":\"scan\",\"args\":{\"method\":\"start\",\"ref\":\"0x200000\",\"length\":65536,\"cell_bytes\":2,\"cpu\":\"audiocpu\"}}"
+    "M136: {\"tool\": \"scan\", \"args\": {\"method\": \"start\", \"ref\": \"0x200000\", \"length\": 65536, \"cell_bytes\": 2, \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

@@ -43,7 +43,7 @@
   },
   {
    "lines": [
-    "M50: {\"tool\":\"captures\",\"args\":{}}"
+    "M50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },

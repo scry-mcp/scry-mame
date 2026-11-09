@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M18b: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"all\":true}}"
+    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },

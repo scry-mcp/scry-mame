@@ -55,7 +55,7 @@
   },
   {
    "lines": [
-    "M19: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"ScoreTbl\",\"mode\":\"change\",\"fmt\":\"u16[2]\"}}"
+    "M19: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"ScoreTbl\", \"mode\": \"change\", \"fmt\": \"u16[2]\"}}"
    ],
    "right": true
   },

@@ -56,12 +56,6 @@
   },
   {
    "lines": [
-    "M173: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"/tmp/a/f000010.png\",\"b\":\"/tmp/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
@@ -92,13 +86,19 @@
   },
   {
    "lines": [
-    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [-2, 0], \"tolerance\": 3}}"
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
     "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"tolerance\": 3, \"shift\": [2, 0]}}"
    ],
    "right": true
   },

@@ -57,7 +57,7 @@
   },
   {
    "lines": [
-    "M35: {\"tool\":\"set_register\",\"args\":{\"name\":\"D3\",\"value\":4660}}"
+    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },

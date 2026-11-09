@@ -43,7 +43,7 @@
   },
   {
    "lines": [
-    "M11: {\"tool\":\"stop\",\"args\":{}}"
+    "M11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },

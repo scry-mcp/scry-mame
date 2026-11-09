@@ -48,7 +48,7 @@
   },
   {
    "lines": [
-    "M45: {\"tool\":\"lua\",\"args\":{\"script\":\"print(manager.machine.system.name)\",\"seconds\":7,\"read_only\":true}}"
+    "M45: {\"tool\": \"lua\", \"args\": {\"script\": \"print(manager.machine.system.name)\", \"seconds\": 7, \"read_only\": true}}"
    ],
    "right": true
   },

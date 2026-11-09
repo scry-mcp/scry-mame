@@ -35,31 +35,7 @@
   },
   {
    "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x1f\", \"cpu\": \"gfxcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x1f\", \"cpu\": \"gfxcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x1f\", \"cpu\": \"gfxcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M67: {\"tool\":\"regpoint_add\",\"args\":{\"condition\":\"d2==0x1f\",\"cpu\":\"gfxcpu\"}}"
    ],
    "right": true
   },
@@ -83,13 +59,7 @@
   },
   {
    "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x1f\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
@@ -107,7 +77,37 @@
   },
   {
    "lines": [
-    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==0x1f\", \"cpu\": \"gfxcpu\"}}"
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M67: {\"tool\": \"regpoint_add\", \"args\": {\"condition\": \"d2==1f\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   }

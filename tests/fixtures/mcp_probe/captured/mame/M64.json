@@ -55,7 +55,7 @@
   },
   {
    "lines": [
-    "M64: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"breakpoint\",\"cpu\":\"soundcpu\"}}"
+    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

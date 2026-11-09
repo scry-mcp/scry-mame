@@ -57,7 +57,7 @@
   },
   {
    "lines": [
-    "M63: {\"tool\":\"read_block\",\"args\":{\"ref\":\"0x7000\",\"length\":8,\"cpu\":\"soundcpu\"}}"
+    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

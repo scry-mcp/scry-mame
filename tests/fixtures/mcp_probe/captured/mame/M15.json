@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M15: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"ref\":\"FrameTick\"}}"
+    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },

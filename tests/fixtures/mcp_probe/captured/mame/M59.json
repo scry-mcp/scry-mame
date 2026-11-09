@@ -58,7 +58,7 @@
   },
   {
    "lines": [
-    "M59: {\"tool\":\"disassemble\",\"args\":{\"ref\":\"0x1B7C\",\"length\":40,\"cpu\":\"soundcpu\"}}"
+    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

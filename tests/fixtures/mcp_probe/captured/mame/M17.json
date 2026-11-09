@@ -49,7 +49,7 @@
   },
   {
    "lines": [
-    "M17: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"regpoint\"}}"
+    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },

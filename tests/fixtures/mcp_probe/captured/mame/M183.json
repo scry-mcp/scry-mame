@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M183: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"/tmp/bench/circus.json\"}}"
+    "M183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
    ],
    "right": true
   },

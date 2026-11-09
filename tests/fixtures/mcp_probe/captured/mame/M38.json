@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M38: {\"tool\":\"snapshot\",\"args\":{\"dest\":\"/tmp/mcp-probe-title.png\"}}"
+    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },

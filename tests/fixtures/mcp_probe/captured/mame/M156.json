@@ -8,91 +8,89 @@
  "runs": [
   {
    "lines": [
-    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the inline print(\"fury up\") cannot be passed."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the line print(\"fury up\") cannot be passed directly."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the inline print line cannot be passed."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT The boot_lua argument takes the path of a harness file, not Lua text, so the print statement cannot be passed inline."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the inline print cannot be passed."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT boot_lua takes a harness file path, not Lua text, so the line print(\"fury up\") cannot be passed as the harness."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the line print(\"fury up\") cannot be passed."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT A boot Lua harness is a file path, not Lua text, so the inline script print(\"fury up\") cannot be passed to start."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M156: CANNOT start takes only a path to a Lua harness file for boot_lua, not Lua text, so the line print(\"fury up\") cannot be passed."
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the print line cannot be passed inline."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT start takes boot_lua as a path to a harness file, not as Lua text, so the inline print line cannot be passed."
+    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the line print(\"fury up\") cannot be given inline."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, and no tool writes that file."
+    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the inline print line cannot be passed."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT boot_lua takes a harness file path, not Lua text, so print(\"fury up\") cannot be passed inline."
+    "M156: CANNOT The boot_lua field takes a harness file path, not Lua text, so the inline print statement cannot be passed."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT The boot_lua argument takes a path to a harness file, not Lua text, so the line print(\"fury up\") cannot be passed as the harness."
+    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the print line cannot be passed as the harness."
    ],
    "right": true
   },
   {
    "lines": [
-    "M156: CANNOT start takes boot_lua as a path to a harness file, not as Lua text, so the line print(\"fury up\") cannot be passed inline."
+    "M156: CANNOT boot_lua takes the path of a harness file, not inline Lua text, so the line print(\"fury up\") cannot be given directly."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the line print(\"fury up\") cannot be passed to start."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the line print(\"fury up\") cannot be passed."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the print statement cannot be passed inline."
+   ],
+   "right": true
+  },
+  {
+   "lines": [],
+   "right": false
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes a path to a harness file, not Lua text, so the line print(\"fury up\") cannot be passed as the harness."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT start takes a path to a boot Lua harness file, not Lua text, and this server has no way to write that file."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes a harness file path, not Lua text, so the print line cannot be supplied inline."
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M156: CANNOT boot_lua takes the path of a harness file, not Lua text, so the inline print cannot be passed."
    ],
    "right": true
   }

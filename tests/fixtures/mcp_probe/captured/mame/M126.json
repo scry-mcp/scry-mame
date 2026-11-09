@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M126: CANNOT The sweep draws every candidate side by side and ranks none, and no tool scores or ranks candidates."
+    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool here ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates unranked and no tool ranks them."
+    "M126: CANNOT The sweep does not rank its candidates; it draws them as one labelled sheet and nothing is ranked."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT Sweeps are not ranked by any tool; gfx_sweep states that nothing is ranked, so the likeliest format cannot be produced."
+    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates unranked and no tool ranks them, so the likelihood order of sweep 1 cannot be produced."
+    "M126: CANNOT The sweep ranks nothing: gfx_sweep draws the candidates as one sheet, and no tool ranks them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT a sweep ranks nothing, so there is no tool that orders sweep 1's candidates by likelihood."
+    "M126: CANNOT the sweep ranks nothing and no tool orders candidates by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws the candidates as one sheet for a person to judge and ranks nothing, so no tool can rank them."
+    "M126: CANNOT The sweep draws its candidates as one labelled sheet and ranks nothing, so no tool can rank them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT a sweep ranks nothing, and no tool in this server ranks its candidates."
+    "M126: CANNOT gfx_sweep draws the candidate layouts as one sheet and ranks nothing."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep is drawn for a person to judge and nothing is ranked, so no tool can order its candidates by likelihood."
+    "M126: CANNOT The sweep reports its candidates without ranking them, and no tool here ranks candidate formats."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT A sweep draws its candidates as one unranked sheet and nothing here ranks them."
+    "M126: CANNOT the sweep ranks nothing, and no tool ranks candidates by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT No tool ranks sweep candidates by how likely each is to be the real format."
+    "M126: CANNOT The server keeps no ranking of sweep candidates; gfx_sweep draws a sheet and nothing is ranked."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool ranks them by likelihood."
+    "M126: CANNOT The sweep draws its candidates as one sheet and ranks none, so no tool can order them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT No tool ranks sweep candidates; gfx_sweep draws them unranked and gfx_draft writes only what the session has proved."
+    "M126: CANNOT gfx_sweep draws the candidates as one labelled sheet and ranks none of them, and no tool ranks sweep candidates."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws the candidates as one sheet and never ranks them."
+    "M126: CANNOT The sweep draws candidates but never ranks them, so no tool orders them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep draws candidates without ranking them, and no tool in this server ranks sweep candidates by likelihood."
+    "M126: CANNOT the sweep ranks nothing, and no tool scores candidates against the real format."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep draws candidates without ranking them, and no tool ranks sweep candidates by likelihood."
+    "M126: CANNOT gfx_sweep draws the candidates as one unranked sheet and no tool ranks them by likelihood."
    ],
    "right": true
   }

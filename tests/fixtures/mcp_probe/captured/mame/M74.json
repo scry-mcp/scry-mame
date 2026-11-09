@@ -28,12 +28,6 @@
   },
   {
    "lines": [
-    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"cpu\": \"soundcpu\", \"control\": \"FrameTick\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"control\": \"FrameTick\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
@@ -58,7 +52,13 @@
   },
   {
    "lines": [
-    "M74: {\"tool\":\"run_to\",\"args\":{\"ref\":\"0x2A40\",\"control\":\"FrameTick\",\"cpu\":\"soundcpu\"}}"
+    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"control\": \"FrameTick\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M74: {\"tool\": \"run_to\", \"args\": {\"ref\": \"0x2A40\", \"control\": \"FrameTick\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },

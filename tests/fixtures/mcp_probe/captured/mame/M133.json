@@ -43,7 +43,7 @@
   },
   {
    "lines": [
-    "M133: {\"tool\":\"cpu_info\",\"args\":{}}"
+    "M133: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },

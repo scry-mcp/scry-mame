@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M181: {\"tool\":\"audio_compare\",\"args\":{\"method\":\"measure\",\"path\":\"/tmp/rec/title.wav\"}}"
+    "M181: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"measure\", \"path\": \"/tmp/rec/title.wav\"}}"
    ],
    "right": true
   },

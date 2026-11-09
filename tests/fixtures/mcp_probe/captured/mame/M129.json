@@ -52,12 +52,6 @@
   },
   {
    "lines": [
-    "M129: {\"tool\":\"gfx_film\",\"args\":{\"trigger\":\"0x3c00\",\"changed\":true,\"frames\":900}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
@@ -76,7 +70,13 @@
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"length\": 1, \"changed\": true, \"frames\": 900}}"
+    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },

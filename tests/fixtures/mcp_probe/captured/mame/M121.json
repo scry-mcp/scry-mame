@@ -63,12 +63,6 @@
   },
   {
    "lines": [
-    "M121: {\"tool\":\"gfx_sweep\",\"args\":{\"tag\":\"gfx3\",\"planes\":[1,2],\"sizes\":[[24,24]],\"count\":20,\"dest\":\"/tmp/mcp-probe-sweep.png\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
@@ -87,7 +81,7 @@
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"sizes\": [[24, 24]], \"planes\": [1, 2], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
@@ -100,6 +94,12 @@
   {
    "lines": [
     "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"planes\": [1, 2], \"sizes\": [[24, 24]], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },

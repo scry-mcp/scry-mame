@@ -43,7 +43,7 @@
   },
   {
    "lines": [
-    "M04: {\"tool\":\"close\",\"args\":{}}"
+    "M04: {\"tool\": \"close\", \"args\": {}}"
    ],
    "right": true
   },

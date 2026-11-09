@@ -22,48 +22,6 @@
  "runs": [
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M158: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"value\":\"0xbeef\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
@@ -106,7 +64,49 @@
   },
   {
    "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   }

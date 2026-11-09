@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time by its ref and has no option to clear every comment at once."
+    "M148: CANNOT comment_write has no all-at-once removal; it deletes one comment by ref, so every note must be deleted separately."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a time by ref and has no method to remove them all."
+    "M148: CANNOT comment_write has no method that removes every comment at once; it deletes one comment by ref."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write has add, delete, save and load per note, with no operation that removes every note at once."
+    "M148: CANNOT comment_write deletes one note at a given ref and has no call to remove all notes at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a given ref and has no all-at-once removal."
+    "M148: CANNOT comment_write deletes one note at a time by ref, and no method removes every note at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a time and has no all option."
+    "M148: CANNOT comment_write deletes one comment at a given ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref and has no method that removes every comment at once."
+    "M148: CANNOT comment_write deletes one comment by its ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time, and no method removes every note at once."
+    "M148: CANNOT comment_write deletes one note by its ref, and no method removes every note at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref; no tool removes every comment at once."
+    "M148: CANNOT comment_write deletes one comment at a time by ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref and has no way to remove every comment at once."
+    "M148: CANNOT comment_write deletes one comment at a time by its ref and has no method that removes every comment."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note by ref and has no way to remove every note at once."
+    "M148: CANNOT comment_write deletes one comment at a given ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a time by its ref, and no call removes every note at once."
+    "M148: CANNOT comment_write deletes one comment at a ref, and no method removes every note at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT No tool clears every comment at once; comment_write deletes one comment at a time."
+    "M148: CANNOT comment_write deletes one comment at a time by its ref, and no tool clears every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a ref and has no bulk clear."
+    "M148: CANNOT comment_write deletes one note at a time by its ref and has no method that clears them all."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref and has no method that removes every comment at once."
+    "M148: CANNOT comment_write deletes one comment at a time by ref, and no tool removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write has no all-clear method and deletes one comment at a time by ref, and no ref list is given."
+    "M148: CANNOT comment_write deletes one comment at a time and has no way to remove every comment at once."
    ],
    "right": true
   }

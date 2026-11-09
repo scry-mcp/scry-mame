@@ -31,31 +31,7 @@
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M18: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"ref\":\"d2==0x77ab\"}}"
    ],
    "right": true
   },
@@ -91,19 +67,43 @@
   },
   {
    "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
     "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   }

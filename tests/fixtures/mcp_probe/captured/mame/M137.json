@@ -22,7 +22,7 @@
  "runs": [
   {
    "lines": [
-    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
    ],
    "right": true
   },
@@ -47,24 +47,6 @@
   {
    "lines": [
     "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M137: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"value\":305}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
    ],
    "right": true
   },
@@ -100,13 +82,31 @@
   },
   {
    "lines": [
-    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M137: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": 305}}"
    ],
    "right": true
   }

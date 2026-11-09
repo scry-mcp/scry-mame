@@ -56,7 +56,7 @@
   },
   {
    "lines": [
-    "M143: {\"tool\":\"comment_write\",\"args\":{\"method\":\"add\",\"ref\":\"0x1F2C0\",\"text\":\"bounce, then slow down\"}}"
+    "M143: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"0x1F2C0\", \"text\": \"bounce, then slow down\"}}"
    ],
    "right": true
   },

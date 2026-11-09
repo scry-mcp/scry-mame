@@ -67,15 +67,15 @@
   },
   {
    "lines": [
-    "M86: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1}],\"summaries\":true}}"
+    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}]}}"
    ],
-   "right": true
+   "right": false
   },
   {
    "lines": [

@@ -54,7 +54,7 @@
   },
   {
    "lines": [
-    "M159: {\"tool\":\"input\",\"args\":{\"port\":\":IN1\",\"field\":\"P2 Button 1\",\"value\":\"0x40\",\"frames\":2}}"
+    "M159: {\"tool\": \"input\", \"args\": {\"port\": \":IN1\", \"field\": \"P2 Button 1\", \"value\": \"0x40\", \"frames\": 2}}"
    ],
    "right": true
   },

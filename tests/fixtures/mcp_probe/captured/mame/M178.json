@@ -51,7 +51,7 @@
   },
   {
    "lines": [
-    "M178: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"dir\":\"/tmp/shots\",\"checksums\":\"/tmp/shots.sha256\"}}"
+    "M178: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"dir\": \"/tmp/shots\", \"checksums\": \"/tmp/shots.sha256\"}}"
    ],
    "right": true
   },

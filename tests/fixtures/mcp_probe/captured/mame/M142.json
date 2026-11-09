@@ -57,7 +57,7 @@
   },
   {
    "lines": [
-    "M142: {\"tool\":\"comment_write\",\"args\":{\"method\":\"add\",\"ref\":\"PaddleHit\",\"text\":\"ball hits the paddle here\",\"cpu\":\"audiocpu\"}}"
+    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },

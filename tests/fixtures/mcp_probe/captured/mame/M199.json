@@ -52,7 +52,7 @@
   },
   {
    "lines": [
-    "M199: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"operator\":\"<\",\"limit\":12}}"
+    "M199: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"<\", \"limit\": 12}}"
    ],
    "right": true
   },

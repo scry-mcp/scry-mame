@@ -53,7 +53,7 @@
   },
   {
    "lines": [
-    "M111: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"pixel\",\"point\":[40,12]}}"
+    "M111: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [40, 12]}}"
    ],
    "right": true
   },

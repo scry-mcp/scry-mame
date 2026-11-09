@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M88: {\"tool\":\"debug\",\"args\":{\"command\":\"printf \\\"d0=%x\\\",d0\"}}"
+    "M88: {\"tool\": \"debug\", \"args\": {\"command\": \"printf \\\"d0=%x\\\",d0\"}}"
    ],
    "right": true
   },

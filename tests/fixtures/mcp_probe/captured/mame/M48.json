@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M48: {\"tool\":\"throttle\",\"args\":{\"on\":false,\"seconds\":3}}"
+    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },

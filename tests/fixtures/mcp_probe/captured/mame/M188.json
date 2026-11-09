@@ -32,19 +32,7 @@
   },
   {
    "lines": [
-    "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
    ],
    "right": true
   },
@@ -56,19 +44,13 @@
   },
   {
    "lines": [
-    "M188: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"render\",\"crop\":[0,0,48,40],\"dest\":\"/tmp/mcp-probe-quiet.png\",\"attach\":false}}"
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
     "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
    ],
    "right": true
   },
@@ -104,7 +86,25 @@
   },
   {
    "lines": [
-    "M188: {\"tool\": \"screen_view\", \"args\": {\"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M188: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"render\", \"crop\": [0, 0, 48, 40], \"dest\": \"/tmp/mcp-probe-quiet.png\", \"attach\": false}}"
    ],
    "right": true
   }

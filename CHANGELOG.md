@@ -8,6 +8,10 @@ What a client of the server notices.
   and shows the rest.
 - `close` no longer names an entry the store already holds as it is.
 - `promote` no longer looks for the store from the binary's folder.
+- A count watch with `trigger_type` `r` or `rw` also counts reads, returned apart as `reads`.
+- `promote`: a map or a script learned from a loaded recipe looks for the store from that
+  recipe.
+- `run_to` says when a condition the console rejects is why it never stopped.
 
 It needs the scry-core that serves `scry_core.window`, `recording.read_document` and
 `recording.steps_to_replay`, not an older one: the tag pinned in `pyproject.toml` is the

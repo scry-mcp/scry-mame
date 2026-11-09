@@ -59,7 +59,7 @@
   },
   {
    "lines": [
-    "M27: {\"tool\":\"read_block\",\"args\":{\"tag\":\"palram2\",\"offset\":72,\"length\":48,\"seconds\":8}}"
+    "M27: {\"tool\": \"read_block\", \"args\": {\"tag\": \"palram2\", \"offset\": 72, \"length\": 48, \"seconds\": 8}}"
    ],
    "right": true
   },

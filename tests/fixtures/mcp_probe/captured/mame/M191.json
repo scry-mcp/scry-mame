@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M191: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"load\",\"path\":\"/tmp/maps/circus.screen-map.json\"}}"
+    "M191: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"load\", \"path\": \"/tmp/maps/circus.screen-map.json\"}}"
    ],
    "right": true
   },

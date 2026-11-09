@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M169: {\"tool\":\"close\",\"args\":{\"detail\":true}}"
+    "M169: {\"tool\": \"close\", \"args\": {\"detail\": true}}"
    ],
    "right": true
   },

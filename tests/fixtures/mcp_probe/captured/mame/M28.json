@@ -47,7 +47,7 @@
   },
   {
    "lines": [
-    "M28: {\"tool\":\"read_block\",\"args\":{\"ref\":\"LatchOut\",\"length\":20}}"
+    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },

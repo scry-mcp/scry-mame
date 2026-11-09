@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M149: {\"tool\":\"trace\",\"args\":{\"frames\":45}}"
+    "M149: {\"tool\": \"trace\", \"args\": {\"frames\": 45}}"
    ],
    "right": true
   },

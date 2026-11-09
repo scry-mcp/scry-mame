@@ -38,6 +38,78 @@
     "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
    ],
    "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "M205: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"attract\", \"match\": [[0, 0, 248, 12]], \"anchor\": \"DrawAttract\"}}"
+   ],
+   "right": true
   }
  ]
 }

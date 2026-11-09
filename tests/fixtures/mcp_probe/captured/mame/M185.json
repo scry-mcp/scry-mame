@@ -46,7 +46,7 @@
   },
   {
    "lines": [
-    "M185: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"~/bench/session.json\"}}"
+    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },

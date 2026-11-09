@@ -50,7 +50,7 @@
   },
   {
    "lines": [
-    "M15b: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"all\":true}}"
+    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
