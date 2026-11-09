@@ -293,7 +293,8 @@ def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[st
 
     Reference: REFERENCE.md, The session.
     """
-    return mpromote.after_close(STATE.drafts, msession.close(bridge(ctx), detail))
+    state = mpromote.scratch()
+    return mpromote.after_close(msession.close(bridge(ctx), detail), state)
 
 
 @tool("The session's window", summary=core_window.summary)

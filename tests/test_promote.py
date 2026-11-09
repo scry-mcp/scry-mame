@@ -153,6 +153,17 @@ def test_close_reports_what_was_left_unkept() -> None:
     assert server.close()["draft"] == ["start/lineup"]
 
 
+def test_close_leaves_out_what_the_store_already_holds(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    entry = STATE.drafts.entries()[0]
+    server.promote(entries=[entry], root=str(tmp_path))
+    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    assert STATE.drafts.entries() == [entry]
+    assert "draft" not in server.close()
+
+
 def test_a_promotion_empties_the_draft_and_close_then_says_nothing(tmp_path: Path) -> None:
     mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
     server.promote(entries=["start/lineup"], root=str(tmp_path))
@@ -232,4 +243,5 @@ def test_a_map_learned_from_a_loaded_recipe_is_looked_for_in_that_recipe_s_store
 def test_a_perform_document_s_start_block_says_where_the_store_is() -> None:
     STATE.drafts.keep("perform", "x", {"start": {"rompath": "/game/roms", "binary": "/b/mame"},
                                        "steps": [{"op": "a", "recorded": {"v": 1}}]})
-    assert mpromote.starting()[:2] == ["/game/roms", str(Path("/b"))]
+    starts = mpromote.starting()
+    assert starts[0] == "/game/roms" and str(Path("/b")) not in starts

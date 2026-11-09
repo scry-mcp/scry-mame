@@ -26,13 +26,14 @@ that approved call creates `.scry/`. `root` names the repository the store is in
 becomes; without it the first `.scry/` found walking up from the file a loaded recipe
 came from, the draft's paths, then this server's directory, is used, and a promotion
 that finds none is refused. Every path is
-written as a `project_store` placeholder; one that would leave them is refused, since a
-tracked file carries no path of this machine. Reply: `store`, `candidates` and
-`unchanged` (a review), `written` and `draft` (an approval), `total_bytes`,
+written as a `project_store` placeholder, since a tracked file carries no path of this
+machine; an approval of an entry a review calls unwritable is refused. Reply: `store`,
+`candidates` and `unchanged` (a review), `unwritable`, each entry with its reason
+(a review holding an entry it cannot write), `written` and `draft` (an approval),
+`total_bytes`,
 `store_bytes`; `close` names what was left unkept, which stays in the draft until the
 server ends. Refused: nothing kept (`needs_call`); an entry the draft does not hold; two
-entries written to one file; a candidate the caps cannot hold; an entry that is there
-and cannot be read as JSON.
+entries written to one file; a kind or a store past its cap.
 
 Reference: REFERENCE.md, The store.
 
@@ -47,6 +48,7 @@ Reference: REFERENCE.md, The store.
 |---|---|
 | `candidates` | array |
 | `unchanged` | array of string |
+| `unwritable` | array |
 | `written` | array |
 | `draft` | array of string |
 | `total_bytes` | integer |

@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from pathlib import Path
 from typing import Any
 
 from scry_core import given, project_store
 from scry_core import promote as core
+from scry_core.promote_paths import LISTS
 
 from scry_mame import launch
 from scry_mame.state import STATE
@@ -20,7 +20,6 @@ PROMOTE_PATHS = (*launch.START_PATHS, "inipath")
 #: What a recipe cannot do without: the machine it boots.
 NEEDS = ("system",)
 after_export = core.after_export
-after_close = core.after_close
 kept_line = core.kept_line
 
 
@@ -61,11 +60,14 @@ def starting() -> list[str]:
     return core.starting(STATE.drafts, recipe_paths)
 
 
+def after_close(reply: dict[str, Any], state: str) -> dict[str, Any]:
+    """`close`'s reply, naming what it left waiting."""
+    return core.after_close(STATE.drafts, reply, starting=starting, state=state)
+
+
 def recipe_paths(recipe: Mapping[str, Any]) -> list[str]:
-    """A recipe's roms and its binary's folder."""
-    parts = str(recipe.get("rompath") or "").split(core.LISTS["rompath"])
-    binary = str(recipe.get("binary") or "")
-    return [*parts, *([str(Path(binary).parent)] if binary else [])]
+    """A recipe's roms, which say which repository it belongs to."""
+    return str(recipe.get("rompath") or "").split(LISTS["rompath"])
 
 
 def scratch() -> str:

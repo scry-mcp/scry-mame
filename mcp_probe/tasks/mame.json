@@ -3654,6 +3654,15 @@
     },
     "root": "/tmp/probe-repo"
    }
+  },
+  {
+   "id": "M216",
+   "prompt": "Several entries are kept for the store at /tmp/probe-repo. Show which could be written and which could not, and why, without writing any.",
+   "tool": "promote",
+   "args": {
+    "dry_run": true,
+    "root": "/tmp/probe-repo"
+   }
   }
  ]
 }

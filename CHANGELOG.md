@@ -4,6 +4,11 @@ What a client of the server notices.
 
 ## Unreleased
 
+- A `promote` review lists apart, in `unwritable` with its reason, each entry it cannot write,
+  and shows the rest.
+- `close` no longer names an entry the store already holds as it is.
+- `promote` no longer looks for the store from the binary's folder.
+
 It needs the scry-core that serves `scry_core.window`, `recording.read_document` and
 `recording.steps_to_replay`, not an older one: the tag pinned in `pyproject.toml` is the
 floor.

@@ -31,12 +31,7 @@ per run, so the call gives `system`, `reference_rom`, `reference_addr` and `refe
 
 Every recipe resolves against one base, the directory holding `.scry/`, so a relative path is
 relative to this repository. What a tracked file must not carry, a host path, is written as a
-placeholder:
-
-- `${root}`: this repository.
-- `${home}`: the user's home.
-- `${state}`: the session's scratch directory.
-- `${env:NAME}`: an environment variable, refused by name when it is unset.
+[placeholder](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md).
 
 ## The caller wins
 
