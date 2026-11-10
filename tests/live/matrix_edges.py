@@ -87,6 +87,7 @@ class Case:
     exempt: str = ""       # why this call cannot wait, when its own wait is above the ceiling
     then: str = ""         # the call that restores the machine after it
     before: tuple[str, dict[str, Any]] | None = None   # the call that sets up its state
+    folder: str = ""       # a folder of this name the case needs in the scratch
 
 
 def waits(tool: str, arg: str, base: dict[str, Any], *, at_max: str = "",
@@ -474,10 +475,15 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("memdump.dest already there", "memdump",
          {"ref": "0x0", "length": 4, "dest": str(TRANSCRIPT)}, is_refused("bad_argument")),
-    Case("memdump.dest with a comma", "memdump",
-         {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "a,b.bin")}, is_refused("bad_argument")),
-    Case("memdump.dest with a semicolon", "memdump",
-         {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "a;b.bin")}, is_refused("bad_argument")),
+    Case("memdump.dest in a folder named with a comma", "memdump",
+         {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "a,b" / "x.bin")},
+         refused_saying("holds ','"), folder="a,b"),
+    Case("memdump.dest in a folder named with a semicolon", "memdump",
+         {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "a;b" / "x.bin")},
+         refused_saying("holds ';'"), folder="a;b"),
+    Case("memdump.dest named with a comma is written under its normalised name", "memdump",
+         {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "a,b.bin")},
+         is_ok(lambda r: r.get("path") == str(SCRATCH / "a-b.bin"))),
     Case("memdump.dest in a missing directory", "memdump",
          {"ref": "0x0", "length": 4, "dest": str(SCRATCH / "no" / "x.bin")},
          is_refused("bad_argument")),
@@ -608,6 +614,8 @@ NO_SESSION_CASES: list[Case] = [
 
 
 def run_case(c: Case) -> dict[str, Any]:
+    if c.folder:
+        (SCRATCH / c.folder).mkdir(exist_ok=True)
     if c.before is not None and not ok(set_up := call(c.before[0], **c.before[1])):
         cell(c.label, False, f"its setup {c.before[0]} failed: {said(set_up)}")
         if c.then:
