@@ -24,7 +24,7 @@ uv run ruff check .
 uv run mypy --strict .
 uv run mypy --strict --platform win32 .
 uv run pytest -q
-bash .githooks/pre-commit.test.sh   # the hook's own cases
+bash .githooks/pre-commit-test.sh   # the hook's own cases
 ```
 
 Ruff and mypy (strict, over the whole tree) judge the code, the second mypy as Windows sees it, so

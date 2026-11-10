@@ -32,7 +32,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from scry_core import bus_writes, judges
+from scry_core import bus_writes, file_names, judges
 from scry_core import value_format as vf
 from scry_core.reply_contract import unavailable
 
@@ -87,7 +87,9 @@ def id_for(cpu: str | None, addr: int, width: int, trigger: int,
 
 def paths(scratch: Path, capture_id: str) -> tuple[Path, Path]:
     """The header path and the rows path."""
-    return scratch / f"capture-{capture_id}.txt", scratch / f"capture-{capture_id}.rows"
+    words = file_names.word(capture_id, "capture_id")
+    return (scratch / file_names.name("capture", words, extension="txt"),
+            scratch / file_names.name("capture", words, extension="rows"))
 
 
 def trigger_addr(trigger: str, table: dict[str, int]) -> int | None:

@@ -153,7 +153,7 @@ def test_find_is_bounded_by_the_program_space_when_the_mask_is_known(
 ) -> None:
     """A `length` past what the program space holds is refused naming the space and its mask."""
     ses = _ConsoleSession(replies={"find": "Not found\n",
-                                   "cpulist": captured("cpulist.main-visible.txt")})
+                                   "cpulist": captured("cpulist-main-visible.txt")})
     _console(monkeypatch, tmp_path, ses)
     monkeypatch.setattr(mstate.STATE, "machine_map", _masked(0x3FFF))
     out = refused("past the program space",

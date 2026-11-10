@@ -56,11 +56,11 @@ def _serve(ses: _ChannelSession, case: str, **files: str) -> None:
     ses.answers[seq] = re.sub(rb"MAME_MCP_LUA_END#\d+", b"MAME_MCP_LUA_END#%d" % seq, text)
     for prefix, name in files.items():
         (ses.scratch / f"{prefix}-{seq}.bin").write_bytes(
-            gzip.decompress((FIX / f"{name}.bin.gz").read_bytes()))
+            gzip.decompress((FIX / f"{name}-bin.gz").read_bytes()))
 
 
 def _capture(name: str) -> bytes:
-    return gzip.decompress((FIX / f"{name}.bin.gz").read_bytes())
+    return gzip.decompress((FIX / f"{name}-bin.gz").read_bytes())
 
 
 def _png(out: dict[str, Any]) -> png_read.Png:
@@ -567,7 +567,7 @@ def test_gfx_view_takes_the_pens_from_the_base_it_is_given(
     size = 256 * 240 * 4
     raw = _capture("gridlee-screen")
     tile = ml.decode(ml.resolve(ml.parse_layout(GRID_SPRITE, allow_name=True), 16384 * 8),
-                      gzip.decompress((FIX / "gridlee-gfx1.bin.gz").read_bytes()), 0, 0xBF)
+                      gzip.decompress((FIX / "gridlee-gfx1-bin.gz").read_bytes()), 0, 0xBF)
     opaque = [(x, y) for y in range(16) for x in range(8) if tile[y * 8 + x]]
     assert len(opaque) > 16
     for x, y in opaque:
@@ -584,7 +584,7 @@ def test_gfx_view_resolves_rgn_frac_against_the_whole_region(
     assert out["layout"]["planeoffset"] == [0, 0x1000 * 8, 0x2000 * 8] and out["size"] == 0x3000
     assert out["tiles_available"] == 512
     pic = _png(out)
-    block = gzip.decompress((FIX / "witchgme-gfx2.bin.gz").read_bytes())
+    block = gzip.decompress((FIX / "witchgme-gfx2-bin.gz").read_bytes())
     # The pixel value, from the three planes by hand: plane 0 (0x0000) is the top bit.
     for t, x, y in ((0, 0, 0), (37, 3, 5), (255, 7, 7)):
         bits = [(block[p + t * 8 + y] >> (7 - x)) & 1 for p in (0, 0x1000, 0x2000)]
@@ -950,7 +950,7 @@ def test_a_big_endian_word_region_decodes_as_its_bytes_in_order(
     _serve(ses, "gfx-gridlee-sprites", block="gridlee-gfx1")
     straight = _png(s.gfx_view(layout=GRID_SPRITE, palette="none", tag="gfx1", count=64,
                                scale=1))
-    real = gzip.decompress((FIX / "gridlee-gfx1.bin.gz").read_bytes())
+    real = gzip.decompress((FIX / "gridlee-gfx1-bin.gz").read_bytes())
     swapped = b"".join(real[i:i + 2][::-1] for i in range(0, len(real), 2))
     other = "big" if sys.byteorder == "little" else "little"
     seq = mstate.STATE.lua_seq + 1
@@ -1026,7 +1026,7 @@ def test_a_nearest_under_a_flip_names_the_pixels_where_they_are_on_screen(
     raw = _capture("circus-screen")
     near = out["nearest"]
     tile = ml.decode(ml.resolve(ml.parse_layout(CIRCUS_CHAR, allow_name=True), 2048 * 8),
-                     gzip.decompress((FIX / "circus-gfx1.bin.gz").read_bytes()), 0, near["tile"])
+                     gzip.decompress((FIX / "circus-gfx1-bin.gz").read_bytes()), 0, near["tile"])
     drawn = mlocate._flipped(tile, 8, 8, "xy")      # the tile as it would sit on the screen
     assert near["pixels"], "a nearest that disagrees nowhere is a match"
     for x, y, pen, value in near["pixels"]:

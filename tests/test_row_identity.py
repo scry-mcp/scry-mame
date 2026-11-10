@@ -107,8 +107,8 @@ def test_a_typed_watch_row_on_an_armed_range_is_foreign(
 
 
 @pytest.mark.parametrize(("answer", "visible"), [
-    (captured("cpulist.main-visible.txt"), ":maincpu"),
-    (captured("cpulist.sub-visible.txt"), ":subcpu"),
+    (captured("cpulist-main-visible.txt"), ":maincpu"),
+    (captured("cpulist-sub-visible.txt"), ":subcpu"),
     ("Unknown command\n\n", None),
 ], ids=["main", "sub", "no-cpulist"])
 def test_the_visible_cpu_is_the_one_cpulist_marks(answer: str, visible: str | None) -> None:
@@ -128,7 +128,7 @@ def test_with_no_cpulist_the_address_alone_decides_what_a_declaration_adopts(
     ses = _running(monkeypatch, tmp_path)
     _sub_row_at_400(ses)
     real = ses.monitor
-    lacks = captured("rpset.unknown-command.txt").replace("rpzzzset {1}", "cpulist")
+    lacks = captured("rpset-unknown-command.txt").replace("rpzzzset {1}", "cpulist")
     monkeypatch.setattr(ses, "monitor", lambda command, timeout=10.0: (
         lacks if command == "cpulist" else real(command, timeout)))
     assert s.breakpoint_at(ref="0x400")["entry"] == "1 @ 000400"

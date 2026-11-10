@@ -4,6 +4,17 @@ What a client of the server notices.
 
 ## Unreleased
 
+- The files the server writes follow
+  [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md): lowercase
+  words joined by hyphens and one extension. A file `dest` is written under its normalised name
+  (`Dump.BIN` as `dump.bin`) and the reply's path names that file; one with no extension is
+  refused, and a directory `dest` keeps its name. A state saved as `Boss_1` is `boss-1`, loaded
+  by either spelling. A state or a screen map kept under an earlier spelling (`Boss_1.sta`,
+  `<application>.screen-map.json`) is not found until its file is renamed; `state_list` says
+  so. A trace's set file
+  is `<name>-<extension>-set.jsonl`, a draft's report `<name>-report.json`, a screen map
+  `<application>-screen-map.json`, a batch's files `batch-<n>-ran.jsonl` and
+  `batch-<n>-replies.jsonl`, and a failed start's copy `<utc stamp>-<system>.log` in lowercase.
 - A `promote` review lists apart, in `unwritable` with its reason, each entry it cannot write,
   and shows the rest.
 - `close` no longer names an entry the store already holds as it is.

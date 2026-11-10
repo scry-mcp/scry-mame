@@ -25,7 +25,7 @@ linker's symbol map beside it, `lineup.map`, in one directory, and a MAME whose 
 includes `lineup`. The game's own repository builds both from its source and stages them together
 (`make stage-rom`); that repository is not public yet, so there is no link to it here.
 
-That repository also declares the game's screen map, `.scry/maps/lineup.screen-map.json`, which the
+That repository also declares the game's screen map, `.scry/maps/lineup-screen-map.json`, which the
 demo loads; a checkout of it is what `--cwd` names.
 
 ## Run it
@@ -37,7 +37,7 @@ uv run python demos/lineup/demo.py --rompath /path/to/romset --cwd /path/to/game
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
 - `--cwd PATH` (absolute or `~`-led) is the game's own repository checkout, whose
-  `.scry/maps/lineup.screen-map.json` is the map the script loads.
+  `.scry/maps/lineup-screen-map.json` is the map the script loads.
 - The window opens in front, scaled to be seen.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites the block below, `TRANSCRIPT.md` and `screen.png` from a run where every step passed.
@@ -53,7 +53,7 @@ Give this to an MCP client with this server connected:
 > Start `lineup` with the romset directory (as an absolute path), its symbols from `lineup.map`
 > there with DATA based at `0x400` and `LUP_JUKEBOX` read in place, checked against the image its
 > two ROM halves make at `0x30000`. Load the game's screen map,
-> `.scry/maps/lineup.screen-map.json` in the `--cwd` checkout. Run to `Draw_High_Scores_Screen`
+> `.scry/maps/lineup-screen-map.json` in the `--cwd` checkout. Run to `Draw_High_Scores_Screen`
 > counting `Check_Money25`, run a second and a half and tell me which screen it is and what
 > `Credits` holds. Drop a coin, run a second, name the screen and read `Credits` again. Press
 > START, run to `Level_Write`, run 200 ms, name the screen and read `Credits` and `Stage_Act`.

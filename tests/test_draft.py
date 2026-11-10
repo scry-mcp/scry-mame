@@ -2,10 +2,10 @@
 additions the draft needs.
 
 THE KNOWN ANSWER IS CAPTURED from the blind run on `circus` in attract (a stock MAME): a capture of
-RAM `0x00..0x3f` on every write to the port `0x2000` (`circus-clown-rows.txt.gz`, as the capture's
+RAM `0x00..0x3f` on every write to the port `0x2000` (`circus-clown-rows-txt.gz`, as the capture's
 tap wrote it, in rows of six fields that `with_stamps` completes with a line and a time the
 correlation never reads) and the `gfx_locate` answers over the whole screen for `gfx2`'s 16x16
-candidates (`circus-clown-locates.json.gz`, as `evidence.record_locate` keeps them). On those
+candidates (`circus-clown-locates-json.gz`, as `evidence.record_locate` keeps them). On those
 frames exactly one reading held: the clown's x is `240 - byte 10` and its y `239 - byte 11`, the
 row of frame F-1 drawing the picture of frame F; no byte of the block holds its tile. The driver,
 read only after the draft existed, draws it at `256 - clown_y - 16` and `256 - clown_x - 16 - 1`.
@@ -46,7 +46,7 @@ def _locates() -> list[dict[str, Any]]:
     """The run's answers as they were kept, before the evidence said which candidates searched
     their whole block: every one of that run's replies has `tiles_searched` equal to
     `[0, tiles_available]`, so each says so here."""
-    locs = list(json.loads(gzip.decompress((FIX / "circus-clown-locates.json.gz").read_bytes())))
+    locs = list(json.loads(gzip.decompress((FIX / "circus-clown-locates-json.gz").read_bytes())))
     for loc in _renamed(locs):
         loc["searched_whole"] = [True] * len(loc["candidates"])
     return locs
@@ -61,7 +61,7 @@ def _renamed(locs: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _rows_text() -> str:
-    return with_stamps(gzip.decompress((FIX / "circus-clown-rows.txt.gz").read_bytes()).decode())
+    return with_stamps(gzip.decompress((FIX / "circus-clown-rows-txt.gz").read_bytes()).decode())
 
 
 def _events() -> list[corr.Event]:
@@ -300,7 +300,7 @@ def test_a_manifest_is_never_overwritten(monkeypatch: pytest.MonkeyPatch,
     out = refused("never overwrites", s.gfx_draft(dest=str(confirmed)))
     assert out["code"] == "bad_argument" and out["marker"] == mm.DRAFT_MARKER
     assert confirmed.read_text() == "schema: 1\nsystems: [circus]\n"
-    other = tmp_path / "x.report.json"
+    other = tmp_path / "x-report.json"
     other.write_text('{"written_by": "somebody"}')
     refused("not a report gfx_draft wrote", s.gfx_draft(dest=str(tmp_path / "x.yaml")))
 
@@ -310,8 +310,10 @@ def test_a_draft_is_written_over_a_draft(monkeypatch: pytest.MonkeyPatch,
     _circus(monkeypatch, tmp_path)
     dest = tmp_path / "circus-gfx.yaml"
     assert s.gfx_draft(dest=str(dest))["status"] == "ok"
-    assert s.gfx_draft(dest=str(dest))["status"] == "ok"
-    assert (tmp_path / "circus-gfx.report.json").exists()
+    again = s.gfx_draft(dest=str(tmp_path / "Circus_GFX.YAML"))
+    assert again["status"] == "ok" and again["manifest"]["path"] == str(dest), again
+    assert sorted(p.name for p in tmp_path.glob("[Cc]ircus*")) == [
+        "circus-gfx-report.json", "circus-gfx.yaml"]
 
 
 def test_no_evidence_is_refused(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -555,7 +557,7 @@ def test_the_draft_does_not_move_with_the_line_and_time_a_row_carries(
     first = s.gfx_draft()["command_fields"]
     (rec,) = [r for r in mstate.STATE.tallies.values() if r.get("trigger") is not None]
     Path(rec["rows_path"]).write_text(with_stamps(gzip.decompress(
-        (FIX / "circus-clown-rows.txt.gz").read_bytes()).decode(), 7).replace(" -1 ", " 3 "))
+        (FIX / "circus-clown-rows-txt.gz").read_bytes()).decode(), 7).replace(" -1 ", " 3 "))
     again = s.gfx_draft()["command_fields"]
     assert first and again == first
 
@@ -786,7 +788,7 @@ def test_a_window_proves_its_layout_at_the_least_it_needs() -> None:
 def _v30(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, Any]:
     """The draft of the two v30 answers (`fixtures/draft/PROVENANCE.txt`): a digit matched
     once over its whole table, and the INSERT COINS strip matched in many windows."""
-    locs = json.loads(gzip.decompress((DRAFT_FIX / "v30-locates.json.gz").read_bytes()))
+    locs = json.loads(gzip.decompress((DRAFT_FIX / "v30-locates-json.gz").read_bytes()))
     _evidence(monkeypatch, tmp_path, _renamed(locs))
     monkeypatch.setattr(mstate.STATE, "system", "v30")
     out: dict[str, Any] = s.gfx_draft()
@@ -961,10 +963,10 @@ def test_the_draft_cites_its_command_and_report_in_every_source(monkeypatch: pyt
     cmd = doc["commands"]["write_2000"]
     for entry in (cmd["fire"], cmd["block"], cmd["fields"]["dest_x"], cmd["fields"]["width"],
                   cmd["fields"]["height"]):
-        assert "gfx-draft.report.json, commands.write_2000" in entry["source"], entry
+        assert "gfx-draft-report.json, commands.write_2000" in entry["source"], entry
     assert cmd["block"]["cpu"] == "maincpu"
     fmt = doc["formats"]["tiles_16x16x1"]
-    assert "on gfx2" in fmt["source"] and "gfx-draft.report.json" in fmt["source"]
+    assert "on gfx2" in fmt["source"] and "gfx-draft-report.json" in fmt["source"]
     report_text = Path(out["report"]["path"]).read_text()
     report = json.loads(report_text)
     assert report_text.startswith('{\n "') and list(report) == sorted(report), "sorted, indent 1"

@@ -8,6 +8,7 @@ crash report per self-SIGSEGV under `~/Library/Logs/DiagnosticReports`.
 """
 
 import os
+import re
 import signal
 import sys
 import time
@@ -729,7 +730,8 @@ def test_the_failed_starts_kept_are_the_twenty_newest(
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
     folder = tmp_path / "state" / "mame-debug" / "failed-starts"
     folder.mkdir(parents=True)
-    old = [folder / f"20260101T0000{i:02d}.000000Z-m68k.log" for i in range(20)]
+    old = [folder / "20251231T235959.000000Z-m68k.log",       # a copy under the earlier stamp
+           *(folder / f"20260101t0000{i:02d}000000z-m68k.log" for i in range(1, 20))]
     for path in old:
         path.write_text("an earlier start\n")
     (folder / "notes.log").write_text("somebody else's\n")
@@ -741,6 +743,18 @@ def test_the_failed_starts_kept_are_the_twenty_newest(
     assert len(left) == launch.FAILED_STARTS_KEPT == 20 and left[-1] == kept, left
     assert not old[0].exists() and old[1].exists(), "the oldest goes, and only it"
     assert (folder / "notes.log").exists(), "only the copies this writes are rotated"
+
+
+def test_a_failed_start_is_kept_under_its_utc_stamp_and_its_system_as_words(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Lowercase and one dot, to the microsecond: two failures in one second keep two files."""
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    (scratch / "stdout.log").write_text("this start\n")
+    kept = Path(str(launch.keep_failed_start(scratch, "Radendur_X")["stdout_kept"]))
+    assert re.fullmatch(r"\d{8}t\d{12}z-radendur-x\.log", kept.name), kept
 
 
 def test_a_failed_start_whose_output_cannot_be_kept_says_why(

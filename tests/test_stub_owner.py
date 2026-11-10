@@ -29,7 +29,7 @@ QUEUED_UNOWNED = pytest.mark.skipif(
     reason="Windows owns a queued connection to its listener, and a host without `lsof` "
            "cannot read the rows")
 #: Rows `GetExtendedTcpTable` returned on Windows (`fixtures/stub_owner/PROVENANCE.txt`).
-CAPTURED = json.loads((Path(__file__).parent / "fixtures" / "stub_owner" / "tcp_rows.json")
+CAPTURED = json.loads((Path(__file__).parent / "fixtures" / "stub_owner" / "tcp-rows.json")
                       .read_text(encoding="utf-8"))
 
 

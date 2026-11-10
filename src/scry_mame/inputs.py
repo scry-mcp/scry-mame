@@ -309,6 +309,12 @@ def fresh_dest(name: str, value: str) -> Path:
     return dest
 
 
+def fresh_folder(name: str, value: str) -> Path:
+    dest = judges.fresh_folder(name, value)
+    _console_safe(name, value, dest)
+    return dest
+
+
 def _console_safe(name: str, value: str, dest: Path) -> None:
     if broken := path_break(str(dest)):
         raise Invalid("bad_argument",

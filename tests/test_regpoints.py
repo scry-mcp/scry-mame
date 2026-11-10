@@ -48,19 +48,19 @@ from scry_mame import state as mstate  # noqa: E402
 
 
 def test_rplist_is_read_as_the_console_prints_it() -> None:
-    assert regpoints.parse_rplist(captured("rplist.none.txt")) == []
-    assert regpoints.parse_rplist(captured("rplist.one.txt")) == [
+    assert regpoints.parse_rplist(captured("rplist-none.txt")) == []
+    assert regpoints.parse_rplist(captured("rplist-one.txt")) == [
         {"index": 1, "cpu": ":maincpu", "enabled": True, "entry": "1 if d1==7fff",
          "condition": "d1==7fff", "action": None}]
-    newest_first = regpoints.parse_rplist(captured("rplist.two-rows.txt"))
+    newest_first = regpoints.parse_rplist(captured("rplist-two-rows.txt"))
     assert [(r["index"], r["condition"]) for r in newest_first] == [(2, "d1=="), (1, "d1==7fff")]
-    disabled = regpoints.parse_rplist(captured("rplist.disabled.txt"))
+    disabled = regpoints.parse_rplist(captured("rplist-disabled.txt"))
     assert disabled[0]["enabled"] is False and disabled[0]["entry"] == "D 1 if d1==7fff"
-    spaced = regpoints.parse_rplist(captured("rplist.cond-with-spaces.txt"))
+    spaced = regpoints.parse_rplist(captured("rplist-cond-with-spaces.txt"))
     assert spaced[0]["condition"] == "d1==7fff && d0!=0x12345678", spaced[0]
-    sixteen = regpoints.parse_rplist(captured("rplist.sixteen.txt"))
+    sixteen = regpoints.parse_rplist(captured("rplist-sixteen.txt"))
     assert [r["index"] for r in sixteen] == list(range(16, 0, -1)), "`10` and `F` are hex"
-    assert regpoints.parse_rplist(captured("rplist.action.txt")) == [
+    assert regpoints.parse_rplist(captured("rplist-action.txt")) == [
         {"index": 1, "cpu": ":maincpu", "enabled": True,
          "entry": "1 if temp2==0x1234 do temp3++ ; g",
          "condition": "temp2==0x1234", "action": "temp3++ ; g"}], "the action after `do`"
@@ -68,13 +68,13 @@ def test_rplist_is_read_as_the_console_prints_it() -> None:
 
 def test_the_double_lists_what_the_captures_list() -> None:
     """The fidelity of `rplist_answer`: it rebuilds the captured answers byte for byte."""
-    assert rplist_answer([(1, "d1==7fff", True)]) == captured("rplist.one.txt")
+    assert rplist_answer([(1, "d1==7fff", True)]) == captured("rplist-one.txt")
     assert rplist_answer([(1, "d1==7fff", True), (2, "d1==", True)]) == captured(
-        "rplist.two-rows.txt")
-    assert rplist_answer([(1, "d1==7fff", False)]) == captured("rplist.disabled.txt")
+        "rplist-two-rows.txt")
+    assert rplist_answer([(1, "d1==7fff", False)]) == captured("rplist-disabled.txt")
 
 
-@pytest.mark.parametrize("answer", [captured("rpset.unknown-command.txt"), "",
+@pytest.mark.parametrize("answer", [captured("rpset-unknown-command.txt"), "",
                                     "Device ':maincpu' registerpoints:\n    1 @ 000400\n"])
 def test_an_answer_that_is_no_list_is_refused_and_quoted(answer: str) -> None:
     with pytest.raises(mstate.Invalid) as refusal:
@@ -86,7 +86,7 @@ def test_an_answer_that_is_no_list_is_refused_and_quoted(answer: str) -> None:
 
 # The console's stop line, cut out of the capture it was logged in.
 _STOP_LINE = next(
-    ln for ln in captured("debuglog.foreign-rp.resume.txt").splitlines(keepends=True)
+    ln for ln in captured("debuglog-foreign-rp-resume.txt").splitlines(keepends=True)
     if ln.startswith("Stopped at registerpoint 1"))
 _FOREIGN_CAUSE = ("registerpoint 1 (if d1==7fff), typed through `debug`: `debug(\"rpclear 0x1\")` "
                 "removes it")
@@ -125,7 +125,7 @@ def test_a_resume_stopped_by_a_registerpoint_typed_through_debug_names_it(
     real_go = reg.go
 
     def go_to_the_value() -> None:
-        (tmp_path / "debug.log").write_text(captured("debuglog.foreign-rp.resume.txt"))
+        (tmp_path / "debug.log").write_text(captured("debuglog-foreign-rp-resume.txt"))
         real_go()
 
     reg.go = go_to_the_value  # type: ignore[method-assign]
@@ -142,7 +142,7 @@ def test_a_frame_run_cut_by_a_registerpoint_is_another_stop_and_never_no_progres
     the machine is stopped: the session must not be handed back marked running."""
     reg = _typed(monkeypatch, tmp_path, frame=10, stop_after=1)
     reg.frozen = True
-    first_stop = captured("debuglog.foreign-rp.frames.txt").split("Data dumped", 1)[0]
+    first_stop = captured("debuglog-foreign-rp-frames.txt").split("Data dumped", 1)[0]
     assert "Stopped at registerpoint 1" in first_stop
     _log_on(reg, tmp_path, "gvblank", first_stop)
     out = s.run_for(frames=2, seconds=2.0)
@@ -159,7 +159,7 @@ def test_a_registerpoint_that_lands_with_the_tick_still_ends_a_frame_run(
     """The counter MOVED and the pc is on no row of this server's, so nothing but the console's
     line says the landing is a stop: the log is looked at after every landing for it."""
     reg = _typed(monkeypatch, tmp_path, frame=10, stop_after=1)
-    _log_on(reg, tmp_path, "gvblank", captured("debuglog.foreign-rp.resume.txt"))
+    _log_on(reg, tmp_path, "gvblank", captured("debuglog-foreign-rp-resume.txt"))
     out = s.run_for(frames=5, seconds=2.0)
     assert out["verdict"] == "OTHER_STOP" and out["cause"] == _FOREIGN_CAUSE, out
     assert out["frame_after"] == 11 and reg.commands.count("gvblank") == 1, out
@@ -170,7 +170,7 @@ def test_a_run_by_milliseconds_cut_by_a_registerpoint_is_another_stop(
 ) -> None:
     reg = _typed(monkeypatch, tmp_path, frame=10)
     reg.frame_answers = ["a"] * 5        # the counter never moved: it stopped an instruction on
-    _log_on(reg, tmp_path, "gtime", captured("debuglog.foreign-rp.ms.txt"))
+    _log_on(reg, tmp_path, "gtime", captured("debuglog-foreign-rp-ms.txt"))
     out = s.run_for(milliseconds=200, seconds=2.0)
     assert out["status"] == "ok" and out["verdict"] == "OTHER_STOP", out
     assert out["cause"] == _FOREIGN_CAUSE, out["cause"]
@@ -184,11 +184,11 @@ def test_the_index_of_a_registerpoint_stop_is_read_in_hex(
     reg = _typed(monkeypatch, tmp_path)
     reg.rplist_rows = [(i, f"d1=={0x100000 + i - 1:x}", True) for i in range(1, 16)]
     reg.rplist_rows.append((16, "1", True))
-    assert captured("rplist.sixteen.txt") == reg.monitor("rplist"), "the double is the capture"
+    assert captured("rplist-sixteen.txt") == reg.monitor("rplist"), "the double is the capture"
     real_go = reg.go
 
     def go_to_the_sixteenth() -> None:
-        (tmp_path / "debug.log").write_text(captured("debuglog.rp-sixteenth.txt"))
+        (tmp_path / "debug.log").write_text(captured("debuglog-rp-sixteenth.txt"))
         real_go()
 
     reg.go = go_to_the_sixteenth  # type: ignore[method-assign]
@@ -207,7 +207,7 @@ def test_a_registerpoint_stop_whose_list_cannot_be_read_spells_its_index_as_the_
     real_go = reg.go
 
     def go_to_the_sixteenth() -> None:
-        (tmp_path / "debug.log").write_text(captured("debuglog.rp-sixteenth.txt"))
+        (tmp_path / "debug.log").write_text(captured("debuglog-rp-sixteenth.txt"))
         real_go()
 
     def unreadable(ses: object) -> list[dict[str, object]]:
@@ -230,7 +230,7 @@ def test_a_registerpoint_line_whose_row_is_gone_names_nothing(
     real_go = reg.go
 
     def go_to_the_value() -> None:
-        (tmp_path / "debug.log").write_text(captured("debuglog.foreign-rp.resume.txt"))
+        (tmp_path / "debug.log").write_text(captured("debuglog-foreign-rp-resume.txt"))
         real_go()
 
     reg.go = go_to_the_value  # type: ignore[method-assign]
@@ -350,8 +350,8 @@ def test_the_same_refusal_needs_no_machine() -> None:
 
 
 @pytest.mark.parametrize("condition, capture, words", [
-    ("d1==", "print.braces.malformed.txt", "stack underflow"),
-    ("eax==5", "print.braces.unknown-symbol.txt", "unknown symbol"),
+    ("d1==", "print-braces-malformed.txt", "stack underflow"),
+    ("eax==5", "print-braces-unknown-symbol.txt", "unknown symbol"),
 ])
 def test_a_condition_the_debugger_cannot_evaluate_is_refused_in_its_own_words(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, condition: str, capture: str, words: str,
@@ -388,7 +388,7 @@ def test_a_debugger_with_no_registerpoints_is_no_channel_and_holds_nothing(
     def older_console(command: str, timeout: float = 10.0) -> str:
         if command.startswith("rpset "):
             ses.commands.append(command)
-            return captured("rpset.unknown-command.txt")
+            return captured("rpset-unknown-command.txt")
         return real(command, timeout)
 
     ses.monitor = older_console  # type: ignore[method-assign]
@@ -505,7 +505,7 @@ def test_a_clear_whose_row_stays_listed_does_not_claim_it_disarmed(
     def deaf(command: str, timeout: float = 10.0) -> str:
         if command.startswith("rpclear "):
             ses.commands.append(command)
-            return captured("rpclear.invalid.txt")
+            return captured("rpclear-invalid.txt")
         return real(command, timeout)
 
     ses.monitor = deaf  # type: ignore[method-assign]
@@ -521,7 +521,7 @@ def test_a_regpoint_of_this_server_that_fires_is_named_and_stays_armed(
 ) -> None:
     ses = _running(monkeypatch, tmp_path)
     s.regpoint_add(condition="d1==7fff")
-    (tmp_path / "debug.log").write_text(captured("debuglog.foreign-rp.resume.txt"))
+    (tmp_path / "debug.log").write_text(captured("debuglog-foreign-rp-resume.txt"))
     ses.stops_after_polls = 1
     out = s.resume(seconds=2.0)
     assert (out["verdict"] == "OTHER_STOP"
@@ -605,7 +605,7 @@ def test_a_re_armed_regpoint_row_names_whose_it_is_and_how_old(
                              created_at="2025-06-01T00:00:00+00:00")
     arming.store().add(mine)
     arming.store().add(theirs)
-    ses.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt")}
+    ses.rp_errors = {"d0==DemoLen": captured("print-braces-unknown-symbol.txt")}
     out = _rearm(ses)
     held = {d.ref: d for d in arming.store().declarations()}  # as the re-arm bound their cpu
     for (row,), decl in ((out["rearmed"], mine), (out["unresolved"], theirs)):
@@ -630,7 +630,7 @@ def test_a_row_already_listed_is_adopted_by_the_re_arm(
 def test_a_row_listed_disabled_is_adopted_by_the_re_arm_saying_so(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """The double answers `rplist` with the captured `rplist.disabled.txt` byte for byte (pinned
+    """The double answers `rplist` with the captured `rplist-disabled.txt` byte for byte (pinned
     above): the re-arm adopts the row as `regpoint_add` does, and says it is disabled and what
     enables it."""
     ses = _stored(monkeypatch, tmp_path, "d1==7fff")
@@ -648,7 +648,7 @@ def test_a_symbol_this_build_lacks_is_unresolved_and_kept(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _stored(monkeypatch, tmp_path, "d0==DemoLen")
-    ses.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt")}
+    ses.rp_errors = {"d0==DemoLen": captured("print-braces-unknown-symbol.txt")}
     out = _rearm(ses)
     assert refs(out["unresolved"]) == ["d0==DemoLen"] and refs(out["rearmed"]) == [], out
     assert not any(c.startswith("rpset") for c in ses.commands)
@@ -685,8 +685,8 @@ def test_the_two_families_unresolved_conditions_are_one_set_that_clears_by_famil
     use_table(monkeypatch, table={"IRQ_VBLANK": 0x4A0})
     arming.store().add(dec.Declaration("breakpoint", "symbol", "irq_vblank", origin="s0",
                                        condition="w@DemoLen==0x25"))
-    ses.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt"),
-                     "w@DemoLen==0x25": captured("print.braces.unknown-symbol.txt")}
+    ses.rp_errors = {"d0==DemoLen": captured("print-braces-unknown-symbol.txt"),
+                     "w@DemoLen==0x25": captured("print-braces-unknown-symbol.txt")}
     out = _rearm(ses)
     assert refs(out["unresolved"]) == ["irq_vblank", "d0==DemoLen"], out
     assert [r["state"] for r in s.declaration_list("regpoint")["regpoints"]] == ["unresolved"]
@@ -705,7 +705,7 @@ def test_what_cannot_be_armed_at_start_says_why_and_stays_stored(
     long = "d1==0x" + "0" * 80 + "1"
     ses = _stored(monkeypatch, tmp_path, "d1==", long, "d1==3")
     ses.packet_size = 64
-    ses.rp_print_errors = {"d1==": captured("print.braces.malformed.txt")}
+    ses.rp_print_errors = {"d1==": captured("print-braces-malformed.txt")}
     real = ses.monitor
 
     def forgetful(command: str, timeout: float = 10.0) -> str:
@@ -789,7 +789,7 @@ def test_a_console_with_no_registerpoints_makes_a_stored_one_unarmable_and_the_s
     real = ses.monitor
 
     def older_console(command: str, timeout: float = 10.0) -> str:
-        return (captured("rpset.unknown-command.txt") if command.startswith("rpset ")
+        return (captured("rpset-unknown-command.txt") if command.startswith("rpset ")
                 else real(command, timeout))
 
     ses.monitor = older_console  # type: ignore[method-assign]
@@ -803,11 +803,11 @@ def test_a_console_with_no_registerpoints_makes_a_stored_one_unarmable_and_the_s
 
 
 def test_rplist_lists_each_cpu_under_its_own_header() -> None:
-    rows = regpoints.parse_rplist(captured("rplist.two-devices.txt"))
+    rows = regpoints.parse_rplist(captured("rplist-two-devices.txt"))
     assert [(r["cpu"], r["index"], r["condition"]) for r in rows] == [
         (":maincpu", 1, "d1==7fff"), (":subcpu", 2, "d1==7fff")]
     assert rplist_answer([(1, "d1==7fff", True), (2, "d1==7fff", True)],
-                         {2: ":subcpu"}) == captured("rplist.two-devices.txt")
+                         {2: ":subcpu"}) == captured("rplist-two-devices.txt")
 
 
 @pytest.mark.parametrize("other", [":subcpu", ":audiocpu"],
@@ -887,7 +887,7 @@ def test_an_unresolved_regpoint_stops_being_one_once_cleared_or_armed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _stored(monkeypatch, tmp_path, "d0==DemoLen")
-    ses.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt")}
+    ses.rp_errors = {"d0==DemoLen": captured("print-braces-unknown-symbol.txt")}
     _rearm(ses)
     ses.rp_errors = {}
     assert s.regpoint_add(condition="d0==DemoLen")["already_stored"] is True
@@ -896,7 +896,7 @@ def test_an_unresolved_regpoint_stops_being_one_once_cleared_or_armed(
     listed = s.declaration_list("regpoint")["regpoints"]
     assert [r["state"] for r in listed] == ["gone"], "not unresolved"
     again = _stored(monkeypatch, tmp_path, "d0==DemoLen")
-    again.rp_errors = {"d0==DemoLen": captured("print.braces.unknown-symbol.txt")}
+    again.rp_errors = {"d0==DemoLen": captured("print-braces-unknown-symbol.txt")}
     _rearm(again)
     s.declaration_clear("regpoint", all=True)
     again.rp_errors = {}
@@ -915,7 +915,7 @@ def test_the_newest_line_in_the_window_names_the_stop_whichever_family_logged_it
 
     def go_through_the_breakpoint() -> None:
         (tmp_path / "debug.log").write_text(
-            captured("debuglog.foreign-bp.ms.txt") + _STOP_LINE)
+            captured("debuglog-foreign-bp-ms.txt") + _STOP_LINE)
         real_go()
 
     reg.go = go_through_the_breakpoint  # type: ignore[method-assign]
@@ -942,12 +942,12 @@ def test_the_double_answers_rpset_as_the_captures_do(
     """The rewrites the double makes of a captured answer are held to the OTHER captures: a
     `replace` that matched nothing would hand back index 1 for ever."""
     ses = _running(monkeypatch, tmp_path)
-    assert ses.monitor("rpset {d1==7fff}") == captured("rpset.set.txt")
-    assert ses.monitor("rpset {d1==}") == captured("rpset.malformed-armed.txt"), "MAME arms it"
-    assert ses.monitor("rpclear 2") == captured("rpclear.cleared.txt")
-    assert ses.monitor("rpclear 7") == captured("rpclear.invalid.txt")
+    assert ses.monitor("rpset {d1==7fff}") == captured("rpset-set.txt")
+    assert ses.monitor("rpset {d1==}") == captured("rpset-malformed-armed.txt"), "MAME arms it"
+    assert ses.monitor("rpclear 2") == captured("rpclear-cleared.txt")
+    assert ses.monitor("rpclear 7") == captured("rpclear-invalid.txt")
     ses.rp_next_index = 16
-    assert ses.monitor("rpset {1}") == captured("rpset.sixteenth.txt")
+    assert ses.monitor("rpset {1}") == captured("rpset-sixteenth.txt")
 
 
 def test_an_rpclear_typed_through_debug_drops_the_record_of_the_row_it_removed(

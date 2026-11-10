@@ -29,6 +29,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
+from scry_core import file_names
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
@@ -86,8 +87,10 @@ def id_for(r: mm.PalettePort) -> str:
 
 def paths(scratch: Path, log_id: str) -> tuple[Path, Path, Path]:
     """The dump, rows and setters files: the ones `clear` removes."""
-    return (scratch / f"ramdac-{log_id}.txt", scratch / f"ramdac-{log_id}.rows",
-            scratch / f"ramdac-{log_id}.setters.json")
+    words = file_names.word(log_id, "log_id")
+    return (scratch / file_names.name("ramdac", words, extension="txt"),
+            scratch / file_names.name("ramdac", words, extension="rows"),
+            scratch / file_names.name("ramdac", words, "setters", extension="json"))
 
 
 def law(r: mm.PalettePort) -> tuple[Any, ...]:

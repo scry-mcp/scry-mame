@@ -31,7 +31,7 @@ UNCOMPARED = {"available": False,
 def _capture(tmp_path: Path) -> mscreen.Capture:
     """m68k-dual's arming capture, read by the parser the film arms with."""
     path = tmp_path / "screen.bin"
-    path.write_bytes(gzip.decompress((FIX / "arm-m68k-dual-screen.bin.gz").read_bytes()))
+    path.write_bytes(gzip.decompress((FIX / "arm-m68k-dual-screen-bin.gz").read_bytes()))
     text = (FIX / "arm-m68k-dual.txt").read_text(errors="replace")
     return mscreen.parse_capture(text, path, {})
 
@@ -56,7 +56,7 @@ def test_the_edits_start_from_a_snapshot_equal_to_the_screen(
     screen: tuple[mscreen.Capture, list[int]],
 ) -> None:
     cap, colours = screen
-    snap = gzip.decompress((FIX / "arm-m68k-dual-snap.bin.gz").read_bytes())
+    snap = gzip.decompress((FIX / "arm-m68k-dual-snap-bin.gz").read_bytes())
     assert mm.colours(snap) == colours and mm.measure(cap, snap, W, H) is None
     pens = {p & mm.RGB for p in cap.pens}
     assert {colours[y * W + x] for x, y in BLOCK} == {BLOCK_COLOUR}

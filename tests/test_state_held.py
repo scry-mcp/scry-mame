@@ -19,7 +19,7 @@ from scry_mame import savestates  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
-HELD_LOG = captured("statesave.held.errorlog.txt")
+HELD_LOG = captured("statesave-held-errorlog.txt")
 ATTEMPTED = {"statesave": "State save attempted.  Please refer to window message popup for "
                           "results.\n",
              "stateload": "State load attempted.  Please refer to window message popup for "

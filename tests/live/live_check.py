@@ -359,7 +359,7 @@ check("disassemble ends the line with the text", line.endswith(" // live check")
 listed = s.comment_list()
 check("comment_list shows it", [c.get("ref") for c in listed.get("comments", [])]
       == ["irq_vblank"], str(listed.get("summary")))
-tsv = str(live_tmp("mame-live-check-comments-") / "c.comments.tsv")
+tsv = str(live_tmp("mame-live-check-comments-") / "c-comments.tsv")
 r = s.comment_write("save", dest=tsv)
 check("comment_write save writes one row under the header",
       r.get("comments_total") == 1 and Path(tsv).read_text().count("\n") == 2,
@@ -799,7 +799,7 @@ draft = s.gfx_draft(dest=str(draft_dir / "m68k-dual-gfx.yaml"))
 check("gfx_draft writes a draft the loader takes and its report beside it",
       draft.get("status") == "ok"
       and (draft_dir / "m68k-dual-gfx.yaml").read_text().startswith("# DRAFT")
-      and (draft_dir / "m68k-dual-gfx.report.json").is_file(), str(draft.get("summary")))
+      and (draft_dir / "m68k-dual-gfx-report.json").is_file(), str(draft.get("summary")))
 check("and neither altered the session", s.status()["session"]["altered"] == altered_before)
 
 print("\n== drive: look, act, verify on the emulator log")
@@ -1461,7 +1461,7 @@ check("the edited document diverges at that step and field (exit 1)",
       f"rc {played.returncode}: {played.stdout.strip().splitlines()[-3:]}")
 
 print("\n== screen maps: circus's attract screen, found by its map, and not once it changed")
-CIRCUS_MAP = Path(__file__).parent / "circus.screen-map.json"
+CIRCUS_MAP = Path(__file__).parent / "circus-screen-map.json"
 r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve()),
             reference_rom=str(circus_image), reference_addr="0x1000", reference_base="0x1000",
             boot_seconds=30.0, presence=False, inipath=NO_JOYSTICK_INI)
@@ -1483,7 +1483,7 @@ first = s.screen_map_find()
 check("with both layers matching, the session's screen is the one named",
       (first.get("screen"), first.get("layer")) == ("header", "session"), str(first.get("summary")))
 saved = s.screen_map_write("save",
-                           dest=str(live_tmp("mame-live-maps-") / "circus.screen-map.json"))
+                           dest=str(live_tmp("mame-live-maps-") / "circus-screen-map.json"))
 check("screen_map_write add maps the screen in front; screen_map_write save writes both layers, "
       "the session's promoted",
       added.get("status") == "ok" and saved.get("screens") == 2
@@ -1499,8 +1499,8 @@ anchored = json.loads(CIRCUS_MAP.read_text())
 anchored["screens"][0]["anchor"] = "0x12f7"
 for mode in ("verified", "consolidated"):
     folder = live_tmp(f"mame-live-anchor-{mode}-")
-    (folder / "circus.screen-map.json").write_text(json.dumps({**anchored, "mode": mode}))
-    s.screen_map_write("load", path=str(folder / "circus.screen-map.json"))
+    (folder / "circus-screen-map.json").write_text(json.dumps({**anchored, "mode": mode}))
+    s.screen_map_write("load", path=str(folder / "circus-screen-map.json"))
     went = s.run_to(screen="attract", control="0x80", seconds=30.0)
     check(f"run_to(screen=) reaches the attract at its anchor on a {mode} map, judged only "
           "when verified",
@@ -1517,8 +1517,8 @@ check("a screen whose region changed matches no screen of the map",
       changed.get("status") == "ok" and changed.get("matched") is False
       and changed.get("screens_tried") == 2, str(changed.get("summary")))
 stale_dir = live_tmp("mame-live-anchor-stale-")
-(stale_dir / "circus.screen-map.json").write_text(json.dumps({**anchored, "mode": "verified"}))
-s.screen_map_write("load", path=str(stale_dir / "circus.screen-map.json"))
+(stale_dir / "circus-screen-map.json").write_text(json.dumps({**anchored, "mode": "verified"}))
+s.screen_map_write("load", path=str(stale_dir / "circus-screen-map.json"))
 stale = s.run_to(screen="attract", control="0x80", seconds=30.0)
 check("a verified screen whose region changed is refused stale at its anchor",
       stale.get("status") == "INVALID" and stale.get("code") == "stale_map",
@@ -1592,7 +1592,7 @@ check("the recipe carries no path of this machine",
       all(not str(v).startswith(("/", "C:", "~")) for v in recipe.values()
           if isinstance(v, str)) and str(recipe.get("rompath", "")).startswith(
               ("${root}", "${home}", "${env:")), str(recipe))
-read = s.screen_map_write("load", path=str(store / ".scry" / "maps" / "circus.screen-map.json"))
+read = s.screen_map_write("load", path=str(store / ".scry" / "maps" / "circus-screen-map.json"))
 check("the promoted map reads back from the file it wrote, both screens",
       (read.get("application"), read.get("screens")) == ("circus", 2), str(read.get("summary")))
 closed = s.close()

@@ -39,7 +39,7 @@ MARKS = json.loads((AUDIO / "marks.json").read_text())
 
 
 def _wav(name: str) -> bytes:
-    return gzip.decompress((AUDIO / f"{name}.wav.gz").read_bytes())
+    return gzip.decompress((AUDIO / f"{name}-wav.gz").read_bytes())
 
 
 def _marks(name: str, seq: int) -> list[str]:

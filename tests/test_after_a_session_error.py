@@ -311,7 +311,7 @@ def test_promote_answers_on_a_broken_session_and_never_names_it(
 
 
 @pytest.mark.parametrize(("method", "args", "code"), [
-    ("load", {"path": _abs("nonexistent", "x.screen-map.json")}, "bad_argument"),
+    ("load", {"path": _abs("nonexistent", "x-screen-map.json")}, "bad_argument"),
     ("save", _ARGS["screen_map_write"], "needs_call"),
     ("add", {"screen": "s", "match": [[0, 0, 1, 1]]}, "session_broken")])
 def test_a_map_file_method_answers_on_a_broken_session_and_add_does_not(
@@ -1351,7 +1351,7 @@ def test_a_reached_target_whose_removal_the_list_does_not_confirm_is_still_the_m
     def refusal(ses: Any, command: str) -> str:
         held.append(int(command.split()[1], 16))
         (tmp_path / "debug.log").open("a").write(f"Stopped at breakpoint {held[0]:X}\n4A0\n")
-        return captured("bpclear.invalid.txt")         # an answer, and the row stays
+        return captured("bpclear-invalid.txt")         # an answer, and the row stays
 
     ses = _target_reached_then(monkeypatch, tmp_path, refusal)
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
@@ -1459,7 +1459,7 @@ def test_a_removal_the_list_does_not_confirm_after_an_unanswered_interrupt_says_
     real = ses.monitor
 
     def monitor(command: str, timeout: float = 10.0) -> str:
-        return (captured("bpclear.invalid.txt") if command.startswith("bpclear")
+        return (captured("bpclear-invalid.txt") if command.startswith("bpclear")
                 else str(real(command, timeout)))
 
     monkeypatch.setattr(ses, "interrupt", _raising(g.Timeout("no answer within 5.0 s")))
@@ -1557,7 +1557,7 @@ def test_a_silent_control_whose_target_removal_is_not_confirmed_says_both_in_one
 
     def monitor(command: str, timeout: float = 10.0) -> str:
         if command.startswith("bpclear"):
-            return captured("bpclear.invalid.txt")      # an answer, and the row stays
+            return captured("bpclear-invalid.txt")      # an answer, and the row stays
         return str(real_monitor(command, timeout))
 
     monkeypatch.setattr(ses, "monitor", monitor)

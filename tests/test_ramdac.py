@@ -85,7 +85,7 @@ def _armed(ses: _ChannelSession, name: str = "ramdac-m68k-dual") -> dict[str, An
     rec = mstate.STATE.tallies[mr.owner_of(_ramdac())]
     rec.update(installed=True, cpu=":maincpu")
     rec["path"].write_text(_text(f"{name}.txt"))
-    rec["rows_path"].write_text(_text(f"{name}.rows.gz"))
+    rec["rows_path"].write_text(_text(f"{name}-rows.gz"))
     return rec
 
 
@@ -140,7 +140,7 @@ def test_a_captured_dump_parses_whole_and_a_cut_or_undecided_one_reads_as_none()
 
 
 def test_rows_parse_every_kind_and_a_cut_row_ends_the_read(tmp_path: Path) -> None:
-    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after.rows.gz").splitlines()))
+    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after-rows.gz").splitlines()))
     kinds = [r.kind for r in rows]
     assert (kinds.count("i"), kinds.count("d"), kinds.count("x")) == (3, 1336, 1)
     assert rows[0] == mr.Row("d", 1, 899, 0xBB0, "guest", value=0xC5), "unsynced: no pen"
@@ -184,7 +184,7 @@ def _device(rows: list[mr.Row], auto: bool) -> list[tuple[int, int | None, int |
 def test_known_answer_the_taps_pens_are_the_devices_own() -> None:
     """Every data write the tap placed is on the pen and component the device would put it on;
     the same law without auto-increment disagrees, the control that this can fail."""
-    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after.rows.gz").splitlines()))
+    rows = list(mr.rows_of(_text("ramdac-m68k-dual-after-rows.gz").splitlines()))
     tap = [(r.n, r.pen, r.slot) for r in rows if r.kind == "d"]
     assert len(tap) > 1000 and sum(1 for _n, p, _s in tap if p is None) == 562
     assert _device(rows, auto=True) == tap
@@ -198,7 +198,7 @@ def test_known_answer_the_replay_composes_what_the_dump_holds(name: str, tmp_pat
     dump = mr.parse_dump(_text(f"{name}.txt"))
     assert dump is not None
     path = tmp_path / "log.rows"
-    path.write_text(_text(f"{name}.rows.gz"))
+    path.write_text(_text(f"{name}-rows.gz"))
     r = _ramdac()
     last: dict[int, tuple[int, str | None]] = {}
     for row, col in mr.replay(path, r):
@@ -354,7 +354,7 @@ def test_a_debuggers_write_only_a_shown_row_holds_is_still_said(
     rec = _armed(ses)
     rec["path"].write_text(_edited("ramdac-m68k-dual.txt", "unsynced=562", "unsynced=0"))
     assert "note" not in s.palette_log(palette_port="ramdac", limit=2), "the control"
-    rows = _text("ramdac-m68k-dual.rows.gz").splitlines()
+    rows = _text("ramdac-m68k-dual-rows.gz").splitlines()
     n = int(rows[-1].split()[1])
     rows += [f"d {n + 1} 999 e2f2c d 10 0 21", f"d {n + 2} 999 bb0 g 10 0 c5"]
     rec["rows_path"].write_text("\n".join(rows) + "\n")
@@ -555,7 +555,7 @@ def test_a_colour_no_kept_row_left_is_said_as_none(monkeypatch: pytest.MonkeyPat
     it): `same_color_write` is null rather than the nearest row."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses, "ramdac-m68k-dual-after")
-    rows = _text("ramdac-m68k-dual-after.rows.gz")
+    rows = _text("ramdac-m68k-dual-after-rows.gz")
     kept = [ln for ln in rows.splitlines() if not re.match(r"^d \d+ \d+ \w+ \w 49 ", ln)]
     rec["rows_path"].write_text("\n".join(kept[:1300]) + "\n")
     out = _pixel(ses)
@@ -673,7 +673,7 @@ def test_the_rows_shown_are_each_rendered_as_what_they_were(monkeypatch: pytest.
     its own shape."""
     ses = _loaded(monkeypatch, tmp_path)
     rec = _armed(ses)
-    rows = _text("ramdac-m68k-dual.rows.gz").splitlines()
+    rows = _text("ramdac-m68k-dual-rows.gz").splitlines()
     first_index = next(i for i, ln in enumerate(rows) if ln.startswith("i "))
     rec["rows_path"].write_text("\n".join(rows[:first_index + 2]) + "\n")
     out = s.palette_log(palette_port="ramdac", limit=3)
@@ -692,7 +692,7 @@ def _packed(board: str) -> mm.PalettePort:
 
 
 def _packed_dump(board: str) -> dict[str, Any]:
-    text = gzip.decompress((PACKED_FIX / f"{board}-dump.txt.gz").read_bytes()).decode()
+    text = gzip.decompress((PACKED_FIX / f"{board}-dump-txt.gz").read_bytes()).decode()
     dump = mr.parse_dump(text)
     assert dump is not None
     return dump
@@ -753,7 +753,7 @@ def test_a_packed_dump_parses_its_word_lines_and_an_older_header_reads_no_partia
     m68k_dual = mr.parse_dump(_text("ramdac-m68k-dual.txt"))
     assert m68k_dual is not None and m68k_dual["partial_writes"] == 0, (
         "a byte RAMDAC's captured dump carries no field and reads as none")
-    text = gzip.decompress((PACKED_FIX / "v30-alt-dump.txt.gz").read_bytes()).decode()
+    text = gzip.decompress((PACKED_FIX / "v30-alt-dump-txt.gz").read_bytes()).decode()
     bad = re.sub(r"(?m)^(w [0-9a-f]+ .*) ([0-9a-f]+)$", r"\1 zz", text, count=1)
     assert bad != text and mr.parse_dump(bad) is None, "a word line of another shape"
 
@@ -984,7 +984,7 @@ def test_a_packed_log_is_read_by_pen_with_its_word(monkeypatch: pytest.MonkeyPat
         b"endianness=little cpu=:maincpu\n") + ses.sentinel(mstate.STATE.lua_seq)
     rec = mstate.STATE.tallies[mr.owner_of(_packed("v30-alt"))]
     rec.update(installed=True, cpu=":maincpu")
-    text = gzip.decompress((PACKED_FIX / "v30-alt-dump.txt.gz").read_bytes()).decode()
+    text = gzip.decompress((PACKED_FIX / "v30-alt-dump-txt.gz").read_bytes()).decode()
     rec["path"].write_text(text)
     rec["rows_path"].write_text("")
     held = _held("v30-alt")

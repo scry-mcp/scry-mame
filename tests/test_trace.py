@@ -41,8 +41,8 @@ TAG = ":maincpu"
 ARMED = "Tracing CPU '{tag}' to file {path}"
 CLOSED = "Stopped tracing on CPU '{tag}'"
 # program masks and the widths the tracer printed under them (M6)
-WIDTHS = {"m68k-dual-maincpu-2f.trace.gz": (0xFFFFFF, 6),
-          "m68k-dual-subcpu-2f.trace": (0xFFFFFF, 6), "v30-alt-2f.trace.gz": (0xFFFFF, 5),
+WIDTHS = {"m68k-dual-maincpu-2f-trace.gz": (0xFFFFFF, 6),
+          "m68k-dual-subcpu-2f.trace": (0xFFFFFF, 6), "v30-alt-2f-trace.gz": (0xFFFFF, 5),
           "circus-2f.trace": (0x7FFF, 4)}
 
 
@@ -82,13 +82,13 @@ def test_a_file_written_in_text_mode_on_windows_reads_as_its_lf_twin(name: str) 
 
 
 def mutated(old: bytes, new: bytes) -> bytes:
-    data = fixture("v30-alt-2f.trace.gz")
+    data = fixture("v30-alt-2f-trace.gz")
     assert data.count(old) >= 1
     return data.replace(old, new, 1)
 
 
 def first_line() -> bytes:
-    return fixture("v30-alt-2f.trace.gz").split(b"\n", 1)[0]
+    return fixture("v30-alt-2f-trace.gz").split(b"\n", 1)[0]
 
 
 def test_a_line_of_no_shape_the_tracer_prints_is_refused_by_number() -> None:
@@ -131,7 +131,7 @@ def test_blank_lines_count_and_a_last_line_needs_no_newline() -> None:
 
 def test_a_pc_past_the_mask_is_no_channel() -> None:
     with pytest.raises(mstate.Invalid) as e:
-        mtrace.parse(lines(fixture("v30-alt-2f.trace.gz")), 5, 0xFFFF, TAG)
+        mtrace.parse(lines(fixture("v30-alt-2f-trace.gz")), 5, 0xFFFF, TAG)
     assert e.value.code == "no_channel" and "mask" in str(e.value)
 
 
@@ -200,9 +200,23 @@ def test_an_existing_dest_or_set_file_is_refused(tmp_path: Path) -> None:
     with pytest.raises(mstate.Invalid, match="already exists"):
         mtrace.check_trace(frames=1, dest=str(there))
     fresh = tmp_path / "u.trace"
-    Path(str(fresh) + mtrace.SET_SUFFIX).write_text("x")
+    (tmp_path / "u-trace-set.jsonl").write_text("x")
     with pytest.raises(mstate.Invalid, match="set file.*already exists"):
         mtrace.check_trace(frames=1, dest=str(fresh))
+
+
+def test_a_set_file_is_named_from_the_whole_trace_file_name(tmp_path: Path) -> None:
+    """`run.trace` and `run.log` keep a set file each."""
+    assert mtrace.set_file(tmp_path / "run.trace") == tmp_path / "run-trace-set.jsonl"
+    assert mtrace.set_file(tmp_path / "run.log") == tmp_path / "run-log-set.jsonl"
+
+
+def test_a_mixed_case_dest_is_traced_under_its_normalised_name(tmp_path: Path) -> None:
+    assert mtrace.check_trace(frames=1, dest=str(tmp_path / "My Run.TRACE")) == \
+        tmp_path / "my-run.trace"
+    (tmp_path / "my-run.trace").write_text("x")
+    with pytest.raises(mstate.Invalid, match="already exists"):
+        mtrace.check_trace(frames=1, dest=str(tmp_path / "MY_RUN.trace"))
 
 
 # ------------------------------------------------------------------------------- the flow
@@ -308,7 +322,7 @@ def call(ses: Console, **kw: Any) -> dict[str, Any]:
 
 
 def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> None:
-    data = fixture("v30-alt-2f.trace.gz")
+    data = fixture("v30-alt-2f-trace.gz")
     ses = board(data, mask=0xFFFFF)
     out = call(ses)
     t = out["trace"]
@@ -329,7 +343,7 @@ def test_a_cpu_with_no_table_places_nothing_and_says_so(board: Any) -> None:
 
 
 def test_the_summary_is_capped_and_counted(board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    data = fixture("v30-alt-2f.trace.gz")
+    data = fixture("v30-alt-2f-trace.gz")
     pcs = sorted(mtrace.parse(lines(data), None, None, TAG).counts)
     use_table(monkeypatch, TAG, table={f"S{i:03d}": pc for i, pc in enumerate(pcs[:100])})
     t = call(board(data, mask=0xFFFFF))["trace"]
@@ -341,7 +355,7 @@ def test_the_summary_is_capped_and_counted(board: Any, monkeypatch: pytest.Monke
 
 def test_a_summary_exactly_at_the_cap_is_not_truncated(
         board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    data = fixture("v30-alt-2f.trace.gz")
+    data = fixture("v30-alt-2f-trace.gz")
     pcs = sorted(mtrace.parse(lines(data), None, None, TAG).counts)
     shown = mtrace.SYMBOLS_SHOWN
     use_table(monkeypatch, TAG, table={f"S{i:03d}": pc for i, pc in enumerate(pcs[:shown])})
@@ -656,7 +670,7 @@ def test_a_trace_of_only_interrupt_lines_is_refused_like_an_empty_one(board: Any
     with pytest.raises(mstate.Invalid) as e:
         call(board(data))
     assert e.value.code == "readback_refused" and "executed nothing" in str(e.value)
-    assert not list((mstate.STATE.scratch or Path()).glob("snap/*.set.jsonl"))
+    assert not list((mstate.STATE.scratch or Path()).glob("snap/*-set.jsonl"))
 
 
 def test_a_refused_route_arms_nothing(board: Any, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -697,7 +711,7 @@ def test_a_close_that_fails_is_readback_refused_with_no_set_file(board: Any) -> 
     out = call(ses)
     assert out["code"] == "readback_refused" and out["trace"]["closed"] is False
     assert "trace off,:maincpu" in out["message"] and "ELAPSED at frame 12" in out["message"]
-    assert not list((mstate.STATE.scratch or Path()).glob("snap/*.set.jsonl"))
+    assert not list((mstate.STATE.scratch or Path()).glob("snap/*-set.jsonl"))
 
 
 def test_an_invalid_run_carries_the_trace_and_no_set_file(board: Any) -> None:
@@ -708,7 +722,7 @@ def test_an_invalid_run_carries_the_trace_and_no_set_file(board: Any) -> None:
         call(ses)
     assert e.value.code == "no_progress" and e.value.fields["trace"]["closed"] is True
     assert ses.sent[-1] == "trace off,:maincpu"
-    assert not list((mstate.STATE.scratch or Path()).glob("snap/*.set.jsonl"))
+    assert not list((mstate.STATE.scratch or Path()).glob("snap/*-set.jsonl"))
 
 
 def test_a_machine_left_running_is_stopped_before_the_close(board: Any) -> None:
@@ -732,8 +746,10 @@ def test_an_invalid_reply_keeps_its_code_and_gains_the_trace(board: Any) -> None
 
 def test_a_given_dest_is_where_the_tracer_writes(board: Any, tmp_path: Path) -> None:
     dest = tmp_path / "mine.trace"
-    t = call(board(b"000400: rte\n000402: nop\n"), dest=str(dest))["trace"]
-    assert t["path"] == str(dest) and t["set_path"] == str(dest) + mtrace.SET_SUFFIX
+    t = call(board(b"000400: rte\n000402: nop\n"), dest=str(tmp_path / "Mine.TRACE"))["trace"]
+    assert t["path"] == str(dest) and t["set_path"] == str(tmp_path / "mine-trace-set.jsonl")
+    assert sorted(p.name for p in tmp_path.glob("[Mm]ine*")) == [
+        "mine-trace-set.jsonl", "mine.trace"]
 
 
 def test_a_parked_cpu_that_is_not_visible_is_not_read_and_says_so(

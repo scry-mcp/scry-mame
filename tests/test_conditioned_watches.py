@@ -28,33 +28,33 @@ COND = "(wpdata&3)!=0"
 ARM = f"wp 0x2031fc::maincpu,0x4,w,{COND}"
 OWNER = ("frame_lo", ":maincpu")
 # The console prints the unconditioned shape, and only once the condition held.
-STOP_LINE = next(ln for ln in captured("debuglog.conditioned-wp.txt").splitlines(keepends=True)
+STOP_LINE = next(ln for ln in captured("debuglog-conditioned-wp.txt").splitlines(keepends=True)
                  if ln.startswith("Stopped at watchpoint 1 "))
 
 
 def _conditioned(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _WatchSession:
     """The watch double with the captured answer to the condition's evaluation."""
     ses = _watching(monkeypatch, tmp_path)
-    ses.rp_print_errors = {COND: captured("print.braces.wpdata-masked-outside.txt")}
+    ses.rp_print_errors = {COND: captured("print-braces-wpdata-masked-outside.txt")}
     ses.memory[0x2031FC] = bytes.fromhex("00000037")
     return ses
 
 
 def test_the_captured_row_and_arm_are_the_shapes_the_doubles_answer() -> None:
     """The doubles answer in the shapes MAME prints, and the parser reads the condition off."""
-    live = captured("wplist.condition.txt")
+    live = captured("wplist-condition.txt")
     assert "write if (wpdata&3)==0" in live
     (row,) = mlists.parse_wplist(live)
     assert row["condition"] == "(wpdata&3)==0" and row["entry"].endswith(" if (wpdata&3)==0")
-    assert captured("wpset.set-condition.txt") == captured("wpset.set.txt"), (
+    assert captured("wpset-set-condition.txt") == captured("wpset-set.txt"), (
         "a conditioned `wp` answers the plain sentence, so only the list proves the condition")
-    assert captured("print.braces.wpdata-outside.txt").strip() == "0"
+    assert captured("print-braces-wpdata-outside.txt").strip() == "0"
     # MAME sets a condition it cannot evaluate and never fires it, hence the evaluator first.
-    assert captured("wpset.malformed-condition.txt") == "Watchpoint 2 set\n\n"
-    malformed = [r for r in mlists.parse_wplist(captured("wplist.malformed-armed.txt"))
+    assert captured("wpset-malformed-condition.txt") == "Watchpoint 2 set\n\n"
+    malformed = [r for r in mlists.parse_wplist(captured("wplist-malformed-armed.txt"))
                  if r["index"] == 2]
     assert malformed[0]["condition"] == "wpdata=="
-    assert "unknown symbol" in captured("refused.wpset-unknown-symbol.txt")
+    assert "unknown symbol" in captured("refused-wpset-unknown-symbol.txt")
 
 
 def test_a_change_watch_arms_its_condition_once_the_console_evaluated_it(
@@ -91,7 +91,7 @@ def test_a_condition_the_console_cannot_evaluate_arms_nothing_and_stores_nothing
 ) -> None:
     """The evaluator's words are the refusal: MAME would set the `wp` and never fire it."""
     ses = _conditioned(monkeypatch, tmp_path)
-    ses.rp_print_errors["wpdata=="] = captured("print.braces.malformed.txt")
+    ses.rp_print_errors["wpdata=="] = captured("print-braces-malformed.txt")
     out = refused("did not evaluate `wpdata==`",
                   s.watch_add(ref="frame_lo", mode="change", length=4, condition="wpdata=="))
     assert out["code"] == "bad_argument"
@@ -180,7 +180,7 @@ def test_a_stored_condition_is_re_armed_at_start_and_one_naming_a_lost_symbol_is
     store.add(dec.Declaration("watch", "address", "0x203200", width=2, fmt="u16",
                               watch_mode="change", condition="wpdata==GONE", origin="s1",
                               cpu=":maincpu", fingerprint=mstate.STATE.fingerprint(":maincpu")))
-    ses.rp_errors = {"wpdata==GONE": captured("print.braces.unknown-symbol.txt")}
+    ses.rp_errors = {"wpdata==GONE": captured("print-braces-unknown-symbol.txt")}
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["rearmed"]) == ["frame_lo"] and refs(out["unresolved"]) == ["0x203200"], out
     assert ARM in ses.commands and not any(c.startswith("wp 0x203200") for c in ses.commands)
@@ -248,7 +248,7 @@ def test_a_pointer_watch_that_moves_takes_its_condition_along(
     ses.pointer_width = 4
     use_table(monkeypatch, table={"_G_ENGINE": 0x2031FC})
     ses.memory[0x2031FC] = (0x210000).to_bytes(4, "big")
-    ses.rp_print_errors["wpdata==7"] = captured("print.braces.wpdata-outside.txt")
+    ses.rp_print_errors["wpdata==7"] = captured("print-braces-wpdata-outside.txt")
     s.watch_add(ref="[_g_engine]+0x4", mode="change", length=2, condition="wpdata==7")
     ses.memory[0x2031FC] = (0x211000).to_bytes(4, "big")
     (w,) = s.step()["watches"]
@@ -271,7 +271,7 @@ def test_a_project_symbol_spelled_like_a_watchpoint_variable_is_ambiguous(
 
 def test_the_write_side_under_lua_taps_is_the_memory_they_wrap() -> None:
     """MAME names a write tap in `map` before what it wraps; the memory is what it wraps."""
-    for name in ("map.one-tap.txt", "map.two-taps.txt"):
+    for name in ("map-one-tap.txt", "map-two-taps.txt"):
         sides = mmap.map_sides(captured(name))
         assert sides == {"read": "memory@200000", "write": "memory@200000"}, (name, sides)
     assert watches.values_from("memory@200000", "memory@200000") == "memory"
@@ -285,7 +285,7 @@ def test_a_condition_on_a_pointer_watch_stored_null_is_judged_before_it_is_store
     ses.pointer_width = 4
     use_table(monkeypatch, table={"_G_ENGINE": 0x2031FC})
     ses.memory[0x2031FC] = bytes(4)
-    ses.rp_print_errors["wpdata=="] = captured("print.braces.malformed.txt")
+    ses.rp_print_errors["wpdata=="] = captured("print-braces-malformed.txt")
     refused("did not evaluate `wpdata==`",
             s.watch_add(ref="[_g_engine]+0x4", mode="change", length=2, condition="wpdata=="))
     assert arming.store().declarations() == [] and ses.watchpoints == []
@@ -320,7 +320,7 @@ def test_a_stored_condition_the_console_refuses_at_start_is_unarmable_and_kept(
     store.add(dec.Declaration("watch", "symbol", "frame_lo", width=4, fmt="u32",
                               watch_mode="change", condition="wpdata==", origin="s1",
                               cpu=":maincpu"))
-    ses.rp_print_errors["wpdata=="] = captured("print.braces.malformed.txt")
+    ses.rp_print_errors["wpdata=="] = captured("print-braces-malformed.txt")
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     (why,) = out["unarmable"]
     assert "did not evaluate `wpdata==`" in why["why"] and ses.watchpoints == [], out

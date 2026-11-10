@@ -3,9 +3,9 @@
 
 THE m68k-dual CASE IS CAPTURED, on its own build through this server: a capture watch on
 the blitter block (`watch_add(ref="0x700000", mode="capture", length=32, trigger="0x70001e")`)
-declared at the stop at frame 900 and read at the stop at frame 903. `m68k-dual-blit-rows.rows.gz`
+declared at the stop at frame 900 and read at the stop at frame 903. `m68k-dual-blit-rows-rows.gz`
 is the rows file the periodic hook wrote, in rows of six fields with no line and no time, which the
-cases read completed by `with_stamps`, since no reader here takes either. `m68k-dual-screen.bin.gz`
+cases read completed by `with_stamps`, since no reader here takes either. `m68k-dual-screen-bin.gz`
 is that stop's screen as the index capture writes it, rebuilt from the indexed PNG `screen_view`
 wrote at the same stop (each PNG index is the pen, its PLTE the pens), and `screen-m68k-dual.txt`
 the capture line that stop answered. The header is the one the survey of that stop reported (352
@@ -56,7 +56,7 @@ HEADER = ("MCP_CAPTURE 700000_32_t70001e seq=3 frame=903 total=352 rows=352 over
 
 def _m68k_dual_rows(salt: int = 0) -> str:
     """The captured rows, completed with a line and a time (`with_stamps`)."""
-    return with_stamps(gzip.decompress((FIX / "m68k-dual-blit-rows.rows.gz").read_bytes()).decode(),
+    return with_stamps(gzip.decompress((FIX / "m68k-dual-blit-rows-rows.gz").read_bytes()).decode(),
                        salt)
 
 
@@ -88,7 +88,7 @@ def _screen(ses: _ChannelSession) -> None:
     seq = mstate.STATE.lua_seq + 1
     ses.answers[seq] = (b"MAME_MCP_SCREEN tag=:screen w=336 h=252 frame=903 palette=- entries=0\n"
                         + ses.sentinel(seq))
-    raw = gzip.decompress((FIX / "m68k-dual-screen.bin.gz").read_bytes())
+    raw = gzip.decompress((FIX / "m68k-dual-screen-bin.gz").read_bytes())
     (ses.scratch / f"screen-{seq}.bin").write_bytes(raw[:336 * 252 * 4])
 
 

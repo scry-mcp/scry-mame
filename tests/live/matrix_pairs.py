@@ -50,6 +50,7 @@ from scry_mame import callbacks  # isort: skip
 from scry_mame import capture as mcapture  # isort: skip
 from scry_mame import watches as mwatches  # isort: skip
 from scry_mame import server as s  # isort: skip
+from scry_mame import tally as mtally  # isort: skip
 from scry_core import png, series  # isort: skip
 from scry_core import value_format as vf  # isort: skip
 from scry_mame.state import STATE  # isort: skip
@@ -696,7 +697,7 @@ def c7_watch_modes() -> None:
     call("run_for", frames=2, seconds=10.0)
     scratch = Path(str(call("status").get("scratch_dir")))
     dumper_fault_cell(C7_DUMPER, "MCP_TALLY", str(tap.get("tally_id")), BLIT_TRIGGER,
-                      scratch / f"tally-{tap.get('tally_id')}.txt")
+                      mtally.dump_path(scratch, str(tap.get('tally_id'))))
     call("declaration_clear", kind="watch", all=True)
 
 
@@ -818,7 +819,7 @@ def _every_op_once(state: str, frame_now: int) -> list[dict[str, Any]]:
     media = _media_files()
     maps = Path(fresh("-maps"))
     maps.mkdir()
-    screen_map = str(maps / "batch.screen-map.json")
+    screen_map = str(maps / "batch-screen-map.json")
     return [
         {"op": "series_capture", "first": frame_now + 1, "last": frame_now + 2,
          "seconds": 10.0},
@@ -1310,7 +1311,7 @@ def c15_condition_and_capture() -> None:
     call("run_for", frames=2, seconds=10.0)
     scratch = Path(str(call("status").get("scratch_dir")))
     dumper_fault_cell(t[7], "MCP_CAPTURE", str(cap.get("tally_id")), COUNTER,
-                      scratch / f"capture-{cap.get('tally_id')}.txt")
+                      mcapture.paths(scratch, str(cap.get("tally_id")))[0])
     call("declaration_clear", kind="watch", all=True)
     # the bound is the server's own, computed from the formats it already holds
     bound = mwatches.capture_block_chars_max()

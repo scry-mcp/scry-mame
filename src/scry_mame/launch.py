@@ -18,6 +18,7 @@ from xml.parsers import expat
 
 from scry_core import (
     app_launch,
+    file_names,
     guardian,
     judges,
     live_host,
@@ -759,14 +760,14 @@ def keep_failed_start(scratch: Path, system: str) -> dict[str, Any]:
     `FAILED_STARTS_KEPT` of that name shape, and answer `stdout_kept`. A failed copy is
     unavailable: the refusal it rides on is the news."""
     folder = dec.state_home() / "failed-starts"
-    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
-    kept = folder / f"{stamp}-{system}.log"
     try:
+        kept = folder / file_names.name(file_names.stamp(datetime.now(UTC)),
+                                        file_names.word(system, "system"), extension="log")
         folder.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(files.log_path(scratch, "process"), kept)
-        for old in sorted(folder.glob("[0-9]*T*Z-*.log"))[:-FAILED_STARTS_KEPT]:
+        for old in sorted(folder.glob("[0-9]*[tT]*[zZ]-*.log"))[:-FAILED_STARTS_KEPT]:
             old.unlink()
-    except OSError as e:
+    except (OSError, st.Invalid) as e:
         return {"stdout_kept": unavailable(str(e))}
     return {"stdout_kept": str(kept)}
 

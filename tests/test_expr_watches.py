@@ -322,8 +322,8 @@ def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
 
 # Captured, not authored (PROVENANCE.txt).
 _CAPTURED = Path(__file__).parent / "fixtures" / "console"
-_FRAMES_LOG = (_CAPTURED / "debuglog.foreign-bp.frames.txt").read_text().splitlines(keepends=True)
-_MS_LOG = (_CAPTURED / "debuglog.foreign-bp.ms.txt").read_text()
+_FRAMES_LOG = (_CAPTURED / "debuglog-foreign-bp-frames.txt").read_text().splitlines(keepends=True)
+_MS_LOG = (_CAPTURED / "debuglog-foreign-bp-ms.txt").read_text()
 _FOREIGN_CAUSE = ("breakpoint 1 at 0x00000400, typed through `debug`: `debug(\"bpclear 0x1\")` "
                 "removes it")
 

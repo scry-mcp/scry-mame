@@ -1,6 +1,6 @@
 """A watch that COUNTS (`tally`): write tap, install, periodic dump, survey.
 
-The dump is CAPTURED (`tests/fixtures/tally-2031fc_4.txt`, m68k-dual's vblank handler). The
+The dump is CAPTURED (`tests/fixtures/tally-2031fc-4.txt`, m68k-dual's vblank handler). The
 dumps with two writers and an overflow are hand-written in the captured shape, because the
 capture has one writer and no overflow, and a field that is zero in every fixture is one two
 regex groups could swap unnoticed."""
@@ -39,7 +39,7 @@ from scry_mame import state as mstate  # noqa: E402
 from scry_mame import tap as mtap  # noqa: E402
 
 FIXTURES = Path(__file__).parent / "fixtures"
-DUMP = (FIXTURES / "tally-2031fc_4.txt").read_text()
+DUMP = (FIXTURES / "tally-2031fc-4.txt").read_text()
 PROMPT = b"\x1b[1;36m[MAME]\x1b[0m> "
 INSTALLED = ("MCP_TALLY installed tally_id=2031fc_4 first=2031fc last=2031ff data_width=16 "
              "endianness=big cpu=:maincpu")
@@ -88,7 +88,7 @@ def _survey(ses: _WatchSession, frame: int) -> dict[str, object]:
 
 def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_dumper() -> None:
     """A rerun of the install chunk must neither double nor zero a census, nor add a dumper."""
-    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc_4.txt"))
+    script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc-4.txt"))
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
     assert 'for _, k in ipairs({"total", "reads", "values", "nvalues", "pcs", "npcs",' in script
     assert '"overflow_pcs", "errors", "first_error", "seq"}}) do t[k] = old[k] end'.replace(
@@ -229,7 +229,7 @@ def test_watch_add_count_sends_the_install_and_stores_pending_moving_nothing(
     assert ses.watchpoints == [], "no `Z2`: a tally is a tap, not a watchpoint"
     rec = mstate.STATE.tallies[("frame_lo", ":maincpu")]
     assert rec["addr"] == 0x2031FC and rec["width"] == 4 and rec["installed"] is None
-    assert rec["path"] == tmp_path / "tally-2031fc_4.txt"
+    assert rec["path"] == tmp_path / "tally-2031fc-4.txt"
     assert out["summary"] == "watch_add frame_lo: count watch pending at 0x002031fc, 4 bytes"
     # A re-declaration adopts and re-sends the install (idempotent in Lua by id).
     again = s.watch_add(ref="frame_lo", mode="count", length=4)
@@ -415,7 +415,7 @@ def test_a_count_watch_declared_again_keeps_what_the_survey_already_reported(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     assert _survey(ses, 61)["since_last_stop"] == 102
     again = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert again["already_stored"] is True and again["call"] == "MAME_MCP_LUA_END#2"
@@ -439,7 +439,7 @@ def test_the_survey_reads_the_dump_as_of_this_stop_and_says_when_it_is_behind(
     assert (item["installed"], item["pending"]) == (False, True), item
     assert "install has no answer" in str(item["why"])
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 61)
     assert item["state"] == "tallied" and item["installed"] is True and item["cpu"] == ":maincpu"
     assert item["frame_as_of"] == 61 and item["superseded"] is False and item["total"] == 102
@@ -466,7 +466,7 @@ def test_a_dump_that_lands_during_the_wait_is_read_current(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    path = tmp_path / "tally-2031fc_4.txt"
+    path = tmp_path / "tally-2031fc-4.txt"
     path.write_text(DUMP)
     polls: list[float] = []
 
@@ -488,7 +488,7 @@ def test_a_list_between_two_stops_looks_and_consumes_nothing(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     listed = s.declaration_list("watch")["watches"][0]
     assert listed["state"] == "tallied" and len(listed["values"]) == 52
     assert "since_last_stop" not in listed
@@ -502,7 +502,7 @@ def test_a_tally_whose_total_fell_is_a_reset_never_a_negative_count(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    path = tmp_path / "tally-2031fc_4.txt"
+    path = tmp_path / "tally-2031fc-4.txt"
     path.write_text(DUMP)
     assert _survey(ses, 61)["since_last_stop"] == 102
     path.write_text(DUMP.replace("seq=62 frame=61 total=102", "seq=63 frame=62 total=5"))
@@ -516,7 +516,7 @@ def test_a_machine_with_no_screen_dumps_no_frame_and_the_survey_does_not_wait(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(
+    (tmp_path / "tally-2031fc-4.txt").write_text(
         DUMP.replace("seq=62 frame=61 total=102", "seq=62 frame=-1 total=102"))
     began = time.monotonic()
     item = _survey(ses, 500)
@@ -536,7 +536,7 @@ def test_the_install_answer_is_matched_by_its_own_call_number_past_a_rerun(
     s.watch_add(ref="0x203200", mode="count", length=2)
     # The rerun of chunk 1 lands after chunk 2 was sent: not chunk 2's sentinel.
     _console_prints(tmp_path, INSTALLED.encode() + b"\nMAME_MCP_LUA_END#1\ttrue\tnil\n" + PROMPT)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     items = {i["ref"]: i for i in watches.evaluate_watches(ses, frame=61)}  # type: ignore[arg-type]
     assert items["frame_lo"]["installed"] is True
     assert (items["0x203200"]["installed"], items["0x203200"]["pending"]) == (False, True)
@@ -578,7 +578,7 @@ def test_an_install_the_reader_died_holding_is_sent_again_once_then_said_lost(
     assert item["call"] == "MAME_MCP_LUA_END#2", "the resend is a new call"
     assert _sent().count(b"install_write_tap(") == 2, "the same install went out again"
     _answer(tmp_path, 2)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 61)
     assert item["installed"] is True and item.get("install_resent",
                                                   0) == 1 and item["state"] == "tallied"
@@ -622,7 +622,7 @@ def test_a_tally_of_zero_is_a_measurement_beside_its_frame(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(
+    (tmp_path / "tally-2031fc-4.txt").write_text(
         "MCP_TALLY 2031fc_4 seq=1 frame=5 total=0 values=0 pcs=0 overflow_values=0 "
         "overflow_pcs=0 data_width=16 endianness=big cpu=:maincpu\nend\n")
     item = _survey(ses, 5)
@@ -637,7 +637,7 @@ RAISED_FIRST = "mcp:3: planted fault"
 
 def test_every_callback_the_count_watch_installs_runs_under_the_guard() -> None:
     assert_every_callback_guarded(
-        tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc_4.txt")), 1, 0)
+        tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc-4.txt")), 1, 0)
     assert_every_callback_guarded(
         tally.install_script("20351c_1", 0x20351C, 1, Path("/s/t.txt")), 1, 0)
 
@@ -650,7 +650,7 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     s.watch_add(ref="0x70001e", mode="count", length=2)
     _answer(tmp_path, 1, output=INSTALLED.replace("2031fc_4 first=2031fc last=2031ff",
                                                   "70001e_2 first=70001e last=70001f"))
-    (tmp_path / "tally-70001e_2.txt").write_text(RAISED)
+    (tmp_path / "tally-70001e-2.txt").write_text(RAISED)
     item = _survey(ses, 904)
     assert item["callback_errors"] == {"count": 678, "first": RAISED_FIRST}, item
     assert (item["state"], item["total"], item["values"]) == ("tallied", 978, [])
@@ -660,7 +660,7 @@ def test_a_count_whose_tap_raised_says_so_and_is_never_an_empty_census(
     # A clean tap says a count of zero and no message.
     clean = RAISED.replace("errors=678", "errors=0").replace(f"e {RAISED_FIRST}\n", "")
     assert clean.count("errors=0") == 1 and "\ne " not in clean
-    (tmp_path / "tally-70001e_2.txt").write_text(clean)
+    (tmp_path / "tally-70001e-2.txt").write_text(clean)
     item = _survey(ses, 904)
     none_raised = {"available": False, "why": mcallbacks.NONE_RAISED_WHY}
     assert item["callback_errors"] == {"count": 0, "first": none_raised}, item
@@ -684,7 +684,7 @@ def test_the_stop_survey_carries_the_overflows_and_the_writer_count_of_the_dump(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="0x2031fe", mode="count", length=2)
     _answer(tmp_path, 1, output=INSTALLED.replace("2031fc_4", "2031fe_2"))
-    (tmp_path / "tally-2031fe_2.txt").write_text(TWO_WRITERS)
+    (tmp_path / "tally-2031fe-2.txt").write_text(TWO_WRITERS)
     item = _survey(ses, 40)
     assert item["overflow_values"] == 7 and item["overflow_pcs"] == 3
     assert item["writers_total"] == 2 and item["values_total"] == 2 and item["total"] == 500
@@ -697,15 +697,15 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
 ) -> None:
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
-    (tmp_path / "tally-2031fc_4.txt.tmp").write_text("half")
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt.tmp").write_text("half")
     out = s.declaration_clear("watch", ref="frame_lo")
     assert out["status"] == "ok" and out["declarations_cleared"] == 1
     assert out["tallies_removed"] == [{"tally_id": "2031fc_4", "removal": "pending",
                                        "lines_ahead": 1, "call": "MAME_MCP_LUA_END#2"}]
     assert mstate.STATE.tallies == {} and ses.watchpoints == []
-    assert not (tmp_path / "tally-2031fc_4.txt").exists()
-    assert not (tmp_path / "tally-2031fc_4.txt.tmp").exists()
+    assert not (tmp_path / "tally-2031fc-4.txt").exists()
+    assert not (tmp_path / "tally-2031fc-4.txt.tmp").exists()
     assert b'MCP_TALLY removed tally_id=' in _sent()
     assert watches.evaluate_watches(ses, frame=61) == []  # type: ignore[arg-type]
     s.watch_add(ref="0x203200", mode="show", length=2)
@@ -782,7 +782,7 @@ def _cleared_with_the_console_silent(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     assert _survey(ses, 61)["installed"] is True
     out = s.declaration_clear("watch", ref="frame_lo")
     assert out["tallies_removed"][0]["removal"] == "pending"
@@ -879,7 +879,7 @@ def test_a_pending_install_reads_no_dump_another_tap_left_on_its_range(
     """`tally_id` is the range, so until this install answers nothing on disk is this tap's."""
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 61)
     assert (item["installed"], item["pending"]) == (False, True), item
     assert item["state"] == "no_dump_yet" and "total" not in item, item
@@ -892,14 +892,14 @@ def test_an_answered_install_reads_its_dump(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 61)
     assert item["installed"] is True and item["state"] == "tallied" and "total" in item, item
 
 
 def test_an_install_over_no_tap_removes_the_dump_a_removed_one_left(tmp_path: Path) -> None:
     """With no tap of the range in the registry the install deletes any dump left at its path."""
-    path = tmp_path / "tally-10_2.txt"
+    path = tmp_path / "tally-10-2.txt"
     script = tally.install_script("10_2", 0x10, 2, path)
     removal = 'if old == nil then os.remove(path) os.remove(path .. ".tmp") end'
     assert script.count(removal) == 1, script
@@ -930,7 +930,7 @@ def _declared_again_over(tmp_path: Path, ses: _WatchSession) -> dict[str, object
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 3)
     assert "old[k]" in _sent().splitlines()[-1].decode(), "the install carries the old counts"
-    (tmp_path / "tally-2031fc_4.txt").write_text(_LATER)
+    (tmp_path / "tally-2031fc-4.txt").write_text(_LATER)
     return _survey(ses, 70)
 
 
@@ -973,7 +973,7 @@ def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never
     assert [r["state"] for r in _removals(ses)] == ["lost", "lost"]
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 5)
-    (tmp_path / "tally-2031fc_4.txt").write_text(
+    (tmp_path / "tally-2031fc-4.txt").write_text(
         _LATER.replace("seq=63 frame=70 total=120", "seq=64 frame=80 total=125"))
     assert _survey(ses, 80)["since_last_stop"] == 5, "from the second row's 120, not the first's"
     lost = mstate.STATE.tally_removals[-1]
@@ -982,7 +982,7 @@ def test_the_newest_latched_row_of_the_range_speaks_and_another_ranges_row_never
     mstate.STATE.tally_removals.append(dict(lost, tally_id="203200_2", last_total=7))
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 7)
-    (tmp_path / "tally-2031fc_4.txt").write_text(
+    (tmp_path / "tally-2031fc-4.txt").write_text(
         _LATER.replace("seq=63 frame=70 total=120", "seq=65 frame=90 total=30"))
     assert _survey(ses, 90)["since_last_stop"] == 30, "the newest row of THIS range ran"
 
@@ -1030,7 +1030,7 @@ def test_an_install_whose_reader_lags_is_neither_resent_nor_lost_whatever_the_fr
     assert _sent().count(b"install_write_tap(") == 1, "nothing was resent"
     assert mstate.STATE.console_lines_lost == 0, "a line still waiting for the hook is not lost"
     _console_prints(tmp_path, INSTALLED.encode() + b"\nMAME_MCP_LUA_END#1\ttrue\tnil\n" + PROMPT)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 111)
     assert item["installed"] is True and item.get("install_resent", 0) == 0, item
 
@@ -1158,7 +1158,7 @@ def test_the_late_original_after_a_resend_is_passed_over_and_the_resend_is_read(
     assert (item["installed"], item["pending"]) == (False, True), item
     assert item["call"] == "MAME_MCP_LUA_END#2", item
     _answer(tmp_path, 2)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     item = _survey(ses, 100)
     assert item["installed"] is True and item.get("install_resent", 0) == 1, item
 
@@ -1315,7 +1315,7 @@ def test_a_tap_that_counted_across_a_reset_says_so_and_the_reset_names_it(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     assert "across" not in _survey(ses, 61), "nothing crossed yet"
     out = s.reset()
     assert out["status"] == "ok", out
@@ -1333,7 +1333,7 @@ def test_a_range_declared_again_over_its_live_tap_reads_that_taps_dump_while_pen
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     assert _survey(ses, 61)["state"] == "tallied"
     again = s.watch_add(ref="frame_lo", mode="count", length=4)
     assert again["status"] == "ok", again
@@ -1353,7 +1353,7 @@ def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pend
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
     s.declaration_clear("watch", ref="frame_lo")
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     item = _survey(ses, 61)
     assert (item["installed"], item["pending"]) == (False, True), item
@@ -1363,7 +1363,7 @@ def test_a_range_declared_again_after_its_removal_still_reads_no_dump_while_pend
 def _dump_failed_line(tally_id: str) -> str:
     """The captured `error.log` line of a raised dumper (`fixtures/callbacks`), under `tally_id`."""
     from scry_mame import callbacks
-    line = (FIXTURES / "callbacks" / "dump-failed.errorlog.txt").read_text()
+    line = (FIXTURES / "callbacks" / "dump-failed-errorlog.txt").read_text()
     assert f"{callbacks.DUMP_FAILED} 70001e_2 " in line, "the capture is the guard's own line"
     return line.replace(" 70001e_2 ", f" {tally_id} ")
 
@@ -1375,7 +1375,7 @@ def test_a_dump_older_than_the_stop_names_the_dumper_s_error_when_it_raised(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.0)
     old = _survey(ses, 70)
     assert old["superseded"] is True and "had not written" in str(old["why"]), old
@@ -1393,7 +1393,7 @@ def test_a_dumper_error_followed_by_a_newer_dump_is_not_why_a_later_one_is_old(
     ses = _tallying(monkeypatch, tmp_path)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     _answer(tmp_path, 1)
-    path = tmp_path / "tally-2031fc_4.txt"
+    path = tmp_path / "tally-2031fc-4.txt"
     path.write_text(DUMP)
     monkeypatch.setattr(mtap, "DUMP_WAIT_S", 0.0)
     with (tmp_path / "error.log").open("a") as log:
@@ -1409,7 +1409,7 @@ def test_a_range_declared_again_before_its_first_install_answered_reads_no_dump(
 ) -> None:
     """A never-installed predecessor owns no file; a live tap beside a pending one is read."""
     ses = _tallying(monkeypatch, tmp_path)
-    (tmp_path / "tally-2031fc_4.txt").write_text(DUMP)
+    (tmp_path / "tally-2031fc-4.txt").write_text(DUMP)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     s.watch_add(ref="frame_lo", mode="count", length=4)
     assert _survey(ses, 61)["state"] == "no_dump_yet"

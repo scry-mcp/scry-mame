@@ -205,14 +205,14 @@ def test_the_consoles_readers_name_the_visible_cpu(
 ) -> None:
     """The console readers act on the visible cpu."""
     ses = _ConsoleSession(bytes(0x1000), replies={
-        "find": captured("find.none.txt"), "history": captured("history.txt"),
-        "cpulist": captured("cpulist.sub-visible.txt")})
+        "find": captured("find-none.txt"), "history": captured("history.txt"),
+        "cpulist": captured("cpulist-sub-visible.txt")})
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     scratch = _console(monkeypatch, tmp_path, ses)
 
     def dasm(command: str) -> str:
         (scratch / command[len("dasm "):].split(",")[0]).write_text(captured("dasm.txt"))
-        return captured("dasm.reply.txt")
+        return captured("dasm-reply.txt")
 
     def save(command: str) -> str:
         path, start, length = command[len("save "):].split(",")

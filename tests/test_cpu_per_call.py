@@ -318,12 +318,12 @@ def _console_on_two_cpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any
         return "Data saved successfully\n"
 
     def dasm(command: str) -> str:
-        (scratch / command[len("dasm "):].split(",")[0]).write_text(captured("dasm.sub.txt"))
+        (scratch / command[len("dasm "):].split(",")[0]).write_text(captured("dasm-sub.txt"))
         return "Data dumped successfully\n\n"
 
     ses = _ConsoleSession(bytes(0x5000), replies={
-        "cpulist": captured("cpulist.main-visible.txt"), "save": save, "dasm": dasm,
-        "find": captured("find.sub.txt"), "history": captured("history.sub.txt")})
+        "cpulist": captured("cpulist-main-visible.txt"), "save": save, "dasm": dasm,
+        "find": captured("find-sub.txt"), "history": captured("history-sub.txt")})
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     scratch = _console(monkeypatch, tmp_path, ses)
     monkeypatch.setattr(mstate.STATE, "machine_map", {

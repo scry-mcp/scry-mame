@@ -230,12 +230,12 @@ def control_console(double: Any, command: str) -> str | None:
             double.breakpoint(addr)       # a plain row, through the double's own stand-in
         if double.bp_next_index > index:
             place_row(double, "bp_devices", index, armed.group(2))
-        return captured("bpset.set.txt").replace("Breakpoint 1 ", f"Breakpoint {index:X} ")
+        return captured("bpset-set.txt").replace("Breakpoint 1 ", f"Breakpoint {index:X} ")
     if command.startswith("bpclear "):
         index = int(command[8:], 16)
         gone = next((r for r in double.bplist_rows if row_index(r) == index), None)
         if gone is None:
-            return captured("bpclear.invalid.txt").replace(" 7\n", f" {index:X}\n")
+            return captured("bpclear-invalid.txt").replace(" 7\n", f" {index:X}\n")
         double.bplist_rows = [r for r in double.bplist_rows if row_index(r) != index]
         if hasattr(double, "armed") and " if " not in gone:
             double.armed.append((int(gone.split(" @ ", 1)[1][:6], 16), True))
@@ -246,7 +246,7 @@ def control_console(double: Any, command: str) -> str | None:
         place_row(double, "wp_devices", index, armed.group(2))
         if hasattr(double, "watchpoints"):
             double.watchpoints.append((addr, length, False))
-        return captured("wpset.set.txt").replace("Watchpoint 1 ", f"Watchpoint {index:X} ")
+        return captured("wpset-set.txt").replace("Watchpoint 1 ", f"Watchpoint {index:X} ")
     if command.startswith("print temp"):
         names = command[6:].split(",")
         return " ".join(f"{double.temps.get(int(n[4:]), 0):X}" for n in names) + "\n\n"
@@ -274,7 +274,7 @@ def captured(name: str) -> str:
 def rplist_answer(rows: list[tuple[int, str, bool]],
                   devices: dict[int, str] | None = None) -> str:
     if not rows:
-        return captured("rplist.none.txt")
+        return captured("rplist-none.txt")
     where = devices or {}
     tags = sorted({where.get(index, ":maincpu") for index, _c, _e in rows})
     return "".join(
@@ -298,18 +298,18 @@ def regpoint_console(double: Any, command: str) -> str | None:
             return errors[cond]
         if verb == "print":
             print_errors: dict[str, str] = getattr(double, "rp_print_errors", {})
-            return print_errors.get(cond, captured("print.braces.false.txt"))
+            return print_errors.get(cond, captured("print-braces-false.txt"))
         index: int = double.rp_next_index
         double.rp_next_index += 1
         double.rplist_rows.append((index, cond, True))
-        return captured("rpset.set.txt").replace("Registerpoint 1 ", f"Registerpoint {index:X} ")
+        return captured("rpset-set.txt").replace("Registerpoint 1 ", f"Registerpoint {index:X} ")
     if command.startswith("rpclear "):
         index = int(command[8:], 16)
         kept = [r for r in double.rplist_rows if r[0] != index]
         if len(kept) == len(double.rplist_rows):
-            return captured("rpclear.invalid.txt").replace(" 7\n", f" {index:X}\n")
+            return captured("rpclear-invalid.txt").replace(" 7\n", f" {index:X}\n")
         double.rplist_rows = kept
-        return captured("rpclear.cleared.txt").replace(" 2 ", f" {index:X} ")
+        return captured("rpclear-cleared.txt").replace(" 2 ", f" {index:X} ")
     return None
 
 
@@ -321,10 +321,10 @@ def debugger_lists(double: Any, command: str) -> str | None:
         return bplist_answer(double.bplist_rows, getattr(double, "bp_devices", None))
     if command.startswith("bplist :"):
         return one_cpus_list(double.bplist_rows, getattr(double, "bp_devices", None),
-                             command.split()[1], bplist_answer, "bplist.sub-none.txt")
+                             command.split()[1], bplist_answer, "bplist-sub-none.txt")
     if command == "cpulist":
         sub = getattr(double, "visible_cpu", ":maincpu") == ":subcpu"
-        return captured("cpulist.sub-visible.txt" if sub else "cpulist.main-visible.txt")
+        return captured("cpulist-sub-visible.txt" if sub else "cpulist-main-visible.txt")
     return focus_console(double, command)
 
 
@@ -349,12 +349,12 @@ def focus_console(double: Any, command: str) -> str | None:
         live = getattr(double, "live", None) or getattr(double, "visible_cpu", ":maincpu")
         if live in double.ignoring:
             double.visible_cpu = double.live = tag
-        return captured("focus.subcpu.txt").replace("':subcpu'", f"'{tag}'")
+        return captured("focus-subcpu.txt").replace("':subcpu'", f"'{tag}'")
     if command == "ignore":
         ignoring: list[str] = getattr(double, "ignoring", [])
         if not ignoring:
-            return captured("ignore.none.txt")
-        return captured("ignore.main-ignored.txt").replace("':maincpu'", f"'{ignoring[0]}'")
+            return captured("ignore-none.txt")
+        return captured("ignore-main-ignored.txt").replace("':maincpu'", f"'{ignoring[0]}'")
     return None
 
 
@@ -365,14 +365,14 @@ def suspend_console(double: Any, command: str) -> str | None:
     suspending: list[str] = getattr(double, "suspending", [])
     if not tag.strip():
         if not suspending:
-            return captured("suspend.none.txt")
-        return captured("suspend.sub-suspended.txt").replace("':subcpu'", f"'{suspending[0]}'")
+            return captured("suspend-none.txt")
+        return captured("suspend-sub-suspended.txt").replace("':subcpu'", f"'{suspending[0]}'")
     tag = ":" + tag.strip().lstrip(":")
     if verb == "suspend":
         double.suspending = [*suspending, tag] if tag not in suspending else suspending
-        return captured("suspend.sub.txt").replace("':subcpu'", f"'{tag}'")
+        return captured("suspend-sub.txt").replace("':subcpu'", f"'{tag}'")
     double.suspending = [t for t in suspending if t != tag]
-    return captured("resume.sub.txt").replace("':subcpu'", f"'{tag}'")
+    return captured("resume-sub.txt").replace("':subcpu'", f"'{tag}'")
 
 
 def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "program")) -> None:
@@ -386,8 +386,8 @@ def io_board(monkeypatch: Any, ses: Any, spaces: tuple[str, ...] = ("io", "progr
         if command.startswith("mapi "):
             ses.commands.append(command)
             port = int(command[5:].split(":", 1)[0], 16)
-            return captured("mapi.v30-6.txt" if port in (6, 7)
-                            else "mapi.v30-20-unmapped.txt")
+            return captured("mapi-v30-6.txt" if port in (6, 7)
+                            else "mapi-v30-20-unmapped.txt")
         return str(plain(command, timeout))
 
     monkeypatch.setattr(ses, "monitor", monitor)

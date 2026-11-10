@@ -646,7 +646,7 @@ shown through two palettes; a screen with no palette refuses it (`no_channel`).
 what `run_to(screen=)` runs to: a consolidated map refuses an `add` without one (`bad_argument`),
 since it enters its screens by theirs.
 
-`load`: `path` (`<application>.screen-map.json`, absolute or `~`-led) as the file layer, held by the
+`load`: `path` (`<application>-screen-map.json`, absolute or `~`-led) as the file layer, held by the
 server; nothing is written to disk. `scale` (1..8) and `margin` [x, y] (machine pixels on
 each side) say how the program's picture sits on this machine's screen; maps and `add`'s
 crops are in the program's units. Reply: `path`, `application`, `mode`, `screens`, `controls`, `pointer`

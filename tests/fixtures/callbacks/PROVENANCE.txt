@@ -15,7 +15,7 @@ capture-raised.txt    the capture: the rows from before the fault only, one erro
 ramdac-raised.txt     the palette log: no pen written, one error per synced data write.
 film-raised.txt       the film: one error per strobe write its tap took since the fault.
 
-dump-failed.errorlog.txt
+dump-failed-errorlog.txt
                       the line the guard logs for a dumper that raised, copied from `error.log`
                       as the live matrix's C.7 cell read it: a count watch on 0x70001e (length 2)
                       on m68k-dual, its item's `endianness` made to raise when the dumper

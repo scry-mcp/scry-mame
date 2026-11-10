@@ -4,13 +4,13 @@ from __future__ import annotations
 from scry_core import comment_file as core_comments
 from scry_core import (
     docs,
+    file_names,
     frame_window,
     log_marks,
     picture,
     recording,
     screen_map,
     series,
-    state_files,
 )
 from scry_core import pens as scry_pens
 from scry_core import promote as core_promote
@@ -69,7 +69,7 @@ DOC_VALUES: dict[str, str] = {
     "FIND_BYTES_MAX": str(read.FIND_BYTES_MAX), "STEP_MAX": str(advance.step_max()),
     "WAIT_MAX_S": f"{vocab.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX),
-    "STATE_NAME_MAX": str(state_files.STATE_NAME_MAX),
+    "STATE_NAME_MAX": str(file_names.WORD_MAX),
     "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
     "ROWS_SHOWN": str(st.ROWS_SHOWN),
     "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",

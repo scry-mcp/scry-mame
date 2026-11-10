@@ -44,7 +44,7 @@ def test_the_demo_takes_the_game_s_map_from_its_own_checkout(tmp_path: Path) -> 
     assert demo.precheck(Run(dir=tmp_path, options={"rompath": str(roms)})).startswith(
         "pass --cwd")
     bare = Run(dir=tmp_path, options={"rompath": str(roms), "cwd": str(tmp_path)})
-    assert demo.precheck(bare).startswith("no .scry/maps/lineup.screen-map.json under --cwd")
+    assert demo.precheck(bare).startswith("no .scry/maps/lineup-screen-map.json under --cwd")
 
 
 def test_the_map_is_the_game_s_and_a_copy_of_it_goes_into_the_run(

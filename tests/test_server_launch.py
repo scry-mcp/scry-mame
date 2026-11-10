@@ -390,13 +390,13 @@ def test_memdump_judges_the_range_by_the_mask_of_the_cpu_it_saves_from(
         return "Data saved successfully\n"
 
     ses = _ConsoleSession(bytes(0x5000), replies={"save": save,
-                                                  "cpulist": captured("cpulist.sub-visible.txt")})
+                                                  "cpulist": captured("cpulist-sub-visible.txt")})
     _console(monkeypatch, tmp_path, ses)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     two = {"spaces": _masked(0xFFFFFF)["spaces"] + _masked(0x3FFF, ":subcpu")["spaces"]}
     monkeypatch.setattr(mstate.STATE, "machine_map", two)
     refused("wraps", s.memdump("0x3ffc", length=8, dest=str(tmp_path / "sub.bin")))
-    ses.replies["cpulist"] = captured("cpulist.main-visible.txt")
+    ses.replies["cpulist"] = captured("cpulist-main-visible.txt")
     out = s.memdump("0x3ffc", length=8, dest=str(tmp_path / "main.bin"))
     assert out["status"] == "ok" and out["cpu"] == ":maincpu", out
 
@@ -412,7 +412,7 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
     use_table(monkeypatch, classes={"IN_IRQ": "DATA", "TOTALTIME": "DATA", "DEMOSTATE": "DATA",
                                     "SOME_CODE": "CODE"})
     use_table(monkeypatch, bases={"DATA": 0x400})
-    fixture = {"f5bc0": "dasm.v30.new_irq_video.txt", "f5e2f": "dasm.v30.startdemo.txt"}
+    fixture = {"f5bc0": "dasm-v30-new-irq-video.txt", "f5e2f": "dasm-v30-startdemo.txt"}
 
     def dasm(command: str) -> str:
         name, addr, _length = command[len("dasm "):].split(",")

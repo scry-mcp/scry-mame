@@ -14,13 +14,13 @@ FIXTURES = Path(__file__).parent / "fixtures" / "console"
 
 def _pair(name: str) -> tuple[list[str], list[str]]:
     lines = [x for x in (FIXTURES / f"{name}.txt").read_text().splitlines() if x.strip()]
-    bare = [x for x in (FIXTURES / f"{name}.bare.txt").read_text().splitlines() if x.strip()]
+    bare = [x for x in (FIXTURES / f"{name}-bare.txt").read_text().splitlines() if x.strip()]
     return bare, [re.match(r"^([0-9A-Fa-f]+):", x).group(1) for x in lines]  # type: ignore[union-attr]
 
 
 def test_a_68000_listing_names_its_call_its_branch_and_its_return() -> None:
     """Only the branch, the call and the return are marked; the rest is sequential."""
-    bare, addresses = _pair("dasm.m68k.560")
+    bare, addresses = _pair("dasm-m68k-560")
     classes = flow.classify_listing(bare, addresses, "m68000")
     assert classes is not None
     marked = {a: c for a, c in zip(addresses, classes, strict=True) if c != flow.SEQUENTIAL}
@@ -29,7 +29,7 @@ def test_a_68000_listing_names_its_call_its_branch_and_its_return() -> None:
 
 def test_a_v30_listing_names_every_flow_word_and_reads_past_a_prefix() -> None:
     """Every V30 flow word is classed, and `rep stmw` is the store it repeats."""
-    bare, addresses = _pair("dasm.v30.30000")
+    bare, addresses = _pair("dasm-v30-30000")
     classes = flow.classify_listing(bare, addresses, "v30")
     assert classes is not None
     by_addr = dict(zip(addresses, classes, strict=True))
@@ -84,7 +84,7 @@ def test_a_type_without_a_table_has_no_source_rather_than_the_nearest_family() -
 
 def test_two_listings_that_disagree_about_the_addresses_classify_nothing() -> None:
     """A class landing on a neighbouring line looks right, so a misaligned listing yields none."""
-    bare, addresses = _pair("dasm.m68k.560")
+    bare, addresses = _pair("dasm-m68k-560")
     assert flow.classify_listing(bare[1:], addresses[1:], "m68000") is not None
     assert flow.classify_listing(bare[1:], addresses[:-1], "m68000") is None, "shifted"
     assert flow.classify_listing(bare[:-1], addresses, "m68000") is None, "one line short"

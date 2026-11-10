@@ -41,7 +41,9 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
   the visible one, and every reply that touches a cpu names it.
 - **Honest replies.** Every reply opens with a one-line `summary` and closes with a `session`
   block saying whether anything was written to the machine. A session that cannot reproduce its
-  ROM is refused before anybody measures on it.
+  ROM is refused before anybody measures on it. A file a tool writes is named by
+  [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md), and the reply
+  names the file it wrote.
 
 ## Two minutes to a first answer
 

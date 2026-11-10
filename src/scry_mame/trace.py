@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, cast
 
-from scry_core import cancel, prose
+from scry_core import cancel, file_names, prose
 from scry_core import progress as mprogress
 from scry_core import sequence_account as account
 from scry_core import vocabulary as vocab
@@ -40,7 +40,6 @@ from scry_mame import gdb_session as gs
 from scry_mame import state as st
 from scry_mame.state import STATE
 
-SET_SUFFIX = ".set.jsonl"
 # Inline per-symbol rows; the set file holds every address.
 SYMBOLS_SHOWN = 64
 # The work is bounded by the file it makes, not by the wait: each cap fills a gibibyte at the
@@ -79,8 +78,13 @@ def check_trace(milliseconds: int = 0, frames: int = 0, dest: str = "", seconds:
     if not dest:
         return None
     path = inputs.fresh_dest("dest", dest)
-    inputs.fresh_dest("dest's set file", str(path) + SET_SUFFIX)
+    inputs.fresh_dest("dest's set file", str(set_file(path)))
     return path
+
+
+def set_file(path: Path) -> Path:
+    """The set file beside the trace file `path`, named from its whole name."""
+    return path.with_name(file_names.name(path.stem, path.suffix[1:], "set", extension="jsonl"))
 
 
 @dataclass
@@ -236,7 +240,7 @@ def trace(ses: gs.Session, scratch: Path, milliseconds: int, frames: int, dest: 
         STATE.next_number("recordings")
     parked, parked_note = _parked_start(ses, tag)
     route = advance.route_frames(ses, read.BY_TIME.format(tool="trace")) if frames else None
-    set_path = Path(str(path) + SET_SUFFIX)
+    set_path = set_file(path)
     # a long path wraps at the console's column
     answer = ses.monitor(f"trace {path},{tag}" + (",noloop" if noloop else ""))
     armed = " ".join(gs.unwrap_console(answer, _ANSWER)).strip()

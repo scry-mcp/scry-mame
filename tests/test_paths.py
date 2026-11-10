@@ -207,7 +207,9 @@ def test_a_dest_that_is_a_dangling_link_already_exists(here: Path, call: Any) ->
                                              ("\x85", "'\\x85'")])
 def test_a_dest_holding_a_control_character_is_refused_naming_it(
         here: Path, char: str, shown: str) -> None:
-    out = refused("control character", s.memdump(ref="0x0", length=4, dest=f"{here}/a{char}b.bin"))
+    (here / f"a{char}b").mkdir()
+    out = refused("control character",
+                  s.memdump(ref="0x0", length=4, dest=f"{here}/a{char}b/x.bin"))
     assert shown in out["message"] and out["code"] == "bad_argument", out
     assert "no comma, semicolon, quote, whitespace" in out["message"], "the console's set is named"
 
@@ -309,6 +311,18 @@ def test_a_link_to_a_state_that_exists_is_a_state_and_a_dangling_one_hides_none_
     assert sorted(rows) == ["a", "x", "z"], rows
     assert rows["a"]["bytes"] == 40 and rows["z"]["bytes"] == 24, rows
     assert "no file is reached" not in str(rows["a"]), rows
+
+
+def test_a_state_file_no_name_loads_is_listed_saying_what_a_load_of_it_reads(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    ses, _, _ = _dangling_state(monkeypatch, tmp_path)
+    kept = ses.scratch / "sta" / "m68k-dual" / "Boss_1.sta"
+    kept.write_bytes(bytes(24))
+    rows = {row["name"]: row for row in s.state_list()["states"]}
+    kept.unlink()                       # this test's own input, not a name the server wrote
+    assert rows["Boss_1"]["frame"] == rows["Boss_1"]["bytes"] == {
+        "available": False, "why": "the file is named as no state is: a load of 'Boss_1' reads "
+                                   "boss-1.sta, rename it to load it"}, rows
 
 
 def _exists_letting_other_errors_out(self: Path, *, follow_symlinks: bool = True) -> bool:
@@ -441,10 +455,11 @@ def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceba
     assert refused("already exists", s.state_write("save", name="d"))["code"] == "bad_argument"
 
 
-@pytest.mark.parametrize("name", ["a;b.yaml", "a b.yaml", "a(b.yaml", "a\x1bb.yaml"])
+@pytest.mark.parametrize("name", ["a;b", "a b", "a(b", "a\x1bb"])
 def test_gfx_drafts_dest_holds_none_of_the_characters_no_dest_may_hold(
         here: Path, name: str) -> None:
-    out = refused("holds", s.gfx_draft(dest=f"{here}/{name}"))
+    (here / name).mkdir()
+    out = refused("holds", s.gfx_draft(dest=f"{here}/{name}/gfx.yaml"))
     assert out["code"] == "bad_argument" and "dest=" in out["message"], out
 
 
@@ -472,7 +487,7 @@ def test_gfx_draft_refuses_a_link_where_the_draft_or_its_report_goes(
     draft.symlink_to(tmp_path / "nowhere.yaml")
     link = "is a link, where gfx_draft writes a file"
     assert refused(link, s.gfx_draft(dest=str(draft)))["code"] == "bad_argument"
-    report = tmp_path / "r.report.json"
+    report = tmp_path / "r-report.json"
     report.symlink_to(tmp_path / "nowhere.json")
     assert refused(link, s.gfx_draft(dest=str(tmp_path / "r.yaml")))["code"] == "bad_argument"
     assert draft.is_symlink() and report.is_symlink()

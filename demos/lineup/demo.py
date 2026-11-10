@@ -22,7 +22,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
 #: The game's own repository declares its screen map; `--cwd` is that checkout.
-SCREEN_MAP = Path(".scry/maps/lineup.screen-map.json")
+SCREEN_MAP = Path(".scry/maps/lineup-screen-map.json")
 
 
 def at(run: Run) -> Path:

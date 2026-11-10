@@ -3,28 +3,28 @@ mame server's tools driven by a one-off script outside this tree, each board boo
 Program and board names were then replaced by neutral labels by a single mechanical substitution
 that preserves every field width; nothing else was edited.
 
-  v30-ay-tone.wav.gz     v30 (a MAME build carrying its driver), 60 frames run, then a Lua
+  v30-ay-tone-wav.gz     v30 (a MAME build carrying its driver), 60 frames run, then a Lua
                             chunk pinning the AY's tone A at period 0x40, volume 15, the other
                             channels and the noise off (a write tap substituting the pinned value
                             for whatever the game writes to registers 0, 1, 7 and 8, plus a write
                             of each every frame), then `audio_record(frames=30)`. Its `begin` and
                             `end` marks are in marks.json, as error.log held them.
-  v30-plain.wav.gz       the same board and run with no poke: the attract's own sound,
+  v30-plain-wav.gz       the same board and run with no poke: the attract's own sound,
                             `audio_record(frames=30)`.
-  v30-closed-empty.wav.gz  `start_recording` then `stop_recording` in one chunk: the header of
+  v30-closed-empty-wav.gz  `start_recording` then `stop_recording` in one chunk: the header of
                             a file that never received a mixer update.
-  v30-unfinished.wav.gz  a copy taken 5 frames into a recording still open: MAME writes both
+  v30-unfinished-wav.gz  a copy taken 5 frames into a recording still open: MAME writes both
                             sizes only when it closes the file.
-  m68k-dual-stereo.wav.gz    m68k-dual, a 7-frame recording made before the tool
+  m68k-dual-stereo-wav.gz    m68k-dual, a 7-frame recording made before the tool
                             existed, by a draft of its script that printed the marks' times to
                             nine decimals (as marks.json holds them): its speaker has two
                             inputs.
 
 Files:
   PROVENANCE.txt
-  v30-ay-tone.wav.gz
-  v30-closed-empty.wav.gz
-  v30-plain.wav.gz
-  v30-unfinished.wav.gz
+  v30-ay-tone-wav.gz
+  v30-closed-empty-wav.gz
+  v30-plain-wav.gz
+  v30-unfinished-wav.gz
   marks.json
-  m68k-dual-stereo.wav.gz
+  m68k-dual-stereo-wav.gz

@@ -48,7 +48,7 @@ def scratch() -> Path:
 
 
 def dump(name: str) -> bytes:
-    return gzip.decompress((FIXTURES / f"{name}.bin.gz").read_bytes())
+    return gzip.decompress((FIXTURES / f"{name}-bin.gz").read_bytes())
 
 
 class Board(_ConsoleSession):
@@ -58,7 +58,7 @@ class Board(_ConsoleSession):
     that moved the machine would raise."""
 
     def __init__(self, base: int, memory: bytes, order: str = "little") -> None:
-        super().__init__(b"", replies={"cpulist": captured("cpulist.main-visible.txt"),
+        super().__init__(b"", replies={"cpulist": captured("cpulist-main-visible.txt"),
                                        "save": self._save})
         self.base, self.memory, self.order = base, bytearray(memory), order
         self.threads = {1: ":maincpu", 2: ":subcpu"}
@@ -106,10 +106,10 @@ def survivors() -> set[tuple[int, int]]:
 
 def rows_of(name: str) -> tuple[int, str] | set[tuple[int, int]]:
     """MAME's list: the rows, or, above the size kept whole, their count and sha256."""
-    if (FIXTURES / f"{name}.rows.gz").is_file():
-        text = gzip.decompress((FIXTURES / f"{name}.rows.gz").read_bytes()).decode()
+    if (FIXTURES / f"{name}-rows.gz").is_file():
+        text = gzip.decompress((FIXTURES / f"{name}-rows.gz").read_bytes()).decode()
         return {(int(a, 16), int(v, 16)) for a, v in (ln.split() for ln in text.splitlines())}
-    count, digest = (FIXTURES / f"{name}.rows.sha256").read_text().split()
+    count, digest = (FIXTURES / f"{name}-rows.sha256").read_text().split()
     return int(count), digest
 
 
@@ -130,8 +130,8 @@ def not_admitted(name: str, width: str) -> set[int]:
 
 
 def cases() -> list[tuple[str, str, str]]:
-    return [tuple(re.fullmatch(r"(.+)-(u[bwd])-(.+)", f.name.split(".")[0]).groups())  # type: ignore[union-attr]
-            for f in sorted(FIXTURES.glob("*-u?-*.rows.*"))]
+    return [tuple(re.fullmatch(r"(.+)-(u[bwd])-(.+)-rows", f.name.split(".")[0]).groups())  # type: ignore[union-attr]
+            for f in sorted(FIXTURES.glob("*-u?-*-rows.*"))]
 
 
 def test_every_list_mame_captured_is_a_case() -> None:
@@ -151,7 +151,7 @@ def test_every_operator_keeps_what_mames_own_engine_keeps(
     opened = s.scan("start", ref=f"{base:#x}", length=0x10000, cell_bytes=SIZE[WIDTH_OF[width]])
     assert opened["status"] == "ok" and opened["hits_total"] == 0x10000 // CELL[width], opened
     ses.memory[:] = dump(f"{name}-stop{pair[1]}")
-    word, _, spelled = op.partition("_")
+    word, _, spelled = op.partition("-")
     gone = not_admitted(name, width)
     theirs = rows_of(f"{name}-{width}-{op}")
     if isinstance(theirs, set):
@@ -282,7 +282,7 @@ def test_a_scan_is_bound_to_its_cpu_and_survives_the_machine_until_close(
         ses = board("m68k-dual", bytes(0x100))
         ses.threads = threads
         s.scan("start", ref="0x200000", length=0x10)
-        ses.replies["cpulist"] = captured("cpulist.sub-visible.txt")
+        ses.replies["cpulist"] = captured("cpulist-sub-visible.txt")
         ses.memory[:] = bytes([7]) * 0x100
         out = s.scan("filter", operator="!")
         assert out["cpu"] == ":maincpu" and out["hits_total"] == 0x10, out
@@ -439,7 +439,7 @@ def test_a_scan_on_a_console_that_marks_no_cpu_is_refused(board: Any) -> None:
     which would read whichever cpu is visible at each filter."""
     ses = board("v30", bytes(0x100))
     ses.threads = {}
-    ses.replies["cpulist"] = captured("rpset.unknown-command.txt").replace(
+    ses.replies["cpulist"] = captured("rpset-unknown-command.txt").replace(
         "rpzzzset {1}", "cpulist")
     out = s.scan("start", ref="0x0", length=0x10)
     assert out["code"] == "unexpected_answer" and "`cpu`" in out["message"], out

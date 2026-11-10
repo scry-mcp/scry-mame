@@ -2,14 +2,14 @@ Captured live from MAME's debugger console through the server's own tools, on th
 m68k-dual, the machine stopped in the debugger, every
 answer copied verbatim out of the transcript of the run that measured MAME's comment commands.
 
-comadd.ok.txt          `debug('comadd 0x000400,"plain"')`: the console's answer to a comment added
-comadd.unbalanced.txt  `debug('comadd 0x000438,"end\"')`: a text ending in a backslash escapes the
+comadd-ok.txt          `debug('comadd 0x000400,"plain"')`: the console's answer to a comment added
+comadd-unbalanced.txt  `debug('comadd 0x000438,"end\"')`: a text ending in a backslash escapes the
                        closing quote, and the console refuses the line
-comdelete.ok.txt       `debug("comdelete 0x200000")`: the answer to a delete, whether or not it
+comdelete-ok.txt       `debug("comdelete 0x200000")`: the answer to a delete, whether or not it
                        removed anything (the bytes there had changed: nothing was)
-dasm.commented.txt     `disassemble(ref="000400", length=2)` after `comadd 0x000400,"plain"`: the
+dasm-commented.txt     `disassemble(ref="000400", length=2)` after `comadd 0x000400,"plain"`: the
                        line MAME writes for a commented address
-dasm.uncommented.txt   `disassemble(ref="200000", length=2)` after the comment there was deleted
+dasm-uncommented.txt   `disassemble(ref="200000", length=2)` after the comment there was deleted
 
 The doubles in test_comments.py answer with these bytes; a change in MAME's output is
 re-captured here, never patched in the fixture.

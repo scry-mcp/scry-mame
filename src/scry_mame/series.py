@@ -69,7 +69,7 @@ def check_series_capture(at_frames: list[int] | None = None, first: int | None =
         judges.rect("crop", crop)
     vocab.check_wait(seconds)
     if dest:
-        inputs.fresh_dest("dest", dest)
+        inputs.fresh_folder("dest", dest)
 
 
 ARM_LUA = """MCP_SERIES = MCP_SERIES or {}
@@ -167,8 +167,8 @@ def series_capture(ses: gs.Session, scratch: Path, at_frames: list[int] | None, 
     if wanted[0] <= now:
         raise st.Invalid("bad_argument", f"frame {wanted[0]} is not ahead of the machine, which "
                          f"is at frame {now}: a series records frames still to come")
-    folder = fresh.directory(inputs.optional_dest(dest), scratch / "series",
-                             lambda n: f"series-{n}", "the series")
+    folder = fresh.directory(inputs.fresh_folder("dest", dest) if dest else None,
+                             scratch / "series", lambda n: f"series-{n}", "the series")
     with fresh.taken_back(folder):
         script = arm_script(folder, at_frames, first, last, step, wanted)
         reply = _captured(ses, scratch, folder, bool(dest), wanted, crop, script, seconds,

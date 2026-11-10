@@ -19,9 +19,8 @@ from scry_mame import (
 
 def test_a_state_name_never_starts_with_a_dash() -> None:
     """It is one console parameter, and a leading dash reads as an option."""
-    with pytest.raises(Invalid, match="never starting with `-`"):
-        savestates.check_state_name("-x")
-    savestates.check_state_name("_save")
+    assert savestates.check_state_name("-x") == "x"
+    assert savestates.check_state_name("_save") == "save"
 
 
 def test_a_types_file_an_editor_marked_with_a_bom_reads_its_first_name(tmp_path: Path) -> None:

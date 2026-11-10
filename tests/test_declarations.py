@@ -189,7 +189,7 @@ def test_start_opens_the_store_keyed_by_system_and_symbol_file(
         if command.startswith("bp "):
             addr = int(command.split()[1].split(":", 1)[0], 16)
             rows[0] = f"Device ':maincpu' breakpoints:\n    1 @ {addr:06X}\n\n"
-            return captured("bpset.set.txt")
+            return captured("bpset-set.txt")
         return "No watchpoints currently installed\n\n"
 
     monkeypatch.setattr(ses, "monitor", monitor)
@@ -306,7 +306,7 @@ def test_breakpoint_clear_by_ref_disarms_and_drops_the_declaration(
     s.breakpoint_at(ref="0x4a0")
     real = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda command, timeout=10.0: (
-        captured("bpclear.cleared.txt").replace(" 1 ", " 3 ") if command.startswith("bpclear ")
+        captured("bpclear-cleared.txt").replace(" 1 ", " 3 ") if command.startswith("bpclear ")
         else real(command, timeout)))
     kept = s.declaration_clear("breakpoint", all=True)
     assert kept["declarations_cleared"] == 1 and kept["disarmed"] == []
@@ -537,7 +537,7 @@ def test_a_refused_re_declaration_leaves_the_store_file_as_it_was(
         assert ses is not None
         taken = ses.monitor
         monkeypatch.setattr(ses, "monitor", lambda c, timeout=10.0: (
-            captured("print.braces.malformed.txt") if c.startswith("print {")
+            captured("print-braces-malformed.txt") if c.startswith("print {")
             else taken(c, timeout)))
         refused("did not evaluate", s.breakpoint_at(ref="irq_vblank",
                                                     condition="w@frame_lo==0x25"))

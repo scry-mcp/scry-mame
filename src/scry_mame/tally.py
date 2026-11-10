@@ -27,7 +27,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from scry_core import bus_writes, prose
+from scry_core import bus_writes, file_names, prose
 
 from scry_mame import callbacks, read, transport
 from scry_mame import declarations as dec
@@ -49,15 +49,16 @@ _PC = re.compile(r"^p ([0-9a-f]+) (\d+)$")
 
 
 def id_for(cpu: str | None, addr: int, width: int, space: str = "program") -> str:
-    """The `tally_id` of a range on its cpu and space, also the dump's file name (hence no
-    colons in a cpu tag); the first cpu's id is the range alone, and a space other than
-    the program's is suffixed (`@io`)."""
+    """The `tally_id` of a range on its cpu and space, whose words name the dump's file; the
+    first cpu's id is the range alone, and a space other than the program's is suffixed
+    (`@io`)."""
     tag = "" if cpu in (None, STATE.first_cpu) else "_" + str(cpu).strip(":").replace(":", ".")
     return f"{addr:x}_{width}{tag}{mspace.suffix(space)}"
 
 
 def dump_path(scratch: Path, tally_id: str) -> Path:
-    return scratch / f"tally-{tally_id}.txt"
+    return scratch / file_names.name("tally", file_names.word(tally_id, "tally_id"),
+                                     extension="txt")
 
 
 def install_script(tally_id: str, addr: int, width: int, path: Path,

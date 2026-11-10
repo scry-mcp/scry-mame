@@ -238,7 +238,7 @@ def check_gfx_film(trigger: str = "", length: int = 1, value: int | None = None,
     if crop is not None and not inputs.is_rectangle(crop):
         raise st.Invalid("bad_argument", f"crop={crop!r} is [x, y, width, height] with a width "
                          "and a height above zero")
-    return inputs.fresh_dest("film_dir", film_dir) if film_dir else None
+    return inputs.fresh_folder("film_dir", film_dir) if film_dir else None
 
 
 # ------------------------------------------------------------------ arming

@@ -56,7 +56,7 @@ def state_list() -> dict[str, Any]:
     folder = _state_dir()
     states: list[dict[str, Any]] = []
     for path in sorted(folder.glob("*.sta")) if folder.is_dir() else []:
-        why = state_files.not_a_state(path)
+        why = state_files.not_a_state(path) or state_files.kept_under_another_name(path)
         if why is not None:
             gone = unavailable(why)
             states.append({"name": path.stem, "path": str(path), "bytes": gone, "frame": gone,
@@ -76,8 +76,8 @@ def state_list() -> dict[str, Any]:
     return menvelope.envelope({"state_dir": str(folder), "states": states})
 
 
-def check_state_name(name: str, **_: Any) -> None:
-    state_files.check_state_name(name, "a file name the console takes as one parameter")
+def check_state_name(name: str, **_: Any) -> str:
+    return state_files.check_state_name(name, "a file name the console takes as one parameter")
 
 
 def _header(path: Path) -> bytes:
@@ -108,7 +108,7 @@ def save_state(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     """The body of the `state_write(method="save")` tool: `statesave`, then the file checked for
     MAME's header. A held save is completed by one instruction (`complete_held`) and the reply
     says so. The frame, pc and register blocks are kept to judge a later load."""
-    check_state_name(name)
+    name = check_state_name(name)
     path = _state_file(name)
     if os.path.lexists(path):
         raise st.Invalid("bad_argument", f"a state named {name!r} already exists at "
@@ -144,7 +144,7 @@ def load_state(ses: gs.Session, scratch: Path, name: str) -> dict[str, Any]:
     """The body of the `state_write(method="load")` tool: `stateload`, which replaces the
     machine, then the stop surveyed, the ROM rechecked and the load judged (`_judged`) against
     the save: `verified`, unavailable with why, or a refusal."""
-    check_state_name(name)
+    name = check_state_name(name)
     path = _state_file(name)
     why = state_files.not_a_state(path)
     if why is not None:

@@ -197,7 +197,7 @@ def _cleared_but_listed(monkeypatch: pytest.MonkeyPatch, ses: Any) -> Any:
     def monitor(command: str, timeout: float = 10.0) -> str:
         if command.startswith("bpclear "):
             ses.commands.append(command)
-            return captured("bpclear.cleared.txt").replace(
+            return captured("bpclear-cleared.txt").replace(
                 " 1 ", f" {int(command[8:], 16):X} ")
         return str(real(command, timeout))
 
@@ -334,7 +334,7 @@ def test_clearing_one_unresolved_regpoint_leaves_the_other_unresolved(
     ses = _running(monkeypatch, tmp_path)
     for condition in ("d0==Gone_A", "d0==Gone_B"):
         arming.store().add(dec.Declaration("regpoint", "expr", condition, origin="s0"))
-        ses.rp_errors[condition] = captured("print.braces.unknown-symbol.txt")
+        ses.rp_errors[condition] = captured("print-braces-unknown-symbol.txt")
     out: dict[str, list[object]] = {"rearmed": [], "unresolved": [], "unarmable": []}
     regpoints.rearm(ses, out)  # type: ignore[arg-type]
     assert refs(out["unresolved"]) == ["d0==Gone_A", "d0==Gone_B"]
@@ -351,7 +351,7 @@ def test_a_regpoint_the_console_will_not_take_removes_only_itself(
     s.regpoint_add(condition="d0==1")
     taken = ses.monitor
     monkeypatch.setattr(ses, "monitor", lambda c, timeout=10.0: (
-        captured("rpset.unknown-command.txt") if c.startswith("rpset ") else taken(c, timeout)))
+        captured("rpset-unknown-command.txt") if c.startswith("rpset ") else taken(c, timeout)))
     ses.exprs["d1==2"] = 0
     assert s.watch_add(ref="d1==2", mode="expr")["status"] == "ok"
     assert s.regpoint_add(condition="d1==2")["code"] == "no_channel"

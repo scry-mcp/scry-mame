@@ -326,7 +326,10 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
     assert "statesave live" in ses.commands
     assert out["session"]["altered"] is False
     refused("already exists", s.state_write("save", name="live"))
-    refused("letters, digits", s.state_write("save", name="a b"))
+    boss = s.state_write("save", name="Boss_1")
+    assert boss["name"] == "boss-1" and Path(boss["path"]).name == "boss-1.sta", boss
+    refused("already exists", s.state_write("save", name="boss-1"))
+    refused("no letter or digit", s.state_write("save", name="_ _"))
     # THE MACHINE MOVES before the load, so the comparison after it can prove one.
     ses.stale_after_load = True
     ses.saved_frames["live"] = ses.frame
@@ -351,6 +354,9 @@ def test_state_save_checks_the_header_and_state_load_judges_it_before_the_consol
         "stateload live")
     out = refused("no state named", s.state_write("load", name="nope"))
     assert out["code"] == "unknown_ref" and "`state_list` names the ones held" in out["message"]
+    ses.saved_frames["boss-1"] = ses.frame
+    assert s.state_write("load", name="boss-1")["name"] == "boss-1", "saved as Boss_1"
+    assert s.state_write("load", name="BOSS 1")["name"] == "boss-1", "one state, any spelling"
 
 
 def test_state_load_hands_the_stop_no_field_the_survey_also_writes(

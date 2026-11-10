@@ -46,6 +46,8 @@ import os
 from pathlib import Path
 from typing import Any
 
+from scry_core import file_names
+
 from scry_mame import callbacks, capture, evidence, inputs, manifest
 from scry_mame import correlate as corr
 from scry_mame import envelope as menvelope
@@ -84,14 +86,12 @@ Key = tuple[Any, ...]
 # ------------------------------------------------------------------ the arguments
 
 def report_path(dest: Path) -> Path:
-    return dest.with_name(dest.name[:-len(".yaml")] + ".report.json")
+    return dest.with_name(file_names.name(dest.stem, "report", extension="json"))
 
 
 def check_gfx_draft(dest: str = "", choose: Any = None, **_: Any) -> None:
     """`gfx_draft`'s machine-independent half: the paths' shape and the choice's."""
-    if dest:
-        inputs.writable_path("dest", dest)
-    if dest and not dest.endswith(".yaml"):
+    if dest and inputs.writable_path("dest", dest).suffix != ".yaml":
         raise st.Invalid("bad_argument", f"dest={dest!r}: a `.yaml` file, or empty for the "
                          "scratch's")
     if choose is None:

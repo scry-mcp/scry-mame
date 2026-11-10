@@ -14,7 +14,7 @@ from test_cpu_focus import _patched  # noqa: E402
 from scry_mame import console  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 
-REGISTERED = Path(__file__).resolve().parent / "fixtures" / "console" / "commands.registered.txt"
+REGISTERED = Path(__file__).resolve().parent / "fixtures" / "console" / "commands-registered.txt"
 
 
 def _registered() -> dict[str, tuple[int, str]]:

@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, NoReturn
 
+from scry_core import file_names
 from scry_core import progress as mprogress
 
 from scry_mame import gdb_session as gs
@@ -32,7 +33,7 @@ def run(ses: gs.Session, scratch: Path, script: str, seconds: float, progress: m
 
 def next_file(scratch: Path, stem: str) -> Path:
     """The next chunk's file, named by the console call number `send` is about to take."""
-    return scratch / f"{stem}-{STATE.lua_seq + 1}.bin"
+    return scratch / file_names.name(stem, STATE.lua_seq + 1, extension="bin")
 
 
 def no_line(what: str, text: str, common: dict[str, Any]) -> NoReturn:

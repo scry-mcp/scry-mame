@@ -1763,9 +1763,9 @@ def state_list() -> dict[str, Any]:
                                                              folds.STATE_METHODS))
 def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
                 name: str) -> dict[str, Any]:
-    """Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..{STATE_NAME_MAX}
-    characters) through the debugger console. `method`: `save` or `load`, the only two it takes.
-    Needs the machine stopped.
+    """Save or load a savestate `name`, kept as a file name is (`Boss_1` is `boss-1`, at most
+    {STATE_NAME_MAX} characters), through the debugger console. `method`: `save` or `load`, the
+    only two it takes. Needs the machine stopped.
 
     `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
     `errorlog`, `held`, `stop_seq` (held for a timer).
@@ -1776,7 +1776,7 @@ def state_write(method: Annotated[str, vocab.enum(tuple(folds.STATE_METHODS))],
     survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `instruction`, `following`,
     `errorlog`, `watches`, `watch_hit`, `regpoint_hit`).
 
-    Refused: a name of another shape; `load` of a `.sta` that is no regular file
+    Refused: a name with no letter or digit; `load` of a `.sta` that is no regular file
     (`unknown_ref`).
 
     Reference: REFERENCE.md, Saved states.

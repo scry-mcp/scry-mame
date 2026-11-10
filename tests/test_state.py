@@ -169,7 +169,7 @@ def test_a_fresh_session_reads_the_emulator_log_from_its_first_byte(tmp_path: Pa
     """The first survey after `start` reads `error.log` from the mark a fresh session holds:
     anything but the file's start loses the head of MAME's first line (captured: a byte-order
     mark, then `Soft reset`)."""
-    start = (Path(__file__).parent / "fixtures" / "console" / "errorlog.start.txt").read_bytes()
+    start = (Path(__file__).parent / "fixtures" / "console" / "errorlog-start.txt").read_bytes()
     files.log_path(tmp_path, "emulator").write_bytes(start)
     lines, mark = files.errorlog_since(tmp_path, mstate.State().errorlog_mark)
     assert [line.lstrip("\ufeff") for line in lines] == ["Soft reset"] and mark == len(start)

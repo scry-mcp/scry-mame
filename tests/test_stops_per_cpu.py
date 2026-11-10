@@ -161,7 +161,7 @@ def test_a_row_typed_on_the_sub_cpu_at_a_main_cpu_rows_address_names_its_own_sto
     s.debug(command="bp 4a0:subcpu")
     s.resume()
     ses.visible_cpu = ":subcpu"
-    # captured shape (`debuglog.subcpu-bp.resume.txt`): the emulated time, then the line
+    # captured shape (`debuglog-subcpu-bp-resume.txt`): the emulated time, then the line
     (tmp_path / "debug.log").open("a").write("1.218048312\nStopped at breakpoint 2\n4A0\n")
     ses.stops_after_polls = 1
     found = s.status()["stopped_on_its_own"]

@@ -322,7 +322,7 @@ def test_a_rewind_mame_refused_leaves_the_next_runs_cycles_counted(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A refused rewind replaced nothing; the control is the same line answered with nothing."""
-    refused_answer = (FIXTURES / "rewind.refused.txt").read_text()
+    refused_answer = (FIXTURES / "rewind-refused.txt").read_text()
     for line, answer, withheld in (("rewind", refused_answer, False), ("rw", refused_answer, False),
                                    ("rewind", "", True)):
         (tmp_path / f"{line}{withheld}").mkdir()
@@ -343,7 +343,7 @@ def test_a_rewind_mame_refused_leaves_the_next_runs_cycles_counted(
 
 def test_a_line_of_a_refused_rewind_and_another_stale_command_stays_marked() -> None:
     from scry_mame import console
-    refused_answer = (FIXTURES / "rewind.refused.txt").read_text()
+    refused_answer = (FIXTURES / "rewind-refused.txt").read_text()
     assert console.refused_rewind(["rewind"], refused_answer)
     assert not console.refused_rewind(["stateload c1", "rewind"], refused_answer)
     assert not console.refused_rewind(["rewind", "rewind"], refused_answer)

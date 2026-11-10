@@ -75,7 +75,7 @@ def _never_spawns(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
 
 
 
-# The debugger's banner as `tests/fixtures/console/session.volume.stdout` captured it.
+# The debugger's banner as `tests/fixtures/console/session-volume.stdout` captured it.
 BANNER_LINE = launch.DEBUGGER_BANNER + "m68k-dual (m68k-dual)\n"
 
 
@@ -170,7 +170,7 @@ class _FakeSession(SessionFields):
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         """`map` as the console answers it."""
         if command == "cpulist":
-            return captured("cpulist.main-visible.txt")
+            return captured("cpulist-main-visible.txt")
         assert command.startswith("map "), f"this double's console answers only `map`: {command}"
         return MAP_RAM if self.writable else MAP_ROM
 
@@ -323,7 +323,7 @@ FIXTURES = Path(__file__).parent / "fixtures" / "console"
 
 def _first_window(answer: str) -> Callable[[str], str]:
     """A console that holds `answer`'s hits in the window starting at zero and none after it."""
-    none = (FIXTURES / "find.none.txt").read_text()
+    none = (FIXTURES / "find-none.txt").read_text()
     return lambda cmd: answer if cmd.split()[1].startswith("0x0,") else none
 
 
@@ -333,9 +333,9 @@ def _listing_pair(scratch: Path, name: str) -> Callable[[str], str]:
     def dasm(command: str) -> str:
         file, _addr, _length, *rest = command[len("dasm "):].split(",")
         bare = bool(rest) and rest[0] == "0"
-        (scratch / file).write_bytes((FIXTURES / f"{name}{'.bare' if bare else ''}.txt")
+        (scratch / file).write_bytes((FIXTURES / f"{name}{'-bare' if bare else ''}.txt")
                                      .read_bytes())
-        return (FIXTURES / "dasm.reply.txt").read_text()
+        return (FIXTURES / "dasm-reply.txt").read_text()
     return dasm
 
 
@@ -587,8 +587,8 @@ MACHINE_INDEPENDENT: dict[str, Any] = {
     "resume-ceiling": lambda: s.resume(seconds=1e9),
     "rom_check-addr": lambda: s.rom_check(reference_rom=_abs("nope"), reference_addr="zz"),
     "rom_check-file": lambda: s.rom_check(reference_rom=str(_FRESH / "rom.bin")),
-    "state_write save-name": lambda: s.state_write("save", name="../x"),
-    "state_write load-name": lambda: s.state_write("load", name="../x"),
+    "state_write save-name": lambda: s.state_write("save", name="../"),
+    "state_write load-name": lambda: s.state_write("load", name="../"),
     "perform-a-snapshot-step's-dest": lambda: s.perform(
         steps=[{"op": "status"}, {"op": "snapshot", "dest": "relative.png"}]),
     "perform-a-lua-step's-script": lambda: s.perform(

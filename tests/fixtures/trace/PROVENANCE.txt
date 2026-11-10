@@ -6,9 +6,9 @@ fresh with a new empty state directory and run at least 600 frames before the wi
 Program and board names were then replaced by neutral labels by a single mechanical substitution
 that preserves every field width; nothing else was edited.
 
-  m68k-dual-maincpu-2f.trace.gz  m68k-dual (its own build), :maincpu, 68000
+  m68k-dual-maincpu-2f-trace.gz  m68k-dual (its own build), :maincpu, 68000
   m68k-dual-subcpu-2f.trace      m68k-dual, :subcpu, 68000 (four lines)
-  v30-alt-2f.trace.gz            v30-alt (its own build), :maincpu, V30
+  v30-alt-2f-trace.gz            v30-alt (its own build), :maincpu, V30
   circus-2f.trace               circus (stock MAME, debug build), :maincpu, 6502
   m68k-dual-maincpu-parked-step3.trace  m68k-dual :maincpu, armed at the stop `start` parks
       the machine on (pc 0xf2034, from `history`), then `step(count=3)`: the file holds the

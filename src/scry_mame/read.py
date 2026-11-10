@@ -192,7 +192,7 @@ def dasm_lines(ses: gs.Session, scratch: Path, addr: int, length: int,
 
     A `SessionError` when no listing came out. `opcodes` is spelled out when a cpu follows it or
     it is off, else left to `dasm`'s default of 1."""
-    listing = scratch / ("dasm.txt" if opcodes else "dasm.bare.txt")
+    listing = scratch / ("dasm.txt" if opcodes else "dasm-bare.txt")
     listing.unlink(missing_ok=True)
     flag = "1" if opcodes else "0"
     named = f",{flag},{cpu}" if cpu else ("" if opcodes else ",0")

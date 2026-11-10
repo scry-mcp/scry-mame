@@ -32,6 +32,7 @@ from matrix_removals import (
 )
 from reader_fault import reader_fault, reader_fault_counts
 
+from scry_mame import tally as mtally
 from scry_mame import transport
 
 # A bool is an `int` to Python, and a client's schema refuses it before any tool runs, so only a
@@ -122,7 +123,7 @@ def _k_circus(_cells: list[str]) -> None:
     call("run_for", frames=3, seconds=5.0)
     call("throttle", on=False)
     call("step")
-    planted = reader_fault(f"tally-{_tally_id('0x20', 1)}.txt", lag=2)
+    planted = reader_fault(mtally.dump_path(Path(), str(_tally_id('0x20', 1))).name, lag=2)
     adds = [call("watch_add", ref=ref, mode="count", length=1)
             for ref in ("0x20", "0x36", "0x1f", "0x1b")]
     ran = call("run_for", frames=1, seconds=5.0)
@@ -194,7 +195,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
         return w.get("installed", bool(w)), w.get("state"), w.get("install_resent", 0)
 
     def fault(ref: str, **how: Any) -> bool:
-        planted = reader_fault(f"tally-{tid(ref)}.txt", **how)
+        planted = reader_fault(mtally.dump_path(Path(), str(tid(ref))).name, **how)
         return ok(planted) and "planted" in str(planted.get("output"))
 
     def lost() -> Any:
@@ -225,7 +226,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
     fired = reader_fault_counts()[0]
     # The plant's own echo travels split, so only a real death carries the line whole.
     after_add = log()[mark:]
-    at = after_add.find(f"tally-{tid(refs[1])}.txt".encode())
+    at = after_add.find(mtally.dump_path(Path(), str(tid(refs[1]))).name.encode())
     died = at >= 0 and b"[LUA ERROR] in thread: killed" in after_add[at:]
     cell_if_planted(t[0], planted, control["mine"] and control.get("lines_ahead") == 0
           and ctl == (True, "tallied", 0) and added["mine"] and fired == 1 and died,
@@ -258,7 +259,7 @@ def _k_resend(t: list[str], refs: tuple[str, ...], length: int) -> None:
     fired = reader_fault_counts()[0]
     # Silent: nothing between the echo and the next prompt.
     tail = log()[mark:]
-    echo = tail.find(f"tally-{tid(refs[3])}.txt".encode())
+    echo = tail.find(mtally.dump_path(Path(), str(tid(refs[3]))).name.encode())
     gap = tail[echo:tail.find(transport.CONSOLE_PROMPT, echo)] if echo >= 0 else b""
     silent = echo >= 0 and transport.CONSOLE_PROMPT in tail[echo:] and b"[LUA ERROR]" not in gap \
         and b"error:" not in gap

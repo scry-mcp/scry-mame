@@ -26,15 +26,15 @@ R_ABS = "must be an absolute path"
 
 FIXTURES = Path(__file__).parent / "fixtures"
 CONSOLE = (FIXTURES / "console.stdout").read_bytes()
-MARKS = (FIXTURES / "console.error.log").read_text().splitlines()
-AVI_HEAD = (FIXTURES / "record-30-frames.avi.head").read_bytes()
-STA_HEAD = (FIXTURES / "statesave.sta.head").read_bytes()
+MARKS = (FIXTURES / "console-error.log").read_text().splitlines()
+AVI_HEAD = (FIXTURES / "record-30-frames-avi.head").read_bytes()
+STA_HEAD = (FIXTURES / "statesave-sta.head").read_bytes()
 PROMPT = b"\x1b[1;36m[MAME]\x1b[0m> "
 BANNER = (b"mame 0.288\t\nCopyright (C) Nicola Salmoria and the MAME team\n\nLua 5.4\t\n"
           b"Copyright (C) Lua.org, PUC-Rio\n\n" + PROMPT
           + b"gdbstub: listening on address localhost port 23990\n")
 # Captured on m68k-dual by writing a bare `error(...)` into the pipe.
-CONSOLE_REFUSAL = (FIXTURES / "console.refused.stdout").read_bytes().split(b"\n", 1)[1].split(
+CONSOLE_REFUSAL = (FIXTURES / "console-refused.stdout").read_bytes().split(b"\n", 1)[1].split(
     PROMPT, 1)[0]
 
 
@@ -300,7 +300,7 @@ def _settles(monkeypatch: pytest.MonkeyPatch, ses: _ChannelSession) -> list[tupl
     return slept
 
 
-VOLUME = (FIXTURES / "console" / "session.volume.stdout").read_bytes()
+VOLUME = (FIXTURES / "console" / "session-volume.stdout").read_bytes()
 
 
 def _volume_line(seq: int) -> str:

@@ -1347,21 +1347,21 @@ def test_unwrap_console_rebuilds_a_row_cut_at_the_space_after_if() -> None:
     """Captured at one short of, at, and one past the console's wrap column."""
     for name, index, zeros in (("row249", 1, 224), ("row250", 2, 225), ("row251", 3, 226)):
         cond = "d0==0x" + "0" * zeros + "1"
-        text = (CONSOLE / f"bplist.{name}.txt").read_text()
+        text = (CONSOLE / f"bplist-{name}.txt").read_text()
         assert g.unwrap_console(text, ROW_START) == [
             "Device ':maincpu' breakpoints:", f"    {index} @ 000400 if {cond}"], name
         assert len(f"    {index} @ 000400 if {cond}") == int(name[3:]), "the fixture's own size"
 
 
 def test_unwrap_console_joins_a_hard_cut_with_nothing_and_a_space_cut_with_a_space() -> None:
-    text = (CONSOLE / "bplist.at-limit.txt").read_text()
+    text = (CONSOLE / "bplist-at-limit.txt").read_text()
     pieces = [p for p in text.split("\n") if p]
     assert any(len(p) == g.CONSOLE_WRAP_COLS for p in pieces), "the capture holds hard cuts"
     lines = g.unwrap_console(text, ROW_START)
     assert lines == ["Device ':maincpu' breakpoints:", "    4 @ 000400 if " + "".join(pieces[2:])]
-    early = g.unwrap_console((CONSOLE / "bplist.space-early.txt").read_text(), ROW_START)
+    early = g.unwrap_console((CONSOLE / "bplist-space-early.txt").read_text(), ROW_START)
     assert _zeros_cond(early[1]) == "d0==0x1 || d1==0x" + "0" * 300 + "1"
-    late = g.unwrap_console((CONSOLE / "bplist.space-late.txt").read_text(), ROW_START)
+    late = g.unwrap_console((CONSOLE / "bplist-space-late.txt").read_text(), ROW_START)
     assert _zeros_cond(late[1]) == "d0==0x" + "0" * 220 + "1 || d1==0x1"
 
 
@@ -1663,8 +1663,8 @@ def _two_cpus_on(wire: _ByteWire) -> g.Session:
 
 def test_each_threads_registers_are_cut_by_its_own_description() -> None:
     """KNOWN ANSWER, m68k-dual on the patched stub."""
-    xml2 = (TWO_CPUS / "target.thread2.xml").read_text()
-    g1, g2 = ((TWO_CPUS / f"g.thread{t}.reply").read_text() for t in (1, 2))
+    xml2 = (TWO_CPUS / "target-thread2.xml").read_text()
+    g1, g2 = ((TWO_CPUS / f"g-thread{t}.reply").read_text() for t in (1, 2))
     ses, wire = _wired(["l" + (TWO_CPUS / "target.xml").read_text(), g1,
                         "OK", "l" + xml2, g2, g2])
     ses.threads = {1: ":maincpu", 2: ":subcpu"}

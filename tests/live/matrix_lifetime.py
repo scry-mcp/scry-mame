@@ -362,7 +362,7 @@ def _p_promote(t: list[str]) -> None:
     created = (store / ".scry").exists()
     written = call("promote", entries=["maps/radendur", "start/radendur"], root=str(store))
     read = call("screen_map_write", method="load",
-                path=str(store / ".scry" / "maps" / "radendur.screen-map.json"))
+                path=str(store / ".scry" / "maps" / "radendur-screen-map.json"))
     closed = call("close")
     cell(t[10], ok(r) and ok(added) and ok(reviewed)
          and found.get("maps/radendur") == "new" and found.get("start/radendur") == "new"

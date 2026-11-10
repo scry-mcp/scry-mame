@@ -86,13 +86,13 @@ class _Regions:
             length = _SIZE - offset
         if verb == "saver":
             path.write_bytes(bytes(self.store[tag][offset:offset + length]))
-            return captured("saver.saved.txt")
+            return captured("saver-saved.txt")
         data = path.read_bytes()[:length]
         self.store[tag][offset:offset + len(data)] = data
         if self.drop:
             self.ses.broken = "the request ran out"
             raise gs.SessionError("no answer to the console request")
-        return captured("loadr.loaded.txt").replace(
+        return captured("loadr-loaded.txt").replace(
             "0x7B8 to 0x7B9", f"0x{offset:X} to 0x{offset + len(data) - 1:X}")
 
 
@@ -227,12 +227,12 @@ def test_a_scratch_path_the_console_would_split_is_refused_before_saver(
 
 
 @pytest.mark.parametrize(("verb", "answer", "altered"), [
-    ("saver", captured("saver.invalid-offset.txt"), False),
-    ("saver", captured("saver.unknown-region.txt"), False),
-    ("saver", captured("saver.unwritable.txt"), False),
-    ("loadr", captured("loadr.short-file.txt"), True),
-    ("loadr", captured("loadr.invalid-offset.txt"), True),
-    ("loadr", captured("loadr.unknown-region.txt"), True),
+    ("saver", captured("saver-invalid-offset.txt"), False),
+    ("saver", captured("saver-unknown-region.txt"), False),
+    ("saver", captured("saver-unwritable.txt"), False),
+    ("loadr", captured("loadr-short-file.txt"), True),
+    ("loadr", captured("loadr-invalid-offset.txt"), True),
+    ("loadr", captured("loadr-unknown-region.txt"), True),
 ], ids=["saver-offset", "saver-region", "saver-unwritable", "loadr-short", "loadr-offset",
         "loadr-region"])
 def test_a_region_command_that_does_not_answer_its_success_is_unexpected(

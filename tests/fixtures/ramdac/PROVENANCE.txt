@@ -6,12 +6,12 @@ that preserves every field width; nothing else was edited.
 
 v30-alt-*   v30-alt (a MAME build carrying its driver, V30), the `latch` entry
            of v30-alt-palette.yaml, data port 0x8 and index port 0xa in the io space.
-           v30-alt-dump.txt.gz   the dump the log's dumper wrote at that stop
+           v30-alt-dump-txt.gz   the dump the log's dumper wrote at that stop
            v30-alt-palette.json  `palette`'s `colors` for pens 0..1023, four pages joined
 v30-*   v30 (a MAME build carrying its driver, V30), the `sequence` entry
            of v30-palette.yaml, data port 0x6 and reset port 0xe in the io space, armed
            where `start` parked, so the offset the driver zeroes as its video starts is known.
-           v30-dump.txt.gz   the dump, as above
+           v30-dump-txt.gz   the dump, as above
            v30-palette.json  `palette`'s `colors` for pens 0..255
 *-palette.yaml   the entries the logs were armed from, read from each driver's source.
 

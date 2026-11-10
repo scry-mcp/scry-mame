@@ -106,16 +106,16 @@ class _WatchSession(_RunningSession):
                 self.watchpoint(addr, length, cpu=armed.group(2), cond=armed.group(4))
             else:
                 self.watchpoint(addr, length, cpu=armed.group(2))
-            return captured("wpset.set.txt").replace("Watchpoint 1 ", f"Watchpoint {index:X} ")
+            return captured("wpset-set.txt").replace("Watchpoint 1 ", f"Watchpoint {index:X} ")
         if command.startswith("wpclear "):
             self.commands.append(command)
             index = int(command[8:], 16)
             row = next((r for r in self.wplist_rows if row_index(r) == index), None)
             if row is None:
-                return captured("wpclear.invalid.txt").replace(" 9\n", f" {index:X}\n")
+                return captured("wpclear-invalid.txt").replace(" 9\n", f" {index:X}\n")
             lo, hi = (int(x, 16) for x in row.split(" @ ", 1)[1].split()[0].split("-"))
             self.watchpoint(lo, hi - lo + 1, remove=True, index=index)
-            return captured("wpclear.cleared.txt").replace("Watchpoint 1 ",
+            return captured("wpclear-cleared.txt").replace("Watchpoint 1 ",
                                                            f"Watchpoint {index:X} ")
         if command.startswith("map ") or command == "wplist":
             self.commands.append(command)
@@ -129,7 +129,7 @@ class _WatchSession(_RunningSession):
         if command.startswith("wplist :"):
             self.commands.append(command)
             return one_cpus_list(self.wplist_rows, getattr(self, "wp_devices", None),
-                                 command.split()[1], wplist_answer, "wplist.sub-none.txt")
+                                 command.split()[1], wplist_answer, "wplist-sub-none.txt")
         return super().monitor(command, timeout)
 
 
@@ -662,10 +662,10 @@ def test_a_watch_stop_by_a_row_this_server_did_not_arm_is_named_as_foreign(
 def test_the_watchpoint_stop_line_the_doubles_author_is_the_shape_the_console_prints(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """Captured (`debuglog.foreign-wp.resume.txt`): holds the authored `STOP_LINE` to the
+    """Captured (`debuglog-foreign-wp-resume.txt`): holds the authored `STOP_LINE` to the
     printed shape."""
     ses = _watching(monkeypatch, tmp_path)
-    (tmp_path / "debug.log").write_text(captured("debuglog.foreign-wp.resume.txt"))
+    (tmp_path / "debug.log").write_text(captured("debuglog-foreign-wp-resume.txt"))
     found = watches.watch_stop(ses, arming.debuglog_since(tmp_path))  # type: ignore[arg-type]
     assert found is not None and found[0] == (
         "watch 1 at 0x002031fc this server did not arm, wrote 00 by pc 0x000025f4: "
@@ -866,18 +866,18 @@ CONSOLE = Path(__file__).parent / "fixtures" / "console"
 
 
 def test_a_conditioned_wplist_row_keeps_its_condition_short_or_wrapped() -> None:
-    short = mlists.parse_wplist((CONSOLE / "wplist.cond-short.txt").read_text())
+    short = mlists.parse_wplist((CONSOLE / "wplist-cond-short.txt").read_text())
     assert [(r["index"], r["addr"], r["length"], r["kind"], r["condition"], r["entry"])
             for r in short] == [(1, 0x2031FC, 4, "write", "d0==1",
                                  "1 @ 2031FC-2031FF write if d0==1")]
-    wrapped = mlists.parse_wplist((CONSOLE / "wplist.cond-wrapped.txt").read_text())
+    wrapped = mlists.parse_wplist((CONSOLE / "wplist-cond-wrapped.txt").read_text())
     assert [(r["index"], r["condition"]) for r in wrapped] == [(2, "d0==0x" + "0" * 400 + "1")]
 
 
 def test_a_wplist_row_with_an_action_keeps_it_as_the_console_prints_it() -> None:
-    """Captured action row (`wplist.action.txt`): text after `do`, no condition as `1` prints no
+    """Captured action row (`wplist-action.txt`): text after `do`, no condition as `1` prints no
     `if`."""
-    assert mlists.parse_wplist((CONSOLE / "wplist.action.txt").read_text()) == [
+    assert mlists.parse_wplist((CONSOLE / "wplist-action.txt").read_text()) == [
         {"index": 1, "addr": 0x25A4, "cpu": ":maincpu", "space": "program", "length": 2,
          "kind": "write", "enabled": True, "entry": "1 @ 0025A4-0025A5 write do temp1++ ; g",
          "condition": None, "action": "temp1++ ; g"}]

@@ -48,10 +48,10 @@ from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
 # CAPTURED from a real console (`fixtures/console/PROVENANCE.txt`): the action row of
-# `bplist.action.txt`, armed with the action in braces as the documentation writes it, and
-# the conditioned rows of `bplist.by-address.txt`. Nothing here is authored.
-BPLIST_ACTION = captured("bplist.action.txt")
-BPLIST_CONDITIONED = captured("bplist.by-address.txt")
+# `bplist-action.txt`, armed with the action in braces as the documentation writes it, and
+# the conditioned rows of `bplist-by-address.txt`. Nothing here is authored.
+BPLIST_ACTION = captured("bplist-action.txt")
+BPLIST_CONDITIONED = captured("bplist-by-address.txt")
 
 
 def _controlled(monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
@@ -128,15 +128,15 @@ def _hard_cut_cond(name: str) -> str:
 
 
 def test_bplist_reads_a_wrapped_row_whole() -> None:
-    cond = _hard_cut_cond("bplist.at-limit.txt")
-    rows = mlists.parse_bplist((CONSOLE / "bplist.at-limit.txt").read_text())
+    cond = _hard_cut_cond("bplist-at-limit.txt")
+    rows = mlists.parse_bplist((CONSOLE / "bplist-at-limit.txt").read_text())
     assert [(r["index"], r["addr"], r["condition"]) for r in rows] == [(4, 0x400, cond)]
-    two = mlists.parse_bplist((CONSOLE / "bplist.two-rows.txt").read_text())
+    two = mlists.parse_bplist((CONSOLE / "bplist-two-rows.txt").read_text())
     assert [(r["index"], r["addr"], r["condition"]) for r in two] == [
         (7, 0x400, cond), (8, 0x404, "d0==1")], "the short row beside it is not dropped"
-    late = mlists.parse_bplist((CONSOLE / "bplist.space-late.txt").read_text())
+    late = mlists.parse_bplist((CONSOLE / "bplist-space-late.txt").read_text())
     assert late[0]["condition"] == "d0==0x" + "0" * 220 + "1 || d1==0x1", "the space comes back"
-    short = mlists.parse_bplist((CONSOLE / "bplist.row249.txt").read_text())
+    short = mlists.parse_bplist((CONSOLE / "bplist-row249.txt").read_text())
     assert short[0]["condition"] == "d0==0x" + "0" * 224 + "1"
 
 
@@ -280,31 +280,31 @@ def test_every_breakpoint_takes_the_doubles_one_counter(tmp_path: Path) -> None:
 def test_the_list_doubles_rebuild_the_two_device_captures_byte_for_byte() -> None:
     """The list doubles rebuild the two-device captures: one counter, a header per cpu."""
     assert bplist_answer(["    1 @ 000400", "    2 @ 0004A0 if d0==1", "    3 @ 000400"],
-                         {3: ":subcpu"}) == captured("bplist.two-devices.txt")
+                         {3: ":subcpu"}) == captured("bplist-two-devices.txt")
     assert wplist_answer(["    1 @ 203200-203201 write", "    2 @ 008000-008001 write"],
-                         {2: ":subcpu"}) == captured("wplist.two-devices.txt")
+                         {2: ":subcpu"}) == captured("wplist-two-devices.txt")
     assert bplist_answer(["    1 @ 0004A0 if (++temp0)==0", "    2 @ 000400 if temp1++"]
-                         ) == captured("bplist.by-address.txt"), "the newer row sits lower"
+                         ) == captured("bplist-by-address.txt"), "the newer row sits lower"
     ses = SimpleNamespace(bplist_rows=[], bp_next_index=1, bp_devices={3: ":subcpu"}, temps={})
     bplist_add(ses, 0x400)
     control_console(ses, "bp 4a0,d0==1")
     bplist_add(ses, 0x400)
-    assert debugger_lists(ses, "bplist") == captured("bplist.two-devices.txt")
+    assert debugger_lists(ses, "bplist") == captured("bplist-two-devices.txt")
 
 
 def test_a_listed_row_keeps_the_cpu_its_devices_header_names() -> None:
     """Only the `Device` header says whose row it is, so every row carries that cpu (and space)."""
     assert [(r["index"], r["addr"], r["cpu"]) for r in
-            mlists.parse_bplist(captured("bplist.two-devices.txt"))] == [
+            mlists.parse_bplist(captured("bplist-two-devices.txt"))] == [
         (1, 0x400, ":maincpu"), (2, 0x4A0, ":maincpu"), (3, 0x400, ":subcpu")]
     assert [(r["index"], r["addr"], r["cpu"], r["space"]) for r in
-            mlists.parse_wplist(captured("wplist.two-devices.txt"))] == [
+            mlists.parse_wplist(captured("wplist-two-devices.txt"))] == [
         (1, 0x203200, ":maincpu", "program"), (2, 0x8000, ":subcpu", "program")]
     # One cpu, one header, as every single-cpu capture prints it.
-    assert {r["cpu"] for r in mlists.parse_bplist(captured("bplist.by-address.txt"))} == {
+    assert {r["cpu"] for r in mlists.parse_bplist(captured("bplist-by-address.txt"))} == {
         ":maincpu"}
     assert {(r["cpu"], r["space"]) for r in
-            mlists.parse_wplist(captured("wplist.action.txt"))} == {(":maincpu", "program")}
+            mlists.parse_wplist(captured("wplist-action.txt"))} == {(":maincpu", "program")}
 
 
 def test_the_doubles_bpclear_reads_an_index_wider_than_four_digits() -> None:
@@ -324,7 +324,7 @@ def test_the_doubles_bpclear_answers_a_number_no_row_holds_as_the_console_does()
     """An unheld index answers `Invalid breakpoint number N`, not `cleared`."""
     ses = SimpleNamespace(bplist_rows=[], bp_next_index=1, bp_devices=None, temps={})
     bplist_add(ses, 0x400)
-    assert control_console(ses, "bpclear 7") == captured("bpclear.invalid.txt")
+    assert control_console(ses, "bpclear 7") == captured("bpclear-invalid.txt")
     assert control_console(ses, "bpclear a") == "Invalid breakpoint number A\n\n", (
         "the index spelled `%X`, as `bpset` and `bpclear` print it")
     assert [row_index(r) for r in ses.bplist_rows] == [1], "and nothing was dropped"
@@ -992,10 +992,10 @@ def test_a_condition_the_console_cannot_evaluate_is_refused_before_anything_is_s
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     ses = _controlled(monkeypatch, tmp_path)
-    ses.rp_print_errors["d1=="] = captured("print.braces.malformed.txt")
+    ses.rp_print_errors["d1=="] = captured("print-braces-malformed.txt")
     out = refused("did not evaluate `d1==`", s.breakpoint_at(ref="0x4a0", condition="d1=="))
     assert out["code"] == "bad_argument"
-    assert " ".join(captured("print.braces.malformed.txt").split()) in out["message"]
+    assert " ".join(captured("print-braces-malformed.txt").split()) in out["message"]
     assert _console_bps(ses) == [] and s.declaration_list("breakpoint")["breakpoints"] == []
     assert "print {d1==}" in ses.commands, "it was the console that judged it"
 
@@ -1012,8 +1012,8 @@ def test_a_re_arm_accounts_for_a_condition_this_build_cannot_evaluate(
     s.breakpoint_at(ref="0x4b0", condition="w@Other==1")
     s.breakpoint_at(ref="where", condition="w@Other==2")
     _new_start(monkeypatch, ses, {"OTHER": 0x203400})
-    ses.rp_errors["w@DemoLen==0x25"] = captured("print.braces.unknown-symbol.txt")
-    ses.rp_print_errors["w@0x203400==1"] = captured("print.braces.malformed.txt")
+    ses.rp_errors["w@DemoLen==0x25"] = captured("print-braces-unknown-symbol.txt")
+    ses.rp_print_errors["w@0x203400==1"] = captured("print-braces-malformed.txt")
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["unresolved"]) == ["0x4a0", "where"] and refs(out["rearmed"]) == [], out
     assert [u["ref"] for u in out["unarmable"]] == ["0x4b0"]
@@ -1032,8 +1032,8 @@ def test_a_breakpoint_whose_condition_is_unresolved_is_listed_so_until_cleared_o
     s.breakpoint_at(ref="0x4a0", condition="w@DemoLen==0x25")
     s.breakpoint_at(ref="0x4b0", condition="w@Other==1")
     _new_start(monkeypatch, ses, {"OTHER": 0x00203400})
-    ses.rp_errors["w@DemoLen==0x25"] = captured("print.braces.unknown-symbol.txt")
-    ses.rp_print_errors["w@0x203400==1"] = captured("print.braces.malformed.txt")
+    ses.rp_errors["w@DemoLen==0x25"] = captured("print-braces-unknown-symbol.txt")
+    ses.rp_print_errors["w@0x203400==1"] = captured("print-braces-malformed.txt")
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["unresolved"]) == ["0x4a0"]
     assert [u["ref"] for u in out["unarmable"]] == ["0x4b0"]
@@ -1050,7 +1050,7 @@ def test_a_breakpoint_whose_condition_is_unresolved_is_listed_so_until_cleared_o
     arming.store().discard([d for d in arming.store().declarations() if d.ref == "0x4a0"])
     _new_start(monkeypatch, ses, {"OTHER": 0x00203400})
     s.breakpoint_at(ref="0x4a0", condition="d0==1")            # the store holds 0x4b0, 0x4a0
-    ses.rp_errors["d0==1"] = captured("print.braces.unknown-symbol.txt")
+    ses.rp_errors["d0==1"] = captured("print-braces-unknown-symbol.txt")
     out = rearming.rearm_breakpoints_and_watches(ses)  # type: ignore[arg-type]
     assert refs(out["unresolved"]) == ["0x4a0"]
     del ses.rp_errors["d0==1"]
@@ -1424,8 +1424,8 @@ class _LineSession:
 
     def monitor(self, command: str, timeout: float = 10.0) -> str:
         if command in ("cpulist", "ignore"):
-            return captured("cpulist.main-visible.txt" if command == "cpulist"
-                            else "ignore.none.txt")
+            return captured("cpulist-main-visible.txt" if command == "cpulist"
+                            else "ignore-none.txt")
         return "1\n"
 
     def emulated_seconds(self) -> float:

@@ -6,7 +6,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import judges
+from scry_core import file_names, judges
 from scry_core.reply_contract import or_unavailable, unavailable
 
 from scry_mame import (
@@ -187,7 +187,7 @@ def clip_text(output: str, scratch: Path, stem: str) -> dict[str, Any]:
     the scratch (`<stem>-N.txt`) plus a preview, `output_chars` and `output_path`."""
     if len(output) <= DEBUG_MAX:
         return {"output": output, "clipped": False}
-    path = scratch / f"{stem}-{STATE.next_number('debug_dumps')}.txt"
+    path = scratch / file_names.name(stem, STATE.next_number("debug_dumps"), extension="txt")
     path.write_text(output, encoding="utf-8", newline="")    # as printed, never CRLF
     preview = output.split("\n", 1)[0][:DEBUG_PREVIEW]
     return {"output": preview + "...", "output_chars": len(output), "output_path": str(path),

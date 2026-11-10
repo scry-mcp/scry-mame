@@ -49,7 +49,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end state_list -->
 
-A `.sta` from an earlier session carries `frame` and `pc` unavailable, as `state_write(method="load")` reports it; a `.sta` that is no regular file (a link to nothing, a directory, a FIFO) also has `bytes` unavailable, its `why` saying what is there. The state folder is `sta/<system>` under the `state_dir` given to `start`, or the scratch's. It is a reading of a directory, so it answers while the machine runs.
+A `.sta` from an earlier session carries `frame` and `pc` unavailable, as `state_write(method="load")` reports it; a `.sta` that is no regular file (a link to nothing, a directory, a FIFO) also has `bytes` unavailable, its `why` saying what is there, and so does one kept under a name no `load` reads (`Boss_1.sta`, where a state is `boss-1`), its `why` saying to rename it. The state folder is `sta/<system>` under the `state_dir` given to `start`, or the scratch's. It is a reading of a directory, so it answers while the machine runs.
 
 <!-- scry-reference:begin state_write -->
 ## `state_write`
@@ -60,9 +60,9 @@ A `.sta` from an earlier session carries `frame` and `pc` unavailable, as `state
 state_write(method, name)
 ```
 
-Save or load a savestate `name` (`[A-Za-z0-9_-]`, never `-` first, 1..64
-characters) through the debugger console. `method`: `save` or `load`, the only two it takes.
-Needs the machine stopped.
+Save or load a savestate `name`, kept as a file name is (`Boss_1` is `boss-1`, at most
+64 characters), through the debugger console. `method`: `save` or `load`, the
+only two it takes. Needs the machine stopped.
 
 `save`: write it, never overwriting. Reply: `name`, `path`, `bytes`, `frame`, `pc`,
 `errorlog`, `held`, `stop_seq` (held for a timer).
@@ -73,7 +73,7 @@ Reply: `name`, `path`, `rom_check`, `verified` (true, or INVALID `readback_refus
 survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `instruction`, `following`,
 `errorlog`, `watches`, `watch_hit`, `regpoint_hit`).
 
-Refused: a name of another shape; `load` of a `.sta` that is no regular file
+Refused: a name with no letter or digit; `load` of a `.sta` that is no regular file
 (`unknown_ref`).
 
 Reference: REFERENCE.md, Saved states.

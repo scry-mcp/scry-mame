@@ -1195,7 +1195,7 @@ def test_the_batch_files_are_written_as_a_pair_or_not_at_all(
     real = sequence_account.write_jsonl
 
     def second_fails(path: Path, rows: Any) -> str:
-        if path.name.endswith(".replies.jsonl"):
+        if path.name.endswith("-replies.jsonl"):
             raise OSError("disk full")
         return str(real(path, rows))
 

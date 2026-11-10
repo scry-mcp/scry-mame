@@ -87,7 +87,7 @@ def test_two_cells_whose_labels_slug_alike_do_not_share_a_directory(tmp_path: Pa
 
 # ------------------------------------------------ the console's counts against the kept log
 
-_KEPT = (Path(__file__).parent / "fixtures" / "console" / "c3.death-and-rerun.stdout").read_bytes()
+_KEPT = (Path(__file__).parent / "fixtures" / "console" / "c3-death-and-rerun.stdout").read_bytes()
 
 
 def test_the_kept_log_of_a_death_and_a_rerun_reads_one_of_each() -> None:
@@ -143,7 +143,7 @@ def test_the_ends_are_read_in_the_order_the_console_printed_them() -> None:
 
 
 _THROTTLE_THEN_LUA = (Path(__file__).parent / "fixtures" / "console"
-                      / "c3.throttle-then-lua.stdout").read_bytes()
+                      / "c3-throttle-then-lua.stdout").read_bytes()
 
 
 def test_c3s_predicate_tells_a_line_a_console_command_ran_from_one_still_ahead() -> None:

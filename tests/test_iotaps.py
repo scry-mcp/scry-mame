@@ -1,7 +1,7 @@
 """Taps in a cpu's io space: count and capture watches whose write is an `out` to a port.
 
-The console answers a port's handlers with `mapi` (`mapi.v30-6.txt`, a port written through
-its handler; `mapi.v30-20-unmapped.txt`, one nothing handles). An io tap is for the session
+The console answers a port's handlers with `mapi` (`mapi-v30-6.txt`, a port written through
+its handler; `mapi-v30-20-unmapped.txt`, one nothing handles). An io tap is for the session
 only, so everything here also holds that the declaration store never sees one.
 """
 

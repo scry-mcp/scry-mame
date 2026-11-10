@@ -266,10 +266,12 @@ def test_memdump_refuses_a_bad_dest_before_touching_the_console(
     s.memdump("0", length=0, dest=str(tmp_path / "fresh.bin")))
     refused("is not a directory",
     s.memdump("0", length=16, dest=str(tmp_path / "missing" / "dump.bin")))
+    (tmp_path / "a,b").mkdir()
     refused("comma",
-    s.memdump("0", length=16, dest=str(tmp_path / "a,b.bin")))
+    s.memdump("0", length=16, dest=str(tmp_path / "a,b" / "x.bin")))
+    (tmp_path / "folder.bin").mkdir()
     refused("exists",
-    s.memdump("0", length=16, dest=str(tmp_path)))
+    s.memdump("0", length=16, dest=str(tmp_path / "folder.bin")))
     assert ses.commands == [], "the console was touched on a refused input"
 
 
@@ -277,22 +279,23 @@ def test_a_semicolon_in_a_dest_is_refused_before_the_console(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """The console ends a command at a `;`."""
-    split = str(tmp_path / "a;b.bin")
+    (tmp_path / "a;b").mkdir()
+    split = str(tmp_path / "a;b" / "x.bin")
     message = _refusal_text(inputs.fresh_dest, "dest", split)
     assert "semicolon" in message and "';'" in message, message
     # Anywhere in the value, inside brackets too, and the console's brackets themselves: an
     # unbalanced one stops the whole line before it runs, as late as the `;` did.
-    for name, char in [(";a.bin", ";"), ("a.bin;", ";"), ("a(;)b.bin", "("), ("a(b.bin", "("),
-                       ("a)b.bin", ")"), ("a[b.bin", "["), ("a]b.bin", "]"), ("a{b.bin", "{"),
-                       ("a}b.bin", "}")]:
-        said = _refusal_text(inputs.fresh_dest, "dest", str(tmp_path / name))
+    for name, char in [(";a", ";"), ("a;", ";"), ("a(;)b", "("), ("a(b", "("), ("a)b", ")"),
+                       ("a[b", "["), ("a]b", "]"), ("a{b", "{"), ("a}b", "}")]:
+        (tmp_path / name).mkdir()
+        said = _refusal_text(inputs.fresh_dest, "dest", str(tmp_path / name / "x.bin"))
         assert f"{char!r}" in said, (name, said)
     ses = _ConsoleSession(bytes(64))
     _console(monkeypatch, tmp_path, ses)
     refused("semicolon",
     s.memdump("0", length=16, dest=split))
     refused("semicolon",
-    s.snapshot(dest=str(tmp_path / "a;b.png")))
+    s.snapshot(dest=str(tmp_path / "a;b" / "x.png")))
     assert ses.commands == [], "the console was touched on a refused input"
 
 
@@ -305,7 +308,7 @@ def test_memdump_refuses_a_range_that_wraps_the_program_space(
     inside; one lying wholly beyond a mask that is not all ones is past the space too, and with
     no mask known nothing is refused."""
     ses = _ConsoleSession(bytes(64), replies={"save": lambda cmd: "Data saved successfully",
-                                              "cpulist": captured("cpulist.main-visible.txt")})
+                                              "cpulist": captured("cpulist-main-visible.txt")})
     _console(monkeypatch, tmp_path, ses)
     monkeypatch.setattr(mstate.STATE, "machine_map", _masked(0xFFFFFF))
     refused("wraps", s.memdump("0xfffffc", length=8, dest=str(tmp_path / "over.bin")))
@@ -336,7 +339,7 @@ def test_memdump_checks_the_file_against_a_read_of_the_cpu_save_read(
         return "Data saved successfully\n"
 
     ses = _ConsoleSession(bytes(64), replies={"save": save,
-                                              "cpulist": captured("cpulist.sub-visible.txt")})
+                                              "cpulist": captured("cpulist-sub-visible.txt")})
     _console(monkeypatch, tmp_path, ses)
     out = refused(r"reads only :maincpu: `memdump\(cpu=':maincpu'\)` is the dump it can check",
                   s.memdump("0x0", length=8, dest=str(tmp_path / "nothread.bin")))
@@ -374,6 +377,25 @@ def test_memdump_writes_the_bytes_and_checks_them_against_a_read(
     small = s.memdump("0xd0", length=8, dest=str(tmp_path / "small.bin"))
     assert small["bytes"] == 8 and small["addr"] == f"{0xD0:#010x}"
     assert ses.commands[-1] == f"save {tmp_path / 'small.bin'},0xd0,0x8"
+
+
+def test_memdump_writes_a_mixed_case_dest_under_the_name_its_reply_gives(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The free-name check judges the name written, and a name with no extension is refused."""
+    image = bytes(range(64))
+
+    def save(command: str) -> str:
+        path, addr, length = command[len("save "):].split(",")
+        Path(path).write_bytes(image[int(addr, 16) : int(addr, 16) + int(length, 16)])
+        return "Data saved successfully"
+
+    ses = _ConsoleSession(image, replies={"save": save})
+    _console(monkeypatch, tmp_path, ses)
+    out = s.memdump("0x0", length=8, dest=str(tmp_path / "Dump_A.BIN"))
+    assert out["path"] == str(tmp_path / "dump-a.bin") and (tmp_path / "dump-a.bin").is_file()
+    refused("exists", s.memdump("0x0", length=8, dest=str(tmp_path / "DUMP A.bin")))
+    refused("no extension", s.memdump("0x0", length=8, dest=str(tmp_path / "dump")))
 
 
 def test_memdump_is_invalid_when_the_file_comes_out_wrong(
@@ -591,7 +613,7 @@ def test_the_console_fixtures_were_captured_and_say_so() -> None:
         assert name in provenance, f"{name} has no line in PROVENANCE.txt saying what produced it"
     # The two shapes the parsers depend on are really in the captured text.
     assert "Found at " in (FIXTURES / "find.txt").read_text()
-    assert (FIXTURES / "find.none.txt").read_text().strip() == "Not found"
+    assert (FIXTURES / "find-none.txt").read_text().strip() == "Not found"
 
 
 def test_disassemble_reads_the_file_the_console_wrote(
@@ -605,7 +627,7 @@ def test_disassemble_reads_the_file_the_console_wrote(
     def dasm(command: str) -> str:
         name = command[len("dasm "):].split(",")[0]
         (scratch / name).write_bytes((FIXTURES / "dasm.txt").read_bytes())
-        return (FIXTURES / "dasm.reply.txt").read_text()
+        return (FIXTURES / "dasm-reply.txt").read_text()
 
     ses.replies["dasm"] = dasm
     out = s.disassemble("0x0", length=16)
@@ -720,13 +742,13 @@ def test_disassemble_classifies_each_line_off_the_listing_without_opcode_bytes(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """`flow` holds one class per line of `lines`."""
-    ses = _ConsoleSession(replies={"cpulist": captured("cpulist.main-visible.txt")})
+    ses = _ConsoleSession(replies={"cpulist": captured("cpulist-main-visible.txt")})
     scratch = _console(monkeypatch, tmp_path, ses)
     # TWO CPUS OF DIFFERENT TYPES, so a class read off one cpu's words with the other's table
     # cannot come out right by coincidence.
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [
         {"tag": ":maincpu", "type": "m68000"}, {"tag": ":subcpu", "type": "v30"}]})
-    ses.replies["dasm"] = _listing_pair(scratch, "dasm.m68k.560")
+    ses.replies["dasm"] = _listing_pair(scratch, "dasm-m68k-560")
     out = s.disassemble("0x560", length=0x40)
     assert out["status"] == "ok" and out["flow_source"] == "mnemonic_table:m68000", out
     assert len(out["flow"]) == len(out["lines"]) and "note" not in out
@@ -736,13 +758,13 @@ def test_disassemble_classifies_each_line_off_the_listing_without_opcode_bytes(
     # THE SECOND LISTING NAMES THE CPU THE TABLE IS FOR, even when the call named none: left to
     # the console it would decode whichever cpu is visible then, under `:maincpu`'s table.
     assert [c for c in ses.commands if c.startswith("dasm")] == [
-        "dasm dasm.txt,0x560,0x40", "dasm dasm.bare.txt,0x560,0x40,0,:maincpu"]
+        "dasm dasm.txt,0x560,0x40", "dasm dasm-bare.txt,0x560,0x40,0,:maincpu"]
     # A CPU NAMED travels to both listings, and picks its own type's table.
     ses.commands.clear()
-    ses.replies["dasm"] = _listing_pair(scratch, "dasm.v30.30000")
+    ses.replies["dasm"] = _listing_pair(scratch, "dasm-v30-30000")
     out = s.disassemble("0x30000", length=0xb0, cpu="subcpu")
     assert [c for c in ses.commands if c.startswith("dasm")] == [
-        "dasm dasm.txt,0x30000,0xb0,1,:subcpu", "dasm dasm.bare.txt,0x30000,0xb0,0,:subcpu"]
+        "dasm dasm.txt,0x30000,0xb0,1,:subcpu", "dasm dasm-bare.txt,0x30000,0xb0,0,:subcpu"]
     assert out["flow_source"] == "mnemonic_table:v30" and "unknown" not in out["flow"], out
 
 
@@ -750,9 +772,9 @@ def test_disassemble_without_a_table_marks_every_line_unknown_once(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     """A type with no table, a type the inventory never recorded."""
-    ses = _ConsoleSession(replies={"cpulist": captured("cpulist.main-visible.txt")})
+    ses = _ConsoleSession(replies={"cpulist": captured("cpulist-main-visible.txt")})
     scratch = _console(monkeypatch, tmp_path, ses)
-    ses.replies["dasm"] = _listing_pair(scratch, "dasm.m68k.560")
+    ses.replies["dasm"] = _listing_pair(scratch, "dasm-m68k-560")
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [
         {"tag": ":maincpu", "type": "m68010"}]})
     out = s.disassemble("0x560", length=0x40)
@@ -766,13 +788,13 @@ def test_disassemble_without_a_table_marks_every_line_unknown_once(
     # THE SECOND LISTING FAILS: the first one is still the answer, and nothing is classified.
     monkeypatch.setattr(mstate.STATE, "machine_map", {"cpus": [
         {"tag": ":maincpu", "type": "m68000"}]})
-    first = _listing_pair(scratch, "dasm.m68k.560")
+    first = _listing_pair(scratch, "dasm-m68k-560")
     ses.replies["dasm"] = lambda cmd: first(cmd) if cmd.startswith("dasm dasm.txt") else "Error"
     out = s.disassemble("0x560", length=0x40)
     assert out["status"] == "ok" and out["flow"] == ["unknown"] * 15, out
     assert "without opcode bytes did not come out" in out["note"], out["note"]
     # THE SECOND LISTING DESCRIBES OTHER INSTRUCTIONS: no class is shifted onto a neighbour.
-    other = _listing_pair(scratch, "dasm.v30.30000")
+    other = _listing_pair(scratch, "dasm-v30-30000")
     ses.replies["dasm"] = lambda cmd: first(cmd) if cmd.startswith("dasm dasm.txt") else other(cmd)
     out = s.disassemble("0x560", length=0x40)
     assert out["flow"] == ["unknown"] * 15 and "same addresses" in out["note"], out
@@ -791,7 +813,7 @@ def test_find_parses_hits_and_an_empty_result(
     # Every byte travels prefixed: a bare `d0` is a register to the console's expression parser.
     assert ses.commands == ["cpulist", "find 0x0,0x8000,0x00,0x20,0x10,0x00",
                             "find 0x8000,0x8000,0x00,0x20,0x10,0x00"]
-    ses.replies["find"] = (FIXTURES / "find.none.txt").read_text()
+    ses.replies["find"] = (FIXTURES / "find-none.txt").read_text()
     none = s.find(ref="0x0", length=0x10000, data_hex="DEADBEEFCAFE")
     assert none["hits"] == [] and none["hits_total"] == 0
     assert ses.commands[-1] == "find 0x8000,0x8000,0xde,0xad,0xbe,0xef,0xca,0xfe", (
@@ -1153,7 +1175,7 @@ def test_find_can_search_within_a_symbol_class_region(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """A one-byte pattern searched over the whole address space drowns in false positives."""
-    ses = _ConsoleSession(replies={"find": (FIXTURES / "find.none.txt").read_text()})
+    ses = _ConsoleSession(replies={"find": (FIXTURES / "find-none.txt").read_text()})
     _console(monkeypatch, tmp_path, ses)
     use_table(monkeypatch, table={"MSG_A": 0x420, "MSG_B": 0x480})
     use_table(monkeypatch, class_span={"DATA": (0x420, 0x480), "CODE": (0x0, 0x200)})

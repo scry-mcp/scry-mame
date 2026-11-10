@@ -138,7 +138,7 @@ def test_log_wait_takes_the_channel_and_finds_a_process_line_that_arrives(
 
 
 # CAPTURED, never authored: the first bytes MAME writes to `error.log` (PROVENANCE.txt).
-_LOG_START = (Path(__file__).parent / "fixtures" / "console" / "errorlog.start.txt").read_bytes()
+_LOG_START = (Path(__file__).parent / "fixtures" / "console" / "errorlog-start.txt").read_bytes()
 
 
 def test_the_mark_mame_writes_at_the_start_of_error_log_is_not_part_of_its_first_line(

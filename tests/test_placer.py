@@ -17,7 +17,7 @@ from scry_mame import read
 from scry_mame.state import STATE
 
 FIXTURES = Path(__file__).parent / "fixtures" / "trace"
-TRACES = ("m68k-dual-maincpu-2f.trace.gz", "m68k-dual-subcpu-2f.trace", "v30-alt-2f.trace.gz",
+TRACES = ("m68k-dual-maincpu-2f-trace.gz", "m68k-dual-subcpu-2f.trace", "v30-alt-2f-trace.gz",
           "circus-2f.trace")
 
 

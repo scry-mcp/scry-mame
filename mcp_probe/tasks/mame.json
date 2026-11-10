@@ -1,7 +1,7 @@
 {
  "tasks": [
   {
-   "id": "M01",
+   "id": "m01",
    "prompt": "Start MAME from the binary /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms. The reference image is /opt/fury/roms/fury.bin: its 16 bytes must match at hex address 1F4A0, and the image's first byte sits at hex 1F000. Load the symbols from the linker map /opt/fury/fury.map, placing its DATA class at hex 3600 and its BSS class at hex 4800. Somebody will watch the run.",
    "tool": "start",
    "args": {
@@ -38,7 +38,7 @@
    }
   },
   {
-   "id": "M02",
+   "id": "m02",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in /opt/fury/ini. Run the boot Lua harness /opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in /opt/fury/states, use the cfg file /opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file /opt/fury/fury.types (no symbol file).",
    "tool": "start",
    "args": {
@@ -60,17 +60,17 @@
    }
   },
   {
-   "id": "M03",
+   "id": "m03",
    "prompt": "Is a machine alive, and which system is it?",
    "tool": "status"
   },
   {
-   "id": "M04",
+   "id": "m04",
    "prompt": "End the MAME session.",
    "tool": "close"
   },
   {
-   "id": "M05",
+   "id": "m05",
    "prompt": "Re-validate the live machine against the reference image {root}/LICENSE: its 16 bytes at hex address 1A0, with the image's first byte at address 0.",
    "tool": "rom_check",
    "args": {
@@ -89,7 +89,7 @@
    }
   },
   {
-   "id": "M06",
+   "id": "m06",
    "prompt": "Run to the symbol LevelEnd, counting the control already declared at FrameTick on the way, stopping there only when the console expression w@LivesLeft==3 holds. Disarm the change watches for this pass, and give it at most 45 wall-clock seconds.",
    "tool": "run_to",
    "args": {
@@ -106,7 +106,7 @@
    }
   },
   {
-   "id": "M07",
+   "id": "m07",
    "prompt": "Run the machine for 250 milliseconds of emulated time, bounded by 20 wall-clock seconds, with every change watch disarmed for the run.",
    "tool": "run_for",
    "args": {
@@ -116,7 +116,7 @@
    }
   },
   {
-   "id": "M08",
+   "id": "m08",
    "prompt": "Run the machine for exactly 37 frames.",
    "tool": "run_for",
    "args": {
@@ -124,7 +124,7 @@
    }
   },
   {
-   "id": "M09",
+   "id": "m09",
    "prompt": "Execute the next 5 instructions, running each call to its return as one step.",
    "tool": "step",
    "args": {
@@ -136,7 +136,7 @@
    ]
   },
   {
-   "id": "M10",
+   "id": "m10",
    "prompt": "Let the machine run, waiting up to 7.5 seconds for it to stop.",
    "tool": "resume",
    "args": {
@@ -144,12 +144,12 @@
    }
   },
   {
-   "id": "M11",
+   "id": "m11",
    "prompt": "The machine is running: stop it where it is.",
    "tool": "stop"
   },
   {
-   "id": "M12",
+   "id": "m12",
    "prompt": "Declare a breakpoint at hex address 3E12 that only counts its hits and never halts the machine.",
    "tool": "breakpoint_at",
    "args": {
@@ -169,7 +169,7 @@
    ]
   },
   {
-   "id": "M13",
+   "id": "m13",
    "prompt": "Halt at PlayerX, forcing it to be taken as a symbol, but only when the console expression w@PlayerX!=0 holds.",
    "tool": "breakpoint_at",
    "args": {
@@ -185,7 +185,7 @@
    ]
   },
   {
-   "id": "M14",
+   "id": "m14",
    "prompt": "List every breakpoint declaration and its state.",
    "tool": "declaration_list",
    "args": {
@@ -196,7 +196,7 @@
    ]
   },
   {
-   "id": "M15",
+   "id": "m15",
    "prompt": "Clear the breakpoint declared as FrameTick.",
    "tool": "declaration_clear",
    "args": {
@@ -208,7 +208,7 @@
    ]
   },
   {
-   "id": "M15b",
+   "id": "m15b",
    "prompt": "Clear every breakpoint declaration.",
    "tool": "declaration_clear",
    "args": {
@@ -220,7 +220,7 @@
    ]
   },
   {
-   "id": "M16",
+   "id": "m16",
    "prompt": "Stop the machine wherever in the program register d2 comes to hold the hex value 77ab.",
    "tool": "regpoint_add",
    "args": {
@@ -239,7 +239,7 @@
    }
   },
   {
-   "id": "M17",
+   "id": "m17",
    "prompt": "List every registerpoint declaration and its state.",
    "tool": "declaration_list",
    "args": {
@@ -250,7 +250,7 @@
    ]
   },
   {
-   "id": "M18",
+   "id": "m18",
    "prompt": "Clear the registerpoint declared as d2==77ab.",
    "tool": "declaration_clear",
    "args": {
@@ -267,7 +267,7 @@
    ]
   },
   {
-   "id": "M18b",
+   "id": "m18b",
    "prompt": "Clear every registerpoint declaration.",
    "tool": "declaration_clear",
    "args": {
@@ -279,7 +279,7 @@
    ]
   },
   {
-   "id": "M19",
+   "id": "m19",
    "prompt": "Stop the machine whenever the two 16-bit values at ScoreTbl are written, and tell me who wrote them, reading them as u16[2].",
    "tool": "watch_add",
    "args": {
@@ -296,7 +296,7 @@
    ]
   },
   {
-   "id": "M20",
+   "id": "m20",
    "prompt": "At every stop, read the 12 bytes at SpriteBuf as unsigned bytes, forcing SpriteBuf to be taken as a symbol.",
    "tool": "watch_add",
    "args": {
@@ -330,7 +330,7 @@
    ]
   },
   {
-   "id": "M21",
+   "id": "m21",
    "prompt": "List every watch declaration and its state.",
    "tool": "declaration_list",
    "args": {
@@ -341,7 +341,7 @@
    ]
   },
   {
-   "id": "M22",
+   "id": "m22",
    "prompt": "Clear every watch declaration.",
    "tool": "declaration_clear",
    "args": {
@@ -353,7 +353,7 @@
    ]
   },
   {
-   "id": "M22b",
+   "id": "m22b",
    "prompt": "Clear the watch declared as ScoreTbl.",
    "tool": "declaration_clear",
    "args": {
@@ -365,7 +365,7 @@
    ]
   },
   {
-   "id": "M22c",
+   "id": "m22c",
    "prompt": "Clear the count watch on the io port at hex 6.",
    "tool": "declaration_clear",
    "args": {
@@ -384,7 +384,7 @@
    ]
   },
   {
-   "id": "M23",
+   "id": "m23",
    "prompt": "Which symbol is the run-time address hex 5C3E inside?",
    "tool": "symbols_find",
    "args": {
@@ -397,7 +397,7 @@
    }
   },
   {
-   "id": "M24",
+   "id": "m24",
    "prompt": "Look up the symbols whose names start with enemy_, at most 25 of them.",
    "tool": "symbols_find",
    "args": {
@@ -406,7 +406,7 @@
    }
   },
   {
-   "id": "M25",
+   "id": "m25",
    "prompt": "Describe the machine, narrowed to the cpu tagged audiocpu.",
    "tool": "machine_map",
    "args": {
@@ -419,7 +419,7 @@
    }
   },
   {
-   "id": "M26",
+   "id": "m26",
    "prompt": "Read 6 bytes of memory at the symbol PlayerX.",
    "tool": "read_memory",
    "args": {
@@ -428,7 +428,7 @@
    }
   },
   {
-   "id": "M27",
+   "id": "m27",
    "prompt": "Read 48 bytes of the memory block MAME keeps under the tag palram2, starting 72 bytes into it, waiting up to 8 seconds for the console.",
    "tool": "read_block",
    "args": {
@@ -449,7 +449,7 @@
    }
   },
   {
-   "id": "M28",
+   "id": "m28",
    "prompt": "Read the 20 bytes behind the symbol LatchOut: its address map entry names the block they live in, since read_memory answers zeros there.",
    "tool": "read_block",
    "args": {
@@ -458,7 +458,7 @@
    }
   },
   {
-   "id": "M29",
+   "id": "m29",
    "prompt": "The machine is running. Give me the registers as they were at the last stop.",
    "tool": "registers",
    "args": {
@@ -466,7 +466,7 @@
    }
   },
   {
-   "id": "M30",
+   "id": "m30",
    "prompt": "Disassemble 40 bytes from hex address 1B7C.",
    "tool": "disassemble",
    "args": {
@@ -480,7 +480,7 @@
    }
   },
   {
-   "id": "M31",
+   "id": "m31",
    "prompt": "Find every address in the 1536 bytes from hex address 2600 that holds the bytes 4E 71.",
    "tool": "find",
    "args": {
@@ -501,7 +501,7 @@
    }
   },
   {
-   "id": "M32",
+   "id": "m32",
    "prompt": "Search the symbol class VARS of the symbol file for the single byte C9.",
    "tool": "find",
    "args": {
@@ -515,7 +515,7 @@
    }
   },
   {
-   "id": "M33",
+   "id": "m33",
    "prompt": "Show the last 120 instructions the cpu executed before the stop.",
    "tool": "history",
    "args": {
@@ -523,7 +523,7 @@
    }
   },
   {
-   "id": "M34",
+   "id": "m34",
    "prompt": "Write the bytes 12 34 AB to memory at LivesLeft.",
    "tool": "write",
    "args": {
@@ -539,7 +539,7 @@
    }
   },
   {
-   "id": "M35",
+   "id": "m35",
    "prompt": "Force register D3 to the decimal value 4660.",
    "tool": "set_register",
    "args": {
@@ -558,13 +558,13 @@
    }
   },
   {
-   "id": "M36",
+   "id": "m36",
    "prompt": "Soft-reset the machine.",
    "tool": "reset",
    "args": {}
   },
   {
-   "id": "M37",
+   "id": "m37",
    "prompt": "Dump 2048 bytes of memory from VramBase to the file /tmp/mcp-probe-vram.bin.",
    "tool": "memdump",
    "args": {
@@ -574,7 +574,7 @@
    }
   },
   {
-   "id": "M38",
+   "id": "m38",
    "prompt": "Save a PNG of the screen as it is now to /tmp/mcp-probe-title.png.",
    "tool": "snapshot",
    "args": {
@@ -582,7 +582,7 @@
    }
   },
   {
-   "id": "M39",
+   "id": "m39",
    "prompt": "Give me the signature of just the rectangle at x 12, y 40, 36 pixels wide and 28 tall, waiting up to 9 seconds.",
    "tool": "screen_signature",
    "args": {
@@ -596,7 +596,7 @@
    }
   },
   {
-   "id": "M40",
+   "id": "m40",
    "prompt": "Show the newest 60 lines of the emulator's error.log that match SND_VOL, with a count of the returned lines per first word.",
    "tool": "log",
    "args": {
@@ -610,7 +610,7 @@
    ]
   },
   {
-   "id": "M41",
+   "id": "m41",
    "prompt": "Wait up to 90 seconds for a line matching the regex STAGE [0-9]+ CLEAR in the process's own stdout log.",
    "tool": "log_wait",
    "args": {
@@ -623,7 +623,7 @@
    ]
   },
   {
-   "id": "M42",
+   "id": "m42",
    "prompt": "In one call: press the field Coin 2 of port :IN0 for 3 frames, then check that a line matching CREDIT arrives within 15 seconds, and show only the last 25 emulator lines matching CREDIT|COIN. Between steps wait at most 20 seconds for a stop, and cut each step's account to its summary.",
    "tool": "drive",
    "args": {
@@ -647,7 +647,7 @@
    ]
   },
   {
-   "id": "M43",
+   "id": "m43",
    "prompt": "In one round trip: run to StageDone counting the control declared at FrameTick, then save a PNG of the screen to /tmp/mcp-probe-stage.png. Wait at most 40 seconds for each stop between steps, and cut each step's account to its summary.",
    "tool": "perform",
    "args": {
@@ -671,7 +671,7 @@
    ]
   },
   {
-   "id": "M44",
+   "id": "m44",
    "prompt": "Run the MAME debugger command `dump 2A40,30` and give me its text.",
    "tool": "debug",
    "args": {
@@ -684,7 +684,7 @@
    }
   },
   {
-   "id": "M45",
+   "id": "m45",
    "prompt": "Evaluate the Lua script `print(manager.machine.system.name)` on the machine, waiting up to 7 seconds; I promise it only reads.",
    "tool": "lua",
    "args": {
@@ -694,7 +694,7 @@
    }
   },
   {
-   "id": "M46",
+   "id": "m46",
    "prompt": "Press the field P1 Button 3 of port :IN2 with the value 2, hold it for 9 frames, bounded by 25 wall-clock seconds.",
    "tool": "input",
    "args": {
@@ -711,7 +711,7 @@
    }
   },
   {
-   "id": "M47",
+   "id": "m47",
    "prompt": "Record 150 frames of the screen to /tmp/mcp-probe-run.avi, bounded by 75 wall-clock seconds.",
    "tool": "record",
    "args": {
@@ -721,7 +721,7 @@
    }
   },
   {
-   "id": "M48",
+   "id": "m48",
    "prompt": "Switch real-speed throttling off, waiting up to 3 seconds for it to apply.",
    "tool": "throttle",
    "args": {
@@ -730,7 +730,7 @@
    }
   },
   {
-   "id": "M49",
+   "id": "m49",
    "prompt": "Save a savestate named bossfight.",
    "tool": "state_write",
    "args": {
@@ -742,17 +742,17 @@
    ]
   },
   {
-   "id": "M50",
+   "id": "m50",
    "prompt": "Every AVI and PNG this session wrote, re-read now.",
    "tool": "captures"
   },
   {
-   "id": "M51",
+   "id": "m51",
    "prompt": "List every savestate in this session's state folder.",
    "tool": "state_list"
   },
   {
-   "id": "M52",
+   "id": "m52",
    "prompt": "Restore the savestate named bossfight.",
    "tool": "state_write",
    "args": {
@@ -764,25 +764,25 @@
    ]
   },
   {
-   "id": "M53",
+   "id": "m53",
    "prompt": "Hard-reset the machine, re-creating it, but keep this same session and emulator process.",
    "expect": "CANNOT",
    "about": "reset"
   },
   {
-   "id": "M55",
+   "id": "m55",
    "prompt": "Set an execution breakpoint at the code address the console expression PlayerX+2 evaluates to, with breakpoint_at forced to read its ref as an expression rather than as a symbol or an address.",
    "expect": "CANNOT",
    "about": "breakpoint_at"
   },
   {
-   "id": "M54",
+   "id": "m54",
    "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
    "expect": "CANNOT",
    "about": "read_memory"
   },
   {
-   "id": "M56",
+   "id": "m56",
    "prompt": "Make the cpu tagged audiocpu the one the debugger shows, so the calls that name no cpu act on it.",
    "tool": "cpu_focus",
    "args": {
@@ -795,7 +795,7 @@
    }
   },
   {
-   "id": "M57",
+   "id": "m57",
    "prompt": "Count the hits at hex address 201060 on the cpu tagged soundcpu, without ever halting there and without changing which cpu the debugger shows.",
    "tool": "breakpoint_at",
    "args": {
@@ -820,7 +820,7 @@
    ]
   },
   {
-   "id": "M58",
+   "id": "m58",
    "prompt": "Stop the machine whenever the 2 bytes at hex address 3FF0 are written by the cpu tagged soundcpu.",
    "tool": "watch_add",
    "args": {
@@ -848,7 +848,7 @@
    ]
   },
   {
-   "id": "M59",
+   "id": "m59",
    "prompt": "Disassemble 40 bytes at hex address 1B7C in the program of the cpu tagged soundcpu.",
    "tool": "disassemble",
    "args": {
@@ -868,7 +868,7 @@
    }
   },
   {
-   "id": "M60",
+   "id": "m60",
    "prompt": "Find every place the bytes 4E 71 occur in the 1536 bytes from hex address 2600 of the cpu tagged soundcpu.",
    "tool": "find",
    "args": {
@@ -895,7 +895,7 @@
    }
   },
   {
-   "id": "M61",
+   "id": "m61",
    "prompt": "Show the last 50 instructions the cpu tagged soundcpu executed before the stop.",
    "tool": "history",
    "args": {
@@ -909,7 +909,7 @@
    }
   },
   {
-   "id": "M62",
+   "id": "m62",
    "prompt": "Dump 256 bytes from hex address 8000 of the cpu tagged soundcpu to the file /tmp/mcp-probe-sound.bin.",
    "tool": "memdump",
    "args": {
@@ -929,7 +929,7 @@
    }
   },
   {
-   "id": "M63",
+   "id": "m63",
    "prompt": "Read the 8 bytes of the memory block that hex address 7000 maps to in the program space of the cpu tagged soundcpu.",
    "tool": "read_block",
    "args": {
@@ -948,7 +948,7 @@
    }
   },
   {
-   "id": "M64",
+   "id": "m64",
    "prompt": "List only the breakpoint declarations whose rows sit on the cpu tagged soundcpu.",
    "tool": "declaration_list",
    "args": {
@@ -965,7 +965,7 @@
    ]
   },
   {
-   "id": "M65",
+   "id": "m65",
    "prompt": "List only the watch declarations placed on the cpu tagged soundcpu.",
    "tool": "declaration_list",
    "args": {
@@ -982,7 +982,7 @@
    ]
   },
   {
-   "id": "M66",
+   "id": "m66",
    "prompt": "List the registerpoint declarations on the cpu tagged gfxcpu, which is the one the debugger shows.",
    "tool": "declaration_list",
    "args": {
@@ -999,7 +999,7 @@
    ]
   },
   {
-   "id": "M67",
+   "id": "m67",
    "prompt": "Stop wherever register d2 comes to equal 1f, naming the cpu tagged gfxcpu so that the declaration is refused if that is not the cpu the debugger shows.",
    "tool": "regpoint_add",
    "args": {
@@ -1020,7 +1020,7 @@
    }
   },
   {
-   "id": "M68",
+   "id": "m68",
    "prompt": "Show every register of the cpu tagged soundcpu as it stands now, without changing which cpu the debugger shows.",
    "tool": "registers",
    "args": {
@@ -1033,7 +1033,7 @@
    }
   },
   {
-   "id": "M69",
+   "id": "m69",
    "prompt": "Read 12 bytes of memory at hex address 3FF0 of the cpu tagged soundcpu.",
    "tool": "read_memory",
    "args": {
@@ -1053,7 +1053,7 @@
    }
   },
   {
-   "id": "M70",
+   "id": "m70",
    "prompt": "Write the bytes 7F 00 to memory at hex address 3FF0 of the cpu tagged soundcpu.",
    "tool": "write",
    "args": {
@@ -1080,7 +1080,7 @@
    }
   },
   {
-   "id": "M71",
+   "id": "m71",
    "prompt": "Force register A2 of the cpu tagged soundcpu to the decimal value 512.",
    "tool": "set_register",
    "args": {
@@ -1105,7 +1105,7 @@
    }
   },
   {
-   "id": "M72",
+   "id": "m72",
    "prompt": "Re-validate the cpu tagged soundcpu against the reference image {root}/LICENSE: its 16 bytes at hex address 40, with the image's first byte at address 0.",
    "tool": "rom_check",
    "args": {
@@ -1129,7 +1129,7 @@
    }
   },
   {
-   "id": "M73",
+   "id": "m73",
    "prompt": "Execute one instruction of the cpu tagged soundcpu.",
    "tool": "step",
    "args": {
@@ -1146,7 +1146,7 @@
    ]
   },
   {
-   "id": "M74",
+   "id": "m74",
    "prompt": "Run to hex address 2A40 in the program of the cpu tagged soundcpu, counting the control already declared at FrameTick on the way.",
    "tool": "run_to",
    "args": {
@@ -1166,7 +1166,7 @@
    }
   },
   {
-   "id": "M75",
+   "id": "m75",
    "prompt": "Start MAME from /opt/twin/mamed, system twinfire, ROMs in /opt/twin/roms, reference image /opt/twin/roms/main.bin at the default address and base. The cpu tagged maincpu's symbols are in /opt/twin/main.yaml and the cpu tagged audiocpu's in /opt/twin/audio.yaml; type the audiocpu's symbols with the file /opt/twin/audio.types.",
    "tool": "start",
    "args": {
@@ -1207,7 +1207,7 @@
    }
   },
   {
-   "id": "M76",
+   "id": "m76",
    "prompt": "Remove the breakpoint declaration SoundNmi on the cpu tagged audiocpu, leaving the one of the same name on the other cpu.",
    "tool": "declaration_clear",
    "args": {
@@ -1225,7 +1225,7 @@
    ]
   },
   {
-   "id": "M77",
+   "id": "m77",
    "prompt": "Remove the watch declarations of VoiceCount placed on the cpu tagged audiocpu, and only those.",
    "tool": "declaration_clear",
    "args": {
@@ -1243,7 +1243,7 @@
    ]
   },
   {
-   "id": "M78",
+   "id": "m78",
    "prompt": "Remove the registerpoint declaration d3==40 from the cpu tagged audiocpu only.",
    "tool": "declaration_clear",
    "args": {
@@ -1266,7 +1266,7 @@
    ]
   },
   {
-   "id": "M79",
+   "id": "m79",
    "prompt": "Look up the symbol VoiceTable in the symbol table of the cpu tagged audiocpu.",
    "tool": "symbols_find",
    "args": {
@@ -1280,7 +1280,7 @@
    }
   },
   {
-   "id": "M80",
+   "id": "m80",
    "prompt": "Patch the ROM live: put the bytes 4E 71 at hex address 1C06. The program space has no write side there, so the bytes have to go into the memory region that backs that address.",
    "tool": "write",
    "args": {
@@ -1302,7 +1302,7 @@
    }
   },
   {
-   "id": "M81",
+   "id": "m81",
    "prompt": "On the cpu tagged audiocpu, patch its program ROM at VoiceTable with the bytes 00 FF, writing them into the ROM region behind that address rather than through the program space.",
    "tool": "write",
    "args": {
@@ -1325,7 +1325,7 @@
    }
   },
   {
-   "id": "M82",
+   "id": "m82",
    "prompt": "Stop the machine only when the byte at hex address 700011 is written with the value hex 25, and tell me who wrote it; any other value written there must not stop it.",
    "tool": "watch_add",
    "args": {
@@ -1356,7 +1356,7 @@
    ]
   },
   {
-   "id": "M83",
+   "id": "m83",
    "prompt": "On the cpu tagged audiocpu, halt whenever VoiceCount is written with a zero, and only then.",
    "tool": "watch_add",
    "args": {
@@ -1389,7 +1389,7 @@
    ]
   },
   {
-   "id": "M84",
+   "id": "m84",
    "prompt": "Each time the word at hex address 70001E is written, record the five 16-bit words starting at hex address 700010 as they stand at that moment, one row per write, without ever stopping the machine.",
    "tool": "watch_add",
    "args": {
@@ -1440,7 +1440,7 @@
    ]
   },
   {
-   "id": "M85",
+   "id": "m85",
    "prompt": "On the cpu tagged audiocpu, keep the 8 bytes at VoiceTable, read as unsigned bytes, every time VoiceTrigger is written, one row each, never halting.",
    "tool": "watch_add",
    "args": {
@@ -1506,7 +1506,7 @@
    ]
   },
   {
-   "id": "M86",
+   "id": "m86",
    "prompt": "In a single call, advance the machine one frame at a time, four times over, keeping for every stop what stopped it and which pc wrote the watched value, and have the server count how many stops each watch made instead of counting them myself.",
    "tool": "perform",
    "args": {
@@ -1535,12 +1535,12 @@
    ]
   },
   {
-   "id": "M87",
+   "id": "m87",
    "prompt": "Which debugger is the live session attached to, and could a capture taken here land a frame away from an autoboot golden taken at the same frame count?",
    "tool": "status"
   },
   {
-   "id": "M88",
+   "id": "m88",
    "prompt": "Print register d0 in hex through the debugger console. The command is `printf \"d0=%x\",d0` and it only prints, so it must not count as a write.",
    "tool": "debug",
    "args": {
@@ -1548,7 +1548,7 @@
    }
   },
   {
-   "id": "M89",
+   "id": "m89",
    "prompt": "The machine is stopped at frame 1320. In one call, advance one frame at a time until the frame counter reads 1390, keeping every stop the watches make along the way and letting the server count the steps and the stops; I cannot know in advance how many steps that takes.",
    "tool": "perform",
    "args": {
@@ -1569,7 +1569,7 @@
    ]
   },
   {
-   "id": "M90",
+   "id": "m90",
    "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to /tmp/mcp-probe-pal.png.",
    "tool": "palette",
    "args": {
@@ -1591,7 +1591,7 @@
    }
   },
   {
-   "id": "M91",
+   "id": "m91",
    "prompt": "What colours does the machine's only palette device hold right now, from its first pen? Wait up to 7 seconds for the console.",
    "tool": "palette",
    "args": {
@@ -1599,7 +1599,7 @@
    }
   },
   {
-   "id": "M92",
+   "id": "m92",
    "prompt": "Which palette pens does the part of the screen at x 16, y 32, 72 pixels wide and 48 tall use, how many pixels each, and which pens does nothing there use?",
    "tool": "screen_view",
    "args": {
@@ -1616,7 +1616,7 @@
    ]
   },
   {
-   "id": "M93",
+   "id": "m93",
    "prompt": "Which palette pen is the pixel at x 120, y 77 of the screen drawn with?",
    "tool": "screen_view",
    "args": {
@@ -1631,7 +1631,7 @@
    ]
   },
   {
-   "id": "M94",
+   "id": "m94",
    "prompt": "Show me where pens 49 and 50 are on the screen, every other pen in grey, enlarged 3 times, saved to /tmp/mcp-probe-iso.png, waiting up to 6 seconds.",
    "tool": "screen_view",
    "args": {
@@ -1657,7 +1657,7 @@
    ]
   },
   {
-   "id": "M95",
+   "id": "m95",
    "prompt": "Decode the region gfx2, starting 2048 bytes into it, under the layout {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}. Show tiles 10 to 29, 8 a row, in grey because I do not want the machine's colours, saved to /tmp/mcp-probe-tiles.png at scale 4, waiting up to 9 seconds.",
    "tool": "gfx_view",
    "args": {
@@ -1722,7 +1722,7 @@
    ]
   },
   {
-   "id": "M96",
+   "id": "m96",
    "prompt": "Tiles in the layout {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"} start at the symbol SpriteBuf in the program space of the cpu tagged subcpu. Show 4 of them through the palette device tagged ppu_pal, from pen 96.",
    "tool": "gfx_view",
    "args": {
@@ -1776,7 +1776,7 @@
    }
   },
   {
-   "id": "M97",
+   "id": "m97",
    "prompt": "Which tile of the region gfx1 is the 8x8 patch of the screen at x 88, y 96? The layout is {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, and this hardware never flips a tile.",
    "tool": "gfx_locate",
    "args": {
@@ -1830,7 +1830,7 @@
    ]
   },
   {
-   "id": "M98",
+   "id": "m98",
    "prompt": "Find the sprite drawn in the 16x16 patch at x 40, y 50 among 512 tiles of the share spritebuf, starting 256 bytes into it, under the layout {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}; pixel value 0 is see-through. Wait up to 20 seconds.",
    "tool": "gfx_locate",
    "args": {
@@ -1896,7 +1896,7 @@
    }
   },
   {
-   "id": "M99",
+   "id": "m99",
    "prompt": "The tiles start at hex address 9000 in the program space of the cpu tagged subcpu: search tiles 16 to 79 for the 8x8 screen patch at x 0, y 8, under the layout {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}.",
    "tool": "gfx_locate",
    "args": {
@@ -1951,13 +1951,13 @@
    }
   },
   {
-   "id": "M100",
+   "id": "m100",
    "prompt": "Show me tilemap 2 exactly as the driver's own tilemap system composes it, scroll and priorities included.",
    "expect": "CANNOT",
    "about": "gfx_view"
   },
   {
-   "id": "M101",
+   "id": "m101",
    "prompt": "Load the graphics manifest of this project, /home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
    "tool": "gfx_load",
    "args": {
@@ -1965,7 +1965,7 @@
    }
   },
   {
-   "id": "M102",
+   "id": "m102",
    "prompt": "Which blits of the draw command spritedraw, in frame 1204, cover the 16x16 area at x 100, y 40 of the screen? Save the picture to /tmp/mcp-probe-boxes.png at scale 2.",
    "tool": "gfx_blits",
    "args": {
@@ -1982,7 +1982,7 @@
    }
   },
   {
-   "id": "M103",
+   "id": "m103",
    "prompt": "Draw every blit the draw command tiledraw fired in the newest finished frame as boxes over the screen, waiting up to 12 seconds.",
    "tool": "gfx_blits",
    "args": {
@@ -1991,7 +1991,7 @@
    }
   },
   {
-   "id": "M104",
+   "id": "m104",
    "prompt": "Show the graphics the blit at index 3 of frame 88 of the draw command tiledraw reads, with 2 pixels of margin round it, at scale 3.",
    "tool": "gfx_blit_source",
    "args": {
@@ -2003,7 +2003,7 @@
    }
   },
   {
-   "id": "M105",
+   "id": "m105",
    "prompt": "In frame 902, the routine at hex address 1fd2 fired one blit of the draw command spritedraw: show what that blit reads, saved to /tmp/mcp-probe-src.png, waiting up to 7 seconds.",
    "tool": "gfx_blit_source",
    "args": {
@@ -2019,7 +2019,7 @@
    }
   },
   {
-   "id": "M106",
+   "id": "m106",
    "prompt": "Decode the region gfx1 under the format page8 that the loaded manifest defines, tiles 0 to 3, in grey because I do not want the machine's colours.",
    "tool": "gfx_view",
    "args": {
@@ -2038,13 +2038,13 @@
    ]
   },
   {
-   "id": "M107",
+   "id": "m107",
    "prompt": "Show the blit at index 3 of frame 88 of the draw command tiledraw as it lands on screen, zoomed by its own scale registers.",
    "expect": "CANNOT",
    "about": "gfx_blit_source"
   },
   {
-   "id": "M108",
+   "id": "m108",
    "prompt": "Start logging every write to the RAMDAC the loaded manifest calls bt478, so that later I can tell who set each pen's colour.",
    "tool": "palette_log",
    "args": {
@@ -2053,7 +2053,7 @@
    }
   },
   {
-   "id": "M109",
+   "id": "m109",
    "prompt": "From the palette write log of the RAMDAC vgadac, show pen 73 whole, with its last 5 writes.",
    "tool": "palette_log",
    "args": {
@@ -2068,7 +2068,7 @@
    }
   },
   {
-   "id": "M110",
+   "id": "m110",
    "prompt": "Stop the palette write log of the RAMDAC vgadac.",
    "tool": "palette_log",
    "args": {
@@ -2077,7 +2077,7 @@
    }
   },
   {
-   "id": "M111",
+   "id": "m111",
    "prompt": "The pixel at x 40, y 12 of the screen is the wrong colour: which pen is it, what colour does that pen have now, and which write set it?",
    "tool": "screen_view",
    "args": {
@@ -2092,13 +2092,13 @@
    ]
   },
   {
-   "id": "M112",
+   "id": "m112",
    "prompt": "Which instruction set pen 12's colour at frame 200, long before any palette write log was armed in this session?",
    "expect": "CANNOT",
    "about": "palette_log"
   },
   {
-   "id": "M113",
+   "id": "m113",
    "prompt": "The blits of frame 88 of the draw command tiledraw, listed one by one with their fields: give me the page that starts at place 50 of that list.",
    "tool": "gfx_blits",
    "args": {
@@ -2109,7 +2109,7 @@
    }
   },
   {
-   "id": "M114",
+   "id": "m114",
    "prompt": "Which palette pen is the pixel at x 46, y 160 of the screen, and show me where on the screen it sits, enlarged.",
    "tool": "screen_view",
    "args": {
@@ -2125,7 +2125,7 @@
    ]
   },
   {
-   "id": "M115",
+   "id": "m115",
    "prompt": "From now on, keep the screen of every frame in which the 16-bit register at hex address 7f0010 is written with the value 0x1234 by the instruction at hex address 2a40: at most 8 pictures, judging the next 300 frames.",
    "tool": "gfx_film",
    "args": {
@@ -2151,7 +2151,7 @@
    }
   },
   {
-   "id": "M116",
+   "id": "m116",
    "prompt": "Film the frames in which the byte at the symbol SOUND_LATCH of the cpu subcpu is written, keeping only the 48x40 part of the screen at x 16, y 24, the files going to the new directory /tmp/mcp-probe-film, waiting up to 9 seconds for the screen read.",
    "tool": "gfx_film",
    "args": {
@@ -2173,13 +2173,13 @@
    }
   },
   {
-   "id": "M117",
+   "id": "m117",
    "prompt": "Show me the frames the film armed in this session has kept so far, with how many frames it has judged.",
    "tool": "gfx_film",
    "args": {}
   },
   {
-   "id": "M118",
+   "id": "m118",
    "prompt": "The film's contact sheet: give me the page of kept frames that starts at place 12 of its list.",
    "tool": "gfx_film",
    "args": {
@@ -2187,7 +2187,7 @@
    }
   },
   {
-   "id": "M119",
+   "id": "m119",
    "prompt": "Stop the film that is recording in this session; its files can stay.",
    "tool": "gfx_film",
    "args": {
@@ -2195,13 +2195,13 @@
    }
   },
   {
-   "id": "M120",
+   "id": "m120",
    "prompt": "Show me the screen of the frames in which the blitter fired during the boot, before anything was armed in this session to keep them.",
    "expect": "CANNOT",
    "about": "gfx_film"
   },
   {
-   "id": "M121",
+   "id": "m121",
    "prompt": "Nobody knows the format of the region gfx3. Draw it under the candidate layouts at one and two bits a pixel, as 24x24 tiles, 20 tiles a candidate, saved to /tmp/mcp-probe-sweep.png.",
    "tool": "gfx_sweep",
    "args": {
@@ -2226,7 +2226,7 @@
    }
   },
   {
-   "id": "M122",
+   "id": "m122",
    "prompt": "Show the share charram, starting 512 bytes into it, under every candidate layout at the default depths and size, through the palette device ppu_pal from pen 48, waiting up to 9 seconds.",
    "tool": "gfx_sweep",
    "args": {
@@ -2258,7 +2258,7 @@
    }
   },
   {
-   "id": "M123",
+   "id": "m123",
    "prompt": "Of the sweep's candidates s2c3 and s2c7, which one draws the 16x16 patch of the screen at x 64, y 40 from the region gfx3?",
    "tool": "gfx_locate",
    "args": {
@@ -2284,7 +2284,7 @@
    ]
   },
   {
-   "id": "M124",
+   "id": "m124",
    "prompt": "Write the gfx.yaml draft of what this session has proved about the board to /tmp/newboard-gfx-draft.yaml.",
    "tool": "gfx_draft",
    "args": {
@@ -2292,7 +2292,7 @@
    }
   },
   {
-   "id": "M125",
+   "id": "m125",
    "prompt": "Ana looked at the sweep's sheet and picked candidate s1c4 as the format: record her choice and write the draft to the scratch.",
    "tool": "gfx_draft",
    "args": {
@@ -2308,7 +2308,7 @@
    }
   },
   {
-   "id": "M128",
+   "id": "m128",
    "prompt": "The tiles of an unknown format start at the symbol TileBank in the program space of the cpu tagged subcpu: draw 40 of them under the candidate layouts at one bit a pixel, the sheet enlarged 2 times.",
    "tool": "gfx_sweep",
    "args": {
@@ -2330,7 +2330,7 @@
    ]
   },
   {
-   "id": "M129",
+   "id": "m129",
    "prompt": "The game rewrites the byte at hex address 3c00 on every frame, mostly with the same number: keep the screen only of the frames where the number it wrote was a different one from the time before, judging the next 900 frames.",
    "tool": "gfx_film",
    "args": {
@@ -2344,19 +2344,19 @@
    }
   },
   {
-   "id": "M126",
+   "id": "m126",
    "prompt": "Rank the candidates of sweep 1 from the most to the least likely to be the real format.",
    "expect": "CANNOT",
    "about": "gfx_sweep"
   },
   {
-   "id": "M127",
+   "id": "m127",
    "prompt": "Replace the confirmed manifest /home/dev/m68k-dual/hardware/gfx.yaml with the draft of this session, overwriting it.",
    "expect": "CANNOT",
    "about": "gfx_draft"
   },
   {
-   "id": "M130",
+   "id": "m130",
    "prompt": "On this V30 board the sound chip is driven through io port hex 1c with out instructions: count every two-byte write to that port, by value and by writer.",
    "tool": "watch_add",
    "args": {
@@ -2379,7 +2379,7 @@
    ]
   },
   {
-   "id": "M131",
+   "id": "m131",
    "prompt": "The palette of this board is written with out instructions to the two-byte io port hex 1e: film the frames in which that port is written, keeping at most 12 pictures.",
    "tool": "gfx_film",
    "args": {
@@ -2398,22 +2398,22 @@
    ]
   },
   {
-   "id": "M132",
+   "id": "m132",
    "prompt": "Where is each cpu's program counter right now, without making another cpu visible?",
    "tool": "cpu_info"
   },
   {
-   "id": "M133",
+   "id": "m133",
    "prompt": "Which cpus has the debugger suspended?",
    "tool": "cpu_info"
   },
   {
-   "id": "M134",
+   "id": "m134",
    "prompt": "How many breakpoints and watches are declared on each cpu?",
    "tool": "cpu_info"
   },
   {
-   "id": "M135",
+   "id": "m135",
    "prompt": "What does the debugger see of the cpu tagged soundcpu alone right now: is it visible, ignored or suspended, and where is its program counter?",
    "tool": "cpu_info",
    "args": {
@@ -2426,7 +2426,7 @@
    }
   },
   {
-   "id": "M136",
+   "id": "m136",
    "prompt": "This board has no map. Open a value search over the 65536 bytes from hex 200000 of the cpu tagged audiocpu, in 16-bit cells.",
    "tool": "scan",
    "args": {
@@ -2450,7 +2450,7 @@
    ]
   },
   {
-   "id": "M137",
+   "id": "m137",
    "prompt": "Keep only the scanned cells that now hold the value 305.",
    "tool": "scan",
    "args": {
@@ -2470,7 +2470,7 @@
    ]
   },
   {
-   "id": "M138",
+   "id": "m138",
    "prompt": "Keep only the scanned cells whose value grew since the search was opened.",
    "tool": "scan",
    "args": {
@@ -2483,7 +2483,7 @@
    ]
   },
   {
-   "id": "M139",
+   "id": "m139",
    "prompt": "Drop the open value scan.",
    "tool": "scan",
    "args": {
@@ -2494,13 +2494,13 @@
    ]
   },
   {
-   "id": "M140",
+   "id": "m140",
    "prompt": "Run a value search over the io ports 0 to 255 for the value 5.",
    "expect": "CANNOT",
    "about": "scan"
   },
   {
-   "id": "M141",
+   "id": "m141",
    "prompt": "Record the sound of the next 120 frames to /tmp/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
    "tool": "audio_record",
    "args": {
@@ -2510,7 +2510,7 @@
    }
   },
   {
-   "id": "M142",
+   "id": "m142",
    "prompt": "Put the note 'ball hits the paddle here' on routine PaddleHit of the sound cpu audiocpu.",
    "tool": "comment_write",
    "args": {
@@ -2529,7 +2529,7 @@
    ]
   },
   {
-   "id": "M143",
+   "id": "m143",
    "prompt": "Note at hex 1F2C0: 'bounce, then slow down'.",
    "tool": "comment_write",
    "args": {
@@ -2547,7 +2547,7 @@
    ]
   },
   {
-   "id": "M144",
+   "id": "m144",
    "prompt": "Which notes are kept for the sound cpu audiocpu?",
    "tool": "comment_list",
    "args": {
@@ -2560,7 +2560,7 @@
    }
   },
   {
-   "id": "M145",
+   "id": "m145",
    "prompt": "Remove the note at 1F2C0 on the cpu tagged audiocpu.",
    "tool": "comment_write",
    "args": {
@@ -2583,7 +2583,7 @@
    ]
   },
   {
-   "id": "M146",
+   "id": "m146",
    "prompt": "Write every note to /tmp/mcp-probe-game.comments.tsv.",
    "tool": "comment_write",
    "args": {
@@ -2595,7 +2595,7 @@
    ]
   },
   {
-   "id": "M147",
+   "id": "m147",
    "prompt": "Bring in the notes from /tmp/mcp-probe-game.comments.tsv.",
    "tool": "comment_write",
    "args": {
@@ -2607,13 +2607,13 @@
    ]
   },
   {
-   "id": "M148",
+   "id": "m148",
    "prompt": "Remove every note at once.",
    "expect": "CANNOT",
    "about": "comment_write"
   },
   {
-   "id": "M149",
+   "id": "m149",
    "prompt": "Record which instruction addresses the CPU goes through during the next 45 frames.",
    "tool": "trace",
    "args": {
@@ -2621,7 +2621,7 @@
    }
   },
   {
-   "id": "M150",
+   "id": "m150",
    "prompt": "For 375 ms of emulated time, list every program location the processor reaches, matched to the symbol names.",
    "tool": "trace",
    "args": {
@@ -2629,7 +2629,7 @@
    }
   },
   {
-   "id": "M151",
+   "id": "m151",
    "prompt": "Over 12 frames, log which code locations run and keep that log at /tmp/e5-window.trace.",
    "tool": "trace",
    "args": {
@@ -2638,7 +2638,7 @@
    }
   },
   {
-   "id": "M152",
+   "id": "m152",
    "prompt": "Find out which code runs during 30 frames, giving up if it takes longer than 25 seconds of real time.",
    "tool": "trace",
    "args": {
@@ -2647,7 +2647,7 @@
    }
   },
   {
-   "id": "M153",
+   "id": "m153",
    "prompt": "Which code does the second processor, subcpu, run during the next 8 frames? I want every location it reaches.",
    "tool": "trace",
    "args": {
@@ -2661,7 +2661,7 @@
    }
   },
   {
-   "id": "M154",
+   "id": "m154",
    "prompt": "Over 6 frames I need, for every code location the CPU runs, exactly how many times it ran, uncondensed.",
    "tool": "trace",
    "args": {
@@ -2670,13 +2670,13 @@
    }
   },
   {
-   "id": "M155",
+   "id": "m155",
    "prompt": "Record every code location the CPU runs from now until the routine irq_vblank is first reached, however long that takes.",
    "expect": "CANNOT",
    "about": "trace"
   },
   {
-   "id": "M157",
+   "id": "m157",
    "prompt": "Force register D5 to the value 0x2f00.",
    "tool": "set_register",
    "args": {
@@ -2695,7 +2695,7 @@
    }
   },
   {
-   "id": "M158",
+   "id": "m158",
    "prompt": "Keep only the scanned cells that now hold the value 0xbeef.",
    "tool": "scan",
    "args": {
@@ -2715,7 +2715,7 @@
    ]
   },
   {
-   "id": "M159",
+   "id": "m159",
    "prompt": "Press the field P2 Button 1 of port :IN1 with the value 0x40 for 2 frames.",
    "tool": "input",
    "args": {
@@ -2731,7 +2731,7 @@
    }
   },
   {
-   "id": "M160",
+   "id": "m160",
    "prompt": "Read 16 bytes of the memory block MAME keeps under the tag vram, starting 0x1c0 bytes into it.",
    "tool": "read_block",
    "args": {
@@ -2751,7 +2751,7 @@
    }
   },
   {
-   "id": "M161",
+   "id": "m161",
    "prompt": "Show 4 tiles of the region gfx2, starting 0x800 bytes into it, in the loaded manifest's format chars8, through the palette device tagged ppu_pal from pen 0x30.",
    "tool": "gfx_view",
    "args": {
@@ -2784,7 +2784,7 @@
    }
   },
   {
-   "id": "M162",
+   "id": "m162",
    "prompt": "Search the 8x8 screen patch at x 16, y 24 for a tile of the region gfx1, starting 0x400 bytes into it, under the loaded manifest's format chars8.",
    "tool": "gfx_locate",
    "args": {
@@ -2812,7 +2812,7 @@
    }
   },
   {
-   "id": "M163",
+   "id": "m163",
    "prompt": "Show the region gfx3, starting 0x2000 bytes into it, under every candidate layout at the default depths and size, through the palette device tagged ppu_pal from pen 0x50.",
    "tool": "gfx_sweep",
    "args": {
@@ -2843,7 +2843,7 @@
    }
   },
   {
-   "id": "M164",
+   "id": "m164",
    "prompt": "In one call: force register D0 to the value 0x7f, then step one instruction.",
    "tool": "perform",
    "args": {
@@ -2898,13 +2898,13 @@
    ]
   },
   {
-   "id": "M156",
+   "id": "m156",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
    "expect": "CANNOT",
    "about": "start"
   },
   {
-   "id": "M165",
+   "id": "m165",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Nobody is going to watch it, but this once I want its window brought to the front when it launches.",
    "tool": "start",
    "args": {
@@ -2916,7 +2916,7 @@
    }
   },
   {
-   "id": "M166",
+   "id": "m166",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
    "tool": "start",
    "args": {
@@ -2929,7 +2929,7 @@
    }
   },
   {
-   "id": "M167",
+   "id": "m167",
    "prompt": "On the cpu tagged audiocpu, add one row every time the sound latch at hex address 6000 is READ, with the value read, without ever stopping the machine.",
    "tool": "watch_add",
    "args": {
@@ -2968,7 +2968,7 @@
    ]
   },
   {
-   "id": "M168",
+   "id": "m168",
    "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base.",
    "tool": "start",
    "args": {
@@ -2978,7 +2978,7 @@
    }
   },
   {
-   "id": "M169",
+   "id": "m169",
    "prompt": "End the MAME session, and keep what MAME printed last on each of its channels even if it quits cleanly.",
    "tool": "close",
    "args": {
@@ -2986,7 +2986,7 @@
    }
   },
   {
-   "id": "M170",
+   "id": "m170",
    "prompt": "I am auditing the ROM set: list the machine's ROM files with their crc and sha1, and nothing else of the machine.",
    "tool": "machine_map",
    "args": {
@@ -2999,7 +2999,7 @@
    ]
   },
   {
-   "id": "M171",
+   "id": "m171",
    "prompt": "Keep frames 1200 to 1260 of the screen, every second frame, only the region at x 0, y 0, 64 by 32, into the new directory /tmp/run7-series, and give the run up to 45 seconds.",
    "tool": "series_capture",
    "args": {
@@ -3017,7 +3017,7 @@
    }
   },
   {
-   "id": "M172",
+   "id": "m172",
    "prompt": "Keep exactly frames 500, 520 and 540 of the whole screen; they can go to the session's scratch.",
    "tool": "series_capture",
    "args": {
@@ -3029,7 +3029,7 @@
    }
   },
   {
-   "id": "M173",
+   "id": "m173",
    "prompt": "Compare /tmp/a/f000010.png with /tmp/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
    "tool": "image_compare",
    "args": {
@@ -3047,7 +3047,7 @@
    ]
   },
   {
-   "id": "M174",
+   "id": "m174",
    "prompt": "Compare the series /tmp/run1/manifest.json against /tmp/run2/manifest.json, only over the rectangle at x 8, y 8, 32 by 16.",
    "tool": "image_compare",
    "args": {
@@ -3066,7 +3066,7 @@
    ]
   },
   {
-   "id": "M175",
+   "id": "m175",
    "prompt": "In the series /tmp/run1/manifest.json, when does the rectangle at x 100, y 20, 24 by 8 match the picture /tmp/ref/digit.png in 95% or more of its pixels? List at most 10 changes.",
    "tool": "image_compare",
    "args": {
@@ -3089,7 +3089,7 @@
    ]
   },
   {
-   "id": "M176",
+   "id": "m176",
    "prompt": "In the series /tmp/run1/manifest.json, how many pixels of the rectangle at x 0, y 200, 320 by 24 changed from the frame before, on each frame where some did?",
    "tool": "image_compare",
    "args": {
@@ -3109,7 +3109,7 @@
    ]
   },
   {
-   "id": "M177",
+   "id": "m177",
    "prompt": "Check the frames of the series /tmp/run1/manifest.json against the goldens listed in /tmp/goldens.sha256.",
    "tool": "image_compare",
    "args": {
@@ -3122,7 +3122,7 @@
    ]
   },
   {
-   "id": "M178",
+   "id": "m178",
    "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256.",
    "tool": "image_compare",
    "args": {
@@ -3135,7 +3135,7 @@
    ]
   },
   {
-   "id": "M179",
+   "id": "m179",
    "prompt": "Compare the pictures /tmp/a/before.png and /tmp/b/after.png, which are not the same size, over the rectangle at x 0, y 0, 200 by 150 they share.",
    "tool": "image_compare",
    "args": {
@@ -3154,7 +3154,7 @@
    ]
   },
   {
-   "id": "M180",
+   "id": "m180",
    "prompt": "Measure the recording /tmp/rec/boot.wav between 0.5 and 2 seconds, only its left channel: did it sound, how loud, and when did it start?",
    "tool": "audio_compare",
    "args": {
@@ -3171,7 +3171,7 @@
    ]
   },
   {
-   "id": "M181",
+   "id": "m181",
    "prompt": "Measure the whole recording /tmp/rec/title.wav, every channel.",
    "tool": "audio_compare",
    "args": {
@@ -3183,7 +3183,7 @@
    ]
   },
   {
-   "id": "M182",
+   "id": "m182",
    "prompt": "Compare the recording /tmp/rec/new.wav with the reference /tmp/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
    "tool": "audio_compare",
    "args": {
@@ -3201,7 +3201,7 @@
    ]
   },
   {
-   "id": "M183",
+   "id": "m183",
    "prompt": "Write what this session has done so far as a replay document to /tmp/bench/circus.json.",
    "tool": "perform_export",
    "args": {
@@ -3209,7 +3209,7 @@
    }
   },
   {
-   "id": "M184",
+   "id": "m184",
    "prompt": "Export this session as a replay to /tmp/bench/circus.json, replacing the document already there.",
    "tool": "perform_export",
    "args": {
@@ -3218,7 +3218,7 @@
    }
   },
   {
-   "id": "M185",
+   "id": "m185",
    "prompt": "Save the session as a replay document named session.json in the bench folder of my home directory.",
    "tool": "perform_export",
    "args": {
@@ -3226,7 +3226,7 @@
    }
   },
   {
-   "id": "M186",
+   "id": "m186",
    "prompt": "In one call, run 60 frames and have the call stop as diverged unless that run's stop is at pc 0x00001a2c on frame 160.",
    "tool": "perform",
    "args": {
@@ -3278,13 +3278,13 @@
    ]
   },
   {
-   "id": "M187",
+   "id": "m187",
    "prompt": "Export only the last ten calls of this session as a replay document.",
    "expect": "CANNOT",
    "about": "perform_export"
   },
   {
-   "id": "M188",
+   "id": "m188",
    "prompt": "Save a picture of the screen's top-left 48 by 40 pixels to /tmp/mcp-probe-quiet.png, but do not attach it to your reply: I only need the file.",
    "tool": "screen_view",
    "args": {
@@ -3302,7 +3302,7 @@
    ]
   },
   {
-   "id": "M189",
+   "id": "m189",
    "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to /tmp/mcp-probe-gfx.png without attaching it to the reply.",
    "tool": "gfx_view",
    "args": {
@@ -3322,7 +3322,7 @@
    ]
   },
   {
-   "id": "M190",
+   "id": "m190",
    "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256, listing at most 5 names in each list.",
    "tool": "image_compare",
    "args": {
@@ -3336,7 +3336,7 @@
    ]
   },
   {
-   "id": "M191",
+   "id": "m191",
    "prompt": "Load the screen map /tmp/maps/circus.screen-map.json.",
    "tool": "screen_map_write",
    "args": {
@@ -3348,7 +3348,7 @@
    ]
   },
   {
-   "id": "M192",
+   "id": "m192",
    "prompt": "The machine is stopped on the attract screen. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, with a place named credits at x 160, y 240, 80 by 12.",
    "tool": "screen_map_write",
    "args": {
@@ -3379,13 +3379,13 @@
    ]
   },
   {
-   "id": "M193",
+   "id": "m193",
    "prompt": "The machine is stopped. Which of the mapped screens is it showing right now?",
    "tool": "screen_map_find",
    "args": {}
   },
   {
-   "id": "M194",
+   "id": "m194",
    "prompt": "Write this session's screen maps to /tmp/maps/circus.screen-map.json, replacing the file that is there.",
    "tool": "screen_map_write",
    "args": {
@@ -3398,7 +3398,7 @@
    ]
   },
   {
-   "id": "M195",
+   "id": "m195",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
    "tool": "start",
    "args": {
@@ -3410,12 +3410,12 @@
    }
   },
   {
-   "id": "M196",
+   "id": "m196",
    "prompt": "Is this session's window being marked as driven right now, or could the marking not be drawn?",
    "tool": "status"
   },
   {
-   "id": "M197",
+   "id": "m197",
    "prompt": "A state was just loaded and its reply gave the mark 48213 for the emulator channel. Show the newest 20 lines of the emulator's error.log matching PERF that were written after that mark.",
    "tool": "log",
    "args": {
@@ -3429,7 +3429,7 @@
    ]
   },
   {
-   "id": "M198",
+   "id": "m198",
    "prompt": "After a state load whose reply gave the mark 912 for the process channel, wait up to 60 seconds for a line matching LEVEL 2 in the process's own stdout log, counting only what was written after that mark.",
    "tool": "log_wait",
    "args": {
@@ -3443,7 +3443,7 @@
    ]
   },
   {
-   "id": "M199",
+   "id": "m199",
    "prompt": "Keep only the scanned cells whose value dropped since the search was opened, and show me at most 12 of the survivors.",
    "tool": "scan",
    "args": {
@@ -3457,7 +3457,7 @@
    ]
   },
   {
-   "id": "M200",
+   "id": "m200",
    "prompt": "Start MAME from /opt/wheels/mamed, system wheelfir, ROMs in /opt/wheels/roms, reference image /opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.",
    "tool": "start",
    "args": {
@@ -3472,7 +3472,7 @@
    ]
   },
   {
-   "id": "M201",
+   "id": "m201",
    "prompt": "The machine is stopped on the play screen of a game whose PC port draws the same pixels through a palette of other colours. Map this screen as play, known by the strip at x 0, y 0, 320 wide and 8 high, signed so that one map knows it on both machines.",
    "tool": "screen_map_write",
    "args": {
@@ -3494,7 +3494,7 @@
    ]
   },
   {
-   "id": "M202",
+   "id": "m202",
    "prompt": "The screen map is loaded. Run to its hiscores screen, counting the control at FrameTick on the way.",
    "tool": "run_to",
    "args": {
@@ -3503,7 +3503,7 @@
    }
   },
   {
-   "id": "M203",
+   "id": "m203",
    "prompt": "Load the screen map /tmp/maps/speedf.screen-map.json for a machine that shows the game's picture twice as large, with 40 rows of border above and below it.",
    "tool": "screen_map_write",
    "args": {
@@ -3520,7 +3520,7 @@
    ]
   },
   {
-   "id": "M204",
+   "id": "m204",
    "prompt": "The screen map is loaded, and its screen named attract has no anchor. Run until the machine shows the attract screen, giving up after 20 seconds.",
    "tool": "run_to",
    "args": {
@@ -3529,7 +3529,7 @@
    }
   },
   {
-   "id": "M205",
+   "id": "m205",
    "prompt": "The screen map loaded is consolidated, and the machine is stopped on the attract screen, which is whole once DrawAttract has run. Map it as attract, known by the strip at x 0, y 0, 248 pixels wide and 12 high, entered by that routine.",
    "tool": "screen_map_write",
    "args": {
@@ -3550,7 +3550,7 @@
    ]
   },
   {
-   "id": "M206",
+   "id": "m206",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching on their second display (display 1).",
    "tool": "start",
    "args": {
@@ -3563,7 +3563,7 @@
    }
   },
   {
-   "id": "M207",
+   "id": "m207",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it over Moonlight, which streams only the main display.",
    "tool": "start",
    "args": {
@@ -3578,12 +3578,12 @@
    ]
   },
   {
-   "id": "M208",
+   "id": "m208",
    "prompt": "Where is the MAME window right now: on which display, and is it on screen and in front?",
    "tool": "window"
   },
   {
-   "id": "M210",
+   "id": "m210",
    "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it in a window of exactly 1280 by 960.",
    "tool": "start",
    "args": {
@@ -3596,7 +3596,7 @@
    }
   },
   {
-   "id": "M209",
+   "id": "m209",
    "prompt": "The MAME window is hidden behind another application. Bring it to the front.",
    "tool": "window",
    "args": {
@@ -3604,7 +3604,7 @@
    }
   },
   {
-   "id": "M211",
+   "id": "m211",
    "prompt": "The machine is stopped and its screen map is loaded. Let it run until the mapped screen called menu is on screen, checking every 5 frames, and stop there.",
    "tool": "screen_wait",
    "args": {
@@ -3618,7 +3618,7 @@
    ]
   },
   {
-   "id": "M212",
+   "id": "m212",
    "prompt": "Start MAME from the run recipe this repository declares for the field bench, a profile called field-bench, and give it no other argument.",
    "tool": "start",
    "args": {
@@ -3626,7 +3626,7 @@
    }
   },
   {
-   "id": "M213",
+   "id": "m213",
    "prompt": "Replay the session kept in /tmp/mcp-probe-session.json on this machine, in one call, and do not send the steps yourself.",
    "tool": "perform",
    "args": {
@@ -3634,7 +3634,7 @@
    }
   },
   {
-   "id": "M214",
+   "id": "m214",
    "prompt": "Show me what this session has learned that could be written into the repository's store, without writing anything.",
    "tool": "promote",
    "args": {
@@ -3642,7 +3642,7 @@
    }
   },
   {
-   "id": "M215",
+   "id": "m215",
    "prompt": "Promote only the map candidate this session kept under the name lineup into the repository at /tmp/probe-repo, writing it there as bench-map, and nothing else.",
    "tool": "promote",
    "args": {
@@ -3656,7 +3656,7 @@
    }
   },
   {
-   "id": "M216",
+   "id": "m216",
    "prompt": "Several entries are kept for the store at /tmp/probe-repo. Show which could be written and which could not, and why, without writing any.",
    "tool": "promote",
    "args": {

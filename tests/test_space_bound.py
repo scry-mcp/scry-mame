@@ -19,7 +19,7 @@ class _Memory(_ConsoleSession):
 
     def __init__(self, size: int) -> None:
         super().__init__(replies={
-            "cpulist": captured("cpulist.main-visible.txt"),
+            "cpulist": captured("cpulist-main-visible.txt"),
             "save": self._save, "find": lambda cmd: "Not found\n"})
         self.memory = bytearray(size)
 

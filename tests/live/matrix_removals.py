@@ -6,6 +6,9 @@ from typing import Any
 from live_harness import blocked, call, cell, ok, said
 from reader_fault import reader_fault, reader_fault_counts
 
+from scry_mame import capture as mcapture
+from scry_mame import tally as mtally
+
 # Present in a removal line and absent from an install line (`tap.remove_script`).
 REMOVAL_LINE = "T.items[id] = nil"
 
@@ -92,7 +95,7 @@ def k_capture_leftover(t: str, ref: str, trigger: str) -> None:
     args = {"ref": ref, "mode": "capture", "fmt": "u16[2]", "trigger": trigger}
     first = call("watch_add", **args)
     scratch = Path(str(call("status").get("scratch_dir")))
-    rows_path = scratch / f"capture-{first.get('tally_id')}.rows"
+    rows_path = mcapture.paths(scratch, str(first.get("tally_id")))[1]
 
     def rows() -> list[str]:
         return rows_path.read_text().splitlines() if rows_path.exists() else []
@@ -136,7 +139,7 @@ def k_redeclare_live(t: str, ref: str, length: int) -> None:
     first = call("watch_add", ref=ref, mode="count", length=length)
     call("step")
     tallied = item(call("run_for", frames=3, seconds=10.0))
-    planted = reader_fault(f"tally-{first.get('tally_id')}.txt", lag=1)
+    planted = reader_fault(mtally.dump_path(Path(), str(first.get('tally_id'))).name, lag=1)
     again = call("watch_add", ref=ref, mode="count", length=length)
     listed = item(call("declaration_list", kind="watch"))
     after = item(call("run_for", frames=2, seconds=10.0))

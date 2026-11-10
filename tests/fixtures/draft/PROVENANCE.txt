@@ -3,7 +3,7 @@ machine, as `scry_mame.evidence.record_locate` kept them, re-serialised with sor
 Program and board names were then replaced by neutral labels by a single mechanical substitution
 that preserves every field width; nothing else was edited.
 
-v30-locates.json.gz  the v30 board (the canonical
+v30-locates-json.gz  the v30 board (the canonical
                         romset), two `gfx_locate` answers over one session, each on a range of
                         the cpu's program space (no region or share holds this board's
                         graphics):

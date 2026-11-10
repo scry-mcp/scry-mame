@@ -111,7 +111,7 @@ def test_saved_screens_become_the_file_layer_and_load_back(
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     _ok(s.screen_map_write("add", screen="board", match=[STRIP], controls=[PLACE]))
-    path = tmp_path / "gridlee.screen-map.json"
+    path = tmp_path / "gridlee-screen-map.json"
     saved = _ok(s.screen_map_write("save", dest=str(path)))
     assert saved["promoted"] == ["board"] and json.loads(path.read_text())["application"] == (
         "gridlee")
@@ -127,7 +127,7 @@ def _consolidated_board(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     ses = _channel(monkeypatch, tmp_path)
     _serve(ses, "screen-gridlee", screen="gridlee-screen")
     _ok(s.screen_map_write("add", screen="board", match=[STRIP]))
-    path = tmp_path / "gridlee.screen-map.json"
+    path = tmp_path / "gridlee-screen-map.json"
     _ok(s.screen_map_write("save", dest=str(path)))
     doc = json.loads(path.read_text())
     doc["mode"], doc["screens"][0]["anchor"] = "consolidated", "DrawBoard"
@@ -147,16 +147,16 @@ def test_a_screen_added_to_a_consolidated_map_names_its_anchor_and_saves(
     added = _ok(s.screen_map_write("add", screen="score", match=[STRIP], anchor="DrawScore"))
     assert added["anchor"] == "DrawScore"
     (tmp_path / "out").mkdir()
-    saved = _ok(s.screen_map_write("save", dest=str(tmp_path / "out" / "gridlee.screen-map.json")))
+    saved = _ok(s.screen_map_write("save", dest=str(tmp_path / "out" / "gridlee-screen-map.json")))
     assert saved["promoted"] == ["score"] and saved["mode"] == "consolidated"
 
 
 @pytest.mark.parametrize(("call", "code"), [
-    (lambda p: s.screen_map_write("save", dest=str(p / "x.screen-map.json")), "needs_call"),
-    (lambda p: s.screen_map_write("load", path=str(p / "no.screen-map.json")), "bad_argument"),
-    (lambda p: s.screen_map_write("load", path="relative.screen-map.json"), "bad_argument"),
+    (lambda p: s.screen_map_write("save", dest=str(p / "x-screen-map.json")), "needs_call"),
+    (lambda p: s.screen_map_write("load", path=str(p / "no-screen-map.json")), "bad_argument"),
+    (lambda p: s.screen_map_write("load", path="relative-screen-map.json"), "bad_argument"),
     (lambda p: s.screen_map_write("save", dest=str(p / "x.json")), "bad_argument"),
-    (lambda p: s.screen_map_write("save", dest=str(p / "x.screen-map.json"), overwrite="yes"),
+    (lambda p: s.screen_map_write("save", dest=str(p / "x-screen-map.json"), overwrite="yes"),
      "bad_argument"),
     (lambda p: s.screen_map_write("add", screen="", match=[STRIP]), "bad_argument"),
     (lambda p: s.screen_map_write("add", screen="s", match=[]), "bad_argument"),

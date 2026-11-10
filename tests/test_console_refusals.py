@@ -1,4 +1,4 @@
-"""`debug` over the console's own error answers, from `fixtures/console/refused.*.txt`."""
+"""`debug` over the console's own error answers, from `fixtures/console/refused-*.txt`."""
 
 from __future__ import annotations
 
@@ -18,36 +18,36 @@ from scry_mame import state as mstate  # noqa: E402
 
 # (capture, the line sent, the command the console refused, the head of its error)
 REFUSED = [
-    ("refused.print-expression-subcpu", "print d@20113a:subcpu", "print d@20113a:subcpu",
+    ("refused-print-expression-subcpu", "print d@20113a:subcpu", "print d@20113a:subcpu",
      "Error in expression: d@20113a:subcpu / ^unknown symbol"),
-    ("refused.print-expression-symbol", "print zzz", "print zzz",
+    ("refused-print-expression-symbol", "print zzz", "print zzz",
      "Error in expression: zzz / ^unknown symbol"),
-    ("refused.bp-expression-symbol", "bp zzz", "bp zzz", "Error in expression: zzz"),
-    ("refused.unknown-command", "zzz 1", "zzz 1", "unknown command"),
-    ("refused.bpclear-number", "bpclear 0x7", "bpclear 0x7", "Invalid breakpoint number 7"),
-    ("refused.wpclear-number", "wpclear 0x9", "wpclear 0x9", "Invalid watchpoint number 9"),
-    ("refused.rpclear-number", "rpclear 0x7", "rpclear 0x7", "Invalid registerpoint number 7"),
-    ("refused.not-enough-params", "print", "print", "not enough parameters for command"),
-    ("refused.too-many-params", "focus maincpu,subcpu,zzz", "focus maincpu,subcpu,zzz",
+    ("refused-bp-expression-symbol", "bp zzz", "bp zzz", "Error in expression: zzz"),
+    ("refused-unknown-command", "zzz 1", "zzz 1", "unknown command"),
+    ("refused-bpclear-number", "bpclear 0x7", "bpclear 0x7", "Invalid breakpoint number 7"),
+    ("refused-wpclear-number", "wpclear 0x9", "wpclear 0x9", "Invalid watchpoint number 9"),
+    ("refused-rpclear-number", "rpclear 0x7", "rpclear 0x7", "Invalid registerpoint number 7"),
+    ("refused-not-enough-params", "print", "print", "not enough parameters for command"),
+    ("refused-too-many-params", "focus maincpu,subcpu,zzz", "focus maincpu,subcpu,zzz",
      "too many parameters for command"),
-    ("refused.unbalanced-parens", "print {d1==", "print {d1==", "unbalanced parentheses"),
-    ("refused.unbalanced-quotes", 'print "abc', 'print "abc', "unbalanced quotes"),
-    ("refused.assignment-expression", "d0=", "d0=",
+    ("refused-unbalanced-parens", "print {d1==", "print {d1==", "unbalanced parentheses"),
+    ("refused-unbalanced-quotes", 'print "abc', 'print "abc', "unbalanced quotes"),
+    ("refused-assignment-expression", "d0=", "d0=",
      "error in assignment expression: stack underflow"),
-    ("refused.comparison-bare", "print d1==1234", "print d1==1234",
+    ("refused-comparison-bare", "print d1==1234", "print d1==1234",
      "error in assignment expression: unknown symbol"),
-    ("refused.wpset-type", "wpset 0x100,4,x", "wpset 0x100,4,x",
+    ("refused-wpset-type", "wpset 0x100,4,x", "wpset 0x100,4,x",
      "Invalid watchpoint type: expected r, w, or rw"),
-    ("refused.loadr-missing-file", "loadr /nonexistent/nope.bin,0,4,:maincpu",
+    ("refused-loadr-missing-file", "loadr /nonexistent/nope.bin,0,4,:maincpu",
      "loadr /nonexistent/nope.bin,0,4,:maincpu", "Error opening file '/nonexistent/nope.bin'"),
-    ("refused.load-missing-file", "load /nonexistent/nope.bin,0,4",
+    ("refused-load-missing-file", "load /nonexistent/nope.bin,0,4",
      "load /nonexistent/nope.bin,0,4", "Error opening file '/nonexistent/nope.bin'"),
 ]
 ANSWERED = [
-    ("answered.print-pc", "print pc"),
-    ("answered.print-braces-false", "print {d1==7fff}"),
-    ("answered.comparison-braces", "print {d1==1234}"),
-    ("answered.bplist-none", "bplist"),
+    ("answered-print-pc", "print pc"),
+    ("answered-print-braces-false", "print {d1==7fff}"),
+    ("answered-comparison-braces", "print {d1==1234}"),
+    ("answered-bplist-none", "bplist"),
 ]
 
 
@@ -106,7 +106,7 @@ def test_an_answer_that_is_not_an_error_is_ok_with_no_refusal_field(
 def test_a_command_a_parse_error_refused_is_no_write_and_the_ones_after_it_never_ran(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """`d0=` alone: the console parsed nothing, so the assignment is no write."""
-    out = _refused(monkeypatch, tmp_path, "refused.assignment-expression", "d0=")
+    out = _refused(monkeypatch, tmp_path, "refused-assignment-expression", "d0=")
     assert out["mutates"] is False and out["session"]["altered"] is False
     assert mstate.STATE.console_writes == 0
 
@@ -114,18 +114,18 @@ def test_a_command_a_parse_error_refused_is_no_write_and_the_ones_after_it_never
 def test_a_command_refused_while_it_ran_is_still_a_write_because_it_may_have_written(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """`print d0=5,zzz` refuses `zzz` yet D0 reads 5: parameters are evaluated in order."""
-    out = _refused(monkeypatch, tmp_path, "refused.print-assign-then-error", "print d0=5,zzz")
+    out = _refused(monkeypatch, tmp_path, "refused-print-assign-then-error", "print d0=5,zzz")
     assert out["mutates"] is True and out["session"]["altered"] is True, out
     assert out["refused"][0]["index"] == 0 and out["not_run"] == []
     assert mstate.STATE.console_writes == 1
-    out = _refused(monkeypatch, tmp_path, "refused.load-missing-file",
+    out = _refused(monkeypatch, tmp_path, "refused-load-missing-file",
                    "load /nonexistent/nope.bin,0,4")
     assert out["mutates"] is True and mstate.STATE.console_writes == 1
 
 
 def test_an_error_in_the_middle_of_a_line_names_its_command_and_the_rest_ran(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    out = _refused(monkeypatch, tmp_path, "refused.semicolon-middle",
+    out = _refused(monkeypatch, tmp_path, "refused-semicolon-middle",
                    "print pc;print d@20113a:subcpu;print d0")
     assert "command 2 of 3, `print d@20113a:subcpu`" in out["message"], out["message"]
     assert "the rest of the line ran" in out["message"], out["message"]
@@ -135,7 +135,7 @@ def test_an_error_in_the_middle_of_a_line_names_its_command_and_the_rest_ran(
 def test_a_family_error_on_a_line_of_several_commands_is_pinned_on_the_familys_one(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """`print pc;bpclear 0x7`: the error is pinned on the line's one `bp` command."""
-    out = _refused(monkeypatch, tmp_path, "refused.print-then-bpclear", "print pc;bpclear 0x7")
+    out = _refused(monkeypatch, tmp_path, "refused-print-then-bpclear", "print pc;bpclear 0x7")
     assert out["refused"] == [{"index": 1, "command": "bpclear 0x7",
                                "error": "Invalid breakpoint number 7"}], out["refused"]
     assert "command 2 of 2, `bpclear 0x7`" in out["message"]
@@ -143,7 +143,7 @@ def test_a_family_error_on_a_line_of_several_commands_is_pinned_on_the_familys_o
 
 def test_a_parse_error_refuses_the_line_at_its_command_and_names_what_never_ran(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    out = _refused(monkeypatch, tmp_path, "refused.semicolon-first", "zzz 1;print pc")
+    out = _refused(monkeypatch, tmp_path, "refused-semicolon-first", "zzz 1;print pc")
     assert "command 1 of 2, `zzz 1`: unknown command" in out["message"], out["message"]
     assert "`print pc` never ran" in out["message"], out["message"]
     assert out["not_run"] == ["print pc"] and out["refused"][0]["index"] == 0
@@ -151,7 +151,7 @@ def test_a_parse_error_refuses_the_line_at_its_command_and_names_what_never_ran(
 
 def test_a_release_after_a_parse_error_never_ran_so_the_machine_is_not_marked_running(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    ses = _console(monkeypatch, tmp_path, {"zzz 1;g": captured("refused.unknown-then-g.txt")})
+    ses = _console(monkeypatch, tmp_path, {"zzz 1;g": captured("refused-unknown-then-g.txt")})
     monkeypatch.setattr(mstate.STATE, "run_release", {"emulated": 1.0, "wall": 2.0})
     out = s.debug(command="zzz 1;g")
     assert out["code"] == "bad_argument" and "running" not in out, out
@@ -165,7 +165,7 @@ def test_a_pinned_parse_error_keeps_its_not_run_beside_errors_that_could_not_be_
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """Two `Error in expression: foo` match two commands so neither is pinned; `yyy` is."""
     line = "print foo;print foo;yyy;g"
-    ses = _console(monkeypatch, tmp_path, {line: captured("refused.two-unpinned-then-parse.txt")})
+    ses = _console(monkeypatch, tmp_path, {line: captured("refused-two-unpinned-then-parse.txt")})
     out = s.debug(command=line)
     assert out["code"] == "bad_argument" and "running" not in out, out
     assert [r["index"] for r in out["refused"]] == [UNPINNED, UNPINNED, 2], out
@@ -177,7 +177,7 @@ def test_a_pinned_parse_error_keeps_its_not_run_beside_errors_that_could_not_be_
 def test_a_control_counter_assigned_after_a_parse_error_is_not_noted(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     line = "zzz 1;temp0=0"
-    text = captured("refused.trailing-semicolon.txt").replace(">zzz 1;", f">{line}")
+    text = captured("refused-trailing-semicolon.txt").replace(">zzz 1;", f">{line}")
     _console(monkeypatch, tmp_path, {line: text})
     monkeypatch.setitem(mstate.STATE.controls, ("hot", ":maincpu"),
                         {"addr": 0x400, "temp": 0, "index": 1, "missed": 0})
@@ -188,7 +188,7 @@ def test_a_control_counter_assigned_after_a_parse_error_is_not_noted(
 def test_the_bare_comparison_is_an_expression_to_the_console_and_judged_by_mames_rule(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """The console reads both as assignment expressions and its caret points at neither."""
-    out = _refused(monkeypatch, tmp_path, "refused.assign-then-comparison",
+    out = _refused(monkeypatch, tmp_path, "refused-assign-then-comparison",
                    "d1=1234;print d1==1234")
     assert out["refused"][0]["index"] == UNPINNED and "could not be told" in out["message"]
     assert out["not_run"] == [] and out["mutates"] is True and out["session"]["altered"] is True
@@ -200,7 +200,7 @@ def test_the_bare_comparison_is_an_expression_to_the_console_and_judged_by_mames
 
 def test_two_malformed_assignments_on_one_line_cannot_be_pinned(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    out = _refused(monkeypatch, tmp_path, "refused.assignment-two", "d0=;d1=")
+    out = _refused(monkeypatch, tmp_path, "refused-assignment-two", "d0=;d1=")
     assert out["refused"][0]["index"] == UNPINNED and out["refused"][0]["command"] == UNPINNED
     assert out["not_run"] == [] and "could not be told" in out["message"]
 
@@ -209,14 +209,14 @@ def test_a_parse_error_on_a_line_the_console_wrapped_is_still_pinned(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """The echo and the caret line come back wrapped; the caret's offset is read through it."""
     line = "print 1;" * 40 + "zzz"
-    out = _refused(monkeypatch, tmp_path, "refused.long-parse-error", line)
+    out = _refused(monkeypatch, tmp_path, "refused-long-parse-error", line)
     assert out["refused"] == [{"index": 40, "command": "zzz", "error": "unknown command"}]
     assert out["not_run"] == [] and "command 41 of 41, `zzz`" in out["message"]
 
 
 def test_a_trailing_semicolon_opens_no_empty_command(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    out = _refused(monkeypatch, tmp_path, "refused.trailing-semicolon", "zzz 1;")
+    out = _refused(monkeypatch, tmp_path, "refused-trailing-semicolon", "zzz 1;")
     assert out["refused"][0]["command"] == "zzz 1" and out["not_run"] == []
     assert "the console refused `zzz 1`" in out["message"], out["message"]
     assert console.console_commands("") == [""] and console.console_commands(";") == [""]
@@ -225,7 +225,7 @@ def test_a_trailing_semicolon_opens_no_empty_command(
 def test_an_error_that_cannot_be_pinned_names_the_line_and_counts_every_command(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """One `Invalid breakpoint number` per command and neither says which."""
-    out = _refused(monkeypatch, tmp_path, "refused.bpclear-two", "bpclear 0x7;bpclear 0x8")
+    out = _refused(monkeypatch, tmp_path, "refused-bpclear-two", "bpclear 0x7;bpclear 0x8")
     assert "could not be told from the answer" in out["message"], out["message"]
     assert [r["index"] for r in out["refused"]] == [UNPINNED, UNPINNED], out
     assert out["refused_total"] == 2 and out["refused"][0]["command"] == UNPINNED
@@ -233,7 +233,7 @@ def test_an_error_that_cannot_be_pinned_names_the_line_and_counts_every_command(
 
 def test_the_refusal_fields_are_bounded_like_output_is() -> None:
     line = ";".join(["print zzz"] * 400)
-    text = captured("refused.print-expression-symbol.txt").rstrip("\n").replace("\n\n", "\n")
+    text = captured("refused-print-expression-symbol.txt").rstrip("\n").replace("\n\n", "\n")
     found = console.refusals(line, (text + "\n") * 400)
     assert found is not None and len(found.refused) == 400
     fields = found.fields(console.console_commands(line))
@@ -245,7 +245,7 @@ def test_the_refusal_fields_are_bounded_like_output_is() -> None:
 def test_a_refused_console_step_ends_a_perform_and_a_drive_at_that_step(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     bad = "print d@20113a:subcpu"
-    _console(monkeypatch, tmp_path, {bad: captured("refused.print-expression-subcpu.txt")})
+    _console(monkeypatch, tmp_path, {bad: captured("refused-print-expression-subcpu.txt")})
     out = s.perform(steps=[{"op": "debug", "command": "bplist"},
                            {"op": "debug", "command": bad},
                            {"op": "registers"}], settle_seconds=0)

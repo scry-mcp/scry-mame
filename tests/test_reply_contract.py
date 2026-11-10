@@ -96,7 +96,7 @@ _ARGS: dict[str, dict[str, Any]] = {
     "gfx_draft": {},
     # absolute on every host, so the empty map refuses, not the spelling
     "screen_map_write": {"method": "save",
-                  "dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract.screen-map.json")},
+                  "dest": str(Path(tempfile.gettempdir()) / "mame-reply-contract-screen-map.json")},
 }
 
 

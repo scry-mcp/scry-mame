@@ -105,14 +105,14 @@ class _Pane(SessionFields):
         if m := re.fullmatch(r'comadd 0x([0-9a-f]+),"(.*)"', command):
             if self.refuse_next:
                 self.refuse_next = False
-                return captured("comadd.unbalanced.txt")
+                return captured("comadd-unbalanced.txt")
             self.held[self.visible, int(m.group(1), 16)] = m.group(2)
-            return captured("comadd.ok.txt")
+            return captured("comadd-ok.txt")
         if m := re.fullmatch(r"comdelete 0x([0-9a-f]+)", command):
             key = (self.visible, int(m.group(1), 16))
             if key not in self.moved:
                 self.held.pop(key, None)
-            return captured("comdelete.ok.txt")
+            return captured("comdelete-ok.txt")
         if command.startswith("dasm "):
             name, addr, _length, _flag, cpu = command[5:].split(",")
             (self.scratch / name).write_text(self.line(cpu, int(addr, 16)) + "\n",
@@ -169,9 +169,9 @@ def held(cpu: str | None = None) -> list[dec.Declaration]:
 
 def test_the_double_writes_the_lines_mame_wrote(tmp_path: Path) -> None:
     pane = _Pane(tmp_path)
-    assert pane.monitor('comadd 0x400,"plain"') == captured("comadd.ok.txt")
-    assert pane.line(MAIN, 0x400) + "\n" == captured("dasm.commented.txt")
-    assert pane.line(MAIN, 0x200000) + "\n" == captured("dasm.uncommented.txt")
+    assert pane.monitor('comadd 0x400,"plain"') == captured("comadd-ok.txt")
+    assert pane.line(MAIN, 0x400) + "\n" == captured("dasm-commented.txt")
+    assert pane.line(MAIN, 0x200000) + "\n" == captured("dasm-uncommented.txt")
 
 
 # ------------------------------------------------------------------------------- comment_write add
@@ -454,7 +454,7 @@ def test_a_comment_over_bytes_that_moved_stays_in_the_pane_and_the_delete_says_s
         # MAME's `comdelete` over bytes that changed since the `comadd` removes nothing
         if command.startswith("comdelete"):
             pane.commands.append(command)
-            return captured("comdelete.ok.txt")
+            return captured("comdelete-ok.txt")
         return original(command, timeout)
 
     pane.monitor = keep  # type: ignore[method-assign]
@@ -480,7 +480,7 @@ def _stamps() -> dict[str, str]:
 def test_save_writes_the_file_sorted_and_byte_exact(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _three(monkeypatch, tmp_path)
-    dest = tmp_path / "game.comments.tsv"
+    dest = tmp_path / "game-comments.tsv"
     out = s.comment_write("save", dest=str(dest))
     assert out["status"] == "ok" and out["comments_total"] == 3, out
     assert out["path"] == str(dest) and "dest" not in out, "the file written is `path`"
@@ -495,7 +495,7 @@ def test_save_writes_the_file_sorted_and_byte_exact(
 def test_save_replaces_its_own_file_and_names_the_rows_it_drops(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _three(monkeypatch, tmp_path)
-    dest = tmp_path / "game.comments.tsv"
+    dest = tmp_path / "game-comments.tsv"
     s.comment_write("save", dest=str(dest))
     s.comment_write("delete", ref="0x500", cpu="maincpu")
     out = s.comment_write("save", dest=str(dest))
@@ -569,7 +569,7 @@ def test_load_into_an_empty_store_keeps_the_files_stamps_and_feeds_the_pane(
 def test_load_lets_the_file_win_and_returns_each_row_it_replaced(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _three(monkeypatch, tmp_path)
-    dest = tmp_path / "game.comments.tsv"
+    dest = tmp_path / "game-comments.tsv"
     s.comment_write("save", dest=str(dest))
     s.comment_write("add", ref="irq_vblank", text="changed here", cpu="maincpu")
     s.comment_write("add", ref="0x600", text="only in the store", cpu="maincpu")
@@ -607,7 +607,7 @@ def test_load_refuses_a_bad_file_whole_naming_the_line(
 def test_what_save_writes_load_reads_back_into_a_fresh_store(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _three(monkeypatch, tmp_path)
-    dest = tmp_path / "game.comments.tsv"
+    dest = tmp_path / "game-comments.tsv"
     s.comment_write("save", dest=str(dest))
     before = {(d.ref, d.cpu, d.created_at, d.text) for d in held()}
     _pane(monkeypatch, tmp_path)
@@ -1667,7 +1667,7 @@ def test_a_console_answer_to_comadd_is_quoted_on_one_line(
     pane = _pane(monkeypatch, tmp_path)
     pane.refuse_next = True
     out = s.comment_write("add", ref="0x900", text="t", cpu="maincpu")
-    said = " ".join(captured("comadd.unbalanced.txt").strip().split())
+    said = " ".join(captured("comadd-unbalanced.txt").strip().split())
     assert out["comment"]["why"] == f"the console answered `comadd` with {said!r}", out
 
 

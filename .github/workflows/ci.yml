@@ -48,5 +48,5 @@ jobs:
       # The coverage floor counts every platform branch of the tree as macOS runs it, so it is
       # judged there; here the suite judges behaviour.
       - run: uv run pytest -q --no-cov -rs
-      - run: bash .githooks/pre-commit.test.sh
+      - run: bash .githooks/pre-commit-test.sh
       - run: uv run python -m scry_core.hook

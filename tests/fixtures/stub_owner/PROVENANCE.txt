@@ -2,6 +2,6 @@ Captured live, never authored: Windows' TCP table read through `GetExtendedTcpTa
 (TCP_TABLE_OWNER_PID_ALL) by a probe that held, in one process of a known pid, a listener on
 127.0.0.1, a listener on ::1, and a connection to the first that it accepted itself.
 
-tcp_rows.json  the probe's pid, its three ports, and each row of the table that names one of
+tcp-rows.json  the probe's pid, its three ports, and each row of the table that names one of
                them, as the raw bytes the call returned (hex): for IPv4 the listener and both
                ends of the connection, for IPv6 the listener. No other row was kept.

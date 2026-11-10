@@ -6,7 +6,7 @@ THE m68k-dual CASE IS CAPTURED, on its own build through this server: stopped at
 on the strobe (`0x70001e`, 2 bytes, `0xffff`, keep 3, frames 12), then run 14 frames. The arming
 chunk's answer and files are `arm-m68k-dual.*`; `film.txt` is the header the film wrote and
 `frame-1.*`, `frame-2.*` the first two kept frames as the notifier left them (frames 900 and 901,
-each read at the next frame); `capture-m68k-dual.rows.gz` the capture's rows of frames 899..902.
+each read at the next frame); `capture-m68k-dual-rows.gz` the capture's rows of frames 899..902.
 `arm-circus.*` is the arming on the stock `circus` at frame 600, where MAME's snapshot is not
 the bare screen: it holds colours none of the screen's two pens does. `MAP_BLIT` is the
 console's `map 0x70001e` on m68k-dual.
@@ -88,9 +88,9 @@ def _serve_arm(ses: _ChannelSession, board: str, snap: bytes | None = None) -> N
     seq = mstate.STATE.lua_seq + 1
     text = (FIX / f"arm-{board}.txt").read_bytes()
     ses.answers[seq] = re.sub(rb"MAME_MCP_LUA_END#\d+", b"MAME_MCP_LUA_END#%d" % seq, text)
-    (ses.scratch / f"screen-{seq}.bin").write_bytes(_gz(f"arm-{board}-screen.bin"))
+    (ses.scratch / f"screen-{seq}.bin").write_bytes(_gz(f"arm-{board}-screen-bin"))
     (ses.scratch / f"screen-{seq}-snap.bin").write_bytes(
-        _gz(f"arm-{board}-snap.bin") if snap is None else snap)
+        _gz(f"arm-{board}-snap-bin") if snap is None else snap)
 
 
 def _armed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[str, Any]:
@@ -139,8 +139,8 @@ def _wrote(rec: dict[str, Any], frames: tuple[int, ...] = (1, 2), header: str | 
         if edits and f"frame-{k}.txt" in edits:
             txt = _edited(txt, *edits[f"frame-{k}.txt"])
         (film.dir / f"frame-{k}.txt").write_text(txt)
-        (film.dir / f"frame-{k}.bin").write_bytes(_gz(f"frame-{src}.bin"))
-        (film.dir / f"frame-{k}.snap").write_bytes(_gz(f"frame-{src}.snap"))
+        (film.dir / f"frame-{k}.bin").write_bytes(_gz(f"frame-{src}-bin"))
+        (film.dir / f"frame-{k}.snap").write_bytes(_gz(f"frame-{src}-snap"))
         (film.dir / f"frame-{k}.pens").write_bytes((FIX / f"frame-{src}.pens").read_bytes())
     return film.dir
 
@@ -302,7 +302,7 @@ def test_every_listed_hit_is_a_write_the_capture_recorded_on_the_same_frame() ->
     """Two taps on one strobe: each hit a kept frame names (pc, value, the counter the tap read)
     is a row of the blitter's capture with that pc, that data and that frame."""
     rows = {(int(pc, 16), int(data, 16), int(frame))
-            for line in gzip.decompress((FIX / "capture-m68k-dual.rows.gz").read_bytes())
+            for line in gzip.decompress((FIX / "capture-m68k-dual-rows.gz").read_bytes())
             .decode().splitlines()
             for _r, _n, frame, pc, data, *_rest in [line.split(" ")]}
     for k in (1, 2):
@@ -320,7 +320,7 @@ def test_a_read_converts_each_kept_frame_to_an_indexed_png_in_its_own_pens(
     # a pen no pixel shows moved between the frame's notifier and the next, as a palette upload
     # would: the PLTE is the frame's own pens, not the ones the capture found a frame later
     size = 336 * 252 * 4
-    shown = {v & 0xFFFFFF for v in array("I", _gz("frame-1.bin")[size:2 * size])}
+    shown = {v & 0xFFFFFF for v in array("I", _gz("frame-1-bin")[size:2 * size])}
     unused = min(set(range(256)) - shown)
     pens = bytearray((folder / "frame-1.pens").read_bytes())
     pens[4 * unused:4 * unused + 4] = (0xFF123456).to_bytes(4, sys.byteorder)
@@ -588,7 +588,7 @@ def test_a_crop_narrows_every_picture_and_its_file(
     assert out["film"]["crop"] == [40, 30, 64, 48], out
     small = _png(folder / "frame-1.png")
     assert (small.width, small.height) == (64, 48)
-    cap_pixels = array("I", _gz("frame-1.bin")[336 * 252 * 4:2 * 336 * 252 * 4])
+    cap_pixels = array("I", _gz("frame-1-bin")[336 * 252 * 4:2 * 336 * 252 * 4])
     for x, y in ((0, 0), (63, 47), (10, 20)):
         assert small.pixels[y * 64 + x] == cap_pixels[(30 + y) * 336 + 40 + x] & 0xFFFFFF
 
@@ -923,22 +923,22 @@ def test_a_direct_colour_screen_keeps_its_frames_in_colour_checked_against_mames
     head = _edited(_header("starfire-film.txt"), "taken=2", "taken=1")
     (film.dir / "film.txt").write_text(head)
     (film.dir / "frame-1.txt").write_text(_current((FIX / "starfire-frame-1.txt").read_text()))
-    (film.dir / "frame-1.bin").write_bytes(_gz("starfire-frame-1.bin"))
-    (film.dir / "frame-1.snap").write_bytes(_gz("starfire-frame-1.snap"))
+    (film.dir / "frame-1.bin").write_bytes(_gz("starfire-frame-1-bin"))
+    (film.dir / "frame-1.snap").write_bytes(_gz("starfire-frame-1-snap"))
     (film.dir / "frame-1.pens").write_bytes(b"")
     out = s.gfx_film()
     assert out["kept"] == 1 and out["refused"] == 0, out
     shown = _png(film.dir / "frame-1.png")
     assert not shown.indexed and (shown.width, shown.height) == (256, 224)
-    colours = array("I", _gz("starfire-frame-1.bin"))
+    colours = array("I", _gz("starfire-frame-1-bin"))
     for x, y in ((0, 0), (128, 100), (255, 223)):
         c = colours[y * 256 + x]
         assert shown.at(x, y) == ((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF)
     assert out["cells"][0]["value"] == "0xff" and out["cells"][0]["pc"] == "0x00000091"
-    snap = bytearray(_gz("starfire-frame-1.snap"))
+    snap = bytearray(_gz("starfire-frame-1-snap"))
     snap[4 * (100 * 256 + 128)] ^= 0x01
     for suffix, data in ((".txt", _current((FIX / "starfire-frame-1.txt").read_text()).replace(
-            "k=1 ", "k=2 ").encode()), (".bin", _gz("starfire-frame-1.bin")),
+            "k=1 ", "k=2 ").encode()), (".bin", _gz("starfire-frame-1-bin")),
             (".snap", bytes(snap)), (".pens", b"")):
         (film.dir / f"frame-2{suffix}").write_bytes(data)
     (film.dir / "film.txt").write_text(_edited(head, "taken=1", "taken=2"))

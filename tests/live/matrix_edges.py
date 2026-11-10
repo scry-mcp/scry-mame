@@ -134,7 +134,7 @@ def _lua_of(n: int) -> str:
     return head + "x" * (n - len(head))
 
 
-NAME_MAX = 64  # a state name: letters, digits, `_` and `-`, never `-` first, up to 64
+NAME_MAX = 64  # a state name: written as a file name is, up to 64
 MAX_NAME = "s" * NAME_MAX
 # A WAIT IS EXEMPT FROM B1 ONLY WHERE THE CALL RETURNS AT ONCE, so a published maximum is proved
 # without being waited out; `run_case` FAILS the cell if it took longer than the ceiling, so each
@@ -399,7 +399,7 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("state_write save.name empty", "state_write", {"method": "save", "name": ""},
          is_refused("bad_argument")),
-    Case("state_write save.name with a space", "state_write", {"method": "save", "name": "a b"},
+    Case("state_write save.name with no letter", "state_write", {"method": "save", "name": "_ _"},
          is_refused("bad_argument")),
     Case(f"state_write load.name at max {NAME_MAX}", "state_write", {"method": "load",
                                                                      "name": MAX_NAME},
