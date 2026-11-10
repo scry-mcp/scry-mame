@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- The descriptions say that a start nobody watches has a small window run flat out (`start`),
+  that a `count` watch tallies writes by value and by writer (`watch_add`), and that a sweep's
+  `tag` is a memory region's or a share's (`gfx_sweep`).
 - The files the server writes follow
   [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md): lowercase
   words joined by hyphens and one extension. A file `dest` is written under its normalised name

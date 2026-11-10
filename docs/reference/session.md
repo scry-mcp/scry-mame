@@ -23,7 +23,8 @@ answers `unavailable` for it. The check: `reference_rom`, `reference_addr`, `ref
 (`0x`, the image's first byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
 `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
-fits the display's usable area, drawn at the view's aspect, real speed). `display`: the OS's
+fits the display's usable area, drawn at the view's aspect, real speed); false, a small
+window run flat out. `display`: the OS's
 display index for that window, 0 (the main display) when omitted; `size`:
 `WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
 whole multiple of the screen is stretched by a fraction, and the reply's `note` says so). Both

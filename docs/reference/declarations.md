@@ -187,7 +187,8 @@ watch_add(ref, mode, length=0, fmt="auto", by="auto", cpu="", condition="", trig
 Declare a watch at `ref`. Stored, re-armed at `start`.
 
 `mode`: `show` (read at each stop), `change` (a write stops the machine), `count` (tallies
-writes, or with `trigger_type` `r` or `rw` the reads as `reads`, apart), `capture` (rows at
+writes by value and by writer pc; with `trigger_type` `r` or `rw` the reads are one count,
+`reads`, apart), `capture` (rows at
 `trigger`), `expr` (one debugger expression). `ref`: a symbol,
 `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
 .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).

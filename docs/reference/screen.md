@@ -955,7 +955,8 @@ cell labelled (`S1C3`); nothing is ranked.
 
 The family: `planes` x `sizes` ([width, height], sides 8..32) x pixel order x
 `packed`, `planar` or `split` (`tag` only); at most 16 candidates. `count`: tiles a
-cell shows (1..64). Source: `tag` with `offset` (an integer or a `0x` string), or `ref`.
+cell shows (1..64). Source: a memory region's or share's `tag` with
+`offset` (an integer or a `0x` string), or `ref`.
 `palette` as `gfx_view`. `pen_base`: the pen each pixel starts at; `dest`: a new path the
 sheet is written to, else the scratch; `cpu`: whose address space, the visible one when
 empty; `seconds` bounds the read.

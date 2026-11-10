@@ -176,7 +176,8 @@ def start(
     (`0x`, the image's first byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
-    fits the display's usable area, drawn at the view's aspect, real speed). `display`: the OS's
+    fits the display's usable area, drawn at the view's aspect, real speed); false, a small
+    window run flat out. `display`: the OS's
     display index for that window, 0 (the main display) when omitted; `size`:
     `WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
     whole multiple of the screen is stretched by a fraction, and the reply's `note` says so). Both
@@ -656,7 +657,8 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
     """Declare a watch at `ref`. Stored, re-armed at `start`.
 
     `mode`: `show` (read at each stop), `change` (a write stops the machine), `count` (tallies
-    writes, or with `trigger_type` `r` or `rw` the reads as `reads`, apart), `capture` (rows at
+    writes by value and by writer pc; with `trigger_type` `r` or `rw` the reads are one count,
+    `reads`, apart), `capture` (rows at
     `trigger`), `expr` (one debugger expression). `ref`: a symbol,
     `0x` address or pointer place (`base->field`; stopped machine only). `fmt`: a scalar (`u8`
     .. `f64`), an array (`u16[8]`), a string (`char[16]`) or a struct (`{x:i16,y:i16}`).
@@ -1215,7 +1217,8 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
 
     The family: `planes` x `sizes` ([width, height], sides 8..{SWEEP_SIDE_MAX}) x pixel order x
     `packed`, `planar` or `split` (`tag` only); at most {SWEEP_MAX} candidates. `count`: tiles a
-    cell shows (1..{SWEEP_COUNT_MAX}). Source: `tag` with `offset` ({NUMBER_ARG}), or `ref`.
+    cell shows (1..{SWEEP_COUNT_MAX}). Source: a memory region's or share's `tag` with
+    `offset` ({NUMBER_ARG}), or `ref`.
     `palette` as `gfx_view`. `pen_base`: the pen each pixel starts at; `dest`: a new path the
     sheet is written to, else the scratch; `cpu`: whose address space, the visible one when
     empty; `seconds` bounds the read.
