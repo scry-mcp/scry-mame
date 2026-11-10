@@ -138,11 +138,17 @@ unset, those cells are BLOCKED naming the variable and the verdict says it is un
 are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map from
 `LINEUP_MAME_ROMS`, and is BLOCKED the same way without it. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
-[`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind
-(it steers placement, not the front, so an unwatched run still belongs where nobody is working),
+[`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind,
 `0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry
 the `window` marker and are out of every default run: `SCRY_FOCUS_CONTROL=1 uv run pytest
 -o addopts="" -m 'live and window' tests/live` runs them (scry-core's README, *On-demand tiers*).
+
+**What a run behind guarantees.** A start behind does not come to the front, so the keyboard
+stays where it was. That is all it promises: its window is still there to be seen, and the host
+carries the load of every emulator the run starts, several at once. So the mode is never the
+reason a run is safe beside somebody working: the matrix runs in an account or on a machine
+nobody is working at, or at an hour agreed with whoever is, and what says whether a run took the
+front is section X's verdict, read as scry-core's README says (*Focus watch*).
 
 Two traps of the host, not of the code. MAME's console parses an unquoted path as an expression,
 so a `TMPDIR` whose path holds a `-` before a letter fails the `debug`, `source` and `trace` cells
