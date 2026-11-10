@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -48,6 +49,11 @@ def now() -> str:
 # REAP_GRACE_S is the separate wait for the killed process to be reaped.
 QUIT_GRACE_S = 5.0
 REAP_GRACE_S = 5.0
+SCRATCH_GONE_S = 2.0
+SCRATCH_POLL_S = 0.05
+
+#: Kept before a test's double takes the name: a tree is ended by pid.
+_POPEN = subprocess.Popen
 EXIT_POLL_S = 0.1
 NO_TABLE = gs.SymbolTable({}, {}, "none")
 
@@ -369,7 +375,7 @@ class State:
                          "exit_code": app_launch.exit_status(self.proc, code),
                          "cfg_written": written}
             else:
-                self.proc.kill()
+                end(self.proc)
                 ended["ended_by"] = "killed"
                 ended["cfg_written"] = False
                 waited = wait_exit(self.proc, REAP_GRACE_S, progress,
@@ -406,14 +412,36 @@ class State:
             with contextlib.suppress(OSError):
                 self.stdout_log.close()
         self.presence.close()
-        # `state_dir` is the caller's and is never deleted.
-        if self.scratch and self.scratch.exists():
-            shutil.rmtree(self.scratch, ignore_errors=True)
-        # The guardian stops only after MAME is reaped.
+        # The guardian stops only after MAME is reaped, and before the scratch goes: on Windows
+        # a process MAME started keeps the log open until the job ends it.
         if self.proc is None or self.proc.poll() is not None:
             guardian.stop(self.guard)
+        # `state_dir` is the caller's and is never deleted.
+        if self.scratch and self.scratch.exists():
+            _remove(self.scratch)
         self._reset()
         return ended
+
+
+def end(proc: Emulator) -> None:
+    """Kill `proc`; on Windows what it started first, since a launcher dies there without the
+    emulator behind it. The tree is followed by pid, so only a real child's is."""
+    if sys.platform == "win32" and isinstance(proc, _POPEN):
+        with contextlib.suppress(OSError, subprocess.TimeoutExpired):
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                           capture_output=True, check=False, timeout=REAP_GRACE_S)
+    proc.kill()
+
+
+def _remove(scratch: Path) -> None:
+    """Remove `scratch`, again for `SCRATCH_GONE_S` while it stays: Windows ends a closed job's
+    processes a moment after the close."""
+    deadline = time.monotonic() + SCRATCH_GONE_S
+    while True:
+        shutil.rmtree(scratch, ignore_errors=True)
+        if not scratch.exists() or time.monotonic() >= deadline:
+            return
+        time.sleep(SCRATCH_POLL_S)
 
 
 STATE = State()

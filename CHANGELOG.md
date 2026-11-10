@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On Windows, `close` ends an emulator started through a launcher script together with the
+  launcher, and removes the session's scratch folder, which stayed behind.
 - The descriptions say that a start nobody watches has a small window run flat out (`start`),
   that a `count` watch tallies writes by value and by writer (`watch_add`), and that a sweep's
   `tag` is a memory region's or a share's (`gfx_sweep`).
