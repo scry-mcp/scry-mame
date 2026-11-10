@@ -13,7 +13,7 @@ dependencies = [
     "mcp>=2.1.0,<3",
     # What the Scry servers share (the reply contract, the probe, the live bench), pinned by
     # its release tag so a build reads exactly the core it was tested against.
-    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.97.1",
+    "scry-core @ git+https://github.com/scry-mcp/scry-core@v0.98.0",
 ]
 
 [dependency-groups]
@@ -55,6 +55,10 @@ warn_return_any = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# The battery runs with a home and a temp folder of its own and fails on a file left in that
+# home (`scry_core.private_run`); pytest removes a green run's base temp and keeps a failed one's.
+private_run = true
+tmp_path_retention_policy = "failed"
 pythonpath = ["."]
 # A TIER THAT LAUNCHES EMULATORS MAY NOT BE REACHED BY ACCIDENT: a stranger running `pytest` from
 # a clone would otherwise launch an emulator per case. Opting in is explicit (`pytest -m live`),
