@@ -203,8 +203,14 @@ def test_a_dest_that_is_a_dangling_link_already_exists(here: Path, call: Any) ->
     assert out["code"] == "bad_argument", out
 
 
-@pytest.mark.parametrize(("char", "shown"), [("\x1b", "'\\x1b'"), ("\x7f", "'\\x7f'"),
-                                             ("\x85", "'\\x85'")])
+#: Windows refuses to make a directory whose name holds a character below 0x20.
+NAMED_ON_THIS_HOST = pytest.mark.skipif(sys.platform == "win32",
+                                        reason="Windows names no directory with this character")
+
+
+@pytest.mark.parametrize(("char", "shown"), [
+    pytest.param("\x1b", "'\\x1b'", marks=NAMED_ON_THIS_HOST), ("\x7f", "'\\x7f'"),
+    ("\x85", "'\\x85'")])
 def test_a_dest_holding_a_control_character_is_refused_naming_it(
         here: Path, char: str, shown: str) -> None:
     (here / f"a{char}b").mkdir()
@@ -455,7 +461,8 @@ def test_state_load_refuses_a_sta_that_is_no_file_as_unknown_ref_never_a_traceba
     assert refused("already exists", s.state_write("save", name="d"))["code"] == "bad_argument"
 
 
-@pytest.mark.parametrize("name", ["a;b", "a b", "a(b", "a\x1bb"])
+@pytest.mark.parametrize("name", ["a;b", "a b", "a(b",
+                                  pytest.param("a\x1bb", marks=NAMED_ON_THIS_HOST)])
 def test_gfx_drafts_dest_holds_none_of_the_characters_no_dest_may_hold(
         here: Path, name: str) -> None:
     (here / name).mkdir()
