@@ -15,6 +15,11 @@ What a client of the server notices.
   is `<name>-<extension>-set.jsonl`, a draft's report `<name>-report.json`, a screen map
   `<application>-screen-map.json`, a batch's files `batch-<n>-ran.jsonl` and
   `batch-<n>-replies.jsonl`, and a failed start's copy `<utc stamp>-<system>.log` in lowercase.
+- `record` refuses a `dest` that is not an `.avi` file: MAME adds `.avi` to any other name, and
+  the reply named a file that was not the one written.
+- Two tally, capture or palette-log ids that differ only in punctuation no longer share one
+  file in the scratch: the file of an id on another cpu or in the I/O space carries a short
+  digest after its words.
 - A `promote` review lists apart, in `unwritable` with its reason, each entry it cannot write,
   and shows the rest.
 - `close` no longer names an entry the store already holds as it is.

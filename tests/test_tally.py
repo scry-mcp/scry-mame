@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from scry_core import file_names  # noqa: E402
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import blank_session, refs, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
@@ -84,6 +85,19 @@ def _survey(ses: _WatchSession, frame: int) -> dict[str, object]:
 
 
 
+
+
+@pytest.mark.parametrize(("one", "other"), [
+    ("10_2_audio.cpu", "10_2_audio_cpu"), ("6_2@io", "6_2_io"), ("6_2__io", "6_2_io"),
+    ("6_2@io", "6_2.io"), ("A_1", "a_1"), ("_a", "a"),
+    ("10_2_" + "a" * 80, "10_2_" + "a" * 81)])
+def test_two_ids_never_share_a_file_and_a_plain_one_keeps_its_own_words(
+        one: str, other: str) -> None:
+    files = {tally.dump_path(Path("/s"), an_id).name for an_id in (one, other, one)}
+    assert len(files) == 2, files
+    assert all(file_names.NAME.fullmatch(name) for name in files), files
+    assert tally.dump_path(Path("/s"), "2031fc_4").name == "tally-2031fc-4.txt"
+    assert tally.id_words("ramdac_0_3c8") == "ramdac-0-3c8"
 
 
 def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_dumper() -> None:

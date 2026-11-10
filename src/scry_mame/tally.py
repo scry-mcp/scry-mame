@@ -23,11 +23,13 @@ skips the lane test.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 from typing import Any
 
 from scry_core import bus_writes, file_names, prose
+from scry_core.reply_contract import Invalid
 
 from scry_mame import callbacks, read, transport
 from scry_mame import declarations as dec
@@ -56,9 +58,19 @@ def id_for(cpu: str | None, addr: int, width: int, space: str = "program") -> st
     return f"{addr:x}_{width}{tag}{mspace.suffix(space)}"
 
 
+def id_words(an_id: str) -> str:
+    """An id as the words of its file. One the words do not spell back, or too long for a
+    name, carries a digest of the id, which keeps two ids out of one file."""
+    digest = hashlib.sha256(an_id.encode()).hexdigest()
+    try:
+        words = file_names.word(an_id, "id")
+    except Invalid:
+        return digest[:16]
+    return words if words.replace("-", "_") == an_id else f"{words}-{digest[:8]}"
+
+
 def dump_path(scratch: Path, tally_id: str) -> Path:
-    return scratch / file_names.name("tally", file_names.word(tally_id, "tally_id"),
-                                     extension="txt")
+    return scratch / file_names.name("tally", id_words(tally_id), extension="txt")
 
 
 def install_script(tally_id: str, addr: int, width: int, path: Path,

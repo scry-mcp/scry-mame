@@ -87,7 +87,7 @@ def id_for(r: mm.PalettePort) -> str:
 
 def paths(scratch: Path, log_id: str) -> tuple[Path, Path, Path]:
     """The dump, rows and setters files: the ones `clear` removes."""
-    words = file_names.word(log_id, "log_id")
+    words = tally.id_words(log_id)
     return (scratch / file_names.name("ramdac", words, extension="txt"),
             scratch / file_names.name("ramdac", words, extension="rows"),
             scratch / file_names.name("ramdac", words, "setters", extension="json"))

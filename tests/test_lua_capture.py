@@ -146,6 +146,15 @@ def test_record_writes_to_the_dest_it_is_given_and_names_it(
     assert not (ses.scratch / "snap" / "record-1.avi").exists()
 
 
+def test_record_refuses_a_dest_mame_would_write_under_another_name(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    out = refused("an `.avi` file", s.record(frames=30, dest=str(tmp_path / "Clip.MP4")))
+    assert out["code"] == "bad_argument" and ses.stdin.getvalue() == b"", out
+    assert mrec.check_record(30, str(tmp_path / "Clip.AVI")) == tmp_path / "clip.avi"
+
+
 def test_captures_lists_what_this_session_recorded_and_snapped_and_says_what_is_gone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

@@ -148,8 +148,8 @@ record(frames, dest="", seconds=60.0)
 Record exactly `frames` emulated frames of the screen to an AVI, then stop.
 Needs the machine STOPPED (else `not_stopped`).
 
-`dest`: an absolute path not there yet; empty lands in the scratch. `frames` is 2 or more.
-The AVI is checked before its path is given; zero frames is INVALID. A run cut short
+`dest`: an absolute `.avi` path not there yet; empty lands in the scratch. `frames` is 2 or
+more. The AVI is checked before its path is given; zero frames is INVALID. A run cut short
 leaves the recording open (`ended: false`); `seconds` bounds the wait for it.
 
 Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,

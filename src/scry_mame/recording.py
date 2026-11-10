@@ -73,7 +73,12 @@ def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -
     inputs.count("frames", frames, tail=": the frame notifier cannot end a recording on the "
                  "call that begins it, so one frame asked for would be two recorded", lo=2)
     vocab.check_wait(seconds)
-    return inputs.optional_dest(dest)
+    path = inputs.optional_dest(dest)
+    if path is not None and path.suffix != ".avi":
+        raise st.Invalid("bad_argument", f"dest={dest!r}: an `.avi` file, or empty for the "
+                         "scratch's; MAME adds `.avi` to any other name, and the file would "
+                         "not be the one named")
+    return path
 
 
 class Recording(NamedTuple):

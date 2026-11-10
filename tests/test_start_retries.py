@@ -723,6 +723,15 @@ def test_a_stub_that_never_answers_from_a_live_process_keeps_what_mame_printed(
     assert kept.name.endswith("-m68k.log") and "launch 1" in kept.read_text(), kept
 
 
+def test_a_system_that_names_no_file_costs_the_copy_and_never_the_refusal(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    (tmp_path / "stdout.log").write_text("this start\n")
+    kept = launch.keep_failed_start(tmp_path, "---")["stdout_kept"]
+    assert isinstance(kept, dict) and kept["available"] is False and "system" in kept["why"]
+
+
 def test_the_failed_starts_kept_are_the_twenty_newest(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

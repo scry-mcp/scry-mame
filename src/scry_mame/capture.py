@@ -87,7 +87,7 @@ def id_for(cpu: str | None, addr: int, width: int, trigger: int,
 
 def paths(scratch: Path, capture_id: str) -> tuple[Path, Path]:
     """The header path and the rows path."""
-    words = file_names.word(capture_id, "capture_id")
+    words = tally.id_words(capture_id)
     return (scratch / file_names.name("capture", words, extension="txt"),
             scratch / file_names.name("capture", words, extension="rows"))
 
