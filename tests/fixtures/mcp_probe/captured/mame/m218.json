@@ -1,0 +1,107 @@
+{
+ "task": {
+  "id": "m218",
+  "prompt": "The machine is stopped, its screen map is loaded and a change watch is declared on the variable level. Let it run until the screen is a different mapped screen from the one shown now, judging only after level has been written, and stop there.",
+  "tool": "screen_wait",
+  "args": {
+   "changed": true,
+   "on_watch": "level"
+  },
+  "allow": [
+   "seconds",
+   "cpu"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m218: CANNOT screen_wait takes one predicate, so a changed screen cannot be judged only after a watch fires."
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m218: {\"tool\": \"screen_wait\", \"args\": {\"changed\": true, \"on_watch\": \"level\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

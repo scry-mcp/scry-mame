@@ -1,0 +1,107 @@
+{
+ "task": {
+  "id": "m217",
+  "prompt": "The machine is stopped, its screen map is loaded and a breakpoint is declared at the routine draw_done. Let it run until the mapped screen called menu is on screen, judging the screen only after draw_done has run rather than every frame, and stop there.",
+  "tool": "screen_wait",
+  "args": {
+   "screen": "menu",
+   "on_breakpoint": "draw_done"
+  },
+  "allow": [
+   "seconds",
+   "cpu"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m217: CANNOT screen_wait takes one predicate, so a screen cannot be judged only after a breakpoint fires."
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m217: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"menu\", \"on_breakpoint\": \"draw_done\"}}"
+   ],
+   "right": true
+  }
+ ]
+}

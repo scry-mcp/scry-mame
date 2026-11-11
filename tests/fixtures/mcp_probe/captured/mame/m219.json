@@ -1,0 +1,117 @@
+{
+ "task": {
+  "id": "m219",
+  "prompt": "The machine is stopped, its screen map is loaded and a breakpoint is declared at draw_done. Let it run until the mapped screen called title is on screen, but only consider the firings of draw_done where register d0 equals 3, and stop there.",
+  "tool": "screen_wait",
+  "args": {
+   "screen": "title",
+   "on_breakpoint": "draw_done",
+   "condition": {
+    "any_of": [
+     "d0==3",
+     "d0 == 3",
+     "d0==0x3",
+     "D0==3",
+     "D0==0x3",
+     "d0==0x00000003"
+    ]
+   }
+  },
+  "allow": [
+   "seconds",
+   "cpu"
+  ]
+ },
+ "runs": [
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==0x3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==0x3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==0x3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m219: CANNOT screen_wait takes one predicate, so a screen cannot be combined with a breakpoint's register condition."
+   ],
+   "right": false
+  },
+  {
+   "lines": [
+    "m219: {\"tool\": \"screen_wait\", \"args\": {\"screen\": \"title\", \"on_breakpoint\": \"draw_done\", \"condition\": \"d0==3\"}}"
+   ],
+   "right": true
+  }
+ ]
+}
