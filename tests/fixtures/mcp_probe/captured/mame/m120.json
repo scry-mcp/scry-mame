@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M120",
+  "id": "m120",
   "prompt": "Show me the screen of the frames in which the blitter fired during the boot, before anything was armed in this session to keep them.",
   "expect": "CANNOT",
   "about": "gfx_film"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M120: CANNOT A film records only from its arming onward, and nothing was armed during the boot, so those frames were never kept."
+    "m120: CANNOT No tool can show frames from before a film or blit capture was armed; nothing was kept for the boot."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT No film was armed during the boot, and gfx_film can keep frames only from the point it is armed."
+    "m120: CANNOT Nothing was armed during the boot, and a film keeps only frames judged after it is armed; earlier frames are not recorded."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT gfx_film keeps only frames from the moment it is armed, so frames during the boot before any arming cannot be recovered."
+    "m120: CANNOT No film was armed during the boot, and gfx_film keeps frames only from when it is armed."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT No film was armed before the boot, so the frames the blitter fired in are not kept and cannot be shown."
+    "m120: CANNOT Nothing was armed before this session to keep blitter frames, and gfx_blits needs a recorded draw_command capture that does not exist for the boot."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT a film keeps only frames from the moment it is armed, so frames during boot cannot be recovered."
+    "m120: CANNOT Film and blit captures only keep what was armed before the frames ran, so nothing from boot can be shown now."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT No film was armed before the boot, and gfx_film keeps frames only from the moment it is armed, so the boot's blitter frames cannot be shown."
+    "m120: CANNOT gfx_film keeps only frames from when it is armed, so frames during the boot before anything was armed cannot be recovered."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT A film keeps only frames from the moment it is armed, and nothing kept from the boot exists in this session."
+    "m120: CANNOT No film was armed before the boot, so the server kept no frames from it, and the frames the blitter fired in then cannot be recovered."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT A film only keeps frames from the moment it is armed, and nothing was armed during the boot, so the blitter frames cannot be recovered."
+    "m120: CANNOT A film only records frames from the moment it is armed, and nothing was armed during the boot, so those frames were never kept."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT a film keeps frames only from the moment it is armed, and no tool replays frames from before arming."
+    "m120: CANNOT A film only keeps frames from the moment it is armed, and nothing was armed during the boot."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT No film was armed before this session started, and the server cannot read frames it never kept."
+    "m120: CANNOT gfx_film keeps frames only from its arming on, and no earlier frames can be read back."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT Nothing was armed during the boot, and a film only keeps frames from the point it is armed."
+    "m120: CANNOT Nothing was armed during the boot, and the film and blit tools only keep frames from the moment they are armed, so those frames cannot be shown."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT No film was armed before the boot, and gfx_blits reads only the blits of a draw_command capture, so earlier frames cannot be shown."
+    "m120: CANNOT No film was armed before boot, and gfx_film only keeps frames from writes it watches once armed, so the earlier frames cannot be shown."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT A film must be armed before the frames happen, and nothing was armed during the boot, so those frames cannot be kept now."
+    "m120: CANNOT A film only judges frames after it is armed, so nothing from before this session's arming can be shown."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT nothing was armed to keep frames during boot, and no tool can recover screens from before a film was armed."
+    "m120: CANNOT Frames before anything was armed are not kept, and gfx_film can only keep frames from a film armed from this point on."
    ],
    "right": true
   },
   {
    "lines": [
-    "M120: CANNOT the film records only writes after it is armed, and nothing was armed during the boot, so those frames cannot be shown."
+    "m120: CANNOT a film only keeps frames from the moment it is armed, so frames during the boot cannot be recovered."
    ],
    "right": true
   }

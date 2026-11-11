@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M100",
+  "id": "m100",
   "prompt": "Show me tilemap 2 exactly as the driver's own tilemap system composes it, scroll and priorities included.",
   "expect": "CANNOT",
   "about": "gfx_view"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M100: CANNOT No tool here renders a tilemap through the driver's own tilemap system; the server reads tiles and screens, not tilemap composition."
+    "m100: CANNOT No tool composes or shows a driver's tilemap; the server draws tiles and screens only."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT This server has no tool that reads the driver's tilemap system or its scroll and priority composition."
+    "m100: CANNOT No tool reads the driver's tilemap system; the server draws only the screen, its tiles and its palettes."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT no tool composes or renders the driver's tilemap system; screen_view and the gfx tools read pixels and tiles only."
+    "m100: CANNOT No tool here reads a driver's tilemap system; the screen tools only show the composed screen as pixels."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool of this server exposes the driver's tilemap composition, including scroll and priorities."
+    "m100: CANNOT No tool reads a tilemap by number or composes the driver's tilemap system; the screen tools only read what the machine has drawn."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT no tool renders a tilemap through the driver's own tilemap system; the server has no tilemap reader."
+    "m100: CANNOT No tool shows a driver's tilemap as its tilemap system composes it; `screen_view` shows only the finished screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT This server has no tool that exposes the driver's tilemap system or its scroll and priority composition."
+    "m100: CANNOT No tool shows a driver's tilemap as its tilemap system composes it; the screen tools read pixels and the gfx tools read tiles."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool reads the driver's tilemap system; `screen_view`, `snapshot` and the gfx tools draw pixels only."
+    "m100: CANNOT The server has no tool that renders a driver's tilemap system, so tilemap 2 cannot be shown as the driver composes it."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool renders a tilemap as the driver composes it; the server reads only raw memory, tiles, screens and palettes."
+    "m100: CANNOT This server has no tool that composes or shows a driver's tilemap; its graphics tools read tile data, screen pixels and blits only."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT no tool composes or renders a driver's tilemap system, so tilemap 2 cannot be shown."
+    "m100: CANNOT No tool composes or shows a driver's tilemap; the server's screen tools read the emulated screen's pixels and pens only."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT The server has no tool that renders a driver's tilemap system with its scroll and priorities; it only reads memory, tiles and screen pixels."
+    "m100: CANNOT no tool renders the driver's tilemap composition, scroll and priorities included."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool here draws a tilemap, so tilemap 2 cannot be shown as the driver composes it."
+    "m100: CANNOT The tools read the screen and the machine's memory but do not expose the driver's tilemap system or its scroll and priority composition."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool renders the driver's tilemap system, and none reads its scroll or priority state."
+    "m100: CANNOT No tool reads back a tilemap as the driver composes it; the screen tools show only the final picture and the server has no tilemap reader."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT No tool here composes a tilemap, so tilemap 2 cannot be shown as the driver draws it."
+    "m100: CANNOT No tool of this server reads the driver's tilemap system; the screen tools only show the composed screen, not tilemap 2 on its own."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT no tool here renders the driver's tilemap system; the screen tools only read the emulated pixels and palette."
+    "m100: CANNOT No tool renders a tilemap as the driver's tilemap system composes it; screen_view and snapshot show only the final screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M100: CANNOT there is no tool that renders a tilemap through the driver's own tilemap system, with scroll and priorities."
+    "m100: CANNOT no tool composes the driver's tilemap system; screen_view and snapshot only show the finished screen."
    ],
    "right": true
   }

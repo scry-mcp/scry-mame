@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M38",
+  "id": "m38",
   "prompt": "Save a PNG of the screen as it is now to /tmp/mcp-probe-title.png.",
   "tool": "snapshot",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\":\"snapshot\",\"args\":{\"dest\":\"/tmp/mcp-probe-title.png\"}}"
    ],
    "right": true
   }

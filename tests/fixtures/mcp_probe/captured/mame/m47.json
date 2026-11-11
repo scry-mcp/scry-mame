@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M47",
+  "id": "m47",
   "prompt": "Record 150 frames of the screen to /tmp/mcp-probe-run.avi, bounded by 75 wall-clock seconds.",
   "tool": "record",
   "args": {
@@ -12,91 +12,91 @@
  "runs": [
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M47: {\"tool\": \"record\", \"args\": {\"frames\": 150, \"dest\": \"/tmp/mcp-probe-run.avi\", \"seconds\": 75}}"
+    "m47: {\"tool\":\"record\",\"args\":{\"frames\":150,\"dest\":\"/tmp/mcp-probe-run.avi\",\"seconds\":75}}"
    ],
    "right": true
   }

@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M208",
+  "id": "m208",
   "prompt": "Where is the MAME window right now: on which display, and is it on screen and in front?",
   "tool": "window"
  },
  "runs": [
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\": \"window\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M208: {\"tool\": \"window\", \"args\": {}}"
+    "m208: {\"tool\":\"window\",\"args\":{}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M215",
+  "id": "m215",
   "prompt": "Promote only the map candidate this session kept under the name lineup into the repository at /tmp/probe-repo, writing it there as bench-map, and nothing else.",
   "tool": "promote",
   "args": {
@@ -16,91 +16,91 @@
  "runs": [
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M215: {\"tool\": \"promote\", \"args\": {\"entries\": [\"maps/lineup\"], \"names\": {\"maps/lineup\": \"bench-map\"}, \"root\": \"/tmp/probe-repo\"}}"
+    "m215: {\"tool\":\"promote\",\"args\":{\"entries\":[\"maps/lineup\"],\"names\":{\"maps/lineup\":\"bench-map\"},\"root\":\"/tmp/probe-repo\"}}"
    ],
    "right": true
   }

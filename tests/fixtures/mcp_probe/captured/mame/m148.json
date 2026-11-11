@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M148",
+  "id": "m148",
   "prompt": "Remove every note at once.",
   "expect": "CANNOT",
   "about": "comment_write"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M148: CANNOT comment_write has no all-at-once removal; it deletes one comment by ref, so every note must be deleted separately."
+    "m148: CANNOT comment_write deletes one comment at a time by ref, and no method clears every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write has no method that removes every comment at once; it deletes one comment by ref."
+    "m148: CANNOT comment_write deletes one comment at a time by its ref, and no method clears every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a given ref and has no call to remove all notes at once."
+    "m148: CANNOT comment_write deletes one comment at a given ref and has no all-at-once clear."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a time by ref, and no method removes every note at once."
+    "m148: CANNOT No tool clears every comment at once; comment_write deletes one comment by its ref."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref, and no method removes every comment at once."
+    "m148: CANNOT `comment_write` deletes one comment at a time and has no clear-all method."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment by its ref, and no method removes every comment at once."
+    "m148: CANNOT comment_write deletes one note at a time by ref and has no clear-all method."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note by its ref, and no method removes every note at once."
+    "m148: CANNOT comment_write deletes one comment at a given ref and has no method that clears every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time by ref, and no method removes every comment at once."
+    "m148: CANNOT comment_write deletes one comment at a single ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time by its ref and has no method that removes every comment."
+    "m148: CANNOT comment_write deletes one comment at a time, by ref, and has no bulk clear."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a given ref, and no method removes every comment at once."
+    "m148: CANNOT comment_write has no clear-all method, and delete removes one comment at one ref."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a ref, and no method removes every note at once."
+    "m148: CANNOT comment_write deletes one note at a given ref, and no method removes every note at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time by its ref, and no tool clears every comment at once."
+    "m148: CANNOT comment_write deletes one note at a given ref, and no method removes every note at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one note at a time by its ref and has no method that clears them all."
+    "m148: CANNOT comment_write deletes one comment at a ref, and no tool clears every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time by ref, and no tool removes every comment at once."
+    "m148: CANNOT comment_write deletes one comment at a given ref, and no method removes every comment at once."
    ],
    "right": true
   },
   {
    "lines": [
-    "M148: CANNOT comment_write deletes one comment at a time and has no way to remove every comment at once."
+    "m148: CANNOT comment_write deletes one note per ref and has no bulk clear."
    ],
    "right": true
   }

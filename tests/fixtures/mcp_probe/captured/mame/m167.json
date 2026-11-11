@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M167",
+  "id": "m167",
   "prompt": "On the cpu tagged audiocpu, add one row every time the sound latch at hex address 6000 is READ, with the value read, without ever stopping the machine.",
   "tool": "watch_add",
   "args": {
@@ -41,91 +41,91 @@
  "runs": [
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M167: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x6000\", \"mode\": \"capture\", \"trigger\": \"0x6000\", \"trigger_type\": \"r\", \"cpu\": \"audiocpu\"}}"
+    "m167: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x6000\",\"mode\":\"capture\",\"trigger\":\"0x6000\",\"trigger_type\":\"r\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   }

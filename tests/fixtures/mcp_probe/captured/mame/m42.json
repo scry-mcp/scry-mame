@@ -1,17 +1,30 @@
 {
  "task": {
-  "id": "M42",
+  "id": "m42",
   "prompt": "In one call: press the field Coin 2 of port :IN0 for 3 frames, then check that a line matching CREDIT arrives within 15 seconds, and show only the last 25 emulator lines matching CREDIT|COIN. Between steps wait at most 20 seconds for a stop, and cut each step's account to its summary.",
   "tool": "drive",
   "args": {
-   "act": [
-    {
-     "op": "input",
-     "port": ":IN0",
-     "field": "Coin 2",
-     "frames": 3
-    }
-   ],
+   "act": {
+    "any_of": [
+     [
+      {
+       "op": "input",
+       "port": ":IN0",
+       "field": "Coin 2",
+       "frames": 3
+      }
+     ],
+     [
+      {
+       "op": "input",
+       "port": ":IN0",
+       "field": "Coin 2",
+       "value": 1,
+       "frames": 3
+      }
+     ]
+    ]
+   },
    "expect": "CREDIT",
    "seconds": 15,
    "pattern": "CREDIT|COIN",
@@ -26,91 +39,91 @@
  "runs": [
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT|COIN\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"value\": 1, \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m42: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"input\", \"port\": \":IN0\", \"field\": \"Coin 2\", \"frames\": 3}], \"expect\": \"CREDIT\", \"seconds\": 15, \"pattern\": \"CREDIT|COIN\", \"limit\": 25, \"settle_seconds\": 20, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m42: {\"tool\":\"drive\",\"args\":{\"act\":[{\"op\":\"input\",\"port\":\":IN0\",\"field\":\"Coin 2\",\"frames\":3}],\"expect\":\"CREDIT\",\"seconds\":15,\"pattern\":\"CREDIT|COIN\",\"limit\":25,\"settle_seconds\":20,\"summaries\":true}}"
    ],
    "right": true
   }

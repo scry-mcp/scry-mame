@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M59",
+  "id": "m59",
   "prompt": "Disassemble 40 bytes at hex address 1B7C in the program of the cpu tagged soundcpu.",
   "tool": "disassemble",
   "args": {
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M59: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40, \"cpu\": \"soundcpu\"}}"
+    "m59: {\"tool\":\"disassemble\",\"args\":{\"ref\":\"0x1B7C\",\"length\":40,\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

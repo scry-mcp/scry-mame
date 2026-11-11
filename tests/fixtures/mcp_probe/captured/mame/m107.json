@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M107",
+  "id": "m107",
   "prompt": "Show the blit at index 3 of frame 88 of the draw command tiledraw as it lands on screen, zoomed by its own scale registers.",
   "expect": "CANNOT",
   "about": "gfx_blit_source"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always shows the blit unscaled, never as it lands on screen, and no other tool shows a blit under its scale registers."
+    "m107: CANNOT gfx_blit_source is always unscaled and never shows the blit as it lands on screen, and no other tool applies the scale registers."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source is always unscaled and never applies the blit's scale registers, so it cannot show the blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source always reads the source unscaled and never shows the blit as it lands; gfx_blits draws boxes, not the blit's picture."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source is always unscaled and gfx_blits only draws boxes, so no tool shows the blit as it lands on screen with its scale registers applied."
+    "m107: CANNOT gfx_blit_source always shows the blit unscaled and no tool applies the screen's zoom or scale registers to a blit."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always reads unscaled and no tool draws a blit as it lands on screen with its own scale registers."
+    "m107: CANNOT gfx_blit_source always shows the blit unscaled and never as it lands on screen, and no other tool renders a blit with its scale registers."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source never applies the scale registers, and gfx_blits shows boxes, not the graphics, so no tool shows a blit as it lands on screen."
+    "m107: CANNOT `gfx_blit_source` never applies scale, and `gfx_blits` draws only boxes, so no tool renders a blit as it lands on screen, zoomed."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always draws unscaled and gfx_blits only draws boxes, so no tool shows the blit as it lands on screen with its scale registers applied."
+    "m107: CANNOT gfx_blit_source is always unscaled and never shows a blit as it lands, and no tool applies the screen's scale registers to a blit."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always draws the blit unscaled, and gfx_blits only boxes blits over the screen; no tool shows a blit as it lands with its scale registers applied."
+    "m107: CANNOT gfx_blit_source always shows the blit unscaled and never as it lands on screen, and gfx_blits draws boxes rather than the blit's pixels, so no tool shows the blit as it lands with its scale registers applied."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source never applies the scale registers, so it cannot show the blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source always reads unscaled and never applies the scale registers, so it cannot show the blit as it lands on screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always reads unscaled and never shows a blit as it lands, and gfx_blits draws only boxes, so no tool shows the blit through its scale registers."
+    "m107: CANNOT gfx_blit_source always reads unscaled and never shows the blit as it lands on screen, and no tool renders a blit through its scale registers."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always draws the blit unscaled and applies no scale register, so it cannot show the blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source is always unscaled and no tool draws a blit as it lands on screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always draws the blit unscaled, never as it lands on screen, and gfx_blits draws boxes rather than the graphic, so no tool shows it zoomed by its scale registers."
+    "m107: CANNOT gfx_blit_source always reads unscaled and never applies the scale registers, so it cannot show the blit as it lands on screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always reads unscaled and never applies the scale registers, so no tool shows a blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source always decodes unscaled and never shows a blit as it lands on screen, and gfx_blits only draws boxes, so no tool gives that picture."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always renders unscaled and never applies the scale registers, so it cannot show the blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source always reads unscaled and never applies the blit's zoom or scale registers, so no tool shows a blit as it lands on screen."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source is always unscaled and never shows the blit as it lands on screen, so the zoomed view cannot be produced with these tools."
+    "m107: CANNOT gfx_blit_source is always unscaled and gfx_blits only draws boxes, so no tool shows a blit as it lands on screen with its scale registers applied."
    ],
    "right": true
   },
   {
    "lines": [
-    "M107: CANNOT gfx_blit_source always shows the blit unscaled and never applies the scale registers, and no other tool shows a blit as it lands on screen."
+    "m107: CANNOT gfx_blit_source is always unscaled and no other tool draws a blit as it lands on screen with its scale registers applied."
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M71",
+  "id": "m71",
   "prompt": "Force register A2 of the cpu tagged soundcpu to the decimal value 512.",
   "tool": "set_register",
   "args": {
@@ -27,91 +27,91 @@
  "runs": [
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M71: {\"tool\": \"set_register\", \"args\": {\"name\": \"A2\", \"value\": 512, \"cpu\": \"soundcpu\"}}"
+    "m71: {\"tool\":\"set_register\",\"args\":{\"name\":\"A2\",\"value\":512,\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

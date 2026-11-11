@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M43",
+  "id": "m43",
   "prompt": "In one round trip: run to StageDone counting the control declared at FrameTick, then save a PNG of the screen to /tmp/mcp-probe-stage.png. Wait at most 40 seconds for each stop between steps, and cut each step's account to its summary.",
   "tool": "perform",
   "args": {
@@ -26,91 +26,91 @@
  "runs": [
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "M43: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": false
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m43: {\"tool\": \"drive\", \"args\": {\"act\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": false
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m43: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_to\", \"ref\": \"StageDone\", \"control\": \"FrameTick\"}, {\"op\": \"snapshot\", \"dest\": \"/tmp/mcp-probe-stage.png\"}], \"settle_seconds\": 40, \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m43: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_to\",\"ref\":\"StageDone\",\"control\":\"FrameTick\"},{\"op\":\"snapshot\",\"dest\":\"/tmp/mcp-probe-stage.png\"}],\"settle_seconds\":40,\"summaries\":true}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M86",
+  "id": "m86",
   "prompt": "In a single call, advance the machine one frame at a time, four times over, keeping for every stop what stopped it and which pc wrote the watched value, and have the server count how many stops each watch made instead of counting them myself.",
   "tool": "perform",
   "args": {
@@ -31,91 +31,91 @@
  "runs": [
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}]}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+    "m86: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}, {\"op\": \"run_for\", \"frames\": 1}], \"summaries\": true}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m86: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1},{\"op\":\"run_for\",\"frames\":1}],\"summaries\":true}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M12",
+  "id": "m12",
   "prompt": "Declare a breakpoint at hex address 3E12 that only counts its hits and never halts the machine.",
   "tool": "breakpoint_at",
   "args": {
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"by\": \"address\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M12: {\"tool\": \"breakpoint_at\", \"args\": {\"ref\": \"0x3E12\", \"role\": \"control\"}}"
+    "m12: {\"tool\":\"breakpoint_at\",\"args\":{\"ref\":\"0x3E12\",\"role\":\"control\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M68",
+  "id": "m68",
   "prompt": "Show every register of the cpu tagged soundcpu as it stands now, without changing which cpu the debugger shows.",
   "tool": "registers",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M68: {\"tool\": \"registers\", \"args\": {\"cpu\": \"soundcpu\"}}"
+    "m68: {\"tool\":\"registers\",\"args\":{\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

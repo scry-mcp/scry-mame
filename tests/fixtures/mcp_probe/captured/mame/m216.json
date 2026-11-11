@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M216",
+  "id": "m216",
   "prompt": "Several entries are kept for the store at /tmp/probe-repo. Show which could be written and which could not, and why, without writing any.",
   "tool": "promote",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\":\"promote\",\"args\":{\"dry_run\":true,\"root\":\"/tmp/probe-repo\"}}"
    ],
    "right": true
   }

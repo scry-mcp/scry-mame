@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M25",
+  "id": "m25",
   "prompt": "Describe the machine, narrowed to the cpu tagged audiocpu.",
   "tool": "machine_map",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M25: {\"tool\": \"machine_map\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m25: {\"tool\":\"machine_map\",\"args\":{\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M49",
+  "id": "m49",
   "prompt": "Save a savestate named bossfight.",
   "tool": "state_write",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M49: {\"tool\": \"state_write\", \"args\": {\"method\": \"save\", \"name\": \"bossfight\"}}"
+    "m49: {\"tool\":\"state_write\",\"args\":{\"method\":\"save\",\"name\":\"bossfight\"}}"
    ],
    "right": true
   }

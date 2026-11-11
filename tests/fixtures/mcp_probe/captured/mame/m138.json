@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M138",
+  "id": "m138",
   "prompt": "Keep only the scanned cells whose value grew since the search was opened.",
   "tool": "scan",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M138: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \">\"}}"
+    "m138: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"operator\":\">\"}}"
    ],
    "right": true
   }

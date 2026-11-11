@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M70",
+  "id": "m70",
   "prompt": "Write the bytes 7F 00 to memory at hex address 3FF0 of the cpu tagged soundcpu.",
   "tool": "write",
   "args": {
@@ -29,91 +29,91 @@
  "runs": [
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M70: {\"tool\": \"write\", \"args\": {\"ref\": \"0x3FF0\", \"data_hex\": \"7F00\", \"cpu\": \"soundcpu\"}}"
+    "m70: {\"tool\":\"write\",\"args\":{\"ref\":\"0x3FF0\",\"data_hex\":\"7F00\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

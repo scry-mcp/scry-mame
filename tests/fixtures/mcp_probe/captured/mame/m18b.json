@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M18b",
+  "id": "m18b",
   "prompt": "Clear every registerpoint declaration.",
   "tool": "declaration_clear",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"all\": true}}"
+    "m18b: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"all\":true}}"
    ],
    "right": true
   }

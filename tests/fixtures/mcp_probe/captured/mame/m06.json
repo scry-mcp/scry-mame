@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M06",
+  "id": "m06",
   "prompt": "Run to the symbol LevelEnd, counting the control already declared at FrameTick on the way, stopping there only when the console expression w@LivesLeft==3 holds. Disarm the change watches for this pass, and give it at most 45 wall-clock seconds.",
   "tool": "run_to",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M06: {\"tool\": \"run_to\", \"args\": {\"ref\": \"LevelEnd\", \"control\": \"FrameTick\", \"condition\": \"w@LivesLeft==3\", \"disarm_watches\": true, \"seconds\": 45}}"
+    "m06: {\"tool\":\"run_to\",\"args\":{\"ref\":\"LevelEnd\",\"control\":\"FrameTick\",\"condition\":\"w@LivesLeft==3\",\"disarm_watches\":true,\"seconds\":45}}"
    ],
    "right": true
   }

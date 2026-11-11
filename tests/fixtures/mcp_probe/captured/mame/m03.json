@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M03",
+  "id": "m03",
   "prompt": "Is a machine alive, and which system is it?",
   "tool": "status"
  },
  "runs": [
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M03: {\"tool\": \"status\", \"args\": {}}"
+    "m03: {\"tool\":\"status\",\"args\":{}}"
    ],
    "right": true
   }

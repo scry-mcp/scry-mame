@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M65",
+  "id": "m65",
   "prompt": "List only the watch declarations placed on the cpu tagged soundcpu.",
   "tool": "declaration_list",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M65: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"watch\", \"cpu\": \"soundcpu\"}}"
+    "m65: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"watch\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

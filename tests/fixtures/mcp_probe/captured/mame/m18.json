@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M18",
+  "id": "m18",
   "prompt": "Clear the registerpoint declared as d2==77ab.",
   "tool": "declaration_clear",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==0x77ab\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M18: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"regpoint\", \"ref\": \"d2==77ab\"}}"
+    "m18: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"regpoint\",\"ref\":\"d2==77ab\"}}"
    ],
    "right": true
   }

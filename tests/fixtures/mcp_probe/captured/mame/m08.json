@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M08",
+  "id": "m08",
   "prompt": "Run the machine for exactly 37 frames.",
   "tool": "run_for",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M08: {\"tool\": \"run_for\", \"args\": {\"frames\": 37}}"
+    "m08: {\"tool\":\"run_for\",\"args\":{\"frames\":37}}"
    ],
    "right": true
   }

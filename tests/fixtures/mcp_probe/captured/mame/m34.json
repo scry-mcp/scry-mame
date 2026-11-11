@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M34",
+  "id": "m34",
   "prompt": "Write the bytes 12 34 AB to memory at LivesLeft.",
   "tool": "write",
   "args": {
@@ -18,91 +18,91 @@
  "runs": [
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M34: {\"tool\": \"write\", \"args\": {\"ref\": \"LivesLeft\", \"data_hex\": \"1234AB\"}}"
+    "m34: {\"tool\":\"write\",\"args\":{\"ref\":\"LivesLeft\",\"data_hex\":\"1234AB\"}}"
    ],
    "right": true
   }

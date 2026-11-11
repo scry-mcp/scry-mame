@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M122",
+  "id": "m122",
   "prompt": "Show the share charram, starting 512 bytes into it, under every candidate layout at the default depths and size, through the palette device ppu_pal from pen 48, waiting up to 9 seconds.",
   "tool": "gfx_sweep",
   "args": {
@@ -34,91 +34,91 @@
  "runs": [
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"pen_base\": 48, \"palette\": \"ppu_pal\", \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M122: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"charram\", \"offset\": 512, \"palette\": \"ppu_pal\", \"pen_base\": 48, \"seconds\": 9}}"
+    "m122: {\"tool\":\"gfx_sweep\",\"args\":{\"tag\":\"charram\",\"offset\":512,\"palette\":\"ppu_pal\",\"pen_base\":48,\"seconds\":9}}"
    ],
    "right": true
   }

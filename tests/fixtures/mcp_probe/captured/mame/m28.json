@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M28",
+  "id": "m28",
   "prompt": "Read the 20 bytes behind the symbol LatchOut: its address map entry names the block they live in, since read_memory answers zeros there.",
   "tool": "read_block",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M28: {\"tool\": \"read_block\", \"args\": {\"ref\": \"LatchOut\", \"length\": 20}}"
+    "m28: {\"tool\":\"read_block\",\"args\":{\"ref\":\"LatchOut\",\"length\":20}}"
    ],
    "right": true
   }

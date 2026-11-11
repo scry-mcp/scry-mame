@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M155",
+  "id": "m155",
   "prompt": "Record every code location the CPU runs from now until the routine irq_vblank is first reached, however long that takes.",
   "expect": "CANNOT",
   "about": "trace"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M155: CANNOT trace needs a fixed window of frames or milliseconds, and no tool records code locations until a symbol is first reached."
+    "m155: CANNOT A trace window is bounded to 5026 frames, so it cannot record every location until an open-ended routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace covers only a fixed window of at most 5026 frames and has no stop at a routine, so it cannot run until irq_vblank is first reached."
+    "m155: CANNOT trace covers at most 5026 frames or 98143 ms per call, and no tool runs until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace is bounded to at most 5026 frames or 98143 ms, so it cannot run until irq_vblank is reached however long that takes."
+    "m155: CANNOT trace needs a bounded window in frames or milliseconds, and no tool records code locations until a symbol is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT Trace windows are bounded by frames or milliseconds, at most 5026 frames, so no tool records code until a routine is first reached."
+    "m155: CANNOT trace covers a bounded window of at most 5026 frames and cannot run until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace needs a fixed window of frames or milliseconds, and no tool records until a routine is first reached."
+    "m155: CANNOT `trace` needs a bounded window of frames or milliseconds, so it cannot record until `irq_vblank` is reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace needs a bounded window of frames or milliseconds, and no tool records code locations until a routine is reached."
+    "m155: CANNOT trace records a fixed window of at most 5026 frames, and no tool records code locations until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace records a fixed window of frames or milliseconds and has no run-until-symbol bound."
+    "m155: CANNOT trace records a fixed window of at most 5026 frames or 98143 ms, and no tool records code locations until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace runs for a fixed number of frames or milliseconds (at most 5026 frames), and no tool runs until a routine is reached."
+    "m155: CANNOT trace records only a fixed window of milliseconds or frames, and no tool runs until a given routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace needs a bounded window of frames or milliseconds, and no tool records locations until a routine is reached."
+    "m155: CANNOT A trace covers a bounded window of at most 5026 frames and cannot run until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace is bounded to at most 5026 frames, so it cannot record execution until a routine is first reached."
+    "m155: CANNOT trace takes a fixed window of frames or milliseconds, not a run until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace records only a bounded window (at most 5026 frames or 98143 ms) and cannot run until a routine is first reached."
+    "m155: CANNOT trace records a fixed window of frames or milliseconds, and no tool runs until a routine is first reached while recording."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace records a fixed window of at most 5026 frames or 98143 ms and cannot run until a routine is first reached."
+    "m155: CANNOT trace needs a bounded window of frames or milliseconds, so it cannot record until irq_vblank is reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace records a window capped at 5026 frames and cannot run until a routine is first reached."
+    "m155: CANNOT trace is bounded to at most 5026 frames, and no tool records locations up to an arbitrary breakpoint such as irq_vblank."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace runs a bounded window (at most 5026 frames) and has no run-until-routine mode, so it cannot record until irq_vblank is first reached."
+    "m155: CANNOT trace records a fixed window of frames or milliseconds, and no tool runs until a routine is first reached."
    ],
    "right": true
   },
   {
    "lines": [
-    "M155: CANNOT trace takes a fixed window of milliseconds or frames and has no run-until-routine option."
+    "m155: CANNOT trace records a fixed window of frames or milliseconds, not everything until a routine is first reached."
    ],
    "right": true
   }

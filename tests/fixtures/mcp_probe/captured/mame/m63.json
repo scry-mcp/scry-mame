@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M63",
+  "id": "m63",
   "prompt": "Read the 8 bytes of the memory block that hex address 7000 maps to in the program space of the cpu tagged soundcpu.",
   "tool": "read_block",
   "args": {
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M63: {\"tool\": \"read_block\", \"args\": {\"ref\": \"0x7000\", \"length\": 8, \"cpu\": \"soundcpu\"}}"
+    "m63: {\"tool\":\"read_block\",\"args\":{\"ref\":\"0x7000\",\"length\":8,\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M170",
+  "id": "m170",
   "prompt": "I am auditing the ROM set: list the machine's ROM files with their crc and sha1, and nothing else of the machine.",
   "tool": "machine_map",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M170: {\"tool\": \"machine_map\", \"args\": {\"sections\": [\"rom_files\"]}}"
+    "m170: {\"tool\":\"machine_map\",\"args\":{\"sections\":[\"rom_files\"]}}"
    ],
    "right": true
   }

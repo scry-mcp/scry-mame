@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M106",
+  "id": "m106",
   "prompt": "Decode the region gfx1 under the format page8 that the loaded manifest defines, tiles 0 to 3, in grey because I do not want the machine's colours.",
   "tool": "gfx_view",
   "args": {
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"page8\", \"first\": 0, \"count\": 4, \"palette\": \"none\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
+    "m106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M106: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"page8\", \"tag\": \"gfx1\", \"count\": 4, \"palette\": \"none\"}}"
+    "m106: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"page8\",\"tag\":\"gfx1\",\"count\":4}}"
    ],
    "right": true
   }

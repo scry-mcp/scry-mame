@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M164",
+  "id": "m164",
   "prompt": "In one call: force register D0 to the value 0x7f, then step one instruction.",
   "tool": "perform",
   "args": {
@@ -57,91 +57,91 @@
  "runs": [
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\"}]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M164: {\"tool\": \"perform\", \"args\": {\"steps\": [{\"op\": \"set_register\", \"name\": \"D0\", \"value\": \"0x7f\"}, {\"op\": \"step\", \"count\": 1}]}}"
+    "m164: {\"tool\":\"perform\",\"args\":{\"steps\":[{\"op\":\"set_register\",\"name\":\"D0\",\"value\":\"0x7f\"},{\"op\":\"step\",\"count\":1}]}}"
    ],
    "right": true
   }

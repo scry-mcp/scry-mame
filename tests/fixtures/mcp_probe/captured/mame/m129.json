@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M129",
+  "id": "m129",
   "prompt": "The game rewrites the byte at hex address 3c00 on every frame, mostly with the same number: keep the screen only of the frames where the number it wrote was a different one from the time before, judging the next 900 frames.",
   "tool": "gfx_film",
   "args": {
@@ -16,91 +16,91 @@
  "runs": [
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M129: {\"tool\": \"gfx_film\", \"args\": {\"trigger\": \"0x3c00\", \"changed\": true, \"frames\": 900}}"
+    "m129: {\"tool\":\"gfx_film\",\"args\":{\"trigger\":\"0x3c00\",\"changed\":true,\"frames\":900}}"
    ],
    "right": true
   }

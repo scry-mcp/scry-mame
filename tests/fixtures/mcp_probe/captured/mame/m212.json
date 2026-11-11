@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M212",
+  "id": "m212",
   "prompt": "Start MAME from the run recipe this repository declares for the field bench, a profile called field-bench, and give it no other argument.",
   "tool": "start",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M212: {\"tool\": \"start\", \"args\": {\"profile\": \"field-bench\"}}"
+    "m212: {\"tool\":\"start\",\"args\":{\"profile\":\"field-bench\"}}"
    ],
    "right": true
   }

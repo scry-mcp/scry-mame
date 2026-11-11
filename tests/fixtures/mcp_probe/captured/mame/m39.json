@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M39",
+  "id": "m39",
   "prompt": "Give me the signature of just the rectangle at x 12, y 40, 36 pixels wide and 28 tall, waiting up to 9 seconds.",
   "tool": "screen_signature",
   "args": {
@@ -16,91 +16,91 @@
  "runs": [
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M39: {\"tool\": \"screen_signature\", \"args\": {\"crop\": [12, 40, 36, 28], \"seconds\": 9}}"
+    "m39: {\"tool\":\"screen_signature\",\"args\":{\"crop\":[12,40,36,28],\"seconds\":9}}"
    ],
    "right": true
   }

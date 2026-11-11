@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M54",
+  "id": "m54",
   "prompt": "Read 6 bytes at PlayerX on a SECOND machine that this same server runs beside the first one.",
   "expect": "CANNOT",
   "about": "read_memory"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M54: CANNOT This server runs one live session at a time (start refuses session_live), so a second machine beside the first cannot be read."
+    "m54: CANNOT The server runs one session at a time, and start refuses a second while a session is live (session_live)."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT This server runs one session, and start refuses a live session, so a second machine cannot be read."
+    "m54: CANNOT This server runs one session at a time; `start` refuses while a session is live, and no tool addresses a second machine."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT this server runs one session, and start refuses a second live machine (session_live), so there is no tool for a second machine."
+    "m54: CANNOT This server drives one session at a time, and no tool takes a machine argument, so a second machine cannot be read beside the first."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session at a time, so a second machine beside this one cannot be read."
+    "m54: CANNOT This server drives one session at a time, so a second machine beside the first cannot be read."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT a session drives one machine, and start is refused while a session is live, so no second machine can be read."
+    "m54: CANNOT This server runs one session at a time, and `start` refuses a second machine while one is live (`session_live`)."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT This server runs one session at a time, and start refuses a second live session, so a second machine cannot be read."
+    "m54: CANNOT The server runs one session at a time and start refuses while one is live, so no tool can reach a second machine beside the first."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session, and no tool selects a second machine; `start` refuses a live session (`session_live`)."
+    "m54: CANNOT The server runs one live session at a time, and a second machine is refused as session_live."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session, and start refuses a live session, so no second machine can be read beside the first."
+    "m54: CANNOT The server runs one live session at a time, and start refuses while a session is live (session_live), so no second machine can be opened beside this one."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT the server runs one live session, and `start` is refused with `session_live` while another machine is live."
+    "m54: CANNOT This server runs one session at a time, and `start` refuses a second live session (`session_live`), so no second machine can be read beside the first."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session at a time, and `start` refuses while a session is live, so a second machine beside this one is not possible."
+    "m54: CANNOT the server runs one session and start refuses a live one, so no tool reaches a second machine."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session at a time and start refuses while a session is live, so no second machine can be read."
+    "m54: CANNOT This server runs one session at a time, and start refuses while a session is live, so no second machine can be started beside the first."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT This server runs one session at a time; `start` is refused while a session is live, so a second machine cannot be read."
+    "m54: CANNOT This server runs one session at a time, and a second `start` is refused while a session is live, so it cannot run a second machine beside the first."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT The server runs one session at a time, and start refuses a live session, so a second machine cannot be read."
+    "m54: CANNOT The server runs one session at a time, and `start` refuses a live session (`session_live`), so a second machine cannot run beside this one."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT this server runs one session at a time, and a second machine cannot be started beside the first (start refuses while a session is live)."
+    "m54: CANNOT The server runs one live session, and start refuses a second while one is live, so a second machine cannot be read here."
    ],
    "right": true
   },
   {
    "lines": [
-    "M54: CANNOT a server session drives one machine, and a second machine cannot run beside the first in the same session."
+    "m54: CANNOT this server holds one live session and start refuses a second while one is live (session_live), so no tool can read the other machine."
    ],
    "right": true
   }

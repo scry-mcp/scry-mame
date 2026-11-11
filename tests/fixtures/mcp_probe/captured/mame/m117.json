@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M117",
+  "id": "m117",
   "prompt": "Show me the frames the film armed in this session has kept so far, with how many frames it has judged.",
   "tool": "gfx_film",
   "args": {}
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\": \"gfx_film\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M117: {\"tool\": \"gfx_film\", \"args\": {}}"
+    "m117: {\"tool\":\"gfx_film\",\"args\":{}}"
    ],
    "right": true
   }

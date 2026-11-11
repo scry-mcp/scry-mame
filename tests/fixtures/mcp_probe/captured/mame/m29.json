@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M29",
+  "id": "m29",
   "prompt": "The machine is running. Give me the registers as they were at the last stop.",
   "tool": "registers",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M29: {\"tool\": \"registers\", \"args\": {\"from_last_stop\": true}}"
+    "m29: {\"tool\":\"registers\",\"args\":{\"from_last_stop\":true}}"
    ],
    "right": true
   }

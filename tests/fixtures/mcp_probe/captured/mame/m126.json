@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M126",
+  "id": "m126",
   "prompt": "Rank the candidates of sweep 1 from the most to the least likely to be the real format.",
   "expect": "CANNOT",
   "about": "gfx_sweep"
@@ -8,91 +8,91 @@
  "runs": [
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool here ranks them."
+    "m126: CANNOT The sweep draws candidates unranked, and no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep does not rank its candidates; it draws them as one labelled sheet and nothing is ranked."
+    "m126: CANNOT A sweep draws its candidates as one labelled sheet and ranks nothing, so no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws its candidates unranked (\"nothing is ranked\"), and no tool ranks them."
+    "m126: CANNOT The sweep draws its candidates as a sheet and ranks nothing, so no tool can rank them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep ranks nothing: gfx_sweep draws the candidates as one sheet, and no tool ranks them by likelihood."
+    "m126: CANNOT gfx_sweep draws its candidates as one labelled sheet and ranks nothing, and no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT the sweep ranks nothing and no tool orders candidates by likelihood."
+    "m126: CANNOT `gfx_sweep` ranks nothing; it draws every candidate unranked."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep draws its candidates as one labelled sheet and ranks nothing, so no tool can rank them by likelihood."
+    "m126: CANNOT gfx_sweep draws its candidates unranked and no tool ranks them."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws the candidate layouts as one sheet and ranks nothing."
+    "m126: CANNOT gfx_sweep draws its candidates as an unranked sheet and no tool ranks them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep reports its candidates without ranking them, and no tool here ranks candidate formats."
+    "m126: CANNOT gfx_sweep draws the candidates as one labelled sheet and ranks nothing, so no tool here orders them by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT the sweep ranks nothing, and no tool ranks candidates by likelihood."
+    "m126: CANNOT The sweep draws candidates but nothing ranks them, and no tool ranks candidates by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The server keeps no ranking of sweep candidates; gfx_sweep draws a sheet and nothing is ranked."
+    "m126: CANNOT gfx_sweep ranks nothing; it only shows the candidates side by side."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep draws its candidates as one sheet and ranks none, so no tool can order them by likelihood."
+    "m126: CANNOT The sweep draws every candidate as a labelled sheet and ranks nothing, so no tool here can order the candidates by likelihood."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws the candidates as one labelled sheet and ranks none of them, and no tool ranks sweep candidates."
+    "m126: CANNOT gfx_sweep draws its candidates without ranking them, and no tool ranks sweep candidates."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT The sweep draws candidates but never ranks them, so no tool orders them by likelihood."
+    "m126: CANNOT No tool ranks sweep candidates; a sweep draws its candidates unranked."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT the sweep ranks nothing, and no tool scores candidates against the real format."
+    "m126: CANNOT Sweeps draw their candidates unranked, and no tool ranks them by likelihood of being the real format."
    ],
    "right": true
   },
   {
    "lines": [
-    "M126: CANNOT gfx_sweep draws the candidates as one unranked sheet and no tool ranks them by likelihood."
+    "m126: CANNOT gfx_sweep draws the candidates but ranks none of them, so no tool orders them by likelihood."
    ],
    "right": true
   }

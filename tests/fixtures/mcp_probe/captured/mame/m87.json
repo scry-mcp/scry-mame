@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M87",
+  "id": "m87",
   "prompt": "Which debugger is the live session attached to, and could a capture taken here land a frame away from an autoboot golden taken at the same frame count?",
   "tool": "status"
  },
  "runs": [
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\": \"status\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M87: {\"tool\": \"status\", \"args\": {}}"
+    "m87: {\"tool\":\"status\",\"args\":{}}"
    ],
    "right": true
   }

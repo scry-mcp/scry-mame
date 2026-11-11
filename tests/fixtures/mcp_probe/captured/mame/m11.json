@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M11",
+  "id": "m11",
   "prompt": "The machine is running: stop it where it is.",
   "tool": "stop"
  },
  "runs": [
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\": \"stop\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M11: {\"tool\": \"stop\", \"args\": {}}"
+    "m11: {\"tool\":\"stop\",\"args\":{}}"
    ],
    "right": true
   }

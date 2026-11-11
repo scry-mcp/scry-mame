@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M110",
+  "id": "m110",
   "prompt": "Stop the palette write log of the RAMDAC vgadac.",
   "tool": "palette_log",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M110: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"clear\": true}}"
+    "m110: {\"tool\":\"palette_log\",\"args\":{\"palette_port\":\"vgadac\",\"clear\":true}}"
    ],
    "right": true
   }

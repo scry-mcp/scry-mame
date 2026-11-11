@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M209",
+  "id": "m209",
   "prompt": "The MAME window is hidden behind another application. Bring it to the front.",
   "tool": "window",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M209: {\"tool\": \"window\", \"args\": {\"front\": true}}"
+    "m209: {\"tool\":\"window\",\"args\":{\"front\":true}}"
    ],
    "right": true
   }

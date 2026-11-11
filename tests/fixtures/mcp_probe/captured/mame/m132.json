@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M132",
+  "id": "m132",
   "prompt": "Where is each cpu's program counter right now, without making another cpu visible?",
   "tool": "cpu_info"
  },
  "runs": [
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\": \"cpu_info\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M132: {\"tool\": \"cpu_info\", \"args\": {}}"
+    "m132: {\"tool\":\"cpu_info\",\"args\":{}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M15b",
+  "id": "m15b",
   "prompt": "Clear every breakpoint declaration.",
   "tool": "declaration_clear",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"all\": true}}"
+    "m15b: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"all\":true}}"
    ],
    "right": true
   }

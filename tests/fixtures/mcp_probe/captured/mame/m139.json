@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M139",
+  "id": "m139",
   "prompt": "Drop the open value scan.",
   "tool": "scan",
   "args": {
@@ -13,91 +13,91 @@
  "runs": [
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M139: {\"tool\": \"scan\", \"args\": {\"method\": \"clear\"}}"
+    "m139: {\"tool\":\"scan\",\"args\":{\"method\":\"clear\"}}"
    ],
    "right": true
   }

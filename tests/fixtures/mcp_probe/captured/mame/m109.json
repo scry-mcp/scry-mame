@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M109",
+  "id": "m109",
   "prompt": "From the palette write log of the RAMDAC vgadac, show pen 73 whole, with its last 5 writes.",
   "tool": "palette_log",
   "args": {
@@ -17,91 +17,91 @@
  "runs": [
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M109: {\"tool\": \"palette_log\", \"args\": {\"palette_port\": \"vgadac\", \"pen\": 73, \"limit\": 5}}"
+    "m109: {\"tool\":\"palette_log\",\"args\":{\"palette_port\":\"vgadac\",\"pen\":73,\"limit\":5}}"
    ],
    "right": true
   }

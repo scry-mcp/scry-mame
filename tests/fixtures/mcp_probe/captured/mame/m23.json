@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M23",
+  "id": "m23",
   "prompt": "Which symbol is the run-time address hex 5C3E inside?",
   "tool": "symbols_find",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M23: {\"tool\": \"symbols_find\", \"args\": {\"linear\": \"0x5C3E\"}}"
+    "m23: {\"tool\":\"symbols_find\",\"args\":{\"linear\":\"0x5C3E\"}}"
    ],
    "right": true
   }

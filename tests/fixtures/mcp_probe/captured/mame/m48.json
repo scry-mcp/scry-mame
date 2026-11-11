@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M48",
+  "id": "m48",
   "prompt": "Switch real-speed throttling off, waiting up to 3 seconds for it to apply.",
   "tool": "throttle",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M48: {\"tool\": \"throttle\", \"args\": {\"on\": false, \"seconds\": 3}}"
+    "m48: {\"tool\":\"throttle\",\"args\":{\"on\":false,\"seconds\":3}}"
    ],
    "right": true
   }

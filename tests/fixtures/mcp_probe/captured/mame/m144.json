@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M144",
+  "id": "m144",
   "prompt": "Which notes are kept for the sound cpu audiocpu?",
   "tool": "comment_list",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M144: {\"tool\": \"comment_list\", \"args\": {\"cpu\": \"audiocpu\"}}"
+    "m144: {\"tool\":\"comment_list\",\"args\":{\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   }

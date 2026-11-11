@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M69",
+  "id": "m69",
   "prompt": "Read 12 bytes of memory at hex address 3FF0 of the cpu tagged soundcpu.",
   "tool": "read_memory",
   "args": {
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M69: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"0x3FF0\", \"length\": 12, \"cpu\": \"soundcpu\"}}"
+    "m69: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"0x3FF0\",\"length\":12,\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

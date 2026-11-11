@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M142",
+  "id": "m142",
   "prompt": "Put the note 'ball hits the paddle here' on routine PaddleHit of the sound cpu audiocpu.",
   "tool": "comment_write",
   "args": {
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M142: {\"tool\": \"comment_write\", \"args\": {\"method\": \"add\", \"ref\": \"PaddleHit\", \"text\": \"ball hits the paddle here\", \"cpu\": \"audiocpu\"}}"
+    "m142: {\"tool\":\"comment_write\",\"args\":{\"method\":\"add\",\"ref\":\"PaddleHit\",\"text\":\"ball hits the paddle here\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   }

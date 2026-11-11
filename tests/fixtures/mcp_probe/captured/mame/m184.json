@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M184",
+  "id": "m184",
   "prompt": "Export this session as a replay to /tmp/bench/circus.json, replacing the document already there.",
   "tool": "perform_export",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M184: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\", \"overwrite\": true}}"
+    "m184: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"/tmp/bench/circus.json\",\"overwrite\":true}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M92",
+  "id": "m92",
   "prompt": "Which palette pens does the part of the screen at x 16, y 32, 72 pixels wide and 48 tall use, how many pixels each, and which pens does nothing there use?",
   "tool": "screen_view",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M92: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"histogram\", \"crop\": [16, 32, 72, 48]}}"
+    "m92: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"histogram\",\"crop\":[16,32,72,48]}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M35",
+  "id": "m35",
   "prompt": "Force register D3 to the decimal value 4660.",
   "tool": "set_register",
   "args": {
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M35: {\"tool\": \"set_register\", \"args\": {\"name\": \"D3\", \"value\": 4660}}"
+    "m35: {\"tool\":\"set_register\",\"args\":{\"name\":\"D3\",\"value\":4660}}"
    ],
    "right": true
   }

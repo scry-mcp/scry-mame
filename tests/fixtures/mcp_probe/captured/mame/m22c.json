@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M22c",
+  "id": "m22c",
   "prompt": "Clear the count watch on the io port at hex 6.",
   "tool": "declaration_clear",
   "args": {
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22c: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"0x6\", \"space\": \"io\"}}"
+    "m22c: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"ref\":\"0x6\",\"space\":\"io\"}}"
    ],
    "right": true
   }

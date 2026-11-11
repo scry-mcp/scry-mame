@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M152",
+  "id": "m152",
   "prompt": "Find out which code runs during 30 frames, giving up if it takes longer than 25 seconds of real time.",
   "tool": "trace",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M152: {\"tool\": \"trace\", \"args\": {\"frames\": 30, \"seconds\": 25}}"
+    "m152: {\"tool\":\"trace\",\"args\":{\"frames\":30,\"seconds\":25}}"
    ],
    "right": true
   }

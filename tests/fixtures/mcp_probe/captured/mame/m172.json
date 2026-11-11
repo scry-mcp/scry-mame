@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M172",
+  "id": "m172",
   "prompt": "Keep exactly frames 500, 520 and 540 of the whole screen; they can go to the session's scratch.",
   "tool": "series_capture",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M172: {\"tool\": \"series_capture\", \"args\": {\"at_frames\": [500, 520, 540]}}"
+    "m172: {\"tool\":\"series_capture\",\"args\":{\"at_frames\":[500,520,540]}}"
    ],
    "right": true
   }

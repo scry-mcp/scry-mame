@@ -1,97 +1,97 @@
 {
  "task": {
-  "id": "M50",
+  "id": "m50",
   "prompt": "Every AVI and PNG this session wrote, re-read now.",
   "tool": "captures"
  },
  "runs": [
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\": \"captures\", \"args\": {}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M50: {\"tool\": \"captures\", \"args\": {}}"
+    "m50: {\"tool\":\"captures\",\"args\":{}}"
    ],
    "right": true
   }

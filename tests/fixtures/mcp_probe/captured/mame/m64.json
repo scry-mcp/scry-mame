@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M64",
+  "id": "m64",
   "prompt": "List only the breakpoint declarations whose rows sit on the cpu tagged soundcpu.",
   "tool": "declaration_list",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M64: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"breakpoint\", \"cpu\": \"soundcpu\"}}"
+    "m64: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"breakpoint\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

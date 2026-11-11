@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M130",
+  "id": "m130",
   "prompt": "On this V30 board the sound chip is driven through io port hex 1c with out instructions: count every two-byte write to that port, by value and by writer.",
   "tool": "watch_add",
   "args": {
@@ -25,91 +25,91 @@
  "runs": [
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2, \"cpu\": \"v30\"}}"
-   ],
-   "right": false
-  },
-  {
-   "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"capture\", \"space\": \"io\", \"length\": 2, \"trigger\": \"0x1c\"}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"length\": 2, \"space\": \"io\"}}"
    ],
-   "right": false
+   "right": true
   },
   {
    "lines": [
-    "M130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+    "m130: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x1c\", \"mode\": \"count\", \"space\": \"io\", \"length\": 2}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m130: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x1c\",\"mode\":\"count\",\"length\":2,\"space\":\"io\"}}"
    ],
    "right": true
   }

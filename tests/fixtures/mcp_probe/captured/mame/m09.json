@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M09",
+  "id": "m09",
   "prompt": "Execute the next 5 instructions, running each call to its return as one step.",
   "tool": "step",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M09: {\"tool\": \"step\", \"args\": {\"count\": 5, \"mode\": \"over\"}}"
+    "m09: {\"tool\":\"step\",\"args\":{\"count\":5,\"mode\":\"over\"}}"
    ],
    "right": true
   }

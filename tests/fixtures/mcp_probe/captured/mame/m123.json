@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M123",
+  "id": "m123",
   "prompt": "Of the sweep's candidates s2c3 and s2c7, which one draws the 16x16 patch of the screen at x 64, y 40 from the region gfx3?",
   "tool": "gfx_locate",
   "args": {
@@ -28,91 +28,91 @@
  "runs": [
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M123: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [\"s2c3\", \"s2c7\"], \"patch\": [64, 40, 16, 16], \"tag\": \"gfx3\"}}"
+    "m123: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[\"s2c3\",\"s2c7\"],\"patch\":[64,40,16,16],\"tag\":\"gfx3\"}}"
    ],
    "right": true
   }

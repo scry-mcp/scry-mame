@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M161",
+  "id": "m161",
   "prompt": "Show 4 tiles of the region gfx2, starting 0x800 bytes into it, in the loaded manifest's format chars8, through the palette device tagged ppu_pal from pen 0x30.",
   "tool": "gfx_view",
   "args": {
@@ -35,91 +35,91 @@
  "runs": [
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx2\", \"offset\": \"0x800\", \"layout\": \"chars8\", \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\", \"count\": 4}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M161: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"chars8\", \"tag\": \"gfx2\", \"offset\": \"0x800\", \"count\": 4, \"palette\": \"ppu_pal\", \"pen_base\": \"0x30\"}}"
+    "m161: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"chars8\",\"tag\":\"gfx2\",\"offset\":\"0x800\",\"count\":4,\"palette\":\"ppu_pal\",\"pen_base\":\"0x30\"}}"
    ],
    "right": true
   }

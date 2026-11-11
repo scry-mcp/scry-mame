@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M82",
+  "id": "m82",
   "prompt": "Stop the machine only when the byte at hex address 700011 is written with the value hex 25, and tell me who wrote it; any other value written there must not stop it.",
   "tool": "watch_add",
   "args": {
@@ -33,91 +33,91 @@
  "runs": [
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"fmt\": \"u8\", \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"fmt\": \"u8\", \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\", \"length\": 1}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"condition\": \"wpdata==0x25\", \"length\": 1}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==25\"}}"
+    "m82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M82: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"0x700011\", \"mode\": \"change\", \"length\": 1, \"condition\": \"wpdata==0x25\"}}"
+    "m82: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"0x700011\",\"mode\":\"change\",\"length\":1,\"condition\":\"wpdata==0x25\"}}"
    ],
    "right": true
   }

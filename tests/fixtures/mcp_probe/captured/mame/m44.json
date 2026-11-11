@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M44",
+  "id": "m44",
   "prompt": "Run the MAME debugger command `dump 2A40,30` and give me its text.",
   "tool": "debug",
   "args": {
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M44: {\"tool\": \"debug\", \"args\": {\"command\": \"dump 2A40,30\"}}"
+    "m44: {\"tool\":\"debug\",\"args\":{\"command\":\"dump 2A40,30\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M204",
+  "id": "m204",
   "prompt": "The screen map is loaded, and its screen named attract has no anchor. Run until the machine shows the attract screen, giving up after 20 seconds.",
   "tool": "run_to",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M204: {\"tool\": \"run_to\", \"args\": {\"screen\": \"attract\", \"seconds\": 20}}"
+    "m204: {\"tool\":\"run_to\",\"args\":{\"screen\":\"attract\",\"seconds\":20}}"
    ],
    "right": true
   }

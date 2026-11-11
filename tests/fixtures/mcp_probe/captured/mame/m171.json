@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M171",
+  "id": "m171",
   "prompt": "Keep frames 1200 to 1260 of the screen, every second frame, only the region at x 0, y 0, 64 by 32, into the new directory /tmp/run7-series, and give the run up to 45 seconds.",
   "tool": "series_capture",
   "args": {
@@ -20,91 +20,91 @@
  "runs": [
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M171: {\"tool\": \"series_capture\", \"args\": {\"first\": 1200, \"last\": 1260, \"step\": 2, \"crop\": [0, 0, 64, 32], \"dest\": \"/tmp/run7-series\", \"seconds\": 45}}"
+    "m171: {\"tool\":\"series_capture\",\"args\":{\"first\":1200,\"last\":1260,\"step\":2,\"crop\":[0,0,64,32],\"dest\":\"/tmp/run7-series\",\"seconds\":45}}"
    ],
    "right": true
   }

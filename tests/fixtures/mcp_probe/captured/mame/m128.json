@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M128",
+  "id": "m128",
   "prompt": "The tiles of an unknown format start at the symbol TileBank in the program space of the cpu tagged subcpu: draw 40 of them under the candidate layouts at one bit a pixel, the sheet enlarged 2 times.",
   "tool": "gfx_sweep",
   "args": {
@@ -24,91 +24,91 @@
  "runs": [
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"planes\": [1], \"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"planes\": [1], \"count\": 40, \"scale\": 2}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M128: {\"tool\": \"gfx_sweep\", \"args\": {\"ref\": \"TileBank\", \"cpu\": \"subcpu\", \"count\": 40, \"planes\": [1], \"scale\": 2}}"
+    "m128: {\"tool\":\"gfx_sweep\",\"args\":{\"ref\":\"TileBank\",\"cpu\":\"subcpu\",\"planes\":[1],\"count\":40,\"scale\":2}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M26",
+  "id": "m26",
   "prompt": "Read 6 bytes of memory at the symbol PlayerX.",
   "tool": "read_memory",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M26: {\"tool\": \"read_memory\", \"args\": {\"ref\": \"PlayerX\", \"length\": 6}}"
+    "m26: {\"tool\":\"read_memory\",\"args\":{\"ref\":\"PlayerX\",\"length\":6}}"
    ],
    "right": true
   }

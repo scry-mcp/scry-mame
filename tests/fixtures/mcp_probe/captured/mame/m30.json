@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M30",
+  "id": "m30",
   "prompt": "Disassemble 40 bytes from hex address 1B7C.",
   "tool": "disassemble",
   "args": {
@@ -16,91 +16,91 @@
  "runs": [
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M30: {\"tool\": \"disassemble\", \"args\": {\"ref\": \"0x1B7C\", \"length\": 40}}"
+    "m30: {\"tool\":\"disassemble\",\"args\":{\"ref\":\"0x1B7C\",\"length\":40}}"
    ],
    "right": true
   }

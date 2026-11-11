@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M22",
+  "id": "m22",
   "prompt": "Clear every watch declaration.",
   "tool": "declaration_clear",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"all\": true}}"
+    "m22: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"all\":true}}"
    ],
    "right": true
   }

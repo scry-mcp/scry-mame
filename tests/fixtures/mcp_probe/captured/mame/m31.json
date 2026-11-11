@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M31",
+  "id": "m31",
   "prompt": "Find every address in the 1536 bytes from hex address 2600 that holds the bytes 4E 71.",
   "tool": "find",
   "args": {
@@ -23,91 +23,91 @@
  "runs": [
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M31: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\"}}"
+    "m31: {\"tool\":\"find\",\"args\":{\"ref\":\"0x2600\",\"length\":1536,\"data_hex\":\"4E71\"}}"
    ],
    "right": true
   }

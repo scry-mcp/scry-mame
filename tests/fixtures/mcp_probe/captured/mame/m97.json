@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M97",
+  "id": "m97",
   "prompt": "Which tile of the region gfx1 is the 8x8 patch of the screen at x 88, y 96? The layout is {\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}, and this hardware never flips a tile.",
   "tool": "gfx_locate",
   "args": {
@@ -56,91 +56,91 @@
  "runs": [
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M97: {\"tool\": \"gfx_locate\", \"args\": {\"layouts\": [{\"width\": 8, \"height\": 8, \"planes\": 1, \"planeoffset\": [0], \"xoffset\": \"{ STEP8(0,1) }\", \"yoffset\": \"{ STEP8(0,8) }\", \"charincrement\": \"8*8\"}], \"patch\": [88, 96, 8, 8], \"tag\": \"gfx1\", \"flips\": [\"none\"]}}"
+    "m97: {\"tool\":\"gfx_locate\",\"args\":{\"layouts\":[{\"width\":8,\"height\":8,\"planes\":1,\"planeoffset\":[0],\"xoffset\":\"{ STEP8(0,1) }\",\"yoffset\":\"{ STEP8(0,8) }\",\"charincrement\":\"8*8\"}],\"patch\":[88,96,8,8],\"tag\":\"gfx1\",\"flips\":[\"none\"]}}"
    ],
    "right": true
   }

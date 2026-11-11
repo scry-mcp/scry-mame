@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M182",
+  "id": "m182",
   "prompt": "Compare the recording /tmp/rec/new.wav with the reference /tmp/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
   "tool": "audio_compare",
   "args": {
@@ -20,91 +20,91 @@
  "runs": [
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\":\"audio_compare\",\"args\":{\"method\":\"diff\",\"a\":\"/tmp/rec/new.wav\",\"b\":\"/tmp/rec/ref.wav\",\"window\":[0,3],\"align\":false}}"
    ],
    "right": true
   }

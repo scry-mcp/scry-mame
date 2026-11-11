@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M60",
+  "id": "m60",
   "prompt": "Find every place the bytes 4E 71 occur in the 1536 bytes from hex address 2600 of the cpu tagged soundcpu.",
   "tool": "find",
   "args": {
@@ -29,91 +29,91 @@
  "runs": [
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"data_hex\": \"4E71\", \"ref\": \"0x2600\", \"length\": 1536, \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M60: {\"tool\": \"find\", \"args\": {\"ref\": \"0x2600\", \"length\": 1536, \"data_hex\": \"4E71\", \"cpu\": \"soundcpu\"}}"
+    "m60: {\"tool\":\"find\",\"args\":{\"ref\":\"0x2600\",\"length\":1536,\"data_hex\":\"4E71\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

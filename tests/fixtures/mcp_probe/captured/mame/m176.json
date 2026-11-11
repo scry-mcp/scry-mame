@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M176",
+  "id": "m176",
   "prompt": "In the series /tmp/run1/manifest.json, how many pixels of the rectangle at x 0, y 200, 320 by 24 changed from the frame before, on each frame where some did?",
   "tool": "image_compare",
   "args": {
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"measure\": \"changed_pixels\", \"crop\": [0, 200, 320, 24]}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"measure\": \"changed_pixels\", \"crop\": [0, 200, 320, 24]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M176: {\"tool\": \"image_compare\", \"args\": {\"method\": \"region\", \"manifest\": \"/tmp/run1/manifest.json\", \"crop\": [0, 200, 320, 24], \"measure\": \"changed_pixels\"}}"
+    "m176: {\"tool\":\"image_compare\",\"args\":{\"method\":\"region\",\"manifest\":\"/tmp/run1/manifest.json\",\"measure\":\"changed_pixels\",\"crop\":[0,200,320,24]}}"
    ],
    "right": true
   }

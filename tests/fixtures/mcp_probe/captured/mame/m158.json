@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M158",
+  "id": "m158",
   "prompt": "Keep only the scanned cells that now hold the value 0xbeef.",
   "tool": "scan",
   "args": {
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"value\": \"0xbeef\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M158: {\"tool\": \"scan\", \"args\": {\"method\": \"filter\", \"operator\": \"=\", \"value\": \"0xbeef\"}}"
+    "m158: {\"tool\":\"scan\",\"args\":{\"method\":\"filter\",\"value\":\"0xbeef\"}}"
    ],
    "right": true
   }

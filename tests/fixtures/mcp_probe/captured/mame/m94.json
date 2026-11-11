@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M94",
+  "id": "m94",
   "prompt": "Show me where pens 49 and 50 are on the screen, every other pen in grey, enlarged 3 times, saved to /tmp/mcp-probe-iso.png, waiting up to 6 seconds.",
   "tool": "screen_view",
   "args": {
@@ -28,91 +28,91 @@
  "runs": [
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M94: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"isolate\", \"pens\": [49, 50], \"scale\": 3, \"dest\": \"/tmp/mcp-probe-iso.png\", \"seconds\": 6}}"
+    "m94: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"isolate\",\"pens\":[49,50],\"scale\":3,\"dest\":\"/tmp/mcp-probe-iso.png\",\"seconds\":6}}"
    ],
    "right": true
   }

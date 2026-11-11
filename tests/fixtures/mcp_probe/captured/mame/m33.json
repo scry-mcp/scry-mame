@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M33",
+  "id": "m33",
   "prompt": "Show the last 120 instructions the cpu executed before the stop.",
   "tool": "history",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M33: {\"tool\": \"history\", \"args\": {\"limit\": 120}}"
+    "m33: {\"tool\":\"history\",\"args\":{\"limit\":120}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M114",
+  "id": "m114",
   "prompt": "Which palette pen is the pixel at x 46, y 160 of the screen, and show me where on the screen it sits, enlarged.",
   "tool": "screen_view",
   "args": {
@@ -23,91 +23,91 @@
  "runs": [
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 4}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160], \"scale\": 0}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M114: {\"tool\": \"screen_view\", \"args\": {\"mode\": \"pixel\", \"point\": [46, 160]}}"
+    "m114: {\"tool\":\"screen_view\",\"args\":{\"mode\":\"pixel\",\"point\":[46,160]}}"
    ],
    "right": true
   }

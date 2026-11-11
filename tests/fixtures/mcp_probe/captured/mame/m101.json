@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M101",
+  "id": "m101",
   "prompt": "Load the graphics manifest of this project, /home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
   "tool": "gfx_load",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\":\"gfx_load\",\"args\":{\"path\":\"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   }

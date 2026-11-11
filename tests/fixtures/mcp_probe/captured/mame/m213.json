@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M213",
+  "id": "m213",
   "prompt": "Replay the session kept in /tmp/mcp-probe-session.json on this machine, in one call, and do not send the steps yourself.",
   "tool": "perform",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M213: {\"tool\": \"perform\", \"args\": {\"path\": \"/tmp/mcp-probe-session.json\"}}"
+    "m213: {\"tool\":\"perform\",\"args\":{\"path\":\"/tmp/mcp-probe-session.json\"}}"
    ],
    "right": true
   }

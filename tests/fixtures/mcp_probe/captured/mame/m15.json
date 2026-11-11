@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M15",
+  "id": "m15",
   "prompt": "Clear the breakpoint declared as FrameTick.",
   "tool": "declaration_clear",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M15: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"FrameTick\"}}"
+    "m15: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"ref\":\"FrameTick\"}}"
    ],
    "right": true
   }

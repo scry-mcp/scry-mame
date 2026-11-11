@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M22b",
+  "id": "m22b",
   "prompt": "Clear the watch declared as ScoreTbl.",
   "tool": "declaration_clear",
   "args": {
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M22b: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"watch\", \"ref\": \"ScoreTbl\"}}"
+    "m22b: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"watch\",\"ref\":\"ScoreTbl\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M201",
+  "id": "m201",
   "prompt": "The machine is stopped on the play screen of a game whose PC port draws the same pixels through a palette of other colours. Map this screen as play, known by the strip at x 0, y 0, 320 wide and 8 high, signed so that one map knows it on both machines.",
   "tool": "screen_map_write",
   "args": {
@@ -24,91 +24,91 @@
  "runs": [
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M201: {\"tool\": \"screen_map_write\", \"args\": {\"method\": \"add\", \"screen\": \"play\", \"match\": [[0, 0, 320, 8]], \"cells\": \"index\"}}"
+    "m201: {\"tool\":\"screen_map_write\",\"args\":{\"method\":\"add\",\"screen\":\"play\",\"match\":[[0,0,320,8]],\"cells\":\"index\"}}"
    ],
    "right": true
   }

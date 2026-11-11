@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M24",
+  "id": "m24",
   "prompt": "Look up the symbols whose names start with enemy_, at most 25 of them.",
   "tool": "symbols_find",
   "args": {
@@ -11,91 +11,91 @@
  "runs": [
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M24: {\"tool\": \"symbols_find\", \"args\": {\"name\": \"enemy_\", \"limit\": 25}}"
+    "m24: {\"tool\":\"symbols_find\",\"args\":{\"name\":\"enemy_\",\"limit\":25}}"
    ],
    "right": true
   }

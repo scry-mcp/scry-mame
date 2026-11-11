@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M40",
+  "id": "m40",
   "prompt": "Show the newest 60 lines of the emulator's error.log that match SND_VOL, with a count of the returned lines per first word.",
   "tool": "log",
   "args": {
@@ -16,91 +16,91 @@
  "runs": [
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M40: {\"tool\": \"log\", \"args\": {\"pattern\": \"SND_VOL\", \"channel\": \"emulator\", \"limit\": 60, \"labels\": true}}"
+    "m40: {\"tool\":\"log\",\"args\":{\"pattern\":\"SND_VOL\",\"channel\":\"emulator\",\"limit\":60,\"labels\":true}}"
    ],
    "right": true
   }

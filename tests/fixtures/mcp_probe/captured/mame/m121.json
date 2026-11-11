@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M121",
+  "id": "m121",
   "prompt": "Nobody knows the format of the region gfx3. Draw it under the candidate layouts at one and two bits a pixel, as 24x24 tiles, 20 tiles a candidate, saved to /tmp/mcp-probe-sweep.png.",
   "tool": "gfx_sweep",
   "args": {
@@ -27,91 +27,91 @@
  "runs": [
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"sizes\": [[24, 24]], \"planes\": [1, 2], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"planes\": [1, 2], \"sizes\": [[24, 24]], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"sizes\": [[24, 24]], \"planes\": [1, 2], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"count\": 20, \"planes\": [1, 2], \"sizes\": [[24, 24]], \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M121: {\"tool\": \"gfx_sweep\", \"args\": {\"tag\": \"gfx3\", \"planes\": [1, 2], \"sizes\": [[24, 24]], \"count\": 20, \"dest\": \"/tmp/mcp-probe-sweep.png\"}}"
+    "m121: {\"tool\":\"gfx_sweep\",\"args\":{\"tag\":\"gfx3\",\"planes\":[1,2],\"sizes\":[[24,24]],\"count\":20,\"dest\":\"/tmp/mcp-probe-sweep.png\"}}"
    ],
    "right": true
   }

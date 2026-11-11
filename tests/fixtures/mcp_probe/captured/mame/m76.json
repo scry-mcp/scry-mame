@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M76",
+  "id": "m76",
   "prompt": "Remove the breakpoint declaration SoundNmi on the cpu tagged audiocpu, leaving the one of the same name on the other cpu.",
   "tool": "declaration_clear",
   "args": {
@@ -20,91 +20,91 @@
  "runs": [
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M76: {\"tool\": \"declaration_clear\", \"args\": {\"kind\": \"breakpoint\", \"ref\": \"SoundNmi\", \"cpu\": \"audiocpu\"}}"
+    "m76: {\"tool\":\"declaration_clear\",\"args\":{\"kind\":\"breakpoint\",\"ref\":\"SoundNmi\",\"cpu\":\"audiocpu\"}}"
    ],
    "right": true
   }

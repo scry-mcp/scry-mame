@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M66",
+  "id": "m66",
   "prompt": "List the registerpoint declarations on the cpu tagged gfxcpu, which is the one the debugger shows.",
   "tool": "declaration_list",
   "args": {
@@ -19,91 +19,91 @@
  "runs": [
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M66: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\", \"cpu\": \"gfxcpu\"}}"
+    "m66: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"regpoint\",\"cpu\":\"gfxcpu\"}}"
    ],
    "right": true
   }

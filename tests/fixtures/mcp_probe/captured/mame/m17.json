@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M17",
+  "id": "m17",
   "prompt": "List every registerpoint declaration and its state.",
   "tool": "declaration_list",
   "args": {
@@ -13,91 +13,91 @@
  "runs": [
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M17: {\"tool\": \"declaration_list\", \"args\": {\"kind\": \"regpoint\"}}"
+    "m17: {\"tool\":\"declaration_list\",\"args\":{\"kind\":\"regpoint\"}}"
    ],
    "right": true
   }

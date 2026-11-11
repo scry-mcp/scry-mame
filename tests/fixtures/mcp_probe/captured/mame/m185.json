@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M185",
+  "id": "m185",
   "prompt": "Save the session as a replay document named session.json in the bench folder of my home directory.",
   "tool": "perform_export",
   "args": {
@@ -10,91 +10,91 @@
  "runs": [
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M185: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"~/bench/session.json\"}}"
+    "m185: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"~/bench/session.json\"}}"
    ],
    "right": true
   }

@@ -1,6 +1,6 @@
 {
  "task": {
-  "id": "M20",
+  "id": "m20",
   "prompt": "At every stop, read the 12 bytes at SpriteBuf as unsigned bytes, forcing SpriteBuf to be taken as a symbol.",
   "tool": "watch_add",
   "args": {
@@ -36,91 +36,91 @@
  "runs": [
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"length\": 12}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"fmt\": \"u8[12]\", \"by\": \"symbol\"}}"
+    "m20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"mode\": \"show\", \"by\": \"symbol\", \"fmt\": \"u8[12]\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "M20: {\"tool\": \"watch_add\", \"args\": {\"ref\": \"SpriteBuf\", \"by\": \"symbol\", \"mode\": \"show\", \"fmt\": \"u8[12]\"}}"
+    "m20: {\"tool\":\"watch_add\",\"args\":{\"ref\":\"SpriteBuf\",\"mode\":\"show\",\"by\":\"symbol\",\"fmt\":\"u8[12]\"}}"
    ],
    "right": true
   }
