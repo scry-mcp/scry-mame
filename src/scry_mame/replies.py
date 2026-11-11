@@ -774,7 +774,7 @@ class RunForReply(MameEnvelope, total=False):
     instruction: StopInstruction
     disarmed_watches: list[Any]
     emulated_after_s: Required[float | dict[str, Any]]
-    emulated_before_s: Required[float]
+    emulated_before_s: Required[float | dict[str, Any]]
     errorlog: dict[str, Any]
     frame: int | dict[str, Any]
     frame_after: Required[int | dict[str, Any]]

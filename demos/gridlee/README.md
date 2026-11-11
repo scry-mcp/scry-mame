@@ -158,18 +158,13 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
-        "errorlog": {
-          "lines_total": 2,
-          "truncated": false,
-          "lines": ["[luaengine] MAME_MCP_INPUT#3 release frame=547 port_held=000000ce", ""],
-          "mark": 1955
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -211,19 +206,13 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["A7D7: EC A4    LDD    ,Y", "A7D9: AF A4    STX    ,Y", "A7DB: ED C4    STD    ,U", "A7DD: 33 A4    LEAU   ,Y", "A7DF: 31 3E    LEAY   -$2,Y", "A7E1: 11 93 80 CMPU   <$80", "A7E4: 26 E6    BNE    $A7CC", "A7E6: DE 84    LDU    <$84", "A7E8: 31 5E    LEAY   -$2,U", "A7EA: DC 80    LDD    <$80", "A7EC: C3 00 02 ADDD   #$0002", "A7EF: DD 80    STD    <$80", "A7F1: 11 93 80 CMPU   <$80", "A7F4: 26 D6    BNE    $A7CC"],
-        "errorlog": {
-          "lines_total": 9,
-          "truncated": true,
-          "lines": ["[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF", "[:] coin counter off", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"],
-          "mark": 2022,
-          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=2022, limit=9)` reads them all"
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -251,7 +240,7 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -264,7 +253,7 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -300,7 +289,7 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -331,7 +320,7 @@ A value scan narrows the candidates: after the first coin the bytes holding 1, a
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```

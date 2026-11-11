@@ -134,13 +134,13 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["A633: 24 FC    BCC    $A631", "A635: B7 93 80 STA    $9380", "A638: B6 97 00 LDA    $9700", "A63B: 43       COMA", "A63C: 85 20    BITA   #$20", "A63E: 27 03    BEQ    $A643", "A640: 7E F0 00 JMP    $F000", "A643: BD B5 2B JSR    $B52B", "A646: BD C5 67 JSR    $C567", "A649: B6 04 28 LDA    $0428", "A64C: 81 0C    CMPA   #$0C", "A64E: 24 51    BCC    $A6A1", "A650: B6 96 00 LDA    $9600"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 195},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -174,7 +174,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -257,18 +257,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
-        "errorlog": {
-          "lines_total": 2,
-          "truncated": false,
-          "lines": ["[luaengine] MAME_MCP_INPUT#1 release frame=299 port_held=000000ce", ""],
-          "mark": 315
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -310,19 +305,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["A7D7: EC A4    LDD    ,Y", "A7D9: AF A4    STX    ,Y", "A7DB: ED C4    STD    ,U", "A7DD: 33 A4    LEAU   ,Y", "A7DF: 31 3E    LEAY   -$2,Y", "A7E1: 11 93 80 CMPU   <$80", "A7E4: 26 E6    BNE    $A7CC", "A7E6: DE 84    LDU    <$84", "A7E8: 31 5E    LEAY   -$2,U", "A7EA: DC 80    LDD    <$80", "A7EC: C3 00 02 ADDD   #$0002", "A7EF: DD 80    STD    <$80", "A7F1: 11 93 80 CMPU   <$80", "A7F4: 26 D6    BNE    $A7CC"],
-        "errorlog": {
-          "lines_total": 9,
-          "truncated": true,
-          "lines": ["[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF", "[:] coin counter off", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"],
-          "mark": 382,
-          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=382, limit=9)` reads them all"
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -369,7 +358,7 @@
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -382,7 +371,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -465,18 +454,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
-        "errorlog": {
-          "lines_total": 2,
-          "truncated": false,
-          "lines": ["[luaengine] MAME_MCP_INPUT#2 release frame=423 port_held=000000ce", ""],
-          "mark": 1061
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -518,19 +502,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["B504: DC 86    LDD    <$86", "B506: 8E DA 62 LDX    #$DA62", "B509: 10 A3 81 CMPD   ,X++", "B50C: 23 07    BLS    $B515", "B50E: 0C 81    INC    <$81", "B510: 8C DA 6A CMPX   #$DA6A", "B513: 26 F4    BNE    $B509", "B515: 96 81    LDA    <$81", "B517: C6 05    LDB    #$05", "B519: 3D       MUL", "B51A: DB 80    ADDB   <$80", "B51C: D7 80    STB    <$80", "B51E: 86 07    LDA    #$07", "B520: 3D       MUL", "B521: D7 88    STB    <$88"],
-        "errorlog": {
-          "lines_total": 11,
-          "truncated": true,
-          "lines": ["[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"],
-          "mark": 1128,
-          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=1128, limit=11)` reads them all"
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -558,7 +536,7 @@
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -571,7 +549,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -654,18 +632,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
-        "errorlog": {
-          "lines_total": 2,
-          "truncated": false,
-          "lines": ["[luaengine] MAME_MCP_INPUT#3 release frame=547 port_held=000000ce", ""],
-          "mark": 1955
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -707,19 +680,13 @@
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["A7D7: EC A4    LDD    ,Y", "A7D9: AF A4    STX    ,Y", "A7DB: ED C4    STD    ,U", "A7DD: 33 A4    LEAU   ,Y", "A7DF: 31 3E    LEAY   -$2,Y", "A7E1: 11 93 80 CMPU   <$80", "A7E4: 26 E6    BNE    $A7CC", "A7E6: DE 84    LDU    <$84", "A7E8: 31 5E    LEAY   -$2,U", "A7EA: DC 80    LDD    <$80", "A7EC: C3 00 02 ADDD   #$0002", "A7EF: DD 80    STD    <$80", "A7F1: 11 93 80 CMPU   <$80", "A7F4: 26 D6    BNE    $A7CC"],
-        "errorlog": {
-          "lines_total": 9,
-          "truncated": true,
-          "lines": ["[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF", "[:] coin counter off", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"],
-          "mark": 2022,
-          "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=2022, limit=9)` reads them all"
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -747,7 +714,7 @@
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -760,7 +727,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -813,7 +780,7 @@
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -845,7 +812,7 @@
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -858,7 +825,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -932,12 +899,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
-  "errorlog": {
-    "lines_total": 4,
-    "truncated": false,
-    "lines": ["[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF", "[luaengine] MAME_MCP_INPUT#4 release frame=671 port_held=000000ce", ""],
-    "mark": 2701
-  },
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -953,13 +915,13 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1013,7 +975,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["B588: BB 04 2C ADDA   $042C", "B58B: 19       DAA", "B58C: B7 04 2C STA    $042C", "B58F: 39       RTS", "B590: 96 F4    LDA    <$F4", "B592: 27 21    BEQ    $B5B5", "B594: 96 B3    LDA    <$B3", "B596: 84 07    ANDA   #$07", "B598: 26 1A    BNE    $B5B4", "B59A: 8E F6 59 LDX    #$F659", "B59D: 96 F5    LDA    <$F5", "B59F: 27 03    BEQ    $B5A4", "B5A1: 8E F7 49 LDX    #$F749", "B5A4: CE 0A 85 LDU    #$0A85"],
-  "errorlog": {"lines_total": 1, "truncated": false, "lines": ["[:] coin counter on"], "mark": 2916},
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -1029,7 +991,7 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -1051,7 +1013,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1105,7 +1067,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["B590: 96 F4    LDA    <$F4", "B592: 27 21    BEQ    $B5B5", "B594: 96 B3    LDA    <$B3", "B596: 84 07    ANDA   #$07", "B598: 26 1A    BNE    $B5B4", "B59A: 8E F6 59 LDX    #$F659", "B59D: 96 F5    LDA    <$F5", "B59F: 27 03    BEQ    $B5A4", "B5A1: 8E F7 49 LDX    #$F749", "B5A4: CE 0A 85 LDU    #$0A85", "B5A7: B6 04 32 LDA    $0432", "B5AA: 27 03    BEQ    $B5AF", "B5AC: CE 0A C3 LDU    #$0AC3"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 2936},
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -1121,7 +1083,7 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -1143,7 +1105,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1177,7 +1139,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1231,12 +1193,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["AE1C: A6 0A       LDA    $A,X", "AE1E: 85 01       BITA   #$01", "AE20: 10 27 00 B0 LBEQ   $AED4", "AE24: 85 40       BITA   #$40", "AE26: 27 06       BEQ    $AE2E", "AE28: BD B8 34    JSR    $B834", "AE2B: 7E AE D4    JMP    $AED4", "AE2E: 85 80       BITA   #$80", "AE30: 10 26 00 82 LBNE   $AEB6", "AE34: 85 20       BITA   #$20", "AE36: 10 26 00 AA LBNE   $AEE4"],
-  "errorlog": {
-    "lines_total": 4,
-    "truncated": false,
-    "lines": ["[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF", "[:] coin counter off", "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF", "[:maincpu] ':maincpu' (A688): unmapped program memory read from 9000 & FF"],
-    "mark": 2936
-  },
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -1252,13 +1209,13 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1289,7 +1246,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1309,20 +1266,20 @@
 
 ```json
 {
-  "summary": "state_write save: four-credits, 10840 bytes at frame 702",
+  "summary": "<volatile>",
   "status": "ok",
   "name": "four-credits",
   "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four-credits.sta",
-  "bytes": 10840,
+  "bytes": "<volatile>",
   "frame": 702,
   "pc": "0x0000ae19",
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 3179},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1403,7 +1360,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["D67B: BB 04 2C ADDA   $042C", "D67E: 19       DAA", "D67F: B7 04 2C STA    $042C", "D682: 39       RTS", "D683: 8E 04 31 LDX    #$0431", "D686: C6 5F    LDB    #$5F", "D688: 6F 85    CLR    B,X", "D68A: 5A       DECB", "D68B: 2A FB    BPL    $D688", "D68D: 39       RTS", "D68E: 0F B9    CLR    <$B9", "D690: D6 9A    LDB    <$9A", "D692: 86 03    LDA    #$03", "D694: 3D       MUL", "D695: 8E AB 76 LDX    #$AB76", "D698: 3A       ABX"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 3307},
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -1419,7 +1376,7 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "watch_hit": {
     "ref": "0x42b",
     "addr": "0x0000042b",
@@ -1441,7 +1398,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1495,7 +1452,7 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["D683: 8E 04 31    LDX    #$0431", "D686: C6 5F       LDB    #$5F", "D688: 6F 85       CLR    B,X", "D68A: 5A          DECB", "D68B: 2A FB       BPL    $D688", "D68D: 39          RTS", "D68E: 0F B9       CLR    <$B9", "D690: D6 9A       LDB    <$9A", "D692: 86 03       LDA    #$03", "D694: 3D          MUL", "D695: 8E AB 76    LDX    #$AB76", "D698: 3A          ABX", "D699: A6 80       LDA    ,X+", "D69B: B7 01 BC    STA    $01BC", "D69E: EC 84       LDD    ,X", "D6A0: 10 83 10 10 CMPD   #$1010"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 3307},
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x42b",
@@ -1511,7 +1468,7 @@
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "watch_hit": {
     "ref": "0x42c",
     "addr": "0x0000042c",
@@ -1533,7 +1490,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1562,7 +1519,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1600,7 +1557,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1630,7 +1587,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1684,19 +1641,13 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["A635: B7 93 80 STA    $9380", "A638: B6 97 00 LDA    $9700", "A63B: 43       COMA", "A63C: 85 20    BITA   #$20", "A63E: 27 03    BEQ    $A643", "A640: 7E F0 00 JMP    $F000", "A643: BD B5 2B JSR    $B52B", "A646: BD C5 67 JSR    $C567", "A649: B6 04 28 LDA    $0428", "A64C: 81 0C    CMPA   #$0C", "A64E: 24 51    BCC    $A6A1", "A650: B6 96 00 LDA    $9600"],
-  "errorlog": {
-    "lines_total": 130,
-    "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8078 = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 8079 = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807A = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807B = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807C = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807D = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807E = FF & FF", "[:maincpu] ':maincpu' (CF61): unmapped program memory write to 807F = FF & FF"],
-    "mark": 3307,
-    "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=3307, limit=130)` reads them all"
-  },
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1727,14 +1678,14 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
 
 </details>
 
-**22. `screen_view`**: OK screen: the game in play, 256x240, sha256 0c1f099a0cae
+**22. `screen_view`**: OK screen: the game in play, 256x240
 
 <details><summary>call and reply</summary>
 
@@ -1761,8 +1712,8 @@
   "crop": [0, 0, 256, 240],
   "image": {
     "path": "./tmp/demos/gridlee/screen.png",
-    "bytes": 8175,
-    "sha256": "0c1f099a0caeb830ec9022c58ed2317731cd7d197dedfb07d572148eb1b434ce",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 512,
     "height": 480,
     "scale": 2,
@@ -1800,13 +1751,13 @@
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["A633: 24 FC    BCC    $A631", "A635: B7 93 80 STA    $9380", "A638: B6 97 00 LDA    $9700", "A63B: 43       COMA", "A63C: 85 20    BITA   #$20", "A63E: 27 03    BEQ    $A643", "A640: 7E F0 00 JMP    $F000", "A643: BD B5 2B JSR    $B52B", "A646: BD C5 67 JSR    $C567", "A649: B6 04 28 LDA    $0428", "A64C: 81 0C    CMPA   #$0C", "A64E: 24 51    BCC    $A6A1", "A650: B6 96 00 LDA    $9600"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 13358},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1836,7 +1787,7 @@ Also attached: image/png.
   "verified": true,
   "saved": {"frame": 702, "pc": "0x0000ae19"},
   "output": "State load attempted.  Please refer to window message popup for results.",
-  "mark": {"emulator": 13358, "process": 10449},
+  "mark": "<volatile>",
   "cause": "stateload four-credits",
   "stop_seq": 17,
   "pc": "0x0000ae19",
@@ -1862,14 +1813,14 @@ Also attached: image/png.
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["AE1C: A6 0A       LDA    $A,X", "AE1E: 85 01       BITA   #$01", "AE20: 10 27 00 B0 LBEQ   $AED4", "AE24: 85 40       BITA   #$40", "AE26: 27 06       BEQ    $AE2E", "AE28: BD B8 34    JSR    $B834", "AE2B: 7E AE D4    JMP    $AED4", "AE2E: 85 80       BITA   #$80", "AE30: 10 26 00 82 LBNE   $AEB6", "AE34: 85 20       BITA   #$20", "AE36: 10 26 00 AA LBNE   $AEE4"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 13358},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": true,
     "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1901,7 +1852,7 @@ Also attached: image/png.
     "altered": true,
     "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -1922,7 +1873,7 @@ Also attached: image/png.
   "status": "ok",
   "closed": true,
   "omitted": ["stdout_tail", "errorlog_tail"],
-  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
+  "how": "<volatile>",
   "ended_by": "quit",
   "exit_code": 0,
   "cfg_written": true,

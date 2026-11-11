@@ -4,6 +4,14 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `screen_wait` on `on_breakpoint` or `on_watch` answers the clocks its reply promises
+  (`frame_before`, `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles`), which it
+  left out, so a client that validates the reply refused it. `emulated_before_s`, like the
+  other clocks, may be `unavailable` when the console reads no time.
+- The demos arrive by the game's code: LineUp waits for each screen at the frame after the
+  game's tick and reads each move once the game has taken it. A transcript hides what the
+  host decides (the window, the log's byte positions, a compressed state's size), and the
+  LineUp recording is held to `music-win32.wav` on Windows.
 - `screen_wait` takes `on_breakpoint` or `on_watch`: the screen is judged only at the frame's
   end after a firing of that declared breakpoint or change watch, never by sampling, and a
   `condition` filters the firings first. The reply counts `firings` and `frames_examined` in

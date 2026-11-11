@@ -261,6 +261,7 @@ def screen_wait_at(ses: gs.Session, scratch: Path, spec: stop_wait.StopWait, cpu
     on = cpus.chosen(ses, cpu) or ""
     state, control = files_of(scratch, next(_WAITS))
     script = gate(state, control, spec, decl, addr, on, place)
+    measured = advance.clock_before(ses)
     began = time.monotonic()
     clock = mprogress.Ticker(seconds, progress)
     released = False
@@ -290,7 +291,7 @@ def screen_wait_at(ses: gs.Session, scratch: Path, spec: stop_wait.StopWait, cpu
                         control.write_text("off\n", encoding="ascii")
                         released = False
                         return _bound(ses, scratch, state, spec, predicate, said, seconds,
-                                      began)
+                                      began, measured)
                     clock.tick("screen_wait {said} at {ref}: {elapsed:.0f}s of {bound:g}s",
                                said=said, ref=decl.ref, bound=seconds)
                     time.sleep(POLL_S)
@@ -304,7 +305,7 @@ def screen_wait_at(ses: gs.Session, scratch: Path, spec: stop_wait.StopWait, cpu
                 if hit is not None:
                     surveyed = running.survey(ses, scratch)
                     return running.finish_stop(ses, surveyed, _cause(surveyed), **_fields(
-                        contract.TARGET, spec, predicate, last, began), **hit)
+                        contract.TARGET, spec, predicate, last, began), **measured(), **hit)
     except BaseException:
         if released:
             advance.left_running(ses)     # let go and not seen to stop: `stop` brings it back
@@ -349,7 +350,8 @@ def _final(state: Path) -> dict[str, Any]:
 
 
 def _bound(ses: gs.Session, scratch: Path, state: Path, spec: stop_wait.StopWait,
-           predicate: str, said: str, seconds: float, began: float) -> dict[str, Any]:
+           predicate: str, said: str, seconds: float, began: float,
+           measured: Callable[[], dict[str, Any]]) -> dict[str, Any]:
     """The bound ran out with the machine running: stop it (the gate already told `off`),
     then `TIMEOUT` on that stop's reply, or `never_fired`."""
     advance.left_running(ses)
@@ -366,4 +368,4 @@ def _bound(ses: gs.Session, scratch: Path, state: Path, spec: stop_wait.StopWait
             f"none of {counted(last['firings'], 'firing')} of the {spec.kind} {spec.ref!r} "
             f"within {seconds:g} s met the condition, so no screen was judged")
     return menvelope.envelope({**stopped, **_fields(contract.TIMEOUT, spec, predicate, last,
-                                                    began), "note": note})
+                                                    began), **measured(), "note": note})

@@ -3,14 +3,17 @@ and the refusals made before it is installed."""
 from __future__ import annotations
 
 import itertools
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pytest
-from scry_core import stop_wait
+from scry_core import reply_schema, stop_wait
 from session_doubles import run_host_lua
 
-from scry_mame import advance, arming, at_stop, chunk, cpus, running
+from scry_mame import advance, arming, at_stop, chunk, cpus, read, running
 from scry_mame import declarations as dec
+from scry_mame import gdb_session as gs
 from scry_mame import state as st
 
 # A machine of the gate's own shape: stops are `periodic` calls with the debugger at `stop`,
@@ -223,6 +226,56 @@ def test_a_state_line_out_of_shape_is_refused(tmp_path: Path, text: str) -> None
     assert at_stop.read_state(path) is None
 
 
+# ------------------------------------------------------------------- the clocks across a wait
+
+
+class Clocked:
+    """A session whose console answers the frame counter and `totalcycles` from `values`."""
+
+    def __init__(self) -> None:
+        self.values = {"frame": 10, "totalcycles": 1000}
+        self.emulated = 0.5
+
+    def emulated_seconds(self) -> float:
+        return self.emulated
+
+
+@pytest.mark.parametrize("symbol", ["frame", None])
+def test_the_clocks_are_read_before_and_after_a_wait(monkeypatch: pytest.MonkeyPatch,
+                                                     symbol: str | None) -> None:
+    ses = Clocked()
+    monkeypatch.setattr(read, "frame_symbol", lambda: symbol)
+    monkeypatch.setattr(read, "print_values", lambda s, names: [s.values[n] for n in names])
+    monkeypatch.setattr(cpus, "visible_cpu", lambda s: ":maincpu")
+    after = advance.clock_before(ses)  # type: ignore[arg-type]
+    ses.values, ses.emulated = {"frame": 12, "totalcycles": 1300}, 0.6
+    got = after()
+    assert got["cycles"] == 300 and got["emulated_after_s"] != got["emulated_before_s"], got
+    if symbol is None:
+        assert got["frame_before"]["available"] is False, got
+        assert got["frame_after"]["available"] is False, got
+    else:
+        assert (got["frame_before"], got["frame_after"]) == (10, 12), got
+
+
+def test_a_clock_the_console_cannot_read_is_said_and_the_reply_keeps_its_model(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    ses = Clocked()
+    ses.emulated = None  # type: ignore[assignment]
+
+    def values(s: Clocked, names: list[str]) -> list[int]:
+        raise gs.ExpressionRefused("no such symbol")
+    monkeypatch.setattr(read, "frame_symbol", lambda: "frame")
+    monkeypatch.setattr(read, "print_values", values)
+    monkeypatch.setattr(cpus, "visible_cpu", lambda s: ":maincpu")
+    got = advance.clock_before(ses)()  # type: ignore[arg-type]
+    for key in ("cycles", "frame_before", "frame_after", "emulated_before_s",
+                "emulated_after_s"):
+        assert got[key]["available"] is False, (key, got)
+    reply_schema.check("screen_wait", {"summary": "s", "status": "ok", "verdict": "TIMEOUT",
+                                       **got, "session": SESSION})
+
+
 # ------------------------------------------------------------------- the server's loop
 
 
@@ -280,12 +333,19 @@ def loop(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):  # type: ignore[no-un
     monkeypatch.setattr(running, "stop", lambda ses, scratch: {"status": "ok", "stop_seq": 8})
     monkeypatch.setattr(at_stop, "POLL_S", 0.001)
     monkeypatch.setattr(at_stop, "FINAL_WAIT_S", 0.01)
+    monkeypatch.setattr(advance, "clock_before", lambda ses: lambda: dict(CLOCK))
     return tmp_path
 
 
-def wait(scratch: Path, outcomes: list[str], judged: list[dict[str, str] | None],
+#: What `run_for` measures across a run, which a wait's reply carries as its model requires.
+CLOCK = {"cycles": 300, "frame_before": 10, "frame_after": 12, "emulated_before_s": 0.1,
+         "emulated_after_s": 0.2}
+SESSION = {"alive": True, "running": False, "altered": False}
+
+
+def wait(scratch: Path, outcomes: list[str], judged: list[dict[str, Any] | None],
          seconds: float = 5.0, ref: str = "0x1234", kind: str = "breakpoint"
-         ) -> tuple[dict[str, object], Ses]:
+         ) -> tuple[dict[str, Any], Ses]:
     spec = stop_wait.check(ref if kind == "breakpoint" else "", ref if kind == "watch" else "",
                            0, "")
     assert spec is not None
@@ -299,11 +359,31 @@ def control(scratch: Path) -> str:
     return at_stop.files_of(scratch, 1)[1].read_text()
 
 
+def test_the_clocks_are_read_before_the_gate_is_installed(loop: Path,
+                                                           monkeypatch: pytest.MonkeyPatch) -> None:
+    order: list[str] = []
+    installed = chunk.run
+
+    def install(*a: object) -> object:
+        order.append("install")
+        return installed(*a)  # type: ignore[arg-type]
+    monkeypatch.setattr(chunk, "run", install)
+    def clock_before(ses: object) -> Callable[[], dict[str, Any]]:
+        order.append("clock")
+        return lambda: dict(CLOCK)
+    monkeypatch.setattr(advance, "clock_before", clock_before)
+    wait(loop, ["candidate"], [{"screen": {"name": "menu", "layer": "file"}}])
+    assert order == ["clock", "install"], order
+
+
 def test_the_loop_releases_until_a_candidate_matches(loop: Path) -> None:
-    out, ses = wait(loop, ["candidate", "candidate"], [None, {"screen": "menu"}])
-    assert out["verdict"] == "TARGET" and out["screen"] == "menu", out
+    out, ses = wait(loop, ["candidate", "candidate"],
+                    [None, {"screen": {"name": "menu", "layer": "file"}}])
+    assert out["verdict"] == "TARGET" and out["screen"]["name"] == "menu", out
     assert out["firings"] == 2 and out["fired_line"] == 40 and ses.sent == ["g", "g"]
     assert out["cause"] == "the frame's end" and control(loop) == "off\n"
+    assert {k: out[k] for k in CLOCK} == CLOCK, out
+    reply_schema.check("screen_wait", {"summary": "s", **out, "session": SESSION})
 
 
 def test_a_stop_the_gate_did_not_make_ends_the_wait_recording_it(loop: Path) -> None:
@@ -316,7 +396,8 @@ def test_a_stop_the_gate_did_not_make_ends_the_wait_recording_it(loop: Path) -> 
 def test_a_bound_with_firings_is_a_timeout_on_the_stops_reply(loop: Path) -> None:
     out, _ = wait(loop, ["candidate"], [None], seconds=0.05)
     assert out["verdict"] == "TIMEOUT" and "not found" in str(out["note"]), out
-    assert out["stop_seq"] == 8
+    assert out["stop_seq"] == 8 and {k: out[k] for k in CLOCK} == CLOCK, out
+    reply_schema.check("screen_wait", {"summary": "s", **out, "session": SESSION})
 
 
 def test_a_bound_with_no_firing_is_never_fired_on_the_stops_fields(loop: Path) -> None:

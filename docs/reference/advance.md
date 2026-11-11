@@ -218,7 +218,7 @@ Reference: REFERENCE.md, Advancing the machine.
 | `instruction` | StopInstruction |
 | `disarmed_watches` | array |
 | `emulated_after_s` | number or object |
-| `emulated_before_s` | number |
+| `emulated_before_s` | number or object |
 | `errorlog` | object |
 | `frame` | integer or object |
 | `frame_after` | integer or object |

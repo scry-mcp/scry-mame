@@ -32,7 +32,16 @@ VOLATILE = {
     "flags": "the window's flags, which name this host's display",
     "binary": "where the host installed MAME",
     "binary_origin": "how the host's MAME was found",
+    "window": "where the host's display put the window, and how big it fits",
+    "mark": "a byte position in the emulator's log, whose line endings are the host's",
+    "how": "it quotes a log position, whose line endings are the host's",
+    "errorlog": "it carries a log position, whose line endings are the host's",
 }
+
+#: What a saved state's reply says that the host decides: MAME compresses the state, and the
+#: size it comes to differs between hosts.
+SAVE_VOLATILE = {"bytes": "the compressed state's size, which the host's compressor decides",
+                 "summary": "it carries the compressed state's size"}
 
 HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
 
@@ -161,7 +170,7 @@ def pictured(what: str) -> Callable[[Reply, Run], str]:
         image = reply["image"]
         expect(Path(image["path"]) == run.dir / "screen.png" and Path(image["path"]).is_file(),
                f"the picture is at {image['path']}")
-        return f"{what}, {reply['width']}x{reply['height']}, sha256 {image['sha256'][:12]}"
+        return f"{what}, {reply['width']}x{reply['height']}"
     return check
 
 

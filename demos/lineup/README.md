@@ -12,8 +12,10 @@ disagree.
 
 It runs to the routine that draws the high scores by name, drops a coin and reads the credits the
 game counted, starts a game, runs to the routine that writes its level, and plays: one column right,
-the next colour, a shot, each read back off the player's own variables. Each screen it arrives at
-is recognised off a map signed in palette indices, because the board's 5-bit palette and the PC's
+the next colour, a shot, each read back off the player's own variables once the frame that took
+the move has run (`Gest_Scores`, by name). Every arrival is the game's own code, never a time: each
+screen is waited for at the frame after the game's tick (`Check_Money100`), and recognised off a
+map signed in palette indices, because the board's 5-bit palette and the PC's
 6-bit DAC show the same pixels in slightly different colours. Then it records two seconds of the
 stage's music off the AY-3-8910 and holds it, sample for sample, to [`music.wav`](music.wav) beside
 this file.
@@ -54,12 +56,13 @@ Give this to an MCP client with this server connected:
 > there with DATA based at `0x400` and `LUP_JUKEBOX` read in place, checked against the image its
 > two ROM halves make at `0x30000`. Load the game's screen map,
 > `.scry/maps/lineup-screen-map.json` in the `--cwd` checkout. Run to `Draw_High_Scores_Screen`
-> counting `Check_Money25`, run a second and a half and tell me which screen it is and what
-> `Credits` holds. Drop a coin, run a second, name the screen and read `Credits` again. Press
-> START, run to `Level_Write`, run 200 ms, name the screen and read `Credits` and `Stage_Act`.
-> Run three seconds, name the screen and read the first six words of `Player1`. Move right, take
-> the next colour and shoot, letting the game run 200, 200 and 100 ms after each before reading
-> `Player1`. Record two seconds of sound, measure it
+> counting `Check_Money25`. Put a breakpoint on `Check_Money100` and wait, judging the screen
+> only after it fires, until the map names `hiscores`; clear it, tell me which screen it is and
+> what `Credits` holds. Drop a coin and wait the same way for `insert`, then read `Credits` again.
+> Press START, run to `Level_Write`, wait the same way for `level`, and read `Credits` and
+> `Stage_Act`. Wait the same way for `play` with `Player1`'s first double word at 0x30001 (the
+> player active in column 3), and read the first six words of `Player1`. Move right, take the
+> next colour and shoot, running to `Gest_Scores` after each before reading `Player1`. Record two seconds of sound, measure it
 > and compare it with `music.wav`, take a picture of the screen and close the session.
 
 ## What it walks
@@ -67,7 +70,8 @@ Give this to an MCP client with this server connected:
 | Family | Calls |
 |---|---|
 | Session | `start` (checked against the romset), `close` |
-| Advance | `run_for` by emulated milliseconds, `run_to` a routine of the game by its name |
+| Advance | `run_to` a routine of the game by its name, `screen_wait` judged only when a breakpoint on the game's tick fires, with a `condition` on `Player1` |
+| Declarations | `breakpoint_at`, `declaration_clear` |
 | Read | `screen_map_write(method="load")`, `screen_map_find` on every screen, `read_memory` by symbol |
 | Lua | `input` (the coin, start, right, fire and up of the game's own actions) |
 | Captures | `audio_record` of the board's output |
@@ -82,7 +86,7 @@ ids and wall-clock counts read `<volatile>`; the files a call names, such as
 root, and the tools themselves take absolute paths.
 
 <!-- demo-transcript:begin -->
-The run is 33 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+The run is 41 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
 **3. `run_to`**: OK to the high scores: stopped at Draw_High_Scores_Screen
 
@@ -154,26 +158,20 @@ The run is 33 calls; these are the ones that show how it is done, and every call
     "delta": 0
   },
   "following": ["31800: E8 21 FE call    31624h", "31803: B8 01 00 mov     aw,1h", "31806: E8 29 73 call    38B32h", "31809: E8 50 36 call    34E5Ch", "3180C: E8 8F FF call    3179Eh", "3180F: 1F       pop     ds0", "31810: C3       ret     ", "31811: 1E       push    ds0", "31812: E8 0F FE call    31624h", "31815: B8 00 00 mov     aw,0h", "31818: E8 17 73 call    38B32h", "3181B: E8 80 FF call    3179Eh", "3181E: 1F       pop     ds0"],
-  "errorlog": {
-    "lines_total": 235,
-    "truncated": true,
-    "lines": ["[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF", "[:maincpu] ':maincpu' (3052C): unmapped io memory write to 000C = 0000 & FFFF"],
-    "mark": 14,
-    "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=235)` reads them all"
-  },
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
 
 </details>
 
-**10. `read_memory`**: OK credits: Credits holds 3
+**14. `read_memory`**: OK credits: Credits holds 3
 
 The script names the game's own variables, and each server resolves them through its build's map: `Credits` is read by name, the same call on the arcade board and on the PC port. The coin the demo dropped is counted as three credits.
 
@@ -199,14 +197,14 @@ The script names the game's own variables, and each server resolves them through
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
 
 </details>
 
-**31. `audio_compare`**: OK exact: the recording is music.wav, sample for sample
+**39. `audio_compare`**: OK exact: the recording is music.wav, sample for sample
 
 The recording is compared with the platform's reference with alignment off: `exact` is true only when every sample is equal, so a changed sound, a different mixer or a drifted start fails the run.
 
@@ -242,7 +240,7 @@ The recording is compared with the platform's reference with alignment off: `exa
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```

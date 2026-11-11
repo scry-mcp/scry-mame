@@ -110,13 +110,7 @@ The run is 7 calls; these are the ones that show how it is done, and every call 
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
-  "window": {
-    "display": 0,
-    "bounds": {"x": 224, "y": 30, "width": 1600, "height": 1032},
-    "onscreen": true,
-    "front": true,
-    "fullscreen": false
-  },
+  "window": "<volatile>",
   "kept": "kept 1 (promote to review)",
   "profile": {
     "name": "<volatile>",
@@ -199,18 +193,13 @@ The run is 7 calls; these are the ones that show how it is done, and every call 
   },
   "instruction": {"address": "F5E2F", "bytes": "06", "text": "push    ds1", "symbol": "startdemo", "delta": 0},
   "following": ["F5E30: 1E             push    ds0", "F5E31: 1E             push    ds0", "F5E32: 07             pop     ds1", "F5E33: 0E             push    ps", "F5E34: 1F             pop     ds0", "F5E35: 8B D8          mov     bw,aw", "F5E37: D1 E3          shl     bw,1", "F5E39: D1 E3          shl     bw,1", "F5E3B: 26 8B B7 45 CE mov     ix,ds1:[bw-31BBh]", "F5E40: BF 35 CA       mov     iy,0CA35h", "F5E43: 2E 8B 0C       mov     cw,ps:[ix]", "F5E46: 83 C1 04       add     cw,4h", "F5E49: F3 A4          rep     movbkb  ", "F5E4B: 26 8B B7 47 CE mov     ix,ds1:[bw-31B9h]"],
-  "errorlog": {
-    "lines_total": 1,
-    "truncated": false,
-    "lines": ["[:] 0fa039: spider_blitter_w unhandled RAM access 000f7006 0000 ff00"],
-    "mark": 126
-  },
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -243,7 +232,7 @@ The run is 7 calls; these are the ones that show how it is done, and every call 
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```

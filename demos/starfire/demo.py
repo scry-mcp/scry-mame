@@ -139,7 +139,7 @@ STEPS = [
     Step("unwatch", "declaration_clear", {"kind": "watch", "ref": CREDITS}, unwatched),
     Step("credits", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4)),
     Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved,
-         shown=("summary", "frame")),
+         shown=("name", "frame"), volatile=free_set.SAVE_VOLATILE),
     Step("coin 5", "perform", {"steps": [{"op": "input", **COIN},
                                          {"op": "run_for", "milliseconds": SETTLE_MS,
                                           "seconds": RUN_S}],

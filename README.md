@@ -175,7 +175,7 @@ disassemble(ref="0x1e40", length=16)
 ```
 state_write(method="save", name="four_credits")
 -> {
-  "summary": "state_write save: four-credits, 16848 bytes at frame 314",
+  "name": "four-credits",
   "frame": 314
 }
 ```

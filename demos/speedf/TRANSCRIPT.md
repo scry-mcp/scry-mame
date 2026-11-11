@@ -56,13 +56,7 @@
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
-  "window": {
-    "display": 0,
-    "bounds": {"x": 224, "y": 30, "width": 1600, "height": 1032},
-    "onscreen": true,
-    "front": true,
-    "fullscreen": false
-  },
+  "window": "<volatile>",
   "kept": "kept 1 (promote to review)",
   "profile": {
     "name": "<volatile>",
@@ -143,18 +137,13 @@
   },
   "instruction": {"address": "F5E2F", "bytes": "06", "text": "push    ds1", "symbol": "startdemo", "delta": 0},
   "following": ["F5E30: 1E             push    ds0", "F5E31: 1E             push    ds0", "F5E32: 07             pop     ds1", "F5E33: 0E             push    ps", "F5E34: 1F             pop     ds0", "F5E35: 8B D8          mov     bw,aw", "F5E37: D1 E3          shl     bw,1", "F5E39: D1 E3          shl     bw,1", "F5E3B: 26 8B B7 45 CE mov     ix,ds1:[bw-31BBh]", "F5E40: BF 35 CA       mov     iy,0CA35h", "F5E43: 2E 8B 0C       mov     cw,ps:[ix]", "F5E46: 83 C1 04       add     cw,4h", "F5E49: F3 A4          rep     movbkb  ", "F5E4B: 26 8B B7 47 CE mov     ix,ds1:[bw-31B9h]"],
-  "errorlog": {
-    "lines_total": 1,
-    "truncated": false,
-    "lines": ["[:] 0fa039: spider_blitter_w unhandled RAM access 000f7006 0000 ff00"],
-    "mark": 126
-  },
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -185,7 +174,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -216,7 +205,7 @@
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -292,20 +281,20 @@
     "delta": 37
   },
   "following": ["F5DB0: FF 06 2D C0    inc     word ptr [0C02Dh]", "F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 195},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
 
 </details>
 
-**6. `screen_view`**: OK screen: the demo, 320x200, sha256 e33dcad8f0dc
+**6. `screen_view`**: OK screen: the demo, 320x200
 
 <details><summary>call and reply</summary>
 
@@ -332,8 +321,8 @@
   "crop": [0, 0, 320, 200],
   "image": {
     "path": "./tmp/demos/speedf/screen.png",
-    "bytes": 24292,
-    "sha256": "e33dcad8f0dc68675f59d2472b51d586376fde9729262a87f19e1cb057b373fd",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 640,
     "height": 400,
     "scale": 2,
@@ -393,13 +382,13 @@
     "delta": 42
   },
   "following": ["F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h", "F5DCD: 1E             push    ds0", "F5DCE: 8B 7E 04       mov     iy,[bp+4h]"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 195},
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -422,7 +411,7 @@ Also attached: image/png.
   "status": "ok",
   "closed": true,
   "omitted": ["stdout_tail", "errorlog_tail"],
-  "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
+  "how": "<volatile>",
   "ended_by": "quit",
   "exit_code": 0,
   "cfg_written": true,

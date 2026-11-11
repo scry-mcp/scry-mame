@@ -160,18 +160,13 @@ A value scan narrows the first kilobyte of scratch RAM: after the first coin the
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
-        "errorlog": {
-          "lines_total": 2,
-          "truncated": false,
-          "lines": ["[luaengine] MAME_MCP_INPUT#3 release frame=253 port_held=000000f9", ""],
-          "mark": 1585
-        },
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -216,13 +211,13 @@ A value scan narrows the first kilobyte of scratch RAM: after the first coin the
           "delta": {"available": false, "why": "no symbol table places this address"}
         },
         "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
-        "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1652},
+        "errorlog": "<volatile>",
         "session": {
           "alive": true,
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     },
@@ -248,7 +243,7 @@ A value scan narrows the first kilobyte of scratch RAM: after the first coin the
           "running": false,
           "altered": false,
           "omitted": ["altering_writes", "console"],
-          "how": "call `status`"
+          "how": "<volatile>"
         }
       }
     }
@@ -263,7 +258,7 @@ A value scan narrows the first kilobyte of scratch RAM: after the first coin the
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -349,7 +344,7 @@ A change watch on that byte stops the emulator on the instruction that writes it
     "delta": {"available": false, "why": "no symbol table places this address"}
   },
   "following": ["1E4C: 7E       ld   a,(hl)", "1E4D: B7       or   a", "1E4E: 28 09    jr   z,$1E59", "1E50: 36 00    ld   (hl),$00", "1E52: 06 04    ld   b,$04", "1E54: 2B       dec  hl", "1E55: 36 09    ld   (hl),$09", "1E57: 10 FB    djnz $1E54", "1E59: C3 33 22 jp   $2233", "1E5C: 21 B5 82 ld   hl,$82B5", "1E5F: 11 9D 82 ld   de,$829D", "1E62: 01 05 00 ld   bc,$0005", "1E65: ED B0    ldir", "1E67: 3A 00 98 ld   a,($9800)"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 1772},
+  "errorlog": "<volatile>",
   "watches": [
     {
       "ref": "0x8299",
@@ -359,7 +354,7 @@ A change watch on that byte stops the emulator on the instruction that writes it
     }
   ],
   "omitted": ["addr", "by", "entry", "fmt", "length", "mode"],
-  "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+  "how": "<volatile>",
   "watch_hit": {
     "ref": "0x8299",
     "addr": "0x00008299",
@@ -384,7 +379,7 @@ A change watch on that byte stops the emulator on the instruction that writes it
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```
@@ -415,7 +410,7 @@ A change watch on that byte stops the emulator on the instruction that writes it
     "running": false,
     "altered": false,
     "omitted": ["altering_writes", "console"],
-    "how": "call `status`"
+    "how": "<volatile>"
   }
 }
 ```

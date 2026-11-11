@@ -653,6 +653,38 @@ def _cycles(ses: gs.Session, cycles_before: int | None, stale_why: str | None,
     return {"cycles": _span(ses, cycles_before, counted_on, stopped_on)}
 
 
+def clock_before(ses: gs.Session) -> Callable[[], dict[str, Any]]:
+    """The clocks read now; the call it answers reads them again and gives what `run_for`
+    measures across a run (`frame_*`, `emulated_*`, `cycles`), for a wait that releases the
+    machine some other way."""
+    counted_on = cpus.visible_cpu(ses)
+    symbol = read.frame_symbol()
+    emulated_before = ses.emulated_seconds()
+    frame_before, cycles_before = _readable(ses, symbol), _readable(ses, "totalcycles")
+    stale_why = cycles.stale_cycles_why(counted_on, cycles_before)
+
+    def after() -> dict[str, Any]:
+        return {**_clock(ses, emulated_before), "frame_before": _counted(frame_before),
+                "frame_after": _counted(_readable(ses, symbol)),
+                **_cycles(ses, cycles_before, stale_why, counted_on, cpus.visible_cpu(ses))}
+    return after
+
+
+def _readable(ses: gs.Session, name: str | None) -> int | None:
+    """`name`'s value off the console, or None for no name or one the console cannot read."""
+    if name is None:
+        return None
+    try:
+        return read.print_values(ses, [name])[0]
+    except gs.SessionError:
+        return None
+
+
+def _counted(frame: int | None) -> int | dict[str, Any]:
+    return frame if frame is not None else unavailable(
+        f"{read.FRAMELESS_WHY}: `emulated_before_s` and `emulated_after_s` are this run's clock")
+
+
 def _span(ses: gs.Session, cycles_before: int | None, counted_on: str | None,
           stopped_on: str | None) -> int | dict[str, Any]:
     """`totalcycles` now minus `cycles_before`, or unavailable saying why: the counter is each
@@ -691,11 +723,6 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
         before, cycles_before = emulated_before, read.print_values(ses, ["totalcycles"])[0]
     stale_why = cycles.stale_cycles_why(counted_on, cycles_before)
 
-    def counted(frame: int | None) -> int | dict[str, Any]:
-        return frame if frame is not None else unavailable(
-            f"{read.FRAMELESS_WHY}: `emulated_before_s` and `emulated_after_s` are this run's "
-            "clock")
-
     times: dict[str, Any] = {"emulated_before_s": _timed(emulated_before)}
     ses.monitor(f"gtime {milliseconds:#x}")
     ses.last_stop_packet = ""
@@ -727,7 +754,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                                          f"`gtime` was sent and {what} could no longer be read "
                                          f"({e}): nothing proves the machine came to rest, so it "
                                          f"may be RUNNING. {running.STOP_RECOVERS}",
-                                         frame_before=counted(frame_before),
+                                         frame_before=_counted(frame_before),
                                          frame_after=unavailable(f"not read after the run: {e}"),
                                          emulated_after_s=unavailable(
                                              f"not read after the run: {e}"), **times)
@@ -740,15 +767,15 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                     f"interrupt at the bound: {what} still moved "
                     f"({settled[-FRAME_STABLE_READS:]}). It may be RUNNING, and this "
                     f"server cannot see a run the console started. {running.STOP_RECOVERS}",
-                    frame_before=counted(frame_before),
-                    frame_after=counted(None) if clocked else settled[-1],
+                    frame_before=_counted(frame_before),
+                    frame_after=_counted(None) if clocked else settled[-1],
                     emulated_after_s=(_timed(settled[-1]) if clocked else unavailable(
                         "not read: the machine did not come to rest")), **times)
             after = settled[-1]
             readings.extend(settled)
             verdict = contract.TIMEOUT
     times["emulated_after_s"] = _timed(after if clocked else ses.emulated_seconds())
-    frame_after = counted(None if clocked else int(after))
+    frame_after = _counted(None if clocked else int(after))
     cause = ("the console's `gtime` stop" if verdict == contract.ELAPSED
              else "interrupt at the bound")
     # Read before the verdict: a watch or breakpoint this server armed can cut the run, a stop of
@@ -759,7 +786,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     if after < before or (after == before and not cut):
         code = "frames_went_backwards" if after < before else "no_progress"
         return running.finish_stop(ses, seen, cause, status="INVALID", code=code,
-                                   frame_before=counted(frame_before), frame_after=frame_after,
+                                   frame_before=_counted(frame_before), frame_after=frame_after,
                                    **times,
                                    message=(
             f"the emulated clock did not move across `gtime {milliseconds:#x}` (it read "
@@ -773,7 +800,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     if cut:
         verdict, cause = contract.OTHER_STOP, running.attribute(pc, seen["cpu"])
     return running.finish_stop(ses, seen, cause, verdict=verdict,
-                               frame_before=counted(frame_before),
+                               frame_before=_counted(frame_before),
                                frame_after=frame_after, **times,
                                **_cycles(ses, cycles_before, stale_why, counted_on,
                                          seen["cpu"]), reads=len(readings))

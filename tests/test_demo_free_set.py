@@ -122,7 +122,7 @@ def test_the_shared_checks_pass_on_a_right_answer_and_name_a_wrong_one(tmp_path:
          "state n loaded and verified, frame 7"),
         (free_set.pictured("the screen"), _reply(width=2, height=3, image={
             "path": str(tmp_path / "screen.png"), "sha256": "ab" * 32}),
-         "the screen, 2x3, sha256 abababababab"),
+         "the screen, 2x3"),
         (free_set.closed, _reply(ended_by="quit"), "closed: MAME quit on its own"),
     ]
     for check, reply, said in rights:
