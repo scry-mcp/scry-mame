@@ -839,12 +839,17 @@ class ScreenWaitReply(RunForReply, total=False):
     entries: int
     frames: Annotated[int, When("once answered")]
     palette: str
-    polls: Annotated[int, When("once answered")]
+    polls: Annotated[int, When("in place of")]
     predicate: Annotated[str, When("once answered")]
-    sampled_every: Annotated[int, When("once answered")]
+    sampled_every: Annotated[int, When("in place of")]
     screen: Annotated[dict[str, Any], When("a screen predicate")]
+    started_on: Annotated[str | dict[str, Any], When("`changed` adds")]
     verdict: Required[str]
     waited_s: Annotated[float, When("once answered")]
+    waited_on: Annotated[dict[str, Any], When("under `on_*`")]
+    firings: Annotated[int, When("under `on_*`")]
+    frames_examined: Annotated[int, When("under `on_*`")]
+    fired_line: Annotated[int | dict[str, Any], When("under `on_*`")]
 
 
 class ScreenSignatureReply(MameConsoleAccount, total=False):

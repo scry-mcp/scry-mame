@@ -445,15 +445,22 @@ The signature is `scry-sig/1`: 16 hex characters of the crop's colours pixel by 
 *Wait for a mapped screen or a black palette*
 
 ```text
-screen_wait(text="", screen="", palette="", every=0, seconds=30.0)
+screen_wait(text="", screen="", palette="", changed=false, every=0, on_breakpoint="", on_watch="", condition="", cpu="", seconds=30.0)
 ```
 
 Run the machine until ONE predicate holds, and stop there.
 
 `screen`: the loaded map's screen is on the frame (`screen_map_write`; enters it). `palette`
-(`black`: every DAC entry black, which is how a fade ends). Exactly one of the two, or
-`bad_argument`; `text` is refused `no_channel`, because this server hands the screen as
-pixels and a text mode's characters are DOSBox-X's to read.
+(`black`: every DAC entry black, which is how a fade ends). `changed`: the map names a
+screen other than the one it named at the start; a frame it names nothing is a transition.
+Exactly one, or `bad_argument`; `text` is refused `no_channel`, because this server hands
+the screen as pixels and a text mode's characters are DOSBox-X's to read.
+
+`on_breakpoint` / `on_watch`: judge only at the frame's end after a firing of that declared
+`stop` breakpoint or `change` watch (its `ref`, on `cpu`), never sampling; `condition`
+(up to 4 terms joined by `&&`, each a register (`AX`, `d0`) or a memory read (`b@ref`, `w@ref`, `d@ref`), a comparison (`==`, `!=`, `<`, `<=`, `>`, `>=`) and a hex value (`0x` allowed)) filters the firings first. MAME's Lua counts the firings and stops
+only on a picture this wait has not rejected; the first firing is awaited even when the
+predicate already holds.
 
 `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
 costs a console round trip is waited on in reasonable time, and a screen alive for fewer
@@ -463,12 +470,15 @@ machine not moved. The emulator's own frame notifier is not used: measured, it r
 screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
 Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
-screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
-stop survey of `run_for`), the stop's own fields; a poll the bound itself cut is stopped
-there first, so the machine is never left running under a wait that gave up. Refused:
-`bad_argument`, `unknown_ref` (no such mapped screen), `no_channel`, and `wait_stopped` when
-a stop nobody asked for ends a poll before the bound (its `cause` and the stop's fields ride
-beside it).
+screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or
+`TIMEOUT` (the same, with `note` and the stop survey of `run_for`), the stop's own fields;
+under `on_*`, `waited_on`, `firings`, `frames_examined` (the frames looked at after a firing)
+and `fired_line` in place of `polls` and `sampled_every`. A poll the bound itself cut is
+stopped there first, so the machine is never left running under a wait that gave up.
+Refused: `bad_argument`, `unknown_ref` (no such mapped screen or declared row), `needs_call`
+(`changed` with no map loaded), `no_channel`, `never_fired` (the row never fired within
+`seconds`), and `wait_stopped` when a stop nobody asked for ends the wait before the bound
+(its `cause` and the stop's fields ride beside it).
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -477,7 +487,12 @@ Reference: REFERENCE.md, Input and the screen.
 | `text` | string | `""` |
 | `screen` | string | `""` |
 | `palette` | one of `""`, `"black"` | `""` |
+| `changed` | boolean | `false` |
 | `every` | integer | `0` |
+| `on_breakpoint` | string | `""` |
+| `on_watch` | string | `""` |
+| `condition` | string | `""` |
+| `cpu` | string | `""` |
 | `seconds` | number (> 0, <= 600.0) | `30.0` |
 
 | reply field | type |
@@ -512,7 +527,12 @@ Reference: REFERENCE.md, Input and the screen.
 | `predicate` | string |
 | `sampled_every` | integer |
 | `screen` | object |
+| `started_on` | string or object |
 | `waited_s` | number |
+| `waited_on` | object |
+| `firings` | integer |
+| `frames_examined` | integer |
+| `fired_line` | integer or object |
 
 Example, from a live run:
 

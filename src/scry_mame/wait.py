@@ -17,9 +17,10 @@ from typing import Any
 
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
+from scry_core import stop_wait
 from scry_core.prose import counted
 
-from scry_mame import advance, maps, running
+from scry_mame import advance, at_stop, maps, running
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
@@ -31,16 +32,26 @@ MIN_STEP_S = 0.001
 
 def screen_wait(ses: gs.Session, scratch: Path, text: str, screen: str, palette: str,
                 every: int, seconds: float,
-                progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
-    """The body of the `screen_wait` tool."""
-    advance.check_wait(text=text, screen=screen, palette=palette, every=every)
+                progress: mprogress.Progress = mprogress.no_progress, *, changed: bool = False,
+                on_breakpoint: str = "", on_watch: str = "", condition: str = "", cpu: str = "",
+                place: Callable[[str], int] | None = None) -> dict[str, Any]:
+    """The body of the `screen_wait` tool; `place` turns a condition's memory ref into its
+    address."""
+    advance.check_wait(text=text, screen=screen, palette=palette, every=every, changed=changed,
+                       on_breakpoint=on_breakpoint, on_watch=on_watch, condition=condition)
+    spec = stop_wait.check(on_breakpoint, on_watch, every, condition)
     if text:
         raise st.Invalid("no_channel",
                          "screen_wait's `text` reads the characters of a text mode, and this "
                          "server hands the screen as pixels: map the screen once with "
                          "`screen_map_write` and wait on it with `screen`")
     step = every or 1
-    judge, name, asked = _judge(ses, scratch, screen, palette, seconds, progress)
+    if spec is not None:
+        at_stop.declared_row(ses, spec, cpu)        # refused before the screen is read
+    judge, name, asked = _judge(ses, scratch, screen, palette, seconds, progress, changed)
+    if spec is not None:
+        return at_stop.screen_wait_at(ses, scratch, spec, cpu, judge, name, asked, seconds,
+                                      progress, place or _no_place)
     began = time.monotonic()
     deadline = began + seconds
     ran = judge()
@@ -79,10 +90,34 @@ def screen_wait(ses: gs.Session, scratch: Path, text: str, screen: str, palette:
                            began=began, last=last)
 
 
+def _no_place(ref: str) -> int:
+    raise st.Invalid("bad_argument", f"the condition reads memory at {ref!r}, and no table "
+                     "places it")
+
+
 def _judge(ses: gs.Session, scratch: Path, screen: str, palette: str, seconds: float,
-           progress: mprogress.Progress,
+           progress: mprogress.Progress, changed: bool = False,
            ) -> tuple[Callable[[], dict[str, Any] | None], str, str]:
     """The one predicate's reader, the argument that named it, and how a note calls it."""
+    if changed:
+        def found_now() -> dict[str, Any]:
+            reply = maps.screen_map_find(ses, scratch, progress)
+            if reply.get("status") != "ok":
+                said = f"`changed` judges the map at each stop: {reply.get('message')}"
+                if reply.get("code") == "needs_call":
+                    raise st.Invalid("needs_call", said)
+                raise st.Invalid("no_channel", said)
+            return reply
+        judge = stop_wait.Changed(found_now())
+
+        def moved() -> dict[str, Any] | None:
+            reply = found_now()
+            if not judge.judge(reply):
+                return None
+            return {"screen": {"name": reply["screen"], "layer": reply.get("layer")},
+                    "started_on": judge.started_on or contract.unavailable(
+                        "the map named no screen when the wait began")}
+        return moved, "changed", "a changed screen"
     if screen:
         st.STATE.maps.check_known(screen)       # refused before a frame runs
 

@@ -11,6 +11,7 @@ from scry_core import (
     recording,
     screen_map,
     series,
+    stop_wait,
 )
 from scry_core import pens as scry_pens
 from scry_core import promote as core_promote
@@ -80,6 +81,7 @@ DOC_VALUES: dict[str, str] = {
     "NOLOOP_MS_MAX": str(mtrace.NOLOOP_MILLISECONDS_MAX),
     "TRACE_SYMBOLS_SHOWN": str(mtrace.SYMBOLS_SHOWN),
     "PALETTES": ", ".join(f"`{p}`" for p in advance.PALETTES),
+    "CONDITION_GRAMMAR": stop_wait.GRAMMAR,
 }
 
 

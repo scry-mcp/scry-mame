@@ -1639,15 +1639,23 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
       on_cancel="stop")
 def screen_wait(text: str = "", screen: str = "",
                 palette: Annotated[str, vocab.enum(("", *advance.PALETTES))] = "",
-                every: int = 0,
+                changed: bool = False, every: int = 0, on_breakpoint: str = "",
+                on_watch: str = "", condition: str = "", cpu: str = "",
                 seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
                 ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run the machine until ONE predicate holds, and stop there.
 
     `screen`: the loaded map's screen is on the frame (`screen_map_write`; enters it). `palette`
-    ({PALETTES}: every DAC entry black, which is how a fade ends). Exactly one of the two, or
-    `bad_argument`; `text` is refused `no_channel`, because this server hands the screen as
-    pixels and a text mode's characters are DOSBox-X's to read.
+    ({PALETTES}: every DAC entry black, which is how a fade ends). `changed`: the map names a
+    screen other than the one it named at the start; a frame it names nothing is a transition.
+    Exactly one, or `bad_argument`; `text` is refused `no_channel`, because this server hands
+    the screen as pixels and a text mode's characters are DOSBox-X's to read.
+
+    `on_breakpoint` / `on_watch`: judge only at the frame's end after a firing of that declared
+    `stop` breakpoint or `change` watch (its `ref`, on `cpu`), never sampling; `condition`
+    ({CONDITION_GRAMMAR}) filters the firings first. MAME's Lua counts the firings and stops
+    only on a picture this wait has not rejected; the first firing is awaited even when the
+    predicate already holds.
 
     `every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
     costs a console round trip is waited on in reasonable time, and a screen alive for fewer
@@ -1657,19 +1665,27 @@ def screen_wait(text: str = "", screen: str = "",
     screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
     Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
-    screen adds `screen`, palette adds `entries`) or `TIMEOUT` (the same, with `note` and the
-    stop survey of `run_for`), the stop's own fields; a poll the bound itself cut is stopped
-    there first, so the machine is never left running under a wait that gave up. Refused:
-    `bad_argument`, `unknown_ref` (no such mapped screen), `no_channel`, and `wait_stopped` when
-    a stop nobody asked for ends a poll before the bound (its `cause` and the stop's fields ride
-    beside it).
+    screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or
+    `TIMEOUT` (the same, with `note` and the stop survey of `run_for`), the stop's own fields;
+    under `on_*`, `waited_on`, `firings`, `frames_examined` (the frames looked at after a firing)
+    and `fired_line` in place of `polls` and `sampled_every`. A poll the bound itself cut is
+    stopped there first, so the machine is never left running under a wait that gave up.
+    Refused: `bad_argument`, `unknown_ref` (no such mapped screen or declared row), `needs_call`
+    (`changed` with no map loaded), `no_channel`, `never_fired` (the row never fired within
+    `seconds`), and `wait_stopped` when a stop nobody asked for ends the wait before the bound
+    (its `cause` and the stop's fields ride beside it).
 
     Reference: REFERENCE.md, Input and the screen.
     """
     args.check("screen_wait", text=text, screen=screen, palette=palette, every=every,
-               seconds=seconds)
-    return mwait.screen_wait(*stopped("a screen wait"), text, screen, palette, every, seconds,
-                             bridge(ctx))
+               seconds=seconds, changed=changed, on_breakpoint=on_breakpoint, on_watch=on_watch,
+               condition=condition)
+    ses, scratch = stopped("a screen wait")
+    on = cpus.chosen(ses, cpu)
+    return mwait.screen_wait(ses, scratch, text, screen, palette, every, seconds, bridge(ctx),
+                             changed=changed, on_breakpoint=on_breakpoint, on_watch=on_watch,
+                             condition=condition, cpu=cpu,
+                             place=lambda ref: STATE.resolve(ref, on))
 
 
 @tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop")

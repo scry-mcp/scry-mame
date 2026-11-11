@@ -210,3 +210,80 @@ def test_the_screen_predicate_is_the_map_naming_the_frame(monkeypatch: pytest.Mo
     r = wait.screen_wait(NO_SESSION, Path("."), "", "menu", "", 0, 30)
     assert (r["verdict"], r["predicate"], r["already"]) == ("TARGET", "screen", True), r
     assert r["screen"] == {"name": "menu", "layer": "session"}, r
+
+
+def _finds(monkeypatch: pytest.MonkeyPatch, replies: list[dict[str, Any]]) -> None:
+    """`maps.screen_map_find` answering `replies` in turn, the last one held."""
+    left = list(replies)
+
+    def find(ses: Any, scratch: Path, progress: Any = None) -> dict[str, Any]:
+        return left.pop(0) if len(left) > 1 else left[0]
+
+    monkeypatch.setattr("scry_mame.wait.maps.screen_map_find", find)
+
+
+def test_changed_waits_for_a_named_screen_other_than_the_first(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    asked = _steps(monkeypatch)
+    title = {"status": "ok", "matched": True, "screen": "title", "layer": "file"}
+    _finds(monkeypatch, [title, title, {"status": "ok", "matched": False, "screens_tried": 2},
+                         {"status": "ok", "matched": True, "screen": "menu", "layer": "file"}])
+    got = wait.screen_wait(NO_SESSION, Path("."), "", "", "", 0, 30, changed=True)
+    assert got["verdict"] == "TARGET" and got["predicate"] == "changed", got
+    assert got["screen"] == {"name": "menu", "layer": "file"} and got["started_on"] == "title"
+    assert asked == [1, 1]
+
+
+@pytest.mark.parametrize(("code", "want"), [("needs_call", "needs_call"),
+                                            ("no_session", "no_channel")])
+def test_changed_with_a_map_it_cannot_read_says_why(monkeypatch: pytest.MonkeyPatch, code: str,
+                                                    want: str) -> None:
+    _finds(monkeypatch, [{"status": "INVALID", "code": code, "message": "no map loaded"}])
+    said = _raises(want, lambda: wait.screen_wait(NO_SESSION, Path("."), "", "", "", 0, 30,
+                                                  changed=True))
+    assert "no map loaded" in said
+
+
+def test_a_wait_on_a_stop_goes_to_the_gate_with_the_judge_it_built(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict[str, Any] = {}
+    monkeypatch.setattr("scry_mame.wait.at_stop.declared_row", lambda ses, spec, cpu: None)
+
+    def gate(ses: Any, scratch: Path, spec: Any, cpu: str, judge: Any, name: str, said: str,
+             seconds: float, progress: Any, place: Any) -> dict[str, Any]:
+        seen.update(spec=spec, name=name, said=said, place=place)
+        return {"status": "ok"}
+    monkeypatch.setattr("scry_mame.wait.at_stop.screen_wait_at", gate)
+    _palette(monkeypatch, [["#000000"]])
+    got = wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0, 30,
+                           on_breakpoint="draw_done", condition="d0==1")
+    assert got == {"status": "ok"} and seen["name"] == "palette"
+    assert seen["spec"].ref == "draw_done" and seen["spec"].condition_text == "d0==1"
+    _raises("bad_argument", lambda: seen["place"]("level"))
+
+
+def test_a_wait_on_a_stop_refuses_sampling_and_a_stray_condition() -> None:
+    _raises("bad_argument", lambda: wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 5,
+                                                     30, on_breakpoint="draw_done"))
+    _raises("bad_argument", lambda: wait.screen_wait(NO_SESSION, Path("."), "", "", "black", 0,
+                                                     30, condition="d0==1"))
+
+
+def test_a_stop_named_by_something_other_than_text_is_refused() -> None:
+    _raises("bad_argument", lambda: advance.check_wait(palette="black", on_breakpoint=3))
+
+
+def test_a_screen_wait_on_a_stop_misses_a_screen_other_than_its_own(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("scry_mame.wait.at_stop.declared_row", lambda ses, spec, cpu: None)
+    monkeypatch.setattr(mstate.STATE.maps, "check_known", lambda name: None)
+    judged: list[Any] = []
+
+    def gate(ses: Any, scratch: Path, spec: Any, cpu: str, judge: Any, *rest: Any
+             ) -> dict[str, Any]:
+        judged.append(judge())
+        return {"status": "ok"}
+    monkeypatch.setattr("scry_mame.wait.at_stop.screen_wait_at", gate)
+    _finds(monkeypatch, [{"status": "ok", "matched": True, "screen": "title", "layer": "file"}])
+    wait.screen_wait(NO_SESSION, Path("."), "", "menu", "", 0, 30, on_breakpoint="draw_done")
+    assert judged == [None]

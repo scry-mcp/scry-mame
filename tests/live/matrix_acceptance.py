@@ -96,7 +96,15 @@ H_CELLS = [f"H{n} {text}" for n, text in enumerate([
     "circus: screen_wait on a palette that is not black times out, naming the frames it examined",
     "circus: screen_wait's text predicate is refused by name, and a screen no map holds is "
     "refused before a frame runs",
+    "circus: screen_wait on_breakpoint at the main loop finds a mapped screen at a frame's end "
+    "after a firing, with its firings, frames examined and line",
+    "circus: screen_wait on_breakpoint for a palette never black times out with its firings",
+    "circus: screen_wait with a condition that never holds examines no frame",
+    "circus: screen_wait on a breakpoint never reached is refused never_fired",
+    "circus: screen_wait on_watch on a zero-page byte the game moves finds the mapped screen",
 ], start=1)]
+#: The five cells of `screen_wait` judged at a declared stop, the last of the section.
+H_STOP_WAITS = 5
 
 PALETTE_MANIFESTS = Path(__file__).resolve().parent / "fixtures"
 
@@ -224,14 +232,51 @@ def _h_circus(t: list[str]) -> None:
 
     waited = call("screen_wait", palette="black", seconds=0.2)
     polls = waited.get("polls")
-    cell(t[-2], ok(waited) and waited.get("verdict") == "TIMEOUT"
+    cell(t[-2 - H_STOP_WAITS], ok(waited) and waited.get("verdict") == "TIMEOUT"
          and waited.get("predicate") == "palette" and isinstance(polls, int) and polls >= 1,
          said(waited))
     by_text = call("screen_wait", text="GAME OVER", seconds=1)
     no_map = call("screen_wait", screen="never-mapped", seconds=1)
-    cell(t[-1], refused(by_text, "no_channel") and refused(no_map, "unknown_ref"),
+    cell(t[-1 - H_STOP_WAITS], refused(by_text, "no_channel") and refused(no_map, "unknown_ref"),
          f"{said(by_text)}; {said(no_map)}")
+    _h_stop_waits(t[-H_STOP_WAITS:])
     call("close")
+
+
+def _h_stop_waits(t: list[str]) -> None:
+    """`screen_wait` judged at a declared stop on circus: the main loop (0x12f7) as the
+    breakpoint, `brk` at 0x80 as one never reached, a zero-page byte seen to move as the watch."""
+    call("screen_map_write", method="add", screen="attract", match=[[0, 0, 8, 8]])
+    call("breakpoint_at", ref="0x12f7")
+    r = call("screen_wait", screen="attract", on_breakpoint="0x12f7", seconds=WAIT_CEILING_S)
+    cell(t[0], ok(r) and r.get("verdict") == "TARGET" and int(r.get("firings") or 0) >= 1
+         and int(r.get("frames_examined") or 0) >= 1 and isinstance(r.get("fired_line"), int)
+         and "polls" not in r and (r.get("screen") or {}).get("name") == "attract", said(r))
+    r = call("screen_wait", palette="black", on_breakpoint="0x12f7", seconds=3)
+    cell(t[1], ok(r) and r.get("verdict") == "TIMEOUT" and int(r.get("firings") or 0) >= 1,
+         said(r))
+    r = call("screen_wait", screen="attract", on_breakpoint="0x12f7", condition="A>0xFF",
+             seconds=3)
+    cell(t[2], ok(r) and r.get("verdict") == "TIMEOUT" and int(r.get("firings") or 0) >= 1
+         and r.get("frames_examined") == 0, said(r))
+    call("declaration_clear", kind="breakpoint", all=True)
+    call("breakpoint_at", ref="0x80")
+    r = call("screen_wait", screen="attract", on_breakpoint="0x80", seconds=2)
+    cell(t[3], refused(r, "never_fired") and r.get("firings") == 0, said(r))
+    call("declaration_clear", kind="breakpoint", all=True)
+    before = bytes.fromhex(str(call("read_memory", ref="0x0", length=256).get("hex")))
+    call("run_for", frames=2, seconds=WAIT_CEILING_S)
+    after = bytes.fromhex(str(call("read_memory", ref="0x0", length=256).get("hex")))
+    moved = next((i for i in range(256) if before[i] != after[i]), None)
+    if moved is None:
+        cell(t[4], False, "no zero-page byte moved over two frames: no watch to wait on")
+        return
+    ref = f"0x{moved:x}"
+    call("watch_add", ref=ref, mode="change", fmt="u8")
+    r = call("screen_wait", screen="attract", on_watch=ref, seconds=WAIT_CEILING_S)
+    cell(t[4], ok(r) and r.get("verdict") == "TARGET" and int(r.get("firings") or 0) >= 1
+         and (r.get("waited_on") or {}).get("kind") == "watch", said(r))
+    call("declaration_clear", kind="watch", all=True)
 
 
 M68K_DUAL_SETTERS = 256  # unrolled upload: one writer pc per pen
@@ -441,7 +486,7 @@ def _h_pangofun(t: list[str]) -> None:
 
 
 H_BOARDS = (
-    Board(_h_circus, (*range(12), 22, len(H_CELLS) - 2, len(H_CELLS) - 1),
+    Board(_h_circus, (*range(12), 22, *range(len(H_CELLS) - 2 - H_STOP_WAITS, len(H_CELLS))),
           free_boards_missing),
     Board(_h_m68k_dual, (12, 23), m68k_dual_missing),
     Board(_h_v30, (13, 14, 15), lambda: board_missing("v30")),

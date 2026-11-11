@@ -20,7 +20,7 @@ from collections.abc import Callable
 from typing import Any
 
 from scry_core import promote as core_promote
-from scry_core import prose, screen_map, session_block
+from scry_core import prose, screen_map, session_block, stop_wait
 from scry_core import reply_contract as contract
 
 from scry_mame import callbacks
@@ -115,13 +115,15 @@ def run_to(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def screen_wait(args: dict[str, Any], reply: dict[str, Any]) -> str:
     predicate = str(reply.get("predicate") or "screen")
     asked = args.get(predicate) or ""
-    said = f"screen {asked!r}" if predicate == "screen" else f"a {asked} palette"
-    polls = prose.counted(int(reply.get("polls") or 0), "frame")
+    said = (f"screen {asked!r}" if predicate == "screen" else "a changed screen"
+            if predicate == "changed" else f"a {asked} palette")
+    after = stop_wait.summary_after(reply) or \
+        f"after {prose.counted(int(reply.get('polls') or 0), 'frame')}"
     if reply.get("verdict") == contract.TIMEOUT:
-        return f"screen_wait {said}: TIMEOUT after {polls}"
+        return f"screen_wait {said}: TIMEOUT {after}"
     if reply.get("already"):
         return f"screen_wait {said}: already on screen"
-    return f"screen_wait {said}: found after {polls}"
+    return f"screen_wait {said}: found {after}"
 
 
 def run_for(args: dict[str, Any], reply: dict[str, Any]) -> str:

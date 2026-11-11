@@ -4,6 +4,14 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `screen_wait` takes `on_breakpoint` or `on_watch`: the screen is judged only at the frame's
+  end after a firing of that declared breakpoint or change watch, never by sampling, and a
+  `condition` filters the firings first. The reply counts `firings` and `frames_examined` in
+  place of `polls`; a row that never fires is `never_fired`, and `perform_export` keeps such a
+  wait as the same call. `changed` waits for a mapped screen other than the one shown
+  at the start.
+  MAME's Lua counts the firings and stops the machine only on a picture this wait has not
+  already rejected, so a firing costs no round trip.
 - On Windows, `close` ends an emulator started through a launcher script together with the
   launcher, and removes the session's scratch folder, which stayed behind.
 - The descriptions say that a start nobody watches has a small window run flat out (`start`),

@@ -8,7 +8,7 @@ from collections.abc import Callable, Hashable, Iterator
 from pathlib import Path
 from typing import Any, TypeVar
 
-from scry_core import cancel, prose, screen_map
+from scry_core import cancel, prose, screen_map, stop_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
@@ -89,7 +89,7 @@ def no_control() -> st.Invalid:
 
 
 #: `screen_wait`'s predicates, named as its arguments name them: exactly one is asked for.
-PREDICATES = ("text", "screen", "palette")
+PREDICATES = ("text", "screen", "palette", "changed")
 #: The one palette a caller waits on today: every DAC entry black, which is how a fade ends.
 PALETTES = ("black",)
 #: The largest sampling step `screen_wait` takes, in frames.
@@ -97,14 +97,21 @@ SAMPLED_EVERY_MAX = 600
 
 
 def check_wait(text: object = "", screen: object = "", palette: object = "", every: object = 0,
-               seconds: float = 30.0, **_: Any) -> None:
-    """`screen_wait`'s machine-independent half: one predicate, its values, the sampling step."""
-    named = [n for n, v in (("text", text), ("screen", screen), ("palette", palette)) if v]
+               seconds: float = 30.0, changed: object = False, on_breakpoint: object = "",
+               on_watch: object = "", condition: object = "", **_: Any) -> None:
+    """`screen_wait`'s machine-independent half: one predicate, its values, the sampling step,
+    and the stop it is judged at (`scry_core.stop_wait.check`)."""
+    named = [n for n, v in (("text", text), ("screen", screen), ("palette", palette),
+                            ("changed", changed)) if v]
     if len(named) != 1:
         raise st.Invalid("bad_argument",
-                         "screen_wait runs on exactly one of `text`, `screen` or `palette`; got "
-                         f"{len(named)} of them. Each is a different read of the screen, and a "
-                         "frame has the budget of one")
+                         "screen_wait runs on exactly one of `text`, `screen`, `palette` or "
+                         f"`changed`; got {len(named)} of them. Each is a different read of the "
+                         "screen, and a frame has the budget of one")
+    if not all(isinstance(v, str) for v in (on_breakpoint, on_watch, condition)):
+        raise st.Invalid("bad_argument", "`on_breakpoint`, `on_watch` and `condition` are text")
+    stop_wait.check(str(on_breakpoint), str(on_watch),
+                    every if isinstance(every, int) else 0, str(condition))
     if palette:
         vocab.one_of("palette", palette, ("", *PALETTES))
     if not isinstance(every, int) or isinstance(every, bool) \
@@ -440,18 +447,18 @@ def run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
 # `console_run` rides along because the release was a console command and the stub sends no stop
 # packet for it.
 @contextlib.contextmanager
-def _console_run(ses: gs.Session) -> Iterator[None]:
+def console_run(ses: gs.Session) -> Iterator[None]:
     """A console-started run is in flight inside this block; a cancel unwinding out of it marks
     the machine RUNNING so the declared end stops it and proves the rest (`running.stop`)."""
     try:
         yield
     except BaseException as e:
         if cancel.is_cancellation(e):
-            _left_running(ses)
+            left_running(ses)
         raise
 
 
-def _left_running(ses: gs.Session, unprovable: bool = False) -> None:
+def left_running(ses: gs.Session, unprovable: bool = False) -> None:
     """Mark the session RUNNING after a bail-out handed back a moving machine; `unprovable` when
     the frame counter itself did not move, so only `stop`'s interrupt recovers it."""
     ses.running = True
@@ -468,7 +475,7 @@ def _release_unconfirmed(ses: gs.Session, command: str, error: gs.SessionError,
     if ses.broken is not None:
         return running.session_broke(ses, error, f"under `{command}`",
                                      f"Whether `{command}` was taken is not known", **fields)
-    _left_running(ses)
+    left_running(ses)
     return menvelope.invalid("not_settled",
                              f"`{command}` was sent and the session failed before its landing was "
                              f"confirmed ({error}): nothing proves the machine came to rest, so it "
@@ -529,10 +536,10 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
     sent = 0
     last = before
     log, peeked = scratch / "debug.log", STATE.debuglog_mark
-    with _console_run(ses):
+    with console_run(ses):
         while last < target:
             if clock.expired():
-                _left_running(ses)
+                left_running(ses)
                 return menvelope.invalid("not_settled",
                                          f"the frame counter reached {last} of the {target} asked "
                                          "for "
@@ -591,7 +598,7 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                                                          counted_on, seen["cpu"]), polls=sent,
                                                **through)
             if last == before and sent > frames + 1:
-                _left_running(ses, unprovable=True)
+                left_running(ses, unprovable=True)
                 return menvelope.invalid("no_progress",
                                          f"the frame counter did not move over {sent} `gvblank`s: "
                                          "nothing was emulated, and the counter cannot tell that "
@@ -603,7 +610,7 @@ def _run_for_frames(ses: gs.Session, scratch: Path, frames: int, seconds: float,
                          asked=prose.counted(frames, "frame"), frame=last, target=target,
                          bound=seconds)
         if not running.frame_at_rest(ses, reads=2):
-            _left_running(ses)
+            left_running(ses)
             return menvelope.invalid("not_settled",
                                      f"the frame counter reached {last} of the {target} asked for "
                                      "and "
@@ -695,7 +702,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
     ses.drain_stop_reply()
     readings: list[int | float] = []
     verdict = contract.ELAPSED
-    with _console_run(ses):
+    with console_run(ses):
         try:
             if not wait_for_rest(
                     readings, lambda: read.rest_reading(ses), seconds, progress=progress,
@@ -715,7 +722,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                 steady = wait_for_rest(settled, lambda: read.rest_reading(ses),
                                         running.CONSOLE_HALT_SETTLE_S, sleep_first=True)
             except gs.ExpressionRefused as e:
-                _left_running(ses)
+                left_running(ses)
                 return menvelope.invalid("not_settled",
                                          f"`gtime` was sent and {what} could no longer be read "
                                          f"({e}): nothing proves the machine came to rest, so it "
@@ -725,7 +732,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                                          emulated_after_s=unavailable(
                                              f"not read after the run: {e}"), **times)
             if not steady:
-                _left_running(ses)
+                left_running(ses)
                 return menvelope.invalid(
                     "not_settled",
                     f"the machine did not come to rest within "
@@ -849,7 +856,7 @@ def _step(ses: gs.Session, scratch: Path, count: int, mode: str, stepped: str | 
                                   instructions_completed=completed,
                                   **others())
     try:
-        with _console_run(ses):
+        with console_run(ses):
             for _ in range(count):
                 try:
                     ses.monitor("over")
@@ -865,7 +872,7 @@ def _step(ses: gs.Session, scratch: Path, count: int, mode: str, stepped: str | 
                         ses.halt()
                     ses.drain_stop_reply()
                     if not _settled_pc(ses):
-                        _left_running(ses)
+                        left_running(ses)
                         return menvelope.invalid("not_settled",
                                                  f"step over {completed + 1} of {count}: the "
                                                  "machine "
