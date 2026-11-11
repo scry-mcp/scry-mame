@@ -113,7 +113,7 @@ Example, from a live run:
   "indirect_entries": 0,
   "colors": ["#000000", "#ff0000", "#00ff00", "#ffff00", "#0000ff", "#ff00ff", "... 250 more"],
   "image": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/gfx/palette-1.png",
+    "path": "$TMPDIR/mame-mcp-<run>/gfx/palette-1.png",
     "bytes": 47843,
     "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
     "width": 1096,
@@ -533,7 +533,7 @@ Example, from a live run:
   "polls": 0,
   "sampled_every": 0,
   "frames": 0,
-  "waited_s": 0.1,
+  "waited_s": 0.0,
   "palette": "black",
   "entries": 256
 }
@@ -675,7 +675,7 @@ Example, from a live run:
   "real_colors": false,
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/gfx/gfx-1.png",
+    "path": "$TMPDIR/mame-mcp-<run>/gfx/gfx-1.png",
     "bytes": 649,
     "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
     "width": 1024,
@@ -1054,7 +1054,7 @@ Example, from a live run:
   "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/gfx/sweep-1.png",
+    "path": "$TMPDIR/mame-mcp-<run>/gfx/sweep-1.png",
     "bytes": 8583,
     "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
     "width": 1320,
@@ -1155,21 +1155,21 @@ Example, from a live run:
 
 ```json
 {
-  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml"
+  "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_draft /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+  "summary": "gfx_draft $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
   "status": "ok",
   "manifest": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml",
-    "sha256": "262671d092f843070be95654627c4aecd8573d1c23f73e834769350d5ab51c18"
+    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml",
+    "sha256": "552963ab5fbf9c739d1d2d8bb15b50dc4bc095b108ec77809897fcb551a45218"
   },
   "report": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f9.report.json",
-    "sha256": "a4ccdc97aa30f7e1651a433dae67507ed2862f2313e6c5a89390ed1d71ea7197"
+    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9-report.json",
+    "sha256": "eb5bbe6159e2f9760f985174ae34748ac0c70c13f19cb8b58c3d52aeda9505ef"
   },
   "formats": {},
   "asset_names": [],
@@ -1297,7 +1297,7 @@ Example, from a live run:
   "frame_screen": 8,
   "width": 336,
   "height": 252,
-  "rows_path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/capture-700000_32_t70001e.rows",
+  "rows_path": "$TMPDIR/mame-mcp-<run>/capture-700000-32-t70001e.rows",
   "rows_kept": 7,
   "overflow_rows": 0,
   "callback_errors": {
@@ -1316,7 +1316,7 @@ Example, from a live run:
   "note": "a plane drawn in pages: `by_plane` and each listed blit name the `page`, and which page the screen shows is not in the rows",
   "not_proved": ["dest_x", "scroll_y", "source_dir_y", "source_x", "source_y", "planes.sprites", "... 1 more"],
   "image": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/gfx/blits-1.png",
+    "path": "$TMPDIR/mame-mcp-<run>/gfx/blits-1.png",
     "bytes": 2312,
     "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
     "width": 1008,
@@ -1517,7 +1517,7 @@ Example, from a live run:
   "not_proved": ["dest_x", "source_dir_y", "source_x", "source_y", "planes.sprites", "planes.background"],
   "reads_source": true,
   "image": {
-    "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/gfx/source-1.png",
+    "path": "$TMPDIR/mame-mcp-<run>/gfx/source-1.png",
     "bytes": 849,
     "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
     "width": 16,

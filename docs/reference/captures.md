@@ -73,7 +73,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json",
+  "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 12,
@@ -116,7 +116,7 @@ Example, from a live run:
   },
   "following": ["00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l", "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l", "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l", "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 66062},
-  "manifest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/series/series-1/manifest.json",
+  "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
   "count": 1,
   "first": 14,
   "last": 14,
@@ -217,7 +217,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "record: 2 frames, 666220 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/record-2.avi",
+  "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-<run>/snap/record-2.avi",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 19,
@@ -229,7 +229,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/record-2.avi",
+  "path": "$TMPDIR/mame-mcp-<run>/snap/record-2.avi",
   "frames": 2,
   "began": true,
   "frame_begin": 20,
@@ -373,7 +373,7 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/audio-3.wav",
+  "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-<run>/snap/audio-3.wav",
   "status": "ok",
   "verdict": "ELAPSED",
   "frame_before": 24,
@@ -385,7 +385,7 @@ Example, from a live run:
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/audio-3.wav",
+  "path": "$TMPDIR/mame-mcp-<run>/snap/audio-3.wav",
   "frames": 2,
   "began": true,
   "frame_begin": 25,
@@ -481,9 +481,9 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "snapshot: 441 bytes at /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
+  "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
   "status": "ok",
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
+  "path": "$TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
   "bytes": 441,
   "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
   "view": "native"
@@ -529,12 +529,7 @@ Example, from a live run:
   "summary": "captures: 1 file, 1 png",
   "status": "ok",
   "captures": [
-    {
-      "kind": "png",
-      "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/snap/snapshot-1.png",
-      "present": true,
-      "bytes": 441
-    }
+    {"kind": "png", "path": "$TMPDIR/mame-mcp-<run>/snap/snapshot-1.png", "present": true, "bytes": 441}
   ]
 }
 ```

@@ -496,17 +496,17 @@ Example, from a live run:
 {
   "ref": "0x0",
   "length": 16,
-  "dest": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
+  "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
 }
 ```
 
 ```json
 {
-  "summary": "memdump 0x0: 16 bytes to /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
+  "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "status": "ok",
   "addr": "0x00000000",
   "length": 16,
-  "path": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
+  "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "bytes": 16,
   "cpu": ":maincpu"
 }
@@ -774,7 +774,8 @@ Example, from a live run:
     "delta": 4
   },
   "following": ["0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
-  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14}
+  "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14},
+  "kept": "kept 2 (promote to review)"
 }
 ```
 <!-- scry-reference:end screen_map_write -->

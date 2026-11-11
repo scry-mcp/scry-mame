@@ -1171,7 +1171,7 @@
 
 </details>
 
-**15. `state_write`**: OK save: state four_credits saved at frame 314
+**15. `state_write`**: OK save: state four-credits saved at frame 314
 
 <details><summary>call and reply</summary>
 
@@ -1184,10 +1184,10 @@
 
 ```json
 {
-  "summary": "state_write save: four_credits, 16848 bytes at frame 314",
+  "summary": "state_write save: four-credits, 16848 bytes at frame 314",
   "status": "ok",
-  "name": "four_credits",
-  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
+  "name": "four-credits",
+  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four-credits.sta",
   "bytes": 16848,
   "frame": 314,
   "pc": "0x00002b38",
@@ -1397,7 +1397,7 @@
 
 </details>
 
-**18. `state_write`**: OK load: state four_credits loaded and verified, frame 314
+**18. `state_write`**: OK load: state four-credits loaded and verified, frame 314
 
 <details><summary>call and reply</summary>
 
@@ -1410,16 +1410,16 @@
 
 ```json
 {
-  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
+  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
   "status": "ok",
-  "name": "four_credits",
-  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four_credits.sta",
+  "name": "four-credits",
+  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four-credits.sta",
   "rom_check": "OK",
   "verified": true,
   "saved": {"frame": 314, "pc": "0x00002b38"},
   "output": "State load attempted.  Please refer to window message popup for results.",
   "mark": {"emulator": 2026, "process": 7879},
-  "cause": "stateload four_credits",
+  "cause": "stateload four-credits",
   "stop_seq": 13,
   "pc": "0x00002b38",
   "cpu": ":maincpu",

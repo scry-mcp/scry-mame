@@ -48,17 +48,17 @@ Example, from a live run:
 
 ```json
 {
-  "path": "/Users/Shared/scry-examples-20261106/bench-mame/m68k-dual/hardware/gfx.yaml"
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "gfx_load /Users/Shared/scry-examples-20261106/bench-mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
+  "summary": "gfx_load ~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
   "status": "ok",
   "loaded": true,
   "replaced_path": {"available": false, "why": "no manifest was loaded in this session before this one"},
-  "path": "/Users/Shared/scry-examples-20261106/bench-mame/m68k-dual/hardware/gfx.yaml",
+  "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
   "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
   "draft": false,
   "systems": ["radendur", "wheelfir", "pwball", "kongball"],
@@ -243,7 +243,7 @@ Example, from a live run:
     "frames": 4,
     "keep": 2,
     "crop": {"available": false, "why": "no `crop`: the whole screen"},
-    "film_dir": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-mcp-<run>/film-1",
+    "film_dir": "$TMPDIR/mame-mcp-<run>/film-1",
     "screen": ":screen",
     "checked": true,
     "space": "program"

@@ -90,7 +90,7 @@
 ```json
 {
   "method": "load",
-  "path": "./tmp/demos/lineup/lineup.screen-map.json"
+  "path": "./tmp/demos/lineup/lineup-screen-map.json"
 }
 ```
 
@@ -98,7 +98,7 @@
 {
   "summary": "screen_map_write load: 4 screens, 10 controls of lineup",
   "status": "ok",
-  "path": "./tmp/demos/lineup/lineup.screen-map.json",
+  "path": "./tmp/demos/lineup/lineup-screen-map.json",
   "application": "lineup",
   "mode": "verified",
   "screens": 4,

@@ -1296,7 +1296,7 @@
 
 </details>
 
-**14. `state_write`**: OK save: state four_credits saved at frame 702
+**14. `state_write`**: OK save: state four-credits saved at frame 702
 
 <details><summary>call and reply</summary>
 
@@ -1309,10 +1309,10 @@
 
 ```json
 {
-  "summary": "state_write save: four_credits, 10840 bytes at frame 702",
+  "summary": "state_write save: four-credits, 10840 bytes at frame 702",
   "status": "ok",
-  "name": "four_credits",
-  "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",
+  "name": "four-credits",
+  "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four-credits.sta",
   "bytes": 10840,
   "frame": 702,
   "pc": "0x0000ae19",
@@ -1815,7 +1815,7 @@ Also attached: image/png.
 
 </details>
 
-**23. `state_write`**: OK load: state four_credits loaded and verified, frame 702
+**23. `state_write`**: OK load: state four-credits loaded and verified, frame 702
 
 <details><summary>call and reply</summary>
 
@@ -1828,16 +1828,16 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 702, pc 0x0000ae19",
+  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 702, pc 0x0000ae19",
   "status": "ok",
-  "name": "four_credits",
-  "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four_credits.sta",
+  "name": "four-credits",
+  "path": "./tmp/demos/gridlee/gridlee-states/sta/gridlee/four-credits.sta",
   "rom_check": "OK",
   "verified": true,
   "saved": {"frame": 702, "pc": "0x0000ae19"},
   "output": "State load attempted.  Please refer to window message popup for results.",
-  "mark": {"emulator": 13358, "process": 10434},
-  "cause": "stateload four_credits",
+  "mark": {"emulator": 13358, "process": 10449},
+  "cause": "stateload four-credits",
   "stop_seq": 17,
   "pc": "0x0000ae19",
   "cpu": ":maincpu",

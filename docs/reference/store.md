@@ -60,38 +60,22 @@ Example, from a live run:
 ```json
 {
   "dry_run": true,
-  "root": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>"
+  "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
 }
 ```
 
 ```json
 {
-  "summary": "promote: 4 candidates in /var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>/.scry",
+  "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
   "status": "ok",
-  "store": "/var/folders/_2/sx7y70hj2kb1nqr6fpfrxsd40000gq/T/mame-live-matrix-<run>/mame-live-promote-<run>/.scry",
+  "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
   "candidates": [
     {
       "entry": "maps/radendur",
       "kind": "maps",
       "name": "radendur",
-      "file": ".scry/maps/radendur.screen-map.json",
+      "file": ".scry/maps/radendur-screen-map.json",
       "bytes": 333,
-      "change": "new"
-    },
-    {
-      "entry": "start/m68k-dual",
-      "kind": "start",
-      "name": "m68k-dual",
-      "file": ".scry/start/m68k-dual.json",
-      "bytes": 464,
-      "change": "new"
-    },
-    {
-      "entry": "start/probe-profile",
-      "kind": "start",
-      "name": "probe-profile",
-      "file": ".scry/start/probe-profile.json",
-      "bytes": 444,
       "change": "new"
     },
     {
@@ -99,12 +83,13 @@ Example, from a live run:
       "kind": "start",
       "name": "radendur",
       "file": ".scry/start/radendur.json",
-      "bytes": 343,
+      "bytes": 385,
       "change": "new"
     }
   ],
-  "total_bytes": 1584,
-  "store_bytes": 1584
+  "unchanged": [],
+  "total_bytes": 718,
+  "store_bytes": 718
 }
 ```
 <!-- scry-reference:end promote -->

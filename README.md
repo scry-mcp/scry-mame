@@ -175,7 +175,7 @@ disassemble(ref="0x1e40", length=16)
 ```
 state_write(method="save", name="four_credits")
 -> {
-  "summary": "state_write save: four_credits, 16848 bytes at frame 314",
+  "summary": "state_write save: four-credits, 16848 bytes at frame 314",
   "frame": 314
 }
 ```
@@ -183,7 +183,7 @@ state_write(method="save", name="four_credits")
 ```
 state_write(method="load", name="four_credits")
 -> {
-  "summary": "state_write load: four_credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
+  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
   "verified": true
 }
 ```
