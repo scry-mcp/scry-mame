@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On macOS the server reads the screens from a child process when it places a window, so it is
+  no longer held as an application and Activity Monitor cannot show it as not responding.
 - `screen_wait` on `on_breakpoint` or `on_watch` answers the clocks its reply promises
   (`frame_before`, `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles`), which it
   left out, so a client that validates the reply refused it. `emulated_before_s`, like the
