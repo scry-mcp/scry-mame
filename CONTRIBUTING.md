@@ -167,10 +167,7 @@ reason a run is safe beside somebody working: the matrix runs in an account or o
 nobody is working at, or at an hour agreed with whoever is, and what says whether a run took the
 front is section X's verdict, read as scry-core's README says (*Focus watch*).
 
-Two traps of the host, not of the code. MAME's console parses an unquoted path as an expression,
-so a `TMPDIR` whose path holds a `-` before a letter fails the `debug`, `source` and `trace` cells
-with `unknown symbol`: such a FAIL is the path first and the code second, and the run takes a
-`TMPDIR` without one. And a debug MAME build aborts at start on an SDL3 input assert while a game
+A trap of the host, not of the code: a debug MAME build aborts at start on an SDL3 input assert while a game
 controller is connected: every live start passes an ini holding `joystickprovider none` as
 `inipath`, the tracked `tests/live/fixtures/ini-no-joystick` or a copy of it, and a start written
 by hand passes one too, or expects the abort.
