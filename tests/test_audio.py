@@ -751,6 +751,33 @@ def test_a_bound_whose_chunk_ran_twice_is_the_reruns_refusal_never_a_file_read(
     assert out["status"] == "INVALID" and out["code"] == "console_rerun", out
 
 
+def test_a_bound_recovered_reply_carries_the_consoles_account(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A settled run says what the console did (`thread_errors`, `console_reruns`, and `resent`
+    only when it is not zero); the recovery is a run of the same console and says the same."""
+    ses, _path, _seen = _bound_at(monkeypatch, tmp_path)
+    ses.answers[1] = (b"m68k-dual\n[LUA ERROR] in thread: attempt to index a nil value\n"
+                      + ses.sentinel(1))
+    out = s.record(frames=30)
+    assert out["status"] == "ok", out
+    assert out["thread_errors"] == 1 and out["console_reruns"] == 0, out
+    assert "resent" not in out, "a counter at zero is left out, as the settled path leaves it"
+
+
+def test_a_stop_straight_after_a_bound_recovery_finds_the_machine_stopped(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The bound lets go of a machine it cannot see stop, and the release's own run ends at a
+    stop: a `stop` after it has nothing to interrupt."""
+    _bound_at(monkeypatch, tmp_path, left_running=True)
+    out = s.record(frames=30)
+    assert out["status"] == "ok" and out["verdict"] == "TIMEOUT", out
+    after = s.stop()
+    assert after["interrupted"] is False and after["note"] == "the machine was already stopped", \
+        after
+
+
 def test_the_spent_bound_after_an_answer_carries_the_consoles_account(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

@@ -110,7 +110,8 @@ def recording_run(ses: gs.Session, scratch: Path, *, what: str, script: str, tag
     chunk at the run's last stop, so reaching every frame proves nothing about the notifier.
     Every `Invalid` raised carries `lines_ahead`, `drain_steps` and the frames moved. `on_bound`
     gets an unsettled run's reply, its answer and the marks the script logged, and answers a
-    reply of its own when the tool can end what the run left half done."""
+    reply of its own when the tool can end what the run left half done; a recovery made with no
+    answer has no console account to report."""
     mark = files.log_mark(scratch)
     advance.refuse_frameless(f"`{what}`, a count of frames,")   # before the drain, which steps
     before = st.last_stop_frame()
@@ -127,7 +128,10 @@ def recording_run(ses: gs.Session, scratch: Path, *, what: str, script: str, tag
                     mlua.refuse_a_rerun(seen, tag, answer, resent, path=str(path))
                 recovered = on_bound(dict(ran), answer, seen)
                 if recovered is not None:
-                    return recovered
+                    # The recovery is a run of the same console, so it says what the console did
+                    # exactly as the settled path does.
+                    said = {} if answer is None else transport.console_did(answer, resent)
+                    return mlua.with_fields(recovered, **said)
             return _unsettled(ran, what, path, ahead, drain_steps, answer, resent)
         if answer is None:
             return mlua.not_evaluated(ran, what, ahead, resent, moved, drain_steps)
