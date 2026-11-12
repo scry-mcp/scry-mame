@@ -5,7 +5,7 @@ What a client of the server notices.
 ## Unreleased
 
 - On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
-  one template.
+  one template and holds the `record` text both servers answer.
 - A `promote` that names `root` no longer fails when the working directory is gone.
 - An approved `promote` into a repository with no `.scry/` also writes its `about.json` and
   `README.md`: `dry_run` lists what it would create in `would_create`, the approval says what it
