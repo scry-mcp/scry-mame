@@ -47,7 +47,7 @@ uv run python demos/lineup/demo.py --rompath /path/to/romset --cwd /path/to/game
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step failed,
 2 a usage error, 3 nothing was demonstrated (a missing romset, a relative path, a server that did
-not start, a checkout without the game's map).
+not start, a checkout without the game's map, a loop that could not be converted).
 
 ## The prompt
 

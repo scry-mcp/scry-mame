@@ -70,7 +70,7 @@ def precheck(run: Run) -> str:
 def boot(run: Run) -> dict[str, Any]:
     """The game's recipe, plus what is the run's own: its ini and state directories."""
     ini, states = free_set.fresh_dirs(run, SYSTEM)
-    args: dict[str, Any] = {**free_set.window(run), "profile": str(game(run) / PROFILE),
+    args: dict[str, Any] = {**free_set.window_args(run), "profile": str(game(run) / PROFILE),
                             "inipath": ini, "state_dir": states}
     if own_romset(run):
         args["rompath"] = romset(run)  # the caller wins over the recipe

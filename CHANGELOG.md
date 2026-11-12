@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), which carries the window every demo asks of
+  its `start`.
+
 - On the pinned scry-core (`pyproject.toml`), whose demo runner fails a loop a bound or a
   stop cut.
 

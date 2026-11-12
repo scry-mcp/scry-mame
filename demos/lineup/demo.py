@@ -79,7 +79,7 @@ def boot(run: Run) -> dict[str, Any]:
     symbols = run.dir / "lineup.map"
     shutil.copyfile(rompath / "lineup.map", symbols)
     ini, states = free_set.fresh_dirs(run, SYSTEM)
-    return {**free_set.window(run), "system": SYSTEM, "reference_rom": reference,
+    return {**free_set.window_args(run), "system": SYSTEM, "reference_rom": reference,
             "reference_addr": REFERENCE_ADDR,
             "reference_base": "0x0", "symbols": symbols, "bases": BASES, "inipath": ini,
             "state_dir": states, "boot_seconds": 60}
