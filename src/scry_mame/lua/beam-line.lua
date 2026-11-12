@@ -1,7 +1,4 @@
--- `vpos()` as Lua cannot call it. It adds half a pixel to the time since line 0, so the tie half a
--- pixel before a line is already that line. Lua binds the periods as doubles, where the tie lands
--- either side by rounding error: the nudge of a billionth of a line is far above that error and far
--- below one cycle.
+-- `vpos()`: half a pixel past a line counts as the next; the 1e-9 nudge beats rounding.
 local function beam_line()
   if screen == nil then
     return __SCRY_no_frame__

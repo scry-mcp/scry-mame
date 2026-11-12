@@ -1,7 +1,5 @@
--- v30-alt's `paldat_w`: a data word with a bit of `index_flag_mask` set sets the index
--- to its low bits; any other word is a whole colour for the indexed pen (the driver takes no
--- mask), and the index moves on when it auto-increments. The optional index port merges into
--- the index under the write's mask (`paloff_w`'s `COMBINE_DATA`).
+-- v30-alt's `paldat_w`: a word with an `index_flag_mask` bit sets the index, any other is a
+-- whole colour; the optional index port merges under the mask (`COMBINE_DATA`).
 local flag = __SCRY_flag__
 local taps = {}
 taps[1] = sp:install_write_tap(

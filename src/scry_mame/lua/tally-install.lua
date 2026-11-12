@@ -1,13 +1,6 @@
--- The tap covers the bus words the range touches (MAME refuses a tap not bus-aligned: "end
--- address has low bits unset") and the callback keeps only writes that land inside. The
--- value key packs masked data and mask into one integer. With no tap of the range in the
--- registry, a dump at `path` is a removed tap's, so the install deletes it.
--- `space:install_write_tap` calls its function once per BUS write with offset, data and lane
--- mask: a `move.l` arrives as two word events, a `move.b` as a word with the mask naming the
--- lane that lands. `cpu.state["CURPC"]` in the callback is the writing instruction's own pc
--- (`PC` is the prefetch, two bytes on). `emu.register_periodic` also runs at debugger stops,
--- where each tally is written whole to a file in the scratch through a rename. The tap and the
--- registry live in the MAME process's `_G`: a new `start` begins clean, `rearm` reinstalls.
+-- The tap covers whole bus words (MAME refuses an unaligned one) and keeps the writes that
+-- land inside; `CURPC` is the writer's pc (`PC` is the prefetch). With no tap of the range,
+-- a dump at `path` is a removed tap's and goes.
 local id, first, last = __SCRY_id__, __SCRY_first__, __SCRY_last__
 local path = __SCRY_path__
 --- __SCRY_bind_cpu__

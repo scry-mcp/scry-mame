@@ -1,5 +1,5 @@
--- The chunk's notifier runs in the same frame update that evaluated it, so a recording begun at
--- frame F and ended when the counter reads F + N - 1 holds exactly N frames.
+-- Begun at the notifier's first call and ended N - 1 calls later, the recording holds N
+-- frames whatever the console's timing.
 if _G._mame_mcp_record_release then
   _G._mame_mcp_record_release()
 end
@@ -12,12 +12,6 @@ end
 if screen == nil then
   error(__SCRY_no_screen__ .. " to record")
 end
--- BEGIN AND END FROM THE SAME PLACE IN THE FRAME: the chunk itself is evaluated by the
--- console's periodic hook, at a point of the frame that is not the notifier's, so a
--- recording begun here and ended there came out one frame short on some runs and exact
--- on others. Begun on the first notifier call, it holds the frame of that call (the
--- notifier runs before the frame's video write) and one per later call, so the count
--- is exact whatever the console's own timing.
 local counted = -1
 local done = false
 _G._mame_mcp_record_release = function()

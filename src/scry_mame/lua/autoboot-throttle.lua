@@ -1,7 +1,5 @@
--- Written by the mame MCP server for ONE session: fly flat out to a frame, real
--- speed from there. The frame comes from the environment; the caller's harness runs after.
--- Inside a `pcall`: MAME stops executing the one autoboot script at the first error, which would
--- silently take the chained caller harness down too.
+-- One session's throttle: flat out to the frame the environment names, real speed after.
+-- In a `pcall`: an error would stop the whole autoboot script, harness included.
 pcall(function()
   local screen = nil
   for _, s in pairs(manager.machine.screens) do

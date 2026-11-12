@@ -38,6 +38,7 @@ def bound_cpu(cpu: str | None) -> str:
     return lua_source.render("tap-bound-cpu", cpu=lua_source.Code(expr)).rstrip("\n")
 
 
+#: A rerun removes its old tap first.
 REMOVE_OLD_TAP = lua_source.render("tap-remove-old").rstrip("\n")
 
 
