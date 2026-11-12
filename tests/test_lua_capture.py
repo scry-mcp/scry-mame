@@ -249,8 +249,8 @@ def test_record_predicts_the_end_frame_its_script_ends_on(
 
     real = inspect.signature(mrec.recording_run)
 
-    def run(*args: Any) -> dict[str, Any]:
-        seen.update(real.bind(*args).arguments)
+    def run(*args: Any, **kw: Any) -> dict[str, Any]:
+        seen.update(real.bind(*args, **kw).arguments)
         raise mstate.Invalid("bad_argument", "the run is this test's")
 
     monkeypatch.setattr(mrec, "recording_run", run)

@@ -111,5 +111,7 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
             # the mixer stops AT the end frame; the span's end is inclusive, as `record`'s
             frame_end=int(end["frame"]) - 1)
 
-    return mrec.recording_run(ses, scratch, "audio_record", script, tag, frames + 4, seconds,
-                              progress, path, frames, frames - 1, _FILE_KEYS, finish)
+    return mrec.recording_run(ses, scratch, what="audio_record", script=script, tag=tag,
+                              run_frames=frames + 4, seconds=seconds, progress=progress,
+                              path=path, frames=frames, ends_after=frames - 1,
+                              file_keys=_FILE_KEYS, finish=finish)

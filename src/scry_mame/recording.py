@@ -93,7 +93,7 @@ def _unsettled(ran: dict[str, Any], what: str, path: Path, ahead: int, drain_ste
                           drain_steps, answer, resent, path=str(path))
 
 
-def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: str,
+def recording_run(ses: gs.Session, scratch: Path, *, what: str, script: str, tag: str,
                   run_frames: int, seconds: float, progress: mprogress.Progress, path: Path,
                   frames: int, ends_after: int, file_keys: tuple[str, ...],
                   finish: Callable[[Recording], dict[str, Any]],
@@ -209,8 +209,10 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
                                 note="the run was cut at its `seconds` bound; the recording was "
                                      "released there and the file holds the frames it ran")
 
-    return recording_run(ses, scratch, "record", script, tag, frames + 3, seconds, progress,
-                         path, frames, ends_after, file_keys, finish, on_bound)
+    return recording_run(ses, scratch, what="record", script=script, tag=tag,
+                         run_frames=frames + 3, seconds=seconds, progress=progress, path=path,
+                         frames=frames, ends_after=ends_after, file_keys=file_keys,
+                         finish=finish, on_bound=on_bound)
 
 
 #: A recording refusal's frame when no stop has read one.

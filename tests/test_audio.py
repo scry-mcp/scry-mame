@@ -562,9 +562,10 @@ def test_the_run_gets_the_script_for_this_call_and_the_callers_bound(
     _channel(monkeypatch, tmp_path)
     seen: dict[str, Any] = {}
 
-    def run(ses: object, scratch: Path, what: str, script: str, tag: str, run_frames: int,
+    def run(ses: object, scratch: Path, *, what: str, script: str, tag: str, run_frames: int,
             seconds: float, progress: object, path: Path, frames: int, ends_after: int,
-            nulls: dict[str, None], finish: object) -> dict[str, Any]:
+            file_keys: tuple[str, ...], finish: object,
+            on_bound: object = None) -> dict[str, Any]:
         seen.update(script=script, tag=tag, run_frames=run_frames, seconds=seconds, path=path,
                     frames=frames, ends_after=ends_after)
         raise mstate.Invalid("bad_argument", "the run is this test's")
@@ -589,8 +590,8 @@ def test_a_recording_s_script_ends_with_its_armed_line(
     _channel(monkeypatch, tmp_path)
     seen: dict[str, Any] = {}
 
-    def run(ses: object, scratch: Path, what: str, script: str, tag: str,
-            *_: object) -> dict[str, Any]:
+    def run(ses: object, scratch: Path, *, script: str, tag: str,
+            **_: object) -> dict[str, Any]:
         seen.update(script=script, tag=tag)
         raise mstate.Invalid("bad_argument", "the run is this test's")
 
