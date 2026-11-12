@@ -2,10 +2,9 @@
 
 This repository's run recipes: what it declares about how its boards run, so a session can boot one without composing `start`'s arguments by hand.
 
-SCRY is a set of MCP servers (`mame`, `dosbox-x`) that let an assistant run a program in an
-emulator and inspect it live. This folder is what this repository declares for it: how the
-program starts and, where it has them, what its screens look like and a session that
-drives it.
+SCRY is a set of MCP servers that let an assistant run a program in an emulator and inspect it
+live. This folder is what this repository declares for it: how the program starts and, where it
+has them, what its screens look like and a session that drives it.
 
 ## How to start
 
@@ -21,11 +20,9 @@ A recipe is the arguments of `start`, so a session boots a program without compo
 - `v30-alt` (`start/v30-alt.json`): the bench's `v30-alt` board (`speedf`) on the shared MAME.
 - `v30` (`start/v30.json`): the bench's `v30` board (`lineup`) on the shared MAME.
 
-The four boards name their paths through `MAME_LIVE_BENCH`, which the live tier exports with `~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe spells the directory and system its bench's `identity.json` declares; a bench that renames either declares a store of its own. `v30`, `v30-alt` and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.
+The board recipes name their paths through `MAME_LIVE_BENCH`, which the live tier exports with `~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe spells the directory and system its bench's `identity.json` declares; a bench that renames either declares a store of its own. `v30`, `v30-alt` and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.
 
 `free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`. Given those, `free_boot("circus", ...)` keeps the call's own system and reference image.
-
-A recipe declares how a board starts: paths, arguments, how long a boot waits. What a board's trace means (which stop serves a case, which palette a pen takes, what an address proves) stays in this repository's rules and its tests, because only this repository holds the gate that keeps it true.
 
 ---
 
