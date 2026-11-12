@@ -1,47 +1,33 @@
-# `.scry/`: this repository's run recipes
+# `.scry/`
 
-What this repository declares about how its boards run, so a session can boot one without
-composing `start`'s arguments by hand. The server reads it; nothing here is written by a tool.
+This repository's run recipes: what it declares about how its boards run, so a session can boot one without composing `start`'s arguments by hand.
 
-    .scry/
-      README.md             this page
-      start/<name>.json     a run recipe: `start`'s arguments, in the `scry-start/1` format
+SCRY is a set of MCP servers (`mame`, `dosbox-x`) that let an assistant run a program in an
+emulator and inspect it live. This folder is what this repository declares for it: how the
+program starts and, where it has them, what its screens look like and a session that
+drives it.
 
-`maps/` and `perform/` hold a screen map and a `perform` document when this repository has one.
+## How to start
 
-## The recipes
+Call the `mame` server's `start` tool with a recipe's name: `start(profile="<name>")`. An argument in the same call wins over the recipe's. A recipe's paths resolve against the directory holding `.scry/`, and what would be this machine's path is a [placeholder](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md).
 
-| name | boots |
-| --- | --- |
-| `m68k-dual` | the bench's `m68k-dual` board (`radendur`) with its symbol table |
-| `m68k-dual-alt` | the bench's `m68k-dual-alt` board (`rltennis`) |
-| `v30` | the bench's `v30` board (`lineup`) on the shared MAME |
-| `v30-alt` | the bench's `v30-alt` board (`speedf`) on the shared MAME |
-| `free` | a free set from `MAME_TEST_ROMS`, its system and reference image given by the call |
+## Recipes
 
-The four boards name their paths through `MAME_LIVE_BENCH`, which the live tier exports with
-`~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe
-spells the directory and system its bench's `identity.json` declares; a bench that renames
-either declares a store of its own. `v30`, `v30-alt`
-and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.
-`free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked
-per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`.
+A recipe is the arguments of `start`, so a session boots a program without composing them by hand.
 
-## How a path is written
+- `free` (`start/free.json`): a free set from `MAME_TEST_ROMS`, its system and reference image given by the call.
+- `m68k-dual-alt` (`start/m68k-dual-alt.json`): the bench's `m68k-dual-alt` board (`rltennis`).
+- `m68k-dual` (`start/m68k-dual.json`): the bench's `m68k-dual` board (`radendur`) with its symbol table.
+- `v30-alt` (`start/v30-alt.json`): the bench's `v30-alt` board (`speedf`) on the shared MAME.
+- `v30` (`start/v30.json`): the bench's `v30` board (`lineup`) on the shared MAME.
 
-Every recipe resolves against one base, the directory holding `.scry/`, so a relative path is
-relative to this repository. What a tracked file must not carry, a host path, is written as a
-[placeholder](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md).
+The four boards name their paths through `MAME_LIVE_BENCH`, which the live tier exports with `~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe spells the directory and system its bench's `identity.json` declares; a bench that renames either declares a store of its own. `v30`, `v30-alt` and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.
 
-## The caller wins
+`free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`. Given those, `free_boot("circus", ...)` keeps the call's own system and reference image.
 
-A recipe fills only what the call does not give, so `boot(symbols=None)` drops the board's
-symbol table and `free_boot("circus", ...)` keeps the call's own system and reference image.
-The reply's `profile` block names the file and every key it supplied.
+A recipe declares how a board starts: paths, arguments, how long a boot waits. What a board's trace means (which stop serves a case, which palette a pen takes, what an address proves) stays in this repository's rules and its tests, because only this repository holds the gate that keeps it true.
 
-## What stays out
+---
 
-A recipe declares how a board starts: paths, arguments, how long a boot waits. What a board's
-trace means (which stop serves a case, which palette a pen takes, what an address proves) stays
-in this repository's rules and its tests, because only this repository holds the gate that keeps
-it true.
+This page is rendered from `about.json` and the files beside it; edit those and run
+`python -m scry_core.scry_readme`, never this page.

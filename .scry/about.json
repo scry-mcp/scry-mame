@@ -1,0 +1,17 @@
+{
+  "format": "scry-about/1",
+  "purpose": "This repository's run recipes: what it declares about how its boards run, so a session can boot one without composing `start`'s arguments by hand.",
+  "server": "mame",
+  "files": {
+    "start/m68k-dual.json": "the bench's `m68k-dual` board (`radendur`) with its symbol table.",
+    "start/m68k-dual-alt.json": "the bench's `m68k-dual-alt` board (`rltennis`).",
+    "start/v30.json": "the bench's `v30` board (`lineup`) on the shared MAME.",
+    "start/v30-alt.json": "the bench's `v30-alt` board (`speedf`) on the shared MAME.",
+    "start/free.json": "a free set from `MAME_TEST_ROMS`, its system and reference image given by the call."
+  },
+  "notes": [
+    "The four boards name their paths through `MAME_LIVE_BENCH`, which the live tier exports with `~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe spells the directory and system its bench's `identity.json` declares; a bench that renames either declares a store of its own. `v30`, `v30-alt` and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.",
+    "`free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`. Given those, `free_boot(\"circus\", ...)` keeps the call's own system and reference image.",
+    "A recipe declares how a board starts: paths, arguments, how long a boot waits. What a board's trace means (which stop serves a case, which palette a pen takes, what an address proves) stays in this repository's rules and its tests, because only this repository holds the gate that keeps it true."
+  ]
+}
