@@ -6,6 +6,9 @@ What a client of the server notices.
 
 - On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
   one template and holds the `record` text both servers answer.
+- `record` whose run reaches its `seconds` bound releases the recording there and, when the
+  release answers, answers its file (`ended: true`, `bytes`, `avi_frames`), where it used to
+  refuse `not_settled` and leave the file open.
 - A `promote` that names `root` no longer fails when the working directory is gone.
 - An approved `promote` into a repository with no `.scry/` also writes its `about.json` and
   `README.md`: `dry_run` lists what it would create in `would_create`, the approval says what it

@@ -96,7 +96,10 @@ def _unsettled(ran: dict[str, Any], what: str, path: Path, ahead: int, drain_ste
 def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: str,
                   run_frames: int, seconds: float, progress: mprogress.Progress, path: Path,
                   frames: int, ends_after: int, file_keys: tuple[str, ...],
-                  finish: Callable[[Recording], dict[str, Any]]) -> dict[str, Any]:
+                  finish: Callable[[Recording], dict[str, Any]],
+                  on_bound: Callable[[dict[str, Any], transport.Answer | None, list[str]],
+                                     dict[str, Any] | None] | None = None,
+                  ) -> dict[str, Any]:
     """The run a recording bounded by the frame notifier makes, `record`'s AVI and
     `audio_record`'s WAV alike.
 
@@ -105,7 +108,9 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
     frame; `file_keys` are `unavailable` while there is no file. A settled run with neither a
     `begin` nor the chunk's `armed` mark is refused as lost marks: the debugger can evaluate a
     chunk at the run's last stop, so reaching every frame proves nothing about the notifier.
-    Every `Invalid` raised carries `lines_ahead`, `drain_steps` and the frames moved."""
+    Every `Invalid` raised carries `lines_ahead`, `drain_steps` and the frames moved. `on_bound`
+    gets an unsettled run's reply, its answer and the marks the script logged, and answers a
+    reply of its own when the tool can end what the run left half done."""
     mark = files.log_mark(scratch)
     advance.refuse_frameless(f"`{what}`, a count of frames,")   # before the drain, which steps
     before = st.last_stop_frame()
@@ -116,6 +121,13 @@ def recording_run(ses: gs.Session, scratch: Path, what: str, script: str, tag: s
         ran, answer, resent, moved = mlua.queued_then_ran(
             ses, scratch, script, run_frames, seconds, progress)
         if ran.get("status") != "ok":
+            if on_bound is not None:
+                seen = mlua.marks_since(scratch, mark, tag)
+                if answer is not None:
+                    mlua.refuse_a_rerun(seen, tag, answer, resent, path=str(path))
+                recovered = on_bound(dict(ran), answer, seen)
+                if recovered is not None:
+                    return recovered
             return _unsettled(ran, what, path, ahead, drain_steps, answer, resent)
         if answer is None:
             return mlua.not_evaluated(ran, what, ahead, resent, moved, drain_steps)
@@ -161,7 +173,7 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
         path = scratch / "snap" / f"record-{STATE.next_number('recordings')}.avi"
     tag = f"{RECORD_MARK}#{STATE.lua_seq + 1}"
     script = (lua_source.render("record", path=begun_as(path), frames=frames, mark=tag,
-                                no_screen=NO_SCREEN)
+                                no_screen=NO_SCREEN, release=lua_source.Code(mlua.RELEASE))
               + armed(tag))
     ends_after = frames - 1
     file_keys = ("avi_frames", "bytes")
@@ -175,20 +187,30 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
                          frame_end_planned=int(begin["frame"]) + ends_after,
                          note="the recording is still OPEN: the run stopped before its last "
                               "frame, and the script closes it when the machine reaches it")
-        total = _avi_frames(path)
-        if total is None:
-            raise st.Invalid("readback_refused",
-                f"{path} is not a finished AVI (missing, or not RIFF/AVI with an avih header)",
-                path=str(path))
-        if total == 0:
-            raise st.Invalid("readback_refused", f"{path} holds ZERO frames", path=str(path),
-                             bytes=path.stat().st_size)
-        STATE.captures.append(("avi", str(path)))
+        total = _finished_avi(path)
         return mlua.with_fields(ran, **own, ended=True, bytes=path.stat().st_size, avi_frames=total,
                      frame_end=int(end["frame"]))
 
+    def on_bound(ran: dict[str, Any], answer: transport.Answer | None,
+                 seen: list[str]) -> dict[str, Any] | None:
+        """The bound fired with the notifier armed: release the recording on the console its
+        script came through, then read the file that closed. A file still open is INVALID."""
+        begin = mlua.one_event(seen, tag, "begin")
+        if (ran.get("code") != "not_settled" or answer is None or not answer.ok
+                or begin is None):
+            return None
+        released, run = mlua.release_recording(ses, scratch, progress)
+        if released is None or not released.ok or run.get("status") != "ok":
+            return None
+        total = _finished_avi(path)
+        return mlua.with_fields(run, verdict=contract.TIMEOUT, path=str(path), frames=frames,
+                                began=True, ended=True, bytes=path.stat().st_size,
+                                avi_frames=total, frame_begin=int(begin["frame"]),
+                                note="the run was cut at its `seconds` bound; the recording was "
+                                     "released there and the file holds the frames it ran")
+
     return recording_run(ses, scratch, "record", script, tag, frames + 3, seconds, progress,
-                         path, frames, ends_after, file_keys, finish)
+                         path, frames, ends_after, file_keys, finish, on_bound)
 
 
 #: A recording refusal's frame when no stop has read one.
@@ -205,6 +227,26 @@ def _avi_frames(path: Path) -> int | None:
         return None if found is None else found.frames
 
     return files.wait_for(declared, files.FILE_WAIT_S, files.FILE_POLL_S)
+
+
+def _finished_avi(path: Path) -> int:
+    """The frame count of the AVI a recording closed, listed in `captures`. Waited for: the
+    release's answer can land before the writer closes, and an open file reads 0 frames."""
+    def closed() -> int | None:
+        found = avi.header(path)
+        return found.frames if found is not None and found.frames > 0 else None
+
+    total = files.wait_for(closed, files.FILE_WAIT_S, files.FILE_POLL_S)
+    if total is None:
+        found = avi.header(path)
+        if found is not None:
+            raise st.Invalid("readback_refused", f"{path} holds ZERO frames", path=str(path),
+                             bytes=path.stat().st_size)
+        raise st.Invalid("readback_refused",
+            f"{path} is not a finished AVI (missing, or not RIFF/AVI with an avih header)",
+            path=str(path))
+    STATE.captures.append(("avi", str(path)))
+    return total
 
 
 def captures() -> dict[str, Any]:

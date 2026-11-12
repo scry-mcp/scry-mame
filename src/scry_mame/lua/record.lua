@@ -1,8 +1,6 @@
 -- Begun at the notifier's first call and ended N - 1 calls later, the recording holds N
 -- frames whatever the console's timing.
-if _G._mame_mcp_record_release then
-  _G._mame_mcp_record_release()
-end
+--- __SCRY_release__
 local v = manager.machine.video
 local screen = nil
 for _, s in pairs(manager.machine.screens) do

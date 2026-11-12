@@ -1695,12 +1695,13 @@ def record(frames: int, dest: str = "",
     """Record exactly `frames` emulated frames of the screen to an AVI, then stop.
     {NEEDS_STOPPED}.
 
-    `dest`: an absolute `.avi` path not there yet; empty lands in the scratch. `frames` is 2 or
-    more. The AVI is checked before its path is given; zero frames is INVALID. A run cut short
-    leaves the recording open (`ended: false`); `seconds` bounds the wait for it.
+    {RECORD_ARGS}
 
-    Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
-    `note`, the stop survey. {PENDING}
+    {RECORD_CUT} A release that does not answer leaves the run's own refusal. A stop that is
+    not the bound leaves the recording open (`ended: false`) until the machine reaches its last
+    frame.
+
+    Reply, once answered: {RECORD_REPLY}, `view`, `note`, the stop survey. {PENDING}
 
     Reference: REFERENCE.md, Input and the screen.
     """

@@ -148,12 +148,13 @@ record(frames, dest="", seconds=60.0)
 Record exactly `frames` emulated frames of the screen to an AVI, then stop.
 Needs the machine STOPPED (else `not_stopped`).
 
-`dest`: an absolute `.avi` path not there yet; empty lands in the scratch. `frames` is 2 or
-more. The AVI is checked before its path is given; zero frames is INVALID. A run cut short
-leaves the recording open (`ended: false`); `seconds` bounds the wait for it.
+`dest`: an absolute `.avi` path not there yet; empty lands in the session's scratch, gone at `close`, and the reply names it either way. `frames` is 2 or more. `seconds` bounds the wait for the recording. The AVI is read before its path is given.
 
-Reply, once answered: `verdict`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`,
-`note`, the stop survey. Without an answer, `pending`.
+A run cut at that bound is released before the reply: when the release answers, the reply says `ended: true` and names the AVI it read back, and a file that does not read as finished is INVALID. A release that does not answer leaves the run's own refusal. A stop that is
+not the bound leaves the recording open (`ended: false`) until the machine reaches its last
+frame.
+
+Reply, once answered: `verdict`, `frames`, `path`, `began`, `ended`, `bytes`, `avi_frames`, `view`, `note`, the stop survey. Without an answer, `pending`.
 
 Reference: REFERENCE.md, Input and the screen.
 
@@ -284,7 +285,7 @@ Example, from a live run:
 
 A `seconds` that would hold the server's lock past its ceiling is refused.
 
-The frame notifier begins and ends the recording, so the count is emulated frames, and it cannot end a recording on the call that begins it: one frame is refused rather than recorded as two. `seconds` bounds the whole call like `input`'s. Lines already in the console's pipe are stepped off before the script is sent so the frames asked for are the recording's own. A script run twice logs its mark twice, a recording begun twice on one file. Cut short, a run leaves the recording open (`frame_end_planned`) or not begun (`began: false`, `frame_begin_planned`). The stop survey is the one every advancing wrapper returns.
+The frame notifier begins and ends the recording, so the count is emulated frames, and it cannot end a recording on the call that begins it: one frame is refused rather than recorded as two. `seconds` bounds the whole call like `input`'s. Lines already in the console's pipe are stepped off before the script is sent so the frames asked for are the recording's own. A script run twice logs its mark twice, a recording begun twice on one file. Cut short by a stop that is not the bound, a run leaves the recording open (`frame_end_planned`) or not begun (`began: false`, `frame_begin_planned`); a bound that fires releases the recording there, and the reply reads the file back. The stop survey is the one every advancing wrapper returns.
 
 <!-- scry-reference:begin audio_record -->
 ## `audio_record`

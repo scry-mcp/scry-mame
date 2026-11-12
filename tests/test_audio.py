@@ -16,9 +16,9 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from lua_support import _channel  # noqa: E402
+from lua_support import AVI_HEAD, _captured, _channel, _marks_of  # noqa: E402
 from lua_text import has, squash
-from scry_core import wav
+from scry_core import roster, wav
 from session_doubles import refused, run_host_lua  # noqa: E402
 
 from scry_mame import (
@@ -675,6 +675,79 @@ def test_a_recording_cut_short_by_an_unsettled_run_is_the_runs_refusal_with_its_
     assert "notifier" in out["message"] and "the frame counter still moves" in out["message"]
     for key in ("began", "ended", "frame_begin_planned", "frame_end_planned", "note", "samples"):
         assert key not in out, key
+
+
+BOUND_REFUSAL = {"status": "INVALID", "code": "not_settled",
+                 "message": "the frame counter reached 103 of the 30 asked for",
+                 "frame_before": 100, "frame_after": 103, "session": {}}
+
+
+def _bound_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *,
+              content: bytes = AVI_HEAD, twice: bool = False) -> tuple[Any, Path, dict[str, Any]]:
+    """The channel of a `record` whose run meets its bound with the notifier armed: the script
+    ran, its file is `content`, and `queued_then_ran` answers `not_settled` on the first call
+    only, so the release runs on a line of its own."""
+    ses = _channel(monkeypatch, tmp_path)
+    path = ses.scratch / "snap" / "record-1.avi"
+    ses.answers[1] = _captured(5)
+    marks = [m.replace("#5", "#1") for m in _marks_of("MAME_MCP_RECORD#5")]
+    ses.marks[1] = [*marks, *marks] if twice else marks
+    ses.files[1] = (path, content)
+    ses.answers[2] = ses.sentinel(2)          # the release line's own answer
+    seen: dict[str, Any] = {"calls": 0}
+    real = lua.queued_then_ran
+
+    def run(*a: Any, **k: Any) -> Any:
+        seen["calls"] += 1
+        ran, answer, resent, moved = real(*a, **k)
+        if seen["calls"] == 1:
+            return dict(BOUND_REFUSAL), answer, resent, moved
+        return ran, answer, resent, moved
+
+    monkeypatch.setattr(lua, "queued_then_ran", run)
+    return ses, path, seen
+
+
+def test_a_bound_that_fires_releases_the_recording_and_answers_its_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The bound's `not_settled` is not the reply when the release finalises the file: the
+    recording is ended on the console its script came through and its AVI is read back."""
+    _ses, path, seen = _bound_at(monkeypatch, tmp_path)
+    out = s.record(frames=30)
+    assert out["status"] == "ok", out
+    assert out["verdict"] == "TIMEOUT" and out["ended"] is True, out
+    assert out["path"] == str(path) and out["bytes"] == len(AVI_HEAD), out
+    assert out["avi_frames"] == 30 and out["frame_begin"] == 321, out
+    assert seen["calls"] == 2, "the release ran on a line of its own, after the bound"
+    assert "cut at its `seconds` bound" in out["note"], out
+    assert set(roster.RECORD_REPLY_FIELDS) <= set(out), out
+
+
+def _open_avi(head: bytes) -> bytes:
+    """The fixture's header as a writer still holds it: the frame count at 0, no index."""
+    out = bytearray(head)
+    struct.pack_into("<I", out, out.find(b"avih") + 8 + 4 * 4, 0)
+    return bytes(out)
+
+
+def test_a_bound_whose_file_is_still_open_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The release's answer can land before the writer closes; the reply never calls that ok."""
+    _bound_at(monkeypatch, tmp_path, content=_open_avi(AVI_HEAD))
+    out = s.record(frames=30)
+    assert out["status"] == "INVALID" and out["code"] == "readback_refused", out
+    assert "holds ZERO frames" in out["message"], out
+
+
+def test_a_bound_whose_chunk_ran_twice_is_the_reruns_refusal_never_a_file_read(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Two runs log every mark twice, and the file is one run's: neither may be described."""
+    _bound_at(monkeypatch, tmp_path, twice=True)
+    out = s.record(frames=30)
+    assert out["status"] == "INVALID" and out["code"] == "console_rerun", out
 
 
 def test_the_spent_bound_after_an_answer_carries_the_consoles_account(

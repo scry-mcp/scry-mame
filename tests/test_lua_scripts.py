@@ -20,6 +20,7 @@ from scry_mame import (
     film,
     gfx,
     launch,
+    lua,
     lua_source,
     machine,
     presence,
@@ -98,7 +99,7 @@ def scripts() -> dict[str, str]:
                                    no_screen=mrec.NO_SCREEN)
         + mrec.armed("M#1"),
         "record": lua_source.render("record", path="/s/r.avi", frames=5, mark="M#2",
-                                    no_screen=mrec.NO_SCREEN)
+                                    no_screen=mrec.NO_SCREEN, release=code(lua.RELEASE))
         + mrec.armed("M#2"),
         "read-block": lua_source.render("read-block", tag=":mainram", addr=None, offset=0,
                                         length=4, cpu=code("manager.machine.debugger.visible_cpu")),
@@ -148,7 +149,8 @@ def test_every_file_is_among_the_scripts_judged(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.setattr(lua_source, "load", seen)
     scripts()
     # Read once, when their module is imported, and composed from the module's constant since.
-    imported = {"callbacks": callbacks.LUA, "beam-line": capture.BEAM_LINE_LUA,
+    imported = {"record-release": lua.RELEASE,
+                "callbacks": callbacks.LUA, "beam-line": capture.BEAM_LINE_LUA,
                 "film-dump-own-frame": film._DUMP_OWN_FRAME, "frame-pens": mscreen.FRAME_PENS_LUA,
                 "tap-remove-old": tap.REMOVE_OLD_TAP + "\n"}
     for name, text in imported.items():

@@ -37,6 +37,9 @@ EVAL_WAIT_S = 5.0
 # Marks the wrappers write through `logerror`, each followed by the `#<seq>` of its call.
 INPUT_MARK = "MAME_MCP_INPUT"
 THROTTLE_MARK = "MAME_MCP_THROTTLE"
+#: The line that ends a recording a bound cut: `record.lua` splices the same script at its head,
+#: so the release has one text, and the console evaluates it on its next hook, a frame later.
+RELEASE = lua_source.render("record-release")
 
 
 # The halves that need no machine: the server asks them before reaching for it.
@@ -281,6 +284,22 @@ def queued_then_ran(ses: gs.Session, scratch: Path, script: str, frames: int, se
             "channel known to be whole",
             pending=True, resent=resent, thread_errors=after.count(transport.THREAD_ERROR))
     return ran, answer, resent, moved
+
+
+def release_recording(ses: gs.Session, scratch: Path, progress: mprogress.Progress,
+                      frames: int = 1, seconds: float = EVAL_WAIT_S
+                      ) -> tuple[transport.Answer | None, dict[str, Any]]:
+    """End a recording a bound cut, on the console its script came through: the release script,
+    and one frame for the console's hook to take it. The answer is None when no answer came in
+    `seconds`; the run is the one that bought it, and `{}` when it did not run at all."""
+    try:
+        ran, answer, _resent, _moved = queued_then_ran(ses, scratch, RELEASE, frames, seconds,
+                                                        progress)
+    except st.Invalid as refusal:
+        if refusal.code == "session_broken":
+            raise
+        return None, {}
+    return answer, ran
 
 
 LAST_LOOK_S = 0.05

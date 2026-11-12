@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-from scry_core import reply_schema  # noqa: E402
+from scry_core import reply_schema, roster  # noqa: E402
 
 from scry_mame import replies  # noqa: E402
 from scry_mame import server as s  # noqa: E402
@@ -46,3 +46,13 @@ def test_every_field_a_reply_sentence_names_is_in_its_model() -> None:
     assert not wrong, wrong
 
 
+def test_record_answers_the_family_both_servers_declare() -> None:
+    declared = set(roster.RECORD_REPLY_FIELDS)
+    assert declared <= set(replies.MODELS["record"].__annotations__), declared
+
+
+def test_record_speaks_the_words_scry_core_declares() -> None:
+    tools = asyncio.run(s.mcp.list_tools())
+    doc = next(t for t in tools if t.name == "record").description or ""
+    for words in (roster.RECORD_ARGS, roster.RECORD_CUT, roster.RECORD_REPLY):
+        assert words in doc, words

@@ -326,6 +326,11 @@ STOPPED_CASES: list[Case] = [
          is_refused("bad_argument")),
     Case("record.dest relative", "record", {"frames": 2, "dest": "rel.avi", "seconds": 10.0},
          is_refused("bad_argument")),
+    # A bound that fires ends the recording where it stands: the release runs on the console,
+    # the file is read back, and the reply names what it holds rather than leaving it open.
+    Case("record bound fires", "record", {"frames": 6000, "seconds": 3.0},
+         is_ok(lambda r: r.get("verdict") == "TIMEOUT" and r.get("ended") is True
+                and r.get("avi_frames", 0) > 0)),
     *waits("record", "seconds", {"frames": 2}, at_max=ENDS_IN_FRAMES, absent=ENDS_IN_FRAMES),
     # The mixer writes whole updates of a fiftieth of an emulated second, so two frames is the
     # shortest span that holds one on a screen under 100 Hz; a bool is not a count.

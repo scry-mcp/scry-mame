@@ -19,6 +19,7 @@ from lua_support import (  # noqa: E402
     _marks_of,
     _whole,
 )
+from scry_core import roster  # noqa: E402
 from session_doubles import blank_session, documented, refused  # noqa: E402
 
 from scry_mame import files as mfiles  # noqa: E402
@@ -120,6 +121,7 @@ def test_record_checks_the_avi_header_and_runs_two_frames_past_the_recording(
     assert out["recording_after"] is True and out["ended"] is True
     assert out["frame_after"] - out["frame_before"] == 33, (
         "frames + 3: one for the begin, two for the file to close")
+    assert set(roster.RECORD_REPLY_FIELDS) <= set(out), out
     assert out["summary"].startswith("record: 30 frames,")
     assert list(out)[-1] == "session"
     keys = list(out)
