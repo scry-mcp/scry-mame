@@ -14,41 +14,38 @@ from typing import Any
 
 from scry_core.reply_contract import or_unavailable, unavailable
 
-from scry_mame import callbacks, transport
+from scry_mame import callbacks, lua_source, transport
 from scry_mame import declarations as dec
 from scry_mame import files as mfiles
 from scry_mame import space as mspace
 from scry_mame import state as st
 from scry_mame.state import STATE
 
-# Lua locals handed between fragments: `T`, `dbg`, `cpu`, `old`.
+# Lua locals handed between fragments: `T`, `cpu`, `old`.
 
 
 def tap_prelude(registry: str) -> str:
     """The callback guard, then the registry in `_G`, made by the first install."""
-    return callbacks.LUA + (f"local T = _G.{registry}\n"
-                            f"if T == nil then T = {{items = {{}}, periodic = false}} "
-                            f"_G.{registry} = T end\n")
+    return callbacks.LUA + lua_source.render("tap-prelude", registry=lua_source.Code(registry))
 
 
 def bound_cpu(cpu: str | None) -> str:
-    """The `dbg` and `cpu` locals; a named cpu is bound at composition, before a `cpu_focus` can
-    move the visible one."""
+    """The `cpu` local; a named cpu is bound at composition, before a `cpu_focus` can move the
+    visible one."""
     expr = (f"manager.machine.devices[{transport.lua_string(cpu)}]" if cpu else
-            'dbg and dbg.visible_cpu or manager.machine.devices[":maincpu"]')
-    return f"local dbg = manager.machine.debugger\nlocal cpu = {expr}"
+            'manager.machine.debugger and manager.machine.debugger.visible_cpu '
+            'or manager.machine.devices[":maincpu"]')
+    return lua_source.render("tap-bound-cpu", cpu=lua_source.Code(expr)).rstrip("\n")
 
 
-# A rerun over a held id removes the old tap first, so it never taps twice.
-REMOVE_OLD_TAP = ("local old = T.items[id]\n"
-               "if old ~= nil and old.tap ~= nil then old.tap:remove() end")
+REMOVE_OLD_TAP = lua_source.render("tap-remove-old").rstrip("\n")
 
 
 def register_dumper_once(body: str) -> str:
     """The registry's periodic dumper, registered by the first install only; `body` is indented
     under the guard."""
     assert body.endswith("\n"), "a body whose last line runs into the guard's `end`"
-    return f"if not T.periodic then\n  T.periodic = true\n{body}end"
+    return lua_source.render("tap-dumper-once", body=lua_source.Code(body)).rstrip("\n")
 
 # The stub's stop packet can reach us before the periodic hook has dumped that stop.
 DUMP_WAIT_S = 0.5
@@ -69,14 +66,8 @@ _ANSWER_LINE = re.compile(re.escape(st.LUA_SENTINEL).encode() + rb"#(\d+)\t(true
 
 def remove_script(tally_id: str, registry: str) -> str:
     """The Lua removing tap `tally_id` from `registry`; an absent tap is no error."""
-    return f"""local T = _G.{registry}
-local id = {transport.lua_string(tally_id)}
-local it = T and T.items[id]
-if it ~= nil then
-  if it.tap ~= nil then it.tap:remove() end
-  T.items[id] = nil
-  print("{ANSWER_PREFIX} removed tally_id=" .. id)
-else print("{ANSWER_PREFIX} absent tally_id=" .. id) end"""
+    return lua_source.render("tap-remove", registry=lua_source.Code(registry), id=tally_id,
+                             answer=ANSWER_PREFIX).rstrip("\n")
 
 
 def held(name: str) -> tuple[dec.Owner, dict[str, Any]] | None:

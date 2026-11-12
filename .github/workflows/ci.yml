@@ -31,15 +31,23 @@ jobs:
       - run: npm install --global jscpd@5.2.1 && jscpd --version
         timeout-minutes: 5
       # The Lua doubles run MAME's Lua through a host interpreter, and the stub owner reads lsof.
-      - name: lua and lsof
-        timeout-minutes: 5
+      # luac5.4, StyLua and luacheck judge the scripts under src/scry_mame/lua/ (tests/test_lua_scripts.py).
+      - name: lua, lsof, StyLua and luacheck
+        timeout-minutes: 8
         run: |
           for _ in 1 2 3; do
-            sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4 lsof && break
+            sudo apt-get update -qq && sudo apt-get install -y -qq lua5.4 liblua5.4-dev luarocks lsof \
+              && break
             sleep 10
           done
-          command -v lua5.4 lsof || { echo "apt-get could not install lua5.4 and lsof"; exit 1; }
+          command -v lua5.4 luac5.4 luarocks lsof || { echo "apt-get could not install them"; exit 1; }
           sudo ln -sf "$(command -v lua5.4)" /usr/local/bin/lua && lua -v
+          sudo luarocks --lua-version=5.4 install luacheck 1.2.0-1 && luacheck --version
+          curl -sSfL -o /tmp/stylua.zip \
+            https://github.com/JohnnyMorganz/StyLua/releases/download/v2.6.0/stylua-linux-x86_64.zip
+          echo "a485f72bbfa22e4642e77a84b5edc2611a5cab7477b34e2e709dd8f78e919895  /tmp/stylua.zip" \
+            | sha256sum -c -
+          sudo unzip -o -q /tmp/stylua.zip -d /usr/local/bin && stylua --version
       - run: uv sync
         timeout-minutes: 5
       - run: uv run ruff check .

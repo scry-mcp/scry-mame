@@ -36,7 +36,7 @@ from scry_core import bus_writes, file_names, judges
 from scry_core import value_format as vf
 from scry_core.reply_contract import unavailable
 
-from scry_mame import callbacks, files, inputs, read, region, tally, transport
+from scry_mame import callbacks, files, inputs, lua_source, read, region, tally
 from scry_mame import declarations as dec
 from scry_mame import space as mspace
 from scry_mame import state as st
@@ -52,18 +52,7 @@ _HEAD = re.compile(
 _ROW = re.compile(r"^r (\d+) (-?\d+) (-?\d+) (\d+)\.(\d{18}) ([0-9a-f]+) ([0-9a-f]+) "
                   r"([0-9a-f]+) ([0-9a-f]*)$")
 ATTOSECONDS_PER_SECOND = 10**18
-# `vpos()` as Lua cannot call it. It adds half a pixel to the time since line 0, so the tie half a
-# pixel before a line is already that line. Lua binds the periods as doubles, where the tie lands
-# either side by rounding error: the nudge of a billionth of a line is far above that error and far
-# below one cycle.
-BEAM_LINE_LUA = f"""local function beam_line()
-  if screen == nil then return {callbacks.NO_FRAME} end
-  local scan = screen.scan_period
-  local since = screen.frame_period - screen:time_until_pos(0, 0)
-  return math.floor((since + screen.pixel_period / 2) / scan + 1e-9)
-    % math.floor(screen.frame_period / scan + 0.5)
-end
-"""
+BEAM_LINE_LUA = lua_source.render("beam-line", no_frame=callbacks.NO_FRAME)
 
 
 @dataclass(frozen=True)
@@ -75,7 +64,7 @@ class TapSource:
 
     def fields(self) -> dict[str, Any]:
         return ({"kind": self.kind, "addr": st.hex_addr(self.offset)} if self.kind == "space"
-                else {"kind": self.kind, "tag": self.tag, "offset": self.offset})
+                else {"kind": self.kind, "tag": self.tag, "offset": st.hex_addr(self.offset)})
 
 
 def id_for(cpu: str | None, addr: int, width: int, trigger: int,
@@ -136,8 +125,8 @@ def source(addr: int, width: int, cpu: str | None,
 
 def block_captures(cpu: str = "",
                    space: str = "program") -> list[tuple[dec.Owner, dict[str, Any]]]:
-    """The session's captures of a block, on `cpu` (every cpu when empty), whose trigger is in
-    `space` (any when empty). A read trigger's capture holds no block, so it is none of these."""
+    """The session's captures of a block on `cpu` (every cpu when empty) triggered in `space`
+    (any when empty); a read trigger's capture holds no block."""
     return [(owner, rec) for owner, rec in STATE.tallies.items()
             if rec.get("trigger") is not None and rec.get("trigger_type", "w") == "w"
             and (not space or rec.get("space", "program") == space)
@@ -159,83 +148,26 @@ def install_script(capture_id: str, trigger: int, src: TapSource, width: int, he
     """The Lua that installs capture `capture_id`: a tap on the bus word holding `trigger`.
     The tap sits in `trigger_space`; the block is read in the program space."""
     reads = trigger_type == "r"
+    code = lua_source.Code
     reader = ("sp:read_direct_u8(off + i)" if src.kind == "space" else "blk:read_u8(off + i)")
-    capture_id_literal = transport.lua_string(capture_id)
-    lookup = ("" if src.kind == "space" or reads else
-              f"""local blk = mem.{src.kind}s[{transport.lua_string(src.tag)}]
-if blk == nil then error("no {src.kind} named " .. {transport.lua_string(src.tag)}) end
-""")
-    block = ("" if reads else f"""  local b = {{}}
-  for i = 0, width - 1 do b[i + 1] = {reader} end
-""")
-    block_text = '""' if reads else "string.format(fmt, table.unpack(b))"
-    dumper = f"""  local function dump(it, fr)
-    if not it.dirty and it.dumped_frame == fr then return end
-    if it.npending > 0 then
-      local r = {callbacks.OPENED}(it, io.open(it.rows_path, "a"))
-      if r ~= nil then
-        r:write(table.concat(it.pending, "\\n", 1, it.npending), "\\n")
-        r:close()
-        it.pending, it.npending = {{}}, 0
-      end
-    end
-    it.seq = it.seq + 1
-    local f = {callbacks.OPENED}(it, io.open(it.head .. ".tmp", "w"))
-    if f == nil then return end
-    f:write(string.format("{HEADER} %s seq=%d frame=%d total=%d rows=%d ", it.id, it.seq,
-      fr, it.rows + it.overflow_rows, it.rows))
-    f:write(string.format("overflow_rows=%d data_width=%d endianness=%s cpu=%s errors=%d\\n",
-      it.overflow_rows, it.data_width, it.endianness, it.cpu, it.errors))
-    if it.first_error ~= nil then f:write("e ", it.first_error, "\\n") end
-    f:write("end\\n")
-    f:close()
-    replace(it.head .. ".tmp", it.head)
-    it.dirty = false
-    it.dumped_frame = fr
-  end
-  dump_at_stops(T, dump)
-"""
-    return mtap.tap_prelude(REGISTRY) + f"""\
-local id, trig, width, off = {capture_id_literal}, {trigger:#x}, {width}, {src.offset:#x}
-local head, rows = {transport.lua_string(str(head))}, {transport.lua_string(str(rows))}
-{mtap.bound_cpu(cpu)}
-local sp = cpu.spaces["program"]
-local tsp = cpu.spaces[{transport.lua_string(trigger_space)}]
-local curpc = cpu.state["CURPC"]
-local mem = manager.machine.memory
-{lookup}local screen = nil
-for _, scr in pairs(manager.machine.screens) do screen = scr break end
-{BEAM_LINE_LUA}{mtap.REMOVE_OLD_TAP}
-local t = {{id = id, head = head, rows_path = rows, rows = 0, overflow_rows = 0, pending = {{}},
-  npending = 0, errors = 0, seq = 0, dumped_frame = {callbacks.NO_FRAME}, dirty = true,
-  data_width = tsp.data_width, endianness = tsp.endianness, cpu = cpu.tag}}
-if old ~= nil then
-  for _, k in ipairs({{"rows", "overflow_rows", "pending", "npending", "errors", "first_error",
-                       "seq"}}) do t[k] = old[k] end
-end
-if old == nil then os.remove(head) os.remove(head .. ".tmp") os.remove(rows) end
-local nb = tsp.data_width // 8
-local lo = trig - (trig % nb)
-local lane = trig - lo
-local shift = tsp.endianness == "big" and (nb - 1 - lane) * 8 or lane * 8
-local fmt = string.rep("%02x", width)
-t.tap = tsp:install_{"read" if reads else "write"}_tap(lo, lo + nb - 1, "mcp_capture_" .. id,
-    guarded(t, function(offset, data, mask)
-  if ((mask >> shift) & 0xff) == 0 then return end
-  if t.rows >= {ROWS_MAX} then t.overflow_rows = t.overflow_rows + 1 t.dirty = true return end
-  local now = manager.machine.time
-{block}  -- a row is counted once it is kept: a body that raised half-way leaves no hole in the file
-  local n = t.npending + 1
-  t.pending[n] = string.format("r %d %d %d %d.%018d %x %x %x ", t.rows + 1,
-    screen and screen:frame_number() or {callbacks.NO_FRAME}, beam_line(), now.seconds,
-    now.attoseconds, curpc.value, data, mask) .. {block_text}
-  t.npending, t.rows, t.dirty = n, t.rows + 1, true
-end))
-T.items[id] = t
-{mtap.register_dumper_once(dumper)}
-print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s trigger=%x ", id, trig)
-  .. string.format("data_width=%d endianness=%s cpu=%s", tsp.data_width, tsp.endianness,
-                   cpu.tag))"""
+    source = (lua_source.render("capture-space") if src.kind == "space" else
+              lua_source.render("capture-lookup", blocks=code(f"{src.kind}s"), tag=src.tag,
+                                kind=src.kind))
+    prepared = ("" if reads else
+                lua_source.render("capture-reader", width=width, off=code(f"{src.offset:#x}"),
+                                  source=code(source)))
+    block = "" if reads else lua_source.render("capture-block", reader=code(reader))
+    dumper = lua_source.render("capture-dumper", header=HEADER)
+    return mtap.tap_prelude(REGISTRY) + lua_source.render(
+        "capture-install", id=capture_id, trig=code(f"{trigger:#x}"),
+        head=str(head), rows=str(rows), bind_cpu=code(mtap.bound_cpu(cpu)),
+        trigger_space=trigger_space, reader=code(prepared),
+        beam=code(BEAM_LINE_LUA), remove_old=code(mtap.REMOVE_OLD_TAP),
+        no_frame=callbacks.NO_FRAME,
+        install=code("install_read_tap" if reads else "install_write_tap"),
+        rows_max=ROWS_MAX, block=code(block),
+        block_text=code('""' if reads else "string.format(fmt, table.unpack(b))"),
+        dumper=code(mtap.register_dumper_once(dumper)), answer=mtap.ANSWER_PREFIX).rstrip("\n")
 
 
 def parse_capture_header(text: str) -> dict[str, Any] | None:
@@ -308,8 +240,8 @@ def _list_chars(n: int, each: int) -> int:
 
 
 def block_chars_max(fmt: vf.Format, width: int) -> int:
-    """The widest a block of `width` bytes decoded in `fmt` prints as `json.dumps` JSON: a string
-    is six characters a byte (escaped `\\u00XX`), a struct's field names are the caller's."""
+    """The widest a block of `width` bytes in `fmt` prints as JSON: a string is six characters
+    a byte (`\\u00XX`)."""
     if fmt.kind == "struct":
         fields = [len(json.dumps(name)) + 2 + block_chars_max(sub, 0) for name, sub in fmt.fields]
         return 2 + sum(fields) + 2 * (len(fields) - 1)

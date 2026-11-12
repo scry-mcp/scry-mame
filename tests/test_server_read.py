@@ -692,7 +692,8 @@ def test_an_operand_quoted_in_a_comment_is_not_resolved() -> None:
     lines = ["F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h // the copy at [0E849h]",
              "F5BCC: 75 03             bne     0F5BD1h              // see [0C014h] // [0D000h]"]
     out = read.resolve_operands(lines, {"DATA": 0x400}, {}, {})
-    assert [(r["line"], r["operand"]) for r in out] == [(0, "0C014h")], out
+    assert [(r["line"], r["operand"], r["offset"]) for r in out] == [
+        (0, "0C014h", "0x0000c014")], out
 
 
 def test_a_resolved_operand_names_its_symbol_as_the_map_spelled_it() -> None:

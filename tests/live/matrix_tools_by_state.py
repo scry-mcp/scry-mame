@@ -570,6 +570,8 @@ def _by_cpu(tag: str) -> dict[str, Callable[[], dict[str, Any]]]:
         "find": lambda: {"ref": "0x0", "length": 1024, "data_hex": "00", "cpu": tag},
         "history": lambda: {"limit": 4, "cpu": tag},
         "breakpoint_at": lambda: {"ref": "exception_handler" if main else "0x8", "cpu": tag},
+        "screen_wait": lambda: {"palette": "black", "cpu": tag, "seconds": 1.0,
+                                "on_breakpoint": "exception_handler" if main else "0x8"},
         "declaration_list breakpoint": lambda: {"cpu": tag},
         "declaration_clear breakpoint": lambda: {"all": True, "cpu": tag},
         "watch_add": lambda: {"ref": "0x0", "mode": "show", "length": 2, "cpu": tag},
@@ -627,6 +629,8 @@ def _by_cpu_says(tag: str) -> dict[str, Judge]:
         "find": lambda r: isinstance(r.get("hits_total"), int) and names(r),
         "history": lambda r: bool(r.get("lines")) and names(r),
         "breakpoint_at": lambda r: r.get("armed") is True and names(r),
+        # the row is found on this cpu (another cpu's would be `unknown_ref`) and never fires
+        "screen_wait": lambda r: refused(r, "never_fired"),
         "declaration_list breakpoint": lambda r: [(b.get("ref"), b.get("cpu"))
                                       for b in r.get("breakpoints", [])]
         == [("exception_handler" if tag == MAIN else "0x8", tag)],
@@ -689,6 +693,8 @@ BY_CPU_RUNNING: dict[str, Judge] = {
     # read with no machine: the stopped half deleted what it added
     "comment_list": lambda r: _says_running(r) and r.get("comments") == [],
 }
+#: Answered with a refusal by design: the wait's row never fires.
+BY_CPU_REFUSED = ("screen_wait",)
 #: The registerpoint call must name the visible cpu, running or stopped.
 BY_CPU_VISIBLE_ONLY: dict[str, Judge] = {"regpoint_add": RUNNING_SAYS["regpoint_add"]}
 
@@ -696,8 +702,9 @@ BY_CPU_VISIBLE_ONLY: dict[str, Judge] = {"regpoint_add": RUNNING_SAYS["regpoint_
 MOVES_VISIBLE = ("step", "cpu_focus")
 BY_CPU_ORDER = [
     "machine_map", "cpu_info", "symbols_find", "rom_check", "read_memory", "read_block",
-    "registers", "disassemble", "find", "history", "breakpoint_at", "declaration_list breakpoint",
-    "declaration_clear breakpoint", "watch_add", "declaration_list watch",
+    "registers", "disassemble", "find", "history", "breakpoint_at", "screen_wait",
+    "declaration_list breakpoint", "declaration_clear breakpoint", "watch_add",
+    "declaration_list watch",
                 "declaration_clear watch", "regpoint_add", "declaration_list regpoint",
     "declaration_clear regpoint", "comment_write add", "comment_list", "comment_write delete",
                 "write", "set_register",
@@ -705,7 +712,7 @@ BY_CPU_ORDER = [
     # `step` stays last before `focus`: RELEASE_RESETS needs the sub's own stop
     "gfx_sweep", "gfx_film", "perform", "drive", "run_to", "trace", "step", "cpu_focus",
 ]
-BY_CPU_RUNNING_ORDER = [t for t in BY_CPU_ORDER if t not in ("perform", "drive")]
+BY_CPU_RUNNING_ORDER = [t for t in BY_CPU_ORDER if t not in ("perform", "drive", "screen_wait")]
 BY_CPU_SURFACE = "the per-cpu section probes exactly the tools that take `cpu`"
 RELEASE_RESETS = ("a release makes the cpu the machine last stopped on visible again, "
                   "whatever `focus` showed while it was stopped")
@@ -733,7 +740,8 @@ def block_a_by_cpu() -> None:
         probes, says = _by_cpu(tag), _by_cpu_says(tag)
         for tool in BY_CPU_ORDER:
             r = call(tool, **probes[tool]())
-            good = says[tool](r) and (ok(r) or (tool in BY_CPU_VISIBLE_ONLY and tag == SUB))
+            good = says[tool](r) and (ok(r) or tool in BY_CPU_REFUSED
+                                      or (tool in BY_CPU_VISIBLE_ONLY and tag == SUB))
             if tool in MOVES_VISIBLE:
                 call("cpu_focus", cpu="maincpu")
             kept = cpus.visible_cpu(STATE.ses) == MAIN if STATE.ses is not None else False

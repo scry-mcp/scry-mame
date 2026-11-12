@@ -42,6 +42,14 @@ symlink), and the floor counts the whole tree.
 emulator and a display are. The suite needs a `lua` on the `PATH` (the Lua doubles run MAME's Lua
 through it) and, on Linux, `lsof` (the stub owner reads it); the workflow installs both.
 
+The Lua the server sends MAME lives in `src/scry_mame/lua/`, loaded by `lua_source.py`, which fills
+each `__SCRY_<name>__` slot with a Lua literal of its value's type. `tests/test_lua_scripts.py`
+judges it with three tools, and fails when one is missing: StyLua (`stylua --check`, configured
+by `stylua.toml`), `luac` of Lua 5.4, MAME's (`luac5.4`; Homebrew's keg-only `lua@5.4`), and
+luacheck (`.luacheckrc`) over every script as it is rendered and sent. On macOS,
+`brew install stylua luacheck lua@5.4`; the workflow installs them at pinned versions. Windows
+skips that file: the scripts are the same bytes there.
+
 A tool's reply model is its contract. A field every `ok` reply of the tool carries is `Required[...]`
 in the model; one that comes only under a condition is `Annotated[T, When("words")]`, and the
 tool's `Reply:` sentence says those words beside the field; a datum that could not be read is

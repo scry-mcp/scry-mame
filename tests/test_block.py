@@ -13,9 +13,10 @@ from pathlib import Path
 
 import pytest
 from lua_support import _channel  # noqa: E402
+from lua_text import has
 from session_doubles import refused, use_table  # noqa: E402
 
-from scry_mame import block  # noqa: E402
+from scry_mame import lua_source  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
@@ -32,7 +33,7 @@ def test_a_share_is_read_by_its_tag_through_one_step_and_alters_nothing(
     assert out["status"] == "ok", out
     assert out["kind"] == "share" and out["tag"] == ":blitram" and out["size"] == 32
     assert out["bytewidth"] == 2 and out["endianness"] == "big"
-    assert out["offset"] == 4 and out["length"] == 4 and out["hex"] == "00120034"
+    assert out["offset"] == "0x00000004" and out["length"] == 4 and out["hex"] == "00120034"
     assert "addr" not in out and "start" not in out, "no address was asked"
     assert out["evaluated_by"] == "one step" and ses.stepped == 1
     assert out["session"]["altered"] is False and "read_only_claims" not in out["session"]
@@ -40,7 +41,8 @@ def test_a_share_is_read_by_its_tag_through_one_step_and_alters_nothing(
     assert out["lines_ahead"] == 0 and isinstance(out.get("reader_steps", 0), int), out
     assert out.get("resent", 0) == 0, "the console's own mishaps are always looked at"
     assert mstate.STATE.last_stop["cause"] == "read_block: one step", "the stop is recorded"
-    assert out["summary"] == "read_block share :blitram: 4 bytes at offset 0x4 of 0x20: 00120034"
+    assert out["summary"] == ("read_block share :blitram: 4 bytes at offset 0x00000004 of 0x20: "
+                              "00120034")
     # The chunk travels inside `load("...")`, so the script's own quotes arrive escaped.
     sent = ses.stdin.getvalue().decode()
     assert 'block(\\"blitram\\")' in sent and "local addr = nil" in sent
@@ -56,9 +58,10 @@ def test_a_block_is_found_from_an_address_through_the_map_entry(
                        b"start=700000 offset=8 hex=abcd\n") + ses.sentinel(1)}
     out = s.read_block(ref="0x700008", length=2)
     assert out["status"] == "ok", out
-    assert out["addr"] == "0x00700008" and out["start"] == "0x00700000" and out["offset"] == 8
+    assert out["addr"] == "0x00700008" and out["start"] == "0x00700000"
+    assert out["offset"] == "0x00000008"
     assert out["hex"] == "abcd" and out["tag"] == ":blitram"
-    assert out["summary"] == ("read_block 0x700008 in share :blitram: 2 bytes at offset 0x8 "
+    assert out["summary"] == ("read_block 0x700008 in share :blitram: 2 bytes at offset 0x00000008 "
                               "of 0x20: abcd")
     sent = ses.stdin.getvalue().decode()
     assert f"local addr = {0x00700008}" in sent
@@ -142,10 +145,10 @@ def test_the_script_is_one_chunk_with_the_shapes_the_parser_knows() -> None:
     branch added to one side and not the other is silent in every other test."""
     for prefix in ("MAME_MCP_BLOCK ", "MAME_MCP_BLOCK_NONE ", "MAME_MCP_BLOCK_OUTSIDE ",
                    "MAME_MCP_BLOCK_NOENTRY ", "MAME_MCP_BLOCK_NOBLOCK "):
-        assert prefix in block.BLOCK_LUA, prefix
-    filled = block.BLOCK_LUA % {"tag": '"x"', "addr": "nil", "offset": 0, "length": 1,
-                                "space": "manager.machine.debugger.visible_cpu"}
-    assert "%(" not in filled and "%%" not in filled, "a placeholder or a doubled per cent leaked"
-    assert 'ipairs({name, ":" .. name})' in filled
+        assert prefix in lua_source.load("read-block"), prefix
+    filled = lua_source.render("read-block", tag="x", addr=None, offset=0, length=1,
+                               cpu=lua_source.Code("manager.machine.debugger.visible_cpu"))
+    assert "__SCRY_" not in filled, "a slot leaked"
+    assert has(filled, 'ipairs({name, ":" .. name})')
     # A region entry's own offset counts; a share's does not (a share has none).
-    assert "hit.region_offset or 0" in filled
+    assert has(filled, "hit.region_offset or 0")

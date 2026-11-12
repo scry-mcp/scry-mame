@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from lua_text import has, squash
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import refs, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
@@ -69,19 +70,22 @@ def test_the_tap_sits_on_the_triggers_word_keeps_its_lanes_and_reads_the_block_i
     src = capture.TapSource("share", ":blitram", 0x10)
     script = capture.install_script(BLIT_ID, 0x70001E, src, 10, Path("/s/h.txt"),
                                     Path("/s/r.rows"), ":maincpu")
-    assert "install_write_tap(lo, lo + nb - 1," in script
-    assert "local lane = trig - lo" in script
-    assert "if ((mask >> shift) & 0xff) == 0 then return end" in script
-    assert 'local blk = mem.shares[":blitram"]\nif blk' in script, "one lookup, the full tag"
-    assert "blk:read_u8(off + i)" in script
-    assert f"if t.rows >= {capture.ROWS_MAX} then t.overflow_rows" in script
-    assert 'devices[":maincpu"]' in script, "the cpu is bound when the chunk is composed"
+    assert has(script, "install_write_tap(lo, lo + nb - 1,")
+    assert has(script, "local lane = trig - lo")
+    assert has(script, "if ((mask >> shift) & 0xff) == 0 then return end")
+    assert has(script, 'local blk = mem.shares[":blitram"]\nif blk'), "one lookup, the full tag"
+    assert has(script, "blk:read_u8(off + i)")
+    assert has(script, f"if t.rows >= {capture.ROWS_MAX} then t.overflow_rows")
+    assert 'local cpu = manager.machine.devices[":maincpu"]\n' in script, (
+        "the cpu is bound when the chunk is composed")
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
-    assert '"rows", "overflow_rows", "pending", "npending", "errors", "first_error",' in script, (
+    assert has(script,
+               '"rows", "overflow_rows", "pending", "npending", "errors", "first_error",'), (
         "a rerun carries the rows and the errors it had, and never doubles nor zeroes them")
-    assert 'io.open(it.rows_path, "a")' in script, "the rows file only grows"
-    assert "replace(it.head" in script, "the header is whole or absent"
-    assert "MCP_TALLY installed tally_id=%s" in script, "the count watch's reader answers it"
+    assert has(script, 'io.open(it.rows_path, "a")'), "the rows file only grows"
+    assert has(script, "replace(it.head"), "the header is whole or absent"
+    assert has(script, '"%s installed tally_id=%s trigger=%x ", "MCP_TALLY", id,'), (
+        "the count watch's reader answers it")
     assert len(script) < transport.SCRIPT_MAX
     plain = capture.install_script(COUNTER_ID, 0x2031FE, capture.TapSource("space", "", 0x2031FC),
                                    4, Path("/s/h.txt"), Path("/s/r.rows"))
@@ -167,7 +171,7 @@ def test_a_capture_is_sent_pending_on_its_triggers_word_with_the_block_read_from
     assert (out["installed"], out["pending"], out["tally_id"], out["trigger"]) == (
         False, True, COUNTER_ID, "0x2031fe"), "an address trigger is kept in a ref's one spelling"
     assert out["trigger_addr"] == "0x002031fe"
-    assert out["source"] == {"kind": "share", "tag": ":mainram", "offset": 0x31FC}
+    assert out["source"] == {"kind": "share", "tag": ":mainram", "offset": "0x000031fc"}
     assert out["session"]["altered"] is False, "a capture reads and never writes"
     assert "map 0x2031fe::maincpu" in ses.commands, "the trigger's write side is asked"
     assert b"install_write_tap" in _sent() and b"_G.MCP_CAPTURE" in _sent()
@@ -396,12 +400,13 @@ def test_a_capture_installed_over_no_tap_removes_the_files_a_removed_one_left(
     go."""
     head, rows = capture.paths(tmp_path, "c")
     src = capture.TapSource("space", "", 0x100)
-    script = capture.install_script("c", 0x10, src, 2, head, rows)
-    removal = ('if old == nil then os.remove(head) os.remove(head .. ".tmp") os.remove(rows) '
-               "end")
+    script = squash(capture.install_script("c", 0x10, src, 2, head, rows))
+    removal = squash('if old == nil then os.remove(head) os.remove(head .. ".tmp") os.remove(rows) '
+                     "end")
     assert script.count(removal) == 1, script
-    assert script.index("local old = T.items[id]") < script.index(removal), "old is read first"
-    assert script.index(removal) < script.index("T.items[id] = t")
+    assert script.index(squash("local old = T.items[id]")) < script.index(removal), (
+        "old is read first")
+    assert script.index(removal) < script.index(squash("T.items[id] = t"))
 
 
 def test_a_stored_capture_comes_back_at_start_and_one_on_a_lost_trigger_is_unresolved(
@@ -510,7 +515,7 @@ def test_a_block_in_rom_is_read_from_its_region(
     an offset."""
     _capturing(monkeypatch, tmp_path)
     out = s.watch_add(ref="0x400", mode="capture", length=4, trigger="0x2031fe")
-    assert out["source"] == {"kind": "region", "tag": ":maincpu", "offset": 0x400}, out
+    assert out["source"] == {"kind": "region", "tag": ":maincpu", "offset": "0x00000400"}, out
     assert b'mem.regions[\\":maincpu\\"]' in _sent(), "the chunk goes out quoted"
 
 
@@ -598,8 +603,8 @@ def test_a_capture_that_cannot_open_its_rows_file_keeps_the_others_flushing() ->
                                     4, Path("/s/h.txt"), Path("/s/r.rows"))
     # each item's dump is its own call from the shared dumper, so a `return` in it ends that item
     dump = script.split("local function dump(it, fr)")[1].split("dump_at_stops(T, dump)")[0]
-    assert "if r ~= nil then" in dump and "if f == nil then return end" in dump, dump
-    assert "dump_at_stops(T, dump)" in script
+    assert has(dump, "if r ~= nil then") and has(dump, "if f == nil then return end"), dump
+    assert has(script, "dump_at_stops(T, dump)")
 
 
 def test_a_trigger_by_name_is_placed_through_the_table_and_kept_as_typed(
@@ -716,4 +721,4 @@ def test_a_capture_read_from_its_own_space_names_the_address() -> None:
     assert capture.TapSource("space", "", 0x2031FC).fields() == {"kind": "space",
                                                                  "addr": "0x002031fc"}
     assert capture.TapSource("share", ":blitram", 0x10).fields() == {
-        "kind": "share", "tag": ":blitram", "offset": 0x10}
+        "kind": "share", "tag": ":blitram", "offset": "0x00000010"}

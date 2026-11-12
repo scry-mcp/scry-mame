@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from lua_text import has
 from session_doubles import io_board, refused, use_table  # noqa: E402
 from test_tally import _sent, _tallying  # noqa: E402
 from test_watches import _WatchSession  # noqa: E402
@@ -280,8 +281,9 @@ def test_a_capture_triggered_by_a_port_reads_its_block_in_program_space(
         "the trigger as given and where it resolved, as a program capture's reply has", out)
     assert out["ref"] == "0x2031fc" and out["space"] == "io" and out["stored"] is False, out
     script = _script()
-    assert 'local tsp = cpu.spaces["io"]' in script and 'local sp = cpu.spaces["program"]' in script
-    assert "tsp:install_write_tap(" in script, "the tap sits on the port"
+    assert has(script, 'local tsp = cpu.spaces["io"]'), script
+    assert has(script, "local blk = mem.shares["), "the block is the program side's share"
+    assert has(script, "tsp:install_write_tap("), "the tap sits on the port"
     assert any(c.startswith("mapi 0x6") for c in ses.commands)
     (owner, rec), = mstate.STATE.tallies.items()
     assert rec["space"] == "io" and owner[0] == "0x2031fc@io"

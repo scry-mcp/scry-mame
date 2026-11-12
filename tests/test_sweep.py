@@ -346,7 +346,7 @@ def test_a_sweep_from_an_offset_reads_from_there_past_candidates_with_no_room(
     """Eight bytes before the block's end: an 8bpp tile has no room, a 1bpp one exactly one,
     and the 1bpp candidate after the empty ones is still drawn."""
     _ses, out = _swept(monkeypatch, tmp_path, planes=[8, 1], offset=2040)
-    assert out["offset"] == 2040
+    assert out["offset"] == "0x000007f8"
     by_what = {c["what"]: c for c in out["candidates"]}
     assert by_what["1bpp 8x8 rows"]["tiles_available"] == 1
     assert all(c["tiles_available"] == 0 for w, c in by_what.items() if w.startswith("8bpp"))
@@ -418,7 +418,7 @@ def test_a_sweep_of_a_cpu_space_range_reads_from_its_address(monkeypatch: pytest
     _serve(ses, "gfx-gridlee-ref", block="gridlee-space-1000")
     out = s.gfx_sweep(ref="0x1000", count=32, palette="palette", pen_base=944)
     assert out["status"] == "ok", out
-    assert (out["kind"], out["addr"], out["offset"]) == ("space", "0x00001000", 0)
+    assert (out["kind"], out["addr"], out["offset"]) == ("space", "0x00001000", "0x00000000")
     assert out["addr_cpu"], out
     assert f", {0x1000}, {32 * 32})" in ses.stdin.getvalue().decode()
 
@@ -542,7 +542,7 @@ def test_a_choice_on_another_block_is_passed_over_not_the_end(monkeypatch: pytes
         assert s.gfx_draft(choose={"candidate": cid, "chosen_by": "me"})["status"] == "ok"
     report = json.loads(Path(s.gfx_draft()["report"]["path"]).read_text())
     offsets = sorted(e["source"]["offset"] for e in report["formats"]["tiles_8x8x1"])
-    assert offsets == [0x20, 0x100], report["formats"]
+    assert offsets == ["0x00000020", "0x00000100"], report["formats"]
 
 
 def test_a_choice_among_layouts_the_screen_could_not_tell_apart_says_so(

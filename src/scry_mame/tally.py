@@ -4,21 +4,10 @@ stopping for one; asked to (`access`), the reads too, as a bare total apart from
 A change watch stops at the first write; a census needs every value a register takes over a
 pass and from which pcs. `disarm_watches` disarms change watches, so a held pass counts nothing.
 
-`space:install_write_tap` calls its function once per BUS write with offset, data and lane
-mask: a `move.l` arrives as two word events, a `move.b` as a word with the mask naming the
-lane that lands. `cpu.state["CURPC"]` in the callback is the writing instruction's own pc
-(`PC` is the prefetch, two bytes on). `emu.register_periodic` also runs at debugger stops,
-where each tally is written whole to a file in the scratch through a rename. The tap and the
-registry live in the MAME process's `_G`: a new `start` begins clean, `rearm` reinstalls.
-
 Idempotent by id: the console reruns an earlier chunk after its reader dies
 (`console_reruns`), so an install removes the tap held under its id and carries its counts
 into the new one; `declaration_clear(kind="watch")` removes the tap, so the next declaration
 starts from zero. Sending, proving, removing and reading a tap is `tap`.
-
-The callback is the hot path (hundreds of thousands of writes per line): the writer's state
-entry is looked up once at install, the value key is an integer, and a bus-aligned range
-skips the lane test.
 """
 
 from __future__ import annotations
@@ -31,7 +20,7 @@ from typing import Any
 from scry_core import bus_writes, file_names, prose
 from scry_core.reply_contract import Invalid
 
-from scry_mame import callbacks, read, transport
+from scry_mame import callbacks, lua_source, read
 from scry_mame import declarations as dec
 from scry_mame import space as mspace
 from scry_mame import state as st
@@ -75,107 +64,27 @@ def dump_path(scratch: Path, tally_id: str) -> Path:
 
 def install_script(tally_id: str, addr: int, width: int, path: Path,
                    cpu: str | None = None, space: str = "program", access: str = "w") -> str:
-    """The one-chunk Lua that installs the tally over `width` bytes at `addr` on `cpu`.
-
-    The tap covers the bus words the range touches (MAME refuses a tap not bus-aligned: "end
-    address has low bits unset") and the callback keeps only writes that land inside. The
-    value key packs masked data and mask into one integer. With no tap of the range in the
-    registry, a dump at `path` is a removed tap's, so the install deletes it."""
+    """The one-chunk Lua that installs the tally over `width` bytes at `addr` on `cpu`."""
     last = addr + width - 1
-    dumper = f"""  local function dump(it, fr)
-    if not it.dirty and it.dumped_frame == fr then return end
-    it.seq = it.seq + 1
-    local f = {callbacks.OPENED}(it, io.open(it.path .. ".tmp", "w"))
-    if f == nil then return end
-    f:write(string.format("{HEADER} %s seq=%d frame=%d total=%d reads=%d values=%d pcs=%d ",
-      it.id, it.seq, fr, it.total, it.reads, it.nvalues, it.npcs))
-    f:write(string.format("overflow_values=%d overflow_pcs=%d data_width=%d ",
-      it.overflow_values, it.overflow_pcs, it.data_width))
-    f:write(string.format("endianness=%s cpu=%s errors=%d\\n", it.endianness, it.cpu,
-      it.errors))
-    for offset, at in pairs(it.values) do
-      for k, c in pairs(at) do
-        f:write(string.format("v %x %x %x %d\\n", offset, (k >> 32) & 0xffffffff,
-                              k & 0xffffffff, c))
-      end
-    end
-    for pc, c in pairs(it.pcs) do f:write(string.format("p %x %d\\n", pc, c)) end
-    if it.first_error ~= nil then f:write("e ", it.first_error, "\\n") end
-    f:write("end\\n")
-    f:close()
-    replace(it.path .. ".tmp", it.path)
-    it.dirty = false
-    it.dumped_frame = fr
-  end
-  dump_at_stops(T, dump)
-"""
-    return mtap.tap_prelude(REGISTRY) + f"""\
-local id, first, last = {transport.lua_string(tally_id)}, {addr:#x}, {last:#x}
-local path = {transport.lua_string(str(path))}
-{mtap.bound_cpu(cpu)}
-local sp = cpu.spaces[{transport.lua_string(space)}]
-local curpc = cpu.state["CURPC"]
-{mtap.REMOVE_OLD_TAP}
-local t = {{id = id, path = path, total = 0, reads = 0, values = {{}}, nvalues = 0,
-  pcs = {{}}, npcs = 0, overflow_values = 0, overflow_pcs = 0, errors = 0, dirty = true, seq = 0,
-  dumped_frame = {callbacks.NO_FRAME},
-  data_width = sp.data_width, endianness = sp.endianness, cpu = cpu.tag}}
-if old ~= nil then
-  for _, k in ipairs({{"total", "reads", "values", "nvalues", "pcs", "npcs", "overflow_values",
-                       "overflow_pcs", "errors", "first_error", "seq"}}) do t[k] = old[k] end
-end
-if old == nil then os.remove(path) os.remove(path .. ".tmp") end
-local nb = sp.data_width // 8
-local big = sp.endianness == "big"
-local lo, hi = first - (first % nb), last + (nb - 1 - (last % nb))
-local aligned = lo == first and hi == last
-local function lands(offset, mask)
-  for i = 0, nb - 1 do
-    local shift = big and (nb - 1 - i) * 8 or i * 8
-    if ((mask >> shift) & 0xff) ~= 0 and offset + i >= first and offset + i <= last then
-      return true
-    end
-  end
-  return false
-end
-{_taps(access)}T.items[id] = t
-{mtap.register_dumper_once(dumper)}
-print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s first=%x last=%x ", id, first, last)
-  .. string.format("data_width=%d endianness=%s cpu=%s", sp.data_width, sp.endianness, cpu.tag))"""
+    code = lua_source.Code
+    return mtap.tap_prelude(REGISTRY) + lua_source.render(
+        "tally-install", id=tally_id, first=code(f"{addr:#x}"), last=code(f"{last:#x}"),
+        path=str(path), bind_cpu=code(mtap.bound_cpu(cpu)), space=space,
+        remove_old=code(mtap.REMOVE_OLD_TAP), no_frame=callbacks.NO_FRAME,
+        taps=code(_taps(access)),
+        dumper=code(mtap.register_dumper_once(lua_source.render("tally-dumper", header=HEADER))),
+        answer=mtap.ANSWER_PREFIX).rstrip("\n")
 
 
 def _taps(access: str) -> str:
     """The Lua that installs the tap or taps `access` names, each filtered by landing."""
-    writes = f"""sp:install_write_tap(lo, hi, "mcp_tally_" .. id,
-guarded(t, function(offset, data, mask)
-  if not aligned and not lands(offset, mask) then return end
-  t.total = t.total + 1
-  local at = t.values[offset]
-  if at == nil then at = {{}} t.values[offset] = at end
-  local k = ((data & mask) << 32) | mask
-  local c = at[k]
-  if c ~= nil then at[k] = c + 1
-  elseif t.nvalues < {BUCKETS_MAX} then at[k] = 1 t.nvalues = t.nvalues + 1
-  else t.overflow_values = t.overflow_values + 1 end
-  local pc = curpc.value
-  local p = t.pcs[pc]
-  if p ~= nil then t.pcs[pc] = p + 1
-  elseif t.npcs < {BUCKETS_MAX} then t.pcs[pc] = 1 t.npcs = t.npcs + 1
-  else t.overflow_pcs = t.overflow_pcs + 1 end
-  t.dirty = true
-end))"""
-    reads = """sp:install_read_tap(lo, hi, "mcp_tally_r_" .. id,
-guarded(t, function(offset, data, mask)
-  if not aligned and not lands(offset, mask) then return end
-  t.reads = t.reads + 1
-  t.dirty = true
-end))"""
+    writes = lua_source.render("tally-write-tap", buckets_max=BUCKETS_MAX)
+    reads = lua_source.render("tally-read-tap")
     if access == "r":
-        return f"t.tap = {reads}\n"
+        return reads + "t.tap = rtap\n"
     if access == "rw":
-        return (f"local wtap = {writes}\nlocal rtap = {reads}\n"
-                "t.tap = {remove = function() wtap:remove() rtap:remove() end}\n")
-    return f"t.tap = {writes}\n"
+        return writes + reads + "t.tap = {remove = function() wtap:remove() rtap:remove() end}\n"
+    return writes + "t.tap = wtap\n"
 
 
 def send_install(scratch: Path, owner: dec.Owner, addr: int, width: int,

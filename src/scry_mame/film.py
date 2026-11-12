@@ -29,7 +29,7 @@ not given to another frame, and a cell names the span of its listed hits' counte
 joins it to a capture.
 
 EVERY KEPT FRAME PROVES ITSELF. The indices come from the indexed screen's own chunk
-(`screen.CAPTURE_LUA`, verbatim), with its checks. Besides, at frame N's notifier the film
+(`lua/capture.lua`, verbatim), with its checks. Besides, at frame N's notifier the film
 keeps `video:snapshot_pixels()`, MAME's rendering of the frame the display showed, and the kept
 indices mapped through the pens saved then must equal it pixel for pixel, or the frame is
 refused with its reason. A debugger redraw between the two notifiers, a driver that says it
@@ -64,7 +64,7 @@ from scry_core import raster as core_raster
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
-from scry_mame import callbacks, chunk, cpus, inputs, iotaps, read, running, transport
+from scry_mame import callbacks, chunk, cpus, inputs, iotaps, lua_source, read, running, transport
 from scry_mame import declarations as dec
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
@@ -248,17 +248,6 @@ def held() -> tuple[dec.Owner, dict[str, Any]] | None:
     return mtap.held(OWNER)
 
 
-ARM_LUA = """local tag = %(call)s
-if tag then
-  local scr = manager.machine.screens[tag]
-  local v = manager.machine.video
-  local f = assert(io.open(%(snap)s, "wb")) f:write(v:snapshot_pixels()) f:close()
-  local w, h = v:snapshot_size()
-  local sp = %(cpu)s.spaces[%(space)s]
-  print(string.format("MCP_FILM_ARM snap_w=%%d snap_h=%%d data_width=%%d endianness=%%s "
-    .. "refresh=%%.6f", w, h, sp.data_width, sp.endianness, scr.refresh))
-end
-"""
 
 
 def arm(ses: gs.Session, scratch: Path, trigger: str, length: int, value: int | None,
@@ -285,10 +274,10 @@ def arm(ses: gs.Session, scratch: Path, trigger: str, length: int, value: int | 
         raise st.Invalid(code, f"the trigger: {why}")
     path = chunk.next_file(scratch, "screen")
     snap_path = path.with_name(path.stem + "-snap.bin")
-    script = (mscreen.capture_lua() + ARM_LUA % {
-        "call": mscreen.capture_call(path, True), "snap": transport.lua_string(str(snap_path)),
-        "cpu": f"manager.machine.devices[{transport.lua_string(on)}]" if on
-        else "manager.machine.debugger.visible_cpu", "space": transport.lua_string(space)})
+    script = mscreen.capture_lua() + lua_source.render(
+        "film-arm", call=lua_source.Code(mscreen.capture_call(path, True)), snap=str(snap_path),
+        cpu=lua_source.Code(f"manager.machine.devices[{transport.lua_string(on)}]" if on
+                            else "manager.machine.debugger.visible_cpu"), space=space)
     try:
         text, common = chunk.run(ses, scratch, script, seconds, progress, "film")
         cap = mscreen.captured(text, path, common)
@@ -347,13 +336,7 @@ def arm(ses: gs.Session, scratch: Path, trigger: str, length: int, value: int | 
 
 # ------------------------------------------------------------------ the tap and the notifier
 
-_DUMP_OWN_FRAME = """\
-  -- a film's frame is its screen's, which the item reads itself
-  dump_at_stops(T, function(it)
-    local fr = it.frame()
-    if it.dirty or it.dumped_frame ~= fr then it.dump(fr) end
-  end)
-"""
+_DUMP_OWN_FRAME = lua_source.render("film-dump-own-frame")
 
 
 def install_script(film: Film, head: Path) -> str:
@@ -364,177 +347,20 @@ def install_script(film: Film, head: Path) -> str:
     counts across, as every tap here does, because the console reruns a chunk now and then; a
     film with another header is another film, and starts from nothing even if the removal of the
     one before never ran."""
-    want = "nil" if film.value is None else f"{film.value:#x}"
-    wpc = "nil" if film.pc_addr is None else f"{film.pc_addr:#x}"
-    head_literal = transport.lua_string(str(head))
-    no_frame = callbacks.NO_FRAME
-    # THE FILM SPELLS ITS CPU ITSELF rather than through `mtap.bound_cpu`: its chunk has no use
-    # for the `dbg` local, and the text it sends is held as it is.
+    code = lua_source.Code
     cpu = (f"manager.machine.devices[{transport.lua_string(film.cpu)}]" if film.cpu else
            'manager.machine.debugger.visible_cpu or manager.machine.devices[":maincpu"]')
-    return mtap.tap_prelude(REGISTRY) + f"""\
-local id = {transport.lua_string(FILM_ID)}
-local cpu = {cpu}
-local sp = cpu.spaces[{transport.lua_string(film.space)}]
-local curpc = cpu.state["CURPC"]
-local v = manager.machine.video
-local scr = manager.machine.screens[{transport.lua_string(film.screen)}]
-local dir = {transport.lua_string(str(film.dir))}
-local trig, len, want, wpc = {film.trigger_addr:#x}, {film.length}, {want}, {wpc}
-local frames_max, keep = {film.frames}, {film.keep}
-local changed = {"true" if film.changed else "false"}
-local checkable = {"true" if film.checked else "false"}
-{mtap.REMOVE_OLD_TAP}
-local same = old ~= nil and old.head == {head_literal}
-local t = same and old or {{id = id, head = {head_literal}, seq = 0, dirty = true,
-  dumped_frame = {no_frame}, judged = 0, met = 0, taken = 0, dropped = 0, dropped_first = -1,
-  dropped_last = -1, lost_reset = 0, lost_load = 0, lost_skipped = 0, nhits = 0, hits = {{}},
-  pend = nil, fresh = true, finished = false, first = -1, last = -1, judge_ticks = 0,
-  picture_ticks = 0, prev = nil, baseline_frame = -1, baseline_value = -1, errors = 0}}
-local said = ""
-local print = function(s) said = s end
-{mscreen.capture_lua()}
-local nb = sp.data_width // 8
-local big = sp.endianness == "big"
-local lo = trig - (trig % nb)
-local shifts = {{}}
-for i = 0, len - 1 do
-  local lane = trig + i - lo
-  shifts[i + 1] = big and (nb - 1 - lane) * 8 or lane * 8
-end
-local function frame() return scr:frame_number() end
-local function put(path, data)
-  local f = io.open(path, "wb")
-  if f == nil then return false end
-  f:write(data) f:close()
-  return true
-end
-local function publish(path, text)
-  if put(path .. ".tmp", text) then replace(path .. ".tmp", path) end
-end
-t.frame = frame
-t.dump = function(fr)
-  t.seq = t.seq + 1
-  publish(t.head, string.format("{HEADER} %s seq=%d frame=%d judged=%d met=%d taken=%d ", t.id,
-    t.seq, fr, t.judged, t.met, t.taken)
-    .. string.format("dropped=%d dropped_first=%d dropped_last=%d lost_reset=%d lost_load=%d ",
-    t.dropped, t.dropped_first, t.dropped_last, t.lost_reset, t.lost_load)
-    .. string.format("lost_skipped=%d pending=%d finished=%d first=%d last=%d ", t.lost_skipped,
-    t.pend and 1 or 0, t.finished and 1 or 0, t.first, t.last)
-    .. string.format("judge_ticks=%d picture_ticks=%d tps=%d ", t.judge_ticks,
-    t.picture_ticks, emu.osd_ticks_per_second())
-    .. string.format("baseline_frame=%d baseline_value=%d errors=%d\\n", t.baseline_frame,
-    t.baseline_value, t.errors)
-    .. (t.first_error ~= nil and "e " .. t.first_error .. "\\n" or "") .. "end\\n")
-  t.dirty, t.dumped_frame = false, fr
-end
-local tapped = true
-local tap = sp:install_write_tap(lo, lo + nb - 1, "mcp_film_" .. id,
-    guarded(t, function(_, data, mask)
-  if t.finished then return end
-  local val = 0
-  for i = 1, len do
-    local s = shifts[i]
-    if ((mask >> s) & 0xff) == 0 then return end
-    local b = (data >> s) & 0xff
-    if big then val = (val << 8) | b else val = val | (b << (8 * (i - 1))) end
-  end
-  if changed then
-    -- every write moves the previous value, whoever wrote it; the film's first is the baseline
-    local before = t.prev
-    t.prev = val
-    if before == nil then t.baseline_frame, t.baseline_value = frame(), val return end
-    if val == before then return end
-  end
-  if want ~= nil and val ~= want then return end
-  local pc = curpc.value
-  if wpc ~= nil and pc ~= wpc then return end
-  t.nhits = t.nhits + 1
-  if t.nhits <= {HITS_KEPT} then t.hits[t.nhits] = string.format("h %x %x %d", pc, val, frame()) end
-end))
-local function untap() if tapped then tapped = false tap:remove() end end
-{mscreen.FRAME_PENS_LUA}
-local function develop(fr)
-  local p = t.pend
-  t.pend = nil
-  local k = t.taken + 1
-  t.taken = k
-  local base = dir .. "/frame-" .. k
-  said = ""
-  local ok, err = pcall(mcp_capture, base .. ".bin", true)
-  if not ok then said = "MCP_FILM_ERROR " .. tostring(err) end
-  put(base .. ".pens", p.pens)
-  put(base .. ".snap", p.snap)
-  publish(base .. ".txt", string.format("MCP_FILM_FRAME k=%d frame=%d hits=%d read_at=%d "
-    .. "skipped=%d\\n", k, p.frame, p.nhits, fr, p.skipped)
-    .. table.concat(p.hits, "\\n") .. (#p.hits > 0 and "\\n" or "")
-    .. "said " .. said:gsub("\\n", " ") .. "\\nend\\n")
-end
-local function lost(field)
-  if t.pend ~= nil then t.pend = nil t[field] = t[field] + 1 end
-  t.fresh, t.nhits, t.hits, t.dirty = true, 0, {{}}, true
-end
-local subs = {{}}
-subs[#subs + 1] = emu.add_machine_frame_notifier(guarded(t, function()
-  if t.finished then return end
-  local t0 = emu.osd_ticks()
-  local fr = frame()
-  local drew = not v.skip_this_frame
-  if t.pend ~= nil then
-    if not drew then
-      t.pend.skipped = t.pend.skipped + 1
-    else
-      develop(fr)
-      local t1 = emu.osd_ticks()
-      t.picture_ticks = t.picture_ticks + (t1 - t0)
-      t0 = t1
-      t.dump(fr)
-    end
-  end
-  if t.fresh then
-    t.fresh, t.nhits, t.hits = false, 0, {{}}
-  elseif t.judged < frames_max then
-    t.judged = t.judged + 1
-    if t.first < 0 then t.first = fr end
-    t.last, t.dirty = fr, true
-    if t.nhits > 0 then
-      t.met = t.met + 1
-      if not drew then
-        t.lost_skipped = t.lost_skipped + 1
-      elseif t.taken < keep then
-        local ok, snap = true, ""
-        if checkable then ok, snap = pcall(function() return v:snapshot_pixels() end) end
-        t.pend = {{frame = fr, nhits = t.nhits, hits = t.hits, pens = pens(),
-                   snap = ok and snap or "", skipped = 0}}
-      else
-        t.dropped = t.dropped + 1
-        if t.dropped_first < 0 then t.dropped_first = fr end
-        t.dropped_last = fr
-      end
-      t.nhits, t.hits = 0, {{}}
-    end
-  end
-  if t.judged >= frames_max and t.pend == nil then
-    t.finished = true
-    untap()
-    t.dump(fr)
-  end
-  t.judge_ticks = t.judge_ticks + (emu.osd_ticks() - t0)
-end))
-if emu.add_machine_reset_notifier ~= nil then
-  subs[#subs + 1] = emu.add_machine_reset_notifier(guarded(t, function() lost("lost_reset") end))
-end
-if emu.add_machine_post_load_notifier ~= nil then
-  subs[#subs + 1] = emu.add_machine_post_load_notifier(guarded(t, function() lost("lost_load") end))
-end
-t.tap = {{remove = function()
-  untap()
-  for _, s in ipairs(subs) do s:unsubscribe() end
-end}}
-T.items[id] = t
-{mtap.register_dumper_once(_DUMP_OWN_FRAME)}
-_G.print(string.format("{mtap.ANSWER_PREFIX} installed tally_id=%s trigger=%x ", id, trig)
-  .. string.format("data_width=%d endianness=%s cpu=%s", sp.data_width, sp.endianness, cpu.tag))"""
+    return mtap.tap_prelude(REGISTRY) + lua_source.render(
+        "film-install", id=FILM_ID, cpu=code(cpu), space=film.space, screen=film.screen,
+        dir=str(film.dir), trig=code(f"{film.trigger_addr:#x}"), len=film.length,
+        want=code("nil" if film.value is None else f"{film.value:#x}"),
+        wpc=code("nil" if film.pc_addr is None else f"{film.pc_addr:#x}"),
+        frames_max=film.frames, keep=film.keep, changed=film.changed, checkable=film.checked,
+        remove_old=code(mtap.REMOVE_OLD_TAP), head=str(head), no_frame=callbacks.NO_FRAME,
+        capture=code(mscreen.capture_lua()), header=HEADER, hits_kept=HITS_KEPT,
+        pens=code(mscreen.FRAME_PENS_LUA),
+        dumper=code(mtap.register_dumper_once(_DUMP_OWN_FRAME)),
+        answer=mtap.ANSWER_PREFIX).rstrip("\n")
 
 
 # ------------------------------------------------------------------ what the film wrote

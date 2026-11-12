@@ -17,6 +17,7 @@ from typing import Any
 
 import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
+from lua_text import has
 from session_doubles import documented, published, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
 from test_gfx import _serve  # noqa: E402
@@ -98,27 +99,29 @@ def test_the_install_runs_the_devices_state_machine_on_both_ports() -> None:
     r = _ramdac()
     script = rlua.install_script(LOG_ID, r, Path("/s/h.txt"), Path("/s/r.rows"), ":maincpu")
     assert f'local id = "{LOG_ID}"\nlocal ip, dp, base = 0x720001, 0x720003, 0\n' in script
-    assert "local comp = {1, 2, 3}" in script and "local auto, pmask = true, 0xff" in script
-    assert 'install_write_tap(ilo, ilo + nb - 1, "mcp_ramdac_i_"' in script
-    assert 'install_write_tap(dlo, dlo + nb - 1, "mcp_ramdac_d_"' in script
-    assert "if ((mask >> dshift) & 0xff) == 0 then return end" in script
-    assert "if slot == 3 then" in script
-    assert "if auto then t.idx = (t.idx + 1) & pmask end" in script
-    assert "t.idx, t.slot, t.sync, t.dirty = v & pmask, 0, true, true" in script, (
+    assert has(script, "local comp = {1, 2, 3}") and has(script, "local auto, pmask = true, 0xff")
+    assert has(script, 'install_write_tap(ilo, ilo + nb - 1, "mcp_ramdac_i_"')
+    assert has(script, 'install_write_tap(dlo, dlo + nb - 1, "mcp_ramdac_d_"')
+    assert has(script, "if ((mask >> dshift) & 0xff) == 0 then return end")
+    assert has(script, "if slot == 3 then")
+    assert has(script, "if auto then t.idx = (t.idx + 1) & pmask end")
+    assert has(script, "t.idx, t.slot, t.sync, t.dirty = v & pmask, 0, true, true"), (
         "an index write resets the component counter, as `index_w` does")
-    assert 'add_machine_reset_notifier(guarded(t, function() desync("reset") end))' in script
-    assert 'add_machine_post_load_notifier(guarded(t, function() desync("load") end))' in script
-    assert "T.ps, T.pa = now.seconds, now.attoseconds" in script, "the park is stamped"
-    assert f"if t.rows >= {mr.ROWS_MAX} then t.overflow_rows" in script
-    assert 'devices[":maincpu"]' in script, "the cpu is bound when the chunk is composed"
+    assert has(script, 'add_machine_reset_notifier(guarded(t, function() desync("reset") end))')
+    assert has(script, 'add_machine_post_load_notifier(guarded(t, function() desync("load") end))')
+    assert has(script, "T.ps, T.pa = now.seconds, now.attoseconds"), "the park is stamped"
+    assert has(script, f"if t.rows >= {mr.ROWS_MAX} then t.overflow_rows")
+    assert 'local cpu = manager.machine.devices[":maincpu"]\n' in script, (
+        "the cpu is bound when the chunk is composed")
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
-    assert "MCP_TALLY installed tally_id=%s" in script, "the count watch's reader answers it"
+    assert has(script, '"%s installed tally_id=%s index=%s data=%x ", "MCP_TALLY", id,'), (
+        "the count watch's reader answers it")
     assert len(script) < transport.SCRIPT_MAX
     bgr = mm.PalettePort("x", "palette", "", 1, 3, ("b", "g", "r"), 6, False, 256, "declared", "s")
     other = rlua.install_script(LOG_ID, bgr, Path("/s/h.txt"), Path("/s/r.rows"), None)
-    assert "local comp = {3, 2, 1}" in other and "local auto, pmask = false, 0xff" in other
-    assert ", 256\n" in other and 'cpu.spaces["program"]' in other
-    assert "dbg.visible_cpu" in other
+    assert has(other, "local comp = {3, 2, 1}") and has(other, "local auto, pmask = false, 0xff")
+    assert "local ip, dp, base = 0x1, 0x3, 256\n" in other and has(other, 'cpu.spaces["program"]')
+    assert has(other, "debugger.visible_cpu") and has(other, "local dbg = manager.machine.debugger")
 
 
 def test_a_captured_dump_parses_whole_and_a_cut_or_undecided_one_reads_as_none() -> None:
@@ -819,7 +822,7 @@ def test_every_callback_a_palette_log_installs_runs_under_the_guard() -> None:
                     (_packed("v30"), 2)):
         script = rlua.install_script(LOG_ID, r, Path("/s/h.txt"), Path("/s/r.rows"), ":maincpu")
         assert_every_callback_guarded(script, taps, 2)
-        assert "for _, it in pairs(T.items) do dump_guarded(it, T.dump, fr) end" in script
+        assert has(script, "for _, it in pairs(T.items) do dump_guarded(it, T.dump, fr) end")
 
 
 def test_a_logged_row_is_counted_only_once_it_is_kept() -> None:

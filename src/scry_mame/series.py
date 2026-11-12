@@ -33,7 +33,7 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.prose import counted
 
-from scry_mame import advance, chunk, inputs, read, transport
+from scry_mame import advance, chunk, inputs, lua_source, read, transport
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
 from scry_mame import screen as mscreen
@@ -72,64 +72,8 @@ def check_series_capture(at_frames: list[int] | None = None, first: int | None =
         inputs.fresh_folder("dest", dest)
 
 
-ARM_LUA = """MCP_SERIES = MCP_SERIES or {}
-if MCP_SERIES.sub ~= nil then MCP_SERIES.sub:unsubscribe() MCP_SERIES.sub = nil end
-MCP_SERIES = nil
-local dir = %(dir)s
-local wanted, last = {}, %(last)d
-%(wanted)s
-local v = manager.machine.video
-local scr = nil
-for _, s in pairs(manager.machine.screens) do scr = s break end
-if scr == nil then print("MCP_SERIES_NO_SCREEN") return end
-local t = {pend = nil, kept = 0, lost = {}, done = false, errors = 0, first_error = ""}
-local said = ""
-local print = function(s) said = s end
-%(capture)s
-local function put(path, data)
-  local f = assert(io.open(path, "wb"))
-  f:write(data) f:close()
-end
-%(pens)s
-t.sub = emu.add_machine_frame_notifier(function()
-  if t.done then return end
-  local ok, err = pcall(function()
-    local fr = scr:frame_number()
-    local drew = not v.skip_this_frame
-    if t.pend ~= nil then
-      if drew then
-        said = ""
-        local base = dir .. "/raw-" .. t.pend.frame
-        local got, why = pcall(mcp_capture, base .. ".bin", true)
-        if not got then said = "MCP_SERIES_ERROR " .. tostring(why) end
-        put(base .. ".pens", t.pend.pens)
-        put(base .. ".txt", string.format("frame=%%d read_at=%%d skipped=%%d\\n", t.pend.frame,
-          fr, t.pend.skipped) .. said)
-        t.kept, t.pend = t.kept + 1, nil
-      else
-        t.pend.skipped = t.pend.skipped + 1
-      end
-    end
-    if wanted[fr] then
-      if drew then t.pend = {frame = fr, pens = pens(), skipped = 0}
-      else t.lost[#t.lost + 1] = tostring(fr) end
-    end
-    if fr >= last and t.pend == nil then t.done = true end
-  end)
-  if not ok then
-    t.errors = t.errors + 1
-    if t.first_error == "" then t.first_error = tostring(err) end
-  end
-end)
-MCP_SERIES = t
-_G.print(string.format("MCP_SERIES_ARMED frame=%%d w=%%d h=%%d", scr:frame_number(), scr.width,
-  scr.height))"""
 
-FINISH_LUA = """local t = MCP_SERIES or {}
-if t.sub ~= nil then t.sub:unsubscribe() t.sub = nil end
-MCP_SERIES = nil
-print(string.format("MCP_SERIES_DONE kept=%d lost=%s errors=%d first_error=%s", t.kept or 0,
-  table.concat(t.lost or {}, ","), t.errors or 0, (t.first_error or ""):gsub("\\n", " ")))"""
+FINISH_LUA = lua_source.render("series-finish")
 
 
 def wanted_lua(at_frames: list[int] | None, first: int | None, last: int | None,
@@ -143,11 +87,11 @@ def wanted_lua(at_frames: list[int] | None, first: int | None, last: int | None,
 
 def arm_script(folder: Path, at_frames: list[int] | None, first: int | None, last: int | None,
                step: int, wanted: list[int]) -> str:
-    """The arming chunk, refused before it is sent when the frame list would not fit in one
-    console line, which only a long `at_frames` list can do."""
-    script = ARM_LUA % {"dir": transport.lua_string(str(folder)), "last": wanted[-1],
-                        "wanted": wanted_lua(at_frames, first, last, step),
-                        "capture": mscreen.capture_lua(), "pens": mscreen.FRAME_PENS_LUA}
+    """The arming chunk; a frame list too long for a console line is refused."""
+    script = lua_source.render("series-arm", dir=str(folder), last=wanted[-1],
+                               wanted=lua_source.Code(wanted_lua(at_frames, first, last, step)),
+                               capture=lua_source.Code(mscreen.capture_lua()),
+                               pens=lua_source.Code(mscreen.FRAME_PENS_LUA))
     if len(script) > CONSOLE_CHARS:
         raise st.Invalid("bad_argument", f"a list of {len(wanted)} frames does not fit in one "
                          f"console line ({len(script)} of {CONSOLE_CHARS} characters): name an "

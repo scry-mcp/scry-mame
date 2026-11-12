@@ -1022,7 +1022,7 @@ def c12_symbols() -> None:
     r = call("memdump", ref="irq_vblank", length=8, dest=dest)
     cell(t[3], ok(r) and Path(dest).read_bytes().hex() == hx.get("hex"), said(r))
     r = call("read_block", ref="irq_vblank", length=4)
-    cell(t[4], ok(r) and r.get("tag") == ":maincpu" and r.get("offset") == 0x400, said(r))
+    cell(t[4], ok(r) and r.get("tag") == ":maincpu" and r.get("offset") == "0x00000400", said(r))
     r = call("write", ref="main_ram", data_hex="00")
     cell(t[5], ok(r) and r.get("addr") == "0x00200000", said(r))
     r = call("symbols_find", linear="0x40e")
@@ -1190,7 +1190,8 @@ def c14_region_write() -> None:
         before, beside, end_before = word(addr), word(addr, other), word(REGION_END)
         r = call("write", ref=ref, data_hex=pattern, cpu=tag, region=True)
         cell(t[0], ok(r) and r.get("verified") is True and r.get("readback") == pattern
-             and (r.get("region"), r.get("region_offset"), r.get("cpu")) == (tag, addr, tag)
+             and (r.get("region"), r.get("region_offset"), r.get("cpu"))
+             == (tag, f"0x{addr:08x}", tag)
              and r["session"]["altered"] is True, said(r))
         cell(t[1], word(addr) == pattern and word(addr, other) == beside,
              f"{tag} {word(addr)}, {other} {word(addr, other)} (was {beside})")

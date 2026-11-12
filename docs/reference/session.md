@@ -391,15 +391,10 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "window: display 0, on screen, covered",
-  "status": "ok",
-  "window": {
-    "display": 0,
-    "bounds": {"x": 352, "y": 40, "width": 1344, "height": 1040},
-    "onscreen": true,
-    "front": false,
-    "fullscreen": false
-  }
+  "summary": "window: INVALID (no_session), no machine running; call `start` first",
+  "status": "INVALID",
+  "code": "no_session",
+  "message": "no machine running; call `start` first"
 }
 ```
 <!-- scry-reference:end window -->
@@ -595,11 +590,11 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.195 ms per query",
+  "summary": "rom_check :maincpu: OK, 1.492 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001195,
+  "query_s": 0.001492,
   "cpu": ":maincpu"
 }
 ```

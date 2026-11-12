@@ -48,12 +48,13 @@ class SourceKey(NamedTuple):
     @classmethod
     def of(cls, src: dict[str, Any]) -> SourceKey:
         return cls(kind=src.get("kind", ""), tag=src.get("tag", ""),
-                   offset=int(src.get("offset", 0)), addr=src.get("addr", ""),
+                   offset=int(str(src.get("offset", 0)), 0), addr=src.get("addr", ""),
                    addr_cpu=src.get("addr_cpu", ""))
 
     def reply(self) -> dict[str, Any]:
         """The key as a reply shows it, address and cpu only where set."""
-        return {k: v for k, v in self._asdict().items() if k in self._fields[:3] or v}
+        shown = {**self._asdict(), "offset": f"0x{self.offset:08x}"}
+        return {k: v for k, v in shown.items() if k in self._fields[:3] or v}
 
 
 def source_of(fields: dict[str, Any]) -> dict[str, Any]:

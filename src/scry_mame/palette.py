@@ -23,7 +23,7 @@ from scry_core import pens, png, prose
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
 
-from scry_mame import chunk, inputs, running, transport
+from scry_mame import chunk, inputs, lua_source, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import lua as mlua
 from scry_mame import state as st
@@ -32,42 +32,6 @@ COUNT_MAX = 256
 ROW_PENS = 16
 CELL = 8
 
-PALETTE_LUA = """local pals = manager.machine.palettes
-local names = {}
-for tag in pairs(pals) do names[#names + 1] = tag end
-table.sort(names)
-local want = %(tag)s
-local tag = nil
-if want ~= "" then
-  for _, cand in ipairs({want, ":" .. want}) do if pals[cand] then tag = cand break end end
-  if tag == nil then
-    print("MAME_MCP_PAL_NONE name=" .. want .. " palettes=" .. table.concat(names, ","))
-    return
-  end
-elseif #names ~= 1 then
-  print("MAME_MCP_PAL_NONE name=- palettes=" .. table.concat(names, ","))
-  return
-else
-  tag = names[1]
-end
-local p = pals[tag]
-local n = p.entries
-local first, count = %(first)d, %(count)d
-if first >= n or first + count > n then
-  print(string.format("MAME_MCP_PAL_PAST tag=%%s entries=%%d", tag, n))
-  return
-end
-if count == 0 then count = math.min(n - first, %(count_max)d) end
-local pens, ind = {}, {}
-for i = first, first + count - 1 do
-  pens[#pens + 1] = string.format("%%08x", p:pen_color(i))
-  if p.indirect_entries > 0 then ind[#ind + 1] = tostring(p:pen_indirect(i)) end
-end
-print(string.format("MAME_MCP_PAL tag=%%s entries=%%d indirect=%%d shadows=%%s highlights=%%s "
-                    .. "first=%%d pens=%%s ind=%%s", tag, n, p.indirect_entries,
-                    tostring(p.shadows_enabled), tostring(p.highlights_enabled), first,
-                    table.concat(pens, ","), table.concat(ind, ",")))
-"""
 _PAL = re.compile(r"MAME_MCP_PAL tag=(\S+) entries=(\d+) indirect=(\d+) shadows=(\w+) "
                   r"highlights=(\w+) first=(\d+) pens=([0-9a-f,]*) ind=([0-9,]*)")
 _NONE = re.compile(r"MAME_MCP_PAL_NONE name=(\S+) palettes=(\S*)")
@@ -129,8 +93,7 @@ def palette(ses: gs.Session, scratch: Path, name: str, first: int, count: int, s
             progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `palette` tool: one Lua evaluation, altering nothing."""
     dest_path = check_palette(name, first, count, scale, dest, seconds)
-    script = PALETTE_LUA % {"tag": transport.lua_string(name), "first": first, "count": count,
-                            "count_max": COUNT_MAX}
+    script = lua_source.render("palette", tag=name, first=first, count=count, count_max=COUNT_MAX)
     text, common = chunk.run(ses, scratch, script, seconds, progress, "palette")
     if (m := _NONE.search(text)) is not None:
         have = [t for t in m.group(2).split(",") if t]
@@ -211,32 +174,7 @@ def swatch(first: int, argb: list[int], entries: int) -> png.Raster:
 # `gfx_view` draws a tile sheet through `2^planes` pens of a device, read in the same chunk as the
 # block it decodes: a function for that chunk to call, and the reading of what it printed.
 
-PENS_LUA = """local function mcp_pens(name, first, n)
-  local pals = manager.machine.palettes
-  local t = {}
-  for k in pairs(pals) do t[#t + 1] = k end
-  table.sort(t)
-  local p = nil
-  if name == "" then
-    if #t == 1 then p = pals[t[1]] end
-  else
-    p = pals[name] or pals[":" .. name]
-  end
-  if p == nil then
-    local shown = name == "" and "-" or name
-    print("MAME_MCP_GFX_PENS_NONE name=" .. shown .. " palettes=" .. table.concat(t, ","))
-    return
-  end
-  if first + n > p.entries then
-    print(string.format("MAME_MCP_GFX_PENS_SHORT tag=%s entries=%d", p.device.tag, p.entries))
-    return
-  end
-  local out = {}
-  for i = first, first + n - 1 do out[#out + 1] = string.format("%08x", p:pen_color(i)) end
-  print(string.format("MAME_MCP_GFX_PENS tag=%s entries=%d pens=%s", p.device.tag, p.entries,
-                      table.concat(out, ",")))
-end
-"""
+PENS_LUA = lua_source.render("pens")
 _PENS = re.compile(r"MAME_MCP_GFX_PENS tag=(\S+) entries=(\d+) pens=([0-9a-f,]*)")
 _PENS_NONE = re.compile(r"MAME_MCP_GFX_PENS_NONE name=(\S+) palettes=(\S*)")
 _PENS_SHORT = re.compile(r"MAME_MCP_GFX_PENS_SHORT tag=(\S+) entries=(\d+)")

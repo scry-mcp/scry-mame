@@ -44,7 +44,7 @@ from scry_core.pens import INDEX_MODES, MODES, PENS_MAX, POINT_RINGS
 from scry_core.raster import signature as raster_signature
 from scry_core.reply_contract import or_unavailable
 
-from scry_mame import chunk, inputs, running, transport
+from scry_mame import chunk, inputs, lua_source, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import lua as mlua
 from scry_mame import palette as mpalette
@@ -57,67 +57,6 @@ ENCODABLE_PENS = 1 << 24
 
 # The capture, as a function the graphics chunks share: it prints its own refusal lines and
 # answers nil, or the screen's tag, size and frame after writing the file at `path`.
-CAPTURE_LUA = """local function mcp_capture(path, want_indices)
-  local list = {}
-  for tag in pairs(manager.machine.screens) do list[#list + 1] = tag end
-  table.sort(list)
-  if #list ~= 1 then
-    print("MAME_MCP_SCREEN_COUNT screens=" .. table.concat(list, ","))
-    return nil
-  end
-  local tag = list[1]
-  local scr = manager.machine.screens[tag]
-  local kind = scr.screen_type
-  if kind == nil then
-    kind = "raster"
-    for _, d in pairs(manager.machine.devices) do
-      if d.shortname == "vector_device" then kind = "vector" end
-    end
-  end
-  if kind ~= "raster" then
-    print(string.format("MAME_MCP_SCREEN_KIND tag=%%s type=%%s", tag, kind))
-    return nil
-  end
-  local frame = scr.frame_number
-  if type(frame) == "function" then frame = scr:frame_number() end
-  local pal = scr.palette
-  local head = string.format("tag=%%s w=%%d h=%%d frame=%%d", tag, scr.width, scr.height, frame)
-  if want_indices and pal ~= nil and (pal.shadows_enabled or pal.highlights_enabled) then
-    print(string.format("MAME_MCP_SCREEN_SHADOWS %%s palette=%%s", head, pal.device.tag))
-    return nil
-  end
-  if want_indices and pal ~= nil and pal.entries > %(encodable)d then
-    print(string.format("MAME_MCP_SCREEN_TOO_MANY %%s entries=%%d", head, pal.entries))
-    return nil
-  end
-  local colour, w, h = scr:pixels()
-  local f = assert(io.open(path, "wb"))
-  f:write(colour)
-  if pal == nil or not want_indices then
-    f:close()
-    print(string.format("MAME_MCP_SCREEN %%s palette=- entries=0", head))
-    return tag
-  end
-  local n = pal.entries
-  local saved, pens, back = {}, {}, {}
-  for i = 0, n - 1 do saved[i] = pal:pen_color(i) end
-  local ok, enc = pcall(function()
-    for i = 0, n - 1 do pal:set_pen_color(i, 0xff000000 | i) end
-    return scr:pixels()
-  end)
-  for i = 0, n - 1 do pal:set_pen_color(i, saved[i]) end
-  if not ok then f:close() error(enc, 0) end
-  for i = 0, n - 1 do
-    pens[#pens + 1] = string.pack("=I4", saved[i])
-    back[#back + 1] = string.pack("=I4", pal:pen_color(i))
-  end
-  local after = scr:pixels()
-  f:write(enc) f:write(after) f:write(table.concat(pens)) f:write(table.concat(back))
-  f:close()
-  print(string.format("MAME_MCP_SCREEN %%s palette=%%s entries=%%d", head, pal.device.tag, n))
-  return tag
-end
-"""
 
 _SCREEN = re.compile(r"MAME_MCP_SCREEN tag=(\S+) w=(\d+) h=(\d+) frame=(\d+) palette=(\S+) "
                      r"entries=(\d+)")
@@ -227,18 +166,12 @@ def parse_capture(text: str, path: Path, common: dict[str, Any]) -> Capture:
 #: The pens the screen's palette holds NOW, as one string of host-order ARGB words: what a
 #: frame's notifier saves so the frame is developed in its own colours, a frame later (the film
 #: and the series both; `scr` is the chunk's screen).
-FRAME_PENS_LUA = """local function pens()
-  local pal = scr.palette
-  if pal == nil then return "" end
-  local p = {}
-  for i = 0, pal.entries - 1 do p[i + 1] = string.pack("=I4", pal:pen_color(i)) end
-  return table.concat(p)
-end"""
+FRAME_PENS_LUA = lua_source.render("frame-pens")
 
 
 def capture_lua() -> str:
     """The capture's function definition, for a chunk to call as `capture_call` says."""
-    return CAPTURE_LUA % {"encodable": ENCODABLE_PENS}
+    return lua_source.render("capture", encodable=ENCODABLE_PENS)
 
 
 def capture_call(path: Path, want_indices: bool) -> str:

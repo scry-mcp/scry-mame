@@ -484,8 +484,8 @@ Example, from a live run:
   "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
   "status": "ok",
   "path": "$TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
-  "bytes": 441,
-  "sha256": "59fdab49a181cabd8045fbef879ebff22316aa2704e290511c90809736f1adcf",
+  "bytes": "<volatile>",
+  "sha256": "<volatile>",
   "view": "native"
 }
 ```

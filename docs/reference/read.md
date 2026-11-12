@@ -108,7 +108,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `length` | integer |
 | `lines_ahead` | integer |
 | `map_entry` | object |
-| `offset` | integer |
+| `offset` | string |
 | `pc_before` | string |
 | `pending` | boolean |
 | `reader_steps` | integer |
@@ -133,14 +133,14 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "read_block region :maincpu: 8 bytes at offset 0x400 of 0x100000: 46fc270048e7f000",
+  "summary": "read_block region :maincpu: 8 bytes at offset 0x00000400 of 0x100000: 46fc270048e7f000",
   "status": "ok",
   "kind": "region",
   "tag": ":maincpu",
   "size": 1048576,
   "bytewidth": 2,
   "endianness": "big",
-  "offset": 1024,
+  "offset": "0x00000400",
   "length": 8,
   "hex": "46fc270048e7f000",
   "evaluated_by": "one step",

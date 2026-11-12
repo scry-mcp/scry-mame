@@ -20,7 +20,7 @@ from scry_core import png, prose
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
 
-from scry_mame import block, chunk, cpus, inputs, manifest, region, running, transport
+from scry_mame import block, chunk, cpus, inputs, lua_source, manifest, region, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import layout as ml
 from scry_mame import lua as mlua
@@ -52,51 +52,6 @@ class Block:
     data: bytes                # from byte 0 of the block (of the span, for `space`)
 
 
-BLOCK_LUA = """local function mcp_block(path, name, addr, length)
-  local mem = manager.machine.memory
-  local kind, tag, blk
-  if addr then
-    local space = %(space)s.spaces["program"]
-    local data = space:read_range(addr, addr + length - 1, 8)
-    local f = assert(io.open(path, "wb")) f:write(data) f:close()
-    print(string.format("MAME_MCP_GFX_BLOCK kind=space tag=%%s size=%%d bytewidth=%%d endian=%%s",
-                        space.name, #data, space.data_width // 8, tostring(space.endianness)))
-    return true
-  end
-  for _, cand in ipairs({name, ":" .. name}) do
-    if mem.regions[cand] then kind, tag, blk = "region", cand, mem.regions[cand] break end
-    if mem.shares[cand] then kind, tag, blk = "share", cand, mem.shares[cand] break end
-  end
-  if kind == nil then
-    local t = {}
-    for k in pairs(mem.shares) do t[#t + 1] = k .. "=share" end
-    for k in pairs(mem.regions) do t[#t + 1] = k .. "=region" end
-    table.sort(t)
-    print("MAME_MCP_GFX_BLOCK_NONE name=" .. name .. " tags=" .. table.concat(t, ","))
-    return nil
-  end
-  if blk.size > (kind == "share" and %(share_max)d or %(bytes_max)d) then
-    print(string.format("MAME_MCP_GFX_BLOCK_BIG kind=%%s tag=%%s size=%%d", kind, tag, blk.size))
-    return nil
-  end
-  local data
-  if kind == "region" then
-    data = blk:read(0, blk.size)
-  else
-    local parts, bytes = {}, {}
-    for i = 0, blk.size - 1 do
-      bytes[#bytes + 1] = blk:read_u8(i)
-      if #bytes == 4096 then parts[#parts + 1] = string.char(table.unpack(bytes)) bytes = {} end
-    end
-    if #bytes > 0 then parts[#parts + 1] = string.char(table.unpack(bytes)) end
-    data = table.concat(parts)
-  end
-  local f = assert(io.open(path, "wb")) f:write(data) f:close()
-  print(string.format("MAME_MCP_GFX_BLOCK kind=%%s tag=%%s size=%%d bytewidth=%%d endian=%%s",
-                      kind, tag, blk.size, blk.bytewidth, tostring(blk.endianness)))
-  return true
-end
-"""
 _BLOCK = re.compile(r"MAME_MCP_GFX_BLOCK kind=(\w+) tag=(\S+) size=(\d+) bytewidth=(\d+) "
                     r"endian=(\w+)")
 _BLOCK_NONE = re.compile(r"MAME_MCP_GFX_BLOCK_NONE name=(\S+) tags=(\S*)")
@@ -110,10 +65,10 @@ def block_call(path: Path, tag: str, addr: int | None, length: int) -> str:
 
 
 def block_lua(ses: gs.Session, cpu: str) -> str:
-    """`BLOCK_LUA` bound to the program space of `cpu`, the visible one when empty (as
+    """`lua/gfx-block.lua` bound to the program space of `cpu`, the visible one when empty (as
     `read_block` binds it)."""
-    return BLOCK_LUA % {"space": block.space_of(ses, cpu), "bytes_max": BLOCK_BYTES_MAX,
-                        "share_max": SHARE_BYTES_MAX}
+    return lua_source.render("gfx-block", cpu=lua_source.Code(block.space_of(ses, cpu)),
+                             bytes_max=BLOCK_BYTES_MAX, share_max=SHARE_BYTES_MAX)
 
 
 def parse_block(text: str, path: Path, common: dict[str, Any]) -> Block:
@@ -233,7 +188,7 @@ def source_fields(blk: Block, start: int, addr: int | None, on: str) -> dict[str
     """Where the bytes came from, as both tools' replies say it."""
     out: dict[str, Any] = {"kind": blk.kind, "tag": blk.tag, "size": blk.size,
                            "bytewidth": blk.bytewidth, "endianness": blk.endianness,
-                           "offset": start}
+                           "offset": st.hex_addr(start)}
     if addr is not None:
         out.update(addr=st.hex_addr(addr), addr_cpu=on)
     return out

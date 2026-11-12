@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 import pytest
+from lua_text import has, squash
 
 from scry_mame import callbacks  # noqa: E402
 
@@ -30,10 +31,10 @@ def assert_every_callback_guarded(script: str, taps: int, notifiers: int) -> Non
 
 def test_the_guard_counts_each_error_keeps_the_first_and_marks_the_item_dirty() -> None:
     lua = callbacks.LUA
-    assert "local ok, err = pcall(f, a, b, c)\n    if not ok then fault(t, err) end" in lua
-    assert "t.errors = (t.errors or 0) + 1" in lua and "t.dirty = true" in lua
-    assert "if t.first_error == nil then" in lua, "the FIRST message, never the last"
-    assert f"1,\n                               {callbacks.FIRST_ERROR_MAX_CHARS})" in lua
+    assert has(lua, "local ok, err = pcall(f, a, b, c)\n    if not ok then fault(t, err) end")
+    assert has(lua, "t.errors = (t.errors or 0) + 1") and has(lua, "t.dirty = true")
+    assert has(lua, "if t.first_error == nil then"), "the FIRST message, never the last"
+    assert has(lua, f"1,\n                               {callbacks.FIRST_ERROR_MAX_CHARS})")
 
 
 def test_the_first_message_is_cut_to_one_line_of_printable_ascii() -> None:
@@ -44,9 +45,9 @@ def test_the_first_message_is_cut_to_one_line_of_printable_ascii() -> None:
 def test_a_dumper_that_keeps_failing_is_counted_once_per_run() -> None:
     """The periodic calls a dumper several times a stop; counting each would measure time."""
     lua = callbacks.LUA
-    assert "if ok then it.dump_failing = nil" in lua
-    assert "elseif not it.dump_failing then\n    it.dump_failing = true\n    fault(it, err)" in lua
-    assert "for _, it in pairs(T.items) do dump_guarded(it, dump, fr) end" in lua
+    assert has(lua, "if ok then it.dump_failing = nil")
+    assert has(lua, "elseif not it.dump_failing then it.dump_failing = true fault(it, err)")
+    assert has(lua, "for _, it in pairs(T.items) do dump_guarded(it, dump, fr) end")
     assert lua.count("emu.register_periodic(") == 1
 
 
@@ -98,10 +99,12 @@ def test_every_dumper_writes_the_count_last_on_its_head_and_the_message_right_be
             (rlua.install_script("x", ramdac, Path("/s/h.txt"), Path("/s/r.rows"), None),
              'partial_writes=%d errors=%d\\n"')):
         assert head_end in script, head_end
-        assert script.index(message) < script.index('f:write("end\\n")'), script[-900:]
+        assert squash(script).index(squash(message)) < squash(script).index(
+            squash('f:write("end\\n")')), script[-900:]
     script = mfilm.install_script(film, Path("/s/film-1/film.txt"))
-    assert 'baseline_value=%d errors=%d\\n"' in script
-    assert '(t.first_error ~= nil and "e " .. t.first_error .. "\\n" or "") .. "end\\n")' in script
+    assert has(script, 'baseline_value=%d errors=%d\\n"')
+    assert has(script,
+               '(t.first_error ~= nil and "e " .. t.first_error .. "\\n" or "") .. "end\\n")')
 
 
 @pytest.mark.parametrize(("name", "module", "parser", "count"), [
@@ -161,7 +164,7 @@ def test_a_dumper_that_raises_after_its_open_has_the_file_closed_and_the_error_l
   LEFT = f
   f:write("MCP_TALLY partial")
   error("the value table raised")
-end""".replace("callbacks_opened", callbacks.OPENED))
+end""".replace("callbacks_opened", "opened"))
     assert "handle\tclosed file" in out, out
     assert "errors\t1" in out, out
     failed = [ln for ln in out if ln.startswith(f"log {callbacks.DUMP_FAILED} ")]
@@ -171,22 +174,16 @@ end""".replace("callbacks_opened", callbacks.OPENED))
 def test_every_dumper_that_writes_after_its_open_opens_through_the_guard() -> None:
     """A dumper calling `io.open` itself would leave its handle to the collector. The film's
     composes its text before opening, so nothing can raise between."""
-    import inspect
-
-    from scry_mame import capture as mame_capture
-    from scry_mame import ramdac_lua as mame_ramdac_lua
-    from scry_mame import tally as mame_tally
+    from scry_mame import lua_source
     bodies = {
-        "tally": (inspect.getsource(mame_tally), "local function dump(it, fr)", "dump_at_stops("),
-        "capture": (inspect.getsource(mame_capture), "local function dump(it, fr)",
-                    "dump_at_stops("),
-        "ramdac": (inspect.getsource(mame_ramdac_lua), "T.dump = function(it, fr)",
-                   "T.settle = "),
+        "tally-dumper": ("local function dump(it, fr)", "dump_at_stops("),
+        "capture-dumper": ("local function dump(it, fr)", "dump_at_stops("),
+        "ramdac-install": ("T.dump = function(it, fr)", "T.settle = "),
     }
-    for name, (text, begin, end) in bodies.items():
-        body = text.split(begin, 1)[1].split(end, 1)[0]
+    for name, (begin, end) in bodies.items():
+        body = lua_source.load(name).split(begin, 1)[1].split(end, 1)[0]
         opens = body.count("io.open(")
-        assert opens and opens == body.count("{callbacks.OPENED}(it, io.open("), name
+        assert opens and opens == body.count("opened(it, io.open("), name
 
 
 def test_a_dump_replaces_its_file_where_rename_will_not_overwrite(tmp_path: Path) -> None:

@@ -174,7 +174,7 @@ STOPPED_CASES: list[Case] = [
     Case("read_block.offset beside ref", "read_block", {"ref": "0x400", "offset": 4},
          is_refused("bad_argument")),
     Case("read_block.offset written 0x", "read_block", {"tag": "maincpu", "offset": "0x10",
-         "length": 8}, is_ok(lambda r: r.get("offset") == 0x10)),
+         "length": 8}, is_ok(lambda r: r.get("offset") == "0x00000010")),
     Case("read_block.offset as decimal text", "read_block", {"tag": "maincpu", "offset": "16"},
          refused_saying("decimal text is refused")),
     *counts("history", "limit", {}, read.HISTORY_MAX,
@@ -833,7 +833,7 @@ def block_b_edges() -> None:
         r = call("read_block", ref=ref, length=n)
         # By address the block is the one the map entry names; a hole names none, and a read
         # past a block's end is refused because MAME answers zeros there in silence.
-        good = {"address 0": ok(r) and r.get("offset") == 0,
+        good = {"address 0": ok(r) and r.get("offset") == "0x00000000",
                 "an unmapped hole": refused(r, "unknown_ref")}.get(
             edge, refused(r, "unknown_ref", "bad_argument") or ok(r))
         cell(_edge_label("read_block", edge), good, said(r))

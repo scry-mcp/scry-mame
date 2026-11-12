@@ -114,8 +114,8 @@ Example, from a live run:
   "colors": ["#000000", "#ff0000", "#00ff00", "#ffff00", "#0000ff", "#ff00ff", "... 250 more"],
   "image": {
     "path": "$TMPDIR/mame-mcp-<run>/gfx/palette-1.png",
-    "bytes": 47843,
-    "sha256": "1a96fb336cc940f265123a98ddfa794658442656815d4fbaca4182479ba27942",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 1096,
     "height": 1024,
     "scale": 8,
@@ -633,7 +633,7 @@ Reference: REFERENCE.md, Input and the screen.
 | `kind` | string |
 | `layout` | object |
 | `lines_ahead` | integer |
-| `offset` | integer |
+| `offset` | string |
 | `palette` | string |
 | `palettes` | array |
 | `pc_before` | string |
@@ -685,7 +685,7 @@ Example, from a live run:
   "size": 1048576,
   "bytewidth": 2,
   "endianness": "big",
-  "offset": 0,
+  "offset": "0x00000000",
   "first": 0,
   "count": 16,
   "tiles_available": 131072,
@@ -696,8 +696,8 @@ Example, from a live run:
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
   "image": {
     "path": "$TMPDIR/mame-mcp-<run>/gfx/gfx-1.png",
-    "bytes": 649,
-    "sha256": "f7ace1f0bdaded024a4351bbdd8367042aaac59b0c2364f6a928a3e068512d1e",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 1024,
     "height": 64,
     "scale": 8,
@@ -828,7 +828,7 @@ Reference: REFERENCE.md, Input and the screen.
 | `matches` | array |
 | `matches_total` | integer |
 | `nearest` | object |
-| `offset` | integer |
+| `offset` | string |
 | `palette` | string |
 | `patch` | array |
 | `pc_before` | string |
@@ -880,7 +880,7 @@ Example, from a live run:
   "size": 1048576,
   "bytewidth": 2,
   "endianness": "big",
-  "offset": 0,
+  "offset": "0x00000000",
   "transparent": {"available": false, "why": "no `transparent`: every pixel compared"},
   "flips": ["none", "x", "y", "xy"],
   "candidates": [
@@ -1029,7 +1029,7 @@ Reference: REFERENCE.md, Input and the screen.
 | `kind` | string |
 | `lines_ahead` | integer |
 | `next` | string |
-| `offset` | integer |
+| `offset` | string |
 | `palette` | string |
 | `palettes` | array |
 | `pc_before` | string |
@@ -1061,7 +1061,7 @@ Example, from a live run:
   "size": 1048576,
   "bytewidth": 2,
   "endianness": "big",
-  "offset": 0,
+  "offset": "0x00000000",
   "sweep": 1,
   "count": 8,
   "palette": "none",
@@ -1075,8 +1075,8 @@ Example, from a live run:
   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
   "image": {
     "path": "$TMPDIR/mame-mcp-<run>/gfx/sweep-1.png",
-    "bytes": 8583,
-    "sha256": "f44f27e948aad92357d377aac52407f930c87da6b005aacc123e12cc43d4b040",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 1320,
     "height": 480,
     "scale": 5,
@@ -1189,7 +1189,7 @@ Example, from a live run:
   },
   "report": {
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9-report.json",
-    "sha256": "eb5bbe6159e2f9760f985174ae34748ac0c70c13f19cb8b58c3d52aeda9505ef"
+    "sha256": "63b54dc1871ee97ffa31f1c000c7014411d2868baf4fadb0ebe56d64ff35bd0a"
   },
   "formats": {},
   "asset_names": [],
@@ -1337,8 +1337,8 @@ Example, from a live run:
   "not_proved": ["dest_x", "scroll_y", "source_dir_y", "source_x", "source_y", "planes.sprites", "... 1 more"],
   "image": {
     "path": "$TMPDIR/mame-mcp-<run>/gfx/blits-1.png",
-    "bytes": 2312,
-    "sha256": "800103185243eee53008b7207f4d210e06054e9ea9bc5d3e1215578315da44ac",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 1008,
     "height": 756,
     "scale": 3,
@@ -1538,8 +1538,8 @@ Example, from a live run:
   "reads_source": true,
   "image": {
     "path": "$TMPDIR/mame-mcp-<run>/gfx/source-1.png",
-    "bytes": 849,
-    "sha256": "d147b5bc26274e4d196bf3c27fcb8a7865b5eae821931c399885c1416b71d2b1",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
     "width": 16,
     "height": 8,
     "scale": 8,

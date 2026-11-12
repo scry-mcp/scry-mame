@@ -27,6 +27,7 @@ from typing import Any
 import png_read  # noqa: E402
 import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
+from lua_text import has, squash
 from scry_core import picture  # noqa: E402
 from session_doubles import MAP_ROM, io_board, refused, use_table  # noqa: E402
 from test_callbacks import assert_every_callback_guarded  # noqa: E402
@@ -233,25 +234,28 @@ def test_the_install_marks_the_frame_and_reads_its_picture_at_the_next_notifier(
     matrix's film section); this pins the parts a refactor could drop in silence."""
     rec = _armed(monkeypatch, tmp_path)
     script = rec["script"]
-    assert "local trig, len, want, wpc = 0x70001e, 2, 0xffff, nil" in script
-    assert 'install_write_tap(lo, lo + nb - 1, "mcp_film_"' in script
-    assert "if want ~= nil and val ~= want then return end" in script
-    assert "if wpc ~= nil and pc ~= wpc then return end" in script
-    assert script.index("local print = function(s) said = s end") < script.index(
+    assert has(script, "local trig, len, want, wpc = 0x70001e, 2, 0xffff, nil")
+    assert has(script, 'install_write_tap(lo, lo + nb - 1, "mcp_film_"')
+    assert has(script, "if want ~= nil and val ~= want then return end")
+    assert has(script, "if wpc ~= nil and pc ~= wpc then return end")
+    flat = squash(script)
+    assert flat.index(squash("local print = function(s) said = s end")) < flat.index(
         "local function mcp_capture"), "the capture's print is kept for the frame's file"
-    judge = script.index("if t.fresh then")
-    assert script.index("if t.pend ~= nil then\n    if not drew then") < judge, (
+    judge = flat.index("if t.fresh then")
+    assert flat.index("if t.pend ~= nil then if not drew then") < judge, (
         "the pending frame's picture is read BEFORE this frame is judged: after the double "
         "buffer turned it over")
-    assert "return v:snapshot_pixels()" in script[judge:], (
+    assert has(flat[judge:], "return v:snapshot_pixels()"), (
         "the frame's own rendering is taken at its own notifier")
-    assert "pens = pens()" in script[judge:], "the frame's own pens are saved at its notifier"
+    assert has(flat[judge:], "pens = pens()"), "the frame's own pens are saved at its notifier"
     assert mscreen.FRAME_PENS_LUA in script, "the pens are saved by the one shared function"
-    assert 'add_machine_reset_notifier(guarded(t, function() lost("lost_reset") end))' in script
-    assert 'add_machine_post_load_notifier(guarded(t, function() lost("lost_load") end))' in script
-    assert "if t.judged >= frames_max and t.pend == nil then" in script
-    assert f"if t.nhits <= {mf.HITS_KEPT} then" in script
-    assert "MCP_TALLY installed tally_id=%s" in script, "the count watch's reader answers it"
+    assert has(script, 'add_machine_reset_notifier(guarded(t, function() lost("lost_reset") end))')
+    assert has(script,
+               'add_machine_post_load_notifier(guarded(t, function() lost("lost_load") end))')
+    assert has(script, "if t.judged >= frames_max and t.pend == nil then")
+    assert has(script, f"if t.nhits <= {mf.HITS_KEPT} then")
+    assert has(script, '"%s installed tally_id=%s trigger=%x ", "MCP_TALLY", id,'), (
+        "the count watch's reader answers it")
 
 
 def test_a_second_film_is_refused_naming_the_clear(
@@ -994,18 +998,18 @@ def test_the_install_compares_each_write_with_the_one_before_it() -> None:
     and meets nothing; a write equal to the one before meets nothing; only then the pc."""
     film = mf.Film("70001e", 0x70001E, 2, None, "", None, ":maincpu", 12, 3, None,
                    Path("/nowhere"), ":screen", 336, 252, 60.0, True, None, True)
-    script = mf.install_script(film, Path("/nowhere/film.txt"))
+    script = squash(mf.install_script(film, Path("/nowhere/film.txt")))
     tap = script[script.index("install_write_tap("):script.index("local function untap()")]
     law = tap.index("if changed then")
     assert law < tap.index("if wpc ~= nil and pc ~= wpc then return end"), (
         "the previous write is every writer's, so it moves before the pc is judged")
     assert tap.index("local before = t.prev") < tap.index("t.prev = val") < tap.index(
         "if before == nil then") < tap.index("if val == before then return end")
-    assert ("if before == nil then t.baseline_frame, t.baseline_value = frame(), val "
-            "return end") in tap, "the baseline is recorded and meets nothing"
-    assert "local changed = true" in script
+    assert squash("if before == nil then t.baseline_frame, t.baseline_value = frame(), val "
+                  "return end") in tap, "the baseline is recorded and meets nothing"
+    assert has(script, "local changed = true")
     plain = mf.install_script(dataclasses.replace(film, changed=False), Path("/n/film.txt"))
-    assert "local changed = false" in plain
+    assert has(plain, "local changed = false")
 
 
 def test_a_changed_films_reply_names_its_baseline(monkeypatch: pytest.MonkeyPatch,
@@ -1060,8 +1064,8 @@ def test_a_new_film_never_inherits_the_state_of_one_whose_removal_was_lost() -> 
                    Path("/nowhere"), ":screen", 336, 252, 60.0, True, None, True)
     script = mf.install_script(film, Path("/nowhere/film.txt"))
     head = transport.lua_string(str(Path("/nowhere/film.txt")))
-    assert f"local same = old ~= nil and old.head == {head}" in script
-    assert "local t = same and old or {" in script
+    assert has(script, f"local same = old ~= nil and old.head == {head}")
+    assert has(script, "local t = same and old or {")
     lost = script[script.index("local function lost(field)"):script.index("local subs = {}")]
     assert "t.prev" not in lost and "baseline" not in lost
 

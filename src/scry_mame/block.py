@@ -20,71 +20,13 @@ from typing import Any
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
 
-from scry_mame import chunk, cpus, inputs, read, running, transport
+from scry_mame import chunk, cpus, inputs, lua_source, read, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import lua as mlua
 from scry_mame import state as st
 from scry_mame.state import STATE
 
 # Each printed shape has its own prefix, so a refusal is not misread as a missing hex field.
-# `%%` is a literal per cent for Lua's `string.format`.
-BLOCK_LUA = """local mem = manager.machine.memory
-local function block(name)
-  for _, cand in ipairs({name, ":" .. name}) do
-    if mem.shares[cand] then return "share", cand, mem.shares[cand] end
-    if mem.regions[cand] then return "region", cand, mem.regions[cand] end
-  end
-  return nil
-end
-local function tags()
-  local t = {}
-  for tag in pairs(mem.shares) do t[#t + 1] = tag .. "=share" end
-  for tag in pairs(mem.regions) do t[#t + 1] = tag .. "=region" end
-  table.sort(t)
-  return table.concat(t, ",")
-end
-local kind, tag, blk, start
-local offset = %(offset)d
-local addr = %(addr)s
-if addr then
-  local space = %(space)s.spaces["program"]
-  local hit = nil
-  for _, e in ipairs(space.map.entries) do
-    if e.address_start <= addr and addr <= e.address_end then hit = e break end
-  end
-  if hit == nil then
-    print(string.format("MAME_MCP_BLOCK_NOENTRY addr=%%x", addr))
-  elseif hit.share == nil and hit.region == nil then
-    print(string.format("MAME_MCP_BLOCK_NOBLOCK start=%%x end=%%x", hit.address_start,
-                        hit.address_end))
-  else
-    kind, tag, blk = block(hit.share or hit.region)
-    if kind == nil then
-      print("MAME_MCP_BLOCK_NONE name=" .. (hit.share or hit.region) .. " tags=" .. tags())
-    else
-      start = hit.address_start
-      offset = addr - start + (hit.share and 0 or (hit.region_offset or 0))
-    end
-  end
-else
-  kind, tag, blk = block(%(tag)s)
-  if kind == nil then print("MAME_MCP_BLOCK_NONE name=" .. %(tag)s .. " tags=" .. tags()) end
-end
-if kind then
-  local length = %(length)d
-  if offset + length > blk.size then
-    print(string.format("MAME_MCP_BLOCK_OUTSIDE kind=%%s tag=%%s size=%%d offset=%%d length=%%d",
-                        kind, tag, blk.size, offset, length))
-  else
-    local t = {}
-    for i = offset, offset + length - 1 do t[#t + 1] = string.format("%%02x", blk:read_u8(i)) end
-    print(string.format("MAME_MCP_BLOCK kind=%%s tag=%%s size=%%d bytewidth=%%d endian=%%s "
-                        .. "start=%%s offset=%%d hex=%%s", kind, tag, blk.size, blk.bytewidth,
-                        tostring(blk.endianness), start and string.format("%%x", start) or "-",
-                        offset, table.concat(t)))
-  end
-end
-"""
 
 _BLOCK = re.compile(r"MAME_MCP_BLOCK kind=(\w+) tag=(\S+) size=(\d+) bytewidth=(\d+) "
                     r"endian=(\w+) start=(\S+) offset=(\d+) hex=([0-9a-f]*)")
@@ -155,8 +97,8 @@ def read_block(ses: gs.Session, scratch: Path, tag: str, ref: str, offset: int, 
     check_read_block(tag, ref, offset, length, seconds, cpu=cpu)
     on = cpus.chosen(ses, cpu)
     addr = STATE.resolve(ref, on) if ref.strip() else None
-    script = BLOCK_LUA % {"tag": transport.lua_string(tag), "addr": "nil" if addr is None else addr,
-                          "offset": offset, "length": length, "space": space_of(ses, cpu)}
+    script = lua_source.render("read-block", tag=tag, addr=addr, offset=offset, length=length,
+                               cpu=lua_source.Code(space_of(ses, cpu)))
     text, common = chunk.run(ses, scratch, script, seconds, progress, "block")
     if (m := _NONE.search(text)) is not None:
         have = _tags(m.group(2))
@@ -185,7 +127,7 @@ def read_block(ses: gs.Session, scratch: Path, tag: str, ref: str, offset: int, 
     kind, name, size, bytewidth, endian, start, at, data = m.groups()
     fields: dict[str, Any] = {
         "kind": kind, "tag": name, "size": int(size), "bytewidth": int(bytewidth),
-        "endianness": endian, "offset": int(at), "length": len(data) // 2, "hex": data,
+        "endianness": endian, "offset": st.hex_addr(int(at)), "length": len(data) // 2, "hex": data,
     }
     if addr is not None:
         fields["addr"] = st.hex_addr(addr)

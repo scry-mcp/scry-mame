@@ -147,7 +147,7 @@ def write(ses: gs.Session, scratch: Path, addr: int, data: bytes, cpu: str | Non
     path.unlink(missing_ok=True)     # a stale file is not this `saver`'s answer
     said = ses.monitor(f"saver {path},{span}")
     files.whole_file(path, hi - lo, said, "saver", "; nothing was loaded", region=here.region,
-                     region_offset=here.offset)
+                     region_offset=st.hex_addr(here.offset))
     # MAME keeps a region wider than a byte in host order (`romload.cpp`), so the cpu's view
     # is `logical` of the file; MAME's validation makes the space share the region's layout.
     view = bytearray(logical(path.read_bytes(), width, order))
@@ -160,5 +160,5 @@ def write(ses: gs.Session, scratch: Path, addr: int, data: bytes, cpu: str | Non
     if loaded is None or (int(loaded.group(1), 16), int(loaded.group(2), 16)) != (lo, hi - 1):
         raise st.Invalid("unexpected_answer", f"`loadr` of {hi - lo:#x} bytes at "
                          f"{here.region} offset {lo:#x} answered {said.strip()!r}",
-                         region=here.region, region_offset=here.offset)
+                         region=here.region, region_offset=st.hex_addr(here.offset))
     return {"region": here.region, "region_offset": here.offset}

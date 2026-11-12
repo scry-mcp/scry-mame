@@ -1195,7 +1195,7 @@ def test_the_groups_are_correlated_in_the_order_of_their_sources_text(
     _captured(ses, _rows_text())
     out = s.gfx_draft()
     names = {e["group"]["source"]["offset"]: e["command"] for e in _report(out)["correlations"]}
-    assert names == {0x100: "write_2000", 0x20: "write_2000_gfx2"}, names
+    assert names == {"0x00000100": "write_2000", "0x00000020": "write_2000_gfx2"}, names
 
 
 def test_a_group_too_small_or_unproved_before_another_leaves_the_other_correlated(

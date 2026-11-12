@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from lua_text import has
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -175,9 +176,9 @@ def test_a_count_watch_binds_its_tap_to_the_cpu_named_when_it_is_composed(
 ) -> None:
     """The install waits in the pipe, so an unnamed cpu is taken at run time, not at compose."""
     named = tally.install_script("2031fc_4", 0x2031FC, 4, tmp_path / "t.txt", ":subcpu")
-    assert 'local cpu = manager.machine.devices[":subcpu"]' in named
+    assert has(named, 'local cpu = manager.machine.devices[":subcpu"]')
     unnamed = tally.install_script("2031fc_4", 0x2031FC, 4, tmp_path / "t.txt")
-    assert "dbg.visible_cpu" in unnamed and ":subcpu" not in unnamed
+    assert "debugger.visible_cpu" in unnamed and ":subcpu" not in unnamed
 
 
 def test_a_watch_stop_is_named_by_the_consoles_line_under_a_packet_that_names_nothing(

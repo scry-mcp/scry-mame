@@ -26,6 +26,8 @@ R_ABS = "must be an absolute path"
 
 FIXTURES = Path(__file__).parent / "fixtures"
 CONSOLE = (FIXTURES / "console.stdout").read_bytes()
+#: The same session on MAME 0.288, whose console printed a raised chunk's sentinel twice.
+CONSOLE_0288 = (FIXTURES / "console-0288.stdout").read_bytes()
 MARKS = (FIXTURES / "console-error.log").read_text().splitlines()
 AVI_HEAD = (FIXTURES / "record-30-frames-avi.head").read_bytes()
 STA_HEAD = (FIXTURES / "statesave-sta.head").read_bytes()
@@ -38,11 +40,11 @@ CONSOLE_REFUSAL = (FIXTURES / "console-refused.stdout").read_bytes().split(b"\n"
     PROMPT, 1)[0]
 
 
-def _captured(seq: int, as_seq: int = 1) -> bytes:
+def _captured(seq: int, as_seq: int = 1, console: bytes = CONSOLE) -> bytes:
     """What the console printed after the echo of chunk `seq`, up to the next prompt."""
-    m = re.search(rb'"MAME_MCP_LUA_END#%d", false, e\) [^\n]*\n' % seq, CONSOLE)
+    m = re.search(rb'"MAME_MCP_LUA_END#%d", false, e\) [^\n]*\n' % seq, console)
     assert m, seq
-    rest = CONSOLE[m.end():]
+    rest = console[m.end():]
     return rest[:rest.index(PROMPT)].replace(b"#%d" % seq, b"#%d" % as_seq)
 
 

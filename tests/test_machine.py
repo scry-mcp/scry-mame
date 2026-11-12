@@ -522,6 +522,19 @@ def test_the_default_map_leaves_the_rom_files_out_and_says_how_to_ask(
     assert reply["counts"]["address_map"] == len(reply["address_map"]) == 32
 
 
+def test_the_reply_writes_a_region_offset_and_a_rom_offset_in_hex(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _cached(monkeypatch, tmp_path)
+    reply = machine.machine_map(sections=["address_map", "rom_files"])
+    regioned = [e["region_offset"] for e in reply["address_map"] if "region_offset" in e]
+    placed = [r["offset"] for r in reply["rom_files"] if "offset" in r]
+    assert regioned and placed
+    assert all(isinstance(o, str) and o.startswith("0x") for o in regioned + placed), reply
+    assert isinstance(STATE.machine_map["address_map"][0].get("region_offset", 0), int), \
+        "the cache keeps the number the tools compute with"
+
+
 def test_sections_answers_only_the_ones_named_in_the_reply_order(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

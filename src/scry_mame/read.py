@@ -323,7 +323,7 @@ def resolve_operands(lines: list[str], bases: dict[str, int], symbols: dict[str,
                 at = bisect.bisect_right(addrs, linear) - 1
                 below = unavailable(f"no symbol of class {klass} lies at or below it")
                 symbol, delta = (below, below) if at < 0 else (names[at], linear - addrs[at])
-                out.append({"line": i, "operand": f"{m.group(1)}h", "offset": offset,
+                out.append({"line": i, "operand": f"{m.group(1)}h", "offset": st.hex_addr(offset),
                             "class": klass, "linear": st.hex_addr(linear), "symbol": symbol,
                             "delta": delta})
     return out

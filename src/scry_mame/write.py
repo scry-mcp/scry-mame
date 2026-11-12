@@ -59,6 +59,7 @@ def write(ses: gs.Session, scratch: Path, ref: str, data_hex: str, cpu: str = ""
         if readers := capture.reading_region(placed["region"], placed["region_offset"],
                                              len(data)):
             placed["captures_reading_it"] = readers
+        placed["region_offset"] = st.hex_addr(placed["region_offset"])
     else:
         ses.write(addr, data, thread=thread)
     try:
@@ -101,7 +102,7 @@ def rom_target(ses: gs.Session, addr: int, cpu: str | None, n: int) -> dict[str,
     if here.region is not None:
         reply["region"] = here.region
     if here.offset is not None:
-        reply["region_offset"] = here.offset
+        reply["region_offset"] = st.hex_addr(here.offset)
     fits = rom_region.unwritable(here, n) is None
     hint = "; `region=True` writes them there" if fits else ""
     reply["note"] = (f"the program space has no write side at {addr:#x}: it is ROM, so the "

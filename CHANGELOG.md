@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Offsets read as addresses do, in `0x` hex: `read_block`'s `offset`, the graphics tools' source
+  `offset`, `machine_map`'s `region_offset` and ROM `offset`, `write`'s `region_offset`, and
+  the offset of each operand `disassemble` resolves.
 - On macOS the server reads the screens from a child process when it places a window, so it is
   no longer held as an application and Activity Monitor cannot show it as not responding.
 - `screen_wait` on `on_breakpoint` or `on_watch` answers the clocks its reply promises

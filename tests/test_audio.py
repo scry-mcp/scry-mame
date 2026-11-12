@@ -17,12 +17,14 @@ from typing import Any
 
 import pytest
 from lua_support import _channel  # noqa: E402
+from lua_text import has, squash
 from scry_core import wav
 from session_doubles import refused, run_host_lua  # noqa: E402
 
 from scry_mame import (
     advance,  # noqa: E402
     lua,  # noqa: E402
+    lua_source,  # noqa: E402
     summaries,  # noqa: E402
     transport,  # noqa: E402
 )
@@ -364,10 +366,9 @@ def test_a_recording_a_stop_came_before_is_not_begun_and_says_when_it_begins(
 
 def test_both_recording_scripts_end_by_logging_where_their_notifier_first_runs() -> None:
     """The `armed` line is each chunk's last and reads the vblank off the two screen timers."""
-    assert "time_until_vblank_end():as_double()\n        < screen:time_until_vblank_start()" in (
-        mrec.ARMED_LUA)
-    for script in (mrec.RECORD_LUA, maudio.AUDIO_LUA):
-        assert script.endswith(mrec.ARMED_LUA), script[-300:]
+    armed = mrec.armed("MAME_MCP_RECORD#1")
+    assert has(armed, "time_until_vblank_end():as_double() < screen:time_until_vblank_start()")
+    assert mrec.armed("x") != armed, "the line carries its call's own mark"
 
 
 def test_an_end_mark_with_no_begin_mark_is_refused(
@@ -441,16 +442,16 @@ def test_captures_lists_a_wav_with_its_header_and_nulls_once_it_no_longer_reads(
 
 def test_the_script_stops_the_mixer_in_one_place_and_prints_its_times_whole() -> None:
     """Release and end both go through `stop_own`, only for a file this script began."""
-    script = maudio.AUDIO_LUA % {"path": transport.lua_string("/x.wav"), "frames": 5,
-                                 "mark": "MAME_MCP_AUDIO#9"}
+    script = lua_source.render("audio", path="/x.wav", frames=5, mark="MAME_MCP_AUDIO#9",
+                               no_screen=mrec.NO_SCREEN)
     release = script.split("_G._mame_mcp_audio_release = function()", 1)[1].split("end\n", 1)[0]
     first = "if _G._mame_mcp_audio_release then _G._mame_mcp_audio_release() end\n"
-    assert script.startswith(first), "the previous recording is released first"
-    assert "done = true" in release and "stop_own()" in release, release
+    assert squash(script).startswith(squash(first)), "the previous recording is released first"
+    assert has(release, "done = true") and has(release, "stop_own()"), release
     assert script.count("snd:stop_recording()") == 1
     own = script.split("local function stop_own()", 1)[1].split("\nend\n", 1)[0]
-    assert "if not began then return end" in own and 'string.unpack("<I4", size) ~= 0' in own
-    assert "time=%.17g period=%.17g" in script and "end frame=%d time=%.17g" in script
+    assert has(own, "if not began then return end") and has(own, 'string.unpack("<I4", size) ~= 0')
+    assert has(script, "time=%.17g period=%.17g") and has(script, "end frame=%d time=%.17g")
 
 
 def _spanning(seq: int, emulated: float, frames: int = 30, t0: float | None = None) -> list[str]:
@@ -572,13 +573,31 @@ def test_the_run_gets_the_script_for_this_call_and_the_callers_bound(
     dest = tmp_path / "out.wav"
     s.audio_record(frames=30, dest=str(dest), seconds=7.5)
     assert seen["tag"] == "MAME_MCP_AUDIO#1" and seen["path"] == dest, seen
-    assert f"{seen['tag']} begin" in seen["script"] and f"{seen['tag']} end" in seen["script"]
+    assert seen["script"].count(transport.lua_string(seen["tag"])) == 3, "begin, end and armed"
+    assert seen["script"].endswith(mrec.armed(seen["tag"])), "the armed line is the chunk's last"
     assert f"local path = {transport.lua_string(str(dest))}" in seen["script"]
     # the script ends AT `frames`, so the last frame recorded, the span's end, is one before
     assert f"counted >= {seen['ends_after'] + 1} then" in seen["script"], seen
     assert (seen["frames"], seen["ends_after"]) == (30, 29), seen
     assert (seen["run_frames"], seen["seconds"]) == (34, 7.5), seen
 
+
+
+def test_a_recording_s_script_ends_with_its_armed_line(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _channel(monkeypatch, tmp_path)
+    seen: dict[str, Any] = {}
+
+    def run(ses: object, scratch: Path, what: str, script: str, tag: str,
+            *_: object) -> dict[str, Any]:
+        seen.update(script=script, tag=tag)
+        raise mstate.Invalid("bad_argument", "the run is this test's")
+
+    monkeypatch.setattr(mrec, "recording_run", run)
+    s.record(frames=30)
+    assert seen["script"].endswith(mrec.armed(seen["tag"])), "the armed line is the chunk's last"
+    assert transport.lua_string(mrec.NO_SCREEN) in seen["script"]
 
 def test_captures_gives_sample_keys_to_a_wav_alone(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
@@ -600,10 +619,11 @@ def _armed(seq: int, frame: int = 60, vblank: str = "false") -> str:
 def test_the_armed_line_the_lua_writes_is_the_line_the_parser_reads() -> None:
     """Lua writes the `armed` line and Python reads it: the format must round-trip."""
     tag = "MAME_MCP_AUDIO#7"
-    chunk = mrec.ARMED_LUA % {"mark": tag}
-    m = re.search(r'string\.format\("(.*?)\\n"', chunk)
+    chunk = mrec.armed(tag)
+    m = re.search(r'string\.format\(\s*"(.*?)\\n"', chunk)
     assert m is not None, chunk
-    line = "[luaengine] " + m.group(1).replace("%d", "61", 1).replace("%s", "true", 1)
+    line = "[luaengine] " + (m.group(1).replace("%s", tag, 1).replace("%d", "61", 1)
+                             .replace("%s", "true", 1))
     assert lua.one_event(mstate.mark_lines([line], tag), tag, "armed") == {
         "frame": "61", "vblank": "true"}
 
@@ -767,8 +787,8 @@ def _run_audio_lua(tmp_path: Path, frames: int, before: str, after: str) -> list
     """Mixer, `before`, the recording script for `frames` frames, then `after`; one event a line."""
     header = _wav("v30-unfinished")[:wav.HEADER_BYTES]
     chunk = (MIXER_LUA % {"header": _lua_bytes(header)} + before + "\n"
-             + maudio.AUDIO_LUA % {"path": transport.lua_string(str(tmp_path / "ours.wav")),
-                                   "frames": frames, "mark": "MAME_MCP_AUDIO#1"}
+             + lua_source.render("audio", path=str(tmp_path / "ours.wav"), frames=frames,
+                                 mark="MAME_MCP_AUDIO#1", no_screen=mrec.NO_SCREEN)
              + after + "\n")
     return [ln.replace(str(tmp_path) + os.sep, "") for ln in run_host_lua(chunk, tmp_path)]
 

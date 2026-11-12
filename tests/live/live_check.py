@@ -100,7 +100,7 @@ check("the region's bytes at 0x400 are what the protocol reads at address 0x400"
 check("and it alters nothing", r.get("session", {}).get("altered") is False)
 r = s.read_block(ref="0x400", length=8)
 check("by address: the map entry names the region and the offset is the address's distance",
-      r.get("status") == "ok" and r.get("tag") == ":maincpu" and r.get("offset") == 0x400
+      r.get("status") == "ok" and r.get("tag") == ":maincpu" and r.get("offset") == "0x00000400"
       and r.get("hex") == by_symbol.get("hex"),
       f"{r.get('tag')} offset={r.get('offset')} ({r.get('code', '')})")
 r = s.read_block(tag="no-such-block")
@@ -113,12 +113,13 @@ check("a read past the block's end is refused, not answered as zeros",
       str(r.get("message"))[:60])
 r = s.read_block(tag="maincpu", offset=size - 8, length=8)
 check("a read that ends exactly at the block's end is answered (the boundary is inclusive)",
-      r.get("status") == "ok" and r.get("offset") == size - 8 and len(r.get("hex", "")) == 16,
+      r.get("status") == "ok" and r.get("offset") == f"0x{size - 8:08x}"
+      and len(r.get("hex", "")) == 16,
       f"offset={r.get('offset')} of {size} ({r.get('code', '')})")
 last = s.read_block(ref=f"{size - 1:#x}", length=1)
 check("the last address of the ROM entry is inside it, at the block's last byte",
       last.get("status") == "ok" and last.get("tag") == ":maincpu"
-      and last.get("offset") == size - 1 and last.get("hex") == r.get("hex", "")[-2:],
+      and last.get("offset") == f"0x{size - 1:08x}" and last.get("hex") == r.get("hex", "")[-2:],
       f"offset={last.get('offset')} ({last.get('code', '')}: {str(last.get('message', ''))[:60]})")
 
 print("\n== machine_map(): what the board IS, from the cache start built")

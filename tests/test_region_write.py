@@ -123,12 +123,13 @@ def test_a_region_write_on_m68k_dual_lands_as_the_measured_bytes_and_reads_back(
     ses, regions = _regions(monkeypatch, tmp_path)
     out = s.write(ref="0x7b8", data_hex="8020", region=True)
     assert out["status"] == "ok" and out["verified"] is True and out["readback"] == "8020", out
-    assert (out["region"], out["region_offset"], out["cpu"]) == (":maincpu", 0x7B8, ":maincpu")
+    assert (out["region"], out["region_offset"], out["cpu"]) == (
+        ":maincpu", "0x000007b8", ":maincpu")
     assert bytes(regions.store[":maincpu"][0x7B8:0x7BA]) == bytes.fromhex("2080")
     assert [c.split(",", 1)[1] for c in _sent(ses, "saver") + _sent(ses, "loadr")] == [
         "0x7b8,0x2,:maincpu", "0x7b8,0x2,:maincpu"], ses.commands
     assert out["session"]["altered"] is True, out
-    assert "into :maincpu at 0x7b8" in out["summary"], out
+    assert "into :maincpu at 0x000007b8" in out["summary"], out
 
 
 # A BOARD WHOSE DRIVER NAMES ITS REGION RELATIVELY: the gather then writes the entry's region
@@ -167,7 +168,7 @@ def test_an_unaligned_region_write_is_widened_to_whole_words_and_keeps_its_neigh
     """Widened to the words it touches (`region.write`), each neighbour put back."""
     ses, regions = _regions(monkeypatch, tmp_path)
     out = s.write(ref=ref, data_hex=data, region=True)
-    assert out["verified"] is True and out["region_offset"] == 0x7B9, out
+    assert out["verified"] is True and out["region_offset"] == "0x000007b9", out
     assert regions.cpu_read(":maincpu", 0x7B8, len(word) // 2).hex() == word
     assert _sent(ses, "loadr")[0].endswith(f",{span},:maincpu"), ses.commands
 
@@ -178,7 +179,8 @@ def test_a_region_write_on_the_sub_cpu_goes_into_the_sub_cpus_region(
     ses, regions = _regions(monkeypatch, tmp_path)
     ses.threads = {1: ":maincpu", 2: ":subcpu"}
     out = s.write(ref="0x544", data_hex="4e71", cpu="subcpu", region=True)
-    assert (out["region"], out["region_offset"], out["cpu"]) == (":subcpu", 0x544, ":subcpu")
+    assert (out["region"], out["region_offset"], out["cpu"]) == (
+        ":subcpu", "0x00000544", ":subcpu")
     assert out["verified"] is True and regions.cpu_read(":subcpu", 0x544, 2).hex() == "4e71"
     assert regions.cpu_read(":maincpu", 0x544, 2) == bytes(2), "the main cpu's region moved"
 
@@ -348,7 +350,7 @@ def test_a_plain_rom_write_the_region_could_not_take_does_not_point_at_region(
     write's note does not offer it."""
     _regions(monkeypatch, tmp_path)
     out = s.write(ref="0xfffff", data_hex="a55a")
-    assert out["target"] == "rom" and out["region_offset"] == 0xFFFFF, out
+    assert out["target"] == "rom" and out["region_offset"] == "0x000fffff", out
     assert "`region=True`" not in out["note"], out
     out = s.write(ref="0xffffe", data_hex="a55a")
     assert "`region=True` writes them there" in out["note"], out
@@ -373,7 +375,7 @@ def test_a_region_write_whose_read_back_is_refused_still_names_where_it_landed(
     regions.refuse_reads = True
     out = s.write(ref="0x7b8", data_hex="8020", region=True)
     assert out["code"] == "readback_refused" and out["session"]["altered"] is True, out
-    assert (out["region"], out["region_offset"], out["bytes_written"]) == (":maincpu", 0x7B8,
+    assert (out["region"], out["region_offset"], out["bytes_written"]) == (":maincpu", "0x000007b8",
                                                                            2), out
 
 

@@ -24,7 +24,7 @@ from xml.parsers import expat
 from scry_core import narrowing, prose
 from scry_core.reply_contract import unavailable
 
-from scry_mame import cpus, inputs, read, transport
+from scry_mame import cpus, inputs, lua_source, read
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import state as st
@@ -36,95 +36,6 @@ BEGIN = "MAME_MCP_MACHINE_BEGIN"
 END = "MAME_MCP_MACHINE_END"
 FAILED = "MAME_MCP_MACHINE_ERROR"
 
-# Runs inside a `pcall`: this is the first chunk of the `-autoboot_script`, and a raise would
-# keep the throttle and caller harnesses behind it from installing. A failure is written into
-# the dump instead. `%%` is a literal per cent for Lua's `string.format`; `%(...)s` is ours.
-MACHINE_LUA = """local function mame_mcp_inventory()
-  local out = {}
-  local function add(s) out[#out + 1] = s end
-  local function sorted(t)
-    local keys = {}
-    for k in pairs(t) do keys[#keys + 1] = k end
-    table.sort(keys)
-    return keys
-  end
-  -- MAME gives an entry's missing share or region as nil or as ""; neither is a tag, so both
-  -- dump as the one spelling of absent.
-  local function dash_if_absent(v)
-    if v == nil or v == "" then return "-" end
-    return v
-  end
-  add("%(begin)s")
-  local devices = manager.machine.devices
-  local cpus = {}
-  for _, tag in ipairs(sorted(devices)) do
-    if devices[tag].debug ~= nil then cpus[#cpus + 1] = tag end
-  end
-  for _, tag in ipairs(cpus) do
-    local dev = devices[tag]
-    local names = sorted(dev.spaces)
-    add(string.format("CPU %%s type=%%s name=%%s spaces=%%s", tag, dev.shortname, dev.name,
-                      table.concat(names, ",")))
-    -- The console's names for this cpu's registers: its symbol table takes each state entry.
-    local regs = sorted(dev.state)
-    add(string.format("REGS %%s %%s", tag, table.concat(regs, ",")))
-    for _, sname in ipairs(names) do
-      local space = dev.spaces[sname]
-      local entries = space.map.entries
-      add(string.format("SPACE %%s %%s data_width=%%d endianness=%%s entries=%%d "
-                        .. "address_mask=%%x", tag, sname, space.data_width,
-                        tostring(space.endianness), #entries, space.address_mask))
-      for i = 1, #entries do
-        local e = entries[i]
-        add(string.format("ENTRY %%s %%s %%d start=%%x end=%%x mirror=%%x mask=%%x share=%%s "
-                          .. "region=%%s region_offset=%%d",
-                          tag, sname, i, e.address_start, e.address_end, e.address_mirror,
-                          e.address_mask, dash_if_absent(e.share), dash_if_absent(e.region),
-                          e.region_offset or 0))
-      end
-    end
-  end
-  local mem = manager.machine.memory
-  for _, tag in ipairs(sorted(mem.regions)) do
-    local r = mem.regions[tag]
-    add(string.format("REGION %%s size=%%d bytewidth=%%d endianness=%%s", tag, r.size,
-                      r.bytewidth, tostring(r.endianness)))
-  end
-  for _, tag in ipairs(sorted(mem.shares)) do
-    local s = mem.shares[tag]
-    add(string.format("SHARE %%s size=%%d bytewidth=%%d endianness=%%s", tag, s.size,
-                      s.bytewidth, tostring(s.endianness)))
-  end
-  local screens = manager.machine.screens
-  for _, tag in ipairs(sorted(screens)) do
-    local sc = screens[tag]
-    add(string.format("SCREEN %%s width=%%d height=%%d refresh=%%.6f", tag, sc.width,
-                      sc.height, sc.refresh))
-  end
-  -- THE VIEWS, in a pcall of their own: a board with no render target (no video) lists none,
-  -- and that may not cost the inventory above. `SNAPVIEW` is the view MAME's snapshots are
-  -- taken through, as MAME resolved `-snapview` (a prefix it matched, or its own fallback).
-  pcall(function()
-    for _, name in pairs(manager.machine.render.targets[1].view_names) do
-      add("VIEW " .. name)
-    end
-  end)
-  pcall(function()
-    add("SNAPVIEW " .. manager.machine.video.snapshot_target.current_view.name)
-  end)
-  add("%(end)s")
-  return out
-end
-local ok, err = pcall(function()
-  local f = assert(io.open(%(dump)s, "w"))
-  for _, line in ipairs(mame_mcp_inventory()) do f:write(line .. "\\n") end
-  f:close()
-end)
-if not ok then
-  local f = io.open(%(dump)s, "w")
-  if f then f:write("%(failed)s " .. tostring(err) .. "\\n") f:close() end
-end
-"""
 
 _CPU = re.compile(r"^CPU (\S+) type=(\S+) name=(.*) spaces=(\S*)$")
 _REGS = re.compile(r"^REGS (\S+) (\S*)$")
@@ -144,8 +55,7 @@ LIVE_SECTIONS = ("cpus", "spaces", "address_map", "regions", "shares", "screens"
 
 def harness(dump: Path) -> str:
     """The gather, as Lua text for the boot script."""
-    return MACHINE_LUA % {"begin": BEGIN, "end": END, "failed": FAILED,
-                          "dump": transport.lua_string(str(dump))}
+    return lua_source.render("inventory", begin=BEGIN, end=END, failed=FAILED, dump=str(dump))
 
 
 def _none_if_absent(name: str) -> str | None:
@@ -578,6 +488,11 @@ def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, A
             for name in asked}
     shown = {name: copy.deepcopy(items[:read.LOG_LIMIT_MAX]) for name, items in rows.items()}
     # Replies name a cpu `cpu`, as `cpu_info` does; the cache keeps `tag`.
+    # The cache keeps the offsets as numbers to compute with; a reply writes them as addresses.
+    for name, key in (("address_map", "region_offset"), ("rom_files", "offset")):
+        if name in shown:
+            shown[name] = [{**row, key: st.hex_addr(row[key])} if key in row else row
+                           for row in shown[name]]
     if "cpus" in shown:
         shown["cpus"] = [{"cpu": row["tag"], **{k: v for k, v in row.items() if k != "tag"}}
                          for row in shown["cpus"]]

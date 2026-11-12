@@ -22,6 +22,7 @@ from session_doubles import refused  # noqa: E402
 from scry_mame import envelope as menvelope  # noqa: E402
 from scry_mame import (
     lua,  # noqa: E402
+    lua_source,  # noqa: E402
     running,  # noqa: E402
     transport,  # noqa: E402
 )
@@ -39,7 +40,7 @@ def test_throttle_is_pending_on_a_stopped_machine_and_applied_on_a_running_one(
     assert out["applies"].startswith("when the console next reads a line: a step, "), out
     assert out["confirmed_by"].startswith("its tag in the error log, read by the next stop's "
                                           "survey, by `status` and by `close`"), out
-    sent = transport.chunk_line(lua.THROTTLE_LUA % {"on": "false", "mark": "MAME_MCP_THROTTLE#6"},
+    sent = transport.chunk_line(lua_source.render("throttle", on=False, mark="MAME_MCP_THROTTLE#6"),
                                 6)
     assert sent.encode() + b"\n" in CONSOLE, "the chunk is the captured one"
     assert ses.stdin.getvalue() == sent.replace("#6", "#1").encode() + b"\n"
@@ -55,7 +56,7 @@ def test_throttle_is_pending_on_a_stopped_machine_and_applied_on_a_running_one(
         ses._tick()
     threading.Timer(0.1, two_frames).start()
     out = s.throttle(on=False, seconds=2.0)
-    assert out["pending"] is False and out["frame"] == 341
+    assert out["pending"] is False and out["frame"] == 363
     assert out["session"]["altered"] is False
     # And a mark that says the OPPOSITE of what was asked is a refusal, not a green.
     ses.answers[3] = ses.sentinel(3)
@@ -254,9 +255,9 @@ def test_the_throttle_script_that_reaches_the_pipe_carries_the_switch_that_was_a
     assert out["on"] is on and out["pending"] is True, out
     assert out["applies"].startswith("when the console next reads a line") and (
         "confirmed_by" in out), out
-    sent = transport.chunk_line(lua.THROTTLE_LUA % {"on": word, "mark": "MAME_MCP_THROTTLE#1"}, 1)
+    sent = transport.chunk_line(lua_source.render("throttle", on=on, mark="MAME_MCP_THROTTLE#1"), 1)
     assert ses.stdin.getvalue() == sent.encode() + b"\n"
-    assert f"video.throttled = {word}\n" in lua.THROTTLE_LUA % {"on": word, "mark": "x"}
+    assert f"video.throttled = {word}\n" in lua_source.render("throttle", on=on, mark="x")
 
 
 def test_the_throttle_body_judges_its_own_bound_with_both_arguments(

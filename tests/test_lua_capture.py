@@ -116,7 +116,7 @@ def test_record_checks_the_avi_header_and_runs_two_frames_past_the_recording(
     assert out["status"] == "ok", out
     assert out["path"] == str(path) and out["bytes"] == len(AVI_HEAD)
     assert out["avi_frames"] == 30, "the captured header declares the frames asked for"
-    assert out["frame_begin"] == 301 and out["frame_end"] == 330
+    assert out["frame_begin"] == 321 and out["frame_end"] == 350
     assert out["recording_after"] is True and out["ended"] is True
     assert out["frame_after"] - out["frame_before"] == 33, (
         "frames + 3: one for the begin, two for the file to close")

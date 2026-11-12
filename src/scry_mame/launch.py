@@ -41,6 +41,7 @@ from scry_mame import (
     files,
     idle,
     inputs,
+    lua_source,
     machine,
     read,
     regpoints,
@@ -81,25 +82,6 @@ GUARDIAN_NAME = guardian.name_of(PROCESS_NAME)
 # `log_wait`.
 THROTTLE_FRAME_VAR = "MAME_MCP_THROTTLE_FRAME"
 THROTTLE_MARK = "MAME_MCP throttled from frame"
-# Inside a `pcall`: MAME stops executing the one autoboot script at the first error, which would
-# silently take the chained caller harness down too.
-THROTTLE_LUA = """-- Written by the mame MCP server for ONE session: fly flat out to a frame, real
--- speed from there. The frame comes from the environment; the caller's harness runs after.
-pcall(function()
-  local screen = nil
-  for _, s in pairs(manager.machine.screens) do screen = s break end
-  local TARGET = tonumber(os.getenv("%(var)s") or "0")
-  local done = screen == nil
-  _G._mame_mcp_throttle = emu.add_machine_frame_notifier(function()
-      if done then return end
-      if screen:frame_number() >= TARGET then
-          done = true
-          manager.machine.video.throttled = true
-          manager.machine:logerror(string.format("%(mark)s %%d\\n", screen:frame_number()))
-      end
-  end)
-end)
-"""
 
 
 def check_rom_check(reference_rom: str, reference_addr: str = "0x0",
@@ -329,7 +311,7 @@ def boot_harness(scratch: Path, boot_lua: str, throttle_from_frame: int,
     """
     text = machine.harness(scratch / machine.DUMP_NAME)
     if throttle_from_frame:
-        text += THROTTLE_LUA % {"var": THROTTLE_FRAME_VAR, "mark": THROTTLE_MARK}
+        text += lua_source.render("autoboot-throttle", var=THROTTLE_FRAME_VAR, mark=THROTTLE_MARK)
     if presence:
         text += mpresence.drawer(scratch)
     if boot_lua:

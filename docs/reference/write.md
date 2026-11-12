@@ -37,7 +37,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `cpu` | string or object |
 | `readback` | string |
 | `region` | string |
-| `region_offset` | integer |
+| `region_offset` | string |
 | `target` | string |
 | `verified` | boolean |
 

@@ -376,7 +376,7 @@ class GfxLocateReply(MameConsoleAccount, total=False):
     matches: Required[list[Any]]
     matches_total: Required[int]
     nearest: Annotated[dict[str, Any], When("nothing matched")]
-    offset: int
+    offset: str
     palette: str
     patch: list[Any]
     pc_before: str
@@ -410,7 +410,7 @@ class GfxSweepReply(MameConsoleAccount, total=False):
     kind: str
     lines_ahead: int
     next: Required[str]
-    offset: int
+    offset: str
     palette: str
     palettes: list[Any]
     pc_before: str
@@ -440,7 +440,7 @@ class GfxViewReply(MameConsoleAccount, total=False):
     kind: str
     layout: dict[str, Any]
     lines_ahead: int
-    offset: int
+    offset: str
     palette: str
     palettes: list[Any]
     pc_before: str
@@ -666,7 +666,7 @@ class ReadBlockReply(MameConsoleAccount, total=False):
     length: int
     lines_ahead: int
     map_entry: dict[str, Any]
-    offset: int
+    offset: str
     pc_before: str
     pending: bool
     reader_steps: Annotated[int, OmitEmpty]
@@ -1150,7 +1150,7 @@ class WriteReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
     readback: Required[str]
     region: str
-    region_offset: Annotated[int, When("with `region`")]
+    region_offset: Annotated[str, When("with `region`")]
     target: Annotated[str, When("on ROM")]
     verified: Required[bool]
 

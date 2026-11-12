@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+from lua_text import has, squash
 from scry_core import file_names  # noqa: E402
 from scry_core import value_format as vf  # noqa: E402
 from session_doubles import blank_session, refs, refused, use_table  # noqa: E402
@@ -104,28 +105,28 @@ def test_the_install_is_idempotent_by_id_carries_the_counts_and_registers_one_du
     """A rerun of the install chunk must neither double nor zero a census, nor add a dumper."""
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/tally-2031fc-4.txt"))
     assert script.index("old.tap:remove()") < script.index("install_write_tap")
-    assert 'for _, k in ipairs({"total", "reads", "values", "nvalues", "pcs", "npcs",' in script
-    assert '"overflow_pcs", "errors", "first_error", "seq"}}) do t[k] = old[k] end'.replace(
-        "}}", "}") in script, "a rerun carries the errors too, never zeroing them"
-    assert script.index("do t[k] = old[k] end") < script.index("T.items[id] = t")
-    assert "if not T.periodic then" in script and script.count("emu.register_periodic") == 1
-    assert '"2031fc_4", 0x2031fc, 0x2031ff' in script
-    assert 'execution_state ~= "stop" then return' in script, "dumps only at a stop"
-    assert 'replace(it.path .. ".tmp", it.path)' in script, "whole or absent, never half-written"
+    assert has(script, 'for _, k in ipairs({"total", "reads", "values", "nvalues", "pcs", "npcs",')
+    assert has(script, '"overflow_pcs", "errors", "first_error", "seq"}) do t[k] = old[k] end'), (
+        "a rerun carries the errors too, never zeroing them")
+    assert squash(script).index("do t[k]= old[k]end") < squash(script).index("T.items[id]= t")
+    assert has(script, "if not T.periodic then") and script.count("emu.register_periodic") == 1
+    assert has(script, '"2031fc_4", 0x2031fc, 0x2031ff')
+    assert has(script, 'execution_state ~= "stop" then return'), "dumps only at a stop"
+    assert has(script, 'replace(it.path .. ".tmp", it.path)'), "whole or absent, never half-written"
     assert len(script) < transport.SCRIPT_MAX, "one console line"
 
 
 def test_the_tap_is_bus_aligned_filters_by_landing_and_pays_no_string_per_write() -> None:
     """MAME refuses a one-byte tap on a 16-bit bus: the tap is bus-aligned, filters by landing."""
     script = tally.install_script("20351c_1", 0x20351C, 1, Path("/s/t.txt"))
-    assert "local lo, hi = first - (first % nb), last + (nb - 1 - (last % nb))" in script
-    assert "local aligned = lo == first and hi == last" in script
-    assert 'install_write_tap(lo, hi,' in script
-    assert "if not aligned and not lands(offset, mask) then return end" in script
-    assert 'local curpc = cpu.state["CURPC"]' in script, "hoisted: the writer, not the prefetch"
+    assert has(script, "local lo, hi = first - (first % nb), last + (nb - 1 - (last % nb))")
+    assert has(script, "local aligned = lo == first and hi == last")
+    assert has(script, 'install_write_tap(lo, hi,')
+    assert has(script, "if not aligned and not lands(offset, mask) then return end")
+    assert has(script, 'local curpc = cpu.state["CURPC"]'), "hoisted: the writer, not the prefetch"
     assert script.index('local curpc = cpu.state["CURPC"]') < script.index("install_write_tap")
-    assert "local pc = curpc.value" in script
-    assert "local k = ((data & mask) << 32) | mask" in script
+    assert has(script, "local pc = curpc.value")
+    assert has(script, "local k = ((data & mask) << 32) | mask")
     callback = script.split("install_write_tap")[1].split("T.items[id] = t")[0]
     assert "string.format" not in callback
 
@@ -133,7 +134,7 @@ def test_the_tap_is_bus_aligned_filters_by_landing_and_pays_no_string_per_write(
 def test_the_removal_takes_the_tap_and_the_registry_entry_and_refuses_nothing() -> None:
     script = mtap.remove_script("2031fc_4", tally.REGISTRY)
     assert "it.tap:remove()" in script and "T.items[id] = nil" in script
-    assert 'print("MCP_TALLY absent tally_id=" .. id)' in script
+    assert 'print("MCP_TALLY" .. " absent tally_id=" .. id)' in script
 
 
 
@@ -720,7 +721,7 @@ def test_watch_clear_sends_the_removal_and_drops_the_record_and_the_dump(
     assert mstate.STATE.tallies == {} and ses.watchpoints == []
     assert not (tmp_path / "tally-2031fc-4.txt").exists()
     assert not (tmp_path / "tally-2031fc-4.txt.tmp").exists()
-    assert b'MCP_TALLY removed tally_id=' in _sent()
+    assert b'MCP_TALLY\\" .. \\" removed tally_id=' in _sent()
     assert watches.evaluate_watches(ses, frame=61) == []  # type: ignore[arg-type]
     s.watch_add(ref="0x203200", mode="show", length=2)
     assert "tallies_removed" not in s.declaration_clear("watch", all=True)
@@ -914,11 +915,12 @@ def test_an_answered_install_reads_its_dump(
 def test_an_install_over_no_tap_removes_the_dump_a_removed_one_left(tmp_path: Path) -> None:
     """With no tap of the range in the registry the install deletes any dump left at its path."""
     path = tmp_path / "tally-10-2.txt"
-    script = tally.install_script("10_2", 0x10, 2, path)
-    removal = 'if old == nil then os.remove(path) os.remove(path .. ".tmp") end'
+    script = squash(tally.install_script("10_2", 0x10, 2, path))
+    removal = squash('if old == nil then os.remove(path) os.remove(path .. ".tmp") end')
     assert script.count(removal) == 1, script
-    assert script.index("local old = T.items[id]") < script.index(removal), "old is read first"
-    assert script.index(removal) < script.index("T.items[id] = t"), "before the tap is held"
+    assert script.index(squash("local old = T.items[id]")) < script.index(removal), (
+        "old is read first")
+    assert script.index(removal) < script.index(squash("T.items[id] = t")), "before the tap is held"
 
 
 def test_a_resend_would_carry_away_a_tally_that_is_alive_again(
@@ -1476,20 +1478,22 @@ def test_a_removal_the_console_refused_is_latched_by_the_next_stop_and_rides_eve
 
 def test_a_count_of_reads_taps_the_reads_and_only_the_reads() -> None:
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access="r")
-    assert "install_read_tap(lo, hi," in script and "install_write_tap" not in script
-    assert "t.reads = t.reads + 1" in script
-    assert "if not aligned and not lands(offset, mask) then return end" in script
+    assert has(script, "install_read_tap(lo, hi,") and "install_write_tap" not in script
+    assert has(script, "t.reads = t.reads + 1")
+    assert has(script, "if not aligned and not lands(offset, mask) then return end")
 
 
 def test_a_count_of_both_keeps_two_taps_under_the_one_a_removal_takes() -> None:
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"), access="rw")
-    assert "install_read_tap(lo, hi," in script and "install_write_tap(lo, hi," in script
-    assert "t.tap = {remove = function() wtap:remove() rtap:remove() end}" in script
+    assert has(script, "install_read_tap(lo, hi,") and has(script, "install_write_tap(lo, hi,")
+    assert has(script, "t.tap = {remove = function() wtap:remove() rtap:remove() end}")
 
 
 def test_a_count_of_writes_is_the_tap_it_always_was() -> None:
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"))
-    assert "t.tap = sp:install_write_tap(lo, hi," in script and "install_read_tap" not in script
+    assert has(script, "local wtap = sp:install_write_tap(lo, hi,")
+    assert "\nt.tap = wtap\n" in script
+    assert "install_read_tap" not in script
 
 
 def test_a_rerun_of_the_install_carries_the_reads_too() -> None:
@@ -1510,7 +1514,8 @@ def test_the_dump_says_its_reads_and_one_without_them_reads_none() -> None:
 
 def test_the_dumper_writes_the_header_the_parser_reads() -> None:
     script = tally.install_script("2031fc_4", 0x2031FC, 4, Path("/s/t.txt"))
-    assert "total=%d reads=%d values=%d" in script and "it.total, it.reads, it.nvalues" in script
+    assert has(script, "total=%d reads=%d values=%d")
+    assert has(script, "it.total, it.reads, it.nvalues")
 
 
 @pytest.mark.parametrize("access", ["r", "rw"])

@@ -11,7 +11,7 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import or_unavailable, unavailable
 
-from scry_mame import advance, files, inputs, read, transport
+from scry_mame import advance, files, inputs, lua_source, read, transport
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import lua as mlua
@@ -19,54 +19,13 @@ from scry_mame import state as st
 from scry_mame.state import STATE
 
 RECORD_MARK = "MAME_MCP_RECORD"
-
-# Predicts where a notifier the debugger evaluated first runs. A chunk evaluated at a stop
-# inside a vblank is first called on the next frame (frame notifiers run at vblank start, the
-# counter moves at vblank end: `screen.cpp`); the running frame update's own chunk is called in
-# that same update. Wrong by one frame under `VIDEO_UPDATE_AFTER_VBLANK`, which Lua cannot see.
-ARMED_LUA = """manager.machine:logerror(string.format("%(mark)s armed frame=%%d vblank=%%s\\n",
-    screen:frame_number(), tostring(screen:time_until_vblank_end():as_double()
-        < screen:time_until_vblank_start():as_double())))
-"""
-
-# The chunk's notifier runs in the same frame update that evaluated it, so a recording begun at
-# frame F and ended when the counter reads F + N - 1 holds exactly N frames.
 NO_SCREEN = "this machine has no screen"
-RECORD_LUA = """if _G._mame_mcp_record_release then _G._mame_mcp_record_release() end
-local v = manager.machine.video
-local screen = nil
-for _, s in pairs(manager.machine.screens) do screen = s break end
-if screen == nil then error('""" + NO_SCREEN + """ to record') end
--- BEGIN AND END FROM THE SAME PLACE IN THE FRAME: the chunk itself is evaluated by the
--- console's periodic hook, at a point of the frame that is not the notifier's, so a
--- recording begun here and ended there came out one frame short on some runs and exact
--- on others. Begun on the first notifier call, it holds the frame of that call (the
--- notifier runs before the frame's video write) and one per later call, so the count
--- is exact whatever the console's own timing.
-local counted = -1
-local done = false
-_G._mame_mcp_record_release = function()
-    done = true
-    if v.is_recording then v:end_recording() end
-end
-_G._mame_mcp_record = emu.add_machine_frame_notifier(function()
-    if done then return end
-    if counted < 0 then
-        v:begin_recording(%(path)s, "avi")
-        counted = 0
-        manager.machine:logerror(string.format(
-            "%(mark)s begin frame=%%d recording=%%s\\n", screen:frame_number(),
-            tostring(v.is_recording)))
-        return
-    end
-    counted = counted + 1
-    if counted >= %(frames)d - 1 then
-        done = true
-        v:end_recording()
-        manager.machine:logerror(string.format("%(mark)s end frame=%%d\\n", screen:frame_number()))
-    end
-end)
-""" + ARMED_LUA
+
+
+def armed(mark: str) -> str:
+    """The line a recording's script ends with: `mark`, the frame and whether it is in vblank,
+    logged as the script is armed."""
+    return lua_source.render("record-armed", mark=mark)
 
 def check_record(frames: int, dest: str = "", seconds: float = 60.0, **_: Any) -> Path | None:
     """`record`'s machine-independent checks; returns the `Path` built from `dest`, if any."""
@@ -201,8 +160,9 @@ def record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds: floa
     else:
         path = scratch / "snap" / f"record-{STATE.next_number('recordings')}.avi"
     tag = f"{RECORD_MARK}#{STATE.lua_seq + 1}"
-    script = RECORD_LUA % {"path": transport.lua_string(begun_as(path)), "frames": frames,
-                           "mark": tag}
+    script = (lua_source.render("record", path=begun_as(path), frames=frames, mark=tag,
+                                no_screen=NO_SCREEN)
+              + armed(tag))
     ends_after = frames - 1
     file_keys = ("avi_frames", "bytes")
 

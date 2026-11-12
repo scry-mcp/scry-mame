@@ -8,6 +8,7 @@ from __future__ import annotations
 import re
 
 import pytest
+from lua_text import squash
 
 from scry_mame import (
     callbacks,  # noqa: E402
@@ -20,21 +21,19 @@ from scry_mame import tap as mtap  # noqa: E402
 def test_the_prelude_is_the_guard_then_the_registry_made_once() -> None:
     assert mtap.tap_prelude("MCP_X") == callbacks.LUA + (
         "local T = _G.MCP_X\n"
-        "if T == nil then T = {items = {}, periodic = false} _G.MCP_X = T end\n")
+        "if T == nil then\n  T = { items = {}, periodic = false }\n  _G.MCP_X = T\nend\n")
 
 
-def test_the_cpu_is_bound_with_the_debugger_local_beside_it() -> None:
-    """`dbg` is bound in both forms: a palette log's `by()` reads it, named cpu or not."""
-    assert mtap.bound_cpu(":subcpu") == ('local dbg = manager.machine.debugger\n'
-                                         'local cpu = manager.machine.devices[":subcpu"]')
+def test_a_named_cpu_is_bound_by_name_and_no_name_is_the_visible_one() -> None:
+    assert mtap.bound_cpu(":subcpu") == 'local cpu = manager.machine.devices[":subcpu"]'
     assert mtap.bound_cpu(None) == (
-        'local dbg = manager.machine.debugger\n'
-        'local cpu = dbg and dbg.visible_cpu or manager.machine.devices[":maincpu"]')
+        "local cpu = manager.machine.debugger and manager.machine.debugger.visible_cpu "
+        'or manager.machine.devices[":maincpu"]')
 
 
 def test_the_old_tap_under_the_id_is_removed_and_kept_as_old() -> None:
-    assert mtap.REMOVE_OLD_TAP == ("local old = T.items[id]\n"
-                                   "if old ~= nil and old.tap ~= nil then old.tap:remove() end")
+    assert squash(mtap.REMOVE_OLD_TAP) == squash(
+        "local old = T.items[id]\nif old ~= nil and old.tap ~= nil then old.tap:remove() end")
 
 
 def test_the_dumper_is_registered_by_the_first_install_alone() -> None:

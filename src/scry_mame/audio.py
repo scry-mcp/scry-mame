@@ -16,7 +16,7 @@ from scry_core import prose, wav
 from scry_core import vocabulary as vocab
 
 from scry_mame import gdb_session as gs
-from scry_mame import inputs, transport
+from scry_mame import inputs, lua_source
 from scry_mame import lua as mlua
 from scry_mame import recording as mrec
 from scry_mame import state as st
@@ -31,56 +31,6 @@ FRAMES_WHY = (f": MAME mixes in whole updates of 1/{MIXER_UPDATE_HZ} of an emula
               f"{FRAMES_MIN} is the fewest frames that always hold one on a screen under "
               f"{FRAMES_MIN * MIXER_UPDATE_HZ} Hz")
 
-# Ends one notifier call after `record`'s script does. It stops only its own recording and only
-# while the mixer still writes it: a session whose ini names `wavwrite`, or a `lua` call, may have
-# replaced the file, and MAME writes the RIFF size only on close, so a size there means it is
-# no longer this script's.
-AUDIO_LUA = """if _G._mame_mcp_audio_release then _G._mame_mcp_audio_release() end
-local snd = manager.machine.sound
-local path = %(path)s
-local screen = nil
-for _, s in pairs(manager.machine.screens) do screen = s break end
-if screen == nil then error('""" + mrec.NO_SCREEN + """ to count frames by') end
-local counted = -1
-local began = false
-local done = false
-local function stop_own()
-    if not began then return end
-    began = false
-    local f = io.open(path, "rb")
-    if f ~= nil then
-        f:seek("set", 4)
-        local size = f:read(4)
-        f:close()
-        if size ~= nil and #size == 4 and string.unpack("<I4", size) ~= 0 then return end
-    end
-    snd:stop_recording()
-end
-_G._mame_mcp_audio_release = function()
-    done = true
-    stop_own()
-end
-_G._mame_mcp_audio = emu.add_machine_frame_notifier(function()
-    if done then return end
-    if counted < 0 then
-        began = snd:start_recording(path)
-        counted = 0
-        manager.machine:logerror(string.format(
-            "%(mark)s begin frame=%%d ok=%%s recording=%%s time=%%.17g period=%%.17g\\n",
-            screen:frame_number(), tostring(began), tostring(snd.recording),
-            manager.machine.time:as_double(), screen.frame_period))
-        if not began then done = true end
-        return
-    end
-    counted = counted + 1
-    if counted >= %(frames)d then
-        done = true
-        stop_own()
-        manager.machine:logerror(string.format("%(mark)s end frame=%%d time=%%.17g\\n",
-            screen:frame_number(), manager.machine.time:as_double()))
-    end
-end)
-""" + mrec.ARMED_LUA
 
 
 def check_audio_record(frames: int, dest: str = "", seconds: float = 60.0,
@@ -108,7 +58,9 @@ def audio_record(ses: gs.Session, scratch: Path, frames: int, dest: str, seconds
     else:
         path = scratch / "snap" / f"audio-{STATE.next_number('recordings')}.wav"
     tag = f"{AUDIO_MARK}#{STATE.lua_seq + 1}"
-    script = AUDIO_LUA % {"path": transport.lua_string(str(path)), "frames": frames, "mark": tag}
+    script = (lua_source.render("audio", path=str(path), frames=frames, mark=tag,
+                                no_screen=mrec.NO_SCREEN)
+              + mrec.armed(tag))
 
     def finish(rec: mrec.Recording) -> dict[str, Any]:
         ran, begin, end = rec

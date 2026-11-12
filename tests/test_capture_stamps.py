@@ -10,6 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from lua_text import has
 from session_doubles import refused, run_host_lua  # noqa: E402
 from test_capture import COUNTER_ID, INSTALLED, _capturing  # noqa: E402
 from test_tally import _answer, _sent  # noqa: E402
@@ -148,7 +149,7 @@ def test_a_read_capture_taps_the_reads_and_reads_no_memory_inside_them(tmp_path:
 def test_a_read_capture_runs_under_the_guard_and_counts_what_raised(tmp_path: Path) -> None:
     script = capture.install_script("x_t12", 0x12, capture.TapSource("space", "", 0x10), 1,
                                     tmp_path / "h", tmp_path / "r", ":maincpu", trigger_type="r")
-    assert "install_read_tap(lo, lo + nb - 1, \"mcp_capture_\" .. id,\n    guarded(t," in script
+    assert has(script, "install_read_tap(lo, lo + nb - 1, \"mcp_capture_\" .. id,\n    guarded(t,")
 
 
 def test_watch_add_declares_a_read_capture_on_its_trigger_and_sends_a_read_tap(

@@ -464,7 +464,8 @@ def test_a_write_that_goes_nowhere_on_rom_says_so_and_names_the_region_behind_it
     ses = _rom_under_write(monkeypatch, tmp_path)
     out = s.write(ref="0x7b8", data_hex="8020")
     assert out["verified"] is False and out["readback"] == "80a0", out
-    assert (out["target"], out["region"], out["region_offset"]) == ("rom", ":maincpu", 0x7B8), out
+    assert (out["target"], out["region"], out["region_offset"]) == (
+        "rom", ":maincpu", "0x000007b8"), out
     assert "no write side" in out["note"], out
     assert ses.commands.count("map 0x7b8::maincpu") == 1, ses.commands
 
@@ -479,7 +480,8 @@ def test_a_rom_write_on_two_cpus_names_the_region_of_the_cpu_it_went_to(
                         lambda c, timeout=10.0: "[0] :maincpu\n[1] :subcpu\n\n" if c == "cpulist"
                         else real(c))
     out = s.write(ref="0x7b8", data_hex="8020")
-    assert (out["cpu"], out["region"], out["region_offset"]) == (":maincpu", ":maincpu", 0x7B8)
+    assert (out["cpu"], out["region"], out["region_offset"]) == (
+        ":maincpu", ":maincpu", "0x000007b8")
     assert "map 0x7b8::maincpu" in ses.commands, ses.commands
 
 
@@ -525,7 +527,8 @@ def test_a_rom_write_with_another_cpu_visible_is_explained_on_the_cpu_it_went_to
     ses = _rom_under_write(monkeypatch, tmp_path)
     ses.visible_cpu, ses.threads = ":subcpu", threads
     out = s.write(ref="0x7b8", data_hex="8020")
-    assert (out["cpu"], out["region"], out["region_offset"]) == (went_to, went_to, 0x7B8), out
+    assert (out["cpu"], out["region"], out["region_offset"]) == (
+        went_to, went_to, "0x000007b8"), out
     assert f"map 0x7b8:{went_to}" in ses.commands, ses.commands
 
 
@@ -548,7 +551,7 @@ def test_a_rom_write_through_a_mirror_names_the_bytes_it_mirrors(
     ses.memory[0x1007B8] = bytes.fromhex("80a0")
     _cached(monkeypatch, tmp_path, dump=_MIRRORED)
     out = s.write(ref="0x1007b8", data_hex="8020")
-    assert (out["region"], out["region_offset"]) == (":maincpu", 0x7B8), out
+    assert (out["region"], out["region_offset"]) == (":maincpu", "0x000007b8"), out
 
 
 def test_a_rom_write_under_two_entries_of_one_cpu_names_no_region(

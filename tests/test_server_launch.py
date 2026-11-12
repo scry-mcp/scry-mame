@@ -423,18 +423,18 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
     out = s.disassemble("0xf5bc0", length=48)
     assert out["status"] == "ok", out
     assert out["resolved"] == [
-        {"line": 4, "operand": "0C014h", "offset": 0xC014, "class": "DATA",
+        {"line": 4, "operand": "0C014h", "offset": "0x0000c014", "class": "DATA",
          "linear": "0x0000c414", "symbol": "IN_IRQ", "delta": 0},
-        {"line": 16, "operand": "0C014h", "offset": 0xC014, "class": "DATA",
+        {"line": 16, "operand": "0C014h", "offset": "0x0000c014", "class": "DATA",
          "linear": "0x0000c414", "symbol": "IN_IRQ", "delta": 0},
-        {"line": 21, "operand": "0E849h", "offset": 0xE849, "class": "DATA",
+        {"line": 21, "operand": "0E849h", "offset": "0x0000e849", "class": "DATA",
          "linear": "0x0000ec49", "symbol": "TOTALTIME", "delta": 0},
-        {"line": 22, "operand": "0C016h", "offset": 0xC016, "class": "DATA",
+        {"line": 22, "operand": "0C016h", "offset": "0x0000c016", "class": "DATA",
          "linear": "0x0000c416", "symbol": "IN_IRQ", "delta": 2},
     ], out["resolved"]
     out = s.disassemble("0xf5e2f", length=48)
     assert out["resolved"] == [
-        {"line": 21, "operand": "0CA34h", "offset": 0xCA34, "class": "DATA",
+        {"line": 21, "operand": "0CA34h", "offset": "0x0000ca34", "class": "DATA",
          "linear": "0x0000ce34", "symbol": "DEMOSTATE", "delta": 0x404},
     ], "only the one direct operand resolves; the register-relative ones are left alone"
     # TWO RELOCATED CLASSES answer one entry each per operand, and a class with no symbol
@@ -450,7 +450,7 @@ def test_disassemble_resolves_direct_memory_operands_under_the_bases(
     use_table(monkeypatch, bases={"DATA": 0x400})
     out = s.disassemble("0xf5e2f", length=48)
     below = {"available": False, "why": "no symbol of class DATA lies at or below it"}
-    assert out["resolved"] == [{"line": 21, "operand": "0CA34h", "offset": 0xCA34,
+    assert out["resolved"] == [{"line": 21, "operand": "0CA34h", "offset": "0x0000ca34",
                                 "class": "DATA", "linear": "0x0000ce34", "symbol": below,
                                 "delta": below}]
     # THE CONTROL: a board with no bases (a 68000 with a YAML table) carries no `resolved`

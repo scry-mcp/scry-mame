@@ -26,7 +26,7 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.reply_contract import unavailable
 
-from scry_mame import advance, files, inputs, running, transport
+from scry_mame import advance, files, inputs, lua_source, running, transport
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import state as st
@@ -37,43 +37,6 @@ EVAL_WAIT_S = 5.0
 # Marks the wrappers write through `logerror`, each followed by the `#<seq>` of its call.
 INPUT_MARK = "MAME_MCP_INPUT"
 THROTTLE_MARK = "MAME_MCP_THROTTLE"
-
-# Values go in as Lua literals through `lua_string`/ints so a quote in a port tag cannot break
-# out. A new script of a family releases the previous notifier first: at most one is armed.
-INPUT_LUA = """if _G._mame_mcp_input_release then _G._mame_mcp_input_release() end
-local p = manager.machine.ioport.ports[%(port)s]
-if p == nil then error("no port " .. %(port)s) end
-local f = p.fields[%(field)s]
-if f == nil then error("port " .. %(port)s .. " has no field " .. %(field)s) end
-local screen = nil
-for _, s in pairs(manager.machine.screens) do screen = s break end
-local start = screen and screen:frame_number() or -1
-local before = p:read()
-f:set_value(%(value)d)
-local done = false
-_G._mame_mcp_input_release = function() done = true f:clear_value() end
-_G._mame_mcp_input = emu.add_machine_frame_notifier(function()
-    if done then return end
-    local frame = screen and screen:frame_number() or -1
-    if frame - start >= %(frames)d then
-        done = true
-        local held = p:read()
-        f:clear_value()
-        manager.machine:logerror(string.format(
-            "%(mark)s release frame=%%d port_held=%%08x\\n", frame, held))
-    end
-end)
-manager.machine:logerror(string.format(
-    "%(mark)s set name=%%q player=%%d mask=%%08x defvalue=%%08x port_before=%%08x frame=%%d\\n",
-    f.name, f.player, f.mask, f.defvalue, before, start))
-"""
-
-THROTTLE_LUA = """manager.machine.video.throttled = %(on)s
-local screen = nil
-for _, s in pairs(manager.machine.screens) do screen = s break end
-manager.machine:logerror(string.format("%(mark)s throttled=%%s frame=%%d\\n",
-    tostring(manager.machine.video.throttled), screen and screen:frame_number() or -1))
-"""
 
 
 # The halves that need no machine: the server asks them before reaching for it.
@@ -381,7 +344,7 @@ def refuse_if_raised(answer: transport.Answer, what: str, resent: int,
 
 
 def input_refusal_code(error: str) -> contract.Code:
-    """`INPUT_LUA` raises on its own only for a port or field the machine lacks."""
+    """`lua/input.lua` raises on its own only for a port or field the machine lacks."""
     return "unknown_ref" if ": no port " in error or " has no field " in error else (
         "unexpected_answer")
 
@@ -393,8 +356,8 @@ def input_field(ses: gs.Session, scratch: Path, port: str, field: str, value: in
     check_input(port, field, frames, seconds)
     mark = files.log_mark(scratch)
     tag = f"{INPUT_MARK}#{STATE.lua_seq + 1}"
-    script = INPUT_LUA % {"port": transport.lua_string(port), "field": transport.lua_string(field),
-                          "value": value, "frames": frames, "mark": tag}
+    script = lua_source.render("input", port=port, field=field, value=value, frames=frames,
+                               mark=tag)
     advance.refuse_frameless("`input`, held for frames,")   # before the drain, which steps
     ahead, drain_steps = drain_ahead(ses, scratch)
     with drain_said(ahead, drain_steps):
@@ -449,7 +412,7 @@ def throttle(ses: gs.Session, scratch: Path, on: bool, seconds: float,
     check_throttle(on, seconds)
     mark = files.log_mark(scratch)
     tag = f"{THROTTLE_MARK}#{STATE.lua_seq + 1}"
-    script = THROTTLE_LUA % {"on": "true" if on else "false", "mark": tag}
+    script = lua_source.render("throttle", on=on, mark=tag)
     _line, seq = transport.send(script)
 
     def pending() -> dict[str, Any]:

@@ -48,11 +48,11 @@ def test_input_queues_the_script_and_reads_the_port_back_off_the_marks(
     assert out["mask"] == "0x00000400" and out["defvalue"] == "0x00000400"
     assert out["port_before"] == "0x0000dfff" and out["port_held"] == "0x0000dbff"
     assert out["active"] is True and out["released"] is True
-    assert out["frame_set"] == 301 and out["frame_released"] == 305
+    assert out["frame_set"] == 300 and out["frame_released"] == 304
     assert out["verdict"] == "ELAPSED" and out["frame_after"] - out["frame_before"] == 5
     assert out["session"]["altered"] is False, "a typed wrapper is not the raw form"
     assert list(out)[-1] == "session", "the envelope's shape survives the wrapper's fields"
-    assert out["summary"] == "input :P1 'Coin 1': held 4 frames, active True, released at frame 305"
+    assert out["summary"] == "input :P1 'Coin 1': held 4 frames, active True, released at frame 304"
 
 
 def test_input_refuses_in_the_consoles_words_when_the_field_does_not_exist(
@@ -76,8 +76,8 @@ def test_input_cut_short_says_the_field_is_still_held_and_a_later_call_ignores_i
     out = s.input(port=":P1", field="Coin 1", frames=4)
     assert out["status"] == "ok" and out["released"] is False
     assert out["active"]["available"] is False and out["port_held"]["available"] is False
-    assert out["frame_release_planned"] == 305 and "still HELD" in out["note"]
-    assert out["summary"] == "input :P1 'Coin 1': still HELD from frame 301, releases at 305"
+    assert out["frame_release_planned"] == 304 and "still HELD" in out["note"]
+    assert out["summary"] == "input :P1 'Coin 1': still HELD from frame 300, releases at 304"
     # The stale release lands in the log with the FIRST call's tag, before the second call runs.
     with open(ses.scratch / "error.log", "a") as log:
         log.write(_marks_of("MAME_MCP_INPUT#3 release")[0].replace("#3", "#1") + "\n")

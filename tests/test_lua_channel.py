@@ -16,6 +16,7 @@ import pytest
 from lua_support import (  # noqa: E402
     AVI_HEAD,
     CONSOLE,
+    CONSOLE_0288,
     PROMPT,
     STA_HEAD,
     TRIO,
@@ -108,7 +109,7 @@ def test_a_script_that_raises_is_a_refusal_in_the_consoles_words_and_the_reader_
 ) -> None:
     """The captured answer to a raised script"""
     ses = _channel(monkeypatch, tmp_path)
-    ses.answers[1] = _captured(2)
+    ses.answers[1] = _captured(2, console=CONSOLE_0288)
     assert ses.answers[1].count(b"MAME_MCP_LUA_END#1") == 2, "the duplicate is in the capture"
     out = refused("attempt to call a nil value", s.lua("this_function_does_not_exist()"))
     assert out["code"] == "bad_argument"

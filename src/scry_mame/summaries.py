@@ -323,7 +323,7 @@ def read_memory(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def read_block(args: dict[str, Any], reply: dict[str, Any]) -> str:
     asked = f"{args['ref']} in " if args.get("ref") else ""
     return (f"read_block {asked}{reply['kind']} {reply['tag']}: "
-            f"{prose.counted(reply['length'], 'byte')} at offset {reply['offset']:#x} of "
+            f"{prose.counted(reply['length'], 'byte')} at offset {reply['offset']} of "
             f"{reply['size']:#x}: {hex_clipped(reply['hex'])}")
 
 
@@ -369,7 +369,7 @@ def history(args: dict[str, Any], reply: dict[str, Any]) -> str:
 # -------------------------------------------------------------------------------- write
 
 def write(args: dict[str, Any], reply: dict[str, Any]) -> str:
-    into = (f" into {reply['region']} at {reply['region_offset']:#x}"
+    into = (f" into {reply['region']} at {reply['region_offset']}"
             if args.get("region") else "")
     return (f"write {args['ref']}: {prose.counted(reply['bytes_written'], 'byte')}{into}, verified "
             f"{reply['verified']}")

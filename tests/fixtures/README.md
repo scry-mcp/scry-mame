@@ -10,3 +10,11 @@ name is MAME's public information; a test that needs a collection set says which
 where to get it.
 
 A directory's PROVENANCE, where it has one, says how its files were captured.
+
+`console.stdout` and `console-error.log` are one session on `m68k-dual` through the server, its
+console's output from the first chunk on and the error log's `[luaengine]` lines: a probe, a
+script that raises, 300 frames run, `input` on `:P1` `Coin 1`, the same on a field the port lacks,
+`record` of 30 frames and `throttle(on=False)`. They are re-captured whenever a script under
+`src/scry_mame/lua/` that they hold changes, since a test finds the chunk the server sends in them.
+`console-0288.stdout` is the same session on MAME 0.288, kept for the raised chunk's sentinel,
+which that console printed twice.
