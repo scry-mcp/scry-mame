@@ -4,7 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
-- On scry-core 0.103.0, whose pre-commit measures the prose of `.lua` files too.
+- On scry-core 0.104.0, whose pre-commit measures the prose of `.lua` files too and which
+  renders a repository's `.scry/README.md` from one template.
 - Offsets read as addresses do, in `0x` hex: `read_block`'s `offset`, the graphics tools' source
   `offset`, `machine_map`'s `region_offset` and ROM `offset`, `write`'s `region_offset`, and
   the offset of each operand `disassemble` resolves.
