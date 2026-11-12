@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), whose demo runner takes `--display`, so a
+  demo can be recorded on one of the host's own displays.
+
 - On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
   one template and holds the `record` text both servers answer.
 - On the pinned scry-core (`pyproject.toml`), whose demo runner records a demo's loop and
