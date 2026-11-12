@@ -29,5 +29,6 @@ A recipe declares how a board starts: paths, arguments, how long a boot waits. W
 
 ---
 
-This page is rendered from `about.json` and the files beside it; edit those and run
-`python -m scry_core.scry_readme`, never this page.
+This page is rendered by the servers' `promote` from `about.json` and the files beside it; edit
+those, never this page. To render it by hand, run `uv run python -m scry_core.scry_readme
+<this repository>` from a scry-core checkout.
