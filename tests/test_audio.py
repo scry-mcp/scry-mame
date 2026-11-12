@@ -683,11 +683,13 @@ BOUND_REFUSAL = {"status": "INVALID", "code": "not_settled",
                  "frame_before": 100, "frame_after": 103, "session": {}}
 
 
-def _bound_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *,
-              content: bytes = AVI_HEAD, twice: bool = False) -> tuple[Any, Path, dict[str, Any]]:
+def _bound_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *, content: bytes = AVI_HEAD,
+              twice: bool = False, left_running: bool = False
+              ) -> tuple[Any, Path, dict[str, Any]]:
     """The channel of a `record` whose run meets its bound with the notifier armed: the script
     ran, its file is `content`, and `queued_then_ran` answers `not_settled` on the first call
-    only, so the release runs on a line of its own."""
+    only, so the release runs on a line of its own. `left_running` makes that first call let go
+    of the machine as the frame counter's bound does (`advance.left_running`)."""
     ses = _channel(monkeypatch, tmp_path)
     path = ses.scratch / "snap" / "record-1.avi"
     ses.answers[1] = _captured(5)
@@ -702,6 +704,8 @@ def _bound_at(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *,
         seen["calls"] += 1
         ran, answer, resent, moved = real(*a, **k)
         if seen["calls"] == 1:
+            if left_running:
+                advance.left_running(ses)  # type: ignore[arg-type]
             return dict(BOUND_REFUSAL), answer, resent, moved
         return ran, answer, resent, moved
 
