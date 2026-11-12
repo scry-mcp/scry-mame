@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Reply, Run, Step, expect, main
+from scry_core.demo import Demo, Loop, Reply, Run, Step, expect, main
 from scry_core.game_demo import arrived, word_is
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
@@ -70,8 +70,8 @@ def precheck(run: Run) -> str:
 def boot(run: Run) -> dict[str, Any]:
     """The game's recipe, plus what is the run's own: its ini and state directories."""
     ini, states = free_set.fresh_dirs(run, SYSTEM)
-    args: dict[str, Any] = {"profile": str(game(run) / PROFILE), "inipath": ini,
-                            "state_dir": states, "shared": True}
+    args: dict[str, Any] = {**free_set.window(run), "profile": str(game(run) / PROFILE),
+                            "inipath": ini, "state_dir": states}
     if own_romset(run):
         args["rompath"] = romset(run)  # the caller wins over the recipe
     return args
@@ -91,7 +91,8 @@ def scene(reply: Reply, run: Run) -> str:
 
 
 STEPS = [
-    Step("start", "start", boot, started, options=frozenset({"binary"}),
+    Step("start", "start", boot, started,
+         options=frozenset({"binary", "display"}),
          volatile=free_set.START_VOLATILE,
          highlight=("`start(profile=...)` boots from the recipe the game's own repository "
                     "declares: the set, the romset, the ini directory, the linker's image as "
@@ -119,13 +120,14 @@ STEPS = [
 DEMO = Demo(
     name=SYSTEM, root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=STEPS,
-    capture=lambda run: run.dir / "screen.png",
-    offers=frozenset({"cwd", "rompath"}), reads=frozenset({"cwd", "rompath"}),
-    precheck=precheck,
+    capture=lambda run: run.dir / "screen.png", loop=Loop("screen"),
+    offers=frozenset({"cwd", "rompath", "display"}),
+    reads=frozenset({"cwd", "rompath"}), precheck=precheck,
     volatile=VOLATILE_GAME,
     host_args={"cwd": "the reader's checkout of the game",
                "rompath": "the directory the host keeps the game's romset in",
                "profile": "the reader's checkout of the game",
+               "display": free_set.DISPLAY,
                "inipath": "the run's own directory",
                "state_dir": "the run's own directory"})
 

@@ -83,7 +83,9 @@ def test_the_board_starts_on_the_image_its_halves_make_with_the_romsets_map(
     assert Path(args["symbols"]).parent == run.dir
     assert (args["reference_addr"], args["bases"]) == ("0x30000", demo.BASES)
     assert (Path(args["inipath"]) / "mame.ini").read_text() == "joystickprovider none\n"
-    assert args["shared"] is True and "display" not in args
+    assert (args["shared"], args["background"], args["display"]) == (True, True, 0)
+    assert demo.boot(Run(dir=run.dir, options={"rompath": str(roms), "display": 1}))[
+        "display"] == 1
 
 
 def test_a_start_whose_release_could_not_be_read_is_not_a_demo_start() -> None:

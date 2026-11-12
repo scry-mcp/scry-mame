@@ -29,10 +29,10 @@ uv run python demos/gridlee/demo.py --rompath ~/roms
 
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
-- `--shared` is for a run somebody watches: MAME opens in front, in a window scaled to be seen.
-  Left out, it runs in a small window behind your work.
+- `--display N` opens the window on that display; left out, on the host's main one. The
+  window opens behind, so the run takes nobody's focus.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md` and `screen.png` from a run where every step
+- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png` and `loop.mp4` from a run where every step
   passed.
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step
@@ -78,7 +78,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 `<volatile>`.
 
 <!-- demo-transcript:begin -->
-The run is 25 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+The run is 26 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
 **6. `perform`**: OK coin 3: coin 3: three bytes hold 3, among them 0x42b and 0x42c
 

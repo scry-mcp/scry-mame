@@ -11,7 +11,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Reply, Run, Step, main
+from scry_core.demo import Demo, Loop, Reply, Run, Step, main
 from scry_core.game_demo import Binding, Press
 from scry_core.games import lineup
 
@@ -79,9 +79,10 @@ def boot(run: Run) -> dict[str, Any]:
     symbols = run.dir / "lineup.map"
     shutil.copyfile(rompath / "lineup.map", symbols)
     ini, states = free_set.fresh_dirs(run, SYSTEM)
-    return {"system": SYSTEM, "reference_rom": reference, "reference_addr": REFERENCE_ADDR,
+    return {**free_set.window(run), "system": SYSTEM, "reference_rom": reference,
+            "reference_addr": REFERENCE_ADDR,
             "reference_base": "0x0", "symbols": symbols, "bases": BASES, "inipath": ini,
-            "state_dir": states, "shared": True, "boot_seconds": 60}
+            "state_dir": states, "boot_seconds": 60}
 
 
 def started(reply: Reply, run: Run) -> str:
@@ -92,7 +93,8 @@ def started(reply: Reply, run: Run) -> str:
 
 BINDING = Binding(
     platform="mame",
-    boot=[Step("start", "start", boot, started, options=frozenset({"binary", "rompath"}),
+    boot=[Step("start", "start", boot, started,
+               options=frozenset({"binary", "rompath", "display"}),
                volatile=free_set.START_VOLATILE)],
     inputs=INPUTS, rate_hz=RATE_HZ, sound=HERE / SOUND,
     map=at)
@@ -100,13 +102,14 @@ BINDING = Binding(
 DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
-    capture=lambda run: run.dir / "screen.png",
-    offers=frozenset({"rompath", "cwd"}), reads=frozenset({"cwd"}), precheck=precheck,
+    capture=lambda run: run.dir / "screen.png", loop=Loop("screen"),
+    offers=frozenset({"rompath", "cwd", "display"}), reads=frozenset({"cwd"}),
+    precheck=precheck,
     volatile={**free_set.VOLATILE,
               "pcm_sha256": "the recording's digest, which Windows' mix changes",
               "b": "the platform's own reference recording"},
     host_args={**free_set.HOST_ARGS, "cwd": "the reader's checkout of the game",
-               "b": "the platform's own reference recording"})
+               "b": "the platform's own reference recording", "display": free_set.DISPLAY})
 
 
 if __name__ == "__main__":

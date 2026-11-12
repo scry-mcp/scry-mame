@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import live_host
-from scry_core.demo import Demo, Reply, Run, Step, expect, main
+from scry_core.demo import Demo, Loop, Reply, Run, Step, expect, main
 from scry_core.reply_contract import Invalid
 
 from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
@@ -44,6 +44,13 @@ SAVE_VOLATILE = {"bytes": "the compressed state's size, which the host's compres
                  "summary": "it carries the compressed state's size"}
 
 HOST_ARGS = {"rompath": "the directory the host keeps its ROM sets in"}
+DISPLAY = "the host's display layout"
+
+
+def window(run: Run) -> dict[str, Any]:
+    """What every demo's `start` asks of the window: watched, behind so it takes nobody's focus,
+    on the display `--display` names and the host's main one otherwise."""
+    return {"shared": True, "background": True, "display": run.options.get("display", 0)}
 
 START_VOLATILE = {"summary": "names where the host installed MAME"}
 
@@ -114,7 +121,8 @@ def boot(system: str, crc: int, addr: str) -> Callable[[Run], dict[str, Any]]:
         reference = run.dir / f"{system}.ref"
         reference.write_bytes(image)
         ini, states = fresh_dirs(run, system)
-        return {"system": system, "reference_rom": reference, "reference_addr": addr,
+        return {**window(run), "system": system, "reference_rom": reference,
+                "reference_addr": addr,
                 "reference_base": addr, "inipath": ini, "state_dir": states,
                 "boot_seconds": 60}  # the wait for the debugger stub to answer at boot
     return args
@@ -180,11 +188,12 @@ def closed(reply: Reply, run: Run) -> str:
 
 
 def demo(system: str, demo_file: str, steps: Sequence[Step]) -> Demo:
-    """The demo of `system` whose `demo.py` is `demo_file`."""
+    """The demo of `system` whose `demo.py` is `demo_file`, its loop recorded after `screen`."""
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
     return Demo(name=system, root=root, server=[sys.executable, "-m", "scry_mame.server"],
                 readme=here / "README.md", front=root / "README.md", steps=steps,
-                capture=lambda run: run.dir / "screen.png",
-                offers=frozenset({"rompath", "shared"}), precheck=precheck(system),
-                volatile=VOLATILE, host_args=HOST_ARGS)
+                capture=lambda run: run.dir / "screen.png", loop=Loop("screen"),
+                offers=frozenset({"rompath", "display"}),
+                precheck=precheck(system),
+                volatile=VOLATILE, host_args={**HOST_ARGS, "display": DISPLAY})

@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), whose demo runner fails a loop a bound or a
+  stop cut.
+
 - On the pinned scry-core (`pyproject.toml`), whose demo runner reports the stop that ends
   a loop as the host's too.
 

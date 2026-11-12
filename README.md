@@ -114,7 +114,7 @@ that counts its coins, and a saved state that takes one back.
 
 <!-- demo-flow:begin starfire -->
 ```
-start(system="starfire", reference_rom="/path/to/scry-mame/tmp/demos/starfire/starfire.ref", reference_addr="0x0", reference_base="0x0", inipath="/path/to/scry-mame/tmp/demos/starfire/starfire-ini", state_dir="/path/to/scry-mame/tmp/demos/starfire/starfire-states", boot_seconds=60, rompath="<host>")
+start(shared=true, background=true, display="<host>", system="starfire", reference_rom="/path/to/scry-mame/tmp/demos/starfire/starfire.ref", reference_addr="0x0", reference_base="0x0", inipath="/path/to/scry-mame/tmp/demos/starfire/starfire-ini", state_dir="/path/to/scry-mame/tmp/demos/starfire/starfire-states", boot_seconds=60, rompath="<host>")
 -> {
   "rom_check": "OK",
   "pc": "0x00000000"
@@ -210,7 +210,7 @@ write watches tell the credits from their BCD copy, then a START spends one.
 
 <!-- demo-flow:begin gridlee -->
 ```
-start(system="gridlee", reference_rom="/path/to/scry-mame/tmp/demos/gridlee/gridlee.ref", reference_addr="0xa000", reference_base="0xa000", inipath="/path/to/scry-mame/tmp/demos/gridlee/gridlee-ini", state_dir="/path/to/scry-mame/tmp/demos/gridlee/gridlee-states", boot_seconds=60, rompath="<host>")
+start(shared=true, background=true, display="<host>", system="gridlee", reference_rom="/path/to/scry-mame/tmp/demos/gridlee/gridlee.ref", reference_addr="0xa000", reference_base="0xa000", inipath="/path/to/scry-mame/tmp/demos/gridlee/gridlee-ini", state_dir="/path/to/scry-mame/tmp/demos/gridlee/gridlee-states", boot_seconds=60, rompath="<host>")
 -> {
   "rom_check": "OK",
   "pc": "0x0000f000"

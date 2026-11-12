@@ -27,17 +27,17 @@ uv run python demos/starfire/demo.py --rompath ~/roms
 
 - `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
   `PATH`.
-- `--shared` is for a run somebody watches: MAME opens in front, in a window scaled to be seen.
-  Left out, it runs in a small window behind your work.
+- `--display N` opens the window on that display; left out, on the host's main one. The
+  window opens behind, so the run takes nobody's focus.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md` and `screen.png` from a run where every step
+- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png` and `loop.mp4` from a run where every step
   passed.
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step
 failed, 2 a usage error, 3 nothing was demonstrated (a missing ROM, a relative path, a server
 that did not start). Star Fire's sound is emulated from its circuit diagram, which is expensive: under the
 debugger the emulation cannot keep up with real time, so a run takes far longer than the game
-seconds it plays, and a watched one moves slowly.
+seconds it plays, and the window moves slowly.
 
 ## The prompt
 
@@ -77,7 +77,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 `<volatile>`.
 
 <!-- demo-transcript:begin -->
-The run is 21 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+The run is 22 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
 **6. `perform`**: OK coin 3: coin 3: one cell left, 0x00008299, holding 3
 

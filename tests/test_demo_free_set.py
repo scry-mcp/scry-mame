@@ -153,5 +153,6 @@ def test_a_demo_is_declared_where_every_free_set_demo_keeps_its_files(tmp_path: 
     assert declared.readme == demo_file.parent / "README.md"
     assert declared.capture is not None
     assert declared.capture(Run(dir=tmp_path)) == tmp_path / "screen.png"
-    assert declared.offers == frozenset({"rompath", "shared"})
+    assert declared.offers == frozenset({"rompath", "display"})
+    assert declared.loop is not None and declared.loop.after == "screen"
     assert declared.volatile == free_set.VOLATILE

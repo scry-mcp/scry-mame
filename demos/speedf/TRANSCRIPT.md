@@ -4,10 +4,12 @@
 
 ```json
 {
+  "shared": true,
+  "background": true,
+  "display": "<host>",
   "profile": "<host>",
   "inipath": "<host>",
-  "state_dir": "<host>",
-  "shared": true
+  "state_dir": "<host>"
 }
 ```
 
@@ -41,7 +43,7 @@
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
@@ -397,7 +399,63 @@ Also attached: image/png.
 
 </details>
 
-**7. `close`**: OK close: closed: MAME quit on its own
+**7. `record`**: OK loop: recording 240 frames in ./tmp/demos/speedf/loop.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 240,
+  "dest": "./tmp/demos/speedf/loop.avi"
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/speedf/loop.avi",
+  "frames": 240,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**8. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 

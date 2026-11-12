@@ -4,6 +4,9 @@
 
 ```json
 {
+  "shared": true,
+  "background": true,
+  "display": "<host>",
   "system": "lineup",
   "reference_rom": "./tmp/demos/lineup/lineup.ref",
   "reference_addr": "0x30000",
@@ -12,7 +15,6 @@
   "bases": {"DATA": "0x400", "LUP_JUKEBOX": "rom"},
   "inipath": "./tmp/demos/lineup/lineup-ini",
   "state_dir": "./tmp/demos/lineup/lineup-states",
-  "shared": true,
   "boot_seconds": 60,
   "rompath": "<host>"
 }
@@ -48,7 +50,7 @@
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
@@ -2453,7 +2455,63 @@
 
 </details>
 
-**41. `close`**: OK close: closed: quit
+**41. `record`**: OK loop: recording 240 frames in ./tmp/demos/lineup/loop.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 240,
+  "dest": "./tmp/demos/lineup/loop.avi"
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/lineup/loop.avi",
+  "frames": 240,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**42. `close`**: OK close: closed: quit
 
 <details><summary>call and reply</summary>
 

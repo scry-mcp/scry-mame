@@ -28,9 +28,10 @@ uv run python demos/speedf/demo.py --cwd /path/to/speedf-mame
   declares the recipe and whose `build/` and `run/` hold what it names.
 - `--rompath PATH` names another romset directory; left out, the recipe's `run/mame_roms`.
 - `--binary PATH` picks the MAME to start; left out, the recipe's `MAME_BINARY`.
-- The window opens in front, scaled to be seen.
+- `--display N` opens the window on that display; left out, on the host's main one. The
+  window opens behind, so the run takes nobody's focus.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md` and `screen.png` from a run where
+- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png` and `loop.mp4` from a run where
   every step passed.
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step failed,
@@ -48,7 +49,7 @@ Give this to an MCP client with this server connected:
 ## The transcript
 
 <!-- demo-transcript:begin -->
-The run is 7 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+The run is 8 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
 **1. `start`**: OK start: speedf on MAME from the game's own recipe (9 keys), rom_check OK, 225 symbols
 
@@ -58,10 +59,12 @@ The run is 7 calls; these are the ones that show how it is done, and every call 
 
 ```json
 {
+  "shared": true,
+  "background": true,
+  "display": "<host>",
   "profile": "<host>",
   "inipath": "<host>",
-  "state_dir": "<host>",
-  "shared": true
+  "state_dir": "<host>"
 }
 ```
 
@@ -95,7 +98,7 @@ The run is 7 calls; these are the ones that show how it is done, and every call 
   "frame_symbol": "frame",
   "view": "native",
   "views": ["Screen 0 Standard (4:3)", "Screen 0 Pixel Aspect (8:5)", "Cocktail"],
-  "background": false,
+  "background": true,
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,

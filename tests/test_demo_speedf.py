@@ -54,7 +54,8 @@ def test_the_call_adds_only_the_run_s_own_to_the_recipe(tmp_path: Path) -> None:
     run.dir.mkdir()
     args = demo.boot(run)
     assert args == {"profile": str(game / demo.PROFILE), "inipath": run.dir / "speedf-ini",
-                    "state_dir": run.dir / "speedf-states", "shared": True}
+                    "state_dir": run.dir / "speedf-states", "shared": True,
+                    "background": True, "display": 0}
     assert (run.dir / "speedf-ini" / "mame.ini").read_text() == "joystickprovider none\n"
     given = Run(dir=run.dir, options={"cwd": str(game), "rompath": str(tmp_path / "roms")})
     assert demo.boot(given)["rompath"] == tmp_path / "roms"
