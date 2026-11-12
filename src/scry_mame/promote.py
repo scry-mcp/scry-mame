@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from typing import Any
 
 from scry_core import given, project_store
@@ -19,8 +19,27 @@ RUN_OWN = frozenset({"state_dir", "stub_port", "display", "size", "background", 
 PROMOTE_PATHS = (*launch.START_PATHS, "inipath")
 #: What a recipe cannot do without: the machine it boots.
 NEEDS = ("system",)
-after_export = core.after_export
-kept_line = core.kept_line
+SERVER = "mame"
+
+
+def has_store(drafts: core.Drafts) -> bool:
+    """Whether a `.scry/` is above the project; unreadable says yes."""
+    try:
+        return project_store.root(core.starting(drafts, recipe_paths)) is not None
+    except OSError:
+        return True
+
+
+def kept_line(drafts: core.Drafts) -> str:
+    """Core's kept line, told if a store exists."""
+    return core.kept_line(drafts, has_store(drafts))
+
+
+def after_export(drafts: core.Drafts, reply: dict[str, Any],
+                 path_keys: Collection[str]) -> dict[str, Any]:
+    """The export's reply, its store sought after the keep."""
+    kept = core.after_export(drafts, reply, path_keys)
+    return {**kept, "kept": kept_line(drafts)} if "kept" in kept else kept
 
 
 def keep_start(params: Mapping[str, Any], *, defaults: Mapping[str, Any]) -> bool:
@@ -44,7 +63,7 @@ def after_map(method: str, reply: dict[str, Any]) -> dict[str, Any]:
     if method != "add" or not application:
         return reply
     if STATE.drafts.keep("maps", application, STATE.maps.document(application)):
-        return {**reply, "kept": core.kept_line(STATE.drafts)}
+        return {**reply, "kept": kept_line(STATE.drafts)}
     return reply
 
 
@@ -52,7 +71,7 @@ def promote(dry_run: bool = False, entries: list[str] | None = None,
             names: dict[str, str] | None = None, root: str = "") -> dict[str, Any]:
     """The body of the `promote` tool, on this server's draft."""
     return core.promote(STATE.drafts, dry_run=dry_run, entries=entries, names=names, root=root,
-                        starting=core.starting(STATE.drafts, recipe_paths), state=scratch())
+                        starting=starting(), state=scratch(), server=SERVER)
 
 
 def starting() -> list[str]:

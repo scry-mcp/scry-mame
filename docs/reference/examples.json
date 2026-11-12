@@ -2204,36 +2204,33 @@
   }
  },
  "promote": {
-  "from": "[P] the session's ends and its own store: P11 the recipe this boot ran and the map it learned are written into a store of the run's own only when the call approves them, and the map reads back from the file",
+  "from": "a recipe this boot ran is written into a store of the run's own only when the call approves it: a review of a repository with no store",
   "call": {
    "dry_run": true,
-   "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
+   "root": "$TMPDIR/mame-promote-example-<run>/repo"
   },
   "reply": {
-   "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
+   "summary": "promote: 1 candidate in $TMPDIR/mame-promote-example-<run>/repo/.scry; would create .scry/, .scry/about.json, .scry/README.md",
    "status": "ok",
-   "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
+   "store": "$TMPDIR/mame-promote-example-<run>/repo/.scry",
    "candidates": [
-    {
-     "entry": "maps/radendur",
-     "kind": "maps",
-     "name": "radendur",
-     "file": ".scry/maps/radendur-screen-map.json",
-     "bytes": 333,
-     "change": "new"
-    },
     {
      "entry": "start/radendur",
      "kind": "start",
      "name": "radendur",
      "file": ".scry/start/radendur.json",
-     "bytes": 385,
+     "bytes": 432,
      "change": "new"
     }
    ],
    "unchanged": [],
-   "total_bytes": 718,
-   "store_bytes": 718
+   "total_bytes": 432,
+   "store_bytes": 1725,
+   "would_create": [
+    ".scry/",
+    ".scry/about.json",
+    ".scry/README.md"
+   ]
   }
  },
  "read_block": {

@@ -22,14 +22,17 @@ store has them, and one that changes nothing is named in `unchanged`, not offere
 file, its size and whether it is new or an update, an update with its diff; `entries`
 (`<kind>/<name>`, the kind one of `start`, `maps`, `perform`) writes only those,
 `names` renames one as it is written, and only
-that approved call creates `.scry/`. `root` names the repository the store is in or
-becomes; without it the first `.scry/` found walking up from the file a loaded recipe
-came from, the draft's paths, then this server's directory, is used, and a promotion
-that finds none is refused. Every path is
+that approved call creates `.scry/`, and with the server's name also `about.json` and
+the rendered `README.md`; `dry_run`
+names those in `would_create`, the approval in `created`. `root` names the repository
+the store is in or becomes; without it the first `.scry/` found walking up from the file
+a loaded recipe came from, the draft's paths, then this server's directory, is used,
+and a promotion that finds none is refused. Every path is
 written as a `project_store` placeholder, since a tracked file carries no path of this
 machine; an approval of an entry a review calls unwritable is refused. Reply: `store`,
 `candidates` and `unchanged` (a review), `unwritable`, each entry with its reason
 (a review holding an entry it cannot write), `written` and `draft` (an approval),
+`would_create` and `created` (the store, `about.json`, `README.md` not yet there),
 `total_bytes`,
 `store_bytes`; `close` names what was left unkept, which stays in the draft until the
 server ends. Refused: nothing kept (`needs_call`); an entry the draft does not hold; two
@@ -50,6 +53,8 @@ Reference: REFERENCE.md, The store.
 | `unchanged` | array of string |
 | `unwritable` | array |
 | `written` | array |
+| `would_create` | array of string |
+| `created` | array of string |
 | `draft` | array of string |
 | `total_bytes` | integer |
 | `store` | string |
@@ -60,36 +65,29 @@ Example, from a live run:
 ```json
 {
   "dry_run": true,
-  "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
+  "root": "$TMPDIR/mame-promote-example-<run>/repo"
 }
 ```
 
 ```json
 {
-  "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
+  "summary": "promote: 1 candidate in $TMPDIR/mame-promote-example-<run>/repo/.scry; would create .scry/, .scry/about.json, .scry/README.md",
   "status": "ok",
-  "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
+  "store": "$TMPDIR/mame-promote-example-<run>/repo/.scry",
   "candidates": [
-    {
-      "entry": "maps/radendur",
-      "kind": "maps",
-      "name": "radendur",
-      "file": ".scry/maps/radendur-screen-map.json",
-      "bytes": 333,
-      "change": "new"
-    },
     {
       "entry": "start/radendur",
       "kind": "start",
       "name": "radendur",
       "file": ".scry/start/radendur.json",
-      "bytes": 385,
+      "bytes": 432,
       "change": "new"
     }
   ],
   "unchanged": [],
-  "total_bytes": 718,
-  "store_bytes": 718
+  "total_bytes": 432,
+  "store_bytes": 1725,
+  "would_create": [".scry/", ".scry/about.json", ".scry/README.md"]
 }
 ```
 <!-- scry-reference:end promote -->

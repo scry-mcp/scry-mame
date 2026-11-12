@@ -1570,23 +1570,25 @@ r = s.start(binary=BINARY, system="circus", rompath=str(Path(FREE_ROMS).resolve(
 # counts what it holds, not what this one call kept.
 check("a start keeps the recipe it ran and says so",
       r.get("status") == "ok" and str(r.get("kept", "")).startswith("kept ")
-      and str(r.get("kept", "")).endswith("(promote to review)"), str(r.get("kept")))
+      and "(promote to review)" in str(r.get("kept", "")), str(r.get("kept")))
 added = s.screen_map_write("add", screen="learned", match=[[0, 0, 8, 8]])
 check("a map learned from the screen joins the draft",
-      added.get("status") == "ok" and str(added.get("kept", "")).endswith("(promote to review)"),
+      added.get("status") == "ok" and "(promote to review)" in str(added.get("kept", "")),
       str(added.get("kept")))
 reviewed = s.promote(dry_run=True, root=str(store))
 candidates = {c.get("entry"): c.get("change") for c in reviewed.get("candidates", [])}
 check("promote(dry_run) lists this session's two as new and writes no store",
       reviewed.get("status") == "ok"
       and candidates.get("start/circus") == "new" and candidates.get("maps/circus") == "new"
+      and reviewed.get("would_create") == [".scry/", ".scry/about.json", ".scry/README.md"]
       and not (store / ".scry").exists(),
       f"{reviewed.get('summary')} / {sorted(candidates)}")
 written = s.promote(entries=["maps/circus", "start/circus"], root=str(store))
 chosen = sorted(w.get("entry") for w in written.get("written", []))
 check("promote(entries) writes the two chosen and keeps the rest",
       written.get("status") == "ok" and chosen == ["maps/circus", "start/circus"]
-      and not {"maps/circus", "start/circus"} & set(written.get("draft", [])),
+      and not {"maps/circus", "start/circus"} & set(written.get("draft", []))
+      and written.get("created") == reviewed.get("would_create"),
       f"{written.get('summary')} / written {chosen}, kept {written.get('draft')}")
 recipe = json.loads((store / ".scry" / "start" / "circus.json").read_text())
 check("the recipe carries no path of this machine",
