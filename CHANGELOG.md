@@ -6,6 +6,8 @@ What a client of the server notices.
 
 - On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
   one template and holds the `record` text both servers answer.
+- On the pinned scry-core (`pyproject.toml`), whose demo runner records a demo's loop and
+  converts it to its `loop.mp4` beside the capture.
 - `record` whose run reaches its `seconds` bound releases the recording there and, when the
   release answers, answers its file (`ended: true`, `bytes`, `avi_frames`), where it used to
   refuse `not_settled` and leave the file open. That reply now also carries the console's
