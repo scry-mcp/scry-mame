@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), whose demo runner reports a loop's own timing
+  as the host's, so a demo's two runs give one transcript.
+
 - On the pinned scry-core (`pyproject.toml`), whose demo runner takes `--display`, so a
   demo can be recorded on one of the host's own displays.
 
