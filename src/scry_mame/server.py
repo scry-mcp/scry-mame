@@ -180,7 +180,8 @@ def start(
     window run flat out. `display`: the OS's
     display index for that window, 0 (the main display) when omitted; `size`:
     `WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
-    whole multiple of the screen is stretched by a fraction, and the reply's `note` says so). Both
+    whole multiple of the screen is scaled by whole pixels, unevenly, and the reply's `note` says
+    so). Both
     need `shared=True` and are refused otherwise; `size` is also refused when it, with its frame,
     exceeds the display's usable area, naming that size; a `display` past the host's count is
     refused naming the count. The server waits for the window to be

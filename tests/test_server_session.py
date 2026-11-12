@@ -98,7 +98,8 @@ def test_a_watched_window_is_scaled_from_the_machine_s_screen_and_named_a_displa
     screens: list[dict[str, Any]], flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(sys, "platform", "darwin")
-    assert launch.window_flags(ASKED, screens) == [*flags, "-screen0", "screen0"]
+    assert launch.window_flags(ASKED, screens) == [*flags, "-screen0", "screen0",
+                                                   "-nounevenstretch"]
 
 
 def test_an_unwatched_window_is_small_and_flat_out() -> None:
@@ -113,8 +114,9 @@ def test_the_display_asked_is_the_one_mame_is_told(
     asked: core_window.WindowRequest, flags: list[str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     got = launch.window_flags(asked, [])
-    assert got[-len(flags):] == flags, got
+    assert got[got.index("-screen0"):got.index("-screen0") + len(flags)] == flags, got
     assert "-window" in got, got
+    assert got[-1] == "-nounevenstretch", got
 
 
 def test_the_tools_are_serialized() -> None:
@@ -331,7 +333,7 @@ def test_a_shared_start_sizes_the_window_from_the_listed_screen_and_names_the_di
         shown = core_window.host().displays()[1]
         fitted = window_size.integer_fit((336, 252), shown.work, shown.scale, sys.platform)
         assert argv[argv.index("-resolution") + 1] == "x".join(map(str, fitted))
-        assert out["flags"][-2:] == ["-screen0", "screen1"], out["flags"]
+        assert out["flags"][-3:] == ["-screen0", "screen1", "-nounevenstretch"], out["flags"]
         assert out["window"]["display"] == 1 and out["window"]["onscreen"] is True, out
     finally:
         s.close()
@@ -678,7 +680,8 @@ def test_start_reports_the_env_and_the_flags_it_handed_over(
     out = s.start(**_boot_args(tmp_path, image), shared=True, env={"M68K_DUAL_SWITCH": "on"})
     try:
         assert out.get("env", {}) == {"M68K_DUAL_SWITCH": "on"} and "display" not in out
-        assert out["flags"] == ["-window", "-nomaximize", "-screen0", "screen0"]
+        assert out["flags"] == ["-window", "-nomaximize", "-screen0", "screen0",
+                                "-nounevenstretch"]
         assert out.get("throttle_from_frame", 0) == 0
         assert _StubProcess.last_kwargs.get("env", {})["M68K_DUAL_SWITCH"] == "on"
         assert Path(out["boot_lua_path"]).parent == mstate.STATE.scratch, (
@@ -1327,7 +1330,7 @@ def test_a_stated_size_that_is_not_a_whole_multiple_of_the_screen_is_said(
     asked = core_window.WindowRequest(0, False, (0, 0), size=size)
     got = launch.scaled_note(asked, screens)
     assert (got is not None) is said, got
-    assert said is False or "whole multiple" in str(got)
+    assert said is False or "whole pixels" in str(got)
 
 
 def test_a_size_the_server_chose_is_never_called_scaled() -> None:

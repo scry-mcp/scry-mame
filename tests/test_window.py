@@ -55,8 +55,8 @@ def _start(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any) -> dict[s
 
 
 @pytest.mark.parametrize(("asked", "tail"), [
-    ({}, ["-screen0", "screen0"]),
-    ({"display": 1}, ["-screen0", "screen1"]),
+    ({}, ["-screen0", "screen0", "-nounevenstretch"]),
+    ({"display": 1}, ["-screen0", "screen1", "-nounevenstretch"]),
 ])
 def test_a_watched_start_asks_mame_for_the_display(
         monkeypatch: pytest.MonkeyPatch, tmp_path: Path, asked: dict[str, Any],

@@ -592,7 +592,7 @@ NO_SESSION_CASES: list[Case] = [
          {**BOOT, "shared": True, "display": 0, "background": True},
          is_ok(lambda r: (r.get("window") or {}).get("display") == 0
                and (r.get("window") or {}).get("onscreen") is True
-               and r.get("flags", [])[-2:] == ["-screen0", "screen0"]),
+               and r.get("flags", [])[-3:] == ["-screen0", "screen0", "-nounevenstretch"]),
          then="close"),
     Case("start.display without shared", "start", {**BOOT, "display": 0},
          refused_saying("shared=true")),

@@ -143,13 +143,16 @@ def window_flags(asked: core_window.WindowRequest | None,
     display asked for, in a window of the stated or fitted size, else MAME's own."""
     if asked is None:
         return ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
-    return window_words.mame(fitted_request(asked, screens) or asked)
+    # `-nounevenstretch` makes MAME scale by whole pixels: the whole-multiple window is then a
+    # whole-multiple picture, never a blurred fractional stretch, even where the view's aspect
+    # (4:3) differs from the screen's.
+    return [*window_words.mame(fitted_request(asked, screens) or asked), "-nounevenstretch"]
 
 
 def scaled_note(asked: core_window.WindowRequest | None,
                 screens: list[dict[str, Any]]) -> str | None:
-    """Says so when a stated size is not a whole multiple of the screen: MAME then stretches the
-    picture by a fraction, and draws it at its view's aspect inside the window."""
+    """Says so when a stated size is not a whole multiple of the screen: MAME then scales the
+    picture by whole pixels, unevenly between the axes, at its view's aspect inside the window."""
     native = native_size(screens)
     if asked is None or asked.size is None or asked.fitted or native is None:
         return None
@@ -157,7 +160,8 @@ def scaled_note(asked: core_window.WindowRequest | None,
             and asked.size[0] // native[0] == asked.size[1] // native[1]:
         return None
     return (f"`size` {asked.size[0]}x{asked.size[1]} is not a whole multiple of this machine's "
-            f"{native[0]}x{native[1]} screen: MAME stretches the picture by a fraction")
+            f"{native[0]}x{native[1]} screen: MAME scales the picture by whole pixels, "
+            "unevenly between the axes")
 
 
 def port_is_free(port: int) -> bool:
