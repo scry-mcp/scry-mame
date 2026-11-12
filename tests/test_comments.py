@@ -1,6 +1,6 @@
 """Comments: a text at a place, held as a declaration, fed to MAME's pane and kept in a file.
 
-The pane double answers with the bytes MAME's console gave (`fixtures/comments/PROVENANCE.txt`):
+The pane double answers with the bytes MAME's console gave (`fixtures/comments/provenance.txt`):
 an empty line for a `comadd`, the line `dasm` writes for a commented address, one comment per
 address per cpu, and a comment hidden once the bytes under it change. Its fidelity to those
 captures is the first case. Every expected file text is written here from the format, never read

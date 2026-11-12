@@ -1,4 +1,4 @@
-"""Flow classes off captured listings (`fixtures/console/PROVENANCE.txt`), checked by hand."""
+"""Flow classes off captured listings (`fixtures/console/provenance.txt`), checked by hand."""
 
 from __future__ import annotations
 

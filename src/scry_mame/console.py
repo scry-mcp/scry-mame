@@ -2,7 +2,7 @@
 write or release the machine, and how the console reports a refusal.
 
 The console has no exit code. The refusal shapes matched here are the ones captured live
-(`tests/fixtures/console/PROVENANCE.txt`), each anchored at a line's start.
+(`tests/fixtures/console/provenance.txt`), each anchored at a line's start.
 """
 
 from __future__ import annotations

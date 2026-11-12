@@ -9,7 +9,7 @@ A set from MAME's own free sets, or a well-known set of a collection, may be nam
 name is MAME's public information; a test that needs a collection set says which set and never
 where to get it.
 
-A directory's PROVENANCE, where it has one, says how its files were captured.
+A directory's provenance, where it has one, says how its files were captured.
 
 `console.stdout` and `console-error.log` are one session on `m68k-dual` through the server, its
 console's output from the first chunk on and the error log's `[luaengine]` lines: a probe, a

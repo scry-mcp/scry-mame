@@ -1,6 +1,6 @@
 """A change watch conditioned on the value written (`wp <addr>,<len>,w,<condition>`).
 
-The console's answers are captured (`fixtures/console/PROVENANCE.txt`).
+The console's answers are captured (`fixtures/console/provenance.txt`).
 """
 
 from __future__ import annotations

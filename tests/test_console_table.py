@@ -1,4 +1,4 @@
-"""The classifier's tables against MAME's own command table (fixtures/console/PROVENANCE.txt)."""
+"""The classifier's tables against MAME's own command table (fixtures/console/provenance.txt)."""
 
 from __future__ import annotations
 

@@ -244,7 +244,7 @@
 		<description>palette</description>
 	</machine>
 	<machine name="ramdac" sourcefile="devices/video/ramdac.cpp" isdevice="yes" runnable="no">
-		<!-- SYNTHETIC: the two lines below are NOT from MAME. See PROVENANCE.txt. -->
+		<!-- SYNTHETIC: the two lines below are NOT from MAME. See provenance.txt. -->
 		<chip type="cpu" tag="dsp" name="Imaginary DSP" clock="1000000"/>
 		<rom name="never.dumped" size="256" crc="deadbeef" sha1="0000000000000000000000000000000000000000" region="dsp" offset="0"/>
 		<description>RAMDAC</description>

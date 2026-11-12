@@ -7,7 +7,7 @@ also fires at EVERY instruction while its condition holds, so a run by frames st
 still true stops one instruction on with the frame counter where it was, which the counter
 alone reads as a machine that emulated nothing.
 
-Every console answer here is a capture (`fixtures/console/PROVENANCE.txt`), never authored;
+Every console answer here is a capture (`fixtures/console/provenance.txt`), never authored;
 the one exception says so where it stands, an answer that is no list at all.
 """
 

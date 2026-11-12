@@ -1,7 +1,7 @@
 """`trace` (`trace`), judged against files MAME's own tracer wrote.
 
 The doubles are captures: `fixtures/trace/` holds trace files a live session wrote
-(`PROVENANCE.txt`), and the console's answers the fake gives are the ones that session read
+(`provenance.txt`), and the console's answers the fake gives are the ones that session read
 back for arming and closing (`Tracing CPU '<tag>' to file <path>`, `Stopped tracing on CPU
 '<tag>'`). The run itself is `run_for`'s, whose own tests judge it; here it is replaced by a
 function that writes the captured file where the tracer would have and answers as `run_for`

@@ -137,7 +137,7 @@ def test_log_wait_takes_the_channel_and_finds_a_process_line_that_arrives(
     monkeypatch.setattr(read, "LOG_LIMIT_MAX", read.LOG_LIMIT_MAX)
 
 
-# CAPTURED, never authored: the first bytes MAME writes to `error.log` (PROVENANCE.txt).
+# CAPTURED, never authored: the first bytes MAME writes to `error.log` (provenance.txt).
 _LOG_START = (Path(__file__).parent / "fixtures" / "console" / "errorlog-start.txt").read_bytes()
 
 

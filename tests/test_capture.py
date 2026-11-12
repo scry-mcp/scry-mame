@@ -1,6 +1,6 @@
 """A watch that CAPTURES (`capture`): the whole block recorded at each write to a trigger.
 
-Known answers are CAPTURED on m68k-dual (`fixtures/capture/PROVENANCE.txt`), each beside a
+Known answers are CAPTURED on m68k-dual (`fixtures/capture/provenance.txt`), each beside a
 control that counted the trigger's writes over the same pass.
 """
 

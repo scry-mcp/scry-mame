@@ -21,7 +21,7 @@ that preserves every field width; nothing else was edited.
                             inputs.
 
 Files:
-  PROVENANCE.txt
+  provenance.txt
   v30-ay-tone-wav.gz
   v30-closed-empty-wav.gz
   v30-plain-wav.gz

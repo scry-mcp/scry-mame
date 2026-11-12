@@ -19,6 +19,12 @@ contract tests and `tests/live/` the tiers that drive a real emulator.
 
 ## The battery
 
+The suite runs with a home and a temp folder of its own (scry-core's `private_run`, on in
+`pyproject.toml`) and fails a run that leaves a file in that home; it stands aside when a `live`
+case is selected. Every name a server writes follows scry-core's
+[rule of file names](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md): a
+`names_judged` red means a file was written outside it.
+
 ```sh
 uv run ruff check .
 uv run mypy --strict .
@@ -50,7 +56,8 @@ luacheck (`.luacheckrc`) over every script as it is rendered and sent. On macOS,
 `brew install stylua luacheck lua@5.4`; the workflow installs them at pinned versions. Windows
 skips that file: the scripts are the same bytes there.
 
-A tool's reply model is its contract. A field every `ok` reply of the tool carries is `Required[...]`
+A tool's reply model is its contract. A number whose natural notation is hex (an address, an offset, an interrupt, a
+port) is answered as `0x` text and taken as `0x` text or an integer. A field every `ok` reply of the tool carries is `Required[...]`
 in the model; one that comes only under a condition is `Annotated[T, When("words")]`, and the
 tool's `Reply:` sentence says those words beside the field; a datum that could not be read is
 `unavailable(why)` and never absent. The battery refuses an `ok` reply that lacks a required field,
@@ -123,9 +130,10 @@ uv run python tests/live/live_check.py
 ```
 
 Its checks run on boards this repository does not carry and on the demos' free sets, with the
-MAME `MAME_BINARY` names. A board that is not there is BLOCKED naming what is missing, and a host
-with nothing to run them on leaves everything unexamined, which is INVALID and not a pass. The
-tracked live code names boards only by label.
+MAME `MAME_BINARY` names. A board it needs that is not there makes the run INVALID, naming what is
+missing; only the game demos, which read their romset and symbol map from `LINEUP_MAME_ROMS` and
+`SPEEDF_MAME_ROMS`, are BLOCKED without them. The tracked live code names the private boards only
+by label; a set name MAME publishes may appear.
 
 `tests/live/live_matrix.py` is the matrix around those checks (every tool, every machine state,
 every argument edge, every pair of tools that share state), one printed line per cell:
@@ -141,10 +149,11 @@ lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run
 host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
 the parent so its watch spans every job. The focus gate's start in front and its Space move take
 the desk of whoever is working, so they run only with `SCRY_FOCUS_CONTROL=1` on an idle machine;
-unset, those cells are BLOCKED naming the variable and the verdict says it is unproven. The free boards and the games' boards run on the MAME
-`MAME_BINARY` names, built with every driver, and the free boards read their sets from `MAME_TEST_ROMS`; unset, those cells
-are BLOCKED naming the variable. The LineUp demo reads its romset and symbol map from
-`LINEUP_MAME_ROMS`, and is BLOCKED the same way without it. The cells that open a watched
+unset, those cells are BLOCKED naming the variable and the verdict says it is unproven. The free
+boards and the V30 boards run on the MAME `MAME_BINARY` names, built with every driver, while the
+two m68k-dual boards name a binary of their own in the bench (`MAME_LIVE_BENCH`, else
+`~/.local/share/scry-bench/mame`); the free boards read their sets from `MAME_TEST_ROMS`, and
+unset, those cells are BLOCKED naming the variable. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
 [`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind,
 `0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry

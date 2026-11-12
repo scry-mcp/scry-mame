@@ -717,7 +717,7 @@ def _composed(board: str, r: mm.PalettePort) -> dict[int, str | None]:
 @pytest.mark.parametrize("board, pens", [("v30-alt", 1023), ("v30", 256)])
 def test_known_answer_a_packed_dump_decodes_to_the_colours_mame_held(board: str,
                                                                     pens: int) -> None:
-    """CAPTURED: v30-alt's latch and v30's sequence (PROVENANCE.txt), every pen the log
+    """CAPTURED: v30-alt's latch and v30's sequence (provenance.txt), every pen the log
     composed against what `palette` read at the same stop."""
     held = _held(board)
     composed = _composed(board, _packed(board))

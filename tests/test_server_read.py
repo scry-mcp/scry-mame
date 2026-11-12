@@ -604,13 +604,13 @@ def test_snapshot_is_invalid_when_the_png_is_not_complete(
 
 def test_the_console_fixtures_were_captured_and_say_so() -> None:
     """The parsers below are written against MAME's OWN text, captured live."""
-    provenance = (FIXTURES / "PROVENANCE.txt").read_text()
+    provenance = (FIXTURES / "provenance.txt").read_text()
     assert provenance.startswith("Captured live from MAME")
-    fixtures = sorted(f.name for f in FIXTURES.iterdir() if f.name != "PROVENANCE.txt")
+    fixtures = sorted(f.name for f in FIXTURES.iterdir() if f.name != "provenance.txt")
     assert fixtures, "no fixtures at all is not a clean directory, it is nothing examined"
     for name in fixtures:
         assert (FIXTURES / name).stat().st_size > 0, name
-        assert name in provenance, f"{name} has no line in PROVENANCE.txt saying what produced it"
+        assert name in provenance, f"{name} has no line in provenance.txt saying what produced it"
     # The two shapes the parsers depend on are really in the captured text.
     assert "Found at " in (FIXTURES / "find.txt").read_text()
     assert (FIXTURES / "find-none.txt").read_text().strip() == "Not found"

@@ -320,7 +320,7 @@ def test_run_for_frames_stops_at_a_watchpoint_typed_through_debug(
     assert reg.commands.count("gvblank") == 2, reg.commands
 
 
-# Captured, not authored (PROVENANCE.txt).
+# Captured, not authored (provenance.txt).
 _CAPTURED = Path(__file__).parent / "fixtures" / "console"
 _FRAMES_LOG = (_CAPTURED / "debuglog-foreign-bp-frames.txt").read_text().splitlines(keepends=True)
 _MS_LOG = (_CAPTURED / "debuglog-foreign-bp-ms.txt").read_text()

@@ -1,7 +1,7 @@
 """The value scan (`scan`), judged against MAME's own engine.
 
 The known answer is never computed by the code under test. `fixtures/scan/` holds what a live
-session captured (`PROVENANCE.txt`): the scanned range dumped at successive stops of v30
+session captured (`provenance.txt`): the scanned range dumped at successive stops of v30
 (V30, little-endian) and m68k-dual (68000, big-endian), and after each pair of stops MAME's
 own `cheatlist` for every operator its console expresses, the cell compared against the value
 it held when the scan opened (`cheatnextf`) or against a value. A scan opened on the first dump

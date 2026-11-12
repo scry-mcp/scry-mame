@@ -786,7 +786,7 @@ def test_a_window_proves_its_layout_at_the_least_it_needs() -> None:
 # ------------------------------------------------------------------ proof by uniqueness
 
 def _v30(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, Any]:
-    """The draft of the two v30 answers (`fixtures/draft/PROVENANCE.txt`): a digit matched
+    """The draft of the two v30 answers (`fixtures/draft/provenance.txt`): a digit matched
     once over its whole table, and the INSERT COINS strip matched in many windows."""
     locs = json.loads(gzip.decompress((DRAFT_FIX / "v30-locates-json.gz").read_bytes()))
     _evidence(monkeypatch, tmp_path, _renamed(locs))

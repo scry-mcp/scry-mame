@@ -47,7 +47,7 @@ from scry_mame import rearm as rearming  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
 
-# CAPTURED from a real console (`fixtures/console/PROVENANCE.txt`): the action row of
+# CAPTURED from a real console (`fixtures/console/provenance.txt`): the action row of
 # `bplist-action.txt`, armed with the action in braces as the documentation writes it, and
 # the conditioned rows of `bplist-by-address.txt`. Nothing here is authored.
 BPLIST_ACTION = captured("bplist-action.txt")
