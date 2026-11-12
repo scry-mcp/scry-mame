@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- The demos ship a loop: each demo's `loop.mp4` sits beside its `screen.png`, recorded by the
+  runner after the step that takes the still.
 - On the pinned scry-core (`pyproject.toml`), which carries the window every demo asks of
   its `start`.
 
@@ -21,6 +23,9 @@ What a client of the server notices.
 
 - On the pinned scry-core (`pyproject.toml`), which renders a repository's `.scry/README.md` from
   one template and holds the `record` text both servers answer.
+- On the pinned scry-core (`pyproject.toml`), whose `record` words say what a bound does when its
+  release answers, so a server that answers `ended: false` over a capture it could not turn off
+  is not contradicted.
 - On the pinned scry-core (`pyproject.toml`), whose demo runner records a demo's loop and
   converts it to its `loop.mp4` beside the capture.
 - `record` whose run reaches its `seconds` bound releases the recording there and, when the
@@ -44,7 +49,7 @@ What a client of the server notices.
 - The demos arrive by the game's code: LineUp waits for each screen at the frame after the
   game's tick and reads each move once the game has taken it. A transcript hides what the
   host decides (the window, the log's byte positions, a compressed state's size), and the
-  LineUp recording is held to `music-win32.wav` on Windows.
+  LineUp recording is held to `win32/music.wav` on Windows.
 - `screen_wait` takes `on_breakpoint` or `on_watch`: the screen is judged only at the frame's
   end after a firing of that declared breakpoint or change watch, never by sampling, and a
   `condition` filters the firings first. The reply counts `firings` and `frames_examined` in

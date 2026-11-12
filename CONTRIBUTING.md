@@ -183,8 +183,13 @@ name. A green run removes its scratch; a red, INVALID or broken one keeps it and
 
 ## Development scripts
 
-None beyond the tests and the live tier: this server has no bench script and no sweep that sits
-off the commit path.
+`demos/<name>/demo.py` runs one demo end to end; with `--update-readme` it rewrites the demo's
+guide from a run where every step passed: the transcript block in its README, `TRANSCRIPT.md`,
+`screen.png` and `loop.mp4` (the loop is recorded right after the step that takes the still).
+Converting the loop needs `ffmpeg` on the `PATH`; without it a demo that declares a loop ends
+INVALID and writes no loop.
+
+Beyond the demo runner, this server has no bench script and no sweep off the commit path.
 
 ## Fixtures and the sweep off the commit path
 

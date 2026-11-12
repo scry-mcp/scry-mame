@@ -75,7 +75,7 @@ Give this to an MCP client with this server connected:
 | Declarations | `breakpoint_at`, `declaration_clear` |
 | Read | `screen_map_write(method="load")`, `screen_map_find` on every screen, `read_memory` by symbol |
 | Lua | `input` (the coin, start, right, fire and up of the game's own actions) |
-| Captures | `audio_record` of the board's output |
+| Captures | `record` (the loop), `audio_record` of the board's output |
 | Files | `audio_compare` (`measure`, then `diff` against `music.wav`) |
 | Screen | `screen_view` |
 

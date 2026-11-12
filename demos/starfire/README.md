@@ -69,6 +69,7 @@ Give this to an MCP client with this server connected:
 | Lists | `perform` (coin, run, filter in one call) |
 | States | `state_write(method="save")`, `state_write(method="load")` (verified) |
 | Screen | `screen_view` |
+| Captures | `record` (the loop) |
 
 ## The transcript
 
