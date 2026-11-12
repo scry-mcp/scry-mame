@@ -1,0 +1,33 @@
+---
+paths:
+  - "demos/**"
+---
+
+# The demos are deterministic
+
+A published demo runs on hosts of very different speed and load, so no step depends on either.
+A step that needs the program to have reached a place gets there by a control, the first of
+these the program offers:
+
+1. a symbol (`run_to`), a breakpoint or a watch on a variable;
+2. what the program writes about itself (`log_wait`);
+3. `screen_wait` judged only at a declared stop (`on_breakpoint`, `on_watch`, with a
+   `condition` to filter the firings);
+4. `screen_wait` sampling frames, only when the program offers nothing above, and the demo says
+   why where it does it.
+
+`run_for` counts emulated time from a fixed start, so the same span runs the same instructions on
+any host: a demo may run one and then assert what it produced (a credit counted, a frame
+reached), and a screen or value that a symbol, a breakpoint or a watch could reach is reached by
+that control instead.
+
+- **What the host decides is declared volatile, each key with its true reason**: the window, a
+  position in the emulator's log (Windows writes CRLF), a compressed state's size, a recording's
+  digest where the platform's mix differs. A value the demo checks or shows is never hidden.
+- **A picture is the same picture when its pixels are**: each host's zlib writes other bytes, so
+  the committed `screen.png` is judged by its pixels and a transcript hides a picture's `bytes` and
+  `sha256`. A recording that differs by platform has its own reference under the same name
+  (`win32/music.wav`), its path declared a host argument so the transcript reads the same.
+- **A changed demo is proved twice on each host it runs on**: the same normalised transcript both
+  runs, the same pixels, and across hosts only what is declared. A second run that differs means
+  the demo is not deterministic yet, never a flake to rerun.

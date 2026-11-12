@@ -214,7 +214,7 @@ The recording is compared with the platform's reference with alignment off: `exa
 {
   "method": "diff",
   "a": "./tmp/demos/lineup/music.wav",
-  "b": "./demos/lineup/music.wav",
+  "b": "<host>",
   "align": false
 }
 ```
@@ -234,7 +234,7 @@ The recording is compared with the platform's reference with alignment off: `exa
   "length_delta_samples": 0,
   "aligned_by_samples": 0,
   "a": "./tmp/demos/lineup/music.wav",
-  "b": "./demos/lineup/music.wav",
+  "b": "<volatile>",
   "session": {
     "alive": true,
     "running": false,

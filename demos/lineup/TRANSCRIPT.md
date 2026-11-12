@@ -2325,7 +2325,7 @@
 {
   "method": "diff",
   "a": "./tmp/demos/lineup/music.wav",
-  "b": "./demos/lineup/music.wav",
+  "b": "<host>",
   "align": false
 }
 ```
@@ -2345,7 +2345,7 @@
   "length_delta_samples": 0,
   "aligned_by_samples": 0,
   "a": "./tmp/demos/lineup/music.wav",
-  "b": "./demos/lineup/music.wav",
+  "b": "<volatile>",
   "session": {
     "alive": true,
     "running": false,

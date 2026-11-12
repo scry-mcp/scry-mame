@@ -34,7 +34,7 @@ REFERENCE_ADDR = "0x30000"
 #: Juke's tile sheet is read in place from ROM.
 BASES = {"DATA": "0x400", "LUP_JUKEBOX": "rom"}
 #: MAME's mix on Windows differs in its last bits, the same run after run.
-SOUND = "music-win32.wav" if sys.platform == "win32" else "music.wav"
+SOUND = Path("win32", "music.wav") if sys.platform == "win32" else Path("music.wav")
 #: The board's pixel clock over its 512 x 312 raster.
 RATE_HZ = 8_000_000 / (512 * 312)
 #: The game's actions on the board's first player, by the arcade source's `J_*` bits: its
@@ -103,8 +103,10 @@ DEMO = Demo(
     capture=lambda run: run.dir / "screen.png",
     offers=frozenset({"rompath", "cwd"}), reads=frozenset({"cwd"}), precheck=precheck,
     volatile={**free_set.VOLATILE,
-              "pcm_sha256": "the recording's digest, which Windows' mix changes"},
-    host_args={**free_set.HOST_ARGS, "cwd": "the reader's checkout of the game"})
+              "pcm_sha256": "the recording's digest, which Windows' mix changes",
+              "b": "the platform's own reference recording"},
+    host_args={**free_set.HOST_ARGS, "cwd": "the reader's checkout of the game",
+               "b": "the platform's own reference recording"})
 
 
 if __name__ == "__main__":

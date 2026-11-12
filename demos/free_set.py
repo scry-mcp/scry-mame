@@ -34,7 +34,7 @@ VOLATILE = {
     "binary_origin": "how the host's MAME was found",
     "window": "where the host's display put the window, and how big it fits",
     "mark": "a byte position in the emulator's log, whose line endings are the host's",
-    "how": "it quotes a log position, whose line endings are the host's",
+    "how": "a hint that, on a log's replies, quotes a position whose line endings are the host's",
     "errorlog": "it carries a log position, whose line endings are the host's",
 }
 
