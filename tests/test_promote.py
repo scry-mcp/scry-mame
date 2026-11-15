@@ -125,9 +125,24 @@ def test_a_map_add_after_a_start_is_named_by_the_machine() -> None:
     assert STATE.drafts.entries() == ["maps/lineup"]
 
 
-def test_a_map_load_only_marks_the_entry_in_the_map_layer() -> None:
-    assert mpromote.after_map("load", {"application": "lineup"}) == {"application": "lineup"}
-    assert STATE.drafts.entries() == [] and STATE.drafts.loaded == {}
+def test_a_map_load_keeps_nothing_and_names_the_entry_it_read(tmp_path: Path) -> None:
+    read = str(tmp_path / ".scry" / "maps" / "lineup-screen-map.json")
+    loaded = {"application": "lineup", "path": read}
+    assert mpromote.after_map("load", loaded) == loaded
+    assert STATE.drafts.entries() == []
+    assert (STATE.drafts.loaded_name("maps"), STATE.drafts.sources["maps"]) == ("lineup", read)
+
+
+def test_a_map_loaded_from_another_store_and_added_to_belongs_to_that_store(
+        tmp_path: Path) -> None:
+    started(profile_in(tmp_path / "game", "v30"))
+    other = tmp_path / "other" / ".scry" / "maps" / "lineup-screen-map.json"
+    other.parent.mkdir(parents=True)
+    mpromote.after_map("load", {"application": "lineup", "path": str(other)})
+    STATE.maps.session_application = "lineup"
+    STATE.maps.session["play"] = screen()
+    mpromote.after_map("add", {"screen": "play"})
+    assert STATE.drafts.held("maps", "lineup")[0].project == str(tmp_path / "other")
 
 
 def test_a_map_save_keeps_nothing() -> None:
