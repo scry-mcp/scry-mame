@@ -306,7 +306,7 @@ def test_promote_answers_on_a_broken_session_and_never_names_it(
     ses.broken = NOT_A_STOP
     monkeypatch.chdir(tmp_path)
     out = s.promote(dry_run=True)
-    assert out["status"] == "INVALID" and out["code"] == "bad_argument", out
+    assert out["status"] == "INVALID" and out["code"] == "needs_call", out
     assert "session_broken" not in out["message"], out
 
 

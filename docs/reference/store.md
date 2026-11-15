@@ -13,8 +13,12 @@ What this session learned, written into the repository's store (`.scry/`) only w
 approved. `start` keeps the recipe it ran, a map's `add` keeps the map, a
 `perform_export` keeps the script; each is complete only with what its reader accepts
 (the arguments a recipe cannot boot without, a map the map reader parses, a script
-with a check), and a reply that keeps one says `kept N (promote to review)`. The
-identity is (kind, name): an entry a call loaded (`start(profile=)`,
+with a check), and a reply that keeps one says `kept N (promote to review)`, naming
+each repository of the draft with no store and the `root` it takes. An entry belongs
+to the repository it was learned in: the one whose store a call loaded it from, else
+the current `start`'s, its profile's or where its program runs, where the server can
+tell. The identity is
+(repository, kind, name): an entry a call loaded (`start(profile=)`,
 `screen_map_write` `load`, `perform(path=)`) names what is learned next, and a name
 the store already holds is an update, which keeps the keys a run owns as the
 store has them, and one that changes nothing is named in `unchanged`, not offered.
@@ -24,10 +28,10 @@ file, its size and whether it is new or an update, an update with its diff; `ent
 `names` renames one as it is written, and only
 that approved call creates `.scry/`, and with the server's name also `about.json` and
 the rendered `README.md`; `dry_run`
-names those in `would_create`, the approval in `created`. `root` names the repository
-the store is in or becomes; without it the first `.scry/` found walking up from the file
-a loaded recipe came from, the draft's paths, then this server's directory, is used,
-and a promotion that finds none is refused. Every path is
+names those in `would_create`, the approval in `created`. Without `root` each entry
+goes only to its own repository's store, one store a call, and one whose repository
+has none is unwritable; `root` names the repository whose store a call writes every
+entry to, a candidate from another saying `from`. Every path is
 written as a `project_store` placeholder, since a tracked file carries no path of this
 machine; an approval of an entry a review calls unwritable is refused. Reply: `store`,
 `candidates` and `unchanged` (a review), `unwritable`, each entry with its reason
@@ -35,8 +39,10 @@ machine; an approval of an entry a review calls unwritable is refused. Reply: `s
 `would_create` and `created` (the store, `about.json`, `README.md` not yet there),
 `total_bytes`,
 `store_bytes`; `close` names what was left unkept, which stays in the draft until the
-server ends. Refused: nothing kept (`needs_call`); an entry the draft does not hold; two
-entries written to one file; a kind or a store past its cap.
+server ends. Refused: nothing kept (`needs_call`); an entry the draft does not hold;
+without `root`, a call none of whose entries has a store, or entries of two stores; a
+name two repositories hold, unless `root` is one of them; two entries written to one
+file; a kind or a store past its cap.
 
 Reference: REFERENCE.md, The store.
 

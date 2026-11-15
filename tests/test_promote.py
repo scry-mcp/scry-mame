@@ -11,6 +11,7 @@ from typing import Any
 import pytest
 from scry_core import given, media_replies, screen_map, tool_replies
 from scry_core import promote as core_promote
+from scry_core.reply_contract import Invalid
 
 from scry_mame import promote as mpromote
 from scry_mame import replies, sequence, server
@@ -73,9 +74,23 @@ def test_promote_is_no_step_of_a_sequence() -> None:
     assert "promote" in sequence.NOT_STEPS and "promote" not in server._step_ops()
 
 
+def started(profile: Path | None = None) -> None:
+    """What the server's `start` leaves noted once its launch returned: the profile it read."""
+    with STATE.drafts.starting(profile=str(profile) if profile else ""):
+        pass
+
+
+def profile_in(root: Path, name: str = "lineup") -> Path:
+    """A profile in `root`'s own store, and its path."""
+    path = root / ".scry" / "start" / f"{name}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"format": "scry-start/1", "system": name}))
+    return path
+
+
 def test_a_start_keeps_its_recipe_without_the_run_s_own_arguments() -> None:
     mpromote.keep_start(START, defaults=server._START_DEFAULTS)
-    kept = STATE.drafts.kept["start", "lineup"].document
+    kept = STATE.drafts.held("start", "lineup")[0].document
     assert kept == {"format": "scry-start/1", "system": "lineup", "rompath": "/x/roms",
                     "reference_rom": "/x/ref.bin", "symbols": {"maincpu": "/x/symbols.yaml"},
                     "presence": False}
@@ -97,15 +112,16 @@ def test_a_map_add_is_named_by_the_entry_this_session_read() -> None:
     STATE.maps.session_application = "lineup"
     STATE.maps.session["play"] = screen()
     reply = mpromote.after_map("add", {"screen": "play"})
-    assert reply["kept"] == "kept 1 (promote to review)"
+    assert reply["kept"].startswith("kept 1 (promote to review)")
     assert STATE.drafts.entries() == ["maps/lineup"]
-    assert STATE.drafts.kept["maps", "lineup"].document["screens"][0]["name"] == "play"
+    assert STATE.drafts.held("maps", "lineup")[0].document["screens"][0]["name"] == "play"
 
 
 def test_a_map_add_after_a_start_is_named_by_the_machine() -> None:
     STATE.system = "lineup"
     STATE.maps.session["play"] = screen()
-    assert mpromote.after_map("add", {"screen": "play"})["kept"] == "kept 1 (promote to review)"
+    kept = mpromote.after_map("add", {"screen": "play"})["kept"]
+    assert kept.startswith("kept 1 (promote to review)")
     assert STATE.drafts.entries() == ["maps/lineup"]
 
 
@@ -128,11 +144,14 @@ def test_a_map_add_with_no_screen_proposes_nothing() -> None:
     assert STATE.drafts.entries() == []
 
 
+def exported(path: Path) -> dict[str, Any]:
+    return core_promote.after_export(STATE.drafts, {"path": str(path)}, mpromote.PROMOTE_PATHS)
+
+
 def test_an_export_keeps_its_document_named_by_the_file_it_wrote(tmp_path: Path) -> None:
     path = tmp_path / "session.json"
     path.write_text(json.dumps(perform_document()))
-    reply = mpromote.after_export(STATE.drafts, {"path": str(path)}, mpromote.PROMOTE_PATHS)
-    assert reply["kept"].startswith("kept 1 (promote to review)")
+    assert exported(path)["kept"].startswith("kept 1 (promote to review)")
     assert STATE.drafts.entries() == ["perform/session"]
 
 
@@ -140,7 +159,7 @@ def test_an_export_after_a_replay_updates_the_entry_it_replayed(tmp_path: Path) 
     path = tmp_path / "session.json"
     path.write_text(json.dumps(perform_document()))
     STATE.drafts.loaded_entry("perform", "dos")
-    mpromote.after_export(STATE.drafts, {"path": str(path)}, mpromote.PROMOTE_PATHS)
+    exported(path)
     assert STATE.drafts.entries() == ["perform/dos"]
 
 
@@ -156,12 +175,11 @@ def test_close_reports_what_was_left_unkept() -> None:
     assert server.close()["draft"] == ["start/lineup"]
 
 
-def test_close_leaves_out_what_the_store_already_holds(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(tmp_path)
+def test_close_leaves_out_what_the_store_already_holds(tmp_path: Path) -> None:
+    started(profile_in(tmp_path))
     mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
     entry = STATE.drafts.entries()[0]
-    server.promote(entries=[entry], root=str(tmp_path))
+    server.promote(entries=[entry])
     mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
     assert STATE.drafts.entries() == [entry]
     assert "draft" not in server.close()
@@ -205,13 +223,6 @@ def test_a_root_creates_the_store_only_on_the_approved_call(tmp_path: Path) -> N
     assert (repo / ".scry" / "start" / "lineup.json").is_file()
 
 
-def test_the_store_is_looked_for_from_the_recipe_s_own_paths(tmp_path: Path) -> None:
-    mpromote.keep_start({**START, "rompath": f"{tmp_path}/roms;{tmp_path}/more"},
-                        defaults=server._START_DEFAULTS)
-    assert f"{tmp_path}/roms" in mpromote.starting()
-    assert f"{tmp_path}/more" in mpromote.starting()
-
-
 def test_a_start_that_only_loads_its_profile_learned_nothing() -> None:
     STATE.drafts.loaded_entry("start", "v30")
     with given.remembered({"profile", "state_dir"}):
@@ -225,44 +236,72 @@ def test_a_start_that_only_loads_its_profile_learned_nothing() -> None:
 
 def test_a_kept_start_leaves_the_run_s_own_keys_to_the_store() -> None:
     mpromote.keep_start(START, defaults=server._START_DEFAULTS)
-    assert set(STATE.drafts.kept["start", "lineup"].own) == set(mpromote.RUN_OWN)
+    assert set(STATE.drafts.held("start", "lineup")[0].own) == set(mpromote.RUN_OWN)
 
 
-def test_the_recipe_s_paths_are_searched_before_this_process_s_directory(tmp_path: Path) -> None:
-    mpromote.keep_start({**START, "rompath": f"{tmp_path}/roms"},
-                        defaults=server._START_DEFAULTS)
-    starts = mpromote.starting()
-    assert starts[0] == f"{tmp_path}/roms" and starts[-1] == os.getcwd()
+def test_a_recipe_read_from_a_profile_belongs_to_the_profile_s_store(tmp_path: Path) -> None:
+    started(profile_in(tmp_path / "game"))
+    mpromote.keep_start(start_at(tmp_path / "bench"), defaults=server._START_DEFAULTS)
+    assert STATE.drafts.held("start", "lineup")[0].project == str(tmp_path / "game")
+    assert server.promote(dry_run=True)["store"] == str(tmp_path / "game" / ".scry")
 
 
-def test_a_map_learned_from_a_loaded_recipe_is_looked_for_in_that_recipe_s_store(
-        tmp_path: Path) -> None:
-    source = f"{tmp_path}/game/.scry/start/v30.json"
-    STATE.drafts.loaded_entry("start", "v30", source=source)
-    STATE.drafts.keep("maps", "v30", {"format": "scry-screen-map/1", "screens": [screen()]})
-    assert mpromote.starting()[0] == source
+def test_a_recipe_s_roms_never_say_whose_it_is(tmp_path: Path) -> None:
+    (tmp_path / "game" / ".scry").mkdir(parents=True)
+    started()
+    mpromote.keep_start(start_at(tmp_path / "game"), defaults=server._START_DEFAULTS)
+    assert STATE.drafts.held("start", "lineup")[0].project == ""
+    refused = server.promote(entries=["start/lineup"])
+    assert refused["code"] == "bad_argument" and "root=<the repository>" in refused["message"]
+    assert not (tmp_path / "game" / ".scry" / "start").exists()
 
 
-def test_a_perform_document_s_start_block_says_where_the_store_is() -> None:
-    STATE.drafts.keep("perform", "x", {"start": {"rompath": "/game/roms", "binary": "/b/mame"},
-                                       "steps": [{"op": "a", "recorded": {"v": 1}}]})
-    starts = mpromote.starting()
-    assert starts[0] == "/game/roms" and str(Path("/b")) not in starts
+def test_a_map_learned_after_a_profile_start_belongs_to_that_store(tmp_path: Path) -> None:
+    started(profile_in(tmp_path / "game", "v30"))
+    STATE.system = "lineup"
+    STATE.maps.session["play"] = screen()
+    assert mpromote.after_map("add", {"screen": "play"})["kept"] == "kept 1 (promote to review)"
+    assert STATE.drafts.held("maps", "lineup")[0].project == str(tmp_path / "game")
 
 
-def test_an_export_looks_for_the_store_where_the_document_it_kept_points(
+def test_a_refused_start_leaves_the_live_session_s_project(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    repo = tmp_path / "repo"
-    (repo / ".scry").mkdir(parents=True)
-    bare = tmp_path / "elsewhere"
-    bare.mkdir()
-    monkeypatch.chdir(bare)
-    document = perform_document()
-    document["start"]["rompath"] = f"{repo}/roms"
-    path = tmp_path / "run.json"
-    path.write_text(json.dumps(document))
-    kept = mpromote.after_export(STATE.drafts, {"path": str(path)}, mpromote.PROMOTE_PATHS)
-    assert kept["kept"] == "kept 1 (promote to review)"
+    monkeypatch.setattr(STATE, "proc", None)
+    started(profile_in(tmp_path / "game"))
+    monkeypatch.setattr(STATE, "proc", object())
+    with pytest.raises(Invalid), mpromote.launching(str(profile_in(tmp_path / "other"))):
+        raise Invalid("session_live", "a session is already live")
+    assert STATE.drafts.started_in == str(tmp_path / "game")
+
+
+def test_a_start_refused_with_its_own_session_live_keeps_its_project(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(STATE, "proc", None)
+    with pytest.raises(Invalid), mpromote.launching(str(profile_in(tmp_path / "other"))):
+        monkeypatch.setattr(STATE, "proc", object())
+        raise Invalid("window_not_visible", "the window never appeared")
+    assert STATE.drafts.started_in == str(tmp_path / "other")
+
+
+def test_two_projects_each_keep_their_own_recipe_and_store(tmp_path: Path) -> None:
+    game, bare = tmp_path / "game", tmp_path / "bare"
+    started(profile_in(game, "alpha"))
+    with given.remembered({"profile", "boot_seconds"}):
+        mpromote.keep_start({**start_at(game), "system": "alpha", "boot_seconds": 9.0},
+                            defaults=server._START_DEFAULTS)
+    started()
+    mpromote.keep_start({**start_at(bare), "system": "beta"}, defaults=server._START_DEFAULTS)
+    kept = core_promote.kept_line(STATE.drafts)
+    assert "start/beta: nothing this session read names its repository" in kept, kept
+    review = server.promote(dry_run=True)
+    assert review["store"] == str(game / ".scry")
+    assert [c["entry"] for c in review["candidates"]] == ["start/alpha"]
+    assert [u["entry"] for u in review["unwritable"]] == ["start/beta"]
+    refused = server.promote(entries=["start/alpha", "start/beta"])
+    assert refused["code"] == "bad_argument" and "start/beta" in refused["message"]
+    server.promote(entries=["start/alpha"])
+    assert not (game / ".scry" / "start" / "beta.json").exists()
+    assert not (bare / ".scry").exists()
 
 
 def working_directory_gone(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -274,10 +313,11 @@ def working_directory_gone(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_a_working_directory_that_is_gone_does_not_cost_the_reply(
-        monkeypatch: pytest.MonkeyPatch) -> None:
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    started(profile_in(tmp_path))
     working_directory_gone(monkeypatch)
     mpromote.keep_start(START, defaults=server._START_DEFAULTS)
-    assert mpromote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
+    assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
 
 
 def test_a_promote_with_a_root_does_not_need_the_working_directory(
@@ -311,19 +351,21 @@ def test_a_second_promotion_creates_nothing_more(tmp_path: Path) -> None:
     assert "created" not in server.promote(entries=["start/lineup"], root=str(tmp_path))
 
 
-def test_a_kept_line_says_how_to_set_up_a_store_only_when_none_is_above(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.chdir(tmp_path)
+def test_a_kept_line_says_how_to_set_up_a_store_only_when_it_names_none(tmp_path: Path) -> None:
+    started(profile_in(tmp_path))
     mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
-    assert "no .scry/ above" in mpromote.kept_line(STATE.drafts)
-    (tmp_path / ".scry").mkdir()
-    assert mpromote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
+    assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
+    started()
+    mpromote.keep_start({**start_at(tmp_path), "system": "speedf"},
+                        defaults=server._START_DEFAULTS)
+    assert "start/speedf: nothing this session read names its repository" in \
+        core_promote.kept_line(STATE.drafts)
 
 
-def test_a_store_above_the_server_s_own_directory_does_not_silence_the_hint(
+def test_a_store_in_the_server_s_own_directory_does_not_silence_the_hint(
         tmp_path: Path) -> None:
     mpromote.keep_start(start_at(tmp_path / "game"), defaults=server._START_DEFAULTS)
-    assert "no .scry/ above" in mpromote.kept_line(STATE.drafts)
+    assert "root=<the repository>" in core_promote.kept_line(STATE.drafts)
 
 
 def test_an_export_names_the_missing_store_too(tmp_path: Path,
@@ -331,5 +373,4 @@ def test_an_export_names_the_missing_store_too(tmp_path: Path,
     monkeypatch.chdir(tmp_path)
     path = tmp_path / "run.json"
     path.write_text(json.dumps(perform_document()))
-    kept = mpromote.after_export(STATE.drafts, {"path": str(path)}, mpromote.PROMOTE_PATHS)
-    assert "no .scry/ above" in kept["kept"]
+    assert "root=<the repository>" in exported(path)["kept"]

@@ -64,6 +64,7 @@ from scry_core import (  # noqa: E402
     signalled_end,
 )
 from scry_core import presence as scry_presence  # noqa: E402
+from scry_core import promote as core_promote  # noqa: E402
 from scry_core import (
     scan_vocabulary as words,
 )
@@ -225,26 +226,23 @@ def start(
                symbols=params["symbols"], inipath=params["inipath"],
                boot_lua=params["boot_lua"], state_dir=params["state_dir"], cfg=params["cfg"],
                types=params["types"], view=params["view"], profile=profile)
-    reply = launch.start(binary=params["binary"], system=params["system"],
-                         rompath=params["rompath"], reference_rom=params["reference_rom"],
-                         symbols=params["symbols"], reference_addr=params["reference_addr"],
-                         inipath=params["inipath"], wait=params["boot_seconds"],
-                         shared=params["shared"], boot_lua=params["boot_lua"],
-                         env=params["env"], bases=params["bases"],
-                         reference_base=params["reference_base"], port=params["stub_port"],
-                         state_dir=params["state_dir"],
-                         throttle_from_frame=params["throttle_from_frame"],
-                         types=params["types"], cfg=params["cfg"],
-                         background=params["background"], presence=params["presence"],
-                         view=params["view"], display=params["display"], size=params["size"],
-                         progress=bridge(ctx))
-    if block is not None:
-        STATE.drafts.loaded_entry("start", Path(str(block["file"])).stem,
-                                  source=str(block["file"]))
-    else:
-        STATE.drafts.forget("start")
+    with mpromote.launching(str(block["file"]) if block is not None else ""):
+        reply = launch.start(binary=params["binary"], system=params["system"],
+                             rompath=params["rompath"],
+                             reference_rom=params["reference_rom"], symbols=params["symbols"],
+                             reference_addr=params["reference_addr"],
+                             inipath=params["inipath"], wait=params["boot_seconds"],
+                             shared=params["shared"], boot_lua=params["boot_lua"],
+                             env=params["env"], bases=params["bases"],
+                             reference_base=params["reference_base"],
+                             port=params["stub_port"], state_dir=params["state_dir"],
+                             throttle_from_frame=params["throttle_from_frame"],
+                             types=params["types"], cfg=params["cfg"],
+                             background=params["background"], presence=params["presence"],
+                             view=params["view"], display=params["display"],
+                             size=params["size"], progress=bridge(ctx))
     if mpromote.keep_start(params, defaults=_START_DEFAULTS):
-        reply["kept"] = mpromote.kept_line(STATE.drafts)
+        reply["kept"] = core_promote.kept_line(STATE.drafts)
     if block is not None:
         reply["profile"] = block
     return reply
@@ -1556,7 +1554,7 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
 
     Reference: REFERENCE.md, From an investigation to a bench.
     """
-    return mpromote.after_export(STATE.drafts, menvelope.envelope(
+    return core_promote.after_export(STATE.drafts, menvelope.envelope(
         recording.export(RECORDER, dest, overwrite)), mpromote.PROMOTE_PATHS)
 
 

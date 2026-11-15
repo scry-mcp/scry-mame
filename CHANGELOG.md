@@ -4,6 +4,14 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), `promote` writes an entry only into the store of
+  the repository it was learned in (the one whose store a call read it from, else the one whose
+  profile the current `start` read), so a session that ran programs of two repositories never
+  files one in the other's and the server's own directory never lends its store. A start that
+  read no profile names no repository, so what it keeps takes `root`. An entry with no store
+  of its own is `unwritable` in a review and refused in an approval, naming the `root` to pass;
+  the `kept` line names it; a call writes one store; with `root`, a candidate kept in another
+  repository says `from`.
 - The demos ship a loop: each demo's `loop.mp4` sits beside its `screen.png`, recorded by the
   runner after the step that takes the still.
 - On the pinned scry-core (`pyproject.toml`), which carries the window every demo asks of

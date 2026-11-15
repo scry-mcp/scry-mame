@@ -1,14 +1,14 @@
-"""`promote`: what this session learned, kept as a candidate and written on approval."""
+"""`promote`: what this session learned, kept as a candidate and written on approval; where it
+may be written is scry-core's to decide."""
 
 from __future__ import annotations
 
-import os
-from collections.abc import Collection, Mapping
+from collections.abc import Iterator, Mapping
+from contextlib import contextmanager
 from typing import Any
 
 from scry_core import given, project_store
 from scry_core import promote as core
-from scry_core.promote_paths import LISTS
 
 from scry_mame import launch
 from scry_mame.state import STATE
@@ -23,26 +23,11 @@ NEEDS = ("system",)
 SERVER = "mame"
 
 
-def has_store(drafts: core.Drafts) -> bool:
-    """Whether a `.scry/` is above the project the draft names; unreadable or nameless says yes."""
-    try:
-        own = os.getcwd()
-        starts = [path for path in core.starting(drafts, recipe_paths) if path != own]
-        return not starts or project_store.root(starts) is not None
-    except OSError:
-        return True
-
-
-def kept_line(drafts: core.Drafts) -> str:
-    """Core's kept line, told if a store exists."""
-    return core.kept_line(drafts, has_store(drafts))
-
-
-def after_export(drafts: core.Drafts, reply: dict[str, Any],
-                 path_keys: Collection[str]) -> dict[str, Any]:
-    """The export's reply, its store sought after the keep."""
-    kept = core.after_export(drafts, reply, path_keys)
-    return {**kept, "kept": kept_line(drafts)} if "kept" in kept else kept
+@contextmanager
+def launching(profile: str) -> Iterator[None]:
+    """A start's launch, from the profile it read ("" for none)."""
+    with STATE.drafts.starting(profile=profile, live=lambda: STATE.proc):
+        yield
 
 
 def keep_start(params: Mapping[str, Any], *, defaults: Mapping[str, Any]) -> bool:
@@ -66,34 +51,20 @@ def after_map(method: str, reply: dict[str, Any]) -> dict[str, Any]:
     if method != "add" or not application:
         return reply
     if STATE.drafts.keep("maps", application, STATE.maps.document(application)):
-        return {**reply, "kept": kept_line(STATE.drafts)}
+        return {**reply, "kept": core.kept_line(STATE.drafts)}
     return reply
 
 
 def promote(dry_run: bool = False, entries: list[str] | None = None,
             names: dict[str, str] | None = None, root: str = "") -> dict[str, Any]:
-    """The body of the `promote` tool, on this server's draft."""
-    try:
-        starts = starting()
-    except OSError:
-        starts = []
+    """The `promote` tool's body."""
     return core.promote(STATE.drafts, dry_run=dry_run, entries=entries, names=names, root=root,
-                        starting=starts, state=scratch(), server=SERVER)
-
-
-def starting() -> list[str]:
-    """Where the store is looked for, as core orders it from this server's recipe paths."""
-    return core.starting(STATE.drafts, recipe_paths)
+                        state=scratch(), server=SERVER)
 
 
 def after_close(reply: dict[str, Any], state: str) -> dict[str, Any]:
     """`close`'s reply, naming what it left waiting."""
-    return core.after_close(STATE.drafts, reply, starting=starting, state=state)
-
-
-def recipe_paths(recipe: Mapping[str, Any]) -> list[str]:
-    """A recipe's roms, which say which repository it belongs to."""
-    return str(recipe.get("rompath") or "").split(LISTS["rompath"])
+    return core.after_close(STATE.drafts, reply, state=state)
 
 
 def scratch() -> str:
