@@ -359,9 +359,9 @@ window(front=false)
 Where the watched window is on the host, at any time, a running machine included. `front`
 brings it in front of whatever covers it and reads that back.
 
-Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, no other
-application's window covering its centre; `fullscreen`); `size` when the session was started
-with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
+Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, on screen with no
+other application's window covering its centre; `fullscreen`); `size` when the session was
+started with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
 `outer`), `tolerance_px`, `height_free` and `matches`.
 
 Refused: no session (`no_session`), one that died (`session_broken`), a session started
