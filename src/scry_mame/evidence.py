@@ -53,7 +53,7 @@ class SourceKey(NamedTuple):
 
     def reply(self) -> dict[str, Any]:
         """The key as a reply shows it, address and cpu only where set."""
-        shown = {**self._asdict(), "offset": f"0x{self.offset:08x}"}
+        shown = {**self._asdict(), "offset": st.hex_addr(self.offset)}
         return {k: v for k, v in shown.items() if k in self._fields[:3] or v}
 
 
