@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- scry-core 0.111.2 pinned: the pre-commit hook starts the `jscpd.cmd` npm installs on Windows,
+  so the hook's cases run there, and a FIFO the tests release is released for a reader that
+  opens late too.
 - A map `screen_map_write` loaded names the entry it was read from, so an `add` after the
   load updates that map in the store it came from, as the `promote` description says,
   where it was kept as a new map of the current `start`'s repository.
