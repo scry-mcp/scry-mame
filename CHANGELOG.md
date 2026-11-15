@@ -108,9 +108,10 @@ floor.
 - `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default: a watched window
   is now the largest whole multiple of the machine's screen that fits the display's usable area
   (menu bar, Dock and taskbar excluded), not a fixed bound, and `window` judges a stated size and
-  answers `size`. MAME draws the picture at its view's aspect inside that window, so the multiple
-  is pixel-exact only where the view's aspect is the screen's. A size that is not a whole multiple
-  is stretched by a fraction, and the `note` says so.
+  answers `size`. MAME draws the picture at its view's aspect inside that window and scales it by
+  whole pixels, never blurred, so the multiple is pixel-exact only where the view's aspect is the
+  screen's. A size that is not a whole multiple is scaled by whole pixels, unevenly between the
+  axes, and the `note` says so.
 - `start` takes `display` (the OS's index, the main display when omitted) and `fullscreen`, and a
   watched start answers `window`, proved in the host's window list; a window that never appears on
   the asked display is `window_not_visible`. `SCRY_EMULATOR_ARGS` is gone. `fullscreen` is refused on
