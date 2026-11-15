@@ -13,7 +13,7 @@ A sequence of this server's operations in one call, in order, stopping at the fi
 failure; `drive` is this plus a wait for a line of the emulator log.
 
 `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-`drive`, `perform_export`. `path`: a `perform` document (absolute or `~`-led:
+`drive`, `perform_export`, `window`, `promote`. `path`: a `perform` document (absolute or `~`-led:
 `.scry/perform/<name>.json`, or a file `perform_export` wrote) whose steps are replayed; give
 `steps` or `path`, never both.
 `until_frame=F` needs `summaries=True` (a window is hundreds of steps) and a `run_for` step, and repeats the list until a stop reads frame F, within 5000 steps and 600 s; `no_channel` if there is no frame counter. A step's `recorded`, `{field: value}` of its own reply,

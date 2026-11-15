@@ -1454,9 +1454,7 @@ def log_wait(pattern: str, channel: Annotated[str, vocab.enum(files.LOG_CHANNELS
 def _step_ops() -> dict[str, Callable[..., dict[str, Any]]]:
     """Op name -> the wrapped tool it dispatches to, built at call time so it names the
     tools by their live registrations rather than a second hand-kept list: every tool but
-    the lifecycle (`start`, `close`, `rom_check`), the two batch tools themselves, `perform`
-    and `drive` (the reason is in `perform`'s docstring), and `perform_export`, which writes
-    the session the list belongs to."""
+    `sequence.NOT_STEPS`."""
     return core_steps.step_ops(mcp, globals(), sequence.NOT_STEPS)
 
 
@@ -1513,7 +1511,7 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     failure; `drive` is this plus a wait for a line of the emulator log.
 
     `steps`: `{"op": <tool>, ...}`, any tool but `start`, `close`, `rom_check`, `perform`,
-    `drive`, `perform_export`. {PERFORM_SOURCE}
+    `drive`, `perform_export`, `window`, `promote`. {PERFORM_SOURCE}
     {UNTIL_FRAME} A step's `recorded`, `{field: value}` of its own reply,
     must hold, else INVALID `diverged`. A refused step: INVALID `errors`, nothing run.
     `settle_seconds` bounds each wait for a stop before a step that needs one (0: never wait).

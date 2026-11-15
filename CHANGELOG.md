@@ -127,11 +127,9 @@ floor.
   whole pixels, never blurred, so the multiple is pixel-exact only where the view's aspect is the
   screen's. A size that is not a whole multiple is scaled by whole pixels, unevenly between the
   axes, and the `note` says so.
-- `start` takes `display` (the OS's index, the main display when omitted) and `fullscreen`, and a
-  watched start answers `window`, proved in the host's window list; a window that never appears on
-  the asked display is `window_not_visible`. `SCRY_EMULATOR_ARGS` is gone. `fullscreen` is refused on
-  macOS and Windows, where MAME's `-nowindow` opens a window the display's work area holds, never
-  the display.
+- `start` takes `display` (the OS's index, the main display when omitted), and a watched start
+  answers `window`, proved in the host's window list; a window that never appears on the asked
+  display is `window_not_visible`. `SCRY_EMULATOR_ARGS` is gone.
 - A new tool, `window`, answers where the window is at any time, and with `front=true` brings it
   in front of what covers it. Without `front` it answers the window
   wherever the owner put it, another display included. A `front` that fails on a session
