@@ -265,22 +265,24 @@ def test_an_export_looks_for_the_store_where_the_document_it_kept_points(
     assert kept["kept"] == "kept 1 (promote to review)"
 
 
+def working_directory_gone(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The working directory cannot be resolved, as when it was deleted: Windows refuses to
+    delete a process's own working directory, so the state is reached without deleting it."""
+    def gone() -> str:
+        raise FileNotFoundError("the working directory")
+    monkeypatch.setattr(os, "getcwd", gone)
+
+
 def test_a_working_directory_that_is_gone_does_not_cost_the_reply(
-        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    gone = tmp_path / "gone"
-    gone.mkdir()
-    monkeypatch.chdir(gone)
-    gone.rmdir()
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    working_directory_gone(monkeypatch)
     mpromote.keep_start(START, defaults=server._START_DEFAULTS)
     assert mpromote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
 
 
 def test_a_promote_with_a_root_does_not_need_the_working_directory(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    gone = tmp_path / "gone"
-    gone.mkdir()
-    monkeypatch.chdir(gone)
-    gone.rmdir()
+    working_directory_gone(monkeypatch)
     mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
     assert server.promote(dry_run=True, root=str(tmp_path))["store"] == str(tmp_path / ".scry")
 
