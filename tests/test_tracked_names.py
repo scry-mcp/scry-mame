@@ -21,10 +21,15 @@ def outside(paths: list[str]) -> list[str]:
     return [p for p in paths if p.startswith(DATA) and not p.endswith(".py") and not named(p)]
 
 
+def tracked(root: Path) -> list[str]:
+    """The paths git tracks, as written: a plain listing quotes a name with a byte past ASCII."""
+    listed = subprocess.run(["git", "-C", str(root), "ls-files", "-z"], capture_output=True,
+                            text=True, check=True).stdout
+    return [p for p in listed.split("\0") if p]
+
+
 def test_every_tracked_data_file_is_named_by_the_rule() -> None:
-    root = Path(__file__).resolve().parents[1]
-    listed = subprocess.run(["git", "-C", str(root), "ls-files"], capture_output=True, text=True,
-                            check=True).stdout.split()
+    listed = tracked(Path(__file__).resolve().parents[1])
     data = [p for p in listed if p.startswith(DATA)]
     assert data, "no tracked data file was judged"
     assert outside(listed) == []
@@ -36,3 +41,11 @@ def test_the_judge_tells_each_form_apart() -> None:
     assert outside(["tests/fixtures/a/PROVENANCE.txt", "demos/x/Shot_1.png",
                     "demos/x/MINES.COMX"]) == ["tests/fixtures/a/PROVENANCE.txt",
                                                "demos/x/Shot_1.png", "demos/x/MINES.COMX"]
+
+
+def test_a_tracked_name_past_ascii_is_judged(tmp_path: Path) -> None:
+    (tmp_path / "tests" / "fixtures").mkdir(parents=True)
+    (tmp_path / "tests" / "fixtures" / "Caf\u00e9.txt").write_bytes(b"")
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    subprocess.run(["git", "-C", str(tmp_path), "add", "-A"], check=True)
+    assert outside(tracked(tmp_path)) == ["tests/fixtures/Caf\u00e9.txt"]
