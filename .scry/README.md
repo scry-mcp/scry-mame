@@ -22,7 +22,7 @@ A recipe is the arguments of `start`, so a session boots a program without compo
 
 The board recipes name their paths through `MAME_LIVE_BENCH`, which the live tier exports with `~/.local/share/scry-bench/mame` as its default and a private copy overrides. Each recipe spells the directory and system its bench's `identity.json` declares; a bench that renames either declares a store of its own. `v30`, `v30-alt` and `free` name the executable through `MAME_BINARY`, the one MAME the games are developed on.
 
-`free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`. Given those, `free_boot("circus", ...)` keeps the call's own system and reference image.
+`free` names its sets through `MAME_TEST_ROMS`; the reference image of a free set is unpacked per run, so the call gives `system`, `reference_rom`, `reference_addr` and `reference_base`. Given those, the call's own `system` and reference image win over the recipe's.
 
 ---
 
