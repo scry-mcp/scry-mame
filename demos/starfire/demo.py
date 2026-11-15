@@ -54,8 +54,8 @@ def filtered(credits: int) -> Any:
         if credits == 3:
             addrs = [h["addr"] for h in scan["hits"]]
             expect(addrs == ["0x00008299"], f"after three coins the scan holds {addrs}")
-            return f"coin {credits}: one cell left, {addrs[0]}, holding 3"
-        return f"coin {credits}: {left} cells still hold {credits}"
+            return f"one cell left, {addrs[0]}, holding 3"
+        return f"{left} cells still hold {credits}"
     return check
 
 

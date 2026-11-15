@@ -62,10 +62,10 @@ def filtered(coins: int) -> Any:
         left = scan["hits_total"]
         expect(left >= 1, f"no byte holds {coins} after coin {coins}")
         if coins < 3:
-            return f"coin {coins}: {left} bytes still hold {coins}"
+            return f"{left} bytes still hold {coins}"
         addrs = {h["addr"] for h in scan["hits"]}
         expect(left == 3 and {at(CREDITS_BIN), at(CREDITS_BCD)} <= addrs, f"the scan kept {addrs}")
-        return f"coin 3: three bytes hold 3, among them {CREDITS_BIN} and {CREDITS_BCD}"
+        return f"three bytes hold 3, among them {CREDITS_BIN} and {CREDITS_BCD}"
     return check
 
 

@@ -78,7 +78,7 @@
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "kept 1 (promote to review); there is no .scry/ above this project: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "kept": "kept 1 (promote to review); start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
   "session": {
     "alive": true,
     "running": false,
@@ -185,7 +185,7 @@
 
 </details>
 
-**4. `perform`**: OK coin 1: coin 1: 22 bytes still hold 1
+**4. `perform`**: OK coin 1: 22 bytes still hold 1
 
 <details><summary>call and reply</summary>
 
@@ -382,7 +382,7 @@
 
 </details>
 
-**5. `perform`**: OK coin 2: coin 2: 3 bytes still hold 2
+**5. `perform`**: OK coin 2: 3 bytes still hold 2
 
 <details><summary>call and reply</summary>
 
@@ -560,7 +560,7 @@
 
 </details>
 
-**6. `perform`**: OK coin 3: coin 3: three bytes hold 3, among them 0x42b and 0x42c
+**6. `perform`**: OK coin 3: three bytes hold 3, among them 0x42b and 0x42c
 
 <details><summary>call and reply</summary>
 

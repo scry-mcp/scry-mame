@@ -82,7 +82,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 <!-- demo-transcript:begin -->
 The run is 26 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
-**6. `perform`**: OK coin 3: coin 3: three bytes hold 3, among them 0x42b and 0x42c
+**6. `perform`**: OK coin 3: three bytes hold 3, among them 0x42b and 0x42c
 
 A value scan narrows the candidates: after the first coin the bytes holding 1, after the second those holding 2, and by the third three bytes remain. The scan cannot tell which of them is the credits, which is what the next steps are for.
 

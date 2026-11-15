@@ -81,7 +81,7 @@ paths read the same on any host; temporary paths, process ids and wall-clock cou
 <!-- demo-transcript:begin -->
 The run is 22 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
 
-**6. `perform`**: OK coin 3: coin 3: one cell left, 0x00008299, holding 3
+**6. `perform`**: OK coin 3: one cell left, 0x00008299, holding 3
 
 A value scan narrows the first kilobyte of scratch RAM: after the first coin the cells holding 1, after the second those holding 2, and after the third one cell is left. That byte is the credits.
 
