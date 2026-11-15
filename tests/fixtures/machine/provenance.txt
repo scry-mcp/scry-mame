@@ -1,4 +1,4 @@
-Captured live, never authored: these are the bytes the boot harness (`scry_mame.machine.MACHINE_LUA`,
+Captured live, never authored: these are the bytes the boot harness (`src/scry_mame/lua/inventory.lua`,
 through MAME's `-autoboot_script`) wrote into the session's scratch on a real machine.
 Program and board names were then replaced by neutral labels by a single mechanical substitution
 that preserves every field width; nothing else was edited.
