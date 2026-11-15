@@ -5,6 +5,9 @@ from __future__ import annotations
 import re
 import subprocess
 from pathlib import Path
+from typing import Any
+
+import pytest
 
 RULE = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*\.[a-z0-9]+")
 DOS = re.compile(r"[A-Z0-9_]{1,8}\.[A-Z0-9]{1,3}")
@@ -24,7 +27,7 @@ def outside(paths: list[str]) -> list[str]:
 def tracked(root: Path) -> list[str]:
     """The paths git tracks, as written: a plain listing quotes a name with a byte past ASCII."""
     listed = subprocess.run(["git", "-C", str(root), "ls-files", "-z"], capture_output=True,
-                            text=True, check=True).stdout
+                            encoding="utf-8", check=True).stdout
     return [p for p in listed.split("\0") if p]
 
 
@@ -49,3 +52,15 @@ def test_a_tracked_name_past_ascii_is_judged(tmp_path: Path) -> None:
     subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
     subprocess.run(["git", "-C", str(tmp_path), "add", "-A"], check=True)
     assert outside(tracked(tmp_path)) == ["tests/fixtures/Caf\u00e9.txt"]
+
+
+def test_the_listing_is_read_as_utf8_on_any_host(monkeypatch: pytest.MonkeyPatch) -> None:
+    # git -z writes these bytes on every host; a pipe read as text takes the host's codec, cp1252
+    # on Windows.
+    def run(args: list[str], **kw: Any) -> subprocess.CompletedProcess[Any]:
+        listed = b"tests/fixtures/Caf\xc3\xa9.txt\x00"
+        text = kw.get("text") or kw.get("encoding")
+        out = listed.decode(kw.get("encoding") or "cp1252") if text else listed
+        return subprocess.CompletedProcess(args, 0, out, "")
+    monkeypatch.setattr(subprocess, "run", run)
+    assert tracked(Path(".")) == ["tests/fixtures/Caf\u00e9.txt"]
