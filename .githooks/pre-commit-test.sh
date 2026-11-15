@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vendored-version: 3 (every server's copy is this file; a sweep compares this stamp)
+# vendored-version: 4 (every server's copy is this file; a sweep compares this stamp)
 # The wiring of `pre-commit.sh`: its one line reaches scry-core's hook, through the real jscpd, the
 # real probe check and the real mypy. What the hook decides is tested in scry-core; here the CONTROL (this tree
 # passes) and one planted clone (blocked at 1) are what shows the line works.
@@ -27,7 +27,10 @@ bad() { printf '  FAIL  %s\n' "$1" >&2; fails=$((fails + 1)); }
     | while IFS= read -r -d '' f; do [ -e "$f" ] && printf '%s\0' "$f"; done \
     | tar -c --null -T - -f - | tar -x -f - -C "$tree"
 git -C "$tree" init -q
-hook() { (cd "$tree" && UV_PROJECT_ENVIRONMENT="$root/.venv" UV_NO_SYNC=1 \
+env=${UV_PROJECT_ENVIRONMENT:-.venv}
+# uv resolves a relative one against the project, which below is the copy.
+case $env in /* | [A-Za-z]:*) ;; *) env="$root/$env" ;; esac
+hook() { (cd "$tree" && UV_PROJECT_ENVIRONMENT="$env" UV_NO_SYNC=1 \
           bash .githooks/pre-commit.sh > "$copy/out" 2>&1); }
 
 rc=0; hook || rc=$?
