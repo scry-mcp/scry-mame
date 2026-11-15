@@ -458,7 +458,7 @@ the screen as pixels and a text mode's characters are DOSBox-X's to read.
 
 `on_breakpoint` / `on_watch`: judge only at the frame's end after a firing of that declared
 `stop` breakpoint or `change` watch (its `ref`, on `cpu`), never sampling; `condition`
-(up to 4 terms joined by `&&`, each a register (`AX`, `d0`) or a memory read (`b@ref`, `w@ref`, `d@ref`), a comparison (`==`, `!=`, `<`, `<=`, `>`, `>=`) and a hex value (`0x` allowed)) filters the firings first. MAME's Lua counts the firings and stops
+(up to 4 terms joined by `&&`, each a register of the stopped cpu or a memory read (`b@ref`, `w@ref`, `d@ref`), a comparison (`==`, `!=`, `<`, `<=`, `>`, `>=`) and a hex value (`0x` allowed)) filters the firings first. MAME's Lua counts the firings and stops
 only on a picture this wait has not rejected; the first firing is awaited even when the
 predicate already holds.
 

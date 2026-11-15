@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On the pinned scry-core (`pyproject.toml`), `screen_wait`'s description gives `condition`
+  a register of the stopped cpu, never a register this server refuses.
 - On the pinned scry-core (`pyproject.toml`), `promote` writes an entry only into the store of
   the repository it was learned in (the one whose store a call read it from, else the one whose
   profile the current `start` read), so a session that ran programs of two repositories never
