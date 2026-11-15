@@ -364,8 +364,8 @@ def test_a_recording_a_stop_came_before_is_not_begun_and_says_when_it_begins(
     assert mstate.STATE.captures == [], "a recording not begun is no capture"
 
 
-def test_both_recording_scripts_end_by_logging_where_their_notifier_first_runs() -> None:
-    """The `armed` line is each chunk's last and reads the vblank off the two screen timers."""
+def test_the_armed_line_reads_the_vblank_off_the_two_screen_timers() -> None:
+    """Where the notifier first runs, which each recording script logs last."""
     armed = mrec.armed("MAME_MCP_RECORD#1")
     assert has(armed, "time_until_vblank_end():as_double() < screen:time_until_vblank_start()")
     assert mrec.armed("x") != armed, "the line carries its call's own mark"
