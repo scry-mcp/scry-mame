@@ -4,6 +4,11 @@ What a client of the server notices.
 
 ## Unreleased
 
+- A map `screen_map_write` loaded names the entry it was read from, so an `add` after the
+  load updates that map in the store it came from, as the `promote` description says,
+  where it was kept as a new map of the current `start`'s repository.
+- `window`'s `front` is said as it is computed: on screen, with no other application's
+  window over its centre.
 - On the pinned scry-core (`pyproject.toml`), `screen_wait`'s description gives `condition`
   a register of the stopped cpu, never a register this server refuses.
 - On the pinned scry-core (`pyproject.toml`), `promote` writes an entry only into the store of
