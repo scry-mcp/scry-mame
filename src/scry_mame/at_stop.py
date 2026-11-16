@@ -5,10 +5,12 @@ A gate installed in MAME's Lua does the work a round trip per firing would cost.
 (`emu.register_periodic` runs at the top of the debugger's wait loop) it tells the named row's
 firing from any other stop: a breakpoint's by the pc, a change watch's by its bytes differing
 from the ones seen at the stop before. It counts the firing, evaluates the condition and, when it
-holds, opens a judgement window and lets the machine run on. The window spans two frame
-notifiers, because a notifier reads the frame before the one just finished (`film.py`); at each
-the gate compares the picture with the ones the server already rejected in this wait and, on a
-new one, stops the machine. Only then does the server read the screen and judge it with the one
+holds, opens a judgement window and lets the machine run on. The window spans two frame ends
+(`emu.register_frame_done`), because once a frame ends `screen:pixels()` reads the buffer the
+next frame draws into, which still holds the frame before: the frame the firing ran in is read at
+the second frame end, as a frame notifier reads it (`film.py`). At each the gate compares the
+picture with the ones the server already rejected in this wait and, on a new one, stops the
+machine. Only then does the server read the screen and judge it with the one
 map code; no match, it releases and the gate files that picture as rejected.
 
 The run is released from the console (`g`), so the stub sends no stop packet: the server learns
@@ -39,7 +41,7 @@ from scry_mame import state as st
 
 #: Pictures a wait remembers as rejected; the oldest goes first.
 REJECTED_MAX = 16
-#: The notifiers a firing's judgement window spans (see the module's docstring).
+#: The frame ends a firing's judgement window spans (see the module's docstring).
 WINDOW_FRAMES = 2
 #: How often the server reads the gate's state file while the machine runs.
 POLL_S = 0.01
