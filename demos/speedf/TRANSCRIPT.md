@@ -47,7 +47,7 @@
   "flags": "<volatile>",
   "boot_lua_path": "<volatile>",
   "presence": true,
-  "machine": {"cpus": 1, "spaces": 2, "address_map": 18, "regions": 2, "shares": 0, "screens": 1, "rom_files": 3},
+  "machine": {"cpus": 1, "spaces": 2, "address_map": 16, "regions": 2, "shares": 0, "screens": 1, "rom_files": 3},
   "declarations": {
     "persistent": true,
     "path": "./tmp/demos/speedf/speedf-states/declarations.json",
