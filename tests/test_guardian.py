@@ -1,8 +1,10 @@
 import shutil
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
+from typing import Any
 
 import pytest
 from scry_core import guardian, host_program, process_tree
@@ -152,6 +154,57 @@ def test_on_windows_kill_returns_once_the_process_object_is_signalled(
     finally:
         real.kill()
         real.wait()
+
+
+def test_on_windows_a_process_object_never_signalled_ends_the_wait_at_its_bound(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The wait is bounded, and says it gave up rather than that the process is gone."""
+    real = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+    answer: list[bool] = []
+    try:
+        with monkeypatch.context() as host:
+            host.setattr(sys, "platform", "win32")
+            host.setattr(subprocess, "run", lambda argv, **_k: None)
+            host.setattr(process_tree, "pid_alive", lambda _pid: True)
+            host.setattr(mstate, "REAP_GRACE_S", 0.2)
+            host.setattr(mstate, "EXIT_POLL_S", 0.01)
+            waiter = threading.Thread(target=lambda: answer.append(mstate.end(real)), daemon=True)
+            waiter.start()
+            waiter.join(5.0)
+            assert not waiter.is_alive(), "end() waited past its bound"
+        assert answer == [False], answer
+    finally:
+        real.kill()
+        real.wait()
+
+
+def test_on_windows_a_mame_still_there_after_the_bound_keeps_its_guardian(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`kill` records the exit code there before the process is gone, so it is not believed."""
+    state = _watched_mame()
+    mame, guard = state.proc, state.guard
+    assert isinstance(mame, subprocess.Popen)
+    try:
+        with monkeypatch.context() as host:
+            host.setattr(sys, "platform", "win32")
+            host.setattr(subprocess, "run", lambda argv, **_k: None)
+            host.setattr(process_tree, "pid_alive", lambda _pid: True)
+            host.setattr(mstate, "REAP_GRACE_S", 0.2)
+            host.setattr(mstate, "EXIT_POLL_S", 0.01)
+            answers: list[dict[str, Any]] = []
+            killer = threading.Thread(target=lambda: answers.append(state.kill(grace=False)),
+                                      daemon=True)
+            killer.start()
+            killer.join(5.0)
+            assert not killer.is_alive(), "kill waited past its bound"
+        assert "not reaped" in str(answers[0]["exit_code"]), answers
+        assert guard is not None and guard.poll() is None, "the guardian was stopped"
+    finally:
+        subprocess.Popen.kill(mame)
+        subprocess.Popen.wait(mame)
+        guardian.stop(guard)
 
 
 def test_a_scratch_a_dying_process_still_holds_is_removed_once_it_lets_go(

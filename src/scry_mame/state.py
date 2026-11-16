@@ -366,6 +366,7 @@ class State:
         """
         ended: dict[str, Any] = {"ended_by": "none", "exit_code": None,
                                  "cfg_written": None}
+        unreaped = False
         dead = self.proc.poll() if self.proc is not None else None
         if self.proc is not None and dead is not None:
             ended = {"ended_by": "died",
@@ -385,11 +386,13 @@ class State:
                          "exit_code": app_launch.exit_status(self.proc, code),
                          "cfg_written": written}
             else:
-                end(self.proc)
+                gone = end(self.proc)
                 ended["ended_by"] = "killed"
                 ended["cfg_written"] = False
-                waited = wait_exit(self.proc, REAP_GRACE_S, progress,
-                                   "close: waiting for the SIGKILLed MAME to be reaped")
+                waited = (wait_exit(self.proc, REAP_GRACE_S, progress,
+                                    "close: waiting for the SIGKILLed MAME to be reaped")
+                          if gone else None)
+                unreaped = waited is None
                 if waited is not None:
                     ended["exit_code"] = app_launch.exit_status(self.proc, waited)
                 if waited is None:
@@ -424,7 +427,7 @@ class State:
         self.presence.close()
         # The guardian stops only after MAME is reaped, and before the scratch goes: on Windows
         # a process MAME started keeps the log open until the job ends it.
-        if self.proc is None or self.proc.poll() is not None:
+        if self.proc is None or (self.proc.poll() is not None and not unreaped):
             guardian.stop(self.guard)
         # `state_dir` is the caller's and is never deleted.
         if self.scratch and self.scratch.exists():
@@ -433,9 +436,11 @@ class State:
         return ended
 
 
-def end(proc: Emulator) -> None:
-    """Kill `proc`; on Windows what it started first, since a launcher dies there without the
-    emulator behind it, and then until its process object is signalled: with that `taskkill`
+def end(proc: Emulator) -> bool:
+    """Kill `proc`, False when it is known to be still there.
+
+    On Windows what it started goes first, since a launcher dies there without the emulator
+    behind it, and the kill waits until the process object is signalled: with that `taskkill`
     under way, `kill` records the exit code before the process is gone and `wait` answers at
     once. The tree is followed by pid, so only a real child's is."""
     if sys.platform == "win32" and isinstance(proc, _POPEN):
@@ -445,10 +450,13 @@ def end(proc: Emulator) -> None:
         proc.kill()
         # Our handle keeps the pid from being reused, so the pid names this process.
         deadline = time.monotonic() + REAP_GRACE_S
-        while process_tree.pid_alive(proc.pid) and time.monotonic() < deadline:
+        while process_tree.pid_alive(proc.pid):
+            if time.monotonic() >= deadline:
+                return False
             time.sleep(EXIT_POLL_S)
-        return
+        return True
     proc.kill()
+    return True
 
 
 def _remove(scratch: Path) -> None:
