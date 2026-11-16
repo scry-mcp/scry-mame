@@ -501,8 +501,24 @@ def test_save_replaces_its_own_file_and_names_the_rows_it_drops(
     out = s.comment_write("save", dest=str(dest))
     assert out["status"] == "ok" and out["comments_total"] == 2
     assert out["dropped_comments"] == [{"ref": "0x500", "cpu": MAIN}] and out["dropped_total"] == 1
-    assert "held 3 comments" in out["note"]
+    assert out["note"].startswith(f"{dest} held 3 comments"), out
     assert dest.read_text().count("\n") == 3
+
+
+def test_a_save_refused_over_what_is_there_names_the_path_it_looked_at(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _three(monkeypatch, tmp_path)
+    (tmp_path / "game.tsv").mkdir()
+    out = refused("is a directory", s.comment_write("save", dest=str(tmp_path / "Game.TSV")))
+    assert f"(as {tmp_path / 'game.tsv'})" in out["message"], out
+
+
+def test_a_save_over_its_own_file_names_it_as_written(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _three(monkeypatch, tmp_path)
+    s.comment_write("save", dest=str(tmp_path / "Game_Comments.TSV"))
+    out = s.comment_write("save", dest=str(tmp_path / "Game_Comments.TSV"))
+    assert out["note"].startswith(f"{tmp_path / 'game-comments.tsv'} held 3 comments"), out
 
 
 def test_save_refuses_a_file_that_is_not_a_comment_file_and_leaves_it(

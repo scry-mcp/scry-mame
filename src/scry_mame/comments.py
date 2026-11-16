@@ -308,23 +308,27 @@ def delete_comment(ses: gs.Session, scratch: Path, ref: str, cpu: str = "") -> d
                                "cpu": or_unavailable(on, st.NO_CPU_READ_WHY), **note})
 
 
+def _as_written(dest: str, path: Path) -> str:
+    """`dest` as the caller gave it, and the path it was written as when that differs."""
+    return f"dest={dest!r}" + ("" if str(path) == dest else f" (as {path})")
+
+
 def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
     """What `dest` holds now as a comment file, None when nothing is there; anything else is
     refused, since `save` replaces only a file of its own format."""
     if path.is_symlink():
         raise st.Invalid("bad_argument",
-                         f"dest={dest!r} is a link: replacing it would put a file where the "
-                         "link is; give the file it points at, or another path")
+                         f"{_as_written(dest, path)} is a link: replacing it would put a file "
+                         "where the link is; give the file it points at, or another path")
     if not path.exists():
         return None
     if path.is_dir():
-        raise st.Invalid("bad_argument", f"dest={dest!r} is a directory")
+        raise st.Invalid("bad_argument", f"{_as_written(dest, path)} is a directory")
     if not path.is_file():
         # Before any open: reading a FIFO would wait for a writer and hold the server.
-        raise st.Invalid("bad_argument", f"dest={dest!r} is not a regular file (a FIFO, a device "
-                                         "or a socket): `comment_write(method=\"save\")` replaces "
-                                         "only a comment "
-                                         "file")
+        raise st.Invalid("bad_argument", f"{_as_written(dest, path)} is not a regular file (a "
+                         "FIFO, a device or a socket): `comment_write(method=\"save\")` replaces "
+                         "only a comment file")
     try:
         text = path.read_bytes().decode("utf-8")
     except UnicodeDecodeError as e:
@@ -335,10 +339,9 @@ def _old_rows(path: Path, dest: str) -> list[cf.Row] | None:
         raise files.unreadable("dest", dest, e) from None
     if text.replace("\r\n", "\n").split("\n")[0] != cf.HEADER:
         raise st.Invalid("bad_argument",
-                         f"dest={dest!r} exists and is not a comment file (its first line is "
-                         f"not {cf.HEADER!r}): `comment_write(method=\"save\")` replaces only a "
-                         "file of its own "
-                         "format, and leaves this one as it is")
+                         f"{_as_written(dest, path)} exists and is not a comment file (its "
+                         f"first line is not {cf.HEADER!r}): `comment_write(method=\"save\")` "
+                         "replaces only a file of its own format, and leaves this one as it is")
     try:
         return cf.parse(text, dest)
     except cf.CommentFileError as e:
@@ -370,10 +373,9 @@ def save_comments(dest: str) -> dict[str, Any]:
     stores = {os.path.realpath(p).casefold()
               for p in (arming.store().path, dec.default_path()) if p is not None}
     if os.path.realpath(path).casefold() in stores:
-        raise st.Invalid("bad_argument", f"dest={dest!r} is the declaration store's own file "
-                                         "(compared without regard to case), which the server "
-                                         "reads at every `start`: give the comment file another "
-                                         "path")
+        raise st.Invalid("bad_argument", f"{_as_written(dest, path)} is the declaration "
+                         "store's own file (compared without regard to case), which the server "
+                         "reads at every `start`: give the comment file another path")
     old = _old_rows(path, dest)
     rows = [cf.Row(d.ref, d.cpu or "", str(d.created_at), d.text) for d in pane.comments()]
     try:
@@ -391,7 +393,7 @@ def save_comments(dest: str) -> dict[str, Any]:
                              for ref, cpu in dropped[:st.ROWS_SHOWN]],
         "dropped_total": len(dropped), "truncated": len(dropped) > st.ROWS_SHOWN,
         **_notes(None if old is None else
-                 f"{dest} held {prose.counted(len(old), 'comment')} and was replaced")})
+                 f"{path} held {prose.counted(len(old), 'comment')} and was replaced")})
 
 
 def _loaded(r: cf.Row, ses: gs.Session, where: str) -> dec.Declaration:

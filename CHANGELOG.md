@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `comment_write(method="save")` names the file it replaced by the path it wrote, and a save
+  it refused over what is there names that path beside the `dest` you gave, where both quoted
+  your spelling of a file that may not exist under it.
 - scry-core 0.114.0 pinned: it words the one sentence a reply's `note` gives when a file is
   written under another name than the one given.
 - scry-core 0.113.0 pinned: on the Mac a window placed to fit a display's usable area sees a
