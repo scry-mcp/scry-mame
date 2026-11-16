@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- scry-core 0.113.0 pinned: on the Mac a window placed to fit a display's usable area sees a
+  Dock or menu bar that showed, hid or moved within a few seconds, where it kept the first area
+  it read for the life of the server.
 - scry-core 0.112.0 pinned: the probe resolves `{tmp}` and `{anchor}` in a task file, so a
   task set spelled through them is judged the same on Windows as on the Mac.
 - The probe's task file and its captures spell a path through `{tmp}` and `{anchor}`, so
