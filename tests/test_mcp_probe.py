@@ -7,7 +7,6 @@ from typing import Any
 
 import pytest
 from scry_core import probe, probe_checks
-from scry_core.host_program import POSIX_TASKS
 from scry_core.host_program import absolute as _abs
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -35,12 +34,10 @@ def _judge(task_id: str, line: str) -> probe.Verdict:
     return probe_checks.judge_line(SURFACE, _tasks(), task_id, line)
 
 
-@POSIX_TASKS
 def test_the_tasks_cover_the_server() -> None:
     assert probe_checks.refused(REPO, "mame") == []
 
 
-@POSIX_TASKS
 def test_every_task_is_captured_and_judged_as_it_was() -> None:
     assert probe_checks.captures_misjudged(REPO, "mame") == []
 
