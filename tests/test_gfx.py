@@ -33,6 +33,7 @@ from scry_core import pens as scry_pens  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
 from scry_core import png, raster  # noqa: E402
 from scry_core import progress as mprogress  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import refused  # noqa: E402
 
 from scry_mame import chunk as mchunk  # noqa: E402
@@ -1693,7 +1694,12 @@ def test_the_pixel_crop_asked_not_to_attach_goes_to_its_dest_unattached(
     out = s.screen_view(mode="pixel", point=[100, 100], dest=str(dest), attach=False)
     assert out["status"] == "ok", out
     assert out["image"]["not_inlined"] == "attach=false" and out["image"]["path"] == str(dest)
-    assert dest.is_file()
+    assert dest.is_file() and "note" not in out
+    _serve(ses, "screen-gridlee", screen="gridlee-screen")
+    renamed = s.screen_view(mode="pixel", point=[100, 100], dest=str(tmp_path / "Pixel_2.PNG"),
+                            attach=False)
+    assert renamed["image"]["path"] == str(tmp_path / "pixel-2.png"), renamed
+    assert renamed["note"] == written_as("dest", str(tmp_path / "Pixel_2.PNG")), renamed
 
 
 def test_gfx_view_asked_not_to_attach_writes_its_picture_and_says_why(
@@ -1705,6 +1711,24 @@ def test_gfx_view_asked_not_to_attach_writes_its_picture_and_says_why(
     assert out["status"] == "ok", out
     assert out["image"]["inline"] is False and out["image"]["not_inlined"] == "attach=false"
     assert Path(out["image"]["path"]).is_file()
+
+
+def test_gfx_view_and_palette_write_a_dest_by_the_file_name_rule_and_say_so(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    _serve(ses, "gfx-circus", block="circus-gfx1")
+    view = s.gfx_view(layout=CIRCUS_CHAR, palette="palette", tag="gfx1", scale=1,
+                      dest=str(tmp_path / "Chars_1.PNG"))
+    assert view["image"]["path"] == str(tmp_path / "chars-1.png"), view
+    assert view["note"].endswith(str(written_as("dest", str(tmp_path / "Chars_1.PNG")))), view
+    _serve(ses, "palette-circus")
+    pal = s.palette(dest=str(tmp_path / "Pens_1.PNG"))
+    assert pal["image"]["path"] == str(tmp_path / "pens-1.png"), pal
+    assert pal["note"].endswith(str(written_as("dest", str(tmp_path / "Pens_1.PNG")))), pal
+    _serve(ses, "palette-circus")
+    kept = s.palette(dest=str(tmp_path / "pens-2.png"))
+    assert "written as" not in kept.get("note", ""), kept
 
 
 @pytest.mark.parametrize(("call", "said"), [

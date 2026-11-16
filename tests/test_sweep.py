@@ -17,6 +17,7 @@ import png_read  # noqa: E402
 import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import picture as mpicture  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from scry_core.host_program import MODE_BITS  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_film import _read_label  # noqa: E402
@@ -42,6 +43,13 @@ def _swept(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, **kw: Any
     out = s.gfx_sweep(tag="gfx1", **kw)
     assert out["status"] == "ok", out
     return ses, out
+
+
+def test_a_dest_is_written_by_the_file_name_rule_and_the_note_says_so(
+        monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _, out = _swept(monkeypatch, tmp_path, dest=str(tmp_path / "Sweep_1.PNG"))
+    assert out["image"]["path"] == str(tmp_path / "sweep-1.png"), out
+    assert out["note"].endswith(str(written_as("dest", str(tmp_path / "Sweep_1.PNG")))), out
 
 
 def _labels(c: dict[str, Any]) -> tuple[str, str, str]:

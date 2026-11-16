@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core.file_names import written_as  # noqa: E402
 from scry_core.reply_contract import unavailable  # noqa: E402
 from session_doubles import SessionFields, use_table
 
@@ -33,6 +34,7 @@ from scry_mame import (
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import mcp as mame_mcp
+from scry_mame import server as s
 from scry_mame import state as mstate
 from scry_mame import trace as mtrace
 
@@ -334,6 +336,19 @@ def test_a_trace_answers_the_set_and_writes_it_beside_the_file(board: Any) -> No
     assert [r["addr"] for r in rows] == sorted(r["addr"] for r in rows)
     assert ("trace", t["path"]) in mstate.STATE.captures
     assert ses.sent[-1] == "trace off,:maincpu"
+
+
+@pytest.mark.parametrize(("given", "written"), [("Run_1.TRACE", "run-1.trace"),
+                                                ("run-2.trace", "run-2.trace")])
+def test_the_tool_writes_a_dest_by_the_file_name_rule_and_notes_a_changed_name(
+        board: Any, monkeypatch: pytest.MonkeyPatch, tmp_path: Path, given: str,
+        written: str) -> None:
+    ses = board(fixture("circus-2f.trace"), mask=0x7FFF)
+    scratch = mstate.STATE.scratch
+    monkeypatch.setattr(s, "stopped", lambda _what: (ses, scratch))
+    out = s.trace(frames=2, dest=str(tmp_path / given))
+    assert out["status"] == "ok" and out["trace"]["path"] == str(tmp_path / written), out
+    assert out.get("note") == written_as("dest", str(tmp_path / given)), out
 
 
 def test_a_cpu_with_no_table_places_nothing_and_says_so(board: Any) -> None:

@@ -435,7 +435,7 @@ def run_for(milliseconds: int = 0, frames: int = 0,
                            disarm_watches=disarm_watches, frames=frames)
 
 
-@tool("Trace what a run executes", summary=summaries.trace, on_cancel="stop")
+@tool("Trace what a run executes", summary=summaries.trace, on_cancel="stop", names_file="dest")
 def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
           seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0, cpu: str = "",
           noloop: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
@@ -612,7 +612,7 @@ def comment_list(cpu: str = "") -> dict[str, Any]:
 
 
 @tool("Write the comments", summary=methods.fold_line("comment_write", folds.COMMENT),
-      replay="drop")
+      replay="drop", names_file="dest")
 def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref: str = "",
                   text: str = "", cpu: str = "", dest: str = "", path: str = ""
                   ) -> dict[str, Any]:
@@ -944,7 +944,7 @@ def reset() -> dict[str, Any]:
 
 # ------------------------------------------------------------------------------- files
 
-@tool("Dump memory to a file", summary=summaries.memdump, replay="drop")
+@tool("Dump memory to a file", summary=summaries.memdump, replay="drop", names_file="dest")
 def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     """Write `length` bytes from `ref` of `cpu` (`subcpu`) to the new file `dest` ({DEST_FILE}).
 
@@ -959,7 +959,7 @@ def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     return files.memdump(stopped("a memory dump")[0], ref, length, dest, cpu)
 
 
-@tool("Snapshot the screen to a PNG", summary=summaries.snapshot, replay="drop")
+@tool("Snapshot the screen to a PNG", summary=summaries.snapshot, replay="drop", names_file="dest")
 def snapshot(dest: str = "") -> dict[str, Any]:
     """Save a PNG of the screen now, through `view`, in the scratch or moved to `dest`, which must
     be a new absolute or `~`-led path in an existing directory. Works while running.
@@ -1006,7 +1006,7 @@ def screen_map_find(ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
 
 
 @tool("Write the screen map", summary=methods.fold_line("screen_map_write", folds.MAP),
-      on_cancel="none", replay={"add": "step", "load": "step", "save": "drop"})
+      on_cancel="none", replay={"add": "step", "load": "step", "save": "drop"}, names_file="dest")
 def screen_map_write(method: Annotated[str, vocab.enum(tuple(folds.MAP))], screen: str = "",
               match: list[list[int]] | None = None, controls: list[dict[str, Any]] | None = None,
               cells: Annotated[str, vocab.enum(screen_map.CELLS_WORDS)] = "",
@@ -1072,7 +1072,7 @@ audio_compare = _MEDIA["audio_compare"]
 # ---------------------------------------------------------------------------- graphics
 
 @tool("The live pens of a palette device", summary=summaries.palette, on_cancel="none",
-      replay="drop")
+      replay="drop", names_file="dest")
 def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scale: int = 0,
             dest: str = "",
             seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
@@ -1098,7 +1098,7 @@ def palette(palette: str = "", first: inputs.NumberArg = 0, count: int = 0, scal
 
 
 @tool("The screen as palette indices", summary=summaries.screen_view, on_cancel="none",
-      replay="drop")
+      replay="drop", names_file="dest")
 def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
                 pens: inputs.NumberList | None = None, point: list[int] | None = None,
                 crop: list[int] | None = None, scale: int = 0, dest: str = "", attach: bool = True,
@@ -1130,7 +1130,7 @@ def screen_view(mode: Annotated[str, vocab.enum(mscreen.MODES)] = "render",
 
 
 @tool("Bytes as tiles, under a gfx_layout", summary=summaries.gfx_view, on_cancel="none",
-      replay="drop")
+      replay="drop", names_file="dest")
 def gfx_view(layout: dict[str, Any] | str, palette: str = "none", tag: str = "", ref: str = "",
              offset: inputs.NumberArg = 0, first: int = 0, count: int = 0,
              columns: Annotated[int, vocab.bounds(1, mgfx.COLUMNS_MAX)] = 16,
@@ -1202,7 +1202,7 @@ def gfx_locate(layouts: list[dict[str, Any] | str], patch: list[int], tag: str =
 
 
 @tool("A block under candidate layouts", summary=summaries.gfx_sweep, on_cancel="none",
-      replay="drop")
+      replay="drop", names_file="dest")
 def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
               count: Annotated[int, vocab.bounds(1, msweep.COUNT_MAX)] = msweep.COUNT_DEFAULT,
               planes: list[Annotated[int, vocab.bounds(1, ml.PLANES_MAX)]] | None = None,
@@ -1237,7 +1237,8 @@ def gfx_sweep(tag: str = "", ref: str = "", offset: inputs.NumberArg = 0,
                             sizes, palette, pen_base, scale, dest, cpu, seconds, bridge(ctx))
 
 
-@tool("Draft a gfx.yaml from the evidence", summary=summaries.gfx_draft, replay="drop")
+@tool("Draft a gfx.yaml from the evidence", summary=summaries.gfx_draft, replay="drop",
+      names_file="dest")
 def gfx_draft(dest: str = "", choose: dict[str, Any] | None = None) -> dict[str, Any]:
     """Write a `gfx.yaml` draft from what this session proved, and a JSON report beside it with
     every figure. Refused with no evidence.
@@ -1274,7 +1275,8 @@ def gfx_load(path: str) -> dict[str, Any]:
     return manifest.gfx_load(path)
 
 
-@tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none", replay="drop")
+@tool("Blit boxes over the screen", summary=summaries.gfx_blits, on_cancel="none", replay="drop",
+      names_file="dest")
 def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | None = None,
               detail: bool = False, first: int = 0, scale: int = 0, dest: str = "",
               seconds: Annotated[float, vocab.WAIT_BOUNDS] = mlua.EVAL_WAIT_S,
@@ -1304,7 +1306,7 @@ def gfx_blits(draw_command: str, frame: int | None = None, area: list[int] | Non
 
 
 @tool("A blit's source, unscaled", summary=summaries.gfx_blit_source, on_cancel="none",
-      replay="drop")
+      replay="drop", names_file="dest")
 def gfx_blit_source(draw_command: str, frame: int | None = None, index: int | None = None,
                     pc: str = "", margin: Annotated[int, vocab.bounds(0, mblits.MARGIN_MAX)] = 0,
                     scale: int = 0, dest: str = "",
@@ -1539,7 +1541,7 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
                               summaries=summaries, until_frame=until_frame, shape_judged=True)
 
 
-@tool("Export the session as a replay", summary=recording.export_summary)
+@tool("Export the session as a replay", summary=recording.export_summary, names_file="dest")
 def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
     """Write the session's calls since `start` to `dest` as a `perform` document.
 
@@ -1685,7 +1687,7 @@ def screen_wait(text: str = "", screen: str = "",
                              place=lambda ref: STATE.resolve(ref, on))
 
 
-@tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop")
+@tool("Record frames to an AVI", summary=summaries.record, on_cancel="stop", names_file="dest")
 def record(frames: int, dest: str = "",
            seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0,
            ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
@@ -1707,7 +1709,8 @@ def record(frames: int, dest: str = "",
                                            bridge(ctx)))
 
 
-@tool("Record the sound to a WAV", summary=summaries.audio_record, on_cancel="stop")
+@tool("Record the sound to a WAV", summary=summaries.audio_record, on_cancel="stop",
+      names_file="dest")
 def audio_record(frames: int, dest: str = "",
                  seconds: Annotated[float, vocab.WAIT_BOUNDS] = 60.0,
                  ctx: Context[Any, Any] | None = None) -> dict[str, Any]:

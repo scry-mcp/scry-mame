@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 from scry_core import recording
+from scry_core.file_names import written_as
 from server_support import _running  # noqa: E402
 
 from scry_mame import mcp as mame_mcp  # noqa: E402
@@ -31,6 +32,7 @@ def test_with_nothing_recorded_the_export_is_no_recording(
     out = s.perform_export(dest=str(tmp_path / "s.json"))
     assert out["status"] == "INVALID" and out["code"] == "no_recording", out
     assert not (tmp_path / "s.json").exists()
+    assert "note" not in s.perform_export(dest=str(tmp_path / "S_1.JSON")), "a refusal says no name"
 
 
 def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
@@ -50,6 +52,10 @@ def test_a_session_on_the_double_is_exported_as_steps_checks_and_named_drops(
     assert doc["steps"][2]["recorded"] == {"hex": read["hex"]}
     assert out["checks"] == 2 and [d["op"] for d in out["dropped"]] == ["status", "comment_write"]
     assert out["summary"].startswith("perform_export: 3 steps, 2 checks, 2 dropped to ")
+    assert "note" not in out, out
+    renamed = s.perform_export(dest=str(tmp_path / "Run_1.JSON"))
+    assert renamed["path"] == str(tmp_path / "run-1.json"), renamed
+    assert renamed["note"] == written_as("dest", str(tmp_path / "Run_1.JSON")), renamed
 
 
 def test_the_machine_around_a_call_is_the_last_stop_as_an_advance_spells_it(

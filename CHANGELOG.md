@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- A reply that wrote a file under another name than the `dest` you gave (`Shot_1.PNG` as
+  `shot-1.png`) says so in its `note`; its path already named the file written.
 - `comment_write(method="save")` names the file it replaced by the path it wrote, and a save
   it refused over what is there names that path beside the `dest` you gave, where both quoted
   your spelling of a file that may not exist under it.

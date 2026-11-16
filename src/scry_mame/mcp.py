@@ -206,9 +206,10 @@ BOUNDARY = boundary.Boundary(
 def tool(
     title: str, *, summary: summaries.Summary, read_only: bool = False, idempotent: bool = False,
     body_session: bool = False, on_cancel: cancel.OnCancel | None = None,
-    replay: recording.Replay | None = None,
+    replay: recording.Replay | None = None, names_file: str | None = None,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Registers an MCP tool on this server's boundary, serialised over the one machine."""
 
     return BOUNDARY.tool(title, summary=summary, read_only=read_only, idempotent=idempotent,
-                         body_session=body_session, on_cancel=on_cancel, replay=replay)
+                         body_session=body_session, on_cancel=on_cancel, replay=replay,
+                         names_file=names_file)

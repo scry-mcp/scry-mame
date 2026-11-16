@@ -20,6 +20,7 @@ from lua_support import (  # noqa: E402
     _whole,
 )
 from scry_core import roster  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import blank_session, documented, refused  # noqa: E402
 
 from scry_mame import files as mfiles  # noqa: E402
@@ -142,10 +143,23 @@ def test_record_writes_to_the_dest_it_is_given_and_names_it(
     ses.files[1] = (dest, AVI_HEAD)
     out = s.record(frames=30, dest=str(dest))
     assert out["status"] == "ok" and out["path"] == str(dest), out
+    assert "written as" not in out.get("note", ""), out
     # a Lua literal inside the chunk, which quotes the whole script once more
     sent = transport.lua_string(transport.lua_string(mrec.begun_as(dest)))[1:-1]
     assert sent.encode() in ses.stdin.getvalue(), "the chunk records to the dest"
     assert not (ses.scratch / "snap" / "record-1.avi").exists()
+
+
+def test_record_writes_a_dest_by_the_file_name_rule_and_the_note_says_so(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ses = _channel(monkeypatch, tmp_path)
+    ses.answers[1] = _captured(5)
+    ses.marks[1] = [m.replace("#5", "#1") for m in _marks_of("MAME_MCP_RECORD#5")]
+    ses.files[1] = (tmp_path / "clip-1.avi", AVI_HEAD)
+    out = s.record(frames=30, dest=str(tmp_path / "Clip_1.AVI"))
+    assert out["status"] == "ok" and out["path"] == str(tmp_path / "clip-1.avi"), out
+    assert out["note"].endswith(str(written_as("dest", str(tmp_path / "Clip_1.AVI")))), out
 
 
 def test_record_refuses_a_dest_mame_would_write_under_another_name(

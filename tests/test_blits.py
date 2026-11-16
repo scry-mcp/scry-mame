@@ -33,6 +33,7 @@ import png_read  # noqa: E402
 import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
 from scry_core import png as mpng  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import add_symbol, refused, with_stamps  # noqa: E402
 from test_gfx import _mark, _png  # noqa: E402
 
@@ -610,8 +611,14 @@ def test_with_no_margin_the_picture_is_the_data(monkeypatch: pytest.MonkeyPatch,
     assert "data" not in out and out["image"]["indexed"] is True
     _serve_sheet(ses)
     dest = tmp_path / "chosen.png"
-    assert s.gfx_blit_source(draw_command="blit", index=0, scale=1, dest=str(dest))["image"][
-        "path"] == str(dest)
+    chosen = s.gfx_blit_source(draw_command="blit", index=0, scale=1, dest=str(dest))
+    assert chosen["image"]["path"] == str(dest), chosen
+    assert "written as" not in chosen.get("note", ""), chosen
+    _serve_sheet(ses)
+    renamed = s.gfx_blit_source(draw_command="blit", index=0, scale=1,
+                                dest=str(tmp_path / "Chosen_2.PNG"))
+    assert renamed["image"]["path"] == str(tmp_path / "chosen-2.png"), renamed
+    assert renamed["note"].endswith(str(written_as("dest", str(tmp_path / "Chosen_2.PNG"))))
     _serve_sheet(ses)
     dest = tmp_path / "chosen-margin.png"
     assert s.gfx_blit_source(draw_command="blit", index=0, margin=1, scale=1, dest=str(dest))[
@@ -1079,8 +1086,9 @@ def test_as_many_writers_as_colours_do_not_repeat_one(monkeypatch: pytest.Monkey
     _declared(ses, "".join(_row(i + 1, 902, 0x1000 + i, words)
                            for i in range(len(mblits.PC_COLOURS))))
     _screen(ses)
-    out = s.gfx_blits(draw_command="blit", scale=1, dest=str(tmp_path / "boxes.png"))
-    assert out["colors_repeat"] is False and out["image"]["path"] == str(tmp_path / "boxes.png")
+    out = s.gfx_blits(draw_command="blit", scale=1, dest=str(tmp_path / "Boxes_1.PNG"))
+    assert out["colors_repeat"] is False and out["image"]["path"] == str(tmp_path / "boxes-1.png")
+    assert out["note"].endswith(str(written_as("dest", str(tmp_path / "Boxes_1.PNG")))), out
 
 
 def test_a_summary_names_the_flags_its_planes_lean_on(monkeypatch: pytest.MonkeyPatch,

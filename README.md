@@ -43,7 +43,7 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
   block saying whether anything was written to the machine. A session that cannot reproduce its
   ROM is refused before anybody measures on it. A file a tool writes is named by
   [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md), and the reply
-  names the file it wrote.
+  names the file it wrote, its `note` saying so when that is not the name you gave.
 
 ## Two minutes to a first answer
 

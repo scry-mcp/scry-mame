@@ -23,6 +23,7 @@ from typing import Any
 
 import pytest
 from lua_support import _channel, _ChannelSession  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from scry_core.host_program import MODE_BITS  # noqa: E402
 from session_doubles import refused, with_stamps  # noqa: E402
 
@@ -312,6 +313,7 @@ def test_a_draft_is_written_over_a_draft(monkeypatch: pytest.MonkeyPatch,
     assert s.gfx_draft(dest=str(dest))["status"] == "ok"
     again = s.gfx_draft(dest=str(tmp_path / "Circus_GFX.YAML"))
     assert again["status"] == "ok" and again["manifest"]["path"] == str(dest), again
+    assert again["note"] == written_as("dest", str(tmp_path / "Circus_GFX.YAML")), again
     assert sorted(p.name for p in tmp_path.glob("[Cc]ircus*")) == [
         "circus-gfx-report.json", "circus-gfx.yaml"]
 

@@ -11,6 +11,7 @@ from typing import Any
 import pytest
 from lua_support import _channel  # noqa: E402
 from scry_core import screen_map  # noqa: E402
+from scry_core.file_names import written_as  # noqa: E402
 from session_doubles import refused  # noqa: E402
 from test_gfx import _serve  # noqa: E402
 
@@ -115,7 +116,13 @@ def test_saved_screens_become_the_file_layer_and_load_back(
     saved = _ok(s.screen_map_write("save", dest=str(path)))
     assert saved["promoted"] == ["board"] and json.loads(path.read_text())["application"] == (
         "gridlee")
+    assert "note" not in saved, saved
     refused("there", s.screen_map_write("save", dest=str(path)))
+    elsewhere = tmp_path / "other"
+    elsewhere.mkdir()
+    renamed = _ok(s.screen_map_write("save", dest=str(elsewhere / "Gridlee-Screen-Map.JSON")))
+    assert renamed["path"] == str(elsewhere / "gridlee-screen-map.json"), renamed
+    assert renamed["note"] == written_as("dest", str(elsewhere / "Gridlee-Screen-Map.JSON"))
     mstate.STATE.maps = screen_map.Maps()
     loaded = _ok(s.screen_map_write("load", path=str(path)))
     assert (loaded["application"], loaded["screens"], loaded["controls"]) == ("gridlee", 1, 1)

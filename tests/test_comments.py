@@ -17,6 +17,7 @@ from typing import Any
 
 import pytest
 from scry_core import host_program
+from scry_core.file_names import written_as
 from scry_core.host_program import MODE_BITS
 from scry_core.host_program import absolute as _abs
 from server_support import _install  # noqa: E402
@@ -484,6 +485,10 @@ def test_save_writes_the_file_sorted_and_byte_exact(
     out = s.comment_write("save", dest=str(dest))
     assert out["status"] == "ok" and out["comments_total"] == 3, out
     assert out["path"] == str(dest) and "dest" not in out, "the file written is `path`"
+    assert "note" not in out, out
+    renamed = s.comment_write("save", dest=str(tmp_path / "Other_Comments.TSV"))
+    assert renamed["path"] == str(tmp_path / "other-comments.tsv"), renamed
+    assert renamed["note"] == written_as("dest", str(tmp_path / "Other_Comments.TSV")), renamed
     t = _stamps()
     assert dest.read_bytes() == (HEAD + f"0x500\t:maincpu\t{t['0x500']}\tclears the list\n"
                                  f"irq_vblank\t:maincpu\t{t['irq_vblank']}\tmain vblank\n"

@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 from scry_core import prose
+from scry_core.file_names import written_as  # noqa: E402
 from server_support import (  # noqa: E402
     _PNG,
     FIXTURES,
@@ -394,6 +395,8 @@ def test_memdump_writes_a_mixed_case_dest_under_the_name_its_reply_gives(
     _console(monkeypatch, tmp_path, ses)
     out = s.memdump("0x0", length=8, dest=str(tmp_path / "Dump_A.BIN"))
     assert out["path"] == str(tmp_path / "dump-a.bin") and (tmp_path / "dump-a.bin").is_file()
+    assert out["note"] == written_as("dest", str(tmp_path / "Dump_A.BIN")), out
+    assert "note" not in s.memdump("0x0", length=8, dest=str(tmp_path / "dump-b.bin"))
     refused("exists", s.memdump("0x0", length=8, dest=str(tmp_path / "DUMP A.bin")))
     refused("no extension", s.memdump("0x0", length=8, dest=str(tmp_path / "dump")))
 
@@ -565,6 +568,7 @@ def test_snapshot_with_a_dest_moves_the_file_there(
     dest = tmp_path / "frame.png"
     out = s.snapshot(dest=str(dest))
     assert out["path"] == str(dest) and dest.exists() and out["bytes"] == len(_PNG)
+    assert "note" not in out, out
     assert not list((scratch / "snap").iterdir()), "nothing left behind in the scratch"
     refused("exists",
     s.snapshot(dest=str(dest)))
@@ -573,6 +577,9 @@ def test_snapshot_with_a_dest_moves_the_file_there(
     refused("is not a directory",
     s.snapshot(dest=str(tmp_path / "missing" / "frame.png")))
     assert ses.commands == ["snap snapshot-1.png"], "the refusals touched no console"
+    renamed = s.snapshot(dest=str(tmp_path / "Frame_2.PNG"))
+    assert renamed["path"] == str(tmp_path / "frame-2.png"), renamed
+    assert renamed["note"] == written_as("dest", str(tmp_path / "Frame_2.PNG")), renamed
 
 
 def test_snapshot_is_invalid_when_no_file_appears(

@@ -19,6 +19,7 @@ import pytest
 from lua_support import AVI_HEAD, _captured, _channel, _marks_of  # noqa: E402
 from lua_text import has, squash
 from scry_core import roster, wav
+from scry_core.file_names import written_as
 from session_doubles import refused, run_host_lua  # noqa: E402
 
 from scry_mame import (
@@ -242,16 +243,22 @@ def test_audio_record_checks_the_wav_and_answers_its_fields_in_order(
 def test_audio_record_writes_where_it_is_told_and_counts_its_default_with_record(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """`dest` is taken as given; the default name shares `record`'s session counter."""
+    """`dest` is written by the file-name rule; the default name shares `record`'s session
+    counter."""
     ses = _channel(monkeypatch, tmp_path)
     dest = tmp_path / "out.wav"
     _put(ses, 1, dest, _wav("m68k-dual-stereo"), _marks("m68k-dual-stereo", 1))
     out = s.audio_record(frames=7, dest=str(dest))
     assert out["status"] == "ok" and out["path"] == str(dest) and out["channels"] == 2, out
+    assert "written as" not in out.get("note", ""), out
     assert mstate.STATE.recordings == 0, "a given dest takes no number from the counter"
     mstate.STATE.recordings = 4
     _put(ses, 2, ses.scratch / "snap" / "audio-5.wav", AY, _marks("v30-ay-tone", 2))
     assert s.audio_record(frames=30)["path"].endswith("audio-5.wav")
+    _put(ses, 3, tmp_path / "tone-1.wav", _wav("m68k-dual-stereo"), _marks("m68k-dual-stereo", 3))
+    renamed = s.audio_record(frames=7, dest=str(tmp_path / "Tone_1.WAV"))
+    assert renamed["status"] == "ok" and renamed["path"] == str(tmp_path / "tone-1.wav"), renamed
+    assert renamed["note"].endswith(str(written_as("dest", str(tmp_path / "Tone_1.WAV"))))
 
 
 @pytest.mark.parametrize("level", [0, -1234])
@@ -502,10 +509,11 @@ def test_the_script_raising_and_a_script_never_evaluated_are_said(
     assert out["code"] == "no_channel" and out["message"].startswith("audio_record:"), (
         "a machine with no screen has no channel to count frames by", out)
     monkeypatch.setattr(lua, "EVAL_WAIT_S", 0.05)
-    out = s.audio_record(frames=2)
+    out = s.audio_record(frames=2, dest=str(tmp_path / "Tone_1.WAV"))
     assert out["status"] == "ok" and out["pending"] is True, out
     assert out["summary"] == "audio_record: " + summaries.PENDING_SCRIPT
     assert "the audio_record script has no answer" in out["note"], out["note"]
+    assert "written as" not in out["note"], "no file was written under any name yet"
 
 
 def _samples(data: bytes, n: int, rate: int = 48000) -> bytes:
