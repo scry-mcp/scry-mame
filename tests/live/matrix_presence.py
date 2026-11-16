@@ -13,7 +13,6 @@ from __future__ import annotations
 import contextlib
 import hashlib
 import os
-import sys
 import time
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -199,27 +198,14 @@ def _z_recordings(t: list[str]) -> None:
     call("close")
 
 
-#: A stopped MAME on Windows draws no held repaint, through the session or sent by hand, while a
-#: run's acting ones rise; why is open. A read that failed is never this case.
-WINDOWS_HELD = "on Windows a stopped MAME drew no held repaint, through the session or by hand"
-
-
-def _held_or_blocked(label: str, none_drawn: bool, holds: bool, detail: str) -> None:
-    if sys.platform == "win32" and none_drawn:
-        blocked(label, f"{WINDOWS_HELD}: {detail}")
-    else:
-        cell(label, holds, detail)
-
-
 def _z_circus(t: list[str]) -> None:
     started = circus_boot(presence=True)
     at_start = _frames()
     status = call("status")
-    _held_or_blocked(t[0], at_start is not None and at_start["held"] == 0,
-                     started.get("presence") is True and status.get("presence") is True
-                     and at_start is not None and at_start["held"] >= 1,
-                     f"start {started.get('presence')!r}, status {status.get('presence')!r}, "
-                     f"repaints before any other call {at_start}")
+    cell(t[0], started.get("presence") is True and status.get("presence") is True
+         and at_start is not None and at_start["held"] >= 1,
+         f"start {started.get('presence')!r}, status {status.get('presence')!r}, "
+         f"repaints before any other call {at_start}")
     call("run_for", frames=60, seconds=10.0)
     before = _frames()
     call("run_for", frames=60, seconds=10.0)
@@ -229,9 +215,9 @@ def _z_circus(t: list[str]) -> None:
     after_commands = _frames()
     acted = _rise(before, after_run, "acting") >= 30
     held = _rise(after_run, after_commands, "held")
-    _held_or_blocked(t[1], acted and held == 0, acted and held >= 2,
-                     f"before {before}, after a run of 60 frames {after_run}, after three "
-                     f"console commands {after_commands}")
+    cell(t[1], acted and held >= 2,
+         f"before {before}, after a run of 60 frames {after_run}, after three "
+         f"console commands {after_commands}")
 
     with _by_hand():
         _paint("off")
@@ -302,10 +288,9 @@ def _z_repaint(label: str) -> None:
         _put(_state_file(), "off")
         by_repaint = repaints_drawn(adapter.repaint)
         by_nothing = repaints_drawn(lambda still: None)
-    _held_or_blocked(label, rose == 0 and by_repaint == 0,
-                     rose >= 1 and word == "held" and by_repaint >= 1 and by_nothing == 0,
-                     f"after the quiet wait {rose} held repaints (state {word!r}); by hand the "
-                     f"repaint drew {by_repaint}, no repaint {by_nothing}")
+    cell(label, rose >= 1 and word == "held" and by_repaint >= 1 and by_nothing == 0,
+         f"after the quiet wait {rose} held repaints (state {word!r}); by hand the "
+         f"repaint drew {by_repaint}, no repaint {by_nothing}")
 
 
 def _judge_window(label: str, off: window_capture.Image, acting: window_capture.Image) -> None:
