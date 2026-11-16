@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `patches/0003` and `0004` are made against mamedev `master` at `a7230f9f`; `0005` is gone,
+  since MAME carries it from mamedev/mame#16363 on.
 - `screen_wait` under `on_breakpoint` or `on_watch` that runs out after firings says where it
   judged them: "was not found at the frame's end after any of N firings", where it said "was not
   found after any of".

@@ -77,12 +77,11 @@ through a stream (Moonlight) sees one display, so the window has to be on it, si
 when the fit is not what you want. The three situations (headless, a window kept behind, a window
 somebody tests) are on [`start`'s page](docs/reference/session.md#start).
 
-Three patches under `patches/`, each naming the MAME commit it was made against, make a build
+Two patches under `patches/`, each naming the MAME commit it was made against, make a build
 better at this: `0003` closes a data race in the Lua console thread that can crash a boot
 (proposed upstream as mamedev/mame#16229; without it `start` relaunches such a boot and lists it
-in `start_retries`), `0004` serves one GDB thread per cpu, so any cpu's registers and memory read
-without the machine running, and `0005` ends MAME with its own exit code on a fatal error under
-the debugger (merged upstream as mamedev/mame#16363, so a MAME from it on carries it).
+in `start_retries`), and `0004` serves one GDB thread per cpu, so any cpu's registers and memory
+read without the machine running.
 
 ## Set up SCRY in your own project
 

@@ -1,6 +1,6 @@
 lua-thread-context-race: thread_context::start and its worker no longer race on the context's Lua state
 version: 3
-base: 9c28def3407cf3386d5c6bea932312741acb7992
+base: a7230f9f3b6b29b491fb2d4a8e44f1452c5ecc3a
 
 This is the canonical copy of a change proposed upstream to MAME. A MAME repository
 vendors it as patches/0003-lua-thread-context-race.patch and applies it after its own patches.
@@ -14,7 +14,7 @@ console line. The change destroys the load result before the worker exists, and 
 release its result and the function under the mutex before it clears m_busy.
 
 diff --git a/src/frontend/mame/luaengine.cpp b/src/frontend/mame/luaengine.cpp
-index 9ad7cea8..73e8e9ed 100644
+index b548b1a7..a8baeb54 100644
 --- a/src/frontend/mame/luaengine.cpp
 +++ b/src/frontend/mame/luaengine.cpp
 @@ -115,34 +115,44 @@ public:
