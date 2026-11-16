@@ -226,7 +226,9 @@ subs[#subs + 1] = emu.add_machine_frame_notifier(guarded(t, function()
       local t1 = emu.osd_ticks()
       t.picture_ticks = t.picture_ticks + (t1 - t0)
       t0 = t1
-      t.dump(fr)
+      dump_guarded(t, function()
+        t.dump(fr)
+      end, fr)
     end
   end
   if t.fresh then
@@ -269,7 +271,9 @@ subs[#subs + 1] = emu.add_machine_frame_notifier(guarded(t, function()
   if t.judged >= frames_max and t.pend == nil then
     t.finished = true
     untap()
-    t.dump(fr)
+    dump_guarded(t, function()
+      t.dump(fr)
+    end, fr)
   end
   t.judge_ticks = t.judge_ticks + (emu.osd_ticks() - t0)
 end))

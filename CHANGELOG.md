@@ -4,6 +4,10 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On Windows, a `gfx_film` frame is judged even when a program holds the film's header open
+  while MAME replaces it: the failed publication is counted once in the reply's callback errors
+  and the header you read stays the last whole one until the next stop, where the frame's
+  judging was lost.
 - `patches/0003` and `0004` are made against mamedev `master` at `a7230f9f`; `0005` is gone,
   since MAME carries it from mamedev/mame#16363 on.
 - `screen_wait` under `on_breakpoint` or `on_watch` that runs out after firings says where it

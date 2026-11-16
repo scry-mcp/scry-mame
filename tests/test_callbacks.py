@@ -204,3 +204,69 @@ def test_a_dump_replaces_its_file_where_rename_will_not_overwrite(tmp_path: Path
     stuck = 'os.rename = function() return nil, "denied" end\n'
     said = run_host_lua(callbacks.LUA + stuck + f'print(pcall(replace, "{path}.tmp", "{path}"))\n')
     assert said[0].startswith("false") and "denied" in said[0], said
+
+
+_FILM_MACHINE = """
+local frame, notifier, tap = 100, nil, nil
+T = {items = {}}
+emu = {osd_ticks = function() return 0 end, osd_ticks_per_second = function() return 1 end}
+function emu.add_machine_frame_notifier(fn) notifier = fn return {unsubscribe = function() end} end
+local space = {data_width = 16, endianness = "big"}
+function space:install_write_tap(_, _, _, fn) tap = fn return {remove = function() end} end
+local cpu = {spaces = {program = space}, state = {CURPC = {value = 0x400}}, tag = ":maincpu"}
+manager = {machine = {video = {skip_this_frame = false},
+                      screens = {[":screen"] = {frame_number = function() return frame end}}}}
+function manager.machine:logerror(_) end
+function tick() frame = frame + 1 notifier() end
+function struck() tap(0, 0xFFFF, 0xFFFF) end
+"""
+
+
+def test_a_film_whose_header_cannot_be_replaced_still_judges_the_frame(tmp_path: Path) -> None:
+    """A reader holding the header open makes Windows refuse its replacement inside the frame
+    notifier: the frame is judged all the same, the failure is counted once and the header the
+    reader holds stays the last whole one."""
+    from session_doubles import run_host_lua
+
+    from scry_mame import lua_source
+
+    code = lua_source.Code
+    stuck = ('local rename, remove = os.rename, os.remove\n'
+             'os.rename = function(a, b)\n'
+             '  local f = io.open(b, "rb")\n'
+             '  if f ~= nil then f:close() return nil, "held" end\n'
+             '  return rename(a, b)\nend\n'
+             'os.remove = function() return nil, "held" end\n')
+    letting_go = ('os.rename, os.remove = rename, remove\n'
+                  'for _ = 1, 8 do tick() end\n'
+                  'f = io.open(HEAD, "rb") local after = f:read("a") f:close()\n'
+                  'print(t.errors, after:match("errors=(%d+)"), after:match("finished=(%d)"))\n')
+    to_the_end = ('for _ = 1, 6 do tick() end\n'
+                  'print(t.judged, tostring(t.finished), t.errors)\n')
+
+    def run(name: str, tail: str) -> list[list[str]]:
+        """The film in a directory of its own, held until `tail` says otherwise."""
+        folder = tmp_path / name
+        folder.mkdir()
+        head = (folder / "film.txt").as_posix()
+        film = lua_source.render(
+            "film-install", id="film_1", cpu=code("cpu"), space="program", screen=":screen",
+            dir=folder.as_posix(), trig=0x70001E, len=2, want=0xFFFF, wpc=code("nil"),
+            frames_max=8, keep=3, changed=False, checkable=False,
+            remove_old=code("local old = nil"), head=head, no_frame=callbacks.NO_FRAME,
+            capture=code("function mcp_capture() end"), header="MCP_FILM", hits_kept=5,
+            pens=code("local function pens() return '' end"), dumper=code(""), answer="x")
+        drive = (f'HEAD = "{head}"\ndo local f = io.open(HEAD, "w") f:write("old") f:close() end\n'
+                 'tick() struck() tick()\n' + stuck + 'tick()\n'
+                 'local t = T.items.film_1\n'
+                 'local f = io.open(HEAD, "rb") local kept = f:read("a") f:close()\n'
+                 'print(t.judged, t.errors, kept, t.first_error)\n' + tail)
+        said = run_host_lua(callbacks.LUA + _FILM_MACHINE + "do\n" + film + "\nend\n" + drive)
+        return [line.split("\t") for line in said[1:]]
+
+    during, after = run("let-go", letting_go)
+    assert during[:3] == ["2", "1", "old"], during
+    assert "held" in during[3], during
+    assert after == ["1", "1", "1"], after
+    # held to the last frame, the dump that ends the film fails too and is not counted again
+    assert run("to-the-end", to_the_end)[1] == ["8", "true", "1"]

@@ -1,8 +1,10 @@
 """Section G of the live matrix: the conditioned film on m68k-dual."""
 
 
+import contextlib
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 from bench_boards import (
@@ -47,6 +49,8 @@ G_CELLS = [
     "and the films altered nothing",
     "a film whose tap raises counts its errors and marks no frame after the fault, where the "
     "same film unplanted marked frames over as many",
+    "a header a reader holds open while the film publishes it costs the film no frame: every "
+    "frame is judged, a failed publication is counted once, and the film reads whole after",
 ]
 
 
@@ -142,5 +146,21 @@ def block_g() -> None:
          and "callbacks raised" in str(film.get("summary")),
          f"strobe writes since the plant {grew}, errors {count}, met {first_met} unplanted -> "
          f"{met}, then {film.get('met')} planted, first {first[:60]!r}")
+    call("gfx_film", clear=True)
+    call("declaration_clear", kind="watch", all=True)
+    call("watch_add", ref=BLITTER, mode="capture", length=32, trigger=BLIT_TRIGGER)
+    armed = call("gfx_film", **{**FILM, "keep": 3, "frames": 8})
+    head = Path(str(armed["film"]["film_dir"])) / "film.txt"
+    present = head.is_file()
+    # a handle open for reading refuses the replacement of its file on Windows, and not on POSIX
+    with head.open("rb") if present else contextlib.nullcontext():
+        call("run_for", frames=10, seconds=10.0)
+    call("run_for", frames=4, seconds=10.0)
+    held = call("gfx_film")
+    count, first = raised(held)
+    counted_once = count == 1 and first != ""
+    cell(t[11], present and held.get("state") == "finished" and held.get("judged") == 8
+         and held.get("kept") == 3 and (counted_once if sys.platform == "win32" else count <= 0),
+         f"{said(held, 90)}; errors {count} {first[:50]!r}")
     call("gfx_film", clear=True)
     call("declaration_clear", kind="watch", all=True)
