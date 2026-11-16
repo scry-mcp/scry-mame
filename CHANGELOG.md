@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- scry-core 0.115.0 pinned: the at-stop wait's refusals and note, its reply fields and their
+  sentence, and what a `start` or a map's `add` keeps for `promote` are the same code on both
+  servers.
 - A reply that wrote a file under another name than the `dest` you gave (`Shot_1.PNG` as
   `shot-1.png`) says so in its `note`; its path already named the file written.
 - `comment_write(method="save")` names the file it replaced by the path it wrote, and a save
