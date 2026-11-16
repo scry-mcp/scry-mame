@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 import pytest
-from scry_core import guardian, host_program
+from scry_core import guardian, host_program, process_tree
 
 from scry_mame import launch  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
@@ -119,11 +119,36 @@ def test_on_windows_kill_ends_what_a_real_process_started_and_follows_no_other_p
         with monkeypatch.context() as host:
             host.setattr(sys, "platform", "win32")
             host.setattr(subprocess, "run", lambda argv, **_k: ran.append(argv))
+            host.setattr(process_tree, "pid_alive", lambda _pid: False)
             mstate.end(real)
             mstate.end(double)  # type: ignore[arg-type]
         assert ran == [["taskkill", "/F", "/T", "/PID", str(real.pid)]], ran
         assert real.wait(timeout=10) is not None, "the process itself is killed as well"
         assert double.killed
+    finally:
+        real.kill()
+        real.wait()
+
+
+def test_on_windows_kill_returns_once_the_process_object_is_signalled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A `taskkill` under way makes `kill` record the exit code before the process is gone."""
+    asked: list[int] = []
+
+    def still_there(pid: int) -> bool:
+        asked.append(pid)
+        return len(asked) < 3
+
+    real = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])
+    try:
+        with monkeypatch.context() as host:
+            host.setattr(sys, "platform", "win32")
+            host.setattr(subprocess, "run", lambda argv, **_k: None)
+            host.setattr(process_tree, "pid_alive", still_there)
+            host.setattr(mstate, "EXIT_POLL_S", 0.0)
+            mstate.end(real)
+        assert asked == [real.pid] * 3, asked
     finally:
         real.kill()
         real.wait()

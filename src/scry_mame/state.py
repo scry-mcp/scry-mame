@@ -14,7 +14,17 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, NoReturn, Protocol, overload
 
-from scry_core import app_launch, boundary, cancel, guardian, picture, presence, prose, screen_map
+from scry_core import (
+    app_launch,
+    boundary,
+    cancel,
+    guardian,
+    picture,
+    presence,
+    process_tree,
+    prose,
+    screen_map,
+)
 from scry_core import progress as mprogress
 from scry_core import promote as core_promote
 from scry_core import reply_contract as contract
@@ -425,11 +435,19 @@ class State:
 
 def end(proc: Emulator) -> None:
     """Kill `proc`; on Windows what it started first, since a launcher dies there without the
-    emulator behind it. The tree is followed by pid, so only a real child's is."""
+    emulator behind it, and then until its process object is signalled: with that `taskkill`
+    under way, `kill` records the exit code before the process is gone and `wait` answers at
+    once. The tree is followed by pid, so only a real child's is."""
     if sys.platform == "win32" and isinstance(proc, _POPEN):
         with contextlib.suppress(OSError, subprocess.TimeoutExpired):
             subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
                            capture_output=True, check=False, timeout=REAP_GRACE_S)
+        proc.kill()
+        # Our handle keeps the pid from being reused, so the pid names this process.
+        deadline = time.monotonic() + REAP_GRACE_S
+        while process_tree.pid_alive(proc.pid) and time.monotonic() < deadline:
+            time.sleep(EXIT_POLL_S)
+        return
     proc.kill()
 
 

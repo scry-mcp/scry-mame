@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- On Windows, a `start` refused after it launched MAME (another process serving its
+  `stub_port`, say) answers once that MAME is gone, where it could answer while the process
+  was still ending.
 - On Windows, a `gfx_film` frame is judged even when a program holds the film's header open
   while MAME replaces it: the failed publication is counted once in the reply's callback errors
   and the header you read stays the last whole one until the next stop, where the frame's
