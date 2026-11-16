@@ -6,6 +6,9 @@ What a client of the server notices.
 
 - scry-core 0.112.0 pinned: the probe resolves `{tmp}` and `{anchor}` in a task file, so a
   task set spelled through them is judged the same on Windows as on the Mac.
+- The probe's task file and its captures spell a path through `{tmp}` and `{anchor}`, so
+  `probe --check`, the hook and the suite's task and capture checks judge the same tasks on
+  Windows, where `/tmp/x` is relative and every such task was refused.
 - scry-core 0.111.2 pinned: the pre-commit hook starts the `jscpd.cmd` npm installs on Windows,
   so the hook's cases run there, and a FIFO the tests release is released for a reader that
   opens late too.

@@ -1,101 +1,101 @@
 {
  "task": {
   "id": "m151",
-  "prompt": "Over 12 frames, log which code locations run and keep that log at /tmp/e5-window.trace.",
+  "prompt": "Over 12 frames, log which code locations run and keep that log at {tmp}/e5-window.trace.",
   "tool": "trace",
   "args": {
    "frames": 12,
-   "dest": "/tmp/e5-window.trace"
+   "dest": "{tmp}/e5-window.trace"
   }
  },
  "runs": [
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\": \"trace\", \"args\": {\"frames\": 12, \"dest\": \"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m151: {\"tool\":\"trace\",\"args\":{\"frames\":12,\"dest\":\"/tmp/e5-window.trace\"}}"
+    "m151: {\"tool\":\"trace\",\"args\":{\"frames\":12,\"dest\":\"{tmp}/e5-window.trace\"}}"
    ],
    "right": true
   }

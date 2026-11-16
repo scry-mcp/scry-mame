@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "m156",
-  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
+  "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
   "expect": "CANNOT",
   "about": "start"
  },

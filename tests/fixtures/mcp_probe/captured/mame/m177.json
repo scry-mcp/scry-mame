@@ -1,12 +1,12 @@
 {
  "task": {
   "id": "m177",
-  "prompt": "Check the frames of the series /tmp/run1/manifest.json against the goldens listed in /tmp/goldens.sha256.",
+  "prompt": "Check the frames of the series {tmp}/run1/manifest.json against the goldens listed in {tmp}/goldens.sha256.",
   "tool": "image_compare",
   "args": {
    "method": "golden",
-   "manifest": "/tmp/run1/manifest.json",
-   "checksums": "/tmp/goldens.sha256"
+   "manifest": "{tmp}/run1/manifest.json",
+   "checksums": "{tmp}/goldens.sha256"
   },
   "grammar": [
    "golden"
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"/tmp/run1/manifest.json\", \"checksums\": \"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\": \"image_compare\", \"args\": {\"method\": \"golden\", \"manifest\": \"{tmp}/run1/manifest.json\", \"checksums\": \"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m177: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"manifest\":\"/tmp/run1/manifest.json\",\"checksums\":\"/tmp/goldens.sha256\"}}"
+    "m177: {\"tool\":\"image_compare\",\"args\":{\"method\":\"golden\",\"manifest\":\"{tmp}/run1/manifest.json\",\"checksums\":\"{tmp}/goldens.sha256\"}}"
    ],
    "right": true
   }

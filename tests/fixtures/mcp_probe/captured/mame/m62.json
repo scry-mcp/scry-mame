@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "m62",
-  "prompt": "Dump 256 bytes from hex address 8000 of the cpu tagged soundcpu to the file /tmp/mcp-probe-sound.bin.",
+  "prompt": "Dump 256 bytes from hex address 8000 of the cpu tagged soundcpu to the file {tmp}/mcp-probe-sound.bin.",
   "tool": "memdump",
   "args": {
    "ref": {
@@ -10,7 +10,7 @@
     ]
    },
    "length": 256,
-   "dest": "/tmp/mcp-probe-sound.bin",
+   "dest": "{tmp}/mcp-probe-sound.bin",
    "cpu": {
     "any_of": [
      "soundcpu",
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"/tmp/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
+    "m62: {\"tool\": \"memdump\", \"args\": {\"ref\": \"0x8000\", \"length\": 256, \"dest\": \"{tmp}/mcp-probe-sound.bin\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m62: {\"tool\":\"memdump\",\"args\":{\"ref\":\"0x8000\",\"length\":256,\"dest\":\"/tmp/mcp-probe-sound.bin\",\"cpu\":\"soundcpu\"}}"
+    "m62: {\"tool\":\"memdump\",\"args\":{\"ref\":\"0x8000\",\"length\":256,\"dest\":\"{tmp}/mcp-probe-sound.bin\",\"cpu\":\"soundcpu\"}}"
    ],
    "right": true
   }

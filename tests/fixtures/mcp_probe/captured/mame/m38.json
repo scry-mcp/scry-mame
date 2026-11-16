@@ -1,100 +1,100 @@
 {
  "task": {
   "id": "m38",
-  "prompt": "Save a PNG of the screen as it is now to /tmp/mcp-probe-title.png.",
+  "prompt": "Save a PNG of the screen as it is now to {tmp}/mcp-probe-title.png.",
   "tool": "snapshot",
   "args": {
-   "dest": "/tmp/mcp-probe-title.png"
+   "dest": "{tmp}/mcp-probe-title.png"
   }
  },
  "runs": [
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\": \"snapshot\", \"args\": {\"dest\": \"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m38: {\"tool\":\"snapshot\",\"args\":{\"dest\":\"/tmp/mcp-probe-title.png\"}}"
+    "m38: {\"tool\":\"snapshot\",\"args\":{\"dest\":\"{tmp}/mcp-probe-title.png\"}}"
    ],
    "right": true
   }

@@ -1,12 +1,12 @@
 {
  "task": {
   "id": "m174",
-  "prompt": "Compare the series /tmp/run1/manifest.json against /tmp/run2/manifest.json, only over the rectangle at x 8, y 8, 32 by 16.",
+  "prompt": "Compare the series {tmp}/run1/manifest.json against {tmp}/run2/manifest.json, only over the rectangle at x 8, y 8, 32 by 16.",
   "tool": "image_compare",
   "args": {
    "method": "series",
-   "a": "/tmp/run1/manifest.json",
-   "b": "/tmp/run2/manifest.json",
+   "a": "{tmp}/run1/manifest.json",
+   "b": "{tmp}/run2/manifest.json",
    "crop": [
     8,
     8,
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"/tmp/run1/manifest.json\", \"b\": \"/tmp/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
+    "m174: {\"tool\": \"image_compare\", \"args\": {\"method\": \"series\", \"a\": \"{tmp}/run1/manifest.json\", \"b\": \"{tmp}/run2/manifest.json\", \"crop\": [8, 8, 32, 16]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m174: {\"tool\":\"image_compare\",\"args\":{\"method\":\"series\",\"a\":\"/tmp/run1/manifest.json\",\"b\":\"/tmp/run2/manifest.json\",\"crop\":[8,8,32,16]}}"
+    "m174: {\"tool\":\"image_compare\",\"args\":{\"method\":\"series\",\"a\":\"{tmp}/run1/manifest.json\",\"b\":\"{tmp}/run2/manifest.json\",\"crop\":[8,8,32,16]}}"
    ],
    "right": true
   }

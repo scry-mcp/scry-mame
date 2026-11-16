@@ -1,12 +1,12 @@
 {
  "task": {
   "id": "m179",
-  "prompt": "Compare the pictures /tmp/a/before.png and /tmp/b/after.png, which are not the same size, over the rectangle at x 0, y 0, 200 by 150 they share.",
+  "prompt": "Compare the pictures {tmp}/a/before.png and {tmp}/b/after.png, which are not the same size, over the rectangle at x 0, y 0, 200 by 150 they share.",
   "tool": "image_compare",
   "args": {
    "method": "image",
-   "a": "/tmp/a/before.png",
-   "b": "/tmp/b/after.png",
+   "a": "{tmp}/a/before.png",
+   "b": "{tmp}/b/after.png",
    "crop": [
     0,
     0,
@@ -21,91 +21,91 @@
  "runs": [
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/before.png\", \"b\": \"/tmp/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
+    "m179: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/before.png\", \"b\": \"{tmp}/b/after.png\", \"crop\": [0, 0, 200, 150]}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m179: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"/tmp/a/before.png\",\"b\":\"/tmp/b/after.png\",\"crop\":[0,0,200,150]}}"
+    "m179: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"{tmp}/a/before.png\",\"b\":\"{tmp}/b/after.png\",\"crop\":[0,0,200,150]}}"
    ],
    "right": true
   }

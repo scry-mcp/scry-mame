@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "m90",
-  "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to /tmp/mcp-probe-pal.png.",
+  "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to {tmp}/mcp-probe-pal.png.",
   "tool": "palette",
   "args": {
    "palette": {
@@ -18,97 +18,97 @@
    },
    "count": 12,
    "scale": 2,
-   "dest": "/tmp/mcp-probe-pal.png"
+   "dest": "{tmp}/mcp-probe-pal.png"
   }
  },
  "runs": [
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\": \"palette\", \"args\": {\"palette\": \"ppu_pal\", \"first\": 32, \"count\": 12, \"scale\": 2, \"dest\": \"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m90: {\"tool\":\"palette\",\"args\":{\"palette\":\"ppu_pal\",\"first\":32,\"count\":12,\"scale\":2,\"dest\":\"/tmp/mcp-probe-pal.png\"}}"
+    "m90: {\"tool\":\"palette\",\"args\":{\"palette\":\"ppu_pal\",\"first\":32,\"count\":12,\"scale\":2,\"dest\":\"{tmp}/mcp-probe-pal.png\"}}"
    ],
    "right": true
   }

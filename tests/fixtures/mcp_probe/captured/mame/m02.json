@@ -1,114 +1,114 @@
 {
  "task": {
   "id": "m02",
-  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in /opt/fury/ini. Run the boot Lua harness /opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in /opt/fury/states, use the cfg file /opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file /opt/fury/fury.types (no symbol file).",
+  "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in {anchor}opt/fury/ini. Run the boot Lua harness {anchor}opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in {anchor}opt/fury/states, use the cfg file {anchor}opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file {anchor}opt/fury/fury.types (no symbol file).",
   "tool": "start",
   "args": {
-   "binary": "/opt/fury/mamed",
+   "binary": "{anchor}opt/fury/mamed",
    "system": "spacefury",
-   "rompath": "/opt/fury/roms",
-   "reference_rom": "/opt/fury/roms/fury.bin",
+   "rompath": "{anchor}opt/fury/roms",
+   "reference_rom": "{anchor}opt/fury/roms/fury.bin",
    "boot_seconds": 12.5,
    "stub_port": 5731,
-   "inipath": "/opt/fury/ini",
-   "boot_lua": "/opt/fury/boot.lua",
+   "inipath": "{anchor}opt/fury/ini",
+   "boot_lua": "{anchor}opt/fury/boot.lua",
    "env": {
     "FURY_MODE": "attract"
    },
-   "state_dir": "/opt/fury/states",
-   "cfg": "/opt/fury/cfg/spacefury.cfg",
+   "state_dir": "{anchor}opt/fury/states",
+   "cfg": "{anchor}opt/fury/cfg/spacefury.cfg",
    "throttle_from_frame": 1800,
-   "types": "/opt/fury/fury.types"
+   "types": "{anchor}opt/fury/fury.types"
   }
  },
  "runs": [
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"inipath\": \"/opt/fury/ini\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"inipath\": \"{anchor}opt/fury/ini\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"shared\": true, \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"shared\": true, \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": false
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"inipath\": \"/opt/fury/ini\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"inipath\": \"{anchor}opt/fury/ini\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"inipath\": \"/opt/fury/ini\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"inipath\": \"{anchor}opt/fury/ini\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"boot_seconds\": 12.5, \"stub_port\": 5731, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"/opt/fury/ini\", \"boot_lua\": \"/opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"/opt/fury/states\", \"cfg\": \"/opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"stub_port\": 5731, \"boot_seconds\": 12.5, \"inipath\": \"{anchor}opt/fury/ini\", \"boot_lua\": \"{anchor}opt/fury/boot.lua\", \"env\": {\"FURY_MODE\": \"attract\"}, \"state_dir\": \"{anchor}opt/fury/states\", \"cfg\": \"{anchor}opt/fury/cfg/spacefury.cfg\", \"throttle_from_frame\": 1800, \"types\": \"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m02: {\"tool\":\"start\",\"args\":{\"binary\":\"/opt/fury/mamed\",\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\",\"boot_seconds\":12.5,\"stub_port\":5731,\"inipath\":\"/opt/fury/ini\",\"boot_lua\":\"/opt/fury/boot.lua\",\"env\":{\"FURY_MODE\":\"attract\"},\"state_dir\":\"/opt/fury/states\",\"cfg\":\"/opt/fury/cfg/spacefury.cfg\",\"throttle_from_frame\":1800,\"types\":\"/opt/fury/fury.types\"}}"
+    "m02: {\"tool\":\"start\",\"args\":{\"binary\":\"{anchor}opt/fury/mamed\",\"system\":\"spacefury\",\"rompath\":\"{anchor}opt/fury/roms\",\"reference_rom\":\"{anchor}opt/fury/roms/fury.bin\",\"boot_seconds\":12.5,\"stub_port\":5731,\"inipath\":\"{anchor}opt/fury/ini\",\"boot_lua\":\"{anchor}opt/fury/boot.lua\",\"env\":{\"FURY_MODE\":\"attract\"},\"state_dir\":\"{anchor}opt/fury/states\",\"cfg\":\"{anchor}opt/fury/cfg/spacefury.cfg\",\"throttle_from_frame\":1800,\"types\":\"{anchor}opt/fury/fury.types\"}}"
    ],
    "right": true
   }

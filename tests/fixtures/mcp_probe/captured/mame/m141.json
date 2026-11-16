@@ -1,102 +1,102 @@
 {
  "task": {
   "id": "m141",
-  "prompt": "Record the sound of the next 120 frames to /tmp/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
+  "prompt": "Record the sound of the next 120 frames to {tmp}/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
   "tool": "audio_record",
   "args": {
    "frames": 120,
-   "dest": "/tmp/mcp-probe-sound.wav",
+   "dest": "{tmp}/mcp-probe-sound.wav",
    "seconds": 30
   }
  },
  "runs": [
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"/tmp/mcp-probe-sound.wav\", \"seconds\": 30}}"
+    "m141: {\"tool\": \"audio_record\", \"args\": {\"frames\": 120, \"dest\": \"{tmp}/mcp-probe-sound.wav\", \"seconds\": 30}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m141: {\"tool\":\"audio_record\",\"args\":{\"frames\":120,\"dest\":\"/tmp/mcp-probe-sound.wav\",\"seconds\":30}}"
+    "m141: {\"tool\":\"audio_record\",\"args\":{\"frames\":120,\"dest\":\"{tmp}/mcp-probe-sound.wav\",\"seconds\":30}}"
    ],
    "right": true
   }

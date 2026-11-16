@@ -1,13 +1,13 @@
 {
  "task": {
   "id": "m166",
-  "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
+  "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
   "tool": "start",
   "args": {
-   "binary": "/opt/fury/mamed",
+   "binary": "{anchor}opt/fury/mamed",
    "system": "spacefury",
-   "rompath": "/opt/fury/roms",
-   "reference_rom": "/opt/fury/roms/fury.bin",
+   "rompath": "{anchor}opt/fury/roms",
+   "reference_rom": "{anchor}opt/fury/roms/fury.bin",
    "shared": true,
    "background": true
   }
@@ -15,91 +15,91 @@
  "runs": [
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"/opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
+    "m166: {\"tool\": \"start\", \"args\": {\"binary\": \"{anchor}opt/fury/mamed\", \"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\", \"shared\": true, \"background\": true}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m166: {\"tool\":\"start\",\"args\":{\"binary\":\"/opt/fury/mamed\",\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\",\"shared\":true,\"background\":true}}"
+    "m166: {\"tool\":\"start\",\"args\":{\"binary\":\"{anchor}opt/fury/mamed\",\"system\":\"spacefury\",\"rompath\":\"{anchor}opt/fury/roms\",\"reference_rom\":\"{anchor}opt/fury/roms/fury.bin\",\"shared\":true,\"background\":true}}"
    ],
    "right": true
   }

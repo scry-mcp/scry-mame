@@ -1,102 +1,102 @@
 {
  "task": {
   "id": "m168",
-  "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base.",
+  "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base.",
   "tool": "start",
   "args": {
    "system": "spacefury",
-   "rompath": "/opt/fury/roms",
-   "reference_rom": "/opt/fury/roms/fury.bin"
+   "rompath": "{anchor}opt/fury/roms",
+   "reference_rom": "{anchor}opt/fury/roms/fury.bin"
   }
  },
  "runs": [
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"/opt/fury/roms\", \"reference_rom\": \"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\": \"start\", \"args\": {\"system\": \"spacefury\", \"rompath\": \"{anchor}opt/fury/roms\", \"reference_rom\": \"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m168: {\"tool\":\"start\",\"args\":{\"system\":\"spacefury\",\"rompath\":\"/opt/fury/roms\",\"reference_rom\":\"/opt/fury/roms/fury.bin\"}}"
+    "m168: {\"tool\":\"start\",\"args\":{\"system\":\"spacefury\",\"rompath\":\"{anchor}opt/fury/roms\",\"reference_rom\":\"{anchor}opt/fury/roms/fury.bin\"}}"
    ],
    "right": true
   }

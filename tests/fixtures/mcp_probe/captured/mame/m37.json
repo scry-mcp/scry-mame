@@ -1,102 +1,102 @@
 {
  "task": {
   "id": "m37",
-  "prompt": "Dump 2048 bytes of memory from VramBase to the file /tmp/mcp-probe-vram.bin.",
+  "prompt": "Dump 2048 bytes of memory from VramBase to the file {tmp}/mcp-probe-vram.bin.",
   "tool": "memdump",
   "args": {
    "ref": "VramBase",
    "length": 2048,
-   "dest": "/tmp/mcp-probe-vram.bin"
+   "dest": "{tmp}/mcp-probe-vram.bin"
   }
  },
  "runs": [
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\": \"memdump\", \"args\": {\"ref\": \"VramBase\", \"length\": 2048, \"dest\": \"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m37: {\"tool\":\"memdump\",\"args\":{\"ref\":\"VramBase\",\"length\":2048,\"dest\":\"/tmp/mcp-probe-vram.bin\"}}"
+    "m37: {\"tool\":\"memdump\",\"args\":{\"ref\":\"VramBase\",\"length\":2048,\"dest\":\"{tmp}/mcp-probe-vram.bin\"}}"
    ],
    "right": true
   }

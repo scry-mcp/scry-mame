@@ -1,101 +1,101 @@
 {
  "task": {
   "id": "m216",
-  "prompt": "Several entries are kept for the store at /tmp/probe-repo. Show which could be written and which could not, and why, without writing any.",
+  "prompt": "Several entries are kept for the store at {tmp}/probe-repo. Show which could be written and which could not, and why, without writing any.",
   "tool": "promote",
   "args": {
    "dry_run": true,
-   "root": "/tmp/probe-repo"
+   "root": "{tmp}/probe-repo"
   }
  },
  "runs": [
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"/tmp/probe-repo\"}}"
+    "m216: {\"tool\": \"promote\", \"args\": {\"dry_run\": true, \"root\": \"{tmp}/probe-repo\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m216: {\"tool\":\"promote\",\"args\":{\"dry_run\":true,\"root\":\"/tmp/probe-repo\"}}"
+    "m216: {\"tool\":\"promote\",\"args\":{\"dry_run\":true,\"root\":\"{tmp}/probe-repo\"}}"
    ],
    "right": true
   }

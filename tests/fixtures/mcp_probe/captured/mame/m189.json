@@ -1,7 +1,7 @@
 {
  "task": {
   "id": "m189",
-  "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to /tmp/mcp-probe-gfx.png without attaching it to the reply.",
+  "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to {tmp}/mcp-probe-gfx.png without attaching it to the reply.",
   "tool": "gfx_view",
   "args": {
    "layout": "tiles8",
@@ -12,7 +12,7 @@
     ]
    },
    "count": 16,
-   "dest": "/tmp/mcp-probe-gfx.png",
+   "dest": "{tmp}/mcp-probe-gfx.png",
    "attach": false
   },
   "allow": [
@@ -22,91 +22,91 @@
  "runs": [
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"first\": 0, \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"tiles8\", \"first\": 0, \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"tag\": \"gfx1\", \"layout\": \"tiles8\", \"first\": 0, \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"/tmp/mcp-probe-gfx.png\", \"attach\": false}}"
+    "m189: {\"tool\": \"gfx_view\", \"args\": {\"layout\": \"tiles8\", \"tag\": \"gfx1\", \"count\": 16, \"dest\": \"{tmp}/mcp-probe-gfx.png\", \"attach\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m189: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"tiles8\",\"tag\":\"gfx1\",\"count\":16,\"attach\":false,\"dest\":\"/tmp/mcp-probe-gfx.png\"}}"
+    "m189: {\"tool\":\"gfx_view\",\"args\":{\"layout\":\"tiles8\",\"tag\":\"gfx1\",\"count\":16,\"attach\":false,\"dest\":\"{tmp}/mcp-probe-gfx.png\"}}"
    ],
    "right": true
   }

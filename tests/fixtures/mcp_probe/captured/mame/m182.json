@@ -1,12 +1,12 @@
 {
  "task": {
   "id": "m182",
-  "prompt": "Compare the recording /tmp/rec/new.wav with the reference /tmp/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
+  "prompt": "Compare the recording {tmp}/rec/new.wav with the reference {tmp}/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
   "tool": "audio_compare",
   "args": {
    "method": "diff",
-   "a": "/tmp/rec/new.wav",
-   "b": "/tmp/rec/ref.wav",
+   "a": "{tmp}/rec/new.wav",
+   "b": "{tmp}/rec/ref.wav",
    "window": [
     0,
     3
@@ -20,91 +20,91 @@
  "runs": [
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"/tmp/rec/new.wav\", \"b\": \"/tmp/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
+    "m182: {\"tool\": \"audio_compare\", \"args\": {\"method\": \"diff\", \"a\": \"{tmp}/rec/new.wav\", \"b\": \"{tmp}/rec/ref.wav\", \"window\": [0, 3], \"align\": false}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m182: {\"tool\":\"audio_compare\",\"args\":{\"method\":\"diff\",\"a\":\"/tmp/rec/new.wav\",\"b\":\"/tmp/rec/ref.wav\",\"window\":[0,3],\"align\":false}}"
+    "m182: {\"tool\":\"audio_compare\",\"args\":{\"method\":\"diff\",\"a\":\"{tmp}/rec/new.wav\",\"b\":\"{tmp}/rec/ref.wav\",\"window\":[0,3],\"align\":false}}"
    ],
    "right": true
   }

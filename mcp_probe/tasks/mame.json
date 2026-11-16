@@ -2,13 +2,13 @@
  "tasks": [
   {
    "id": "m01",
-   "prompt": "Start MAME from the binary /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms. The reference image is /opt/fury/roms/fury.bin: its 16 bytes must match at hex address 1F4A0, and the image's first byte sits at hex 1F000. Load the symbols from the linker map /opt/fury/fury.map, placing its DATA class at hex 3600 and its BSS class at hex 4800. Somebody will watch the run.",
+   "prompt": "Start MAME from the binary {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms. The reference image is {anchor}opt/fury/roms/fury.bin: its 16 bytes must match at hex address 1F4A0, and the image's first byte sits at hex 1F000. Load the symbols from the linker map {anchor}opt/fury/fury.map, placing its DATA class at hex 3600 and its BSS class at hex 4800. Somebody will watch the run.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "reference_addr": {
      "any_of": [
       "0x1F4A0",
@@ -21,7 +21,7 @@
       "0x1f000"
      ]
     },
-    "symbols": "/opt/fury/fury.map",
+    "symbols": "{anchor}opt/fury/fury.map",
     "bases": {
      "DATA": {
       "any_of": [
@@ -39,24 +39,24 @@
   },
   {
    "id": "m02",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in /opt/fury/ini. Run the boot Lua harness /opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in /opt/fury/states, use the cfg file /opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file /opt/fury/fury.types (no symbol file).",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. Wait up to 12.5 seconds for the stub, on port 5731, with the ini files in {anchor}opt/fury/ini. Run the boot Lua harness {anchor}opt/fury/boot.lua (it prints the FURY_MODE environment variable) with FURY_MODE set to attract. Keep the states in {anchor}opt/fury/states, use the cfg file {anchor}opt/fury/cfg/spacefury.cfg, fly flat out until frame 1800 and run at real speed from there, with the types file {anchor}opt/fury/fury.types (no symbol file).",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "boot_seconds": 12.5,
     "stub_port": 5731,
-    "inipath": "/opt/fury/ini",
-    "boot_lua": "/opt/fury/boot.lua",
+    "inipath": "{anchor}opt/fury/ini",
+    "boot_lua": "{anchor}opt/fury/boot.lua",
     "env": {
      "FURY_MODE": "attract"
     },
-    "state_dir": "/opt/fury/states",
-    "cfg": "/opt/fury/cfg/spacefury.cfg",
+    "state_dir": "{anchor}opt/fury/states",
+    "cfg": "{anchor}opt/fury/cfg/spacefury.cfg",
     "throttle_from_frame": 1800,
-    "types": "/opt/fury/fury.types"
+    "types": "{anchor}opt/fury/fury.types"
    }
   },
   {
@@ -565,20 +565,20 @@
   },
   {
    "id": "m37",
-   "prompt": "Dump 2048 bytes of memory from VramBase to the file /tmp/mcp-probe-vram.bin.",
+   "prompt": "Dump 2048 bytes of memory from VramBase to the file {tmp}/mcp-probe-vram.bin.",
    "tool": "memdump",
    "args": {
     "ref": "VramBase",
     "length": 2048,
-    "dest": "/tmp/mcp-probe-vram.bin"
+    "dest": "{tmp}/mcp-probe-vram.bin"
    }
   },
   {
    "id": "m38",
-   "prompt": "Save a PNG of the screen as it is now to /tmp/mcp-probe-title.png.",
+   "prompt": "Save a PNG of the screen as it is now to {tmp}/mcp-probe-title.png.",
    "tool": "snapshot",
    "args": {
-    "dest": "/tmp/mcp-probe-title.png"
+    "dest": "{tmp}/mcp-probe-title.png"
    }
   },
   {
@@ -661,7 +661,7 @@
   },
   {
    "id": "m43",
-   "prompt": "In one round trip: run to StageDone counting the control declared at FrameTick, then save a PNG of the screen to /tmp/mcp-probe-stage.png. Wait at most 40 seconds for each stop between steps, and cut each step's account to its summary.",
+   "prompt": "In one round trip: run to StageDone counting the control declared at FrameTick, then save a PNG of the screen to {tmp}/mcp-probe-stage.png. Wait at most 40 seconds for each stop between steps, and cut each step's account to its summary.",
    "tool": "perform",
    "args": {
     "steps": [
@@ -672,7 +672,7 @@
      },
      {
       "op": "snapshot",
-      "dest": "/tmp/mcp-probe-stage.png"
+      "dest": "{tmp}/mcp-probe-stage.png"
      }
     ],
     "settle_seconds": 40,
@@ -725,11 +725,11 @@
   },
   {
    "id": "m47",
-   "prompt": "Record 150 frames of the screen to /tmp/mcp-probe-run.avi, bounded by 75 wall-clock seconds.",
+   "prompt": "Record 150 frames of the screen to {tmp}/mcp-probe-run.avi, bounded by 75 wall-clock seconds.",
    "tool": "record",
    "args": {
     "frames": 150,
-    "dest": "/tmp/mcp-probe-run.avi",
+    "dest": "{tmp}/mcp-probe-run.avi",
     "seconds": 75
    }
   },
@@ -923,7 +923,7 @@
   },
   {
    "id": "m62",
-   "prompt": "Dump 256 bytes from hex address 8000 of the cpu tagged soundcpu to the file /tmp/mcp-probe-sound.bin.",
+   "prompt": "Dump 256 bytes from hex address 8000 of the cpu tagged soundcpu to the file {tmp}/mcp-probe-sound.bin.",
    "tool": "memdump",
    "args": {
     "ref": {
@@ -932,7 +932,7 @@
      ]
     },
     "length": 256,
-    "dest": "/tmp/mcp-probe-sound.bin",
+    "dest": "{tmp}/mcp-probe-sound.bin",
     "cpu": {
      "any_of": [
       "soundcpu",
@@ -1180,40 +1180,40 @@
   },
   {
    "id": "m75",
-   "prompt": "Start MAME from /opt/twin/mamed, system twinfire, ROMs in /opt/twin/roms, reference image /opt/twin/roms/main.bin at the default address and base. The cpu tagged maincpu's symbols are in /opt/twin/main.yaml and the cpu tagged audiocpu's in /opt/twin/audio.yaml; type the audiocpu's symbols with the file /opt/twin/audio.types.",
+   "prompt": "Start MAME from {anchor}opt/twin/mamed, system twinfire, ROMs in {anchor}opt/twin/roms, reference image {anchor}opt/twin/roms/main.bin at the default address and base. The cpu tagged maincpu's symbols are in {anchor}opt/twin/main.yaml and the cpu tagged audiocpu's in {anchor}opt/twin/audio.yaml; type the audiocpu's symbols with the file {anchor}opt/twin/audio.types.",
    "tool": "start",
    "args": {
-    "binary": "/opt/twin/mamed",
+    "binary": "{anchor}opt/twin/mamed",
     "system": "twinfire",
-    "rompath": "/opt/twin/roms",
-    "reference_rom": "/opt/twin/roms/main.bin",
+    "rompath": "{anchor}opt/twin/roms",
+    "reference_rom": "{anchor}opt/twin/roms/main.bin",
     "symbols": {
      "any_of": [
       {
-       "maincpu": "/opt/twin/main.yaml",
-       "audiocpu": "/opt/twin/audio.yaml"
+       "maincpu": "{anchor}opt/twin/main.yaml",
+       "audiocpu": "{anchor}opt/twin/audio.yaml"
       },
       {
-       ":maincpu": "/opt/twin/main.yaml",
-       ":audiocpu": "/opt/twin/audio.yaml"
+       ":maincpu": "{anchor}opt/twin/main.yaml",
+       ":audiocpu": "{anchor}opt/twin/audio.yaml"
       },
       {
-       "maincpu": "/opt/twin/main.yaml",
-       ":audiocpu": "/opt/twin/audio.yaml"
+       "maincpu": "{anchor}opt/twin/main.yaml",
+       ":audiocpu": "{anchor}opt/twin/audio.yaml"
       },
       {
-       ":maincpu": "/opt/twin/main.yaml",
-       "audiocpu": "/opt/twin/audio.yaml"
+       ":maincpu": "{anchor}opt/twin/main.yaml",
+       "audiocpu": "{anchor}opt/twin/audio.yaml"
       }
      ]
     },
     "types": {
      "any_of": [
       {
-       "audiocpu": "/opt/twin/audio.types"
+       "audiocpu": "{anchor}opt/twin/audio.types"
       },
       {
-       ":audiocpu": "/opt/twin/audio.types"
+       ":audiocpu": "{anchor}opt/twin/audio.types"
       }
      ]
     }
@@ -1583,7 +1583,7 @@
   },
   {
    "id": "m90",
-   "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to /tmp/mcp-probe-pal.png.",
+   "prompt": "Show me pens 32 to 43 of the palette device tagged ppu_pal, as a swatch enlarged 2 times, saved to {tmp}/mcp-probe-pal.png.",
    "tool": "palette",
    "args": {
     "palette": {
@@ -1600,7 +1600,7 @@
     },
     "count": 12,
     "scale": 2,
-    "dest": "/tmp/mcp-probe-pal.png"
+    "dest": "{tmp}/mcp-probe-pal.png"
    }
   },
   {
@@ -1645,7 +1645,7 @@
   },
   {
    "id": "m94",
-   "prompt": "Show me where pens 49 and 50 are on the screen, every other pen in grey, enlarged 3 times, saved to /tmp/mcp-probe-iso.png, waiting up to 6 seconds.",
+   "prompt": "Show me where pens 49 and 50 are on the screen, every other pen in grey, enlarged 3 times, saved to {tmp}/mcp-probe-iso.png, waiting up to 6 seconds.",
    "tool": "screen_view",
    "args": {
     "mode": "isolate",
@@ -1662,7 +1662,7 @@
      ]
     },
     "scale": 3,
-    "dest": "/tmp/mcp-probe-iso.png",
+    "dest": "{tmp}/mcp-probe-iso.png",
     "seconds": 6
    },
    "grammar": [
@@ -1671,7 +1671,7 @@
   },
   {
    "id": "m95",
-   "prompt": "Decode the region gfx2, starting 2048 bytes into it, under the layout {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}. Show tiles 10 to 29, 8 a row, in grey because I do not want the machine's colours, saved to /tmp/mcp-probe-tiles.png at scale 4, waiting up to 9 seconds.",
+   "prompt": "Decode the region gfx2, starting 2048 bytes into it, under the layout {\"width\": 16, \"height\": 16, \"planes\": 4, \"planeoffset\": \"{ 0, 1, 2, 3 }\", \"xoffset\": \"{ STEP16(0,4) }\", \"yoffset\": \"{ STEP16(0,64) }\", \"charincrement\": \"16*64\"}. Show tiles 10 to 29, 8 a row, in grey because I do not want the machine's colours, saved to {tmp}/mcp-probe-tiles.png at scale 4, waiting up to 9 seconds.",
    "tool": "gfx_view",
    "args": {
     "tag": {
@@ -1690,7 +1690,7 @@
     "count": 20,
     "columns": 8,
     "palette": "none",
-    "dest": "/tmp/mcp-probe-tiles.png",
+    "dest": "{tmp}/mcp-probe-tiles.png",
     "scale": 4,
     "seconds": 9,
     "layout": {
@@ -1971,15 +1971,15 @@
   },
   {
    "id": "m101",
-   "prompt": "Load the graphics manifest of this project, /home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
+   "prompt": "Load the graphics manifest of this project, {anchor}home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
    "tool": "gfx_load",
    "args": {
-    "path": "/home/dev/m68k-dual/hardware/gfx.yaml"
+    "path": "{anchor}home/dev/m68k-dual/hardware/gfx.yaml"
    }
   },
   {
    "id": "m102",
-   "prompt": "Which blits of the draw command spritedraw, in frame 1204, cover the 16x16 area at x 100, y 40 of the screen? Save the picture to /tmp/mcp-probe-boxes.png at scale 2.",
+   "prompt": "Which blits of the draw command spritedraw, in frame 1204, cover the 16x16 area at x 100, y 40 of the screen? Save the picture to {tmp}/mcp-probe-boxes.png at scale 2.",
    "tool": "gfx_blits",
    "args": {
     "draw_command": "spritedraw",
@@ -1990,7 +1990,7 @@
      16,
      16
     ],
-    "dest": "/tmp/mcp-probe-boxes.png",
+    "dest": "{tmp}/mcp-probe-boxes.png",
     "scale": 2
    }
   },
@@ -2017,7 +2017,7 @@
   },
   {
    "id": "m105",
-   "prompt": "In frame 902, the routine at hex address 1fd2 fired one blit of the draw command spritedraw: show what that blit reads, saved to /tmp/mcp-probe-src.png, waiting up to 7 seconds.",
+   "prompt": "In frame 902, the routine at hex address 1fd2 fired one blit of the draw command spritedraw: show what that blit reads, saved to {tmp}/mcp-probe-src.png, waiting up to 7 seconds.",
    "tool": "gfx_blit_source",
    "args": {
     "draw_command": "spritedraw",
@@ -2027,7 +2027,7 @@
       "0x1fd2"
      ]
     },
-    "dest": "/tmp/mcp-probe-src.png",
+    "dest": "{tmp}/mcp-probe-src.png",
     "seconds": 7
    }
   },
@@ -2165,7 +2165,7 @@
   },
   {
    "id": "m116",
-   "prompt": "Film the frames in which the byte at the symbol SOUND_LATCH of the cpu subcpu is written, keeping only the 48x40 part of the screen at x 16, y 24, the files going to the new directory /tmp/mcp-probe-film, waiting up to 9 seconds for the screen read.",
+   "prompt": "Film the frames in which the byte at the symbol SOUND_LATCH of the cpu subcpu is written, keeping only the 48x40 part of the screen at x 16, y 24, the files going to the new directory {tmp}/mcp-probe-film, waiting up to 9 seconds for the screen read.",
    "tool": "gfx_film",
    "args": {
     "trigger": "SOUND_LATCH",
@@ -2181,7 +2181,7 @@
      48,
      40
     ],
-    "film_dir": "/tmp/mcp-probe-film",
+    "film_dir": "{tmp}/mcp-probe-film",
     "seconds": 9
    }
   },
@@ -2215,7 +2215,7 @@
   },
   {
    "id": "m121",
-   "prompt": "Nobody knows the format of the region gfx3. Draw it under the candidate layouts at one and two bits a pixel, as 24x24 tiles, 20 tiles a candidate, saved to /tmp/mcp-probe-sweep.png.",
+   "prompt": "Nobody knows the format of the region gfx3. Draw it under the candidate layouts at one and two bits a pixel, as 24x24 tiles, 20 tiles a candidate, saved to {tmp}/mcp-probe-sweep.png.",
    "tool": "gfx_sweep",
    "args": {
     "tag": {
@@ -2235,7 +2235,7 @@
      ]
     ],
     "count": 20,
-    "dest": "/tmp/mcp-probe-sweep.png"
+    "dest": "{tmp}/mcp-probe-sweep.png"
    }
   },
   {
@@ -2298,10 +2298,10 @@
   },
   {
    "id": "m124",
-   "prompt": "Write the gfx.yaml draft of what this session has proved about the board to /tmp/newboard-gfx-draft.yaml.",
+   "prompt": "Write the gfx.yaml draft of what this session has proved about the board to {tmp}/newboard-gfx-draft.yaml.",
    "tool": "gfx_draft",
    "args": {
-    "dest": "/tmp/newboard-gfx-draft.yaml"
+    "dest": "{tmp}/newboard-gfx-draft.yaml"
    }
   },
   {
@@ -2364,7 +2364,7 @@
   },
   {
    "id": "m127",
-   "prompt": "Replace the confirmed manifest /home/dev/m68k-dual/hardware/gfx.yaml with the draft of this session, overwriting it.",
+   "prompt": "Replace the confirmed manifest {anchor}home/dev/m68k-dual/hardware/gfx.yaml with the draft of this session, overwriting it.",
    "expect": "CANNOT",
    "about": "gfx_draft"
   },
@@ -2514,11 +2514,11 @@
   },
   {
    "id": "m141",
-   "prompt": "Record the sound of the next 120 frames to /tmp/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
+   "prompt": "Record the sound of the next 120 frames to {tmp}/mcp-probe-sound.wav, bounded by 30 wall-clock seconds.",
    "tool": "audio_record",
    "args": {
     "frames": 120,
-    "dest": "/tmp/mcp-probe-sound.wav",
+    "dest": "{tmp}/mcp-probe-sound.wav",
     "seconds": 30
    }
   },
@@ -2597,11 +2597,11 @@
   },
   {
    "id": "m146",
-   "prompt": "Write every note to /tmp/mcp-probe-game.comments.tsv.",
+   "prompt": "Write every note to {tmp}/mcp-probe-game.comments.tsv.",
    "tool": "comment_write",
    "args": {
     "method": "save",
-    "dest": "/tmp/mcp-probe-game.comments.tsv"
+    "dest": "{tmp}/mcp-probe-game.comments.tsv"
    },
    "grammar": [
     "save"
@@ -2609,11 +2609,11 @@
   },
   {
    "id": "m147",
-   "prompt": "Bring in the notes from /tmp/mcp-probe-game.comments.tsv.",
+   "prompt": "Bring in the notes from {tmp}/mcp-probe-game.comments.tsv.",
    "tool": "comment_write",
    "args": {
     "method": "load",
-    "path": "/tmp/mcp-probe-game.comments.tsv"
+    "path": "{tmp}/mcp-probe-game.comments.tsv"
    },
    "grammar": [
     "load"
@@ -2643,11 +2643,11 @@
   },
   {
    "id": "m151",
-   "prompt": "Over 12 frames, log which code locations run and keep that log at /tmp/e5-window.trace.",
+   "prompt": "Over 12 frames, log which code locations run and keep that log at {tmp}/e5-window.trace.",
    "tool": "trace",
    "args": {
     "frames": 12,
-    "dest": "/tmp/e5-window.trace"
+    "dest": "{tmp}/e5-window.trace"
    }
   },
   {
@@ -2912,31 +2912,31 @@
   },
   {
    "id": "m156",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base, and have it run this as its boot Lua harness: print(\"fury up\")",
    "expect": "CANNOT",
    "about": "start"
   },
   {
    "id": "m165",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Nobody is going to watch it, but this once I want its window brought to the front when it launches.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. Nobody is going to watch it, but this once I want its window brought to the front when it launches.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "background": false
    }
   },
   {
    "id": "m166",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. I will watch it, but launch it without taking my focus away from the app I am typing in.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "shared": true,
     "background": true
    }
@@ -2982,12 +2982,12 @@
   },
   {
    "id": "m168",
-   "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base.",
+   "prompt": "Start the MAME that is installed on this machine (I have not built one of my own), system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base.",
    "tool": "start",
    "args": {
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin"
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin"
    }
   },
   {
@@ -3013,7 +3013,7 @@
   },
   {
    "id": "m171",
-   "prompt": "Keep frames 1200 to 1260 of the screen, every second frame, only the region at x 0, y 0, 64 by 32, into the new directory /tmp/run7-series, and give the run up to 45 seconds.",
+   "prompt": "Keep frames 1200 to 1260 of the screen, every second frame, only the region at x 0, y 0, 64 by 32, into the new directory {tmp}/run7-series, and give the run up to 45 seconds.",
    "tool": "series_capture",
    "args": {
     "first": 1200,
@@ -3025,7 +3025,7 @@
      64,
      32
     ],
-    "dest": "/tmp/run7-series",
+    "dest": "{tmp}/run7-series",
     "seconds": 45
    }
   },
@@ -3043,12 +3043,12 @@
   },
   {
    "id": "m173",
-   "prompt": "Compare /tmp/a/f000010.png with /tmp/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
+   "prompt": "Compare {tmp}/a/f000010.png with {tmp}/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
    "tool": "image_compare",
    "args": {
     "method": "image",
-    "a": "/tmp/a/f000010.png",
-    "b": "/tmp/a/f000011.png",
+    "a": "{tmp}/a/f000010.png",
+    "b": "{tmp}/a/f000011.png",
     "shift": [
      2,
      0
@@ -3061,12 +3061,12 @@
   },
   {
    "id": "m174",
-   "prompt": "Compare the series /tmp/run1/manifest.json against /tmp/run2/manifest.json, only over the rectangle at x 8, y 8, 32 by 16.",
+   "prompt": "Compare the series {tmp}/run1/manifest.json against {tmp}/run2/manifest.json, only over the rectangle at x 8, y 8, 32 by 16.",
    "tool": "image_compare",
    "args": {
     "method": "series",
-    "a": "/tmp/run1/manifest.json",
-    "b": "/tmp/run2/manifest.json",
+    "a": "{tmp}/run1/manifest.json",
+    "b": "{tmp}/run2/manifest.json",
     "crop": [
      8,
      8,
@@ -3080,11 +3080,11 @@
   },
   {
    "id": "m175",
-   "prompt": "In the series /tmp/run1/manifest.json, when does the rectangle at x 100, y 20, 24 by 8 match the picture /tmp/ref/digit.png in 95% or more of its pixels? List at most 10 changes.",
+   "prompt": "In the series {tmp}/run1/manifest.json, when does the rectangle at x 100, y 20, 24 by 8 match the picture {tmp}/ref/digit.png in 95% or more of its pixels? List at most 10 changes.",
    "tool": "image_compare",
    "args": {
     "method": "region",
-    "manifest": "/tmp/run1/manifest.json",
+    "manifest": "{tmp}/run1/manifest.json",
     "crop": [
      100,
      20,
@@ -3092,7 +3092,7 @@
      8
     ],
     "measure": "match",
-    "ref": "/tmp/ref/digit.png",
+    "ref": "{tmp}/ref/digit.png",
     "threshold": 0.95,
     "limit": 10
    },
@@ -3103,11 +3103,11 @@
   },
   {
    "id": "m176",
-   "prompt": "In the series /tmp/run1/manifest.json, how many pixels of the rectangle at x 0, y 200, 320 by 24 changed from the frame before, on each frame where some did?",
+   "prompt": "In the series {tmp}/run1/manifest.json, how many pixels of the rectangle at x 0, y 200, 320 by 24 changed from the frame before, on each frame where some did?",
    "tool": "image_compare",
    "args": {
     "method": "region",
-    "manifest": "/tmp/run1/manifest.json",
+    "manifest": "{tmp}/run1/manifest.json",
     "crop": [
      0,
      200,
@@ -3123,12 +3123,12 @@
   },
   {
    "id": "m177",
-   "prompt": "Check the frames of the series /tmp/run1/manifest.json against the goldens listed in /tmp/goldens.sha256.",
+   "prompt": "Check the frames of the series {tmp}/run1/manifest.json against the goldens listed in {tmp}/goldens.sha256.",
    "tool": "image_compare",
    "args": {
     "method": "golden",
-    "manifest": "/tmp/run1/manifest.json",
-    "checksums": "/tmp/goldens.sha256"
+    "manifest": "{tmp}/run1/manifest.json",
+    "checksums": "{tmp}/goldens.sha256"
    },
    "grammar": [
     "golden"
@@ -3136,12 +3136,12 @@
   },
   {
    "id": "m178",
-   "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256.",
+   "prompt": "Check the PNGs in the directory {tmp}/shots against the goldens listed in {tmp}/shots.sha256.",
    "tool": "image_compare",
    "args": {
     "method": "golden",
-    "dir": "/tmp/shots",
-    "checksums": "/tmp/shots.sha256"
+    "dir": "{tmp}/shots",
+    "checksums": "{tmp}/shots.sha256"
    },
    "grammar": [
     "golden"
@@ -3149,12 +3149,12 @@
   },
   {
    "id": "m179",
-   "prompt": "Compare the pictures /tmp/a/before.png and /tmp/b/after.png, which are not the same size, over the rectangle at x 0, y 0, 200 by 150 they share.",
+   "prompt": "Compare the pictures {tmp}/a/before.png and {tmp}/b/after.png, which are not the same size, over the rectangle at x 0, y 0, 200 by 150 they share.",
    "tool": "image_compare",
    "args": {
     "method": "image",
-    "a": "/tmp/a/before.png",
-    "b": "/tmp/b/after.png",
+    "a": "{tmp}/a/before.png",
+    "b": "{tmp}/b/after.png",
     "crop": [
      0,
      0,
@@ -3168,11 +3168,11 @@
   },
   {
    "id": "m180",
-   "prompt": "Measure the recording /tmp/rec/boot.wav between 0.5 and 2 seconds, only its left channel: did it sound, how loud, and when did it start?",
+   "prompt": "Measure the recording {tmp}/rec/boot.wav between 0.5 and 2 seconds, only its left channel: did it sound, how loud, and when did it start?",
    "tool": "audio_compare",
    "args": {
     "method": "measure",
-    "path": "/tmp/rec/boot.wav",
+    "path": "{tmp}/rec/boot.wav",
     "window": [
      0.5,
      2
@@ -3185,11 +3185,11 @@
   },
   {
    "id": "m181",
-   "prompt": "Measure the whole recording /tmp/rec/title.wav, every channel.",
+   "prompt": "Measure the whole recording {tmp}/rec/title.wav, every channel.",
    "tool": "audio_compare",
    "args": {
     "method": "measure",
-    "path": "/tmp/rec/title.wav"
+    "path": "{tmp}/rec/title.wav"
    },
    "grammar": [
     "measure"
@@ -3197,12 +3197,12 @@
   },
   {
    "id": "m182",
-   "prompt": "Compare the recording /tmp/rec/new.wav with the reference /tmp/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
+   "prompt": "Compare the recording {tmp}/rec/new.wav with the reference {tmp}/rec/ref.wav over their first 3 seconds, without lining up their onsets first.",
    "tool": "audio_compare",
    "args": {
     "method": "diff",
-    "a": "/tmp/rec/new.wav",
-    "b": "/tmp/rec/ref.wav",
+    "a": "{tmp}/rec/new.wav",
+    "b": "{tmp}/rec/ref.wav",
     "window": [
      0,
      3
@@ -3215,18 +3215,18 @@
   },
   {
    "id": "m183",
-   "prompt": "Write what this session has done so far as a replay document to /tmp/bench/circus.json.",
+   "prompt": "Write what this session has done so far as a replay document to {tmp}/bench/circus.json.",
    "tool": "perform_export",
    "args": {
-    "dest": "/tmp/bench/circus.json"
+    "dest": "{tmp}/bench/circus.json"
    }
   },
   {
    "id": "m184",
-   "prompt": "Export this session as a replay to /tmp/bench/circus.json, replacing the document already there.",
+   "prompt": "Export this session as a replay to {tmp}/bench/circus.json, replacing the document already there.",
    "tool": "perform_export",
    "args": {
-    "dest": "/tmp/bench/circus.json",
+    "dest": "{tmp}/bench/circus.json",
     "overwrite": true
    }
   },
@@ -3298,10 +3298,10 @@
   },
   {
    "id": "m188",
-   "prompt": "Save a picture of the screen's top-left 48 by 40 pixels to /tmp/mcp-probe-quiet.png, but do not attach it to your reply: I only need the file.",
+   "prompt": "Save a picture of the screen's top-left 48 by 40 pixels to {tmp}/mcp-probe-quiet.png, but do not attach it to your reply: I only need the file.",
    "tool": "screen_view",
    "args": {
-    "dest": "/tmp/mcp-probe-quiet.png",
+    "dest": "{tmp}/mcp-probe-quiet.png",
     "attach": false,
     "crop": [
      0,
@@ -3316,7 +3316,7 @@
   },
   {
    "id": "m189",
-   "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to /tmp/mcp-probe-gfx.png without attaching it to the reply.",
+   "prompt": "Decode tiles 0 to 15 of the region gfx1 under the layout named tiles8 from the loaded manifest, and write the picture to {tmp}/mcp-probe-gfx.png without attaching it to the reply.",
    "tool": "gfx_view",
    "args": {
     "layout": "tiles8",
@@ -3327,7 +3327,7 @@
      ]
     },
     "count": 16,
-    "dest": "/tmp/mcp-probe-gfx.png",
+    "dest": "{tmp}/mcp-probe-gfx.png",
     "attach": false
    },
    "allow": [
@@ -3336,12 +3336,12 @@
   },
   {
    "id": "m190",
-   "prompt": "Check the PNGs in the directory /tmp/shots against the goldens listed in /tmp/shots.sha256, listing at most 5 names in each list.",
+   "prompt": "Check the PNGs in the directory {tmp}/shots against the goldens listed in {tmp}/shots.sha256, listing at most 5 names in each list.",
    "tool": "image_compare",
    "args": {
     "method": "golden",
-    "dir": "/tmp/shots",
-    "checksums": "/tmp/shots.sha256",
+    "dir": "{tmp}/shots",
+    "checksums": "{tmp}/shots.sha256",
     "limit": 5
    },
    "grammar": [
@@ -3350,11 +3350,11 @@
   },
   {
    "id": "m191",
-   "prompt": "Load the screen map /tmp/maps/circus.screen-map.json.",
+   "prompt": "Load the screen map {tmp}/maps/circus.screen-map.json.",
    "tool": "screen_map_write",
    "args": {
     "method": "load",
-    "path": "/tmp/maps/circus.screen-map.json"
+    "path": "{tmp}/maps/circus.screen-map.json"
    },
    "grammar": [
     "load"
@@ -3399,11 +3399,11 @@
   },
   {
    "id": "m194",
-   "prompt": "Write this session's screen maps to /tmp/maps/circus.screen-map.json, replacing the file that is there.",
+   "prompt": "Write this session's screen maps to {tmp}/maps/circus.screen-map.json, replacing the file that is there.",
    "tool": "screen_map_write",
    "args": {
     "method": "save",
-    "dest": "/tmp/maps/circus.screen-map.json",
+    "dest": "{tmp}/maps/circus.screen-map.json",
     "overwrite": true
    },
    "grammar": [
@@ -3412,13 +3412,13 @@
   },
   {
    "id": "m195",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base. Do not put the orange edge on its window that marks the session as holding it: I am recording the screen myself.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "presence": false
    }
   },
@@ -3471,13 +3471,13 @@
   },
   {
    "id": "m200",
-   "prompt": "Start MAME from /opt/wheels/mamed, system wheelfir, ROMs in /opt/wheels/roms, reference image /opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.",
+   "prompt": "Start MAME from {anchor}opt/wheels/mamed, system wheelfir, ROMs in {anchor}opt/wheels/roms, reference image {anchor}opt/wheels/roms/wheelfir.bin at the default address and base. Every picture I take this session should show the board's layout view whose name begins with Shifter-R, not the bare screen.",
    "tool": "start",
    "args": {
-    "binary": "/opt/wheels/mamed",
+    "binary": "{anchor}opt/wheels/mamed",
     "system": "wheelfir",
-    "rompath": "/opt/wheels/roms",
-    "reference_rom": "/opt/wheels/roms/wheelfir.bin",
+    "rompath": "{anchor}opt/wheels/roms",
+    "reference_rom": "{anchor}opt/wheels/roms/wheelfir.bin",
     "view": "Shifter-R"
    },
    "grammar": [
@@ -3517,11 +3517,11 @@
   },
   {
    "id": "m203",
-   "prompt": "Load the screen map /tmp/maps/speedf.screen-map.json for a machine that shows the game's picture twice as large, with 40 rows of border above and below it.",
+   "prompt": "Load the screen map {tmp}/maps/speedf.screen-map.json for a machine that shows the game's picture twice as large, with 40 rows of border above and below it.",
    "tool": "screen_map_write",
    "args": {
     "method": "load",
-    "path": "/tmp/maps/speedf.screen-map.json",
+    "path": "{tmp}/maps/speedf.screen-map.json",
     "scale": 2,
     "margin": [
      0,
@@ -3564,26 +3564,26 @@
   },
   {
    "id": "m206",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching on their second display (display 1).",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base, for somebody watching on their second display (display 1).",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "shared": true,
     "display": 1
    }
   },
   {
    "id": "m207",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it over Moonlight, which streams only the main display.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base, for somebody watching it over Moonlight, which streams only the main display.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "shared": true
    },
    "allow": [
@@ -3597,13 +3597,13 @@
   },
   {
    "id": "m210",
-   "prompt": "Start MAME from /opt/fury/mamed, system spacefury, ROMs in /opt/fury/roms, reference image /opt/fury/roms/fury.bin at the default address and base, for somebody watching it in a window of exactly 1280 by 960.",
+   "prompt": "Start MAME from {anchor}opt/fury/mamed, system spacefury, ROMs in {anchor}opt/fury/roms, reference image {anchor}opt/fury/roms/fury.bin at the default address and base, for somebody watching it in a window of exactly 1280 by 960.",
    "tool": "start",
    "args": {
-    "binary": "/opt/fury/mamed",
+    "binary": "{anchor}opt/fury/mamed",
     "system": "spacefury",
-    "rompath": "/opt/fury/roms",
-    "reference_rom": "/opt/fury/roms/fury.bin",
+    "rompath": "{anchor}opt/fury/roms",
+    "reference_rom": "{anchor}opt/fury/roms/fury.bin",
     "shared": true,
     "size": "1280x960"
    }
@@ -3640,10 +3640,10 @@
   },
   {
    "id": "m213",
-   "prompt": "Replay the session kept in /tmp/mcp-probe-session.json on this machine, in one call, and do not send the steps yourself.",
+   "prompt": "Replay the session kept in {tmp}/mcp-probe-session.json on this machine, in one call, and do not send the steps yourself.",
    "tool": "perform",
    "args": {
-    "path": "/tmp/mcp-probe-session.json"
+    "path": "{tmp}/mcp-probe-session.json"
    }
   },
   {
@@ -3656,7 +3656,7 @@
   },
   {
    "id": "m215",
-   "prompt": "Promote only the map candidate this session kept under the name lineup into the repository at /tmp/probe-repo, writing it there as bench-map, and nothing else.",
+   "prompt": "Promote only the map candidate this session kept under the name lineup into the repository at {tmp}/probe-repo, writing it there as bench-map, and nothing else.",
    "tool": "promote",
    "args": {
     "entries": [
@@ -3665,16 +3665,16 @@
     "names": {
      "maps/lineup": "bench-map"
     },
-    "root": "/tmp/probe-repo"
+    "root": "{tmp}/probe-repo"
    }
   },
   {
    "id": "m216",
-   "prompt": "Several entries are kept for the store at /tmp/probe-repo. Show which could be written and which could not, and why, without writing any.",
+   "prompt": "Several entries are kept for the store at {tmp}/probe-repo. Show which could be written and which could not, and why, without writing any.",
    "tool": "promote",
    "args": {
     "dry_run": true,
-    "root": "/tmp/probe-repo"
+    "root": "{tmp}/probe-repo"
    }
   },
   {

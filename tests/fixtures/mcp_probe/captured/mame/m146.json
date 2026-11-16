@@ -1,11 +1,11 @@
 {
  "task": {
   "id": "m146",
-  "prompt": "Write every note to /tmp/mcp-probe-game.comments.tsv.",
+  "prompt": "Write every note to {tmp}/mcp-probe-game.comments.tsv.",
   "tool": "comment_write",
   "args": {
    "method": "save",
-   "dest": "/tmp/mcp-probe-game.comments.tsv"
+   "dest": "{tmp}/mcp-probe-game.comments.tsv"
   },
   "grammar": [
    "save"
@@ -14,91 +14,91 @@
  "runs": [
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\": \"comment_write\", \"args\": {\"method\": \"save\", \"dest\": \"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m146: {\"tool\":\"comment_write\",\"args\":{\"method\":\"save\",\"dest\":\"/tmp/mcp-probe-game.comments.tsv\"}}"
+    "m146: {\"tool\":\"comment_write\",\"args\":{\"method\":\"save\",\"dest\":\"{tmp}/mcp-probe-game.comments.tsv\"}}"
    ],
    "right": true
   }

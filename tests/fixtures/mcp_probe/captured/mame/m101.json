@@ -1,100 +1,100 @@
 {
  "task": {
   "id": "m101",
-  "prompt": "Load the graphics manifest of this project, /home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
+  "prompt": "Load the graphics manifest of this project, {anchor}home/dev/m68k-dual/hardware/gfx.yaml, so the other graphics tools can use its formats and draw commands.",
   "tool": "gfx_load",
   "args": {
-   "path": "/home/dev/m68k-dual/hardware/gfx.yaml"
+   "path": "{anchor}home/dev/m68k-dual/hardware/gfx.yaml"
   }
  },
  "runs": [
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\": \"gfx_load\", \"args\": {\"path\": \"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m101: {\"tool\":\"gfx_load\",\"args\":{\"path\":\"/home/dev/m68k-dual/hardware/gfx.yaml\"}}"
+    "m101: {\"tool\":\"gfx_load\",\"args\":{\"path\":\"{anchor}home/dev/m68k-dual/hardware/gfx.yaml\"}}"
    ],
    "right": true
   }

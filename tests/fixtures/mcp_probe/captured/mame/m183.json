@@ -1,100 +1,100 @@
 {
  "task": {
   "id": "m183",
-  "prompt": "Write what this session has done so far as a replay document to /tmp/bench/circus.json.",
+  "prompt": "Write what this session has done so far as a replay document to {tmp}/bench/circus.json.",
   "tool": "perform_export",
   "args": {
-   "dest": "/tmp/bench/circus.json"
+   "dest": "{tmp}/bench/circus.json"
   }
  },
  "runs": [
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\": \"perform_export\", \"args\": {\"dest\": \"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m183: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"/tmp/bench/circus.json\"}}"
+    "m183: {\"tool\":\"perform_export\",\"args\":{\"dest\":\"{tmp}/bench/circus.json\"}}"
    ],
    "right": true
   }

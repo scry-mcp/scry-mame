@@ -1,12 +1,12 @@
 {
  "task": {
   "id": "m173",
-  "prompt": "Compare /tmp/a/f000010.png with /tmp/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
+  "prompt": "Compare {tmp}/a/f000010.png with {tmp}/a/f000011.png, reading the second 2 pixels to the right of the first, and count a channel within 3 as equal.",
   "tool": "image_compare",
   "args": {
    "method": "image",
-   "a": "/tmp/a/f000010.png",
-   "b": "/tmp/a/f000011.png",
+   "a": "{tmp}/a/f000010.png",
+   "b": "{tmp}/a/f000011.png",
    "shift": [
     2,
     0
@@ -20,91 +20,91 @@
  "runs": [
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"/tmp/a/f000010.png\", \"b\": \"/tmp/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
+    "m173: {\"tool\": \"image_compare\", \"args\": {\"method\": \"image\", \"a\": \"{tmp}/a/f000010.png\", \"b\": \"{tmp}/a/f000011.png\", \"shift\": [2, 0], \"tolerance\": 3}}"
    ],
    "right": true
   },
   {
    "lines": [
-    "m173: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"/tmp/a/f000010.png\",\"b\":\"/tmp/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
+    "m173: {\"tool\":\"image_compare\",\"args\":{\"method\":\"image\",\"a\":\"{tmp}/a/f000010.png\",\"b\":\"{tmp}/a/f000011.png\",\"shift\":[2,0],\"tolerance\":3}}"
    ],
    "right": true
   }
