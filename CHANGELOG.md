@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- scry-core 0.112.0 pinned: the probe resolves `{tmp}` and `{anchor}` in a task file, so a
+  task set spelled through them is judged the same on Windows as on the Mac.
 - scry-core 0.111.2 pinned: the pre-commit hook starts the `jscpd.cmd` npm installs on Windows,
   so the hook's cases run there, and a FIFO the tests release is released for a reader that
   opens late too.
