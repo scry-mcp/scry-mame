@@ -11,8 +11,7 @@ from scry_core import boundary, presence
 
 STATE_FILE = "presence.state"
 
-#: Calls that can move the guest or change it, or cannot be told from one: presence is `acting`.
-#: Both sets are written out, so a new tool must be placed.
+#: The two sides `scry_core.presence.check_classified` holds against the registry.
 DRIVING_TOOLS = frozenset({
     "run_to", "run_for", "screen_wait", "trace", "step", "resume", "stop", "series_capture",
     "input", "record",

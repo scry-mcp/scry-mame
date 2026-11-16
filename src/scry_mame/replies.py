@@ -834,7 +834,7 @@ class RunToReply(MameEnvelope, total=False):
     watches: list[Any]
 
 
-class ScreenWaitReply(RunForReply, total=False):
+class ScreenWaitReply(RunForReply, tool_replies.StopWaitFields, total=False):
     already: bool
     entries: int
     frames: Annotated[int, When("once answered")]
@@ -846,10 +846,6 @@ class ScreenWaitReply(RunForReply, total=False):
     started_on: Annotated[str | dict[str, Any], When("`changed` adds")]
     verdict: Required[str]
     waited_s: Annotated[float, When("once answered")]
-    waited_on: Annotated[dict[str, Any], When("under `on_*`")]
-    firings: Annotated[int, When("under `on_*`")]
-    frames_examined: Annotated[int, When("under `on_*`")]
-    fired_line: Annotated[int | dict[str, Any], When("under `on_*`")]
 
 
 class ScreenSignatureReply(MameConsoleAccount, total=False):
@@ -947,7 +943,7 @@ class WindowReply(WindowRefused, tool_replies.WindowSizeField, total=False):
     window: Required[dict[str, Any]]
 
 
-class StartReply(WindowRefused, total=False):
+class StartReply(WindowRefused, tool_replies.ProfileRefusedFields, total=False):
     kept: Annotated[str, OmitEmpty]
     after_s: float
     alive: bool

@@ -31,7 +31,6 @@ from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import stop_wait
 from scry_core import value_format as vf
-from scry_core.prose import counted
 
 from scry_mame import advance, arming, capture, chunk, cpus, lua_source, running, transport
 from scry_mame import declarations as dec
@@ -69,22 +68,17 @@ def declared_row(ses: gs.Session, spec: stop_wait.StopWait,
     store = arming.store()
     held = store.held_ref(spec.ref, by, (spec.kind,), on)
     if held is None:
-        mine = [d.ref for d in store.declarations() if d.kind == spec.kind and d.cpu == on]
-        raise st.Invalid("unknown_ref",
-            f"{spec.ref!r} matches no {spec.kind} declaration on {on}: `on_{spec.kind}` names a "
-            f"row `declaration_list` lists. The {spec.kind} declarations held there: "
-            + (", ".join(repr(r) for r in mine) if mine else "none at all"))
+        raise stop_wait.no_such_row(spec, [d.ref for d in store.declarations()
+                                           if d.kind == spec.kind and d.cpu == on], cpu=on or "")
     decl = next(d for d in store.declarations()
                 if d.kind == spec.kind and d.cpu == on and d.ref == held)
     if spec.kind == "breakpoint" and decl.role != "stop":
         raise st.Invalid("bad_argument", f"the breakpoint {held!r} is a `{decl.role}`, which "
                          "counts its hits and never stops the machine")
     if spec.kind == "watch" and decl.watch_mode != "change":
-        raise st.Invalid("bad_argument", f"the watch {held!r} is a `{decl.watch_mode}` watch, "
-                         "which never stops the machine: only a `change` watch fires")
+        raise stop_wait.not_a_change_watch(held, str(decl.watch_mode))
     if decl.by == "pointer":
-        raise st.Invalid("bad_argument", f"the watch {held!r} follows a pointer, and its bytes "
-                         "move between stops, so its firing cannot be told from another stop")
+        raise stop_wait.follows_pointer(held)
     addr = arming.resolve_decl(decl).addr
     if addr is None:
         raise st.Invalid("bad_argument", f"{held!r} resolves to no address in this build, so "
@@ -244,9 +238,7 @@ def _bound(ses: gs.Session, scratch: Path, state: Path, spec: stop_wait.StopWait
         raise stop_wait.never_fired(spec, seconds, firings=0, frames_examined=last["examined"],
                                     **{k: v for k, v in stopped.items()
                                        if k not in contract.RESERVED})
-    note = (f"{said} was not found after any of {counted(last['firings'], 'firing')} of the "
-            f"{spec.kind} {spec.ref!r} within {seconds:g} s" if last["examined"] else
-            f"none of {counted(last['firings'], 'firing')} of the {spec.kind} {spec.ref!r} "
-            f"within {seconds:g} s met the condition, so no screen was judged")
+    note = stop_wait.timeout_note(said, spec, last["firings"], last["examined"], seconds,
+                                  judged_at="at the frame's end")
     return menvelope.envelope({**stopped, **_fields(contract.TIMEOUT, spec, predicate, last,
                                                     began), **measured(), "note": note})

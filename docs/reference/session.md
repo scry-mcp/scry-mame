@@ -95,6 +95,7 @@ Reference: REFERENCE.md, The session.
 | `activation` | string |
 | `asked_display` | integer |
 | `seen` | object |
+| `searched` | array |
 | `kept` | string |
 | `after_s` | number |
 | `alive` | boolean |

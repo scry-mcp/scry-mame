@@ -395,7 +395,8 @@ def test_a_stop_the_gate_did_not_make_ends_the_wait_recording_it(loop: Path) -> 
 
 def test_a_bound_with_firings_is_a_timeout_on_the_stops_reply(loop: Path) -> None:
     out, _ = wait(loop, ["candidate"], [None], seconds=0.05)
-    assert out["verdict"] == "TIMEOUT" and "not found" in str(out["note"]), out
+    assert out["verdict"] == "TIMEOUT", out
+    assert str(out["note"]).startswith("screen 'menu' was not found at the frame's end"), out
     assert out["stop_seq"] == 8 and {k: out[k] for k in CLOCK} == CLOCK, out
     reply_schema.check("screen_wait", {"summary": "s", **out, "session": SESSION})
 
@@ -432,16 +433,17 @@ def test_a_bound_whose_stop_fails_hands_that_failure_back(
     assert out == failed
 
 
-@pytest.mark.parametrize(("ref", "kind", "code"), [
-    ("0x9999", "breakpoint", "unknown_ref"),
-    ("0x2000", "breakpoint", "bad_argument"),
-    ("level", "watch", "bad_argument"),
-    ("[0x10]+0x2", "watch", "bad_argument"),
-    ("gone", "breakpoint", "bad_argument"),
+@pytest.mark.parametrize(("ref", "kind", "code", "said"), [
+    ("0x9999", "breakpoint", "unknown_ref", "'0x9999' matches no breakpoint declaration on "
+     ":maincpu"),
+    ("0x2000", "breakpoint", "bad_argument", "the breakpoint '0x2000' is a `control`"),
+    ("level", "watch", "bad_argument", "the watch 'level' is a `show` watch"),
+    ("[0x10]+0x2", "watch", "bad_argument", "the watch '[0x10]+0x2' follows a pointer"),
+    ("gone", "breakpoint", "bad_argument", "'gone' resolves to no address"),
 ])
 def test_a_row_that_cannot_be_waited_on_is_refused_first(loop: Path, ref: str, kind: str,
-                                                          code: str) -> None:
+                                                          code: str, said: str) -> None:
     with pytest.raises(st.Invalid) as e:
         wait(loop, [], [], ref=ref, kind=kind)
-    assert e.value.code == code
+    assert e.value.code == code and str(e.value).startswith(said), e.value
     assert not at_stop.files_of(loop, 1)[0].exists()

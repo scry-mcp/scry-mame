@@ -4,6 +4,11 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `screen_wait` under `on_breakpoint` or `on_watch` that runs out after firings says where it
+  judged them: "was not found at the frame's end after any of N firings", where it said "was not
+  found after any of".
+- `start` refused for a `profile` no directory above holds carries `searched`, the directories
+  it walked, beside the message that already named them.
 - scry-core 0.115.0 pinned: the at-stop wait's refusals and note, its reply fields and their
   sentence, and what a `start` or a map's `add` keeps for `promote` are the same code on both
   servers.

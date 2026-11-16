@@ -1666,8 +1666,7 @@ def screen_wait(text: str = "", screen: str = "",
     Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
     screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or
     `TIMEOUT` (the same, with `note` and the stop survey of `run_for`), the stop's own fields;
-    under `on_*`, `waited_on`, `firings`, `frames_examined` (the frames looked at after a firing)
-    and `fired_line` in place of `polls` and `sampled_every`. A poll the bound itself cut is
+    {ON_FIELDS}. A poll the bound itself cut is
     stopped there first, so the machine is never left running under a wait that gave up.
     Refused: `bad_argument`, `unknown_ref` (no such mapped screen or declared row), `needs_call`
     (`changed` with no map loaded), `no_channel`, `never_fired` (the row never fired within
