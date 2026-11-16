@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- scry-core 0.114.0 pinned: it words the one sentence a reply's `note` gives when a file is
+  written under another name than the one given.
 - scry-core 0.113.0 pinned: on the Mac a window placed to fit a display's usable area sees a
   Dock or menu bar that showed, hid or moved within a few seconds, where it kept the first area
   it read for the life of the server.
