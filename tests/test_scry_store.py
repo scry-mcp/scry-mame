@@ -34,6 +34,10 @@ def test_the_store_declares_exactly_these_recipes() -> None:
     assert sorted(path.stem for path in STORE.glob("*.json")) == list(RECIPES)
 
 
+def test_every_entry_of_the_store_is_found_by_its_own_name() -> None:
+    assert project_store.misnamed(ROOT / ".scry") == []
+
+
 @pytest.mark.parametrize("name", RECIPES)
 def test_the_ini_inside_the_repository_it_names_exists(name: str) -> None:
     values = project_store.read(STORE / f"{name}.json", KEYS, launch.START_PATHS,
