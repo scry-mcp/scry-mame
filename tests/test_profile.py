@@ -50,6 +50,15 @@ def test_a_profile_fills_what_the_caller_did_not_give(tmp_path: Path,
     assert block["supplied"] == ["reference_rom", "rompath", "system"]
 
 
+def test_each_folder_of_a_profiles_rompath_and_inipath_resolves(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    stored(tmp_path, {**BENCH, "rompath": "roms;shared", "inipath": "ini;/opt/ini"})
+    monkeypatch.chdir(tmp_path)
+    arguments, _block = launch.with_profile("bench", keys=KEYS, arguments=call(), given=())
+    assert arguments["rompath"] == f"{tmp_path / 'roms'};{tmp_path / 'shared'}"
+    assert arguments["inipath"] == f"{tmp_path / 'ini'};/opt/ini"
+
+
 def test_a_callers_argument_wins_over_the_profile(tmp_path: Path,
                                                   monkeypatch: pytest.MonkeyPatch) -> None:
     stored(tmp_path, BENCH)

@@ -14,8 +14,8 @@ from scry_mame.state import STATE
 #: `start`'s arguments a recipe leaves to the run.
 RUN_OWN = frozenset({"state_dir", "stub_port", "display", "size", "background", "view",
                      "throttle_from_frame", "boot_lua", "env", "profile"})
-#: What a recipe may hold as a path, `inipath` included.
-PROMOTE_PATHS = (*launch.START_PATHS, "inipath")
+#: What a recipe may hold as a path.
+PROMOTE_PATHS = launch.START_PATHS
 #: What a recipe cannot do without.
 NEEDS = ("system",)
 SERVER = "mame"

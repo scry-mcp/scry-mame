@@ -499,9 +499,8 @@ def judge_state_dir(state_dir: str) -> Path:
 PORT_MAX = 65535
 
 #: `start`'s arguments that hold paths, which a profile resolves against its store's base.
-#: `inipath` is not one: it is a `;`-separated list, so a profile spells each `${root}` itself.
-START_PATHS = ("binary", "rompath", "reference_rom", "symbols", "boot_lua", "state_dir", "cfg",
-               "types")
+START_PATHS = ("binary", "rompath", "inipath", "reference_rom", "symbols", "boot_lua",
+               "state_dir", "cfg", "types")
 
 
 def with_profile(profile: str, *, keys: Collection[str], arguments: dict[str, Any],
