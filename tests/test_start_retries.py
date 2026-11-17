@@ -793,8 +793,9 @@ def test_a_signal_death_during_the_last_poll_of_the_wait_is_still_a_death(
         proc = mstate.STATE.proc
         if not killed and seconds == launch.BOOT_POLL_S and proc is not None:
             killed.append(proc.pid)
-            while not (tmp_path / "launches").exists() and proc.poll() is None:  # counted
-                real_sleep(0.01)
+            counted = tmp_path / "launches"     # written, not just created: a kill between
+            while not (counted.exists() and counted.read_text()) and proc.poll() is None:
+                real_sleep(0.01)                # the two leaves it empty for the relaunch
             os.kill(proc.pid, signal.SIGSEGV)
             proc.wait(timeout=30)
             monkeypatch.setattr(launch, "BOOT_POLL_S", 0.05)  # the relaunch polls as usual
