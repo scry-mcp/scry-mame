@@ -13,7 +13,8 @@
    },
    "reference_base": {
     "any_of": [
-     "0x0"
+     "0x0",
+     0
     ]
    }
   }
@@ -21,42 +22,6 @@
  "runs": [
   {
    "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": \"0x0\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
    ],
    "right": true
@@ -105,7 +70,43 @@
   },
   {
    "lines": [
-    "m05: {\"tool\":\"rom_check\",\"args\":{\"reference_rom\":\"{root}/LICENSE\",\"reference_addr\":\"0x1A0\"}}"
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\", \"reference_base\": 0}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m05: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x1A0\"}}"
    ],
    "right": true
   }

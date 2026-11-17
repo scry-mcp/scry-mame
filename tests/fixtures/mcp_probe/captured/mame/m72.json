@@ -12,7 +12,8 @@
    },
    "reference_base": {
     "any_of": [
-     "0x0"
+     "0x0",
+     0
     ]
    },
    "cpu": {
@@ -26,37 +27,7 @@
  "runs": [
   {
    "lines": [
-    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"reference_base\": \"0x0\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
     "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
-   ],
-   "right": true
-  },
-  {
-   "lines": [
-    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"reference_base\": \"0x0\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   },
@@ -110,7 +81,37 @@
   },
   {
    "lines": [
-    "m72: {\"tool\":\"rom_check\",\"args\":{\"reference_rom\":\"{root}/LICENSE\",\"reference_addr\":\"0x40\",\"cpu\":\"soundcpu\"}}"
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
+   ],
+   "right": true
+  },
+  {
+   "lines": [
+    "m72: {\"tool\": \"rom_check\", \"args\": {\"reference_rom\": \"{root}/LICENSE\", \"reference_addr\": \"0x40\", \"cpu\": \"soundcpu\"}}"
    ],
    "right": true
   }
