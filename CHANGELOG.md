@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `screen_wait` is listed under Advance, where it runs the machine until its predicate holds;
+  its page moved from `docs/reference/screen.md` to `docs/reference/advance.md`.
 - `start`'s description says that `throttle_from_frame` runs at real speed after its frame and
   that `background` brings either window to the front, watched or not, so neither reads as a
   reason for `shared`.

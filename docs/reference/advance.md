@@ -716,3 +716,122 @@ Example, from a live run:
 **The caps** bound how much one window can produce; a longer window is consecutive calls.
 
 `set_path` is a JSON line per executed address, ascending (`addr`, `symbol` when placed, `count` under `noloop`); `symbols` rows carry `symbol`, `addr`, `addresses`, `first`, `last` and `instructions` under `noloop`. An empty `dest` lands in the scratch. Refusals before anything is armed: an existing `dest` or its set file (`<name>-<extension>-set.jsonl`), a cpu with no disassembler (`no_channel`). `readback_refused`: a trace with no instruction line, or a tracer that could not be closed (`trace.closed: false`, unavailable when the session broke). An INVALID run carries `trace` (`path`, `bytes`, `closed`) and no set file.
+<!-- scry-reference:begin screen_wait -->
+## `screen_wait`
+
+*Wait for a mapped screen or a black palette*
+
+```text
+screen_wait(text="", screen="", palette="", changed=false, every=0, on_breakpoint="", on_watch="", condition="", cpu="", seconds=30.0)
+```
+
+Run the machine until ONE predicate holds, and stop there.
+
+`screen`: the loaded map's screen is on the frame (`screen_map_write`; enters it). `palette`
+(`black`: every DAC entry black, which is how a fade ends). `changed`: the map names a
+screen other than the one it named at the start; a frame it names nothing is a transition.
+Exactly one, or `bad_argument`; `text` is refused `no_channel`, because this server hands
+the screen as pixels and a text mode's characters are DOSBox-X's to read.
+
+`on_breakpoint` / `on_watch`: judge only at the frame's end after a firing of that declared
+`stop` breakpoint or `change` watch (its `ref`, on `cpu`), never sampling; `condition`
+(up to 4 terms joined by `&&`, each a register of the stopped cpu or a memory read (`b@ref`, `w@ref`, `d@ref`), a comparison (`==`, `!=`, `<`, `<=`, `>`, `>=`) and a hex value (`0x` allowed)) filters the firings first. MAME's Lua counts the firings and stops
+only on a picture this wait has not rejected; the first firing is awaited even when the
+predicate already holds.
+
+`every`: 0 judges every frame; N runs N frames per poll, which is how a screen whose read
+costs a console round trip is waited on in reasonable time, and a screen alive for fewer
+than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
+recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the
+machine not moved. The emulator's own frame notifier is not used: measured, it reads the
+screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
+
+Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
+screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or
+`TIMEOUT` (the same, with `note` and the stop survey of `run_for`), the stop's own fields;
+under `on_*`, `waited_on`, `firings`, `frames_examined` (the frames looked at after a firing) and `fired_line` in place of `polls` and `sampled_every`. A poll the bound itself cut is
+stopped there first, so the machine is never left running under a wait that gave up.
+Refused: `bad_argument`, `unknown_ref` (no such mapped screen or declared row), `needs_call`
+(`changed` with no map loaded), `no_channel`, `never_fired` (the row never fired within
+`seconds`), and `wait_stopped` when a stop nobody asked for ends the wait before the bound
+(its `cause` and the stop's fields ride beside it).
+
+Reference: REFERENCE.md, Input and the screen.
+
+| argument | type | default |
+|---|---|---|
+| `text` | string | `""` |
+| `screen` | string | `""` |
+| `palette` | one of `""`, `"black"` | `""` |
+| `changed` | boolean | `false` |
+| `every` | integer | `0` |
+| `on_breakpoint` | string | `""` |
+| `on_watch` | string | `""` |
+| `condition` | string | `""` |
+| `cpu` | string | `""` |
+| `seconds` | number (> 0, <= 600.0) | `30.0` |
+
+| reply field | type |
+|---|---|
+| `command_chars` | integer |
+| `cpu` | string or object |
+| `cycles` | integer or object |
+| `following` | array of string |
+| `instruction` | StopInstruction |
+| `disarmed_watches` | array |
+| `emulated_after_s` | number or object |
+| `emulated_before_s` | number or object |
+| `errorlog` | object |
+| `frame` | integer or object |
+| `frame_after` | integer or object |
+| `frame_before` | integer or object |
+| `limit_chars` | integer |
+| `not_rearmed` | array |
+| `pc` | string |
+| `polls` | integer |
+| `reads` | integer |
+| `regpoint_hit` | object |
+| `regs` | object |
+| `stop_seq` | integer |
+| `verdict` | string |
+| `watch_hit` | object |
+| `watches` | array |
+| `waited_on` | object |
+| `firings` | integer |
+| `frames_examined` | integer |
+| `fired_line` | integer or object |
+| `already` | boolean |
+| `entries` | integer |
+| `frames` | integer |
+| `palette` | string |
+| `predicate` | string |
+| `sampled_every` | integer |
+| `screen` | object |
+| `started_on` | string or object |
+| `waited_s` | number |
+
+Example, from a live run:
+
+```json
+{
+  "palette": "black",
+  "seconds": 0.2
+}
+```
+
+```json
+{
+  "summary": "screen_wait a black palette: already on screen",
+  "status": "ok",
+  "verdict": "TARGET",
+  "predicate": "palette",
+  "already": true,
+  "polls": 0,
+  "sampled_every": 0,
+  "frames": 0,
+  "waited_s": 0.0,
+  "palette": "black",
+  "entries": 256
+}
+```
+<!-- scry-reference:end screen_wait -->
