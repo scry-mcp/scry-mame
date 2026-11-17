@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import inspect
-import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -249,7 +248,7 @@ def test_each_tool_at_a_ref_echoes_it_just_before_the_address_it_resolved(
         {**address, **fields}))
     for gated in (s, folds):
         monkeypatch.setattr(gated, "stopped", lambda _why: (object(), tmp_path))
-    if "dest" in args:          # absolute on the host, and the run's own: memdump refuses one that exists
+    if "dest" in args:          # the run's own: memdump refuses a dest that exists
         args = {**args, "dest": str(tmp_path / args["dest"])}
     got = getattr(s, tool)(**args)
     keys = list(got)
