@@ -11,7 +11,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Loop, Reply, Run, Step, main
+from scry_core.demo import Demo, Reply, Run, Step, main
 from scry_core.game_demo import Binding, Press
 from scry_core.games import lineup
 
@@ -102,7 +102,9 @@ BINDING = Binding(
 DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
-    capture=lambda run: run.dir / "screen.png", loop=Loop("screen"),
+    capture=lambda run: run.dir / "screen.png",
+    moments=(lineup.PLAYING,),
+    alt="LineUp in play on the arcade board, a shot in flight",
     offers=frozenset({"rompath", "cwd", "display"}), reads=frozenset({"cwd"}),
     precheck=precheck,
     volatile={**free_set.VOLATILE,

@@ -14,13 +14,24 @@ from pathlib import Path
 from typing import Any
 
 from scry_core import live_host
-from scry_core.demo import DISPLAY, Demo, Loop, Reply, Run, Step, expect, main, window_args
+from scry_core.demo import (
+    DISPLAY,
+    Demo,
+    Moment,
+    Reply,
+    Run,
+    Step,
+    expect,
+    main,
+    recording,
+    window_args,
+)
 from scry_core.reply_contract import Invalid
 
 from scry_mame import binary as mame_binary  # isort: skip -- the repository root, which each demo puts on the path
 
-__all__ = ["DISPLAY", "RUN_S", "Demo", "Reply", "Run", "Step", "absolute_only", "demo", "expect",
-           "fresh_dirs", "host_ready", "main", "window_args"]
+__all__ = ["DISPLAY", "RUN_S", "Demo", "Moment", "Reply", "Run", "Step", "absolute_only", "demo",
+           "expect", "fresh_dirs", "host_ready", "main", "recording", "window_args"]
 
 #: Wall-clock bound on one timed run: a board can emulate well below real speed under the debugger.
 RUN_S = 300
@@ -179,13 +190,15 @@ def closed(reply: Reply, run: Run) -> str:
     return "closed: MAME quit on its own"
 
 
-def demo(system: str, demo_file: str, steps: Sequence[Step]) -> Demo:
-    """The demo of `system` whose `demo.py` is `demo_file`, its loop recorded after `screen`."""
+def demo(system: str, demo_file: str, steps: Sequence[Step], moments: Sequence[Moment],
+         alt: str) -> Demo:
+    """The demo of `system` whose `demo.py` is `demo_file`; `moments` are what its loop shows and
+    `alt` says what moves in it."""
     here = Path(demo_file).resolve().parent
     root = here.parents[1]
     return Demo(name=system, root=root, server=[sys.executable, "-m", "scry_mame.server"],
                 readme=here / "README.md", front=root / "README.md", steps=steps,
-                capture=lambda run: run.dir / "screen.png", loop=Loop("screen"),
+                capture=lambda run: run.dir / "screen.png", moments=moments, alt=alt,
                 offers=frozenset({"rompath", "display"}),
                 precheck=precheck(system),
                 volatile=VOLATILE, host_args={**HOST_ARGS, "display": DISPLAY})

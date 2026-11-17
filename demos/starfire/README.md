@@ -1,21 +1,26 @@
-# Star Fire: a coin, found and caught
+# Star Fire: find where the game counts its coins
 
-![Star Fire's attract screen after four coins, with the fuel gauge filled](screen.png)
+<!-- demo-motion:begin -->
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Star Fire&#x27;s attract screen counting a coin, then back to the saved state"></picture>
 
-Exidy's *Star Fire* (1979) is a first-person space shooter on a Z80. This demo boots it, lets its
-attract mode run, drops coins into it and goes looking for where the game keeps them: a value
-scan narrows the first kilobyte of scratch RAM to the one byte that counts credits, a watch on
-that byte stops the machine on the instruction that bumps it, and a saved state takes a fifth
-coin back.
+1. `input` drops a fifth coin: the screen redraws and FUEL reads 1800.
+2. `state_write` loads the state saved at four coins, and FUEL is back at 1500.
+
+<!-- moments-ms: 1504,1003 -->
+<!-- demo-motion:end -->
+
+Exidy's *Star Fire* (1979) is a space shooter on a Z80. This demo drops coins into it and finds
+the byte that counts them with a value scan. A watch then stops the game on the instruction
+that writes that byte, and a saved state takes a coin back.
 
 ## The ROM
 
-The set is one of the ROMs [mamedev.org](https://www.mamedev.org/roms/) distributes for free,
-non-commercial use, from its own site only, so it is not in this repository. Get it and check it
-with your MAME:
+[mamedev.org](https://www.mamedev.org/roms/) distributes this ROM for free, non-commercial use,
+from its own site only, so it is not in this repository. Get it and check it with your MAME:
 
 ```sh
-mkdir -p ~/roms && curl -fL -o ~/roms/starfire.zip https://www.mamedev.org/roms/starfire/starfire.zip
+mkdir -p ~/roms
+curl -fL -o ~/roms/starfire.zip https://www.mamedev.org/roms/starfire/starfire.zip
 mame -rompath ~/roms -verifyroms starfire
 ```
 
@@ -25,238 +30,72 @@ mame -rompath ~/roms -verifyroms starfire
 uv run python demos/starfire/demo.py --rompath ~/roms
 ```
 
-- `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
-  `PATH`.
-- `--display N` opens the window on that display; left out, on the host's main one. The
-  window opens behind, so the run takes nobody's focus.
+Each line it prints is one call and its check. The window opens behind the others, so the run
+does not take your keyboard.
+
+- `--binary PATH` picks the MAME to start. Left out, it is `MAME_BINARY`, else the `mame` on
+  your `PATH`.
+- `--display N` opens the window on that display. Left out, it opens on the main one.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png`, `loop.mp4` and the front door's
-  flow from a run where every step
-  passed.
+- `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png`,
+  `loop.webp` and the README's example calls, from a run where every step passed. It needs
+  ffmpeg and `img2webp` on your `PATH`.
 
-Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step
-failed, 2 a usage error, 3 nothing was demonstrated (a missing ROM, a relative path, a server
-that did not start, a loop that could not be converted).
+Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
+That last one is a missing ROM, a relative path or a server that did not start.
 
-A run takes far longer than the game seconds it plays, and the window moves slowly: Star Fire's
-sound is emulated from its circuit diagram, which is expensive, and under the debugger the
-emulation cannot keep up with real time.
+A run takes far longer than the game seconds it plays. Star Fire's sound is emulated from its
+circuit diagram, which is expensive, and under the debugger MAME cannot keep up with real time.
 
-## The prompt
+## Try it yourself
 
-Give this to an MCP client with this server connected:
-
-> Start `starfire` with the ROMs in `~/roms` (as an absolute path), checking it against its
-> first program ROM, `r1412-11.1a` (CRC 9990AF64), unzipped from `starfire.zip` and given as the
-> reference image at `0x0`. Let the attract mode run for three seconds. Then find the credit
-> counter: open a value scan over `0x8000`, 1 KB, and after each of three coins (`:SYSTEM`,
-> `Coin 1`, held four frames) and half a second of running, keep only the bytes that equal the
-> number of coins so far. Put a watch that stops on a change of the byte that is left and drop a
-> fourth coin: tell me which instruction writes it, disassemble 16 bytes from `0x1e40`, and show
-> me the last 12 instructions executed and the registers. Run half a second more so the coin
-> releases, clear the watch and read the credits. Save a state, drop a fifth coin the same way
-> and read the credits, then load the state and read them again. Take a picture of the screen
-> and close the session.
-
-## What it walks
-
-| Family | Calls |
-|---|---|
-| Session | `start` (checked against the ROM), `close` |
-| Advance | `run_for` by emulated milliseconds, with its frame and cycle survey |
-| Scan | `scan(method="start")` and `scan(method="filter")` to find the credits |
-| Declarations | `watch_add`, whose stop names the writer, and `declaration_clear(kind="watch")` |
-| Read | `read_memory`, `disassemble`, `history`, `registers` |
-| Lua | `input` (the coin slot, held four frames) |
-| Lists | `perform` (coin, run, filter in one call) |
-| States | `state_write(method="save")`, `state_write(method="load")` (verified) |
-| Screen | `screen_view` |
-| Captures | `record` (the loop) |
-
-## The transcript
-
-Generated by `demo.py --update-readme` from a run where every step passed, with the ROM and MAME
-reached through links under the repository's own `tmp/` (`tmp/roms`, `tmp/bin/mame`), so the
-paths read the same on any host; temporary paths, process ids and wall-clock counts read
-`<volatile>`.
+[Add the server to your client](../../README.md#install) and ask it to start `starfire` with
+the ROM in `~/roms`. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
-The run is 22 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+**1. Find a variable nobody named**
 
-**6. `perform`**: OK coin 3: one cell left, 0x00008299, holding 3
+Ask:
 
-A value scan narrows the first kilobyte of scratch RAM: after the first coin the cells holding 1, after the second those holding 2, and after the third one cell is left. That byte is the credits.
+> Three coins are in. Keep only the bytes of the scan that hold 3 now.
 
-<details><summary>call and reply</summary>
+Call:
+
+```text
+scan(method="filter", operator="=", value=3)
+```
+
+Reply, 3 of 12 fields:
 
 ```json
 {
-  "steps": [
-    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
-    {"op": "run_for", "milliseconds": 500, "seconds": 300},
-    {"op": "scan", "method": "filter", "operator": "=", "value": 3}
-  ],
-  "settle_seconds": 300
+  "summary": "scan filter: = 0x03, 1 survivor",
+  "hits_total": 1,
+  "hits": [
+    {"addr": "0x00008299", "value": "0x03"}
+  ]
 }
 ```
 
+One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor" is a byte still in the scan.
+
+<details><summary>The whole reply</summary>
+
 ```json
 {
-  "summary": "perform: 3 steps completed",
+  "summary": "scan filter: = 0x03, 1 survivor",
   "status": "ok",
-  "ran": [
-    {
-      "op": "input",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 253",
-        "status": "ok",
-        "verdict": "ELAPSED",
-        "frame_before": 249,
-        "frame_after": 254,
-        "emulated_before_s": 4.178907,
-        "emulated_after_s": 4.262483,
-        "cycles": 208941,
-        "polls": 6,
-        "lines_ahead": 0,
-        "thread_errors": 0,
-        "console_reruns": 0,
-        "route": "ioport",
-        "port": ":SYSTEM",
-        "field": "Coin 1",
-        "value": "0x00000001",
-        "frames": 4,
-        "name": "Coin 1",
-        "player": 0,
-        "mask": "0x00000001",
-        "defvalue": "0x00000000",
-        "port_before": "0x000000f8",
-        "frame_set": 249,
-        "released": true,
-        "port_held": "0x000000f9",
-        "frame_released": 253,
-        "active": true,
-        "cause": "the `gvblank` stop of the last frame asked",
-        "stop_seq": 7,
-        "pc": "0x00000066",
-        "cpu": ":maincpu",
-        "frame": 254,
-        "regs": {
-          "AF": "0x4780",
-          "BC": "0x0c00",
-          "DE": "0x8003",
-          "HL": "0x8265",
-          "AF'": "0x0000",
-          "BC'": "0x0000",
-          "DE'": "0x0000",
-          "HL'": "0x0000",
-          "IX": "0x820d",
-          "IY": "0x82af",
-          "SP": "0x807b",
-          "PC": "0x0066",
-          "IR": "0x0018"
-        },
-        "instruction": {
-          "address": "0066",
-          "bytes": "C36900",
-          "text": "jp   $0069",
-          "symbol": {"available": false, "why": "no symbol table places this address"},
-          "delta": {"available": false, "why": "no symbol table places this address"}
-        },
-        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
-        "errorlog": "<volatile>",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
-    },
-    {
-      "op": "run_for",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "run_for 500 ms: ELAPSED, frame 254 to 284",
-        "status": "ok",
-        "verdict": "ELAPSED",
-        "frame_before": 254,
-        "frame_after": 284,
-        "emulated_before_s": 4.262483,
-        "emulated_after_s": 4.762487,
-        "cycles": 1250010,
-        "reads": "<volatile>",
-        "cause": "the console's `gtime` stop",
-        "stop_seq": 8,
-        "pc": "0x00002b38",
-        "cpu": ":maincpu",
-        "frame": 284,
-        "regs": {
-          "AF": "0xb5b3",
-          "BC": "0x00c9",
-          "DE": "0xdbb5",
-          "HL": "0x0038",
-          "AF'": "0x0000",
-          "BC'": "0x0000",
-          "DE'": "0x0000",
-          "HL'": "0x0000",
-          "IX": "0x8255",
-          "IY": "0x82af",
-          "SP": "0x808d",
-          "PC": "0x2b38",
-          "IR": "0x0039"
-        },
-        "instruction": {
-          "address": "2B38",
-          "bytes": "18FE",
-          "text": "jr   $2B38",
-          "symbol": {"available": false, "why": "no symbol table places this address"},
-          "delta": {"available": false, "why": "no symbol table places this address"}
-        },
-        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
-        "errorlog": "<volatile>",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
-    },
-    {
-      "op": "scan",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "scan filter: = 0x03, 1 survivor",
-        "status": "ok",
-        "operator": "=",
-        "value": "0x03",
-        "iterations": 3,
-        "closed": false,
-        "hits": [
-          {"addr": "0x00008299", "value": "0x03"}
-        ],
-        "hits_total": 1,
-        "truncated": false,
-        "cpu": ":maincpu",
-        "space": "program",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
-    }
+  "operator": "=",
+  "value": "0x03",
+  "iterations": 3,
+  "closed": false,
+  "hits": [
+    {"addr": "0x00008299", "value": "0x03"}
   ],
-  "steps_completed": 3,
-  "failed_at": {"available": false, "why": "no step failed"},
-  "held": 0,
-  "visible_cpu": ":maincpu",
-  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "hits_total": 1,
+  "truncated": false,
+  "cpu": ":maincpu",
+  "space": "program",
   "session": {
     "alive": true,
     "running": false,
@@ -269,20 +108,31 @@ A value scan narrows the first kilobyte of scratch RAM: after the first coin the
 
 </details>
 
-**8. `input`**: OK coin 4: the fourth coin stopped the machine: Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)
+**2. Catch the instruction that writes it**
 
-A change watch on that byte stops the emulator on the instruction that writes it, and the reply is the stop itself: which watchpoint, the value written and the program counter. No polling, no guess about timing.
+Ask:
 
-<details><summary>call and reply</summary>
+> With a change watch on `0x8299`, drop a fourth coin and tell me what wrote it.
+
+Call:
+
+```text
+input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
+```
+
+Reply, 3 of 42 fields:
 
 ```json
 {
-  "port": ":SYSTEM",
-  "field": "Coin 1",
-  "frames": 4,
-  "seconds": 300
+  "summary": "input :SYSTEM 'Coin 1': still HELD from frame 284, releases at 288",
+  "verdict": "OTHER_STOP",
+  "cause": "watch 0x8299: 0x00008299 written by pc 0x00001e48"
 }
 ```
+
+`OTHER_STOP` means the watch stopped the machine while the coin was still held. `cause` names the byte and the instruction that wrote it, at `0x1e48`.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
@@ -390,24 +240,45 @@ A change watch on that byte stops the emulator on the instruction that writes it
 
 </details>
 
-**10. `history`**: OK history: 12 instructions led there, ending 1E49: ld hl,$82AF
+**3. Read how the program got there**
 
-`history` is the instructions the CPU ran up to the stop, the code that took the coin; `registers` then says what it was working on: HL points at the credits byte.
+Ask:
 
-<details><summary>call and reply</summary>
+> Show me the last eight instructions the CPU ran before that stop.
+
+Call:
+
+```text
+history(limit=8)
+```
+
+Reply, 1 of 6 fields:
 
 ```json
 {
-  "limit": 12
+  "lines": [
+    "1E3E: inc  (hl)",
+    "1E3F: ld   a,(hl)",
+    "1E40: cpl",
+    "1E41: and  $03",
+    "1E43: jr   z,$1E04",
+    "1E45: ld   hl,$8299",
+    "1E48: inc  (hl)",
+    "1E49: ld   hl,$82AF"
+  ]
 }
 ```
 
+`history` lists what the CPU ran up to the stop, oldest first. `inc (hl)` at `1E48` is the write the watch caught, and the line after it is where the game stopped.
+
+<details><summary>The whole reply</summary>
+
 ```json
 {
-  "summary": "history: 12 instructions of 12 asked",
+  "summary": "history: 8 instructions of 8 asked",
   "status": "ok",
-  "asked": 12,
-  "lines": ["2640: ld   (hl),a", "2641: sub  $0A", "2643: ret  m", "1E3B: ld   hl,$8298", "1E3E: inc  (hl)", "1E3F: ld   a,(hl)", "1E40: cpl", "1E41: and  $03", "1E43: jr   z,$1E04", "1E45: ld   hl,$8299", "1E48: inc  (hl)", "1E49: ld   hl,$82AF"],
+  "asked": 8,
+  "lines": ["1E3E: inc  (hl)", "1E3F: ld   a,(hl)", "1E40: cpl", "1E41: and  $03", "1E43: jr   z,$1E04", "1E45: ld   hl,$8299", "1E48: inc  (hl)", "1E49: ld   hl,$82AF"],
   "cpu": ":maincpu",
   "session": {
     "alive": true,
@@ -420,4 +291,126 @@ A change watch on that byte stops the emulator on the instruction that writes it
 ```
 
 </details>
+
+**4. Go back to before the coin**
+
+Ask:
+
+> Load the state you saved at four credits.
+
+Call:
+
+```text
+state_write(method="load", name="four_credits")
+```
+
+Reply, 2 of 19 fields:
+
+```json
+{
+  "summary": "state_write load: four-credits, rom_check OK, verified True, ... (85 characters)",
+  "verified": true
+}
+```
+
+`verified` is true: the server read the machine back after the load, and it is the saved one. The fifth coin is undone.
+
+<details><summary>The whole reply</summary>
+
+```json
+{
+  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
+  "status": "ok",
+  "name": "four-credits",
+  "path": "./tmp/demos/starfire/starfire-states/sta/starfire/four-credits.sta",
+  "rom_check": "OK",
+  "verified": true,
+  "saved": {"frame": 314, "pc": "0x00002b38"},
+  "output": "State load attempted.  Please refer to window message popup for results.",
+  "mark": "<volatile>",
+  "cause": "stateload four-credits",
+  "stop_seq": 13,
+  "pc": "0x00002b38",
+  "cpu": ":maincpu",
+  "frame": 314,
+  "regs": {
+    "AF": "0xb5b3",
+    "BC": "0x00c9",
+    "DE": "0xdbb5",
+    "HL": "0x0038",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x808d",
+    "PC": "0x2b38",
+    "IR": "0x0029"
+  },
+  "instruction": {
+    "address": "2B38",
+    "bytes": "18FE",
+    "text": "jr   $2B38",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
 <!-- demo-transcript:end -->
+
+<details><summary>The whole demo as one prompt</summary>
+
+1. Start `starfire` with the ROMs in `~/roms`, checked against its first program ROM (CRC
+   9990AF64) as the reference image at `0x0`.
+2. Let the attract mode run for three seconds, then open a value scan over `0x8000`, 1 KB.
+3. Three times: drop a coin (`:SYSTEM`, `Coin 1`, four frames), run half a second, and keep
+   only the bytes that equal the coins so far.
+4. Put a watch that stops on a change of the byte that is left, and drop a fourth coin.
+5. Tell me which instruction wrote it, disassemble 16 bytes from `0x1e40`, and show the last
+   8 instructions and the registers.
+6. Run half a second so the coin releases, clear the watch, read the credits and save a state.
+7. Drop a fifth coin, record 90 frames to an AVI and read the credits.
+8. Load the state, record 60 frames, read the credits again, take a picture and close.
+
+</details>
+
+## Tools this demo uses
+
+| Group | Tools |
+|---|---|
+| [Session](../../docs/reference/session.md) | `start`, `close` |
+| [Advance](../../docs/reference/advance.md) | `run_for` |
+| [Scan](../../docs/reference/scan.md) | `scan` |
+| [Declarations](../../docs/reference/declarations.md) | `watch_add`, `declaration_clear` |
+| [Read](../../docs/reference/read.md) | `read_memory`, `disassemble`, `history`, `registers` |
+| [Lua](../../docs/reference/lua.md) | `input` |
+| [Lists](../../docs/reference/lists.md) | `perform` |
+| [States](../../docs/reference/states.md) | `state_write` |
+| [Screen](../../docs/reference/screen.md) | `screen_view` |
+| [Captures](../../docs/reference/captures.md) | `record` |
+
+Each group is a page of the reference. Four of the names need a word:
+
+- Advance: the tools that let the program run and stop it again.
+- Declarations: breakpoints and watches.
+- Lists: the tools that run several calls as one.
+- Lua: the tools that reach MAME's own scripting, `input` among them.
+
+## The transcript
+
+[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The run reached the
+ROM and MAME through links under the repository's own `tmp/`, so its paths read the same on
+any computer.

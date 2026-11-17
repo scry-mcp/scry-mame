@@ -1,34 +1,27 @@
-# LineUp: one script, two machines
+# LineUp: one script plays the arcade board and its DOS version
 
-![LineUp in play on the arcade board](screen.png)
+<!-- demo-motion:begin -->
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="LineUp in play on the arcade board, a shot in flight"></picture>
 
-*LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board with an AY-3-8910, and its
-team later ported the same source to MS-DOS. This demo plays it on the board under MAME with the
-script `scry_core.games.lineup`, whose symbols, screens and checks are the ones the PC port's
-repository declares for its own demo: the same game, the same map, the same steps. Only a short
-binding differs per machine: how it starts, which input is the coin, the screen's refresh, and the
-recording its sound is held to. A script that needs anything more is a place where the two servers
-disagree.
+1. The player moved, raised the colour and fired: `record` films the game going on.
 
-It runs to the routine that draws the high scores by name, drops a coin and reads the credits the
-game counted, starts a game, runs to the routine that writes its level, and plays: one column right,
-the next colour, a shot, each read back off the player's own variables once the frame that took
-the move has run (`Gest_Scores`, by name). Every arrival is the game's own code, never a time: each
-screen is waited for at the frame after the game's tick (`Check_Money100`), and recognised off a
-map signed in palette indices, because the board's 5-bit palette and the PC's
-6-bit DAC show the same pixels in slightly different colours. Then it records two seconds of the
-stage's music off the AY-3-8910 and holds it, sample for sample, to [`music.wav`](music.wav) beside
-this file (`win32/music.wav` on Windows, whose mix differs).
+<!-- moments-ms: 2516 -->
+<!-- demo-motion:end -->
 
-## The romset
+*LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board, and its team ported the
+same source to MS-DOS. This demo plays the board by the game's own routine and variable names:
+a coin, a game started, a move, a colour, a shot, each read back from memory.
 
-LineUp is not distributed with this repository. The demo needs its romset, `lineup.zip`, with the
-linker's symbol map beside it, `lineup.map`, in one directory, and a MAME whose driver list
-includes `lineup`. The game's own repository builds both from its source and stages them together
-(`make stage-rom`).
+## The program
 
-That repository also declares the game's screen map, `.scry/maps/lineup-screen-map.json`, which the
-demo loads; a checkout of it is what `--cwd` names.
+LineUp is not distributed with this repository. The demo needs three things from the game's
+own repository:
+
+- its ROM set, `lineup.zip`, with the linker's symbol map, `lineup.map`, in the same directory
+  (`make stage-rom` builds both and puts them together);
+- a MAME whose driver list includes `lineup`;
+- a checkout, which `--cwd` names: its `.scry/maps/lineup-screen-map.json` is the screen map
+  the demo loads.
 
 ## Run it
 
@@ -36,72 +29,62 @@ demo loads; a checkout of it is what `--cwd` names.
 uv run python demos/lineup/demo.py --rompath /path/to/romset --cwd /path/to/game
 ```
 
-- `--binary PATH` picks the MAME to start; left out, `MAME_BINARY`, else the `mame` on your
-  `PATH`.
-- `--cwd PATH` (absolute or `~`-led) is the game's own repository checkout, whose
-  `.scry/maps/lineup-screen-map.json` is the map the script loads.
-- `--display N` opens the window on that display; left out, on the host's main one. The
-  window opens behind, so the run takes nobody's focus.
+Each line it prints is one call and its check. The window opens behind the others, so the run
+does not take your keyboard.
+
+- `--binary PATH` picks the MAME to start. Left out, it is `MAME_BINARY`, else the `mame` on
+  your `PATH`.
+- `--cwd PATH` (absolute or `~`-led) is the checkout of the game's repository.
+- `--display N` opens the window on that display. Left out, it opens on the main one.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png` and `loop.mp4` from a run where every step passed.
+- `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
+  `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your
+  `PATH`.
 
-Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step failed,
-2 a usage error, 3 nothing was demonstrated (a missing romset, a relative path, a server that did
-not start, a checkout without the game's map, a loop that could not be converted).
+Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
+That last one is a missing ROM set, a relative path, a checkout without the game's map or a
+server that did not start.
 
-## The prompt
+Nothing in the run waits a fixed time: each screen is waited for at a breakpoint on the game's
+own 50 Hz tick. A screen is recognised by a screen map written in palette indices, because the
+board and a VGA card show the same pixels in slightly different colours.
 
-Give this to an MCP client with this server connected:
+The script is `scry_core.games.lineup`, and the other server runs the DOS version with the same
+symbols, screens and checks. Only a short table differs per emulator: how the game starts,
+which input is the coin, the screen's refresh rate, and the reference recording of its music.
 
-> Start `lineup` with the romset directory (as an absolute path), its symbols from `lineup.map`
-> there with DATA based at `0x400` and `LUP_JUKEBOX` read in place, checked against the image its
-> two ROM halves make at `0x30000`. Load the game's screen map,
-> `.scry/maps/lineup-screen-map.json` in the `--cwd` checkout. Run to `Draw_High_Scores_Screen`
-> counting `Check_Money25`. Put a breakpoint on `Check_Money100` and wait, judging the screen
-> only after it fires, until the map names `hiscores`; clear it, tell me which screen it is and
-> what `Credits` holds. Drop a coin and wait the same way for `insert`, then read `Credits` again.
-> Press START, run to `Level_Write`, wait the same way for `level`, and read `Credits` and
-> `Stage_Act`. Wait the same way for `play` with `Player1`'s first double word at 0x30001 (the
-> player active in column 3), and read the first six words of `Player1`. Move right, take the
-> next colour and shoot, running to `Gest_Scores` after each before reading `Player1`. Record two seconds of sound, measure it
-> and compare it with `music.wav`, take a picture of the screen and close the session.
+## Try it yourself
 
-## What it walks
-
-| Family | Calls |
-|---|---|
-| Session | `start` (checked against the romset), `close` |
-| Advance | `run_to` a routine of the game by its name, `screen_wait` judged only when a breakpoint on the game's tick fires, with a `condition` on `Player1` |
-| Declarations | `breakpoint_at`, `declaration_clear` |
-| Read | `screen_map_write(method="load")`, `screen_map_find` on every screen, `read_memory` by symbol |
-| Lua | `input` (the coin, start, right, fire and up of the game's own actions) |
-| Captures | `record` (the loop), `audio_record` of the board's output |
-| Files | `audio_compare` (`measure`, then `diff` against `music.wav`) |
-| Screen | `screen_view` |
-
-## The transcript
-
-Generated by `demo.py --update-readme` from a run where every step passed. Temporary paths, process
-ids and wall-clock counts read `<volatile>`; the files a call names, such as
-`./tmp/demos/lineup/music.wav` or `./demos/lineup/music.wav`, are shown relative to the repository
-root, and the tools themselves take absolute paths.
+[Add the server to your client](../../README.md#install) and ask it to start `lineup` with your
+ROM set and its symbol map. Each of these is a step of the demo, in the order the demo makes
+them.
 
 <!-- demo-transcript:begin -->
-The run is 42 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+**1. Run to a routine by its name**
 
-**3. `run_to`**: OK to the high scores: stopped at Draw_High_Scores_Screen
+Ask:
 
-`run_to` takes the game's own routine name from the build's symbol map and runs the machine until that routine begins. `control` is a place known to run, and the reply counts its hits meanwhile, so a run that missed its target says whether the machine was running at all.
+> Run the game until it starts drawing its high-score table, and count `Check_Money25` on the way.
 
-<details><summary>call and reply</summary>
+Call:
+
+```text
+run_to(ref="Draw_High_Scores_Screen", control="Check_Money25", seconds=120)
+```
+
+Reply, 3 of 15 fields:
 
 ```json
 {
-  "ref": "Draw_High_Scores_Screen",
-  "control": "Check_Money25",
-  "seconds": 120
+  "summary": "run_to Draw_High_Scores_Screen: TARGET, control counted 250",
+  "verdict": "TARGET",
+  "control_hits": 250
 }
 ```
+
+`TARGET` means the game stopped where `Draw_High_Scores_Screen` begins. `control_hits` counts an address that runs on every tick, so a run that misses its target still says the game was running.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
@@ -172,23 +155,37 @@ The run is 42 calls; these are the ones that show how it is done, and every call
 
 </details>
 
-**14. `read_memory`**: OK credits: Credits holds 3
+**2. Read a variable by its name**
 
-The script names the game's own variables, and each server resolves them through its build's map: `Credits` is read by name, the same call on the arcade board and on the PC port. The coin the demo dropped is counted as three credits.
+Ask:
 
-<details><summary>call and reply</summary>
+> Read the game's `Credits` variable now that the coin is in.
+
+Call:
+
+```text
+read_memory(ref="Credits", length=2)
+```
+
+Reply, 3 of 8 fields:
 
 ```json
 {
-  "ref": "Credits",
-  "length": 2
+  "summary": "read_memory Credits: 2 bytes at 0x0000914a: 0300",
+  "addr": "0x0000914a",
+  "hex": "0300"
 }
 ```
+
+`Credits` is a name from the game's own symbol map, so the same call works on the arcade board and on the PC port. `hex` is the value, low byte first: three credits for one coin.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
   "summary": "read_memory Credits: 2 bytes at 0x0000914a: 0300",
   "status": "ok",
+  "ref": "Credits",
   "addr": "0x0000914a",
   "length": 2,
   "hex": "0300",
@@ -205,20 +202,30 @@ The script names the game's own variables, and each server resolves them through
 
 </details>
 
-**39. `audio_compare`**: OK exact: the recording is music.wav, sample for sample
+**3. Compare a recording with its reference**
 
-The recording is compared with the platform's reference with alignment off: `exact` is true only when every sample is equal, so a changed sound, a different mixer or a drifted start fails the run.
+Ask:
 
-<details><summary>call and reply</summary>
+> Compare the music you just recorded with the reference recording, sample by sample.
+
+Call:
+
+```text
+audio_compare(method="diff", a="./tmp/demos/lineup/music.wav", b="<host>", align=false)
+```
+
+Reply, 2 of 12 fields:
 
 ```json
 {
-  "method": "diff",
-  "a": "./tmp/demos/lineup/music.wav",
-  "b": "<host>",
-  "align": false
+  "summary": "audio_compare diff: exact, equal, envelope 1.0",
+  "exact": true
 }
 ```
+
+`exact` is true only when every sample is equal, so a changed sound, a different mixer or a late start fails the run.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
@@ -248,3 +255,50 @@ The recording is compared with the platform's reference with alignment off: `exa
 
 </details>
 <!-- demo-transcript:end -->
+
+<details><summary>The whole demo as one prompt</summary>
+
+1. Start `lineup` with the ROM set directory, checked against the image its two ROM halves
+   make at `0x30000`.
+2. In that same call take its symbols from `lineup.map`, with `DATA` at `0x400` and
+   `LUP_JUKEBOX` left where the map puts it.
+3. Load the game's screen map, `.scry/maps/lineup-screen-map.json` in the checkout.
+4. Run to `Draw_High_Scores_Screen` counting `Check_Money25`.
+5. Put a breakpoint on `Check_Money100` and wait, looking at the screen only when it stops
+   there, until the map names `hiscores`; clear it and read `Credits`.
+6. Drop a coin, wait the same way for `insert`, and read `Credits` again.
+7. Press START, run to `Level_Write`, wait the same way for `level`, and read `Credits` and
+   `Stage_Act`.
+8. Wait the same way for `play` with `Player1`'s first double word at 0x30001, and read the
+   first six words of `Player1`.
+9. Move right, take the next colour and shoot, running to `Gest_Scores` after each before
+   reading `Player1`.
+10. Record two seconds of sound, measure it and compare it with `music.wav`.
+11. Record 150 frames of video, take a picture of the screen and close.
+
+</details>
+
+## Tools this demo uses
+
+| Group | Tools |
+|---|---|
+| [Session](../../docs/reference/session.md) | `start`, `close` |
+| [Advance](../../docs/reference/advance.md) | `run_to`, `screen_wait` |
+| [Declarations](../../docs/reference/declarations.md) | `breakpoint_at`, `declaration_clear` |
+| [Read](../../docs/reference/read.md) | `screen_map_write`, `screen_map_find`, `read_memory` |
+| [Lua](../../docs/reference/lua.md) | `input` |
+| [Captures](../../docs/reference/captures.md) | `record`, `audio_record` |
+| [Files](../../docs/reference/files.md) | `audio_compare` |
+| [Screen](../../docs/reference/screen.md) | `screen_view` |
+
+Each group is a page of the reference. Three of the names need a word:
+
+- Advance: the tools that let the program run and stop it again.
+- Declarations: breakpoints and watches.
+- Lua: the tools that reach MAME's own scripting, `input` among them.
+
+## The transcript
+
+[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The two seconds of
+music it records must equal [`music.wav`](music.wav) sample for sample (`win32/music.wav` on
+Windows, where MAME mixes the sound differently).

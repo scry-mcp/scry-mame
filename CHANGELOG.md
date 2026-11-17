@@ -4,6 +4,12 @@ What a client of the server notices.
 
 ## Unreleased
 
+- Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds one
+  or two moments cut from `record` calls of the demo's own run.
+- Each demo's page offers the steps to try, each with what to ask, the call and the reply it
+  got. The whole run is in `TRANSCRIPT.md`.
+- The README opens with what the server is for. Its `## Install` section has the lines to paste
+  for ten MCP clients and a first question to ask.
 - Takes scry-core 0.119.0.
 - On Windows a `start` behind (`background=true`, or left out on an unwatched start) leaves the
   foreground where it was: no program may take it while the start launches. The flag did
@@ -82,19 +88,8 @@ What a client of the server notices.
   of its own is `unwritable` in a review and refused in an approval, naming the `root` to pass;
   the `kept` line names it; a call writes one store; with `root`, a candidate kept in another
   repository says `from`.
-- The demos ship a loop: each demo's `loop.mp4` sits beside its `screen.png`, recorded by the
-  runner after the step that takes the still.
 - On the pinned scry-core (`pyproject.toml`), which carries the window every demo asks of
   its `start`.
-
-- On the pinned scry-core (`pyproject.toml`), whose demo runner fails a loop a bound or a
-  stop cut.
-
-- On the pinned scry-core (`pyproject.toml`), whose demo runner reports the stop that ends
-  a loop as the host's too.
-
-- On the pinned scry-core (`pyproject.toml`), whose demo runner reports a loop's own timing
-  as the host's, so a demo's two runs give one transcript.
 
 - On the pinned scry-core (`pyproject.toml`), whose demo runner takes `--display`, so a
   demo can be recorded on one of the host's own displays.
@@ -104,8 +99,6 @@ What a client of the server notices.
 - On the pinned scry-core (`pyproject.toml`), whose `record` words say what a bound does when its
   release answers, so a server that answers `ended: false` over a capture it could not turn off
   is not contradicted.
-- On the pinned scry-core (`pyproject.toml`), whose demo runner records a demo's loop and
-  converts it to its `loop.mp4` beside the capture.
 - `record` whose run reaches its `seconds` bound releases the recording there and, when the
   release answers, answers its file (`ended: true`, `bytes`, `avi_frames`), where it used to
   refuse `not_settled` and leave the file open. That reply now also carries the console's

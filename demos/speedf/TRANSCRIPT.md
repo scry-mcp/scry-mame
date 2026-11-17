@@ -1,4 +1,6 @@
-**1. `start`**: OK start: speedf on MAME from the game's own recipe (9 keys), rom_check OK, 225 symbols
+Every call of the run with its reply, in order: 7 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+
+**1. `start`**: OK start: speedf on MAME from the game's own start profile (9 keys), rom_check OK, 225 symbols
 
 <details><summary>call and reply</summary>
 
@@ -167,6 +169,7 @@
 {
   "summary": "read_memory _sceneId: 1 byte at 0x0000fd16: 02",
   "status": "ok",
+  "ref": "_sceneId",
   "addr": "0x0000fd16",
   "length": 1,
   "hex": "02",
@@ -198,6 +201,7 @@
 {
   "summary": "read_memory creditos: 2 bytes at 0x0000c41c: 0000",
   "status": "ok",
+  "ref": "creditos",
   "addr": "0x0000c41c",
   "length": 2,
   "hex": "0000",
@@ -214,199 +218,15 @@
 
 </details>
 
-**5. `run_for`**: OK plays: the demo plays: ran to frame 1103, 24000010 cycles
+**5. `record`**: OK plays: the attract demo plays for three seconds
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "milliseconds": 3000,
+  "frames": 180,
+  "dest": "./tmp/demos/speedf/plays.avi",
   "seconds": 300
-}
-```
-
-```json
-{
-  "summary": "run_for 3000 ms: ELAPSED, frame 923 to 1103",
-  "status": "ok",
-  "verdict": "ELAPSED",
-  "frame_before": 923,
-  "frame_after": 1103,
-  "emulated_before_s": 15.390295,
-  "emulated_after_s": 18.390296,
-  "cycles": 24000010,
-  "reads": "<volatile>",
-  "cause": "the console's `gtime` stop",
-  "stop_seq": 3,
-  "pc": "0x000f5dab",
-  "cpu": ":maincpu",
-  "frame": 1103,
-  "regs": {
-    "EAX": "0xd000",
-    "ECX": "0x0014",
-    "EDX": "0x4506",
-    "EBX": "0x0046",
-    "ESP": "0xbfa8",
-    "EBP": "0x86de",
-    "ESI": "0xc0e5",
-    "EDI": "0xcda0",
-    "EIP": "0x000f5dab",
-    "EFLAGS": "0xf046",
-    "CS": "0xed00",
-    "SS": "0x0040",
-    "DS": "0x0040",
-    "ES": "0x1000",
-    "FS": "0x00000000",
-    "GS": "0x00000000",
-    "ST0": "0x00000000000000000000",
-    "ST1": "0x00000000000000000000",
-    "ST2": "0x00000000000000000000",
-    "ST3": "0x00000000000000000000",
-    "ST4": "0x00000000000000000000",
-    "ST5": "0x00000000000000000000",
-    "ST6": "0x00000000000000000000",
-    "ST7": "0x00000000000000000000",
-    "FCTRL": "0x00000000",
-    "FSTAT": "0x00000000",
-    "FTAG": "0x00000000",
-    "FISEG": "0x00000000",
-    "FIOFF": "0x00000000",
-    "FOSEG": "0x00000000",
-    "FOOFF": "0x00000000",
-    "FOP": "0x00000000"
-  },
-  "instruction": {
-    "address": "F5DAB",
-    "bytes": "83062BC00A",
-    "text": "add     word ptr [0C02Bh],0Ah",
-    "symbol": "pushitem",
-    "delta": 37
-  },
-  "following": ["F5DB0: FF 06 2D C0    inc     word ptr [0C02Dh]", "F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h"],
-  "errorlog": "<volatile>",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": false,
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-</details>
-
-**6. `screen_view`**: OK screen: the demo, 320x200
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "mode": "render",
-  "dest": "./tmp/demos/speedf/screen.png",
-  "scale": 2
-}
-```
-
-```json
-{
-  "summary": "screen_view render :screen frame 1103 from indices; 640x400 PNG x2, inline",
-  "status": "ok",
-  "mode": "render",
-  "screen": ":screen",
-  "width": 320,
-  "height": 200,
-  "frame_screen": 1103,
-  "palette": ":palette",
-  "entries": 1024,
-  "screen_indexed": true,
-  "crop": [0, 0, 320, 200],
-  "image": {
-    "path": "./tmp/demos/speedf/screen.png",
-    "bytes": "<volatile>",
-    "sha256": "<volatile>",
-    "width": 640,
-    "height": 400,
-    "scale": 2,
-    "indexed": false,
-    "inline": true
-  },
-  "evaluated_by": "one step",
-  "lines_ahead": 0,
-  "thread_errors": 0,
-  "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#1",
-  "pc_before": "0x000f5dab",
-  "cause": "screen_view: one step",
-  "stop_seq": 4,
-  "pc": "0x000f5db0",
-  "cpu": ":maincpu",
-  "frame": 1103,
-  "regs": {
-    "EAX": "0xd000",
-    "ECX": "0x0014",
-    "EDX": "0x4506",
-    "EBX": "0x0046",
-    "ESP": "0xbfa8",
-    "EBP": "0x86de",
-    "ESI": "0xc0e5",
-    "EDI": "0xcda0",
-    "EIP": "0x000f5db0",
-    "EFLAGS": "0xf082",
-    "CS": "0xed00",
-    "SS": "0x0040",
-    "DS": "0x0040",
-    "ES": "0x1000",
-    "FS": "0x00000000",
-    "GS": "0x00000000",
-    "ST0": "0x00000000000000000000",
-    "ST1": "0x00000000000000000000",
-    "ST2": "0x00000000000000000000",
-    "ST3": "0x00000000000000000000",
-    "ST4": "0x00000000000000000000",
-    "ST5": "0x00000000000000000000",
-    "ST6": "0x00000000000000000000",
-    "ST7": "0x00000000000000000000",
-    "FCTRL": "0x00000000",
-    "FSTAT": "0x00000000",
-    "FTAG": "0x00000000",
-    "FISEG": "0x00000000",
-    "FIOFF": "0x00000000",
-    "FOSEG": "0x00000000",
-    "FOOFF": "0x00000000",
-    "FOP": "0x00000000"
-  },
-  "instruction": {
-    "address": "F5DB0",
-    "bytes": "FF062DC0",
-    "text": "inc     word ptr [0C02Dh]",
-    "symbol": "pushitem",
-    "delta": 42
-  },
-  "following": ["F5DB4: 1F             pop     ds0", "F5DB5: C3             ret     ", "F5DB6: 83 3E 29 C0 00 cmp     word ptr [0C029h],0h", "F5DBB: 74 71          be      0F5E2Eh", "F5DBD: 83 3E 2D C0 00 cmp     word ptr [0C02Dh],0h", "F5DC2: 74 6A          be      0F5E2Eh", "F5DC4: 06             push    ds1", "F5DC5: B8 00 20       mov     aw,2000h", "F5DC8: 8E C0          mov     ds1,aw", "F5DCA: BD 31 C0       mov     bp,0C031h", "F5DCD: 1E             push    ds0", "F5DCE: 8B 7E 04       mov     iy,[bp+4h]"],
-  "errorlog": "<volatile>",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": false,
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-Also attached: image/png.
-
-</details>
-
-**7. `record`**: OK loop: recording 240 frames in ./tmp/demos/speedf/loop.avi
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "frames": 240,
-  "dest": "./tmp/demos/speedf/loop.avi"
 }
 ```
 
@@ -424,8 +244,8 @@ Also attached: image/png.
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "./tmp/demos/speedf/loop.avi",
-  "frames": 240,
+  "path": "./tmp/demos/speedf/plays.avi",
+  "frames": 180,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -455,7 +275,104 @@ Also attached: image/png.
 
 </details>
 
-**8. `close`**: OK close: closed: MAME quit on its own
+**6. `screen_view`**: OK screen: the demo, 320x200
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "mode": "render",
+  "dest": "./tmp/demos/speedf/screen.png",
+  "scale": 2
+}
+```
+
+```json
+{
+  "summary": "screen_view render :screen frame 1106 from indices; 640x400 PNG x2, inline",
+  "status": "ok",
+  "mode": "render",
+  "screen": ":screen",
+  "width": 320,
+  "height": 200,
+  "frame_screen": 1106,
+  "palette": ":palette",
+  "entries": 1024,
+  "screen_indexed": true,
+  "crop": [0, 0, 320, 200],
+  "image": {
+    "path": "./tmp/demos/speedf/screen.png",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
+    "width": 640,
+    "height": 400,
+    "scale": 2,
+    "indexed": false,
+    "inline": true
+  },
+  "evaluated_by": "one step",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "call": "MAME_MCP_LUA_END#2",
+  "pc_before": "0x000f5bc0",
+  "cause": "screen_view: one step",
+  "stop_seq": 4,
+  "pc": "0x000f5bc1",
+  "cpu": ":maincpu",
+  "frame": 1106,
+  "regs": {
+    "EAX": "0x0000",
+    "ECX": "0x0000",
+    "EDX": "0x0000",
+    "EBX": "0x0100",
+    "ESP": "0xbfc4",
+    "EBP": "0x001c",
+    "ESI": "0xe8c7",
+    "EDI": "0xe93b",
+    "EIP": "0x000f5bc1",
+    "EFLAGS": "0xf002",
+    "CS": "0xed00",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "F5BC1", "bytes": "1E", "text": "push    ds0", "symbol": "new_irq_video", "delta": 1},
+  "following": ["F5BC2: B8 40 00          mov     aw,40h", "F5BC5: 8E D8             mov     ds0,aw", "F5BC7: 83 3E 14 C0 01    cmp     word ptr [0C014h],1h", "F5BCC: 75 03             bne     0F5BD1h", "F5BCE: 1F                pop     ds0", "F5BCF: 58                pop     aw", "F5BD0: CF                reti    ", "F5BD1: 53                push    bw", "F5BD2: 51                push    cw", "F5BD3: 52                push    dw", "F5BD4: 56                push    ix", "F5BD5: 57                push    iy", "F5BD6: 55                push    bp", "F5BD7: 06                push    ds1", "F5BD8: C7 06 14 C0 01 00 mov     word ptr [0C014h],1h", "F5BDE: E8 27 75          call    0FD108h"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+Also attached: image/png.
+
+</details>
+
+**7. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 

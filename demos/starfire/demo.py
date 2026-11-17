@@ -2,7 +2,7 @@
 prompt asks an MCP client to make, each answer checked. `--help` says how to run it.
 
 The set is one of the ROMs mamedev.org distributes for free, non-commercial use, from its own
-site only, so the demo says where to get it and never carries it. What it walks: the attract
+site only, so the demo says where to get it and never carries it. What it does: the attract
 mode running, a coin found in RAM by a value scan, the instruction that writes it caught by a
 change watch, and a saved state that puts the credits back where they were.
 """
@@ -15,7 +15,16 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
 from demos import free_set  # noqa: E402
-from demos.free_set import RUN_S, Reply, Run, Step, expect, main  # noqa: E402
+from demos.free_set import (  # noqa: E402
+    RUN_S,
+    Moment,
+    Reply,
+    Run,
+    Step,
+    expect,
+    main,
+    recording,
+)
 
 SYSTEM = "starfire"
 #: The first program ROM's CRC: the cpu sees it at 0x0, which is what `start` checks against.
@@ -30,6 +39,10 @@ WRITER_PC = "0x00001e48"
 COIN = {"port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": RUN_S}
 #: Half a second after a coin, which is long enough for the game to count it.
 SETTLE_MS = 500
+#: The instructions `history` is asked for: the routine that counts the coin, and the stop.
+TRAIL = 8
+#: The frames each moment of the loop records: a second and a half, and a second.
+COUNTED_FRAMES, BACK_FRAMES = 90, 60
 
 
 def attract(reply: Reply, run: Run) -> str:
@@ -41,22 +54,37 @@ def unwatched(reply: Reply, run: Run) -> str:
     return "the watch cleared"
 
 
+def coin_and_run() -> list[dict[str, Any]]:
+    return [{"op": "input", **COIN}, {"op": "run_for", "milliseconds": SETTLE_MS, "seconds": RUN_S}]
+
+
 def coin_and_filter(credits: int) -> list[dict[str, Any]]:
-    return [{"op": "input", **COIN}, {"op": "run_for", "milliseconds": SETTLE_MS, "seconds": RUN_S},
-            {"op": "scan", "method": "filter", "operator": "=", "value": credits}]
+    return [*coin_and_run(), {"op": "scan", "method": "filter", "operator": "=", "value": credits}]
 
 
 def filtered(credits: int) -> Any:
     def check(reply: Reply, run: Run) -> str:
-        scan = reply["ran"][-1]["reply"]
-        left = scan["hits_total"]
+        left = reply["ran"][-1]["reply"]["hits_total"]
         expect(left >= 1, f"no cell holds {credits} after coin {credits}")
-        if credits == 3:
-            addrs = [h["addr"] for h in scan["hits"]]
-            expect(addrs == ["0x00008299"], f"after three coins the scan holds {addrs}")
-            return f"one cell left, {addrs[0]}, holding 3"
         return f"{left} cells still hold {credits}"
     return check
+
+
+def third(reply: Reply, run: Run) -> str:
+    expect(reply["ran"][-1]["reply"]["verdict"] == "ELAPSED", "the run after the coin was cut")
+    return "a third coin, and half a second for the game to count it"
+
+
+def one_left(reply: Reply, run: Run) -> str:
+    addrs = [h["addr"] for h in reply["hits"]]
+    expect(addrs == ["0x00008299"], f"after three coins the scan holds {addrs}")
+    return f"one cell left, {addrs[0]}, holding 3"
+
+
+def dropped(reply: Reply, run: Run) -> str:
+    expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
+           f"verdict {reply['verdict']}, released {reply['released']}")
+    return "a fifth coin, held four frames and released"
 
 
 def caught(reply: Reply, run: Run) -> str:
@@ -99,62 +127,68 @@ def credits_are(n: int) -> Any:
     return check
 
 
-def fifth(reply: Reply, run: Run) -> str:
-    expect(reply["ran"][-1]["reply"]["verdict"] == "ELAPSED", "the run after the coin was cut")
-    return f"a fifth coin, run to frame {reply['ran'][-1]['reply']['frame_after']}"
-
-
 STEPS = [
     Step("start", "start", free_set.boot(SYSTEM, REFERENCE_CRC, "0x0"), free_set.started,
-         options=True,
-         volatile=free_set.START_VOLATILE,
-         shown=("rom_check", "pc")),
+         options=True, volatile=free_set.START_VOLATILE),
     Step("attract", "run_for", {"milliseconds": 3000, "seconds": RUN_S}, attract),
     Step("scan", "scan", {"method": "start", "ref": RAM, "length": RAM_BYTES},
-         free_set.scanned(RAM, RAM_BYTES),
-         shown=("summary", "hits_total")),
+         free_set.scanned(RAM, RAM_BYTES)),
     Step("coin 1", "perform", {"steps": coin_and_filter(1), "settle_seconds": RUN_S}, filtered(1)),
     Step("coin 2", "perform", {"steps": coin_and_filter(2), "settle_seconds": RUN_S}, filtered(2)),
-    Step("coin 3", "perform", {"steps": coin_and_filter(3), "settle_seconds": RUN_S}, filtered(3),
-         shown=("summary",),
-         highlight=("A value scan narrows the first kilobyte of scratch RAM: after the first coin "
-                    "the cells holding 1, after the second those holding 2, and after the third "
-                    "one cell is left. That byte is the credits.")),
+    Step("coin 3", "perform", {"steps": coin_and_run(), "settle_seconds": RUN_S}, third),
+    Step("three", "scan", {"method": "filter", "operator": "=", "value": 3}, one_left,
+         title="Find a variable nobody named",
+         ask="Three coins are in. Keep only the bytes of the scan that hold 3 now.",
+         shown=("summary", "hits_total", "hits"),
+         reads=("One byte followed the coins from 1 to 3, so `0x8299` is the credits. "
+                "A \"survivor\" is a byte still in the scan.")),
     Step("watch", "watch_add", {"ref": CREDITS, "mode": "change", "fmt": "u8"},
-         lambda reply, run: f"a change watch armed at {reply['addr']}",
-         shown=("summary", "entry", "write_maps_to")),
+         lambda reply, run: f"a change watch armed at {reply['addr']}"),
     Step("coin 4", "input", COIN, caught,
-         shown=("summary", "cause", "watch_hit"),
-         highlight=("A change watch on that byte stops the emulator on the instruction that writes "
-                    "it, and the reply is the stop itself: which watchpoint, the value written and "
-                    "the program counter. No polling, no guess about timing.")),
-    Step("writer", "disassemble", {"ref": "0x1e40", "length": 16}, listed,
-         shown=("summary", "lines")),
-    Step("history", "history", {"limit": 12}, trail,
-         highlight=("`history` is the instructions the CPU ran up to the stop, the code that took "
-                    "the coin; `registers` then says what it was working on: HL points at the "
-                    "credits byte.")),
+         title="Catch the instruction that writes it",
+         ask="With a change watch on `0x8299`, drop a fourth coin and tell me what wrote it.",
+         shown=("summary", "verdict", "cause"),
+         reads=("`OTHER_STOP` means the watch stopped the machine while the coin was still "
+                "held. `cause` names the byte and the instruction that wrote it, at `0x1e48`.")),
+    Step("writer", "disassemble", {"ref": "0x1e40", "length": 16}, listed),
+    Step("history", "history", {"limit": TRAIL}, trail,
+         title="Read how the program got there",
+         ask="Show me the last eight instructions the CPU ran before that stop.",
+         shown=("lines",),
+         reads=("`history` lists what the CPU ran up to the stop, oldest first. `inc (hl)` at "
+                "`1E48` is the write the watch caught, and the line after it is where the game "
+                "stopped.")),
     Step("registers", "registers", {}, regs),
     Step("release", "run_for", {"milliseconds": SETTLE_MS, "seconds": RUN_S}, released),
     Step("unwatch", "declaration_clear", {"kind": "watch", "ref": CREDITS}, unwatched),
     Step("credits", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4)),
     Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved,
-         shown=("name", "frame"), volatile=free_set.SAVE_VOLATILE),
-    Step("coin 5", "perform", {"steps": [{"op": "input", **COIN},
-                                         {"op": "run_for", "milliseconds": SETTLE_MS,
-                                          "seconds": RUN_S}],
-                               "settle_seconds": RUN_S}, fifth),
+         volatile=free_set.SAVE_VOLATILE),
+    Step("coin 5", "input", COIN, dropped),
+    recording("fifth counted", COUNTED_FRAMES),
     Step("five", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(5)),
     Step("load", "state_write", {"method": "load", "name": "four_credits"}, free_set.loaded,
-         shown=("summary", "verified")),
-    Step("back to four", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4),
-         shown=("summary", "hex")),
+         title="Go back to before the coin",
+         ask="Load the state you saved at four credits.",
+         shown=("summary", "verified"),
+         reads=("`verified` is true: the server read the machine back after the load, and it is "
+                "the saved one. The fifth coin is undone.")),
+    recording("four again", BACK_FRAMES),
+    Step("back to four", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4)),
     Step("screen", "screen_view", lambda run: {"mode": "render", "dest": run.dir / "screen.png",
                                                "scale": 2}, free_set.pictured("the screen")),
     Step("close", "close", {}, free_set.closed),
 ]
 
-DEMO = free_set.demo(SYSTEM, __file__, STEPS)
+MOMENTS = (
+    Moment("coin 5", "fifth counted",
+           "`input` drops a fifth coin: the screen redraws and FUEL reads 1800."),
+    Moment("load", "four again",
+           "`state_write` loads the state saved at four coins, and FUEL is back at 1500."),
+)
+
+DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
+                     "Star Fire's attract screen counting a coin, then back to the saved state")
 
 if __name__ == "__main__":
     sys.exit(main(DEMO))

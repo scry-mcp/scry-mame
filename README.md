@@ -1,330 +1,470 @@
-<p align="center"><img src="docs/scry-logo.png" alt="Scry" width="480"></p>
+<p align="center"><img src="docs/scry-logo.png" alt="SCRY" width="480"></p>
 
 # scry-mame
 
-**Point an MCP client at an arcade board and ask the machine questions, live.** One MAME stays
-open at its debugger; you ask what is in a register right now, who wrote this byte, when this
-routine runs, what is on screen the instant the game says a scene is drawn, and every answer
-says what it checked. A question costs a round trip over MAME's own gdbstub instead of a boot.
+**Ask your MCP client what an arcade game is doing right now, and it looks inside a running
+MAME to answer.**
 
-If you reverse-engineer or develop for a board under MAME you know the loop: boot, wait for the
-attract screen, type one command into the debugger, read one number, quit. This server pays the
-boot once and then answers, and it is built so that an autonomous session can be left alone
-with it: a breakpoint that never fires is a measurement here, never a silence.
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/gridlee/screen.png"><img src="demos/gridlee/loop.webp" alt="Gridlee starting a game, then counting a coin after a saved state is loaded"></picture>
 
-## What it can do
+*Gridlee, a free ROM, driven by this server: [the demo](demos/gridlee/) finds the code that
+spends a credit and the code that counts a coin.*
 
-- **Hold a live machine open.** `start` boots your system with the debugger attached, proves the
-  loaded ROM against your reference image, reads your symbol file and parks the machine
-  stopped. Registers, memory, a disassembly, the driver's log, a screenshot: each is one call.
-- **Start from your repository's recipe.** `start(profile=...)` takes the arguments a
-  `.scry/start/` file declares, fills only what the call does not give, and names the file and
-  what it filled in the reply.
-- **Names, not addresses.** Load the linker's map or a YAML of names and say `Player1`, not
-  `0x008400`; a class that lives in RAM is relocated the way the running board sees it.
-- **Stop where you mean to, with a control beside it.** `run_to` counts a control breakpoint at
-  a place known to be hot and refuses to run with none, so "the target never ran" is a verdict
-  with evidence. Break on a value, on a byte that CHANGES (and be told who wrote it), or on a
-  register reaching a value wherever that happens.
-- **Find a variable no map names.** `scan(method="start")` and `scan(method="filter")` narrow every cell of a range
-  to the ones that moved the way the variable did, without moving the machine.
-- **Advance by emulated time.** `run_for` by milliseconds of MAME's clock or by frames of its
-  counter, waiting until the machine has really stopped; `trace` hands back every address the
-  cpu executed, joined to your symbols.
-- **Press its inputs and prove it.** `input` presses a field by MAME's own names and reads the
-  port back; `record` and `audio_record` write exactly N frames of video or sound.
-- **A number before a picture.** `screen_signature` answers "did the image change?" with one
-  string; the file tools compare PNGs, series and recordings with numbers and a control.
-- **One call per turn.** `perform` runs a list of operations checked whole before the first
-  runs; `drive` is look, act, verify in one round trip.
-- **Every cpu on the board**, the way MAME's debugger has them: a call names its cpu, or acts on
-  the visible one, and every reply that touches a cpu names it.
-- **Honest replies.** Every reply opens with a one-line `summary` and closes with a `session`
-  block saying whether anything was written to the machine. A session that cannot reproduce its
-  ROM is refused before anybody measures on it. A file a tool writes is named by
-  [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md), and the reply
-  names the file it wrote, its `note` saying so when that is not the name you gave.
+The server keeps one MAME open at its debugger. You ask in plain words; your client reads
+registers and memory, sets breakpoints and watches, presses the game's controls and looks at
+its screen. A question costs one call, not a boot.
 
-## A first answer
+## Install
 
-You need git, the Python that `requires-python` in `pyproject.toml` names,
-[uv](https://docs.astral.sh/uv/), and a MAME built with the gdbstub (`-debugger gdbstub`) and its
-`console` plugin. `start` runs the MAME its `binary` argument names, else `MAME_BINARY`, else the
-`mame` on your `PATH`. The server is tested on one MAME release, which `start` names in
-`recommended_release`; another release boots with a `note` saying so. A board on a NEC
-V20/V30/V33 needs a MAME whose gdbstub serves their registers.
+You need git, [uv](https://docs.astral.sh/uv/) and a MAME built with its gdbstub and its
+`console` plugin, on macOS or Windows.
 
 ```sh
 git clone https://github.com/scry-mcp/scry-mame
 cd scry-mame
-claude mcp add mame -s user -- uv run --directory "$PWD" scry-mame
 ```
 
-Any other MCP client starts the same command over stdio:
-`uv run --directory /path/to/scry-mame scry-mame`.
+Add it to your client:
 
-The quickest first answer is a demo on a free set: [`demos/starfire/`](demos/starfire/) has the
-two commands that fetch and check its ROM, then `uv run python demos/starfire/demo.py --rompath
-~/roms` runs it. For your own board, ask your client to `start` it with `binary`, `system` and
-`rompath`, and, to prove the ROM and name your addresses, `reference_rom`, `reference_addr` and
-`symbols` (the [`start` page](docs/reference/session.md#start) says what each takes). Everything
-about your project comes from you; the server names no game and carries no default of its own.
+<!-- scry-install:begin -->
+<details open><summary>Claude Code</summary>
 
-To watch a machine, `start` takes `shared=true`, `display` (the OS's display index, 0 the main
-display) and `size`, and proves the window is on the display you asked in the
-host's window list, refusing by name (`window_not_visible`) when it is not. Somebody watching
-through a stream (Moonlight) sees one display, so the window has to be on it, sized with `size`
-when the fit is not what you want. The three situations (headless, a window kept behind, a window
-somebody tests) are on [`start`'s page](docs/reference/session.md#start).
+Run this from the clone. `--scope user` makes the server available to you across all projects, and `claude mcp list` shows it.
 
-Two patches under `patches/`, each naming the MAME commit it was made against, make a build
-better at this: `0003` closes a data race in the Lua console thread that can crash a boot
-(without it `start` relaunches such a boot and lists it in `start_retries`), and `0004` serves
-one GDB thread per cpu, so any cpu's registers and memory read without the machine running.
-
-## Set up SCRY in your own project
-
-To keep what a session learned with your repository, ask it to `promote` the entries worth
-keeping. `promote(dry_run=true, root=<your repository>)` lists what would be created; once you
-approve, call it again with `entries` naming the ones you want instead of `dry_run`, and it
-creates `.scry/` with those entries, its `about.json` and its README. It writes nothing before that. What it builds, and how to render the page again, is
-in [scry-core's page on it](https://github.com/scry-mcp/scry-core/blob/main/docs/scry-readme.md#set-up-scry-in-a-new-project).
-
-## Platforms
-
-macOS and Windows: the server and its tests run on both. On Windows the server proves which
-process serves MAME's gdbstub from the system's own TCP table instead of `lsof`, and a MAME
-outlives no server: it runs in a job object the server holds, which Windows closes, ending MAME,
-however the server ends. Linux runs the unit tests (`.github/workflows/ci.yml`) and nothing else:
-the server supports macOS and Windows only.
-
-## See it run
-
-Two demos on free mamedev.org sets, each a `demo.py` that makes the calls a model would and
-checks every answer. The calls and replies below are the last run's, written here by the demo
-itself (`uv run python demos/<name>/demo.py --update-readme`), each cut to the fields that make
-its point.
-
-![Star Fire's attract screen, four coins in](demos/starfire/screen.png)
-
-[`demos/starfire/`](demos/starfire/): Exidy's *Star Fire*, from a cold boot to the instruction
-that counts its coins, and a saved state that takes one back.
-
-<!-- demo-flow:begin starfire -->
-```
-start(shared=true, background=true, display="<host>", system="starfire", reference_rom="/path/to/scry-mame/tmp/demos/starfire/starfire.ref", reference_addr="0x0", reference_base="0x0", inipath="/path/to/scry-mame/tmp/demos/starfire/starfire-ini", state_dir="/path/to/scry-mame/tmp/demos/starfire/starfire-states", boot_seconds=60, rompath="<host>")
--> {
-  "rom_check": "OK",
-  "pc": "0x00000000"
-}
+```sh
+claude mcp add --scope user mame -- uv run --directory "$PWD" scry-mame
 ```
 
-```
-scan(method="start", ref="0x8000", length=1024)
--> {
-  "summary": "scan start: 0x8000, 1024 1-byte candidates on :maincpu",
-  "hits_total": 1024
-}
+</details>
+
+<details><summary>Codex</summary>
+
+Run this from the clone. `codex mcp list` shows the server.
+
+```sh
+codex mcp add mame -- uv run --directory "$PWD" scry-mame
 ```
 
-```
-perform(steps=[{"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 500, "seconds": 300}, {"op": "scan", "method": "filter", "operator": "=", "value": 3}], settle_seconds=300)
--> {
-  "summary": "perform: 3 steps completed"
-}
-```
+</details>
 
-```
-watch_add(ref="0x8299", mode="change", fmt="u8")
--> {
-  "summary": "watch_add 0x8299: change watch armed at 0x00008299, 1 byte",
-  "entry": "1 @ 8299-8299 write",
-  "write_maps_to": "starfire_base_state::scratch_w"
-}
-```
+<details><summary>Claude Desktop</summary>
 
-```
-input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
--> {
-  "summary": "input :SYSTEM 'Coin 1': still HELD from frame 284, releases at 288",
-  "cause": "watch 0x8299: 0x00008299 written by pc 0x00001e48",
-  "watch_hit": {
-    "ref": "0x8299",
-    "addr": "0x00008299",
-    "cpu": ":maincpu",
-    "index": 1,
-    "writes_total": 1,
-    "truncated": false,
-    "writer_pc": "0x00001e48",
-    "writes": [
-      {"wrote": "0x04", "to": "0x00008299", "pc": "0x00001e48"}
-    ],
-    "values_from": "bus",
-    "before": {
-      "available": false,
-      "why": "the first write logged since the watch was armed: no earlier write to compare"
-    },
-    "after": 4,
-    "lines": ["Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)"]
+In Settings, open the Developer tab and choose Edit Config, which opens `claude_desktop_config.json`; add this with the clone's absolute path. Then quit Claude Desktop completely and start it again.
+
+```json
+{
+  "mcpServers": {
+    "mame": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/scry-mame", "scry-mame"]
+    }
   }
 }
 ```
 
-```
-disassemble(ref="0x1e40", length=16)
--> {
-  "summary": "disassemble 0x1e40: 9 lines at 0x00001e40",
-  "lines": ["1E40: 2F       cpl", "1E41: E6 03    and  $03", "1E43: 28 BF    jr   z,$1E04", "1E45: 21 99 82 ld   hl,$8299", "1E48: 34       inc  (hl)", "1E49: 21 AF 82 ld   hl,$82AF", "... 3 more"]
+</details>
+
+<details><summary>Cursor</summary>
+
+Put this in `~/.cursor/mcp.json` to have the server everywhere, or in `.cursor/mcp.json` inside one project, with the clone's absolute path.
+
+```json
+{
+  "mcpServers": {
+    "mame": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/scry-mame", "scry-mame"]
+    }
+  }
 }
 ```
 
-```
-state_write(method="save", name="four_credits")
--> {
-  "name": "four-credits",
-  "frame": 314
+</details>
+
+<details><summary>VS Code</summary>
+
+Put this in `.vscode/mcp.json` in your workspace, with the clone's absolute path.
+
+```json
+{
+  "servers": {
+    "mame": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/scry-mame", "scry-mame"]
+    }
+  }
 }
 ```
 
+</details>
+
+<details><summary>Copilot CLI</summary>
+
+Run this from the clone. `copilot mcp list` shows the server.
+
+```sh
+copilot mcp add mame -- uv run --directory "$PWD" scry-mame
 ```
+
+</details>
+
+<details><summary>Gemini CLI</summary>
+
+Run this from the clone. `--scope user` keeps it in your own settings, and `gemini mcp list` shows it, disabled while the folder you are in is not trusted.
+
+```sh
+gemini mcp add --scope user mame uv run -- --directory "$PWD" scry-mame
+```
+
+</details>
+
+<details><summary>Antigravity</summary>
+
+Put this in `~/.gemini/config/mcp_config.json` for every workspace, or in `.agents/mcp_config.json` inside one, with the clone's absolute path.
+
+```json
+{
+  "mcpServers": {
+    "mame": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/scry-mame", "scry-mame"]
+    }
+  }
+}
+```
+
+</details>
+
+<details><summary>Devin</summary>
+
+Run this from the clone. `--scope user` keeps it in your own configuration, `~/.config/devin/mcp_config.json`, and `devin mcp list` shows the server.
+
+```sh
+devin mcp add --scope user mame -- uv run --directory "$PWD" scry-mame
+```
+
+</details>
+
+<details><summary>Another client</summary>
+
+Any client that runs a local server over stdio starts this command, with the clone's absolute path.
+
+```sh
+uv run --directory /path/to/scry-mame scry-mame
+```
+
+</details>
+<!-- scry-install:end -->
+
+Your first question needs only a ROM [mamedev.org](https://www.mamedev.org/roms/) gives away,
+`starfire.zip`, in `~/roms`:
+
+> Start `starfire` from `~/roms`, checked against its first program ROM unzipped from
+> `starfire.zip`, and show me the screen.
+
+Your client calls `start`, which answers `rom_check: OK` with the game stopped at its first
+instruction, and `screen_view`, which returns the picture.
+
+## What you can ask
+
+- "What is in this register, this byte, this routine, right now?" `registers`, `read_memory`,
+  `disassemble`. With your symbol file loaded you say `Player1`, not `0x008400`.
+- "Who writes this byte?" `watch_add`. A watch stops the game on the instruction that changes
+  the byte, and the reply names it.
+- "Where does the game keep its credits?" `scan`. It narrows a range of memory to the bytes
+  that changed the way the value did.
+- "Does this routine ever run?" `run_to`, `breakpoint_at`. A run counts an address known to
+  run beside your target, so "never" comes with evidence.
+- "What happens if I press this?" `input`, `screen_view`, `record`. Press a control by MAME's
+  own name, then look: a picture, or exactly N frames of video.
+- "Can you do that again tomorrow?" `perform`, `promote`. A list of calls runs as one, and what
+  a session learned is saved in your repository.
+
+## See it run
+
+Each demo is a `demo.py` that makes the calls a model would and checks every answer.
+
+- [`demos/starfire/`](demos/starfire/): Exidy's *Star Fire*, a free ROM, from a cold start to
+  the instruction that counts its coins.
+- [`demos/gridlee/`](demos/gridlee/): Videa's *Gridlee*, a free ROM, whose credits turn out to
+  live in two bytes, in binary and in BCD.
+- [`demos/lineup/`](demos/lineup/): the arcade *LineUp*, from the game's own ROM set, played by
+  its own routine and variable names.
+- [`demos/speedf/`](demos/speedf/): the arcade *Speed Fight*, from a checkout of the game,
+  started from a file in its own repository.
+
+These are steps of the two demos on free ROMs, written here by the demos themselves from their
+last run. Each step follows the ones before it in its demo, whose guide has the whole prompt.
+
+### Star Fire
+
+<!-- demo-flow:begin starfire -->
+**1. Find a variable nobody named**
+
+Ask:
+
+> Three coins are in. Keep only the bytes of the scan that hold 3 now.
+
+Call:
+
+```text
+scan(method="filter", operator="=", value=3)
+```
+
+Reply, 3 of 12 fields:
+
+```json
+{
+  "summary": "scan filter: = 0x03, 1 survivor",
+  "hits_total": 1,
+  "hits": [
+    {"addr": "0x00008299", "value": "0x03"}
+  ]
+}
+```
+
+One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor" is a byte still in the scan.
+
+**2. Catch the instruction that writes it**
+
+Ask:
+
+> With a change watch on `0x8299`, drop a fourth coin and tell me what wrote it.
+
+Call:
+
+```text
+input(port=":SYSTEM", field="Coin 1", frames=4, seconds=300)
+```
+
+Reply, 3 of 42 fields:
+
+```json
+{
+  "summary": "input :SYSTEM 'Coin 1': still HELD from frame 284, releases at 288",
+  "verdict": "OTHER_STOP",
+  "cause": "watch 0x8299: 0x00008299 written by pc 0x00001e48"
+}
+```
+
+`OTHER_STOP` means the watch stopped the machine while the coin was still held. `cause` names the byte and the instruction that wrote it, at `0x1e48`.
+
+**3. Read how the program got there**
+
+Ask:
+
+> Show me the last eight instructions the CPU ran before that stop.
+
+Call:
+
+```text
+history(limit=8)
+```
+
+Reply, 1 of 6 fields:
+
+```json
+{
+  "lines": [
+    "1E3E: inc  (hl)",
+    "1E3F: ld   a,(hl)",
+    "1E40: cpl",
+    "1E41: and  $03",
+    "1E43: jr   z,$1E04",
+    "1E45: ld   hl,$8299",
+    "1E48: inc  (hl)",
+    "1E49: ld   hl,$82AF"
+  ]
+}
+```
+
+`history` lists what the CPU ran up to the stop, oldest first. `inc (hl)` at `1E48` is the write the watch caught, and the line after it is where the game stopped.
+
+**4. Go back to before the coin**
+
+Ask:
+
+> Load the state you saved at four credits.
+
+Call:
+
+```text
 state_write(method="load", name="four_credits")
--> {
-  "summary": "state_write load: four-credits, rom_check OK, verified True, frame 314, pc 0x00002b38",
+```
+
+Reply, 2 of 19 fields:
+
+```json
+{
+  "summary": "state_write load: four-credits, rom_check OK, verified True, ... (85 characters)",
   "verified": true
 }
 ```
 
-```
-read_memory(ref="0x8299", length=1)
--> {
-  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
-  "hex": "04"
-}
-```
+`verified` is true: the server read the machine back after the load, and it is the saved one. The fifth coin is undone.
 <!-- demo-flow:end starfire -->
 
-[`demos/gridlee/`](demos/gridlee/): Videa's *Gridlee*, where three bytes hold the same count and
-write watches tell the credits from their BCD copy, then a START spends one.
+### Gridlee
 
 <!-- demo-flow:begin gridlee -->
+**1. Narrow a scan with each coin**
+
+Ask:
+
+> Three coins are in. Keep only the bytes of the scan that hold 3 now.
+
+Call:
+
+```text
+scan(method="filter", operator="=", value=3)
 ```
-start(shared=true, background=true, display="<host>", system="gridlee", reference_rom="/path/to/scry-mame/tmp/demos/gridlee/gridlee.ref", reference_addr="0xa000", reference_base="0xa000", inipath="/path/to/scry-mame/tmp/demos/gridlee/gridlee-ini", state_dir="/path/to/scry-mame/tmp/demos/gridlee/gridlee-states", boot_seconds=60, rompath="<host>")
--> {
-  "rom_check": "OK",
-  "pc": "0x0000f000"
+
+Reply, 3 of 12 fields:
+
+```json
+{
+  "summary": "scan filter: = 0x03, 3 survivors",
+  "hits_total": 3,
+  "hits": [
+    {"addr": "0x000003ee", "value": "0x03"},
+    {"addr": "0x0000042b", "value": "0x03"},
+    {"addr": "0x0000042c", "value": "0x03"}
+  ]
 }
 ```
 
-```
-perform(steps=[{"op": "input", "port": ":IN1", "field": "Coin 1", "frames": 4, "seconds": 300}, {"op": "run_for", "milliseconds": 2000, "seconds": 300}, {"op": "scan", "method": "filter", "operator": "=", "value": 3}], settle_seconds=300)
--> {
-  "summary": "perform: 3 steps completed"
-}
-```
+Three bytes hold 3, and a scan cannot say which is the credits. A "survivor" is a byte still in the scan; the watches of the next step tell them apart.
 
-```
-perform(steps=[{"op": "watch_add", "ref": "0x42b", "mode": "change", "fmt": "u8"}, {"op": "watch_add", "ref": "0x42c", "mode": "change", "fmt": "u8"}])
--> {
-  "summary": "perform: 2 steps completed"
-}
-```
+**2. Let a watch name the writer**
 
-```
+Ask:
+
+> Change watches are on `0x42b` and `0x42c` and a fourth coin is in. Run half a second and tell me what stopped it.
+
+Call:
+
+```text
 run_for(milliseconds=500, seconds=300)
--> {
+```
+
+Reply, 3 of 23 fields:
+
+```json
+{
   "summary": "run_for 500 ms: OTHER_STOP, frame 672 to 673",
-  "watch_hit": {
-    "ref": "0x42b",
-    "addr": "0x0000042b",
-    "cpu": ":maincpu",
-    "index": 1,
-    "writes_total": 1,
-    "truncated": false,
-    "writer_pc": "0x0000b583",
-    "writes": [
-      {"wrote": "0x04", "to": "0x0000042b", "pc": "0x0000b583"}
-    ],
-    "values_from": "memory",
-    "before": 3,
-    "after": 4,
-    "lines": ["Stopped at watchpoint 1 writing 04 to 042B (PC=B583)"]
-  }
+  "verdict": "OTHER_STOP",
+  "cause": "watch 0x42b: 0x0000042b written by pc 0x0000b583"
 }
 ```
 
+`OTHER_STOP` means a watch stopped the run before its half second ended. `cause` names the byte and the instruction that wrote it.
+
+**3. Read the routine it stopped in**
+
+Ask:
+
+> Disassemble 12 bytes from `0xb583`, where the first watch stopped.
+
+Call:
+
+```text
+disassemble(ref="0xb583", length=12)
 ```
-run_for(milliseconds=500, seconds=300)
--> {
-  "summary": "run_for 500 ms: OTHER_STOP, frame 673 to 673",
-  "watch_hit": {
-    "ref": "0x42c",
-    "addr": "0x0000042c",
-    "cpu": ":maincpu",
-    "index": 2,
-    "writes_total": 1,
-    "truncated": false,
-    "writer_pc": "0x0000b58c",
-    "writes": [
-      {"wrote": "0x04", "to": "0x0000042c", "pc": "0x0000b58c"}
-    ],
-    "values_from": "memory",
-    "before": 3,
-    "after": 4,
-    "lines": ["Stopped at watchpoint 2 writing 04 to 042C (PC=B58C)"]
-  }
+
+Reply, 2 of 11 fields:
+
+```json
+{
+  "summary": "disassemble 0xb583: 5 lines at 0x0000b583",
+  "lines": [
+    "B583: 7C 04 2B INC    $042B",
+    "B586: 86 01    LDA    #$01",
+    "B588: BB 04 2C ADDA   $042C",
+    "B58B: 19       DAA",
+    "B58C: B7 04 2C STA    $042C"
+  ]
 }
 ```
 
-```
-read_memory(ref="0x42b", length=2)
--> {
-  "summary": "read_memory 0x42b: 2 bytes at 0x0000042b: 0404",
-  "hex": "0404"
-}
-```
+The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, `DAA`, `STA`). The game keeps its credits twice, in binary and in BCD.
 
-```
-input(port=":IN1", field="1 Player Start", frames=4, seconds=300)
--> {
-  "summary": "input :IN1 '1 Player Start': still HELD from frame 702, releases at 706",
-  "cause": "watch 0x42b: 0x0000042b written by pc 0x0000d676"
-}
-```
+**4. See what ran before a stop**
 
-```
+Ask:
+
+> START was pressed and a watch stopped it. Show me the last eight instructions.
+
+Call:
+
+```text
 history(limit=8)
--> {
-  "summary": "history: 8 instructions of 8 asked",
-  "lines": ["D68D: RTS", "C5AD: JSR    $D676", "D676: DEC    $042B", "D679: LDA    #$99", "D67B: ADDA   $042C", "D67E: DAA", "... 2 more"]
+```
+
+Reply, 1 of 6 fields:
+
+```json
+{
+  "lines": [
+    "D68D: RTS",
+    "C5AD: JSR    $D676",
+    "D676: DEC    $042B",
+    "D679: LDA    #$99",
+    "D67B: ADDA   $042C",
+    "D67E: DAA",
+    "D67F: STA    $042C",
+    "D682: RTS"
+  ]
 }
 ```
+
+`history` lists what the CPU ran up to the stop, oldest first. START takes a credit from both counters: `DEC $042B`, then the BCD one by adding 99.
 <!-- demo-flow:end gridlee -->
 
-[`demos/lineup/`](demos/lineup/) plays the arcade *LineUp* with the same script the DOSBox-X server
-plays its PC port with: the routines and variables named off each build's own symbol map, every
-screen recognised off one map signed by palette index, and the stage's music held, sample for
-sample, to the board's own recording. It needs the game's romset, which is not distributed here.
+## Set up SCRY in your own project
 
-[`demos/speedf/`](demos/speedf/) boots the arcade *Speed Fight* from the run recipe its own
-repository declares in `.scry/start/speedf.json`, runs to the attract's demo by routine name and
-reads the scene and the credits by name. It needs a checkout of the game, which is not
-distributed here.
+Ask your client to `start` your own game with `binary`, `system` and `rompath`. To check the
+ROM and use your own names for addresses, add `reference_rom`, `reference_addr` and `symbols`;
+[`start`'s page](docs/reference/session.md#start) says what each takes.
+
+To keep what a session learned with your repository, ask it to `promote` what is worth keeping.
+`promote(dry_run=true, root=<your repository>)` lists what it would create. Once you approve,
+the same call with `entries` creates a `.scry/` folder with them; it writes nothing before
+that.
+
+[scry-core's page on that folder](https://github.com/scry-mcp/scry-core/blob/main/docs/scry-readme.md#set-up-scry-in-a-new-project)
+says what is in it.
+
+## Platforms
+
+macOS and Windows: the server and its tests run on both. Linux runs the unit tests
+(`.github/workflows/ci.yml`) and nothing else.
+
+- `start` runs the MAME its `binary` argument names, else `MAME_BINARY`, else the `mame` on your
+  `PATH`.
+- The server is tested on one MAME release, which `start` names in `recommended_release`.
+  Another release starts with a `note` saying so.
+- A game on a NEC V20, V30 or V33 needs a MAME whose gdbstub serves their registers.
+- Two patches under `patches/` make a MAME better at this. `0003` closes a data race that can
+  crash a start; `0004` gives each cpu its own GDB thread.
+- On Windows a MAME never outlives its server: it runs in a job object the server holds.
 
 ## The tools
 
-The tools by family, each with its arguments, its reply and a real example, are in the index
-at the top of [REFERENCE.md](REFERENCE.md). A tool's own description, delivered to your client
-at connection, is its contract.
+The tools by group, each with its arguments, its reply and a real example, are in the index at
+the top of [REFERENCE.md](REFERENCE.md). Every reply opens with a one-line `summary` and ends
+with a `session` block that says whether anything was written to the machine.
 
 ## Going further
 
-[REFERENCE.md](REFERENCE.md) holds what the families share (the session, what every reply
-carries, names for addresses) and links each family's page, where every tool's block is
-followed by why its contract is shaped that way. [CONTRIBUTING.md](CONTRIBUTING.md) is for
-changing the server: its battery, its live tier and what proves a change.
-
-What this server shares with the other Scry server lives in [scry-core](https://github.com/scry-mcp/scry-core),
-pinned by tag; its README lists every module.
+- [REFERENCE.md](REFERENCE.md) has what the groups of tools share, and links each group's page.
+- To watch a game run, `start` takes `shared`, `display` and `size`;
+  [its page](docs/reference/session.md#start) covers a window kept behind, in front or none.
+- [CONTRIBUTING.md](CONTRIBUTING.md) is for changing the server: its checks, and what proves a
+  change.
+- What this server shares with scry-dosbox-x lives in
+  [scry-core](https://github.com/scry-mcp/scry-core), pinned by tag.
 
 ## Licence
 

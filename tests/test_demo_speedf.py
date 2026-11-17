@@ -81,15 +81,15 @@ def test_the_start_must_have_come_from_the_recipe(tmp_path: Path) -> None:
     reply: dict[str, Any] = {"rom_check": "OK", "version": "0.289", "system": "speedf",
                              "symbols_total": 223,
                              "profile": {"name": "x", "file": "x", "supplied": ["binary"]}}
-    with pytest.raises(StepFailed, match="the recipe supplied"):
+    with pytest.raises(StepFailed, match="the start profile supplied"):
         demo.started(Reply(reply), Run(dir=tmp_path))
     reply["profile"]["supplied"] = ["binary", "system", "rompath", "reference_rom", "symbols"]
     assert demo.started(Reply(reply), Run(dir=tmp_path)).startswith(
-        "speedf on MAME from the game's own recipe (5 keys), rom_check OK, 223 symbols")
+        "speedf on MAME from the game's own start profile (5 keys), rom_check OK, 223 symbols")
     for partial in (["system", "reference_rom"], ["system", "symbols"],
                     ["reference_rom", "symbols"]):
         reply["profile"]["supplied"] = partial
-        with pytest.raises(StepFailed, match="the recipe supplied"):
+        with pytest.raises(StepFailed, match="the start profile supplied"):
             demo.started(Reply(reply), Run(dir=tmp_path))
 
 

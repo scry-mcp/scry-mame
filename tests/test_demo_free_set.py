@@ -147,12 +147,14 @@ def test_the_shared_checks_pass_on_a_right_answer_and_name_a_wrong_one(tmp_path:
 
 def test_a_demo_is_declared_where_every_free_set_demo_keeps_its_files(tmp_path: Path) -> None:
     demo_file = tmp_path / "repo" / "demos" / "someset" / "demo.py"
-    declared = free_set.demo("someset", str(demo_file), [])
+    moments = (free_set.Moment("a", "b", "It moves."),)
+    declared = free_set.demo("someset", str(demo_file), [], moments, "A set moving")
     assert declared.root == tmp_path / "repo"
     assert declared.server[1:] == ["-m", "scry_mame.server"]
     assert declared.readme == demo_file.parent / "README.md"
     assert declared.capture is not None
     assert declared.capture(Run(dir=tmp_path)) == tmp_path / "screen.png"
     assert declared.offers == frozenset({"rompath", "display"})
-    assert declared.loop is not None and declared.loop.after == "screen"
+    assert (declared.moments, declared.alt) == (moments, "A set moving")
+    assert declared.front == tmp_path / "repo" / "README.md"
     assert declared.volatile == free_set.VOLATILE

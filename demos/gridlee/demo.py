@@ -2,7 +2,7 @@
 prompt asks an MCP client to make, each answer checked. `--help` says how to run it.
 
 What it proves, by address: the coin routine's two writes of the credits, the START's two
-(each watch stopping the machine at its writer, the START still held), and the trail the
+(each watch stopping the machine at its writer, the START still held), and the instructions the
 history shows behind the second. The README tells the story.
 """
 
@@ -14,7 +14,16 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))  # so `demos` imports as it checks
 from demos import free_set  # noqa: E402
-from demos.free_set import RUN_S, Reply, Run, Step, expect, main  # noqa: E402
+from demos.free_set import (  # noqa: E402
+    RUN_S,
+    Moment,
+    Reply,
+    Run,
+    Step,
+    expect,
+    main,
+    recording,
+)
 
 SYSTEM = "gridlee"
 #: The first program ROM's CRC: the cpu sees it at 0xA000, which is what `start` checks against.
@@ -39,6 +48,9 @@ SETTLE = {"milliseconds": 500, "seconds": RUN_S}
 #: After each coin of the scan: the game had not yet counted the third coin half a second after it
 #: dropped, and had two seconds after.
 COIN_MS = 2000
+#: The frames recorded after the last coin, for the loop to show it counted, and the eight seconds
+#: the game plays after START.
+COIN_FRAMES, PLAY_FRAMES = 120, 480
 
 
 def at(addr: str) -> str:
@@ -49,24 +61,34 @@ def folded(lines: list[str]) -> list[str]:
     return [" ".join(ln.upper().split()) for ln in lines]
 
 
+def coin_and_run() -> list[dict[str, Any]]:
+    return [{"op": "input", **COIN}, {"op": "run_for", "milliseconds": COIN_MS, "seconds": RUN_S}]
+
+
 def coin_and_filter(coins: int) -> dict[str, Any]:
-    return {"steps": [{"op": "input", **COIN},
-                      {"op": "run_for", "milliseconds": COIN_MS, "seconds": RUN_S},
+    return {"steps": [*coin_and_run(),
                       {"op": "scan", "method": "filter", "operator": "=", "value": coins}],
             "settle_seconds": RUN_S}
 
 
 def filtered(coins: int) -> Any:
     def check(reply: Reply, run: Run) -> str:
-        scan = reply["ran"][-1]["reply"]
-        left = scan["hits_total"]
+        left = reply["ran"][-1]["reply"]["hits_total"]
         expect(left >= 1, f"no byte holds {coins} after coin {coins}")
-        if coins < 3:
-            return f"{left} bytes still hold {coins}"
-        addrs = {h["addr"] for h in scan["hits"]}
-        expect(left == 3 and {at(CREDITS_BIN), at(CREDITS_BCD)} <= addrs, f"the scan kept {addrs}")
-        return f"three bytes hold 3, among them {CREDITS_BIN} and {CREDITS_BCD}"
+        return f"{left} bytes still hold {coins}"
     return check
+
+
+def third(reply: Reply, run: Run) -> str:
+    expect(reply["ran"][-1]["reply"]["verdict"] == "ELAPSED", "the run after the coin was cut")
+    return "a third coin, and two seconds for the game to count it"
+
+
+def three_left(reply: Reply, run: Run) -> str:
+    addrs = {h["addr"] for h in reply["hits"]}
+    expect(reply["hits_total"] == 3 and {at(CREDITS_BIN), at(CREDITS_BCD)} <= addrs,
+           f"the scan kept {addrs}")
+    return f"three bytes hold 3, among them {CREDITS_BIN} and {CREDITS_BCD}"
 
 
 def watching(reply: Reply, run: Run) -> str:
@@ -79,7 +101,7 @@ def watching(reply: Reply, run: Run) -> str:
 def dropped(reply: Reply, run: Run) -> str:
     expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
            f"verdict {reply['verdict']}, released {reply['released']}")
-    return "the fourth coin, held four frames and released"
+    return "a coin, held four frames and released"
 
 
 def wrote(addr: str, pc: str, stop: str, value: int, what: str) -> Any:
@@ -95,7 +117,8 @@ def wrote(addr: str, pc: str, stop: str, value: int, what: str) -> Any:
 
 def listed(reply: Reply, run: Run) -> str:
     lines = folded(reply["lines"])
-    want = ["B583: 7C 04 2B INC $042B", "B58B: 19 DAA", "B58C: B7 04 2C STA $042C"]
+    want = ["B583: 7C 04 2B INC $042B", "B586: 86 01 LDA #$01", "B588: BB 04 2C ADDA $042C",
+            "B58B: 19 DAA", "B58C: B7 04 2C STA $042C"]
     expect(all(w in lines for w in want), f"the coin routine is not {want}: {reply['lines']}")
     return "the coin routine: INC $042B, then ADDA $042C, DAA, STA $042C"
 
@@ -146,65 +169,78 @@ def cleared(reply: Reply, run: Run) -> str:
 
 STEPS = [
     Step("start", "start", free_set.boot(SYSTEM, REFERENCE_CRC, "0xa000"), free_set.started,
-         options=True,
-         volatile=free_set.START_VOLATILE,
-         shown=("rom_check", "pc")),
+         options=True, volatile=free_set.START_VOLATILE),
     Step("attract", "run_for", {"milliseconds": 5000, "seconds": RUN_S},
          lambda reply, run: f"attract mode {free_set.ran(reply, run)}"),
     Step("scan", "scan", {"method": "start", "ref": RAM, "length": RAM_BYTES},
          free_set.scanned(RAM, RAM_BYTES)),
     Step("coin 1", "perform", coin_and_filter(1), filtered(1)),
     Step("coin 2", "perform", coin_and_filter(2), filtered(2)),
-    Step("coin 3", "perform", coin_and_filter(3), filtered(3),
-         shown=("summary",),
-         highlight=("A value scan narrows the candidates: after the first coin the bytes holding "
-                    "1, after the second those holding 2, and by the third three bytes remain. The "
-                    "scan cannot tell which of them is the credits, which is what the next steps "
-                    "are for.")),
+    Step("coin 3", "perform", {"steps": coin_and_run(), "settle_seconds": RUN_S}, third),
+    Step("holds 3", "scan", {"method": "filter", "operator": "=", "value": 3}, three_left,
+         title="Narrow a scan with each coin",
+         ask="Three coins are in. Keep only the bytes of the scan that hold 3 now.",
+         shown=("summary", "hits_total", "hits"),
+         reads=("Three bytes hold 3, and a scan cannot say which is the credits. A \"survivor\" "
+                "is a byte still in the scan; the watches of the next step tell them apart.")),
     Step("watch", "perform", {"steps": [
         {"op": "watch_add", "ref": CREDITS_BIN, "mode": "change", "fmt": "u8"},
-        {"op": "watch_add", "ref": CREDITS_BCD, "mode": "change", "fmt": "u8"}]}, watching,
-         shown=("summary",)),
+        {"op": "watch_add", "ref": CREDITS_BCD, "mode": "change", "fmt": "u8"}]}, watching),
     Step("coin 4", "input", COIN, dropped),
     Step("binary", "run_for", SETTLE,
          wrote(CREDITS_BIN, COIN_BIN_PC, COIN_BIN_STOP, 4, "the binary credits"),
-         shown=("summary", "watch_hit")),
+         title="Let a watch name the writer",
+         ask=("Change watches are on `0x42b` and `0x42c` and a fourth coin is in. Run half a "
+              "second and tell me what stopped it."),
+         shown=("summary", "verdict", "cause"),
+         reads=("`OTHER_STOP` means a watch stopped the run before its half second ended. "
+                "`cause` names the byte and the instruction that wrote it.")),
     Step("bcd", "run_for", SETTLE,
-         wrote(CREDITS_BCD, COIN_BCD_PC, COIN_BCD_STOP, 4, "the BCD credits"),
-         shown=("summary", "watch_hit")),
+         wrote(CREDITS_BCD, COIN_BCD_PC, COIN_BCD_STOP, 4, "the BCD credits")),
     Step("writer", "disassemble", {"ref": "0xb583", "length": 12}, listed,
-         highlight=("`disassemble` at the address the watch stopped on shows the coin routine: "
-                    "`INC $042B`, then `ADDA $042C`, `DAA`, `STA $042C`. The game keeps its "
-                    "credits twice, in binary and in BCD, which is why the scan found three bytes "
-                    "and not one.")),
+         title="Read the routine it stopped in",
+         ask="Disassemble 12 bytes from `0xb583`, where the first watch stopped.",
+         shown=("summary", "lines"),
+         reads=("The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, "
+                "`DAA`, `STA`). The game keeps its credits twice, in binary and in BCD.")),
     Step("settle", "run_for", SETTLE, settled),
-    Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04),
-         shown=("summary", "hex")),
+    Step("both", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
     Step("save", "state_write", {"method": "save", "name": "four_credits"}, free_set.saved,
          volatile=free_set.SAVE_VOLATILE),
     Step("press start", "input", START,
-         wrote(CREDITS_BIN, START_BIN_PC, START_BIN_STOP, 3, "START stopped on the binary"),
-         shown=("summary", "cause")),
+         wrote(CREDITS_BIN, START_BIN_PC, START_BIN_STOP, 3, "START stopped on the binary")),
     Step("start bcd", "run_for", {"frames": 1, "seconds": RUN_S},
          wrote(CREDITS_BCD, START_BCD_PC, START_BCD_STOP, 3, "then on the BCD credits")),
     Step("trail", "history", {"limit": TRAIL}, taken,
-         shown=("summary", "lines"),
-         highlight=("`history` is the instructions the CPU ran up to the stop. After START it "
-                    "reads `DEC $042B`, then `LDA #$99`, `ADDA $042C`, `DAA`, `STA $042C`: the "
-                    "same two counters going down, the BCD one by adding 99.")),
+         title="See what ran before a stop",
+         ask="START was pressed and a watch stopped it. Show me the last eight instructions.",
+         shown=("lines",),
+         reads=("`history` lists what the CPU ran up to the stop, oldest first. START takes a "
+                "credit from both counters: `DEC $042B`, then the BCD one by adding 99.")),
     Step("registers", "registers", {}, regs),
     Step("unwatch", "declaration_clear", {"kind": "watch", "all": True}, cleared),
-    Step("play", "run_for", {"milliseconds": 8000, "seconds": RUN_S},
-         lambda reply, run: f"the game plays on: {free_set.ran(reply, run)}"),
+    recording("play", PLAY_FRAMES, lambda reply, run: "the game plays on for eight seconds"),
     Step("after start", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(3, 0x03)),
     Step("screen", "screen_view", lambda run: {"mode": "render", "dest": run.dir / "screen.png",
                                                "scale": 2}, free_set.pictured("the game in play")),
     Step("load", "state_write", {"method": "load", "name": "four_credits"}, free_set.loaded),
     Step("back", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(4, 0x04)),
+    Step("coin 5", "input", COIN, dropped),
+    recording("fifth credit", COIN_FRAMES),
+    Step("five", "read_memory", {"ref": CREDITS_BIN, "length": 2}, credits_are(5, 0x05)),
     Step("close", "close", {}, free_set.closed),
 ]
 
-DEMO = free_set.demo(SYSTEM, __file__, STEPS)
+MOMENTS = (
+    Moment("unwatch", "play", "`input` pressed START and a credit is spent: the level card, then "
+                              "the game.", skip=300, frames=170),
+    Moment("coin 5", "fifth credit", "`state_write` loads the saved state and `input` drops a "
+                                     "coin: CREDITS goes from 4 to 5.", frames=90),
+)
+
+DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
+                     "Gridlee starting a game, then counting a coin after a saved state is loaded")
+
 
 if __name__ == "__main__":
     sys.exit(main(DEMO))

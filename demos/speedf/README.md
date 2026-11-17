@@ -1,22 +1,23 @@
-# Speed Fight: the board boots from the game's own recipe
+# Speed Fight: the board starts from a file in the game's own repository
 
-![Speed Fight's attract demo on the arcade board](screen.png)
+<!-- demo-motion:begin -->
+<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Speed Fight&#x27;s attract demo playing on the arcade board"></picture>
 
-*Speed Fight* (Eco-Games / GAMART, 1994) ran on the same NEC V30 arcade board as *LineUp*, with
-an OKI M6295 for its sound. This demo boots it from the run recipe the game's own repository
-declares in `.scry/start/speedf.json`: the set, the romset, the ini directory, the linker's image
-as the known answer and the symbol map with its `DATA` base. The call gives only what is the
-run's own, and the reply says which keys the recipe filled.
+1. `run_to` stopped where the attract demo starts, and `record` films it.
 
-It then runs to the routine that starts the attract's demo, counting the video interrupt
-meanwhile, reads the scene the dispatcher is on and the credits by name, lets the demo play, and
-saves a picture of the board.
+<!-- moments-ms: 2600 -->
+<!-- demo-motion:end -->
 
-## The game
+*Speed Fight* (Eco-Games / GAMART, 1994) ran on the same NEC V30 arcade board as *LineUp*.
+This demo starts it from a start profile, a saved set of `start` arguments the game's own
+repository keeps in `.scry/start/speedf.json`. Then it runs to the routine that begins the
+attract demo and reads two variables by name.
 
-Speed Fight is not distributed with this repository. The demo needs a checkout of the game's own
-repository, built and staged (`make rom`, `make stage-rom`), and a MAME whose driver
-list includes `speedf`: the recipe names it through `MAME_BINARY`, and `--binary` names another.
+## The program
+
+Speed Fight is not distributed with this repository. The demo needs a checkout of the game's
+own repository, built and with its ROM set in place (`make rom`, `make stage-rom`), and a MAME
+whose driver list includes `speedf`.
 
 ## Run it
 
@@ -24,49 +25,56 @@ list includes `speedf`: the recipe names it through `MAME_BINARY`, and `--binary
 uv run python demos/speedf/demo.py --cwd /path/to/speedf-mame
 ```
 
-- `--cwd PATH` (absolute or `~`-led) is the game's own repository checkout, whose `.scry/`
-  declares the recipe and whose `build/` and `run/` hold what it names.
-- `--rompath PATH` names another romset directory; left out, the recipe's `run/mame_roms`.
-- `--binary PATH` picks the MAME to start; left out, the recipe's `MAME_BINARY`.
-- `--display N` opens the window on that display; left out, on the host's main one. The
-  window opens behind, so the run takes nobody's focus.
+Each line it prints is one call and its check. The window opens behind the others, so the run
+does not take your keyboard.
+
+- `--cwd PATH` (absolute or `~`-led) is the checkout of the game's repository. Its `.scry/`
+  holds the start profile, and its `build/` and `run/` hold what the profile names.
+- `--rompath PATH` names another ROM set directory. Left out, it is the profile's
+  `run/mame_roms`.
+- `--binary PATH` picks the MAME to start. Left out, it is the profile's `MAME_BINARY`.
+- `--display N` opens the window on that display. Left out, it opens on the main one.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
-- `--update-readme` rewrites the block below, `TRANSCRIPT.md`, `screen.png` and `loop.mp4` from a run where
-  every step passed.
+- `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and
+  `loop.webp`, from a run where every step passed. It needs ffmpeg and `img2webp` on your
+  `PATH`.
 
-Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step failed,
-2 a usage error, 3 nothing was demonstrated (a checkout without its recipe or its build, a
-relative path, a server that did not start, a loop that could not be converted).
+Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
+That last one is a checkout without its start profile or its build, a relative path or a
+server that did not start.
 
-## The prompt
+## Try it yourself
 
-Give this to an MCP client with this server connected:
-
-> Start the board from the recipe `.scry/start/speedf.json` in the `--cwd` checkout, with a
-> window. Run to `startdemo` counting `new_irq_video`, read `_sceneId` and `creditos`, run three
-> seconds, save a picture of the screen and close.
-
-## The transcript
+[Add the server to your client](../../README.md#install) and open it in your checkout of the
+game. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
-The run is 8 calls; these are the ones that show how it is done, and every call with its reply is in [TRANSCRIPT.md](TRANSCRIPT.md).
+**1. Start from the game's own start profile**
 
-**1. `start`**: OK start: speedf on MAME from the game's own recipe (9 keys), rom_check OK, 225 symbols
+Ask:
 
-`start(profile=...)` boots from the recipe the game's own repository declares: the set, the romset, the ini directory, the linker's image as the known answer and the symbol map with its `DATA` base. The call gives only what is the run's own, and the reply says which keys the recipe filled.
+> Start Speed Fight from the start profile its repository keeps in `.scry/start/`.
 
-<details><summary>call and reply</summary>
+Call:
+
+```text
+start(shared=true, background=true, display="<host>", profile="<host>", inipath="<host>",
+    state_dir="<host>")
+```
+
+Reply, 3 of 36 fields:
 
 ```json
 {
-  "shared": true,
-  "background": true,
-  "display": "<host>",
-  "profile": "<host>",
-  "inipath": "<host>",
-  "state_dir": "<host>"
+  "rom_check": "OK",
+  "symbols_total": 225,
+  "kept": "kept 1 (promote to review)"
 }
 ```
+
+A start profile is a saved set of `start` arguments: the call adds only what is this run's own. `rom_check` says the ROM in memory is the build's own image, and `kept` that a candidate was saved for `promote`.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
@@ -132,19 +140,31 @@ The run is 8 calls; these are the ones that show how it is done, and every call 
 
 </details>
 
-**2. `run_to`**: OK to the demo: stopped at startdemo
+**2. Run to a routine by its name**
 
-`run_to` takes the game's own routine name from its map and runs the board until the attract's demo starts; `control` is the video interrupt, counted meanwhile, so a run that missed its target says whether the machine was running at all.
+Ask:
 
-<details><summary>call and reply</summary>
+> Run the game until its attract demo starts, at `startdemo`, counting the video interrupt on the way.
+
+Call:
+
+```text
+run_to(ref="startdemo", control="new_irq_video", seconds=300)
+```
+
+Reply, 3 of 15 fields:
 
 ```json
 {
-  "ref": "startdemo",
-  "control": "new_irq_video",
-  "seconds": 300
+  "summary": "run_to startdemo: TARGET, control counted 920",
+  "verdict": "TARGET",
+  "control_hits": 920
 }
 ```
+
+`TARGET` means the run stopped at `startdemo`. `control_hits` counts the video interrupt meanwhile, so a run that never arrived would still say the game was running.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
@@ -209,23 +229,37 @@ The run is 8 calls; these are the ones that show how it is done, and every call 
 
 </details>
 
-**4. `read_memory`**: OK no credits: creditos holds 0
+**3. Read a variable by its name**
 
-`creditos` is read by name through the map's `DATA` base: the map holds the ROM address of the initialised copy, and the program reads its variables at paragraph `0x40`, which the recipe's `bases` declares.
+Ask:
 
-<details><summary>call and reply</summary>
+> Read the game's `creditos` variable.
+
+Call:
+
+```text
+read_memory(ref="creditos", length=2)
+```
+
+Reply, 3 of 8 fields:
 
 ```json
 {
-  "ref": "creditos",
-  "length": 2
+  "summary": "read_memory creditos: 2 bytes at 0x0000c41c: 0000",
+  "addr": "0x0000c41c",
+  "hex": "0000"
 }
 ```
+
+`creditos` is a name from the game's symbol map. The start profile says where the game's data sits in RAM, so the name resolves to the address the program reads.
+
+<details><summary>The whole reply</summary>
 
 ```json
 {
   "summary": "read_memory creditos: 2 bytes at 0x0000c41c: 0000",
   "status": "ok",
+  "ref": "creditos",
   "addr": "0x0000c41c",
   "length": 2,
   "hex": "0000",
@@ -242,3 +276,31 @@ The run is 8 calls; these are the ones that show how it is done, and every call 
 
 </details>
 <!-- demo-transcript:end -->
+
+<details><summary>The whole demo as one prompt</summary>
+
+1. Start the board from the start profile `.scry/start/speedf.json` in the checkout, with a
+   window.
+2. Run to `startdemo` counting `new_irq_video`.
+3. Read `_sceneId` and `creditos`.
+4. Record 180 frames of video, take a picture of the screen and close.
+
+</details>
+
+## Tools this demo uses
+
+| Group | Tools |
+|---|---|
+| [Session](../../docs/reference/session.md) | `start`, `close` |
+| [Advance](../../docs/reference/advance.md) | `run_to` |
+| [Read](../../docs/reference/read.md) | `read_memory` |
+| [Captures](../../docs/reference/captures.md) | `record` |
+| [Screen](../../docs/reference/screen.md) | `screen_view` |
+
+Each group is a page of the reference. Advance holds the tools that let the program run and
+stop it again.
+
+## The transcript
+
+[TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The paths of the
+checkout read `<host>` there, because they are your computer's.

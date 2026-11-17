@@ -1,3 +1,5 @@
+Every call of the run with its reply, in order: 24 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+
 **1. `start`**: OK start: starfire on MAME 0.289 (unknown), rom_check OK, pc 0x00000000
 
 <details><summary>call and reply</summary>
@@ -162,6 +164,7 @@
 {
   "summary": "scan start: 0x8000, 1024 1-byte candidates on :maincpu",
   "status": "ok",
+  "ref": "0x8000",
   "addr": "0x00008000",
   "length": 1024,
   "cell_bytes": 1,
@@ -556,7 +559,7 @@
 
 </details>
 
-**6. `perform`**: OK coin 3: one cell left, 0x00008299, holding 3
+**6. `perform`**: OK coin 3: a third coin, and half a second for the game to count it
 
 <details><summary>call and reply</summary>
 
@@ -564,8 +567,7 @@
 {
   "steps": [
     {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
-    {"op": "run_for", "milliseconds": 500, "seconds": 300},
-    {"op": "scan", "method": "filter", "operator": "=", "value": 3}
+    {"op": "run_for", "milliseconds": 500, "seconds": 300}
   ],
   "settle_seconds": 300
 }
@@ -573,7 +575,7 @@
 
 ```json
 {
-  "summary": "perform: 3 steps completed",
+  "summary": "perform: 2 steps completed",
   "status": "ok",
   "ran": [
     {
@@ -695,35 +697,9 @@
           "how": "<volatile>"
         }
       }
-    },
-    {
-      "op": "scan",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "scan filter: = 0x03, 1 survivor",
-        "status": "ok",
-        "operator": "=",
-        "value": "0x03",
-        "iterations": 3,
-        "closed": false,
-        "hits": [
-          {"addr": "0x00008299", "value": "0x03"}
-        ],
-        "hits_total": 1,
-        "truncated": false,
-        "cpu": ":maincpu",
-        "space": "program",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
     }
   ],
-  "steps_completed": 3,
+  "steps_completed": 2,
   "failed_at": {"available": false, "why": "no step failed"},
   "held": 0,
   "visible_cpu": ":maincpu",
@@ -740,7 +716,46 @@
 
 </details>
 
-**7. `watch_add`**: OK watch: a change watch armed at 0x00008299
+**7. `scan`**: OK three: one cell left, 0x00008299, holding 3
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "method": "filter",
+  "operator": "=",
+  "value": 3
+}
+```
+
+```json
+{
+  "summary": "scan filter: = 0x03, 1 survivor",
+  "status": "ok",
+  "operator": "=",
+  "value": "0x03",
+  "iterations": 3,
+  "closed": false,
+  "hits": [
+    {"addr": "0x00008299", "value": "0x03"}
+  ],
+  "hits_total": 1,
+  "truncated": false,
+  "cpu": ":maincpu",
+  "space": "program",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**8. `watch_add`**: OK watch: a change watch armed at 0x00008299
 
 <details><summary>call and reply</summary>
 
@@ -784,7 +799,7 @@
 
 </details>
 
-**8. `input`**: OK coin 4: the fourth coin stopped the machine: Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)
+**9. `input`**: OK coin 4: the fourth coin stopped the machine: Stopped at watchpoint 1 writing 04 to 8299 (PC=1E48)
 
 <details><summary>call and reply</summary>
 
@@ -903,7 +918,7 @@
 
 </details>
 
-**9. `disassemble`**: OK writer: the writer: 1E48: 34 inc (hl)
+**10. `disassemble`**: OK writer: the writer: 1E48: 34 inc (hl)
 
 <details><summary>call and reply</summary>
 
@@ -918,6 +933,7 @@
 {
   "summary": "disassemble 0x1e40: 9 lines at 0x00001e40",
   "status": "ok",
+  "ref": "0x1e40",
   "addr": "0x00001e40",
   "length": 16,
   "lines": ["1E40: 2F       cpl", "1E41: E6 03    and  $03", "1E43: 28 BF    jr   z,$1E04", "1E45: 21 99 82 ld   hl,$8299", "1E48: 34       inc  (hl)", "1E49: 21 AF 82 ld   hl,$82AF", "1E4C: 7E       ld   a,(hl)", "1E4D: B7       or   a", "1E4E: 28 09    jr   z,$1E59"],
@@ -937,22 +953,22 @@
 
 </details>
 
-**10. `history`**: OK history: 12 instructions led there, ending 1E49: ld hl,$82AF
+**11. `history`**: OK history: 8 instructions led there, ending 1E49: ld hl,$82AF
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "limit": 12
+  "limit": 8
 }
 ```
 
 ```json
 {
-  "summary": "history: 12 instructions of 12 asked",
+  "summary": "history: 8 instructions of 8 asked",
   "status": "ok",
-  "asked": 12,
-  "lines": ["2640: ld   (hl),a", "2641: sub  $0A", "2643: ret  m", "1E3B: ld   hl,$8298", "1E3E: inc  (hl)", "1E3F: ld   a,(hl)", "1E40: cpl", "1E41: and  $03", "1E43: jr   z,$1E04", "1E45: ld   hl,$8299", "1E48: inc  (hl)", "1E49: ld   hl,$82AF"],
+  "asked": 8,
+  "lines": ["1E3E: inc  (hl)", "1E3F: ld   a,(hl)", "1E40: cpl", "1E41: and  $03", "1E43: jr   z,$1E04", "1E45: ld   hl,$8299", "1E48: inc  (hl)", "1E49: ld   hl,$82AF"],
   "cpu": ":maincpu",
   "session": {
     "alive": true,
@@ -966,7 +982,7 @@
 
 </details>
 
-**11. `registers`**: OK registers: HL 0x8299 points at the credits, A 0x02
+**12. `registers`**: OK registers: HL 0x8299 points at the credits, A 0x02
 
 <details><summary>call and reply</summary>
 
@@ -1021,7 +1037,7 @@
 
 </details>
 
-**12. `run_for`**: OK release: ran on to frame 314, the coin released
+**13. `run_for`**: OK release: ran on to frame 314, the coin released
 
 <details><summary>call and reply</summary>
 
@@ -1094,7 +1110,7 @@
 
 </details>
 
-**13. `declaration_clear`**: OK unwatch: the watch cleared
+**14. `declaration_clear`**: OK unwatch: the watch cleared
 
 <details><summary>call and reply</summary>
 
@@ -1124,7 +1140,7 @@
 
 </details>
 
-**14. `read_memory`**: OK credits: credits 4
+**15. `read_memory`**: OK credits: credits 4
 
 <details><summary>call and reply</summary>
 
@@ -1139,6 +1155,7 @@
 {
   "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
   "status": "ok",
+  "ref": "0x8299",
   "addr": "0x00008299",
   "length": 1,
   "hex": "04",
@@ -1155,7 +1172,7 @@
 
 </details>
 
-**15. `state_write`**: OK save: state four-credits saved at frame 314
+**16. `state_write`**: OK save: state four-credits saved at frame 314
 
 <details><summary>call and reply</summary>
 
@@ -1188,151 +1205,77 @@
 
 </details>
 
-**16. `perform`**: OK coin 5: a fifth coin, run to frame 349
+**17. `input`**: OK coin 5: a fifth coin, held four frames and released
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "steps": [
-    {"op": "input", "port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": 300},
-    {"op": "run_for", "milliseconds": 500, "seconds": 300}
-  ],
-  "settle_seconds": 300
+  "port": ":SYSTEM",
+  "field": "Coin 1",
+  "frames": 4,
+  "seconds": 300
 }
 ```
 
 ```json
 {
-  "summary": "perform: 2 steps completed",
+  "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 318",
   "status": "ok",
-  "ran": [
-    {
-      "op": "input",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "input :SYSTEM 'Coin 1': held 4 frames, active True, released at frame 318",
-        "status": "ok",
-        "verdict": "ELAPSED",
-        "frame_before": 314,
-        "frame_after": 319,
-        "emulated_before_s": 5.265421,
-        "emulated_after_s": 5.348998,
-        "cycles": 208942,
-        "polls": 6,
-        "lines_ahead": 0,
-        "thread_errors": 0,
-        "console_reruns": 0,
-        "route": "ioport",
-        "port": ":SYSTEM",
-        "field": "Coin 1",
-        "value": "0x00000001",
-        "frames": 4,
-        "name": "Coin 1",
-        "player": 0,
-        "mask": "0x00000001",
-        "defvalue": "0x00000000",
-        "port_before": "0x000000f8",
-        "frame_set": 314,
-        "released": true,
-        "port_held": "0x000000f9",
-        "frame_released": 318,
-        "active": true,
-        "cause": "the `gvblank` stop of the last frame asked",
-        "stop_seq": 11,
-        "pc": "0x00000066",
-        "cpu": ":maincpu",
-        "frame": 319,
-        "regs": {
-          "AF": "0x6474",
-          "BC": "0x0c00",
-          "DE": "0x6405",
-          "HL": "0x825e",
-          "AF'": "0x0000",
-          "BC'": "0x0000",
-          "DE'": "0x0000",
-          "HL'": "0x0000",
-          "IX": "0x820d",
-          "IY": "0x82af",
-          "SP": "0x807b",
-          "PC": "0x0066",
-          "IR": "0x004d"
-        },
-        "instruction": {
-          "address": "0066",
-          "bytes": "C36900",
-          "text": "jp   $0069",
-          "symbol": {"available": false, "why": "no symbol table places this address"},
-          "delta": {"available": false, "why": "no symbol table places this address"}
-        },
-        "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
-        "errorlog": "<volatile>",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
-    },
-    {
-      "op": "run_for",
-      "cpu": ":maincpu",
-      "reply": {
-        "summary": "run_for 500 ms: ELAPSED, frame 319 to 349",
-        "status": "ok",
-        "verdict": "ELAPSED",
-        "frame_before": 319,
-        "frame_after": 349,
-        "emulated_before_s": 5.348998,
-        "emulated_after_s": 5.849,
-        "cycles": 1250005,
-        "reads": "<volatile>",
-        "cause": "the console's `gtime` stop",
-        "stop_seq": 12,
-        "pc": "0x00002b38",
-        "cpu": ":maincpu",
-        "frame": 349,
-        "regs": {
-          "AF": "0xb5b3",
-          "BC": "0x00c9",
-          "DE": "0xdbb5",
-          "HL": "0x0038",
-          "AF'": "0x0000",
-          "BC'": "0x0000",
-          "DE'": "0x0000",
-          "HL'": "0x0000",
-          "IX": "0x8255",
-          "IY": "0x82af",
-          "SP": "0x808d",
-          "PC": "0x2b38",
-          "IR": "0x0044"
-        },
-        "instruction": {
-          "address": "2B38",
-          "bytes": "18FE",
-          "text": "jr   $2B38",
-          "symbol": {"available": false, "why": "no symbol table places this address"},
-          "delta": {"available": false, "why": "no symbol table places this address"}
-        },
-        "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
-        "errorlog": "<volatile>",
-        "session": {
-          "alive": true,
-          "running": false,
-          "altered": false,
-          "omitted": ["altering_writes", "console"],
-          "how": "<volatile>"
-        }
-      }
-    }
-  ],
-  "steps_completed": 2,
-  "failed_at": {"available": false, "why": "no step failed"},
-  "held": 0,
-  "visible_cpu": ":maincpu",
-  "visible_cpu_kept": {"before": ":maincpu", "after": ":maincpu", "restored": false},
+  "verdict": "ELAPSED",
+  "frame_before": 314,
+  "frame_after": 319,
+  "emulated_before_s": 5.265421,
+  "emulated_after_s": 5.348998,
+  "cycles": 208942,
+  "polls": 6,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":SYSTEM",
+  "field": "Coin 1",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "Coin 1",
+  "player": 0,
+  "mask": "0x00000001",
+  "defvalue": "0x00000000",
+  "port_before": "0x000000f8",
+  "frame_set": 314,
+  "released": true,
+  "port_held": "0x000000f9",
+  "frame_released": 318,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 11,
+  "pc": "0x00000066",
+  "cpu": ":maincpu",
+  "frame": 319,
+  "regs": {
+    "AF": "0x6474",
+    "BC": "0x0c00",
+    "DE": "0x6405",
+    "HL": "0x825e",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x820d",
+    "IY": "0x82af",
+    "SP": "0x807b",
+    "PC": "0x0066",
+    "IR": "0x004d"
+  },
+  "instruction": {
+    "address": "0066",
+    "bytes": "C36900",
+    "text": "jp   $0069",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+  "errorlog": "<volatile>",
   "session": {
     "alive": true,
     "running": false,
@@ -1345,7 +1288,64 @@
 
 </details>
 
-**17. `read_memory`**: OK five: credits 5
+**18. `record`**: OK fifth counted: recorded 90 frames in ./tmp/demos/starfire/fifth-counted.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 90,
+  "dest": "./tmp/demos/starfire/fifth-counted.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/starfire/fifth-counted.avi",
+  "frames": 90,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**19. `read_memory`**: OK five: credits 5
 
 <details><summary>call and reply</summary>
 
@@ -1360,6 +1360,7 @@
 {
   "summary": "read_memory 0x8299: 1 byte at 0x00008299: 05",
   "status": "ok",
+  "ref": "0x8299",
   "addr": "0x00008299",
   "length": 1,
   "hex": "05",
@@ -1376,7 +1377,7 @@
 
 </details>
 
-**18. `state_write`**: OK load: state four-credits loaded and verified, frame 314
+**20. `state_write`**: OK load: state four-credits loaded and verified, frame 314
 
 <details><summary>call and reply</summary>
 
@@ -1440,131 +1441,15 @@
 
 </details>
 
-**19. `read_memory`**: OK back to four: credits 4
+**21. `record`**: OK four again: recorded 60 frames in ./tmp/demos/starfire/four-again.avi
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "ref": "0x8299",
-  "length": 1
-}
-```
-
-```json
-{
-  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
-  "status": "ok",
-  "addr": "0x00008299",
-  "length": 1,
-  "hex": "04",
-  "cpu": ":maincpu",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": true,
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-</details>
-
-**20. `screen_view`**: OK screen: the screen, 256x224
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "mode": "render",
-  "dest": "./tmp/demos/starfire/screen.png",
-  "scale": 2
-}
-```
-
-```json
-{
-  "summary": "screen_view render :screen frame 314 from colours; 512x448 PNG x2, inline",
-  "status": "ok",
-  "mode": "render",
-  "screen": ":screen",
-  "width": 256,
-  "height": 224,
-  "frame_screen": 314,
-  "palette": {"available": false, "why": "the screen is direct colour: no palette device draws it"},
-  "entries": 0,
-  "screen_indexed": false,
-  "crop": [0, 0, 256, 224],
-  "image": {
-    "path": "./tmp/demos/starfire/screen.png",
-    "bytes": "<volatile>",
-    "sha256": "<volatile>",
-    "width": 512,
-    "height": 448,
-    "scale": 2,
-    "indexed": false,
-    "inline": true
-  },
-  "evaluated_by": "one step",
-  "lines_ahead": 0,
-  "thread_errors": 0,
-  "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#6",
-  "pc_before": "0x00002b38",
-  "cause": "screen_view: one step",
-  "stop_seq": 14,
-  "pc": "0x00002b38",
-  "cpu": ":maincpu",
-  "frame": 314,
-  "regs": {
-    "AF": "0xb5b3",
-    "BC": "0x00c9",
-    "DE": "0xdbb5",
-    "HL": "0x0038",
-    "AF'": "0x0000",
-    "BC'": "0x0000",
-    "DE'": "0x0000",
-    "HL'": "0x0000",
-    "IX": "0x8255",
-    "IY": "0x82af",
-    "SP": "0x808d",
-    "PC": "0x2b38",
-    "IR": "0x002a"
-  },
-  "instruction": {
-    "address": "2B38",
-    "bytes": "18FE",
-    "text": "jr   $2B38",
-    "symbol": {"available": false, "why": "no symbol table places this address"},
-    "delta": {"available": false, "why": "no symbol table places this address"}
-  },
-  "following": ["2B3A: 21 CC 0C ld   hl,$0CCC", "2B3D: 2B       dec  hl", "2B3E: 7C       ld   a,h", "2B3F: B5       or   l", "2B40: 20 FB    jr   nz,$2B3D", "2B42: C9       ret", "2B43: 3E FF    ld   a,$FF", "2B45: 32 7B 83 ld   ($837B),a", "2B48: CD 45 23 call $2345", "2B4B: CD 2B 12 call $122B", "2B4E: CD 93 09 call $0993", "2B51: 97       sub  a", "2B52: 32 01 94 ld   ($9401),a", "2B55: 32 00 94 ld   ($9400),a"],
-  "errorlog": "<volatile>",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": true,
-    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-Also attached: image/png.
-
-</details>
-
-**21. `record`**: OK loop: recording 240 frames in ./tmp/demos/starfire/loop.avi
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "frames": 240,
-  "dest": "./tmp/demos/starfire/loop.avi"
+  "frames": 60,
+  "dest": "./tmp/demos/starfire/four-again.avi",
+  "seconds": 300
 }
 ```
 
@@ -1582,8 +1467,8 @@ Also attached: image/png.
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "./tmp/demos/starfire/loop.avi",
-  "frames": 240,
+  "path": "./tmp/demos/starfire/four-again.avi",
+  "frames": 60,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -1614,7 +1499,125 @@ Also attached: image/png.
 
 </details>
 
-**22. `close`**: OK close: closed: MAME quit on its own
+**22. `read_memory`**: OK back to four: credits 4
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x8299",
+  "length": 1
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x8299: 1 byte at 0x00008299: 04",
+  "status": "ok",
+  "ref": "0x8299",
+  "addr": "0x00008299",
+  "length": 1,
+  "hex": "04",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**23. `screen_view`**: OK screen: the screen, 256x224
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "mode": "render",
+  "dest": "./tmp/demos/starfire/screen.png",
+  "scale": 2
+}
+```
+
+```json
+{
+  "summary": "screen_view render :screen frame 377 from colours; 512x448 PNG x2, inline",
+  "status": "ok",
+  "mode": "render",
+  "screen": ":screen",
+  "width": 256,
+  "height": 224,
+  "frame_screen": 377,
+  "palette": {"available": false, "why": "the screen is direct colour: no palette device draws it"},
+  "entries": 0,
+  "screen_indexed": false,
+  "crop": [0, 0, 256, 224],
+  "image": {
+    "path": "./tmp/demos/starfire/screen.png",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
+    "width": 512,
+    "height": 448,
+    "scale": 2,
+    "indexed": false,
+    "inline": true
+  },
+  "evaluated_by": "one step",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "call": "MAME_MCP_LUA_END#8",
+  "pc_before": "0x00000066",
+  "cause": "screen_view: one step",
+  "stop_seq": 15,
+  "pc": "0x00000069",
+  "cpu": ":maincpu",
+  "frame": 377,
+  "regs": {
+    "AF": "0xb5b3",
+    "BC": "0x00c9",
+    "DE": "0xdbb5",
+    "HL": "0x0038",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8255",
+    "IY": "0x82af",
+    "SP": "0x808b",
+    "PC": "0x0069",
+    "IR": "0x0055"
+  },
+  "instruction": {
+    "address": "0069",
+    "bytes": "F5",
+    "text": "push af",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)", "0086: 21 14 80 ld   hl,$8014"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+Also attached: image/png.
+
+</details>
+
+**24. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 

@@ -1,3 +1,5 @@
+Every call of the run with its reply, in order: 42 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+
 **1. `start`**: OK start: lineup on MAME, rom_check OK, 306 symbols
 
 <details><summary>call and reply</summary>
@@ -450,6 +452,7 @@
 {
   "summary": "read_memory Credits: 2 bytes at 0x0000914a: 0000",
   "status": "ok",
+  "ref": "Credits",
   "addr": "0x0000914a",
   "length": 2,
   "hex": "0000",
@@ -807,6 +810,7 @@
 {
   "summary": "read_memory Credits: 2 bytes at 0x0000914a: 0300",
   "status": "ok",
+  "ref": "Credits",
   "addr": "0x0000914a",
   "length": 2,
   "hex": "0300",
@@ -1246,6 +1250,7 @@
 {
   "summary": "read_memory Credits: 2 bytes at 0x0000914a: 0200",
   "status": "ok",
+  "ref": "Credits",
   "addr": "0x0000914a",
   "length": 2,
   "hex": "0200",
@@ -1277,6 +1282,7 @@
 {
   "summary": "read_memory Stage_Act: 2 bytes at 0x000086a6: 0000",
   "status": "ok",
+  "ref": "Stage_Act",
   "addr": "0x000086a6",
   "length": 2,
   "hex": "0000",
@@ -1541,6 +1547,7 @@
 {
   "summary": "read_memory Player1: 12 bytes at 0x00008400: 010003000100000003000000",
   "status": "ok",
+  "ref": "Player1",
   "addr": "0x00008400",
   "length": 12,
   "hex": "010003000100000003000000",
@@ -1748,6 +1755,7 @@
 {
   "summary": "read_memory Player1: 12 bytes at 0x00008400: 010004000100000003000000",
   "status": "ok",
+  "ref": "Player1",
   "addr": "0x00008400",
   "length": 12,
   "hex": "010004000100000003000000",
@@ -1955,6 +1963,7 @@
 {
   "summary": "read_memory Player1: 12 bytes at 0x00008400: 010004000200000003000000",
   "status": "ok",
+  "ref": "Player1",
   "addr": "0x00008400",
   "length": 12,
   "hex": "010004000200000003000000",
@@ -2162,6 +2171,7 @@
 {
   "summary": "read_memory Player1: 12 bytes at 0x00008400: 030004000200040006000200",
   "status": "ok",
+  "ref": "Player1",
   "addr": "0x00008400",
   "length": 12,
   "hex": "030004000200040006000200",
@@ -2360,7 +2370,64 @@
 
 </details>
 
-**40. `screen_view`**: OK screen: the board, 320x200
+**40. `record`**: OK playing: recorded 126 frames in ./tmp/demos/lineup/playing.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 126,
+  "dest": "./tmp/demos/lineup/playing.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/lineup/playing.avi",
+  "frames": 126,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**41. `screen_view`**: OK screen: the board, 320x200
 
 <details><summary>call and reply</summary>
 
@@ -2373,13 +2440,13 @@
 
 ```json
 {
-  "summary": "screen_view render :screen frame 726 from indices; 1280x800 PNG x4, not inlined",
+  "summary": "screen_view render :screen frame 855 from indices; 1280x800 PNG x4, not inlined",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 320,
   "height": 200,
-  "frame_screen": 726,
+  "frame_screen": 855,
   "palette": ":palette",
   "entries": 256,
   "screen_indexed": true,
@@ -2399,27 +2466,27 @@
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#21",
+  "call": "MAME_MCP_LUA_END#22",
   "pc_before": "0x000300a9",
   "cause": "screen_view: one step",
-  "stop_seq": 27,
+  "stop_seq": 28,
   "pc": "0x000300aa",
   "cpu": ":maincpu",
-  "frame": 726,
+  "frame": 855,
   "regs": {
-    "EAX": "0x02d4",
-    "ECX": "0x0000",
-    "EDX": "0x0002",
-    "EBX": "0x490a",
-    "ESP": "0x99d5",
+    "EAX": "0x8183",
+    "ECX": "0x000b",
+    "EDX": "0x000c",
+    "EBX": "0x1680",
+    "ESP": "0x99c9",
     "EBP": "0xbe31",
-    "ESI": "0x8048",
-    "EDI": "0xfaa0",
+    "ESI": "0x1684",
+    "EDI": "0x8825",
     "EIP": "0x000300aa",
-    "EFLAGS": "0xf097",
+    "EFLAGS": "0xf006",
     "CS": "0x3000",
     "SS": "0x0040",
-    "DS": "0x0040",
+    "DS": "0x81a2",
     "ES": "0x1000",
     "FS": "0x00000000",
     "GS": "0x00000000",
@@ -2443,62 +2510,6 @@
   "instruction": {"address": "300AA", "bytes": "50", "text": "push    aw", "symbol": "New_IRQ_Video", "delta": 1},
   "following": ["300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy", "300C9: 5E             pop     ix"],
   "errorlog": "<volatile>",
-  "session": {
-    "alive": true,
-    "running": false,
-    "altered": false,
-    "omitted": ["altering_writes", "console"],
-    "how": "<volatile>"
-  }
-}
-```
-
-</details>
-
-**41. `record`**: OK loop: recording 240 frames in ./tmp/demos/lineup/loop.avi
-
-<details><summary>call and reply</summary>
-
-```json
-{
-  "frames": 240,
-  "dest": "./tmp/demos/lineup/loop.avi"
-}
-```
-
-```json
-{
-  "summary": "<volatile>",
-  "status": "ok",
-  "verdict": "ELAPSED",
-  "frame_before": "<volatile>",
-  "frame_after": "<volatile>",
-  "emulated_before_s": "<volatile>",
-  "emulated_after_s": "<volatile>",
-  "cycles": "<volatile>",
-  "polls": "<volatile>",
-  "lines_ahead": 0,
-  "thread_errors": 0,
-  "console_reruns": 0,
-  "path": "./tmp/demos/lineup/loop.avi",
-  "frames": 240,
-  "began": true,
-  "frame_begin": "<volatile>",
-  "recording_after": true,
-  "ended": true,
-  "bytes": "<volatile>",
-  "avi_frames": "<volatile>",
-  "frame_end": "<volatile>",
-  "cause": "<volatile>",
-  "stop_seq": "<volatile>",
-  "pc": "<volatile>",
-  "cpu": ":maincpu",
-  "frame": "<volatile>",
-  "regs": "<volatile>",
-  "instruction": "<volatile>",
-  "following": "<volatile>",
-  "errorlog": "<volatile>",
-  "view": "native",
   "session": {
     "alive": true,
     "running": false,
