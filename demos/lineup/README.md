@@ -18,14 +18,14 @@ screen is waited for at the frame after the game's tick (`Check_Money100`), and 
 map signed in palette indices, because the board's 5-bit palette and the PC's
 6-bit DAC show the same pixels in slightly different colours. Then it records two seconds of the
 stage's music off the AY-3-8910 and holds it, sample for sample, to [`music.wav`](music.wav) beside
-this file.
+this file (`win32/music.wav` on Windows, whose mix differs).
 
 ## The romset
 
 LineUp is not distributed with this repository. The demo needs its romset, `lineup.zip`, with the
 linker's symbol map beside it, `lineup.map`, in one directory, and a MAME whose driver list
 includes `lineup`. The game's own repository builds both from its source and stages them together
-(`make stage-rom`); that repository is not public yet, so there is no link to it here.
+(`make stage-rom`).
 
 That repository also declares the game's screen map, `.scry/maps/lineup-screen-map.json`, which the
 demo loads; a checkout of it is what `--cwd` names.

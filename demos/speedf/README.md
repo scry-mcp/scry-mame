@@ -14,8 +14,8 @@ saves a picture of the board.
 
 ## The game
 
-Speed Fight is not distributed with this repository, and its repository is private. The demo
-needs a checkout of it, built and staged (`make rom`, `make stage-rom`), and a MAME whose driver
+Speed Fight is not distributed with this repository. The demo needs a checkout of the game's own
+repository, built and staged (`make rom`, `make stage-rom`), and a MAME whose driver
 list includes `speedf`: the recipe names it through `MAME_BINARY`, and `--binary` names another.
 
 ## Run it

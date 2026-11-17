@@ -45,14 +45,14 @@ with it: a breakpoint that never fires is a measurement here, never a silence.
   [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md), and the reply
   names the file it wrote, its `note` saying so when that is not the name you gave.
 
-## Two minutes to a first answer
+## A first answer
 
-You need git, Python 3.11 or newer, [uv](https://docs.astral.sh/uv/), and a MAME built with the
-gdbstub (`-debugger gdbstub`) and its `console` plugin. `start` runs the MAME its `binary`
-argument names, else `MAME_BINARY`, else the `mame` on your `PATH`. The server is tested on one
-MAME release, which `start` names in `recommended_release`; another release boots with a `note`
-saying so. A board on a NEC V20/V30/V33 needs a
-MAME from mamedev/mame#16131 on, where the stub learned their registers.
+You need git, the Python that `requires-python` in `pyproject.toml` names,
+[uv](https://docs.astral.sh/uv/), and a MAME built with the gdbstub (`-debugger gdbstub`) and its
+`console` plugin. `start` runs the MAME its `binary` argument names, else `MAME_BINARY`, else the
+`mame` on your `PATH`. The server is tested on one MAME release, which `start` names in
+`recommended_release`; another release boots with a `note` saying so. A board on a NEC
+V20/V30/V33 needs a MAME whose gdbstub serves their registers.
 
 ```sh
 git clone https://github.com/scry-mcp/scry-mame
@@ -79,9 +79,8 @@ somebody tests) are on [`start`'s page](docs/reference/session.md#start).
 
 Two patches under `patches/`, each naming the MAME commit it was made against, make a build
 better at this: `0003` closes a data race in the Lua console thread that can crash a boot
-(proposed upstream as mamedev/mame#16229; without it `start` relaunches such a boot and lists it
-in `start_retries`), and `0004` serves one GDB thread per cpu, so any cpu's registers and memory
-read without the machine running.
+(without it `start` relaunches such a boot and lists it in `start_retries`), and `0004` serves
+one GDB thread per cpu, so any cpu's registers and memory read without the machine running.
 
 ## Set up SCRY in your own project
 
@@ -324,7 +323,7 @@ carries, names for addresses) and links each family's page, where every tool's b
 followed by why its contract is shaped that way. [CONTRIBUTING.md](CONTRIBUTING.md) is for
 changing the server: its battery, its live tier and what proves a change.
 
-What this server has in common with its sibling lives in [scry-core](https://github.com/scry-mcp/scry-core),
+What this server shares with the other Scry server lives in [scry-core](https://github.com/scry-mcp/scry-core),
 pinned by tag; its README lists every module.
 
 ## Licence
