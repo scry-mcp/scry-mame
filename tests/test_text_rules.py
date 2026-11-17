@@ -35,7 +35,8 @@ def test_no_condition_example_writes_a_bare_number() -> None:
 
 
 def test_start_says_which_paths_are_directories() -> None:
-    assert "`rompath`, `inipath`, `state_dir` directories, the rest files" in _texts()["start"]
+    assert ("`rompath` and `inipath` `;`-separated directories, `state_dir` a directory, the rest "
+            "files") in _texts()["start"]
 
 
 def test_gfx_locate_names_its_source_arguments() -> None:
