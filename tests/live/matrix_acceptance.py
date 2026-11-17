@@ -230,7 +230,7 @@ def _h_circus(t: list[str]) -> None:
              reference_addr="0x1000", reference_base="0x1000")
     cell(t[22], ok(r) and r.get("rom_check") == "OK", said(r))
 
-    waited = call("screen_wait", palette="black", seconds=0.2)
+    waited = call("screen_wait", palette="black", seconds=2.0)
     polls = waited.get("polls")
     cell(t[-2 - H_STOP_WAITS], ok(waited) and waited.get("verdict") == "TIMEOUT"
          and waited.get("predicate") == "palette" and isinstance(polls, int) and polls >= 1,
