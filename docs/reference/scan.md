@@ -73,6 +73,7 @@ Example, from a live run:
 {
   "summary": "scan start: 0x200000, 256 1-byte candidates on :maincpu",
   "status": "ok",
+  "ref": "0x200000",
   "addr": "0x00200000",
   "length": 256,
   "cell_bytes": 1,

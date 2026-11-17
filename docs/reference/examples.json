@@ -379,6 +379,7 @@
   "reply": {
    "summary": "disassemble irq_vblank: 2 lines at 0x00000400",
    "status": "ok",
+   "ref": "irq_vblank",
    "addr": "0x00000400",
    "length": 8,
    "lines": [
@@ -525,6 +526,7 @@
   "reply": {
    "summary": "find 00 in 0x400 bytes at 0x0: 510 hits",
    "status": "ok",
+   "ref": "0x0",
    "addr": "0x00000000",
    "length": 1024,
    "span": {
@@ -857,7 +859,7 @@
    },
    "report": {
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9-report.json",
-    "sha256": "63b54dc1871ee97ffa31f1c000c7014411d2868baf4fadb0ebe56d64ff35bd0a"
+    "sha256": "5f75090e1a75a2cb1743a6dd78abe96446d3fbb5f35e324f80f20a7ec2d60ef3"
    },
    "formats": {},
    "asset_names": [],
@@ -973,17 +975,17 @@
  "gfx_load": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_load @ stopped",
   "call": {
-   "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml"
+   "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml"
   },
   "reply": {
-   "summary": "gfx_load ~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
+   "summary": "gfx_load $MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
    "status": "ok",
    "loaded": true,
    "replaced_path": {
     "available": false,
     "why": "no manifest was loaded in this session before this one"
    },
-   "path": "~/.local/share/scry-bench/mame/m68k-dual/hardware/gfx.yaml",
+   "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml",
    "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
    "draft": false,
    "systems": [
@@ -1915,7 +1917,7 @@
    "omitted": [
     "rom_files"
    ],
-   "how": "sections=[...] names the sections to answer",
+   "how": "sections=[...] names the sections to read; dest=<absolute path> writes every section read whole",
    "frame_symbol": "frame",
    "cpu": {
     "available": false,
@@ -1933,6 +1935,7 @@
   "reply": {
    "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
    "status": "ok",
+   "ref": "0x0",
    "addr": "0x00000000",
    "length": 16,
    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
@@ -2165,7 +2168,7 @@
     {
      "call": 2,
      "op": "machine_map",
-     "why": "a read the export does not check"
+     "why": "it changes nothing in the emulated machine"
     },
     {
      "call": 3,
@@ -2200,32 +2203,40 @@
     "why": "the recording kept every call a replay takes"
    },
    "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
-   "kept": "kept 3 (promote to review)"
+   "kept": "kept 3 (promote to review); maps/radendur, perform/f12, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
  "promote": {
-  "from": "a recipe this boot ran is written into a store of the run's own only when the call approves it: a review of a repository with no store",
+  "from": "[P] the session's ends and its own store: P11 the recipe this boot ran and the map it learned are written into a store of the run's own only when the call approves them, and the map reads back from the file",
   "call": {
    "dry_run": true,
-   "root": "$TMPDIR/mame-promote-example-<run>/repo"
+   "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
   },
   "reply": {
-   "summary": "promote: 1 candidate in $TMPDIR/mame-promote-example-<run>/repo/.scry; would create .scry/, .scry/about.json, .scry/README.md",
+   "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry; would create .scry/, .scry/about.json, .scry/README.md",
    "status": "ok",
-   "store": "$TMPDIR/mame-promote-example-<run>/repo/.scry",
+   "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
    "candidates": [
+    {
+     "entry": "maps/radendur",
+     "kind": "maps",
+     "name": "radendur",
+     "file": ".scry/maps/radendur-screen-map.json",
+     "bytes": 333,
+     "change": "new"
+    },
     {
      "entry": "start/radendur",
      "kind": "start",
      "name": "radendur",
      "file": ".scry/start/radendur.json",
-     "bytes": 432,
+     "bytes": 343,
      "change": "new"
     }
    ],
    "unchanged": [],
-   "total_bytes": 432,
-   "store_bytes": 1725,
+   "total_bytes": 676,
+   "store_bytes": 2152,
    "would_create": [
     ".scry/",
     ".scry/about.json",
@@ -2312,6 +2323,7 @@
   "reply": {
    "summary": "read_memory 0x400: 8 bytes at 0x00000400: 46fc270048e7f000",
    "status": "ok",
+   "ref": "0x400",
    "addr": "0x00000400",
    "length": 8,
    "hex": "46fc270048e7f000",
@@ -2552,15 +2564,15 @@
  "rom_check": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): rom_check @ stopped",
   "call": {
-   "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+   "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
    "reference_addr": "0x0"
   },
   "reply": {
-   "summary": "rom_check :maincpu: OK, 1.492 ms per query",
+   "summary": "rom_check :maincpu: OK, 3.632 ms per query",
    "status": "ok",
    "rom_check": "OK",
    "deterministic": true,
-   "query_s": 0.001492,
+   "query_s": 0.003632,
    "cpu": ":maincpu"
   }
  },
@@ -2737,6 +2749,7 @@
   "reply": {
    "summary": "scan start: 0x200000, 256 1-byte candidates on :maincpu",
    "status": "ok",
+   "ref": "0x200000",
    "addr": "0x00200000",
    "length": 256,
    "cell_bytes": 1,
@@ -2902,7 +2915,7 @@
     "lines": [],
     "mark": 14
    },
-   "kept": "kept 2 (promote to review)"
+   "kept": "kept 2 (promote to review); maps/radendur, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
  "screen_signature": {
@@ -3077,7 +3090,7 @@
    "polls": 0,
    "sampled_every": 0,
    "frames": 0,
-   "waited_s": 0.0,
+   "waited_s": 0.2,
    "palette": "black",
    "entries": 256
   }
@@ -3194,22 +3207,21 @@
  "start": {
   "from": "[A] states x tools: no session, stopped, running, after close (section 11): start @ none",
   "call": {
-   "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+   "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
    "system": "radendur",
-   "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
-   "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+   "rompath": "$MAME_LIVE_BENCH/m68k-dual/run/mame_roms",
+   "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
    "reference_addr": "0x0",
    "boot_seconds": 25.0,
    "presence": false,
    "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-   "background": true,
-   "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
+   "symbols": "$MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
   },
   "reply": {
-   "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
+   "summary": "start radendur on $MAME_LIVE_BENCH/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
    "status": "ok",
    "system": "radendur",
-   "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+   "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
    "binary_origin": "argument",
    "version": "<volatile>",
    "pid": "<volatile>",
@@ -3272,7 +3284,7 @@
    "declarations": {
     "persistent": true,
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
-    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+    "key": "radendur $MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
     "rearm": {
@@ -3290,7 +3302,7 @@
     }
    },
    "recommended_release": "0.289",
-   "kept": "kept 1 (promote to review)"
+   "kept": "kept 1 (promote to review); start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
  "state_list": {
@@ -3619,13 +3631,23 @@
   }
  },
  "window": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): window @ none",
+  "from": "[B] start's arguments at their edges, with no session: window answers the window the start proved",
   "call": {},
   "reply": {
-   "summary": "window: INVALID (no_session), no machine running; call `start` first",
-   "status": "INVALID",
-   "code": "no_session",
-   "message": "no machine running; call `start` first"
+   "summary": "window: display 0, on screen, in front",
+   "status": "ok",
+   "window": {
+    "display": 0,
+    "bounds": {
+     "x": 520,
+     "y": 166,
+     "width": 1008,
+     "height": 788
+    },
+    "onscreen": true,
+    "front": true,
+    "fullscreen": false
+   }
   }
  },
  "write": {
@@ -3637,6 +3659,7 @@
   "reply": {
    "summary": "write 0x200000: 1 byte, verified True",
    "status": "ok",
+   "ref": "0x200000",
    "addr": "0x00200000",
    "bytes_written": 1,
    "readback": "00",

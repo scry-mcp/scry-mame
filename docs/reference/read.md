@@ -44,6 +44,7 @@ Example, from a live run:
 {
   "summary": "read_memory 0x400: 8 bytes at 0x00000400: 46fc270048e7f000",
   "status": "ok",
+  "ref": "0x400",
   "addr": "0x00000400",
   "length": 8,
   "hex": "46fc270048e7f000",
@@ -328,6 +329,7 @@ Example, from a live run:
 {
   "summary": "disassemble irq_vblank: 2 lines at 0x00000400",
   "status": "ok",
+  "ref": "irq_vblank",
   "addr": "0x00000400",
   "length": 8,
   "lines": ["000400: 46FC 2700 move    #$2700, SR", "000404: 48E7 F000 movem.l D0-D3, -(A7)"],
@@ -396,6 +398,7 @@ Example, from a live run:
 {
   "summary": "find 00 in 0x400 bytes at 0x0: 510 hits",
   "status": "ok",
+  "ref": "0x0",
   "addr": "0x00000000",
   "length": 1024,
   "span": {"from": "0x00000000", "length": 1024, "source": "ref+length"},
@@ -506,6 +509,7 @@ Example, from a live run:
 {
   "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
   "status": "ok",
+  "ref": "0x0",
   "addr": "0x00000000",
   "length": 16,
   "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
@@ -777,7 +781,7 @@ Example, from a live run:
   },
   "following": ["0025E8: 41F9 0020 1000      lea     $201000.l, A0", "0025EE: 203C 0000 E927      move.l  #$e927, D0", "0025F4: 4218                clr.b   (A0)+", "0025F6: 51C8 FFFC           dbra    D0, $25f4", "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"],
   "errorlog": {"lines_total": 0, "truncated": false, "lines": [], "mark": 14},
-  "kept": "kept 2 (promote to review)"
+  "kept": "kept 2 (promote to review); maps/radendur, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
 }
 ```
 <!-- scry-reference:end screen_map_write -->

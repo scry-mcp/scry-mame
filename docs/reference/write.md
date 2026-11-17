@@ -55,6 +55,7 @@ Example, from a live run:
 {
   "summary": "write 0x200000: 1 byte, verified True",
   "status": "ok",
+  "ref": "0x200000",
   "addr": "0x00200000",
   "bytes_written": 1,
   "readback": "00",

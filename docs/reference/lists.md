@@ -362,7 +362,7 @@ Example, from a live run:
   "steps": 44,
   "checks": 7,
   "dropped": [
-    {"call": 2, "op": "machine_map", "why": "a read the export does not check"},
+    {"call": 2, "op": "machine_map", "why": "it changes nothing in the emulated machine"},
     {"call": 3, "op": "cpu_info", "why": "a read the export does not check"},
     {"call": 4, "op": "symbols_find", "why": "a read the export does not check"},
     {"call": 8, "op": "disassemble", "why": "a read the export does not check"},
@@ -373,7 +373,7 @@ Example, from a live run:
   "dropped_total": 41,
   "cut": {"available": false, "why": "the recording kept every call a replay takes"},
   "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
-  "kept": "kept 3 (promote to review)"
+  "kept": "kept 3 (promote to review); maps/radendur, perform/f12, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
 }
 ```
 <!-- scry-reference:end perform_export -->

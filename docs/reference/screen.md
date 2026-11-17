@@ -1072,7 +1072,7 @@ Example, from a live run:
   },
   "report": {
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9-report.json",
-    "sha256": "63b54dc1871ee97ffa31f1c000c7014411d2868baf4fadb0ebe56d64ff35bd0a"
+    "sha256": "5f75090e1a75a2cb1743a6dd78abe96446d3fbb5f35e324f80f20a7ec2d60ef3"
   },
   "formats": {},
   "asset_names": [],

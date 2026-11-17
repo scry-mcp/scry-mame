@@ -148,25 +148,24 @@ Example, from a live run:
 
 ```json
 {
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
   "system": "radendur",
-  "rompath": "~/.local/share/scry-bench/mame/m68k-dual/run/mame_roms",
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "rompath": "$MAME_LIVE_BENCH/m68k-dual/run/mame_roms",
+  "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
   "reference_addr": "0x0",
   "boot_seconds": 25.0,
   "presence": false,
   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-  "background": true,
-  "symbols": "~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
+  "symbols": "$MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
 }
 ```
 
 ```json
 {
-  "summary": "start radendur on ~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
+  "summary": "start radendur on $MAME_LIVE_BENCH/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
   "status": "ok",
   "system": "radendur",
-  "binary": "~/.local/share/scry-bench/mame/m68k-dual/upstream/radendu",
+  "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
   "binary_origin": "argument",
   "version": "<volatile>",
   "pid": "<volatile>",
@@ -207,14 +206,14 @@ Example, from a live run:
   "declarations": {
     "persistent": true,
     "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
-    "key": "radendur ~/.local/share/scry-bench/mame/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+    "key": "radendur $MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
     "held": 0,
     "fingerprint": "07549ca6b6e1c4ed",
     "rearm": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": [], "evaluated": []},
     "comments": {"rearmed": [], "stale": [], "unresolved": [], "unarmable": []}
   },
   "recommended_release": "0.289",
-  "kept": "kept 1 (promote to review)"
+  "kept": "kept 1 (promote to review); start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
 }
 ```
 <!-- scry-reference:end start -->
@@ -387,10 +386,15 @@ Example, from a live run:
 
 ```json
 {
-  "summary": "window: INVALID (no_session), no machine running; call `start` first",
-  "status": "INVALID",
-  "code": "no_session",
-  "message": "no machine running; call `start` first"
+  "summary": "window: display 0, on screen, in front",
+  "status": "ok",
+  "window": {
+    "display": 0,
+    "bounds": {"x": 520, "y": 166, "width": 1008, "height": 788},
+    "onscreen": true,
+    "front": true,
+    "fullscreen": false
+  }
 }
 ```
 <!-- scry-reference:end window -->
@@ -580,18 +584,18 @@ Example, from a live run:
 
 ```json
 {
-  "reference_rom": "~/.local/share/scry-bench/mame/m68k-dual/disasm/img/radendur_maincpu.bin",
+  "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
   "reference_addr": "0x0"
 }
 ```
 
 ```json
 {
-  "summary": "rom_check :maincpu: OK, 1.492 ms per query",
+  "summary": "rom_check :maincpu: OK, 3.632 ms per query",
   "status": "ok",
   "rom_check": "OK",
   "deterministic": true,
-  "query_s": 0.001492,
+  "query_s": 0.003632,
   "cpu": ":maincpu"
 }
 ```

@@ -826,7 +826,7 @@ Example, from a live run:
   "polls": 0,
   "sampled_every": 0,
   "frames": 0,
-  "waited_s": 0.0,
+  "waited_s": 0.2,
   "palette": "black",
   "entries": 256
 }

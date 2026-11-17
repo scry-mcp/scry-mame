@@ -228,7 +228,7 @@ Example, from a live run:
   },
   "note": "the address map is the map of the machine's EXECUTING devices, which is what MAME gives a debugger: a device that only exposes an address space of its own is not in it, though its shares and regions are; the map reported is the STATICALLY C ... (844 characters)",
   "omitted": ["rom_files"],
-  "how": "sections=[...] names the sections to answer",
+  "how": "sections=[...] names the sections to read; dest=<absolute path> writes every section read whole",
   "frame_symbol": "frame",
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }

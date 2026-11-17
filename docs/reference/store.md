@@ -71,28 +71,36 @@ Example, from a live run:
 ```json
 {
   "dry_run": true,
-  "root": "$TMPDIR/mame-promote-example-<run>/repo"
+  "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
 }
 ```
 
 ```json
 {
-  "summary": "promote: 1 candidate in $TMPDIR/mame-promote-example-<run>/repo/.scry; would create .scry/, .scry/about.json, .scry/README.md",
+  "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry; would create .scry/, .scry/about.json, .scry/README.md",
   "status": "ok",
-  "store": "$TMPDIR/mame-promote-example-<run>/repo/.scry",
+  "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
   "candidates": [
+    {
+      "entry": "maps/radendur",
+      "kind": "maps",
+      "name": "radendur",
+      "file": ".scry/maps/radendur-screen-map.json",
+      "bytes": 333,
+      "change": "new"
+    },
     {
       "entry": "start/radendur",
       "kind": "start",
       "name": "radendur",
       "file": ".scry/start/radendur.json",
-      "bytes": 432,
+      "bytes": 343,
       "change": "new"
     }
   ],
   "unchanged": [],
-  "total_bytes": 432,
-  "store_bytes": 1725,
+  "total_bytes": 676,
+  "store_bytes": 2152,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"]
 }
 ```
