@@ -4,7 +4,7 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Takes scry-core 0.118.2.
+- Takes scry-core 0.118.3.
 - `run_to`'s `cut_by_other_stop` refusal ends in the words scry-dosbox-x's now ends in too, with
   `disarm_watches=true` spelled as a client sends it.
 - `promote` refuses a `start` profile or a `perform` document holding a `${...}` that is no
