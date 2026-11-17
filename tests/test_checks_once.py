@@ -59,17 +59,6 @@ def test_drive_bounds_its_wait_in_the_one_sentence() -> None:
     assert out["code"] == "bad_argument", out
 
 
-@pytest.mark.parametrize(("pattern", "said"), [
-    (123, r"^pattern is a regular expression; got 123$"),
-    ("", r"^pattern is a non-empty regular expression \('\.' for every line\)$"),
-    ("(", r"^pattern='\(' does not compile: "),
-])
-def test_one_regex_judge_refuses_a_non_string_an_empty_one_and_one_that_does_not_compile(
-        pattern: Any, said: str) -> None:
-    with pytest.raises(mstate.Invalid, match=said):
-        inputs.regex("pattern", pattern)
-
-
 @pytest.mark.parametrize("tool", ["log", "log_wait"])
 def test_an_empty_pattern_is_refused_by_the_log_readers_too(tool: str) -> None:
     reply = s.log(pattern="", channel="emulator") if tool == "log" else s.log_wait(

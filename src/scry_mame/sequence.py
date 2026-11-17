@@ -13,7 +13,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import frame_window, media_tools, roster, sequence
+from scry_core import frame_window, judges, media_tools, roster, sequence
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
 from scry_core import sequence_account as account
@@ -182,9 +182,9 @@ def check_drive(act: Any = None, expect: str = "", seconds: float | None = None,
         raise st.Invalid("bad_argument",
             "act is a non-empty LIST of steps ({'op': <name>, ...}), the same shape "
                          "`perform` takes")
-    pattern_rx = inputs.regex("pattern", pattern)
+    pattern_rx = judges.regex("pattern", pattern)
     inputs.count("limit", limit, read.LOG_LIMIT_MAX)
-    expect_rx = inputs.regex("expect", expect) if expect else None
+    expect_rx = judges.regex("expect", expect) if expect else None
     vocab.check_wait(DRIVE_EXPECT_WAIT_S if seconds is None else seconds)
     if not expect and seconds is not None:
         raise st.Invalid("bad_argument",

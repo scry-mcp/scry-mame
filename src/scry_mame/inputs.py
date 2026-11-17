@@ -332,16 +332,3 @@ def picture_args(scale: int = 0, dest: str = "", attach: bool = True) -> Path | 
     picture.check_scale(scale)
     picture.check_attach(attach)
     return optional_dest(dest)
-
-
-def regex(name: str, pattern: object) -> re.Pattern[str]:
-    """A caller's regular expression, compiled. Empty is refused (`.` is every line, written)."""
-    if not isinstance(pattern, str):
-        raise Invalid("bad_argument", f"{name} is a regular expression; got {pattern!r}")
-    if not pattern:
-        raise Invalid("bad_argument", f"{name} is a non-empty regular expression ('.' for every "
-                      "line)")
-    try:
-        return re.compile(pattern)
-    except re.error as e:
-        raise Invalid("bad_argument", f"{name}={pattern!r} does not compile: {e}") from None

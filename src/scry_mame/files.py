@@ -244,7 +244,7 @@ def check_log(pattern: str, channel: str, limit: int = 40, since_mark: int = 0,
     """`log`'s machine-independent half: limit, regex, channel, mark, in that order. The regex
     is handed back compiled."""
     inputs.count("limit", limit, read.LOG_LIMIT_MAX)
-    rx = inputs.regex("pattern", pattern)
+    rx = judges.regex("pattern", pattern)
     check_channel(channel)
     _check_mark(since_mark, channel)
     return rx
@@ -255,7 +255,7 @@ def check_log_wait(pattern: str, channel: str, seconds: float = 30.0, since_mark
     """`log_wait`'s machine-independent half: bound, regex, channel, mark, in that order. The
     regex is handed back compiled."""
     vocab.check_wait(seconds)
-    rx = inputs.regex("pattern", pattern)
+    rx = judges.regex("pattern", pattern)
     check_channel(channel)
     _check_mark(since_mark, channel)
     return rx
