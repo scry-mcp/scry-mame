@@ -408,8 +408,9 @@ End the session: MAME is asked to `quit` and killed only if it has not gone with
 grace period. The scratch is deleted; a named `state_dir` stays. Works on a running machine;
 with no session it answers `closed: false`.
 
-Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `cfg_written`
-(MAME wrote its cfg as it quit),
+Reply: `closed`, `ended_by` (`quit`, `exited`, `killed`, `died`, `none`), `exit_code` (an
+integer, or unavailable with its `why` when no session was running or the process was not
+reaped), `cfg_written` (MAME wrote its cfg as it quit),
 `cfg` (`installed_path`, `changed`), `average_speed` (while a `resume` run was open), `note`;
 `stdout_tail` and `errorlog_tail` when the end was not a clean `quit`, or with `detail=True`.
 `session` is the block as it is after the close (`alive` and `running` false); a console doubt

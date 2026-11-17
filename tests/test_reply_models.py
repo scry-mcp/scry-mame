@@ -56,3 +56,10 @@ def test_record_speaks_the_words_scry_core_declares() -> None:
     doc = next(t for t in tools if t.name == "record").description or ""
     for words in (roster.RECORD_ARGS, roster.RECORD_CUT, roster.RECORD_REPLY):
         assert words in doc, words
+
+
+def test_close_always_answers_the_exit_code_as_both_servers_do() -> None:
+    """An integer, or unavailable with its `why` (no session, a process not reaped)."""
+    assert "exit_code" in reply_schema.own_required(replies.MODELS["close"])
+    doc = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == "close").description
+    assert "`exit_code`" in (doc or "")

@@ -115,6 +115,8 @@ class CloseReply(MameEnvelope, total=False):
     errorlog_tail: Annotated[str, When("not a clean")]
     cfg_written: Required[bool | dict[str, Any]]
     stdout_tail: Annotated[str, When("not a clean")]
+    # The base leaves `exit_code` optional; this reply always carries it.
+    exit_code: Required[int | dict[str, Any]]  # type: ignore[misc]
 
 
 class CommentListReply(MameEnvelope, total=False):
