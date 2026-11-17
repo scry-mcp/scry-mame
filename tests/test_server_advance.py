@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scry_core import log_marks
+from scry_core import log_marks, stop_wait
 from scry_core import log_wait as core_wait
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
@@ -1299,6 +1299,7 @@ def test_a_run_to_that_found_nothing_to_trust_still_answers_with_every_field(
     out = s.run_to(ref="0x4a0", control="0x25a4", seconds=1.0)
     assert out["code"] == "cut_by_other_stop"
     assert out["controls"] == [{"ref": "0x25a4", "cpu": ":maincpu", "hits_in_run": 0}]
+    assert out["message"].endswith(stop_wait.CUT_WAY_OUT), out["message"]
 
 
 def test_an_interrupt_the_stub_refuses_at_the_bound_does_not_escape_run_to(

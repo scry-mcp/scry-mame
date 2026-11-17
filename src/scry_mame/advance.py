@@ -386,10 +386,7 @@ def _run_to(ses: gs.Session, scratch: Path, ref: str, seconds: float, on: str | 
         return running.stop_reply(ses, scratch, cause, status="INVALID", code="cut_by_other_stop",
                                   control_hits=0, controls=controls, **late, message=(
             f"another stop cut the run before any control could fire, so neither {ref} nor "
-            "the controls were measured over the window asked for; `cause` says what stopped "
-            "it. Clear what stopped it, or, for a watch, disarm the watches for the pass "
-            "(`disarm_watches=True`), and run "
-            "again"))
+            f"the controls were measured over the window asked for. {stop_wait.CUT_WAY_OUT}"))
     if verdict != contract.TARGET and control_hits == 0:
         # INVALID, and still a STOP: the survey rides on this reply, or the next contact would
         # report this server's own interrupt as `stopped_on_its_own`. A silent control is not
