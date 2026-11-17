@@ -5,6 +5,10 @@ What a client of the server notices.
 ## Unreleased
 
 - Takes scry-core 0.118.1.
+- The live tier reads its bench only from `MAME_LIVE_BENCH`: unset, every board on the bench is
+  BLOCKED naming the variable, where it fell back to a directory of the developer's home.
+- A `perform` document a store holds is replayed with its placeholders resolved, `${state}`
+  naming the session's scratch: its steps ran with `${root}` in their paths and were refused.
 - `perform` and `drive` end a list at a `screen_wait` that ran out, as at a `log_wait`: the
   steps after it were built on a screen that never came.
 - `close`, `run_for`, `disassemble` and `debug` carry the titles the same tools carry on
@@ -18,12 +22,14 @@ What a client of the server notices.
 - On Windows, a `start` refused after it launched MAME (another process serving its
   `stub_port`, say) answers once that MAME is gone, where it could answer while the process
   was still ending.
+- On Windows, `close` answers a killed MAME it could not see gone as not reaped and leaves
+  running the job that ends it, where it reported the MAME reaped and stopped that job.
 - On Windows, a `gfx_film` frame is judged even when a program holds the film's header open
   while MAME replaces it: the failed publication is counted once in the reply's callback errors
   and the header you read stays the last whole one until the next stop, where the frame's
   judging was lost.
 - `patches/0003` and `0004` are made against mamedev `master` at `a7230f9f`; `0005` is gone,
-  since MAME carries it from mamedev/mame#16363 on.
+  since MAME carries that fix itself.
 - `screen_wait` under `on_breakpoint` or `on_watch` that runs out after firings says where it
   judged them: "was not found at the frame's end after any of N firings", where it said "was not
   found after any of".
@@ -162,8 +168,8 @@ floor.
 - `status` with no session says `no session is live, so there is no stop to report` for `last_stop`, not that the
   session has not stopped yet.
 - A control on the instruction a stop lands on is counted by MAME alone: the server no longer adds a hit of its own
-  for each landing of a run by frames. That is exact on a MAME that evaluates the landing (mamedev/mame#16435); on one
-  that does not, such a control misses the landing, as the `declare` page says.
+  for each landing of a run by frames. That is exact on a MAME that evaluates the landing; on one that
+  does not, such a control misses the landing, as the Declarations page says.
 - `start`'s description names `session_live`, the code a second `start` gets while a session is up, and the README
   says how to watch a machine.
 - `start` takes `size` (`WIDTHxHEIGHT` in the host's unit), which wins over the default: a watched window
