@@ -85,7 +85,8 @@ def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,
         STATE.lua_calls += 1
     answer, ahead, evaluated_by, reader_steps, resent, seq = transport.evaluate(
         ses, scratch, script, seconds, progress, pc_before, alters=not read_only)
-    refuse_if_raised(answer, "lua", resent, pc_before=st.hex_addr(pc_before), output=answer.text)
+    refuse_if_raised(answer, "lua", resent, pc_before=st.hex_addr(pc_before),
+                     **({} if answer.ok else narrowing.clip_text(answer.text, scratch, "lua")))
     hint: dict[str, str] = {}
     if not answer.text and "print" not in script:
         hint["note"] = ("no output: the console captures what the script `print`s, and a "

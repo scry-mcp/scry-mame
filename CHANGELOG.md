@@ -199,6 +199,8 @@ floor.
   and the values of `bases` take an address as `0x` text or an integer, as every other address.
 - `screen_wait`'s reply no longer lists `disarmed_watches` and `not_rearmed`, which only `run_to`
   and `run_for` send.
+- A `lua` script that prints past 4000 characters and then raises keeps its text in a file, as an
+  answer does, where the refusal carried it whole.
 
 ## 0.1.0
 

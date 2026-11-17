@@ -153,6 +153,21 @@ def test_a_long_answer_goes_to_a_file_like_debugs_and_the_summary_counts_it_whol
     assert out["summary"].startswith(f"lua: {len(long)} chars back, to a file")
 
 
+def test_a_script_that_prints_past_the_ceiling_then_raises_keeps_its_text_in_a_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A refusal is bounded as an answer is: the text it carries past the ceiling goes to a
+    file, never whole into the reply."""
+    _channel(monkeypatch, tmp_path)
+    long = "\n".join(str(i) for i in range(1, 2001)) + "\n"
+    monkeypatch.setattr(transport, "evaluate", lambda *_a, **_k: (
+        transport.Answer(long, ok=False, error="[string]:1: x"), 0, "console", 0, 0, 1))
+    out = refused("the script raised", s.lua("for i=1,2000 do print(i) end error('x')"))
+    assert out["clipped"] is True and out["output_chars"] == len(long), out
+    assert len(out["output"]) <= narrowing.TEXT_PREVIEW + 3, out["output"]
+    assert Path(out["output_path"]).read_text() == long
+
+
 def test_a_script_above_the_ceiling_is_refused_before_the_machine_is_touched(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
