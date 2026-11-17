@@ -4,7 +4,7 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Takes scry-core 0.118.0.
+- Takes scry-core 0.118.1.
 - `perform` and `drive` end a list at a `screen_wait` that ran out, as at a `log_wait`: the
   steps after it were built on a screen that never came.
 - `close`, `run_for`, `disassemble` and `debug` carry the titles the same tools carry on
