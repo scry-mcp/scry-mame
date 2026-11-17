@@ -715,7 +715,8 @@ def machine_map(cpu: str = "",
     tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
 
     Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
-    `symbol_coverage`, `counts`, `truncated` (lists are cut to {LIST_MAX} rows), `sources`,
+    `symbol_coverage`, `counts`, `truncated` (lists cut to {LIST_MAX} rows; `dest` holds all),
+    `sources`,
     `path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
 
     Reference: REFERENCE.md, Reading and writing.

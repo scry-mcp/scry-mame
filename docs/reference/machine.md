@@ -88,7 +88,8 @@ Refused: an empty or unknown `sections`, or an existing `dest` (`bad_argument`);
 tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
 
 Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
-`symbol_coverage`, `counts`, `truncated` (lists are cut to 400 rows), `sources`,
+`symbol_coverage`, `counts`, `truncated` (lists cut to 400 rows; `dest` holds all),
+`sources`,
 `path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
 
 Reference: REFERENCE.md, Reading and writing.

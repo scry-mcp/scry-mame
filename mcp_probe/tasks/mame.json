@@ -83,7 +83,8 @@
     },
     "reference_base": {
      "any_of": [
-      "0x0"
+      "0x0",
+      0
      ]
     }
    }
@@ -1130,7 +1131,8 @@
     },
     "reference_base": {
      "any_of": [
-      "0x0"
+      "0x0",
+      0
      ]
     },
     "cpu": {
@@ -3017,7 +3019,10 @@
    "tool": "machine_map",
    "args": {
     "dest": "{tmp}/mcp-probe-map.json"
-   }
+   },
+   "allow": [
+    "sections"
+   ]
   },
   {
    "id": "m171",
