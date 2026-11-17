@@ -372,11 +372,12 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
     """Run to `ref` and stop, with a control counting meanwhile.
 
     `ref` is armed on `cpu` (the visible one when empty). `control` is required with a `ref` or an
-    anchored screen: a place known to run, declared as a control on that cpu if it is new
-    (`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
-    controls count too. `condition`: stop only when it holds, bare numbers hex
-    (`w@DemoLen==0x25`). {DISARM_WATCHES}. Needs a stopped machine. Refused: an unresolved ref,
-    an empty or unresolved control, an over-long `condition`.
+    anchored screen: a place the program runs often while the target is awaited, counted each time
+    it does, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does
+    the same ahead of time), and the cpu's other declared controls count too. `condition`: stop
+    only when it holds, bare numbers hex (`w@DemoLen==0x25`). {DISARM_WATCHES}. Needs a stopped
+    machine. Refused: an unresolved ref, an empty or unresolved control, an over-long
+    `condition`.
 
     {MAP_RUN_TO}
 
@@ -1587,7 +1588,8 @@ def lua(script: str,
     `seconds` bounds the console's answer. `read_only=True` declares it only reads, else the
     session is marked ALTERED. More than
     {PIPE_STEPS_MAX} lines ahead in the pipe is refused. A chunk that fails to load or raises
-    is INVALID with the console's `error:`; `reader_died` means the script never ran.
+    is INVALID with the console's `error:`; `reader_died` means it had not run when the reader
+    died, and with `pending: true` it may still run on a later reader.
 
     Reply: `output`, `clipped`, `output_path` (past {OUTPUT_MAX} characters), `evaluated_by`,
     `pc_before`, `lines_ahead`, `console_reruns`, `note`, the stop survey.
@@ -1649,8 +1651,8 @@ def screen_wait(text: str = "", screen: str = "",
     costs a console round trip is waited on in reasonable time, and a screen alive for fewer
     than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
     recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the
-    machine not moved. The emulator's own frame notifier is not used: measured, it reads the
-    screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
+    machine not moved. The emulator's own frame notifier is not used: it reads the screen a
+    frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
     Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
     screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or

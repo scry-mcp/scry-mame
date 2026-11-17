@@ -2,9 +2,9 @@
 
 **MAME cannot advance one cpu alone.** Every run and step goes through the visible cpu while every other cpu runs its share of the same emulated time. `step(cpu=X)` makes X visible with the stub's `Hc`, which runs nothing, and `others` shows what the rest did. Without the thread patch another cpu cannot be shown without running, so naming one is refused.
 
-**Three ways to advance, and rest.** By ADDRESS (`run_to`, always with a control), by EMULATED TIME or frames (`run_for`), or with NO DEADLINE (`resume`). A running machine handed back unknowingly is the worst state a session can be in, so a run is ELAPSED only once rest is proved by two readings a tenth of a second apart: readings milliseconds apart agree on a machine running flat out.
+**Three ways to advance, and rest.** By ADDRESS (`run_to`, always with a control), by EMULATED TIME or frames (`run_for`), or with NO DEADLINE (`resume`). A running machine handed back unknowingly is the worst state a session can be in, so a run is ELAPSED only once rest is proved by three agreeing readings a tenth of a second apart: readings milliseconds apart agree on a machine running flat out.
 
-**The frame counter.** **A board with no screen device has no frame counter, and is run by time.** MAME registers `frame` only on a machine with exactly one screen device (`frame0`, `frame1`... on several); a vector board has a display and no screen chip, so the screens `machine_map` lists are no guide, and `start` asks the console and reports `frame_symbol`. There, runs by frames are refused `no_channel`, and the emulated clock (the console's `time`) proves rest wherever the counter would. A stop's `frame` is unavailable, and the console refusing an expression is `no_channel`, an answer about the machine, never a broken session.
+**The frame counter.** **A board with no screen device has no frame counter, and is run by time.** MAME registers `frame` on a machine with one screen device, and `frame0`, `frame1`... on one with several; a vector board has a display and no screen chip, so the screens `machine_map` lists are no guide, and `start` asks the console and reports `frame_symbol`. There, runs by frames are refused `no_channel`, and the emulated clock (the console's `time`) proves rest wherever the counter would. A stop's `frame` is unavailable, and the console refusing an expression is `no_channel`, an answer about the machine, never a broken session.
 
 **Frame runs count the counter itself**, so a golden is a marker plus N frames, and N milliseconds is not N frames. MAME keeps "a vblank happened" as one flag that the first cpu to run after it consumes, so the run goes through the FIRST cpu; a build without the thread patch cannot make it visible and refuses a run by frames while another is.
 
@@ -32,11 +32,12 @@ run_to(ref="", control="", screen="", seconds=30.0, disarm_watches=false, condit
 Run to `ref` and stop, with a control counting meanwhile.
 
 `ref` is armed on `cpu` (the visible one when empty). `control` is required with a `ref` or an
-anchored screen: a place known to run, declared as a control on that cpu if it is new
-(`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
-controls count too. `condition`: stop only when it holds, bare numbers hex
-(`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of them cuts it. Needs a stopped machine. Refused: an unresolved ref,
-an empty or unresolved control, an over-long `condition`.
+anchored screen: a place the program runs often while the target is awaited, counted each time
+it does, declared as a control on that cpu if it is new (`breakpoint_at(role="control")` does
+the same ahead of time), and the cpu's other declared controls count too. `condition`: stop
+only when it holds, bare numbers hex (`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of them cuts it. Needs a stopped
+machine. Refused: an unresolved ref, an empty or unresolved control, an over-long
+`condition`.
 
 `screen`: a mapped screen's name instead of `ref` (exactly one). If the screen names an `anchor` (set by `screen_map_write`), run to it (`control`
 required): a `verified` map judges it there (`stale_map` when it no longer holds), a
@@ -178,7 +179,7 @@ Example, from a live run:
 
 **Unanswered interrupt at the bound.** `run_to` starts with the stub's own `c`, so an interrupt at the bound that is NOT ANSWERED is `not_settled` with no `cause` (no stop was read) and `target_disarmed` saying whether the temporary breakpoint's removal was confirmed; the session stays RUNNING and `stop` waits for the packet the run still owes. A removal the stub REFUSES after the stop is an answer, not a break: the stop is still the measurement, and the `note` names the `debug("bpclear 0x<row>")` that removes the row (`declaration_clear(kind="breakpoint")` clears declarations, and the target was never one).
 
-Reply details: `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `dasm`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s and `trace`'s shared option.
+Reply details: `not_settled` may leave the machine RUNNING: `stop`, and if that fails as well, `close` then `start`; `session_broken` LATCHES until `close`. `control_silent` carries a survey, `control_dasm` and a `note`; `readback_refused` means a row listed bare is removed first. A removal the stub refuses keeps the stop's reply with `target_disarmed: false` and a `note`; a stop packet landing during it is a TIMEOUT with `cause` "answered late". A TARGET is `ok` with no control hit. Also in the reply: `target_disarmed`, `note`, `disarmed_watches`, `not_rearmed`. The stop survey every advancing tool returns is `cause`, `stop_seq`, `cpu` (the stop's), `pc`, `regs`, `frame`, `instruction` and `following`, `errorlog` (not `log`), `watches`, and `watch_hit` or `regpoint_hit` if one stopped it. `disarm_watches` is `run_to`'s and `run_for`'s shared option.
 
 <!-- scry-reference:begin run_for -->
 ## `run_for`
@@ -741,8 +742,8 @@ predicate already holds.
 costs a console round trip is waited on in reasonable time, and a screen alive for fewer
 than N is passed over. `seconds` bounds the polls, counted from the opening judge; the
 recovery stop comes after it. Needs a stopped machine. Already true: answered at once, the
-machine not moved. The emulator's own frame notifier is not used: measured, it reads the
-screen a frame late and sometimes mid-draw, so the judge is the server's at the stop.
+machine not moved. The emulator's own frame notifier is not used: it reads the screen a
+frame late and sometimes mid-draw, so the judge is the server's at the stop.
 
 Reply: `verdict` `TARGET` (`predicate`, `already`, `waited_s`, `polls`, `sampled_every`;
 screen adds `screen`, palette adds `entries`, `changed` adds `screen` and `started_on`) or

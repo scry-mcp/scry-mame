@@ -36,9 +36,11 @@ uv run python demos/starfire/demo.py --rompath ~/roms
 
 Each line it prints is one call and its check. Exit codes: 0 every step passed, 1 a step
 failed, 2 a usage error, 3 nothing was demonstrated (a missing ROM, a relative path, a server
-that did not start, a loop that could not be converted). Star Fire's sound is emulated from its circuit diagram, which is expensive: under the
-debugger the emulation cannot keep up with real time, so a run takes far longer than the game
-seconds it plays, and the window moves slowly.
+that did not start, a loop that could not be converted).
+
+A run takes far longer than the game seconds it plays, and the window moves slowly: Star Fire's
+sound is emulated from its circuit diagram, which is expensive, and under the debugger the
+emulation cannot keep up with real time.
 
 ## The prompt
 

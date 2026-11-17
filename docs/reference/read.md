@@ -276,9 +276,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end registers -->
 
-A fixed eight digits would make a 16-bit register look 32-bit and its own ceiling look like a broken tool.
-
-Each register prints at its declared width, so a 16-bit V30 register named `EAX` says 16 rather than leaving it to a digit count. Names come from the target description: a 68000 board answers D0..D7/A0..A5/FP/SP/PS/PC, an x86 or V30 board EAX..GS with EIP; the m68k aliases A6, A7, SR, USP are accepted by `set_register` but not listed. A stop's registers are marked `superseded` so they are never read as the current value. Each cpu is served by its own thread of the gdbstub's thread patch; a build without it serves only its first cpu and refuses another with `bad_argument`.
+Each register prints at its declared width, because a fixed eight digits would make a 16-bit register look 32-bit: a 16-bit V30 register named `EAX` says 16 rather than leaving it to a digit count. Names come from the target description: a 68000 board answers D0..D7/A0..A5/FP/SP/PS/PC, an x86 or V30 board EAX..GS with EIP; the m68k aliases A6, A7, SR, USP are accepted by `set_register` but not listed. A stop's registers are marked `superseded` so they are never read as the current value. Each cpu is served by its own thread of the gdbstub's thread patch; a build without it serves only its first cpu and refuses another with `bad_argument`.
 
 <!-- scry-reference:begin disassemble -->
 ## `disassemble`

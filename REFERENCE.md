@@ -71,7 +71,7 @@ While a session holds the window, an orange edge says so: dim from `start` to `c
 
 **Every tool publishes its reply as its `outputSchema`**: each field is its value or `unavailable(why)`, `status` is required, and the fields an `ok` reply always carries are required of it (unless its `omitted` names them). A field that comes only under a condition says which in the tool's `Reply:` sentence.
 
-Every reply opens with a one-line `summary` and closes with a `session` block composed after the tool's work, so it says what the machine is doing after the call (`close`'s alone describes the state before it). Alarms ride on every reply (`altered`, `broken`, `console` once a count is not zero, `throttles_not_applied`, `tallies_not_removed`, a `note`); what only counts rides on `start`, `status` and `close`.
+Every reply opens with a one-line `summary` and closes with a `session` block composed after the tool's work, so it says what the machine is doing after the call, `close`'s included (no session is left). Alarms ride on every reply (`altered`, `broken`, `console` once a count is not zero, `throttles_not_applied`, `tallies_not_removed`, a `note`); what only counts rides on `start`, `status` and `close`.
 
 **A reply that answers less than everything says so**: it carries `omitted`, the names it left out, and `how` brings them; one that left nothing out carries neither.
 

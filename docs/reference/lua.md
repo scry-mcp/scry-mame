@@ -175,7 +175,7 @@ Example, from a live run:
 
 A field by NAME is the right shape for a board with no keyboard.
 
-The reply ends with the stop survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `dasm`, `errorlog`, `watches`, `watch_hit` or `regpoint_hit`), which every wrapper that advances the machine shares. `value` is an integer or a `0x` string; an analog field takes a value in its own range. `seconds` is the wall-clock bound of the whole call, so every run and every console wait inside it takes what is left. A press is play, not a write, hence `altered` is untouched. `lines_ahead`, `drain_steps`, `reader_steps`, `thread_errors`, `console_reruns`, `resent` are the console's account, described under `lua`. A script the console ran twice sets the field twice, which is why it is INVALID.
+The reply ends with the stop survey (`cause`, `stop_seq`, `cpu`, `pc`, `regs`, `frame`, `instruction`, `following`, `errorlog`, `watches`, `watch_hit` or `regpoint_hit`), which every wrapper that advances the machine shares. `value` is an integer or a `0x` string; an analog field takes a value in its own range. `seconds` is the wall-clock bound of the whole call, so every run and every console wait inside it takes what is left. A press is play, not a write, hence `altered` is untouched. `lines_ahead`, `drain_steps`, `reader_steps`, `thread_errors`, `console_reruns`, `resent` are the console's account, described under `lua`. A script the console ran twice sets the field twice, which is why it is INVALID.
 
 <!-- scry-reference:begin lua -->
 ## `lua`
@@ -192,7 +192,8 @@ Evaluate a Lua `script` on MAME's Lua console; prefer the typed wrappers. Needs 
 `seconds` bounds the console's answer. `read_only=True` declares it only reads, else the
 session is marked ALTERED. More than
 8 lines ahead in the pipe is refused. A chunk that fails to load or raises
-is INVALID with the console's `error:`; `reader_died` means the script never ran.
+is INVALID with the console's `error:`; `reader_died` means it had not run when the reader
+died, and with `pending: true` it may still run on a later reader.
 
 Reply: `output`, `clipped`, `output_path` (past 4000 characters), `evaluated_by`,
 `pc_before`, `lines_ahead`, `console_reruns`, `note`, the stop survey.
@@ -358,4 +359,4 @@ Example, from a live run:
 
 **The `throttles_not_applied` row LATCHES** for a switch the console demonstrably worked past without writing, or a machine reporting the OTHER setting: a caller who does not ask again would never hear of it, and every timing they take meanwhile describes a speed nobody chose. Until the console has worked past the line there is no row, because the `pending` the caller was given is true. Asking again fixes the machine, but the row stays until the session ends: it is the record that this session measured at a speed nobody chose, and it rides on every reply while it holds, because the call that would naturally report it is one nobody is obliged to make. `status` lists a switch not yet applied (`throttles_pending`), so a success is a row leaving a list the caller can see.
 
-Stopped at a breakpoint, ask and `resume`: the machine runs at real speed from its first frame. The console reads on a step, the next frame emulated, or a debugger command on a stub that refreshes after one. The tag's number is the session's console sequence, shared with every call sending the console a line, so it counts nothing about throttles; `log_wait` takes a regex, so unclosed digits (`#1`) also match `#10`. One that stops before its next frame stays pending. `start`'s `throttle_from_frame` is the same switch decided at launch. A pending switch is revisited by the next stop's survey, `status` and `close`; one that arrives leaves `throttles_pending`; one that does not puts the latching row described above (`readback_refused`).
+Stopped at a breakpoint, ask and `resume`: the machine runs at real speed from its first frame. The console reads on a step, the next frame emulated, or a debugger command on a stub that refreshes after one. The tag's number is the session's console sequence, shared with every call sending the console a line, so it counts nothing about throttles; `log_wait` takes a regex, so unclosed digits (`#1`) also match `#10`. One that stops before its next frame stays pending. `start`'s `throttle_from_frame` is the same switch decided at launch. A pending switch is revisited by the next stop's survey, `status` and `close`; one that arrives leaves `throttles_pending`; one that does not puts the latching row described above in `session.throttles_not_applied`, and no call is refused for it.
