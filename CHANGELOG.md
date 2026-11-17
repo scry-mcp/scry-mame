@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `start`'s description says that `throttle_from_frame` runs at real speed after its frame and
+  that `background` brings either window to the front, watched or not, so neither reads as a
+  reason for `shared`.
 - On Windows, a `start` refused after it launched MAME (another process serving its
   `stub_port`, say) answers once that MAME is gone, where it could answer while the process
   was still ending.

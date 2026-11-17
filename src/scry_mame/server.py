@@ -177,8 +177,8 @@ def start(
     (`0x`, the image's first byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
-    fits the display's usable area, drawn at the view's aspect, real speed); false, a small
-    window run flat out. `display`: the OS's
+    fits the display's usable area, drawn at the view's aspect, real speed); false, nobody
+    watches: a small window run flat out. `display`: the OS's
     display index for that window, 0 (the main display) when omitted; `size`:
     `WIDTHxHEIGHT` of the window in the host's unit, which wins over the fit (a size that is not a
     whole multiple of the screen is scaled by whole pixels, unevenly, and the reply's `note` says
@@ -187,9 +187,10 @@ def start(
     exceeds the display's usable area, naming that size; a `display` past the host's count is
     refused naming the count. The server waits for the window to be
     listed on that display and answers `window`; a later `window` judges a stated size.
-    `background`: launch behind, keeping the caller's focus, or in front; it does not need
-    `shared`, and omitted it is behind unless `shared`; somebody watching without losing their
-    focus is `shared=True` with `background=True`. `throttle_from_frame`: flat out until it.
+    `background`: launch behind, keeping the caller's focus, or in front, either window; omitted
+    it is behind unless `shared`; somebody watching without losing their focus is `shared=True`
+    with `background=True`. `throttle_from_frame`: flat out until that frame, real speed after,
+    either window.
     `boot_lua`: a harness file, not Lua text. `boot_seconds`: the wait for MAME's first prompt.
     `env`: variables MAME's own process gets. `cfg`: a `.cfg` file the server installs as the
     system's own before it boots, judged for what MAME would refuse in silence.
