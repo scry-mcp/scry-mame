@@ -169,12 +169,12 @@ def start(
 ) -> dict[str, Any]:
     """Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
 
-    Paths are absolute or `~`-led: `rompath`, `inipath`, `state_dir` directories, the rest
-    files. `binary` names a MAME executable or a `.app` bundle carrying one: the bundle is
-    launched through `open`, which makes it an application the host captures as one, and the
-    reply names it in `bundle`; its exit status is then not this server's to know, and `close`
-    answers `unavailable` for it. The check: `reference_rom`, `reference_addr`, `reference_base`
-    (the image's first byte).
+    Paths are absolute or `~`-led: `rompath` and `inipath` `;`-separated directories, `state_dir`
+    a directory, the rest files. `binary` names a MAME executable or a `.app` bundle carrying
+    one: the bundle is launched through `open`, which makes it an application the host captures
+    as one, and the reply names it in `bundle`; its exit status is then not this server's to
+    know, and `close` answers `unavailable` for it. The check: `reference_rom`, `reference_addr`,
+    `reference_base` (the image's first byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
     fits the display's usable area, drawn at the view's aspect, real speed); false, nobody

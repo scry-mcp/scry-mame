@@ -408,15 +408,19 @@ CFG_PARSE_ERROR = "Error parsing XML configuration file"
 PORT_ATTRS = ("tag", "mask", "defvalue")
 
 
-def judge_inipath(inipath: str) -> None:
-    """Judge `-inipath`'s `;`-separated list; a missing directory is skipped by MAME."""
-    parts = inipath.split(";") if inipath else []
+def judge_folders(name: str, value: str) -> list[tuple[str, Path]]:
+    """Judge a `;`-separated list of absolute directories (`-rompath`, `-inipath`): each folder
+    with the name a refusal gives it, `name[i]` in a list of several."""
+    parts = value.split(";") if value else []
+    folders: list[tuple[str, Path]] = []
     for i, part in enumerate(parts):
         if not part:
             raise st.Invalid("bad_argument",
-                             f"inipath={inipath!r} holds an empty element: it is a `;`-separated "
+                             f"{name}={value!r} holds an empty element: it is a `;`-separated "
                              "list of absolute directories")
-        inputs.absolute("inipath" if len(parts) == 1 else f"inipath[{i}]", part)
+        named = name if len(parts) == 1 else f"{name}[{i}]"
+        folders.append((named, inputs.absolute(named, part)))
+    return folders
 
 
 def judge_cfg(cfg: str, system: str) -> Path:
@@ -533,9 +537,8 @@ def check_start(binary: str = "", rompath: str = "", reference_rom: str = "",
         inputs.absolute("binary", binary)
     if reference_rom:
         inputs.absolute("reference_rom", reference_rom)
-    if rompath:
-        inputs.absolute("rompath", rompath)
-    judge_inipath(inipath)
+    judge_folders("rompath", rompath)
+    judge_folders("inipath", inipath)            # a missing one MAME skips
     if cfg:
         inputs.absolute("cfg", cfg)
     if boot_lua:
@@ -594,8 +597,9 @@ def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
     ref = reference_rom_file(reference_rom)
     # Reaching MAME, a missing ROM directory looks like a stub that never answers, after the
     # whole `boot_seconds`.
-    if not (roms := inputs.absolute("rompath", rompath)).is_dir():
-        inputs.no_such("rompath", "ROM directory", str(roms))
+    for named, roms in judge_folders("rompath", rompath):
+        if not roms.is_dir():
+            inputs.no_such(named, "ROM directory", str(roms))
     inputs.natural("throttle_from_frame", throttle_from_frame,
                    " is not a frame number: an integer, never negative, and 0 is off")
     behind = judge_background(background, shared, env)
@@ -922,9 +926,10 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
           progress: mprogress.Progress = mprogress.no_progress) -> dict[str, Any]:
     """The body of the `start` tool: one launch, relaunched whole up to `START_RETRIES_MAX` times
     for a `failures.LaunchFailed` that says so. Only its evidence survives, as `start_retries`."""
-    binary, rompath, reference_rom, boot_lua, cfg, state_dir = (
-        judges.expanded(v) for v in (binary, rompath, reference_rom, boot_lua, cfg, state_dir))
-    inipath = ";".join(judges.expanded(p) for p in inipath.split(";")) if inipath else inipath
+    binary, reference_rom, boot_lua, cfg, state_dir = (
+        judges.expanded(v) for v in (binary, reference_rom, boot_lua, cfg, state_dir))
+    rompath, inipath = (";".join(judges.expanded(p) for p in v.split(";")) if v else v
+                        for v in (rompath, inipath))
     symbols = syms.expanded(symbols)
     types = syms.expanded(types)
     retries: list[dict[str, Any]] = []

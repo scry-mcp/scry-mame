@@ -5,6 +5,8 @@ What a client of the server notices.
 ## Unreleased
 
 - Takes scry-core 0.118.3.
+- `rompath` takes a `;`-separated list of directories, as `inipath` does, each judged on its own
+  (`rompath[i]` in a refusal); a list was refused as one missing directory.
 - A `start` profile's `rompath` and `inipath` resolve each of their `;`-separated folders against
   the store's base; only the first was resolved, and `inipath` not at all.
 - `run_to`'s `cut_by_other_stop` refusal ends in the words scry-dosbox-x's now ends in too, with

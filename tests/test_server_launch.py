@@ -815,6 +815,26 @@ def test_a_docstring_placeholder_is_filled_from_its_constant_or_fails_the_import
 
 
 
+def test_a_rompath_list_reaches_mame_whole_and_each_folder_is_judged(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    image = bytes(range(64))
+    _stub_boot(monkeypatch, tmp_path, image, at=0)
+    shared = tmp_path / "shared"
+    shared.mkdir()
+    listed = f"{tmp_path};{shared}"
+    s.start(**{**_boot_args(tmp_path, image), "rompath": listed})
+    try:
+        argv = _StubProcess.last_argv
+        assert argv[argv.index("-rompath") + 1] == listed
+    finally:
+        s.close()
+    refused(r"rompath\[1\]: no ROM directory at",
+            s.start(**{**_boot_args(tmp_path, image), "rompath": f"{tmp_path};{tmp_path / 'no'}"}))
+    refused("holds an empty element",
+            s.start(**{**_boot_args(tmp_path, image), "rompath": f"{tmp_path};"}))
+
+
 def test_boot_hands_the_inipath_and_the_scratch_as_cwd_to_the_process(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
