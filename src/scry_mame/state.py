@@ -139,7 +139,6 @@ class State:
         self.port: int = 0
         self.stdout_log: IO[bytes] | None = None
         self.snapshots: int = 0
-        self.debug_dumps: int = 0
         self.batches: int = 0
         self.recordings: int = 0
         self.captures: list[tuple[str, str]] = []
@@ -286,7 +285,7 @@ class State:
         """Why the session can no longer be trusted, None with no session."""
         return self.ses.broken if self.ses is not None else None
 
-    def next_number(self, kind: Literal["snapshots", "debug_dumps", "batches",
+    def next_number(self, kind: Literal["snapshots", "batches",
                                         "recordings"]) -> int:
         number = int(getattr(self, kind)) + 1
         setattr(self, kind, number)

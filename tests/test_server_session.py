@@ -14,10 +14,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scry_core import narrowing, window_size
 from scry_core import presence as presence_mod
 from scry_core import progress as mprogress  # noqa: E402
 from scry_core import window as core_window
-from scry_core import window_size
 from server_support import (  # noqa: E402
     MACHINE_INDEPENDENT,
     _AlreadyDead,
@@ -65,7 +65,6 @@ from scry_mame import server as s  # noqa: E402
 from scry_mame import session as msession
 from scry_mame import state as mstate  # noqa: E402
 from scry_mame import stub_owner as owner  # noqa: E402
-from scry_mame import write as mwrite  # noqa: E402
 
 UNWATCHED = ["-window", "-nomaximize", "-resolution", "320x240", "-nothrottle"]
 
@@ -500,7 +499,7 @@ def test_a_long_console_answer_goes_to_a_file_and_the_envelope_stays(
 ) -> None:
     """The haystack goes to a file and the honesty envelope stays in front of the caller."""
     long = "\n".join(f"line {i}" for i in range(2000))
-    assert len(long) > mwrite.DEBUG_MAX
+    assert len(long) > narrowing.TEXT_MAX
     scratch = _console(monkeypatch, tmp_path, _ConsoleSession(replies={"help": long}))
     out = s.debug("help")
     assert out["clipped"] is True
@@ -517,10 +516,10 @@ def test_a_long_console_answer_goes_to_a_file_and_the_envelope_stays(
     ses.replies["find"] = "x" * 5000  # type: ignore[attr-defined]
     one_line = s.debug("find 0,ffff,00")
     assert one_line["clipped"] is True
-    assert len(one_line["output"]) == mwrite.DEBUG_PREVIEW + 3
+    assert len(one_line["output"]) == narrowing.TEXT_PREVIEW + 3
     assert Path(one_line["output_path"]).name == "debug-2.txt", "each clip its own file"
     # Exactly the ceiling is not above it.
-    ses.replies["symlist"] = "y" * mwrite.DEBUG_MAX  # type: ignore[attr-defined]
+    ses.replies["symlist"] = "y" * narrowing.TEXT_MAX  # type: ignore[attr-defined]
     assert s.debug("symlist")["clipped"] is False
 
 
@@ -882,7 +881,7 @@ def test_kill_clears_every_field_of_the_session_it_ends() -> None:
         "machine_map": {"cpus": [{"tag": ":old"}]}, "cpus": [":old"], "frame_symbol": None,
         "scratch": Path(tempfile.mkdtemp(prefix="mame-mcp-kill-test-")), "named_state_dir": "/x",
         "cfg": {"source": Path("/x/a.cfg"), "installed": Path("/x/cfg/m68k.cfg")},
-        "port": 23999, "snapshots": 3, "debug_dumps": 1, "batches": 4, "errorlog_mark": 5,
+        "port": 23999, "snapshots": 3, "batches": 4, "errorlog_mark": 5,
         "recordings": 2, "console_mark": 9, "lua_calls": 1, "lua_read_only_claims": 2,
         "console_thread_errors": 3, "console_reruns_seen": 2, "console_lines_lost": 1,
         "console_counted": 12,

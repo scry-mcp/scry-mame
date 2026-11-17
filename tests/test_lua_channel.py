@@ -35,6 +35,7 @@ from lua_support import (  # noqa: E402
     _TimedPipe,
     _whole,
 )
+from scry_core import narrowing
 from scry_core import progress as mprogress  # noqa: E402
 from session_doubles import blank_session, refused  # noqa: E402
 
@@ -49,7 +50,6 @@ from scry_mame import files as mfiles  # noqa: E402
 from scry_mame import gdb_session as g  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
-from scry_mame import write as mwrite  # noqa: E402
 
 
 def test_a_script_becomes_one_chunk_under_pcall_with_its_sentinel() -> None:
@@ -143,7 +143,7 @@ def test_a_long_answer_goes_to_a_file_like_debugs_and_the_summary_counts_it_whol
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     long = "\n".join(str(i) for i in range(1, 2001)).encode() + b"\n"
-    assert len(long) > mwrite.DEBUG_MAX
+    assert len(long) > narrowing.TEXT_MAX
     ses = _channel(monkeypatch, tmp_path)
     ses.answers[1] = long + ses.sentinel(1)
     out = s.lua("for i=1,2000 do print(i) end")

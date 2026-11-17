@@ -7,6 +7,7 @@ from scry_core import (
     file_names,
     frame_window,
     log_marks,
+    narrowing,
     picture,
     recording,
     roster,
@@ -35,7 +36,6 @@ from scry_mame import scan as mscan
 from scry_mame import state as st
 from scry_mame import sweep as msweep
 from scry_mame import trace as mtrace
-from scry_mame import write as mwrite
 
 # Sentences shared by the tool docstrings. The server instructions already say which readers
 # refuse on a running machine, so it is not repeated here (each repeat counts against the cap).
@@ -73,7 +73,7 @@ DOC_VALUES: dict[str, str] = {
     "WAIT_MAX_S": f"{vocab.WAIT_MAX_S:g}", "SCRIPT_MAX": str(transport.SCRIPT_MAX),
     "WATCH_SHOW_MAX": str(watches.SHOW_WATCH_MAX),
     "STATE_NAME_MAX": str(file_names.WORD_MAX),
-    "OUTPUT_MAX": str(mwrite.DEBUG_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
+    "OUTPUT_MAX": str(narrowing.TEXT_MAX), "PIPE_STEPS_MAX": str(transport.PIPE_STEPS_MAX),
     "ROWS_SHOWN": str(st.ROWS_SHOWN),
     "EXPECT_WAIT_S": f"{sequence.DRIVE_EXPECT_WAIT_S:g}",
     "TEMPS": str(lexer.TEMPS), "SCAN_BYTES_MAX": f"{mscan.SCAN_BYTES_MAX:#x}",

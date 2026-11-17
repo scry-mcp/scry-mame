@@ -6,7 +6,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from scry_core import file_names, judges
+from scry_core import judges, narrowing
 from scry_core.reply_contract import or_unavailable, unavailable
 
 from scry_mame import (
@@ -34,10 +34,6 @@ from scry_mame import state as st
 from scry_mame import tap as mtap
 from scry_mame.state import STATE
 
-# Above DEBUG_MAX characters a `debug` answer goes to a file in the scratch; the reply keeps
-# a preview and the path.
-DEBUG_MAX = 4000
-DEBUG_PREVIEW = 160
 
 # `readback` and `verified` are the point: a ROM write on a 68000 board answers
 # `bytes_written: 4` while the memory keeps its old bytes.
@@ -183,18 +179,6 @@ def reset(ses: gs.Session, scratch: Path) -> dict[str, Any]:
                                **({"taps_across": across} if across else {}))
 
 
-def clip_text(output: str, scratch: Path, stem: str) -> dict[str, Any]:
-    """Text of no known shape, bounded by characters: whole below the ceiling, else a file in
-    the scratch (`<stem>-N.txt`) plus a preview, `output_chars` and `output_path`."""
-    if len(output) <= DEBUG_MAX:
-        return {"output": output, "clipped": False}
-    path = scratch / file_names.name(stem, STATE.next_number("debug_dumps"), extension="txt")
-    path.write_text(output, encoding="utf-8", newline="")    # as printed, never CRLF
-    preview = output.split("\n", 1)[0][:DEBUG_PREVIEW]
-    return {"output": preview + "...", "output_chars": len(output), "output_path": str(path),
-            "clipped": True}
-
-
 
 
 # The console's three clears and the forget that follows each.
@@ -317,7 +301,7 @@ def debug(ses: gs.Session, scratch: Path, command: str) -> dict[str, Any]:
             notes.append("the console's `ignore` answered neither of its shapes, so whether "
                          "this line released the machine was not judged")
     st.add_note(reply, *notes)
-    fields = {**reply, **clip_text(output, scratch, "debug")}
+    fields = {**reply, **narrowing.clip_text(output, scratch, "debug")}
     if refusal is None:
         return menvelope.envelope(fields)
     # The console's own error refuses the argument in its words, keeping the whole answer.

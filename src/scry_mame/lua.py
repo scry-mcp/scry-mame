@@ -19,7 +19,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
-from scry_core import cancel, prose
+from scry_core import cancel, narrowing, prose
 from scry_core import log_wait as core_wait
 from scry_core import progress as mprogress
 from scry_core import reply_contract as contract
@@ -30,7 +30,6 @@ from scry_mame import advance, files, inputs, lua_source, running, transport
 from scry_mame import envelope as menvelope
 from scry_mame import gdb_session as gs
 from scry_mame import state as st
-from scry_mame import write as mwrite
 from scry_mame.state import STATE
 
 EVAL_WAIT_S = 5.0
@@ -96,7 +95,7 @@ def lua(ses: gs.Session, scratch: Path, script: str, seconds: float,
                               reader_steps=reader_steps, call=st.sentinel_line(seq),
                               pc_before=st.hex_addr(pc_before),
                               **st.merged(transport.console_did(answer, resent),
-                                          mwrite.clip_text(answer.text, scratch, "lua"), hint))
+                                          narrowing.clip_text(answer.text, scratch, "lua"), hint))
 
 
 def marks_since(scratch: Path, mark: int, tag: str) -> list[str]:

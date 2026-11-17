@@ -298,7 +298,6 @@ def _console(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, ses: _ConsoleSessi
     _install(monkeypatch, ses, tmp_path)
     monkeypatch.setattr(mstate.STATE, "scratch", scratch)
     monkeypatch.setattr(mstate.STATE, "snapshots", 0)
-    monkeypatch.setattr(mstate.STATE, "debug_dumps", 0)
     return scratch
 
 
