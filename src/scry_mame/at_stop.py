@@ -73,8 +73,7 @@ def declared_row(ses: gs.Session, spec: stop_wait.StopWait,
     decl = next(d for d in store.declarations()
                 if d.kind == spec.kind and d.cpu == on and d.ref == held)
     if spec.kind == "breakpoint" and decl.role != "stop":
-        raise st.Invalid("bad_argument", f"the breakpoint {held!r} is a `{decl.role}`, which "
-                         "counts its hits and never stops the machine")
+        raise stop_wait.not_a_stop(held, decl.role)
     if spec.kind == "watch" and decl.watch_mode != "change":
         raise stop_wait.not_a_change_watch(held, str(decl.watch_mode))
     if decl.by == "pointer":

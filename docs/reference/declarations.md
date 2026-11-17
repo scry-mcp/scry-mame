@@ -82,7 +82,7 @@ Example, from a live run:
 ```
 <!-- scry-reference:end breakpoint_at -->
 
-**A control costs a run nothing**: MAME counts its hits through a conditioned console breakpoint (`bp addr:cpu,(++tempN)==0`) that never halts.
+**A control costs a run nothing**: MAME counts its hits through a conditioned console breakpoint (`bp addr:cpu,(++tempN)==0`) that never halts. So `run_to` declares its own `control` as one, and every later run counts it free. scry-dosbox-x has the same `role="control"`, but there a breakpoint always halts and each hit costs a round trip, so its `run_to` keeps its own `control` for that run alone.
 
 MAME's debugger skips the breakpoints of the instruction a stop lands on when the stop came from outside the instruction stream (end of a frame, a time, a step), and that instruction executes unchecked on release, unless the MAME carries mamedev/mame#16435, which evaluates it. This server counts nothing of its own for such a landing: on a MAME without that patch a control sitting on the instruction a stop lands on misses that landing (a run by frames lands on one every frame, often the first of the vblank handler), so there place a control off the stopped pc.
 
