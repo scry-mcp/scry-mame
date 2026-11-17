@@ -264,6 +264,9 @@ def test_a_reference_address_outside_the_image_refuses_start_before_the_emulator
     refused("OUTSIDE", s.start(reference_addr="0x20010", **common))
     refused("reference_addr", s.start(reference_addr="0x4zz", **common))
     refused("reference_base", s.start(reference_addr="0x10", reference_base="-20000", **common))
+    # CONTRIBUTING.md: an address is taken as `0x` text or an integer.
+    refused("OUTSIDE", s.start(reference_addr=0x20010, **common))
+    refused("reference_base", s.start(reference_addr=0x10, reference_base=-0x20000, **common))
 
 
 def test_start_on_a_machine_that_does_not_hold_the_rom_is_refused_in_the_envelope(
@@ -306,6 +309,8 @@ def test_rom_check_takes_the_reference_base(
     monkeypatch.setattr(ses, "cost_per_query", lambda *_a, **_k: 0.0012345678, raising=False)
     out = s.rom_check(reference_rom=str(rom), reference_addr="0x20010", reference_base="0x20000")
     assert out["rom_check"] == "OK"
+    assert s.rom_check(reference_rom=str(rom), reference_addr=0x20010,
+                       reference_base=0x20000)["rom_check"] == "OK", "an integer is an address too"
     assert out["query_s"] == 0.001235, "the cost of one query, in seconds, to the microsecond"
 
 

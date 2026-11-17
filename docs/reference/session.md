@@ -10,7 +10,7 @@ A repository may declare, in its own `.scry/`, the mechanical facts of how its p
 *Start a MAME session*
 
 ```text
-start(system="", rompath="", reference_rom="", symbols="", reference_addr="0x0", inipath="", boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null, bases=null, reference_base="0x0", stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="", profile="")
+start(system="", rompath="", reference_rom="", symbols="", reference_addr=0, inipath="", boot_seconds=8.0, shared=false, display=null, size=null, background=null, boot_lua="", env=null, bases=null, reference_base=0, stub_port=0, state_dir="", throttle_from_frame=0, types="", cfg="", binary="", presence=true, view="", profile="")
 ```
 
 Start MAME with its gdbstub, parked STOPPED and checked against the reference image.
@@ -20,7 +20,7 @@ files. `binary` names a MAME executable or a `.app` bundle carrying one: the bun
 launched through `open`, which makes it an application the host captures as one, and the
 reply names it in `bundle`; its exit status is then not this server's to know, and `close`
 answers `unavailable` for it. The check: `reference_rom`, `reference_addr`, `reference_base`
-(`0x`, the image's first byte).
+(the image's first byte).
 `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
 `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
 fits the display's usable area, drawn at the view's aspect, real speed); false, nobody
@@ -67,7 +67,7 @@ Reference: REFERENCE.md, The session.
 | `rompath` | string | `""` |
 | `reference_rom` | string | `""` |
 | `symbols` | string or object | `""` |
-| `reference_addr` | string | `"0x0"` |
+| `reference_addr` | integer or string | `0` |
 | `inipath` | string | `""` |
 | `boot_seconds` | number (> 0, <= 600.0) | `8.0` |
 | `shared` | boolean | `false` |
@@ -77,7 +77,7 @@ Reference: REFERENCE.md, The session.
 | `boot_lua` | string | `""` |
 | `env` | object or null | `null` |
 | `bases` | object or null | `null` |
-| `reference_base` | string | `"0x0"` |
+| `reference_base` | integer or string | `0` |
 | `stub_port` | integer (>= 0, <= 65535) | `0` |
 | `state_dir` | string | `""` |
 | `throttle_from_frame` | integer | `0` |
@@ -273,7 +273,7 @@ A watched run opens MAME's window on the display `display` names (the OS's index
 
 **The reply also carries what reached the driver** (`binary_origin`, `env`, `view`, `background`, `flags`, `throttle_from_frame`, `boot_lua_path`, `debugger`, `symbols_typed`, `symbols_format`, `symbols_by_class`, `frame_symbol`, `errorlog_path`, `stdout_path`, `cfg`), so a start can be attributed from its own output.
 
-**Also refused**: a stranger on your `stub_port` is `host_failed`; an unknown `system` is refused after the spawn, or before it on a watched start or a `symbols` mapping. `symbols` is a YAML or the linker's five-column map; `bases` maps each non-CODE class of a map to a `0x` base or to `rom`; `types` is a file of `name: format` lines; with several cpus `symbols` is `{cpu: path}`, `bases` `{cpu: {class: base}}`, `types` `{cpu: file}`. `shared=True` means somebody watches (a window scaled to be seen, real speed).
+**Also refused**: a stranger on your `stub_port` is `host_failed`; an unknown `system` is refused after the spawn, or before it on a watched start or a `symbols` mapping. `symbols` is a YAML or the linker's five-column map; `bases` maps each non-CODE class of a map to a base (`0x` text or an integer) or to `rom`; `types` is a file of `name: format` lines; with several cpus `symbols` is `{cpu: path}`, `bases` `{cpu: {class: base}}`, `types` `{cpu: file}`. `shared=True` means somebody watches (a window scaled to be seen, real speed).
 
 <!-- scry-reference:begin status -->
 ## `status`
@@ -549,7 +549,7 @@ Example, from a live run:
 *Check the ROM against its image*
 
 ```text
-rom_check(reference_rom, reference_addr="0x0", reference_base="0x0", cpu="")
+rom_check(reference_rom, reference_addr=0, reference_base=0, cpu="")
 ```
 
 Re-validate the session: 16 bytes at `reference_addr` of `cpu` (empty: the visible one)
@@ -564,8 +564,8 @@ Reference: REFERENCE.md, The session.
 | argument | type | default |
 |---|---|---|
 | `reference_rom` | string | required |
-| `reference_addr` | string | `"0x0"` |
-| `reference_base` | string | `"0x0"` |
+| `reference_addr` | integer or string | `0` |
+| `reference_base` | integer or string | `0` |
 | `cpu` | string | `""` |
 
 | reply field | type |

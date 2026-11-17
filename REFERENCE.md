@@ -115,7 +115,7 @@ Every tool ends one of three ways, and one that declares no end ends `none`:
 
 ## Names for addresses
 
-A symbol file is the project's YAML or the linker's own five-column map. A map row's address is the runtime one only for CODE: DATA is copied to RAM at boot, so the map's linear address for it is the ROM copy of its INITIAL value, which reads plausibly and is wrong. So `bases` maps each non-CODE class to the `0x` base the board uses or to `rom`, and a class with no base REFUSES the start rather than loading an image address in silence.
+A symbol file is the project's YAML or the linker's own five-column map. A map row's address is the runtime one only for CODE: DATA is copied to RAM at boot, so the map's linear address for it is the ROM copy of its INITIAL value, which reads plausibly and is wrong. So `bases` maps each non-CODE class to the base the board uses (`0x` text or an integer, as every address) or to `rom`, and a class with no base REFUSES the start rather than loading an image address in silence.
 
 **An address is written `0x`, and nothing else is one.** Any other ref is a symbol, so `adc` names the symbol even where it is also valid hex. Bare hex that names no symbol is refused (`unknown_ref`) with the `0x` spelling it most likely meant, because the table deciding would read one build's name as another build's address. Every address ARGUMENT and every io port is written `0x`; text that starts `0x` and is not hex is refused. A writer's `pc` is a ref. Conditions and `debug` are the console's own grammar, where a bare number is hex; `lua` is Lua's, where it is decimal.
 

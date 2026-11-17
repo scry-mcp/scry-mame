@@ -145,7 +145,7 @@ def start(
     rompath: str = "",
     reference_rom: str = "",
     symbols: str | dict[str, str] = "",
-    reference_addr: str = "0x0",
+    reference_addr: inputs.NumberArg = 0,
     inipath: str = "",
     boot_seconds: Annotated[float, vocab.WAIT_BOUNDS] = 8.0,
     shared: bool = False,
@@ -154,8 +154,8 @@ def start(
     background: bool | None = None,
     boot_lua: str = "",
     env: dict[str, str] | None = None,
-    bases: dict[str, str] | dict[str, dict[str, str]] | None = None,
-    reference_base: str = "0x0",
+    bases: dict[str, inputs.NumberArg] | dict[str, dict[str, inputs.NumberArg]] | None = None,
+    reference_base: inputs.NumberArg = 0,
     stub_port: Annotated[int, vocab.bounds(0, launch.PORT_MAX)] = 0,
     state_dir: str = "",
     throttle_from_frame: int = 0,
@@ -174,7 +174,7 @@ def start(
     launched through `open`, which makes it an application the host captures as one, and the
     reply names it in `bundle`; its exit status is then not this server's to know, and `close`
     answers `unavailable` for it. The check: `reference_rom`, `reference_addr`, `reference_base`
-    (`0x`, the image's first byte).
+    (the image's first byte).
     `symbols`, `bases`, `types`: one value, or `{cpu: ...}` per cpu.
     `shared=True`: somebody watches (a window of the largest whole multiple of the screen that
     fits the display's usable area, drawn at the view's aspect, real speed); false, nobody
@@ -342,7 +342,8 @@ def cpu_info(cpu: str = "") -> dict[str, Any]:
 
 @tool("Check the ROM against its image", summary=summaries.rom_check, read_only=True)
 def rom_check(
-    reference_rom: str, reference_addr: str = "0x0", reference_base: str = "0x0",
+    reference_rom: str, reference_addr: inputs.NumberArg = 0,
+    reference_base: inputs.NumberArg = 0,
     cpu: str = ""
 ) -> dict[str, Any]:
     """Re-validate the session: 16 bytes at `reference_addr` of `cpu` (empty: the visible one)

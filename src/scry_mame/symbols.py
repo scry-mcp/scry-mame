@@ -21,7 +21,7 @@ from scry_mame import state as st
 #: `symbols` as `start` takes it: one path, or one path per cpu.
 Given = str | dict[str, str]
 #: `bases` beside one path (class to base), or beside a mapping (cpu to class to base).
-Bases = dict[str, str] | dict[str, dict[str, str]]
+Bases = dict[str, inputs.NumberArg] | dict[str, dict[str, inputs.NumberArg]]
 #: `types` beside one path, or one file per cpu beside a mapping.
 Types = str | dict[str, str]
 
@@ -76,13 +76,15 @@ def check_files(symbols: Given, types: Types) -> None:
         inputs.input_file(name, path, thing)
 
 
-def _parse_bases(bases: dict[str, str]) -> dict[str, int | None]:
-    """One table's `bases`: `rom` is the one non-hex value (resident at its linear address)."""
-    return {k.upper(): (None if v.strip().lower() == "rom" else inputs.hex_arg(f"bases[{k!r}]", v))
+def _parse_bases(bases: dict[str, inputs.NumberArg]) -> dict[str, int | None]:
+    """One table's `bases`: `rom` is the one value that is no address (resident at its linear
+    address)."""
+    return {k.upper(): (None if isinstance(v, str) and v.strip().lower() == "rom"
+                        else inputs.address_arg(f"bases[{k!r}]", v))
             for k, v in bases.items()}
 
 
-def _one(name: str, path: str, bases: dict[str, str], types: str) -> gs.SymbolTable:
+def _one(name: str, path: str, bases: dict[str, inputs.NumberArg], types: str) -> gs.SymbolTable:
     """One cpu's table: the file read under its `bases`, `types` merged over its `type:` lines.
     A reader complaint is refused as argument `name`; an unreadable file is `unreadable`."""
     parsed = _parse_bases(bases)
@@ -110,7 +112,7 @@ def read_types(path: str) -> dict[str, str]:
         raise st.Invalid("bad_argument", str(e)) from None
 
 
-def _per_cpu(what: str, value: dict[str, str] | dict[str, dict[str, str]] | str,
+def _per_cpu(what: str, value: Bases | Types,
              mapped: dict[str, str], tags: list[str]) -> dict[str, object]:
     """`bases` or `types` beside a mapping: one entry per cpu, keyed by resolved tag. The
     one-path shape is refused: it does not say which cpu's program it describes."""
@@ -145,7 +147,8 @@ def load(symbols: Given, bases: Bases | None, types: Types, tags: list[str]) -> 
             raise st.Invalid("bad_argument",
                              "`types` is one file per cpu only beside a `symbols` mapping; "
                              "beside one path it is one file")
-        flat: dict[str, str] = {k: v for k, v in (bases or {}).items() if isinstance(v, str)}
+        flat: dict[str, inputs.NumberArg] = {k: v for k, v in (bases or {}).items()
+                                             if not isinstance(v, dict)}
         if flat and not path:
             raise st.Invalid("bad_argument",
                              "`bases` was given with no `symbols` file to apply it to")

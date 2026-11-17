@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import inspect
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -88,6 +89,16 @@ TABLE: dict[tuple[str, str], tuple[dict[str, Any], Any, str, int]] = {
     ("symbols_find", "linear"): ({}, mread, "symbols_find", 1),
 }
 NUMBERS = [(tool, others, arg) for (tool, arg), (others, *_) in TABLE.items()]
+
+
+def test_a_number_argument_defaults_to_the_integer_the_boundary_reads_it_as() -> None:
+    """The boundary hands a body `0x0` as 0, so a text default would compare unequal to its own
+    spelling: `start` would keep `reference_addr: 0` in a recipe as if the caller set it."""
+    texts = {(fn.__name__, name): p.default
+             for fn in (s.start, s.rom_check) for name, p in
+             inspect.signature(fn).parameters.items()
+             if name in inputs.number_params(fn) and isinstance(p.default, str)}
+    assert texts == {}, texts
 
 
 def test_the_table_is_every_argument_the_server_declares_a_number() -> None:

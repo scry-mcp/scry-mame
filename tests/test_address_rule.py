@@ -506,17 +506,18 @@ def test_symbols_find_refuses_a_bare_linear_before_the_table(
                          reference_base="20000"), "reference_base"),
 ])
 def test_an_address_argument_is_written_0x(call: Any, name: str) -> None:
-    out = refused(rf"{name} is '[0-9a-f]+'; an address is written 0x", call())
+    out = refused(rf"{name}='[0-9a-f]+' is not an integer or a `0x` hex string", call())
     assert out["code"] == "bad_argument", out
 
 
 def test_a_bases_value_is_written_0x(tmp_path: Path) -> None:
     from scry_mame import symbols
-    with pytest.raises(mstate.Invalid, match=r"bases\['DATA'\] is '400'; an address is written "
-                                             r"0x400"):
+    with pytest.raises(mstate.Invalid, match=r"bases\['DATA'\]='400' is not an integer or a `0x` "
+                                             r"hex string"):
         symbols._parse_bases({"DATA": "400"})
     assert symbols._parse_bases({"DATA": "0x400", "TILES": "rom"}) == {"DATA": 0x400,
                                                                       "TILES": None}
+    assert symbols._parse_bases({"DATA": 0x400}) == {"DATA": 0x400}, "an integer is an address"
 
 
 # ------------------------------------------------------------------ the P6 review's reds

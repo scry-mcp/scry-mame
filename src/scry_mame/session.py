@@ -154,14 +154,15 @@ def status() -> dict[str, Any]:
     })
 
 
-def rom_check(ses: gs.Session, reference_rom: str, reference_addr: str, reference_base: str,
+def rom_check(ses: gs.Session, reference_rom: str, reference_addr: inputs.NumberArg,
+              reference_base: inputs.NumberArg,
               cpu: str) -> dict[str, Any]:
     """The body of the `rom_check` tool: the known-answer read on `cpu`."""
-    addr = inputs.hex_arg("reference_addr", reference_addr)
+    addr = inputs.address_arg("reference_addr", reference_addr)
     on, thread = cpus.thread_for(ses, cpu)
     try:
         ses.self_check(launch.reference_rom_file(reference_rom).read_bytes(), addr,
-                       base=inputs.hex_arg("reference_base", reference_base), thread=thread)
+                       base=inputs.address_arg("reference_base", reference_base), thread=thread)
     except gs.Mismatch as e:
         # The image is one cpu's: name the cpu read, so a wrong-cpu check is not a lying session.
         raise st.Invalid("readback_refused", f"read on {on}: {e}", cpu=on) from e

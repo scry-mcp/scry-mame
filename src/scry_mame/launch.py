@@ -31,6 +31,7 @@ from scry_core import presence as scry_presence
 from scry_core import progress as mprogress
 from scry_core import vocabulary as vocab
 from scry_core import window as core_window
+from scry_core.judges import NumberArg
 from scry_core.reply_contract import unavailable
 
 from scry_mame import binary as binaries
@@ -84,22 +85,22 @@ THROTTLE_FRAME_VAR = "MAME_MCP_THROTTLE_FRAME"
 THROTTLE_MARK = "MAME_MCP throttled from frame"
 
 
-def check_rom_check(reference_rom: str, reference_addr: str = "0x0",
-                    reference_base: str = "0x0", **_: Any) -> None:
-    """`rom_check`'s machine-independent half: two `0x` addresses and a readable file."""
-    inputs.hex_arg("reference_addr", reference_addr)
-    inputs.hex_arg("reference_base", reference_base)
+def check_rom_check(reference_rom: str, reference_addr: NumberArg = 0,
+                    reference_base: NumberArg = 0, **_: Any) -> None:
+    """`rom_check`'s machine-independent half: two addresses and a readable file."""
+    inputs.address_arg("reference_addr", reference_addr)
+    inputs.address_arg("reference_base", reference_base)
     reference_window_in_image(reference_rom_file(reference_rom), reference_addr, reference_base)
 
 
-def reference_window_in_image(ref: Path, reference_addr: str,
-                              reference_base: str) -> tuple[int, int]:
+def reference_window_in_image(ref: Path, reference_addr: NumberArg,
+                              reference_base: NumberArg) -> tuple[int, int]:
     """The known-answer read's address and base, parsed and held inside the image, or the refusal.
 
     The image's size is the file's, so an address it does not cover is the caller's argument and
     needs no machine."""
-    addr = inputs.hex_arg("reference_addr", reference_addr)
-    base = inputs.hex_arg("reference_base", reference_base)
+    addr = inputs.address_arg("reference_addr", reference_addr)
+    base = inputs.address_arg("reference_base", reference_base)
     try:
         gs.reference_window(ref.stat().st_size, addr, 16, base)
     except gs.SessionError as e:
@@ -563,9 +564,9 @@ def check_view(view: str) -> None:
 
 
 def judge(*, binary: str, system: str, rompath: str, reference_rom: str,
-          symbols: syms.Given, reference_addr: str, inipath: str, wait: float, shared: bool,
+          symbols: syms.Given, reference_addr: NumberArg, inipath: str, wait: float, shared: bool,
           boot_lua: str, env: dict[str, str] | None, bases: syms.Bases | None,
-          reference_base: str, port: int, state_dir: str,
+          reference_base: NumberArg, port: int, state_dir: str,
           throttle_from_frame: int, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, presence: bool = False,
           binary_origin: str = binaries.ARGUMENT, view: str = "", display: int | None = None,
@@ -913,8 +914,8 @@ def boot(judged: Judged, progress: mprogress.Progress = mprogress.no_progress,
 
 
 def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: syms.Given,
-          reference_addr: str, inipath: str, wait: float, shared: bool, boot_lua: str,
-          env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
+          reference_addr: NumberArg, inipath: str, wait: float, shared: bool, boot_lua: str,
+          env: dict[str, str] | None, bases: syms.Bases | None, reference_base: NumberArg,
           port: int, state_dir: str,
           throttle_from_frame: int = 0, types: syms.Types = "", cfg: str = "",
           background: bool | None = None, *, presence: bool, view: str = "",
@@ -952,8 +953,8 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
 
 
 def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols: syms.Given,
-            reference_addr: str, inipath: str, wait: float, shared: bool, boot_lua: str,
-            env: dict[str, str] | None, bases: syms.Bases | None, reference_base: str,
+            reference_addr: NumberArg, inipath: str, wait: float, shared: bool, boot_lua: str,
+            env: dict[str, str] | None, bases: syms.Bases | None, reference_base: NumberArg,
             port: int, state_dir: str, throttle_from_frame: int,
             types: syms.Types, cfg: str, background: bool | None, presence: bool,
             retries: list[dict[str, Any]], progress: mprogress.Progress,

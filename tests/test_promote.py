@@ -21,11 +21,11 @@ STATE = mstate.STATE
 
 START: dict[str, Any] = {
     "system": "lineup", "rompath": "/x/roms", "reference_rom": "/x/ref.bin",
-    "state_dir": "/tmp/run", "binary": "", "reference_addr": "0x0", "inipath": "",
+    "state_dir": "/tmp/run", "binary": "", "reference_addr": 0, "inipath": "",
     "boot_seconds": 8.0, "shared": False, "presence": False,
     "symbols": {"maincpu": "/x/symbols.yaml"}, "env": None, "view": "",
     "throttle_from_frame": 0, "background": None, "display": None, "size": None,
-    "boot_lua": "", "cfg": "", "types": "", "bases": None, "reference_base": "0x0",
+    "boot_lua": "", "cfg": "", "types": "", "bases": None, "reference_base": 0,
     "stub_port": 0,
 }
 
