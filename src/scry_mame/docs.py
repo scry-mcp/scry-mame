@@ -20,6 +20,7 @@ from scry_core import (
     scan_vocabulary as words,
 )
 from scry_core import vocabulary as vocab
+from scry_core import window as core_window
 
 from scry_mame import advance, inputs, lexer, read, sequence, transport, watches
 from scry_mame import binary as binaries
@@ -51,7 +52,7 @@ DOC_VALUES: dict[str, str] = {
     # scry-core's, alike on both servers.
     **picture.DOC_VALUES, **series.DOC_VALUES, **screen_map.DOC_VALUES, **recording.DOC_VALUES,
     **core_comments.DOC_VALUES, **frame_window.DOC_VALUES,
-    **core_promote.DOC_VALUES, **roster.DOC_VALUES,
+    **core_promote.DOC_VALUES, **roster.DOC_VALUES, **core_window.DOC_VALUES,
     "RECORD_MAX": str(frame_window.UNTIL_STEPS_MAX),
     "GFX_PIXELS_MAX": str(mgfx.TILE_PIXELS_MAX),
     "GFX_BLOCK_MAX": str(mgfx.BLOCK_BYTES_MAX), "SCREEN_PENS_MAX": str(scry_pens.PENS_MAX),

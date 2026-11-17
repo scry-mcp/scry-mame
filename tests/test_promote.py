@@ -30,6 +30,11 @@ START: dict[str, Any] = {
 }
 
 
+
+def kept_recipe(params: dict[str, Any]) -> bool:
+    """Whether `start`'s reply for `params` says the recipe was kept."""
+    return "kept" in mpromote.after_start({}, params, block=None, defaults=server._START_DEFAULTS)
+
 def screen(name: str = "play") -> screen_map.Screen:
     return screen_map.Screen(name, "pixel", (320, 200), (((0, 0, 8, 8), "0" * 16),), (),
                              "rgb", "")
@@ -89,7 +94,7 @@ def profile_in(root: Path, name: str = "lineup") -> Path:
 
 
 def test_a_start_keeps_its_recipe_without_the_run_s_own_arguments() -> None:
-    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    kept_recipe(START)
     kept = STATE.drafts.held("start", "lineup")[0].document
     assert kept == {"format": "scry-start/1", "system": "lineup", "rompath": "/x/roms",
                     "reference_rom": "/x/ref.bin", "symbols": {"maincpu": "/x/symbols.yaml"},
@@ -98,13 +103,12 @@ def test_a_start_keeps_its_recipe_without_the_run_s_own_arguments() -> None:
 
 def test_a_start_from_a_profile_is_named_by_the_profile_it_read() -> None:
     STATE.drafts.loaded_entry("start", "v30")
-    mpromote.keep_start({**START, "system": "lineup"}, defaults=server._START_DEFAULTS)
+    kept_recipe({**START, "system": "lineup"})
     assert STATE.drafts.entries() == ["start/v30"]
 
 
 def test_a_start_with_no_machine_proposes_nothing() -> None:
-    assert mpromote.keep_start({**START, "system": ""},
-                               defaults=server._START_DEFAULTS) is False
+    assert not kept_recipe({**START, "system": ""})
     assert STATE.drafts.entries() == []
 
 
@@ -186,22 +190,22 @@ def test_a_replay_the_reader_refuses_marks_no_entry(tmp_path: Path) -> None:
 
 
 def test_close_reports_what_was_left_unkept() -> None:
-    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    kept_recipe(START)
     assert server.close()["draft"] == ["start/lineup"]
 
 
 def test_close_leaves_out_what_the_store_already_holds(tmp_path: Path) -> None:
     started(profile_in(tmp_path))
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     entry = STATE.drafts.entries()[0]
     server.promote(entries=[entry])
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     assert STATE.drafts.entries() == [entry]
     assert "draft" not in server.close()
 
 
 def test_a_promotion_empties_the_draft_and_close_then_says_nothing(tmp_path: Path) -> None:
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     server.promote(entries=["start/lineup"], root=str(tmp_path))
     assert STATE.drafts.entries() == []
     assert "draft" not in server.close()
@@ -210,7 +214,7 @@ def test_a_promotion_empties_the_draft_and_close_then_says_nothing(tmp_path: Pat
 def test_promote_reviews_and_writes_in_a_store_of_its_own(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     review = server.promote(dry_run=True, root=str(tmp_path))
     assert [c["entry"] for c in review["candidates"]] == ["start/lineup"]
     assert review["candidates"][0]["change"] == "new"
@@ -223,7 +227,7 @@ def test_promote_reviews_and_writes_in_a_store_of_its_own(
 def test_a_promotion_with_no_store_names_root(tmp_path: Path,
                                               monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.chdir(tmp_path)
-    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    kept_recipe(START)
     reply = server.promote(dry_run=True)
     assert reply["code"] == "bad_argument" and "root" in reply["message"]
 
@@ -231,7 +235,7 @@ def test_a_promotion_with_no_store_names_root(tmp_path: Path,
 def test_a_root_creates_the_store_only_on_the_approved_call(tmp_path: Path) -> None:
     repo = tmp_path / "game"
     repo.mkdir()
-    mpromote.keep_start(start_at(repo), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(repo))
     assert server.promote(dry_run=True, root=str(repo))["candidates"][0]["change"] == "new"
     assert not (repo / ".scry").exists()
     server.promote(entries=["start/lineup"], root=str(repo))
@@ -241,22 +245,20 @@ def test_a_root_creates_the_store_only_on_the_approved_call(tmp_path: Path) -> N
 def test_a_start_that_only_loads_its_profile_learned_nothing() -> None:
     STATE.drafts.loaded_entry("start", "v30")
     with given.remembered({"profile", "state_dir"}):
-        assert mpromote.keep_start({**START, "system": "lineup"},
-                                   defaults=server._START_DEFAULTS) is False
+        assert not kept_recipe({**START, "system": "lineup"})
     assert STATE.drafts.entries() == []
     with given.remembered({"profile", "boot_seconds"}):
-        assert mpromote.keep_start({**START, "system": "lineup"},
-                                   defaults=server._START_DEFAULTS) is True
+        assert kept_recipe({**START, "system": "lineup"})
 
 
 def test_a_kept_start_leaves_the_run_s_own_keys_to_the_store() -> None:
-    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    kept_recipe(START)
     assert set(STATE.drafts.held("start", "lineup")[0].own) == set(mpromote.RUN_OWN)
 
 
 def test_a_recipe_read_from_a_profile_belongs_to_the_profile_s_store(tmp_path: Path) -> None:
     started(profile_in(tmp_path / "game"))
-    mpromote.keep_start(start_at(tmp_path / "bench"), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path / "bench"))
     assert STATE.drafts.held("start", "lineup")[0].project == str(tmp_path / "game")
     assert server.promote(dry_run=True)["store"] == str(tmp_path / "game" / ".scry")
 
@@ -264,7 +266,7 @@ def test_a_recipe_read_from_a_profile_belongs_to_the_profile_s_store(tmp_path: P
 def test_a_recipe_s_roms_never_say_whose_it_is(tmp_path: Path) -> None:
     (tmp_path / "game" / ".scry").mkdir(parents=True)
     started()
-    mpromote.keep_start(start_at(tmp_path / "game"), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path / "game"))
     assert STATE.drafts.held("start", "lineup")[0].project == ""
     refused = server.promote(entries=["start/lineup"])
     assert refused["code"] == "bad_argument" and "root=<the repository>" in refused["message"]
@@ -302,10 +304,9 @@ def test_two_projects_each_keep_their_own_recipe_and_store(tmp_path: Path) -> No
     game, bare = tmp_path / "game", tmp_path / "bare"
     started(profile_in(game, "alpha"))
     with given.remembered({"profile", "boot_seconds"}):
-        mpromote.keep_start({**start_at(game), "system": "alpha", "boot_seconds": 9.0},
-                            defaults=server._START_DEFAULTS)
+        kept_recipe({**start_at(game), "system": "alpha", "boot_seconds": 9.0})
     started()
-    mpromote.keep_start({**start_at(bare), "system": "beta"}, defaults=server._START_DEFAULTS)
+    kept_recipe({**start_at(bare), "system": "beta"})
     kept = core_promote.kept_line(STATE.drafts)
     assert "start/beta: nothing this session read names its repository" in kept, kept
     review = server.promote(dry_run=True)
@@ -331,14 +332,14 @@ def test_a_working_directory_that_is_gone_does_not_cost_the_reply(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     started(profile_in(tmp_path))
     working_directory_gone(monkeypatch)
-    mpromote.keep_start(START, defaults=server._START_DEFAULTS)
+    kept_recipe(START)
     assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
 
 
 def test_a_promote_with_a_root_does_not_need_the_working_directory(
         tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     working_directory_gone(monkeypatch)
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     assert server.promote(dry_run=True, root=str(tmp_path))["store"] == str(tmp_path / ".scry")
 
 
@@ -348,7 +349,7 @@ SETUP = [".scry/", ".scry/about.json", ".scry/README.md"]
 def test_an_approved_promotion_into_a_bare_repository_sets_up_the_store(tmp_path: Path) -> None:
     repo = tmp_path / "game"
     repo.mkdir()
-    mpromote.keep_start(start_at(repo), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(repo))
     review = server.promote(dry_run=True, root=str(repo))
     assert review["would_create"] == SETUP and "created" not in review
     assert not (repo / ".scry").exists()
@@ -359,27 +360,25 @@ def test_an_approved_promotion_into_a_bare_repository_sets_up_the_store(tmp_path
 
 
 def test_a_second_promotion_creates_nothing_more(tmp_path: Path) -> None:
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     server.promote(entries=["start/lineup"], root=str(tmp_path))
-    mpromote.keep_start({**start_at(tmp_path), "boot_seconds": 9.0},
-                        defaults=server._START_DEFAULTS)
+    kept_recipe({**start_at(tmp_path), "boot_seconds": 9.0})
     assert "created" not in server.promote(entries=["start/lineup"], root=str(tmp_path))
 
 
 def test_a_kept_line_says_how_to_set_up_a_store_only_when_it_names_none(tmp_path: Path) -> None:
     started(profile_in(tmp_path))
-    mpromote.keep_start(start_at(tmp_path), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path))
     assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
     started()
-    mpromote.keep_start({**start_at(tmp_path), "system": "speedf"},
-                        defaults=server._START_DEFAULTS)
+    kept_recipe({**start_at(tmp_path), "system": "speedf"})
     assert "start/speedf: nothing this session read names its repository" in \
         core_promote.kept_line(STATE.drafts)
 
 
 def test_a_store_in_the_server_s_own_directory_does_not_silence_the_hint(
         tmp_path: Path) -> None:
-    mpromote.keep_start(start_at(tmp_path / "game"), defaults=server._START_DEFAULTS)
+    kept_recipe(start_at(tmp_path / "game"))
     assert "root=<the repository>" in core_promote.kept_line(STATE.drafts)
 
 

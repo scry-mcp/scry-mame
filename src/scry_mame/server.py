@@ -44,7 +44,6 @@ project.
 
 from __future__ import annotations
 
-import inspect
 from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated, Any
@@ -57,6 +56,7 @@ from scry_core import (  # noqa: E402
     media_tools,
     methods,
     process_name,
+    project_store,
     recording,
     reference,
     reply_schema,  # noqa: E402
@@ -242,21 +242,10 @@ def start(
                              background=params["background"], presence=params["presence"],
                              view=params["view"], display=params["display"],
                              size=params["size"], progress=bridge(ctx))
-    if mpromote.keep_start(params, defaults=_START_DEFAULTS):
-        reply["kept"] = core_promote.kept_line(STATE.drafts)
-    if block is not None:
-        reply["profile"] = block
-    return reply
+    return mpromote.after_start(reply, params, block=block, defaults=_START_DEFAULTS)
 
 
-#: What a profile may set: `start`'s own arguments, read off its signature so the two cannot
-#: drift apart. `profile` is not one of them, and `ctx` is the protocol's.
-_PROFILE_KEYS = tuple(name for name in inspect.signature(start).parameters
-                      if name not in ("ctx", "profile"))
-#: The same, with each argument's default: a recipe keeps what the call decided, not what the
-#: tool would have answered on its own.
-_START_DEFAULTS = {name: parameter.default
-                   for name, parameter in inspect.signature(start).parameters.items()}
+_PROFILE_KEYS, _START_DEFAULTS = project_store.start_arguments(start)
 
 
 @tool("Session status", summary=summaries.status, read_only=True)
@@ -303,16 +292,9 @@ def window(front: bool = False) -> dict[str, Any]:
     """Where the watched window is on the host, at any time, a running machine included. `front`
     brings it in front of whatever covers it and reads that back.
 
-    Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, on screen with no
-    other application's window covering its centre; `fullscreen`); `size` when the session was
-    started with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
-    `outer`), `tolerance_px`, `height_free` and `matches`.
+    Reply: {WINDOW_REPLY}.
 
-    Refused: no session (`no_session`), one that died (`session_broken`), a session started
-    without `shared` (`no_channel`), a window that never appears or, with `front`, is still
-    covered after the activation (`window_not_visible`, naming what was seen; on a
-    `background=true` session it names that as what may keep it behind). Without `front` the
-    window is answered wherever the owner put it.
+    Refused: {WINDOW_REFUSED}.
 
     Reference: REFERENCE.md, The session.
     """
@@ -1526,7 +1508,7 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     recording.check_perform_arguments(steps, path)
     args.check("perform", settle_seconds=settle_seconds, summaries=summaries,
                until_frame=until_frame)
-    steps = recording.steps_to_replay(steps, path)
+    steps = recording.steps_to_replay(steps, path, state=mpromote.scratch())
     # THE WHOLE LIST, BEFORE THE MACHINE. Nothing in a step's op, argument names or values needs an
     # emulator to be wrong, so the list is checked before the machine is asked for, and a cold
     # server refuses it exactly as a warm one does.
@@ -1534,8 +1516,7 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
     if refusal is not None:
         return refusal
     if path:
-        STATE.drafts.loaded_entry("perform", Path(path).expanduser().stem,
-                                  source=str(Path(path).expanduser()))
+        STATE.drafts.loaded_file("perform", path)
     ses, scratch = contact()
     sequence.check_until(steps, until_frame)     # after the contact: it judges where the machine is
     return sequence.run_steps(ses, scratch, steps, settle_seconds, _step_ops(), bridge(ctx),
