@@ -496,18 +496,18 @@ def registers_at_last_stop(ses: gs.Session, cpu: str = "") -> dict[str, Any]:
 SYMBOLS_LIMIT_MAX = 50
 
 
-def check_symbols_find(name: str = "", linear: str = "", limit: int = 10,
+def check_symbols_find(name: str = "", linear: inputs.NumberArg | None = None, limit: int = 10,
                        **_: Any) -> None:
     """`symbols_find`'s machine-independent half."""
-    if bool(name) == bool(linear):
+    if bool(name) == (linear is not None):
         raise st.Invalid("bad_argument",
             "one question per call: `name` (a symbol to look up) or `linear` "
             "(an address to place inside the nearest symbol), not both, not neither")
     inputs.count("limit", limit, SYMBOLS_LIMIT_MAX,
                    ": each symbol answered costs the console one `map` when the machine is "
                    "stopped, so the list is bounded")
-    if linear:
-        inputs.hex_arg("linear", linear)
+    if linear is not None:
+        inputs.address_arg("linear", linear)
 
 
 Placer = Callable[[int], tuple[int, str] | None]
@@ -566,7 +566,7 @@ def add_symbol(row: dict[str, Any], pc: int, cpu: str | None) -> dict[str, Any]:
     return row
 
 
-def symbols_find(name: str, linear: str, limit: int,
+def symbols_find(name: str, linear: inputs.NumberArg | None, limit: int,
                  kind: Callable[[int], str] | None = None,
                  cpu: str | None = None) -> dict[str, Any]:
     """A reader over `cpu`'s table, so it takes no session.
@@ -599,7 +599,8 @@ def symbols_find(name: str, linear: str, limit: int,
                         for n, a in hits[:limit]],
             "truncated": len(hits) > limit, **note,
         })
-    addr = inputs.hex_arg("linear", linear)
+    assert linear is not None       # exactly one of the two was given, checked above
+    addr = inputs.address_arg("linear", linear)
     placed = nearest_symbol(addr, cpu)
     if placed is None:
         lowest = min(at for _, at in gs.rows_of(table))

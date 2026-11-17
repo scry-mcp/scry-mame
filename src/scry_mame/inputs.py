@@ -94,6 +94,14 @@ def hex_arg(name: str, value: str) -> int:
 #: A JSON integer or a `0x` string (REFERENCE.md, *Names for addresses*).
 NumberArg = judges.NumberArg
 
+
+def address_arg(name: str, value: object) -> int:
+    """An address argument, `0x` text or an integer as CONTRIBUTING.md takes every address."""
+    address = number_arg(name, value)
+    if address < 0:
+        raise Invalid("bad_argument", f"{name} is {value!r}: an address is not negative")
+    return address
+
 #: The widest number MAME's debugger holds: its expressions are 64-bit.
 NUMBER_BITS = 64
 

@@ -495,7 +495,8 @@ def test_symbols_find_refuses_a_bare_linear_before_the_table(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     _running(monkeypatch, tmp_path)
-    out = refused(r"linear is '1000'; an address is written 0x1000", s.symbols_find(linear="1000"))
+    out = refused(r"linear='1000' is not an integer or a `0x` hex string",
+                  s.symbols_find(linear="1000"))
     assert out["code"] == "bad_argument", out
 
 

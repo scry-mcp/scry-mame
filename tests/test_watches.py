@@ -1024,6 +1024,8 @@ def test_symbols_find_answers_in_the_spelling_the_map_gave(
     out = s.symbols_find(name="IRQ_VBLANK")
     assert [r["name"] for r in out["symbols"]] == ["irq_Vblank"], out
     assert s.symbols_find(linear="0x400")["name"] == "irq_Vblank"
+    # CONTRIBUTING.md: an address is taken as `0x` text or an integer.
+    assert s.symbols_find(linear=0x400)["name"] == "irq_Vblank"
 
 
 def test_symbols_find_answers_by_name_exact_then_prefix_and_by_address(

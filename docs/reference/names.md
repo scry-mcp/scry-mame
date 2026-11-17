@@ -6,13 +6,13 @@
 *Look a symbol up*
 
 ```text
-symbols_find(name="", linear="", limit=10, cpu="")
+symbols_find(name="", linear=null, limit=10, cpu="")
 ```
 
 Look a symbol up in the table `start` loaded for `cpu`, else the visible cpu. One question
 per call: `name` (exact, else prefix matches by address, case ignored, each in the
 spelling the map gave, up to `limit` 1..50; the name never reaches MAME's
-console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
+console), or `linear`, a run-time address as `disassemble` shows it, not a
 linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
 Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`). A name the
@@ -27,7 +27,7 @@ Reference: REFERENCE.md, Names for addresses.
 | argument | type | default |
 |---|---|---|
 | `name` | string | `""` |
-| `linear` | string | `""` |
+| `linear` | integer or string or null | `null` |
 | `limit` | integer (>= 1, <= 50) | `10` |
 | `cpu` | string | `""` |
 

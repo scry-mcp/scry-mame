@@ -673,13 +673,13 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
 # -------------------------------------------------------------------------------- read
 
 @tool("Look a symbol up", summary=summaries.symbols_find, read_only=True)
-def symbols_find(name: str = "", linear: str = "",
+def symbols_find(name: str = "", linear: inputs.NumberArg | None = None,
                  limit: Annotated[int, vocab.bounds(1, read.SYMBOLS_LIMIT_MAX)] = 10,
                  cpu: str = "") -> dict[str, Any]:
     """Look a symbol up in the table `start` loaded for `cpu`, else the visible cpu. One question
     per call: `name` (exact, else prefix matches by address, case ignored, each in the
     spelling the map gave, up to `limit` 1..{SYMBOLS_MAX}; the name never reaches MAME's
-    console), or `linear`, a `0x` run-time address as `disassemble` shows it, not a
+    console), or `linear`, a run-time address as `disassemble` shows it, not a
     linker map's column: the nearest symbol at or below, and the distance. Works while running.
 
     Refused: no table (`no_channel`); an address below every symbol (`unknown_ref`). A name the

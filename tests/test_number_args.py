@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -13,6 +14,7 @@ from test_gfx_layout import CIRCUS_CHARLAYOUT  # noqa: E402
 
 from scry_mame import (
     block,  # noqa: E402
+    cpus,  # noqa: E402
     folds,  # noqa: E402
     inputs,  # noqa: E402
     sequence,  # noqa: E402
@@ -25,6 +27,7 @@ from scry_mame import lua as mlua  # noqa: E402
 from scry_mame import mcp as mame_mcp  # noqa: E402
 from scry_mame import palette as mpalette  # noqa: E402
 from scry_mame import ramdac as mramdac  # noqa: E402
+from scry_mame import read as mread  # noqa: E402
 from scry_mame import scan as mscan  # noqa: E402
 from scry_mame import server as s  # noqa: E402
 from scry_mame import state as mstate  # noqa: E402
@@ -82,6 +85,7 @@ TABLE: dict[tuple[str, str], tuple[dict[str, Any], Any, str, int]] = {
     ("gfx_sweep", "pen_base"): (_SWEEP, msweep, "gfx_sweep", 9),
     ("palette", "first"): ({}, mpalette, "palette", 3),
     ("palette_log", "pen"): ({"palette_port": "ramdac"}, mramdac, "palette_log", 2),
+    ("symbols_find", "linear"): ({}, mread, "symbols_find", 1),
 }
 NUMBERS = [(tool, others, arg) for (tool, arg), (others, *_) in TABLE.items()]
 
@@ -190,9 +194,11 @@ def test_every_body_receives_the_integer_whichever_spelling_the_caller_used(
         seen.append(a[at])
         return menvelope.invalid("no_session", "the body was reached")
     monkeypatch.setattr(module, name, body)
+    running = SimpleNamespace(running=True)     # `symbols_find` asks whether it may read the map
+    monkeypatch.setattr(cpus, "chosen", lambda *_a: None)
     for gated in (s, folds):
         monkeypatch.setattr(gated, "stopped", lambda _why: (object(), tmp_path))
-        monkeypatch.setattr(gated, "contact", lambda: (object(), tmp_path))
+        monkeypatch.setattr(gated, "contact", lambda: (running, tmp_path))
     for spelled in ("0x12", 0x12):
         reply = getattr(s, tool)(**others, **{arg: spelled})
         assert reply["message"] == "the body was reached", reply
@@ -246,12 +252,16 @@ def test_every_step_spelling_the_judge_refuses_is_refused_before_any_step_runs(
 ) -> None:
     """The list is refused whole with the argument named; `None` is valid only if optional."""
     optional = (tool, arg) in {("scan", "value"), ("gfx_film", "value"),
-                               ("palette_log", "pen"), ("gfx_locate", "transparent")}
+                               ("palette_log", "pen"), ("gfx_locate", "transparent"),
+                               ("symbols_find", "linear")}
     assert inputs.number_params(s._step_ops()[tool])[arg] is optional
     bad = sequence.refuse_steps([{"op": "status"}, {"op": tool, **others, arg: given}],
                                 s._step_ops())
     if given is None and optional:
-        assert bad is None, bad
+        # `linear` left out is a question by `name` instead.
+        asked = {"name": "_main"} if tool == "symbols_find" else {}
+        assert sequence.refuse_steps([{"op": tool, **others, **asked, arg: given}],
+                                     s._step_ops()) is None
         return
     assert bad is not None and [(e["step"], e["op"]) for e in bad["errors"]] == [(1, tool)], bad
     assert arg in bad["errors"][0]["message"], bad
