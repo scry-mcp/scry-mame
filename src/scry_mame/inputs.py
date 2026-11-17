@@ -81,16 +81,6 @@ def is_rectangle(value: object) -> bool:
 HEX_ADDR = re.compile(r"(?:0[xX])?[0-9a-fA-F]+")
 
 
-def hex_arg(name: str, value: str) -> int:
-    """An address argument written `0x`; bare `int(value, 16)` accepts `-400` and `4_00`."""
-    text = value.strip()
-    if ADDRESS.fullmatch(text):
-        return int(text, 16)
-    if _BARE_HEX.fullmatch(text):
-        raise Invalid("bad_argument", f"{name} is {value!r}; an address is written 0x{text}")
-    raise Invalid("bad_argument", f"{name} is {value!r}, which is not an address like `0x400`")
-
-
 #: A JSON integer or a `0x` string (REFERENCE.md, *Names for addresses*).
 NumberArg = judges.NumberArg
 
