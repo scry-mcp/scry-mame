@@ -441,24 +441,39 @@ def test_block_f_takes_the_newest_pen_completed_with_red_and_blue_apart(
     assert pick({"rows": rows}) == want  # type: ignore[operator]
 
 
-def test_the_bench_root_is_the_variable_or_the_users_data_and_the_manifest_lives_in_it(
+def test_the_bench_root_is_the_variable_only_and_the_manifest_lives_in_it(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """This repository resolves its own bench and hands the directory to `scry_core.live_bench`,
-    which knows no server: `MAME_LIVE_BENCH` (a `~` expanded, a relative path made absolute) or
-    `~/.local/share/scry-bench/mame`."""
+    which knows no server: `MAME_LIVE_BENCH` (a `~` expanded, a relative path made absolute), and
+    no path of its own when the variable is unset."""
     _harness(monkeypatch, tmp_path)
     boards = sys.modules["bench_boards"]
     assert boards.BENCH.root == tmp_path
     assert tmp_path / "bench.json" == boards.BENCH.manifest
     monkeypatch.delenv("MAME_LIVE_BENCH")
-    assert boards._root() == Path.home() / ".local/share/scry-bench/mame"
+    assert boards._root() is None
     monkeypatch.setenv("MAME_LIVE_BENCH", "~/b")
     assert boards._root() == Path.home() / "b"
     monkeypatch.setenv("MAME_LIVE_BENCH", "relative")
     assert boards._root() == Path.cwd() / "relative"
     assert boards.bench_missing("dual/").endswith(
         f"`python -m scry_core.live_bench check --bench {tmp_path}`"), "the remedy names --bench"
+
+
+def test_with_no_bench_named_every_board_is_refused_naming_the_variable(tmp_path: Path) -> None:
+    """Unset, no board resolves to a directory of the developer's: each says to set the variable."""
+    env = {k: v for k, v in os.environ.items() if k != "MAME_LIVE_BENCH"}
+    probe = ("import bench_boards as b; "
+             "print(b.board_missing('m68k-dual')); print(b.bench_missing('v30/')); "
+             "import os; print(os.environ.get('MAME_LIVE_BENCH', 'unset'))")
+    done = subprocess.run([sys.executable, "-c", probe], cwd=LIVE,
+                          env={**env, "TMPDIR": str(tmp_path)}, capture_output=True, text=True,
+                          check=False)
+    assert done.returncode == 0, done.stderr
+    board, prefix, exported = done.stdout.splitlines()
+    assert board == prefix == "MAME_LIVE_BENCH is not set: name the bench directory with it"
+    assert exported == "unset"
 
 
 def _imported(module: str, tmp_path: Path, **env: str) -> subprocess.CompletedProcess[str]:

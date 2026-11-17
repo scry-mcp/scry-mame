@@ -102,8 +102,9 @@ argument as its source, so `uv run pytest tests/test_x.py` runs the whole suite 
 a one-file run, and a `--no-cov` after the path does not help: the path was already taken. Narrow
 a run with `-o addopts=""` naming the test files, or with `-k <module name> --no-cov`, and read it as a run
 that judged no floor. `-o addopts=` also drops the `not live` and `not window` deselections, so it names
-test files and never a directory: `tests` would start a real emulator. The live tier is not part of `pytest`:
-it is the two scripts below, so a clone runs no emulator by accident.
+test files and never a directory: `tests` would start a real emulator. The live tier is outside the default
+`pytest` run: it is the two scripts below and the opt-in `window` cases, so a clone runs no emulator
+by accident.
 
 `uv run` syncs the environment before its command, so an editable install of a core checkout
 (`uv pip install -e ../scry-core`) is replaced by the pinned scry-core on the next plain `uv run`,
@@ -150,10 +151,10 @@ host's CPUs; `1`, one after another), while section X, the focus gate, opens and
 the parent so its watch spans every job. The focus gate's start in front and its Space move take
 the desk of whoever is working, so they run only with `SCRY_FOCUS_CONTROL=1` on an idle machine;
 unset, those cells are BLOCKED naming the variable and the verdict says it is unproven. The free
-boards and the V30 boards run on the MAME `MAME_BINARY` names, built with every driver, while the
-two m68k-dual boards name a binary of their own in the bench (`MAME_LIVE_BENCH`, else
-`~/.local/share/scry-bench/mame`); the free boards read their sets from `MAME_TEST_ROMS`, and
-unset, those cells are BLOCKED naming the variable. The cells that open a watched
+boards and the V30 boards run on the MAME that `MAME_BINARY` names, built with every driver, while the
+two m68k-dual boards name a binary of their own in the bench; the bench's boards read it from
+`MAME_LIVE_BENCH` and the free boards their sets from `MAME_TEST_ROMS`, and with either unset,
+those cells are BLOCKED naming it. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
 [`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind,
 `0` every start in front, unset leaves each start its own default. Section C's dumper faults run

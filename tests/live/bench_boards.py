@@ -7,17 +7,21 @@ from pathlib import Path
 from scry_core import live_bench as bench
 from scry_core import verdict
 
-
-def _root() -> Path:
-    held = os.environ.get("MAME_LIVE_BENCH", "")
-    if held:
-        return Path(held).expanduser().absolute()
-    return Path.home() / ".local" / "share" / "scry-bench" / "mame"
+BENCH_VAR = "MAME_LIVE_BENCH"
+UNSET = f"{BENCH_VAR} is not set: name the bench directory with it"
 
 
-BENCH = bench.Bench(_root())
+def _root() -> Path | None:
+    held = os.environ.get(BENCH_VAR, "")
+    return Path(held).expanduser().absolute() if held else None
+
+
+ROOT = _root()
+#: Unset: a path named after the variable, which no file is at.
+BENCH = bench.Bench(ROOT or Path(BENCH_VAR))
 IDENTITY = BENCH.root / "identity.json"
-os.environ["MAME_LIVE_BENCH"] = str(BENCH.root)
+if ROOT is not None:
+    os.environ[BENCH_VAR] = str(ROOT)
 
 IDENTITY_KEYS: dict[str, tuple[str, ...]] = {
     "m68k-dual": ("dir", "system", "binary", "reference_rom", "symbols", "sub_rom",
@@ -48,6 +52,8 @@ _OPENED: dict[str, tuple[str, ...]] = {
 
 def _identity() -> tuple[dict[str, dict[str, str]], str]:
     """Every label's values, and why the file cannot be read (empty when it can)."""
+    if ROOT is None:
+        return {}, UNSET
     remedy = (f"write {IDENTITY} beside bench.json: one object per label "
               f"({', '.join(IDENTITY_KEYS)}), each value a string")
     try:
@@ -109,7 +115,7 @@ def board_path(label: str, key: str) -> str:
 
 
 def bench_missing(prefix: str) -> str:
-    return BENCH.missing(prefix)
+    return UNSET if ROOT is None else BENCH.missing(prefix)
 
 
 def opened(label: str) -> list[str]:
