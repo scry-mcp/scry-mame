@@ -155,6 +155,7 @@ class DisassembleReply(MameEnvelope, total=False):
     flow_source: Required[str]
     length: int
     lines: Required[list[Any]]
+    ref: Required[str]
     resolved: Annotated[list[Any], When("relocated board")]
 
 
@@ -171,6 +172,7 @@ class FindReply(MameEnvelope, total=False):
     hits: Required[list[Any]]
     hits_total: Required[int]
     length: int
+    ref: Annotated[str, When("with `ref`")]
     span: Required[dict[str, Any]]
     symbol_class: str
     truncated: Required[bool]
@@ -571,6 +573,7 @@ class MemdumpReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
     length: int
     path: Required[str]
+    ref: Required[str]
 
 
 class PaletteReply(MameConsoleAccount, total=False):
@@ -683,6 +686,7 @@ class ReadMemoryReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
     hex: Required[str]
     length: int
+    ref: Required[str]
 
 
 class RecordReply(MameRecordingRun, total=False):
@@ -1143,6 +1147,7 @@ class WriteReply(MameEnvelope, total=False):
     captures_reading_it: Annotated[list[Any], When("with `region`")]
     cpu: str | dict[str, Any]
     readback: Required[str]
+    ref: Required[str]
     region: str
     region_offset: Annotated[str, When("with `region`")]
     target: Annotated[str, When("on ROM")]
@@ -1188,6 +1193,7 @@ class ScanReply(MameEnvelope, total=False):
     iterations: Annotated[int, When("`filter`")]
     length: int
     operator: str
+    ref: Annotated[str, When("`start`")]
     space: Annotated[str, When("`start`", "`filter`")]
     truncated: Annotated[bool, When("`filter`")]
     value: str | dict[str, Any]

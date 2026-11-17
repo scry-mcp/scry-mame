@@ -16,7 +16,7 @@ ports. One scan at a time; it outlives runs, writes, `reset` and state loads; `c
 ends it.
 
 `start`: every cell of `cell_bytes` from `ref` on `cpu` is a candidate;
-`length` counts bytes, at most 0x100000. Reply: `addr`, `length`, `cell_bytes`,
+`length` counts bytes, at most 0x100000. Reply: `ref`, `addr`, `length`, `cell_bytes`,
 `hits_total`, `cpu`, `space`.
 
 `filter`: keep the cells whose value satisfies `operator` (`=` default) against
@@ -54,6 +54,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `iterations` | integer |
 | `length` | integer |
 | `operator` | string |
+| `ref` | string |
 | `space` | string |
 | `truncated` | boolean |
 | `value` | string or object |

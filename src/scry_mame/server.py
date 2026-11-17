@@ -733,13 +733,13 @@ def read_memory(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)]
     """Read `length` bytes (1..{READ_MAX}) at `ref` (a symbol or `0x` address) of `cpu` (`subcpu`;
     the visible one when empty). A range past the cpu's program space is `bad_argument`.
 
-    Reply: `addr`, `length`, `hex`, `cpu`. Above the ceiling use `memdump`. A write-only range
-    (`latch`) answers zeros with no error: use `read_block`.
+    Reply: `ref`, `addr`, `length`, `hex`, `cpu`. Above the ceiling use `memdump`. A write-only
+    range (`latch`) answers zeros with no error: use `read_block`.
 
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("read_memory", ref=ref, length=length)
-    return read.read_memory(stopped("a memory read")[0], ref, length, cpu)
+    return menvelope.with_ref(read.read_memory(stopped("a memory read")[0], ref, length, cpu), ref)
 
 
 @tool("Read a memory share or region", summary=summaries.read_block, on_cancel="none",
@@ -793,7 +793,7 @@ def disassemble(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)]
     """Disassemble `length` bytes (1..{READ_MAX}) from `ref` of `cpu` (`subcpu`; the visible one
     when empty), as MAME's `dasm`; the last instruction is completed.
 
-    Reply: `addr`, `length`, `cpu`, `lines`, `flow` (per line: `call`, `branch`, `return`,
+    Reply: `ref`, `addr`, `length`, `cpu`, `lines`, `flow` (per line: `call`, `branch`, `return`,
     `sequential`, `unknown`), `flow_source`, `note`, and on a relocated board `resolved` (per
     direct memory operand: `line`, `operand`, `offset`, `linear`, `symbol`, `delta`). The
     printed operand is the map's offset: `read_memory` and `watch_add` take `linear`.
@@ -802,7 +802,7 @@ def disassemble(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)]
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("disassemble", ref=ref, length=length)
-    return read.disassemble(*stopped("a disassembly"), ref, length, cpu)
+    return menvelope.with_ref(read.disassemble(*stopped("a disassembly"), ref, length, cpu), ref)
 
 
 @tool("Find bytes in memory", summary=summaries.find, read_only=True)
@@ -815,14 +815,15 @@ def find(data_hex: str, ref: str = "", length: int = 0,
     which misses a match past the last symbol's start. Both, neither, or an unknown class is
     refused. A range past the program space is `bad_argument`.
 
-    Reply: `addr`, `length`, `span` (`from`, `length`, `source`), `hits` (at most {LIST_MAX},
-    highest kept), `hits_total`, `truncated`, `cpu`, `symbol_class`. An unreadable console
-    answer is `status: INVALID`.
+    Reply: `ref` (with `ref`), `addr`, `length`, `span` (`from`, `length`, `source`), `hits` (at
+    most {LIST_MAX}, highest kept), `hits_total`, `truncated`, `cpu`, `symbol_class`. An
+    unreadable console answer is `status: INVALID`.
 
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("find", data_hex=data_hex, ref=ref, length=length, symbol_class=symbol_class)
-    return read.find(stopped("a memory search")[0], data_hex, ref, length, symbol_class, cpu)
+    return menvelope.with_ref(
+        read.find(stopped("a memory search")[0], data_hex, ref, length, symbol_class, cpu), ref)
 
 
 @tool("Value scan", summary=methods.fold_line("scan", folds.SCAN), replay="drop")
@@ -838,7 +839,7 @@ def scan(method: Annotated[str, vocab.enum(tuple(folds.SCAN))], ref: str = "",
     ends it.
 
     `start`: every cell of `cell_bytes` from `ref` on `cpu` is a candidate;
-    `length` counts bytes, at most {SCAN_BYTES_MAX}. Reply: `addr`, `length`, `cell_bytes`,
+    `length` counts bytes, at most {SCAN_BYTES_MAX}. Reply: `ref`, `addr`, `length`, `cell_bytes`,
     `hits_total`, `cpu`, `space`.
 
     `filter`: keep the cells whose value satisfies `operator` (`=` default) against
@@ -886,14 +887,15 @@ def write(ref: str, data_hex: str, cpu: str = "", region: bool = False) -> dict[
     the address (refused where none does, or past its end); without it a ROM write goes
     nowhere and says why. A range past the program space is `bad_argument`.
 
-    Reply: `addr`, `bytes_written`, `readback`, `verified`, `cpu`; with `region` also
+    Reply: `ref`, `addr`, `bytes_written`, `readback`, `verified`, `cpu`; with `region` also
     `region`, `region_offset`, `captures_reading_it`; on ROM `target`, `note`. A failed
     re-read is `readback_refused` or `session_broken`.
 
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("write", ref=ref, data_hex=data_hex)
-    return mwrite.write(*stopped("a memory write"), ref, data_hex, cpu, region)
+    return menvelope.with_ref(mwrite.write(*stopped("a memory write"), ref, data_hex, cpu, region),
+                              ref)
 
 
 @tool("Force a register", summary=summaries.set_register)
@@ -934,15 +936,16 @@ def reset() -> dict[str, Any]:
 def memdump(ref: str, length: int, dest: str, cpu: str = "") -> dict[str, Any]:
     """Write `length` bytes from `ref` of `cpu` (`subcpu`) to the new file `dest` ({DEST_FILE}).
 
-    Reply: `addr`, `length`, `path`, `bytes`, `cpu`. A file not `length` bytes, or whose first
-    bytes differ from a protocol read, is `status: INVALID`; a refused control read is
+    Reply: `ref`, `addr`, `length`, `path`, `bytes`, `cpu`. A file not `length` bytes, or whose
+    first bytes differ from a protocol read, is `status: INVALID`; a refused control read is
     `readback_refused`, a broken channel `session_broken`. A range past the program space is
     `bad_argument`.
 
     Reference: REFERENCE.md, Reading and writing.
     """
     args.check("memdump", ref=ref, length=length, dest=dest)
-    return files.memdump(stopped("a memory dump")[0], ref, length, dest, cpu)
+    return menvelope.with_ref(files.memdump(stopped("a memory dump")[0], ref, length, dest, cpu),
+                              ref)
 
 
 @tool("Snapshot the screen to a PNG", summary=summaries.snapshot, replay="drop", names_file="dest")

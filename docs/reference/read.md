@@ -12,8 +12,8 @@ read_memory(ref, length=16, cpu="")
 Read `length` bytes (1..1024) at `ref` (a symbol or `0x` address) of `cpu` (`subcpu`;
 the visible one when empty). A range past the cpu's program space is `bad_argument`.
 
-Reply: `addr`, `length`, `hex`, `cpu`. Above the ceiling use `memdump`. A write-only range
-(`latch`) answers zeros with no error: use `read_block`.
+Reply: `ref`, `addr`, `length`, `hex`, `cpu`. Above the ceiling use `memdump`. A write-only
+range (`latch`) answers zeros with no error: use `read_block`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -29,6 +29,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `cpu` | string or object |
 | `hex` | string |
 | `length` | integer |
+| `ref` | string |
 
 Example, from a live run:
 
@@ -291,7 +292,7 @@ disassemble(ref, length=16, cpu="")
 Disassemble `length` bytes (1..1024) from `ref` of `cpu` (`subcpu`; the visible one
 when empty), as MAME's `dasm`; the last instruction is completed.
 
-Reply: `addr`, `length`, `cpu`, `lines`, `flow` (per line: `call`, `branch`, `return`,
+Reply: `ref`, `addr`, `length`, `cpu`, `lines`, `flow` (per line: `call`, `branch`, `return`,
 `sequential`, `unknown`), `flow_source`, `note`, and on a relocated board `resolved` (per
 direct memory operand: `line`, `operand`, `offset`, `linear`, `symbol`, `delta`). The
 printed operand is the map's offset: `read_memory` and `watch_add` take `linear`.
@@ -313,6 +314,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `flow_source` | string |
 | `length` | integer |
 | `lines` | array |
+| `ref` | string |
 | `resolved` | array |
 
 Example, from a live run:
@@ -356,9 +358,9 @@ Every address in `length` bytes from `ref` holding `data_hex` (whole hex bytes,
 which misses a match past the last symbol's start. Both, neither, or an unknown class is
 refused. A range past the program space is `bad_argument`.
 
-Reply: `addr`, `length`, `span` (`from`, `length`, `source`), `hits` (at most 400,
-highest kept), `hits_total`, `truncated`, `cpu`, `symbol_class`. An unreadable console
-answer is `status: INVALID`.
+Reply: `ref` (with `ref`), `addr`, `length`, `span` (`from`, `length`, `source`), `hits` (at
+most 400, highest kept), `hits_total`, `truncated`, `cpu`, `symbol_class`. An
+unreadable console answer is `status: INVALID`.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -377,6 +379,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `hits` | array |
 | `hits_total` | integer |
 | `length` | integer |
+| `ref` | string |
 | `span` | object |
 | `symbol_class` | string |
 | `truncated` | boolean |
@@ -468,8 +471,8 @@ memdump(ref, length, dest, cpu="")
 
 Write `length` bytes from `ref` of `cpu` (`subcpu`) to the new file `dest` (absolute or `~`-led, in a directory that exists, with no comma, semicolon, quote, whitespace, bracket or control character).
 
-Reply: `addr`, `length`, `path`, `bytes`, `cpu`. A file not `length` bytes, or whose first
-bytes differ from a protocol read, is `status: INVALID`; a refused control read is
+Reply: `ref`, `addr`, `length`, `path`, `bytes`, `cpu`. A file not `length` bytes, or whose
+first bytes differ from a protocol read, is `status: INVALID`; a refused control read is
 `readback_refused`, a broken channel `session_broken`. A range past the program space is
 `bad_argument`.
 
@@ -489,6 +492,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `cpu` | string or object |
 | `length` | integer |
 | `path` | string |
+| `ref` | string |
 
 Example, from a live run:
 

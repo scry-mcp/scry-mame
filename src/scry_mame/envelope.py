@@ -34,6 +34,15 @@ def envelope(extra: dict[str, Any]) -> dict[str, Any]:
     return contract.check_envelope(out)
 
 
+def with_ref(reply: dict[str, Any], ref: str) -> dict[str, Any]:
+    """The caller's `ref` just before the `addr` it resolved to; a refusal, or no `ref`, as is."""
+    if reply.get("status") != "ok" or not ref:
+        return reply
+    keys = list(reply)
+    at = keys.index("addr") if "addr" in keys else len(keys)
+    return {**{k: reply[k] for k in keys[:at]}, "ref": ref, **{k: reply[k] for k in keys[at:]}}
+
+
 def with_view(reply: dict[str, Any]) -> dict[str, Any]:
     """Name the snapshot view a capture was rendered through."""
     if reply.get("status") != "ok":

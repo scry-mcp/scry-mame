@@ -221,6 +221,39 @@ def test_a_debug_command_past_the_packet_size_is_a_bad_argument_at_once(
     assert wire.sent == [] and ses.writes == 0, wire.sent
 
 
+@pytest.mark.parametrize(("tool", "args", "module", "body", "fields"), [
+    ("read_memory", {"ref": "irq", "length": 2}, "read", "read_memory", {"hex": "aa55"}),
+    ("disassemble", {"ref": "irq", "length": 2}, "read", "disassemble",
+     {"lines": [], "flow": [], "flow_source": "listing"}),
+    ("find", {"data_hex": "aa", "ref": "irq", "length": 2}, "read", "find",
+     {"hits": [], "hits_total": 0, "span": {}, "truncated": False}),
+    ("memdump", {"ref": "irq", "length": 2, "dest": "/tmp/x.bin"}, "files", "memdump",
+     {"path": "/tmp/x.bin", "bytes": 2}),
+    ("write", {"ref": "irq", "data_hex": "aa"}, "mwrite", "write",
+     {"bytes_written": 1, "readback": "aa", "verified": True}),
+    ("scan", {"method": "start", "ref": "irq", "length": 2}, "mscan", "start_scan",
+     {"hits_total": 2, "space": "program", "cell_bytes": 1, "cpu": ":maincpu"}),
+])
+def test_each_tool_at_a_ref_echoes_it_just_before_the_address_it_resolved(
+    tool: str, args: dict[str, Any], module: str, body: str, fields: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """As on scry-dosbox-x: the reply says which `ref` its `addr` answers."""
+    from scry_mame import files, folds, read
+    from scry_mame import scan as mscan
+    from scry_mame import write as mwrite
+    owner = {"read": read, "files": files, "mwrite": mwrite, "mscan": mscan}[module]
+    address = {"addr": "0x00000400"} if tool == "write" else {"addr": "0x00000400", "length": 2}
+    monkeypatch.setattr(owner, body, lambda *_a, **_k: menvelope.envelope(
+        {**address, **fields}))
+    for gated in (s, folds):
+        monkeypatch.setattr(gated, "stopped", lambda _why: (object(), tmp_path))
+    monkeypatch.setattr(files, "check_memdump", lambda *_a, **_k: tmp_path / "x.bin")
+    got = getattr(s, tool)(**args)
+    keys = list(got)
+    assert got["ref"] == "irq" and keys.index("ref") + 1 == keys.index("addr"), got
+
+
 def test_a_read_above_the_ceiling_is_refused_and_names_memdump(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -242,6 +275,7 @@ def test_a_read_summary_carries_its_bytes_whole_to_a_ceiling_and_counts_the_rest
     _console(monkeypatch, tmp_path, _ConsoleSession(image))
     short = s.read_memory("0x2", length=2)
     assert short["summary"] == "read_memory 0x2: 2 bytes at 0x00000002: 0203", short["summary"]
+    assert short["ref"] == "0x2" and short["addr"] == "0x00000002", short
     cap = prose.HEX_BYTES_SHOWN
     long = s.read_memory("0x0", length=cap + 3)
     assert long["summary"].endswith(image[:cap].hex() + "... (3 more bytes in `hex`)"), (

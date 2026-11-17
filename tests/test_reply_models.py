@@ -63,3 +63,12 @@ def test_close_always_answers_the_exit_code_as_both_servers_do() -> None:
     assert "exit_code" in reply_schema.own_required(replies.MODELS["close"])
     doc = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == "close").description
     assert "`exit_code`" in (doc or "")
+
+
+@pytest.mark.parametrize("tool", ["disassemble", "find", "memdump", "read_memory", "scan",
+                                  "write"])
+def test_a_tool_that_reads_or_writes_at_a_ref_echoes_it_beside_addr(tool: str) -> None:
+    """As on scry-dosbox-x: the reply says which `ref` its `addr` answers."""
+    assert "ref" in reply_schema.own_fields(replies.MODELS[tool])
+    doc = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == tool).description
+    assert "ref" in reply_schema.reply_sentence_names(doc or ""), doc

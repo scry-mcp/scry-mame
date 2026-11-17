@@ -24,6 +24,7 @@ from scry_mame import (
     summaries,
     watches,
 )
+from scry_mame import envelope as menvelope
 from scry_mame import maps as mmaps
 from scry_mame import scan as mscan
 from scry_mame import space as mspace
@@ -137,7 +138,8 @@ MAP = {
 
 
 def _start_scan(ref: str, length: int, cell_bytes: int = 1, cpu: str = "") -> dict[str, Any]:
-    return mscan.start_scan(*stopped("a value scan"), ref, length, cell_bytes, cpu)
+    return menvelope.with_ref(mscan.start_scan(*stopped("a value scan"), ref, length, cell_bytes,
+                                               cpu), ref)
 
 
 def _filter_scan(operator: str = "=", value: int | None = None,

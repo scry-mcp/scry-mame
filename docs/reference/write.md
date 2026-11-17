@@ -16,7 +16,7 @@ stopped.
 the address (refused where none does, or past its end); without it a ROM write goes
 nowhere and says why. A range past the program space is `bad_argument`.
 
-Reply: `addr`, `bytes_written`, `readback`, `verified`, `cpu`; with `region` also
+Reply: `ref`, `addr`, `bytes_written`, `readback`, `verified`, `cpu`; with `region` also
 `region`, `region_offset`, `captures_reading_it`; on ROM `target`, `note`. A failed
 re-read is `readback_refused` or `session_broken`.
 
@@ -36,6 +36,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `captures_reading_it` | array |
 | `cpu` | string or object |
 | `readback` | string |
+| `ref` | string |
 | `region` | string |
 | `region_offset` | string |
 | `target` | string |

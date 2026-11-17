@@ -192,6 +192,11 @@ floor.
 - `machine_map` takes `dest`, as on scry-dosbox-x: every row of the sections read is written to
   that new file as JSON and the reply names it in `path`; a cut list with no `dest` says how to
   get every row.
+- `read_memory`, `disassemble`, `find`, `memdump`, `scan` (its `start`) and `write` echo the
+  caller's `ref` beside the `addr` it resolved to, as on scry-dosbox-x.
+- `close` declares the `exit_code` it always answered: an integer, or unavailable with its `why`.
+  `symbols_find`'s `linear`, `start`'s and `rom_check`'s `reference_addr` and `reference_base`,
+  and the values of `bases` take an address as `0x` text or an integer, as every other address.
 
 ## 0.1.0
 
