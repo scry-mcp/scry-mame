@@ -4,7 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Takes scry-core 0.118.1.
+- Takes scry-core 0.118.2.
+- `promote` refuses a `start` profile or a `perform` document holding a `${...}` that is no
+  placeholder, typed text included, where it wrote a store file `perform(path=)` refused.
 - The live tier reads its bench only from `MAME_LIVE_BENCH`: unset, every board on the bench is
   BLOCKED naming the variable, where it fell back to a directory of the developer's home.
 - A `perform` document a store holds is replayed with its placeholders resolved, `${state}`

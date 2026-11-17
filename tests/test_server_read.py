@@ -222,18 +222,14 @@ def test_a_debug_command_past_the_packet_size_is_a_bad_argument_at_once(
     assert wire.sent == [] and ses.writes == 0, wire.sent
 
 
-#: Absolute on the host, as `memdump` requires its `dest` to be: `/tmp` is not on Windows.
-DUMP = str(Path(tempfile.gettempdir()) / "x.bin")
-
-
 @pytest.mark.parametrize(("tool", "args", "module", "body", "fields"), [
     ("read_memory", {"ref": "irq", "length": 2}, "read", "read_memory", {"hex": "aa55"}),
     ("disassemble", {"ref": "irq", "length": 2}, "read", "disassemble",
      {"lines": [], "flow": [], "flow_source": "listing"}),
     ("find", {"data_hex": "aa", "ref": "irq", "length": 2}, "read", "find",
      {"hits": [], "hits_total": 0, "span": {}, "truncated": False}),
-    ("memdump", {"ref": "irq", "length": 2, "dest": DUMP}, "files", "memdump",
-     {"path": DUMP, "bytes": 2}),
+    ("memdump", {"ref": "irq", "length": 2, "dest": "x.bin"}, "files", "memdump",
+     {"path": "x.bin", "bytes": 2}),
     ("write", {"ref": "irq", "data_hex": "aa"}, "mwrite", "write",
      {"bytes_written": 1, "readback": "aa", "verified": True}),
     ("scan", {"method": "start", "ref": "irq", "length": 2}, "mscan", "start_scan",
@@ -253,7 +249,8 @@ def test_each_tool_at_a_ref_echoes_it_just_before_the_address_it_resolved(
         {**address, **fields}))
     for gated in (s, folds):
         monkeypatch.setattr(gated, "stopped", lambda _why: (object(), tmp_path))
-    monkeypatch.setattr(files, "check_memdump", lambda *_a, **_k: tmp_path / "x.bin")
+    if "dest" in args:          # absolute on the host, and the run's own: memdump refuses one that exists
+        args = {**args, "dest": str(tmp_path / args["dest"])}
     got = getattr(s, tool)(**args)
     keys = list(got)
     assert got["ref"] == "irq" and keys.index("ref") + 1 == keys.index("addr"), got
