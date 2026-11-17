@@ -1480,17 +1480,21 @@ def test_a_refusal_the_stub_answered_while_the_list_waits_latches_nothing(
     assert e.value.code == "readback_refused" and not ses.broken, (e.value, ses.broken)
 
 
+@pytest.mark.parametrize(("op", "args"), [
+    ("log_wait", {"pattern": "GO", "channel": "emulator"}),
+    ("screen_wait", {"palette": "black"}),
+])
 def test_a_step_whose_own_wait_missed_ends_the_list(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, op: str, args: dict[str, Any],
 ) -> None:
-    """A `log_wait` that timed out ends the list with the verdict."""
+    """A wait for something to see that timed out ends the list with the verdict."""
     _running(monkeypatch, tmp_path)
-    monkeypatch.setattr(s, "log_wait", lambda **_k: menvelope.envelope(
-        {"verdict": "TIMEOUT", "waited_s": 0.1, "pattern": "GO"}))
-    out = s.perform(steps=[{"op": "log_wait", "pattern": "GO", "channel": "emulator",
-                            "seconds": 0.1}, {"op": "status"}], settle_seconds=0.5)
+    monkeypatch.setattr(s, op, lambda **_k: menvelope.envelope(
+        {"verdict": "TIMEOUT", "waited_s": 0.1}))
+    out = s.perform(steps=[{"op": op, **args, "seconds": 0.1}, {"op": "status"}],
+                    settle_seconds=0.5)
     assert out["status"] == "ok" and out["steps_completed"] == 1, out
-    assert out["verdict"] == "TIMEOUT" and "step 1 ('log_wait')" in out["note"], out
+    assert out["verdict"] == "TIMEOUT" and f"step 1 ('{op}')" in out["note"], out
 
 
 def test_an_unprovable_console_run_is_proved_stopped_by_the_stop_the_console_logged(
