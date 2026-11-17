@@ -197,6 +197,8 @@ floor.
 - `close` declares the `exit_code` it always answered: an integer, or unavailable with its `why`.
   `symbols_find`'s `linear`, `start`'s and `rom_check`'s `reference_addr` and `reference_base`,
   and the values of `bases` take an address as `0x` text or an integer, as every other address.
+- `screen_wait`'s reply no longer lists `disarmed_watches` and `not_rearmed`, which only `run_to`
+  and `run_for` send.
 
 ## 0.1.0
 

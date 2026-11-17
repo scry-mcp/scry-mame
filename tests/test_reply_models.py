@@ -72,3 +72,12 @@ def test_a_tool_that_reads_or_writes_at_a_ref_echoes_it_beside_addr(tool: str) -
     assert "ref" in reply_schema.own_fields(replies.MODELS[tool])
     doc = next(t for t in asyncio.run(s.mcp.list_tools()) if t.name == tool).description
     assert "ref" in reply_schema.reply_sentence_names(doc or ""), doc
+
+
+@pytest.mark.parametrize("tool", ["run_to", "run_for", "screen_wait"])
+def test_only_a_tool_that_takes_disarm_watches_lists_what_it_adds(tool: str) -> None:
+    """`disarmed_watches` and `not_rearmed` are the pass's account: a reply never sends them where
+    no pass was disarmed."""
+    takes = "disarm_watches" in getattr(s, tool).__wrapped__.__code__.co_varnames
+    fields = reply_schema.own_fields(replies.MODELS[tool])
+    assert ("disarmed_watches" in fields) is takes and ("not_rearmed" in fields) is takes, tool

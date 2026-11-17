@@ -768,13 +768,12 @@ class RomCheckReply(MameEnvelope, total=False):
     rom_check: Required[str]
 
 
-class RunForReply(MameEnvelope, total=False):
+class RunForStop(MameEnvelope, total=False):
     command_chars: int
     cpu: str | dict[str, Any]
     cycles: Required[int | dict[str, Any]]
     following: list[str]
     instruction: StopInstruction
-    disarmed_watches: list[Any]
     emulated_after_s: Required[float | dict[str, Any]]
     emulated_before_s: Required[float | dict[str, Any]]
     errorlog: dict[str, Any]
@@ -782,7 +781,6 @@ class RunForReply(MameEnvelope, total=False):
     frame_after: Required[int | dict[str, Any]]
     frame_before: Required[int | dict[str, Any]]
     limit_chars: int
-    not_rearmed: list[Any]
     pc: str
     polls: Annotated[int, When("by frames")]
     reads: Annotated[int, When("by milliseconds")]
@@ -794,7 +792,11 @@ class RunForReply(MameEnvelope, total=False):
     watches: list[Any]
 
 
-class RunToReply(MameEnvelope, total=False):
+class RunForReply(RunForStop, tool_replies.DisarmFields, total=False):
+    """`run_for`'s stop and what `disarm_watches` adds; `screen_wait` runs alike, unflagged."""
+
+
+class RunToReply(MameEnvelope, tool_replies.DisarmFields, total=False):
     addr: str
     call: Annotated[str, When("a run to a screen")]
     evaluated_by: Annotated[str, When("a run to a screen")]
@@ -816,11 +818,9 @@ class RunToReply(MameEnvelope, total=False):
     following: list[str]
     frames: Annotated[int, When("a screen with no anchor")]
     instruction: StopInstruction
-    disarmed_watches: list[Any]
     errorlog: dict[str, Any]
     frame: int
     limit_chars: int
-    not_rearmed: list[Any]
     pc: str
     ref: str
     regpoint_hit: dict[str, Any]
@@ -836,7 +836,7 @@ class RunToReply(MameEnvelope, total=False):
     watches: list[Any]
 
 
-class ScreenWaitReply(RunForReply, tool_replies.StopWaitFields, total=False):
+class ScreenWaitReply(RunForStop, tool_replies.StopWaitFields, total=False):
     already: bool
     entries: int
     frames: Annotated[int, When("once answered")]

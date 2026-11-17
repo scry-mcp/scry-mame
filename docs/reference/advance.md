@@ -35,9 +35,8 @@ Run to `ref` and stop, with a control counting meanwhile.
 anchored screen: a place known to run, declared as a control on that cpu if it is new
 (`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
 controls count too. `condition`: stop only when it holds, bare numbers hex
-(`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of
-them cuts it. Needs a stopped machine. Refused: an unresolved ref, an empty or unresolved
-control, an over-long `condition`.
+(`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of them cuts it. Needs a stopped machine. Refused: an unresolved ref,
+an empty or unresolved control, an over-long `condition`.
 
 `screen`: a mapped screen's name instead of `ref` (exactly one). If the screen names an `anchor` (set by `screen_map_write`), run to it (`control`
 required): a `verified` map judges it there (`stale_map` when it no longer holds), a
@@ -65,6 +64,8 @@ Reference: REFERENCE.md, Advancing the machine.
 
 | reply field | type |
 |---|---|
+| `disarmed_watches` | array |
+| `not_rearmed` | array |
 | `addr` | string |
 | `call` | string |
 | `evaluated_by` | string |
@@ -86,11 +87,9 @@ Reference: REFERENCE.md, Advancing the machine.
 | `following` | array of string |
 | `frames` | integer |
 | `instruction` | StopInstruction |
-| `disarmed_watches` | array |
 | `errorlog` | object |
 | `frame` | integer |
 | `limit_chars` | integer |
-| `not_rearmed` | array |
 | `pc` | string |
 | `ref` | string |
 | `regpoint_hit` | object |
@@ -191,8 +190,7 @@ run_for(milliseconds=0, frames=0, seconds=30.0, disarm_watches=false)
 ```
 
 Run for `milliseconds` of emulated time or `frames` of the frame counter (exactly one) and
-wait until STOPPED. `disarm_watches=true` disarms the watches for this pass, so none of them
-cuts it. Needs the machine STOPPED (else `not_stopped`).
+wait until STOPPED. `disarm_watches=true` disarms the watches for this pass, so none of them cuts it. Needs the machine STOPPED (else `not_stopped`).
 
 Reply: `verdict` (`ELAPSED`, `TIMEOUT`, `OTHER_STOP`; a control never cuts), `frame_before`,
 `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles` (each unavailable with
@@ -216,7 +214,6 @@ Reference: REFERENCE.md, Advancing the machine.
 | `cycles` | integer or object |
 | `following` | array of string |
 | `instruction` | StopInstruction |
-| `disarmed_watches` | array |
 | `emulated_after_s` | number or object |
 | `emulated_before_s` | number or object |
 | `errorlog` | object |
@@ -224,7 +221,6 @@ Reference: REFERENCE.md, Advancing the machine.
 | `frame_after` | integer or object |
 | `frame_before` | integer or object |
 | `limit_chars` | integer |
-| `not_rearmed` | array |
 | `pc` | string |
 | `polls` | integer |
 | `reads` | integer |
@@ -234,6 +230,8 @@ Reference: REFERENCE.md, Advancing the machine.
 | `verdict` | string |
 | `watch_hit` | object |
 | `watches` | array |
+| `disarmed_watches` | array |
+| `not_rearmed` | array |
 
 Example, from a live run:
 
@@ -778,7 +776,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `cycles` | integer or object |
 | `following` | array of string |
 | `instruction` | StopInstruction |
-| `disarmed_watches` | array |
 | `emulated_after_s` | number or object |
 | `emulated_before_s` | number or object |
 | `errorlog` | object |
@@ -786,7 +783,6 @@ Reference: REFERENCE.md, Input and the screen.
 | `frame_after` | integer or object |
 | `frame_before` | integer or object |
 | `limit_chars` | integer |
-| `not_rearmed` | array |
 | `pc` | string |
 | `polls` | integer |
 | `reads` | integer |

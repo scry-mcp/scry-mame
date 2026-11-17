@@ -375,9 +375,8 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
     anchored screen: a place known to run, declared as a control on that cpu if it is new
     (`breakpoint_at(role="control")` does the same ahead of time), and the cpu's other declared
     controls count too. `condition`: stop only when it holds, bare numbers hex
-    (`w@DemoLen==0x25`). `disarm_watches=true` disarms the watches for this pass, so none of
-    them cuts it. Needs a stopped machine. Refused: an unresolved ref, an empty or unresolved
-    control, an over-long `condition`.
+    (`w@DemoLen==0x25`). {DISARM_WATCHES}. Needs a stopped machine. Refused: an unresolved ref,
+    an empty or unresolved control, an over-long `condition`.
 
     {MAP_RUN_TO}
 
@@ -404,8 +403,7 @@ def run_for(milliseconds: int = 0, frames: int = 0,
             seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
             disarm_watches: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """Run for `milliseconds` of emulated time or `frames` of the frame counter (exactly one) and
-    wait until STOPPED. `disarm_watches=true` disarms the watches for this pass, so none of them
-    cuts it. {NEEDS_STOPPED}.
+    wait until STOPPED. {DISARM_WATCHES}. {NEEDS_STOPPED}.
 
     Reply: `verdict` (`ELAPSED`, `TIMEOUT`, `OTHER_STOP`; a control never cuts), `frame_before`,
     `frame_after`, `emulated_before_s`, `emulated_after_s`, `cycles` (each unavailable with
