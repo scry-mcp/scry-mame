@@ -1,228 +1,278 @@
 # Contributing to scry-mame
 
-This is the guide for changing the server. What the tools promise is in `REFERENCE.md`; this
-file says where the code lives, how to run the battery and the live tiers, and what proves a
-change.
+This page is for changing the server: where the code lives, which checks a change must pass,
+and what proves it. What the tools promise is in [REFERENCE.md](REFERENCE.md).
 
 ## Where the code lives
 
-`src/scry_mame/server.py` holds the tools and `src/scry_mame/mcp.py` the MCP boundary (the server
-object, its `instructions`, the roster of tools by family). Every other module in `src/scry_mame/`
-holds one concern, and its
-docstring opens with what it holds and why: read that before changing it. What both Scry servers
-share (the reply contract, the reference generator, the demo runner, the probe, the live bench)
-is the scry-core package, pinned by tag in `pyproject.toml`; its README lists every module, among them `scry_core.process_tree` (ending a launched
-process with everything it started), `scry_core.regpoint` (the `regpoint_hit` of a registerpoint
-stop) and `scry_core.tool_replies` (the fields `screen_map_write`, `log_wait` and `comment_write`
-share). `demos/` holds the demos and `patches/` the MAME patches the README names. `tests/` holds the
-contract tests and `tests/live/` the tiers that drive a real emulator.
+- `src/scry_mame/server.py` holds the tools, and `src/scry_mame/mcp.py` the MCP server object,
+  its `instructions` and the list of tools by group.
+- Every other module of `src/scry_mame/` holds one concern. Its docstring opens with what it
+  holds and why: read that before changing it.
+- What both SCRY servers share is the scry-core package, pinned by tag in `pyproject.toml`.
+  [Its module list](https://github.com/scry-mcp/scry-core/blob/main/docs/modules.md) has one
+  row per module.
+- `demos/` holds the demos and `patches/` the MAME patches the README names.
+- `tests/` holds the unit tests, and `tests/live/` the tests that drive a real emulator.
 
-## The battery
-
-The suite runs with a home and a temp folder of its own (scry-core's `private_run`, on in
-`pyproject.toml`) and fails a run that leaves a file in that home; it stands aside when a `live`
-case is selected. Every name a server writes follows scry-core's
-[rule of file names](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md): a
-`names_judged` red means a file was written outside it.
+## The checks
 
 ```sh
 uv run ruff check .
 uv run mypy --strict .
 uv run mypy --strict --platform win32 .
 uv run pytest -q
-bash .githooks/pre-commit-test.sh   # the hook's own cases
+bash .githooks/pre-commit-test.sh
 ```
 
-Ruff and mypy (strict, over the whole tree) judge the code, the second mypy as Windows sees it, so
-a call Windows lacks goes red on any host until it is guarded by `sys.platform`; pytest runs the
-contract tests and, through `--cov`, the coverage floor in `pyproject.toml`; the last line runs the
-pre-commit hook's own cases. All five green is what a change needs before it is committed.
+All five pass before a change is committed. What each one proves:
 
-On Windows the battery is the same, with `uv run pytest -q --no-cov`: the floor is judged on macOS
-only, because Windows skips by design the cases that need what it lacks (a FIFO, a mode bit, a
-symlink), and the floor counts the whole tree.
+- `ruff` and the first `mypy` check the code, strict, over the whole repository. A new
+  directory is covered without being added anywhere.
+- The second `mypy` reads the code as Windows sees it. A call Windows lacks fails on any
+  computer until it is guarded by `sys.platform`.
+- `pytest` runs the unit tests and checks the coverage floor in `pyproject.toml`.
+- The last line runs the commit hook's own cases.
 
-`.github/workflows/ci.yml` runs this battery on GitHub's Linux runners when started by hand, with
-`--no-cov` since the floor is macOS's, plus the pre-commit's checks (which need `jscpd` on the
-`PATH`, here as on a contributor's machine); the live tier stays on macOS and Windows, where an
-emulator and a display are. The suite needs a `lua` on the `PATH` (the Lua doubles run MAME's Lua
-through it) and, on Linux, `lsof` (the stub owner reads it); the workflow installs both.
+The tests run with a home and a temporary folder of their own, and fail a run that leaves a
+file in that home (scry-core's `private_run`). Every file the server writes follows scry-core's
+[rule of file names](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md); a
+red `names_judged` means one was written outside it.
 
-The Lua the server sends MAME lives in `src/scry_mame/lua/`, loaded by `lua_source.py`, which fills
-each `__SCRY_<name>__` slot with a Lua literal of its value's type. `tests/test_lua_scripts.py`
-judges it with three tools, and fails when one is missing: StyLua (`stylua --check`, configured
-by `stylua.toml`), `luac` of Lua 5.4, MAME's (`luac5.4`; Homebrew's keg-only `lua@5.4`), and
-luacheck (`.luacheckrc`) over every script as it is rendered and sent. On macOS,
-`brew install stylua luacheck lua@5.4`; the workflow installs them at pinned versions. Windows
-skips that file: the scripts are the same bytes there.
+On Windows the fourth command is `uv run pytest -q --no-cov`. The coverage floor is checked on
+macOS only, because Windows skips the cases that need what it lacks (a FIFO, a mode bit, a
+symlink).
 
-A tool's reply model is its contract. A number whose natural notation is hex (an address, an offset, an interrupt, a
-port) is answered as `0x` text and taken as `0x` text or an integer. A field every `ok` reply of the tool carries is `Required[...]`
-in the model; one that comes only under a condition is `Annotated[T, When("words")]`, and the
-tool's `Reply:` sentence says those words beside the field; a datum that could not be read is
-`unavailable(why)` and never absent. The battery refuses an `ok` reply that lacks a required field,
-and `tests/test_reply_models.py` refuses a promised field whose condition the sentence does not say.
+`.github/workflows/ci.yml` runs the same checks on GitHub's Linux runners when started by hand,
+with `--no-cov` and with `jscpd` installed for the hook. The tests need a `lua` on the `PATH`
+and, on Linux, `lsof`; the workflow installs both.
 
-A change to a tool's arguments, reply model or description changes its reference page, and
-`tests/test_reference_pages.py` goes red naming the tool, the page and the line. Regenerate the pages from the
-code, and the examples only from a live run's transcript (each `--mark` spells a directory of
-the run's host, as the committed examples do):
+### Running part of the tests
+
+Every `pytest` run checks the coverage floor, which belongs to the whole repository, so a
+partial run fails on it. Two traps follow from how `addopts` is written:
+
+- `addopts` ends in a bare `--cov`, which takes the next argument as its source. So
+  `uv run pytest tests/test_x.py` runs every test while looking like a one-file run.
+- Narrow a run with `-o addopts=""` and the test files, or with `-k <module name> --no-cov`.
+  Read it as a run that checked no floor.
+- `-o addopts=` also drops the `not live` and `not window` deselections. Name test files with
+  it, never a directory: `tests` would start a real emulator.
+
+### The Lua the server sends
+
+The Lua the server sends MAME lives in `src/scry_mame/lua/`. `lua_source.py` loads it and fills
+each `__SCRY_<name>__` slot with a Lua literal of its value's type.
+
+`tests/test_lua_scripts.py` checks every script as it is sent, with three programs, and fails
+when one is missing: StyLua (`stylua --check`), `luac` of Lua 5.4, which is MAME's, and
+luacheck. On macOS, `brew install stylua luacheck lua@5.4`. Windows skips that file: the
+scripts are the same bytes there.
+
+### A scry-core checkout
+
+`uv run` syncs the environment before its command. So the next plain `uv run` replaces an
+editable install of a scry-core checkout (`uv pip install -e ../scry-core`) with the pinned
+package. The run then checks the pinned package while looking like a run on the checkout.
+
+- Print `scry_core.__file__` from the project's Python before and after a run.
+- Use `uv run --no-sync` (or `UV_NO_SYNC=1`) while the editable install is wanted, and
+  reinstall it after a full run of the checks.
+- Export `PYTHONPATH=<checkout>/src` for a run that must keep the checkout while another
+  command syncs the environment.
+
+## Changing a tool
+
+A tool's reply model is its contract:
+
+- A number whose natural notation is hex (an address, an offset, a port) is answered as `0x`
+  text, and taken as `0x` text or an integer.
+- A field every `ok` reply carries is `Required[...]` in the model.
+- A field that comes only sometimes is `Annotated[T, When("words")]`, and the tool's `Reply:`
+  sentence says those words beside it.
+- A value that could not be read is `unavailable(why)`, never absent.
+
+The tests refuse an `ok` reply that lacks a required field. `tests/test_reply_models.py` refuses
+a promised field whose condition the sentence does not say.
+
+A change to a tool's arguments, reply model or description changes its reference page.
+`tests/test_reference_pages.py` then fails, naming the tool, the page and the line. Rewrite the
+pages from the code:
 
 ```sh
 uv run python -m scry_core.reference scry_mame.server:REFERENCE --write
+```
+
+The examples on those pages come only from the transcript of a run against the real emulator.
+Each `--mark` spells one of that computer's directories the way the committed examples do:
+
+```sh
 uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
     --examples <transcript.jsonl ...> --mark '/tmp/<the run>=$TMPDIR'
 ```
 
-A green live run deletes its scratch, transcript included: hard-link `transcript.jsonl` while it
-runs, and only one newer than the run's start, since the scratches of earlier failed runs keep
-their old transcripts under the same temp root. Mark the temp root as well as the run directory: a server's own scratch lives directly under
-`$TMPDIR`, so a `--mark` of the run directory alone leaves host paths in `examples.json`; add
-`--mark '<TMPDIR without its trailing slash>=$TMPDIR'` and grep `docs/reference` for `/Users/`,
-`/var/folders` and `/private/var` before the commit. A clock reading, pid, port or scratch
-directory name in a reply is hidden by the generator.
-`--skip '<regex>'` leaves out the cells whose call, reply, section or label match it, so a tool
-whose first cell ran on a board a stranger cannot have takes its next cell as its example; a tool
-with no other cell keeps none.
+- A run that passes deletes its temporary folder, transcript included. Hard-link
+  `transcript.jsonl` while it runs, and only one newer than the run's start.
+- Mark the temporary root as well as the run's directory, with
+  `--mark '<TMPDIR without its trailing slash>=$TMPDIR'`. The server's own temporary folder
+  sits directly under `$TMPDIR`.
+- Before the commit, search `docs/reference` for `/Users/`, `/var/folders` and `/private/var`.
+- `--skip '<regex>'` leaves out the test cases whose call, reply or label match it. Use it when
+  a tool's first case ran on a game a stranger cannot have.
 
-The commit itself runs scry-core's pre-commit (`python -m scry_core.hook --help` says what it checks): enable it once per clone with
+A promise in the reference has a test that fails against the defect it guards. The parsers of
+MAME's console are tested on text captured from a real MAME, never written by hand. The
+captures are under `tests/fixtures/console/`, and `tests/fixtures/README.md` says where each
+came from.
+
+### A tool that moves to another page
+
+The reference generator rewrites only the blocks between its markers. The hand-written
+paragraphs after a block belong to that tool by position, so a tool moved to another page
+leaves them behind.
+
+1. Take the text between the tool's end marker and the next begin marker, at `HEAD`.
+2. Remove it from the old page and put it after the same tool's end marker on the new page.
+3. Run `tests/test_reference_pages.py` again.
+
+The paragraphs of `REFERENCE.md` that name the group, and the demos' tables of tools, need the
+same pass. The group of each tool both servers have is `roster.SHARED_FAMILIES` in scry-core.
+
+## The commit hook
+
+The commit runs scry-core's pre-commit check; `python -m scry_core.hook --help` says what it
+looks at. Turn it on once per clone:
 
 ```sh
 git config core.hooksPath .githooks
 ```
 
-Its prose check is a share of each file's bytes, so a change that only deletes code raises the
-share and can go red with no comment touched: run the hook after a sweep that deletes lines, and
-cut a clause in the file it names, never raise the ceiling.
+One of its checks is the share of comments and docstrings in each file's bytes. A change that
+only deletes code raises that share and can fail with no comment touched. Cut a clause in the
+file it names; never raise the limit.
 
-Every pytest run judges the coverage floor: `--cov` is in `addopts` and the floor is
-`fail_under` in `pyproject.toml`. A partial run goes red on that floor by construction, because
-the floor is the whole repository's. `addopts` ends in a bare `--cov`, which takes the next
-argument as its source, so `uv run pytest tests/test_x.py` runs the whole suite while looking like
-a one-file run, and a `--no-cov` after the path does not help: the path was already taken. Narrow
-a run with `-o addopts=""` naming the test files, or with `-k <module name> --no-cov`, and read it as a run
-that judged no floor. `-o addopts=` also drops the `not live` and `not window` deselections, so it names
-test files and never a directory: `tests` would start a real emulator. The live tier is outside the default
-`pytest` run: it is the two scripts below and the opt-in `window` cases, so a clone runs no emulator
-by accident.
+## Tests against a real emulator
 
-`uv run` syncs the environment before its command, so an editable install of a core checkout
-(`uv pip install -e ../scry-core`) is replaced by the pinned scry-core on the next plain `uv run`,
-and a battery, probe or live tier then judges the pinned core while looking like a run on the
-checkout. Print `scry_core.__file__` from the project's Python before and after a run, use
-`uv run --no-sync` (or `UV_NO_SYNC=1`) while the editable core is wanted, reinstall it after a
-full battery, and export `PYTHONPATH=<core checkout>/src` for a run that must keep the source
-winning while another command syncs the environment mid-run.
-
-The ruff and mypy configuration in `pyproject.toml` is scry-core's bar; mypy runs strict with no
-path list, so a new directory is covered without being added anywhere.
-
-A guarantee in the reference has a test that fails against the defect it guards. The console
-parsers are held to text captured live rather than authored; the captures are under
-`tests/fixtures/console/`, with their provenance in `tests/fixtures/README.md`.
-
-## The live tier
-
-The live half is `tests/live/live_check.py` against a real board. It drives every tool through
-the server, the running contract and the throttle flight included.
+A plain `pytest` starts no emulator. These two scripts do, and both call every tool through the
+server:
 
 ```sh
 uv run python tests/live/live_check.py
+timeout 1800 uv run python tests/live/live_matrix.py
 ```
 
-Its checks run on boards this repository does not carry and on the demos' free sets, with the
-MAME `MAME_BINARY` names. A board it needs that is not there makes the run INVALID, naming what is
-missing; only the game demos, which read their romset and symbol map from `LINEUP_MAME_ROMS` and
-`SPEEDF_MAME_ROMS`, are BLOCKED without them. The tracked live code names the private boards only
-by label; a set name MAME publishes may appear.
+`live_check.py` runs its checks on games this repository does not carry and on the demos' free
+ROMs, with the MAME that `MAME_BINARY` names. A game it needs and does not find makes the run
+INVALID, naming what is missing.
 
-`tests/live/live_matrix.py` is the matrix around those checks (every tool, every machine state,
-every argument edge, every pair of tools that share state), one printed line per cell:
+`live_matrix.py` tries every tool in every state of the machine, at every edge of its
+arguments, and every pair of tools that share state. It prints one line per test case:
 
-    timeout 1800 uv run python tests/live/live_matrix.py
+- The cases are listed before anything starts, so the count is printed first and a case the run
+  never reached shows at the end.
+- OK means the reply matches the tool's published contract for that state and input.
+- FAIL means it contradicts the contract, raises, or leaves the `session` block disagreeing
+  with the machine.
+- BLOCKED means the case could not run, with the reason.
+- Every call lands whole in a JSONL transcript.
 
-Its cells are declared before anything boots, so the count PLANNED is printed first and a cell the
-run never reached shows at the end. A cell is OK when the reply matches the tool's published
-contract for that state and input, FAIL when it contradicts it, raises, or leaves the session
-block disagreeing with the machine, and BLOCKED when it could not run, with the reason; every call
-lands whole in a JSONL transcript. `MAME_LIVE_SECTIONS` names the letters to run (all, unset);
-`MAME_LIVE_JOBS` runs each letter as a process of its own, that many at once (unset, half the
-host's CPUs; `1`, one after another), while section X, the focus gate, opens and closes the run in
-the parent so its watch spans every job. The focus gate's start in front and its Space move take
-the desk of whoever is working, so they run only with `SCRY_FOCUS_CONTROL=1` on an idle machine;
-unset, those cells are BLOCKED naming the variable and the verdict says it is unproven. The free
-boards and the V30 boards run on the MAME that `MAME_BINARY` names, built with every driver, while the
-two m68k-dual boards name a binary of their own in the bench; the bench's boards read it from
-`MAME_LIVE_BENCH` and the free boards their sets from `MAME_TEST_ROMS`, and with either unset,
-those cells are BLOCKED naming it. The cells that open a watched
-window open it as `start` does, on the display they ask for (`display`, on
-[`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind,
-`0` every start in front, unset leaves each start its own default. Section C's dumper faults run
-on macOS only and are BLOCKED on Windows, saying so: they read the files MAME holds open through
-`lsof`. Section Z's window cells capture the window as the host shows it, a window behind others
-included, and on Windows they need the display on: with it off Windows composes no new frame of
-the window, so they are BLOCKED, saying so. The cases that move the owner's Space carry
-the `window` marker and are out of every default run: `SCRY_FOCUS_CONTROL=1 uv run pytest
--o addopts="" -m 'live and window' tests/live` runs them (scry-core's README, *On-demand tiers*).
+What the scripts read from the environment:
 
-**What a run behind guarantees.** A start behind does not come to the front, so the keyboard
-stays where it was. That is all it promises: its window is still there to be seen, and the host
-carries the load of every emulator the run starts, several at once. So the mode is never the
-reason a run is safe beside somebody working: the matrix runs in an account or on a machine
-nobody is working at, or at an hour agreed with whoever is, and what says whether a run took the
-front is section X's verdict, read as scry-core's README says (*Focus watch*).
+| Variable | What it sets |
+|---|---|
+| `MAME_BINARY` | the MAME the free ROMs and the V30 games run on, built with every driver |
+| `MAME_TEST_ROMS` | the directory of the free ROMs |
+| `MAME_LIVE_BENCH` | the folder of the private test games, each with its own MAME where it needs one |
+| `LINEUP_MAME_ROMS`, `SPEEDF_MAME_ROMS` | each game demo's ROM set and symbol map |
+| `MAME_LIVE_SECTIONS` | the letters of the sections to run; unset, all of them |
+| `MAME_LIVE_JOBS` | how many sections run at once, each as its own process; unset, half the CPUs |
+| `MAME_BACKGROUND` | `1` opens every window behind, `0` every one in front; unset, each start decides |
+| `SCRY_FOCUS_CONTROL` | `1` lets the focus section open a window in front and move a Space |
 
-A trap of the host, not of the code: a debug MAME build aborts at start on an SDL3 input assert while a game
-controller is connected: every live start passes an ini holding `joystickprovider none` as
-`inipath`, the tracked `tests/live/fixtures/ini-no-joystick` or a copy of it, and a start written
-by hand passes one too, or expects the abort.
+With a variable unset, the cases that need it are BLOCKED and name it. The tracked test code
+names the private games only by a label; a set name MAME publishes may appear.
 
-## What a live run guards
+A few cases depend on the computer:
 
-A live run refuses a host that cannot start MAME, and proves it left none running. Before its
-first start it launches the board once in a form that ends by itself; one that does not return is
-INVALID naming the host, and nothing else is launched. Every MAME a session starts is recorded
-where it is spawned, and at the end of the run one still alive is killed and FAILS the run by
-name. A green run removes its scratch; a red, INVALID or broken one keeps it and prints its path
-(`scry_core.live_host`).
+- The focus section opens and closes the run in the parent process, so its watch spans every
+  job. Its start in front and its Space move take your screen and keyboard: they run only with
+  `SCRY_FOCUS_CONTROL=1`, on a machine nobody is using.
+- The cases that open a window open it as `start` does, on the display they ask for
+  ([`start`'s page](docs/reference/session.md#start)).
+- Section C's cases that break MAME's table writer run on macOS only: they read the files MAME
+  holds open through `lsof`.
+- Section Z captures the window as the computer shows it. On Windows that needs the display
+  on, because Windows draws no new frame of a window while it is off.
+- The cases that move a Space carry the `window` marker and are out of every default run.
+  `SCRY_FOCUS_CONTROL=1 uv run pytest -o addopts="" -m 'live and window' tests/live` runs them.
 
-## Development scripts
+### What a window opened behind promises
 
-`demos/<name>/demo.py` runs one demo end to end; with `--update-readme` it rewrites the demo's
-guide from a run where every step passed: the transcript block in its README, `TRANSCRIPT.md`,
-`screen.png` and `loop.mp4` (the loop is recorded right after the step that takes the still).
-Converting the loop needs `ffmpeg` on the `PATH`; without it a demo that declares a loop ends
-INVALID and writes no loop.
+A start behind does not come to the front, so the keyboard stays where it was. That is all it
+promises: the window is still there to be seen, and the computer carries the load of every
+emulator the run starts.
 
-Beyond the demo runner, this server has no bench script and no sweep off the commit path.
+So run the live test script in an account or on a machine nobody is working at, or at an hour
+agreed with whoever is. Whether a run took the front is the focus section's verdict, read as
+[scry-core's page on these tests](https://github.com/scry-mcp/scry-core/blob/main/docs/live-tests.md#showing-that-a-run-took-nobodys-focus)
+says.
 
-## Fixtures and the sweep off the commit path
+### A game controller makes a debug MAME abort
 
-This server has no generated fixtures and no sweep kept off the commit path. The fixtures under
-`tests/fixtures/` are captures of real output; the console ones are described above.
+A debug build of MAME aborts at start, on an SDL3 input assert, while a game controller is
+connected. Every start of these tests passes an ini that holds `joystickprovider none` as
+`inipath`: the tracked `tests/live/fixtures/ini-no-joystick`, or a copy. A start written by
+hand passes one too.
 
-## Proving a change
+### What a run checks about the computer
 
-A change to a tool's description, arguments or `instructions` is probed: the probe hands a model
-only what a client delivers and checks that it calls the tool as the contract says. The
-pre-commit runs its `--check`, which asks no model and names a tool or argument with no task in
-`mcp_probe/tasks/`; a real run asks the `claude` CLI and judges each task over several runs:
+A run refuses a computer that cannot start MAME, and proves it left none running
+(`scry_core.live_host`):
+
+- Before its first start it launches the game once in a form that ends by itself. If that does
+  not return, the run is INVALID and starts nothing else.
+- Every MAME a session starts is recorded where it is started. One still alive at the end is
+  killed and fails the run by name.
+- A run that passes removes its temporary folder. Any other keeps it and prints its path.
+
+## Demos
+
+`demos/<name>/demo.py` runs one demo end to end. With `--update-readme` it rewrites the demo's
+page from a run where every step passed: the two generated blocks of its README,
+`TRANSCRIPT.md`, `screen.png` and `loop.webp`.
+
+- The steps a demo marks with an `ask` are the examples of its page, and of the README for the
+  two demos on free ROMs.
+- `loop.webp` shows the demo's moments, each cut from a `record` step of the run. ffmpeg
+  decodes the recordings and `img2webp` assembles the file; without either on the `PATH` the
+  update is refused by name.
+- A second run gives the same page. `loop.webp` alone may differ in its bytes.
+
+The block of the README that adds the server to each client is scry-core's table of clients:
 
 ```sh
-uv run python -m scry_core.probe mame --servers mcp_probe/servers.py --tasks mcp_probe/tasks --check
-uv run python -m scry_core.probe mame --servers mcp_probe/servers.py --tasks mcp_probe/tasks --runs 3
+uv run python -m scry_core.install scry_mame --write
 ```
 
-`python -m scry_core.probe --help` says how a failure is told from the model's noise. A task the
-probe's model keeps getting wrong, where the server refuses the wrong call naming why, is accepted
-residual and reported with its numbers: a client retries on a refusal, and more description text
-for that task spends the cap the others need. Only a wrong call the server accepts with
-`status: ok` is a defect.
+## The description test
 
-The reference generator rewrites only the blocks between its markers, and the hand-written
-paragraphs after a block belong to that tool by position. A tool moved to another family page
-leaves them on the old page: take the text between its end marker and the next begin marker at
-HEAD, remove it from the old page (it occurs once) and put it after the same tool's end marker on
-the new page, then rerun the drift test. The `REFERENCE.md` prose that names the family and the
-demos' family tables need the same sweep; the family of each shared tool is
-`roster.SHARED_FAMILIES` in scry-core.
+A tool's description, its arguments and the server's `instructions` are all a model has to call
+the tool from. The description test gives a model only what a client delivers and checks the
+calls it makes:
+
+```sh
+uv run python -m scry_core.probe mame --servers mcp_probe/servers.py \
+    --tasks mcp_probe/tasks --check
+uv run python -m scry_core.probe mame --servers mcp_probe/servers.py \
+    --tasks mcp_probe/tasks --runs 3
+```
+
+- `--check` asks no model. It names a tool or an argument that has no task in
+  `mcp_probe/tasks/`, and the commit hook runs it.
+- `--runs` asks the `claude` CLI and checks each task over several runs.
+  `python -m scry_core.probe --help` says how a failure is told from the model's noise.
+
+A task the model keeps getting wrong is tolerated when the server refuses the wrong call and
+says why: report it with its numbers. A client retries on a refusal, and more description text
+spends the room the other tools need. Only a wrong call the server accepts with `status: ok`
+is a defect.
