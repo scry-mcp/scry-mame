@@ -282,7 +282,7 @@ Each register prints at its declared width, so a 16-bit V30 register named `EAX`
 <!-- scry-reference:begin disassemble -->
 ## `disassemble`
 
-*Disassemble*
+*Disassemble code*
 
 ```text
 disassemble(ref, length=16, cpu="")

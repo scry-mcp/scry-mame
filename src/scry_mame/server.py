@@ -267,7 +267,7 @@ def status() -> dict[str, Any]:
     return msession.status()
 
 
-@tool("Close the MAME session", summary=summaries.close, body_session=True, on_cancel="kill")
+@tool("Close the session", summary=summaries.close, body_session=True, on_cancel="kill")
 def close(detail: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
     """End the session: MAME is asked to `quit` and killed only if it has not gone within the
     grace period. The scratch is deleted; a named `state_dir` stays. Works on a running machine;
@@ -397,7 +397,7 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
                           condition=condition, disarm_watches=disarm_watches, cpu=cpu)
 
 
-@tool("Run for emulated time", summary=summaries.run_for, on_cancel="stop")
+@tool("Run for frames or emulated time", summary=summaries.run_for, on_cancel="stop")
 def run_for(milliseconds: int = 0, frames: int = 0,
             seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
             disarm_watches: bool = False, ctx: Context[Any, Any] | None = None) -> dict[str, Any]:
@@ -784,7 +784,7 @@ def registers(from_last_stop: bool = False, cpu: str = "") -> dict[str, Any]:
     return read.registers(stopped("a register read")[0], cpu)
 
 
-@tool("Disassemble", summary=summaries.disassemble, read_only=True)
+@tool("Disassemble code", summary=summaries.disassemble, read_only=True)
 def disassemble(ref: str, length: Annotated[int, vocab.bounds(1, read.READ_MAX)] = 16,
                 cpu: str = "") -> dict[str, Any]:
     """Disassemble `length` bytes (1..{READ_MAX}) from `ref` of `cpu` (`subcpu`; the visible one
@@ -1550,7 +1550,7 @@ def promote(dry_run: bool = False, entries: list[str] | None = None,
     return menvelope.envelope(mpromote.promote(dry_run, entries, names, root))
 
 
-@tool("Debugger console command", summary=summaries.debug)
+@tool("Raw debugger command", summary=summaries.debug)
 def debug(command: str) -> dict[str, Any]:
     """Run any MAME debugger command, `command`. Prefer the typed readers: a wide `find` takes
     MAME down. Needs the machine stopped.
@@ -1620,7 +1620,9 @@ def input(port: str, field: str, value: inputs.NumberArg = 1, frames: int = 4,
       on_cancel="stop")
 def screen_wait(text: str = "", screen: str = "",
                 palette: Annotated[str, vocab.enum(("", *advance.PALETTES))] = "",
-                changed: bool = False, every: int = 0, on_breakpoint: str = "",
+                changed: bool = False,
+                every: Annotated[int, vocab.bounds(0, advance.SAMPLED_EVERY_MAX)] = 0,
+                on_breakpoint: str = "",
                 on_watch: str = "", condition: str = "", cpu: str = "",
                 seconds: Annotated[float, vocab.WAIT_BOUNDS] = 30.0,
                 ctx: Context[Any, Any] | None = None) -> dict[str, Any]:

@@ -361,16 +361,9 @@ window(front=false)
 Where the watched window is on the host, at any time, a running machine included. `front`
 brings it in front of whatever covers it and reads that back.
 
-Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, on screen with no
-other application's window covering its centre; `fullscreen`); `size` when the session was
-started with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or
-`outer`), `tolerance_px`, `height_free` and `matches`.
+Reply: `window` (`display`, the OS's index; `bounds`; `onscreen`; `front`, on screen with no other application's window covering its centre; `fullscreen`); `size` when the session was started with a stated `size`: `asked`, `seen`, which rectangle was `compared` (`client` or `outer`), `tolerance_px`, `height_free` and `matches`.
 
-Refused: no session (`no_session`), one that died (`session_broken`), a session started
-without `shared` (`no_channel`), a window that never appears or, with `front`, is still
-covered after the activation (`window_not_visible`, naming what was seen; on a
-`background=true` session it names that as what may keep it behind). Without `front` the
-window is answered wherever the owner put it.
+Refused: no session (`no_session`), one that died (`session_broken`), a session started without `shared` (`no_channel`), a window that never appears or, with `front`, is still covered after the activation (`window_not_visible`, naming what was seen; on a `background=true` session it names that as what may keep it behind). Without `front` the window is answered wherever the owner put it.
 
 Reference: REFERENCE.md, The session.
 
@@ -405,7 +398,7 @@ Example, from a live run:
 <!-- scry-reference:begin close -->
 ## `close`
 
-*Close the MAME session*
+*Close the session*
 
 ```text
 close(detail=false)

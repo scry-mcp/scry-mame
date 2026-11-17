@@ -4,6 +4,9 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `close`, `run_for`, `disassemble` and `debug` carry the titles the same tools carry on
+  scry-dosbox-x (`run_for`'s now names the frames it takes), and `screen_wait`'s schema publishes
+  `every`'s bound of 0 to 600, which it refused before without saying so.
 - `screen_wait` is listed under Advance, where it runs the machine until its predicate holds;
   its page moved from `docs/reference/screen.md` to `docs/reference/advance.md`.
 - `start`'s description says that `throttle_from_frame` runs at real speed after its frame and

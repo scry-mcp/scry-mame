@@ -184,7 +184,7 @@ Reply details: `not_settled` may leave the machine RUNNING: `stop`, and if that 
 <!-- scry-reference:begin run_for -->
 ## `run_for`
 
-*Run for emulated time*
+*Run for frames or emulated time*
 
 ```text
 run_for(milliseconds=0, frames=0, seconds=30.0, disarm_watches=false)
@@ -764,7 +764,7 @@ Reference: REFERENCE.md, Input and the screen.
 | `screen` | string | `""` |
 | `palette` | one of `""`, `"black"` | `""` |
 | `changed` | boolean | `false` |
-| `every` | integer | `0` |
+| `every` | integer (>= 0, <= 600) | `0` |
 | `on_breakpoint` | string | `""` |
 | `on_watch` | string | `""` |
 | `condition` | string | `""` |

@@ -243,7 +243,7 @@ Example, from a live run:
 <!-- scry-reference:begin debug -->
 ## `debug`
 
-*Debugger console command*
+*Raw debugger command*
 
 ```text
 debug(command)
