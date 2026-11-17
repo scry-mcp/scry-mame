@@ -702,28 +702,29 @@ def symbols_find(name: str = "", linear: inputs.NumberArg | None = None,
     return read.symbols_find(name, linear, limit, kind, on)
 
 
-@tool("Map the machine", summary=summaries.machine_map, read_only=True, idempotent=True)
+@tool("Map the machine", summary=summaries.machine_map, replay="drop", names_file="dest")
 def machine_map(cpu: str = "",
                 sections: list[Annotated[str, vocab.enum(machine.MAP_SECTIONS)]] | None = None,
-                ) -> dict[str, Any]:
+                dest: str = "") -> dict[str, Any]:
     """What the machine is: its cpus and spaces, address map, regions, shares, screens and ROM
     files. Cached at `start()`, free; answered on a running machine.
 
     Arguments: `cpu`, a tag in either spelling, narrows `cpus`, `spaces`, `address_map` and
-    `symbol_coverage`. `sections` picks sections; left out, all but `rom_files`.
+    `symbol_coverage`. `sections` picks sections; left out, all but `rom_files`. `dest`
+    (absolute or `~`-led, new) writes every row of the sections read as JSON.
 
-    Refused: an empty or unknown `sections` (`bad_argument`); an unknown tag (`unknown_ref`); no
-    machine (`no_session`); a broken session (`session_broken`).
+    Refused: an empty or unknown `sections`, or an existing `dest` (`bad_argument`); an unknown
+    tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
 
     Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
     `symbol_coverage`, `counts`, `truncated` (lists are cut to {LIST_MAX} rows), `sources`,
-    `note`, `frame_symbol`. A field no source backs is absent.
+    `path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
 
     Reference: REFERENCE.md, Reading and writing.
     """
-    args.check("machine_map", sections=sections)
+    args.check("machine_map", sections=sections, dest=dest)
     st.refuse_broken(STATE.alive())
-    return machine.machine_map(cpu, sections)
+    return machine.machine_map(cpu, sections, dest)
 
 
 @tool("Read memory", summary=summaries.read_memory, read_only=True, replay=("hex",))

@@ -189,6 +189,9 @@ floor.
   every path resolved against the directory holding `.scry/`; the reply's `profile` block names
   the file and what it filled, and an argument neither the call nor a profile gives is refused
   by name. `system`, `rompath` and `reference_rom` are optional now, so a profile can carry them.
+- `machine_map` takes `dest`, as on scry-dosbox-x: every row of the sections read is written to
+  that new file as JSON and the reply names it in `path`; a cut list with no `dest` says how to
+  get every row.
 
 ## 0.1.0
 

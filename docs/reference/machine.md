@@ -74,21 +74,22 @@ A cpu's type and clock are `machine_map`'s, not this tool's. `visible` is the cp
 *Map the machine*
 
 ```text
-machine_map(cpu="", sections=null)
+machine_map(cpu="", sections=null, dest="")
 ```
 
 What the machine is: its cpus and spaces, address map, regions, shares, screens and ROM
 files. Cached at `start()`, free; answered on a running machine.
 
 Arguments: `cpu`, a tag in either spelling, narrows `cpus`, `spaces`, `address_map` and
-`symbol_coverage`. `sections` picks sections; left out, all but `rom_files`.
+`symbol_coverage`. `sections` picks sections; left out, all but `rom_files`. `dest`
+(absolute or `~`-led, new) writes every row of the sections read as JSON.
 
-Refused: an empty or unknown `sections` (`bad_argument`); an unknown tag (`unknown_ref`); no
-machine (`no_session`); a broken session (`session_broken`).
+Refused: an empty or unknown `sections`, or an existing `dest` (`bad_argument`); an unknown
+tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
 
 Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
 `symbol_coverage`, `counts`, `truncated` (lists are cut to 400 rows), `sources`,
-`note`, `frame_symbol`. A field no source backs is absent.
+`path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
 
 Reference: REFERENCE.md, Reading and writing.
 
@@ -96,6 +97,7 @@ Reference: REFERENCE.md, Reading and writing.
 |---|---|---|
 | `cpu` | string | `""` |
 | `sections` | array of one of `"cpus"`, `"spaces"`, `"address_map"`, `"regions"`, `"shares"`, `"screens"`, `"rom_files"`, `"symbol_coverage"` or null | `null` |
+| `dest` | string | `""` |
 
 | reply field | type |
 |---|---|
@@ -104,6 +106,7 @@ Reference: REFERENCE.md, Reading and writing.
 | `cpu` | string or object |
 | `cpus` | array |
 | `frame_symbol` | string or object |
+| `path` | string |
 | `regions` | array |
 | `rom_files` | array |
 | `screens` | array |

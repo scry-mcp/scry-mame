@@ -5,10 +5,12 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from scry_core import host_program
+import test_envelope_seam  # noqa: E402
+from scry_core import host_program, narrowing
 from session_doubles import run_host_lua, use_table  # noqa: E402
 
 from scry_mame import (
@@ -871,3 +873,38 @@ def test_a_view_line_with_no_name_costs_nothing_but_itself() -> None:
     end = lines.index(machine.END)
     got = machine.parse("\n".join([*lines[:end], "VIEW ", "VIEW Shifter", *lines[end:]]))
     assert got[machine.VIEWS] == ["Shifter"] and got["cpus"], got[machine.VIEWS]
+
+
+def test_a_dest_written_under_another_name_says_so_through_the_boundary(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The name rule turns `My_Map.JSON` into `my-map.json`; the reply's `note` says so, as every
+    tool that names a file does."""
+    _cached(monkeypatch, tmp_path)
+    monkeypatch.setattr(STATE, "alive", lambda: SimpleNamespace(broken=""))
+    reply = test_envelope_seam._call("machine_map", {"dest": str(tmp_path / "My_Map.JSON"),
+                                                     "sections": ["cpus"]})[1]
+    assert reply["path"] == str(tmp_path / "my-map.json"), reply
+    assert "is written as 'my-map.json'" in reply.get("note", ""), reply
+
+
+def test_dest_writes_every_row_of_every_section_read_and_the_reply_names_it(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """As DOSBox-X's `machine_map`: the reply is cut at the ceiling, the file never is."""
+    _cached(monkeypatch, tmp_path)
+    monkeypatch.setattr(read, "LOG_LIMIT_MAX", 4)
+    cut = machine.machine_map(sections=EVERY)
+    assert cut["truncated"] is True and cut["how"] == narrowing.MAP_CUT_HOW, cut
+    dest = tmp_path / "out" / "map.json"
+    dest.parent.mkdir()
+    reply = machine.machine_map(sections=EVERY, dest=str(dest))
+    assert reply["path"] == str(dest) and "how" not in reply, reply
+    whole = json.loads(dest.read_text())
+    assert len(whole["address_map"]) == whole["counts"]["address_map"] == 32, whole["counts"]
+    assert whole["address_map"][:4] == reply["address_map"], "the file's rows are the reply's"
+    assert whole["cpus"] == reply["cpus"] and whole["sources"] == reply["sources"]
+    with pytest.raises(st.Invalid) as refused:
+        machine.machine_map(sections=["cpus"], dest=str(dest))
+    assert refused.value.code == "bad_argument" and "already exists" in str(refused.value)
+    assert reply == {**reply, **{k: v for k, v in cut.items() if k not in ("how", "summary")}}

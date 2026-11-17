@@ -465,46 +465,59 @@ NO_CLASSES_NOTE = ("`symbol_coverage` is empty: this session's symbol table carr
 MAP_SECTIONS: tuple[str, ...] = (*SECTIONS, SYMBOL_SECTION)
 #: The board's shape; `rom_files` is a ROM audit's question, not a debugging session's.
 DEFAULT_SECTIONS = frozenset(MAP_SECTIONS) - {"rom_files"}
-MAP_HOW = "sections=[...] names the sections to answer"
+def check_machine_map(sections: list[str] | None = None, dest: str = "",
+                      **_: Any) -> tuple[list[str], Path | None]:
+    """The sections `machine_map` answers and the new file it writes; no machine needed."""
+    return (narrowing.sections(sections, MAP_SECTIONS, DEFAULT_SECTIONS),
+            inputs.optional_dest(dest))
 
 
-def check_machine_map(sections: list[str] | None = None, **_: Any) -> list[str]:
-    """The sections `machine_map` answers; no machine needed."""
-    return narrowing.sections(sections, MAP_SECTIONS, DEFAULT_SECTIONS)
+def _shaped(name: str, items: list[Any]) -> list[Any]:
+    """A section's rows as a reply writes them: copies, an offset as an address, a cpu as `cpu`."""
+    # The cache keeps the offsets as numbers to compute with, and names a cpu `tag`.
+    rows = copy.deepcopy(items)
+    key = {"address_map": "region_offset", "rom_files": "offset"}.get(name)
+    if key is not None:
+        rows = [{**row, key: st.hex_addr(row[key])} if key in row else row for row in rows]
+    if name == "cpus":
+        rows = [{"cpu": row["tag"], **{k: v for k, v in row.items() if k != "tag"}}
+                for row in rows]
+    return rows
 
 
-def machine_map(cpu: str = "", sections: list[str] | None = None) -> dict[str, Any]:
-    """The body of the `machine_map` tool: the cached inventory, narrowed and bounded.
+def machine_map(cpu: str = "", sections: list[str] | None = None,
+                dest: str = "") -> dict[str, Any]:
+    """The body of the `machine_map` tool: the cached inventory, narrowed and bounded; with
+    `dest`, every row of every section asked written there as JSON.
 
     The reply is a deep copy so a caller cannot rewrite the cache. `truncated` is a boolean
     for the reason beside `read.LOG_LIMIT_MAX`.
     """
-    asked = check_machine_map(sections)
+    asked, target = check_machine_map(sections, dest)
     if not STATE.machine_map:
         st.no_machine()
     chosen, wanted = select(STATE.machine_map, cpu)
     # One bounding rule for every list section, `symbol_coverage` included.
-    rows = {name: symbol_coverage(wanted) if name == SYMBOL_SECTION else chosen[name]
+    rows = {name: _shaped(name, symbol_coverage(wanted) if name == SYMBOL_SECTION
+                          else chosen[name])
             for name in asked}
-    shown = {name: copy.deepcopy(items[:read.LOG_LIMIT_MAX]) for name, items in rows.items()}
-    # Replies name a cpu `cpu`, as `cpu_info` does; the cache keeps `tag`.
-    # The cache keeps the offsets as numbers to compute with; a reply writes them as addresses.
-    for name, key in (("address_map", "region_offset"), ("rom_files", "offset")):
-        if name in shown:
-            shown[name] = [{**row, key: st.hex_addr(row[key])} if key in row else row
-                           for row in shown[name]]
-    if "cpus" in shown:
-        shown["cpus"] = [{"cpu": row["tag"], **{k: v for k, v in row.items() if k != "tag"}}
-                         for row in shown["cpus"]]
+    shown = {name: items[:read.LOG_LIMIT_MAX] for name, items in rows.items()}
+    counts = {name: len(items) for name, items in rows.items()}
+    sources = {n: copy.deepcopy(v) for n, v in chosen["sources"].items() if n in asked}
+    written = (None if target is None else
+               narrowing.write_whole(target, {**rows, "counts": counts, "sources": sources}))
     note = st.join_notes(chosen["note"], None if shown.get(SYMBOL_SECTION, True)
                          else NO_CLASSES_NOTE)
+    truncated = any(len(shown[name]) < len(rows[name]) for name in rows)
     reply: dict[str, Any] = {
         **shown,
-        "counts": {name: len(items) for name, items in rows.items()},
-        "truncated": any(len(shown[name]) < len(rows[name]) for name in rows),
-        "sources": {n: copy.deepcopy(v) for n, v in chosen["sources"].items() if n in asked},
+        "counts": counts,
+        "truncated": truncated,
+        "sources": sources,
+        **({"path": written} if written is not None else {}),
         **({"note": note} if note is not None else {}),
-        **narrowing.omission([n for n in MAP_SECTIONS if n not in asked], MAP_HOW),
+        **narrowing.map_rest([n for n in MAP_SECTIONS if n not in asked],
+                             truncated=truncated, written=written is not None),
     }
     reply = st.merged(reply, read.frame_fields())
     reply["cpu"] = wanted or unavailable(st.NO_CPU_NAMED_WHY)

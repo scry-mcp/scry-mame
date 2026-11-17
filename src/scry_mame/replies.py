@@ -536,6 +536,7 @@ class MachineMapReply(MameEnvelope, total=False):
     cpu: str | dict[str, Any]
     cpus: Annotated[list[Any], When("no source backs")]
     frame_symbol: Annotated[str | dict[str, Any], When("no source backs")]
+    path: Annotated[str, When("with `dest`")]
     regions: Annotated[list[Any], When("no source backs")]
     rom_files: Annotated[list[Any], When("no source backs")]
     screens: Annotated[list[Any], When("no source backs")]
