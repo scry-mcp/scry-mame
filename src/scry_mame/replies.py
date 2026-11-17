@@ -1,9 +1,4 @@
-"""THE REPLY MODELS, one per tool: the fields each tool's reply names beside the envelope
-every reply carries, published as its `outputSchema` (each field its value or `unavailable`,
-the always-present ones required) and held to every reply the battery builds
-(`scry_core.reply_schema`). Named from the replies the battery and the live runs built, so a
-branch none of them reached is unnamed until one does: a field a reply grows is named here in
-the same change. The file tools' models are the core's (`scry_core.media_replies`)."""
+"""The reply model of each tool, the contract `scry_core.reply_schema` publishes and holds."""
 
 from __future__ import annotations
 
