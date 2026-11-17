@@ -553,10 +553,6 @@ class _Mame(sequence.SequenceMachine):
     def entry(self, op: str, reply: dict[str, Any]) -> dict[str, Any]:
         return _entry(op, reply)
 
-    def missed(self, op: str, reply: dict[str, Any]) -> bool:
-        """A step's own wait ran out (a `log_wait` TIMEOUT): later steps were built on it."""
-        return op == "log_wait" and reply.get("verdict") == contract.TIMEOUT
-
     def rested(self, ran: list[dict[str, Any]]) -> dict[str, Any] | None:
         """The stop that came during the last step is the one the run was heading for.
 

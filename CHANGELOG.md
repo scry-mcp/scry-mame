@@ -4,6 +4,8 @@ What a client of the server notices.
 
 ## Unreleased
 
+- `perform` and `drive` end a list at a `screen_wait` that ran out, as at a `log_wait`: the
+  steps after it were built on a screen that never came.
 - `close`, `run_for`, `disassemble` and `debug` carry the titles the same tools carry on
   scry-dosbox-x (`run_for`'s now names the frames it takes), and `screen_wait`'s schema publishes
   `every`'s bound of 0 to 600, which it refused before without saying so.
