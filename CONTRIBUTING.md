@@ -156,7 +156,10 @@ two m68k-dual boards name a binary of their own in the bench (`MAME_LIVE_BENCH`,
 unset, those cells are BLOCKED naming the variable. The cells that open a watched
 window open it as `start` does, on the display they ask for (`display`, on
 [`start`'s page](docs/reference/session.md#start)); `MAME_BACKGROUND=1` puts every start behind,
-`0` every start in front, unset leaves each start its own default. The cases that move the owner's Space carry
+`0` every start in front, unset leaves each start its own default. Two kinds of cell run on macOS
+only and are BLOCKED on Windows, saying so: section Z's, which capture the window as the host
+shows it (scry-core's window capture has no Windows half), and section C's dumper faults, which
+read the files MAME holds open through `lsof`. The cases that move the owner's Space carry
 the `window` marker and are out of every default run: `SCRY_FOCUS_CONTROL=1 uv run pytest
 -o addopts="" -m 'live and window' tests/live` runs them (scry-core's README, *On-demand tiers*).
 
