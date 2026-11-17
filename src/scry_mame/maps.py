@@ -89,10 +89,8 @@ def run_to_screen(ses: gs.Session, scratch: Path, screen: str, control: str, sec
     common: dict[str, Any] = {}
 
     def refuse_inapplicable() -> None:
-        if applied := [k for k in ("condition", "disarm_watches", "cpu") if run.get(k)]:
-            raise st.Invalid("bad_argument", f"screen {screen!r} names no anchor, so it is run to "
-                             f"a frame at a time, and {', '.join(applied)} has nothing to apply "
-                             "to: leave it out")
+        screen_map.check_frame_flags(
+            screen, [k for k in ("condition", "disarm_watches", "cpu") if run.get(k)])
     def advanced(reply: dict[str, Any]) -> dict[str, Any]:
         common.clear()          # only a read after the last advance moved the machine on
         return reply
