@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 import subprocess
@@ -10,6 +11,7 @@ import tempfile
 import threading
 import time
 from array import array
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
@@ -993,6 +995,30 @@ def test_start_hands_presence_to_the_judge(monkeypatch: pytest.MonkeyPatch) -> N
             launch.start("mame", "sys", "/r", "/r/x.bin", "", "0x0", "", 1.0, False, "", None,
                          None, "0x0", 0, "", presence=asked)
     assert seen == [True, False]
+
+
+@pytest.mark.parametrize(("shared", "background", "kept"), [
+    (True, True, True), (True, None, False), (True, False, False),
+    (False, None, True), (False, True, True), (False, False, False)])
+def test_a_start_behind_keeps_the_foreground_while_it_launches(
+        monkeypatch: pytest.MonkeyPatch, shared: bool, background: bool | None,
+        kept: bool) -> None:
+    seen: list[object] = []
+
+    @contextlib.contextmanager
+    def held(behind: bool) -> Iterator[None]:
+        seen.append(("held", behind))
+        yield
+        seen.append("lifted")
+
+    def launched(*_args: Any) -> dict[str, Any]:
+        seen.append("launch")
+        return {}
+    monkeypatch.setattr(core_window, "foreground_kept", held)
+    monkeypatch.setattr(launch, "_launch", launched)
+    launch.start("mame", "sys", "/r", "/r/x.bin", "", "0x0", "", 1.0, shared, "", None,
+                 None, "0x0", 0, "", background=background, presence=True)
+    assert seen == [("held", kept), "launch", "lifted"]
 
 
 def test_boot_names_a_gdbstub_that_never_answers_within_its_wait(

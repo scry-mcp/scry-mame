@@ -5,6 +5,9 @@ What a client of the server notices.
 ## Unreleased
 
 - Takes scry-core 0.118.3.
+- On Windows a `start` behind (`background=true`, or left out on an unwatched start) leaves the
+  foreground where it was: no program may take it while the start launches. The flag did
+  nothing there, and MAME's window took the caller's keyboard.
 - `rompath` takes a `;`-separated list of directories, as `inipath` does, each judged on its own
   (`rompath[i]` in a refusal); a list was refused as one missing directory.
 - A `start` profile's `rompath` and `inipath` resolve each of their `;`-separated folders against

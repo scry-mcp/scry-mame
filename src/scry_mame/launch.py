@@ -933,27 +933,30 @@ def start(binary: str, system: str, rompath: str, reference_rom: str, symbols: s
     symbols = syms.expanded(symbols)
     types = syms.expanded(types)
     retries: list[dict[str, Any]] = []
-    try:
-        while True:
-            try:
-                return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
-                               inipath, wait, shared, boot_lua, env, bases, reference_base,
-                               port, state_dir, throttle_from_frame, types, cfg,
-                               background, presence, retries, progress, view, display,
-                               size)
-            except failures.LaunchFailed as failed:
-                if not failed.relaunch(port_picked=not port) or len(retries) == START_RETRIES_MAX:
-                    raise
-                retries.append(failed.evidence())
-                progress(len(retries), START_RETRIES_MAX,
-                         f"start {system}: {failed.what}; relaunching after {failed.kind} "
-                         f"({len(retries)} of {START_RETRIES_MAX})")
-    except st.Invalid as refused:
-        refused.fields["start_retries"] = retries
-        raise
-    except gs.SessionError as e:
-        raise st.Invalid("session_broken", f"the boot's channel failed: {e}. The session is "
-                         "closed; `start` again", start_retries=retries) from e
+    # Windows: a start behind keeps the foreground where it is until its window is up.
+    with core_window.foreground_kept(core_window.judge_background(background, shared)):
+        try:
+            while True:
+                try:
+                    return _launch(binary, system, rompath, reference_rom, symbols, reference_addr,
+                                   inipath, wait, shared, boot_lua, env, bases, reference_base,
+                                   port, state_dir, throttle_from_frame, types, cfg,
+                                   background, presence, retries, progress, view, display,
+                                   size)
+                except failures.LaunchFailed as failed:
+                    if (not failed.relaunch(port_picked=not port)
+                            or len(retries) == START_RETRIES_MAX):
+                        raise
+                    retries.append(failed.evidence())
+                    progress(len(retries), START_RETRIES_MAX,
+                             f"start {system}: {failed.what}; relaunching after {failed.kind} "
+                             f"({len(retries)} of {START_RETRIES_MAX})")
+        except st.Invalid as refused:
+            refused.fields["start_retries"] = retries
+            raise
+        except gs.SessionError as e:
+            raise st.Invalid("session_broken", f"the boot's channel failed: {e}. The session is "
+                             "closed; `start` again", start_retries=retries) from e
 
 
 def _launch(binary: str, system: str, rompath: str, reference_rom: str, symbols: syms.Given,
