@@ -354,8 +354,7 @@ def start_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def filter_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
     value = f" {reply['value']}" if isinstance(reply["value"], str) else ""
     closed = ", scan closed" if reply["closed"] else ""
-    return (f"{reply['operator']}{value}, "
-            f"{prose.counted(reply['hits_total'], 'survivor')}{closed}")
+    return f"{reply['operator']}{value}, {prose.left(reply['hits_total'])}{closed}"
 
 
 def clear_scan(args: dict[str, Any], reply: dict[str, Any]) -> str:
@@ -537,12 +536,8 @@ def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def drive(args: dict[str, Any], reply: dict[str, Any]) -> str:
     verify = reply.get("verify") or {}
     act = reply.get("act") or {}
-    if act.get("verdict") == contract.TIMEOUT:
-        return "drive: act TIMEOUT, nothing verified"
-    seen = (f"effect seen, {verify['verdict']}" if verify.get("seen") else
-            f"effect not seen, {verify['verdict']}" if verify.get("checked")
-            else "no expectation")
-    return f"drive: {seen}"
+    late = "input TIMEOUT, " if act.get("verdict") == contract.TIMEOUT else ""
+    return f"drive: {late}{prose.reaction(verify)}"
 
 
 def debug(args: dict[str, Any], reply: dict[str, Any]) -> str:

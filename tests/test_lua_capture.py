@@ -490,7 +490,7 @@ def test_drive_marks_the_emulator_log_acts_verifies_and_looks_from_the_mark(
     assert (looked["lines_written"], looked["lines_total"], len(looked["lines"])) == (2, 2,
                                                                                       2), looked
     assert all("#1" in ln for ln in looked["lines"]), "the stale #0 line is before the mark"
-    assert out["summary"] == "drive: effect seen, TARGET", out["summary"]
+    assert out["summary"] == "drive: reaction seen", out["summary"]
     # The cut: `lines=1` keeps the LAST matching line, the counts say what was cut.
     ses.answers[2] = _captured(3).replace(b"#3", b"#2")
     ses.marks[2] = [m.replace("#3", "#2") for m in _marks_of("MAME_MCP_INPUT#3")]
@@ -540,7 +540,7 @@ def test_the_drive_summary_reads_the_field_the_reply_actually_carries(
     # The guest's own line, written where the emulator writes it AND WHEN it would.
     none = s.drive(act=[{"op": "step", "count": 1}])
     assert none["verify"]["checked"] is False, none
-    assert "no expectation" in none["summary"], none["summary"]
+    assert none["summary"] == "drive: sent, reaction not checked", none["summary"]
     stepper = ses.step
 
     def step_and_log() -> str:
@@ -553,7 +553,7 @@ def test_the_drive_summary_reads_the_field_the_reply_actually_carries(
     seen = s.drive(act=[{"op": "step", "count": 1}], expect="DRIVE_MARK", seconds=0.5)
     monkeypatch.setattr(ses, "step", stepper)
     assert seen["status"] == "ok" and seen["verify"]["checked"] is True, seen
-    assert "effect seen" in seen["summary"], seen["summary"]
+    assert "reaction seen" in seen["summary"], seen["summary"]
 
 
 def test_a_record_refused_after_its_run_says_the_frames_it_advanced(

@@ -201,7 +201,7 @@ def test_a_cell_written_back_to_its_opening_value_drops_out_of_changed(board: An
     ses.memory[3] = 0xA5
     one = s.scan("filter", operator="!")
     assert one["hits_total"] == 1 and "survivors" not in one, "the open reply's one count"
-    assert one["summary"] == "scan filter: !, 1 survivor", one["summary"]
+    assert one["summary"] == "scan filter: !, 1 left", one["summary"]
     assert s.scan("filter",
                   operator="!")["hits_total"] == 1, "compared with the opening, not the last"
     ses.memory[3] = 0
@@ -231,7 +231,7 @@ def test_a_scan_answers_its_cells_cpu_and_space_and_moves_nothing(board: Any) ->
         "hits": [], "hits_total": 0, "truncated": False, "cpu": ":maincpu",
         "space": "program"}, shut
     assert "survivors" not in shut and "candidates" not in out, "one key per count"
-    assert shut["summary"] == "scan filter: !, 0 survivors, scan closed", shut["summary"]
+    assert shut["summary"] == "scan filter: !, 0 left, scan closed", shut["summary"]
     assert "listed" not in shut and shut["session"]["altered"] is False
     assert [c for c in ses.commands if not c.startswith(("save ", "cpulist"))] == []
 
