@@ -80,7 +80,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "kept 1 (promote to review); start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
   "session": {
     "alive": true,
     "running": false,
@@ -326,7 +326,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
       "op": "scan",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "scan filter: = 0x01, 22 survivors",
+        "summary": "scan filter: = 0x01, 22 left",
         "status": "ok",
         "operator": "=",
         "value": "0x01",
@@ -523,7 +523,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
       "op": "scan",
       "cpu": ":maincpu",
       "reply": {
-        "summary": "scan filter: = 0x02, 3 survivors",
+        "summary": "scan filter: = 0x02, 3 left",
         "status": "ok",
         "operator": "=",
         "value": "0x02",
@@ -726,7 +726,7 @@ Every call of the run with its reply, in order: 29 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "status": "ok",
   "operator": "=",
   "value": "0x03",

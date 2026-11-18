@@ -68,7 +68,7 @@ Reply, 3 of 36 fields:
 {
   "rom_check": "OK",
   "symbols_total": 225,
-  "kept": "kept 1 (promote to review)"
+  "kept": "1 saved for `promote`"
 }
 ```
 
@@ -122,7 +122,7 @@ A start profile is a saved set of `start` arguments: the call adds only what is 
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "kept 1 (promote to review)",
+  "kept": "1 saved for `promote`",
   "profile": {
     "name": "<volatile>",
     "file": "<volatile>",

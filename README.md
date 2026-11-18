@@ -248,7 +248,7 @@ Reply, 3 of 12 fields:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 1 survivor",
+  "summary": "scan filter: = 0x03, 1 left",
   "hits_total": 1,
   "hits": [
     {"addr": "0x00008299", "value": "0x03"}
@@ -256,7 +256,7 @@ Reply, 3 of 12 fields:
 }
 ```
 
-One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor" is a byte still in the scan.
+One byte followed the coins from 1 to 3, so `0x8299` is the credits. "1 left" counts the bytes still in the scan.
 
 #### 2. Catch the instruction that writes it
 
@@ -356,7 +356,7 @@ Reply, 3 of 12 fields:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "hits_total": 3,
   "hits": [
     {"addr": "0x000003ee", "value": "0x03"},
@@ -366,7 +366,7 @@ Reply, 3 of 12 fields:
 }
 ```
 
-Three bytes hold 3, and a scan cannot say which is the credits. A "survivor" is a byte still in the scan; the watches of the next step tell them apart.
+Three bytes hold 3, and a scan cannot say which is the credits. "3 left" counts the bytes still in the scan; the watches of the next step tell them apart.
 
 #### 2. Let a watch name the writer
 

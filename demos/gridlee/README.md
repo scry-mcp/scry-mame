@@ -66,7 +66,7 @@ Reply, 3 of 12 fields:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "hits_total": 3,
   "hits": [
     {"addr": "0x000003ee", "value": "0x03"},
@@ -76,13 +76,13 @@ Reply, 3 of 12 fields:
 }
 ```
 
-Three bytes hold 3, and a scan cannot say which is the credits. A "survivor" is a byte still in the scan; the watches of the next step tell them apart.
+Three bytes hold 3, and a scan cannot say which is the credits. "3 left" counts the bytes still in the scan; the watches of the next step tell them apart.
 
 <details><summary>The whole reply</summary>
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "status": "ok",
   "operator": "=",
   "value": "0x03",

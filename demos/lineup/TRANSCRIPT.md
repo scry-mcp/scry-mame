@@ -68,7 +68,7 @@ Every call of the run with its reply, in order: 51 calls. `<volatile>` stands fo
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "kept 1 (promote to review); start/lineup: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
+  "kept": "1 saved for `promote`; start/lineup: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create",
   "session": {
     "alive": true,
     "running": false,

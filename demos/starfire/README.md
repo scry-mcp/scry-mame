@@ -70,7 +70,7 @@ Reply, 3 of 12 fields:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 1 survivor",
+  "summary": "scan filter: = 0x03, 1 left",
   "hits_total": 1,
   "hits": [
     {"addr": "0x00008299", "value": "0x03"}
@@ -78,13 +78,13 @@ Reply, 3 of 12 fields:
 }
 ```
 
-One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor" is a byte still in the scan.
+One byte followed the coins from 1 to 3, so `0x8299` is the credits. "1 left" counts the bytes still in the scan.
 
 <details><summary>The whole reply</summary>
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 1 survivor",
+  "summary": "scan filter: = 0x03, 1 left",
   "status": "ok",
   "operator": "=",
   "value": "0x03",

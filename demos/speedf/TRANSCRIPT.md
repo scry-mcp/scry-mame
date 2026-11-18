@@ -61,7 +61,7 @@ Every call of the run with its reply, in order: 7 calls. `<volatile>` stands for
   },
   "recommended_release": "0.289",
   "window": "<volatile>",
-  "kept": "kept 1 (promote to review)",
+  "kept": "1 saved for `promote`",
   "profile": {
     "name": "<volatile>",
     "file": "<volatile>",
