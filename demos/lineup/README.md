@@ -16,14 +16,14 @@ a coin, a game started, a move, a colour, a shot, each read back from memory.
 
 ## The program
 
-LineUp is not distributed with this repository. The demo needs three things from
-[the game's own repository](https://github.com/MS-DOS-Club/lineup-mame):
+LineUp is not distributed with this repository. The demo needs three things:
 
-- its ROM set, `lineup.zip`, with the linker's symbol map, `lineup.map`, in the same directory
-  (`make stage-rom` builds both and puts them together);
+- its ROM set, `lineup.zip`, with the linker's symbol map, `lineup.map`, in the same directory,
+  which `--rompath` names;
 - a MAME whose driver list includes `lineup`;
-- a checkout, which `--cwd` names: its `.scry/maps/lineup-screen-map.json` is the screen map
-  the demo loads, a file that names the game's screens.
+- a directory, which `--cwd` names, holding the game's `.scry/` folder: its
+  `.scry/maps/lineup-screen-map.json` is the screen map the demo loads, a file that names the
+  game's screens.
 
 ## Run it
 
@@ -36,7 +36,7 @@ does not take your keyboard.
 
 - `--binary PATH` picks the MAME to start. Left out, it is `MAME_BINARY`, else the `mame` on
   your `PATH`.
-- `--cwd PATH` (absolute or `~`-led) is the checkout of the game's repository.
+- `--cwd PATH` (absolute or `~`-led) is the directory holding the game.
 - `--display N` opens the window on that display. Left out, it opens on the main one.
 - `--transcript PATH` moves the whole transcript; the run's other files go beside it.
 - `--update-readme` rewrites this page's generated parts, `TRANSCRIPT.md`, `screen.png` and

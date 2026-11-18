@@ -15,9 +15,9 @@ attract demo and reads two variables by name.
 
 ## The program
 
-Speed Fight is not distributed with this repository. The demo needs a checkout of
-[the game's own repository](https://github.com/MS-DOS-Club/speedf-mame), built and with its ROM
-set in place (`make rom`, `make stage-rom`), and a MAME whose driver list includes `speedf`.
+Speed Fight is not distributed with this repository. The demo needs a built copy of the game,
+with its ROM set in place and its `build/`, `run/` and `.scry/` folders.
+It also needs a MAME whose driver list includes `speedf`.
 
 ## Run it
 
@@ -28,7 +28,7 @@ uv run python demos/speedf/demo.py --cwd /path/to/speedf-mame
 Each line it prints is one call and its check. The window opens behind the others, so the run
 does not take your keyboard.
 
-- `--cwd PATH` (absolute or `~`-led) is the checkout of the game's repository. Its `.scry/`
+- `--cwd PATH` (absolute or `~`-led) is the directory holding the game. Its `.scry/`
   holds the start profile, and its `build/` and `run/` hold what the profile names.
 - `--rompath PATH` names another ROM set directory. Left out, it is the profile's
   `run/mame_roms`.
