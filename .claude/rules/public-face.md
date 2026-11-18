@@ -47,7 +47,7 @@ reader goes to for it. Words are counted in prose, outside code blocks and gener
 | every layer | a table has at most 3 columns and 12 rows; wider data is a list |
 | every layer | a code block showing has at most 12 lines of at most 100 columns; longer output sits in a closed `<details>` |
 | front door | the opening is one bold sentence of at most 25 words |
-| front door | at most 150 words between the title and the install block |
+| front door | at most 150 words between the title and the install block, the title's words in and the generated lead block out (`tests/test_reference_pages.py` holds it, and refuses a second lead marker) |
 | front door | "What you can ask" has at most 6 bullets, each a question of at most 12 words in quotes, the tools that answer it, and one sentence of at most 20 words |
 | front door | at most 2 generated flows, each at most 5 calls, each reply at most 12 lines |
 | front door | under 16 KB, the generated blocks included |
@@ -60,12 +60,23 @@ reader goes to for it. Words are counted in prose, outside code blocks and gener
 
 ## The front door: its sections and their order
 
-1. The logo and the title.
-2. The bold sentence: what the reader can do now.
-3. One demo, moving, with a one-line caption (*Demo motion*).
-4. `## Install` (*Install*).
+1. One centred `<h1>` holding the logo and the repository's name.
+2. A centred `<p><b>...</b></p>`: what the reader can do now; under it a row of four links,
+   Install, What you can ask, Demos, Reference.
+3. The lead block, generated (*Generated documents*): the lead demo's clip linked to its
+   guide, a caption, and one step as a table of three rows, You ask / Your client calls /
+   SCRY answers. A lead declared with `learns=True` has a fourth row, "Your client learns",
+   holding the step check's own summary. The call row cuts every string longer than 9
+   characters to its first and last 4 (`scry_core.demo.LEAD_STRING_ENDS`, `demo.narrow`),
+   so a 390 px phone holds the table; the whole call is in the demo's `TRANSCRIPT.md`.
+4. `## Install` (*Install*), with two `###` subheadings, "Add it to your client" and
+   "Your first question".
 5. `## What you can ask`.
-6. `## See it run`: each demo in one sentence, linked; the generated flows.
+6. `## See it run`: a grid of the other demos' stills (never the lead's), each
+   `demos/<name>/screen.png`, the screen that demo's run ended on, linked to its guide, every
+   one at the same height (`width` and `height` set from the still's own shape), in centred
+   rows of at most four. No clip moves there: each guide shows its own. Then each demo in one
+   sentence, linked; the generated flows.
 7. `## Set up SCRY in your own project`.
 8. `## Platforms`.
 9. `## The tools`: a pointer to the index `REFERENCE.md` generates, never a table typed by hand.
@@ -166,11 +177,14 @@ The same shape in the front door, the reference and the demo guides:
 ## A demo guide: its sections and their order
 
 1. The title: the program, and what the demo shows, in words a stranger knows.
-2. The demo moving, its moments under it (*Demo motion*).
+2. The demo moving, centred (`<p align="center"><picture>...`), its moments under it
+   (*Demo motion*).
 3. One paragraph of at most 60 words: what it shows.
 4. How to get the program: `## The ROM`, or `## The program`.
 5. `## Run it`.
-6. `## Try it yourself`: 2 to 4 steps, each an example in the one shape; the whole prompt folded.
+6. `## Try it yourself`: 2 to 4 steps, each an example in the one shape under a `### N. title`
+   heading (`#### N. title` in a README's example calls), so GitHub's outline lists them; the
+   whole prompt folded.
 7. `## Tools this demo uses`: a table of two columns, `Group` and `Tools`. A group is a family of
    the reference, by its own name and linked to its page; no label is invented for a row.
 8. `## The transcript`.
@@ -189,8 +203,13 @@ A demo is shown moving, never as a still alone.
   demo with one strong moment shows one.
 - **Nothing is staged.** The frames are the run's; a moment is cut, never slowed, held or
   composed, and no caption is drawn over the picture.
-- **Frames**: the machine's own resolution (a capture the emulator doubled is halved back), at
-  most 30 a second. Scaling up is the page's job, with `image-rendering: pixelated`.
+- **Frames**: the machine's own (a capture the emulator doubled is halved back), at most 30 a
+  second. Rows and columns at the clip's edges that are one colour, the same in every frame,
+  are cut (`scry_core.motion.kept`), and `screen.png` is cut by the same box at its own scale
+  (`motion.still`); `stale` takes a still that is a rectangle of the run's capture as that
+  capture. A README cannot style an image, so the frames are then written scaled up a whole
+  number of times, each pixel a sharp block, as far as 960 x 600 holds them
+  (`scry_core.motion.FIT`).
 - **Weight**: at most 400 KB a file. Lossless where it fits, else lossy; a file past the budget
   is refused, and the demo shows less.
 - **Made by** `demos/<name>/demo.py --update-readme`, in the run that writes the README block and
@@ -211,6 +230,7 @@ A demo is shown moving, never as a still alone.
 |---|---|---|
 | `REFERENCE.md` and `docs/reference/*.md`, the blocks between their `<!-- scry-reference:begin NAME -->` and `end` markers; `docs/reference/examples.json` | the server's own tool registry (names, descriptions, argument schemas, reply models, roster); the examples from the committed demo transcripts and, for a tool no demo calls, a live run's; each tool's sentences (`what`, `ask`, `on`, `call`, `shows`, `reads`, `arguments`, `returns`, `refuses`, `why`, `related`) and each family's one line from the hand-written `docs/reference/asks.json` | `python -m scry_core.reference scry_mame.server:REFERENCE --write` (the examples with `--examples docs/reference/tour/TRANSCRIPT.md demos/*/TRANSCRIPT.md`, after `docs/reference/tour/tour.py` has run), held by this repository's drift test |
 | `README.md`'s block between `<!-- scry-install:begin -->` and `<!-- scry-install:end -->` | scry-core's table of clients | `python -m scry_core.install scry_mame --write`, held by the same drift test |
+| `README.md`'s block between `<!-- demo-lead:begin NAME -->` and `<!-- demo-lead:end NAME -->` | the lead demo's run (`Demo.lead`): its clip linked to its guide, a caption, one step as a table | `demos/lineup/demo.py --update-readme` |
 | `README.md`'s blocks between `<!-- demo-flow:begin NAME -->` and `<!-- demo-flow:end NAME -->` | the steps the demo marks `shown`, from a run of that demo (starfire and gridlee) | `demos/<name>/demo.py --update-readme` |
 | `demos/*/README.md`'s block between `<!-- demo-motion:begin -->` and `<!-- demo-motion:end -->` | the demo's `loop.webp`, `alt` and the caption of each `Moment`, timed by the frames the run cut | `demos/<name>/demo.py --update-readme` |
 | `demos/*/README.md`'s block between `<!-- demo-transcript:begin -->` and `end`, `demos/*/TRANSCRIPT.md`, `demos/*/screen.png` and `demos/*/loop.webp` | a run of the demo against the real emulator; the steps to try and their sentences are the demo's own, on the steps it marks | `demos/<name>/demo.py --update-readme` |
