@@ -2,7 +2,8 @@
 each rule leaves standing named as a candidate and none asserted.
 
 It classifies and never diagnoses: an overlay drawn in pen colours leaves another picture's
-mark. What each field and candidate means is docs/reference/timeline.md's, in the `gfx_film` section.
+mark. What each field and candidate means is docs/reference/timeline.md's, in the `gfx_film`
+section.
 """
 
 from __future__ import annotations
