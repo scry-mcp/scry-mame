@@ -50,7 +50,7 @@ Reply, 5 of 11 fields:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "status": "ok",
   "iterations": 3,
   "hits": [
@@ -86,7 +86,7 @@ The second call's:
 
 ```json
 {
-  "summary": "scan filter: = 0x03, 3 survivors",
+  "summary": "scan filter: = 0x03, 3 left",
   "status": "ok",
   "operator": "=",
   "value": "0x03",

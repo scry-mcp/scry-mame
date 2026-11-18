@@ -3297,7 +3297,7 @@
     "value": 3
    },
    "reply": {
-    "summary": "scan filter: = 0x03, 3 survivors",
+    "summary": "scan filter: = 0x03, 3 left",
     "status": "ok",
     "operator": "=",
     "value": "0x03",
