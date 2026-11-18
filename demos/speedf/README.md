@@ -40,12 +40,12 @@ does not take your keyboard.
   `PATH`.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
-That last one is a checkout without its start profile or its build, a relative path or a
+That last one is a copy without its start profile or its build, a relative path or a
 server that did not start.
 
 ## Try it yourself
 
-[Add the server to your client](../../README.md#install) and open it in your checkout of the
+[Add the server to your client](../../README.md#install) and open it in your copy of the
 game. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
@@ -279,7 +279,7 @@ Reply, 3 of 8 fields:
 
 <details><summary>The whole demo as one prompt</summary>
 
-1. Start the board from the start profile `.scry/start/speedf.json` in the checkout, with a
+1. Start the board from the start profile `.scry/start/speedf.json` in the copy, with a
    window.
 2. Run to `startdemo` counting `new_irq_video`.
 3. Read `_sceneId` and `creditos`.
@@ -303,4 +303,4 @@ stop it again.
 ## The transcript
 
 [TRANSCRIPT.md](TRANSCRIPT.md) has every call of the run with its reply. The paths of the
-checkout read `<host>` there, because they are your computer's.
+copy read `<host>` there, because they are your computer's.

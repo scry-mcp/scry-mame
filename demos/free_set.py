@@ -64,7 +64,7 @@ def url(system: str) -> str:
 
 def absolute_only(run: Run) -> str:
     """Why the host's paths cannot reach the server, or "": it takes absolute ones, and a
-    checkout (`cwd`) absolute or `~`-led."""
+    copy (`cwd`) absolute or `~`-led."""
     relative = [f"--{k} {v}" for k, v in run.options.items()
                 if k in ("rompath", "binary", "cwd") and not Path(str(v)).is_absolute()
                 and not (k == "cwd" and str(v).startswith("~"))]

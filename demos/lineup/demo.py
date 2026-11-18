@@ -21,12 +21,12 @@ from demos import free_set  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "lineup"
-#: The game's own `.scry/` folder declares its screen map; `--cwd` is that checkout.
+#: The game's own `.scry/` folder declares its screen map; `--cwd` is that copy.
 SCREEN_MAP = Path(".scry/maps/lineup-screen-map.json")
 
 
 def at(run: Run) -> Path:
-    """The game's screen map, in the checkout `--cwd` names."""
+    """The game's screen map, in the copy `--cwd` names."""
     return Path(str(run.options["cwd"])).expanduser() / SCREEN_MAP
 #: The CODE segment's base, ROM content that never changes at runtime: what `start` checks.
 REFERENCE_ADDR = "0x30000"
@@ -57,7 +57,7 @@ def precheck(run: Run) -> str:
                 "directory holding LineUp's romset and the symbol map beside it")
     cwd = run.options.get("cwd")
     if not cwd:
-        return (f"pass --cwd, the reader's checkout of the game: its {SCREEN_MAP.as_posix()} "
+        return (f"pass --cwd, the reader's copy of the game: its {SCREEN_MAP.as_posix()} "
                 "is the map the script loads")
     if not at(run).is_file():
         return (f"no {SCREEN_MAP.as_posix()} under --cwd {cwd}: the game's own `.scry/` "
@@ -115,7 +115,7 @@ DEMO = Demo(
     volatile={**free_set.VOLATILE,
               "pcm_sha256": "the recording's digest, which Windows' mix changes",
               "b": "the platform's own reference recording"},
-    host_args={**free_set.HOST_ARGS, "cwd": "the reader's checkout of the game",
+    host_args={**free_set.HOST_ARGS, "cwd": "the reader's copy of the game",
                "b": "the platform's own reference recording", "display": free_set.DISPLAY})
 
 

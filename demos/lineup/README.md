@@ -44,7 +44,7 @@ does not take your keyboard.
   `PATH`.
 
 Exit codes: 0 every step passed, 1 a step failed, 2 a usage error, 3 nothing was demonstrated.
-That last one is a missing ROM set, a relative path, a checkout without the game's map or a
+That last one is a missing ROM set, a relative path, a copy without the game's map or a
 server that did not start.
 
 Nothing in the run waits a fixed time: each screen is waited for at a breakpoint on the game's
@@ -264,7 +264,7 @@ Reply, 2 of 12 fields:
    make at `0x30000`.
 2. In that same call take its symbols from `lineup.map`, with `DATA` at `0x400` and
    `LUP_JUKEBOX` left where the map puts it.
-3. Load the game's screen map, `.scry/maps/lineup-screen-map.json` in the checkout.
+3. Load the game's screen map, `.scry/maps/lineup-screen-map.json` in the copy.
 4. Run to `Draw_High_Scores_Screen` counting `Check_Money25`.
 5. Put a breakpoint on `Check_Money100` and wait, looking at the screen only when it stops
    there, until the map names `hiscores`; clear it and read `Credits`.

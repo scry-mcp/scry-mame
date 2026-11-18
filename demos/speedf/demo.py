@@ -1,5 +1,5 @@
 """The Speed Fight demo on MAME: the arcade game's own `.scry/` boots it. `--help` says how to
-run it. The game is the reader's checkout (`--cwd`); nothing of it is in this repository.
+run it. The game is the reader's copy (`--cwd`); nothing of it is in this repository.
 """
 
 from __future__ import annotations
@@ -17,9 +17,9 @@ from demos import free_set  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SYSTEM = "speedf"
-#: What the game's checkout holds once built: the start profile, the linker's image and the
+#: What the game's copy holds once built: the start profile, the linker's image and the
 #: romset staged with its map. The profile names the last two as well; the precheck reads them
-#: here so a checkout that is not built is refused with its own words before `start` is paid for.
+#: here so a copy that is not built is refused with its own words before `start` is paid for.
 PROFILE = Path(".scry/start/speedf.json")
 IMAGE = Path("build/speedf.bin")
 ROMSET = Path("run/mame_roms")
@@ -29,9 +29,9 @@ TARGET, CONTROL = "startdemo", "new_irq_video"
 PLAYS_FRAMES = 180
 #: The reply keys a boot from the start profile fills with the reader's own paths.
 VOLATILE_GAME = {**free_set.VOLATILE,
-                 "name": "where the reader's checkout keeps its start profile",
-                 "file": "where the reader's checkout keeps its start profile",
-                 "key": "the draft's identity, which names the reader's checkout"}
+                 "name": "where the reader's copy keeps its start profile",
+                 "file": "where the reader's copy keeps its start profile",
+                 "key": "the draft's identity, which names the reader's copy"}
 
 
 def game(run: Run) -> Path:
@@ -57,7 +57,7 @@ def precheck(run: Run) -> str:
         return relative
     cwd = run.options.get("cwd")
     if not cwd:
-        return ("pass --cwd, the reader's checkout of the game: its .scry/ holds the start "
+        return ("pass --cwd, the reader's copy of the game: its .scry/ holds the start "
                 "profile, and its build/ and run/ hold what the profile names")
     missing = [p.as_posix() for p in (PROFILE, IMAGE) if not (game(run) / p).is_file()]
     if missing:
@@ -137,9 +137,9 @@ DEMO = Demo(
     offers=frozenset({"cwd", "rompath", "display"}),
     reads=frozenset({"cwd", "rompath"}), precheck=precheck,
     volatile=VOLATILE_GAME,
-    host_args={"cwd": "the reader's checkout of the game",
+    host_args={"cwd": "the reader's copy of the game",
                "rompath": "the directory the host keeps the game's romset in",
-               "profile": "the reader's checkout of the game",
+               "profile": "the reader's copy of the game",
                "display": free_set.DISPLAY,
                "inipath": "the run's own directory",
                "state_dir": "the run's own directory"})
