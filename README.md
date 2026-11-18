@@ -208,13 +208,13 @@ instruction, and `screen_view`, which returns the picture.
 
 ## See it run
 
-Each demo is a `demo.py` that makes the calls a model would and checks every answer. The
-pictures move because they are cut from that run.
+Each demo is a `demo.py` that makes the calls a model would and checks every answer. Each
+picture is the screen that run ended on, linked to its guide, where it moves.
 
 <p align="center">
-  <a href="demos/starfire/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/starfire/screen.png"><img src="demos/starfire/loop.webp" alt="Star Fire counting a coin, then flying a mission" width="170"></picture></a>
-  <a href="demos/gridlee/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/gridlee/screen.png"><img src="demos/gridlee/loop.webp" alt="Gridlee starting a game" width="170"></picture></a>
-  <a href="demos/speedf/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/speedf/screen.png"><img src="demos/speedf/loop.webp" alt="Speed Fight playing a match" width="170"></picture></a>
+  <a href="demos/starfire/"><img src="demos/starfire/screen.png" alt="Star Fire flying a mission" width="171" height="150"></a>
+  <a href="demos/gridlee/"><img src="demos/gridlee/screen.png" alt="Gridlee in play" width="160" height="150"></a>
+  <a href="demos/speedf/"><img src="demos/speedf/screen.png" alt="Speed Fight's arena" width="240" height="150"></a>
 </p>
 
 - [`demos/starfire/`](demos/starfire/): Exidy's *Star Fire*, a free ROM, from a cold start to
