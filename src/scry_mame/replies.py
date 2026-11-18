@@ -38,6 +38,7 @@ class MameConsoleAccount(MameEnvelope, total=False):
     resent: Annotated[int, OmitEmpty]
     stop_seq: int
     thread_errors: int
+    watches: list[Any]
 
 
 #: What `record` and `audio_record` share: the frame window a recording ran over.
@@ -1101,6 +1102,7 @@ class TraceReply(MameEnvelope, total=False):
     stop_seq: int
     trace: Required[dict[str, Any]]
     verdict: str
+    watches: list[Any]
 
 
 class WatchAddReply(MameEnvelope, total=False):

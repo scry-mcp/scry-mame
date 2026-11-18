@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from typing import get_type_hints
 
 import pytest
 from scry_core import reply_schema, roster  # noqa: E402
@@ -26,6 +27,16 @@ def test_a_real_tools_reply_with_a_field_its_model_does_not_name_fails() -> None
     reply_schema.check("status", {"status": "ok", "pid": 1})
     with pytest.raises(ValueError):
         reply_schema.check("status", {"status": "ok", "pid": 1, "stray": 1})
+
+
+def test_a_reply_that_carries_the_stop_the_console_left_takes_its_watches() -> None:
+    """A read the console evaluates steps the machine, and the stop it leaves carries the
+    readings of every watch declared: a model that does not name them refuses that reply."""
+    stop = {"stop_seq", "regs", "instruction"}
+    lacking = sorted(name for name, model in replies.MODELS.items()
+                     if stop <= set(get_type_hints(model))
+                     and "watches" not in get_type_hints(model))
+    assert lacking == [], lacking
 
 
 #: Words a tool's `Reply` text quotes that are no field of its reply, kept per tool so one
