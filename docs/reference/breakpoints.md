@@ -1,6 +1,6 @@
 # The Declarations tools
 
-Breakpoints, registerpoints and watches are declarations: what the caller meant, kept by the server and armed in the debugger. What they share is in [REFERENCE.md, Declarations](../../REFERENCE.md#declarations); each tool's reasoning follows its block.
+Breakpoints, registerpoints and watches are declarations: what the caller meant, kept by the server and armed in the debugger. What they share is in [REFERENCE.md, Declarations](../../REFERENCE.md#breakpoints-and-watches); each tool's reasoning follows its block.
 
 <!-- scry-reference:begin breakpoint_at -->
 ## `breakpoint_at`

@@ -8,11 +8,11 @@ The [README](README.md) is the front door. This page holds the contract several 
 - [Session](docs/reference/session.md): [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
 - [Machine](docs/reference/machine.md): [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
 - [Names](docs/reference/names.md): [`symbols_find`](docs/reference/names.md#symbols_find)
-- [Advance](docs/reference/advance.md): [`run_to`](docs/reference/advance.md#run_to), [`run_for`](docs/reference/advance.md#run_for), [`step`](docs/reference/advance.md#step), [`resume`](docs/reference/advance.md#resume), [`stop`](docs/reference/advance.md#stop), [`trace`](docs/reference/advance.md#trace), [`screen_wait`](docs/reference/advance.md#screen_wait)
-- [Declarations](docs/reference/declarations.md): [`breakpoint_at`](docs/reference/declarations.md#breakpoint_at), [`regpoint_add`](docs/reference/declarations.md#regpoint_add), [`watch_add`](docs/reference/declarations.md#watch_add), [`declaration_list`](docs/reference/declarations.md#declaration_list), [`declaration_clear`](docs/reference/declarations.md#declaration_clear)
+- [Run](docs/reference/run.md): [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
+- [Breakpoints](docs/reference/breakpoints.md): [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
 - [Read](docs/reference/read.md): [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
 - [Screen](docs/reference/screen.md): [`palette`](docs/reference/screen.md#palette), [`screen_view`](docs/reference/screen.md#screen_view), [`screen_signature`](docs/reference/screen.md#screen_signature), [`gfx_view`](docs/reference/screen.md#gfx_view), [`gfx_locate`](docs/reference/screen.md#gfx_locate), [`gfx_sweep`](docs/reference/screen.md#gfx_sweep), [`gfx_draft`](docs/reference/screen.md#gfx_draft), [`gfx_blits`](docs/reference/screen.md#gfx_blits), [`gfx_blit_source`](docs/reference/screen.md#gfx_blit_source)
-- [Film](docs/reference/film.md): [`gfx_load`](docs/reference/film.md#gfx_load), [`gfx_film`](docs/reference/film.md#gfx_film), [`palette_log`](docs/reference/film.md#palette_log)
+- [Timeline](docs/reference/timeline.md): [`gfx_load`](docs/reference/timeline.md#gfx_load), [`gfx_film`](docs/reference/timeline.md#gfx_film), [`palette_log`](docs/reference/timeline.md#palette_log)
 - [Scan](docs/reference/scan.md): [`scan`](docs/reference/scan.md#scan)
 - [Write](docs/reference/write.md): [`write`](docs/reference/write.md#write), [`set_register`](docs/reference/write.md#set_register), [`reset`](docs/reference/write.md#reset), [`debug`](docs/reference/write.md#debug)
 - [Comments](docs/reference/comments.md): [`comment_list`](docs/reference/comments.md#comment_list), [`comment_write`](docs/reference/comments.md#comment_write)
@@ -20,8 +20,8 @@ The [README](README.md) is the front door. This page holds the contract several 
 - [States](docs/reference/states.md): [`state_list`](docs/reference/states.md#state_list), [`state_write`](docs/reference/states.md#state_write)
 - [Captures](docs/reference/captures.md): [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
 - [Files](docs/reference/files.md): [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
-- [Lists](docs/reference/lists.md): [`perform`](docs/reference/lists.md#perform), [`drive`](docs/reference/lists.md#drive), [`perform_export`](docs/reference/lists.md#perform_export)
-- [Store](docs/reference/store.md): [`promote`](docs/reference/store.md#promote)
+- [Sequences](docs/reference/sequences.md): [`perform`](docs/reference/sequences.md#perform), [`drive`](docs/reference/sequences.md#drive), [`perform_export`](docs/reference/sequences.md#perform_export)
+- [Project](docs/reference/project.md): [`promote`](docs/reference/project.md#promote)
 <!-- scry-reference:end index -->
 
 ## The session
@@ -127,13 +127,13 @@ A ref is read once, so a clear reaches only declarations of its own kind: a name
 
 **A type file** (`types`) or a `type:` beside a symbol names what a symbol IS, so a watch on it needs no format and a pointer says what it points at.
 
-The tools: [Names](docs/reference/names.md), [Declarations](docs/reference/declarations.md), [Read](docs/reference/read.md).
+The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
 
-## Declarations
+## Breakpoints and watches
 
 The debugger holds the ARMED instances; the server holds what the caller MEANT: a symbol or a raw address, a condition as typed. Keeping the intent makes a rebuild free, since an address moves when the program is relinked and a name does not. Each declaration is stamped with its session (`origin`) and `created_at`.
 
-The tools: [Declarations](docs/reference/declarations.md) (breakpoints, registerpoints, watches) and [Comments](docs/reference/comments.md).
+The tools: [Breakpoints](docs/reference/breakpoints.md) (breakpoints, registerpoints, watches) and [Comments](docs/reference/comments.md).
 
 **Lists.** `inherited` says the row came back from the store at `start`; no reply names the session's own origin to compare against. `age_s` is negative for a stamp ahead of this host's clock, floored and never clamped, since a zero would claim "just now". Every list reads the debugger's own `bplist`, `wplist` or `rplist` back, so `armed` is the machine's answer; a row no declaration placed is `foreign`: listed, never deleted.
 
@@ -155,9 +155,9 @@ The tools: [Declarations](docs/reference/declarations.md) (breakpoints, register
 
 **The comment file is what a project versions beside its symbol file**, written only by `comment_write(method="save")` and read only by `comment_write(method="load")`; by convention `<symbol file name without extension>-comments.tsv`, the first cpu's on a multi-cpu board. UTF-8, no byte order mark, LF line ends. Line 1 is exactly `# comments v1: ref<TAB>cpu<TAB>created_at<TAB>text`; every other line is one comment in that order, the text last and so the rest of the line, sorted by cpu then ref in code-point order so a re-save moves only what changed. `cpu` is the absolute tag (`:maincpu`); `created_at` is `YYYY-MM-DDTHH:MM:SS+00:00`. An address is always `0x` and hex and anything else a symbol, so a saved symbol `fade` never comes back as an address. The file has no build column, so a raw address loaded into another build is trusted: what must survive a rebuild is commented by symbol.
 
-## Advancing the machine
+## Running and stopping
 
-The tools: [Advance](docs/reference/advance.md), whose page holds how a run is chosen, the frame counter, the stops that are not a run's own and the survey every stop returns. What every tool shares about a running or a broken session follows.
+The tools: [Run](docs/reference/run.md), whose page holds how a run is chosen, the frame counter, the stops that are not a run's own and the survey every stop returns. What every tool shares about a running or a broken session follows.
 
 ### The running guest is a contract
 
@@ -205,9 +205,9 @@ A chatty driver fills the log fast, so the pattern and the limit are the whole i
 
 **Files.** A third file sits beside the two channels, unreported: `debug.log` (`-debuglog`), the debugger console's own output, which the stop survey reads for a watchpoint's writer.
 
-The tools: [Machine](docs/reference/machine.md) (`log`, `log_wait`); `drive` takes the same pattern ([Lists](docs/reference/lists.md)).
+The tools: [Machine](docs/reference/machine.md) (`log`, `log_wait`); `drive` takes the same pattern ([Sequences](docs/reference/sequences.md)).
 
-## Sequences in one call
+## Several calls as one
 
 `perform` runs a list of the server's own operations in one call, and `drive` runs `perform`'s rules around an input.
 
@@ -215,9 +215,9 @@ The tools: [Machine](docs/reference/machine.md) (`log`, `log_wait`); `drive` tak
 
 **Counting.** Messages count steps from 1, as the progress line does; the indexes a reply carries (`failed_at`, a row's `step`, `errors`' `step`) count from 0.
 
-The tools: [Lists](docs/reference/lists.md).
+The tools: [Sequences](docs/reference/sequences.md).
 
-## From an investigation to a bench
+## From a session to a test that replays itself
 
 Every session is recorded from the `start` that succeeds, and cleared by the next one; `close` keeps it. `perform_export` writes it as `perform`'s own document, and the runner plays it back with no model, from this repository:
 
@@ -229,15 +229,15 @@ It exits 0 when every step held; 1 when a step diverged or failed; 2 on a usage 
 
 A step's check is `"recorded": {<field>: <value>}` inside it, and a mismatch is `diverged` at that step. A caller keys on `failed_at`, which a failed step and a diverged one both carry; the code says which. Under `until_frame` every lap holds each step to its `recorded` again, so a stop recorded on the first lap diverges on the second: an exported document carries no `until_frame`.
 
-The tools: [Lists](docs/reference/lists.md).
+The tools: [Sequences](docs/reference/sequences.md).
 
-## The store
+## The `.scry/` folder
 
 A repository can declare how a session starts on it, the screen maps of its program and the scripts that replay it, in a `.scry/` store it tracks, so a session gives only what is its own run's (`start(profile=...)`, `screen_map_write(method="load")`, `perform(path=...)`). A session keeps what it learned as drafts and writes nothing into the repository until a `promote` call names what to write: the store is tracked, so every entry is reviewed first, and every path in it is a placeholder ([the rule](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md)), so the file reads the same on any machine.
 
 Each entry belongs to one repository, fixed when it is kept: the one whose store a call read it from (a `start` profile, a map `screen_map_write` loaded, a script `perform` replayed), else the one whose profile the current `start` read. A start that read no profile names none, since no argument of it says where a program's repository is (`rompath` is often a folder many share), so what it keeps is written only where `root` says. Without `root`, `promote` writes an entry only into its own repository's store, so a session that ran programs of two repositories never files one in the other's, and the directory this server runs in, its own clone, never lends its store; an entry whose repository holds none is `unwritable` in a review and refused in an approval, naming the `root` to pass.
 
-The tool: [Store](docs/reference/store.md) (`promote`).
+The tool: [Project](docs/reference/project.md) (`promote`).
 
 ## Input and the screen
 
@@ -255,9 +255,9 @@ The tools: [Lua](docs/reference/lua.md) (`input`, `throttle`), [Captures](docs/r
 
 ### Graphics
 
-These tools answer the question a colour snapshot cannot, WHICH PEN, from bytes under a format the caller states, never from what a driver's `GFXDECODE` believes. Their shared contract (the picture, which instant a decode shows, the source, how a board is discovered) is on [Screen](docs/reference/screen.md), and the `gfx.yaml` project knowledge on [Film](docs/reference/film.md).
+These tools answer the question a colour snapshot cannot, WHICH PEN, from bytes under a format the caller states, never from what a driver's `GFXDECODE` believes. Their shared contract (the picture, which instant a decode shows, the source, how a board is discovered) is on [Screen](docs/reference/screen.md), and the `gfx.yaml` project knowledge on [Timeline](docs/reference/timeline.md).
 
-The tools: [Screen](docs/reference/screen.md) (`palette`, `screen_view`, `screen_signature`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`) and [Film](docs/reference/film.md) (`gfx_load`, `gfx_film`, `palette_log`).
+The tools: [Screen](docs/reference/screen.md) (`palette`, `screen_view`, `screen_signature`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`) and [Timeline](docs/reference/timeline.md) (`gfx_load`, `gfx_film`, `palette_log`).
 
 ## Media files
 

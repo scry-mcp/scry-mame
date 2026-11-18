@@ -487,7 +487,7 @@ def _release_unconfirmed(ses: gs.Session, command: str, error: gs.SessionError,
 # from a mid-frame stop the first reaches that vblank without moving it.
 #
 # A `gvblank` stops only through the FIRST cpu, which consumes MAME's one vblank flag
-# (`debugger_cpu::start_hook`): through another it runs away (REFERENCE.md, Advancing the machine).
+# (`debugger_cpu::start_hook`): through another it runs away (REFERENCE.md, Running and stopping).
 def route_frames(ses: gs.Session, instead: str = "") -> dict[str, Any]:
     """Make the first cpu visible for a run by frames and return the reply's `note` saying so; {}
     when it already is or there is no second cpu. Refused (`refuse_frameless`) on a board with no
@@ -803,7 +803,7 @@ def _run_for(ses: gs.Session, scratch: Path, milliseconds: int, seconds: float,
                                          seen["cpu"]), reads=len(readings))
 
 
-# MAME cannot advance one cpu alone (REFERENCE.md, Advancing the machine): a step goes through
+# MAME cannot advance one cpu alone (REFERENCE.md, Running and stopping): a step goes through
 # the visible cpu, so a named one is shown first.
 def step(ses: gs.Session, scratch: Path, count: int, mode: str = "into",
          cpu: str = "") -> dict[str, Any]:

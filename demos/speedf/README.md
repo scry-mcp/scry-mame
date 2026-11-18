@@ -292,7 +292,7 @@ Reply, 3 of 8 fields:
 | Group | Tools |
 |---|---|
 | [Session](../../docs/reference/session.md) | `start`, `close` |
-| [Advance](../../docs/reference/advance.md) | `run_to` |
+| [Run](../../docs/reference/run.md) | `run_to` |
 | [Read](../../docs/reference/read.md) | `read_memory` |
 | [Captures](../../docs/reference/captures.md) | `record` |
 | [Screen](../../docs/reference/screen.md) | `screen_view` |

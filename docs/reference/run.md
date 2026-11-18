@@ -18,7 +18,7 @@ A row typed through `debug` ends a run the same way and is named from that line 
 - The field is `errorlog`; a caller reading `reply["log"]` off a survey finds nothing, in silence.
 - `regpoint_hit` carries a `note` that the registerpoint is STILL ARMED and fires again one instruction on.
 
-What a running or a broken session does to every tool is in [REFERENCE.md, Advancing the machine](../../REFERENCE.md#advancing-the-machine).
+What a running or a broken session does to every tool is in [REFERENCE.md, Advancing the machine](../../REFERENCE.md#running-and-stopping).
 
 <!-- scry-reference:begin run_to -->
 ## `run_to`

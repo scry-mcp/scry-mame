@@ -387,7 +387,7 @@ def run_to(ref: str = "", *, control: str = "", screen: str = "",
     stop survey (`stop_seq`, `pc`, `regs`, `instruction`, `following` when the listing runs on).
     INVALID has no `verdict`: `control_silent`, `cut_by_other_stop`, `not_settled`, `stale_map`.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     args.check("run_to", ref=ref, seconds=seconds, condition=condition, control=control,
                screen=screen)
@@ -412,7 +412,7 @@ def run_for(milliseconds: int = 0, frames: int = 0,
     INVALID has no `verdict`: `no_progress`, `frames_went_backwards`, `not_settled`,
     `session_broken`; `no_channel` on a board with no counter.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     args.check("run_for", milliseconds=milliseconds, frames=frames, seconds=seconds)
     return advance.run_for(*stopped("a run by time"), milliseconds, seconds, bridge(ctx),
@@ -432,7 +432,7 @@ def trace(milliseconds: int = 0, frames: int = 0, dest: str = "",
     `unplaced`, `symbols` (first {TRACE_SYMBOLS_SHOWN})). Refused: `dest` existing,
     `no_channel`, `readback_refused`.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     args.check("trace", milliseconds=milliseconds, frames=frames, dest=dest, seconds=seconds,
                noloop=noloop)
@@ -453,7 +453,7 @@ def step(count: Annotated[int, vocab.bounds(1, advance.step_max())] = 1,
     the stop survey of `run_to`. A refused `over` may have run: the machine is marked RUNNING,
     and `stop` recovers it. INVALID: `not_settled`, `session_broken`.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     args.check("step", count=count, mode=mode)
     return advance.step(*stopped("a step"), count, mode, cpu)
@@ -468,7 +468,7 @@ def resume(seconds: Annotated[float, vocab.WAIT_FROM_ZERO_BOUNDS] = 0.0,
     Reply: with a bound, `waited_s` and `verdict` (`OTHER_STOP` with the stop survey and
     `average_speed`; `TIMEOUT`, left running, with a `note`). INVALID: `session_broken`.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     args.check("resume", seconds=seconds)
     return running.resume(*contact(), seconds, bridge(ctx))
@@ -482,7 +482,7 @@ def stop() -> dict[str, Any]:
     stopped, with a `note`). INVALID: `not_settled` (the machine stays marked RUNNING; ask
     again), `session_broken`.
 
-    Reference: REFERENCE.md, Advancing the machine.
+    Reference: REFERENCE.md, Running and stopping.
     """
     return running.stop(*contact())
 
@@ -507,7 +507,7 @@ def breakpoint_at(ref: str,
     Reply: `ref`, `stored`, `already_stored`, `armed`, `state`, `temp` (a control), `addr` (once
     `ref` resolves), `entry` (once armed).
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("breakpoint_at", ref=ref, by=by, role=role, condition=condition)
     return breakpoints.breakpoint_at(contact()[0], ref, by, role, condition, cpu)
@@ -523,7 +523,7 @@ def declaration_list(kind: Annotated[str, vocab.enum(("", *folds.KINDS))] = "",
     `cpu`, `created_at`, `origin`, `inherited`, `age_s`, `state`, plus its kind's fields),
     `foreign` (debugger rows no declaration placed), `cpu`.
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("declaration_list", kind=kind)
     return folds.list_declarations(kind, cpu)
@@ -545,7 +545,7 @@ def declaration_clear(kind: Annotated[str, vocab.enum(folds.KINDS)], ref: str = 
     Reply: `declarations_cleared`, `disarmed`, `while_running`, `tallies_removed` (removing an io
     tap), `note`.
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("declaration_clear", kind=kind, ref=ref, all=all, space=space)
     return folds.clear_declarations(kind, ref, cpu, all, space)
@@ -571,7 +571,7 @@ def regpoint_add(condition: str, cpu: str = "") -> dict[str, Any]:
     Reply: `ref` (the condition as typed), `stored`, `already_stored`, `armed`, `state`,
     `while_running`, `entry`, `cpu`, `note`.
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("regpoint_add", condition=condition)
     return regpoints.regpoint_add(contact()[0], condition, cpu)
@@ -590,7 +590,7 @@ def comment_list(cpu: str = "") -> dict[str, Any]:
     Reply: `comments` (each `ref`, `text`, `addr`, `state`; at most {ROWS_SHOWN}),
     `comments_total`, `truncated`, `declarations`, `cpu`.
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     return comments.comment_list(contact()[0], cpu)
 
@@ -618,7 +618,7 @@ def comment_write(method: Annotated[str, vocab.enum(tuple(folds.COMMENT))], ref:
     `dest` that is the declaration store's file (compared without regard to case, on any
     volume), an unwritable store (`host_failed`, `held_in_memory`).
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("comment_write", **_given(locals()))
     return methods.dispatch(folds.COMMENT, locals())
@@ -659,7 +659,7 @@ def watch_add(ref: str, mode: Annotated[str, vocab.enum(dec.WATCH_MODES)],
     Reply: `ref`, `mode`, `stored`, `already_stored`, `armed`, `state`, `reading` (on a stopped
     machine), and each mode's own fields.
 
-    Reference: REFERENCE.md, Declarations.
+    Reference: REFERENCE.md, Breakpoints and watches.
     """
     args.check("watch_add", ref=ref, mode=mode, length=length, fmt=fmt, by=by,
                condition=condition, trigger=trigger, space=space, trigger_type=trigger_type)
@@ -1475,7 +1475,7 @@ def drive(act: list[dict[str, Any]], expect: str = "",
     Reply: `act`, `verify` (`checked`, `seen`, `verdict` `TARGET` or `TIMEOUT`, `line`,
     `waited_s`), `looked` (`emulator`).
 
-    Reference: REFERENCE.md, Sequences in one call.
+    Reference: REFERENCE.md, Several calls as one.
     """
     # IN `drive`'s OWN SHAPE, under `act`: a refusal that arrives before the machine exists must not
     # be a different shape from one that arrives after, whichever check it came from.
@@ -1509,7 +1509,7 @@ def perform(steps: list[dict[str, Any]] | None = None, path: str = "",
 
     {PERFORM_REPLY}
 
-    Reference: REFERENCE.md, Sequences in one call.
+    Reference: REFERENCE.md, Several calls as one.
     """
     recording.check_perform_arguments(steps, path)
     args.check("perform", settle_seconds=settle_seconds, summaries=summaries,
@@ -1540,7 +1540,7 @@ def perform_export(dest: str, overwrite: bool = False) -> dict[str, Any]:
 
     {EXPORT_KEPT}
 
-    Reference: REFERENCE.md, From an investigation to a bench.
+    Reference: REFERENCE.md, From a session to a test that replays itself.
     """
     return core_promote.after_export(STATE.drafts, menvelope.envelope(
         recording.export(RECORDER, dest, overwrite)), mpromote.PROMOTE_PATHS)
@@ -1551,7 +1551,7 @@ def promote(dry_run: bool = False, entries: list[str] | None = None,
             names: dict[str, str] | None = None, root: str = "") -> dict[str, Any]:
     """{PROMOTE}
 
-    Reference: REFERENCE.md, The store.
+    Reference: REFERENCE.md, The `.scry/` folder.
     """
     return menvelope.envelope(mpromote.promote(dry_run, entries, names, root))
 

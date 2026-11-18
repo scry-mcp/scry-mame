@@ -287,8 +287,8 @@ Reply, 2 of 12 fields:
 | Group | Tools |
 |---|---|
 | [Session](../../docs/reference/session.md) | `start`, `close` |
-| [Advance](../../docs/reference/advance.md) | `run_to`, `screen_wait` |
-| [Declarations](../../docs/reference/declarations.md) | `breakpoint_at`, `declaration_clear` |
+| [Run](../../docs/reference/run.md) | `run_to`, `screen_wait` |
+| [Breakpoints](../../docs/reference/breakpoints.md) | `breakpoint_at`, `declaration_clear` |
 | [Read](../../docs/reference/read.md) | `screen_map_write`, `screen_map_find`, `read_memory` |
 | [Lua](../../docs/reference/lua.md) | `input` |
 | [Captures](../../docs/reference/captures.md) | `record`, `audio_record` |

@@ -1,6 +1,6 @@
 # The Comments tools
 
-A comment is a declaration too: a text at a place, shown in MAME's own disassembly. The shared contract and the comment file's format are in [REFERENCE.md, Declarations](../../REFERENCE.md#declarations).
+A comment is a declaration too: a text at a place, shown in MAME's own disassembly. The shared contract and the comment file's format are in [REFERENCE.md, Declarations](../../REFERENCE.md#breakpoints-and-watches).
 
 **A rebuild can bring several comments to one place.** All are kept; the pane shows the first the store holds that it can show, and each other is `unarmable` (a `stale` one is `stale`, never fed). An add, load or delete there reaches the one its ref spells, else the one the pane shows. A `stale` comment of the other kind is outside the one-per-place rule: only its own spelling replaces or deletes it. A replacing add keeps the first `ref` and `by`, so a comment made by symbol keeps following it.
 

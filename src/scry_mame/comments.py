@@ -2,7 +2,7 @@
 
 The store (`declarations`, kind `comment`) is the record and MAME's disassembly pane a view
 of it, fed through the console's `comadd`. A view that fails is said (`unarmable`) and the record
-is kept. Why the console and not Lua is REFERENCE.md's, Declarations. The pane is
+is kept. Why the console and not Lua is REFERENCE.md's, Breakpoints and watches. The pane is
 `comment_pane`'s, the file a project versions `comment_file`'s.
 """
 

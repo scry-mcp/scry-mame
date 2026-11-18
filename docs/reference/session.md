@@ -220,7 +220,7 @@ Example, from a live run:
 
 **A failed reference check closes the session**, because a lying session left alive is reachable by the next call.
 
-**`start` asks which name the frame counter answers to**, because a board with no screen device has none ([Advance](advance.md), *The frame counter*, says what that changes).
+**`start` asks which name the frame counter answers to**, because a board with no screen device has none ([Run](run.md), *The frame counter*, says what that changes).
 
 **The wait.** A MAME that exits during it ends it at once, and the refusal says it exited and with which code rather than that the stub did not answer: the two send a reader to different places. One still alive at the end is `session_broken` with `stdout_kept`, a copy of what it printed saved before the scratch is deleted, because a hang nobody can read cannot be told from a slow boot or a port somebody else took.
 

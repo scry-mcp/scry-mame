@@ -396,12 +396,12 @@ Reply, 2 of 19 fields:
 | Group | Tools |
 |---|---|
 | [Session](../../docs/reference/session.md) | `start`, `close` |
-| [Advance](../../docs/reference/advance.md) | `run_for` |
+| [Run](../../docs/reference/run.md) | `run_for` |
 | [Scan](../../docs/reference/scan.md) | `scan` |
-| [Declarations](../../docs/reference/declarations.md) | `watch_add`, `declaration_clear` |
+| [Breakpoints](../../docs/reference/breakpoints.md) | `watch_add`, `declaration_clear` |
 | [Read](../../docs/reference/read.md) | `read_memory`, `disassemble`, `history`, `registers` |
 | [Lua](../../docs/reference/lua.md) | `input` |
-| [Lists](../../docs/reference/lists.md) | `perform` |
+| [Sequences](../../docs/reference/sequences.md) | `perform` |
 | [States](../../docs/reference/states.md) | `state_write` |
 | [Screen](../../docs/reference/screen.md) | `screen_view` |
 | [Captures](../../docs/reference/captures.md) | `record` |
