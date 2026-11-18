@@ -1,18 +1,39 @@
-<p align="center"><img src="docs/scry-logo.png" alt="SCRY" width="480"></p>
+<h1 align="center">
+  <img src="docs/scry-logo.png" alt="SCRY" width="240"><br>
+  scry-mame
+</h1>
 
-# scry-mame
+<p align="center"><b>Ask your AI client what an arcade game is doing, and it finds out: it stops the game, reads its memory and presses its controls.</b></p>
 
-**Ask your MCP client what an arcade game is doing right now, and it looks inside a running
-MAME to answer.**
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#what-you-can-ask">What you can ask</a> ·
+  <a href="#see-it-run">Demos</a> ·
+  <a href="REFERENCE.md">Reference</a>
+</p>
 
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/gridlee/screen.png"><img src="demos/gridlee/loop.webp" alt="Gridlee starting a game, then counting a coin after a saved state is loaded"></picture>
+<!-- demo-lead:begin lineup -->
+<p align="center"><a href="demos/lineup/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/lineup/screen.png"><img src="demos/lineup/loop.webp" alt="LineUp played on the arcade board: three shots, each from another column or colour"></picture></a></p>
+<p align="center"><em>LineUp on its arcade board, played through this server: each shot is one <code>input</code> call, by the names MAME gives the controls.</em></p>
 
-*Gridlee, a free ROM, driven by this server: [the demo](demos/gridlee/) finds the code that
-spends a credit and the code that counts a coin.*
+<table align="center">
+<tr><th align="left">You ask</th><td>Press fire for four frames.</td></tr>
+<tr><th align="left">Your client calls</th><td><code>input(port=":P1", field="P1 Up", frames=4)</code></td></tr>
+<tr><th align="left">SCRY answers</th><td><code>input :P1 'P1 Up': held 4 frames, active True, released at frame 730</code></td></tr>
+</table>
+<!-- demo-lead:end lineup -->
 
-The server keeps one MAME open at its debugger. You ask in plain words; your client reads
-registers and memory, sets breakpoints and watches, presses the game's controls and looks at
-its screen. A question costs one call, not a boot.
+scry-mame is an [MCP](https://modelcontextprotocol.io) server for
+[MAME](https://www.mamedev.org), the emulator of arcade boards and home computers. It gives
+your client a MAME held open at its debugger, so a question costs one call, not a boot.
+
+Your client reads registers and memory by your program's own symbol names, sets breakpoints and
+watches, presses the machine's controls, and reads its screen and its graphics. Replies carry
+their evidence: a loaded state is read back, and a missed target says the game was still
+running.
+
+The clip is [the LineUp demo](demos/lineup/), which needs the game's own ROM set.
+[Your first question](#your-first-question) needs only a ROM that is free to download.
 
 ## Install
 
@@ -24,7 +45,7 @@ git clone https://github.com/scry-mcp/scry-mame
 cd scry-mame
 ```
 
-Add it to your client:
+### Add it to your client
 
 <!-- scry-install:begin -->
 <details open><summary>Claude Code</summary>
@@ -158,7 +179,9 @@ uv run --directory /path/to/scry-mame scry-mame
 </details>
 <!-- scry-install:end -->
 
-Your first question needs only a ROM [mamedev.org](https://www.mamedev.org/roms/) gives away,
+### Your first question
+
+It needs only a ROM [mamedev.org](https://www.mamedev.org/roms/) gives away,
 `starfire.zip`, in `~/roms`:
 
 > Start `starfire` from `~/roms`, checked against its first program ROM unzipped from
@@ -169,22 +192,29 @@ instruction, and `screen_view`, which returns the picture.
 
 ## What you can ask
 
-- "What is in this register, this byte, this routine, right now?" `registers`, `read_memory`,
+- **"What is in this register, this byte, this routine, right now?"** `registers`, `read_memory`,
   `disassemble`. With your symbol file loaded you say `Player1`, not `0x008400`.
-- "Who writes this byte?" `watch_add`. A watch stops the game on the instruction that changes
+- **"Who writes this byte?"** `watch_add`. A watch stops the game on the instruction that changes
   the byte, and the reply names it.
-- "Where does the game keep its credits?" `scan`. It narrows a range of memory to the bytes
+- **"Where does the game keep its credits?"** `scan`. It narrows a range of memory to the bytes
   that changed the way the value did.
-- "Does this routine ever run?" `run_to`, `breakpoint_at`. A run counts an address known to
+- **"Does this routine ever run?"** `run_to`, `breakpoint_at`. A run counts an address known to
   run beside your target, so "never" comes with evidence.
-- "What happens if I press this?" `input`, `screen_view`, `record`. Press a control by MAME's
+- **"What happens if I press this?"** `input`, `screen_view`, `record`. Press a control by MAME's
   own name, then look: a picture, or exactly N frames of video.
-- "Can you do that again tomorrow?" `perform`, `promote`. A list of calls runs as one, and what
+- **"Can you do that again tomorrow?"** `perform`, `promote`. A list of calls runs as one, and what
   a session learned is saved in your repository.
 
 ## See it run
 
-Each demo is a `demo.py` that makes the calls a model would and checks every answer.
+Each demo is a `demo.py` that makes the calls a model would and checks every answer. The
+pictures move because they are cut from that run.
+
+<p align="center">
+  <a href="demos/starfire/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/starfire/screen.png"><img src="demos/starfire/loop.webp" alt="Star Fire counting a coin, then flying a mission" width="170"></picture></a>
+  <a href="demos/gridlee/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/gridlee/screen.png"><img src="demos/gridlee/loop.webp" alt="Gridlee starting a game" width="170"></picture></a>
+  <a href="demos/speedf/"><picture><source media="(prefers-reduced-motion: reduce)" srcset="demos/speedf/screen.png"><img src="demos/speedf/loop.webp" alt="Speed Fight playing a match" width="170"></picture></a>
+</p>
 
 - [`demos/starfire/`](demos/starfire/): Exidy's *Star Fire*, a free ROM, from a cold start to
   the instruction that counts its coins.
@@ -201,7 +231,7 @@ last run. Each step follows the ones before it in its demo, whose guide has the 
 ### Star Fire
 
 <!-- demo-flow:begin starfire -->
-**1. Find a variable nobody named**
+#### 1. Find a variable nobody named
 
 Ask:
 
@@ -227,7 +257,7 @@ Reply, 3 of 12 fields:
 
 One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor" is a byte still in the scan.
 
-**2. Catch the instruction that writes it**
+#### 2. Catch the instruction that writes it
 
 Ask:
 
@@ -251,7 +281,7 @@ Reply, 3 of 42 fields:
 
 `OTHER_STOP` means the watch stopped the machine while the coin was still held. `cause` names the byte and the instruction that wrote it, at `0x1e48`.
 
-**3. Read how the program got there**
+#### 3. Read how the program got there
 
 Ask:
 
@@ -282,7 +312,7 @@ Reply, 1 of 6 fields:
 
 `history` lists what the CPU ran up to the stop, oldest first. `inc (hl)` at `1E48` is the write the watch caught, and the line after it is where the game stopped.
 
-**4. Go back to before the coin**
+#### 4. Go back to before the coin
 
 Ask:
 
@@ -309,7 +339,7 @@ Reply, 2 of 19 fields:
 ### Gridlee
 
 <!-- demo-flow:begin gridlee -->
-**1. Narrow a scan with each coin**
+#### 1. Narrow a scan with each coin
 
 Ask:
 
@@ -337,7 +367,7 @@ Reply, 3 of 12 fields:
 
 Three bytes hold 3, and a scan cannot say which is the credits. A "survivor" is a byte still in the scan; the watches of the next step tell them apart.
 
-**2. Let a watch name the writer**
+#### 2. Let a watch name the writer
 
 Ask:
 
@@ -361,7 +391,7 @@ Reply, 3 of 23 fields:
 
 `OTHER_STOP` means a watch stopped the run before its half second ended. `cause` names the byte and the instruction that wrote it.
 
-**3. Read the routine it stopped in**
+#### 3. Read the routine it stopped in
 
 Ask:
 
@@ -390,7 +420,7 @@ Reply, 2 of 11 fields:
 
 The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, `DAA`, `STA`). The game keeps its credits twice, in binary and in BCD.
 
-**4. See what ran before a stop**
+#### 4. See what ran before a stop
 
 Ask:
 

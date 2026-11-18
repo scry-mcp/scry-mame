@@ -1,7 +1,7 @@
 # Speed Fight: the board starts from a file in the game's own repository
 
 <!-- demo-motion:begin -->
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Speed Fight&#x27;s attract demo playing on the arcade board"></picture>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Speed Fight&#x27;s attract demo playing on the arcade board"></picture></p>
 
 1. `run_to` stopped where the attract demo starts, and `record` films it.
 
@@ -15,9 +15,9 @@ attract demo and reads two variables by name.
 
 ## The program
 
-Speed Fight is not distributed with this repository. The demo needs a checkout of the game's
-own repository, built and with its ROM set in place (`make rom`, `make stage-rom`), and a MAME
-whose driver list includes `speedf`.
+Speed Fight is not distributed with this repository. The demo needs a checkout of
+[the game's own repository](https://github.com/MS-DOS-Club/speedf-mame), built and with its ROM
+set in place (`make rom`, `make stage-rom`), and a MAME whose driver list includes `speedf`.
 
 ## Run it
 
@@ -49,7 +49,7 @@ server that did not start.
 game. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
-**1. Start from the game's own start profile**
+### 1. Start from the game's own start profile
 
 Ask:
 
@@ -140,7 +140,7 @@ A start profile is a saved set of `start` arguments: the call adds only what is 
 
 </details>
 
-**2. Run to a routine by its name**
+### 2. Run to a routine by its name
 
 Ask:
 
@@ -229,7 +229,7 @@ Reply, 3 of 15 fields:
 
 </details>
 
-**3. Read a variable by its name**
+### 3. Read a variable by its name
 
 Ask:
 

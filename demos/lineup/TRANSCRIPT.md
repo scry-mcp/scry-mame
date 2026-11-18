@@ -1,4 +1,4 @@
-Every call of the run with its reply, in order: 42 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+Every call of the run with its reply, in order: 51 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
 
 **1. `start`**: OK start: lineup on MAME, rom_check OK, 306 symbols
 
@@ -2370,14 +2370,109 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
 
 </details>
 
-**40. `record`**: OK playing: recorded 126 frames in ./tmp/demos/lineup/playing.avi
+**40. `input`**: OK fire again: UP pressed
 
 <details><summary>call and reply</summary>
 
 ```json
 {
-  "frames": 126,
-  "dest": "./tmp/demos/lineup/playing.avi",
+  "port": ":P1",
+  "field": "P1 Up",
+  "frames": 4
+}
+```
+
+```json
+{
+  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 730",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 726,
+  "frame_after": 731,
+  "emulated_before_s": 14.516737,
+  "emulated_after_s": 14.616577,
+  "cycles": 798720,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":P1",
+  "field": "P1 Up",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "P1 Up",
+  "player": 0,
+  "mask": "0x00000004",
+  "defvalue": "0x00000004",
+  "port_before": "0x000000ff",
+  "frame_set": 726,
+  "released": true,
+  "port_held": "0x000000fb",
+  "frame_released": 730,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 27,
+  "pc": "0x000300a9",
+  "cpu": ":maincpu",
+  "frame": 731,
+  "regs": {
+    "EAX": "0x8117",
+    "ECX": "0x0010",
+    "EDX": "0x0016",
+    "EBX": "0x1680",
+    "ESP": "0x99bd",
+    "EBP": "0xbe31",
+    "ESI": "0x1d95",
+    "EDI": "0x7ba0",
+    "EIP": "0x000300a9",
+    "EFLAGS": "0xf006",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x81a2",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "300A9", "bytes": "55", "text": "push    bp", "symbol": "New_IRQ_Video", "delta": 0},
+  "following": ["300AA: 50             push    aw", "300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**41. `record`**: OK second shot: recorded 51 frames in ./tmp/demos/lineup/second-shot.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 51,
+  "dest": "./tmp/demos/lineup/second-shot.avi",
   "seconds": 300
 }
 ```
@@ -2396,8 +2491,8 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "path": "./tmp/demos/lineup/playing.avi",
-  "frames": 126,
+  "path": "./tmp/demos/lineup/second-shot.avi",
+  "frames": 51,
   "began": true,
   "frame_begin": "<volatile>",
   "recording_after": true,
@@ -2427,7 +2522,663 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
 
 </details>
 
-**41. `screen_view`**: OK screen: the board, 320x200
+**42. `input`**: OK right again: RIGHT pressed
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":P1",
+  "field": "P1 Right",
+  "frames": 4
+}
+```
+
+```json
+{
+  "summary": "input :P1 'P1 Right': held 4 frames, active True, released at frame 789",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 785,
+  "frame_after": 790,
+  "emulated_before_s": 15.694849,
+  "emulated_after_s": 15.794689,
+  "cycles": 798722,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":P1",
+  "field": "P1 Right",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "P1 Right",
+  "player": 0,
+  "mask": "0x00000020",
+  "defvalue": "0x00000020",
+  "port_before": "0x000000ff",
+  "frame_set": 785,
+  "released": true,
+  "port_held": "0x000000df",
+  "frame_released": 789,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 29,
+  "pc": "0x000300a9",
+  "cpu": ":maincpu",
+  "frame": 790,
+  "regs": {
+    "EAX": "0xffff",
+    "ECX": "0x0000",
+    "EDX": "0x0002",
+    "EBX": "0x490a",
+    "ESP": "0x99d7",
+    "EBP": "0xbe31",
+    "ESI": "0x8048",
+    "EDI": "0xfaa0",
+    "EIP": "0x000300a9",
+    "EFLAGS": "0xf097",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "300A9", "bytes": "55", "text": "push    bp", "symbol": "New_IRQ_Video", "delta": 0},
+  "following": ["300AA: 50             push    aw", "300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**43. `run_to`**: OK moved again: the move taken
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "Gest_Scores",
+  "control": "Check_Money25",
+  "seconds": 120
+}
+```
+
+```json
+{
+  "summary": "run_to Gest_Scores: TARGET, control counted 2",
+  "status": "ok",
+  "verdict": "TARGET",
+  "control_hits": 2,
+  "controls": [
+    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 2}
+  ],
+  "cause": "target Gest_Scores",
+  "stop_seq": 30,
+  "pc": "0x0003092f",
+  "cpu": ":maincpu",
+  "frame": 791,
+  "regs": {
+    "EAX": "0x0000",
+    "ECX": "0x0000",
+    "EDX": "0x0000",
+    "EBX": "0x1680",
+    "ESP": "0x99db",
+    "EBP": "0xbe31",
+    "ESI": "0x8048",
+    "EDI": "0x96d0",
+    "EIP": "0x0003092f",
+    "EFLAGS": "0xf006",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {
+    "address": "3092F",
+    "bytes": "F70600802000",
+    "text": "test    word ptr [8000h],20h",
+    "symbol": "Gest_Scores",
+    "delta": 0
+  },
+  "following": ["30935: 75 25             bne     3095Ch", "30937: A1 0C 80          mov     aw,[800Ch]", "3093A: 3B 06 0E 80       cmp     aw,[800Eh]", "3093E: 74 07             be      30947h", "30940: FF 06 0E 80       inc     word ptr [800Eh]", "30944: A1 0E 80          mov     aw,[800Eh]", "30947: BF 78 96          mov     iy,9678h", "3094A: B9 05 00          mov     cw,5h", "3094D: E8 E3 3F          call    34933h"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**44. `input`**: OK fire from there: UP pressed
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":P1",
+  "field": "P1 Up",
+  "frames": 4
+}
+```
+
+```json
+{
+  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 795",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 791,
+  "frame_after": 796,
+  "emulated_before_s": 15.818442,
+  "emulated_after_s": 15.914498,
+  "cycles": 768448,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":P1",
+  "field": "P1 Up",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "P1 Up",
+  "player": 0,
+  "mask": "0x00000004",
+  "defvalue": "0x00000004",
+  "port_before": "0x000000ff",
+  "frame_set": 791,
+  "released": true,
+  "port_held": "0x000000fb",
+  "frame_released": 795,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 31,
+  "pc": "0x000300a9",
+  "cpu": ":maincpu",
+  "frame": 796,
+  "regs": {
+    "EAX": "0xffff",
+    "ECX": "0x0000",
+    "EDX": "0x0002",
+    "EBX": "0x490a",
+    "ESP": "0x99d7",
+    "EBP": "0xbe31",
+    "ESI": "0x8048",
+    "EDI": "0xfaa0",
+    "EIP": "0x000300a9",
+    "EFLAGS": "0xf097",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "300A9", "bytes": "55", "text": "push    bp", "symbol": "New_IRQ_Video", "delta": 0},
+  "following": ["300AA: 50             push    aw", "300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**45. `record`**: OK third shot: recorded 51 frames in ./tmp/demos/lineup/third-shot.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 51,
+  "dest": "./tmp/demos/lineup/third-shot.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/lineup/third-shot.avi",
+  "frames": 51,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**46. `input`**: OK colour again: FIRE1 pressed
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":P1",
+  "field": "P1 Button 2",
+  "frames": 4
+}
+```
+
+```json
+{
+  "summary": "input :P1 'P1 Button 2': held 4 frames, active True, released at frame 854",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 850,
+  "frame_after": 855,
+  "emulated_before_s": 16.992769,
+  "emulated_after_s": 17.092609,
+  "cycles": 798723,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":P1",
+  "field": "P1 Button 2",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "P1 Button 2",
+  "player": 0,
+  "mask": "0x00000080",
+  "defvalue": "0x00000080",
+  "port_before": "0x000000ff",
+  "frame_set": 850,
+  "released": true,
+  "port_held": "0x0000007f",
+  "frame_released": 854,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 33,
+  "pc": "0x000300a9",
+  "cpu": ":maincpu",
+  "frame": 855,
+  "regs": {
+    "EAX": "0x8183",
+    "ECX": "0x0029",
+    "EDX": "0x000d",
+    "EBX": "0x1680",
+    "ESP": "0x99cb",
+    "EBP": "0xbe31",
+    "ESI": "0x1684",
+    "EDI": "0x86c7",
+    "EIP": "0x000300a9",
+    "EFLAGS": "0xf002",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x81a2",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "300A9", "bytes": "55", "text": "push    bp", "symbol": "New_IRQ_Video", "delta": 0},
+  "following": ["300AA: 50             push    aw", "300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**47. `run_to`**: OK raised again: the colour taken
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "Gest_Scores",
+  "control": "Check_Money25",
+  "seconds": 120
+}
+```
+
+```json
+{
+  "summary": "run_to Gest_Scores: TARGET, control counted 1",
+  "status": "ok",
+  "verdict": "TARGET",
+  "control_hits": 1,
+  "controls": [
+    {"ref": "Check_Money25", "cpu": ":maincpu", "hits_in_run": 1}
+  ],
+  "cause": "target Gest_Scores",
+  "stop_seq": 34,
+  "pc": "0x0003092f",
+  "cpu": ":maincpu",
+  "frame": 855,
+  "regs": {
+    "EAX": "0x0000",
+    "ECX": "0x0000",
+    "EDX": "0x0000",
+    "EBX": "0x1680",
+    "ESP": "0x99db",
+    "EBP": "0xbe31",
+    "ESI": "0x8048",
+    "EDI": "0x96d0",
+    "EIP": "0x0003092f",
+    "EFLAGS": "0xf006",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {
+    "address": "3092F",
+    "bytes": "F70600802000",
+    "text": "test    word ptr [8000h],20h",
+    "symbol": "Gest_Scores",
+    "delta": 0
+  },
+  "following": ["30935: 75 25             bne     3095Ch", "30937: A1 0C 80          mov     aw,[800Ch]", "3093A: 3B 06 0E 80       cmp     aw,[800Eh]", "3093E: 74 07             be      30947h", "30940: FF 06 0E 80       inc     word ptr [800Eh]", "30944: A1 0E 80          mov     aw,[800Eh]", "30947: BF 78 96          mov     iy,9678h", "3094A: B9 05 00          mov     cw,5h", "3094D: E8 E3 3F          call    34933h"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**48. `input`**: OK fire that colour: UP pressed
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":P1",
+  "field": "P1 Up",
+  "frames": 4
+}
+```
+
+```json
+{
+  "summary": "input :P1 'P1 Up': held 4 frames, active True, released at frame 859",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 855,
+  "frame_after": 860,
+  "emulated_before_s": 17.097253,
+  "emulated_after_s": 17.19245,
+  "cycles": 761579,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":P1",
+  "field": "P1 Up",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "P1 Up",
+  "player": 0,
+  "mask": "0x00000004",
+  "defvalue": "0x00000004",
+  "port_before": "0x000000ff",
+  "frame_set": 855,
+  "released": true,
+  "port_held": "0x000000fb",
+  "frame_released": 859,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 35,
+  "pc": "0x000300a9",
+  "cpu": ":maincpu",
+  "frame": 860,
+  "regs": {
+    "EAX": "0xffff",
+    "ECX": "0x0000",
+    "EDX": "0x0002",
+    "EBX": "0x490a",
+    "ESP": "0x99d7",
+    "EBP": "0xbe31",
+    "ESI": "0x8048",
+    "EDI": "0xfaa0",
+    "EIP": "0x000300a9",
+    "EFLAGS": "0xf097",
+    "CS": "0x3000",
+    "SS": "0x0040",
+    "DS": "0x0040",
+    "ES": "0x1000",
+    "FS": "0x00000000",
+    "GS": "0x00000000",
+    "ST0": "0x00000000000000000000",
+    "ST1": "0x00000000000000000000",
+    "ST2": "0x00000000000000000000",
+    "ST3": "0x00000000000000000000",
+    "ST4": "0x00000000000000000000",
+    "ST5": "0x00000000000000000000",
+    "ST6": "0x00000000000000000000",
+    "ST7": "0x00000000000000000000",
+    "FCTRL": "0x00000000",
+    "FSTAT": "0x00000000",
+    "FTAG": "0x00000000",
+    "FISEG": "0x00000000",
+    "FIOFF": "0x00000000",
+    "FOSEG": "0x00000000",
+    "FOOFF": "0x00000000",
+    "FOP": "0x00000000"
+  },
+  "instruction": {"address": "300A9", "bytes": "55", "text": "push    bp", "symbol": "New_IRQ_Video", "delta": 0},
+  "following": ["300AA: 50             push    aw", "300AB: 53             push    bw", "300AC: 51             push    cw", "300AD: 52             push    dw", "300AE: 56             push    ix", "300AF: 57             push    iy", "300B0: 1E             push    ds0", "300B1: 06             push    ds1", "300B2: 9C             push    psw", "300B3: B8 40 00       mov     aw,40h", "300B6: 8E D8          mov     ds0,aw", "300B8: B8 00 10       mov     aw,1000h", "300BB: 8E C0          mov     ds1,aw", "300BD: FC             clr1    dir", "300BE: 83 3E C8 8D 01 cmp     word ptr [8DC8h],1h", "300C3: 75 0B          bne     300D0h", "300C5: 9D             pop     psw", "300C6: 07             pop     ds1", "300C7: 1F             pop     ds0", "300C8: 5F             pop     iy"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**49. `record`**: OK fourth shot: recorded 51 frames in ./tmp/demos/lineup/fourth-shot.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 51,
+  "dest": "./tmp/demos/lineup/fourth-shot.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/lineup/fourth-shot.avi",
+  "frames": 51,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": false,
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**50. `screen_view`**: OK screen: the board, 320x200
 
 <details><summary>call and reply</summary>
 
@@ -2440,13 +3191,13 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "screen_view render :screen frame 855 from indices; 1280x800 PNG x4, not inlined",
+  "summary": "screen_view render :screen frame 914 from indices; 1280x800 PNG x4, not inlined",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 320,
   "height": 200,
-  "frame_screen": 855,
+  "frame_screen": 914,
   "palette": ":palette",
   "entries": 256,
   "screen_indexed": true,
@@ -2466,27 +3217,27 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#22",
+  "call": "MAME_MCP_LUA_END#29",
   "pc_before": "0x000300a9",
   "cause": "screen_view: one step",
-  "stop_seq": 28,
+  "stop_seq": 37,
   "pc": "0x000300aa",
   "cpu": ":maincpu",
-  "frame": 855,
+  "frame": 914,
   "regs": {
-    "EAX": "0x8183",
-    "ECX": "0x000b",
-    "EDX": "0x000c",
-    "EBX": "0x1680",
-    "ESP": "0x99c9",
+    "EAX": "0x0c00",
+    "ECX": "0x0003",
+    "EDX": "0x0002",
+    "EBX": "0x490a",
+    "ESP": "0x99cf",
     "EBP": "0xbe31",
-    "ESI": "0x1684",
-    "EDI": "0x8825",
+    "ESI": "0x4128",
+    "EDI": "0xf6d8",
     "EIP": "0x000300aa",
-    "EFLAGS": "0xf006",
+    "EFLAGS": "0xf086",
     "CS": "0x3000",
     "SS": "0x0040",
-    "DS": "0x81a2",
+    "DS": "0x7802",
     "ES": "0x1000",
     "FS": "0x00000000",
     "GS": "0x00000000",
@@ -2522,7 +3273,7 @@ Every call of the run with its reply, in order: 42 calls. `<volatile>` stands fo
 
 </details>
 
-**42. `close`**: OK close: closed: quit
+**51. `close`**: OK close: closed: quit
 
 <details><summary>call and reply</summary>
 

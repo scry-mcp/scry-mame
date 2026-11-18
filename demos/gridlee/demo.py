@@ -232,8 +232,8 @@ STEPS = [
 ]
 
 MOMENTS = (
-    Moment("unwatch", "play", "`input` pressed START and a credit is spent: the level card, then "
-                              "the game.", skip=300, frames=170),
+    Moment("unwatch", "play", "`input` pressed START and a credit is spent: the game is on.",
+           skip=352, frames=128),
     Moment("coin 5", "fifth credit", "`state_write` loads the saved state and `input` drops a "
                                      "coin: CREDITS goes from 4 to 5.", frames=90),
 )

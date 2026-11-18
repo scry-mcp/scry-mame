@@ -1,4 +1,4 @@
-Every call of the run with its reply, in order: 24 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
+Every call of the run with its reply, in order: 28 calls. `<volatile>` stands for a value that changes from run to run, and `<host>` for one this host decides.
 
 **1. `start`**: OK start: starfire on MAME 0.289 (unknown), rom_check OK, pc 0x00000000
 
@@ -1532,7 +1532,215 @@ Every call of the run with its reply, in order: 24 calls. `<volatile>` stands fo
 
 </details>
 
-**23. `screen_view`**: OK screen: the screen, 256x224
+**23. `read_memory`**: OK fuel waiting: FUEL 1500, and the game waiting
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x82ab",
+  "length": 4
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x82ab: 4 bytes at 0x000082ab: 00000501",
+  "status": "ok",
+  "ref": "0x82ab",
+  "addr": "0x000082ab",
+  "length": 4,
+  "hex": "00000501",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**24. `input`**: OK press start: START, held four frames and released
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "port": ":SYSTEM",
+  "field": "1 Player Start",
+  "frames": 4,
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "input :SYSTEM '1 Player Start': held 4 frames, active True, released at frame 381",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": 377,
+  "frame_after": 382,
+  "emulated_before_s": 6.318501,
+  "emulated_after_s": 6.402082,
+  "cycles": 208952,
+  "polls": 5,
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "route": "ioport",
+  "port": ":SYSTEM",
+  "field": "1 Player Start",
+  "value": "0x00000001",
+  "frames": 4,
+  "name": "1 Player Start",
+  "player": 0,
+  "mask": "0x00000002",
+  "defvalue": "0x00000000",
+  "port_before": "0x000000f8",
+  "frame_set": 377,
+  "released": true,
+  "port_held": "0x000000fa",
+  "frame_released": 381,
+  "active": true,
+  "cause": "the `gvblank` stop of the last frame asked",
+  "stop_seq": 15,
+  "pc": "0x00000066",
+  "cpu": ":maincpu",
+  "frame": 382,
+  "regs": {
+    "AF": "0x0080",
+    "BC": "0x5e08",
+    "DE": "0xd882",
+    "HL": "0x8296",
+    "AF'": "0x0000",
+    "BC'": "0x0000",
+    "DE'": "0x0000",
+    "HL'": "0x0000",
+    "IX": "0x8145",
+    "IY": "0x82af",
+    "SP": "0x8089",
+    "PC": "0x0066",
+    "IR": "0x0070"
+  },
+  "instruction": {
+    "address": "0066",
+    "bytes": "C36900",
+    "text": "jp   $0069",
+    "symbol": {"available": false, "why": "no symbol table places this address"},
+    "delta": {"available": false, "why": "no symbol table places this address"}
+  },
+  "following": ["0069: F5       push af", "006A: E5       push hl", "006B: D5       push de", "006C: 97       sub  a", "006D: 67       ld   h,a", "006E: 6F       ld   l,a", "006F: 39       add  hl,sp", "0070: 11 15 80 ld   de,$8015", "0073: ED 52    sbc  hl,de", "0075: B4       or   h", "0076: C2 00 00 jp   nz,$0000", "0079: B5       or   l", "007A: FA 00 00 jp   m,$0000", "007D: FE 78    cp   $78", "007F: F2 00 00 jp   p,$0000", "0082: 21 67 83 ld   hl,$8367", "0085: 34       inc  (hl)"],
+  "errorlog": "<volatile>",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**25. `record`**: OK mission: recorded 420 frames in ./tmp/demos/starfire/mission.avi
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "frames": 420,
+  "dest": "./tmp/demos/starfire/mission.avi",
+  "seconds": 300
+}
+```
+
+```json
+{
+  "summary": "<volatile>",
+  "status": "ok",
+  "verdict": "ELAPSED",
+  "frame_before": "<volatile>",
+  "frame_after": "<volatile>",
+  "emulated_before_s": "<volatile>",
+  "emulated_after_s": "<volatile>",
+  "cycles": "<volatile>",
+  "polls": "<volatile>",
+  "lines_ahead": 0,
+  "thread_errors": 0,
+  "console_reruns": 0,
+  "path": "./tmp/demos/starfire/mission.avi",
+  "frames": 420,
+  "began": true,
+  "frame_begin": "<volatile>",
+  "recording_after": true,
+  "ended": true,
+  "bytes": "<volatile>",
+  "avi_frames": "<volatile>",
+  "frame_end": "<volatile>",
+  "cause": "<volatile>",
+  "stop_seq": "<volatile>",
+  "pc": "<volatile>",
+  "cpu": ":maincpu",
+  "frame": "<volatile>",
+  "regs": "<volatile>",
+  "instruction": "<volatile>",
+  "following": "<volatile>",
+  "errorlog": "<volatile>",
+  "view": "native",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "<volatile>",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**26. `read_memory`**: OK fuel burning: FUEL 1465: the mission is burning it
+
+<details><summary>call and reply</summary>
+
+```json
+{
+  "ref": "0x82ab",
+  "length": 4
+}
+```
+
+```json
+{
+  "summary": "read_memory 0x82ab: 4 bytes at 0x000082ab: 05060401",
+  "status": "ok",
+  "ref": "0x82ab",
+  "addr": "0x000082ab",
+  "length": 4,
+  "hex": "05060401",
+  "cpu": ":maincpu",
+  "session": {
+    "alive": true,
+    "running": false,
+    "altered": true,
+    "note": "this session has been MODIFIED: what is measured here does not describe a normal run of the game",
+    "omitted": ["altering_writes", "console"],
+    "how": "<volatile>"
+  }
+}
+```
+
+</details>
+
+**27. `screen_view`**: OK screen: the screen, 256x224
 
 <details><summary>call and reply</summary>
 
@@ -1546,13 +1754,13 @@ Every call of the run with its reply, in order: 24 calls. `<volatile>` stands fo
 
 ```json
 {
-  "summary": "screen_view render :screen frame 377 from colours; 512x448 PNG x2, inline",
+  "summary": "screen_view render :screen frame 805 from colours; 512x448 PNG x2, inline",
   "status": "ok",
   "mode": "render",
   "screen": ":screen",
   "width": 256,
   "height": 224,
-  "frame_screen": 377,
+  "frame_screen": 805,
   "palette": {"available": false, "why": "the screen is direct colour: no palette device draws it"},
   "entries": 0,
   "screen_indexed": false,
@@ -1571,25 +1779,25 @@ Every call of the run with its reply, in order: 24 calls. `<volatile>` stands fo
   "lines_ahead": 0,
   "thread_errors": 0,
   "console_reruns": 0,
-  "call": "MAME_MCP_LUA_END#8",
+  "call": "MAME_MCP_LUA_END#10",
   "pc_before": "0x00000066",
   "cause": "screen_view: one step",
-  "stop_seq": 15,
+  "stop_seq": 17,
   "pc": "0x00000069",
   "cpu": ":maincpu",
-  "frame": 377,
+  "frame": 805,
   "regs": {
-    "AF": "0xb5b3",
-    "BC": "0x00c9",
-    "DE": "0xdbb5",
-    "HL": "0x0038",
+    "AF": "0x0800",
+    "BC": "0xee2c",
+    "DE": "0x0deb",
+    "HL": "0xae2c",
     "AF'": "0x0000",
     "BC'": "0x0000",
     "DE'": "0x0000",
     "HL'": "0x0000",
-    "IX": "0x8255",
-    "IY": "0x82af",
-    "SP": "0x808b",
+    "IX": "0x815f",
+    "IY": "0x825b",
+    "SP": "0x8083",
     "PC": "0x0069",
     "IR": "0x0055"
   },
@@ -1617,7 +1825,7 @@ Also attached: image/png.
 
 </details>
 
-**24. `close`**: OK close: closed: MAME quit on its own
+**28. `close`**: OK close: closed: MAME quit on its own
 
 <details><summary>call and reply</summary>
 

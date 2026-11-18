@@ -4,12 +4,16 @@ What a client of the server notices.
 
 ## Unreleased
 
-- Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds one
-  or two moments cut from `record` calls of the demo's own run.
+- Every demo is shown moving: a `loop.webp` beside its README replaces `loop.mp4`. It holds
+  one to three moments cut from `record` calls of the demo's own run, scaled up so its pixels
+  stay sharp.
+- The Star Fire demo presses START and films a mission, and the LineUp demo fires three more
+  shots.
 - Each demo's page offers the steps to try, each with what to ask, the call and the reply it
   got. The whole run is in `TRANSCRIPT.md`.
-- The README opens with what the server is for. Its `## Install` section has the lines to paste
-  for ten MCP clients and a first question to ask.
+- The README opens with what the server lets you ask, its lead demo moving at the page's width
+  and one exchange of that demo's run. Its `## Install` section has the lines to paste for ten
+  MCP clients and a first question to ask.
 - Takes scry-core 0.119.0.
 - On Windows a `start` behind (`background=true`, or left out on an unwatched start) leaves the
   foreground where it was: no program may take it while the start launches. The flag did

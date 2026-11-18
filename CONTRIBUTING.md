@@ -246,6 +246,8 @@ page from a run where every step passed: the two generated blocks of its README,
 - `loop.webp` shows the demo's moments, each cut from a `record` step of the run. ffmpeg
   decodes the recordings and `img2webp` assembles the file; without either on the `PATH` the
   update is refused by name.
+- The LineUp demo also writes what the README opens with: its clip, a caption and one step of
+  the run as an exchange, all named in its `Lead`.
 - A second run gives the same page. `loop.webp` alone may differ in its bytes.
 
 The block of the README that adds the server to each client is scry-core's table of clients:

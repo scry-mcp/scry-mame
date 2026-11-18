@@ -11,7 +11,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from scry_core.demo import Demo, Reply, Run, Step, main
+from scry_core.demo import Demo, Lead, Reply, Run, Step, main
 from scry_core.game_demo import Binding, Press
 from scry_core.games import lineup
 
@@ -103,8 +103,12 @@ DEMO = Demo(
     name="lineup", root=ROOT, server=[sys.executable, "-m", "scry_mame.server"],
     readme=HERE / "README.md", steps=lineup.steps(BINDING),
     capture=lambda run: run.dir / "screen.png",
-    moments=(lineup.PLAYING,),
-    alt="LineUp in play on the arcade board, a shot in flight",
+    moments=lineup.filmed(BINDING),
+    alt="LineUp played on the arcade board: three shots, each from another column or colour",
+    lead=Lead(front=ROOT / "README.md", step="fire again",
+              ask="Press fire for four frames.",
+              caption="LineUp on its arcade board, played through this server: each shot is one "
+                      "`input` call, by the names MAME gives the controls."),
     offers=frozenset({"rompath", "cwd", "display"}), reads=frozenset({"cwd"}),
     precheck=precheck,
     volatile={**free_set.VOLATILE,

@@ -1,11 +1,13 @@
 # LineUp: one script plays the arcade board and its DOS version
 
 <!-- demo-motion:begin -->
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="LineUp in play on the arcade board, a shot in flight"></picture>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="LineUp played on the arcade board: three shots, each from another column or colour"></picture></p>
 
-1. The player moved, raised the colour and fired: `record` films the game going on.
+1. `input` presses fire, and `record` films the shot.
+2. `input` moves the player one column right and fires again.
+3. `input` raises the next colour and fires a third time.
 
-<!-- moments-ms: 2516 -->
+<!-- moments-ms: 1018,1018,1018 -->
 <!-- demo-motion:end -->
 
 *LineUp* (Eco-Games / GAMART, 1994) ran on an NEC V30 arcade board, and its team ported the
@@ -14,14 +16,14 @@ a coin, a game started, a move, a colour, a shot, each read back from memory.
 
 ## The program
 
-LineUp is not distributed with this repository. The demo needs three things from the game's
-own repository:
+LineUp is not distributed with this repository. The demo needs three things from
+[the game's own repository](https://github.com/MS-DOS-Club/lineup-mame):
 
 - its ROM set, `lineup.zip`, with the linker's symbol map, `lineup.map`, in the same directory
   (`make stage-rom` builds both and puts them together);
 - a MAME whose driver list includes `lineup`;
 - a checkout, which `--cwd` names: its `.scry/maps/lineup-screen-map.json` is the screen map
-  the demo loads.
+  the demo loads, a file that names the game's screens.
 
 ## Run it
 
@@ -50,8 +52,8 @@ own 50 Hz tick. A screen is recognised by a screen map written in palette indice
 board and a VGA card show the same pixels in slightly different colours.
 
 The script is `scry_core.games.lineup`, and the other server runs the DOS version with the same
-symbols, screens and checks. Only a short table differs per emulator: how the game starts,
-which input is the coin, the screen's refresh rate, and the reference recording of its music.
+symbols, screens and checks. Only a few settings differ per emulator: how the game starts,
+which input is each control, the screen's refresh rate, and the reference recording of its music.
 
 ## Try it yourself
 
@@ -60,7 +62,7 @@ ROM set and its symbol map. Each of these is a step of the demo, in the order th
 them.
 
 <!-- demo-transcript:begin -->
-**1. Run to a routine by its name**
+### 1. Run to a routine by its name
 
 Ask:
 
@@ -155,7 +157,7 @@ Reply, 3 of 15 fields:
 
 </details>
 
-**2. Read a variable by its name**
+### 2. Read a variable by its name
 
 Ask:
 
@@ -202,7 +204,7 @@ Reply, 3 of 8 fields:
 
 </details>
 
-**3. Compare a recording with its reference**
+### 3. Compare a recording with its reference
 
 Ask:
 
@@ -274,7 +276,9 @@ Reply, 2 of 12 fields:
 9. Move right, take the next colour and shoot, running to `Gest_Scores` after each before
    reading `Player1`.
 10. Record two seconds of sound, measure it and compare it with `music.wav`.
-11. Record 150 frames of video, take a picture of the screen and close.
+11. Shoot three more times: where the player stands, one column to the right, and with the
+    next colour. Record a second of video after each shot.
+12. Take a picture of the screen and close.
 
 </details>
 

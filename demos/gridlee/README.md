@@ -1,12 +1,12 @@
 # Gridlee: the game keeps its credits twice
 
 <!-- demo-motion:begin -->
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Gridlee starting a game, then counting a coin after a saved state is loaded"></picture>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Gridlee starting a game, then counting a coin after a saved state is loaded"></picture></p>
 
-1. `input` pressed START and a credit is spent: the level card, then the game.
+1. `input` pressed START and a credit is spent: the game is on.
 2. `state_write` loads the saved state and `input` drops a coin: CREDITS goes from 4 to 5.
 
-<!-- moments-ms: 2872,1521 -->
+<!-- moments-ms: 2163,1521 -->
 <!-- demo-motion:end -->
 
 Videa's *Gridlee* (1983) runs on a 6809. This demo drops three coins into it and looks for the
@@ -50,7 +50,7 @@ That last one is a missing ROM, a relative path or a server that did not start.
 the ROM in `~/roms`. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
-**1. Narrow a scan with each coin**
+### 1. Narrow a scan with each coin
 
 Ask:
 
@@ -109,7 +109,7 @@ Three bytes hold 3, and a scan cannot say which is the credits. A "survivor" is 
 
 </details>
 
-**2. Let a watch name the writer**
+### 2. Let a watch name the writer
 
 Ask:
 
@@ -216,7 +216,7 @@ Reply, 3 of 23 fields:
 
 </details>
 
-**3. Read the routine it stopped in**
+### 3. Read the routine it stopped in
 
 Ask:
 
@@ -271,7 +271,7 @@ The coin routine increments `$042B`, then adds one to `$042C` in BCD (`ADDA`, `D
 
 </details>
 
-**4. See what ran before a stop**
+### 4. See what ran before a stop
 
 Ask:
 

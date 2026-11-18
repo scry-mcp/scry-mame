@@ -4,7 +4,8 @@ prompt asks an MCP client to make, each answer checked. `--help` says how to run
 The set is one of the ROMs mamedev.org distributes for free, non-commercial use, from its own
 site only, so the demo says where to get it and never carries it. What it does: the attract
 mode running, a coin found in RAM by a value scan, the instruction that writes it caught by a
-change watch, and a saved state that puts the credits back where they were.
+change watch, a saved state that puts the credits back where they were, and START pressed: a
+mission, which the fuel gauge it burns confirms.
 """
 
 from __future__ import annotations
@@ -41,8 +42,16 @@ COIN = {"port": ":SYSTEM", "field": "Coin 1", "frames": 4, "seconds": RUN_S}
 SETTLE_MS = 500
 #: The instructions `history` is asked for: the routine that counts the coin, and the stop.
 TRAIL = 8
+START = {"port": ":SYSTEM", "field": "1 Player Start", "frames": 4, "seconds": RUN_S}
+#: The fuel gauge, four decimal digits a byte each, lowest first, and what it reads while the
+#: game waits with four coins in: taken from a run, asserted on every run since. Only a mission
+#: burns it, so it is what says START was taken.
+FUEL, FUEL_WAITING = "0x82ab", 1500
 #: The frames each moment of the loop records: a second and a half, and a second.
 COUNTED_FRAMES, BACK_FRAMES = 90, 60
+#: The frames recorded once START is pressed, and the three seconds of them the loop shows: the
+#: mission from where its first enemy closes in.
+MISSION_FRAMES, MISSION_SKIP, MISSION_SHOWN = 420, 228, 180
 
 
 def attract(reply: Reply, run: Run) -> str:
@@ -85,6 +94,26 @@ def dropped(reply: Reply, run: Run) -> str:
     expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
            f"verdict {reply['verdict']}, released {reply['released']}")
     return "a fifth coin, held four frames and released"
+
+
+def fuel(reply: Reply) -> int:
+    return sum(digit * 10 ** place for place, digit in enumerate(bytes.fromhex(reply["hex"])))
+
+
+def fuel_waits(reply: Reply, run: Run) -> str:
+    expect(fuel(reply) == FUEL_WAITING, f"FUEL {fuel(reply)} before START, not {FUEL_WAITING}")
+    return f"FUEL {FUEL_WAITING}, and the game waiting"
+
+
+def fuel_burns(reply: Reply, run: Run) -> str:
+    expect(fuel(reply) < FUEL_WAITING, f"FUEL still {fuel(reply)}: START began no mission")
+    return f"FUEL {fuel(reply)}: the mission is burning it"
+
+
+def pressed(reply: Reply, run: Run) -> str:
+    expect(reply["verdict"] == "ELAPSED" and reply["released"] is True,
+           f"verdict {reply['verdict']}, released {reply['released']}")
+    return "START, held four frames and released"
 
 
 def caught(reply: Reply, run: Run) -> str:
@@ -175,6 +204,10 @@ STEPS = [
                 "the saved one. The fifth coin is undone.")),
     recording("four again", BACK_FRAMES),
     Step("back to four", "read_memory", {"ref": CREDITS, "length": 1}, credits_are(4)),
+    Step("fuel waiting", "read_memory", {"ref": FUEL, "length": 4}, fuel_waits),
+    Step("press start", "input", START, pressed),
+    recording("mission", MISSION_FRAMES),
+    Step("fuel burning", "read_memory", {"ref": FUEL, "length": 4}, fuel_burns),
     Step("screen", "screen_view", lambda run: {"mode": "render", "dest": run.dir / "screen.png",
                                                "scale": 2}, free_set.pictured("the screen")),
     Step("close", "close", {}, free_set.closed),
@@ -185,10 +218,14 @@ MOMENTS = (
            "`input` drops a fifth coin: the screen redraws and FUEL reads 1800."),
     Moment("load", "four again",
            "`state_write` loads the state saved at four coins, and FUEL is back at 1500."),
+    Moment("press start", "mission",
+           "`input` presses START: the mission begins and its first enemy closes in.",
+           skip=MISSION_SKIP, frames=MISSION_SHOWN),
 )
 
 DEMO = free_set.demo(SYSTEM, __file__, STEPS, MOMENTS,
-                     "Star Fire's attract screen counting a coin, then back to the saved state")
+                     "Star Fire counting a coin, going back to a saved state, then flying a "
+                     "mission")
 
 if __name__ == "__main__":
     sys.exit(main(DEMO))

@@ -1,17 +1,18 @@
 # Star Fire: find where the game counts its coins
 
 <!-- demo-motion:begin -->
-<picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Star Fire&#x27;s attract screen counting a coin, then back to the saved state"></picture>
+<p align="center"><picture><source media="(prefers-reduced-motion: reduce)" srcset="screen.png"><img src="loop.webp" alt="Star Fire counting a coin, going back to a saved state, then flying a mission"></picture></p>
 
 1. `input` drops a fifth coin: the screen redraws and FUEL reads 1800.
 2. `state_write` loads the state saved at four coins, and FUEL is back at 1500.
+3. `input` presses START: the mission begins and its first enemy closes in.
 
-<!-- moments-ms: 1504,1003 -->
+<!-- moments-ms: 1504,1003,3009 -->
 <!-- demo-motion:end -->
 
 Exidy's *Star Fire* (1979) is a space shooter on a Z80. This demo drops coins into it and finds
 the byte that counts them with a value scan. A watch then stops the game on the instruction
-that writes that byte, and a saved state takes a coin back.
+that writes that byte, a saved state takes a coin back, and START begins a mission.
 
 ## The ROM
 
@@ -53,7 +54,7 @@ circuit diagram, which is expensive, and under the debugger MAME cannot keep up 
 the ROM in `~/roms`. Each of these is a step of the demo, in the order the demo makes them.
 
 <!-- demo-transcript:begin -->
-**1. Find a variable nobody named**
+### 1. Find a variable nobody named
 
 Ask:
 
@@ -108,7 +109,7 @@ One byte followed the coins from 1 to 3, so `0x8299` is the credits. A "survivor
 
 </details>
 
-**2. Catch the instruction that writes it**
+### 2. Catch the instruction that writes it
 
 Ask:
 
@@ -240,7 +241,7 @@ Reply, 3 of 42 fields:
 
 </details>
 
-**3. Read how the program got there**
+### 3. Read how the program got there
 
 Ask:
 
@@ -292,7 +293,7 @@ Reply, 1 of 6 fields:
 
 </details>
 
-**4. Go back to before the coin**
+### 4. Go back to before the coin
 
 Ask:
 
@@ -383,7 +384,10 @@ Reply, 2 of 19 fields:
    8 instructions and the registers.
 6. Run half a second so the coin releases, clear the watch, read the credits and save a state.
 7. Drop a fifth coin, record 90 frames to an AVI and read the credits.
-8. Load the state, record 60 frames, read the credits again, take a picture and close.
+8. Load the state, record 60 frames and read the credits again.
+9. Read the four digits of the fuel gauge at `0x82ab`, press `1 Player Start` for four frames
+   and record 420 frames of the mission.
+10. Read the fuel again, take a picture and close.
 
 </details>
 
