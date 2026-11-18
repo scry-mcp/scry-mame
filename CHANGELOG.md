@@ -26,6 +26,8 @@ What a client of the server notices.
 - A scan's summary says how many candidates are left ("3 left"). `drive`'s says "reaction
   seen", "no reaction seen (TIMEOUT)" or "sent, reaction not checked".
 - A reply that saves a candidate for `promote` says "N saved for `promote`" in `kept`.
+- `series_capture`'s `errorlog` holds the lines MAME wrote during the series and while its
+  notifier was removed. It held only the second part.
 - `series_capture` answers the stop the machine rests at, one step past its run's. It answered
   the run's stop, and the next call reported the step as a stop of the machine's own.
 - The descriptions of `start` and `window` say what `front` means: on screen, with no other
