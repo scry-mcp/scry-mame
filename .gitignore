@@ -11,3 +11,5 @@ __pycache__/
 /tmp/
 **/._*
 **/.DS_Store
+# The assistant's local rules: they stay on the owner's machine.
+.claude/
