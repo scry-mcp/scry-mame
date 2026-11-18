@@ -197,7 +197,7 @@ class Format:
 @dataclass(frozen=True)
 class PalettePort:
     """The ports a palette's pens are written through, and the `protocol` whose law places each
-    write on a pen (`ramdac`, `latch`, `sequence`: REFERENCE.md, under `palette_log`), as
+    write on a pen (`ramdac`, `latch`, `sequence`: docs/reference/timeline.md, under `palette_log`), as
     `ramdac` logs them. The pen is `pen_base` plus the index, below `pen_count`."""
 
     name: str

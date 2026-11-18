@@ -30,7 +30,7 @@ never a bank: its matches carry `pen_map` and no `base`.
 
 NO MATCH IS NOT A NEAR MATCH. When nothing matched, `nearest` names the candidate with the
 smallest share of disagreeing pixels found within a budget of comparisons (why a share:
-REFERENCE.md, `gfx_locate`), and says whether the budget let it look at every candidate
+docs/reference/screen.md, `gfx_locate`), and says whether the budget let it look at every candidate
 (`complete`).
 """
 
