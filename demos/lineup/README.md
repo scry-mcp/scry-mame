@@ -51,7 +51,7 @@ Nothing in the run waits a fixed time: each screen is waited for at a breakpoint
 own 50 Hz tick. A screen is recognised by a screen map written in palette indices, because the
 board and a VGA card show the same pixels in slightly different colours.
 
-The script is `scry_core.games.lineup`, and the other server runs the DOS version with the same
+The script is `scry_core.games.lineup`, and scry-dosbox-x runs the DOS version with the same
 symbols, screens and checks. Only a few settings differ per emulator: how the game starts,
 which input is each control, the screen's refresh rate, and the reference recording of its music.
 

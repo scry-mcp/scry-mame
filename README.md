@@ -461,8 +461,8 @@ ROM and use your own names for addresses, add `reference_rom`, `reference_addr` 
 
 To keep what a session learned with your repository, ask it to `promote` what is worth keeping.
 `promote(dry_run=true, root=<your repository>)` lists what it would create. Once you approve,
-the same call with `entries` creates a `.scry/` folder with them; it writes nothing before
-that.
+`promote` with `entries` and the same `root` creates a `.scry/` folder with them; it writes
+nothing before that.
 
 [scry-core's page on that folder](https://github.com/scry-mcp/scry-core/blob/main/docs/scry-readme.md#set-up-scry-in-a-new-project)
 says what is in it.
@@ -491,7 +491,7 @@ with a `session` block that says whether anything was written to the machine.
 
 - [REFERENCE.md](REFERENCE.md) has what the groups of tools share, and links each group's page.
 - To watch a game run, `start` takes `shared`, `display` and `size`;
-  [its page](docs/reference/session.md#start) covers a window kept behind, in front or none.
+  [its page](docs/reference/session.md#start) covers a window nobody watches, one in front, and one watched from behind.
 - [CONTRIBUTING.md](CONTRIBUTING.md) is for changing the server: its checks, and what proves a
   change.
 - What this server shares with scry-dosbox-x lives in
