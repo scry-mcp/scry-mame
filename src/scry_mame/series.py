@@ -34,7 +34,7 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.prose import counted
 
-from scry_mame import advance, chunk, inputs, lua_source, read, running, transport
+from scry_mame import advance, chunk, files, inputs, lua_source, read, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
 from scry_mame import screen as mscreen
@@ -184,6 +184,10 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
         STATE.record_image(folder / series.frame_name(frame))
     rest = running.stop_reply(ses, scratch, f"series_capture: {done['evaluated_by']}")
     here = {k: v for k, v in rest.items() if k not in ("status", "session")}
+    # The rest stop's log starts where the run's stop moved the mark.
+    if isinstance(run.get("errorlog"), dict) and "mark" in run["errorlog"]:
+        mark = int(run["errorlog"]["mark"])
+        here["errorlog"] = running.errorlog_block(files.errorlog_since(scratch, mark)[0], mark)
     body = {k: v for k, v in run.items() if k not in ("summary", "session", *here)}
     account = {k: common[k] for k in CONSOLE_ACCOUNT if k in common}
     # MERGED, never spread: a field `run_for` and the series both said would otherwise be

@@ -15,6 +15,7 @@ from session_doubles import blank_session  # noqa: E402
 
 from scry_mame import advance as madvance  # noqa: E402
 from scry_mame import chunk as mchunk  # noqa: E402
+from scry_mame import files as mfiles  # noqa: E402
 from scry_mame import read as mread  # noqa: E402
 from scry_mame import running as mrunning  # noqa: E402
 from scry_mame import screen as mscreen  # noqa: E402
@@ -185,6 +186,31 @@ def test_the_reply_carries_the_stop_the_machine_rests_at(console: _Console,
     assert (out["stop_seq"], out["pc"]) == (7, "0x00000002")
     assert out["cause"] == "series_capture: one step" and out["verdict"] == "ELAPSED"
     assert console.own == []
+
+
+def test_the_log_the_run_wrote_is_kept_beside_the_rest_stops(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The rest stop reads `error.log` from where the run's own stop left the mark, so a block
+    taken from it alone would drop every line the run wrote."""
+    log = mfiles.log_path(tmp_path, "emulator")
+    log.write_text("during the run\n")
+    run_for = console.run_for
+
+    def ran(*a: Any, **kw: Any) -> dict[str, Any]:
+        out = run_for(*a, **kw)
+        return {**out, "errorlog": mrunning.errorlog_block(["during the run"], 0)}
+
+    def rested(ses: Any, scratch: Path, cause: str, **base: Any) -> dict[str, Any]:
+        mark = log.stat().st_size
+        with log.open("a") as f:
+            f.write("while the notifier went\n")
+        return {**console.rest(ses, scratch, cause, **base),
+                "errorlog": mrunning.errorlog_block(["while the notifier went"], mark)}
+    monkeypatch.setattr(madvance, "run_for", ran)
+    monkeypatch.setattr(mrunning, "stop_reply", rested)
+    out = _capture(tmp_path)
+    assert out["errorlog"] == mrunning.errorlog_block(
+        ["during the run", "while the notifier went"], 0)
 
 
 def test_a_run_refused_still_owns_the_step_that_removed_the_notifier(
