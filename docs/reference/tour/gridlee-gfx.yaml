@@ -1,0 +1,37 @@
+# What the tour states of Gridlee's sprites, for the tools that read a manifest. An entry marked
+# `proved` names the step of tour.py that checks it on every run.
+schema: 1
+systems: [gridlee]
+
+formats:
+  sprite:
+    layout:
+      width: 8
+      height: 16
+      planes: 4
+      planeoffset: '{ 0, 1, 2, 3 }'
+      xoffset: '{ STEP8(0,4) }'
+      yoffset: '{ STEP16(0,32) }'
+      charincrement: 64*8
+    status: proved
+    source: tour.py, gfx_locate finds the player's tile on the screen under this layout
+
+assets:
+  sprites:
+    format: sprite
+    tag: gfx1
+    palette: palette
+    status: proved
+    source: tour.py, gfx_locate matches the screen against the region gfx1
+
+commands:
+  player:
+    block: {address: 0x000c, words: 4, word_bytes: 1, status: proved, source: 'tour.py, read_block of spriteram at offset 12 holds the tile, y and x of the player'}
+    fire: {address: 0x0010, status: proved, source: 'tour.py, a capture on the write of the next entry holds this one whole, and gfx_blits boxes it'}
+    asset: sprites
+    fields:
+      source_tile: {parts: [{word: 0, mask: 0xff}], status: proved, source: 'tour.py, gfx_locate matches that tile'}
+      dest_y: {parts: [{word: 2, mask: 0xff}], add: 17, status: proved, source: 'tour.py, gfx_locate matches at that line'}
+      dest_x: {parts: [{word: 3, mask: 0xff}], status: proved, source: 'tour.py, gfx_locate matches at that column'}
+      width: {const: 8, status: proved, source: 'tour.py, the layout gfx_locate matches under'}
+      height: {const: 16, status: proved, source: 'tour.py, the layout gfx_locate matches under'}

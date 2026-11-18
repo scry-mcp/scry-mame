@@ -1,0 +1,20 @@
+# Names for the Gridlee addresses the tour reads, breaks on and watches. Gridlee ships no symbol
+# file; each address here is one a run of tour.py checks: the credits by the coin that writes
+# them, count_coin and take_credit by the stops there, irq by its vector, wait_frame by the
+# control that counts it and write_sprites by the writer of the sprite table.
+- addr: 0x042b
+  name: credits
+  type: u8
+- addr: 0x042c
+  name: credits_bcd
+  type: u8
+- addr: 0xb583
+  name: count_coin
+- addr: 0xd676
+  name: take_credit
+- addr: 0xfd80
+  name: irq
+- addr: 0xa631
+  name: wait_frame
+- addr: 0xa7f6
+  name: write_sprites
