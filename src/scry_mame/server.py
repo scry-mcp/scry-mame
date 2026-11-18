@@ -208,7 +208,7 @@ def start(
     `window_not_visible`, the session left live to `window` or `close`.
 
     Reply: `system`, `pid`, `window` (`display`, `bounds`, `onscreen`, `front`, `fullscreen`, with
-    `shared`), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
+    `shared`; {WINDOW_FRONT}), `stub_port`, `rom_check`, `pc`, `frame`, `start_retries`,
     `recommended_release` ({MAME_RELEASE}), with a profile `profile` (`name`, `file`,
     `supplied`), and `kept` when the recipe is complete and the draft holds it; another release
     boots with a `note` saying so.

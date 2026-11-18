@@ -39,6 +39,12 @@ def test_start_says_which_paths_are_directories() -> None:
             "files") in _texts()["start"]
 
 
+def test_start_says_what_front_means_and_that_it_is_not_focus() -> None:
+    """`start` lists `front` in its `window`, and "front" reads as holding the keyboard."""
+    assert ("`front` says no other application's window covers its centre, not that it has the "
+            "keyboard focus") in _texts()["start"]
+
+
 def test_gfx_locate_names_its_source_arguments() -> None:
     text = documented("gfx_locate")
     assert all(f"`{a}`" in text for a in ("tag", "ref", "offset", "cpu")), text
