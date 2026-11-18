@@ -15,6 +15,24 @@ What a client of the server notices.
   and one exchange of that demo's run. Its `## Install` section has the lines to paste for ten
   MCP clients and a first question to ask.
 - Takes scry-core 0.119.0.
+- Each tool's reference entry opens with what the tool does and an example to try: what to
+  ask, the call and the reply it got. Its arguments, what comes back, what it refuses and why
+  follow, each under its own heading.
+- The examples are calls of one session on Gridlee, a ROM mamedev.org distributes for free. The
+  whole session is `docs/reference/tour/TRANSCRIPT.md`.
+- The groups of tools have names that say what they hold: Run (it was Advance), Breakpoints
+  (Declarations), Sequences (Lists), Project (Store) and Timeline (Film). The `instructions`,
+  the reference's pages and the sections of `REFERENCE.md` carry them.
+- A scan's summary says how many candidates are left ("3 left"). `drive`'s says "reaction
+  seen", "no reaction seen (TIMEOUT)" or "sent, reaction not checked".
+- A reply that saves a candidate for `promote` says "N saved for `promote`" in `kept`.
+- `series_capture` answers the stop the machine rests at, one step past its run's. It answered
+  the run's stop, and the next call reported the step as a stop of the machine's own.
+- `start`'s description says what `front` means in its `window`: no other application's window
+  covers its centre. It does not mean the window has the keyboard.
+- `palette`, `gfx_view`, `gfx_sweep`, `screen_signature`, the two screen-map tools and `trace`
+  publish `watches`. Their replies carried it whenever a watch was declared, against their own
+  schema.
 - On Windows a `start` behind (`background=true`, or left out on an unwatched start) leaves the
   foreground where it was: no program may take it while the start launches. The flag did
   nothing there, and MAME's window took the caller's keyboard.

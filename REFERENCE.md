@@ -1,286 +1,351 @@
 # scry-mame: reference
 
-The [README](README.md) is the front door. This page holds the contract several families share: the session, what every reply carries, names for addresses. Each family's tools, with arguments, replies and the reason behind each contract, are under `docs/reference/`.
+This page is for a rule that several tools share. It holds the list of tools, the fields every reply carries, and those rules.
+
+Each tool has its own entry, with arguments, reply and example, on its family's page under `docs/reference/`; a family is a group of tools. To install, see the [README](README.md).
 
 ## Index
 
 <!-- scry-reference:begin index -->
-- [Session](docs/reference/session.md): [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
-- [Machine](docs/reference/machine.md): [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
-- [Names](docs/reference/names.md): [`symbols_find`](docs/reference/names.md#symbols_find)
-- [Run](docs/reference/run.md): [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
-- [Breakpoints](docs/reference/breakpoints.md): [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
-- [Read](docs/reference/read.md): [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
-- [Screen](docs/reference/screen.md): [`palette`](docs/reference/screen.md#palette), [`screen_view`](docs/reference/screen.md#screen_view), [`screen_signature`](docs/reference/screen.md#screen_signature), [`gfx_view`](docs/reference/screen.md#gfx_view), [`gfx_locate`](docs/reference/screen.md#gfx_locate), [`gfx_sweep`](docs/reference/screen.md#gfx_sweep), [`gfx_draft`](docs/reference/screen.md#gfx_draft), [`gfx_blits`](docs/reference/screen.md#gfx_blits), [`gfx_blit_source`](docs/reference/screen.md#gfx_blit_source)
-- [Timeline](docs/reference/timeline.md): [`gfx_load`](docs/reference/timeline.md#gfx_load), [`gfx_film`](docs/reference/timeline.md#gfx_film), [`palette_log`](docs/reference/timeline.md#palette_log)
-- [Scan](docs/reference/scan.md): [`scan`](docs/reference/scan.md#scan)
-- [Write](docs/reference/write.md): [`write`](docs/reference/write.md#write), [`set_register`](docs/reference/write.md#set_register), [`reset`](docs/reference/write.md#reset), [`debug`](docs/reference/write.md#debug)
-- [Comments](docs/reference/comments.md): [`comment_list`](docs/reference/comments.md#comment_list), [`comment_write`](docs/reference/comments.md#comment_write)
-- [Lua](docs/reference/lua.md): [`input`](docs/reference/lua.md#input), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
-- [States](docs/reference/states.md): [`state_list`](docs/reference/states.md#state_list), [`state_write`](docs/reference/states.md#state_write)
-- [Captures](docs/reference/captures.md): [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
-- [Files](docs/reference/files.md): [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
-- [Sequences](docs/reference/sequences.md): [`perform`](docs/reference/sequences.md#perform), [`drive`](docs/reference/sequences.md#drive), [`perform_export`](docs/reference/sequences.md#perform_export)
-- [Project](docs/reference/project.md): [`promote`](docs/reference/project.md#promote)
+- [Session](docs/reference/session.md): Starting a MAME session, asking what state it is in, finding its window, choosing a cpu and ending it. [`start`](docs/reference/session.md#start), [`status`](docs/reference/session.md#status), [`window`](docs/reference/session.md#window), [`close`](docs/reference/session.md#close), [`cpu_focus`](docs/reference/session.md#cpu_focus), [`rom_check`](docs/reference/session.md#rom_check)
+- [Machine](docs/reference/machine.md): What the emulated machine is made of, how the debugger holds each cpu, and what MAME writes to its logs. [`cpu_info`](docs/reference/machine.md#cpu_info), [`machine_map`](docs/reference/machine.md#machine_map), [`log`](docs/reference/machine.md#log), [`log_wait`](docs/reference/machine.md#log_wait)
+- [Names](docs/reference/names.md): Symbol names for addresses: look up a name or an address in the symbol table of your program. [`symbols_find`](docs/reference/names.md#symbols_find)
+- [Run](docs/reference/run.md): The tools that let the program run and stop it again. [`run_to`](docs/reference/run.md#run_to), [`run_for`](docs/reference/run.md#run_for), [`step`](docs/reference/run.md#step), [`resume`](docs/reference/run.md#resume), [`stop`](docs/reference/run.md#stop), [`trace`](docs/reference/run.md#trace), [`screen_wait`](docs/reference/run.md#screen_wait)
+- [Breakpoints](docs/reference/breakpoints.md): Breakpoints and watches the server saves by name and sets again in later sessions. [`breakpoint_at`](docs/reference/breakpoints.md#breakpoint_at), [`regpoint_add`](docs/reference/breakpoints.md#regpoint_add), [`watch_add`](docs/reference/breakpoints.md#watch_add), [`declaration_list`](docs/reference/breakpoints.md#declaration_list), [`declaration_clear`](docs/reference/breakpoints.md#declaration_clear)
+- [Read](docs/reference/read.md): Reading what the stopped program holds: memory, registers, code, and which of its screens is showing. [`read_memory`](docs/reference/read.md#read_memory), [`read_block`](docs/reference/read.md#read_block), [`registers`](docs/reference/read.md#registers), [`disassemble`](docs/reference/read.md#disassemble), [`find`](docs/reference/read.md#find), [`history`](docs/reference/read.md#history), [`memdump`](docs/reference/read.md#memdump), [`screen_map_find`](docs/reference/read.md#screen_map_find), [`screen_map_write`](docs/reference/read.md#screen_map_write)
+- [Screen](docs/reference/screen.md): Seeing a board's graphics as data: the palette entry behind each pixel, tiles decoded from ROM or memory, and the draws a board makes. [`palette`](docs/reference/screen.md#palette), [`screen_view`](docs/reference/screen.md#screen_view), [`screen_signature`](docs/reference/screen.md#screen_signature), [`gfx_view`](docs/reference/screen.md#gfx_view), [`gfx_locate`](docs/reference/screen.md#gfx_locate), [`gfx_sweep`](docs/reference/screen.md#gfx_sweep), [`gfx_draft`](docs/reference/screen.md#gfx_draft), [`gfx_blits`](docs/reference/screen.md#gfx_blits), [`gfx_blit_source`](docs/reference/screen.md#gfx_blit_source)
+- [Timeline](docs/reference/timeline.md): MAME's tools that load a project's graphics manifest and show, frame by frame, when a write happened and which code set a colour. [`gfx_load`](docs/reference/timeline.md#gfx_load), [`gfx_film`](docs/reference/timeline.md#gfx_film), [`palette_log`](docs/reference/timeline.md#palette_log)
+- [Scan](docs/reference/scan.md): Finding the address of a value nobody has named yet. [`scan`](docs/reference/scan.md#scan)
+- [Write](docs/reference/write.md): Changing the machine: memory, a register, a reset, and any line the debugger console takes. [`write`](docs/reference/write.md#write), [`set_register`](docs/reference/write.md#set_register), [`reset`](docs/reference/write.md#reset), [`debug`](docs/reference/write.md#debug)
+- [Comments](docs/reference/comments.md): Notes on addresses of the program, saved with the breakpoints and shown in the disassembly. [`comment_list`](docs/reference/comments.md#comment_list), [`comment_write`](docs/reference/comments.md#comment_write)
+- [Lua](docs/reference/lua.md): Pressing the board's inputs, running Lua inside MAME, and choosing whether the machine runs at real speed. [`input`](docs/reference/lua.md#input), [`lua`](docs/reference/lua.md#lua), [`throttle`](docs/reference/lua.md#throttle)
+- [States](docs/reference/states.md): Saved states: the whole emulated machine written to a file, listed, and loaded back. [`state_list`](docs/reference/states.md#state_list), [`state_write`](docs/reference/states.md#state_write)
+- [Captures](docs/reference/captures.md): Saving the screen and the sound to files: a still, a series of frames, a video, a recording, and the list of them. [`series_capture`](docs/reference/captures.md#series_capture), [`record`](docs/reference/captures.md#record), [`audio_record`](docs/reference/captures.md#audio_record), [`snapshot`](docs/reference/captures.md#snapshot), [`captures`](docs/reference/captures.md#captures)
+- [Files](docs/reference/files.md): Comparing pictures and recordings on disk, in numbers, with no machine running. [`image_compare`](docs/reference/files.md#image_compare), [`audio_compare`](docs/reference/files.md#audio_compare)
+- [Sequences](docs/reference/sequences.md): Running several calls as one: a list of steps, an input with its check, and a session written as a replay script. [`perform`](docs/reference/sequences.md#perform), [`drive`](docs/reference/sequences.md#drive), [`perform_export`](docs/reference/sequences.md#perform_export)
+- [Project](docs/reference/project.md): Saving what a session learned into the repository's `.scry/` folder, after a review. [`promote`](docs/reference/project.md#promote)
 <!-- scry-reference:end index -->
 
 ## The session
 
-A debug session has to outlive the question: a shell command is a fresh process and each question would cost a whole emulator boot, so an MCP, a long-lived process, holds the machine between them. The server does not watch a run with no end: `trace` hands back what a bounded window executed, and a count across an open-ended run is a question for a Lua tracer.
+A session is one MAME that `start` launches and the server keeps until `close`, so every call reaches the same machine.
+
+- **One call at a time.** Calls take turns: a second one waits for the first.
+- **Which MAME runs.** `start` uses `binary`, else the `MAME_BINARY` variable, else the `mame` on your `PATH`: the first of these that is set. A value that names no executable is refused, never skipped.
+- **Paths.** A path argument is absolute or starts with `~`; a relative one is refused, because MAME runs from the session's temporary folder. So is an empty required path, or one with a NUL or an unpaired surrogate.
+- **The server's end.** However the server stops, its MAME stops too. On Windows the system ends it; elsewhere a watchdog process does, listed as `scry-mame-guardian`.
+- **An idle hour.** After an hour with no call, counted from the end of the last one, the server closes the session, a running program included. The next reply says so, in a `no_session` refusal or in `status`'s `note`.
+- **Your own kill script.** The command line of a MAME the server launched contains `mame-mcp-`: skip those. End a session with `close`, never with a signal.
+
+### Boards with several cpus
+
+MAME's debugger acts on one cpu at a time, the visible one, and every stop makes the cpu that stopped visible.
+
+- With no `cpu`, a call uses the visible cpu; a tool that lists or clears covers every cpu.
+- With a `cpu`, a call uses that one and leaves the visible one alone. Only `step` shows the cpu it steps.
+- `cpu` is MAME's tag, `subcpu` or `:subcpu`. An unknown one is refused `unknown_ref`, listing the board's cpus.
+- A reply that touches a cpu names it in `cpu`.
+- A registerpoint, MAME's stop on a condition over registers, is always the visible cpu's: MAME's `rpset` names none.
+- Another cpu's registers and memory need a MAME built with the patches under `patches/`. Without them MAME serves its first cpu only, and a call that needs another says so.
+
+`space` is MAME's name for an address space, `program` by default. A tool refuses a space it cannot read, and `io` on a cpu that has none.
+
+### The orange edge of the window
+
+While a session is live MAME's window has an orange edge, so a person at the computer knows it is in use. It is bright while a call that can run or change the program is in progress, and dim otherwise, even over a program `resume` left running. `start(presence=False)` turns it off, and no capture shows it.
 
 The tools: [Session](docs/reference/session.md), [Machine](docs/reference/machine.md).
 
-**A MAME this server spawned does not outlive it, nor an abandoned session.** MAME has no reason of its own to exit and a SIGKILLed server runs no cleanup, so a guardian process beside every MAME (named `scry-mame-guardian` in the process list), in a session of its own, SIGKILLs it within one poll of the server being gone, since MAME ignores SIGTERM. A SIGTERM, a SIGHUP or a Ctrl-C to the server itself ends its machine before it leaves. On Windows the same promise is kept by a job object the server holds and places MAME in once it has started: the system closes it when the server ends, however it ends, and MAME with it. A session no tool has touched for an hour, counted from the end of the last call so a call's own wait never counts, is closed by the ordinary `close`, a running machine included; the next reply that finds no machine says so, in `no_session` and in `status`'s `note`.
-
-**A live session is recognised from outside by the literal `mame-mcp-` in the emulator's argv, and that is a contract.** A project's own `make stop` kills by binary path and this server spawns the same binary, so the command line is all that tells them apart; a kill path that excludes the mark leaves the live session alone. It rides on `-snapshot_directory`, always emitted, and changing its spelling changes every project's kill path. A pid is a claim to verify, never a handle to signal: `close` is the ending.
-
-**Every path argument is absolute or starts with `~`, judged at the argument.** MAME runs from a scratch directory of the server's own, so a relative path would be judged in one directory and used in another. `~` is expanded as a shell would, because no shell stands between a client and the argument. A NUL, a lone surrogate or an empty required path is refused.
-
-**Each session has its own scratch directory, and the tools serialize on one lock**, so no project's EEPROM ends up inside the shared tool and overlapping `run_to` calls never steal each other's stops.
-
-**A board with several cpus is addressed the way MAME's debugger addresses it.** The debugger acts on one cpu at a time, the VISIBLE one, and makes the cpu that stopped the visible one at every stop and again when it releases the machine. A call that names no `cpu` acts on the visible one; a call that names one acts on that cpu and leaves the visible one where it was, as `bp addr:cpu` does (`step` alone shows the cpu it steps). The visible cpu is read off the console's `cpulist`, never remembered. A declaration keeps its cpu and its `ref` resolves in that cpu's symbol table. What MAME cannot address by cpu is refused rather than faked: `rpset` names none, so a registerpoint is the visible cpu's. A stock gdbstub serves its first cpu alone; `patches/0004-gdbstub-one-thread-per-cpu.patch` serves one GDB thread per cpu, so every register and memory call reads its own cpu and `cpu_focus` shows a cpu without running.
-
-**`cpu` and `space`.** `cpu` is a tag in either spelling (`subcpu` or `:subcpu`), refused `unknown_ref` naming the cpus there are. Empty, it is the visible cpu for a tool that acts or reads at a place and every cpu for one that lists or clears. `space` is MAME's own name, `program` by default; a tool takes only the spaces it implements and refuses `io` on a cpu that has none, naming the cpus that have one.
-
-### The presence indicator
-
-While a session holds the window, an orange edge says so: dim from `start` to `close`, bright while a call that can move the guest on or change what it holds runs, so whoever sits at the host knows whether to keep their hands off. A stopped machine is repainted only at a stop and at each console command, so once a driving call that leaves it stopped is over the server sends one command of its own (`print 0`, which moves neither pc, cycle count nor memory) and the edge goes dim. A machine left running by `resume` shows the dim edge: the indicator marks the calls, not the machine. `start(presence=False)` leaves it off, and a failure drawing it never changes any other reply. It is drawn by MAME's Lua on the UI container, which the snapshot target does not show, so `snapshot`, `record` and the screen readers never carry it.
-
 ## What every reply carries
 
+Every reply has the same outer fields, whichever tool answers, so you read any answer the same way.
+
 <!-- scry-reference:begin envelope -->
-| field | type |
-|---|---|
-| `summary` | string |
-| `status` | one of `"ok"`, `"INVALID"` |
-| `code` | string |
-| `message` | string |
-| `omitted` | array of string |
-| `how` | string |
-| `note` | string |
-| `cancelled` | object |
-| `session` | object |
-| `answers_while_running` | array |
-| `exit_code` | integer or object |
-| `last_stop` | object |
-| `stopped_on_its_own` | object |
-| `broken` | string |
-| `cause` | string |
-| `cpu_tags` | array of string |
+- `summary` (string)
+- `status` (one of `"ok"`, `"INVALID"`)
+- `code` (string)
+- `message` (string)
+- `omitted` (array of string)
+- `how` (string)
+- `note` (string)
+- `cancelled` (object)
+- `session` (object)
+- `answers_while_running` (array)
+- `exit_code` (integer or object)
+- `last_stop` (object)
+- `stopped_on_its_own` (object)
+- `broken` (string)
+- `cause` (string)
+- `cpu_tags` (array of string)
 <!-- scry-reference:end envelope -->
 
-**Every tool publishes its reply as its `outputSchema`**: each field is its value or `unavailable(why)`, `status` is required, and the fields an `ok` reply always carries are required of it (unless its `omitted` names them). A field that comes only under a condition says which in the tool's `Reply:` sentence.
+What each one is for:
 
-Every reply opens with a one-line `summary` and closes with a `session` block composed after the tool's work, so it says what the machine is doing after the call, `close`'s included (no session is left). Alarms ride on every reply (`altered`, `broken`, `console` once a count is not zero, `throttles_not_applied`, `tallies_not_removed`, a `note`); what only counts rides on `start`, `status` and `close`.
+- `summary`: one line saying what happened.
+- `status`: `ok`, or `INVALID` for a refusal.
+- `code`, `message`: a refusal's word, from a fixed list, and its reason.
+- `omitted`, `how`: fields left out to keep the reply short, and the call that returns them.
+- `note`: what the other fields do not say; absent when there is nothing to add.
+- `session`, `cancelled`: described below.
+- `answers_while_running`: on a refusal because the program runs, the tools that still answer.
+- `last_stop`: the last stop the server saw: its number, address, frame, cause and age.
+- `stopped_on_its_own`: the program stopped while no call waited; said once, by the next reply.
+- `exit_code`: MAME's, when it ended during the session.
+- `broken`: on `status`, what broke the session.
+- `cause`: on a reply that ends at a stop, what stopped the program.
+- `cpu_tags`: the board's cpus, on `status` and on a refused `cpu`.
 
-**A reply that answers less than everything says so**: it carries `omitted`, the names it left out, and `how` brings them; one that left nothing out carries neither.
+### The `session` block
 
-Every refusal of an argument's shape names it and comes before the emulator is touched; what only the machine can decide (`wait_expired`, `readback_refused`, `control_silent`, `not_settled`...) is refused after it was asked, and says what was asked and what it was left doing. Every number sent to the console travels with `0x`, because to MAME's expression parser a bare `d0` is a register.
+`session` closes every reply and is read after the tool's work. It says `alive` (MAME is up), `running` (the program runs, not stopped at the debugger) and `altered`.
 
-**A reply that touches a cpu says which, in `cpu`.** Where the stub cannot read that cpu's registers, `regs` says `available: false` with `why`, never another cpu's file under its name. A cpu the stub does not describe, or whose byte order is not established, is `no_channel`: the order is MAME's, the endianness of the cpu's program space as `start`'s inventory read it, and it is not established when that read failed or when a known architecture measured the other way disagrees, since one of the two is wrong.
+**`altered` says something wrote to the machine.** A write is allowed: `write`, `set_register`, a `lua` script, a `debug` line that changes the machine. Every later reply then says `altered: true`, because a measurement on a forced value does not describe the game's own run.
 
-**Writing to a live machine is allowed, and every reply afterwards says the session was altered**, `debug` included. A measurement on a forced state is not a measurement of the game, and the reader three questions later has no other way to know.
+A warning appears only while it holds:
 
-**The stub's EMPTY packet is "unsupported", never "done".** A client that refuses only an `E` reply takes a packet the stub does not implement as a good answer, and `write`, `set_register` and breakpoints then report an operation that has not happened, silencing the control `run_to` relies on. So the client says no itself.
+- `broken`: see [Running and stopping](#running-and-stopping).
+- `console`: trouble on MAME's Lua console, once a count is not zero. It counts reader failures (`thread_errors`), scripts run twice (`reruns`) and lines never run (`lost`).
+- `throttles_not_applied`: speed changes MAME has not confirmed, which put later timings in doubt.
+- `tallies_not_removed`: a counting watch that was cleared and still counts inside MAME, listed until the session ends.
+- `read_only_claims`: `lua` calls you declared read-only, which the server did not count as writes.
 
-**`session.console` counts what the console channel did to this session**: `thread_errors` (the Lua reader died), `reruns` (chunks run again), `lost` (lines taken and never evaluated). They are three because a reader that restarted harmlessly and a chunk that WROTE TWICE are different events. They are counted when a lua-family call reads its answer back and once more at `close`, so a line sent and never read back (a `throttle` asked while stopped) moves none until then. The per-call fields describe one line's window: `thread_errors` and `console_reruns` ride, zeros included, on every reply that read a Lua chunk's answer back, and `resent` rides only when the line was sent again. A wrapper's own script that raises is refused by what it raised: a port or field the machine lacks is `unknown_ref`, a recording with no screen `no_channel`, anything else `unexpected_answer`; `lua`'s script is the caller's, `bad_argument`.
+`start` and `status` also carry the plain counts, such as `altering_writes`; other replies may name them in `omitted` instead.
 
-**A `tallies_not_removed` row stays until the session ends.** Asking again fixes the machine; the row is the record that this session counted past a removal. It rides on every reply while it holds, because the call that would naturally report it is one nobody is obliged to make. `status` lists a removal the console has not run yet (`tallies_pending_removal`), so a success is a row leaving a list the caller can see.
+### A refusal
 
-**A refusal is one contract.** `status` is `ok` or `INVALID`; an INVALID carries `code`, one word from a fixed table, and `message`, flat beside the context (`last_stop`, `control_hits`, `left_armed`). `verdict` is a measurement's word (`TARGET`, `TIMEOUT`, `ELAPSED`, `OTHER_STOP`) and an INVALID run carries none. A wait answers one too, `status: ok`: `TARGET` when what it waited for came, `TIMEOUT` when its bound ran out (interrupted on `run_to` and `run_for`, left running on `resume`, `log_wait`, `perform` and `drive`), `OTHER_STOP` when a stop it did not ask for ended it. What could not finish still refuses. A stop's `cause` is prose; how `close` ended is `ended_by`. `bad_argument` asks for another value, `needs_call` for another call first, which its message names. A malformed refusal (a code outside the table, an empty message) is refused where it is written, so it never looks like a verdict. A bad argument is a refusal, not an execution failure: the SDK's `isError` is for a bug, and "I could not look" is a verdict.
+A refused call answers `status: INVALID` with `code` and `message`, and its context in plain fields beside them, such as `last_stop`.
 
-**The schema is strict.** An argument of the wrong TYPE never reaches a tool: the schema refuses it first, in this same envelope as `bad_argument` naming the argument. Nothing is coerced (`"16"` is not 16) except that an integer stands for a number, a value or offset also takes a `0x` string; an unknown argument name is refused, never dropped. A fixed vocabulary or range is published as `enum`, `minimum` and `maximum`; a word outside still reaches the tool and is refused there, naming the list. A vocabulary that depends on the machine publishes none.
+- `bad_argument` asks for another value; `needs_call` for another call first, which the message names.
+- An argument's form is checked before MAME is asked anything. What only the machine can decide is refused afterwards, saying what state the machine is left in.
+- The schema refuses a wrong type as `bad_argument`, and an unknown argument name too. Nothing is converted: `"16"` is not 16.
+- A fixed list of words or a range is published in the schema as `enum`, `minimum` and `maximum`.
+- A refusal is a normal reply: MCP's `isError` is for a failure of the server itself.
 
-**One spelling per concept, in every tool.** `seconds` is a call's wait, `count` how many, `first` from where, `length` how many bytes, `limit` how many rows come back, `dest` the file a call writes, `path` the file it reads, `<what>_path` any other file a reply names (always whole), `<what>_s` seconds, `<what>_at` a wall-clock instant, `<done>_by` who did it, `<list>_total` how many a list holds, listed or not. A count names what it counts and over what (`bytes_written`, `hits_in_run`, `hits_since_armed`); `hits` is always a list. `note` is one string, its sentences joined by `; `; `why` is a row's or field's reason, quoting what the console said where it rests on that; `error` is only ever the words another program answered.
+A field that could not be read is `{"available": false, "why": "..."}` where its value would be; no reply carries a null. Every tool publishes its reply's shape as `outputSchema`, and its description says when a field comes only in some cases.
 
-**A datum that could not be read is `{"available": false, "why": ...}` in the place its value would have taken, and no reply carries a null**: whether it could not be read or does not apply here, the two differ only in their `why`.
+### One name for each thing
 
-**One spelling for each kind of number.** An address or port a reply reads back is eight hex digits (`0x0070001e`); a ref stays in the spelling a call names it back by; an offset into a block, region or share is an integer. A value or mask is `0x` text at the width it was written at; what a watch DECODES under its format is what that format reads. A span a reader acts on is rounded to the tenth of a second, a time that is itself the reading to the microsecond, and a capture row's `time_s` is at full precision since two accesses one cycle apart are nanoseconds apart. A width says its unit (`data_width_bits`, `cell_bytes`, `refresh_hz`); `size` is bytes.
+- `seconds` is the real time a call may wait; `frames` and `milliseconds` are emulated time.
+- `count` is how many, `first` from where, `length` how many bytes, `limit` how many rows come back.
+- `dest` is the file a call writes, `path` the file it reads, `<what>_path` any other file, always whole.
+- `_s` ends a name in seconds, `_at` a clock time, `_by` who did it, `_total` how many a list holds.
+- `hits` is always a list; a count says what it counts, as `bytes_written` does.
+- `note` is one string, its sentences joined by `; `; `why` is one row's reason; `error` quotes another program.
+- A width names its unit, as `cell_bytes` and `refresh_hz` do; `size` alone is bytes.
 
-**One rule for every wait.** `seconds` is the wall-clock bound of the call, or of the one wait its description names; `frames` and `milliseconds` are EMULATED time. Zero is a wait of its own kind in two places only: `resume(seconds=0)` waits for nothing, and `settle_seconds=0` never waits for a stop.
+### How a wait ends
+
+A tool that waits answers `status: ok` with a `verdict`:
+
+- `TARGET`: what it waited for happened.
+- `ELAPSED`: the emulated time you asked for passed.
+- `TIMEOUT`: `seconds` ran out. `run_to` and `run_for` then stop the program; `resume`, `log_wait`, `perform` and `drive` leave it running.
+- `OTHER_STOP`: a stop the call did not ask for ended it.
+
+A call that could not finish is a refusal, with no `verdict`. Zero means no wait in `resume(seconds=0)` and in `settle_seconds=0`, a sequence's wait for a stop.
 
 ### A long wait, and a cancelled call
 
-A wait that can run for seconds reports its progress about once a second, as MCP progress notifications. The value measures the work when the work has a size (`run_for(frames=N)`: frames done of N); every other wait reports elapsed time with no total, because a bar filling towards the bound would read as progress towards failure. Within one call the value never goes back.
+A long wait reports progress about once a second, as MCP progress notifications: frames done out of N for `run_for(frames=N)`, elapsed seconds with no total otherwise. The value never goes back.
 
-A call the client cancels ends at the next poll of its wait, the way its own bound would have ended it, and answers nothing: the protocol sends no response to a cancelled request. A tool with no wait of its own runs to its end first. The next reply, whatever tool it is, says once what that call left, in `cancelled` (`tool`, `after_s`, `left`: `stopped`, `running`, `closed` or `unknown`; `earlier`, the cancelled calls no reply reported) and in its summary. A call cancelled while it waited for another did nothing and leaves no record; one that had finished its work is recorded with no end applied; a cancel after the server's last look is not seen.
+**A cancelled call answers nothing**, since the protocol sends no response to one. It ends at the next check of its wait, as its own time limit would end it; a tool with no wait finishes first.
 
-Every tool ends one of three ways, and one that declares no end ends `none`:
+**The next reply says what it left**, once, in `summary` and in `cancelled`: `tool`, `after_s`, `left` and `earlier`. `left` is `stopped`, `running`, `closed` or `unknown`; `earlier` names cancelled calls not yet reported.
+
+A call cancelled while it waited its turn did nothing and leaves no record. One that had already finished is recorded with nothing done to the machine, and a cancel that arrives after its last check is not seen.
 
 | End | What the cancel leaves | Tools |
 |---|---|---|
-| `stop` | the machine stopped through `stop`'s own path; a stop the call made on its way is recorded as its own | `step`, `run_to`, `run_for`, `screen_wait`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
-| `kill` | the emulator ended, with the grace that writes `cfg/` and `nvram/` when a session is up to be asked; a MAME still booting is killed at once | `start`, `close` |
-| `none` | the machine as the call found it | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write`, `promote` |
+| `stop` | The program stopped, as `stop` leaves it; a stop the call had already reached is recorded as its own. | `step`, `run_to`, `run_for`, `screen_wait`, `trace`, `series_capture`, `perform`, `input`, `record`, `audio_record` |
+| `kill` | MAME ended: asked to quit first when a session is up, which writes `cfg/` and `nvram/`, and killed at once while still booting. | `start`, `close` |
+| `none` | The machine as the call found it. | `status`, `window`, `cpu_focus`, `cpu_info`, `rom_check`, `resume`, `stop`, `breakpoint_at`, `regpoint_add`, `watch_add`, `declaration_list`, `declaration_clear`, `comment_list`, `comment_write`, `symbols_find`, `machine_map`, `read_memory`, `read_block`, `registers`, `disassemble`, `find`, `scan`, `history`, `write`, `set_register`, `reset`, `memdump`, `snapshot`, `screen_signature`, `screen_map_find`, `screen_map_write`, `image_compare`, `audio_compare`, `palette`, `screen_view`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_load`, `gfx_blits`, `gfx_blit_source`, `palette_log`, `gfx_film`, `log`, `log_wait`, `drive`, `perform_export`, `debug`, `lua`, `throttle`, `captures`, `state_list`, `state_write`, `promote` |
+
+The tools: every one in the [Index](#index).
 
 ## Names for addresses
 
-A symbol file is the project's YAML or the linker's own five-column map. A map row's address is the runtime one only for CODE: DATA is copied to RAM at boot, so the map's linear address for it is the ROM copy of its INITIAL value, which reads plausibly and is wrong. So `bases` maps each non-CODE class to the base the board uses (`0x` text or an integer, as every address) or to `rom`, and a class with no base REFUSES the start rather than loading an image address in silence.
+An address argument, `ref` in most tools, is a `0x` number or a symbol of your program.
 
-**An address is written `0x`, and nothing else is one.** Any other ref is a symbol, so `adc` names the symbol even where it is also valid hex. Bare hex that names no symbol is refused (`unknown_ref`) with the `0x` spelling it most likely meant, because the table deciding would read one build's name as another build's address. Every address ARGUMENT and every io port is written `0x`; text that starts `0x` and is not hex is refused. A writer's `pc` is a ref. Conditions and `debug` are the console's own grammar, where a bare number is hex; `lua` is Lua's, where it is decimal.
-
-A ref is read once, so a clear reaches only declarations of its own kind: a name is never the row at the address its letters spell. Each is read as the console reads it (`7fff`, `0x7fff`, `$7fff` and `#32767` are one; a run of letters such as `ab` stays a name, and a name keeps its case). What the comment file or the store already holds keeps the reading its file gives it: a hex-shaped ref there is a symbol, and a stored row by address in bare hex is that address.
-
-**A value, a byte offset or a pen is an integer or a `0x` string** (`"0x1234"` is 4660), in a call and in a `perform` or `drive` step alike. Decimal text is refused, because `"4660"` reads as plausibly as the digits of `0x4660`, as is a bool or either spelling past 64 bits, the widest number MAME's debugger holds. A reply hands the number back in a form the argument takes again. A count is an integer only.
-
-**A name is a name of ONE cpu's table**: a `ref` resolves against the table of the cpu the call names, else of the visible one, so a name only the other cpu's program has is an unknown symbol here, and the same name in both tables is not ambiguous: the cpu decides. A `ref` with a segment in it (`12345:0010`) is refused, because the address here is linear; an unknown NAME waits for the machine, being a symbol in THAT machine's table.
-
-**A type file** (`types`) or a `type:` beside a symbol names what a symbol IS, so a watch on it needs no format and a pointer says what it points at.
+- **`0x` makes an address; anything else is a symbol.** So `adc` is the symbol, though it is also valid hex. Bare hex naming no symbol is refused `unknown_ref`, with the `0x` spelling you probably meant; an I/O port takes `0x` too.
+- **Symbols come from the file you give `start`**: your project's YAML or the linker's map. A map gives data its address in ROM, not in the RAM the program uses, so `start`'s `bases` says where each class lives. A class with no base is refused.
+- **A symbol belongs to one cpu**: the one the call names, else the visible one. The same name in two cpus' files is not ambiguous.
+- **Addresses are linear.** A `ref` with a segment, such as `12345:0010`, is refused.
+- **A value, an offset or a palette index is an integer or a `0x` string**, in a call and in a `perform` step: `"0x1234"` is 4660. Decimal text is refused, since `"4660"` could be the digits of `0x4660`. A count is an integer only.
+- **A reply spells a number so the argument takes it back**: an address as `0x0070001e`, eight digits; a value as `0x` text at its width; an offset as an integer.
+- **Two tools have their own grammar.** A condition or a `debug` line reaches MAME's console as typed, where a bare number is hex. In a `lua` script it is decimal.
 
 The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
 
 ## Breakpoints and watches
 
-The debugger holds the ARMED instances; the server holds what the caller MEANT: a symbol or a raw address, a condition as typed. Keeping the intent makes a rebuild free, since an address moves when the program is relinked and a name does not. Each declaration is stamped with its session (`origin`) and `created_at`.
+The server saves each breakpoint, watch and registerpoint as you asked for it, and sets it again in later sessions.
 
-The tools: [Breakpoints](docs/reference/breakpoints.md) (breakpoints, registerpoints, watches) and [Comments](docs/reference/comments.md).
+You give a symbol or an address, and a condition as typed; MAME's debugger holds what is set now. A rebuild moves an address but not a name, so a breakpoint by name survives it. The tools call a saved one a declaration, and each row they list has a `state`:
 
-**Lists.** `inherited` says the row came back from the store at `start`; no reply names the session's own origin to compare against. `age_s` is negative for a stamp ahead of this host's clock, floored and never clamped, since a zero would claim "just now". Every list reads the debugger's own `bplist`, `wplist` or `rplist` back, so `armed` is the machine's answer; a row no declaration placed is `foreign`: listed, never deleted.
+- `armed`: set in the debugger now, as MAME's own `bplist`, `wplist` or `rplist` reports it.
+- `unresolved`: its symbol is not in this build. It stays saved and is tried at the next `start`.
+- `stale`: a raw address saved over another build, not set because other code may be there now.
 
-**Declaring is idempotent and nothing is silent.** A re-declaration adopts and takes the new session's stamp, never stacking a row. A name absent from THIS build is kept `unresolved`, except a registerpoint at the ADD, which refuses what the console cannot evaluate.
+`inherited: true` marks a row an earlier session saved. `foreign` lists debugger rows the server did not set, such as one typed through `debug`; they are never deleted.
 
-**A row is known by its INDEX**, which MAME numbers with one counter across every cpu. A re-declaration adopts only a row nobody holds on the visible cpu (where an arm lands); a row typed through `debug`, or one under another cpu, stays `foreign`. One row is one declaration per (cpu, address): a stop adopts a listed row only under its own condition, any other is `ambiguous_ref` naming the console command that removes it, at the declaration and at `start`'s re-arm alike. A `bp` whose row `bplist` shows without the condition sent is not armed. Watches and registerpoints apply the same rule.
+- **Asking twice gives one row**, which takes this session's `origin` and `created_at`. Another condition at the same cpu and address is refused `ambiguous_ref`.
+- **A row keeps its cpu**, so one `ref` on two cpus is two rows. Name the `cpu` on a board with several, since a stop can change the visible one. `declaration_clear` without `cpu` clears the `ref` on every cpu.
+- **A callback that fails is counted, never read as a zero.** A counting or capturing watch, `palette_log`, `gfx_film`, `gfx_blits` and `gfx_blit_source` collect through callbacks inside MAME. The reply that reports them carries `callback_errors`, and with a count above zero there the numbers are short of what happened.
 
-**A declaration keeps its cpu**, read when declared. Each cpu runs its own program, so the same ref on two cpus is two declarations; one made again with no `cpu` after a stop moved the visible cpu is a second one, and naming the first cpu adopts its own row. A clear with `cpu` reaches that cpu's declarations of the ref, without it every cpu's. Rows are armed with the cpu named (`bp <addr>:<cpu>`), which never moves the visible cpu, at `start`'s re-arm too. A stored row with no cpu is the first cpu's.
+### What is saved between sessions
 
-**The store is keyed by the system name plus the RESOLVED path of the symbol file `start` was given**: two spellings of one file are one key, two boards sharing a map differ by system, two maps of one board by path. With no symbol file there is no key, because nothing could re-resolve by name: declarations are by address and die with the session. A corrupt store refuses the start before the emulator spawns and is never discarded.
+- **One file per program.** The saved breakpoints file is found by the system's name and the path of the symbol file `start` was given. With no symbol file nothing is saved, and the rows end with the session.
+- **`start` sets every saved row again** before it answers, looking each symbol up in this build. `declarations.rearm` accounts for each one.
+- **A raw address belongs to one build**, by a fingerprint of the system, the ROM image and that cpu's symbol file. On another build it is `stale`.
+- **A damaged file refuses the `start`** before MAME launches, and is never thrown away.
+- **`start(state_dir=...)` uses a file of its own** in that folder, empty the first time, and never opens the project's. `declarations.path` names the file in use. `declaration_clear(all=True)` clears all of it, other sessions' rows included.
 
-**A `state_dir` session never opens the project store**, so nothing it does reaches another session's rows. A directory named for the first time starts empty, since copying the project's rows in would bring back what naming it keeps out. The project store's directory is refused as a `state_dir`, directly or through a link. `declarations.path` says which store is in use and so what `all=True` reaches: with a `state_dir`, rows declared under it; without, every session's rows of that system and symbol file, where a row another session declared reads `inherited: true`, so a caller who did not declare it clears by `ref`.
-
-**A raw address is bound to a build.** Declarations are stamped with their cpu's build FINGERPRINT (system, ROM image and that cpu's symbol file, hashed), so a rebuild of one cpu's program leaves the other's raw addresses alone. A raw address is re-armed only over the same fingerprint, whoever declared it, and listed `stale` over another: armed blind it would land on whatever the new build put there. A name re-resolves whatever the build.
-
-**What the store held comes back at `start`**, re-resolved against that start's table and re-armed before the park's survey; `declarations.rearm` accounts for every one. Nothing is dropped: a name this build lacks re-resolves at the next `start`, or the caller clears it.
-
-**A callback that raises is counted, never read as a zero.** The taps, notifiers and dumpers of the censuses (count watch, capture, `palette_log`, `gfx_film`) run under `pcall`, because MAME drops a tap's error silently; the census reply carries `callback_errors` (`count`, `first`). A census beside a count above zero is short of what happened, and a draft proves no command from such a capture. A dumper that keeps failing leaves the earlier dump on disk and logs `MCP_DUMP_FAILED <id> <message>` to `error.log`, which a reply over that dump gives as its `why`. The wrappers' own notifiers (`input`, `record`, `audio_record`, the launch's throttle) are unguarded: each proves itself by a mark in `error.log`, so a raise leaves its reply pending, never a clean zero.
-
-**The comment file is what a project versions beside its symbol file**, written only by `comment_write(method="save")` and read only by `comment_write(method="load")`; by convention `<symbol file name without extension>-comments.tsv`, the first cpu's on a multi-cpu board. UTF-8, no byte order mark, LF line ends. Line 1 is exactly `# comments v1: ref<TAB>cpu<TAB>created_at<TAB>text`; every other line is one comment in that order, the text last and so the rest of the line, sorted by cpu then ref in code-point order so a re-save moves only what changed. `cpu` is the absolute tag (`:maincpu`); `created_at` is `YYYY-MM-DDTHH:MM:SS+00:00`. An address is always `0x` and hex and anything else a symbol, so a saved symbol `fade` never comes back as an address. The file has no build column, so a raw address loaded into another build is trusted: what must survive a rebuild is commented by symbol.
+The tools: [Breakpoints](docs/reference/breakpoints.md), and [Comments](docs/reference/comments.md) for the comments saved beside them.
 
 ## Running and stopping
 
-The tools: [Run](docs/reference/run.md), whose page holds how a run is chosen, the frame counter, the stops that are not a run's own and the survey every stop returns. What every tool shares about a running or a broken session follows.
+The program is either stopped at the debugger or running, and most tools need it stopped.
 
-### The running guest is a contract
+`start` leaves it stopped; `run_to`, `run_for` and `step` run it and stop it again; `resume` lets it run and returns. Every reply that ends at a stop carries the same readings, listed on the Run page.
 
-While a released machine runs, every reader refuses, naming `last_stop` and `answers_while_running`. The refusal is a decision and not a limit of the stub: it serves `m` and `qRcmd` to a running machine too, but a value read off a moving machine is a sample of no state, and the stop packet the stub sends on its own can land in front of the read's answer.
+**While it runs, a tool that reads the machine refuses** `not_stopped`, with `last_stop` and `answers_while_running`. A value read off a moving machine belongs to no moment. These answer:
 
-What answers reads nothing off the machine, plus the declarations: the console takes a `bp`, `rpset` or `wp` while running and it FIRES, so nothing is queued and the reply says `while_running`, meaning whether the machine was running when the call ARRIVED, read once at entry. A stop its own round trips let through is the next contact's `last_stop`. A stop reached on its own while nobody waited is recorded by the first tool that finds it (`stopped_on_its_own`).
+- every tool of Machine, Names, Breakpoints, Timeline, Files, Sequences and Project;
+- `status`, `window`, `close`, `stop`, `comment_list`, `throttle`, `state_list`, `snapshot`, `captures`;
+- `comment_write(method="save")`, `scan(method="clear")`, `screen_map_write` with `load` or `save`, and `registers(from_last_stop=True)`.
 
-A run the console owns, typed through `debug` (the `g` family, `step N`, `over`, `out`, `next`), marks the session RUNNING too, and its stop is proved on the frame counter, by `stop` or the first contact after. **A `run_for` or a `step over` that BAILS OUT marks it the same way**, because each hands the machine back under a console-started run it could not see end. A `no_progress` by frames is the counter itself not moving, so only `stop`'s interrupt proves rest there.
+**A breakpoint set while it runs works at once**, and the reply's `while_running` says whether the program ran when the call came in. A stop nobody waited for is reported once, in `stopped_on_its_own`. A run typed through `debug`, such as `g` or `step N`, counts as running until `stop`.
 
-A `gvblank` or an `over` the console REFUSED is a bail-out too: the command may have been taken, so the reply is `not_settled`, names `stop`, and past it, if `stop` fails as well, `close` then `start`. An unanswered `stop` interrupt is `not_settled` the same way; nothing counts the attempts, and the caller decides when to give up. The reason is the stub: it answers `?` with a stop whether the machine runs or not, so no query proves rest and "it may be RUNNING" is the only honest word. A request the console did not answer IN TIME is not a bail-out; it breaks the session, below.
+### When a stop cannot be confirmed
 
-### A broken session says so until it is closed
+`not_settled` means the server cannot tell whether the program stopped: a run ended where it could not see, or `stop` got no answer. Call `stop`; if `stop` fails as well, `close` then `start`.
 
-**`session_broken` LATCHES until `close`.** When a tool reads something that is not a stop where one was due, cannot survey a stop it did read, or the connection fails under it, the two ends no longer agree where a packet starts, and the stub honours an interrupt only BETWEEN packets: not even `stop` can be believed from there. The stub's own `no` is the exception, because it keeps the channel paired: an `E` reply is `readback_refused`, an empty packet (a capability this build lacks) `no_channel`, and neither latches. A MAME that died under the session answers `session_broken` with its `exit_code`, and `close` is named first, since it reads the process's last words before the scratch is deleted.
+### A broken session stays broken until `close`
 
-**A request the stub did not answer in time breaks it too**, whichever tool sent it: nothing in the protocol numbers a reply, so the answer still owed would be read as the NEXT request's. A wait for a STOP is not a request and keeps its own `not_settled`.
+**`session_broken` stays set until `close`.** A session breaks when the server can no longer match MAME's answers to its requests. That is a request with no answer in time, something other than a stop where one was due, or a failed connection.
 
-From then on every tool but `status` and `close` answers `session_broken`, quoting what broke it and the way out (`close`, then `start`). It never describes the machine as running, which such a channel can no longer establish: `running: false` beside `broken`. `close` skips the drain, the speed read and the `quit`, which have no channel to believe, and kills the process, so nothing is written to a `state_dir`. A restart costs seconds, and a wrong value costs the measurement.
+**Whichever tool meets the failure, every tool reports it.** From then on each tool but `status` and `close` answers `session_broken`, with what broke it and the way out: `close`, then `start`. No answer can be trusted after it, not even `stop`'s, so `session` shows `running: false` beside `broken`.
+
+**A MAME that died answers `session_broken` with its `exit_code`.** Call `close` first: it returns MAME's last output before the temporary folder is deleted. On a broken session `close` kills MAME without asking it to quit, so MAME writes nothing to a `state_dir`.
+
+Two refusals leave the session usable: `readback_refused`, where the debugger answered no, and `no_channel`, where this MAME or this cpu lacks what the call needs.
+
+The tools: [Run](docs/reference/run.md).
 
 ## Reading and writing
 
+Every tool that reads or writes memory takes a `ref` and works at the address the running board uses.
+
+- **A range of bytes past the end of a cpu's program space is refused** `bad_argument`. MAME would wrap round and answer the first bytes again, a believable value for an address that does not exist. Where the server knows no address mask, MAME's console decides.
+- **A tool that reads through the console refuses an answer it did not ask for**, as `unexpected_answer`, and never returns a zero in its stead.
+- **`write` and `set_register` read back what the machine now holds**, and set `altered`. A read alters nothing.
+
+### An answer that is a file
+
+A memory dump, a recording or a picture does not fit in a conversation, so those tools write a file and answer with its path.
+
+- **`dest` is absolute or starts with `~`**, in a folder that exists, with nothing at its name yet, a dangling link included. Left empty where a tool allows it, the file goes to the session's temporary folder, deleted at `close`.
+- **The file's name is written by [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md)**: `My Dump.BIN` becomes `my-dump.bin`, and a name with no extension is refused. The reply's path is the file as written, with a `note` when the name changed. A folder `dest` keeps its name.
+- **The folders of the path hold no comma, semicolon, quote, space, bracket or control character**, where MAME's console would cut the line.
+- **All of it is checked before MAME is asked anything**, even with no session, so a refusal leaves no file behind.
+
 The tools: [Read](docs/reference/read.md), [Scan](docs/reference/scan.md), [Write](docs/reference/write.md), and `machine_map` on [Machine](docs/reference/machine.md).
-
-Every reader takes a `ref`, by symbol or `0x` address, and answers at the address the running board uses. On a RUNNING machine every reader refuses (Advancing the machine, *The running guest is a contract*).
-
-**A range past the end of a cpu's program space is refused, by one judge**, for every tool that reads or writes a range: the stub masks an address, so a byte past the space would answer the space's first bytes again, a plausible value for a place that does not exist, and a write would land there. With no mask known, the console judges.
-
-**The console readers answer INVALID, never a zero**, when the console said something they were not captured answering.
-
-**`write` and `set_register` READ BACK what landed**; every later reply's `session` block carries `altered: true`, and `close` reports it for the session that ended. A read through the console without stepping or writing alters nothing.
-
-### What comes back as a file
-
-A live session answers into the conversation, and a frame's worth of bytes or a driver's log do not fit there, so those tools return a PATH.
-
-A `dest` you name is absolute or `~`-led, in a directory that exists, and not there yet, a dangling link included; left empty, where a tool takes an empty one, the file is written in the session's scratch (`memdump` and `perform_export` need a `dest`). A file's own name is written by [one rule](https://github.com/scry-mcp/scry-core/blob/main/docs/file-names.md) (`My Dump.BIN` as `my-dump.bin`, a name with no extension refused) and the reply's path names the file as written, its `note` saying so when that is not the name given; a directory `dest` (`series_capture`, `gfx_film`'s `film_dir`) keeps its name. The directories of the path are free of commas, semicolons, quotes, whitespace, brackets (the console's command line splits, ends, quotes or refuses a line at each) and control characters. All of it is judged before the console is touched and before the session gate, because a `dest` is a verdict about a string and answers with no machine: a refusal after the console wrote the file leaves a file nobody asked for. `gfx_draft` alone may find something there already, which it replaces; its missing directory is refused rather than made, and a space in its directories is refused although no console line carries that file.
 
 ## The log
 
-A chatty driver fills the log fast, so the pattern and the limit are the whole interface.
+MAME writes two logs, and `log` and `log_wait` search them by pattern, since a busy driver fills a log fast.
 
-**The pattern is never empty.** `.` is every line, written out: an empty pattern left by mistake would hand back the whole log, so `log`, `log_wait` and `drive` refuse it.
+- **`channel` picks the log**: `emulator` for `error.log`, what MAME's core and drivers write with `logerror`; `process` for MAME's standard output and error; `all` for both.
+- **`pattern` is a regular expression, never empty.** `.` matches every line. An empty pattern would return the whole log, so `log`, `log_wait` and `drive` refuse it.
+- **`since_mark` reads only what follows a position.** After a saved state is loaded the program writes the same lines again, so only a position tells old from new. A state load answers it as `mark`.
+- **A `mark` is a byte position in one file, not a moment.** A line MAME had not written out when the load was sent lands after it. `all` reads two files, so it takes none.
 
-**`since_mark` asks "after Y".** A machine that replays a saved timeline writes lines that look like the ones before the load, so content cannot tell them apart; a position can. The mark is a position in the file, not a moment: a line the emulator had not yet flushed when the load was sent lands after it. One position cannot name a place in two files, so `all` is asked channel by channel.
-
-**Files.** A third file sits beside the two channels, unreported: `debug.log` (`-debuglog`), the debugger console's own output, which the stop survey reads for a watchpoint's writer.
-
-The tools: [Machine](docs/reference/machine.md) (`log`, `log_wait`); `drive` takes the same pattern ([Sequences](docs/reference/sequences.md)).
+The tools: [Machine](docs/reference/machine.md) for `log` and `log_wait`, [Sequences](docs/reference/sequences.md) for `drive`.
 
 ## Several calls as one
 
-`perform` runs a list of the server's own operations in one call, and `drive` runs `perform`'s rules around an input.
+`perform` runs a list of calls in order as one call, and `drive` runs a list and then waits for a line of the log.
 
-**The whole list is checked before the first step runs**, every refusal listed, so a batch is fixed once and a refusal never lands after other steps have moved the machine. What only its step can judge still refuses there, with `failed_at` and `ran` as the honest account (a symbol against the table, a file an earlier step writes, anything that needs the machine).
-
-**Counting.** Messages count steps from 1, as the progress line does; the indexes a reply carries (`failed_at`, a row's `step`, `errors`' `step`) count from 0.
+- **The whole list is checked before its first step runs**, every problem listed at once. No refusal comes after earlier steps have moved the machine.
+- **What only the machine can decide is refused at its step**, such as a symbol this build lacks. The reply says where in `failed_at` and what ran before in `ran`.
+- **After a `resume` step, a step that answers on a running program runs at once.** One that needs a stop waits for it, up to `settle_seconds`.
+- **Messages count steps from 1**; the indexes in a reply, `failed_at` and each `step`, count from 0.
 
 The tools: [Sequences](docs/reference/sequences.md).
 
 ## From a session to a test that replays itself
 
-Every session is recorded from the `start` that succeeds, and cleared by the next one; `close` keeps it. `perform_export` writes it as `perform`'s own document, and the runner plays it back with no model, from this repository:
+A session can be written out as a list of steps and played back later with no model, as a test.
+
+Every session is recorded from the `start` that succeeds; the next `start` clears the recording and `close` keeps it. `perform_export` writes it as a document `perform` can run, and this command plays it back from this repository:
 
 ```sh
 uv run python -m scry_core.replay <document> [--binary PATH] [--rompath DIR] [--transcript PATH]
 ```
 
-It exits 0 when every step held; 1 when a step diverged or failed; 2 on a usage error; 3 when nothing was demonstrated (no step with a `recorded` answer, a start the server refused, a needed saved state or declaration the replay lacks, a server that broke).
+- Exit 0: every step gave its recorded values again.
+- Exit 1: a step failed or gave other values.
+- Exit 2: the command line was wrong.
+- Exit 3: nothing was shown. No step has recorded values, the `start` was refused, the server broke, or a saved state or breakpoint the document needs is missing.
 
-A step's check is `"recorded": {<field>: <value>}` inside it, and a mismatch is `diverged` at that step. A caller keys on `failed_at`, which a failed step and a diverged one both carry; the code says which. Under `until_frame` every lap holds each step to its `recorded` again, so a stop recorded on the first lap diverges on the second: an exported document carries no `until_frame`.
+A step's expected values are its `recorded` field, and a step that gives others is `diverged`. Both a failed step and a diverged one set `failed_at`; `code` says which.
 
 The tools: [Sequences](docs/reference/sequences.md).
 
 ## The `.scry/` folder
 
-A repository can declare how a session starts on it, the screen maps of its program and the scripts that replay it, in a `.scry/` store it tracks, so a session gives only what is its own run's (`start(profile=...)`, `screen_map_write(method="load")`, `perform(path=...)`). A session keeps what it learned as drafts and writes nothing into the repository until a `promote` call names what to write: the store is tracked, so every entry is reviewed first, and every path in it is a placeholder ([the rule](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md)), so the file reads the same on any machine.
+A repository can keep how a session starts on its program in a `.scry/` folder it tracks, so a session gives only what belongs to its own run.
 
-Each entry belongs to one repository, fixed when it is kept: the one whose store a call read it from (a `start` profile, a map `screen_map_write` loaded, a script `perform` replayed), else the one whose profile the current `start` read. A start that read no profile names none, since no argument of it says where a program's repository is (`rompath` is often a folder many share), so what it keeps is written only where `root` says. Without `root`, `promote` writes an entry only into its own repository's store, so a session that ran programs of two repositories never files one in the other's, and the directory this server runs in, its own clone, never lends its store; an entry whose repository holds none is `unwritable` in a review and refused in an approval, naming the `root` to pass.
+- `.scry/start/`: start profiles, each a saved set of `start` arguments, for `start(profile=...)`.
+- `.scry/maps/`: screen maps, for `screen_map_write(method="load")`.
+- `.scry/perform/`: saved step lists, for `perform(path=...)`.
 
-The tool: [Project](docs/reference/project.md) (`promote`).
+**A session writes nothing there by itself.** It saves what it learned as drafts; `promote` shows them for review and writes the ones you approve. Paths in these files use placeholders, by [this rule](https://github.com/scry-mcp/scry-core/blob/main/docs/store-paths.md), so a file reads the same on any computer.
+
+**Each draft belongs to one repository**: the one a call read it from, else the one whose profile `start` read. Without `root`, `promote` writes a draft only there, never into another repository or the server's own clone. A `start` with no profile names no repository, so its drafts need `root`.
+
+The tools: [Project](docs/reference/project.md).
 
 ## Input and the screen
 
-**Every capture is taken through one view, fixed at `start`**, because a running MAME cannot switch the view its snapshots take. `snapshot` and `record` render through it and carry `view`; the readers of the screen's own pixels (`screen_view`, `screen_signature`, `series_capture`, a film's frames) never do and carry none. Under a named view a film's frames are unchecked against MAME's snapshot.
+Input goes in inside the emulated machine and the screen is read from it, so neither depends on your window, keyboard or mouse.
 
-**Input is injected inside the machine.** The typed Lua wrappers (`input`, `record`, `audio_record`, `throttle`) are scripts this server composed, so none marks the session altered for a read, and each proves its effect through `error.log`: their scripts write marks with `logerror`, flushed as written, where a `print` from a frame notifier sits in the stdio buffer until the next prompt.
+- **`input`, `record`, `audio_record` and `throttle` are Lua scripts the server writes.** Each acts on a frame and confirms what it did from lines it writes to MAME's `error.log`. None counts as a write.
+- **A run cut short leaves the script waiting**: a key still held, a recording still open. The reply names the frame it acts on, and the next call of the same tool finishes it.
+- **Captures go through one view, fixed at `start`**, since a running MAME cannot change it; `snapshot` and `record` name it in `view`. `screen_view`, `screen_signature`, `series_capture` and a `gfx_film`'s frames read the screen's own pixels instead. Under a named view, a `gfx_film`'s frames are not checked against MAME's snapshot.
+- **`captures` lists every file that `record`, `audio_record`, `trace`, `snapshot` and the graphics tools checked and handed back this session.** It reads each again, and answers while the program runs.
+- **The graphics tools answer which palette index, a pen in MAME's words, a pixel holds**, from bytes decoded under a format you state.
 
-A run another stop cuts short leaves the notifier armed (field held, recording open or not begun) and the reply names the frame it acts on; the next call of the same tool releases it. That frame is predicted from the counter at the evaluation, one later inside a vblank, since MAME calls notifiers as a vblank begins and moves the counter as it ends. A driver that updates its screen after the vblank is called at the end, which Lua cannot see, so a chunk evaluated inside that vblank is predicted one frame late.
-
-A chunk that answered with no mark at all is refused as lost marks. A wrapper whose run did not settle is `not_settled`, its message saying the notifier may still be armed, never the wrapper's fields: the machine may still be running, so nothing read off it is a state of the wrapper. A wrapper refused once its run began has moved the machine, and says so in `frame_before` and `frame_after`. Marks carry the call's own number so a stale one is never attributed to a later call.
-
-The tools: [Lua](docs/reference/lua.md) (`input`, `throttle`), [Captures](docs/reference/captures.md) (`record`, `audio_record`), and `screen_signature` on [Screen](docs/reference/screen.md).
-
-`snapshot` and `captures` ([Captures](docs/reference/captures.md)) are the screen's other half: the still as a complete, hashed PNG, and every file `record`, `audio_record`, `trace`, `snapshot` and the graphics tools checked and handed back this session, re-read, answering while the machine runs.
-
-### Graphics
-
-These tools answer the question a colour snapshot cannot, WHICH PEN, from bytes under a format the caller states, never from what a driver's `GFXDECODE` believes. Their shared contract (the picture, which instant a decode shows, the source, how a board is discovered) is on [Screen](docs/reference/screen.md), and the `gfx.yaml` project knowledge on [Timeline](docs/reference/timeline.md).
-
-The tools: [Screen](docs/reference/screen.md) (`palette`, `screen_view`, `screen_signature`, `gfx_view`, `gfx_locate`, `gfx_sweep`, `gfx_draft`, `gfx_blits`, `gfx_blit_source`) and [Timeline](docs/reference/timeline.md) (`gfx_load`, `gfx_film`, `palette_log`).
+The tools: [Lua](docs/reference/lua.md) for `input` and `throttle`, [Captures](docs/reference/captures.md), [Screen](docs/reference/screen.md), [Timeline](docs/reference/timeline.md).
 
 ## Media files
 
-The tools that answer about pictures and sound follow one order, so a reply is the cheapest thing that answers the question: a signature or a number first ("is it the same screen" is two strings compared, never two pictures sent); the full picture last, and only from a tool whose purpose is to show; and a reply that answers with numbers names what it compared, over which region, and its path.
+The tools that answer about pictures and sound give the cheapest answer that settles the question.
 
-The signature, crop and series formats and the rules of the file tools are on [Files](docs/reference/files.md).
+A fingerprint or a number comes first: "is it the same screen" is two strings compared, never two pictures sent. The whole picture comes last, only from a tool made to show one. A reply of numbers says what it compared, over which region, and each file's path.
 
-The tools: [Captures](docs/reference/captures.md); [Files](docs/reference/files.md); [Screen](docs/reference/screen.md).
+The tools: [Captures](docs/reference/captures.md), [Files](docs/reference/files.md), [Screen](docs/reference/screen.md).
 
 ## Screen maps
 
-A screen map names an application's screens and their controls in a file, so a caller asks "which screen is this" and gets a name; its format and its two layers are on [Screen](docs/reference/screen.md).
+A screen map is a file that names a program's screens and the areas of each, so you ask "which screen is this" and get a name.
 
-The tools: [Read](docs/reference/read.md) (`screen_map_write` with its three methods, `screen_map_find`).
+Its format is on the Read page.
+
+The tools: [Read](docs/reference/read.md) for `screen_map_find` and `screen_map_write`.
 
 ## Saved states
 
-A saved state goes through the debugger console, and MAME can hold a save or a load instead of running it; `state_write(method="save")`, `state_write(method="load")` and a `statesave` or `stateload` typed through `debug` all settle that the same way.
+A saved state goes through MAME's debugger console, where MAME can hold a save or a load back while a timer is pending.
+
+`state_write` completes a held save or load and checks the state's file, since the console refuses a bad state in silence. A `statesave` or `stateload` typed through `debug` is completed the same way.
 
 The tools: [States](docs/reference/states.md).
 
 ## The console
 
-`debug` goes through the protocol's `monitor` escape; `lua` and the wrappers that run a script go through MAME's Lua console, `-console` over the process's standard input, which works with no terminal attached. The console's shared contract is on [Lua](docs/reference/lua.md).
+Two tools reach MAME's own consoles, for what no other tool covers.
 
-The tools: [Write](docs/reference/write.md) (`debug`); [Lua](docs/reference/lua.md) (`lua`, `input`, `throttle`).
+`debug` sends one line to the debugger console and returns what it printed. `lua` runs a script on MAME's Lua console, which the server feeds through MAME's standard input, so no terminal is needed. `input`, `record`, `audio_record` and `throttle` use that console too, and the Lua page holds the rules they share.
+
+The tools: [Write](docs/reference/write.md) for `debug`, [Lua](docs/reference/lua.md) for `lua`, `input` and `throttle`.

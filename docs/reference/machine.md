@@ -1,14 +1,121 @@
 # The Machine tools
 
+These tools describe the machine a session runs and read what MAME logs about it. `cpu_info` and `machine_map` say what is there: the cpus, their memory, the screens, the ROM files. `log` and `log_wait` read the lines MAME writes.
+
+All four answer while the program runs. A cpu is named by its MAME tag, with or without the leading colon: `subcpu` or `:subcpu`.
+
 <!-- scry-reference:begin cpu_info -->
 ## `cpu_info`
 
-*What the debugger sees of each cpu*
+List each cpu as the debugger sees it: visible, ignored or suspended, its program counter, and the breakpoints and watches set on it.
 
 ```text
 cpu_info(cpu="")
 ```
 
+### Try it
+
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset, right after `start`.
+
+Ask:
+
+> Which cpus does this machine have, and which one is the debugger showing?
+
+Call:
+
+```text
+cpu_info()
+```
+
+Reply, 1 of 4 fields:
+
+```json
+{
+  "cpus": [
+    {
+      "cpu": ":maincpu",
+      "visible": true,
+      "ignored": false,
+      "suspended": false,
+      "pc": {"reg": "PC", "value": "0x0000f000"},
+      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
+    }
+  ]
+}
+```
+
+Gridlee has one cpu, `:maincpu`. It is the `visible` one, which a call that names no cpu acts on; it sits at `0xf000` and nothing is set on it yet.
+
+<details><summary>The whole reply</summary>
+
+```json
+{
+  "summary": "cpu_info: 1 cpu, :maincpu visible",
+  "status": "ok",
+  "cpus": [
+    {
+      "cpu": ":maincpu",
+      "visible": true,
+      "ignored": false,
+      "suspended": false,
+      "pc": {"reg": "PC", "value": "0x0000f000"},
+      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
+    }
+  ],
+  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
+}
+```
+
+</details>
+
+### Arguments
+
+- `cpu` (string, default `""`): The tag of one cpu: only its row comes back and only its `pc` is read. Left empty, every cpu is listed.
+
+### What comes back
+
+- `cpus`: One row per cpu: its tag `cpu`, `visible`, `ignored`, `suspended`, its program counter `pc`, and `declarations`, the count of what is set on it.
+- `cpu`: The full tag of the cpu you named; with none named, an object that says so.
+
+<details><summary>All 2 reply fields</summary>
+
+- `cpu` (string or object)
+- `cpus` (array)
+
+</details>
+
+### What it refuses
+
+- A tag that names no cpu; the message lists the tags there are (`unknown_ref`).
+- A call with no session open (`no_session`).
+- A session that broke and has to be closed (`session_broken`).
+
+### Why it works this way
+
+Answering runs nothing and makes no cpu visible: the flags come from the debugger's own listings and each `pc` is read as a register. `visible` marks the cpu that a call naming none acts on, and a stop moves it. `ignored` means breakpoints and watches on that cpu have no effect.
+
+A `pc` is unavailable, with the reason, while the program runs, and for every cpu but the first where MAME's gdbstub serves one cpu. A cpu the board itself holds in reset or halted shows nowhere: telling would mean moving the machine.
+
+<details><summary>More on why</summary>
+
+- `declarations` counts `breakpoints`, `watches` and `regpoints`, armed or not. A regpoint is MAME's registerpoint, a stop on a condition over registers.
+- A watch on an io port counts; one on a debugger expression belongs to no cpu and is not counted.
+- `suspended` is the debugger's own `suspend`.
+- Rows follow the debugger's `cpulist`, then any other cpu a saved breakpoint or watch names; of such a cpu only the counts are read.
+
+</details>
+
+### Related tools
+
+- [`machine_map`](#machine_map)
+- [`cpu_focus`](session.md#cpu_focus)
+- [`registers`](read.md#registers)
+- [`declaration_list`](breakpoints.md#declaration_list)
+- [`status`](session.md#status)
+
+<details><summary>The contract your client receives</summary>
+
+```text
 What the debugger sees of each cpu now: visibility, ignored or suspended, program counter,
 and how many breakpoints, watches and registerpoints are declared on it. Moves nothing;
 answers on a running machine.
@@ -21,198 +128,128 @@ Refused: a tag no row names (`unknown_ref`); no machine (`no_session`); a broken
 Reply: `cpus` (each `cpu`, `visible`, `ignored`, `suspended`, `pc`, `declarations`), `cpu`.
 
 Reference: REFERENCE.md, The session.
-
-| argument | type | default |
-|---|---|---|
-| `cpu` | string | `""` |
-
-| reply field | type |
-|---|---|
-| `cpu` | string or object |
-| `cpus` | array |
-
-Example, from a live run:
-
-```json
-{}
 ```
 
-```json
-{
-  "summary": "cpu_info: 2 cpus, :maincpu visible",
-  "status": "ok",
-  "cpus": [
-    {
-      "cpu": ":maincpu",
-      "visible": true,
-      "ignored": false,
-      "suspended": false,
-      "pc": {"reg": "PC", "value": "0x000f2034"},
-      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
-    },
-    {
-      "cpu": ":subcpu",
-      "visible": false,
-      "ignored": false,
-      "suspended": false,
-      "pc": {"reg": "PC", "value": "0x00000000"},
-      "declarations": {"breakpoints": 0, "watches": 0, "regpoints": 0}
-    }
-  ],
-  "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
-}
-```
+</details>
 <!-- scry-reference:end cpu_info -->
-
-Two things no reply carries, because neither the console nor Lua shows them without moving the machine: a cpu the BOARD holds in reset or on its halt line, and, without the thread patch, the registers of any cpu but the first.
-
-A cpu's type and clock are `machine_map`'s, not this tool's. `visible` is the cpu a call naming none acts on, and a stop moves it; `ignored` means its breakpoints and watches have no effect; `suspended` is the debugger's own `suspend`. Rows follow `cpulist`'s order, then any other cpu a declaration names; for a cpu `cpulist` does not list, the first three are unavailable. `declarations` counts this server's breakpoints, watches (an io tap among them) and regpoints in any state, and an expr watch names no cpu. Naming `cpu` reads only that cpu's pc. The listings are the console's own and each pc is read off the stub, which is why no cpu is made visible and nothing runs; `unknown_ref` names the tags that do have rows.
 
 <!-- scry-reference:begin machine_map -->
 ## `machine_map`
 
-*Map the machine*
+Get the layout of the machine: its cpus and their address spaces, the address map, memory regions and shares, screens and ROM files.
 
 ```text
 machine_map(cpu="", sections=null, dest="")
 ```
 
-What the machine is: its cpus and spaces, address map, regions, shares, screens and ROM
-files. Cached at `start()`, free; answered on a running machine.
+### Try it
 
-Arguments: `cpu`, a tag in either spelling, narrows `cpus`, `spaces`, `address_map` and
-`symbol_coverage`. `sections` picks sections; left out, all but `rom_files`. `dest`
-(absolute or `~`-led, new) writes every row of the sections read as JSON.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset, right after `start`.
 
-Refused: an empty or unknown `sections`, or an existing `dest` (`bad_argument`); an unknown
-tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
+Ask:
 
-Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
-`symbol_coverage`, `counts`, `truncated` (lists cut to 400 rows; `dest` holds all),
-`sources`,
-`path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
+> What is this board made of: its cpu, its ROMs, its RAM, its screen?
 
-Reference: REFERENCE.md, Reading and writing.
+Call:
 
-| argument | type | default |
-|---|---|---|
-| `cpu` | string | `""` |
-| `sections` | array of one of `"cpus"`, `"spaces"`, `"address_map"`, `"regions"`, `"shares"`, `"screens"`, `"rom_files"`, `"symbol_coverage"` or null | `null` |
-| `dest` | string | `""` |
-
-| reply field | type |
-|---|---|
-| `address_map` | array |
-| `counts` | object |
-| `cpu` | string or object |
-| `cpus` | array |
-| `frame_symbol` | string or object |
-| `path` | string |
-| `regions` | array |
-| `rom_files` | array |
-| `screens` | array |
-| `shares` | array |
-| `sources` | object |
-| `spaces` | array |
-| `symbol_coverage` | array |
-| `truncated` | boolean |
-
-Example, from a live run:
-
-```json
-{}
+```text
+machine_map()
 ```
+
+Reply, 2 of 17 fields:
 
 ```json
 {
-  "summary": "machine_map: 2 cpus, 4 spaces, 32 address map entries, 4 regions, 2 shares, 1 screen, left out: rom_files (see `omitted`)",
+  "regions": [
+    {"tag": ":gfx1", "size": 16384, "bytewidth": 1, "endianness": "little"},
+    {"tag": ":maincpu", "size": 65536, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":proms", "size": 6144, "bytewidth": 1, "endianness": "little"}
+  ],
+  "shares": [
+    {"tag": ":nvram", "size": 256, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":spriteram", "size": 2048, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":videoram", "size": 30720, "bytewidth": 1, "endianness": "big"}
+  ]
+}
+```
+
+`regions` are the ROMs MAME loaded and `shares` the blocks of RAM the board's devices share, each with its size in bytes. The sprite RAM is 2048 bytes.
+
+<details><summary>The whole reply</summary>
+
+```json
+{
+  "summary": "machine_map: 1 cpu, 1 space, 14 address map entries, 3 regions, 3 shares, 1 screen, left out: rom_files (see `omitted`)",
   "status": "ok",
   "cpus": [
     {
       "cpu": ":maincpu",
-      "name": "Motorola MC68000",
-      "clock_hz": 16000000,
-      "type": "m68000",
-      "spaces": ["cpu_space", "program"]
-    },
-    {
-      "cpu": ":subcpu",
-      "name": "Motorola MC68000",
-      "clock_hz": 16000000,
-      "type": "m68000",
-      "spaces": ["cpu_space", "program"]
+      "name": "MC6809 (legacy)",
+      "clock_hz": 1250000,
+      "type": "m6809",
+      "spaces": ["program"]
     }
   ],
   "spaces": [
     {
       "cpu": ":maincpu",
-      "space": "cpu_space",
-      "data_width_bits": 16,
+      "space": "program",
+      "data_width_bits": 8,
       "endianness": "big",
-      "entries": 7,
-      "address_mask": "0x00ffffff"
+      "entries": 14,
+      "address_mask": "0x0000ffff"
+    }
+  ],
+  "address_map": [
+    {
+      "cpu": ":maincpu",
+      "space": "program",
+      "index": 1,
+      "start": "0x00000000",
+      "end": "0x000007ff",
+      "share": ":spriteram"
     },
     {
       "cpu": ":maincpu",
       "space": "program",
-      "data_width_bits": 16,
-      "endianness": "big",
-      "entries": 13,
-      "address_mask": "0x00ffffff"
+      "index": 2,
+      "start": "0x00000800",
+      "end": "0x00007fff",
+      "share": ":videoram"
     },
-    {
-      "cpu": ":subcpu",
-      "space": "cpu_space",
-      "data_width_bits": 16,
-      "endianness": "big",
-      "entries": 7,
-      "address_mask": "0x00ffffff"
-    },
-    {
-      "cpu": ":subcpu",
-      "space": "program",
-      "data_width_bits": 16,
-      "endianness": "big",
-      "entries": 5,
-      "address_mask": "0x00ffffff"
-    }
-  ],
-  "address_map": [
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 1, "start": "0x00fffff3", "end": "0x00fffff3"},
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 2, "start": "0x00fffff5", "end": "0x00fffff5"},
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 3, "start": "0x00fffff7", "end": "0x00fffff7"},
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 4, "start": "0x00fffff9", "end": "0x00fffff9"},
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 5, "start": "0x00fffffb", "end": "0x00fffffb"},
-    {"cpu": ":maincpu", "space": "cpu_space", "index": 6, "start": "0x00fffffd", "end": "0x00fffffd"},
-    "... 26 more"
+    {"cpu": ":maincpu", "space": "program", "index": 3, "start": "0x00009000", "end": "0x00009000"},
+    {"cpu": ":maincpu", "space": "program", "index": 4, "start": "0x00009200", "end": "0x00009200"},
+    {"cpu": ":maincpu", "space": "program", "index": 5, "start": "0x00009380", "end": "0x00009380"},
+    {"cpu": ":maincpu", "space": "program", "index": 6, "start": "0x00009500", "end": "0x00009501"},
+    "... 8 more"
   ],
   "regions": [
-    {"tag": ":gfx1", "size": 16777216, "bytewidth": 1, "endianness": "little"},
-    {"tag": ":maincpu", "size": 1048576, "bytewidth": 2, "endianness": "big"},
-    {"tag": ":plds", "size": 741, "bytewidth": 1, "endianness": "little"},
-    {"tag": ":subcpu", "size": 1048576, "bytewidth": 2, "endianness": "big"}
+    {"tag": ":gfx1", "size": 16384, "bytewidth": 1, "endianness": "little"},
+    {"tag": ":maincpu", "size": 65536, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":proms", "size": 6144, "bytewidth": 1, "endianness": "little"}
   ],
   "shares": [
-    {"tag": ":blitram", "size": 32, "bytewidth": 2, "endianness": "big"},
-    {"tag": ":mainram", "size": 65536, "bytewidth": 2, "endianness": "big"}
+    {"tag": ":nvram", "size": 256, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":spriteram", "size": 2048, "bytewidth": 1, "endianness": "big"},
+    {"tag": ":videoram", "size": 30720, "bytewidth": 1, "endianness": "big"}
   ],
   "screens": [
     {
       "tag": ":screen",
-      "width": 336,
-      "height": 252,
-      "refresh_hz": 50.080128,
+      "width": 256,
+      "height": 240,
+      "refresh_hz": 59.185606,
       "rotation": 0,
       "type": "raster"
     }
   ],
   "symbol_coverage": [],
   "counts": {
-    "cpus": 2,
-    "spaces": 4,
-    "address_map": 32,
-    "regions": 4,
-    "shares": 2,
+    "cpus": 1,
+    "spaces": 1,
+    "address_map": 14,
+    "regions": 3,
+    "shares": 3,
     "screens": 1,
     "symbol_coverage": 0
   },
@@ -233,27 +270,210 @@ Example, from a live run:
   "cpu": {"available": false, "why": "no cpu was named, so the rows are every cpu's"}
 }
 ```
+
+</details>
+
+### Arguments
+
+- `cpu` (string, default `""`): The tag of one cpu, to narrow `cpus`, `spaces`, `address_map` and `symbol_coverage` to it. Left empty, every cpu's rows come back.
+- `sections` (array of one of `"cpus"`, `"spaces"`, `"address_map"`, `"regions"`, `"shares"`, `"screens"`, `"rom_files"`, `"symbol_coverage"`, optional): Which sections to read. Left out, all of them but `rom_files`.
+- `dest` (string, default `""`): A file to write every row of the sections read, as JSON: an absolute or `~` path that does not exist yet. Left empty, no file is written.
+
+### What comes back
+
+- `cpus`: One row per cpu: its tag `cpu`, MAME's short name `type`, `name`, `clock_hz` and the names of its `spaces`.
+- `address_map`: One row per entry of a cpu's memory map: `cpu`, `space`, `index`, `start`, `end`, and the `share` or `region` behind it.
+- `sources`: For each section, where its rows came from: `live` (the running machine), `-listxml` (MAME's own description of it) or `symbols` (your symbol table).
+- `counts`: How many rows each section has in full, so a list cut short shows.
+- `truncated`: `true` when a section had more than 400 rows and its list was cut; `dest` gets them all.
+- `path`: With `dest`, the file that was written.
+
+<details><summary>All 14 reply fields</summary>
+
+- `address_map` (array)
+- `counts` (object)
+- `cpu` (string or object)
+- `cpus` (array)
+- `frame_symbol` (string or object)
+- `path` (string)
+- `regions` (array)
+- `rom_files` (array)
+- `screens` (array)
+- `shares` (array)
+- `sources` (object)
+- `spaces` (array)
+- `symbol_coverage` (array)
+- `truncated` (boolean)
+
+</details>
+
+### What it refuses
+
+- An empty `sections`, a name that is no section, or a `dest` that already exists (`bad_argument`).
+- A tag that names no cpu; the message lists the ones the machine has (`unknown_ref`).
+- A call with no session open (`no_session`).
+- A session that broke and has to be closed (`session_broken`).
+
+### Why it works this way
+
+The map is read once, while `start` boots the machine, so asking costs nothing and it answers while the program runs. It is the machine as `start` found it: nothing reads it again, even after the emulator has died.
+
+Two sources fill it, because neither has everything. MAME's `-listxml`, run on this session's own binary, alone knows a clock, a screen's rotation and a ROM file's checksums. The running machine alone knows the shares, the region sizes, the address map and a cpu's `type`.
+
+Where the two disagree the field carries the running machine's value, and `note` names both. A field neither source has is absent, never null or guessed.
+
+<details><summary>More on why</summary>
+
+The address map covers the devices that execute, the ones MAME gives a debugger. It is the map as wired: a banked range answers for whichever bank is selected at the time.
+
+- `spaces`: `cpu`, `space`, `data_width_bits`, `endianness`, `entries`, `address_mask`.
+- `address_map`: also `region_offset` beside a `region`, and the entry's own `mirror` and `address_mask` when not zero. A `share` or `region` carries the tag `shares` and `regions` list it under.
+- `regions` and `shares`: `tag`, `size`, `bytewidth`, `endianness`.
+- `screens`: `tag`, `width`, `height`, `refresh_hz`, `rotation`, `type`.
+- `rom_files`: `name`, `size`, `crc`, `sha1`, `dump_status`, `region`, `offset`. It is left out by default because it answers a ROM audit, not a debugging question.
+- `symbol_coverage`: one row per class of each cpu's symbol table, with `class`, `cpu`, `span` (`from`, `length`), `symbols` and `base`. It is empty when the table has no classes.
+- `cpu` leaves the regions, shares, screens and ROM files whole: they are the board's, and a shorter list would say the other cpu's ROMs do not exist.
+- When `-listxml` fails, `rom_files`, the clocks and the rotation are empty and `note` quotes why.
+- `frame_symbol` names the machine's frame counter, unavailable on a board with none. `omitted` and `how` name the sections left out and how to ask for them.
+
+</details>
+
+### Related tools
+
+- [`cpu_info`](#cpu_info)
+- [`read_block`](read.md#read_block)
+- [`read_memory`](read.md#read_memory)
+- [`rom_check`](session.md#rom_check)
+- [`symbols_find`](names.md#symbols_find)
+
+<details><summary>The contract your client receives</summary>
+
+```text
+What the machine is: its cpus and spaces, address map, regions, shares, screens and ROM
+files. Cached at `start()`, free; answered on a running machine.
+
+Arguments: `cpu`, a tag in either spelling, narrows `cpus`, `spaces`, `address_map` and
+`symbol_coverage`. `sections` picks sections; left out, all but `rom_files`. `dest`
+(absolute or `~`-led, new) writes every row of the sections read as JSON.
+
+Refused: an empty or unknown `sections`, or an existing `dest` (`bad_argument`); an unknown
+tag (`unknown_ref`); no machine (`no_session`); a broken session (`session_broken`).
+
+Reply: `cpus`, `spaces`, `address_map`, `regions`, `shares`, `screens`, `rom_files`,
+`symbol_coverage`, `counts`, `truncated` (lists cut to 400 rows; `dest` holds all),
+`sources`,
+`path` (with `dest`), `note`, `frame_symbol`. A field no source backs is absent.
+
+Reference: REFERENCE.md, Reading and writing.
+```
+
+</details>
 <!-- scry-reference:end machine_map -->
-
-**Two sources are the emulator's, because neither carries the whole answer, and each section says which backs it** (`sources`). `-listxml`, run once against THIS session's binary, is the only one with a clock, a rotation and a ROM file's crc and sha1; the live machine is the only one with the shares, the regions' sizes, the address map and a cpu's `type`, because on the Lua channel a device's clock reads back nil. Where both back a field and differ, the `note` names both and the field carries the LIVE one, which is the machine actually running; nothing decides which is correct, so the disagreement is in front of you instead of resolved in silence. A field NEITHER source backs is absent, never null or guessed.
-
-**The live half is gathered by the boot harness**, not by a console evaluation at the park (the route `read_block` takes), which costs a step and moves the pc. One route owns it whole, because a gather split between two is where two accounts of one fact diverge. A dump missing a sentinel is refused: a truncated inventory cannot be told from a small machine.
-
-**The cpus are the devices MAME gives a `debug`**, those that EXECUTE; the XML half cannot decide it, because a build that fails `-listxml` must still produce a session.
-
-**`symbol_coverage` names its source** (`symbols`) because a section whose provenance is missing cannot be told from an oversight, and `cpu=` leaves the ROM files whole because narrowing them would say the other cpu's ROMs do not exist.
-
-Row fields. `cpus`: `cpu`, `type` (MAME's shortname, `m68000`), `name`, `clock_hz`, `spaces`. `spaces`: `cpu`, `space`, `data_width_bits`, `endianness`, `entries`, and `address_mask` where a source backs it. `address_map`: `cpu`, `space`, `index`, `start`, `end`, `share` or `region`+`region_offset` by the full tag `regions` and `shares` carry, and the entry's own `mirror` and `address_mask` when not zero. `regions`/`shares`: `tag`, `size`, `bytewidth`, `endianness`. `screens`: `tag`, `width`, `height`, `refresh_hz`, `rotation`, `type`. `rom_files`: `name`, `size`, `crc`, `sha1`, `dump_status`, `region`, `offset`. `symbol_coverage`: one row per class of each cpu's table (`cpu`, `span`, `symbols`, `base`), an empty list when no table has classes. `counts` is each section's full count; `omitted` and `how` name the sections left out. `note` records a disagreement between sources (the live value kept), banked ranges, and that this is the machine as `start` read it. `frame_symbol` is the frame counter's name, unavailable on a board with none. A refused tag's `unknown_ref` names the ones the machine has.
 
 <!-- scry-reference:begin log -->
 ## `log`
 
-*Read the log*
+Read the newest log lines that match a pattern: from MAME's own log, from the process's output, or from both.
 
 ```text
 log(pattern, channel, limit=40, labels=false, since_mark=0)
 ```
 
+### Try it
+
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, after one coin has been dropped.
+
+Ask:
+
+> What has MAME logged about the coin counter?
+
+Call:
+
+```text
+log(pattern="coin counter", channel="emulator")
+```
+
+Reply, 2 of 7 fields:
+
+```json
+{
+  "summary": "log emulator /coin counter/: 3 of 3 lines",
+  "lines": ["[:] coin counter off", "[:] coin counter on", "[:] coin counter off"]
+}
+```
+
+Three lines of MAME's own log match, oldest first: the driver reports the coin counter off, then on for the coin, then off again.
+
+<details><summary>The whole reply</summary>
+
+```json
+{
+  "summary": "log emulator /coin counter/: 3 of 3 lines",
+  "status": "ok",
+  "pattern": "coin counter",
+  "channel": "emulator",
+  "lines_total": 3,
+  "truncated": false,
+  "lines": ["[:] coin counter off", "[:] coin counter on", "[:] coin counter off"]
+}
+```
+
+</details>
+
+### Arguments
+
+- `pattern` (string, required): A regular expression each line is searched for. It is never empty: `.` matches every line.
+- `channel` (one of `"emulator"`, `"process"`, `"all"`, required): Which log to read. `emulator` is MAME's `error.log`, `process` its stdout and stderr, `all` both with each line tagged `[emulator] ` or `[process] `.
+- `limit` (integer (>= 1, <= 400), default `40`): How many of the newest matching lines to return: 1 to 400. Left out, 40.
+- `labels` (boolean, default `false`): `true` adds `labels`: the lines returned, counted by their first word. Left out, no count.
+- `since_mark` (integer (>= 0), default `0`): A byte position in the log: only lines written after it are read. Left out or 0, the whole log is read.
+
+### What comes back
+
+- `lines`: The newest `limit` matching lines, oldest first.
+- `lines_total`: How many lines matched in all, not how many came back.
+- `truncated`: `true` when more matched than came back.
+- `counts`: On `all`, how many lines matched in each of the two logs.
+- `labels`: With `labels=true`, the returned lines counted by their first word: a quick view of who is writing.
+
+<details><summary>All 7 reply fields</summary>
+
+- `channel` (string)
+- `counts` (object)
+- `labels` (object)
+- `lines` (array)
+- `lines_total` (integer)
+- `pattern` (string)
+- `truncated` (boolean)
+
+</details>
+
+### What it refuses
+
+- An empty pattern, or one that is not a regular expression (`bad_argument`).
+- A `limit` outside 1 to 400 (`bad_argument`).
+- `channel` `guest`: an arcade board has no log written by the program itself (`bad_argument`).
+- A `since_mark` with `all`, or one past the end of the log (`bad_argument`).
+- A log MAME has written nothing to yet (`no_channel`).
+
+### Why it works this way
+
+A driver can fill the log fast, so the pattern and the limit are how a line is found. Pass a pattern that narrows: `.` is the last resort, and `labels` shows at a glance who is writing.
+
+`emulator` is what MAME's core and the drivers write with `logerror`. `process` is where MAME's own error messages, its `-verbose` output and a driver's counters go.
+
+`since_mark` takes the `mark` that a state load, or the log part of a stop's reply, gives for that log. It is a position in one file, so `all`, which reads two, takes none.
+
+### Related tools
+
+- [`log_wait`](#log_wait)
+- [`drive`](sequences.md#drive)
+- [`state_write`](states.md#state_write)
+- [`run_to`](run.md#run_to)
+
+<details><summary>The contract your client receives</summary>
+
+```text
 The newest lines of one `channel` of what MAME writes matching the regex `pattern` (`.` for
 all; never empty). Works while running.
 
@@ -266,61 +486,129 @@ Reply: `pattern`, `channel`, `lines` (the newest `limit`, 1..400, oldest first),
 `since_mark` is refused.
 
 Reference: REFERENCE.md, The log.
-
-| argument | type | default |
-|---|---|---|
-| `pattern` | string | required |
-| `channel` | one of `"emulator"`, `"process"`, `"all"` | required |
-| `limit` | integer (>= 1, <= 400) | `40` |
-| `labels` | boolean | `false` |
-| `since_mark` | integer (>= 0) | `0` |
-
-| reply field | type |
-|---|---|
-| `channel` | string |
-| `counts` | object |
-| `labels` | object |
-| `lines` | array |
-| `lines_total` | integer |
-| `pattern` | string |
-| `truncated` | boolean |
-
-Example, from a live run:
-
-```json
-{
-  "pattern": ".",
-  "channel": "emulator",
-  "limit": 3
-}
 ```
 
-```json
-{
-  "summary": "log emulator /./: 1 of 1 line",
-  "status": "ok",
-  "pattern": ".",
-  "channel": "emulator",
-  "lines_total": 1,
-  "truncated": false,
-  "lines": ["Soft reset"]
-}
-```
+</details>
 <!-- scry-reference:end log -->
-
-The `emulator` channel is `error.log`, which every launch writes.
-
-Pass a pattern that narrows: `.` is a last resort. `since_mark` is a byte position in the channel's log (the `mark` a state load or a stop's log block gives): only what was written after it is read; 0, the default, reads the whole log, and it is not accepted over `all`, two files. `emulator` is `error.log` (core and driver `logerror`), `process` is `stdout.log` (stdout and stderr). A driver's own `logerror` traffic can run to hundreds of lines per emulated second, so a default-pattern read is mostly somebody else's noise with the wanted line buried in it; the same goes for `drive`'s `pattern`. `process` is where `osd_printf_error`, `-verbose` and a driver's own counters go, and `labels` gives one glance at who is talking (`RE_DAC`, `RE_IRQ`). `guest` is a channel an arcade board does not have.
 
 <!-- scry-reference:begin log_wait -->
 ## `log_wait`
 
-*Wait for a log line*
+Wait until a log line matches a pattern, or get the line at once when the log already has it.
 
 ```text
 log_wait(pattern, channel, seconds=30.0, since_mark=0)
 ```
 
+### Try it
+
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, after turning the throttle off and letting the game run five seconds.
+
+Ask:
+
+> Check MAME's log for the line that says the throttle went off.
+
+Call:
+
+```text
+log_wait(pattern="MAME_MCP_THROTTLE#1", channel="emulator")
+```
+
+Reply, 4 of 12 fields:
+
+```json
+{
+  "summary": "log_wait emulator /MAME_MCP_THROTTLE#1/: matched already there",
+  "verdict": "TARGET",
+  "line": "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0",
+  "already": true
+}
+```
+
+`TARGET` means a line matched, and `already` that the log held it before the call, so nothing was waited for. The line is the one MAME wrote when the throttle went off.
+
+<details><summary>The whole reply</summary>
+
+```json
+{
+  "summary": "log_wait emulator /MAME_MCP_THROTTLE#1/: matched already there",
+  "status": "ok",
+  "verdict": "TARGET",
+  "pattern": "MAME_MCP_THROTTLE#1",
+  "channel": "emulator",
+  "line": "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0",
+  "already": true,
+  "lines_total": 1,
+  "lines_before": 4,
+  "arrived_during": 0,
+  "waited_s": "<volatile>",
+  "lines_examined": 6
+}
+```
+
+</details>
+
+### Arguments
+
+- `pattern` (string, required): A regular expression each line is searched for. It is never empty: `.` matches every line.
+- `channel` (one of `"emulator"`, `"process"`, `"all"`, required): Which log to wait on: `emulator`, `process` or `all`, as in [`log`](#log).
+- `seconds` (number (> 0, <= 600.0), default `30.0`): How long to wait at most, in seconds, up to 600. Left out, 30.
+- `since_mark` (integer (>= 0), default `0`): A byte position in the log: only lines written after it count, the ones already there included. Left out or 0, the whole log counts.
+
+### What comes back
+
+- `verdict`: `TARGET` when a line matched, `TIMEOUT` when the time ran out with none; `note` then says what was read.
+- `line`: The first line that matched; for the newest one, use `log`.
+- `already`: `true` when the log held the line before the call, so nothing was waited for.
+- `waited_s`: Seconds spent waiting; 0 when the line was already there.
+- `arrived_during`: How many lines were written during the wait, whether or not they matched.
+- `lines_examined`: How many lines were read in all: those the log held and those that came during the wait.
+
+<details><summary>All 10 reply fields</summary>
+
+- `already` (boolean)
+- `arrived_during` (integer)
+- `channel` (string)
+- `line` (string)
+- `lines_before` (integer)
+- `lines_examined` (integer)
+- `lines_total` (integer)
+- `pattern` (string)
+- `verdict` (string)
+- `waited_s` (number)
+
+</details>
+
+### What it refuses
+
+- A machine stopped at the debugger, or one that stops during the wait, while the log lacks the line: a stopped machine logs nothing (`wait_stopped`).
+- An emulator that exits during the wait (`session_broken`).
+- `seconds` out of range, an empty or malformed pattern, or a `since_mark` past the end of the log (`bad_argument`).
+
+### Why it works this way
+
+The log is read before any waiting, so a line written before the call is found at once, where a tool that only waited would report that it never came. `already` marks such a line.
+
+A `TIMEOUT` says what it read. `arrived_during` counts the lines written during the wait and `lines_examined` every line read, so a program that wrote nothing is told apart from one whose lines did not match.
+
+A stop during the wait is refused like a machine already stopped, after one last read of the log. After a `TIMEOUT` the program still runs. Progress is reported while it waits.
+
+<details><summary>More on why</summary>
+
+`lines_before` counts the lines read before the match and `lines_total` the matches in that read.
+
+</details>
+
+### Related tools
+
+- [`log`](#log)
+- [`resume`](run.md#resume)
+- [`drive`](sequences.md#drive)
+- [`run_to`](run.md#run_to)
+
+<details><summary>The contract your client receives</summary>
+
+```text
 Wait up to `seconds` for a line of `channel` matching the regex `pattern` (never empty);
 at once if the log holds it. Answers while running. `channel`, `since_mark` as in `log`.
 
@@ -331,53 +619,7 @@ Reply: `verdict` `TARGET`, `line` (the first match), `already`, `waited_s`, `lin
 `lines_total`, `arrived_during`, `lines_examined`; on timeout `verdict` `TIMEOUT`, `note`.
 
 Reference: REFERENCE.md, The log.
-
-| argument | type | default |
-|---|---|---|
-| `pattern` | string | required |
-| `channel` | one of `"emulator"`, `"process"`, `"all"` | required |
-| `seconds` | number (> 0, <= 600.0) | `30.0` |
-| `since_mark` | integer (>= 0) | `0` |
-
-| reply field | type |
-|---|---|
-| `already` | boolean |
-| `arrived_during` | integer |
-| `channel` | string |
-| `line` | string |
-| `lines_before` | integer |
-| `lines_examined` | integer |
-| `lines_total` | integer |
-| `pattern` | string |
-| `verdict` | string |
-| `waited_s` | number |
-
-Example, from a live run:
-
-```json
-{
-  "pattern": ".",
-  "channel": "emulator",
-  "seconds": 5.0
-}
 ```
 
-```json
-{
-  "summary": "log_wait emulator /./: matched already there",
-  "status": "ok",
-  "verdict": "TARGET",
-  "pattern": ".",
-  "channel": "emulator",
-  "line": "Soft reset",
-  "already": true,
-  "lines_total": 779,
-  "lines_before": 0,
-  "arrived_during": 0,
-  "waited_s": 0.0,
-  "lines_examined": 788
-}
-```
+</details>
 <!-- scry-reference:end log_wait -->
-
-It is the proof that a run reached what it was meant to reach; `log` is the tool for the newest match. With `since_mark`, "already" means since the mark, which is how "after the load" is asked. A stopped machine logs nothing, so the wait could not end; a stop landing during the wait is reported the same way after one last read of the log. On a timeout the machine still runs. It reports progress while it waits.

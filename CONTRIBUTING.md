@@ -96,20 +96,40 @@ The tests refuse an `ok` reply that lacks a required field. `tests/test_reply_mo
 a promised field whose condition the sentence does not say.
 
 A change to a tool's arguments, reply model or description changes its reference page.
-`tests/test_reference_pages.py` then fails, naming the tool, the page and the line. Rewrite the
-pages from the code:
+`tests/test_reference_pages.py` then fails, naming the tool, the page and the line. Rewrite the pages from the code:
 
 ```sh
 uv run python -m scry_core.reference scry_mame.server:REFERENCE --write
 ```
 
-The examples on those pages come only from the transcript of a run against the real emulator.
-Each `--mark` spells one of that computer's directories the way the committed examples do:
+Every sentence of an entry is in `docs/reference/asks.json`, one object per tool. It holds what
+the tool does, its example's ask, a sentence per argument and per field, what it refuses and
+why. The registry gives the rest.
+
+- The same test fails when a tool has no entry there, or an entry has a sentence for an
+  argument the tool lost.
+- It fails too when a sentence passes its limit. `--write` writes no page until every entry
+  is whole, and lists what each lacks.
+
+The examples are calls of the tour, `docs/reference/tour/tour.py`: one session on Gridlee
+that calls each tool once, with every reply checked.
 
 ```sh
+uv run python docs/reference/tour/tour.py --rompath <the folder of gridlee.zip> --display 1
 uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
-    --examples <transcript.jsonl ...> --mark '/tmp/<the run>=$TMPDIR'
+    --examples docs/reference/tour/TRANSCRIPT.md demos/*/TRANSCRIPT.md
 ```
+
+- A run where every step passed copies its transcript to `docs/reference/tour/TRANSCRIPT.md`.
+  A second run gives the same file.
+- An entry's `call` names its example: the first call of those transcripts with those
+  arguments. A demo's call serves too, and so does a step of a `perform`.
+- Three tools need what Gridlee lacks: `cpu_focus`, `palette_log` and `gfx_blit_source`. Their examples come from
+  a run of `tests/live/live_matrix.py`, and `--examples` keeps the one each has.
+
+To replace one of those, add that run's `transcript.jsonl` to `--examples`. Each `--mark`
+spells one of that computer's directories the way the committed examples do:
+`--mark '/tmp/<the run>=$TMPDIR'`.
 
 - A run that passes deletes its temporary folder, transcript included. Hard-link
   `transcript.jsonl` while it runs, and only one newer than the run's start.
@@ -117,26 +137,20 @@ uv run python -m scry_core.reference scry_mame.server:REFERENCE --write \
   `--mark '<TMPDIR without its trailing slash>=$TMPDIR'`. The server's own temporary folder
   sits directly under `$TMPDIR`.
 - Before the commit, search `docs/reference` for `/Users/`, `/var/folders` and `/private/var`.
-- `--skip '<regex>'` leaves out the test cases whose call, reply or label match it. Use it when
-  a tool's first case ran on a game a stranger cannot have.
 
 A promise in the reference has a test that fails against the defect it guards. The parsers of
 MAME's console are tested on text captured from a real MAME, never written by hand. The
 captures are under `tests/fixtures/console/`, and `tests/fixtures/README.md` says where each
 came from.
 
-### A tool that moves to another page
+### A tool that moves to another group
 
-The reference generator rewrites only the blocks between its markers. The hand-written
-paragraphs after a block belong to that tool by position, so a tool moved to another page
-leaves them behind.
+An entry is found by its tool's name, so it moves with the tool. Change the tool's group in
+`src/scry_mame/mcp.py`, then rewrite the pages: its block leaves one page and lands on the other.
 
-1. Take the text between the tool's end marker and the next begin marker, at `HEAD`.
-2. Remove it from the old page and put it after the same tool's end marker on the new page.
-3. Run `tests/test_reference_pages.py` again.
-
-The paragraphs of `REFERENCE.md` that name the group, and the demos' tables of tools, need the
-same pass. The group of each tool both servers have is `roster.SHARED_FAMILIES` in scry-core.
+The line of each group in `asks.json`, the paragraphs of `REFERENCE.md` that name the group, and
+the demos' tables of tools need the same pass. The group of each tool both servers have is
+`roster.SHARED_FAMILIES` in scry-core.
 
 ## The commit hook
 

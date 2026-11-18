@@ -116,7 +116,7 @@ def test_a_map_add_is_named_by_the_entry_this_session_read() -> None:
     STATE.maps.session_application = "lineup"
     STATE.maps.session["play"] = screen()
     reply = mpromote.after_map("add", {"screen": "play"})
-    assert reply["kept"].startswith("kept 1 (promote to review)")
+    assert reply["kept"].startswith("1 saved for `promote`")
     assert STATE.drafts.entries() == ["maps/lineup"]
     assert STATE.drafts.held("maps", "lineup")[0].document["screens"][0]["name"] == "play"
 
@@ -125,7 +125,7 @@ def test_a_map_add_after_a_start_is_named_by_the_machine() -> None:
     STATE.system = "lineup"
     STATE.maps.session["play"] = screen()
     kept = mpromote.after_map("add", {"screen": "play"})["kept"]
-    assert kept.startswith("kept 1 (promote to review)")
+    assert kept.startswith("1 saved for `promote`")
     assert STATE.drafts.entries() == ["maps/lineup"]
 
 
@@ -170,7 +170,7 @@ def exported(path: Path) -> dict[str, Any]:
 def test_an_export_keeps_its_document_named_by_the_file_it_wrote(tmp_path: Path) -> None:
     path = tmp_path / "session.json"
     path.write_text(json.dumps(perform_document()))
-    assert exported(path)["kept"].startswith("kept 1 (promote to review)")
+    assert exported(path)["kept"].startswith("1 saved for `promote`")
     assert STATE.drafts.entries() == ["perform/session"]
 
 
@@ -277,7 +277,7 @@ def test_a_map_learned_after_a_profile_start_belongs_to_that_store(tmp_path: Pat
     started(profile_in(tmp_path / "game", "v30"))
     STATE.system = "lineup"
     STATE.maps.session["play"] = screen()
-    assert mpromote.after_map("add", {"screen": "play"})["kept"] == "kept 1 (promote to review)"
+    assert mpromote.after_map("add", {"screen": "play"})["kept"] == "1 saved for `promote`"
     assert STATE.drafts.held("maps", "lineup")[0].project == str(tmp_path / "game")
 
 
@@ -333,7 +333,7 @@ def test_a_working_directory_that_is_gone_does_not_cost_the_reply(
     started(profile_in(tmp_path))
     working_directory_gone(monkeypatch)
     kept_recipe(START)
-    assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
+    assert core_promote.kept_line(STATE.drafts) == "1 saved for `promote`"
 
 
 def test_a_promote_with_a_root_does_not_need_the_working_directory(
@@ -369,7 +369,7 @@ def test_a_second_promotion_creates_nothing_more(tmp_path: Path) -> None:
 def test_a_kept_line_says_how_to_set_up_a_store_only_when_it_names_none(tmp_path: Path) -> None:
     started(profile_in(tmp_path))
     kept_recipe(start_at(tmp_path))
-    assert core_promote.kept_line(STATE.drafts) == "kept 1 (promote to review)"
+    assert core_promote.kept_line(STATE.drafts) == "1 saved for `promote`"
     started()
     kept_recipe({**start_at(tmp_path), "system": "speedf"})
     assert "start/speedf: nothing this session read names its repository" in \

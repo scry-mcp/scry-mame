@@ -1126,7 +1126,7 @@ def test_the_descriptions_say_what_each_changed_reply_carries() -> None:
     assert "`mode` and `instructions_completed`" in documented("step")
     assert "An `into` that reads anything else in a stop's place" in documented("step")
     assert ("a failed connection, or an `over` the console did not answer in time is "
-            "`session_broken` and LATCHES") in documented("step")
+            "`session_broken`. That stays set until `close`") in documented("step")
     assert "`available: false`" in documented("close")
 
 
@@ -1134,12 +1134,14 @@ def test_the_instructions_and_the_reference_say_any_tool_latches() -> None:
     """A session error no tool answered latches wherever it surfaces (`mcp.tool`
     wrapper), so the contract names no short list of tools that latch: such a list reads as
     "the others never do", which is false."""
-    latching = "`session_broken` LATCHES until `close`"
-    for where, text in (("instructions", " ".join((s.mcp.instructions or "").split())),
-                        ("REFERENCE.md", _prose(_PACKAGE / "REFERENCE.md"))):
+    said = (("instructions", " ".join((s.mcp.instructions or "").split()),
+             "`session_broken` LATCHES until `close`", WAY_OUT),
+            ("REFERENCE.md", _prose(_PACKAGE / "REFERENCE.md"),
+             "`session_broken` stays set until `close`", "the way out: `close`, then `start`"))
+    for where, text, latching, way_out in said:
         assert latching in text, f"{where} does not say a broken session latches"
         assert "`run_to`, `resume`, `step` or `stop`" not in text, f"{where} names a short list"
-        assert WAY_OUT in text, f"{where} names `stop` as the recovery and no way out past it"
+        assert way_out in text, f"{where} names `stop` as the recovery and no way out past it"
     assert "`session_broken` from `run_to` LATCHES" not in (s.mcp.instructions or "")
 
 

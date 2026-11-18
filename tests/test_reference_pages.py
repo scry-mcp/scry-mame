@@ -13,7 +13,7 @@ def test_the_reference_pages_agree_with_the_registry() -> None:
     found = reference.drift(server.REFERENCE)
     assert not found, "\n".join([
         *found, "pages: uv run python -m scry_core.reference scry_mame.server:REFERENCE --write;",
-        "examples come only from a live run's transcript (CONTRIBUTING.md, Changing a tool)"])
+        "sentences: docs/reference/asks.json; examples: the tour (CONTRIBUTING.md)"])
 
 
 README = Path(__file__).resolve().parents[1] / "README.md"

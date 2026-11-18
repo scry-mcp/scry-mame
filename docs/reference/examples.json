@@ -1,207 +1,333 @@
 {
  "audio_compare": {
-  "from": "[L] audio_record: the mixer's WAV, bounded by frames, checked against its own header: L12 v30 S3: audio_compare measure hears the pinned tone (an onset, not silent) and calls the AY pinned at volume 0 silent",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 76",
   "call": {
    "method": "measure",
-   "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+   "path": "./tmp/demos/tour/card.wav"
   },
   "reply": {
-   "summary": "audio_compare measure: ch0 peak -8.55 dBFS, onset 0.0 s",
+   "summary": "audio_compare measure: ch0 silent",
    "status": "ok",
    "sample_rate_hz": 48000,
    "channels": 1,
    "bits": 16,
    "window": [
     0.0,
-    0.6
+    0.5
    ],
    "measures": [
     {
      "channel": 0,
-     "peak_dbfs": -8.55,
-     "rms_dbfs": -12.36,
-     "silent": false,
-     "silence_spans": {
-      "count": 0,
-      "first": {
-       "available": false,
-       "why": "no silence in the window"
-      }
+     "peak_dbfs": {
+      "available": false,
+      "why": "a level of zero has no value in dB"
      },
-     "onset_s": 0.0,
+     "rms_dbfs": {
+      "available": false,
+      "why": "a level of zero has no value in dB"
+     },
+     "silent": true,
+     "silence_spans": {
+      "count": 1,
+      "first": [
+       0.0,
+       0.5
+      ]
+     },
+     "onset_s": {
+      "available": false,
+      "why": "a silent window has no onset"
+     },
      "clipping_run": 0,
      "clipped": false
     }
    ],
-   "pcm_sha256": "78e4eaf1ae7707114ef29ad1549ab0a8ccb5a0f39daa96961f9d9a054d78b4c3",
-   "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/L/f4.wav"
+   "pcm_sha256": "bb918147fe10391b43adeba4bd21b9ef32e5bd6c5076c3517733a05ed6dd0569",
+   "path": "./tmp/demos/tour/card.wav"
   }
  },
  "audio_record": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): audio_record @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 61",
   "call": {
-   "frames": 2,
-   "seconds": 10.0
+   "frames": 30,
+   "dest": "./tmp/demos/tour/card.wav",
+   "seconds": 300
   },
   "reply": {
-   "summary": "audio_record: 1920 samples at 48000 Hz x 2 at $TMPDIR/mame-mcp-<run>/snap/audio-3.wav",
+   "summary": "audio_record: 24000 samples at 48000 Hz x 1, silent at ./tmp/demos/tour/card.wav",
    "status": "ok",
    "verdict": "ELAPSED",
-   "frame_before": 24,
-   "frame_after": 30,
-   "emulated_before_s": 0.499207,
-   "emulated_after_s": 0.619008,
-   "cycles": 1916822,
-   "polls": 6,
+   "frame_before": 594,
+   "frame_after": 628,
+   "emulated_before_s": 10.053138,
+   "emulated_after_s": 10.627602,
+   "cycles": 718080,
+   "polls": 34,
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "path": "$TMPDIR/mame-mcp-<run>/snap/audio-3.wav",
-   "frames": 2,
+   "path": "./tmp/demos/tour/card.wav",
+   "frames": 30,
    "began": true,
-   "frame_begin": 25,
+   "frame_begin": 595,
    "recording_after": true,
    "ended": true,
-   "bytes": 7724,
-   "channels": 2,
+   "bytes": 48044,
+   "channels": 1,
    "sample_rate_hz": 48000,
-   "samples": 1920,
-   "emulated_s": 0.039936,
-   "sample_min": -10050,
-   "sample_max": -6589,
-   "frame_end": 26,
+   "samples": 24000,
+   "emulated_s": 0.50688,
+   "sample_min": 0,
+   "sample_max": 0,
+   "frame_end": 624,
    "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 26,
-   "pc": "0x000e2cea",
+   "stop_seq": 58,
+   "pc": "0x0000fd80",
    "cpu": ":maincpu",
-   "frame": 30,
+   "frame": 628,
    "regs": {
-    "D0": "0x0001000b",
-    "D1": "0x00000032",
-    "D2": "0x000001dc",
-    "D3": "0x00000020",
-    "D4": "0x0000000f",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000001dc",
-    "A1": "0x0020829c",
-    "A2": "0x00203208",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fd8",
-    "SP": "0x00200fcc",
-    "PS": "0x2100",
-    "PC": "0x000e2cea"
+    "A": "0x00",
+    "B": "0xda",
+    "D": "0x00da",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd80",
+    "S": "0x07f4",
+    "CC": "0xd4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0E2CEA",
-    "bytes": "C1C3",
-    "text": "muls.w  D3, D0",
-    "symbol": "palette_range_table",
-    "delta": 49624
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": "irq",
+    "delta": 0
    },
    "following": [
-    "0E2CEC: 48C0           ext.l   D0",
-    "0E2CEE: 81C1           divs.w  D1, D0",
-    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
-    "0E2CF4: 5242           addq.w  #1, D2",
-    "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
-    "0E2CFA: 6FD4           ble     $e2cd0",
-    "... 3 more"
+    "FD82: 96 B2    LDA    <$B2",
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 6,
-    "truncated": false,
-    "lines": [
-     "[luaengine] MAME_MCP_AUDIO#24 armed frame=24 vblank=true",
-     "",
-     "[luaengine] MAME_MCP_AUDIO#24 begin frame=25 ok=true recording=true time=0.51916800000000007 period=0.019968000000000003",
-     "",
-     "[luaengine] MAME_MCP_AUDIO#24 end frame=27 time=0.55910400000000005",
-     ""
-    ],
-    "mark": 66415
-   }
+   "errorlog": "<volatile>"
   }
  },
  "breakpoint_at": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): breakpoint_at @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 45",
   "call": {
-   "ref": "exception_handler"
+   "ref": "take_credit"
   },
   "reply": {
-   "summary": "breakpoint_at exception_handler: armed at 0x000025a4",
+   "summary": "breakpoint_at take_credit: armed at 0x0000d676",
    "status": "ok",
-   "ref": "exception_handler",
+   "ref": "take_credit",
    "by": "symbol",
    "role": "stop",
    "cpu": ":maincpu",
    "stored": true,
    "while_running": false,
-   "addr": "0x000025a4",
+   "addr": "0x0000d676",
    "armed": true,
    "state": "armed",
-   "entry": "1 @ 0025A4"
+   "entry": "3 @ D676"
+  },
+  "then": {
+   "tool": "input",
+   "call": {
+    "port": ":IN1",
+    "field": "1 Player Start",
+    "frames": 4,
+    "seconds": 300
+   },
+   "reply": {
+    "summary": "input :IN1 '1 Player Start': still HELD from frame 552, releases at 556",
+    "status": "ok",
+    "verdict": "OTHER_STOP",
+    "frame_before": 552,
+    "frame_after": 553,
+    "emulated_before_s": 9.343506,
+    "emulated_after_s": 9.347718,
+    "cycles": 5265,
+    "polls": 2,
+    "lines_ahead": 0,
+    "thread_errors": 0,
+    "console_reruns": 0,
+    "route": "ioport",
+    "port": ":IN1",
+    "field": "1 Player Start",
+    "value": "0x00000001",
+    "frames": 4,
+    "name": "1 Player Start",
+    "player": 0,
+    "mask": "0x00000004",
+    "defvalue": "0x00000004",
+    "port_before": "0x000000cf",
+    "frame_set": 552,
+    "released": false,
+    "active": {
+     "available": false,
+     "why": "the field is still HELD: the port is read at its release, which the run has not reached"
+    },
+    "port_held": {
+     "available": false,
+     "why": "the field is still HELD: the port is read at its release, which the run has not reached"
+    },
+    "frame_release_planned": 556,
+    "note": "the field is still HELD: the run stopped before the release frame, and the script releases it when the machine reaches it",
+    "cause": "breakpoint take_credit at 0xd676",
+    "stop_seq": 21,
+    "pc": "0x0000d676",
+    "cpu": ":maincpu",
+    "frame": 553,
+    "regs": {
+     "A": "0xcb",
+     "B": "0xff",
+     "D": "0xcbff",
+     "X": "0x0431",
+     "Y": "0x00f1",
+     "U": "0xc66d",
+     "PC": "0xd676",
+     "S": "0x07fc",
+     "CC": "0xa8",
+     "DP": "0x00"
+    },
+    "instruction": {
+     "address": "D676",
+     "bytes": "7A042B",
+     "text": "DEC    $042B",
+     "symbol": "take_credit",
+     "delta": 0
+    },
+    "following": [
+     "D679: 86 99    LDA    #$99",
+     "D67B: BB 04 2C ADDA   $042C",
+     "D67E: 19       DAA",
+     "D67F: B7 04 2C STA    $042C",
+     "D682: 39       RTS",
+     "D683: 8E 04 31 LDX    #$0431",
+     "... 10 more"
+    ],
+    "errorlog": "<volatile>",
+    "watches": [
+     {
+      "ref": "credits_bcd",
+      "cpu": ":maincpu",
+      "state": "armed",
+      "reading": {
+       "available": true,
+       "value": 3,
+       "raw_hex": "03"
+      }
+     }
+    ],
+    "omitted": [
+     "addr",
+     "by",
+     "entry",
+     "fmt",
+     "length",
+     "mode"
+    ],
+    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
+   }
   }
  },
  "captures": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): captures @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 64",
   "call": {},
   "reply": {
-   "summary": "captures: 1 file, 1 png",
+   "summary": "captures: 15 files, 1 avi, 1 png, 11 image, 1 wav, 1 trace",
    "status": "ok",
    "captures": [
     {
-     "kind": "png",
-     "path": "$TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
+     "kind": "image",
+     "path": "./tmp/demos/tour/film/frame-1.png",
      "present": true,
-     "bytes": 441
-    }
+     "bytes": "<volatile>"
+    },
+    {
+     "kind": "image",
+     "path": "./tmp/demos/tour/film/sheet-0.png",
+     "present": true,
+     "bytes": "<volatile>"
+    },
+    {
+     "kind": "image",
+     "path": "./tmp/demos/tour/pixel.png",
+     "present": true,
+     "bytes": "<volatile>"
+    },
+    {
+     "kind": "image",
+     "path": "./tmp/demos/tour/palette.png",
+     "present": true,
+     "bytes": "<volatile>"
+    },
+    {
+     "kind": "image",
+     "path": "./tmp/demos/tour/sweep.png",
+     "present": true,
+     "bytes": "<volatile>"
+    },
+    {
+     "kind": "image",
+     "path": "./tmp/demos/tour/tiles.png",
+     "present": true,
+     "bytes": "<volatile>"
+    },
+    "... 9 more"
    ]
   }
  },
  "close": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): close @ none",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 74",
   "call": {},
   "reply": {
-   "summary": "close: no session",
+   "summary": "close: quit, exit code 0, last words left out (see `omitted`)",
    "status": "ok",
-   "closed": false,
-   "ended_by": "none",
-   "exit_code": {
-    "available": false,
-    "why": "no session was running"
-   },
-   "cfg_written": {
-    "available": false,
-    "why": "no session was running"
-   },
+   "closed": true,
+   "omitted": [
+    "stdout_tail",
+    "errorlog_tail"
+   ],
+   "how": "close(detail=True) keeps the channels' last words on a clean quit too; once a close has answered they are gone with the scratch",
+   "ended_by": "quit",
+   "exit_code": 0,
+   "cfg_written": true,
    "cfg": {
     "available": false,
     "why": "no cfg was given, so MAME runs on its defaults"
    },
-   "note": "there was no session to close"
+   "console_pending_before": 0,
+   "console_drained": 0,
+   "draft": [
+    "maps/gridlee",
+    "perform/two-coins",
+    "start/gridlee"
+   ]
   }
  },
  "comment_list": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): comment_list @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 12",
   "call": {},
   "reply": {
    "summary": "comment_list: 1 comment",
    "status": "ok",
    "comments": [
     {
-     "ref": "irq_vblank",
+     "ref": "count_coin",
      "by": "symbol",
      "cpu": ":maincpu",
      "created_at": "<volatile>",
      "origin": "<volatile>",
      "inherited": false,
-     "age_s": 0,
-     "text": "matrix A",
-     "addr": "0x00000400",
+     "age_s": "<volatile>",
+     "text": "a coin: INC credits, then the BCD copy",
+     "addr": "0x0000b583",
      "state": "armed"
     }
    ],
@@ -209,7 +335,7 @@
    "truncated": false,
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
+    "path": "./tmp/demos/tour/gridlee-states/declarations.json"
    },
    "cpu": {
     "available": false,
@@ -218,32 +344,31 @@
   }
  },
  "comment_write": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): comment_write add @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 11",
   "call": {
    "method": "add",
-   "ref": "irq_vblank",
-   "text": "matrix A",
-   "cpu": "maincpu"
+   "ref": "count_coin",
+   "text": "a coin: INC credits, then the BCD copy"
   },
   "reply": {
-   "summary": "comment_write add: irq_vblank at :maincpu 0x00000400, stored, persistent",
+   "summary": "comment_write add: count_coin at :maincpu 0x0000b583, stored, persistent",
    "status": "ok",
    "comment": {
-    "ref": "irq_vblank",
+    "ref": "count_coin",
     "by": "symbol",
     "cpu": ":maincpu",
     "created_at": "<volatile>",
     "origin": "<volatile>",
     "inherited": false,
-    "age_s": 0,
-    "text": "matrix A",
-    "addr": "0x00000400",
+    "age_s": "<volatile>",
+    "text": "a coin: INC credits, then the BCD copy",
+    "addr": "0x0000b583",
     "state": "armed"
    },
    "replaced_comments": [],
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json"
+    "path": "./tmp/demos/tour/gridlee-states/declarations.json"
    },
    "cpu": ":maincpu"
   }
@@ -268,10 +393,10 @@
   }
  },
  "cpu_info": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): cpu_info @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 5",
   "call": {},
   "reply": {
-   "summary": "cpu_info: 2 cpus, :maincpu visible",
+   "summary": "cpu_info: 1 cpu, :maincpu visible",
    "status": "ok",
    "cpus": [
     {
@@ -281,22 +406,7 @@
      "suspended": false,
      "pc": {
       "reg": "PC",
-      "value": "0x000f2034"
-     },
-     "declarations": {
-      "breakpoints": 0,
-      "watches": 0,
-      "regpoints": 0
-     }
-    },
-    {
-     "cpu": ":subcpu",
-     "visible": false,
-     "ignored": false,
-     "suspended": false,
-     "pc": {
-      "reg": "PC",
-      "value": "0x00000000"
+      "value": "0x0000f000"
      },
      "declarations": {
       "breakpoints": 0,
@@ -312,56 +422,102 @@
   }
  },
  "debug": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): debug @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 67",
   "call": {
-   "command": "print pc"
+   "command": "map 9380"
   },
   "reply": {
-   "summary": "debug 'print pc'",
+   "summary": "debug 'map 9380'",
    "status": "ok",
-   "command": "print pc",
+   "command": "map 9380",
    "mutates": false,
-   "output": "F203A\n\n",
+   "output": "   Read: 9380 logical program == 9380 physical program -> unmapped\n  Write: 9380 logical program == 9380 physical program -> watchdog_timer_device::reset_w\n  Fetch: 9380 logical program == 9380 physical program -> unmapped\n\n",
    "clipped": false
   }
  },
  "declaration_clear": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): declaration_clear breakpoint @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 50",
   "call": {
    "kind": "breakpoint",
    "all": true
   },
   "reply": {
-   "summary": "declaration_clear breakpoint all: 1 cleared, 1 disarmed",
+   "summary": "declaration_clear breakpoint all: 2 cleared, 2 disarmed",
    "status": "ok",
-   "declarations_cleared": 1,
+   "declarations_cleared": 2,
    "disarmed": [
-    "1 @ 0025A4"
+    "1 @ A631 if (++temp0)==0",
+    "3 @ D676"
    ],
    "while_running": false
   }
  },
  "declaration_list": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): declaration_list breakpoint @ stopped",
-  "call": {
-   "kind": "breakpoint"
-  },
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 49",
+  "call": {},
   "reply": {
-   "summary": "declaration_list breakpoint: 1 breakpoint (1 armed)",
+   "summary": "declaration_list: 2 breakpoints (2 armed), 1 regpoint (1 armed), 1 watch (1 armed)",
    "status": "ok",
    "breakpoints": [
     {
-     "ref": "exception_handler",
+     "ref": "wait_frame",
      "by": "symbol",
      "cpu": ":maincpu",
      "created_at": "<volatile>",
      "origin": "<volatile>",
      "inherited": false,
-     "age_s": 0,
-     "role": "stop",
-     "addr": "0x000025a4",
+     "age_s": "<volatile>",
+     "role": "control",
+     "addr": "0x0000a631",
      "state": "armed",
-     "entry": "1 @ 0025A4"
+     "entry": "1 @ A631 if (++temp0)==0",
+     "hits_since_armed": 3
+    },
+    {
+     "ref": "take_credit",
+     "by": "symbol",
+     "cpu": ":maincpu",
+     "created_at": "<volatile>",
+     "origin": "<volatile>",
+     "inherited": false,
+     "age_s": "<volatile>",
+     "role": "stop",
+     "addr": "0x0000d676",
+     "state": "armed",
+     "entry": "3 @ D676"
+    }
+   ],
+   "regpoints": [
+    {
+     "ref": "a==99",
+     "by": "expr",
+     "cpu": ":maincpu",
+     "created_at": "<volatile>",
+     "origin": "<volatile>",
+     "inherited": false,
+     "age_s": "<volatile>",
+     "condition": "a==99",
+     "state": "armed",
+     "entry": "1 if a==99",
+     "index": 1
+    }
+   ],
+   "watches": [
+    {
+     "ref": "credits_bcd",
+     "by": "symbol",
+     "cpu": ":maincpu",
+     "created_at": "<volatile>",
+     "origin": "<volatile>",
+     "inherited": false,
+     "age_s": "<volatile>",
+     "mode": "change",
+     "length": 1,
+     "fmt": "u8",
+     "addr": "0x0000042c",
+     "state": "armed",
+     "entry": "1 @ 042C-042C write",
+     "values_from": "memory"
     }
    ],
    "cpu": {
@@ -371,112 +527,188 @@
   }
  },
  "disassemble": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): disassemble @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 9",
   "call": {
-   "ref": "irq_vblank",
-   "length": 8
+   "ref": "count_coin",
+   "length": 12
   },
   "reply": {
-   "summary": "disassemble irq_vblank: 2 lines at 0x00000400",
+   "summary": "disassemble count_coin: 5 lines at 0x0000b583",
    "status": "ok",
-   "ref": "irq_vblank",
-   "addr": "0x00000400",
-   "length": 8,
+   "ref": "count_coin",
+   "addr": "0x0000b583",
+   "length": 12,
    "lines": [
-    "000400: 46FC 2700 move    #$2700, SR",
-    "000404: 48E7 F000 movem.l D0-D3, -(A7)"
+    "B583: 7C 04 2B INC    $042B",
+    "B586: 86 01    LDA    #$01",
+    "B588: BB 04 2C ADDA   $042C",
+    "B58B: 19       DAA",
+    "B58C: B7 04 2C STA    $042C"
    ],
    "cpu": ":maincpu",
    "flow": [
-    "sequential",
-    "sequential"
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown"
    ],
-   "flow_source": "mnemonic_table:m68000"
+   "flow_source": "none",
+   "note": "no mnemonic table for cpu type 'm6809' (tables: m68000, v30), so no line is classified"
   }
  },
  "drive": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): drive @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 18",
   "call": {
    "act": [
     {
+     "op": "input",
+     "port": ":IN1",
+     "field": "Coin 1",
+     "frames": 4,
+     "seconds": 300
+    },
+    {
      "op": "run_for",
-     "frames": 1,
-     "seconds": 10.0
+     "milliseconds": 2000,
+     "seconds": 300
     }
    ],
-   "settle_seconds": 2.0
+   "expect": "coin counter on"
   },
   "reply": {
-   "summary": "drive: no expectation",
+   "summary": "drive: reaction seen",
    "status": "ok",
    "act": {
     "ran": [
      {
-      "op": "run_for",
+      "op": "input",
       "cpu": ":maincpu",
       "reply": {
-       "summary": "run_for 1 frame: ELAPSED, frame 30 to 31",
+       "summary": "input :IN1 'Coin 1': held 4 frames, active True, released at frame 299",
        "status": "ok",
        "verdict": "ELAPSED",
-       "frame_before": 30,
-       "frame_after": 31,
-       "emulated_before_s": 0.619011,
-       "emulated_after_s": 0.638976,
-       "cycles": 319450,
-       "polls": 1,
+       "frame_before": 295,
+       "frame_after": 300,
+       "emulated_before_s": 5.001233,
+       "emulated_after_s": 5.085713,
+       "cycles": 105600,
+       "polls": 6,
+       "lines_ahead": 0,
+       "thread_errors": 0,
+       "console_reruns": 0,
+       "route": "ioport",
+       "port": ":IN1",
+       "field": "Coin 1",
+       "value": "0x00000001",
+       "frames": 4,
+       "name": "Coin 1",
+       "player": 0,
+       "mask": "0x00000001",
+       "defvalue": "0x00000001",
+       "port_before": "0x000000cf",
+       "frame_set": 295,
+       "released": true,
+       "port_held": "0x000000ce",
+       "frame_released": 299,
+       "active": true,
        "cause": "the `gvblank` stop of the last frame asked",
-       "stop_seq": 29,
-       "pc": "0x000025f6",
+       "stop_seq": 4,
+       "pc": "0x0000fd80",
        "cpu": ":maincpu",
-       "frame": 31,
+       "frame": 300,
        "regs": {
-        "D0": "0x0000b079",
-        "D1": "0x00000032",
-        "D2": "0x000001dc",
-        "D3": "0x00000020",
-        "D4": "0x0000000f",
-        "D5": "0x00000000",
-        "D6": "0x00000000",
-        "D7": "0x00000000",
-        "A0": "0x002048af",
-        "A1": "0x0020829c",
-        "A2": "0x00203208",
-        "A3": "0x00000000",
-        "A4": "0x00000000",
-        "A5": "0x00000000",
-        "FP": "0x00200fd8",
-        "SP": "0x00200fc4",
-        "PS": "0x2704",
-        "PC": "0x000025f6"
+        "A": "0x00",
+        "B": "0xfe",
+        "D": "0x00fe",
+        "X": "0x02db",
+        "Y": "0xf2e6",
+        "U": "0xbef1",
+        "PC": "0xfd80",
+        "S": "0x07f4",
+        "CC": "0xd4",
+        "DP": "0x00"
        },
        "instruction": {
-        "address": "0025F6",
-        "bytes": "51C8FFFC",
-        "text": "dbra    D0, $25f4",
-        "symbol": "boot_init",
-        "delta": 26
+        "address": "FD80",
+        "bytes": "0CB2",
+        "text": "INC    <$B2",
+        "symbol": "irq",
+        "delta": 0
        },
        "following": [
-        "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-        "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-        "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-        "002610: 1039 0020 351C      move.b  $20351c.l, D0"
+        "FD82: 96 B2    LDA    <$B2",
+        "FD84: 84 03    ANDA   #$03",
+        "FD86: 26 04    BNE    $FD8C",
+        "FD88: 0C B3    INC    <$B3",
+        "FD8A: 0C B4    INC    <$B4",
+        "FD8C: B6 03 BE LDA    $03BE",
+        "... 9 more"
        ],
-       "errorlog": {
-        "lines_total": 2,
-        "truncated": false,
-        "lines": [
-         "[luaengine] MAME_MCP_THROTTLE#25 throttled=false frame=30",
-         ""
-        ],
-        "mark": 66675
-       },
+       "errorlog": "<volatile>",
        "session": {
         "alive": true,
         "running": false,
-        "altered": true,
-        "read_only_claims": 1,
-        "note": "1 raw `lua` call was declared read_only BY THE CALLER and are not counted as writes. Nothing verified that claim: a Lua string can read a byte or rewrite RAM and the text does not say which, so `altered` here rests on the caller's word for  ... (349 characters)",
+        "altered": false,
+        "omitted": [
+         "altering_writes",
+         "console"
+        ],
+        "how": "call `status`"
+       }
+      }
+     },
+     {
+      "op": "run_for",
+      "cpu": ":maincpu",
+      "reply": {
+       "summary": "run_for 2000 ms: ELAPSED, frame 300 to 419",
+       "status": "ok",
+       "verdict": "ELAPSED",
+       "frame_before": 300,
+       "frame_after": 419,
+       "emulated_before_s": 5.085713,
+       "emulated_after_s": 7.085713,
+       "cycles": 2500000,
+       "reads": "<volatile>",
+       "cause": "the console's `gtime` stop",
+       "stop_seq": 5,
+       "pc": "0x0000a7d5",
+       "cpu": ":maincpu",
+       "frame": 419,
+       "regs": {
+        "A": "0x00",
+        "B": "0x00",
+        "D": "0x0000",
+        "X": "0x0150",
+        "Y": "0x00e1",
+        "U": "0x00e3",
+        "PC": "0xa7d5",
+        "S": "0x07fe",
+        "CC": "0x84",
+        "DP": "0x00"
+       },
+       "instruction": {
+        "address": "A7D5",
+        "bytes": "2406",
+        "text": "BCC    $A7DD",
+        "symbol": "wait_frame",
+        "delta": 420
+       },
+       "following": [
+        "A7D7: EC A4    LDD    ,Y",
+        "A7D9: AF A4    STX    ,Y",
+        "A7DB: ED C4    STD    ,U",
+        "A7DD: 33 A4    LEAU   ,Y",
+        "A7DF: 31 3E    LEAY   -$2,Y",
+        "A7E1: 11 93 80 CMPU   <$80",
+        "... 8 more"
+       ],
+       "errorlog": "<volatile>",
+       "session": {
+        "alive": true,
+        "running": false,
+        "altered": false,
         "omitted": [
          "altering_writes",
          "console"
@@ -486,65 +718,67 @@
       }
      }
     ],
-    "steps_completed": 1,
+    "steps_completed": 2,
     "failed_at": {
      "available": false,
      "why": "no step failed"
     },
-    "held": 0,
-    "visible_cpu": ":maincpu",
-    "visible_cpu_kept": {
-     "before": ":maincpu",
-     "after": ":maincpu",
-     "restored": false
-    }
+    "held": 0
    },
    "verify": {
-    "checked": false,
-    "why": "no `expect` given; the act's own steps carried whatever verification they asked for"
+    "checked": true,
+    "seen": true,
+    "verdict": "TARGET",
+    "expected": "coin counter on",
+    "line": "[:] coin counter on",
+    "lines_before": 4,
+    "lines_total": 1,
+    "waited_s": "<volatile>"
    },
    "looked": {
     "emulator": {
      "available": true,
-     "since_mark": 66734,
-     "lines_written": 0,
-     "lines_total": 0,
+     "since_mark": "<volatile>",
+     "lines_written": 13,
+     "lines_total": 11,
      "truncated": false,
-     "lines": [],
+     "lines": [
+      "[luaengine] MAME_MCP_INPUT#3 set name=\"Coin 1\" player=0 mask=00000001 defvalue=00000001 port_before=000000cf frame=295",
+      "[luaengine] MAME_MCP_INPUT#3 release frame=299 port_held=000000ce",
+      "[:] coin counter on",
+      "[:maincpu] ':maincpu' (FE4A): unmapped program memory read from 9020 & FF",
+      "[:] coin counter off",
+      "[:maincpu] ':maincpu' (A685): unmapped program memory read from 9010 & FF",
+      "... 5 more"
+     ],
      "pattern": "."
     }
    }
   }
  },
  "find": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): find @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 10",
   "call": {
-   "ref": "0x0",
-   "length": 1024,
-   "data_hex": "00"
+   "data_hex": "7c042b",
+   "ref": "0xa000",
+   "length": 24576
   },
   "reply": {
-   "summary": "find 00 in 0x400 bytes at 0x0: 510 hits",
+   "summary": "find 7c042b in 0x6000 bytes at 0xa000: 1 hit",
    "status": "ok",
-   "ref": "0x0",
-   "addr": "0x00000000",
-   "length": 1024,
+   "ref": "0xa000",
+   "addr": "0x0000a000",
+   "length": 24576,
    "span": {
-    "from": "0x00000000",
-    "length": 1024,
+    "from": "0x0000a000",
+    "length": 24576,
     "source": "ref+length"
    },
    "hits": [
-    "0x000000e0",
-    "0x000000e1",
-    "0x000000e4",
-    "0x000000e5",
-    "0x000000e8",
-    "0x000000e9",
-    "... 394 more"
+    "0x0000b583"
    ],
-   "hits_total": 510,
-   "truncated": true,
+   "hits_total": 1,
+   "truncated": false,
    "cpu": ":maincpu"
   }
  },
@@ -699,23 +933,31 @@
   }
  },
  "gfx_blits": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_blits @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 36",
   "call": {
-   "draw_command": "blit"
+   "draw_command": "player",
+   "frame": 545,
+   "area": [
+    148,
+    164,
+    8,
+    16
+   ],
+   "dest": "./tmp/demos/tour/blits.png"
   },
   "reply": {
-   "summary": "gfx_blits blit frame 6: 1 blit by 1 writer; 1008x756 PNG x3, inline",
+   "summary": "gfx_blits player frame 545: 1 of 1 blit covers [148, 164, 8, 16], topmost #0 pc 0x0000a81f; 1024x960 PNG x4, inline",
    "status": "ok",
-   "draw_command": "blit",
-   "frame_blit": 6,
-   "frame_complete": true,
+   "draw_command": "player",
+   "frame_blit": 545,
+   "frame_complete": false,
    "rows_cut": false,
    "screen": ":screen",
-   "frame_screen": 8,
-   "width": 336,
-   "height": 252,
-   "rows_path": "$TMPDIR/mame-mcp-<run>/capture-700000-32-t70001e.rows",
-   "rows_kept": 7,
+   "frame_screen": 545,
+   "width": 256,
+   "height": 240,
+   "rows_path": "<volatile>",
+   "rows_kept": 3,
    "overflow_rows": 0,
    "callback_errors": {
     "count": 0,
@@ -725,15 +967,15 @@
     }
    },
    "frames_with_blits": {
-    "first": 4,
-    "last": 8,
+    "first": 543,
+    "last": 545,
     "count": 3
    },
    "blits_in_frame": 1,
    "legend": [
     {
-     "pc": "0x00002738",
-     "symbol": "boot_init+0x15c",
+     "pc": "0x0000a81f",
+     "symbol": "write_sprites+0x29",
      "color": "#ff4040",
      "blits": 1
     }
@@ -741,29 +983,86 @@
    "colors_repeat": false,
    "by_plane": [
     {
-     "plane": "sprites",
-     "page": 0,
+     "plane": {
+      "available": false,
+      "why": "the command declares no plane"
+     },
+     "page": {
+      "available": false,
+      "why": "the plane is not drawn in pages"
+     },
      "blits": 1,
      "on_screen": 1
     }
    ],
-   "note": "a plane drawn in pages: `by_plane` and each listed blit name the `page`, and which page the screen shows is not in the rows",
-   "not_proved": [
-    "dest_x",
-    "scroll_y",
-    "source_dir_y",
-    "source_x",
-    "source_y",
-    "planes.sprites",
-    "... 1 more"
+   "area": [
+    148,
+    164,
+    8,
+    16
    ],
+   "covering": 1,
+   "topmost": {
+    "index": 0,
+    "n": 3,
+    "pc": "0x0000a81f",
+    "plane": {
+     "available": false,
+     "why": "the command declares no plane"
+    }
+   },
+   "note": "a box COVERS the area; what painted a pixel also needs the source pixels, their transparency and the scale, which the rows do not carry: `topmost` is the last covering blit of the highest plane, the likeliest painter, not a proven one",
+   "listed": {
+    "first": 0,
+    "count": 1,
+    "of": 1
+   },
+   "blits": [
+    {
+     "index": 0,
+     "n": 3,
+     "pc": "0x0000a81f",
+     "box": {
+      "x": 148,
+      "y": 164,
+      "width": 8,
+      "height": 16,
+      "dir_x": 1,
+      "dir_y": 1
+     },
+     "plane": {
+      "available": false,
+      "why": "the command declares no plane"
+     },
+     "screen": [
+      [
+       148,
+       164,
+       8,
+       16
+      ]
+     ],
+     "on_screen": true,
+     "clipped": false,
+     "fields": {
+      "source_tile": 91,
+      "dest_y": 164,
+      "dest_x": 148,
+      "width": 8,
+      "height": 16
+     },
+     "flags": {},
+     "symbol": "write_sprites+0x29"
+    }
+   ],
+   "not_proved": [],
    "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/blits-1.png",
+    "path": "./tmp/demos/tour/blits.png",
     "bytes": "<volatile>",
     "sha256": "<volatile>",
-    "width": 1008,
-    "height": 756,
-    "scale": 3,
+    "width": 1024,
+    "height": 960,
+    "scale": 4,
     "indexed": false,
     "inline": true
    },
@@ -771,58 +1070,48 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#12",
-   "pc_before": "0x000027ac",
+   "call": "MAME_MCP_LUA_END#14",
+   "pc_before": "0x0000fd8c",
    "cause": "gfx_blits: one step",
-   "stop_seq": 13,
-   "pc": "0x000027ac",
+   "stop_seq": 16,
+   "pc": "0x0000fd8f",
    "cpu": ":maincpu",
-   "frame": 8,
+   "frame": 545,
    "regs": {
-    "D0": "0x0103a924",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00004842",
-    "A1": "0x000f27de",
-    "A2": "0x00720003",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2708",
-    "PC": "0x000027ac"
+    "A": "0x00",
+    "B": "0x72",
+    "D": "0x0072",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd8f",
+    "S": "0x07f4",
+    "CC": "0xf4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0027AC",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $27ac",
-    "symbol": "boot_init",
-    "delta": 464
+    "address": "FD8F",
+    "bytes": "2628",
+    "text": "BNE    $FDB9",
+    "symbol": "irq",
+    "delta": 15
    },
    "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
+    "FD91: F6 95 01 LDB    $9501",
+    "FD94: 1F 98    TFR    B,A",
+    "FD96: D0 BD    SUBB   <$BD",
+    "FD98: C4 0F    ANDB   #$0F",
+    "FD9A: 85 10    BITA   #$10",
+    "FD9C: 26 01    BNE    $FD9F",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   },
+   "errorlog": "<volatile>",
    "watches": [
     {
-     "ref": "0x700000",
+     "ref": "0xc",
      "cpu": ":maincpu",
      "state": "captured",
-     "total": 7,
+     "total": 3,
      "callback_errors": {
       "count": 0,
       "first": {
@@ -846,52 +1135,67 @@
   }
  },
  "gfx_draft": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_draft @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 33",
   "call": {
-   "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml"
+   "dest": "./tmp/demos/tour/gridlee-gfx-draft.yaml",
+   "choose": {
+    "candidate": "s1c1",
+    "chosen_by": "the tour"
+   }
   },
   "reply": {
-   "summary": "gfx_draft $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml: 0 formats, 0 assets, 0 commands",
+   "summary": "gfx_draft ./tmp/demos/tour/gridlee-gfx-draft.yaml: 1 format (1 human), 0 assets, 0 commands; 2 not proved",
    "status": "ok",
    "manifest": {
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9.yaml",
-    "sha256": "552963ab5fbf9c739d1d2d8bb15b50dc4bc095b108ec77809897fcb551a45218"
+    "path": "./tmp/demos/tour/gridlee-gfx-draft.yaml",
+    "sha256": "227b32e68e59f87c84a0ed70236c92d935c8c42bb20b8f66a6a3269c8aca106d"
    },
    "report": {
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f9-report.json",
-    "sha256": "5f75090e1a75a2cb1743a6dd78abe96446d3fbb5f35e324f80f20a7ec2d60ef3"
+    "path": "./tmp/demos/tour/gridlee-gfx-draft-report.json",
+    "sha256": "251286b45bd5632f5e776e4346eae0e9bb22403970fc20f99da27d415469142d"
    },
-   "formats": {},
+   "formats": {
+    "tiles_8x16x4": "human"
+   },
    "asset_names": [],
    "command_fields": {},
    "evidence": {
     "locates": 1,
     "sweeps": 1,
-    "choices": 0,
+    "choices": 1,
     "correlations": 0
    },
-   "not_proved": [],
-   "confirm": "the owner confirms the draft by deleting its first line; `gfx_load` loads it before that and says `draft: true`"
+   "not_proved": [
+    ":gfx1: s1c1 matched only windows that prove no layout (failed: rarest)",
+    ":gfx1: no asset for tiles_8x16x4, chosen under no palette"
+   ],
+   "confirm": "the owner confirms the draft by deleting its first line; `gfx_load` loads it before that and says `draft: true`",
+   "chose": {
+    "candidate": "s1c1",
+    "chosen_by": "the tour"
+   }
   }
  },
  "gfx_film": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_film @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 20",
   "call": {
-   "trigger": "0x70001e",
-   "length": 2,
-   "value": 65535,
+   "trigger": "credits",
+   "frames": 90,
    "keep": 2,
-   "frames": 4
+   "film_dir": "./tmp/demos/tour/film"
   },
   "reply": {
-   "summary": "gfx_film on 0x70001e: armed, installed when the console next reads a line",
+   "summary": "gfx_film on credits: armed, installed when the console next reads a line",
    "status": "ok",
    "armed_now": true,
    "film": {
-    "trigger": "0x70001e",
-    "trigger_addr": "0x0070001e",
-    "length": 2,
-    "value": "0xffff",
+    "trigger": "credits",
+    "trigger_addr": "0x0000042b",
+    "length": 1,
+    "value": {
+     "available": false,
+     "why": "no `value` was given"
+    },
     "changed": false,
     "pc": {
      "available": false,
@@ -902,211 +1206,260 @@
      "why": "no `pc` was given"
     },
     "cpu": ":maincpu",
-    "frames": 4,
+    "frames": 90,
     "keep": 2,
     "crop": {
      "available": false,
      "why": "no `crop`: the whole screen"
     },
-    "film_dir": "$TMPDIR/mame-mcp-<run>/film-1",
+    "film_dir": "./tmp/demos/tour/film",
     "screen": ":screen",
     "checked": true,
     "space": "program"
    },
-   "trigger_maps_to": "radendur_state::blit_w",
+   "trigger_maps_to": "memory@0",
    "tally_id": "film",
    "installed": false,
    "pending": true,
-   "install_call": "MAME_MCP_LUA_END#17",
+   "install_call": "MAME_MCP_LUA_END#5",
    "install_lines_ahead": 0,
    "note": "the film judges from the first whole frame after the install, which runs when the console next reads a line; read it with `gfx_film()`",
    "evaluated_by": "one step",
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#16",
-   "pc_before": "0x000027ac",
+   "call": "MAME_MCP_LUA_END#4",
+   "pc_before": "0x0000a7d5",
    "cause": "gfx_film: one step",
-   "stop_seq": 15,
-   "pc": "0x000027ac",
+   "stop_seq": 6,
+   "pc": "0x0000a7dd",
    "cpu": ":maincpu",
-   "frame": 8,
+   "frame": 419,
    "regs": {
-    "D0": "0x0103a922",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00004842",
-    "A1": "0x000f27de",
-    "A2": "0x00720003",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2708",
-    "PC": "0x000027ac"
+    "A": "0x00",
+    "B": "0x00",
+    "D": "0x0000",
+    "X": "0x0150",
+    "Y": "0x00e1",
+    "U": "0x00e3",
+    "PC": "0xa7dd",
+    "S": "0x07fe",
+    "CC": "0x84",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0027AC",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $27ac",
-    "symbol": "boot_init",
-    "delta": 464
+    "address": "A7DD",
+    "bytes": "33A4",
+    "text": "LEAU   ,Y",
+    "symbol": "wait_frame",
+    "delta": 428
    },
    "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
+    "A7DF: 31 3E       LEAY   -$2,Y",
+    "A7E1: 11 93 80    CMPU   <$80",
+    "A7E4: 26 E6       BNE    $A7CC",
+    "A7E6: DE 84       LDU    <$84",
+    "A7E8: 31 5E       LEAY   -$2,U",
+    "A7EA: DC 80       LDD    <$80",
+    "... 6 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
+   "errorlog": "<volatile>"
+  },
+  "then": {
+   "tool": "gfx_film",
+   "call": {},
+   "reply": {
+    "summary": "gfx_film on credits: finished, 90 judged, 1 met, 1 kept; 792x864 PNG x3, inline",
+    "status": "ok",
+    "film": {
+     "trigger": "credits",
+     "trigger_addr": "0x0000042b",
+     "length": 1,
+     "value": {
+      "available": false,
+      "why": "no `value` was given"
+     },
+     "changed": false,
+     "pc": {
+      "available": false,
+      "why": "no `pc` was given"
+     },
+     "pc_addr": {
+      "available": false,
+      "why": "no `pc` was given"
+     },
+     "cpu": ":maincpu",
+     "frames": 90,
+     "keep": 2,
+     "crop": {
+      "available": false,
+      "why": "no `crop`: the whole screen"
+     },
+     "film_dir": "./tmp/demos/tour/film",
+     "screen": ":screen",
+     "checked": true,
+     "space": "program"
+    },
+    "tally_id": "film",
+    "installed": true,
+    "pending": false,
+    "cpu": ":maincpu",
+    "state": "finished",
+    "frame_as_of": 543,
+    "superseded": false,
+    "callback_errors": {
+     "count": 0,
+     "first": {
+      "available": false,
+      "why": "no callback raised"
+     }
+    },
+    "judged": 90,
+    "judged_frames": [
+     420,
+     509
+    ],
+    "met": 1,
+    "kept": 1,
+    "refused": 0,
+    "dropped_total": 0,
+    "dropped_frames": {
+     "available": false,
+     "why": "no frame was dropped"
+    },
+    "lost": {},
+    "pending_picture": false,
+    "cost": "<volatile>",
+    "listing_path": "./tmp/demos/tour/film/film.json",
+    "cells": [
+     {
+      "k": 1,
+      "frame": 425,
+      "hits_in_frame": 1,
+      "hit_counters": [
+       425,
+       425
+      ],
+      "pc": "0x0000b583",
+      "value": "0x02",
+      "symbol": "count_coin",
+      "path": "./tmp/demos/tour/film/frame-1.png"
+     }
+    ],
+    "listed": {
+     "first": 0,
+     "count": 1,
+     "of": 1
+    },
+    "image": {
+     "path": "./tmp/demos/tour/film/sheet-0.png",
+     "bytes": "<volatile>",
+     "sha256": "<volatile>",
+     "width": 792,
+     "height": 864,
+     "scale": 3,
+     "indexed": false,
+     "inline": true
+    },
+    "animation": {
+     "path": "./tmp/demos/tour/film/film-anim.png",
+     "bytes": "<volatile>",
+     "sha256": "<volatile>",
+     "frames": 1,
+     "frame_period_s": 0.016896
+    }
    }
   }
  },
  "gfx_load": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_load @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 34",
   "call": {
-   "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml"
+   "path": "./docs/reference/tour/gridlee-gfx.yaml"
   },
   "reply": {
-   "summary": "gfx_load $MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml: 1 format, 1 asset, 1 command, 1 palette port; 14 proved, 11 declared, 0 human",
+   "summary": "gfx_load ./docs/reference/tour/gridlee-gfx.yaml: 1 format, 1 asset, 1 command, 0 palette ports; 9 proved, 0 declared, 0 human",
    "status": "ok",
    "loaded": true,
    "replaced_path": {
     "available": false,
     "why": "no manifest was loaded in this session before this one"
    },
-   "path": "$MAME_LIVE_BENCH/m68k-dual/hardware/gfx.yaml",
-   "sha256": "c595c36986dda4738dadb83211388e1251bfdf66e6f2cd02e4c1fd495c76ca1d",
+   "path": "./docs/reference/tour/gridlee-gfx.yaml",
+   "sha256": "b79a770ebbbc34d15656c24e1aa3ec68ed95065ab8dc3606d69c43845846e753",
    "draft": false,
    "systems": [
-    "radendur",
-    "wheelfir",
-    "pwball",
-    "kongball"
+    "gridlee"
    ],
    "formats": {
-    "page_512x512x8": "declared"
+    "sprite": "proved"
    },
    "assets": {
-    "pages": {
-     "format": "page_512x512x8",
+    "sprites": {
+     "format": "sprite",
      "tag": "gfx1",
      "palette": "palette"
     }
    },
    "commands": {
-    "blit": {
-     "block": "0x00700000",
-     "length": 32,
-     "trigger_addr": "0x0070001e",
-     "fires_with": "0xffff",
-     "asset": "pages",
+    "player": {
+     "block": "0x0000000c",
+     "length": 4,
+     "trigger_addr": "0x00000010",
+     "fires_with": "any write",
+     "asset": "sprites",
      "roles": [
-      "dest_dir_x",
-      "dest_dir_y",
       "dest_x",
-      "dest_x_end",
       "dest_y",
-      "dest_y_end",
-      "... 7 more"
+      "height",
+      "source_tile",
+      "width"
      ],
-     "flags": [
-      "dest_y_half",
-      "scroll_x",
-      "scroll_y",
-      "visible_page",
-      "writes_index_0"
-     ],
-     "planes": [
-      "sprites",
-      "background"
-     ]
+     "flags": [],
+     "planes": []
     }
    },
-   "palette_ports": {
-    "ramdac": {
-     "palette": "palette",
-     "space": "program",
-     "protocol": "ramdac",
-     "index_port": "0x00720001",
-     "data_port": "0x00720003",
-     "index_flag_mask": {
-      "available": false,
-      "why": "only a latch's index word carries a flag"
-     },
-     "order": "rgb",
-     "component_bits": 8,
-     "components_bit_reversed": false,
-     "pen_range": [
-      0,
-      255
-     ]
-    }
-   },
+   "palette_ports": {},
    "status_counts": {
-    "proved": 14,
-    "declared": 11,
+    "proved": 9,
+    "declared": 0,
     "human": 0
    }
   }
  },
  "gfx_locate": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_locate @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 32",
   "call": {
    "layouts": [
-    {
-     "width": 8,
-     "height": 8,
-     "planes": 1,
-     "planeoffset": [
-      0
-     ],
-     "xoffset": "{ STEP8(0,1) }",
-     "yoffset": "{ STEP8(0,8) }",
-     "charincrement": "8*8"
-    }
+    "s1c1"
    ],
    "patch": [
-    0,
-    0,
+    148,
+    164,
     8,
-    8
+    16
    ],
-   "tag": "maincpu",
-   "count": 64
+   "tag": "gfx1",
+   "transparent": 0
   },
   "reply": {
-   "summary": "gfx_locate region :maincpu for patch [0, 0, 8, 8]: no match",
+   "summary": "gfx_locate region :gfx1 for patch [148, 164, 8, 16]: 1 match, first s1c1 tile 91 flip none base 0x340",
    "status": "ok",
    "patch": [
-    0,
-    0,
+    148,
+    164,
     8,
-    8
+    16
    ],
    "screen": ":screen",
-   "frame_screen": 0,
+   "frame_screen": 545,
    "palette": ":palette",
    "kind": "region",
-   "tag": ":maincpu",
-   "size": 1048576,
-   "bytewidth": 2,
-   "endianness": "big",
+   "tag": ":gfx1",
+   "size": 16384,
+   "bytewidth": 1,
+   "endianness": "little",
    "offset": "0x00000000",
-   "transparent": {
-    "available": false,
-    "why": "no `transparent`: every pixel compared"
-   },
+   "transparent": 0,
    "flips": [
     "none",
     "x",
@@ -1116,59 +1469,76 @@
    "candidates": [
     {
      "layout": {
-      "name": "layout0",
+      "name": "s1c1",
       "width": 8,
-      "height": 8,
-      "planes": 1,
+      "height": 16,
+      "planes": 4,
       "planeoffset": [
-       0
-      ],
-      "xoffset": [
        0,
        1,
        2,
-       3,
+       3
+      ],
+      "xoffset": [
+       0,
        4,
-       5,
+       8,
+       12,
+       16,
+       20,
        "... 2 more"
       ],
       "yoffset": [
        0,
-       8,
-       16,
-       24,
        32,
-       40,
-       "... 2 more"
+       64,
+       96,
+       128,
+       160,
+       "... 10 more"
       ],
-      "charincrement": 64
+      "charincrement": 512
      },
      "tiles_searched": [
       0,
-      64
+      256
      ],
-     "windows": 0,
-     "windows_uniform": 1,
+     "windows": 1,
+     "windows_uniform": 0,
      "windows_mixed_bank": 0,
-     "matches": 0,
-     "tiles_available": 131072,
-     "pen_map_matches": 0
+     "matches": 1,
+     "tiles_available": 256
     }
    ],
-   "matched": false,
-   "matches_total": 0,
-   "matches": [],
+   "matched": true,
+   "matches_total": 1,
+   "matches": [
+    {
+     "layout": "s1c1",
+     "window": [
+      148,
+      164
+     ],
+     "tile": 91,
+     "flip": "none",
+     "base": 832,
+     "bit": 46592,
+     "byte": 5824,
+     "compared": 78,
+     "shape": [
+      16,
+      8,
+      1
+     ],
+     "ambiguous": false
+    }
+   ],
    "ambiguous": false,
    "ambiguous_windows": 0,
    "pen_map": {
-    "tried": true,
-    "matches": 0
-   },
-   "nearest": {
     "available": false,
-    "why": "no window came close enough to name (the note says why)"
+    "why": "the single-bank search matched, so no pen map was tried"
    },
-   "note": "no nearest candidate: every window was of one pen or of two banks; the pen map read none of them as a tile",
    "evidence": {
     "locate": 1
    },
@@ -1176,75 +1546,97 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#9",
-   "pc_before": "0x000025f6",
+   "call": "MAME_MCP_LUA_END#12",
+   "pc_before": "0x0000fd88",
    "cause": "gfx_locate: one step",
-   "stop_seq": 10,
-   "pc": "0x000025f4",
+   "stop_seq": 14,
+   "pc": "0x0000fd8a",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 545,
    "regs": {
-    "D0": "0x0000e926",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00201001",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2704",
-    "PC": "0x000025f4"
+    "A": "0x00",
+    "B": "0x72",
+    "D": "0x0072",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd8a",
+    "S": "0x07f4",
+    "CC": "0xf8",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025F4",
-    "bytes": "4218",
-    "text": "clr.b   (A0)+",
-    "symbol": "boot_init",
-    "delta": 24
+    "address": "FD8A",
+    "bytes": "0CB4",
+    "text": "INC    <$B4",
+    "symbol": "irq",
+    "delta": 10
    },
    "following": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "FD91: F6 95 01 LDB    $9501",
+    "FD94: 1F 98    TFR    B,A",
+    "FD96: D0 BD    SUBB   <$BD",
+    "FD98: C4 0F    ANDB   #$0F",
+    "... 8 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>",
+   "watches": [
+    {
+     "ref": "0xc",
+     "cpu": ":maincpu",
+     "state": "captured",
+     "total": 3,
+     "callback_errors": {
+      "count": 0,
+      "first": {
+       "available": false,
+       "why": "no callback raised"
+      }
+     },
+     "since_last_stop": 0
+    }
+   ],
+   "omitted": [
+    "addr",
+    "by",
+    "fmt",
+    "frame_as_of",
+    "install_resent",
+    "installed",
+    "... 12 more"
+   ],
+   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
  "gfx_sweep": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_sweep @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 31",
   "call": {
-   "tag": "maincpu",
+   "tag": "gfx1",
    "planes": [
-    1
+    4
    ],
-   "count": 8
+   "sizes": [
+    [
+     8,
+     16
+    ]
+   ],
+   "count": 16,
+   "dest": "./tmp/demos/tour/sweep.png"
   },
   "reply": {
-   "summary": "gfx_sweep region :maincpu: sweep 1, 1 candidate s1c1, 1 drawn; 1320x480 PNG x5, inline",
+   "summary": "gfx_sweep region :gfx1: sweep 1, 3 candidates s1c1..s1c3, 3 drawn; 1568x384 PNG x2, inline",
    "status": "ok",
    "kind": "region",
-   "tag": ":maincpu",
-   "size": 1048576,
-   "bytewidth": 2,
-   "endianness": "big",
+   "tag": ":gfx1",
+   "size": 16384,
+   "bytewidth": 1,
+   "endianness": "little",
    "offset": "0x00000000",
    "sweep": 1,
-   "count": 8,
+   "count": 16,
    "palette": "none",
    "pen_base": 0,
    "real_colors": false,
@@ -1252,20 +1644,32 @@
    "candidates": [
     {
      "id": "s1c1",
-     "what": "1bpp 8x8 rows",
-     "tiles_available": 131072,
-     "shown": 8
+     "what": "4bpp 8x16 packed, rows",
+     "tiles_available": 256,
+     "shown": 16
+    },
+    {
+     "id": "s1c2",
+     "what": "4bpp 8x16 planar, rows",
+     "tiles_available": 256,
+     "shown": 16
+    },
+    {
+     "id": "s1c3",
+     "what": "4bpp 8x16 split, rows",
+     "tiles_available": 256,
+     "shown": 16
     }
    ],
    "next": "gfx_locate(layouts=[<ids>]) proves one against the screen; gfx_draft(choose={\"candidate\": <id>, \"chosen_by\": <who>}) records a person's pick",
    "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours",
    "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/sweep-1.png",
+    "path": "./tmp/demos/tour/sweep.png",
     "bytes": "<volatile>",
     "sha256": "<volatile>",
-    "width": 1320,
-    "height": 480,
-    "scale": 5,
+    "width": 1568,
+    "height": 384,
+    "scale": 2,
     "indexed": false,
     "inline": true
    },
@@ -1273,123 +1677,135 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#10",
-   "pc_before": "0x000025f4",
+   "call": "MAME_MCP_LUA_END#11",
+   "pc_before": "0x0000fd86",
    "cause": "gfx_sweep: one step",
-   "stop_seq": 11,
-   "pc": "0x000025f6",
+   "stop_seq": 13,
+   "pc": "0x0000fd88",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 545,
    "regs": {
-    "D0": "0x0000e926",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00201002",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2704",
-    "PC": "0x000025f6"
+    "A": "0x00",
+    "B": "0x72",
+    "D": "0x0072",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd88",
+    "S": "0x07f4",
+    "CC": "0xf4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025F6",
-    "bytes": "51C8FFFC",
-    "text": "dbra    D0, $25f4",
-    "symbol": "boot_init",
-    "delta": 26
+    "address": "FD88",
+    "bytes": "0CB3",
+    "text": "INC    <$B3",
+    "symbol": "irq",
+    "delta": 8
    },
    "following": [
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "FD91: F6 95 01 LDB    $9501",
+    "FD94: 1F 98    TFR    B,A",
+    "FD96: D0 BD    SUBB   <$BD",
+    "... 8 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>",
+   "watches": [
+    {
+     "ref": "0xc",
+     "cpu": ":maincpu",
+     "state": "captured",
+     "total": 3,
+     "callback_errors": {
+      "count": 0,
+      "first": {
+       "available": false,
+       "why": "no callback raised"
+      }
+     },
+     "since_last_stop": 0
+    }
+   ],
+   "omitted": [
+    "addr",
+    "by",
+    "fmt",
+    "frame_as_of",
+    "install_resent",
+    "installed",
+    "... 12 more"
+   ],
+   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
  "gfx_view": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_view @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 35",
   "call": {
-   "layout": {
-    "width": 8,
-    "height": 8,
-    "planes": 1,
-    "planeoffset": [
-     0
-    ],
-    "xoffset": "{ STEP8(0,1) }",
-    "yoffset": "{ STEP8(0,8) }",
-    "charincrement": "8*8"
-   },
-   "palette": "none",
-   "tag": "maincpu",
-   "count": 16
+   "layout": "sprite",
+   "tag": "gfx1",
+   "palette": "palette",
+   "first": 88,
+   "count": 8,
+   "columns": 8,
+   "pen_base": 832,
+   "dest": "./tmp/demos/tour/tiles.png"
   },
   "reply": {
-   "summary": "gfx_view region :maincpu: tiles 0..15 of 131072, 8x8x1, palette none; 1024x64 PNG x8, inline",
+   "summary": "gfx_view region :gfx1: tiles 88..95 of 256, 8x16x4, palette :palette; 512x128 PNG x8, inline",
    "status": "ok",
    "layout": {
-    "name": "",
+    "name": "sprite",
     "width": 8,
-    "height": 8,
-    "planes": 1,
+    "height": 16,
+    "planes": 4,
     "planeoffset": [
-     0
-    ],
-    "xoffset": [
      0,
      1,
      2,
-     3,
+     3
+    ],
+    "xoffset": [
+     0,
      4,
-     5,
+     8,
+     12,
+     16,
+     20,
      "... 2 more"
     ],
     "yoffset": [
      0,
-     8,
-     16,
-     24,
      32,
-     40,
-     "... 2 more"
+     64,
+     96,
+     128,
+     160,
+     "... 10 more"
     ],
-    "charincrement": 64
+    "charincrement": 512
    },
    "kind": "region",
-   "tag": ":maincpu",
-   "size": 1048576,
-   "bytewidth": 2,
-   "endianness": "big",
+   "tag": ":gfx1",
+   "size": 16384,
+   "bytewidth": 1,
+   "endianness": "little",
    "offset": "0x00000000",
-   "first": 0,
-   "count": 16,
-   "tiles_available": 131072,
-   "columns": 16,
-   "palette": "none",
-   "pen_base": 0,
-   "real_colors": false,
-   "note": "palette `none`: a grey ramp over the pixel values, NOT the machine's colours; the PNG's index is the pixel value either way",
+   "first": 88,
+   "count": 8,
+   "tiles_available": 256,
+   "columns": 8,
+   "palette": ":palette",
+   "pen_base": 832,
+   "real_colors": true,
    "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/gfx-1.png",
+    "path": "./tmp/demos/tour/tiles.png",
     "bytes": "<volatile>",
     "sha256": "<volatile>",
-    "width": 1024,
-    "height": 64,
+    "width": 512,
+    "height": 128,
     "scale": 8,
     "indexed": true,
     "inline": true
@@ -1398,352 +1814,316 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#8",
-   "pc_before": "0x000025f4",
+   "call": "MAME_MCP_LUA_END#13",
+   "pc_before": "0x0000fd8a",
    "cause": "gfx_view: one step",
-   "stop_seq": 9,
-   "pc": "0x000025f6",
+   "stop_seq": 15,
+   "pc": "0x0000fd8c",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 545,
    "regs": {
-    "D0": "0x0000e927",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00201001",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2704",
-    "PC": "0x000025f6"
+    "A": "0x00",
+    "B": "0x72",
+    "D": "0x0072",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd8c",
+    "S": "0x07f4",
+    "CC": "0xf0",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025F6",
-    "bytes": "51C8FFFC",
-    "text": "dbra    D0, $25f4",
-    "symbol": "boot_init",
-    "delta": 26
+    "address": "FD8C",
+    "bytes": "B603BE",
+    "text": "LDA    $03BE",
+    "symbol": "irq",
+    "delta": 12
    },
    "following": [
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
+    "FD8F: 26 28    BNE    $FDB9",
+    "FD91: F6 95 01 LDB    $9501",
+    "FD94: 1F 98    TFR    B,A",
+    "FD96: D0 BD    SUBB   <$BD",
+    "FD98: C4 0F    ANDB   #$0F",
+    "FD9A: 85 10    BITA   #$10",
+    "... 8 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>",
+   "watches": [
+    {
+     "ref": "0xc",
+     "cpu": ":maincpu",
+     "state": "captured",
+     "total": 3,
+     "callback_errors": {
+      "count": 0,
+      "first": {
+       "available": false,
+       "why": "no callback raised"
+      }
+     },
+     "since_last_stop": 0
+    }
+   ],
+   "omitted": [
+    "addr",
+    "by",
+    "fmt",
+    "frame_as_of",
+    "install_resent",
+    "installed",
+    "... 12 more"
+   ],
+   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
  "history": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): history @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 43",
   "call": {
-   "limit": 4
+   "limit": 8
   },
   "reply": {
-   "summary": "history: 2 instructions of 4 asked",
+   "summary": "history: 8 instructions of 8 asked",
    "status": "ok",
-   "asked": 4,
+   "asked": 8,
    "lines": [
-    "0F2034: move    #$2700, SR",
-    "0F2038: move.w  #$0, $20351c.l"
+    "B579: DEC    $0491",
+    "B57C: JSR    $B583",
+    "B583: INC    $042B",
+    "B586: LDA    #$01",
+    "B588: ADDA   $042C",
+    "B58B: DAA",
+    "... 2 more"
    ],
    "cpu": ":maincpu"
   }
  },
  "image_compare": {
-  "from": "[Y] the media layer: each scenario the hand way and the new way, over one answer: m68k-dual S1 new: series_capture and image_compare region find the same frames, with no picture",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 75",
   "call": {
-   "method": "region",
-   "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
-   "measure": "changed_pixels"
+   "method": "image",
+   "a": "./tmp/demos/tour/series/f000557.png",
+   "b": "./tmp/demos/tour/series/f000581.png"
   },
   "reply": {
-   "summary": "image_compare region: changed_pixels, 9 transitions over 12 frames",
+   "summary": "image_compare image: 8975 pixels differ over 256x240, bbox [4, 17, 242, 213]",
    "status": "ok",
-   "measure": "changed_pixels",
+   "differing_pixels": 8975,
+   "bbox": [
+    4,
+    17,
+    242,
+    213
+   ],
+   "max_delta": [
+    255,
+    255,
+    255
+   ],
+   "width": 256,
+   "height": 240,
    "crop": [
     0,
     0,
-    336,
-    252
+    256,
+    240
    ],
-   "frames": 12,
-   "start": {
-    "available": false,
-    "why": "`changed_pixels` counts a change from the frame before, and the first frame has none"
+   "shift": [
+    0,
+    0
+   ],
+   "tolerance": 0,
+   "a": {
+    "path": "./tmp/demos/tour/series/f000557.png",
+    "sha256": "<volatile>"
    },
-   "transitions": [
-    [
-     24,
-     14790
-    ],
-    [
-     25,
-     23888
-    ],
-    [
-     26,
-     30995
-    ],
-    [
-     27,
-     39139
-    ],
-    [
-     28,
-     31816
-    ],
-    [
-     29,
-     16125
-    ],
-    "... 3 more"
-   ],
-   "gaps": [
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    "... 2 more"
-   ],
-   "transitions_total": 9,
-   "path": "$TMPDIR/mame-mcp-<run>/series/series-1/track-1.json",
-   "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json"
+   "b": {
+    "path": "./tmp/demos/tour/series/f000581.png",
+    "sha256": "<volatile>"
+   }
   }
  },
  "input": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): input @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 21, step 1 of its `perform`",
   "call": {
-   "port": ":P1",
+   "port": ":IN1",
    "field": "Coin 1",
-   "frames": 1,
-   "seconds": 10.0
+   "frames": 4,
+   "seconds": 300
   },
   "reply": {
-   "summary": "input :P1 'Coin 1': held 1 frame, active True, released at frame 18",
+   "summary": "input :IN1 'Coin 1': held 4 frames, active True, released at frame 423",
    "status": "ok",
    "verdict": "ELAPSED",
-   "frame_before": 17,
-   "frame_after": 19,
-   "emulated_before_s": 0.359425,
-   "emulated_after_s": 0.39936,
-   "cycles": 638966,
-   "polls": 2,
+   "frame_before": 419,
+   "frame_after": 424,
+   "emulated_before_s": 7.096336,
+   "emulated_after_s": 7.180818,
+   "cycles": 105602,
+   "polls": 6,
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
    "route": "ioport",
-   "port": ":P1",
+   "port": ":IN1",
    "field": "Coin 1",
    "value": "0x00000001",
-   "frames": 1,
+   "frames": 4,
    "name": "Coin 1",
    "player": 0,
-   "mask": "0x00000400",
-   "defvalue": "0x00000400",
-   "port_before": "0x0000dfff",
-   "frame_set": 17,
+   "mask": "0x00000001",
+   "defvalue": "0x00000001",
+   "port_before": "0x000000cf",
+   "frame_set": 419,
    "released": true,
-   "port_held": "0x0000dbff",
-   "frame_released": 18,
+   "port_held": "0x000000ce",
+   "frame_released": 423,
    "active": true,
    "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 24,
-   "pc": "0x000e2cdc",
+   "stop_seq": 7,
+   "pc": "0x0000fd80",
    "cpu": ":maincpu",
-   "frame": 19,
+   "frame": 424,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000032",
-    "D2": "0x0000002e",
-    "D3": "0x0000007b",
-    "D4": "0x0000000f",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x0000002e",
-    "A1": "0x00207996",
-    "A2": "0x00203208",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fd8",
-    "SP": "0x00200fcc",
-    "PS": "0x2100",
-    "PC": "0x000e2cdc"
+    "A": "0x00",
+    "B": "0x00",
+    "D": "0x0000",
+    "X": "0x0150",
+    "Y": "0x00e3",
+    "U": "0x00e5",
+    "PC": "0xfd80",
+    "S": "0x07f2",
+    "CC": "0x90",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0E2CDC",
-    "bytes": "3239002010C8",
-    "text": "move.w  $2010c8.l, D1",
-    "symbol": "palette_range_table",
-    "delta": 49610
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": "irq",
+    "delta": 0
    },
    "following": [
-    "0E2CE2: 3001           move.w  D1, D0",
-    "0E2CE4: 9079 0020 10C6 sub.w   $2010c6.l, D0",
-    "0E2CEA: C1C3           muls.w  D3, D0",
-    "0E2CEC: 48C0           ext.l   D0",
-    "0E2CEE: 81C1           divs.w  D1, D0",
-    "0E2CF0: 1180 9800      move.b  D0, (A0,A1.l)",
-    "... 3 more"
+    "FD82: 96 B2    LDA    <$B2",
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 4,
-    "truncated": false,
-    "lines": [
-     "[luaengine] MAME_MCP_INPUT#22 set name=\"Coin 1\" player=0 mask=00000400 defvalue=00000400 port_before=0000dfff frame=17",
-     "",
-     "[luaengine] MAME_MCP_INPUT#22 release frame=18 port_held=0000dbff",
-     ""
-    ],
-    "mark": 66062
-   }
+   "errorlog": "<volatile>"
   }
  },
  "log": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): log @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 19",
   "call": {
-   "pattern": ".",
-   "channel": "emulator",
-   "limit": 3
+   "pattern": "coin counter",
+   "channel": "emulator"
   },
   "reply": {
-   "summary": "log emulator /./: 1 of 1 line",
+   "summary": "log emulator /coin counter/: 3 of 3 lines",
    "status": "ok",
-   "pattern": ".",
+   "pattern": "coin counter",
    "channel": "emulator",
-   "lines_total": 1,
+   "lines_total": 3,
    "truncated": false,
    "lines": [
-    "Soft reset"
+    "[:] coin counter off",
+    "[:] coin counter on",
+    "[:] coin counter off"
    ]
   }
  },
  "log_wait": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): log_wait @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 15",
   "call": {
-   "pattern": ".",
-   "channel": "emulator",
-   "seconds": 5.0
+   "pattern": "MAME_MCP_THROTTLE#1",
+   "channel": "emulator"
   },
   "reply": {
-   "summary": "log_wait emulator /./: matched already there",
+   "summary": "log_wait emulator /MAME_MCP_THROTTLE#1/: matched already there",
    "status": "ok",
    "verdict": "TARGET",
-   "pattern": ".",
+   "pattern": "MAME_MCP_THROTTLE#1",
    "channel": "emulator",
-   "line": "Soft reset",
+   "line": "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0",
    "already": true,
-   "lines_total": 779,
-   "lines_before": 0,
+   "lines_total": 1,
+   "lines_before": 4,
    "arrived_during": 0,
-   "waited_s": 0.0,
-   "lines_examined": 788
+   "waited_s": "<volatile>",
+   "lines_examined": 6
   }
  },
  "lua": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): lua @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 66",
   "call": {
-   "script": "print(1)",
+   "script": "print(manager.machine.system.description)",
    "read_only": true
   },
   "reply": {
-   "summary": "lua: 2 chars back, pc 0x000f2040 after one step",
+   "summary": "lua: 8 chars back, pc 0x0000fd82 after one step",
    "status": "ok",
-   "script_chars": 8,
+   "script_chars": 41,
    "evaluated_by": "one step",
    "lines_ahead": 0,
-   "call": "MAME_MCP_LUA_END#2",
-   "pc_before": "0x000f2038",
+   "call": "MAME_MCP_LUA_END#39",
+   "pc_before": "0x0000fd80",
    "thread_errors": 0,
    "console_reruns": 0,
-   "output": "1\n",
+   "output": "Gridlee\n",
    "clipped": false,
    "cause": "lua: one step",
-   "stop_seq": 3,
-   "pc": "0x000f2040",
+   "stop_seq": 60,
+   "pc": "0x0000fd82",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 630,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00201000",
-    "PS": "0x2704",
-    "PC": "0x000f2040"
+    "A": "0x00",
+    "B": "0xd8",
+    "D": "0x00d8",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd82",
+    "S": "0x07f4",
+    "CC": "0xd0",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0F2040",
-    "bytes": "4EB825DC",
-    "text": "jsr     $25dc.w",
-    "symbol": "reset",
-    "delta": 12
+    "address": "FD82",
+    "bytes": "96B2",
+    "text": "LDA    <$B2",
+    "symbol": "irq",
+    "delta": 2
    },
    "following": [
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l",
-    "0F205C: 23FC 0000 4942 0020 2EA8 move.l  #$4942, $202ea8.l"
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>"
   }
  },
  "machine_map": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): machine_map @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 4",
   "call": {},
   "reply": {
-   "summary": "machine_map: 2 cpus, 4 spaces, 32 address map entries, 4 regions, 2 shares, 1 screen, left out: rom_files (see `omitted`)",
+   "summary": "machine_map: 1 cpu, 1 space, 14 address map entries, 3 regions, 3 shares, 1 screen, left out: rom_files (see `omitted`)",
    "status": "ok",
    "cpus": [
     {
      "cpu": ":maincpu",
-     "name": "Motorola MC68000",
-     "clock_hz": 16000000,
-     "type": "m68000",
+     "name": "MC6809 (legacy)",
+     "clock_hz": 1250000,
+     "type": "m6809",
      "spaces": [
-      "cpu_space",
-      "program"
-     ]
-    },
-    {
-     "cpu": ":subcpu",
-     "name": "Motorola MC68000",
-     "clock_hz": 16000000,
-     "type": "m68000",
-     "spaces": [
-      "cpu_space",
       "program"
      ]
     }
@@ -1751,139 +2131,117 @@
    "spaces": [
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
-     "data_width_bits": 16,
-     "endianness": "big",
-     "entries": 7,
-     "address_mask": "0x00ffffff"
-    },
-    {
-     "cpu": ":maincpu",
      "space": "program",
-     "data_width_bits": 16,
+     "data_width_bits": 8,
      "endianness": "big",
-     "entries": 13,
-     "address_mask": "0x00ffffff"
-    },
-    {
-     "cpu": ":subcpu",
-     "space": "cpu_space",
-     "data_width_bits": 16,
-     "endianness": "big",
-     "entries": 7,
-     "address_mask": "0x00ffffff"
-    },
-    {
-     "cpu": ":subcpu",
-     "space": "program",
-     "data_width_bits": 16,
-     "endianness": "big",
-     "entries": 5,
-     "address_mask": "0x00ffffff"
+     "entries": 14,
+     "address_mask": "0x0000ffff"
     }
    ],
    "address_map": [
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 1,
-     "start": "0x00fffff3",
-     "end": "0x00fffff3"
+     "start": "0x00000000",
+     "end": "0x000007ff",
+     "share": ":spriteram"
     },
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 2,
-     "start": "0x00fffff5",
-     "end": "0x00fffff5"
+     "start": "0x00000800",
+     "end": "0x00007fff",
+     "share": ":videoram"
     },
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 3,
-     "start": "0x00fffff7",
-     "end": "0x00fffff7"
+     "start": "0x00009000",
+     "end": "0x00009000"
     },
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 4,
-     "start": "0x00fffff9",
-     "end": "0x00fffff9"
+     "start": "0x00009200",
+     "end": "0x00009200"
     },
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 5,
-     "start": "0x00fffffb",
-     "end": "0x00fffffb"
+     "start": "0x00009380",
+     "end": "0x00009380"
     },
     {
      "cpu": ":maincpu",
-     "space": "cpu_space",
+     "space": "program",
      "index": 6,
-     "start": "0x00fffffd",
-     "end": "0x00fffffd"
+     "start": "0x00009500",
+     "end": "0x00009501"
     },
-    "... 26 more"
+    "... 8 more"
    ],
    "regions": [
     {
      "tag": ":gfx1",
-     "size": 16777216,
+     "size": 16384,
      "bytewidth": 1,
      "endianness": "little"
     },
     {
      "tag": ":maincpu",
-     "size": 1048576,
-     "bytewidth": 2,
+     "size": 65536,
+     "bytewidth": 1,
      "endianness": "big"
     },
     {
-     "tag": ":plds",
-     "size": 741,
+     "tag": ":proms",
+     "size": 6144,
      "bytewidth": 1,
      "endianness": "little"
-    },
-    {
-     "tag": ":subcpu",
-     "size": 1048576,
-     "bytewidth": 2,
-     "endianness": "big"
     }
    ],
    "shares": [
     {
-     "tag": ":blitram",
-     "size": 32,
-     "bytewidth": 2,
+     "tag": ":nvram",
+     "size": 256,
+     "bytewidth": 1,
      "endianness": "big"
     },
     {
-     "tag": ":mainram",
-     "size": 65536,
-     "bytewidth": 2,
+     "tag": ":spriteram",
+     "size": 2048,
+     "bytewidth": 1,
+     "endianness": "big"
+    },
+    {
+     "tag": ":videoram",
+     "size": 30720,
+     "bytewidth": 1,
      "endianness": "big"
     }
    ],
    "screens": [
     {
      "tag": ":screen",
-     "width": 336,
-     "height": 252,
-     "refresh_hz": 50.080128,
+     "width": 256,
+     "height": 240,
+     "refresh_hz": 59.185606,
      "rotation": 0,
      "type": "raster"
     }
    ],
    "symbol_coverage": [],
    "counts": {
-    "cpus": 2,
-    "spaces": 4,
-    "address_map": 32,
-    "regions": 4,
-    "shares": 2,
+    "cpus": 1,
+    "spaces": 1,
+    "address_map": 14,
+    "regions": 3,
+    "shares": 3,
     "screens": 1,
     "symbol_coverage": 0
    },
@@ -1926,52 +2284,56 @@
   }
  },
  "memdump": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): memdump @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 65",
   "call": {
-   "ref": "0x0",
-   "length": 16,
-   "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin"
+   "ref": "0xa000",
+   "length": 4096,
+   "dest": "./tmp/demos/tour/rom.bin"
   },
   "reply": {
-   "summary": "memdump 0x0: 16 bytes to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
+   "summary": "memdump 0xa000: 4096 bytes to ./tmp/demos/tour/rom.bin",
    "status": "ok",
-   "ref": "0x0",
-   "addr": "0x00000000",
-   "length": 16,
-   "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f10.bin",
-   "bytes": 16,
+   "ref": "0xa000",
+   "addr": "0x0000a000",
+   "length": 4096,
+   "path": "./tmp/demos/tour/rom.bin",
+   "bytes": 4096,
    "cpu": ":maincpu"
   }
  },
  "palette": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): palette @ stopped",
-  "call": {},
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 30",
+  "call": {
+   "first": 832,
+   "count": 32,
+   "dest": "./tmp/demos/tour/palette.png"
+  },
   "reply": {
-   "summary": "palette :palette: pens 0x0..0xff of 256; 1096x1024 PNG x8, inline",
+   "summary": "palette :palette: pens 0x340..0x35f of 2048, more after; 1128x128 PNG x8, inline",
    "status": "ok",
    "palette": ":palette",
-   "entries": 256,
-   "first": 0,
-   "count": 256,
+   "entries": 2048,
+   "first": 832,
+   "count": 32,
    "truncated": false,
    "shadows": false,
    "highlights": false,
    "indirect_entries": 0,
    "colors": [
-    "#000000",
+    "#8866bb",
     "#ff0000",
-    "#00ff00",
-    "#ffff00",
-    "#0000ff",
-    "#ff00ff",
-    "... 250 more"
+    "#cc0000",
+    "#660000",
+    "#ccff88",
+    "#77cc44",
+    "... 26 more"
    ],
    "image": {
-    "path": "$TMPDIR/mame-mcp-<run>/gfx/palette-1.png",
+    "path": "./tmp/demos/tour/palette.png",
     "bytes": "<volatile>",
     "sha256": "<volatile>",
-    "width": 1096,
-    "height": 1024,
+    "width": 1128,
+    "height": 128,
     "scale": 8,
     "indexed": false,
     "inline": true
@@ -1980,53 +2342,68 @@
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#6",
-   "pc_before": "0x000025e8",
+   "call": "MAME_MCP_LUA_END#10",
+   "pc_before": "0x0000fd84",
    "cause": "palette: one step",
-   "stop_seq": 7,
-   "pc": "0x000025ee",
+   "stop_seq": 12,
+   "pc": "0x0000fd86",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 545,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00201000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2708",
-    "PC": "0x000025ee"
+    "A": "0x00",
+    "B": "0x72",
+    "D": "0x0072",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd86",
+    "S": "0x07f4",
+    "CC": "0xf4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025EE",
-    "bytes": "203C0000E927",
-    "text": "move.l  #$e927, D0",
-    "symbol": "boot_init",
-    "delta": 18
+    "address": "FD86",
+    "bytes": "2604",
+    "text": "BNE    $FD8C",
+    "symbol": "irq",
+    "delta": 6
    },
    "following": [
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l"
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "FD91: F6 95 01 LDB    $9501",
+    "FD94: 1F 98    TFR    B,A",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>",
+   "watches": [
+    {
+     "ref": "0xc",
+     "cpu": ":maincpu",
+     "state": "captured",
+     "total": 3,
+     "callback_errors": {
+      "count": 0,
+      "first": {
+       "available": false,
+       "why": "no callback raised"
+      }
+     },
+     "since_last_stop": 0
+    }
+   ],
+   "omitted": [
+    "addr",
+    "by",
+    "fmt",
+    "frame_as_of",
+    "install_resent",
+    "installed",
+    "... 12 more"
+   ],
+   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
  "palette_log": {
@@ -2064,72 +2441,215 @@
   }
  },
  "perform": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): perform @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 21",
   "call": {
    "steps": [
     {
-     "op": "registers"
+     "op": "input",
+     "port": ":IN1",
+     "field": "Coin 1",
+     "frames": 4,
+     "seconds": 300
+    },
+    {
+     "op": "run_for",
+     "milliseconds": 2000,
+     "seconds": 300
+    },
+    {
+     "op": "scan",
+     "method": "filter",
+     "operator": "=",
+     "value": 2
     }
    ],
-   "settle_seconds": 2.0
+   "settle_seconds": 300
   },
   "reply": {
-   "summary": "perform: 1 step completed",
+   "summary": "perform: 3 steps completed",
    "status": "ok",
    "ran": [
     {
-     "op": "registers",
+     "op": "input",
      "cpu": ":maincpu",
      "reply": {
-      "summary": "registers: 18 registers",
+      "summary": "input :IN1 'Coin 1': held 4 frames, active True, released at frame 423",
       "status": "ok",
-      "regs": {
-       "D0": "0x00010000",
-       "D1": "0x00000032",
-       "D2": "0x000001dc",
-       "D3": "0x00000020",
-       "D4": "0x0000000f",
-       "D5": "0x00000000",
-       "D6": "0x00000000",
-       "D7": "0x00000000",
-       "A0": "0x000001dc",
-       "A1": "0x0020829c",
-       "A2": "0x00203208",
-       "A3": "0x00000000",
-       "A4": "0x00000000",
-       "A5": "0x00000000",
-       "FP": "0x00200fd8",
-       "SP": "0x00201000",
-       "PS": "0x2704",
-       "PC": "0x000f2034"
-      },
-      "register_bits": {
-       "D0": 32,
-       "D1": 32,
-       "D2": 32,
-       "D3": 32,
-       "D4": 32,
-       "D5": 32,
-       "D6": 32,
-       "D7": 32,
-       "A0": 32,
-       "A1": 32,
-       "A2": 32,
-       "A3": 32,
-       "A4": 32,
-       "A5": 32,
-       "FP": 32,
-       "SP": 32,
-       "PS": 16,
-       "PC": 32
-      },
+      "verdict": "ELAPSED",
+      "frame_before": 419,
+      "frame_after": 424,
+      "emulated_before_s": 7.096336,
+      "emulated_after_s": 7.180818,
+      "cycles": 105602,
+      "polls": 6,
+      "lines_ahead": 0,
+      "thread_errors": 0,
+      "console_reruns": 0,
+      "route": "ioport",
+      "port": ":IN1",
+      "field": "Coin 1",
+      "value": "0x00000001",
+      "frames": 4,
+      "name": "Coin 1",
+      "player": 0,
+      "mask": "0x00000001",
+      "defvalue": "0x00000001",
+      "port_before": "0x000000cf",
+      "frame_set": 419,
+      "released": true,
+      "port_held": "0x000000ce",
+      "frame_released": 423,
+      "active": true,
+      "cause": "the `gvblank` stop of the last frame asked",
+      "stop_seq": 7,
+      "pc": "0x0000fd80",
       "cpu": ":maincpu",
+      "frame": 424,
+      "regs": {
+       "A": "0x00",
+       "B": "0x00",
+       "D": "0x0000",
+       "X": "0x0150",
+       "Y": "0x00e3",
+       "U": "0x00e5",
+       "PC": "0xfd80",
+       "S": "0x07f2",
+       "CC": "0x90",
+       "DP": "0x00"
+      },
+      "instruction": {
+       "address": "FD80",
+       "bytes": "0CB2",
+       "text": "INC    <$B2",
+       "symbol": "irq",
+       "delta": 0
+      },
+      "following": [
+       "FD82: 96 B2    LDA    <$B2",
+       "FD84: 84 03    ANDA   #$03",
+       "FD86: 26 04    BNE    $FD8C",
+       "FD88: 0C B3    INC    <$B3",
+       "FD8A: 0C B4    INC    <$B4",
+       "FD8C: B6 03 BE LDA    $03BE",
+       "... 9 more"
+      ],
+      "errorlog": "<volatile>",
       "session": {
        "alive": true,
        "running": false,
-       "altered": true,
-       "read_only_claims": 1,
-       "note": "1 raw `lua` call was declared read_only BY THE CALLER and are not counted as writes. Nothing verified that claim: a Lua string can read a byte or rewrite RAM and the text does not say which, so `altered` here rests on the caller's word for  ... (349 characters)",
+       "altered": false,
+       "omitted": [
+        "altering_writes",
+        "console"
+       ],
+       "how": "call `status`"
+      }
+     }
+    },
+    {
+     "op": "run_for",
+     "cpu": ":maincpu",
+     "reply": {
+      "summary": "run_for 2000 ms: ELAPSED, frame 424 to 543",
+      "status": "ok",
+      "verdict": "ELAPSED",
+      "frame_before": 424,
+      "frame_after": 543,
+      "emulated_before_s": 7.180818,
+      "emulated_after_s": 9.180819,
+      "cycles": 2500002,
+      "reads": "<volatile>",
+      "cause": "the console's `gtime` stop",
+      "stop_seq": 8,
+      "pc": "0x0000b502",
+      "cpu": ":maincpu",
+      "frame": 543,
+      "regs": {
+       "A": "0x02",
+       "B": "0x70",
+       "D": "0x0270",
+       "X": "0xda5c",
+       "Y": "0x0101",
+       "U": "0xab79",
+       "PC": "0xb502",
+       "S": "0x07fc",
+       "CC": "0xa9",
+       "DP": "0x00"
+      },
+      "instruction": {
+       "address": "B502",
+       "bytes": "26F4",
+       "text": "BNE    $B4F8",
+       "symbol": "write_sprites",
+       "delta": 3340
+      },
+      "following": [
+       "B504: DC 86    LDD    <$86",
+       "B506: 8E DA 62 LDX    #$DA62",
+       "B509: 10 A3 81 CMPD   ,X++",
+       "B50C: 23 07    BLS    $B515",
+       "B50E: 0C 81    INC    <$81",
+       "B510: 8C DA 6A CMPX   #$DA6A",
+       "... 9 more"
+      ],
+      "errorlog": "<volatile>",
+      "session": {
+       "alive": true,
+       "running": false,
+       "altered": false,
+       "omitted": [
+        "altering_writes",
+        "console"
+       ],
+       "how": "call `status`"
+      }
+     }
+    },
+    {
+     "op": "scan",
+     "cpu": ":maincpu",
+     "reply": {
+      "summary": "scan filter: = 0x02, 11 left",
+      "status": "ok",
+      "operator": "=",
+      "value": "0x02",
+      "iterations": 1,
+      "closed": false,
+      "hits": [
+       {
+        "addr": "0x00000084",
+        "value": "0x02"
+       },
+       {
+        "addr": "0x000000da",
+        "value": "0x02"
+       },
+       {
+        "addr": "0x000000ed",
+        "value": "0x02"
+       },
+       {
+        "addr": "0x000000ef",
+        "value": "0x02"
+       },
+       {
+        "addr": "0x000001b6",
+        "value": "0x02"
+       },
+       {
+        "addr": "0x00000299",
+        "value": "0x02"
+       },
+       "... 5 more"
+      ],
+      "hits_total": 11,
+      "truncated": false,
+      "cpu": ":maincpu",
+      "space": "program",
+      "session": {
+       "alive": true,
+       "running": false,
+       "altered": false,
        "omitted": [
         "altering_writes",
         "console"
@@ -2139,32 +2659,31 @@
      }
     }
    ],
-   "steps_completed": 1,
+   "steps_completed": 3,
    "failed_at": {
     "available": false,
     "why": "no step failed"
    },
-   "held": 0,
-   "visible_cpu": ":maincpu",
-   "visible_cpu_kept": {
-    "before": ":maincpu",
-    "after": ":maincpu",
-    "restored": false
-   }
+   "held": 0
   }
  },
  "perform_export": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): perform_export @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 24",
   "call": {
-   "dest": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json"
+   "dest": "./tmp/demos/tour/two-coins.json"
   },
   "reply": {
-   "summary": "perform_export: 44 steps, 7 checks, 41 dropped to $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
+   "summary": "perform_export: 9 steps, 3 checks, 14 dropped to ./tmp/demos/tour/two-coins.json",
    "status": "ok",
-   "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
-   "steps": 44,
-   "checks": 7,
+   "path": "./tmp/demos/tour/two-coins.json",
+   "steps": 9,
+   "checks": 3,
    "dropped": [
+    {
+     "call": 1,
+     "op": "status",
+     "why": "a read the export does not check"
+    },
     {
      "call": 2,
      "op": "machine_map",
@@ -2181,62 +2700,65 @@
      "why": "a read the export does not check"
     },
     {
-     "call": 8,
+     "call": 6,
      "op": "disassemble",
      "why": "a read the export does not check"
     },
     {
-     "call": 9,
+     "call": 7,
      "op": "find",
      "why": "a read the export does not check"
     },
-    {
-     "call": 10,
-     "op": "history",
-     "why": "a read the export does not check"
-    },
-    "... 34 more"
+    "... 8 more"
    ],
-   "dropped_total": 41,
+   "dropped_total": 14,
    "cut": {
     "available": false,
     "why": "the recording kept every call a replay takes"
    },
-   "replay": "uv run python -m scry_core.replay $TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/f12.json",
-   "kept": "kept 3 (promote to review); maps/radendur, perform/f12, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
+   "replay": "uv run python -m scry_core.replay ./tmp/demos/tour/two-coins.json",
+   "kept": "2 saved for `promote`; perform/two-coins, start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
  "promote": {
-  "from": "[P] the session's ends and its own store: P11 the recipe this boot ran and the map it learned are written into a store of the run's own only when the call approves them, and the map reads back from the file",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 70",
   "call": {
    "dry_run": true,
-   "root": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>"
+   "root": "./tmp/demos/tour"
   },
   "reply": {
-   "summary": "promote: 2 candidates in $TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry; would create .scry/, .scry/about.json, .scry/README.md",
+   "summary": "promote: 3 candidates in ./tmp/demos/tour/.scry; would create .scry/, .scry/about.json, .scry/README.md",
    "status": "ok",
-   "store": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/P/mame-live-promote-<run>/.scry",
+   "store": "./tmp/demos/tour/.scry",
    "candidates": [
     {
-     "entry": "maps/radendur",
+     "entry": "maps/gridlee",
      "kind": "maps",
-     "name": "radendur",
-     "file": ".scry/maps/radendur-screen-map.json",
-     "bytes": 333,
+     "name": "gridlee",
+     "file": ".scry/maps/gridlee-screen-map.json",
+     "bytes": 440,
      "change": "new"
     },
     {
-     "entry": "start/radendur",
+     "entry": "perform/two-coins",
+     "kind": "perform",
+     "name": "two-coins",
+     "file": ".scry/perform/two-coins.json",
+     "bytes": 2977,
+     "change": "new"
+    },
+    {
+     "entry": "start/gridlee",
      "kind": "start",
-     "name": "radendur",
-     "file": ".scry/start/radendur.json",
-     "bytes": 343,
+     "name": "gridlee",
+     "file": ".scry/start/gridlee.json",
+     "bytes": 385,
      "change": "new"
     }
    ],
    "unchanged": [],
-   "total_bytes": 676,
-   "store_bytes": 2152,
+   "total_bytes": 3802,
+   "store_bytes": 5477,
    "would_create": [
     ".scry/",
     ".scry/about.json",
@@ -2245,403 +2767,69 @@
   }
  },
  "read_block": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): read_block @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 28",
   "call": {
-   "tag": "maincpu",
-   "offset": 1024,
-   "length": 8
+   "tag": "spriteram",
+   "offset": 12,
+   "length": 4
   },
   "reply": {
-   "summary": "read_block region :maincpu: 8 bytes at offset 0x00000400 of 0x100000: 46fc270048e7f000",
+   "summary": "read_block share :spriteram: 4 bytes at offset 0x0000000c of 0x800: 5b009394",
    "status": "ok",
-   "kind": "region",
-   "tag": ":maincpu",
-   "size": 1048576,
-   "bytewidth": 2,
+   "kind": "share",
+   "tag": ":spriteram",
+   "size": 2048,
+   "bytewidth": 1,
    "endianness": "big",
-   "offset": "0x00000400",
-   "length": 8,
-   "hex": "46fc270048e7f000",
+   "offset": "0x0000000c",
+   "length": 4,
+   "hex": "5b009394",
    "evaluated_by": "one step",
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#1",
-   "pc_before": "0x000f2034",
+   "call": "MAME_MCP_LUA_END#8",
+   "pc_before": "0x0000fd80",
    "cause": "read_block: one step",
-   "stop_seq": 2,
-   "pc": "0x000f2038",
+   "stop_seq": 10,
+   "pc": "0x0000fd82",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 545,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00201000",
-    "PS": "0x2700",
-    "PC": "0x000f2038"
+    "A": "0xff",
+    "B": "0x72",
+    "D": "0xff72",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd82",
+    "S": "0x07f4",
+    "CC": "0xf8",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0F2038",
-    "bytes": "33FC00000020351C",
-    "text": "move.w  #$0, $20351c.l",
-    "symbol": "reset",
-    "delta": 4
+    "address": "FD82",
+    "bytes": "96B2",
+    "text": "LDA    <$B2",
+    "symbol": "irq",
+    "delta": 2
    },
    "following": [
-    "0F2040: 4EB8 25DC                jsr     $25dc.w",
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
-  }
- },
- "read_memory": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): read_memory @ stopped",
-  "call": {
-   "ref": "0x400",
-   "length": 8
-  },
-  "reply": {
-   "summary": "read_memory 0x400: 8 bytes at 0x00000400: 46fc270048e7f000",
-   "status": "ok",
-   "ref": "0x400",
-   "addr": "0x00000400",
-   "length": 8,
-   "hex": "46fc270048e7f000",
-   "cpu": ":maincpu"
-  }
- },
- "record": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): record @ stopped",
-  "call": {
-   "frames": 2,
-   "seconds": 10.0
-  },
-  "reply": {
-   "summary": "record: 2 frames, 666220 bytes at $TMPDIR/mame-mcp-<run>/snap/record-2.avi",
-   "status": "ok",
-   "verdict": "ELAPSED",
-   "frame_before": 19,
-   "frame_after": 24,
-   "emulated_before_s": 0.39936,
-   "emulated_after_s": 0.499207,
-   "cycles": 1597548,
-   "polls": 5,
-   "lines_ahead": 0,
-   "thread_errors": 0,
-   "console_reruns": 0,
-   "path": "$TMPDIR/mame-mcp-<run>/snap/record-2.avi",
-   "frames": 2,
-   "began": true,
-   "frame_begin": 20,
-   "recording_after": true,
-   "ended": true,
-   "bytes": 666220,
-   "avi_frames": 2,
-   "frame_end": 21,
-   "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 25,
-   "pc": "0x000e2cf0",
-   "cpu": ":maincpu",
-   "frame": 24,
-   "regs": {
-    "D0": "0x002d000d",
-    "D1": "0x00000032",
-    "D2": "0x000000fc",
-    "D3": "0x0000008b",
-    "D4": "0x0000000f",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000000fc",
-    "A1": "0x002088a0",
-    "A2": "0x00203208",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fd8",
-    "SP": "0x00200fcc",
-    "PS": "0x2100",
-    "PC": "0x000e2cf0"
-   },
-   "instruction": {
-    "address": "0E2CF0",
-    "bytes": "11809800",
-    "text": "move.b  D0, (A0,A1.l)",
-    "symbol": "palette_range_table",
-    "delta": 49630
-   },
-   "following": [
-    "0E2CF4: 5242           addq.w  #1, D2",
-    "0E2CF6: B47C 02FF      cmp.w   #$2ff, D2",
-    "0E2CFA: 6FD4           ble     $e2cd0",
-    "0E2CFC: 5379 0020 10C6 subq.w  #1, $2010c6.l",
-    "0E2D02: 2079 0020 7990 movea.l $207990.l, A0",
-    "0E2D08: 30BC 0001      move.w  #$1, (A0)",
-    "... 1 more"
-   ],
-   "errorlog": {
-    "lines_total": 6,
-    "truncated": false,
-    "lines": [
-     "[luaengine] MAME_MCP_RECORD#23 armed frame=19 vblank=true",
-     "",
-     "[luaengine] MAME_MCP_RECORD#23 begin frame=20 recording=true",
-     "",
-     "[luaengine] MAME_MCP_RECORD#23 end frame=21",
-     ""
-    ],
-    "mark": 66249
-   },
-   "view": "native"
-  }
- },
- "registers": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): registers @ stopped",
-  "call": {},
-  "reply": {
-   "summary": "registers: 18 registers",
-   "status": "ok",
-   "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00201000",
-    "PS": "0x2700",
-    "PC": "0x000f2038"
-   },
-   "register_bits": {
-    "D0": 32,
-    "D1": 32,
-    "D2": 32,
-    "D3": 32,
-    "D4": 32,
-    "D5": 32,
-    "D6": 32,
-    "D7": 32,
-    "A0": 32,
-    "A1": 32,
-    "A2": 32,
-    "A3": 32,
-    "A4": 32,
-    "A5": 32,
-    "FP": 32,
-    "SP": 32,
-    "PS": 16,
-    "PC": 32
-   },
-   "cpu": ":maincpu"
-  }
- },
- "regpoint_add": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): regpoint_add @ stopped",
-  "call": {
-   "condition": "pc==0xfffffffe"
-  },
-  "reply": {
-   "summary": "regpoint_add pc==0xfffffffe: armed, index 1",
-   "status": "ok",
-   "ref": "pc==0xfffffffe",
-   "cpu": ":maincpu",
-   "by": "expr",
-   "condition": "pc==0xfffffffe",
-   "stored": true,
-   "while_running": false,
-   "armed": true,
-   "state": "armed",
-   "entry": "1 if pc==0xfffffffe",
-   "index": 1
-  }
- },
- "reset": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): reset @ stopped",
-  "call": {},
-  "reply": {
-   "summary": "reset: softreset applied at frame 30, pc 0x000f2034 verified True",
-   "status": "ok",
-   "kind": "softreset",
-   "pc": "0x000f2034",
-   "boot_pc": "0x000f2034",
-   "verified": true,
-   "frame_at_reset": 30,
-   "taps_across": [
-    {
-     "ref": "ramdac:ramdac",
-     "cpu": ":maincpu"
-    },
-    {
-     "ref": "film",
-     "cpu": ":maincpu"
-    }
-   ],
-   "cause": "softreset",
-   "stop_seq": 28,
-   "cpu": ":maincpu",
-   "frame": 30,
-   "regs": {
-    "D0": "0x00010000",
-    "D1": "0x00000032",
-    "D2": "0x000001dc",
-    "D3": "0x00000020",
-    "D4": "0x0000000f",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000001dc",
-    "A1": "0x0020829c",
-    "A2": "0x00203208",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fd8",
-    "SP": "0x00201000",
-    "PS": "0x2704",
-    "PC": "0x000f2034"
-   },
-   "instruction": {
-    "address": "0F2034",
-    "bytes": "46FC2700",
-    "text": "move    #$2700, SR",
-    "symbol": "reset",
-    "delta": 0
-   },
-   "following": [
-    "0F2038: 33FC 0000 0020 351C      move.w  #$0, $20351c.l",
-    "0F2040: 4EB8 25DC                jsr     $25dc.w",
-    "0F2044: 33FC D800 0020 351C      move.w  #$d800, $20351c.l",
-    "0F204C: 4EB9 000F 24DE           jsr     $f24de.l",
-    "0F2052: 23FC 000F 4414 0020 2EA4 move.l  #$f4414, $202ea4.l"
-   ],
-   "errorlog": {
-    "lines_total": 1,
-    "truncated": false,
-    "lines": [
-     "Soft reset"
-    ],
-    "mark": 66664
-   }
-  }
- },
- "resume": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): resume @ stopped",
-  "call": {},
-  "reply": {
-   "summary": "resume: running, no wait asked",
-   "status": "ok"
-  }
- },
- "rom_check": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): rom_check @ stopped",
-  "call": {
-   "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
-   "reference_addr": "0x0"
-  },
-  "reply": {
-   "summary": "rom_check :maincpu: OK, 3.632 ms per query",
-   "status": "ok",
-   "rom_check": "OK",
-   "deterministic": true,
-   "query_s": 0.003632,
-   "cpu": ":maincpu"
-  }
- },
- "run_for": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): gfx_blits @ stopped",
-  "call": {
-   "frames": 8,
-   "seconds": 10.0
-  },
-  "reply": {
-   "summary": "run_for 8 frames: ELAPSED, frame 0 to 8",
-   "status": "ok",
-   "verdict": "ELAPSED",
-   "frame_before": 0,
-   "frame_after": 8,
-   "emulated_before_s": 0.019968,
-   "emulated_after_s": 0.179712,
-   "cycles": 2555906,
-   "polls": 9,
-   "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 12,
-   "pc": "0x000027ac",
-   "cpu": ":maincpu",
-   "frame": 8,
-   "regs": {
-    "D0": "0x0103a925",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00004842",
-    "A1": "0x000f27de",
-    "A2": "0x00720003",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2708",
-    "PC": "0x000027ac"
-   },
-   "instruction": {
-    "address": "0027AC",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $27ac",
-    "symbol": "boot_init",
-    "delta": 464
-   },
-   "following": [
-    "0027B0: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "0027B8: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "0027C0: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0027C8: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
-   ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   },
+   "errorlog": "<volatile>",
    "watches": [
     {
-     "ref": "0x700000",
+     "ref": "0xc",
      "cpu": ":maincpu",
      "state": "captured",
-     "total": 7,
+     "total": 3,
      "callback_errors": {
       "count": 0,
       "first": {
@@ -2649,7 +2837,7 @@
        "why": "no callback raised"
       }
      },
-     "since_last_stop": 7
+     "since_last_stop": 0
     }
    ],
    "omitted": [
@@ -2664,570 +2852,1009 @@
    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
- "run_to": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): run_to @ stopped",
+ "read_memory": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 8",
   "call": {
-   "ref": "irq_vblank",
-   "control": "0x4a0",
-   "seconds": 10.0
+   "ref": "0xfff8",
+   "length": 2
   },
   "reply": {
-   "summary": "run_to irq_vblank: TARGET, control counted 0",
+   "summary": "read_memory 0xfff8: 2 bytes at 0x0000fff8: fd80",
    "status": "ok",
-   "verdict": "TARGET",
-   "control_hits": 0,
-   "controls": [
-    {
-     "ref": "0x4a0",
-     "cpu": ":maincpu",
-     "hits_in_run": 0
-    }
-   ],
-   "cause": "target irq_vblank",
-   "stop_seq": 16,
-   "pc": "0x00000400",
+   "ref": "0xfff8",
+   "addr": "0x0000fff8",
+   "length": 2,
+   "hex": "fd80",
+   "cpu": ":maincpu"
+  }
+ },
+ "record": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 60",
+  "call": {
+   "frames": 30,
+   "dest": "./tmp/demos/tour/card.avi",
+   "seconds": 300
+  },
+  "reply": {
+   "summary": "record: 30 frames, 5659194 bytes at ./tmp/demos/tour/card.avi",
+   "status": "ok",
+   "verdict": "ELAPSED",
+   "frame_before": 561,
+   "frame_after": 594,
+   "emulated_before_s": 9.495573,
+   "emulated_after_s": 10.053138,
+   "cycles": 696956,
+   "polls": 33,
+   "lines_ahead": 0,
+   "thread_errors": 0,
+   "console_reruns": 0,
+   "path": "./tmp/demos/tour/card.avi",
+   "frames": 30,
+   "began": true,
+   "frame_begin": 562,
+   "recording_after": true,
+   "ended": true,
+   "bytes": 5659194,
+   "avi_frames": 30,
+   "frame_end": 591,
+   "cause": "the `gvblank` stop of the last frame asked",
+   "stop_seq": 57,
+   "pc": "0x0000fd80",
    "cpu": ":maincpu",
-   "frame": 11,
+   "frame": 594,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000002ff",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200ffa",
-    "PS": "0x2300",
-    "PC": "0x00000400"
+    "A": "0x00",
+    "B": "0xfc",
+    "D": "0x00fc",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd80",
+    "S": "0x07f4",
+    "CC": "0xd4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "000400",
-    "bytes": "46FC2700",
-    "text": "move    #$2700, SR",
-    "symbol": "irq_vblank",
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": "irq",
     "delta": 0
    },
    "following": [
-    "000404: 48E7 F000           movem.l D0-D3, -(A7)",
-    "000408: 5279 0020 3200      addq.w  #1, $203200.l",
-    "00040E: 52B9 0020 31FC      addq.l  #1, $2031fc.l",
-    "000414: 33FC 0001 0020 91E8 move.w  #$1, $2091e8.l",
-    "00041C: 4A79 0020 91EE      tst.w   $2091ee.l"
+    "FD82: 96 B2    LDA    <$B2",
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 768,
-    "truncated": true,
-    "lines": [
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & FF00",
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002F8 = 0000 & 00FF",
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & FF00",
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FA = 0000 & 00FF",
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & FF00",
-     "[:maincpu] ':maincpu' (0E2C6C): unmapped program memory write to 0002FC = 0000 & 00FF",
-     "... 2 more"
+   "errorlog": "<volatile>",
+   "view": "native"
+  }
+ },
+ "registers": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 44",
+  "call": {},
+  "reply": {
+   "summary": "registers: 10 registers",
+   "status": "ok",
+   "regs": {
+    "A": "0x03",
+    "B": "0xcf",
+    "D": "0x03cf",
+    "X": "0xe199",
+    "Y": "0xf2e6",
+    "U": "0x7acf",
+    "PC": "0xb58f",
+    "S": "0x07fc",
+    "CC": "0x80",
+    "DP": "0x00"
+   },
+   "register_bits": {
+    "A": 8,
+    "B": 8,
+    "D": 16,
+    "X": 16,
+    "Y": 16,
+    "U": 16,
+    "PC": 16,
+    "S": 16,
+    "CC": 8,
+    "DP": 8
+   },
+   "cpu": ":maincpu"
+  }
+ },
+ "regpoint_add": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 47",
+  "call": {
+   "condition": "a==99"
+  },
+  "reply": {
+   "summary": "regpoint_add a==99: armed, index 1",
+   "status": "ok",
+   "ref": "a==99",
+   "cpu": ":maincpu",
+   "by": "expr",
+   "condition": "a==99",
+   "stored": true,
+   "while_running": false,
+   "armed": true,
+   "state": "armed",
+   "entry": "1 if a==99",
+   "index": 1
+  },
+  "then": {
+   "tool": "run_for",
+   "call": {
+    "frames": 1,
+    "seconds": 300
+   },
+   "reply": {
+    "summary": "run_for 1 frame: OTHER_STOP, frame 553 to 553",
+    "status": "ok",
+    "verdict": "OTHER_STOP",
+    "frame_before": 553,
+    "frame_after": 553,
+    "emulated_before_s": 9.347726,
+    "emulated_after_s": 9.347726,
+    "cycles": 0,
+    "polls": 1,
+    "cause": "registerpoint 'a==99'",
+    "stop_seq": 22,
+    "pc": "0x0000d67b",
+    "cpu": ":maincpu",
+    "frame": 553,
+    "regs": {
+     "A": "0x99",
+     "B": "0xff",
+     "D": "0x99ff",
+     "X": "0x0431",
+     "Y": "0x00f1",
+     "U": "0xc66d",
+     "PC": "0xd67b",
+     "S": "0x07fc",
+     "CC": "0xa8",
+     "DP": "0x00"
+    },
+    "instruction": {
+     "address": "D67B",
+     "bytes": "BB042C",
+     "text": "ADDA   $042C",
+     "symbol": "take_credit",
+     "delta": 5
+    },
+    "following": [
+     "D67E: 19       DAA",
+     "D67F: B7 04 2C STA    $042C",
+     "D682: 39       RTS",
+     "D683: 8E 04 31 LDX    #$0431",
+     "D686: C6 5F    LDB    #$5F",
+     "D688: 6F 85    CLR    B,X",
+     "... 10 more"
     ],
-    "mark": 14,
-    "how": "`log(pattern=\".\", channel=\"emulator\", since_mark=14, limit=400)` reads the newest 400"
+    "errorlog": "<volatile>",
+    "regpoint_hit": {
+     "ref": "a==99",
+     "condition": "a==99",
+     "pc": "0x0000d67b",
+     "note": "still armed: a registerpoint stops at every instruction where its condition holds, so the next advance stops again; `declaration_clear(kind=\"regpoint\")` removes it",
+     "cpu": ":maincpu",
+     "index": 1
+    },
+    "watches": [
+     {
+      "ref": "credits_bcd",
+      "cpu": ":maincpu",
+      "state": "armed",
+      "reading": {
+       "available": true,
+       "value": 3,
+       "raw_hex": "03"
+      }
+     }
+    ],
+    "omitted": [
+     "addr",
+     "by",
+     "entry",
+     "fmt",
+     "length",
+     "mode"
+    ],
+    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
    }
   }
  },
- "scan": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): scan start @ stopped",
+ "reset": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 71",
+  "call": {},
+  "reply": {
+   "summary": "reset: softreset applied at frame 630, pc 0x0000f000 verified True",
+   "status": "ok",
+   "kind": "softreset",
+   "pc": "0x0000f000",
+   "boot_pc": "0x0000f000",
+   "verified": true,
+   "frame_at_reset": 630,
+   "taps_across": [
+    {
+     "ref": "film",
+     "cpu": ":maincpu"
+    }
+   ],
+   "cause": "softreset",
+   "stop_seq": 61,
+   "cpu": ":maincpu",
+   "frame": 630,
+   "regs": {
+    "A": "0x42",
+    "B": "0xd8",
+    "D": "0x42d8",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xf000",
+    "S": "0x07f4",
+    "CC": "0xd0",
+    "DP": "0x00"
+   },
+   "instruction": {
+    "address": "F000",
+    "bytes": "1A50",
+    "text": "ORCC   #$50",
+    "symbol": "take_credit",
+    "delta": 6538
+   },
+   "following": [
+    "F002: 4F          CLRA",
+    "F003: 1F 8B       TFR    A,DP",
+    "F005: 10 CE 08 00 LDS    #$0800",
+    "F009: BD D1 21    JSR    $D121",
+    "F00C: B6 95 02    LDA    $9502",
+    "F00F: 97 BC       STA    <$BC",
+    "... 6 more"
+   ],
+   "errorlog": "<volatile>"
+  }
+ },
+ "resume": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 72",
+  "call": {},
+  "reply": {
+   "summary": "resume: running, no wait asked",
+   "status": "ok"
+  },
+  "then": {
+   "tool": "stop",
+   "call": {},
+   "reply": {
+    "summary": "<volatile>",
+    "status": "ok",
+    "interrupted": true,
+    "cause": "interrupt",
+    "stop_seq": 62,
+    "pc": "<volatile>",
+    "cpu": ":maincpu",
+    "frame": "<volatile>",
+    "regs": "<volatile>",
+    "instruction": "<volatile>",
+    "following": "<volatile>",
+    "errorlog": "<volatile>",
+    "average_speed": "<volatile>"
+   }
+  }
+ },
+ "rom_check": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 6",
   "call": {
-   "method": "start",
-   "ref": "0x200000",
-   "length": 256
+   "reference_rom": "./tmp/demos/tour/gridlee.ref",
+   "reference_addr": "0xa000",
+   "reference_base": "0xa000"
   },
   "reply": {
-   "summary": "scan start: 0x200000, 256 1-byte candidates on :maincpu",
+   "summary": "<volatile>",
    "status": "ok",
-   "ref": "0x200000",
-   "addr": "0x00200000",
-   "length": 256,
+   "rom_check": "OK",
+   "deterministic": true,
+   "query_s": "<volatile>",
+   "cpu": ":maincpu"
+  }
+ },
+ "run_for": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 14",
+  "call": {
+   "milliseconds": 5000,
+   "seconds": 300
+  },
+  "reply": {
+   "summary": "run_for 5000 ms: ELAPSED, frame 0 to 295",
+   "status": "ok",
+   "verdict": "ELAPSED",
+   "frame_before": 0,
+   "frame_after": 295,
+   "emulated_before_s": 3e-06,
+   "emulated_after_s": 5.000003,
+   "cycles": 6250000,
+   "reads": "<volatile>",
+   "cause": "the console's `gtime` stop",
+   "stop_seq": 2,
+   "pc": "0x0000a631",
+   "cpu": ":maincpu",
+   "frame": 295,
+   "regs": {
+    "A": "0x0a",
+    "B": "0x4b",
+    "D": "0x0a4b",
+    "X": "0xc901",
+    "Y": "0xf2e6",
+    "U": "0xbef1",
+    "PC": "0xa631",
+    "S": "0x0800",
+    "CC": "0xc4",
+    "DP": "0x00"
+   },
+   "instruction": {
+    "address": "A631",
+    "bytes": "04B4",
+    "text": "LSR    <$B4",
+    "symbol": "wait_frame",
+    "delta": 0
+   },
+   "following": [
+    "A633: 24 FC    BCC    $A631",
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "... 7 more"
+   ],
+   "errorlog": "<volatile>"
+  }
+ },
+ "run_to": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 39",
+  "call": {
+   "ref": "count_coin",
+   "control": "wait_frame",
+   "seconds": 300
+  },
+  "reply": {
+   "summary": "run_to count_coin: TARGET, control counted 1",
+   "status": "ok",
+   "verdict": "TARGET",
+   "control_hits": 1,
+   "controls": [
+    {
+     "ref": "wait_frame",
+     "cpu": ":maincpu",
+     "hits_in_run": 1
+    }
+   ],
+   "cause": "target count_coin",
+   "stop_seq": 18,
+   "pc": "0x0000b583",
+   "cpu": ":maincpu",
+   "frame": 552,
+   "regs": {
+    "A": "0x01",
+    "B": "0xcf",
+    "D": "0x01cf",
+    "X": "0xe199",
+    "Y": "0xf2e6",
+    "U": "0x7acf",
+    "PC": "0xb583",
+    "S": "0x07fc",
+    "CC": "0xa4",
+    "DP": "0x00"
+   },
+   "instruction": {
+    "address": "B583",
+    "bytes": "7C042B",
+    "text": "INC    $042B",
+    "symbol": "count_coin",
+    "delta": 0,
+    "comment": "a coin: INC credits, then the BCD copy"
+   },
+   "following": [
+    "B586: 86 01    LDA    #$01",
+    "B588: BB 04 2C ADDA   $042C",
+    "B58B: 19       DAA",
+    "B58C: B7 04 2C STA    $042C",
+    "B58F: 39       RTS",
+    "B590: 96 F4    LDA    <$F4",
+    "... 8 more"
+   ],
+   "errorlog": "<volatile>"
+  }
+ },
+ "scan": {
+  "from": "demos/gridlee/TRANSCRIPT.md: call 3",
+  "call": {
+   "method": "start",
+   "ref": "0x0",
+   "length": 2048
+  },
+  "reply": {
+   "summary": "scan start: 0x0, 2048 1-byte candidates on :maincpu",
+   "status": "ok",
+   "ref": "0x0",
+   "addr": "0x00000000",
+   "length": 2048,
    "cell_bytes": 1,
-   "hits_total": 256,
+   "hits_total": 2048,
    "cpu": ":maincpu",
    "space": "program"
+  },
+  "then": {
+   "tool": "scan",
+   "call": {
+    "method": "filter",
+    "operator": "=",
+    "value": 3
+   },
+   "reply": {
+    "summary": "scan filter: = 0x03, 3 survivors",
+    "status": "ok",
+    "operator": "=",
+    "value": "0x03",
+    "iterations": 3,
+    "closed": false,
+    "hits": [
+     {
+      "addr": "0x000003ee",
+      "value": "0x03"
+     },
+     {
+      "addr": "0x0000042b",
+      "value": "0x03"
+     },
+     {
+      "addr": "0x0000042c",
+      "value": "0x03"
+     }
+    ],
+    "hits_total": 3,
+    "truncated": false,
+    "cpu": ":maincpu",
+    "space": "program"
+   }
   }
  },
  "screen_map_find": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_map_find @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 56",
   "call": {},
   "reply": {
-   "summary": "screen_map_find: probe (session), 0 controls",
+   "summary": "screen_map_find: level_card (session), 1 control",
    "status": "ok",
    "matched": true,
-   "screen": "probe",
+   "screen": "level_card",
    "layer": "session",
    "kind": "pixel",
    "size": [
-    336,
-    252
+    256,
+    240
    ],
-   "controls": [],
+   "controls": [
+    {
+     "name": "level",
+     "rect": [
+      88,
+      152,
+      72,
+      8
+     ],
+     "centre": [
+      124,
+      156
+     ]
+    }
+   ],
    "evaluated_by": "one step",
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#5",
-   "pc_before": "0x000025e0",
+   "call": "MAME_MCP_LUA_END#21",
+   "pc_before": "0x0000a631",
    "cause": "screen_map_find: one step",
-   "stop_seq": 6,
-   "pc": "0x000025e8",
+   "stop_seq": 27,
+   "pc": "0x0000a633",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 702,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2708",
-    "PC": "0x000025e8"
+    "A": "0x00",
+    "B": "0x99",
+    "D": "0x0099",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xa633",
+    "S": "0x0800",
+    "CC": "0x84",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025E8",
-    "bytes": "41F900201000",
-    "text": "lea     $201000.l, A0",
-    "symbol": "boot_init",
-    "delta": 12
+    "address": "A633",
+    "bytes": "24FC",
+    "text": "BCC    $A631",
+    "symbol": "wait_frame",
+    "delta": 2
    },
    "following": [
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l"
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "A640: 7E F0 00 JMP    $F000",
+    "... 6 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>"
   }
  },
  "screen_map_write": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_map_write add @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 55",
   "call": {
    "method": "add",
-   "screen": "probe",
+   "screen": "level_card",
    "match": [
     [
-     0,
-     0,
-     8,
-     8
+     24,
+     104,
+     208,
+     16
     ]
+   ],
+   "controls": [
+    {
+     "name": "level",
+     "rect": [
+      88,
+      152,
+      72,
+      8
+     ]
+    }
    ]
   },
   "reply": {
-   "summary": "screen_map_write add: probe (pixel 336x252), 1 region, 0 controls",
+   "summary": "screen_map_write add: level_card (pixel 256x240), 1 region, 1 control",
    "status": "ok",
-   "screen": "probe",
+   "screen": "level_card",
    "kind": "pixel",
    "size": [
-    336,
-    252
+    256,
+    240
    ],
    "cells": "rgb",
    "match": [
     {
      "crop": [
-      0,
-      0,
-      8,
-      8
+      24,
+      104,
+      208,
+      16
      ],
-     "signature": "d275923c4035816a"
+     "signature": "5733a1938b03c102"
     }
    ],
-   "controls": 0,
+   "controls": 1,
    "replaced": false,
    "shadows_file": false,
    "evaluated_by": "one step",
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#4",
-   "pc_before": "0x000025dc",
+   "call": "MAME_MCP_LUA_END#20",
+   "pc_before": "0x0000a633",
    "cause": "screen_map_write add: one step",
-   "stop_seq": 5,
-   "pc": "0x000025e0",
+   "stop_seq": 26,
+   "pc": "0x0000a631",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 702,
    "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2704",
-    "PC": "0x000025e0"
+    "A": "0x00",
+    "B": "0x99",
+    "D": "0x0099",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xa631",
+    "S": "0x0800",
+    "CC": "0x84",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025E0",
-    "bytes": "33FCFFFF00720004",
-    "text": "move.w  #$ffff, $720004.l",
-    "symbol": "boot_init",
-    "delta": 4
-   },
-   "following": [
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
-   ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   },
-   "kept": "kept 2 (promote to review); maps/radendur, start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
-  }
- },
- "screen_signature": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_signature @ stopped",
-  "call": {},
-  "reply": {
-   "summary": "screen_signature 336x252 at [0, 0]: b78c68b342d821d6",
-   "status": "ok",
-   "signature": "b78c68b342d821d6",
-   "kind": "pixel",
-   "width": 336,
-   "height": 252,
-   "crop": [
-    0,
-    0,
-    336,
-    252
-   ],
-   "screen": ":screen",
-   "frame_screen": 0,
-   "evaluated_by": "one step",
-   "lines_ahead": 0,
-   "thread_errors": 0,
-   "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#3",
-   "pc_before": "0x000f2040",
-   "cause": "screen_signature: one step",
-   "stop_seq": 4,
-   "pc": "0x000025dc",
-   "cpu": ":maincpu",
-   "frame": 0,
-   "regs": {
-    "D0": "0x00000000",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00000000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200ffc",
-    "PS": "0x2704",
-    "PC": "0x000025dc"
-   },
-   "instruction": {
-    "address": "0025DC",
-    "bytes": "48E7FFFC",
-    "text": "movem.l D0-D7/A0-A5, -(A7)",
-    "symbol": "boot_init",
+    "address": "A631",
+    "bytes": "04B4",
+    "text": "LSR    <$B4",
+    "symbol": "wait_frame",
     "delta": 0
    },
    "following": [
-    "0025E0: 33FC FFFF 0072 0004 move.w  #$ffff, $720004.l",
-    "0025E8: 41F9 0020 1000      lea     $201000.l, A0",
-    "0025EE: 203C 0000 E927      move.l  #$e927, D0",
-    "0025F4: 4218                clr.b   (A0)+",
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l"
+    "A633: 24 FC    BCC    $A631",
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "... 7 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>",
+   "kept": "3 saved for `promote`; maps/gridlee, perform/two-coins, start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
- "screen_view": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_view @ stopped",
-  "call": {
-   "mode": "histogram"
-  },
+ "screen_signature": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 16",
+  "call": {},
   "reply": {
-   "summary": "screen_view histogram :screen frame 0: 1 of 256 pens used",
+   "summary": "screen_signature 256x240 at [0, 0]: 0b0a637e5b000571",
    "status": "ok",
-   "mode": "histogram",
-   "screen": ":screen",
-   "width": 336,
-   "height": 252,
-   "frame_screen": 0,
-   "palette": ":palette",
-   "entries": 256,
-   "screen_indexed": true,
+   "signature": "0b0a637e5b000571",
+   "kind": "pixel",
+   "width": 256,
+   "height": 240,
    "crop": [
     0,
     0,
-    336,
-    252
+    256,
+    240
    ],
-   "histogram": [
-    [
-     0,
-     84672
-    ]
-   ],
-   "pens_used": 1,
-   "unused": [
-    "0x1-0xff"
-   ],
+   "screen": ":screen",
+   "frame_screen": 295,
    "evaluated_by": "one step",
    "lines_ahead": 0,
    "thread_errors": 0,
    "console_reruns": 0,
-   "call": "MAME_MCP_LUA_END#7",
-   "pc_before": "0x000025ee",
-   "cause": "screen_view: one step",
-   "stop_seq": 8,
-   "pc": "0x000025f4",
+   "call": "MAME_MCP_LUA_END#2",
+   "pc_before": "0x0000a631",
+   "cause": "screen_signature: one step",
+   "stop_seq": 3,
+   "pc": "0x0000a633",
    "cpu": ":maincpu",
-   "frame": 0,
+   "frame": 295,
    "regs": {
-    "D0": "0x0000e927",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x00201000",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00000000",
-    "SP": "0x00200fc4",
-    "PS": "0x2700",
-    "PC": "0x000025f4"
+    "A": "0x0a",
+    "B": "0x4b",
+    "D": "0x0a4b",
+    "X": "0xc901",
+    "Y": "0xf2e6",
+    "U": "0xbef1",
+    "PC": "0xa633",
+    "S": "0x0800",
+    "CC": "0xc4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0025F4",
-    "bytes": "4218",
-    "text": "clr.b   (A0)+",
-    "symbol": "boot_init",
-    "delta": 24
+    "address": "A633",
+    "bytes": "24FC",
+    "text": "BCC    $A631",
+    "symbol": "wait_frame",
+    "delta": 2
    },
    "following": [
-    "0025F6: 51C8 FFFC           dbra    D0, $25f4",
-    "0025FA: 4EB9 000F 24D0      jsr     $f24d0.l",
-    "002600: 13FC 00D8 0020 351C move.b  #$d8, $20351c.l",
-    "002608: 33FC 0007 0020 F772 move.w  #$7, $20f772.l",
-    "002610: 1039 0020 351C      move.b  $20351c.l, D0"
+    "A635: B7 93 80 STA    $9380",
+    "A638: B6 97 00 LDA    $9700",
+    "A63B: 43       COMA",
+    "A63C: 85 20    BITA   #$20",
+    "A63E: 27 03    BEQ    $A643",
+    "A640: 7E F0 00 JMP    $F000",
+    "... 6 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 14
-   }
+   "errorlog": "<volatile>"
+  }
+ },
+ "screen_view": {
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 29",
+  "call": {
+   "mode": "pixel",
+   "point": [
+    151,
+    172
+   ],
+   "dest": "./tmp/demos/tour/pixel.png"
+  },
+  "reply": {
+   "summary": "screen_view pixel :screen frame 545: (151, 172) is pen 0x346 #449933; no logged write to it: no manifest is loaded: `gfx_load` a gfx.yaml whose `palette_ports` names this palette, then `palette_log(palette_port=..., arm=True)` arms the log  ... (290 characters)",
+   "status": "ok",
+   "mode": "pixel",
+   "screen": ":screen",
+   "width": 256,
+   "height": 240,
+   "frame_screen": 545,
+   "palette": ":palette",
+   "entries": 2048,
+   "screen_indexed": true,
+   "x": 151,
+   "y": 172,
+   "pen": 838,
+   "color": "#449933",
+   "set_by": {
+    "available": false,
+    "why": "no manifest is loaded: `gfx_load` a gfx.yaml whose `palette_ports` names this palette, then `palette_log(palette_port=..., arm=True)` arms the log that answers who set a pen"
+   },
+   "crop": [
+    127,
+    148,
+    48,
+    48
+   ],
+   "point_in_crop": [
+    24,
+    24
+   ],
+   "image": {
+    "path": "./tmp/demos/tour/pixel.png",
+    "bytes": "<volatile>",
+    "sha256": "<volatile>",
+    "width": 388,
+    "height": 388,
+    "scale": 8,
+    "indexed": false,
+    "inline": true,
+    "border": 2
+   },
+   "evaluated_by": "one step",
+   "lines_ahead": 0,
+   "thread_errors": 0,
+   "console_reruns": 0,
+   "call": "MAME_MCP_LUA_END#9",
+   "pc_before": "0x0000fd82",
+   "cause": "screen_view: one step",
+   "stop_seq": 11,
+   "pc": "0x0000fd84",
+   "cpu": ":maincpu",
+   "frame": 545,
+   "regs": {
+    "A": "0xbc",
+    "B": "0x72",
+    "D": "0xbc72",
+    "X": "0x0100",
+    "Y": "0x00f1",
+    "U": "0xc66d",
+    "PC": "0xfd84",
+    "S": "0x07f4",
+    "CC": "0xf8",
+    "DP": "0x00"
+   },
+   "instruction": {
+    "address": "FD84",
+    "bytes": "8403",
+    "text": "ANDA   #$03",
+    "symbol": "irq",
+    "delta": 4
+   },
+   "following": [
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "FD91: F6 95 01 LDB    $9501",
+    "... 9 more"
+   ],
+   "errorlog": "<volatile>",
+   "watches": [
+    {
+     "ref": "0xc",
+     "cpu": ":maincpu",
+     "state": "captured",
+     "total": 3,
+     "callback_errors": {
+      "count": 0,
+      "first": {
+       "available": false,
+       "why": "no callback raised"
+      }
+     },
+     "since_last_stop": 0
+    }
+   ],
+   "omitted": [
+    "addr",
+    "by",
+    "fmt",
+    "frame_as_of",
+    "install_resent",
+    "installed",
+    "... 12 more"
+   ],
+   "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables"
   }
  },
  "screen_wait": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): screen_wait @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 59",
   "call": {
-   "palette": "black",
-   "seconds": 0.2
+   "screen": "level_card",
+   "seconds": 300
   },
   "reply": {
-   "summary": "screen_wait a black palette: already on screen",
+   "summary": "screen_wait screen 'level_card': found after 13 frames",
    "status": "ok",
    "verdict": "TARGET",
-   "predicate": "palette",
-   "already": true,
-   "polls": 0,
+   "frame_before": 560,
+   "frame_after": 561,
+   "emulated_before_s": 9.478676,
+   "emulated_after_s": 9.495568,
+   "cycles": 21115,
+   "polls": 13,
+   "cause": "the `gvblank` stop of the last frame asked",
+   "stop_seq": 55,
+   "pc": "0x0000fd80",
+   "cpu": ":maincpu",
+   "frame": 561,
+   "regs": {
+    "A": "0x01",
+    "B": "0x1d",
+    "D": "0x011d",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd80",
+    "S": "0x07f4",
+    "CC": "0xd4",
+    "DP": "0x00"
+   },
+   "instruction": {
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": "irq",
+    "delta": 0
+   },
+   "following": [
+    "FD82: 96 B2    LDA    <$B2",
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "... 9 more"
+   ],
+   "errorlog": "<volatile>",
+   "predicate": "screen",
+   "already": false,
    "sampled_every": 0,
-   "frames": 0,
-   "waited_s": 0.2,
-   "palette": "black",
-   "entries": 256
+   "frames": 13,
+   "waited_s": "<volatile>",
+   "screen": {
+    "name": "level_card",
+    "layer": "session"
+   }
   }
  },
  "series_capture": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): series_capture @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 53",
   "call": {
-   "at_frames": [
-    14
-   ],
-   "seconds": 10.0
+   "first": 557,
+   "last": 581,
+   "step": 8,
+   "dest": "./tmp/demos/tour/series",
+   "seconds": 300
   },
   "reply": {
-   "summary": "series_capture: 1 frame 14..14, 1 distinct, manifest $TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
+   "summary": "series_capture: 4 frames 557..581, 3 distinct, manifest ./tmp/demos/tour/series/manifest.json",
    "status": "ok",
    "verdict": "ELAPSED",
-   "frame_before": 12,
-   "frame_after": 16,
-   "emulated_before_s": 0.259586,
-   "emulated_after_s": 0.339456,
-   "cycles": 1277920,
-   "polls": 4,
-   "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 20,
-   "pc": "0x00002986",
+   "frame_before": 553,
+   "frame_after": 583,
+   "emulated_before_s": 9.3604,
+   "emulated_after_s": 9.86728,
+   "cycles": 633600,
+   "polls": 31,
+   "cause": "series_capture: one step",
+   "stop_seq": 24,
+   "pc": "0x0000fd82",
    "cpu": ":maincpu",
-   "frame": 16,
+   "frame": 583,
    "regs": {
-    "D0": "0x00005845",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000002ff",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fe4",
-    "SP": "0x00200fa4",
-    "PS": "0x2108",
-    "PC": "0x00002986"
+    "A": "0x01",
+    "B": "0x10",
+    "D": "0x0110",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd82",
+    "S": "0x07f4",
+    "CC": "0xd0",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "002986",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $2986",
-    "symbol": "mode_clear_blits",
-    "delta": 304
+    "address": "FD82",
+    "bytes": "96B2",
+    "text": "LDA    <$B2",
+    "symbol": "irq",
+    "delta": 2
    },
    "following": [
-    "00298A: 33FC 0000 0070 0000 move.w  #$0, $700000.l",
-    "002992: 33FC 0000 0070 0004 move.w  #$0, $700004.l",
-    "00299A: 33FC 0000 0070 000C move.w  #$0, $70000c.l",
-    "0029A2: 33FC 000F 0070 000E move.w  #$f, $70000e.l"
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "FD8F: 26 28    BNE    $FDB9",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-   },
-   "manifest": "$TMPDIR/mame-mcp-<run>/series/series-1/manifest.json",
-   "count": 1,
-   "first": 14,
-   "last": 14,
-   "distinct": 1,
+   "errorlog": "<volatile>",
+   "manifest": "./tmp/demos/tour/series/manifest.json",
+   "count": 4,
+   "first": 557,
+   "last": 581,
+   "distinct": 3,
    "crop": [
     0,
     0,
-    336,
-    252
+    256,
+    240
    ],
    "lost": [],
-   "frames_asked": 1,
-   "kept_after_close": false,
+   "frames_asked": 4,
+   "kept_after_close": true,
    "frame_source": "frame_number",
    "thread_errors": 0,
    "console_reruns": 0
   }
  },
  "set_register": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): set_register @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 69",
   "call": {
-   "name": "D0",
-   "value": 0
+   "name": "A",
+   "value": "0x42"
   },
   "reply": {
-   "summary": "set_register D0 = 0x00000000, verified True",
+   "summary": "set_register A = 0x42, verified True",
    "status": "ok",
-   "register": "D0",
-   "value": "0x00000000",
-   "readback": "0x00000000",
+   "register": "A",
+   "value": "0x42",
+   "readback": "0x42",
    "verified": true,
    "cpu": ":maincpu"
   }
  },
  "snapshot": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): snapshot @ stopped",
-  "call": {},
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 62",
+  "call": {
+   "dest": "./tmp/demos/tour/card.png"
+  },
   "reply": {
-   "summary": "snapshot: 441 bytes at $TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
+   "summary": "<volatile>",
    "status": "ok",
-   "path": "$TMPDIR/mame-mcp-<run>/snap/snapshot-1.png",
+   "path": "./tmp/demos/tour/card.png",
    "bytes": "<volatile>",
    "sha256": "<volatile>",
    "view": "native"
   }
  },
  "start": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): start @ none",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 1",
   "call": {
-   "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
-   "system": "radendur",
-   "rompath": "$MAME_LIVE_BENCH/m68k-dual/run/mame_roms",
-   "reference_rom": "$MAME_LIVE_BENCH/m68k-dual/disasm/img/radendur_maincpu.bin",
-   "reference_addr": "0x0",
-   "boot_seconds": 25.0,
-   "presence": false,
-   "inipath": "/path/to/scry-mame/tests/live/fixtures/ini-no-joystick",
-   "symbols": "$MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml"
+   "shared": true,
+   "background": true,
+   "display": "<host>",
+   "system": "gridlee",
+   "reference_rom": "./tmp/demos/tour/gridlee.ref",
+   "reference_addr": "0xa000",
+   "reference_base": "0xa000",
+   "inipath": "./tmp/demos/tour/gridlee-ini",
+   "state_dir": "./tmp/demos/tour/gridlee-states",
+   "boot_seconds": 60,
+   "symbols": "./docs/reference/tour/gridlee-symbols.yaml",
+   "rompath": "<host>"
   },
   "reply": {
-   "summary": "start radendur on $MAME_LIVE_BENCH/m68k-dual/upstream/radendu (argument): rom_check OK, 64 symbols, pc 0x000f2034, machine: 2 cpus, 1 screen, 22 ROM files, 4 regions, 2 shares",
+   "summary": "<volatile>",
    "status": "ok",
-   "system": "radendur",
-   "binary": "$MAME_LIVE_BENCH/m68k-dual/upstream/radendu",
-   "binary_origin": "argument",
-   "version": "<volatile>",
+   "system": "gridlee",
+   "binary": "<volatile>",
+   "binary_origin": "<volatile>",
+   "version": "0.289 (unknown)",
    "pid": "<volatile>",
    "stub_port": "<volatile>",
-   "scratch_dir": "$TMPDIR/mame-mcp-<run>",
-   "state_dir": "$TMPDIR/mame-mcp-<run>",
+   "scratch_dir": "<volatile>",
+   "state_dir": "./tmp/demos/tour/gridlee-states",
    "cfg": {
     "available": false,
     "why": "no cfg was given, so MAME runs on its defaults"
@@ -3236,57 +3863,53 @@
     "attached": "gdbstub",
     "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
    },
-   "errorlog_path": "$TMPDIR/mame-mcp-<run>/error.log",
-   "stdout_path": "$TMPDIR/mame-mcp-<run>/stdout.log",
+   "errorlog_path": "<volatile>",
+   "stdout_path": "<volatile>",
    "rom_check": "OK",
-   "symbols_total": 64,
+   "symbols_total": 7,
+   "symbols_typed": 2,
    "symbols_format": "yaml",
    "symbols_by_class": {},
    "symbols_by_cpu": {
-    ":maincpu": 64
+    ":maincpu": 7
    },
    "registers": [
-    "D0",
-    "D1",
-    "D2",
-    "D3",
-    "D4",
-    "D5",
-    "... 12 more"
+    "A",
+    "B",
+    "D",
+    "X",
+    "Y",
+    "U",
+    "... 4 more"
    ],
-   "pc": "0x000f2034",
+   "pc": "0x0000f000",
    "frame": 0,
    "frame_symbol": "frame",
    "view": "native",
    "views": [
     "Screen 0 Standard (4:3)",
+    "Screen 0 Pixel Aspect (16:15)",
     "Cocktail"
    ],
    "background": true,
-   "flags": [
-    "-window",
-    "-nomaximize",
-    "-resolution",
-    "320x240",
-    "-nothrottle"
-   ],
-   "boot_lua_path": "$TMPDIR/mame-mcp-<run>/boot.lua",
-   "presence": false,
+   "flags": "<volatile>",
+   "boot_lua_path": "<volatile>",
+   "presence": true,
    "machine": {
-    "cpus": 2,
-    "spaces": 4,
-    "address_map": 32,
-    "regions": 4,
-    "shares": 2,
+    "cpus": 1,
+    "spaces": 1,
+    "address_map": 14,
+    "regions": 3,
+    "shares": 3,
     "screens": 1,
-    "rom_files": 22
+    "rom_files": 13
    },
    "declarations": {
     "persistent": true,
-    "path": "$TMPDIR/mame-live-matrix-<run>/jobs-scratch/A/mame-live-matrix-state-<run>/mame-debug/declarations.json",
-    "key": "radendur $MAME_LIVE_BENCH/m68k-dual/disasm/symbols-radendur_maincpu.yaml",
+    "path": "./tmp/demos/tour/gridlee-states/declarations.json",
+    "key": "gridlee ./docs/reference/tour/gridlee-symbols.yaml",
     "held": 0,
-    "fingerprint": "07549ca6b6e1c4ed",
+    "fingerprint": "9ddedcc4d2bcbc14",
     "rearm": {
      "rearmed": [],
      "stale": [],
@@ -3302,164 +3925,253 @@
     }
    },
    "recommended_release": "0.289",
-   "kept": "kept 1 (promote to review); start/radendur: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
+   "window": "<volatile>",
+   "kept": "1 saved for `promote`; start/gridlee: nothing this session read names its repository: promote(dry_run=true, root=<the repository>) lists what an approval would create"
   }
  },
  "state_list": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): state_list @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 26",
   "call": {},
   "reply": {
-   "summary": "state_list: 0 states in $TMPDIR/mame-mcp-<run>/sta/radendur",
+   "summary": "state_list: 1 state in ./tmp/demos/tour/gridlee-states/sta/gridlee",
    "status": "ok",
-   "state_dir": "$TMPDIR/mame-mcp-<run>/sta/radendur",
-   "states": []
+   "state_dir": "./tmp/demos/tour/gridlee-states/sta/gridlee",
+   "states": [
+    {
+     "name": "two-credits",
+     "path": "./tmp/demos/tour/gridlee-states/sta/gridlee/two-credits.sta",
+     "bytes": "<volatile>",
+     "frame": 543,
+     "pc": "0x0000b502"
+    }
+   ]
   }
  },
  "state_write": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): state_write save @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 25",
   "call": {
    "method": "save",
-   "name": "m11"
+   "name": "two_credits"
   },
   "reply": {
-   "summary": "state_write save: m11, 111781 bytes at frame 30",
+   "summary": "<volatile>",
    "status": "ok",
-   "name": "m11",
-   "path": "$TMPDIR/mame-mcp-<run>/sta/radendur/m11.sta",
-   "bytes": 111781,
-   "frame": 30,
-   "pc": "0x000e2cea",
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66664
+   "name": "two-credits",
+   "path": "./tmp/demos/tour/gridlee-states/sta/gridlee/two-credits.sta",
+   "bytes": "<volatile>",
+   "frame": 543,
+   "pc": "0x0000b502",
+   "errorlog": "<volatile>"
+  },
+  "then": {
+   "tool": "state_write",
+   "call": {
+    "method": "load",
+    "name": "two_credits"
+   },
+   "reply": {
+    "summary": "state_write load: two-credits, rom_check OK, verified True, frame 543, pc 0x0000b502",
+    "status": "ok",
+    "name": "two-credits",
+    "path": "./tmp/demos/tour/gridlee-states/sta/gridlee/two-credits.sta",
+    "rom_check": "OK",
+    "verified": true,
+    "saved": {
+     "frame": 543,
+     "pc": "0x0000b502"
+    },
+    "output": "State load attempted.  Please refer to window message popup for results.",
+    "mark": "<volatile>",
+    "taps_across": [
+     {
+      "ref": "film",
+      "cpu": ":maincpu"
+     }
+    ],
+    "cause": "stateload two-credits",
+    "stop_seq": 28,
+    "pc": "0x0000b502",
+    "cpu": ":maincpu",
+    "frame": 543,
+    "regs": {
+     "A": "0x02",
+     "B": "0x70",
+     "D": "0x0270",
+     "X": "0xda5c",
+     "Y": "0x0101",
+     "U": "0xab79",
+     "PC": "0xb502",
+     "S": "0x07fc",
+     "CC": "0xa9",
+     "DP": "0x00"
+    },
+    "instruction": {
+     "address": "B502",
+     "bytes": "26F4",
+     "text": "BNE    $B4F8",
+     "symbol": "write_sprites",
+     "delta": 3340
+    },
+    "following": [
+     "B504: DC 86    LDD    <$86",
+     "B506: 8E DA 62 LDX    #$DA62",
+     "B509: 10 A3 81 CMPD   ,X++",
+     "B50C: 23 07    BLS    $B515",
+     "B50E: 0C 81    INC    <$81",
+     "B510: 8C DA 6A CMPX   #$DA6A",
+     "... 9 more"
+    ],
+    "errorlog": "<volatile>"
    }
   }
  },
  "status": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): status @ none",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 2",
   "call": {},
   "reply": {
-   "summary": "status: no session",
+   "summary": "status: gridlee alive at pc 0x0000f000",
    "status": "ok",
-   "last_stop": {
+   "system": "gridlee",
+   "pid": "<volatile>",
+   "stub_port": "<volatile>",
+   "scratch_dir": "<volatile>",
+   "state_dir": "./tmp/demos/tour/gridlee-states",
+   "cfg": {
     "available": false,
-    "why": "no session is live, so there is no stop to report"
-   }
+    "why": "no cfg was given, so MAME runs on its defaults"
+   },
+   "debugger": {
+    "attached": "gdbstub",
+    "note": "MAME runs with -debug under this stub. A capture taken at one of this session's stops can land a frame away from an autoboot golden taken by a frame notifier at the same count, in a scene that changes every frame: compare a live capture wit ... (255 characters)"
+   },
+   "presence": true,
+   "fingerprint": "9ddedcc4d2bcbc14",
+   "fingerprints": {
+    ":maincpu": "9ddedcc4d2bcbc14"
+   },
+   "errorlog_path": "<volatile>",
+   "stdout_path": "<volatile>",
+   "pc": "0x0000f000",
+   "last_stop": {
+    "stop_seq": 1,
+    "pc": "0x0000f000",
+    "cpu": ":maincpu",
+    "frame": 0,
+    "cause": "start",
+    "since_s": "<volatile>",
+    "wall_at": "<volatile>"
+   },
+   "in_debugger": {
+    "breakpoints": [],
+    "watches": [],
+    "regpoints": []
+   },
+   "threads": {
+    "1": ":maincpu"
+   },
+   "cpu_tags": [
+    ":maincpu"
+   ],
+   "console_pending": 0,
+   "tallies_pending_removal": [],
+   "frame_symbol": "frame"
   }
  },
  "step": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): step @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 40",
   "call": {
    "count": 1
   },
   "reply": {
-   "summary": "step 1 into: pc 0x000029ee",
+   "summary": "step 1 into: pc 0x0000b586",
    "status": "ok",
    "mode": "into",
    "instructions_completed": 1,
-   "others": {
-    ":subcpu": {
-     "reg": "PC",
-     "before": "0x00000542",
-     "after": "0x00000542"
-    }
-   },
    "cause": "step 1",
-   "stop_seq": 23,
-   "pc": "0x000029ee",
+   "stop_seq": 19,
+   "pc": "0x0000b586",
    "cpu": ":maincpu",
-   "frame": 17,
+   "frame": 552,
    "regs": {
-    "D0": "0x0000e281",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000002ff",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fe4",
-    "SP": "0x00200fa4",
-    "PS": "0x2108",
-    "PC": "0x000029ee"
+    "A": "0x01",
+    "B": "0xcf",
+    "D": "0x01cf",
+    "X": "0xe199",
+    "Y": "0xf2e6",
+    "U": "0x7acf",
+    "PC": "0xb586",
+    "S": "0x07fc",
+    "CC": "0xa0",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0029EE",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $29ee",
-    "symbol": "mode_clear_blits",
-    "delta": 408
+    "address": "B586",
+    "bytes": "8601",
+    "text": "LDA    #$01",
+    "symbol": "count_coin",
+    "delta": 3
    },
    "following": [
-    "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
-    "0029F6: 4E75      rts",
-    "0029F8: 0000 0796 ori.b   #$96, D0",
-    "0029FC: 0000 4854 ori.b   #$54, D0",
-    "002A00: 0000 4860 ori.b   #$60, D0",
-    "002A04: 0000 48C4 ori.b   #$c4, D0",
-    "... 2 more"
+    "B588: BB 04 2C ADDA   $042C",
+    "B58B: 19       DAA",
+    "B58C: B7 04 2C STA    $042C",
+    "B58F: 39       RTS",
+    "B590: 96 F4    LDA    <$F4",
+    "B592: 27 21    BEQ    $B5B5",
+    "... 8 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-   }
+   "errorlog": "<volatile>"
   }
  },
  "stop": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): stop @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 73",
   "call": {},
   "reply": {
-   "summary": "stop: was already stopped",
+   "summary": "<volatile>",
    "status": "ok",
-   "interrupted": false,
-   "note": "the machine was already stopped",
-   "last_stop": {
-    "stop_seq": 29,
-    "pc": "0x000025f6",
-    "cpu": ":maincpu",
-    "frame": 31,
-    "cause": "the `gvblank` stop of the last frame asked",
-    "since_s": 0.0,
-    "wall_at": "<volatile>"
-   }
+   "interrupted": true,
+   "cause": "interrupt",
+   "stop_seq": 62,
+   "pc": "<volatile>",
+   "cpu": ":maincpu",
+   "frame": "<volatile>",
+   "regs": "<volatile>",
+   "instruction": "<volatile>",
+   "following": "<volatile>",
+   "errorlog": "<volatile>",
+   "average_speed": "<volatile>"
   }
  },
  "symbols_find": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): symbols_find @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 7",
   "call": {
-   "name": "irq_vblank"
+   "name": "cred"
   },
   "reply": {
-   "summary": "symbols_find irq_vblank: 1 match",
+   "summary": "symbols_find cred: 2 matches",
    "status": "ok",
-   "query": "irq_vblank",
+   "query": "cred",
    "cpu": ":maincpu",
-   "symbols_total": 1,
+   "symbols_total": 2,
    "symbols": [
     {
-     "name": "irq_vblank",
-     "addr": "0x00000400",
-     "memory": "rom"
+     "name": "credits",
+     "addr": "0x0000042b",
+     "memory": "ram"
+    },
+    {
+     "name": "credits_bcd",
+     "addr": "0x0000042c",
+     "memory": "ram"
     }
    ],
    "truncated": false
   }
  },
  "throttle": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): throttle @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 13",
   "call": {
-   "on": false,
-   "seconds": 5.0
+   "on": false
   },
   "reply": {
    "summary": "throttle off: pending until the console next reads a line",
@@ -3467,202 +4179,282 @@
    "on": false,
    "pending": true,
    "applies": "when the console next reads a line: a step, the next frame emulated, or a debugger command on a stub that refreshes after one",
-   "tag": "MAME_MCP_THROTTLE#25",
+   "tag": "MAME_MCP_THROTTLE#1",
    "confirmed_by": "its tag in the error log, read by the next stop's survey, by `status` and by `close`; `status` lists it in `throttles_pending` until then, and if the tag never comes, every reply after that says so in `session.throttles_not_applied`"
+  },
+  "then": {
+   "tool": "log_wait",
+   "call": {
+    "pattern": "MAME_MCP_THROTTLE#1",
+    "channel": "emulator"
+   },
+   "reply": {
+    "summary": "log_wait emulator /MAME_MCP_THROTTLE#1/: matched already there",
+    "status": "ok",
+    "verdict": "TARGET",
+    "pattern": "MAME_MCP_THROTTLE#1",
+    "channel": "emulator",
+    "line": "[luaengine] MAME_MCP_THROTTLE#1 throttled=false frame=0",
+    "already": true,
+    "lines_total": 1,
+    "lines_before": 4,
+    "arrived_during": 0,
+    "waited_s": "<volatile>",
+    "lines_examined": 6
+   }
   }
  },
  "trace": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): trace @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 63",
   "call": {
-   "frames": 1,
-   "seconds": 10.0
+   "frames": 2,
+   "dest": "./tmp/demos/tour/trace.txt",
+   "seconds": 300
   },
   "reply": {
-   "summary": "trace :maincpu 1 frame: 201 addresses in 7 symbols, 13781 bytes",
+   "summary": "trace :maincpu 2 frames: 192 addresses in 4 symbols, 19627 bytes",
    "status": "ok",
    "verdict": "ELAPSED",
-   "frame_before": 16,
-   "frame_after": 17,
-   "emulated_before_s": 0.339457,
-   "emulated_after_s": 0.359424,
-   "cycles": 319482,
-   "polls": 1,
+   "frame_before": 628,
+   "frame_after": 630,
+   "emulated_before_s": 10.627602,
+   "emulated_after_s": 10.661393,
+   "cycles": 42239,
+   "polls": 2,
    "cause": "the `gvblank` stop of the last frame asked",
-   "stop_seq": 22,
-   "pc": "0x000029ee",
+   "stop_seq": 59,
+   "pc": "0x0000fd80",
    "cpu": ":maincpu",
-   "frame": 17,
+   "frame": 630,
    "regs": {
-    "D0": "0x0000e282",
-    "D1": "0x00000000",
-    "D2": "0x00000000",
-    "D3": "0x00000000",
-    "D4": "0x00000000",
-    "D5": "0x00000000",
-    "D6": "0x00000000",
-    "D7": "0x00000000",
-    "A0": "0x000002ff",
-    "A1": "0x00000000",
-    "A2": "0x00000000",
-    "A3": "0x00000000",
-    "A4": "0x00000000",
-    "A5": "0x00000000",
-    "FP": "0x00200fe4",
-    "SP": "0x00200fa4",
-    "PS": "0x2108",
-    "PC": "0x000029ee"
+    "A": "0x00",
+    "B": "0xd8",
+    "D": "0x00d8",
+    "X": "0x0014",
+    "Y": "0xf2e6",
+    "U": "0x4071",
+    "PC": "0xfd80",
+    "S": "0x07f4",
+    "CC": "0xd4",
+    "DP": "0x00"
    },
    "instruction": {
-    "address": "0029EE",
-    "bytes": "51C8FFFE",
-    "text": "dbra    D0, $29ee",
-    "symbol": "mode_clear_blits",
-    "delta": 408
+    "address": "FD80",
+    "bytes": "0CB2",
+    "text": "INC    <$B2",
+    "symbol": "irq",
+    "delta": 0
    },
    "following": [
-    "0029F2: 4CDF 3FFF movem.l (A7)+, D0-D7/A0-A5",
-    "0029F6: 4E75      rts",
-    "0029F8: 0000 0796 ori.b   #$96, D0",
-    "0029FC: 0000 4854 ori.b   #$54, D0",
-    "002A00: 0000 4860 ori.b   #$60, D0",
-    "002A04: 0000 48C4 ori.b   #$c4, D0",
-    "... 2 more"
+    "FD82: 96 B2    LDA    <$B2",
+    "FD84: 84 03    ANDA   #$03",
+    "FD86: 26 04    BNE    $FD8C",
+    "FD88: 0C B3    INC    <$B3",
+    "FD8A: 0C B4    INC    <$B4",
+    "FD8C: B6 03 BE LDA    $03BE",
+    "... 9 more"
    ],
-   "errorlog": {
-    "lines_total": 0,
-    "truncated": false,
-    "lines": [],
-    "mark": 66062
-   },
-   "stopped_on_its_own": {
-    "stop_seq": 21,
-    "pc": "0x00002986",
-    "cpu": ":maincpu",
-    "frame": 16,
-    "cause": "stopped at no breakpoint this server armed",
-    "packet": "T05thread:1;0e:00200fe4;0f:00200fa4;11:00002986;"
-   },
+   "errorlog": "<volatile>",
    "trace": {
     "cpu": ":maincpu",
-    "path": "$TMPDIR/mame-mcp-<run>/snap/trace-1.trace",
-    "bytes": 13781,
-    "set_path": "$TMPDIR/mame-mcp-<run>/snap/trace-1-trace-set.jsonl",
-    "instructions": 23491,
-    "addresses": 201,
+    "path": "./tmp/demos/tour/trace.txt",
+    "bytes": 19627,
+    "set_path": "./tmp/demos/tour/trace-txt-set.jsonl",
+    "instructions": 9398,
+    "addresses": 192,
     "unplaced": 0,
     "symbols": [
      {
-      "symbol": "irq_vblank",
-      "addr": "0x00000400",
+      "symbol": "wait_frame",
+      "addr": "0x0000a631",
+      "addresses": 26,
+      "first": "0x0000a631",
+      "last": "0x0000a79b"
+     },
+     {
+      "symbol": "write_sprites",
+      "addr": "0x0000a7f6",
       "addresses": 25,
-      "first": "0x00000400",
-      "last": "0x00000502"
+      "first": "0x0000b52b",
+      "last": "0x0000b561"
      },
      {
-      "symbol": "page_bit_compose_a",
-      "addr": "0x00000506",
-      "addresses": 4,
-      "first": "0x00000506",
-      "last": "0x00000516"
+      "symbol": "count_coin",
+      "addr": "0x0000b583",
+      "addresses": 36,
+      "first": "0x0000b58f",
+      "last": "0x0000cc5b"
      },
      {
-      "symbol": "arm_line_counter",
-      "addr": "0x00000520",
-      "addresses": 18,
-      "first": "0x00000520",
-      "last": "0x0000059a"
-     },
-     {
-      "symbol": "mode_clear_blits",
-      "addr": "0x00002856",
-      "addresses": 15,
-      "first": "0x00002986",
-      "last": "0x000029ee"
-     },
-     {
-      "symbol": "sound_streamer_rom",
-      "addr": "0x000f2446",
-      "addresses": 116,
-      "first": "0x000f2984",
-      "last": "0x000f2df8"
-     },
-     {
-      "symbol": "irq5_streamer_ram",
-      "addr": "0x00203164",
-      "addresses": 22,
-      "first": "0x00203164",
-      "last": "0x002031f4"
-     },
-     "... 1 more"
+      "symbol": "irq",
+      "addr": "0x0000fd80",
+      "addresses": 105,
+      "first": "0x0000fd80",
+      "last": "0x0000ffa0"
+     }
     ],
-    "symbols_total": 7,
+    "symbols_total": 4,
     "truncated": false,
     "noloop": false,
-    "note": "the pc :maincpu was parked on, 0x00002986, is counted: the window executed it first and the tracer, armed there, does not log it"
+    "note": "the pc :maincpu was parked on, 0x0000fd80, is counted: the window executed it first and the tracer, armed there, does not log it"
    }
   }
  },
  "watch_add": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): watch_add @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 41",
   "call": {
-   "ref": "0x203200",
-   "mode": "show",
-   "length": 2
+   "ref": "credits_bcd",
+   "mode": "change"
   },
   "reply": {
-   "summary": "watch_add 0x203200: show watch evaluated at 0x00203200, 2 bytes",
+   "summary": "watch_add credits_bcd: change watch armed at 0x0000042c, 1 byte",
    "status": "ok",
-   "ref": "0x203200",
-   "by": "address",
-   "mode": "show",
-   "length": 2,
-   "fmt": "u16",
+   "ref": "credits_bcd",
+   "by": "symbol",
+   "mode": "change",
+   "length": 1,
+   "fmt": "u8",
    "cpu": ":maincpu",
    "while_running": false,
-   "addr": "0x00203200",
-   "stored": true,
-   "armed": false,
-   "state": "evaluated",
+   "addr": "0x0000042c",
    "reading": {
     "available": true,
-    "value": 0,
-    "raw_hex": "0000"
+    "value": 2,
+    "raw_hex": "02"
+   },
+   "stored": true,
+   "armed": true,
+   "state": "armed",
+   "index": 1,
+   "entry": "1 @ 042C-042C write",
+   "write_maps_to": "memory@0",
+   "read_maps_to": "memory@0",
+   "values_from": "memory"
+  },
+  "then": {
+   "tool": "run_for",
+   "call": {
+    "frames": 1,
+    "seconds": 300
+   },
+   "reply": {
+    "summary": "run_for 1 frame: OTHER_STOP, frame 552 to 552",
+    "status": "ok",
+    "verdict": "OTHER_STOP",
+    "frame_before": 552,
+    "frame_after": 552,
+    "emulated_before_s": 9.32817,
+    "emulated_after_s": 9.32817,
+    "cycles": 0,
+    "polls": 1,
+    "cause": "watch credits_bcd: 0x0000042c written by pc 0x0000b58c",
+    "stop_seq": 20,
+    "pc": "0x0000b58f",
+    "cpu": ":maincpu",
+    "frame": 552,
+    "regs": {
+     "A": "0x03",
+     "B": "0xcf",
+     "D": "0x03cf",
+     "X": "0xe199",
+     "Y": "0xf2e6",
+     "U": "0x7acf",
+     "PC": "0xb58f",
+     "S": "0x07fc",
+     "CC": "0x80",
+     "DP": "0x00"
+    },
+    "instruction": {
+     "address": "B58F",
+     "bytes": "39",
+     "text": "RTS",
+     "symbol": "count_coin",
+     "delta": 12
+    },
+    "following": [
+     "B590: 96 F4    LDA    <$F4",
+     "B592: 27 21    BEQ    $B5B5",
+     "B594: 96 B3    LDA    <$B3",
+     "B596: 84 07    ANDA   #$07",
+     "B598: 26 1A    BNE    $B5B4",
+     "B59A: 8E F6 59 LDX    #$F659",
+     "... 7 more"
+    ],
+    "errorlog": "<volatile>",
+    "watches": [
+     {
+      "ref": "credits_bcd",
+      "cpu": ":maincpu",
+      "state": "armed",
+      "reading": {
+       "available": true,
+       "value": 3,
+       "raw_hex": "03"
+      }
+     }
+    ],
+    "omitted": [
+     "addr",
+     "by",
+     "entry",
+     "fmt",
+     "length",
+     "mode"
+    ],
+    "how": "`declaration_list(kind=\"watch\")` answers each watch whole: its declaration, the debugger's row for it, and a count's or a capture's tables",
+    "watch_hit": {
+     "ref": "credits_bcd",
+     "addr": "0x0000042c",
+     "cpu": ":maincpu",
+     "index": 1,
+     "writes_total": 1,
+     "truncated": false,
+     "writer_pc": "0x0000b58c",
+     "writes": [
+      {
+       "wrote": "0x03",
+       "to": "0x0000042c",
+       "pc": "0x0000b58c"
+      }
+     ],
+     "values_from": "memory",
+     "before": 2,
+     "after": 3,
+     "lines": [
+      "Stopped at watchpoint 1 writing 03 to 042C (PC=B58C)"
+     ]
+    }
    }
   }
  },
  "window": {
-  "from": "[B] start's arguments at their edges, with no session: window answers the window the start proved",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 3",
   "call": {},
   "reply": {
-   "summary": "window: display 0, on screen, in front",
+   "summary": "<volatile>",
    "status": "ok",
    "window": {
-    "display": 0,
-    "bounds": {
-     "x": 520,
-     "y": 166,
-     "width": 1008,
-     "height": 788
-    },
+    "display": "<volatile>",
+    "bounds": "<volatile>",
     "onscreen": true,
-    "front": true,
+    "front": "<volatile>",
     "fullscreen": false
    }
   }
  },
  "write": {
-  "from": "[A] states x tools: no session, stopped, running, after close (section 11): write @ stopped",
+  "from": "docs/reference/tour/TRANSCRIPT.md: call 68",
   "call": {
-   "ref": "0x200000",
-   "data_hex": "00"
+   "ref": "credits",
+   "data_hex": "0909"
   },
   "reply": {
-   "summary": "write 0x200000: 1 byte, verified True",
+   "summary": "write credits: 2 bytes, verified True",
    "status": "ok",
-   "ref": "0x200000",
-   "addr": "0x00200000",
-   "bytes_written": 1,
-   "readback": "00",
+   "ref": "credits",
+   "addr": "0x0000042b",
+   "bytes_written": 2,
+   "readback": "0909",
    "verified": true,
    "cpu": ":maincpu"
   }
