@@ -170,7 +170,7 @@ STEPS = [
          ask="Three coins are in. Keep only the bytes of the scan that hold 3 now.",
          shown=("summary", "hits_total", "hits"),
          reads=("One byte followed the coins from 1 to 3, so `0x8299` is the credits. "
-                "A \"survivor\" is a byte still in the scan.")),
+                "\"1 left\" counts the bytes still in the scan.")),
     Step("watch", "watch_add", {"ref": CREDITS, "mode": "change", "fmt": "u8"},
          lambda reply, run: f"a change watch armed at {reply['addr']}"),
     Step("coin 4", "input", COIN, caught,

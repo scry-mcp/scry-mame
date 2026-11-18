@@ -181,8 +181,9 @@ STEPS = [
          title="Narrow a scan with each coin",
          ask="Three coins are in. Keep only the bytes of the scan that hold 3 now.",
          shown=("summary", "hits_total", "hits"),
-         reads=("Three bytes hold 3, and a scan cannot say which is the credits. A \"survivor\" "
-                "is a byte still in the scan; the watches of the next step tell them apart.")),
+         reads=("Three bytes hold 3, and a scan cannot say which is the credits. \"3 left\" "
+                "counts the bytes still in the scan; the watches of the next step tell them "
+                "apart.")),
     Step("watch", "perform", {"steps": [
         {"op": "watch_add", "ref": CREDITS_BIN, "mode": "change", "fmt": "u8"},
         {"op": "watch_add", "ref": CREDITS_BCD, "mode": "change", "fmt": "u8"}]}, watching),
