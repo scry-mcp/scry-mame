@@ -17,9 +17,10 @@
 <p align="center"><em>LineUp on its arcade board, played through this server: each shot is one <code>input</code> call, by the names MAME gives the controls.</em></p>
 
 <table align="center">
-<tr><th align="left">You ask</th><td>Press fire for four frames.</td></tr>
-<tr><th align="left">Your client calls</th><td><code>input(port=":P1", field="P1 Up", frames=4)</code></td></tr>
-<tr><th align="left">SCRY answers</th><td><code>input :P1 'P1 Up': held 4 frames, active True, released at frame 730</code></td></tr>
+<tr><th align="left">You ask</th><td>A coin is in. Read the game's <code>Credits</code> variable by its name.</td></tr>
+<tr><th align="left">Your client calls</th><td><code>read_memory(ref="Credits", length=2)</code></td></tr>
+<tr><th align="left">SCRY answers</th><td><code>{"ref": "Credits", "hex": "0300"}</code></td></tr>
+<tr><th align="left">Your client learns</th><td>Credits holds 3</td></tr>
 </table>
 <!-- demo-lead:end lineup -->
 
