@@ -53,6 +53,7 @@ reader goes to for it. Words are counted in prose, outside code blocks and gener
 | front door | under 16 KB, the generated blocks included |
 | reference | a tool's one sentence is at most 25 words; an argument's at most 30 |
 | reference | a tool shows at most 3 paragraphs of why; more sits in a closed `<details>` |
+| reference | where an example can be tried is one sentence of at most 30 words; a refusal's line and a returned field's sentence at most 30 words each |
 | demo guide | at most 120 words above "Run it"; its first paragraph at most 60 |
 | demo guide | at most 3 moments, each one sentence of at most 25 words |
 | demo guide | 2 to 4 steps under "Try it yourself"; the whole prompt as numbered steps of at most 30 words each, in a closed `<details>` |
@@ -107,23 +108,28 @@ and the other lacks is a finding.
 
 ## A tool's entry: its fields and their order
 
-On its family's page, per tool:
+On its family's page, per tool, each part under its own third-level heading so a page of the
+site can list them:
 
-1. `## \`name\``.
-2. What it does for a person: one sentence (`docs/reference/asks.json`, `what`).
-3. The signature, in a `text` block.
-4. **Try it**: where it can be tried, then the example in the shape below.
-5. **Arguments**: a list in the signature's order, each `name` (type, `required` or its default)
-   and one sentence.
-6. **What comes back**: the fields a reader acts on, at most 6, each with one sentence; every
+1. `## \`name\``, then what it does for a person: one sentence (`docs/reference/asks.json`,
+   `what`), and the signature in a `text` block.
+2. `### Try it`: where it can be tried (`on`), then the example in the shape below.
+3. `### Modes`, for a tool whose first choice is a `mode` or a `method`: a table of at most 3
+   columns, one row a mode.
+4. `### Arguments`: a list in the signature's order, each `name` (type, `required` or its
+   default) and one sentence.
+5. `### What comes back`: the fields a reader acts on, at most 6, each with one sentence; every
    field and its type in a closed `<details>`.
-7. **What it refuses**: a list, one refusal a line.
-8. **The contract your client receives**: the tool's own description, whole, in a closed
+6. `### What it refuses`: a list, one refusal a line.
+7. `### Why it works this way`: at most 3 paragraphs; more in a closed `<details>`.
+8. `### Related tools`: links to the tools a reader reaches for next.
+9. The contract the client receives: the tool's own description, whole, in a closed
    `<details>`. It is the contract, so it is never reworded here.
-9. The hand-written why, after the generated block.
 
-A reply field table of every field, an example placed last, and a tool name in a tinted box are
-what this order replaces.
+Every part is generated: the registry gives the signature, the types, the fields and the
+contract; `asks.json` gives each sentence, and a sentence over its limit is refused. A tool
+with nothing to say under a heading has no such heading. A reply field table of every field
+showing, an example placed last, and a tool name in a tinted box are what this order replaces.
 
 ## An example: its shape
 
@@ -131,18 +137,24 @@ The same shape in the front door, the reference and the demo guides:
 
 1. **Ask**: what a person would type to their client, at most 25 words, one request
    (`asks.json`, `ask`; a demo's `Step.ask`).
-2. **Call**: the call as written, `tool(argument=value)`, at most 3 lines.
+2. **Call**: the call as written, `tool(argument=value)`, at most 3 lines. A call too long
+   for them is cut where the cut shows (`perform(steps=[… 19 items])`), and the whole call is
+   in the demo's `TRANSCRIPT.md`.
 3. **Reply**: an excerpt of the real reply, at most 12 lines: the fields that make the point,
    and "N of M fields" beside it.
 4. How to read that reply: at most 2 sentences and 40 words, which say in plain words any name
    of ours the excerpt shows (*Vocabulary*).
-5. The whole reply in a closed `<details>`.
+5. The whole reply in a closed `<details>`, in the reference and the demo guides. The
+   front door's generated flows leave it to the guides, to stay under the README's size limit.
 
 - A reply is copied from a run, never typed: a demo's transcript, or a live run's.
 - **An example can be tried.** Its call works on a demo the reader can get: `starfire` or `gridlee`, on ROMs mamedev.org distributes for free. A tool
   none of those reaches says which program its example ran on and what that program needs.
 - An example has at most two calls, the second only when the first call's point is what the
   next stop says.
+- A reference example is the demo's own: its call and its reply are copied from the committed
+  `demos/<name>/TRANSCRIPT.md`, where a call the demo makes inside a `perform` counts as that
+  tool's call. A tool no demo calls takes its example from a run of the live tests.
 
 ## A demo guide: its sections and their order
 
@@ -162,9 +174,12 @@ A demo is shown moving, never as a still alone.
 
 - **One file per demo**: `demos/<name>/loop.webp`, an animated WebP that loops for ever.
 - **Up to 3 moments, 6 seconds in all**, each between 1 and 3 seconds. A moment is a stretch
-  where the screen changes because of a call the demo made, declared in the demo
-  (`Moment(after=<step>, frames=N, caption=...)`) and recorded by the runner with the server's own
-  `record` right after that step. Less is more: a demo with one strong moment shows one.
+  where the screen changes because of a call the demo made, declared in the demo as
+  `Moment(after, until, caption, skip=0, frames=0)`: what the screen did from the end of step
+  `after` to the end of step `until`. `until` is a `record` step right after `after`, whose
+  file is the moment, or any later step of a session that records its own video, whose stretch
+  between the two steps is cut. `frames` of it are shown from its frame `skip`. Less is more: a
+  demo with one strong moment shows one.
 - **Nothing is staged.** The frames are the run's; a moment is cut, never slowed, held or
   composed, and no caption is drawn over the picture.
 - **Frames**: the machine's own resolution (a capture the emulator doubled is halved back), at
@@ -187,9 +202,10 @@ A demo is shown moving, never as a still alone.
 
 | document | generated from | regenerated by |
 |---|---|---|
-| `REFERENCE.md` and `docs/reference/*.md`, the blocks between their `<!-- scry-reference:begin NAME -->` and `end` markers; `docs/reference/examples.json` | the server's own tool registry (names, descriptions, argument schemas, reply models, roster); the examples from a run's transcript; each tool's `what`, `ask`, `on`, `shows` and `reads` from the hand-written `docs/reference/asks.json` | `python -m scry_core.reference scry_mame.server:REFERENCE --write` (the examples with `--examples <transcript.jsonl>`), held by this repository's drift test |
+| `REFERENCE.md` and `docs/reference/*.md`, the blocks between their `<!-- scry-reference:begin NAME -->` and `end` markers; `docs/reference/examples.json` | the server's own tool registry (names, descriptions, argument schemas, reply models, roster); the examples from the committed demo transcripts and, for a tool no demo calls, a live run's; each tool's sentences (`what`, `ask`, `on`, `call`, `shows`, `reads`, `arguments`, `returns`, `refuses`, `why`, `related`) and each family's one line from the hand-written `docs/reference/asks.json` | `python -m scry_core.reference scry_mame.server:REFERENCE --write` (the examples with `--examples demos/*/TRANSCRIPT.md <live transcript.jsonl>`), held by this repository's drift test |
 | `README.md`'s block between `<!-- scry-install:begin -->` and `<!-- scry-install:end -->` | scry-core's table of clients | `python -m scry_core.install scry_mame --write`, held by the same drift test |
 | `README.md`'s blocks between `<!-- demo-flow:begin NAME -->` and `<!-- demo-flow:end NAME -->` | the steps the demo marks `shown`, from a run of that demo (starfire and gridlee) | `demos/<name>/demo.py --update-readme` |
+| `demos/*/README.md`'s block between `<!-- demo-motion:begin -->` and `<!-- demo-motion:end -->` | the demo's `loop.webp`, `alt` and the caption of each `Moment`, timed by the frames the run cut | `demos/<name>/demo.py --update-readme` |
 | `demos/*/README.md`'s block between `<!-- demo-transcript:begin -->` and `end`, `demos/*/TRANSCRIPT.md`, `demos/*/screen.png` and `demos/*/loop.webp` | a run of the demo against the real emulator; the steps to try and their sentences are the demo's own, on the steps it marks | `demos/<name>/demo.py --update-readme` |
 
 The prose outside the markers is hand-written. A generated block is never edited by hand: a
@@ -305,12 +321,22 @@ finding about it is a finding about the tool's code.
 | bound | time limit |
 | live run | a run against the real emulator |
 | declare (a repository) | keeps in `.scry/` |
+| Advance (a family) | Run |
+| Declarations (a family) | Breakpoints |
+| Lists (a family) | Sequences |
+| Store (a family) | Project |
+| Film (a family) | Timeline |
+| N survivors (a scan's summary) | N left |
+| posted, unverified | sent, reaction not checked |
+| effect seen, effect not seen | reaction seen, no reaction seen |
+| N retraces (a summary) | N frames |
+| kept N (promote to review) | N saved for `promote` |
 
 Kept and explained where they first appear, never renamed by a document:
 
-- The families: Declarations (breakpoints, watches and comments, declared by name and saved by the server), Lists (the tools that run several calls as one (`perform`, `drive`), not tools that list things), Store (the tool that writes into the repository's `.scry/` (`promote`)), Advance (the tools that let the program run and stop it again), Film (MAME's tools that record the frames in which a write happened).
+- The families, by the names the servers send: Run (the tools that let the program run and stop it again), Breakpoints (breakpoints and watches, saved by name and set again by the server), Sequences (the tools that run several calls as one: `perform`, `drive`), Project (the tool that saves into the repository's `.scry/` folder: `promote`), Timeline (MAME's tools that show the frames in which a write happened). "Screen map" names the `screen_map_*` tools and the file they read: a program's screens and the named areas of each, explained where it first appears.
 - The names: `promote`, `kept`, `draft`, `not_settled`, `settle_seconds`, `verdict`, `OTHER_STOP`, `ELAPSED`, `TARGET`, `TIMEOUT`, `altered`, `control`, `control_silent`, `anchor`, `mark`, `since_mark`, `ref`, `held`, `recorded`, `diverged`, `route`, `armed`, `pending`, `unresolved`, `unarmable`, `stale`, `foreign`, `inherited`, `orphan`, `declaration`, `regpoint`, `shared`, `presence`, `tally`, `show`, `change`, `count`, `capture`, `freeze`, `consolidated`, `verified`, `perform`, `drive`, `e9`, `no_channel`, `enrichment`, `unaccounted`, `surveyed`, `superseded`, `cut`, `posted`, `arrived`, `pen`, `profile`, `keep_noise`, `heavy_debug`, and every other tool, argument, field and value the reference lists.
-- What a reply prints: "survivors"; "posted, unverified / effect seen"; "retraces"; "kept N (promote to review)"; "<volatile>, <host>, <run>, <time>".
+- What a transcript prints for a value that changes from run to run: "<volatile>, <host>, <run>, <time>", said once at the head of each transcript.
 
 ## Limits
 
