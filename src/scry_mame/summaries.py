@@ -536,7 +536,7 @@ def perform(args: dict[str, Any], reply: dict[str, Any]) -> str:
 def drive(args: dict[str, Any], reply: dict[str, Any]) -> str:
     verify = reply.get("verify") or {}
     act = reply.get("act") or {}
-    late = "input TIMEOUT, " if act.get("verdict") == contract.TIMEOUT else ""
+    late = "act TIMEOUT, " if act.get("verdict") == contract.TIMEOUT else ""
     return f"drive: {late}{prose.reaction(verify)}"
 
 

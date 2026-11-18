@@ -231,7 +231,7 @@ def test_a_broken_sessions_refusal_carries_the_reason_as_a_field(
     ("drive", {}, {"verify": {"checked": True, "seen": False, "verdict": "TIMEOUT"}},
      "drive: no reaction seen (TIMEOUT)"),
     ("drive", {}, {"act": {"verdict": "TIMEOUT"}, "verify": {"available": False}},
-     "drive: input TIMEOUT, reaction could not be checked"),
+     "drive: act TIMEOUT, reaction could not be checked"),
     ("drive", {}, {"verify": {"checked": False}}, "drive: sent, reaction not checked"),
     ("registers", {}, {"regs": {"D0": "0", "D1": "1"}}, "registers: 2 registers"),
     ("registers", {}, {"regs": {"D0": "0"}, "superseded": True},
