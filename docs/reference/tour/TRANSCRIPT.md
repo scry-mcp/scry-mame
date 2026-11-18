@@ -3311,9 +3311,9 @@ Also attached: image/png.
   "emulated_after_s": 9.86728,
   "cycles": 633600,
   "polls": 31,
-  "cause": "the `gvblank` stop of the last frame asked",
-  "stop_seq": 23,
-  "pc": "0x0000fd80",
+  "cause": "series_capture: one step",
+  "stop_seq": 24,
+  "pc": "0x0000fd82",
   "cpu": ":maincpu",
   "frame": 583,
   "regs": {
@@ -3323,13 +3323,13 @@ Also attached: image/png.
     "X": "0x0014",
     "Y": "0xf2e6",
     "U": "0x4071",
-    "PC": "0xfd80",
+    "PC": "0xfd82",
     "S": "0x07f4",
-    "CC": "0xd4",
+    "CC": "0xd0",
     "DP": "0x00"
   },
-  "instruction": {"address": "FD80", "bytes": "0CB2", "text": "INC    <$B2", "symbol": "irq", "delta": 0},
-  "following": ["FD82: 96 B2    LDA    <$B2", "FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF"],
+  "instruction": {"address": "FD82", "bytes": "96B2", "text": "LDA    <$B2", "symbol": "irq", "delta": 2},
+  "following": ["FD84: 84 03    ANDA   #$03", "FD86: 26 04    BNE    $FD8C", "FD88: 0C B3    INC    <$B3", "FD8A: 0C B4    INC    <$B4", "FD8C: B6 03 BE LDA    $03BE", "FD8F: 26 28    BNE    $FDB9", "FD91: F6 95 01 LDB    $9501", "FD94: 1F 98    TFR    B,A", "FD96: D0 BD    SUBB   <$BD", "FD98: C4 0F    ANDB   #$0F", "FD9A: 85 10    BITA   #$10", "FD9C: 26 01    BNE    $FD9F", "FD9E: 50       NEGB", "FD9F: DB BF    ADDB   <$BF", "FDA1: D7 BF    STB    <$BF"],
   "errorlog": "<volatile>",
   "manifest": "./tmp/demos/tour/series/manifest.json",
   "count": 4,
@@ -3397,14 +3397,6 @@ Also attached: image/png.
   "instruction": {"address": "A633", "bytes": "24FC", "text": "BCC    $A631", "symbol": "wait_frame", "delta": 2},
   "following": ["A635: B7 93 80 STA    $9380", "A638: B6 97 00 LDA    $9700", "A63B: 43       COMA", "A63C: 85 20    BITA   #$20", "A63E: 27 03    BEQ    $A643", "A640: 7E F0 00 JMP    $F000", "A643: BD B5 2B JSR    $B52B", "A646: BD C5 67 JSR    $C567", "A649: B6 04 28 LDA    $0428", "A64C: 81 0C    CMPA   #$0C", "A64E: 24 51    BCC    $A6A1", "A650: B6 96 00 LDA    $9600"],
   "errorlog": "<volatile>",
-  "stopped_on_its_own": {
-    "stop_seq": 24,
-    "pc": "0x0000fd82",
-    "cpu": ":maincpu",
-    "frame": 583,
-    "cause": "stopped at no breakpoint this server armed",
-    "packet": "T05thread:1;05:4071;06:fd82;07:07f4;"
-  },
   "session": {
     "alive": true,
     "running": false,
@@ -3887,7 +3879,7 @@ Also attached: image/png.
 
 </details>
 
-**62. `snapshot`**: OK snapshot: the level card, saved through the native view
+**62. `snapshot`**: OK snapshot: a picture of 256 x 240, saved through the native view
 
 <details><summary>call and reply</summary>
 
@@ -3899,7 +3891,7 @@ Also attached: image/png.
 
 ```json
 {
-  "summary": "snapshot: 2067 bytes at ./tmp/demos/tour/card.png",
+  "summary": "<volatile>",
   "status": "ok",
   "path": "./tmp/demos/tour/card.png",
   "bytes": "<volatile>",
@@ -4341,7 +4333,7 @@ Also attached: image/png.
   ],
   "unchanged": [],
   "total_bytes": 3802,
-  "store_bytes": 5467,
+  "store_bytes": 5477,
   "would_create": [".scry/", ".scry/about.json", ".scry/README.md"],
   "session": {
     "alive": true,

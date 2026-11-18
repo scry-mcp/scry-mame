@@ -17,6 +17,7 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
+from scry_core import png
 from scry_core.demo import DISPLAY, Demo, recorded
 
 HERE = Path(__file__).resolve().parent
@@ -272,6 +273,9 @@ def captured(reply: Reply, run: Run) -> str:
     watch, ran = (r["reply"] for r in reply["ran"])
     expect(watch["mode"] == "capture" and ran["verdict"] == "ELAPSED",
            f"mode {watch['mode']}, verdict {ran['verdict']}")
+    fired = ran["watches"][0]
+    expect(fired["state"] == "captured" and fired["total"] > 0,
+           f"the capture is {fired['state']} with {fired['total']} rows")
     return (f"a capture of the player's entry on each write of the next one, and frame "
             f"{ran['frame_after']} reached")
 
@@ -427,8 +431,12 @@ def sound(reply: Reply, run: Run) -> str:
 
 
 def snapped(reply: Reply, run: Run) -> str:
-    expect(Path(reply["path"]).is_file(), f"no picture at {reply['path']}")
-    return f"the level card, saved through the {reply['view']} view"
+    picture = png.decode(Path(reply["path"]).read_bytes())
+    row = len(picture.pixels) // picture.height
+    lines = {picture.pixels[at:at + row] for at in range(0, len(picture.pixels), row)}
+    expect(len(lines) > 1, "every line of the picture is the same: nothing is drawn in it")
+    return (f"a picture of {picture.width} x {picture.height}, saved through the "
+            f"{reply['view']} view")
 
 
 def trace_to(run: Run) -> dict[str, Any]:
@@ -641,7 +649,8 @@ STEPS = [
     Step("sound", "audio_record",
          lambda run: {"frames": CAPTURE_FRAMES, "dest": new(run, "card.wav"), "seconds": RUN_S},
          sound),
-    Step("snapshot", "snapshot", lambda run: {"dest": new(run, "card.png")}, snapped),
+    Step("snapshot", "snapshot", lambda run: {"dest": new(run, "card.png")}, snapped,
+         volatile={"summary": "it carries the picture's size, which the host's zlib decides"}),
     Step("trace", "trace", trace_to, traced),
     Step("captures", "captures", {}, listed, volatile=CAPTURES_VOLATILE),
     Step("dump", "memdump", lambda run: {"ref": ROM_BASE, "length": 4096,
