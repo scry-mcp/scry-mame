@@ -13,10 +13,11 @@ file says when it was read, which is checked. A wanted frame that was itself ski
 drew nothing and is listed `lost`, never filled in; one that came out of the run neither kept nor
 lost is refused by number.
 
-THE RUN is `run_for` by frames, to `RUN_TAIL` past the last frame, so its notifier develops it;
-the machine stops there, and the reply carries that stop. The notifier only reads (the pen
-encoding of the capture is put back and proven inside its chunk), so the run alters nothing; it
-is removed before the reply on every path where the machine is known to be stopped.
+THE RUN is `run_for` by frames, to `RUN_TAIL` past the last frame, so its notifier develops it.
+The notifier only reads (the pen encoding of the capture is put back and proven inside its
+chunk), so the run alters nothing; it is removed before the reply on every path where the
+machine is known to be stopped. Removing it costs the console a step, so the machine rests one
+stop past the run's: the reply carries that one, and a refusal records it as the call's own.
 """
 
 from __future__ import annotations
@@ -33,7 +34,7 @@ from scry_core import reply_contract as contract
 from scry_core import vocabulary as vocab
 from scry_core.prose import counted
 
-from scry_mame import advance, chunk, inputs, lua_source, read, transport
+from scry_mame import advance, chunk, inputs, lua_source, read, running, transport
 from scry_mame import gdb_session as gs
 from scry_mame import palette as mpalette
 from scry_mame import screen as mscreen
@@ -156,6 +157,7 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
                                "series_capture removes it, or close does"})
     done = _finish(ses, scratch, seconds, progress)
     if run.get("status") != "ok":
+        running.record_own_stop("series_capture", "the step that removed its notifier")
         return run
     if run.get("verdict") != contract.ELAPSED:
         raise st.Invalid("cut_by_other_stop", f"the run stopped with verdict {run.get('verdict')} "
@@ -180,11 +182,13 @@ def _captured(ses: gs.Session, scratch: Path, folder: Path, kept: bool, wanted: 
     reply = series.write_manifest(folder, "mame", FRAME_SOURCE, crop, kept_frames, signed)
     for frame in kept_frames:
         STATE.record_image(folder / series.frame_name(frame))
-    body = {k: v for k, v in run.items() if k not in ("summary", "session")}
+    rest = running.stop_reply(ses, scratch, f"series_capture: {done['evaluated_by']}")
+    here = {k: v for k, v in rest.items() if k not in ("status", "session")}
+    body = {k: v for k, v in run.items() if k not in ("summary", "session", *here)}
     account = {k: common[k] for k in CONSOLE_ACCOUNT if k in common}
     # MERGED, never spread: a field `run_for` and the series both said would otherwise be
     # overwritten in silence
-    return st.merged(body, reply, {"crop": area, "lost": series.runs(lost)},
+    return st.merged(body, here, reply, {"crop": area, "lost": series.runs(lost)},
                      series.tail(len(wanted), kept, FRAME_SOURCE), account)
 
 
@@ -229,7 +233,7 @@ def _finish(ses: gs.Session, scratch: Path, seconds: float,
     if m is None:
         chunk.no_line("series finish", text, common)
     return {"kept": int(m.group(1)), "lost": m.group(2), "errors": int(m.group(3)),
-            "first_error": m.group(4)}
+            "first_error": m.group(4), "evaluated_by": common["evaluated_by"]}
 
 
 def _finish_quietly(ses: gs.Session, scratch: Path, seconds: float,

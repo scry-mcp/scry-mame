@@ -16,6 +16,7 @@ from session_doubles import blank_session  # noqa: E402
 from scry_mame import advance as madvance  # noqa: E402
 from scry_mame import chunk as mchunk  # noqa: E402
 from scry_mame import read as mread  # noqa: E402
+from scry_mame import running as mrunning  # noqa: E402
 from scry_mame import screen as mscreen  # noqa: E402
 from scry_mame import series as mseries  # noqa: E402
 from scry_mame import server as s  # noqa: E402
@@ -76,6 +77,8 @@ class _Console:
         self.armed = f"MCP_SERIES_ARMED frame={now} w={W} h={H}\n"
         self.running_after = False
         self.scripts: list[str] = []
+        self.rested: list[tuple[str, int]] = []
+        self.own: list[tuple[str, str]] = []
 
     def run(self, ses: Any, scratch: Path, script: str, seconds: float, progress: Any,
             what: str) -> tuple[str, dict[str, Any]]:
@@ -87,7 +90,13 @@ class _Console:
                                 "console_reruns": 0, "resent": 0}
         self.finished += 1
         return (f"MCP_SERIES_DONE kept={len(self.kept)} lost={self.lost} errors={self.errors} "
-                f"first_error={'boom' if self.errors else ''}\n"), {}
+                f"first_error={'boom' if self.errors else ''}\n"), {"evaluated_by": "one step"}
+
+    def rest(self, ses: Any, scratch: Path, cause: str, **base: Any) -> dict[str, Any]:
+        """`running.stop_reply`: the stop the machine rests at, one step past the run's."""
+        self.rested.append((cause, self.finished))
+        return {"status": "ok", **base, "cause": cause, "stop_seq": 7, "pc": "0x00000002",
+                "session": {}}
 
     def run_for(self, ses: Any, scratch: Path, milliseconds: int, seconds: float,
                 progress: Any, frames: int = 0) -> dict[str, Any]:
@@ -98,7 +107,8 @@ class _Console:
         if self.running_after:
             ses.running = True
         return {"summary": "x", "status": "ok", "verdict": self.verdict, "frame_before": 100,
-                "frame_after": 100 + frames, "cause": "the run", "session": {}}
+                "frame_after": 100 + frames, "cause": "the run", "stop_seq": 6,
+                "pc": "0x00000000", "session": {}}
 
 
 class _Session:
@@ -112,6 +122,9 @@ def console(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> _Console:
     double = _Console(folders, kept=[101, 103, 105])
     monkeypatch.setattr(mchunk, "run", double.run)
     monkeypatch.setattr(madvance, "run_for", double.run_for)
+    monkeypatch.setattr(mrunning, "stop_reply", double.rest)
+    monkeypatch.setattr(mrunning, "record_own_stop",
+                        lambda tool, cause="": double.own.append((tool, cause)))
     monkeypatch.setattr(mread, "frame", lambda ses: double.now)
     return double
 
@@ -160,6 +173,28 @@ def test_a_frame_this_server_encoded_is_signed_without_decoding_it_back(
     for row in json.loads(Path(out["manifest"]).read_text())["frames"]:
         picture = png.decode((Path(out["manifest"]).parent / row["path"]).read_bytes())
         assert row["signature"] == raster.picture_signature(picture), row
+
+
+def test_the_reply_carries_the_stop_the_machine_rests_at(console: _Console,
+                                                         tmp_path: Path) -> None:
+    """Removing the notifier costs the console a step, so the machine rests one stop past the
+    run's. A reply that kept the run's stop named a `pc` the machine had left, and the next call
+    found the step's stop as one the machine had reached on its own."""
+    out = _capture(tmp_path)
+    assert console.rested == [("series_capture: one step", 1)], "asked once, after the finish"
+    assert (out["stop_seq"], out["pc"]) == (7, "0x00000002")
+    assert out["cause"] == "series_capture: one step" and out["verdict"] == "ELAPSED"
+    assert console.own == []
+
+
+def test_a_run_refused_still_owns_the_step_that_removed_the_notifier(
+        console: _Console, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def refused_run(*_: Any, **__: Any) -> dict[str, Any]:
+        return {"summary": "x", "status": "INVALID", "code": "not_settled", "message": "m"}
+    monkeypatch.setattr(madvance, "run_for", refused_run)
+    assert _capture(tmp_path)["code"] == "not_settled"
+    assert console.own == [("series_capture", "the step that removed its notifier")]
+    assert console.rested == []
 
 
 def test_a_crop_and_a_dest_shape_the_series(console: _Console, tmp_path: Path) -> None:
