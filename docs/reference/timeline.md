@@ -17,11 +17,11 @@ gfx_load(path)
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, at any stop. The manifest is the tour's, `docs/reference/tour/gridlee-gfx.yaml` in this repository.
+On Gridlee, a free ROM from mamedev.org, at any stop. The manifest is the example session's, `docs/reference/tour/gridlee-gfx.yaml` in this repository.
 
 Ask:
 
-> Load the graphics manifest the tour keeps for Gridlee.
+> Load the graphics manifest this repository keeps for Gridlee.
 
 Call:
 
@@ -229,7 +229,7 @@ gfx_film(trigger="", length=1, value=null, changed=false, pc="", cpu="", frames=
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped in attract mode with the tour's symbols loaded, so `credits` names the byte that counts coins.
+On Gridlee, a free ROM from mamedev.org, stopped in attract mode with the example session's symbols loaded, so `credits` names the byte that counts coins.
 
 Ask:
 
@@ -547,6 +547,8 @@ A `start` does not arm the film again. A film spends its frames and pictures fro
 
 `cost` is the frame notifier's own host time inside MAME; the hook's cost per write is not in it.
 
+A film whose callbacks raised says so in `nothing_kept` when it kept no picture: frames that met the condition may not have been marked.
+
 </details>
 
 ### Related tools
@@ -748,6 +750,8 @@ A driver that zeroes that offset as its video starts leaves a log armed right af
 In both, a pen has a colour only once every colour bit of its word has been seen written. A write that merges into bits the log never saw counts in `partial_writes`, and the pen has no colour until they are.
 
 A row of an index write carries `index`, and one of a whole-colour write `word` and `mask`. A row that landed on no pen says `unsynced`; one where the index was lost says `desync` and `why`.
+
+A log whose callbacks raised carries `callback_errors`, with their `count` and the `first` error, and a pen with no write logged then says one may have been missed. A log whose periodic write to disk keeps failing shows its last finished table, and `why` gives the error.
 
 </details>
 

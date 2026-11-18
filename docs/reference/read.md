@@ -128,7 +128,7 @@ read_block(tag="", ref="", offset=0, length=16, seconds=5.0, cpu="")
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped once the game has drawn its sprites; the tour reads at frame 545.
+On Gridlee, a free ROM from mamedev.org, stopped once the game has drawn its sprites; the example session reads at frame 545.
 
 Ask:
 
@@ -407,6 +407,14 @@ Each value is printed at its register's own width, and `register_bits` states it
 
 The names are the ones MAME's gdbstub gives the cpu. A 68000 has `D0` to `D7`, `A0` to `A5`, `FP`, `SP`, `PS` and `PC`; an x86 or a V30 has `EAX` to `GS` with `EIP`. `set_register` also takes the 68000 aliases `A6`, `A7`, `SR` and `USP`, which are not listed here.
 
+<details><summary>More on why</summary>
+
+The byte order is MAME's: the endianness of the cpu's program space, as `start` read it. It is not established when that read failed, or when it disagrees with the order measured for that architecture, and the cpu is then `no_channel`.
+
+At a stop, the `regs` of such a cpu say `available: false` with a `why`, never another cpu's registers under its name.
+
+</details>
+
 ### Related tools
 
 - [`set_register`](write.md#set_register)
@@ -443,7 +451,7 @@ disassemble(ref, length=16, cpu="")
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped at reset with the tour's symbol file loaded, which names `count_coin`.
+On Gridlee, a free ROM from mamedev.org, stopped at reset with the example session's symbol file loaded, which names `count_coin`.
 
 Ask:
 
@@ -853,7 +861,7 @@ The file holds 4096 bytes, as asked: `bytes` equals `length`. `path` is where it
 
 - `ref` (string, required): Where the range begins: a symbol or a `0x` address.
 - `length` (integer, required): How many bytes to write.
-- `dest` (string, required): The file to create: an absolute or `~`-led path, in a folder that exists, not there yet. The path holds no space, comma, semicolon, quote or bracket.
+- `dest` (string, required): The file to create, required: an absolute or `~`-led path, in a folder that exists, not there yet. The path holds no space, comma, semicolon, quote or bracket.
 - `cpu` (string, default `""`): The cpu whose program memory is written out. Left empty, the one the debugger is showing.
 
 ### What comes back

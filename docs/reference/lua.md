@@ -21,7 +21,7 @@ input(port, field, value=1, frames=4, seconds=30.0)
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped about seven seconds after power-on. The tour drops this coin as the first step of a `perform`.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped about seven seconds after power-on. The example session drops this coin as the first step of a `perform`.
 
 Ask:
 
@@ -246,7 +246,7 @@ lua(script, seconds=5.0, read_only=false)
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped anywhere. The tour asks this late in a game.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped anywhere. The example session asks this late in a game.
 
 Ask:
 
@@ -390,8 +390,12 @@ MAME reads the console on a thread its own source calls unsafe: a step at the wr
 - `resent`: the console took the line and never ran it, so it was sent again. A second time is refused `reader_died`.
 - `thread_errors`: how many times the console's reading thread died.
 - `console_reruns`: earlier scripts run a second time. `altered` alone cannot say a write happened twice.
+- `thread_errors`, `console_reruns` and `resent` are on every reply that read a script's answer back, zero included.
+- Session totals sit under `session.console`. They grow when a call reads its answer back and once more at `close`, so a `throttle` asked while stopped adds none till then.
 
 The tools that send a script of the server's own carry the same counts: `input`, `throttle`, `record`, `audio_record`, `screen_signature`, `screen_map_find` and `screen_map_write` with `method="add"`. [`debug`](write.md#debug) does not use this console: it talks to MAME's debugger.
+
+A script of the server's own that raises is refused by its error. A port or field the machine lacks is `unknown_ref`, a recording with no screen `no_channel`, anything else `unexpected_answer`.
 
 </details>
 
@@ -436,7 +440,7 @@ throttle(on, seconds=5.0)
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset before anything has run. The tour then runs the game five seconds.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset before anything has run. The example session then runs the game five seconds.
 
 Ask:
 

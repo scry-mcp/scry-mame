@@ -15,7 +15,7 @@ write(ref, data_hex, cpu="", region=false)
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, at any stop, with the tour's symbols loaded: `credits` names the first of the two bytes the game keeps its credits in.
+On Gridlee, a free ROM from mamedev.org, at any stop, with the example session's symbols loaded: `credits` names the first of the two bytes the game keeps its credits in.
 
 Ask:
 
@@ -225,6 +225,7 @@ Register A of `:maincpu` now holds `0x42`. `readback` is what the register held 
 - A machine that is running (`not_stopped`).
 - A name the cpu does not have; the message lists the ones it has (`bad_argument`).
 - A negative value, or one wider than the register (`bad_argument`).
+- A bool, or a value of either spelling wider than 64 bits, the widest number MAME's debugger holds (`bad_argument`).
 - A `cpu` other than the first, on a MAME build whose debugger connection serves one cpu only (`bad_argument`).
 - A cpu whose registers the debugger connection does not describe (`no_channel`).
 
@@ -269,7 +270,7 @@ reset()
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, at any stop. The tour resets at frame 630, with a game under way.
+On Gridlee, a free ROM from mamedev.org, at any stop. The example session resets at frame 630, with a game under way.
 
 Ask:
 

@@ -150,7 +150,7 @@ comment_write(method, ref="", text="", cpu="", dest="", path="")
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped at reset with the tour's symbol file loaded, which names the coin routine `count_coin`.
+On Gridlee, a free ROM from mamedev.org, stopped at reset with the example session's symbol file loaded, which names the coin routine `count_coin`.
 
 Ask:
 
@@ -278,6 +278,11 @@ One address shows one comment. An `add` where one exists replaces its text and k
 - A file with two comments a rebuild put at one address loads both, so what `save` writes of them reads back.
 - MAME writes its own comment files into a folder inside the session's temporary folder, so nothing deleted here comes back from them.
 - `comments_total`, `dropped_total` and `replaced_total` count the whole lists; `truncated` says a list was cut. `declarations` names the saved breakpoints file, as in `comment_list`.
+
+- The file `save` writes is UTF-8 with no byte order mark, and its lines end in LF.
+- Line 1 is exactly `# comments v1: ref<TAB>cpu<TAB>created_at<TAB>text`, and each row after it holds those four columns.
+- Rows are sorted by cpu, then by ref, so a diff shows only what changed.
+- `cpu` is the cpu's absolute tag, and `created_at` reads `YYYY-MM-DDTHH:MM:SS+00:00`.
 
 </details>
 

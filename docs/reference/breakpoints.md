@@ -35,7 +35,7 @@ breakpoint_at(ref, by="auto", role="stop", condition="", cpu="")
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped with a credit in and the tour's symbol file loaded, which names the routine `take_credit`.
+On Gridlee, a free ROM from mamedev.org, stopped with a credit in and the example session's symbol file loaded, which names the routine `take_credit`.
 
 Ask:
 
@@ -245,6 +245,9 @@ The condition is evaluated once before the breakpoint is set, because the debugg
 - If the visible cpu cannot be put back, the call is refused before anything is saved and `visible_cpu` names the cpu left visible (`unexpected_answer`).
 - At `start`, a saved condition the debugger cannot evaluate is reported `unresolved` when it names a symbol this build lacks and `unarmable` otherwise. It stays saved either way.
 - `cpu` is the cpu the breakpoint is on. `note` warns when the debugger is set to ignore that cpu: the breakpoint has no effect until `debug("observe <cpu>")`.
+- Each row is armed naming its cpu, `bp <addr>:<cpu>`, which never changes the visible cpu, at `start`'s re-arm too. A saved row with no cpu is the first cpu's.
+- A row the debugger already lists there on that cpu, under the same condition and held by no other declaration, is taken over, not doubled, here and at `start`'s re-arm.
+- A row `bplist` shows without the condition sent is not armed: the call is refused, and `start`'s re-arm lists it `unarmable`. Watches follow the same rule.
 
 </details>
 
@@ -519,7 +522,7 @@ watch_add(ref, mode, length=0, fmt="auto", by="auto", cpu="", condition="", trig
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped in its coin routine right after a coin was counted, with the tour's symbol file loaded.
+On Gridlee, a free ROM from mamedev.org, stopped in its coin routine right after a coin was counted, with the example session's symbol file loaded.
 
 Ask:
 
@@ -777,6 +780,7 @@ On `change`:
 - The debugger's list is read back after every arm, and a watch is saved only once it is armed.
 - For a write-only register a stop's reading is `bus` with `last_wrote`, the last value written.
 - `write_maps_to` and `read_maps_to` say what the memory map has at the address for each direction.
+- The writer's `pc` is a `0x` address, so it goes straight into `disassemble` or `breakpoint_at` as a `ref`. MAME names it only for a write by the watch's own cpu.
 
 On a `condition`:
 
@@ -796,6 +800,7 @@ On `count`:
 - A count that never started must not read as zero. An install the console echoed and never ran is sent once more (`install_resent`); lost twice, the state is `install_lost`.
 - `lines_ahead` is how many console lines wait before the install, and `call` the line that marks it done.
 - Declaring the range again installs over the old count and keeps its counts. After a clear that ran, it counts from zero.
+- A count or capture whose periodic write keeps failing leaves its last finished dump on disk. Its reading is `superseded`, its `why` the error `error.log` logs as `MCP_DUMP_FAILED`.
 
 On `capture`:
 
@@ -1167,6 +1172,10 @@ With no `cpu` it reaches that `ref` on every cpu. In a file several sessions use
 - A removal MAME did not carry out shows on every reply under `session.tallies_not_removed`.
 - If the debugger still lists a row after its removal, `note` says so and names the `debug` command that removes it.
 - `all=True` on `watch` removes the port watches too.
+- A registerpoint's condition or an `expr` watch matches as typed but for its numbers, read as the console reads them: `7fff`, `0x7fff`, `$7fff` and `#32767` are one.
+- There a run of letters such as `ab` stays a name and keeps its case. A saved address written in bare hex is that address.
+- With a `state_dir`, `all=True` reaches only the rows saved in that folder. Without one, it reaches every session's rows of the same system and symbol file.
+- Declaring the range again installs over a count not removed, keeping its totals, and a clear then removes it. Its `tallies_not_removed` row stays: this session counted past a removal.
 
 </details>
 

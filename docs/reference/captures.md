@@ -359,6 +359,7 @@ The video holds 30 frames, 562 to 591, and the recording is closed (`ended`). `E
 - A machine that is running (`not_stopped`).
 - A machine with no screen or no frame counter (`no_channel`).
 - A file that does not read back as a finished AVI with frames in it (`readback_refused`).
+- A script that answered and logged no mark, not even the line it writes as it is evaluated (`readback_refused`).
 - A script MAME's console ran twice, which begins two recordings on one file (`console_rerun`).
 - A run that did not come to a stop within `seconds` and could not be ended (`not_settled`).
 
@@ -377,6 +378,12 @@ Lines already waiting in MAME's console are run before the script is sent, one i
 The reply is also a stop: it carries `verdict` and the fields `run_for` returns, with the readings taken at each stop. `frame_before` and `frame_after` say how far the machine moved.
 
 A reply with `pending: true` means the console had not run the script when the call ended, so nothing is known about the recording yet.
+
+- The script proves each step by a mark in MAME's `error.log`, carrying this call's own number, so a stale mark is never taken for a later call's.
+- A frame notifier that fails leaves no mark, so the reply says `began: false` or `ended: false`, never a finished empty file.
+- `frame_begin_planned` is predicted from the frame counter as the script is evaluated, one frame later inside a vertical blank.
+- A refusal after the run began says how far the machine moved, in `frame_before` and `frame_after`.
+- A `not_settled` run leaves out the recording's fields, and its message says whether the frame notifier may still be armed.
 
 </details>
 
@@ -574,6 +581,7 @@ The file holds 24000 samples for about half an emulated second. `sample_min` and
 - A machine with no screen or no frame counter (`no_channel`).
 - A stretch with no mixer update, a machine with no speaker, or a mixer already recording (`readback_refused`).
 - A WAV whose header, length or sample count does not agree with the run (`readback_refused`).
+- A script that answered and logged no mark, not even the line it writes as it is evaluated (`readback_refused`).
 - A script MAME's console ran twice (`console_rerun`).
 
 ### Why it works this way
@@ -589,6 +597,8 @@ Silence is reported, never refused: it is a fact about the program. A constant l
 Two is the fewest `frames` that always hold a mixer update on a screen under 100 Hz.
 
 A stop that cuts the run short leaves the recording open or not begun, as [`record`](#record) explains. An open recording gains nothing while the machine stands at the debugger, since no mixer update runs there.
+
+Its marks in `error.log`, its planned frames and its refusals after the run began follow [`record`](#record)'s rules.
 
 </details>
 

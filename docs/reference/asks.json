@@ -22,7 +22,7 @@
   "start": {
    "what": "Start MAME on a system, stopped at the debugger, after checking that it runs the program your reference image holds.",
    "ask": "Start Gridlee in a window I can watch without losing my keyboard, with these symbols, checked against this image at 0xa000.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The tour starts it for a person to watch, with seven symbols and a reference image of the program ROM at `0xa000`.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The example session starts it for a person to watch, with seven symbols and a reference image of the program ROM at `0xa000`.",
    "call": {
     "shared": true,
     "background": true,
@@ -51,7 +51,7 @@
     "system": "The system to run, by MAME's short name. Required unless a start profile gives it.",
     "rompath": "The folders that hold the system's ROMs, separated by `;`. Required unless a start profile gives it.",
     "reference_rom": "A binary image of the program you expect to be running, which the machine's memory is compared with. Required unless a start profile gives it.",
-    "symbols": "A symbol file, so an address can be given by name: a YAML file or the linker's map. One path is the first cpu's; `{cpu: path}` gives one per cpu.",
+    "symbols": "A symbol file, so an address can be given by name: a YAML file or the linker's five-column map. One path is the first cpu's; `{cpu: path}` gives one per cpu.",
     "reference_addr": "The address where 16 bytes of the machine are compared with the image: an integer or a `0x` string. Left out, 0.",
     "inipath": "The folders MAME reads its `.ini` files from, separated by `;`. Left empty, MAME's own.",
     "boot_seconds": "How long to wait for MAME's debugger to answer, in seconds. Left out, 8.",
@@ -61,7 +61,7 @@
     "background": "`true` opens the window behind your other windows and leaves the keyboard focus where it is; `false` opens it in front. Left out, behind unless `shared`.",
     "boot_lua": "A Lua file MAME runs at boot, after the server's own script. It is a path, never Lua text.",
     "env": "Environment variables for MAME's own process, as `{name: value}`. They are there for what `boot_lua` reads.",
-    "bases": "For a linker's map: the address each class other than CODE is based at, or `rom`. With per-cpu `symbols`, `{cpu: {class: base}}`.",
+    "bases": "For a linker's map: the address each class other than CODE is based at, as `0x` text or an integer, or `rom`. With per-cpu `symbols`, `{cpu: {class: base}}`.",
     "reference_base": "The address of the image's first byte. Left out, 0.",
     "stub_port": "The TCP port of MAME's gdbstub, the remote-debugger connection this server uses. Left at 0, a free port is picked.",
     "state_dir": "The folder for saved states, `cfg/` and `nvram/`, which stays after `close`. Left empty, the session's temporary folder, deleted at `close`.",
@@ -88,6 +88,7 @@
     "A `reference_addr` outside the image, a `stub_port` that is not free, or a `cfg` MAME would not read (`bad_argument`).",
     "Per-cpu `symbols`, `bases` or `types` naming a cpu the machine does not have (`unknown_ref`).",
     "A class of a linker's map with no base, `bases` beside a YAML file, or a bad line in `types` (`bad_argument`).",
+    "A `state_dir` that is the server's own folder for the saved breakpoints file, directly or through a link: a session with a `state_dir` keeps its own (`bad_argument`).",
     "`display` or `size` without `shared=true`, a `display` the host does not have, or a `size` larger than the display's usable area (`bad_argument`).",
     "A `profile` that no `.scry/` folder searched holds; `searched` lists them (`bad_argument`).",
     "A window that never appears on the display asked for. The session stays open for `window` or `close` (`window_not_visible`).",
@@ -110,9 +111,9 @@
     "**The boot.**",
     "- A MAME that exits while `start` waits ends the wait at once, and the refusal gives its exit code.\n- One still alive when `boot_seconds` runs out is `session_broken`; `stdout_kept` is a saved copy of what it printed.\n- A crash by a signal before the debugger answers, or a port another process took first, is launched again a few times. `start_retries` lists the attempts.\n- An exit code (missing ROMs, an unknown system, a bad option) would come again, so it is refused at once.\n- A MAME that dies after `start` answered is never launched again.\n- An unknown `system` is refused in MAME's own words: after the launch, or before it on a `shared` start or with per-cpu `symbols`.\n- A gdbstub that does not describe the board's first cpu is `no_channel`: that MAME build cannot serve the board.\n- Another process listening on a `stub_port` you named is `host_failed`, naming its pid.\n- `start` connects once, after MAME prints its debugger banner. A build that never prints it costs every start its whole `boot_seconds`.",
     "**Symbols and files.**",
-    "- A symbol file belongs to one cpu, because each cpu runs its own program. With `{cpu: path}`, `bases` and `types` are per cpu too, and the single shape is refused.\n- `symbols_total`, `symbols_typed`, `symbols_format` and `symbols_by_class` describe the first cpu's file; `symbols_by_cpu` counts each.\n- `boot_lua` runs after the server's own boot script, so `boot_lua_path` is the combined script. One that calls `manager.machine:exit()` ends the machine under the session.\n- With `state_dir` empty, saved states, `cfg/` and `nvram/` live in the temporary folder `scratch_dir` names. Nothing is written into your project either way.\n- `cfg` is copied to where MAME reads it; your file is never touched. MAME reports a rejected `.cfg` on stderr only, so the server reads that and refuses the start.",
+    "- A symbol file belongs to one cpu, because each cpu runs its own program. With `{cpu: path}`, `bases` and `types` are per cpu too, and the single shape is refused.\n- `symbols_total`, `symbols_typed`, `symbols_format` and `symbols_by_class` describe the first cpu's file; `symbols_by_cpu` counts each.\n- `boot_lua` runs after the server's own boot script, so `boot_lua_path` is the combined script. One that calls `manager.machine:exit()` ends the machine under the session.\n- With `state_dir` empty, saved states, `cfg/` and `nvram/` live in the temporary folder `scratch_dir` names. Nothing is written into your project either way.\n- `cfg` is copied to where MAME reads it; your file is never touched. MAME reports a rejected `.cfg` on stderr only, so the server reads that and refuses the start.\n- A `type:` line under a YAML symbol, or a `types` line, says what the symbol is, so a watch needs no `fmt`. A pointer's type names what it points at.",
     "**What else the reply says.**",
-    "- `version` is the build's own `-version` line and `recommended_release` the MAME version this server is tested on. Another version starts with a `note`, never a refusal.\n- `debugger.note`: the machine runs under the debugger, so a capture at a stop can land one frame from a reference capture an autoboot script took at the same frame count.\n- `machine` holds counts only; `machine_map` has the rows. If MAME's `-listxml` fails, the start still works and the `note` says what is left empty.\n- `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).\n- `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply."
+    "- `version` is the build's own `-version` line and `recommended_release` the MAME version this server is tested on. Another version starts with a `note`, never a refusal.\n- `debugger.note`: the machine runs under the debugger, so a capture at a stop can land one frame from a reference capture an autoboot script took at the same frame count.\n- `machine` holds counts only; `machine_map` has the rows. If MAME's `-listxml` fails, the start still works and the `note` says what is left empty.\n- `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).\n- `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.\n- `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`."
    ],
    "related": [
     "status",
@@ -200,7 +201,7 @@
   "close": {
    "what": "End the session and the emulator with it, and learn how it ended.",
    "ask": "We are done: close the emulator and tell me how it ended.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), at the end of the tour, after it saved a screen map and a list of steps.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), at the end of the example session, after it saved a screen map and a list of steps.",
    "call": {},
    "shows": [
     "summary",
@@ -231,7 +232,7 @@
    ],
    "why_more": [
     "- `quit`: a clean exit. `cfg_written` says whether MAME wrote its cfg, and is unavailable when there was no cfg file to read.\n- `exited`: it exited and wrote none.\n- `killed`: killed after the grace period. `exit_code` is unavailable if the process is still not collected.\n- `died`: it had already exited.\n- `none`: there was no session.",
-    "- `average_speed` is the server's own measure, the debugger's emulated clock over the wall clock: MAME prints no speed line when it exits from the debugger.\n- It holds `percent` and the two deltas, or `available: false` with a `why`.\n- Lua lines still waiting in the console are run before the quit, because one left there can crash MAME on its way out. `console_pending_before` and `console_drained` count them.\n- The `note` names the lines that could not be run, so a bad exit code has its likely cause beside it.\n- `cfg` is unavailable when no cfg was given, and `changed` says so when the copy could not be read back.\n- When the last lines are left out, `omitted` names them and `how` says what brings them."
+    "- `average_speed` is the server's own measure, the debugger's emulated clock over the wall clock: MAME prints no speed line when it exits from the debugger.\n- It holds `percent` and the two deltas, or `available: false` with a `why`.\n- Lua lines still waiting in the console are run before the quit, because one left there can crash MAME on its way out. `console_pending_before` and `console_drained` count them.\n- The `note` names the lines that could not be run, so a bad exit code has its likely cause beside it.\n- `cfg` is unavailable when no cfg was given, and `changed` says so when the copy could not be read back.\n- When the last lines are left out, `omitted` names them and `how` says what brings them.\n- On a broken session `close` asks MAME nothing: no drain, no speed read and no `quit`, only the kill.\n- The last lines are read before the temporary folder is deleted, so a MAME that died still gives its last words in `stdout_tail` and `errorlog_tail`."
    ],
    "related": [
     "start",
@@ -679,7 +680,7 @@
     "`cycles` is unavailable on the first run after a load, a rewind or a reset typed through `debug`. MAME's debugger refreshes its cycle counter only when the cpu executes, so the span would be off by the distance between the two states. It is also unavailable when the run was counted on one cpu and stopped on another.",
     "A board with no screen device has no frame counter and is run by `milliseconds`. MAME registers `frame` on a machine with one screen device and `frame0`, `frame1` and so on with several, where the first one is used. `start` asks MAME and reports the name as `frame_symbol`.",
     "A vector board has a display and no screen device, so the screens `machine_map` lists are no guide. There a stop's `frame` is unavailable and the emulated clock confirms the stop. An expression MAME's console refuses there is `no_channel`: an answer about the machine, not a broken session.",
-    "- A MAME without one debugger thread per cpu cannot change the visible cpu without running, so it refuses `frames` while another cpu is visible.\n- `no_progress` by frames leaves the machine running until `stop` and carries no stop readings. By milliseconds it carries them.\n- After `not_settled`, call `stop`. If `stop` fails as well, `close` then `start`.\n- The call reports progress to the client while it waits.\n- A run started while a registerpoint's condition still holds stops one instruction later as `OTHER_STOP`, never `no_progress`."
+    "- A MAME without one debugger thread per cpu cannot change the visible cpu without running, so it refuses `frames` while another cpu is visible.\n- `no_progress` by frames leaves the machine running until `stop` and carries no stop readings. By milliseconds it carries them.\n- After `not_settled`, call `stop`. If `stop` fails as well, `close` then `start`.\n- The call reports progress to the client while it waits.\n- A run started while a registerpoint's condition still holds stops one instruction later as `OTHER_STOP`, never `no_progress`.\n- A single-frame run MAME refused, or whose landing was not read, may still have been taken: the session is marked running and the call is `not_settled`."
    ],
    "related": [
     "run_to",
@@ -885,7 +886,8 @@
     "| in `trace` | what it holds |\n|---|---|\n| `path`, `bytes` | MAME's own log and its size |\n| `set_path` | a file with one JSON line per executed address, ascending: `addr`, `symbol` when one covers it, `count` under `noloop` |\n| `instructions`, `addresses`, `unplaced` | instructions logged, distinct addresses, addresses no symbol covers |\n| `symbols` | the first rows, by address: `symbol`, `addr`, `addresses`, `first`, `last`, and `instructions` under `noloop` |\n| `symbols_total`, `truncated` | how many symbols ran, and whether `symbols` leaves some out |\n| `cpu`, `noloop`, `note` | the cpu traced, whether loops were kept whole, and the corrections applied |\n| `closed` | on a refusal: whether the tracer was closed |",
     "The tracer cannot see a cpu the debugger ignores, a cpu waiting on its own, or a stretch that runs with a save or a load pending. MAME calls no instruction hook for them. A cpu that pauses in the middle of an instruction, as MAME's 68000 does, finishes it after the window, unlogged.",
     "When the tracer cannot be shown closed, the way out is `stop`, then `debug(\"trace off,<cpu>\")`. If `stop` fails, `close` then `start`, since closing MAME closes the file. A run that ends `INVALID` carries `trace` with `path`, `bytes` and `closed`, and no list file.",
-    "One address can go missing from a condensed trace: address 0, when it runs among the first instructions, because the tracer's history starts as zeros."
+    "One address can go missing from a condensed trace: address 0, when it runs among the first instructions, because the tracer's history starts as zeros.",
+    "The server never watches a run with no end: `trace` covers one bounded window. A count across an open-ended run is a job for a tracer you write in Lua and run with `lua`."
    ],
    "related": [
     "run_for",
@@ -959,7 +961,7 @@
   },
   "breakpoint_at": {
    "what": "Set a breakpoint at a symbol or an address, to stop there or to count how often the code runs.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped with a credit in and the tour's symbol file loaded, which names the routine `take_credit`.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped with a credit in and the example session's symbol file loaded, which names the routine `take_credit`.",
    "ask": "Stop the game where it takes a credit to start a game.",
    "call": {
     "ref": "take_credit"
@@ -1021,7 +1023,7 @@
     "The condition is evaluated once before the breakpoint is set, because the debugger accepts a condition it cannot evaluate and that breakpoint never fires. A name that is both a symbol and a register of that cpu is refused as ambiguous."
    ],
    "why_more": [
-    "- A breakpoint set while the machine runs fires at once. `while_running` says the machine was running when the call came.\n- `run_to` saves its own `control` as one, so every later run counts it too.\n- A stop no instruction caused (the end of a frame, a time, a step) lands on an instruction whose breakpoints some MAME builds skip. A `control` there misses that hit.\n- A run by frames lands on one such instruction every frame, often the first of the vblank handler. Put a control somewhere else.\n- `condition` is the condition as the debugger reads it, your symbols replaced by addresses. `condition_typed` is what you typed, when the two differ.\n- The condition is evaluated on the breakpoint's own cpu: the server makes it the visible one for that and puts the visible one back, which runs nothing.\n- If the visible cpu cannot be put back, the call is refused before anything is saved and `visible_cpu` names the cpu left visible (`unexpected_answer`).\n- At `start`, a saved condition the debugger cannot evaluate is reported `unresolved` when it names a symbol this build lacks and `unarmable` otherwise. It stays saved either way.\n- `cpu` is the cpu the breakpoint is on. `note` warns when the debugger is set to ignore that cpu: the breakpoint has no effect until `debug(\"observe <cpu>\")`."
+    "- A breakpoint set while the machine runs fires at once. `while_running` says the machine was running when the call came.\n- `run_to` saves its own `control` as one, so every later run counts it too.\n- A stop no instruction caused (the end of a frame, a time, a step) lands on an instruction whose breakpoints some MAME builds skip. A `control` there misses that hit.\n- A run by frames lands on one such instruction every frame, often the first of the vblank handler. Put a control somewhere else.\n- `condition` is the condition as the debugger reads it, your symbols replaced by addresses. `condition_typed` is what you typed, when the two differ.\n- The condition is evaluated on the breakpoint's own cpu: the server makes it the visible one for that and puts the visible one back, which runs nothing.\n- If the visible cpu cannot be put back, the call is refused before anything is saved and `visible_cpu` names the cpu left visible (`unexpected_answer`).\n- At `start`, a saved condition the debugger cannot evaluate is reported `unresolved` when it names a symbol this build lacks and `unarmable` otherwise. It stays saved either way.\n- `cpu` is the cpu the breakpoint is on. `note` warns when the debugger is set to ignore that cpu: the breakpoint has no effect until `debug(\"observe <cpu>\")`.\n- Each row is armed naming its cpu, `bp <addr>:<cpu>`, which never changes the visible cpu, at `start`'s re-arm too. A saved row with no cpu is the first cpu's.\n- A row the debugger already lists there on that cpu, under the same condition and held by no other declaration, is taken over, not doubled, here and at `start`'s re-arm.\n- A row `bplist` shows without the condition sent is not armed: the call is refused, and `start`'s re-arm lists it `unarmable`. Watches follow the same rule."
    ],
    "related": [
     "run_to",
@@ -1102,7 +1104,7 @@
   },
   "watch_add": {
    "what": "Keep a variable in view at every stop, stop the machine when it is written, or count every write to it, by name.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped in its coin routine right after a coin was counted, with the tour's symbol file loaded.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped in its coin routine right after a coin was counted, with the example session's symbol file loaded.",
    "ask": "Stop the game when the BCD copy of the credits is written, and tell me which instruction did it.",
    "call": {
     "ref": "credits_bcd",
@@ -1211,11 +1213,11 @@
     "On `show` and `expr`:",
     "- A watch on another cpu is read only on a MAME whose gdbstub reads every cpu. Otherwise its `reading` is `available: false`, and a watch through a pointer there is refused.\n- Every `expr` is read in one `print` at each stop, so one more costs a stop nothing.\n- An `expr` has no cpu, and takes no `,`, `;`, assignment, `length` or `fmt`.",
     "On `change`:",
-    "- The writer comes from the debugger's own log line for the stop. A 68000 writes a long as two words, so one write lists as two.\n- The debugger accepts a watchpoint on the ROM copy of a variable whose live copy is in RAM, and it never fires. So the memory map is asked first.\n- Two watchpoints on one byte would make \"who wrote it\" ambiguous, so an overlap is refused. A `count` or a `capture` never stops, so only an identical one is refused.\n- The debugger's list is read back after every arm, and a watch is saved only once it is armed.\n- For a write-only register a stop's reading is `bus` with `last_wrote`, the last value written.\n- `write_maps_to` and `read_maps_to` say what the memory map has at the address for each direction.",
+    "- The writer comes from the debugger's own log line for the stop. A 68000 writes a long as two words, so one write lists as two.\n- The debugger accepts a watchpoint on the ROM copy of a variable whose live copy is in RAM, and it never fires. So the memory map is asked first.\n- Two watchpoints on one byte would make \"who wrote it\" ambiguous, so an overlap is refused. A `count` or a `capture` never stops, so only an identical one is refused.\n- The debugger's list is read back after every arm, and a watch is saved only once it is armed.\n- For a write-only register a stop's reading is `bus` with `last_wrote`, the last value written.\n- `write_maps_to` and `read_maps_to` say what the memory map has at the address for each direction.\n- The writer's `pc` is a `0x` address, so it goes straight into `disassemble` or `breakpoint_at` as a `ref`. MAME names it only for a write by the watch's own cpu.",
     "On a `condition`:",
     "- It answers \"who writes bits 0-1 of this byte\" without a stop at every write of the register.\n- `wpdata` is the value as it reached the bus, shifted down to the bytes written.\n- It takes `breakpoint_at`'s grammar on the watch's cpu and is evaluated once before arming: MAME sets a watchpoint whose condition it cannot evaluate, and that one never fires.\n- A watch through a pointer that is still null has its condition checked right away: the stop that finds the pointer set has no call left to refuse it.\n- A row the debugger lists without the condition sent is `readback_refused`. A row already at that range under another condition is `ambiguous_ref`.",
     "On `count`:",
-    "- It sees the writes of its own cpu only, never those a DMA or a blitter makes on its own bus.\n- It counts writes to its own range only. To count one register's values by the value of another, use a `capture`: two counts cannot be joined afterwards.\n- A write lands in one bus word, so a word covered in part would give fragments with no `value`. That is why such a range is refused.\n- It sees every write the cpu makes, handled or not, so it arms where nothing handles the write: `write_maps_to` is then `unmapped`, with a `note`.\n- `tally_id` names it: its range, plus the cpu when that is not the first one.\n- A count that never started must not read as zero. An install the console echoed and never ran is sent once more (`install_resent`); lost twice, the state is `install_lost`.\n- `lines_ahead` is how many console lines wait before the install, and `call` the line that marks it done.\n- Declaring the range again installs over the old count and keeps its counts. After a clear that ran, it counts from zero.",
+    "- It sees the writes of its own cpu only, never those a DMA or a blitter makes on its own bus.\n- It counts writes to its own range only. To count one register's values by the value of another, use a `capture`: two counts cannot be joined afterwards.\n- A write lands in one bus word, so a word covered in part would give fragments with no `value`. That is why such a range is refused.\n- It sees every write the cpu makes, handled or not, so it arms where nothing handles the write: `write_maps_to` is then `unmapped`, with a `note`.\n- `tally_id` names it: its range, plus the cpu when that is not the first one.\n- A count that never started must not read as zero. An install the console echoed and never ran is sent once more (`install_resent`); lost twice, the state is `install_lost`.\n- `lines_ahead` is how many console lines wait before the install, and `call` the line that marks it done.\n- Declaring the range again installs over the old count and keeps its counts. After a clear that ran, it counts from zero.\n- A count or capture whose periodic write keeps failing leaves its last finished dump on disk. Its reading is `superseded`, its `why` the error `error.log` logs as `MCP_DUMP_FAILED`.",
     "On `capture`:",
     "- The row is taken before the write lands. When `trigger` lies inside the block, the block holds the value from before the write.\n- The block must be plain memory. Reading through a handler would run it at every trigger, and reading around it gives zeros that look like data.\n- `source` says where the block is read: `kind`, then `addr` in the cpu's memory, or the `tag` and `offset` of a memory share or region.\n- `time_s` is the accessing cpu's own clock at full precision, so two accesses one cycle apart never share it.\n- Captures on two cpus share one clock: order their rows by `time_s`, not by position. `line` is the screen line being drawn.\n- A capture of reads keeps the access and no block. It sees no instruction fetch and no ROM read, so on code or ROM it keeps no row.\n- It runs at every read, so on an address the program polls it costs a Lua call per poll.\n- A read capture's `ref` is its trigger, so a write capture of the same address under that ref is refused.\n- `gfx_blits`, `gfx_blit_source`, `gfx_draft` and a region write read write captures only.\n- `trigger_addr` is where `trigger` resolves, and `trigger_maps_to` what the memory map has there.",
     "On a port (`space=\"io\"`):",
@@ -1317,7 +1319,7 @@
     "With no `cpu` it reaches that `ref` on every cpu. In a file several sessions use, `all=True` also clears rows another session saved, which read `inherited: true`: clear by `ref` when they are not yours."
    ],
    "why_more": [
-    "- Removing a `count` or a `capture` is sent to MAME's console and applied when it next reads a line.\n- It is never sent twice: the id is the range, and a second send could remove a watch declared since.\n- A removal MAME did not carry out shows on every reply under `session.tallies_not_removed`.\n- If the debugger still lists a row after its removal, `note` says so and names the `debug` command that removes it.\n- `all=True` on `watch` removes the port watches too."
+    "- Removing a `count` or a `capture` is sent to MAME's console and applied when it next reads a line.\n- It is never sent twice: the id is the range, and a second send could remove a watch declared since.\n- A removal MAME did not carry out shows on every reply under `session.tallies_not_removed`.\n- If the debugger still lists a row after its removal, `note` says so and names the `debug` command that removes it.\n- `all=True` on `watch` removes the port watches too.\n- A registerpoint's condition or an `expr` watch matches as typed but for its numbers, read as the console reads them: `7fff`, `0x7fff`, `$7fff` and `#32767` are one.\n- There a run of letters such as `ab` stays a name and keeps its case. A saved address written in bare hex is that address.\n- With a `state_dir`, `all=True` reaches only the rows saved in that folder. Without one, it reaches every session's rows of the same system and symbol file.\n- Declaring the range again installs over a count not removed, keeping its totals, and a clear then removes it. Its `tallies_not_removed` row stays: this session counted past a removal."
    ],
    "related": [
     "declaration_list",
@@ -1370,7 +1372,7 @@
   },
   "read_block": {
    "what": "Read bytes MAME keeps under a tag and no cpu can read back: write-only memory, or a ROM outside every cpu's address space.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped once the game has drawn its sprites; the tour reads at frame 545.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped once the game has drawn its sprites; the example session reads at frame 545.",
    "ask": "Read four bytes of the sprite memory, from its byte 12 on.",
    "call": {
     "tag": "spriteram",
@@ -1451,7 +1453,10 @@
     "Each value is printed at its register's own width, and `register_bits` states it, because a fixed eight digits would make a 16-bit register look 32-bit. A V30's 16-bit register is named `EAX` and says 16.",
     "The names are the ones MAME's gdbstub gives the cpu. A 68000 has `D0` to `D7`, `A0` to `A5`, `FP`, `SP`, `PS` and `PC`; an x86 or a V30 has `EAX` to `GS` with `EIP`. `set_register` also takes the 68000 aliases `A6`, `A7`, `SR` and `USP`, which are not listed here."
    ],
-   "why_more": [],
+   "why_more": [
+    "The byte order is MAME's: the endianness of the cpu's program space, as `start` read it. It is not established when that read failed, or when it disagrees with the order measured for that architecture, and the cpu is then `no_channel`.",
+    "At a stop, the `regs` of such a cpu say `available: false` with a `why`, never another cpu's registers under its name."
+   ],
    "related": [
     "set_register",
     "cpu_info",
@@ -1462,7 +1467,7 @@
   },
   "disassemble": {
    "what": "Disassemble the code at an address, one instruction a line, each marked as a call, a branch, a return or none of those.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped at reset with the tour's symbol file loaded, which names `count_coin`.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped at reset with the example session's symbol file loaded, which names `count_coin`.",
    "ask": "Show me the first instructions of the routine that counts a coin.",
    "call": {
     "ref": "count_coin",
@@ -1613,7 +1618,7 @@
    "arguments": {
     "ref": "Where the range begins: a symbol or a `0x` address.",
     "length": "How many bytes to write.",
-    "dest": "The file to create: an absolute or `~`-led path, in a folder that exists, not there yet. The path holds no space, comma, semicolon, quote or bracket.",
+    "dest": "The file to create, required: an absolute or `~`-led path, in a folder that exists, not there yet. The path holds no space, comma, semicolon, quote or bracket.",
     "cpu": "The cpu whose program memory is written out. Left empty, the one the debugger is showing."
    },
    "returns": {
@@ -1978,7 +1983,7 @@
   "gfx_view": {
    "what": "Draw bytes of a ROM region or of memory as tiles, in a layout you state in MAME's `gfx_layout` terms.",
    "ask": "Show me sprite tiles 88 to 95 of Gridlee's graphics ROM in the palette's colours, starting at pen 832.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped in attract mode. The tour's manifest, `docs/reference/tour/gridlee-gfx.yaml`, is loaded and names the format `sprite`.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped in attract mode. The example session's manifest, `docs/reference/tour/gridlee-gfx.yaml`, is loaded and names the format `sprite`.",
    "call": {
     "layout": "sprite",
     "tag": "gfx1",
@@ -2184,7 +2189,7 @@
   "gfx_draft": {
    "what": "Write a draft `gfx.yaml` from what this session's `gfx_locate` answers and your picks proved, with a report of every figure beside it.",
    "ask": "Write down what we worked out about Gridlee's sprite format as a draft manifest, and record that the tour picked candidate s1c1.",
-   "on": "On Gridlee, a free ROM from mamedev.org, after the `gfx_sweep` and `gfx_locate` calls shown on this page. The pick of `s1c1` is recorded as the tour's.",
+   "on": "On Gridlee, a free ROM from mamedev.org, after the `gfx_sweep` and `gfx_locate` calls shown on this page. The pick of `s1c1` is recorded as the example session's.",
    "call": {
     "dest": "./tmp/demos/tour/gridlee-gfx-draft.yaml",
     "choose": {
@@ -2216,6 +2221,7 @@
     "A session with no `gfx_locate` answer and no pick (`needs_call`).",
     "A `dest` that exists and is not a draft, so a confirmed manifest is never overwritten (`bad_argument`).",
     "A `dest` that is not a `.yaml` file, or a `choose` of another shape (`bad_argument`).",
+    "A `dest` holding a space, comma, semicolon, quote, bracket or control character, although no console line carries that file: one rule serves every path (`bad_argument`).",
     "A `choose` that names no candidate of this session's sheets (`unknown_ref`)."
    ],
    "why": [
@@ -2229,6 +2235,7 @@
     "A pick from a `gfx_sweep` sheet is written as `human` where nothing of its tile size is proved. A match that proves the same layout turns it into `proved`, and a match that proves another is reported as contradicting it.",
     "An asset is written for each block and palette bank a format was drawn with; `asset_names` lists them. A format matched only through `gfx_locate`'s pen table proves no bank, so it gets no asset.",
     "A draw command comes from a capture watch (`watch_add`), paired with the answers whose matches all sit in one window. An answer of screen frame F pairs with the capture's row of frame F minus a lag. Each word of the block is tried as `dest_x`, `dest_y` and `source_tile`, with a sign and an `add`.",
+    "A capture whose callbacks raised is short of writes, so the draft proves no draw command from it and says why in `not_proved`.",
     "A reading holds when it agrees on every paired answer, on enough of them, with a value that changes. The lag is the one at which both x and y hold; none or several settle nothing. A role that holds only at another lag is left out and named (`elsewhere`); `command_fields` lists what was written.",
     "Every figure lives in the report, which the same record regenerates byte for byte, and the draft's `source` lines name the report's key. A `choose` is recorded once however often it is made, and not at all when the draft fails."
    ],
@@ -2243,7 +2250,7 @@
   "gfx_blits": {
    "what": "Show every draw (blit) a board made in one frame as a box over the screen, coloured by the code that issued it.",
    "ask": "Which code drew over the rectangle at (148, 164), 8 by 16 pixels, in frame 545?",
-   "on": "On Gridlee, a free ROM from mamedev.org, with the tour's manifest loaded. A capture watch on the player's sprite entry (`0xc`, 4 bytes, trigger `0x10`) has recorded two frames.",
+   "on": "On Gridlee, a free ROM from mamedev.org, with the example session's manifest loaded. A capture watch on the player's sprite entry (`0xc`, 4 bytes, trigger `0x10`) has recorded two frames.",
    "call": {
     "draw_command": "player",
     "frame": 545,
@@ -2362,8 +2369,8 @@
   },
   "gfx_load": {
    "what": "Load a project's `gfx.yaml`, the file that names its tile formats, graphics assets, draw commands and palette ports for the other tools.",
-   "ask": "Load the graphics manifest the tour keeps for Gridlee.",
-   "on": "On Gridlee, a free ROM from mamedev.org, at any stop. The manifest is the tour's, `docs/reference/tour/gridlee-gfx.yaml` in this repository.",
+   "ask": "Load the graphics manifest this repository keeps for Gridlee.",
+   "on": "On Gridlee, a free ROM from mamedev.org, at any stop. The manifest is the example session's, `docs/reference/tour/gridlee-gfx.yaml` in this repository.",
    "call": {
     "path": "./docs/reference/tour/gridlee-gfx.yaml"
    },
@@ -2419,7 +2426,7 @@
   "gfx_film": {
    "what": "Keep a picture of each frame in which a chosen write happened, and read them back as one contact sheet.",
    "ask": "Keep a picture of every frame in the next 90 where the game writes its credits, two pictures at most.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped in attract mode with the tour's symbols loaded, so `credits` names the byte that counts coins.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped in attract mode with the example session's symbols loaded, so `credits` names the byte that counts coins.",
    "call": {
     "trigger": "credits",
     "frames": 90,
@@ -2490,7 +2497,8 @@
     "| in `candidates` | when |\n|---|---|\n| `orientation` | a mirrored screen equals the snapshot |\n| `frame_lag` | no mirror, and every differing pixel is in a pen's colour |\n| `colour_adjustment` | each screen colour is drawn as one snapshot colour, no two alike |\n| `overlay_or_artwork` | anything else, and a snapshot of another size, where nothing is compared |",
     "A `start` does not arm the film again. A film spends its frames and pictures from the moment it is armed, and a new start would spend them on the boot. `clear` keeps the files, and a later film writes into a folder of its own.",
     "- `frame-K.png`: one per kept frame.\n- `film.json`: every kept frame with its file, `sha256`, check, `hits_in_frame`, `hit_counters` and first hits, and every refused one with its reason.\n- `sheet-F.png`: one per page read.\n- `film-anim.png`: every kept frame as an animation, never attached.",
-    "`cost` is the frame notifier's own host time inside MAME; the hook's cost per write is not in it."
+    "`cost` is the frame notifier's own host time inside MAME; the hook's cost per write is not in it.",
+    "A film whose callbacks raised says so in `nothing_kept` when it kept no picture: frames that met the condition may not have been marked."
    ],
    "related": [
     "gfx_blits",
@@ -2552,7 +2560,8 @@
     "`sequence`: each data write merges into the stored word of the pen at the current offset, under its mask. Any write to `index_port`'s bus word sets the offset back to 0.",
     "A driver that zeroes that offset as its video starts leaves a log armed right after `start` knowing it (`synced_at_start`). Armed anywhere else, the log waits for a write a game may never make again.",
     "In both, a pen has a colour only once every colour bit of its word has been seen written. A write that merges into bits the log never saw counts in `partial_writes`, and the pen has no colour until they are.",
-    "A row of an index write carries `index`, and one of a whole-colour write `word` and `mask`. A row that landed on no pen says `unsynced`; one where the index was lost says `desync` and `why`."
+    "A row of an index write carries `index`, and one of a whole-colour write `word` and `mask`. A row that landed on no pen says `unsynced`; one where the index was lost says `desync` and `why`.",
+    "A log whose callbacks raised carries `callback_errors`, with their `count` and the `first` error, and a pen with no write logged then says one may have been missed. A log whose periodic write to disk keeps failing shows its last finished table, and `why` gives the error."
    ],
    "related": [
     "gfx_load",
@@ -2654,7 +2663,7 @@
   "write": {
    "what": "Write bytes into memory at an address or a symbol, and see what the memory holds afterwards.",
    "ask": "Give me nine credits: write 9 into both bytes the game keeps its credits in.",
-   "on": "On Gridlee, a free ROM from mamedev.org, at any stop, with the tour's symbols loaded: `credits` names the first of the two bytes the game keeps its credits in.",
+   "on": "On Gridlee, a free ROM from mamedev.org, at any stop, with the example session's symbols loaded: `credits` names the first of the two bytes the game keeps its credits in.",
    "call": {
     "ref": "credits",
     "data_hex": "0909"
@@ -2739,6 +2748,7 @@
     "A machine that is running (`not_stopped`).",
     "A name the cpu does not have; the message lists the ones it has (`bad_argument`).",
     "A negative value, or one wider than the register (`bad_argument`).",
+    "A bool, or a value of either spelling wider than 64 bits, the widest number MAME's debugger holds (`bad_argument`).",
     "A `cpu` other than the first, on a MAME build whose debugger connection serves one cpu only (`bad_argument`).",
     "A cpu whose registers the debugger connection does not describe (`no_channel`)."
    ],
@@ -2757,7 +2767,7 @@
   "reset": {
    "what": "Soft-reset the machine without restarting MAME, and stop where its boot begins.",
    "ask": "Reset the game without restarting MAME.",
-   "on": "On Gridlee, a free ROM from mamedev.org, at any stop. The tour resets at frame 630, with a game under way.",
+   "on": "On Gridlee, a free ROM from mamedev.org, at any stop. The example session resets at frame 630, with a game under way.",
    "call": {},
    "shows": [
     "summary",
@@ -2893,7 +2903,7 @@
   },
   "comment_write": {
    "what": "Change the saved comments: add or delete one, or save them all to a file and load them back.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped at reset with the tour's symbol file loaded, which names the coin routine `count_coin`.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped at reset with the example session's symbol file loaded, which names the coin routine `count_coin`.",
    "ask": "Leave a note on the coin routine: a coin increments the credits, then the BCD copy.",
    "call": {
     "method": "add",
@@ -2963,7 +2973,8 @@
     "`save` and `load` are how a project keeps its comments under version control beside its symbol file. `load` is all or nothing, and the file wins where both comment an address."
    ],
    "why_more": [
-    "- A comment's `state` is `armed` once MAME's disassembly shows it. `unresolved` names a symbol this build lacks: the comment stays saved and is shown once a build has it.\n- The file has no build column, so a raw address loaded into another build is trusted. Comment by symbol what must survive a rebuild.\n- A rebuild can bring several comments to one address. An `add`, `delete` or `load` there reaches the one whose `ref` it spells, else the one MAME's disassembly shows.\n- A `stale` comment made the other way, by symbol where yours is by address or the reverse, is reached only by its own spelling.\n- `save`'s `dest` is in a folder that exists, and its path holds no comma, semicolon, quote, space, bracket or control character.\n- MAME's console cannot carry a text holding `\"` or ending in `\\`: it is saved and reads `unarmable`. If it replaces one that was shown, the old text is cleared.\n- A `delete` over instruction bytes that changed since leaves MAME holding the old text, hidden, until `close`.\n- A file with two comments a rebuild put at one address loads both, so what `save` writes of them reads back.\n- MAME writes its own comment files into a folder inside the session's temporary folder, so nothing deleted here comes back from them.\n- `comments_total`, `dropped_total` and `replaced_total` count the whole lists; `truncated` says a list was cut. `declarations` names the saved breakpoints file, as in `comment_list`."
+    "- A comment's `state` is `armed` once MAME's disassembly shows it. `unresolved` names a symbol this build lacks: the comment stays saved and is shown once a build has it.\n- The file has no build column, so a raw address loaded into another build is trusted. Comment by symbol what must survive a rebuild.\n- A rebuild can bring several comments to one address. An `add`, `delete` or `load` there reaches the one whose `ref` it spells, else the one MAME's disassembly shows.\n- A `stale` comment made the other way, by symbol where yours is by address or the reverse, is reached only by its own spelling.\n- `save`'s `dest` is in a folder that exists, and its path holds no comma, semicolon, quote, space, bracket or control character.\n- MAME's console cannot carry a text holding `\"` or ending in `\\`: it is saved and reads `unarmable`. If it replaces one that was shown, the old text is cleared.\n- A `delete` over instruction bytes that changed since leaves MAME holding the old text, hidden, until `close`.\n- A file with two comments a rebuild put at one address loads both, so what `save` writes of them reads back.\n- MAME writes its own comment files into a folder inside the session's temporary folder, so nothing deleted here comes back from them.\n- `comments_total`, `dropped_total` and `replaced_total` count the whole lists; `truncated` says a list was cut. `declarations` names the saved breakpoints file, as in `comment_list`.",
+    "- The file `save` writes is UTF-8 with no byte order mark, and its lines end in LF.\n- Line 1 is exactly `# comments v1: ref<TAB>cpu<TAB>created_at<TAB>text`, and each row after it holds those four columns.\n- Rows are sorted by cpu, then by ref, so a diff shows only what changed.\n- `cpu` is the cpu's absolute tag, and `created_at` reads `YYYY-MM-DDTHH:MM:SS+00:00`."
    ],
    "related": [
     "comment_list",
@@ -2974,7 +2985,7 @@
   },
   "input": {
    "what": "Press one of the board's inputs by name (a coin, a start button), hold it for some frames and let go.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped about seven seconds after power-on. The tour drops this coin as the first step of a `perform`.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped about seven seconds after power-on. The example session drops this coin as the first step of a `perform`.",
    "ask": "Drop a coin into the first slot and keep it pressed for four frames.",
    "call": {
     "port": ":IN1",
@@ -3041,7 +3052,7 @@
   },
   "lua": {
    "what": "Run a Lua script inside MAME, with all of MAME's Lua interface, and get back what it prints.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped anywhere. The tour asks this late in a game.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped anywhere. The example session asks this late in a game.",
    "ask": "Ask MAME itself which machine this is, with one line of Lua that only reads.",
    "call": {
     "script": "print(manager.machine.system.description)",
@@ -3086,8 +3097,9 @@
     "MAME's console is a plugin. `start` refuses a MAME that does not have it, before anything is launched.",
     "`call` is the line that closes this call's output in the `process` log. When `seconds` runs out, the refusal says how many steps were taken, and a late answer shows in `log`, ending with that line.",
     "MAME reads the console on a thread its own source calls unsafe: a step at the wrong moment can make it run the previous script again, or drop a line. Every reply that reads the console counts what happened:",
-    "- `lines_ahead`: lines waiting before this call's own. `drain_steps` or `evaluated_by` says how they were run first.\n- `reader_steps`: extra steps given because the console had not picked the line up.\n- `resent`: the console took the line and never ran it, so it was sent again. A second time is refused `reader_died`.\n- `thread_errors`: how many times the console's reading thread died.\n- `console_reruns`: earlier scripts run a second time. `altered` alone cannot say a write happened twice.",
-    "The tools that send a script of the server's own carry the same counts: `input`, `throttle`, `record`, `audio_record`, `screen_signature`, `screen_map_find` and `screen_map_write` with `method=\"add\"`. [`debug`](write.md#debug) does not use this console: it talks to MAME's debugger."
+    "- `lines_ahead`: lines waiting before this call's own. `drain_steps` or `evaluated_by` says how they were run first.\n- `reader_steps`: extra steps given because the console had not picked the line up.\n- `resent`: the console took the line and never ran it, so it was sent again. A second time is refused `reader_died`.\n- `thread_errors`: how many times the console's reading thread died.\n- `console_reruns`: earlier scripts run a second time. `altered` alone cannot say a write happened twice.\n- `thread_errors`, `console_reruns` and `resent` are on every reply that read a script's answer back, zero included.\n- Session totals sit under `session.console`. They grow when a call reads its answer back and once more at `close`, so a `throttle` asked while stopped adds none till then.",
+    "The tools that send a script of the server's own carry the same counts: `input`, `throttle`, `record`, `audio_record`, `screen_signature`, `screen_map_find` and `screen_map_write` with `method=\"add\"`. [`debug`](write.md#debug) does not use this console: it talks to MAME's debugger.",
+    "A script of the server's own that raises is refused by its error. A port or field the machine lacks is `unknown_ref`, a recording with no screen `no_channel`, anything else `unexpected_answer`."
    ],
    "related": [
     "debug",
@@ -3100,7 +3112,7 @@
   },
   "throttle": {
    "what": "Choose whether the machine runs at real speed or as fast as the host can.",
-   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset before anything has run. The tour then runs the game five seconds.",
+   "on": "On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org, stopped at reset before anything has run. The example session then runs the game five seconds.",
    "ask": "Turn real-speed throttling off so the game fast-forwards, then confirm the switch was applied.",
    "call": {
     "on": false
@@ -3165,7 +3177,7 @@
   "state_list": {
    "what": "List the session's saved states, with the size of each and where it was saved.",
    "ask": "Which saved states does this session have?",
-   "on": "On Gridlee, a free ROM from mamedev.org, after a state was saved as `two_credits`. The tour gives `start` a `state_dir` of its own.",
+   "on": "On Gridlee, a free ROM from mamedev.org, after a state was saved as `two_credits`. The example session gives `start` a `state_dir` of its own.",
    "call": {},
    "shows": [
     "summary",
@@ -3193,7 +3205,7 @@
   "state_write": {
    "what": "Save the emulated machine to a file under a name, or load a saved one back.",
    "ask": "Save the machine here under the name two_credits, so I can come back to it.",
-   "on": "On Gridlee, a free ROM from mamedev.org, stopped after two coins went in. The tour then plays on to the level card before it loads the state back.",
+   "on": "On Gridlee, a free ROM from mamedev.org, stopped after two coins went in. The example session then plays on to the level card before it loads the state back.",
    "call": {
     "method": "save",
     "name": "two_credits"
@@ -3367,6 +3379,7 @@
     "A machine that is running (`not_stopped`).",
     "A machine with no screen or no frame counter (`no_channel`).",
     "A file that does not read back as a finished AVI with frames in it (`readback_refused`).",
+    "A script that answered and logged no mark, not even the line it writes as it is evaluated (`readback_refused`).",
     "A script MAME's console ran twice, which begins two recordings on one file (`console_rerun`).",
     "A run that did not come to a stop within `seconds` and could not be ended (`not_settled`)."
    ],
@@ -3378,7 +3391,8 @@
    "why_more": [
     "Lines already waiting in MAME's console are run before the script is sent, one instruction each, so the frames asked for are the recording's own.",
     "The reply is also a stop: it carries `verdict` and the fields `run_for` returns, with the readings taken at each stop. `frame_before` and `frame_after` say how far the machine moved.",
-    "A reply with `pending: true` means the console had not run the script when the call ended, so nothing is known about the recording yet."
+    "A reply with `pending: true` means the console had not run the script when the call ended, so nothing is known about the recording yet.",
+    "- The script proves each step by a mark in MAME's `error.log`, carrying this call's own number, so a stale mark is never taken for a later call's.\n- A frame notifier that fails leaves no mark, so the reply says `began: false` or `ended: false`, never a finished empty file.\n- `frame_begin_planned` is predicted from the frame counter as the script is evaluated, one frame later inside a vertical blank.\n- A refusal after the run began says how far the machine moved, in `frame_before` and `frame_after`.\n- A `not_settled` run leaves out the recording's fields, and its message says whether the frame notifier may still be armed."
    ],
    "related": [
     "captures",
@@ -3427,6 +3441,7 @@
     "A machine with no screen or no frame counter (`no_channel`).",
     "A stretch with no mixer update, a machine with no speaker, or a mixer already recording (`readback_refused`).",
     "A WAV whose header, length or sample count does not agree with the run (`readback_refused`).",
+    "A script that answered and logged no mark, not even the line it writes as it is evaluated (`readback_refused`).",
     "A script MAME's console ran twice (`console_rerun`)."
    ],
    "why": [
@@ -3436,7 +3451,8 @@
    ],
    "why_more": [
     "Two is the fewest `frames` that always hold a mixer update on a screen under 100 Hz.",
-    "A stop that cuts the run short leaves the recording open or not begun, as [`record`](#record) explains. An open recording gains nothing while the machine stands at the debugger, since no mixer update runs there."
+    "A stop that cuts the run short leaves the recording open or not begun, as [`record`](#record) explains. An open recording gains nothing while the machine stands at the debugger, since no mixer update runs there.",
+    "Its marks in `error.log`, its planned frames and its refusals after the run began follow [`record`](#record)'s rules."
    ],
    "related": [
     "audio_compare",
@@ -3763,6 +3779,7 @@
     "`until_frame` counts what happens before a frame when nobody can know how many steps that takes. Every stop a watch makes takes a step without moving the frame, so a list sized by guessing ends short, with a smaller count that looks right.",
     "The call ends right after the first step whose stop reads the frame, even mid-list, and `frame_reached` says which. It needs a `run_for` step because `run_for` carries on past a watch's stop, where `run_to` and `step` end at the first.",
     "On a running program the first stop starts the count. Running out of steps or seconds is a `TIMEOUT` that names the last frame read.",
+    "Every pass compares each step with its `recorded` values again, so a stop recorded on the first pass diverges on the second. A document `perform_export` writes carries no `until_frame`.",
     "With `summaries`, `steps_total` counts the rows and `truncated` says the reply shows fewer. Read `stops` for a count and `ran_path` for the whole table: a count made by hand from cut rows comes out wrong and looks right.",
     "On a machine with several cpus the list leaves the visible cpu, the one the debugger shows, as it found it. At its end, failed or not, it puts back the cpu visible before the first step, or the one the last `cpu_focus` step chose, running nothing. Once the program runs, the next stop decides.",
     "`visible_cpu` is that cpu after the list, and `visible_cpu_kept` tells how it was kept: `before`, `asked`, `after`, `restored`, `moved_to`, and a `why` when it was not put back."
@@ -3857,7 +3874,7 @@
    ],
    "reads": "Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is unavailable because nothing ended the script early; `kept` says the script is now a candidate for `promote`.",
    "arguments": {
-    "dest": "The `.json` file to write: absolute, or starting with `~`. Refused when it exists, unless `overwrite`.",
+    "dest": "The `.json` file to write, required: absolute, or starting with `~`. Refused when it exists, unless `overwrite`.",
     "overwrite": "`true` replaces a `dest` that is already there. Left out, an existing file is refused."
    },
    "returns": {
@@ -3907,7 +3924,7 @@
     "store_bytes",
     "would_create"
    ],
-   "reads": "A review writes nothing: its candidates come to 3802 bytes, and the folder would hold 5467 with them and its two own files. `would_create` lists what a first approval adds.",
+   "reads": "A review writes nothing: `total_bytes` is the size of its candidates, and `store_bytes` what the folder would hold with them and its two own files. `would_create` lists what a first approval adds.",
    "arguments": {
     "dry_run": "`true` reviews: it lists every candidate and writes nothing. It cannot be given together with `entries`.",
     "entries": "The entries to write, each `<kind>/<name>` with a kind of `start`, `maps` or `perform`. Only these are written.",
@@ -3937,7 +3954,7 @@
    "why": [
     "Nothing is written into a repository until a call names the entries to write. The `.scry/` folder is tracked, so every entry is reviewed before it is written, and only an approved call creates the folder. [The `.scry/` folder](../../REFERENCE.md#the-scry-folder) says what it holds.",
     "`dry_run=true` lists each candidate that would change the folder: its file, its size and whether it is new or an update, an update with what changes. It names the candidates that would change nothing, and what an approval would create beside the entries.",
-    "An entry belongs to one repository, fixed when it is saved: the one a call read it from, else the one whose profile the current `start` read. A `start` that read no profile names none, since no argument says where a program's repository is. Its entries are written only where `root` says."
+    "An entry belongs to one repository, fixed when it is saved: the one a call read it from, else the one whose profile the current `start` read. A `start` that read no profile names none: no argument says where a program's repository is, and `rompath` is often a folder many programs share. Its entries are written only where `root` says."
    ],
    "why_more": [
     "A candidate is saved only when complete: a start profile with the arguments it cannot start without, a screen map its reader parses, a script with a check. A reply that saves one also names each repository with no `.scry/` folder and the `root` to give.",

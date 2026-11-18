@@ -15,7 +15,7 @@ state_list()
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, after a state was saved as `two_credits`. The tour gives `start` a `state_dir` of its own.
+On Gridlee, a free ROM from mamedev.org, after a state was saved as `two_credits`. The example session gives `start` a `state_dir` of its own.
 
 Ask:
 
@@ -114,7 +114,7 @@ state_write(method, name)
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped after two coins went in. The tour then plays on to the level card before it loads the state back.
+On Gridlee, a free ROM from mamedev.org, stopped after two coins went in. The example session then plays on to the level card before it loads the state back.
 
 Ask:
 

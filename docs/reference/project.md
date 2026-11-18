@@ -39,7 +39,7 @@ Reply, 5 of 8 fields:
 }
 ```
 
-A review writes nothing: its candidates come to 3802 bytes, and the folder would hold 5467 with them and its two own files. `would_create` lists what a first approval adds.
+A review writes nothing: `total_bytes` is the size of its candidates, and `store_bytes` what the folder would hold with them and its two own files. `would_create` lists what a first approval adds.
 
 <details><summary>The whole reply</summary>
 
@@ -133,7 +133,7 @@ Nothing is written into a repository until a call names the entries to write. Th
 
 `dry_run=true` lists each candidate that would change the folder: its file, its size and whether it is new or an update, an update with what changes. It names the candidates that would change nothing, and what an approval would create beside the entries.
 
-An entry belongs to one repository, fixed when it is saved: the one a call read it from, else the one whose profile the current `start` read. A `start` that read no profile names none, since no argument says where a program's repository is. Its entries are written only where `root` says.
+An entry belongs to one repository, fixed when it is saved: the one a call read it from, else the one whose profile the current `start` read. A `start` that read no profile names none: no argument says where a program's repository is, and `rompath` is often a folder many programs share. Its entries are written only where `root` says.
 
 <details><summary>More on why</summary>
 

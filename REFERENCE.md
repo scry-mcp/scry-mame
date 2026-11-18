@@ -4,6 +4,10 @@ This page is for a rule that several tools share. It holds the list of tools, th
 
 Each tool has its own entry, with arguments, reply and example, on its family's page under `docs/reference/`; a family is a group of tools. To install, see the [README](README.md).
 
+Each example is a call of the example session: one session on Gridlee, a free ROM from mamedev.org, kept whole in [`docs/reference/tour/TRANSCRIPT.md`](docs/reference/tour/TRANSCRIPT.md).
+
+A path in an example that starts with `./` stands for the folder of your clone, and `$TMPDIR` for your temporary folder. Write the whole path in your own call: a relative one is refused.
+
 ## Index
 
 <!-- scry-reference:begin index -->
@@ -171,7 +175,7 @@ An address argument, `ref` in most tools, is a `0x` number or a symbol of your p
 - **A symbol belongs to one cpu**: the one the call names, else the visible one. The same name in two cpus' files is not ambiguous.
 - **Addresses are linear.** A `ref` with a segment, such as `12345:0010`, is refused.
 - **A value, an offset or a palette index is an integer or a `0x` string**, in a call and in a `perform` step: `"0x1234"` is 4660. Decimal text is refused, since `"4660"` could be the digits of `0x4660`. A count is an integer only.
-- **A reply spells a number so the argument takes it back**: an address as `0x0070001e`, eight digits; a value as `0x` text at its width; an offset as an integer.
+- **A reply spells a number so the argument takes it back**: an address or a block offset as `0x0070001e`, eight digits; a value as `0x` text at its width.
 - **Two tools have their own grammar.** A condition or a `debug` line reaches MAME's console as typed, where a bare number is hex. In a `lua` script it is decimal.
 
 The tools: [Names](docs/reference/names.md), [Breakpoints](docs/reference/breakpoints.md), [Read](docs/reference/read.md).
@@ -213,6 +217,8 @@ The program is either stopped at the debugger or running, and most tools need it
 - every tool of Machine, Names, Breakpoints, Timeline, Files, Sequences and Project;
 - `status`, `window`, `close`, `stop`, `comment_list`, `throttle`, `state_list`, `snapshot`, `captures`;
 - `comment_write(method="save")`, `scan(method="clear")`, `screen_map_write` with `load` or `save`, and `registers(from_last_stop=True)`.
+
+A tool that answers may still refuse one of its modes while the program runs: its entry says which.
 
 **A breakpoint set while it runs works at once**, and the reply's `while_running` says whether the program ran when the call came in. A stop nobody waited for is reported once, in `stopped_on_its_own`. A run typed through `debug`, such as `g` or `step N`, counts as running until `stop`.
 

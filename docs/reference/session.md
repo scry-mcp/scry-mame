@@ -20,7 +20,7 @@ start(system="", rompath="", reference_rom="", symbols="", reference_addr=0, ini
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The tour starts it for a person to watch, with seven symbols and a reference image of the program ROM at `0xa000`.
+On [Gridlee](../../demos/gridlee/README.md), a free ROM from mamedev.org. The example session starts it for a person to watch, with seven symbols and a reference image of the program ROM at `0xa000`.
 
 Ask:
 
@@ -118,7 +118,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `system` (string, default `""`): The system to run, by MAME's short name. Required unless a start profile gives it.
 - `rompath` (string, default `""`): The folders that hold the system's ROMs, separated by `;`. Required unless a start profile gives it.
 - `reference_rom` (string, default `""`): A binary image of the program you expect to be running, which the machine's memory is compared with. Required unless a start profile gives it.
-- `symbols` (string or object, default `""`): A symbol file, so an address can be given by name: a YAML file or the linker's map. One path is the first cpu's; `{cpu: path}` gives one per cpu.
+- `symbols` (string or object, default `""`): A symbol file, so an address can be given by name: a YAML file or the linker's five-column map. One path is the first cpu's; `{cpu: path}` gives one per cpu.
 - `reference_addr` (integer or string, default `0`): The address where 16 bytes of the machine are compared with the image: an integer or a `0x` string. Left out, 0.
 - `inipath` (string, default `""`): The folders MAME reads its `.ini` files from, separated by `;`. Left empty, MAME's own.
 - `boot_seconds` (number (> 0, <= 600.0), default `8.0`): How long to wait for MAME's debugger to answer, in seconds. Left out, 8.
@@ -128,7 +128,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - `background` (boolean, optional): `true` opens the window behind your other windows and leaves the keyboard focus where it is; `false` opens it in front. Left out, behind unless `shared`.
 - `boot_lua` (string, default `""`): A Lua file MAME runs at boot, after the server's own script. It is a path, never Lua text.
 - `env` (object, optional): Environment variables for MAME's own process, as `{name: value}`. They are there for what `boot_lua` reads.
-- `bases` (object, optional): For a linker's map: the address each class other than CODE is based at, or `rom`. With per-cpu `symbols`, `{cpu: {class: base}}`.
+- `bases` (object, optional): For a linker's map: the address each class other than CODE is based at, as `0x` text or an integer, or `rom`. With per-cpu `symbols`, `{cpu: {class: base}}`.
 - `reference_base` (integer or string, default `0`): The address of the image's first byte. Left out, 0.
 - `stub_port` (integer (>= 0, <= 65535), default `0`): The TCP port of MAME's gdbstub, the remote-debugger connection this server uses. Left at 0, a free port is picked.
 - `state_dir` (string, default `""`): The folder for saved states, `cfg/` and `nvram/`, which stays after `close`. Left empty, the session's temporary folder, deleted at `close`.
@@ -212,6 +212,7 @@ The check passed, seven symbols are loaded and the machine is stopped at `0x0000
 - A `reference_addr` outside the image, a `stub_port` that is not free, or a `cfg` MAME would not read (`bad_argument`).
 - Per-cpu `symbols`, `bases` or `types` naming a cpu the machine does not have (`unknown_ref`).
 - A class of a linker's map with no base, `bases` beside a YAML file, or a bad line in `types` (`bad_argument`).
+- A `state_dir` that is the server's own folder for the saved breakpoints file, directly or through a link: a session with a `state_dir` keeps its own (`bad_argument`).
 - `display` or `size` without `shared=true`, a `display` the host does not have, or a `size` larger than the display's usable area (`bad_argument`).
 - A `profile` that no `.scry/` folder searched holds; `searched` lists them (`bad_argument`).
 - A window that never appears on the display asked for. The session stays open for `window` or `close` (`window_not_visible`).
@@ -266,6 +267,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 - `boot_lua` runs after the server's own boot script, so `boot_lua_path` is the combined script. One that calls `manager.machine:exit()` ends the machine under the session.
 - With `state_dir` empty, saved states, `cfg/` and `nvram/` live in the temporary folder `scratch_dir` names. Nothing is written into your project either way.
 - `cfg` is copied to where MAME reads it; your file is never touched. MAME reports a rejected `.cfg` on stderr only, so the server reads that and refuses the start.
+- A `type:` line under a YAML symbol, or a `types` line, says what the symbol is, so a watch needs no `fmt`. A pointer's type names what it points at.
 
 **What else the reply says.**
 
@@ -274,6 +276,7 @@ A watched window is the largest whole multiple of the machine's first screen tha
 - `machine` holds counts only; `machine_map` has the rows. If MAME's `-listxml` fails, the start still works and the `note` says what is left empty.
 - `frame_symbol` is the name the frame counter answers to; a board with no screen has none ([Run](run.md)).
 - `flags`, `env`, `view`, `background`, `binary_origin`, `errorlog_path` and `stdout_path` say what the launch used, so a start can be told from another by its own reply.
+- `presence` is `true` while the border is drawn. A failure drawing it never changes another reply: `presence`, here and in `status`, turns `available: false` with a `why`.
 
 </details>
 
@@ -635,7 +638,7 @@ close(detail=false)
 
 ### Try it
 
-On [Gridlee](../../demos/gridlee/README.md), at the end of the tour, after it saved a screen map and a list of steps.
+On [Gridlee](../../demos/gridlee/README.md), at the end of the example session, after it saved a screen map and a list of steps.
 
 Ask:
 
@@ -734,6 +737,8 @@ It is the one way out of every state: it works on a running machine and on a bro
 - The `note` names the lines that could not be run, so a bad exit code has its likely cause beside it.
 - `cfg` is unavailable when no cfg was given, and `changed` says so when the copy could not be read back.
 - When the last lines are left out, `omitted` names them and `how` says what brings them.
+- On a broken session `close` asks MAME nothing: no drain, no speed read and no `quit`, only the kill.
+- The last lines are read before the temporary folder is deleted, so a MAME that died still gives its last words in `stdout_tail` and `errorlog_tail`.
 
 </details>
 

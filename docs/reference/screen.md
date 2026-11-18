@@ -685,7 +685,7 @@ gfx_view(layout, palette="none", tag="", ref="", offset=0, first=0, count=0, col
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, stopped in attract mode. The tour's manifest, `docs/reference/tour/gridlee-gfx.yaml`, is loaded and names the format `sprite`.
+On Gridlee, a free ROM from mamedev.org, stopped in attract mode. The example session's manifest, `docs/reference/tour/gridlee-gfx.yaml`, is loaded and names the format `sprite`.
 
 Ask:
 
@@ -1458,7 +1458,7 @@ gfx_draft(dest="", choose=null)
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, after the `gfx_sweep` and `gfx_locate` calls shown on this page. The pick of `s1c1` is recorded as the tour's.
+On Gridlee, a free ROM from mamedev.org, after the `gfx_sweep` and `gfx_locate` calls shown on this page. The pick of `s1c1` is recorded as the example session's.
 
 Ask:
 
@@ -1550,6 +1550,7 @@ The one format written is the recorded pick, marked `human`: `not_proved` says t
 - A session with no `gfx_locate` answer and no pick (`needs_call`).
 - A `dest` that exists and is not a draft, so a confirmed manifest is never overwritten (`bad_argument`).
 - A `dest` that is not a `.yaml` file, or a `choose` of another shape (`bad_argument`).
+- A `dest` holding a space, comma, semicolon, quote, bracket or control character, although no console line carries that file: one rule serves every path (`bad_argument`).
 - A `choose` that names no candidate of this session's sheets (`unknown_ref`).
 
 ### Why it works this way
@@ -1571,6 +1572,8 @@ A pick from a `gfx_sweep` sheet is written as `human` where nothing of its tile 
 An asset is written for each block and palette bank a format was drawn with; `asset_names` lists them. A format matched only through `gfx_locate`'s pen table proves no bank, so it gets no asset.
 
 A draw command comes from a capture watch (`watch_add`), paired with the answers whose matches all sit in one window. An answer of screen frame F pairs with the capture's row of frame F minus a lag. Each word of the block is tried as `dest_x`, `dest_y` and `source_tile`, with a sign and an `add`.
+
+A capture whose callbacks raised is short of writes, so the draft proves no draw command from it and says why in `not_proved`.
 
 A reading holds when it agrees on every paired answer, on enough of them, with a value that changes. The lag is the one at which both x and y hold; none or several settle nothing. A role that holds only at another lag is left out and named (`elsewhere`); `command_fields` lists what was written.
 
@@ -1617,7 +1620,7 @@ gfx_blits(draw_command, frame=null, area=null, detail=false, first=0, scale=0, d
 
 ### Try it
 
-On Gridlee, a free ROM from mamedev.org, with the tour's manifest loaded. A capture watch on the player's sprite entry (`0xc`, 4 bytes, trigger `0x10`) has recorded two frames.
+On Gridlee, a free ROM from mamedev.org, with the example session's manifest loaded. A capture watch on the player's sprite entry (`0xc`, 4 bytes, trigger `0x10`) has recorded two frames.
 
 Ask:
 

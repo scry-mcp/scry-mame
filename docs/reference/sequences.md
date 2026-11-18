@@ -269,6 +269,8 @@ The call ends right after the first step whose stop reads the frame, even mid-li
 
 On a running program the first stop starts the count. Running out of steps or seconds is a `TIMEOUT` that names the last frame read.
 
+Every pass compares each step with its `recorded` values again, so a stop recorded on the first pass diverges on the second. A document `perform_export` writes carries no `until_frame`.
+
 With `summaries`, `steps_total` counts the rows and `truncated` says the reply shows fewer. Read `stops` for a count and `ran_path` for the whole table: a count made by hand from cut rows comes out wrong and looks right.
 
 On a machine with several cpus the list leaves the visible cpu, the one the debugger shows, as it found it. At its end, failed or not, it puts back the cpu visible before the first step, or the one the last `cpu_focus` step chose, running nothing. Once the program runs, the next stop decides.
@@ -636,7 +638,7 @@ Nine calls replay, three of them as checks, and 14 calls were left out. `cut` is
 
 ### Arguments
 
-- `dest` (string, required): The `.json` file to write: absolute, or starting with `~`. Refused when it exists, unless `overwrite`.
+- `dest` (string, required): The `.json` file to write, required: absolute, or starting with `~`. Refused when it exists, unless `overwrite`.
 - `overwrite` (boolean, default `false`): `true` replaces a `dest` that is already there. Left out, an existing file is refused.
 
 ### What comes back

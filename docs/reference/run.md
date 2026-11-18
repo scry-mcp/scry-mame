@@ -389,6 +389,7 @@ A vector board has a display and no screen device, so the screens `machine_map` 
 - After `not_settled`, call `stop`. If `stop` fails as well, `close` then `start`.
 - The call reports progress to the client while it waits.
 - A run started while a registerpoint's condition still holds stops one instruction later as `OTHER_STOP`, never `no_progress`.
+- A single-frame run MAME refused, or whose landing was not read, may still have been taken: the session is marked running and the call is `not_settled`.
 
 </details>
 
@@ -1044,6 +1045,8 @@ The tracer cannot see a cpu the debugger ignores, a cpu waiting on its own, or a
 When the tracer cannot be shown closed, the way out is `stop`, then `debug("trace off,<cpu>")`. If `stop` fails, `close` then `start`, since closing MAME closes the file. A run that ends `INVALID` carries `trace` with `path`, `bytes` and `closed`, and no list file.
 
 One address can go missing from a condensed trace: address 0, when it runs among the first instructions, because the tracer's history starts as zeros.
+
+The server never watches a run with no end: `trace` covers one bounded window. A count across an open-ended run is a job for a tracer you write in Lua and run with `lua`.
 
 </details>
 
